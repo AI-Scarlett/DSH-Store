@@ -1,0 +1,8 @@
+# This bundle adds only its own Host plugin row. It does not disable, replace,
+# or patch any official DeepSeek Harness entry.
+- insert:
+    - id: dsh-safe-plugin-manager
+      name: dsh-safe-plugin-manager
+      config:
+        defaultProfile: web
+
