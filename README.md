@@ -7,6 +7,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 
 
 [打开在线插件商城](https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/) ·
+[提交插件上架申请](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) ·
 [查看机器目录](registry/catalog.json) ·
 [目录准入规则](registry/README.md) ·
 [安全说明](SECURITY.md)
@@ -200,6 +201,18 @@ Host 端使用 `ctx.inject(['webServer'], ...)` 等待可选 Web 服务。Client
   DSH 入口 ID 和生命周期脚本复核；
 - 同一个 DSH `packageName` 只允许出现一次，避免安装和更新身份冲突；
 - 收录不代表安全审计，商城不可安装和未验证状态必须保留真实原因。
+
+### 提交插件上架申请
+
+如果你开发或发现了值得收录的 DSH 插件，可以通过
+[插件上架申请表](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
+留言提交。申请需要提供公开 GitHub 仓库、完整 40 位 Commit、包名和版本、DSH 入口 ID，
+并如实声明安装生命周期脚本。
+
+联合审核任务每天北京时间 06:00 和 18:00 依次处理 GitHub 主动发现项目与用户提交，
+统一去重后按照“热门、有用、有趣”三个维度筛选，并复核许可证、来源、权限、兼容性、
+Bundle Patch、受保护条目和固定 Commit。审核通过只会生成候选目录草案与一次性变更计划；
+实际写入商城目录、提交 Pull Request 或合并仍需要逐次人工确认。
 
 ## 本地验证
 
