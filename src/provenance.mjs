@@ -15,7 +15,7 @@ export async function readMarketplaceProvenance(dshHome, profile) {
     let event
     try { event = JSON.parse(line) } catch { continue }
     if (event?.status !== 'applied' || event?.profile !== profile || typeof event?.packageName !== 'string') continue
-    if (event.action === 'install' || event.action === 'update') managed.add(event.packageName)
+    if (event.action === 'install' || event.action === 'update' || event.action === 'migrate') managed.add(event.packageName)
     if (event.action === 'uninstall') managed.delete(event.packageName)
   }
   return managed

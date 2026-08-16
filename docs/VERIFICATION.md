@@ -28,7 +28,7 @@
 - 进程与端口：DSH Web 重启后持续运行，`127.0.0.1:3080` 可访问；
 - Host API：同源请求 `POST /api2/dsh-safe-plugin-manager/inventory` 返回 HTTP 200，
   `mode=read-only`、`profile=web`、`plugins` 长度为 6、无诊断错误；
-- Client UI：浏览器实测“设置 → 插件 → 安全管理”可见，显示只读提示、Profile
+- Client UI：浏览器实测“设置 → 插件 → 插件商城”可见，显示只读提示、Profile
   与 6 个插件条目；
 - DSH 源码：安装过程中没有修改 DSH 源码或替换任何 `@deepseek-ai/*` 包。
 
@@ -69,6 +69,23 @@
   `healthy`，本机 4 个自有插件均标记为“本地开发安装”；
 - 安装来源台账、`unlisted` 下架隐藏和最小化安装回执均有自动测试；回执默认关闭，
   尚未部署统计接收服务，因此没有声称真实安装次数。
+
+### `0.3.1` 商城命名与本地来源迁移
+
+- Client 契约将 Settings 页签改为“插件商城”，页面标题改为
+  “DSH第三方插件商城”；
+- `link:`、`file:` 与 `workspace:` 来源只获得单独的 `migrate` 操作，普通
+  `update` 仍以 `LOCAL_SOURCE_PROTECTED` 失败关闭；
+- 迁移计划必须明示来源切换边界、固定 Commit、可能修改文件和确认语，
+  执行仍经由官方 DSH CLI、事务备份、健康检查与失败回滚；
+- 一次性 `DSH_HOME` 实测先安装本地链接，再使用官方
+  `dsh plugin --profile migration add <fixed-git-commit>` 切换来源；Profile 依赖
+  最终为 `github:AI-Scarlett/dsh-safe-plugin-manager#64949...`，安装包版本为
+  `0.3.0`，项目工作树没有出现 CLI 额外改动；
+- 上述测试为一次性环境的官方 CLI 来源切换证据，不等于真实 `web`
+  Profile 已迁移；真实 Profile 仍留给用户在 UI 中生成计划并精确确认。
+- 商城自身目录条目升级为 `0.3.1`，并固定到包版本为 `0.3.1` 的功能
+  提交 `80fefeca68d9a206b1811e54edc6905f24c08269`。
 
 官方安装命令曾把 Profile 中两个既有本地依赖也识别为 Bundle，但它们的链接包未
 提供所声明的 Bundle Patch，导致首次重启失败。最终仅从 `bundles` 数组移除这两个

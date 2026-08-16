@@ -24,11 +24,11 @@ function catalog() {
   }
 }
 
-async function fixture({ installed = true } = {}) {
+async function fixture({ installed = true, specifier = '^1.0.0' } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'dsh-safe-ops-'))
   const profile = join(root, 'profiles', 'web')
   await mkdir(profile, { recursive: true })
-  const dependencies = installed ? { 'dsh-demo': '^1.0.0' } : {}
+  const dependencies = installed ? { 'dsh-demo': specifier } : {}
   const bundles = installed ? ['dsh-demo'] : []
   await writeFile(join(profile, 'package.json'), JSON.stringify({ name: 'fixture', dependencies, dsh: { profile: { bundles } } }, null, 2) + '\n')
   await writeFile(join(profile, 'cordis.patch.yml'), '[]\n')
@@ -90,6 +90,42 @@ test('failed GitHub install restores exact profile files', async () => {
     assert.equal(result.rollback, 'succeeded')
     assert.equal(await readFile(join(profile, 'package.json'), 'utf8'), before)
     assert.equal(calls, 2)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('local development links require an explicit migration plan', async () => {
+  const { root } = await fixture({ specifier: 'link:/tmp/dsh-demo-local-source' })
+  const calls = []
+  const runner = {
+    async plugin(profile, args) {
+      calls.push([profile, args])
+      return { ok: true, exitCode: 0 }
+    },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner)
+    await assert.rejects(operations.createPlan({ action: 'update', pluginId: 'demo' }), error => error.code === 'LOCAL_SOURCE_PROTECTED')
+    const plan = await operations.createPlan({ action: 'migrate', pluginId: 'demo' })
+    assert.equal(plan.confirmation, 'MIGRATE dsh-demo web')
+    assert.equal(plan.impact.restartRequired, true)
+    assert.match(plan.impact.sourceTransition, /不删除或修改原本地目录/)
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'applied')
+    assert.deepEqual(calls[0], ['web', ['add', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`]])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('marketplace migration rejects non-local package sources', async () => {
+  const { root } = await fixture()
+  const runner = { plugin: async () => ({ ok: true }), dumpConfig: async () => ({ ok: true }) }
+  try {
+    const operations = service(root, runner)
+    await assert.rejects(operations.createPlan({ action: 'migrate', pluginId: 'demo' }), error => error.code === 'MIGRATION_NOT_REQUIRED')
   } finally {
     await rm(root, { recursive: true, force: true })
   }

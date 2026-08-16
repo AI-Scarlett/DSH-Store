@@ -271,17 +271,20 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       && installed.declaredSpecifier.toLowerCase().includes(entry.commit)
     const commitDrift = installed?.source === 'git' && !commitMatched
     const updateAvailable = installed !== null && (versionComparison === -1 || commitDrift)
+    const migrationAvailable = localProtected && entry.status === 'approved' && !installed?.official
     const self = entry.packageName === 'dsh-safe-plugin-manager'
     let managementBlockedReason = null
     if (entry.status === 'blocked') managementBlockedReason = entry.statusReason
     else if (entry.status === 'unlisted' && installed === null) managementBlockedReason = entry.statusReason
     else if (installed?.official) managementBlockedReason = '官方组件永久只读'
-    else if (localProtected) managementBlockedReason = '本地开发链接不会被市场替换'
     const allowedActions = []
     if (managementBlockedReason === null) {
-      if (installed === null && entry.status === 'approved' && !self) allowedActions.push('install')
-      if (installed !== null && entry.status === 'approved' && updateAvailable) allowedActions.push('update')
-      if (installed !== null && !self) allowedActions.push('disable', 'enable', 'uninstall')
+      if (migrationAvailable) allowedActions.push('migrate')
+      else {
+        if (installed === null && entry.status === 'approved' && !self) allowedActions.push('install')
+        if (installed !== null && entry.status === 'approved' && updateAvailable) allowedActions.push('update')
+        if (installed !== null && !self) allowedActions.push('disable', 'enable', 'uninstall')
+      }
     }
     if (self && allowedActions.length === 0 && managementBlockedReason === null) {
       managementBlockedReason = '管理器自身仅允许更新，禁止停用或卸载'
@@ -298,6 +301,7 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       installedVersion: installed?.version ?? null,
       installedSource: installed?.source ?? null,
       updateAvailable,
+      migrationAvailable,
       commitMatched,
       versionState: versionComparison === null ? 'unknown' : versionComparison < 0 ? 'behind' : versionComparison > 0 ? 'ahead' : 'equal',
       installOrigin,

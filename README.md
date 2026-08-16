@@ -6,7 +6,7 @@ Bundle + Host Plugin + Client Bundle 结构，不开发桌面端，不修改 DSH
 
 ## 当前状态
 
-当前仓库已升级为 `0.2.0` GitHub-only 安全管理版，已发布到
+当前仓库已升级为 `0.3.1` GitHub-only 第三方插件商城，已发布到
 [`AI-Scarlett/dsh-safe-plugin-manager`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager)，
 并以本地链接安装在真实 DSH `web` Profile：
 
@@ -14,12 +14,12 @@ Bundle + Host Plugin + Client Bundle 结构，不开发桌面端，不修改 DSH
   本地版本和官方/第三方属性；
 - 已实现：集中 GitHub 目录、搜索、分类筛选、推荐排序、上下架、固定 Commit 来源复核
   和离线内置快照；
-- 已实现：安装、更新、卸载、启用、停用的计划/确认/执行 API；
+- 已实现：安装、更新、本地链接迁移、卸载、启用、停用的计划/确认/执行 API；
 - 已实现：Profile 文件锁、前置哈希、精确备份、官方 DSH 命令、配置健康检查、
   失败回滚与脱敏审计；
 - 已实现：“插件市场 / 已安装 / 健康检查”三视图、外部安装来源标记与逐操作确认界面；
 - 已验证：DSH 配置可合成，Host API 返回 HTTP 200，浏览器中的
-  “设置 → 插件 → 安全管理”可见并列出 6 个条目；
+  “设置 → 插件 → 插件商城”可见；
 - 已验证：安装后的页面刷新和扫描只读；安装前已有备份可用于人工恢复；
 - 已验证：单元/契约/事务测试和目录内全部 approved GitHub 固定 Commit 来源；
 - 尚未验证：真实 Profile 的安装—重启—卸载闭环、运行态 Fiber 映射、异常依赖
@@ -40,6 +40,11 @@ Bundle 记录，这是任何标准 DSH 插件都无法避免的；管理器永�
 - 官方只读插件列表及其 Loader/Fiber 生命周期。
 
 项目自己的 `cordis.patch.yml` 只插入自身条目，不遮蔽或禁用官方插件清单。
+
+以 `link:`、`file:` 或 `workspace:` 安装的本地开发插件不会被普通“更新”静默覆盖。
+页面会改为提供“迁移到商城版”：经单次计划确认后，仅将目标 Profile 的依赖
+来源切换为目录固定的 GitHub Commit，原本地项目不删除、不修改；迁移后才进入商城
+的常规更新链路。
 
 ## 架构
 

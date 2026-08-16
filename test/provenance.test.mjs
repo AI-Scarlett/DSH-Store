@@ -15,9 +15,10 @@ test('provenance derives marketplace-managed installs from successful audit even
       JSON.stringify({ status: 'rolled-back', action: 'install', profile: 'web', packageName: 'two' }),
       JSON.stringify({ status: 'applied', action: 'uninstall', profile: 'web', packageName: 'one' }),
       JSON.stringify({ status: 'applied', action: 'update', profile: 'web', packageName: 'three' }),
+      JSON.stringify({ status: 'applied', action: 'migrate', profile: 'web', packageName: 'four' }),
       'not-json',
     ].join('\n'))
-    assert.deepEqual([...await readMarketplaceProvenance(root, 'web')], ['three'])
+    assert.deepEqual([...await readMarketplaceProvenance(root, 'web')], ['three', 'four'])
   } finally {
     await rm(root, { recursive: true, force: true })
   }
