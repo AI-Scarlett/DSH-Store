@@ -12,6 +12,7 @@ window.__ModuleLoader__.load({
       plan: '/api2/dsh-safe-plugin-manager/plan',
       execute: '/api2/dsh-safe-plugin-manager/execute',
     }
+    const PROJECT_REPOSITORY_URL = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
 
     async function post(route, body = {}, intent = null) {
       const headers = { 'content-type': 'application/json' }
@@ -29,7 +30,8 @@ window.__ModuleLoader__.load({
     const styles = {
       root: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '920px' },
       toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' },
-      nav: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
+      nav: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', width: '100%' },
+      navTabs: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
       title: { margin: 0, fontSize: '16px', lineHeight: '24px', fontWeight: 650 },
       subtitle: { margin: '3px 0 0', color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       input: {
@@ -44,6 +46,7 @@ window.__ModuleLoader__.load({
         border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px', padding: '7px 11px',
         background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', cursor: 'pointer', fontSize: '12px',
       },
+      compactButton: { borderRadius: '7px', padding: '4px 8px', fontSize: '11px', lineHeight: '18px' },
       activeButton: { background: 'var(--dsw-alias-bg-layer-3)', borderColor: 'var(--dsw-alias-label-secondary)', fontWeight: 600 },
       dangerButton: { borderColor: 'var(--dsw-alias-state-error-primary)', color: 'var(--dsw-alias-state-error-primary)' },
       primaryButton: { borderColor: 'var(--dsw-alias-label-primary)', fontWeight: 600 },
@@ -71,6 +74,8 @@ window.__ModuleLoader__.load({
       detailLabel: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       detailValue: { margin: 0, color: 'var(--dsw-alias-label-primary)', fontSize: '12px', lineHeight: '18px', overflowWrap: 'anywhere' },
       detailBadges: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+      detailFooter: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', width: '100%' },
+      detailFooterLinks: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginLeft: 'auto' },
     }
 
     const DETAIL_MODAL_CSS = `
@@ -159,10 +164,10 @@ window.__ModuleLoader__.load({
       return `${detailLabel('installSource', entry.details.installSource)}（目录声明）`
     }
 
-    function Button({ children, active = false, danger = false, primary = false, disabled = false, onClick }) {
+    function Button({ children, active = false, danger = false, primary = false, compact = false, disabled = false, onClick }) {
       return React.createElement('button', {
         type: 'button', disabled, onClick,
-        style: { ...styles.button, ...(active ? styles.activeButton : {}), ...(danger ? styles.dangerButton : {}), ...(primary ? styles.primaryButton : {}), ...(disabled ? styles.disabledButton : {}) },
+        style: { ...styles.button, ...(compact ? styles.compactButton : {}), ...(active ? styles.activeButton : {}), ...(danger ? styles.dangerButton : {}), ...(primary ? styles.primaryButton : {}), ...(disabled ? styles.disabledButton : {}) },
       }, children)
     }
 
@@ -217,14 +222,20 @@ window.__ModuleLoader__.load({
         React.createElement('dd', { style: { ...styles.detailValue, ...(code ? styles.code : {}) } }, value))
     }
 
-    function PluginDetailsModal({ entry, categoryLabels, close }) {
+    function PluginDetailsModal({ entry, categoryLabels, health, beginPlan, close }) {
       if (!entry) return null
       const permissions = entry.details.permissions
       const status = entry.status === 'approved' ? '可安装' : entry.status === 'blocked' ? '商城不可安装' : '已下架'
       const installed = entry.installed ? `已安装 ${entry.installedVersion || '版本未知'}` : '未安装'
-      const footer = React.createElement(React.Fragment, null,
-        React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, entry.status === 'blocked' ? '前往 GitHub 手动安装' : '查看 GitHub 仓库'),
-        React.createElement(Button, { onClick: close }, '关闭'))
+      const beginDetailPlan = (action, selectedEntry) => {
+        close()
+        beginPlan(action, selectedEntry)
+      }
+      const footer = React.createElement('div', { style: styles.detailFooter },
+        React.createElement(PluginActions, { entry, health, beginPlan: beginDetailPlan }),
+        React.createElement('div', { style: styles.detailFooterLinks },
+          React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, entry.status === 'blocked' ? '前往 GitHub 手动安装' : '查看 GitHub 仓库'),
+          React.createElement(Button, { onClick: close }, '关闭')))
       return React.createElement(Modal, {
         open: true, onClose: close, title: entry.name, closeLabel: '关闭插件详情',
         description: entry.description, footer,
@@ -283,7 +294,7 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.muted }, item.message)))))
     }
 
-    function PlanPanel({ operation, confirmation, setConfirmation, execute, cancel }) {
+    function PlanPanel({ operation, confirmation, setConfirmation, execute, retryPlan, cancel }) {
       if (!operation || operation.status === 'idle') return null
       if (operation.status === 'planning' || operation.status === 'executing') {
         const planning = operation.status === 'planning'
@@ -296,11 +307,16 @@ window.__ModuleLoader__.load({
           className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
         }, React.createElement('div', { style: styles.notice }, planning ? '正在生成只读操作计划…' : '正在执行事务与健康检查…'))
       }
-      if (operation.status === 'error') return React.createElement(Modal, {
-        open: true, onClose: cancel, title: '操作计划生成失败', closeLabel: '关闭错误信息',
-        footer: React.createElement(Button, { onClick: cancel }, '关闭'),
-        className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
-      }, React.createElement('div', { style: styles.error }, `${operation.code || 'ERROR'}：${operation.message}`))
+      if (operation.status === 'error') {
+        const footer = React.createElement(React.Fragment, null,
+          React.createElement(Button, { onClick: cancel }, '关闭'),
+          operation.retry ? React.createElement(Button, { primary: true, onClick: retryPlan }, '重新校验') : null)
+        return React.createElement(Modal, {
+          open: true, onClose: cancel, title: operation.retry ? '操作计划生成失败' : '操作执行失败', closeLabel: '关闭错误信息',
+          footer,
+          className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+        }, React.createElement('div', { style: styles.error }, `${operation.code || 'ERROR'}：${operation.message}`))
+      }
       if (operation.status === 'result') {
         const result = operation.value
         return React.createElement(Modal, {
@@ -374,9 +390,16 @@ window.__ModuleLoader__.load({
           const value = await post(ROUTES.plan, { action, pluginId: entry.id }, 'plan')
           setOperation({ status: 'plan', value })
         } catch (error) {
-          setOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
+          setOperation({
+            status: 'error', code: error?.code, message: String(error?.message || error), retry: { action, entry },
+          })
         }
       }, [])
+
+      const retryPlan = useCallback(() => {
+        if (operation.status !== 'error' || !operation.retry) return
+        void beginPlan(operation.retry.action, operation.retry.entry)
+      }, [beginPlan, operation])
 
       const execute = useCallback(async () => {
         if (operation.status !== 'plan') return
@@ -396,12 +419,17 @@ window.__ModuleLoader__.load({
       const heading = React.createElement('div', { style: styles.toolbar },
         React.createElement('div', null,
           React.createElement('h3', { style: styles.title }, 'DSH第三方插件商城'),
-          React.createElement('p', { style: styles.subtitle }, 'GitHub-only 目录 · 计划确认 · Profile 备份 · 健康检查 · 失败回滚')),
-        React.createElement(Button, { onClick: () => refresh(true) }, '刷新 GitHub 目录'))
+          React.createElement('p', { style: styles.subtitle },
+            'GitHub-only 目录 · 计划确认 · Profile 备份 · 健康检查 · 失败回滚 · ',
+            React.createElement('a', {
+              href: PROJECT_REPOSITORY_URL, target: '_blank', rel: 'noreferrer', style: styles.link,
+            }, '技术支持：GitHub'))))
 
       const nav = React.createElement('div', { style: styles.nav },
-        [['market', '插件市场'], ['installed', '已安装'], ['health', '健康检查']].map(([id, label]) =>
-          React.createElement(Button, { key: id, active: view === id, onClick: () => setView(id) }, label)))
+        React.createElement('div', { style: styles.navTabs },
+          [['market', '插件市场'], ['installed', '已安装'], ['health', '健康检查']].map(([id, label]) =>
+            React.createElement(Button, { key: id, active: view === id, onClick: () => setView(id) }, label))),
+        React.createElement(Button, { compact: true, onClick: () => refresh(true) }, '刷新 GitHub 目录'))
 
       let content
       if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
@@ -438,9 +466,10 @@ window.__ModuleLoader__.load({
       return React.createElement('section', { style: styles.root },
         React.createElement('style', null, DETAIL_MODAL_CSS),
         heading, nav, content,
-        React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, cancel }),
+        React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel }),
         React.createElement(PluginDetailsModal, {
-          entry: detailEntry, categoryLabels: state.status === 'ready' ? state.market.registry.categories : {}, close: closeDetails,
+          entry: detailEntry, categoryLabels: state.status === 'ready' ? state.market.registry.categories : {},
+          health: state.status === 'ready' ? state.health : null, beginPlan, close: closeDetails,
         }))
     }
 

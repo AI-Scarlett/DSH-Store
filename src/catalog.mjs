@@ -7,6 +7,7 @@ const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const MAX_CATALOG_BYTES = 2 * 1024 * 1024
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
+const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json'
@@ -41,9 +42,34 @@ function rawGithubUrl(entry, path) {
   return `https://raw.githubusercontent.com/${owner}/${repo}/${entry.commit}/${path}`
 }
 
-async function fetchPinnedText(url, request, timeoutMs, maxBytes) {
+function wait(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+function retryableTransportError(error) {
+  if (error?.catalogInvalid === true) return false
+  if (typeof error?.retryable === 'boolean') return error.retryable
+  return error?.name === 'AbortError' || error instanceof TypeError
+}
+
+function sourceError(code, message) {
+  return Object.assign(new Error(message), { code })
+}
+
+function finalSourceTransportError(error) {
+  if (error?.name === 'AbortError') {
+    return sourceError('SOURCE_VERIFICATION_TIMEOUT', 'GitHub fixed-commit source verification timed out; retry the operation')
+  }
+  if (Number.isInteger(error?.status)) {
+    return sourceError('SOURCE_VERIFICATION_HTTP', `GitHub fixed-commit source returned HTTP ${error.status}`)
+  }
+  return sourceError('SOURCE_VERIFICATION_NETWORK', 'GitHub fixed-commit source is temporarily unavailable; retry the operation')
+}
+
+async function fetchPinnedTextWithRetries(url, request, timeoutMs, maxBytes, retryDelaysMs) {
   let lastError
-  for (let attempt = 0; attempt < 3; attempt += 1) {
+  const delays = Array.isArray(retryDelaysMs) ? retryDelaysMs : DEFAULT_RETRY_DELAYS_MS
+  for (let attempt = 0; attempt <= delays.length; attempt += 1) {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeoutMs)
     try {
@@ -53,6 +79,7 @@ async function fetchPinnedText(url, request, timeoutMs, maxBytes) {
       })
       if (!response.ok) {
         const error = new Error(`GitHub source returned HTTP ${response.status}`)
+        error.status = response.status
         error.retryable = response.status === 429 || response.status >= 500
         throw error
       }
@@ -61,8 +88,10 @@ async function fetchPinnedText(url, request, timeoutMs, maxBytes) {
       return text
     } catch (error) {
       lastError = error
-      if (error?.retryable === false || attempt === 2) throw error
-      await new Promise(resolve => setTimeout(resolve, 200 * (attempt + 1)))
+      if (!retryableTransportError(error) || attempt === delays.length) {
+        throw finalSourceTransportError(error)
+      }
+      await wait(delays[attempt])
     } finally {
       clearTimeout(timer)
     }
@@ -74,38 +103,55 @@ export async function verifyCatalogEntry(entry, options = {}) {
   const request = options.fetch ?? globalThis.fetch
   if (typeof request !== 'function') throw new Error('GitHub source verification is unavailable')
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+  const retryDelaysMs = options.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS
   const manifestUrl = rawGithubUrl(entry, entry.manifestPath)
-  const manifest = JSON.parse(await fetchPinnedText(manifestUrl, request, timeoutMs, 512 * 1024))
-  if (manifest.name !== entry.packageName) throw new Error('GitHub manifest package name does not match the registry')
-  if (manifest.version !== entry.version) throw new Error('GitHub manifest version does not match the registry')
+  let manifest
+  try {
+    manifest = JSON.parse(await fetchPinnedTextWithRetries(
+      manifestUrl, request, timeoutMs, 512 * 1024, retryDelaysMs,
+    ))
+  } catch (error) {
+    if (typeof error?.code === 'string') throw error
+    throw sourceError('SOURCE_MANIFEST_INVALID', 'GitHub fixed-commit manifest is not valid JSON')
+  }
+  if (manifest.name !== entry.packageName) {
+    throw sourceError('SOURCE_MANIFEST_MISMATCH', 'GitHub manifest package name does not match the registry')
+  }
+  if (manifest.version !== entry.version) {
+    throw sourceError('SOURCE_MANIFEST_MISMATCH', 'GitHub manifest version does not match the registry')
+  }
   const manifestLicense = typeof manifest.license === 'string' && manifest.license.trim() !== ''
     ? manifest.license.trim()
     : null
   if (manifestLicense !== null && manifestLicense !== entry.details.license) {
-    throw new Error('GitHub manifest license does not match the registry')
+    throw sourceError('SOURCE_MANIFEST_MISMATCH', 'GitHub manifest license does not match the registry')
   }
   const patchRelative = manifest?.dsh?.bundle?.patch
   if (typeof patchRelative !== 'string' || patchRelative.trim() === '' || patchRelative.includes('..') || patchRelative.startsWith('/')) {
-    throw new Error('GitHub manifest does not declare a safe dsh.bundle.patch')
+    throw sourceError('SOURCE_MANIFEST_MISMATCH', 'GitHub manifest does not declare a safe dsh.bundle.patch')
   }
   const lifecycle = ['preinstall', 'install', 'postinstall', 'prepare'].filter(name => typeof manifest.scripts?.[name] === 'string')
   if (JSON.stringify(lifecycle.sort()) !== JSON.stringify([...entry.risk.installScripts].sort())) {
-    throw new Error('GitHub lifecycle scripts do not match the registry risk declaration')
+    throw sourceError('SOURCE_MANIFEST_MISMATCH', 'GitHub lifecycle scripts do not match the registry risk declaration')
   }
   const base = entry.manifestPath.includes('/') ? entry.manifestPath.slice(0, entry.manifestPath.lastIndexOf('/') + 1) : ''
   const patchPath = `${base}${patchRelative.replace(/^\.\//, '')}`
   const patchUrl = rawGithubUrl(entry, patchPath)
-  const patch = await fetchPinnedText(patchUrl, request, timeoutMs, 512 * 1024)
+  const patch = await fetchPinnedTextWithRetries(patchUrl, request, timeoutMs, 512 * 1024, retryDelaysMs)
   for (const protectedId of ['ui-settings-plugin-inventory', 'dsh-safe-plugin-manager']) {
     const pattern = new RegExp(`(?:^|\\n)- id: ['\"]?${protectedId}['\"]?[\\s\\S]{0,160}?disabled:\\s*true`, 'i')
-    if (pattern.test(patch)) throw new Error(`GitHub Bundle Patch disables protected entry ${protectedId}`)
+    if (pattern.test(patch)) {
+      throw sourceError('SOURCE_PATCH_REJECTED', `GitHub Bundle Patch disables protected entry ${protectedId}`)
+    }
   }
   if (/@deepseek-ai\//.test(patch) && /disabled:\s*true/.test(patch)) {
-    throw new Error('GitHub Bundle Patch appears to disable an official package')
+    throw sourceError('SOURCE_PATCH_REJECTED', 'GitHub Bundle Patch appears to disable an official package')
   }
   for (const id of entry.entryIds) {
     const pattern = new RegExp(`(?:^|\\n)\\s*- id: ['\"]?${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['\"]?\\s*(?:\\n|$)`)
-    if (!pattern.test(patch)) throw new Error(`GitHub Bundle Patch does not declare registry entry id ${id}`)
+    if (!pattern.test(patch)) {
+      throw sourceError('SOURCE_PATCH_MISMATCH', `GitHub Bundle Patch does not declare registry entry id ${id}`)
+    }
   }
   return {
     status: 'verified', verifiedAt: new Date().toISOString(), manifestUrl, patchUrl,
@@ -403,12 +449,22 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
 }
 
 async function readResponseJson(response) {
-  if (!response.ok) throw new Error(`catalog returned HTTP ${response.status}`)
+  if (!response.ok) {
+    const error = new Error(`catalog returned HTTP ${response.status}`)
+    error.status = response.status
+    error.retryable = response.status === 429 || response.status >= 500
+    throw error
+  }
   const declared = Number(response.headers.get('content-length'))
   if (Number.isFinite(declared) && declared > MAX_CATALOG_BYTES) throw new Error('catalog response is too large')
   const text = await response.text()
   if (Buffer.byteLength(text) > MAX_CATALOG_BYTES) throw new Error('catalog response is too large')
-  return JSON.parse(text)
+  try {
+    return JSON.parse(text)
+  } catch (error) {
+    error.catalogInvalid = true
+    throw error
+  }
 }
 
 export function createCatalogService(options = {}) {
@@ -416,6 +472,7 @@ export function createCatalogService(options = {}) {
   const bundledUrl = options.bundledUrl ?? new URL('../registry/catalog.json', import.meta.url)
   const request = options.fetch ?? globalThis.fetch
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+  const retryDelaysMs = options.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS
   const cacheTtlMs = options.cacheTtlMs ?? DEFAULT_CACHE_TTL_MS
   let cached = null
   let cachedAt = 0
@@ -434,23 +491,46 @@ export function createCatalogService(options = {}) {
     if (catalogUrl === null || typeof request !== 'function') {
       value = await bundled(catalogUrl === null ? null : 'FETCH_UNAVAILABLE')
     } else {
-      const controller = new AbortController()
-      const timer = setTimeout(() => controller.abort(), timeoutMs)
       try {
-        const response = await request(catalogUrl, {
-          headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
-          signal: controller.signal,
-        })
-        const document = validateCatalog(await readResponseJson(response))
+        let document
+        let lastError
+        const delays = Array.isArray(retryDelaysMs) ? retryDelaysMs : DEFAULT_RETRY_DELAYS_MS
+        for (let attempt = 0; attempt <= delays.length; attempt += 1) {
+          const controller = new AbortController()
+          const timer = setTimeout(() => controller.abort(), timeoutMs)
+          try {
+            const response = await request(catalogUrl, {
+              headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
+              signal: controller.signal,
+            })
+            const rawDocument = await readResponseJson(response)
+            try {
+              document = validateCatalog(rawDocument)
+            } catch (error) {
+              error.catalogInvalid = true
+              throw error
+            }
+            lastError = null
+            break
+          } catch (error) {
+            lastError = error
+            if (!retryableTransportError(error) || attempt === delays.length) break
+            await wait(delays[attempt])
+          } finally {
+            clearTimeout(timer)
+          }
+        }
+        if (lastError) throw lastError
         value = {
           ...document,
           source: { kind: 'github', url: catalogUrl, fetchedAt: new Date().toISOString(), errorCode: null },
         }
       } catch (error) {
-        const code = error?.name === 'AbortError' ? 'CATALOG_TIMEOUT' : 'CATALOG_UNAVAILABLE'
+        const code = error?.name === 'AbortError' ? 'CATALOG_TIMEOUT'
+          : Number.isInteger(error?.status) ? 'CATALOG_HTTP_ERROR'
+            : error?.catalogInvalid === true ? 'CATALOG_INVALID'
+              : 'CATALOG_UNAVAILABLE'
         value = await bundled(code)
-      } finally {
-        clearTimeout(timer)
       }
     }
     cached = value

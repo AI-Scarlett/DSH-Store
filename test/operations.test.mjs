@@ -47,12 +47,55 @@ async function fixture({ installed = true, specifier = '^1.0.0' } = {}) {
   return { root, profile }
 }
 
-function service(root, runner) {
+function service(root, runner, options = {}) {
   return createOperationService({
     dshHome: root, defaultProfile: 'web', catalogService: { load: async () => catalog() },
-    runner, mutationsEnabled: true, sourceVerifier: async entry => ({ status: 'verified', packageName: entry.packageName }),
+    runner, mutationsEnabled: true,
+    sourceVerifier: options.sourceVerifier ?? (async entry => ({ status: 'verified', packageName: entry.packageName })),
+    sourceVerificationCacheTtlMs: options.sourceVerificationCacheTtlMs,
   })
 }
+
+test('source verification success is reused only for the same immutable catalog fingerprint', async () => {
+  const { root } = await fixture({ installed: false })
+  const runner = { plugin: async () => ({ ok: true }), dumpConfig: async () => ({ ok: true }) }
+  let calls = 0
+  try {
+    const operations = service(root, runner, {
+      sourceVerifier: async entry => {
+        calls += 1
+        return { status: 'verified', packageName: entry.packageName, verifiedAt: new Date().toISOString() }
+      },
+    })
+    const first = await operations.createPlan({ action: 'install', pluginId: 'demo' })
+    const second = await operations.createPlan({ action: 'install', pluginId: 'demo' })
+    assert.equal(first.sourceVerification.cacheStatus, 'fresh')
+    assert.equal(second.sourceVerification.cacheStatus, 'memory-cache')
+    assert.equal(calls, 1)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('source verification exposes safe actionable error categories without the verifier message', async () => {
+  const { root } = await fixture({ installed: false })
+  const runner = { plugin: async () => ({ ok: true }), dumpConfig: async () => ({ ok: true }) }
+  try {
+    const operations = service(root, runner, {
+      sourceVerifier: async () => {
+        throw Object.assign(new Error('secret upstream diagnostic'), { code: 'SOURCE_VERIFICATION_NETWORK' })
+      },
+    })
+    await assert.rejects(
+      operations.createPlan({ action: 'install', pluginId: 'demo' }),
+      error => error.code === 'SOURCE_VERIFICATION_NETWORK'
+        && /GitHub 网络暂时不可用/.test(error.message)
+        && !/secret upstream diagnostic/.test(error.message),
+    )
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
 
 test('disable and enable require a typed plan and preserve external patch content', async () => {
   const { root, profile } = await fixture()
