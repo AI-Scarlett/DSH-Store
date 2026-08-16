@@ -35,6 +35,10 @@ window.__ModuleLoader__.load({
         width: '100%', boxSizing: 'border-box', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '9px',
         padding: '9px 11px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
       },
+      select: {
+        boxSizing: 'border-box', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '9px',
+        padding: '9px 11px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', minWidth: '180px',
+      },
       button: {
         border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px', padding: '7px 11px',
         background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', cursor: 'pointer', fontSize: '12px',
@@ -68,28 +72,35 @@ window.__ModuleLoader__.load({
     }
 
     function PluginActions({ entry, health, beginPlan }) {
-      if (!entry.manageable) return React.createElement('div', { style: styles.muted }, entry.managementBlockedReason || '当前不可管理')
+      const allowed = new Set(entry.allowedActions || [])
+      if (allowed.size === 0) return React.createElement('div', { style: styles.muted }, entry.managementBlockedReason || '当前没有可执行操作')
       const disabled = entry.entryIds.length > 0 && entry.entryIds.every(id => health?.disabledEntryIds?.includes(id))
       const actions = []
-      if (!entry.installed) actions.push(React.createElement(Button, { key: 'install', primary: true, onClick: () => beginPlan('install', entry) }, '安装'))
-      if (entry.installed && entry.updateAvailable) actions.push(React.createElement(Button, { key: 'update', primary: true, onClick: () => beginPlan('update', entry) }, '更新'))
-      if (entry.installed && entry.entryIds.length > 0) {
+      if (allowed.has('install')) actions.push(React.createElement(Button, { key: 'install', primary: true, onClick: () => beginPlan('install', entry) }, '安装'))
+      if (allowed.has('update')) actions.push(React.createElement(Button, { key: 'update', primary: true, onClick: () => beginPlan('update', entry) }, '更新'))
+      if (entry.entryIds.length > 0 && (allowed.has('enable') || allowed.has('disable'))) {
         actions.push(React.createElement(Button, { key: 'toggle', onClick: () => beginPlan(disabled ? 'enable' : 'disable', entry) }, disabled ? '启用' : '停用'))
       }
-      if (entry.installed) actions.push(React.createElement(Button, { key: 'remove', danger: true, onClick: () => beginPlan('uninstall', entry) }, '卸载'))
+      if (allowed.has('uninstall')) actions.push(React.createElement(Button, { key: 'remove', danger: true, onClick: () => beginPlan('uninstall', entry) }, '卸载'))
       return React.createElement('div', { style: styles.actions }, actions)
     }
 
-    function MarketCard({ entry, health, beginPlan }) {
+    function MarketCard({ entry, health, beginPlan, categoryLabels = {} }) {
       const state = entry.status === 'blocked' ? '策略阻止'
         : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
+      const origin = entry.installOrigin === 'marketplace-managed' ? '商城安装'
+        : entry.installOrigin === 'catalog-source-matched' ? '目录来源匹配 · 渠道未知'
+          : entry.installOrigin === 'local-development' ? '本地开发安装'
+            : entry.installOrigin === 'external-or-drifted' ? '外部安装 / 来源漂移' : null
       return React.createElement('article', { style: styles.card },
         React.createElement('div', { style: styles.row },
-          React.createElement('div', { style: styles.name }, entry.name),
+          React.createElement('div', { style: styles.name }, `${entry.featured ? '★ ' : ''}${entry.name}`),
           React.createElement('span', { style: styles.badge }, state)),
         React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
         React.createElement('div', { style: styles.muted }, entry.description),
-        React.createElement('div', { style: styles.muted }, `Commit ${entry.commit.slice(0, 12)} · ${entry.categories.join(' / ')}`),
+        React.createElement('div', { style: styles.muted }, `Commit ${entry.commit.slice(0, 12)} · ${entry.categories.map(id => categoryLabels[id] || id).join(' / ')}`),
+        origin ? React.createElement('div', { style: styles.badge }, origin) : null,
+        Number.isInteger(entry.installCount) ? React.createElement('div', { style: styles.muted }, `累计安装 ${entry.installCount}`) : null,
         entry.risk.installScripts.length > 0
           ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join(', ')}`)
           : null,
@@ -142,6 +153,7 @@ window.__ModuleLoader__.load({
     function ManagerPanel() {
       const [view, setView] = useState('market')
       const [query, setQuery] = useState('')
+      const [category, setCategory] = useState('')
       const [state, setState] = useState({ status: 'loading' })
       const [confirmation, setConfirmation] = useState('')
       const [operation, setOperation] = useState({ status: 'idle' })
@@ -162,10 +174,13 @@ window.__ModuleLoader__.load({
       const entries = useMemo(() => {
         if (state.status !== 'ready') return []
         const needle = query.trim().toLowerCase()
-        if (!needle) return state.market.entries
-        return state.market.entries.filter(entry => [entry.name, entry.packageName, entry.description, entry.repositoryUrl, ...entry.categories]
-          .some(value => value.toLowerCase().includes(needle)))
-      }, [query, state])
+        return state.market.entries
+          .filter(entry => entry.listed !== false)
+          .filter(entry => !category || entry.categories.includes(category))
+          .filter(entry => !needle || [entry.name, entry.packageName, entry.description, entry.repositoryUrl, ...entry.categories]
+            .some(value => value.toLowerCase().includes(needle)))
+          .sort((a, b) => Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || a.name.localeCompare(b.name, 'zh-CN'))
+      }, [category, query, state])
 
       const beginPlan = useCallback(async (action, entry) => {
         setConfirmation('')
@@ -212,15 +227,23 @@ window.__ModuleLoader__.load({
           return React.createElement('article', { key: plugin.packageName, style: styles.card },
             React.createElement('div', { style: styles.row }, React.createElement('div', { style: styles.name }, plugin.packageName), React.createElement('span', { style: styles.badge }, plugin.official ? '官方 · 只读' : plugin.source)),
             React.createElement('div', { style: styles.muted }, `${plugin.version || '版本未知'} · ${plugin.declaredAsBundle ? 'Bundle' : '依赖'}`),
-            market ? React.createElement(PluginActions, { entry: market, health: state.health, beginPlan }) : React.createElement('div', { style: styles.muted }, '未进入集中 GitHub 目录，只读'))
+            market ? React.createElement(React.Fragment, null,
+              React.createElement('div', { style: styles.muted }, market.installOrigin === 'marketplace-managed' ? '通过本商城安装' : market.installOrigin === 'local-development' ? '本地开发安装' : '外部安装或渠道未知'),
+              React.createElement(PluginActions, { entry: market, health: state.health, beginPlan }))
+              : React.createElement('div', { style: styles.badge }, '外部插件 · 未进入集中目录'))
         }))
       } else {
+        const categoryIds = [...new Set(state.market.entries.filter(entry => entry.listed !== false).flatMap(entry => entry.categories))].sort()
         content = React.createElement(React.Fragment, null,
-          React.createElement('input', { type: 'search', value: query, onChange: event => setQuery(event.target.value), style: styles.input, placeholder: '搜索名称、包名、分类或 GitHub 仓库' }),
+          React.createElement('div', { style: styles.toolbar },
+            React.createElement('input', { type: 'search', value: query, onChange: event => setQuery(event.target.value), style: { ...styles.input, flex: '1 1 360px' }, placeholder: '搜索名称、包名、分类或 GitHub 仓库' }),
+            React.createElement('select', { value: category, onChange: event => setCategory(event.target.value), style: styles.select, 'aria-label': '按分类筛选' },
+              React.createElement('option', { value: '' }, '全部分类'),
+              categoryIds.map(id => React.createElement('option', { key: id, value: id }, state.market.registry.categories?.[id] || id)))),
           React.createElement('div', { style: styles.notice },
-            `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${state.market.entries.length} 个条目`,
+            `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${entries.length} / ${state.market.entries.filter(entry => entry.listed !== false).length} 个在架条目`,
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
-          React.createElement('div', { style: styles.grid }, entries.map(entry => React.createElement(MarketCard, { key: entry.id, entry, health: state.health, beginPlan }))))
+          React.createElement('div', { style: styles.grid }, entries.map(entry => React.createElement(MarketCard, { key: entry.id, entry, health: state.health, beginPlan, categoryLabels: state.market.registry.categories }))))
       }
 
       return React.createElement('section', { style: styles.root },

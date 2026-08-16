@@ -48,16 +48,20 @@ function publicPlan(plan) {
   return value
 }
 
-function assertManageable(entry, installed) {
+function assertManageable(entry, installed, action) {
   if (!entry) throw Object.assign(new Error('plugin is not present in the GitHub registry'), { code: 'NOT_IN_REGISTRY' })
-  if (entry.status !== 'approved') throw Object.assign(new Error(entry.statusReason), { code: 'REGISTRY_BLOCKED' })
+  if (entry.status === 'blocked') throw Object.assign(new Error(entry.statusReason), { code: 'REGISTRY_BLOCKED' })
+  if (entry.status === 'unlisted' && ['install', 'update'].includes(action)) {
+    throw Object.assign(new Error(entry.statusReason), { code: 'REGISTRY_UNLISTED' })
+  }
   if (entry.packageName.startsWith('@deepseek-ai/') || installed?.official) {
     throw Object.assign(new Error('official DSH components are permanently read-only'), { code: 'OFFICIAL_PROTECTED' })
   }
-  if (entry.packageName === 'dsh-safe-plugin-manager') {
-    throw Object.assign(new Error('the manager cannot modify itself'), { code: 'SELF_PROTECTED' })
+  const selfUpdate = entry.packageName === 'dsh-safe-plugin-manager' && action === 'update'
+  if (entry.packageName === 'dsh-safe-plugin-manager' && !selfUpdate) {
+    throw Object.assign(new Error('the manager only allows self-update'), { code: 'SELF_PROTECTED' })
   }
-  if (entry.entryIds.some(id => CRITICAL_ENTRY_IDS.has(id))) {
+  if (!selfUpdate && entry.entryIds.some(id => CRITICAL_ENTRY_IDS.has(id))) {
     throw Object.assign(new Error('plugin targets a protected DSH entry id'), { code: 'CRITICAL_ENTRY_PROTECTED' })
   }
 }
@@ -154,6 +158,7 @@ export function createOperationService(options = {}) {
   const runner = options.runner
   const mutationsEnabled = options.mutationsEnabled === true
   const sourceVerifier = options.sourceVerifier ?? verifyCatalogEntry
+  const telemetryClient = options.telemetryClient ?? { recordInstall: async () => ({ status: 'disabled' }) }
   const planTtlMs = options.planTtlMs ?? PLAN_TTL_MS
   const plans = new Map()
 
@@ -167,7 +172,7 @@ export function createOperationService(options = {}) {
     const catalog = await catalogService.load()
     const entry = catalog.entries.find(item => item.id === input.pluginId) ?? null
     const installed = entry ? inventory.plugins.find(item => item.packageName === entry.packageName) ?? null : null
-    assertManageable(entry, installed)
+    assertManageable(entry, installed, action)
     if (action === 'install' && installed) throw Object.assign(new Error('plugin is already installed'), { code: 'ALREADY_INSTALLED' })
     if (action !== 'install' && !installed) throw Object.assign(new Error('plugin is not installed'), { code: 'NOT_INSTALLED' })
     if (action === 'update') {
@@ -257,6 +262,7 @@ export function createOperationService(options = {}) {
         profile: plan.profile, packageName: entry.packageName, backupId: transactionId,
         restartRequired: plan.impact.restartRequired, health,
       }
+      if (action === 'install') value.installReceipt = await telemetryClient.recordInstall({ pluginId: entry.id, version: entry.version })
       await appendAudit(dshHome, { ...value, at: new Date().toISOString() })
       return value
     } catch (error) {

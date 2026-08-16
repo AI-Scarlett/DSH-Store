@@ -9,7 +9,7 @@ const entry = {
   id: 'demo', name: 'Demo', packageName: 'dsh-demo', description: 'demo plugin',
   repositoryUrl: 'https://github.com/example/dsh-demo', defaultBranch: 'main',
   manifestPath: 'package.json', commit: 'a'.repeat(40), version: '1.2.0',
-  categories: ['tools'], entryIds: ['demo'], status: 'approved',
+  categories: ['tools'], featured: true, entryIds: ['demo'], status: 'approved',
   compatibility: { dsh: '>=0.1.0', node: '>=22' },
   risk: { installScripts: [], review: 'curated-not-security-audited' },
 }
@@ -20,6 +20,7 @@ function document(entries = [entry]) {
     registry: {
       name: 'Fixture', repositoryUrl: 'https://github.com/example/registry',
       homepageUrl: 'https://example.github.io/registry', updatedAt: '2026-08-16T00:00:00Z',
+      categories: { tools: '工具' },
     },
     entries,
   }
@@ -30,8 +31,18 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
   assert.equal(catalog.entries.length, 1)
   assert.equal(githubInstallSpecifier(catalog.entries[0]), `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}`)
   assert.equal(searchCatalog(catalog, 'TOOLS')[0].id, 'demo')
+  assert.equal(catalog.entries[0].featured, true)
   assert.throws(() => validateCatalog(document([{ ...entry, repositoryUrl: 'https://example.test/repo' }])), /github\.com/)
   assert.throws(() => validateCatalog(document([entry, { ...entry, id: 'two' }])), /duplicate catalog package/)
+})
+
+test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {
+  const nested = { ...entry, id: 'nested', packageName: 'dsh-nested', manifestPath: 'plugin/package.json', installPath: 'plugin' }
+  const hidden = { ...entry, id: 'hidden', packageName: 'dsh-hidden', status: 'unlisted', statusReason: 'retired', featured: false }
+  const catalog = validateCatalog(document([nested, hidden]))
+  assert.equal(githubInstallSpecifier(catalog.entries[0]), `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}&path:plugin`)
+  assert.deepEqual(searchCatalog(catalog).map(item => item.id), ['nested'])
+  assert.deepEqual(searchCatalog(catalog, '', { includeUnlisted: true }).map(item => item.id), ['nested', 'hidden'])
 })
 
 test('catalog service falls back to bundled snapshot when GitHub is unavailable', async () => {

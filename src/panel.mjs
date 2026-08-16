@@ -1,6 +1,7 @@
 import { buildMarketplaceSnapshot } from './catalog.mjs'
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, validateProfileName } from './inventory.mjs'
+import { readMarketplaceProvenance } from './provenance.mjs'
 
 export const ROUTE_PATH = '/api2/dsh-safe-plugin-manager/inventory'
 export const MARKET_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/market'
@@ -121,7 +122,8 @@ export function handleMarketRequest(req, res, options = {}) {
     const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
     const inventory = await readProfileInventory({ dshHome: options.dshHome, profile })
     const catalog = await options.catalogService.load({ force: body.refresh === true })
-    return buildMarketplaceSnapshot(catalog, inventory, body.query ?? '')
+    const managedPackages = await readMarketplaceProvenance(options.dshHome, profile)
+    return buildMarketplaceSnapshot(catalog, inventory, body.query ?? '', { managedPackages })
   })
 }
 
