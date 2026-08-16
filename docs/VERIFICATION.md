@@ -110,7 +110,7 @@
 - DSH CLI Runner 在固定参数数组和无 Shell 前提下，将 Node 可执行文件目录加入子进程
   `PATH`；退出码 127 会报告 `DSH_PNPM_NOT_FOUND`，且不会运行没有必要的依赖恢复；
 - 商城自身目录条目升级为 `0.4.0`，并固定到功能提交
-  `3acd578272f19cbf25a62cab490359f3bcb1dbab`；
+  `f3a93c25bb43fa4512c12aea82437538d63e3c4a`；
 - `npm run check` 的语法、目录校验和 34 项单元/契约/事务测试全部通过；GitHub Pages
   内联 ES Module 另行通过 Node 语法检查；
 - 以上不等于真实 `web` Profile 已迁移到 `0.4.0`，也不等于 5 个手动安装项目已获
