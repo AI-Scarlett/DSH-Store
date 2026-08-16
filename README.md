@@ -12,15 +12,16 @@ Bundle + Host Plugin + Client Bundle 结构，不开发桌面端，不修改 DSH
 
 - 已实现：读取指定 Profile 的 `package.json`，归并 Bundle 与依赖，识别来源、
   本地版本和官方/第三方属性；
-- 已实现：集中 GitHub 目录、搜索、固定 Commit 来源复核和离线内置快照；
+- 已实现：集中 GitHub 目录、搜索、分类筛选、推荐排序、上下架、固定 Commit 来源复核
+  和离线内置快照；
 - 已实现：安装、更新、卸载、启用、停用的计划/确认/执行 API；
 - 已实现：Profile 文件锁、前置哈希、精确备份、官方 DSH 命令、配置健康检查、
   失败回滚与脱敏审计；
-- 已实现：“插件市场 / 已安装 / 健康检查”三视图与逐操作确认界面；
+- 已实现：“插件市场 / 已安装 / 健康检查”三视图、外部安装来源标记与逐操作确认界面；
 - 已验证：DSH 配置可合成，Host API 返回 HTTP 200，浏览器中的
   “设置 → 插件 → 安全管理”可见并列出 6 个条目；
 - 已验证：安装后的页面刷新和扫描只读；安装前已有备份可用于人工恢复；
-- 已验证：25 项单元/契约/事务测试和 2 个 GitHub 固定 Commit 来源；
+- 已验证：单元/契约/事务测试和目录内全部 approved GitHub 固定 Commit 来源；
 - 尚未验证：真实 Profile 的安装—重启—卸载闭环、运行态 Fiber 映射、异常依赖
   矩阵和无 Web Server Profile。
 
@@ -76,6 +77,11 @@ npm run check
 在线目录默认从本仓库的 GitHub Raw 地址读取，人工浏览页面位于
 [DSH Safe GitHub Plugin Registry](https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/)；
 任何网络失败都只会回退到随包发布的已知目录快照，不会自动改用未知安装地址。
+
+`approved` 表示上架，`blocked` 表示展示但禁止安装，`unlisted` 表示下架且不在商城
+显示。`featured: true` 的插件会在所属分类优先展示。成功安装可向配置的 HTTPS 计数
+服务发送不含设备、Profile 或用户标识的最小回执；该能力默认关闭，GitHub Pages
+本身不能接收写请求，也不会把 GitHub 写令牌下发给客户端。
 
 ## 文档
 

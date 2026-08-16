@@ -3,6 +3,7 @@ import { createDshRunner } from './dsh.mjs'
 import { resolveDshHome, validateProfileName } from './inventory.mjs'
 import { createOperationService } from './operations.mjs'
 import { registerManagerRoutes } from './panel.mjs'
+import { createTelemetryClient } from './telemetry.mjs'
 
 export const name = 'dsh-safe-plugin-manager'
 export const inject = []
@@ -13,6 +14,8 @@ function normalizeConfig(config = {}) {
     dshHome: resolveDshHome(config.dshHome),
     catalogUrl: config.catalogUrl === null ? null : (config.catalogUrl ?? DEFAULT_CATALOG_URL),
     mutationsEnabled: config.mutationsEnabled === true,
+    telemetryEnabled: config.telemetryEnabled === true,
+    telemetryUrl: typeof config.telemetryUrl === 'string' ? config.telemetryUrl : null,
     dshCliPath: typeof config.dshCliPath === 'string' && config.dshCliPath.trim() !== ''
       ? config.dshCliPath
       : process.argv[1],
@@ -23,12 +26,14 @@ export function apply(ctx, config = {}) {
   const options = normalizeConfig(config)
   const catalogService = createCatalogService({ catalogUrl: options.catalogUrl })
   const runner = createDshRunner({ cliPath: options.dshCliPath })
+  const telemetryClient = createTelemetryClient({ endpoint: options.telemetryUrl, enabled: options.telemetryEnabled })
   const operationService = createOperationService({
     dshHome: options.dshHome,
     defaultProfile: options.defaultProfile,
     catalogService,
     runner,
     mutationsEnabled: options.mutationsEnabled,
+    telemetryClient,
   })
   ctx.inject(['webServer'], (webCtx) => {
     const dispose = registerManagerRoutes(webCtx.webServer, {

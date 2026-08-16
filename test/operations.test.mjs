@@ -17,7 +17,7 @@ function catalog() {
   return {
     ...validateCatalog({
       schemaVersion: 1,
-      registry: { name: 'Fixture', repositoryUrl: 'https://github.com/example/registry', updatedAt: '2026-08-16T00:00:00Z' },
+      registry: { name: 'Fixture', repositoryUrl: 'https://github.com/example/registry', updatedAt: '2026-08-16T00:00:00Z', categories: { tools: '工具' } },
       entries: [demoEntry],
     }),
     source: { kind: 'fixture' },

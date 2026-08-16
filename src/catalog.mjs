@@ -31,7 +31,8 @@ export function canonicalGithubRepository(value) {
 export function githubInstallSpecifier(entry) {
   const repository = canonicalGithubRepository(entry.repositoryUrl)
   if (!COMMIT_SHA.test(entry.commit)) throw new TypeError('catalog install target must use a full Git commit SHA')
-  return `git+${repository}.git#${entry.commit}`
+  const installPath = entry.installPath ? `&path:${entry.installPath}` : ''
+  return `git+${repository}.git#${entry.commit}${installPath}`
 }
 
 function rawGithubUrl(entry, path) {
@@ -125,8 +126,8 @@ function validateEntry(value, index) {
   if (!PACKAGE_NAME.test(packageName) || packageName.includes('..')) {
     throw new TypeError(`entries[${index}].packageName is invalid`)
   }
-  const status = value.status === 'approved' || value.status === 'blocked' ? value.status : null
-  if (status === null) throw new TypeError(`entries[${index}].status must be approved or blocked`)
+  const status = ['approved', 'blocked', 'unlisted'].includes(value.status) ? value.status : null
+  if (status === null) throw new TypeError(`entries[${index}].status must be approved, blocked, or unlisted`)
   const commit = nonEmptyString(value.commit, `entries[${index}].commit`, 40).toLowerCase()
   if (!COMMIT_SHA.test(commit)) throw new TypeError(`entries[${index}].commit must be a full Git commit SHA`)
   const version = nonEmptyString(value.version, `entries[${index}].version`, 80)
@@ -134,6 +135,12 @@ function validateEntry(value, index) {
   const manifestPath = nonEmptyString(value.manifestPath ?? 'package.json', `entries[${index}].manifestPath`, 160)
   if (manifestPath.startsWith('/') || manifestPath.includes('..') || manifestPath.includes('\\')) {
     throw new TypeError(`entries[${index}].manifestPath must stay inside the repository`)
+  }
+  const installPath = value.installPath === undefined || value.installPath === null
+    ? null
+    : nonEmptyString(value.installPath, `entries[${index}].installPath`, 160).replace(/^\/+|\/+$/g, '')
+  if (installPath && (installPath.includes('..') || installPath.includes('\\'))) {
+    throw new TypeError(`entries[${index}].installPath must stay inside the repository`)
   }
   const entryIds = stringArray(value.entryIds ?? [], `entries[${index}].entryIds`, { simple: true })
   if (status === 'approved' && entryIds.length === 0) {
@@ -152,12 +159,15 @@ function validateEntry(value, index) {
     repositoryUrl: canonicalGithubRepository(value.repositoryUrl),
     defaultBranch: nonEmptyString(value.defaultBranch ?? 'main', `entries[${index}].defaultBranch`, 120),
     manifestPath,
+    installPath,
     commit,
     version,
     categories: stringArray(value.categories ?? [], `entries[${index}].categories`, { simple: true }),
+    featured: value.featured === true,
+    installCount: Number.isSafeInteger(value.installCount) && value.installCount >= 0 ? value.installCount : null,
     entryIds,
     status,
-    statusReason: status === 'blocked'
+    statusReason: status === 'blocked' || status === 'unlisted'
       ? nonEmptyString(value.statusReason, `entries[${index}].statusReason`, 600)
       : null,
     compatibility: {
@@ -180,12 +190,23 @@ export function validateCatalog(document) {
     throw new TypeError('catalog registry metadata is required')
   }
   if (!Array.isArray(document.entries)) throw new TypeError('catalog entries must be an array')
+  const categories = document.registry.categories && typeof document.registry.categories === 'object'
+    ? Object.fromEntries(Object.entries(document.registry.categories).map(([key, label]) => {
+        const id = nonEmptyString(key, 'registry.categories key', 96)
+        if (!SIMPLE_ID.test(id)) throw new TypeError(`registry category id ${id} is invalid`)
+        return [id, nonEmptyString(label, `registry.categories.${key}`, 120)]
+      }))
+    : {}
   const entries = document.entries.map(validateEntry)
   const ids = new Set()
   const packages = new Set()
   for (const entry of entries) {
     if (ids.has(entry.id)) throw new TypeError(`duplicate catalog id ${entry.id}`)
     if (packages.has(entry.packageName)) throw new TypeError(`duplicate catalog package ${entry.packageName}`)
+    if (entry.categories.length === 0) throw new TypeError(`catalog entry ${entry.id} must declare at least one category`)
+    for (const category of entry.categories) {
+      if (!Object.hasOwn(categories, category)) throw new TypeError(`catalog entry ${entry.id} uses unknown category ${category}`)
+    }
     ids.add(entry.id)
     packages.add(entry.packageName)
   }
@@ -198,6 +219,7 @@ export function validateCatalog(document) {
         ? document.registry.homepageUrl.slice(0, 400)
         : null,
       updatedAt: nonEmptyString(document.registry.updatedAt, 'registry.updatedAt', 80),
+      categories,
     },
     entries,
   }
@@ -222,18 +244,25 @@ export function compareVersions(left, right) {
   return a.pre.localeCompare(b.pre, 'en', { numeric: true })
 }
 
-export function searchCatalog(catalog, query = '') {
+export function searchCatalog(catalog, query = '', options = {}) {
   const needle = String(query).trim().toLowerCase()
-  if (needle === '') return catalog.entries
-  return catalog.entries.filter(entry => [
-    entry.id, entry.name, entry.packageName, entry.description,
-    entry.repositoryUrl, ...entry.categories,
-  ].some(value => value.toLowerCase().includes(needle)))
+  const category = String(options.category ?? '').trim().toLowerCase()
+  return catalog.entries
+    .filter(entry => options.includeUnlisted === true || entry.status !== 'unlisted')
+    .filter(entry => category === '' || entry.categories.includes(category))
+    .filter(entry => needle === '' || [
+      entry.id, entry.name, entry.packageName, entry.description,
+      entry.repositoryUrl, ...entry.categories,
+    ].some(value => value.toLowerCase().includes(needle)))
+    .sort((left, right) => Number(right.featured) - Number(left.featured)
+      || (right.installCount ?? -1) - (left.installCount ?? -1)
+      || left.name.localeCompare(right.name, 'zh-CN'))
 }
 
-export function buildMarketplaceSnapshot(catalog, inventory, query = '') {
+export function buildMarketplaceSnapshot(catalog, inventory, query = '', options = {}) {
   const installedByName = new Map(inventory.plugins.map(plugin => [plugin.packageName, plugin]))
-  const entries = searchCatalog(catalog, query).map(entry => {
+  const managedPackages = options.managedPackages instanceof Set ? options.managedPackages : new Set()
+  const entries = searchCatalog(catalog, query, { includeUnlisted: true }).map(entry => {
     const installed = installedByName.get(entry.packageName) ?? null
     const versionComparison = installed?.version ? compareVersions(installed.version, entry.version) : null
     const localProtected = ['link', 'file', 'workspace'].includes(installed?.source)
@@ -241,20 +270,39 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '') {
       && typeof installed.declaredSpecifier === 'string'
       && installed.declaredSpecifier.toLowerCase().includes(entry.commit)
     const commitDrift = installed?.source === 'git' && !commitMatched
+    const updateAvailable = installed !== null && (versionComparison === -1 || commitDrift)
+    const self = entry.packageName === 'dsh-safe-plugin-manager'
     let managementBlockedReason = null
-    if (entry.status !== 'approved') managementBlockedReason = entry.statusReason
-    else if (entry.packageName === 'dsh-safe-plugin-manager') managementBlockedReason = '管理器自身受保护'
+    if (entry.status === 'blocked') managementBlockedReason = entry.statusReason
+    else if (entry.status === 'unlisted' && installed === null) managementBlockedReason = entry.statusReason
     else if (installed?.official) managementBlockedReason = '官方组件永久只读'
     else if (localProtected) managementBlockedReason = '本地开发链接不会被市场替换'
+    const allowedActions = []
+    if (managementBlockedReason === null) {
+      if (installed === null && entry.status === 'approved' && !self) allowedActions.push('install')
+      if (installed !== null && entry.status === 'approved' && updateAvailable) allowedActions.push('update')
+      if (installed !== null && !self) allowedActions.push('disable', 'enable', 'uninstall')
+    }
+    if (self && allowedActions.length === 0 && managementBlockedReason === null) {
+      managementBlockedReason = '管理器自身仅允许更新，禁止停用或卸载'
+    }
+    const installOrigin = installed === null ? null
+      : managedPackages.has(entry.packageName) ? 'marketplace-managed'
+      : localProtected ? 'local-development'
+      : commitMatched ? 'catalog-source-matched'
+      : 'external-or-drifted'
     return {
       ...entry,
+      listed: entry.status !== 'unlisted',
       installed: installed !== null,
       installedVersion: installed?.version ?? null,
       installedSource: installed?.source ?? null,
-      updateAvailable: installed !== null && (versionComparison === -1 || commitDrift),
+      updateAvailable,
       commitMatched,
       versionState: versionComparison === null ? 'unknown' : versionComparison < 0 ? 'behind' : versionComparison > 0 ? 'ahead' : 'equal',
-      manageable: managementBlockedReason === null,
+      installOrigin,
+      allowedActions,
+      manageable: allowedActions.length > 0,
       managementBlockedReason,
     }
   })

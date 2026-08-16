@@ -14,7 +14,11 @@
         "name": { "type": "string", "minLength": 1 },
         "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
         "homepageUrl": { "type": "string" },
-        "updatedAt": { "type": "string" }
+        "updatedAt": { "type": "string" },
+        "categories": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        }
       }
     },
     "entries": {
@@ -30,11 +34,14 @@
           "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
           "defaultBranch": { "type": "string" },
           "manifestPath": { "type": "string" },
+          "installPath": { "type": "string" },
           "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
           "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+" },
           "categories": { "type": "array", "items": { "type": "string" } },
+          "featured": { "type": "boolean" },
+          "installCount": { "type": "integer", "minimum": 0 },
           "entryIds": { "type": "array", "items": { "type": "string" } },
-          "status": { "enum": ["approved", "blocked"] },
+          "status": { "enum": ["approved", "blocked", "unlisted"] },
           "statusReason": { "type": "string" },
           "compatibility": { "type": "object" },
           "risk": {
