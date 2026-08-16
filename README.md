@@ -18,7 +18,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 | 可安装 | 26 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
-| 推荐 | 4 个，仅限 `AI-Scarlett` 自研插件 |
+| 推荐 | 5 个：自研四件套 + DSH Web UI All |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
 商城已经在真实 DSH `web` Profile 中完成只读扫描、GitHub 在线目录刷新、配置合成、
@@ -75,7 +75,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - `approved`：正常上架并允许生成安装计划；
 - `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
-- `featured: true`：在全部视图和所属分类中优先显示；当前仅推荐自研四件套；
+- `featured: true`：在全部视图和所属分类中优先显示；当前推荐自研四件套和用户精选的
+  DSH Web UI All；
 - 可选安装回执只发送插件 ID 和版本，不发送设备、Profile 或用户标识；默认关闭；
 - GitHub Pages 不能直接写回 `catalog.json`，真实计数需要独立匿名聚合服务。
 
@@ -116,8 +117,9 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 ## 已收录插件
 
-`★` 表示推荐。所有推荐仅来自 `AI-Scarlett` 自研四件套；普通社区插件即使同类，也
-不会因此被排除。以下列表与当前 `registry/catalog.json` 一致。
+`★` 表示推荐。当前推荐 `AI-Scarlett` 自研四件套，以及用户精选的社区插件
+DSH Web UI All；推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
+`registry/catalog.json` 一致。
 
 | 插件 | 分类 | 状态 | 介绍 |
 | --- | --- | --- | --- |
@@ -142,7 +144,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | [DSH OpenPencil](https://github.com/ZSeven-W/dsh-openpencil) | 设计与原型、界面增强、工具能力 | 可安装 | 集成 OpenPencil 多画板预览、交互画布与托管编辑工作台。 |
 | [AnySearch for DSH](https://github.com/anysearch-team/anysearch-dsh) | 搜索与网络、工具能力 | 可安装 | 注册 AnySearch 网络搜索提供商与增强搜索工具，需要配置 API Key。 |
 | [DSH Gomoku](https://github.com/omdsh-dev/dsh-gomoku) | 娱乐、界面增强 | 可安装 | 在对话界面加入五子棋棋盘、AI 落子路由与模型目录。 |
-| [DSH Web UI All](https://github.com/zhu1090093659/dsh-web-ui) | 综合套件、界面增强、工具能力 | 可安装 | 聚合任务板、Git 图、宠物、远程界面、实时统计、SSH、视觉工具与多款皮肤。 |
+| ★ [DSH Web UI All](https://github.com/zhu1090093659/dsh-web-ui) | 综合套件、界面增强、工具能力 | 可安装 | 聚合任务板、Git 图、宠物、远程界面、实时统计、SSH、视觉工具与多款皮肤。 |
 | [DSH Shortcuts](https://github.com/Ricketts-Guo/dsh-shortcuts) | 界面增强、工具能力、新锐实验 | 可安装 | 提供可录制、可配置的键盘快捷键与权限切换反馈。 |
 | [DSH Diagram](https://github.com/hanzhangzzz/dsh-diagram) | 可视化、设计与原型、新锐实验 | 可安装 | 将文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。 |
 | [DSH Egress Guard](https://github.com/tancheng33/dsh-egress-guard) | 安全与隐私、工具能力、新锐实验 | 可安装 | 提供出站域名策略、工具结果密钥脱敏和追加式审计日志，默认监控模式。 |
