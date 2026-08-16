@@ -171,6 +171,20 @@ window.__ModuleLoader__.load({
       }, children)
     }
 
+    function CatalogFilters({ query, category, categoryIds, categoryLabels, onQueryChange, onCategoryChange }) {
+      return React.createElement('div', { style: styles.toolbar },
+        React.createElement('input', {
+          type: 'search', value: query, onChange: event => onQueryChange(event.target.value),
+          style: { ...styles.input, flex: '1 1 360px' }, placeholder: '搜索名称、包名、分类、权限或 GitHub 仓库',
+        }),
+        React.createElement('select', {
+          value: category, onChange: event => onCategoryChange(event.target.value),
+          style: styles.select, 'aria-label': '按分类筛选',
+        },
+        React.createElement('option', { value: '' }, '全部分类'),
+        categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))))
+    }
+
     function PluginActions({ entry, health, beginPlan }) {
       const allowed = new Set(entry.allowedActions || [])
       if (allowed.size === 0) return React.createElement('div', { style: styles.muted }, entry.managementBlockedReason || '当前没有可执行操作')
@@ -214,6 +228,21 @@ window.__ModuleLoader__.load({
               : null),
           React.createElement('div', { style: styles.detailAction },
             React.createElement(Button, { onClick: () => openDetails(entry) }, '查看详情'))))
+    }
+
+    function InventoryOnlyCard({ plugin }) {
+      const source = plugin.official ? '官方 · 只读' : `${plugin.source || 'unknown'} · 目录外只读`
+      return React.createElement('article', { style: styles.card },
+        React.createElement('div', { style: styles.row },
+          React.createElement('div', { style: styles.name }, plugin.packageName),
+          React.createElement('span', { style: styles.badge }, source)),
+        React.createElement('div', { style: styles.code }, `${plugin.version || '版本未知'} · ${plugin.declaredAsBundle ? 'Bundle' : '依赖'}`),
+        React.createElement('div', { style: styles.muted }, plugin.description || '本地 manifest 未提供插件介绍'),
+        React.createElement('div', { style: styles.notice }, '该插件未进入 GitHub catalog.json，无法提供目录详情或商城受保护操作。'),
+        plugin.repository
+          ? React.createElement('div', { style: styles.cardFooter },
+            React.createElement('a', { href: plugin.repository, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub 仓库'))
+          : null)
     }
 
     function DetailRow({ label, value, code = false }) {
@@ -372,16 +401,23 @@ window.__ModuleLoader__.load({
       }, [])
       useEffect(() => { void refresh(false) }, [refresh])
 
-      const entries = useMemo(() => {
+      const normalizedEntries = useMemo(() => {
         if (state.status !== 'ready') return []
-        const needle = query.trim().toLowerCase()
         return state.market.entries
-          .filter(entry => entry.listed !== false)
           .map(normalizeMarketEntry)
+      }, [state])
+
+      const scopedEntries = useMemo(() => {
+        return normalizedEntries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
+      }, [normalizedEntries, view])
+
+      const entries = useMemo(() => {
+        const needle = query.trim().toLowerCase()
+        return scopedEntries
           .filter(entry => !category || entry.categories.includes(category))
           .filter(entry => !needle || detailSearchValues(entry).some(value => value.toLowerCase().includes(needle)))
           .sort((a, b) => Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || a.name.localeCompare(b.name, 'zh-CN'))
-      }, [category, query, state])
+      }, [category, query, scopedEntries])
 
       const beginPlan = useCallback(async (action, entry) => {
         setConfirmation('')
@@ -431,35 +467,50 @@ window.__ModuleLoader__.load({
             React.createElement(Button, { key: id, active: view === id, onClick: () => setView(id) }, label))),
         React.createElement(Button, { compact: true, onClick: () => refresh(true) }, '刷新 GitHub 目录'))
 
+      const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories))].sort()
+      const categoryLabels = state.status === 'ready' ? state.market.registry.categories || {} : {}
+      const filters = React.createElement(CatalogFilters, {
+        query, category, categoryIds, categoryLabels, onQueryChange: setQuery, onCategoryChange: setCategory,
+      })
+      const catalogPackageNames = new Set(normalizedEntries.map(entry => entry.packageName))
+      const uncataloguedInstalledAll = state.status === 'ready'
+        ? state.inventory.plugins.filter(plugin => plugin.installed && !catalogPackageNames.has(plugin.packageName))
+        : []
+      const needle = query.trim().toLowerCase()
+      const uncataloguedInstalled = category ? [] : uncataloguedInstalledAll
+        .filter(plugin => !needle || [plugin.packageName, plugin.version, plugin.description, plugin.repository, plugin.source]
+          .some(value => String(value || '').toLowerCase().includes(needle)))
+        .sort((a, b) => a.packageName.localeCompare(b.packageName, 'en'))
+
       let content
       if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
       else if (state.status === 'error') content = React.createElement('p', { style: styles.error }, state.message)
       else if (view === 'health') content = React.createElement(HealthPanel, { health: state.health })
       else if (view === 'installed') {
-        content = React.createElement('div', { style: styles.grid }, state.inventory.plugins.map(plugin => {
-          const market = state.market.entries.find(entry => entry.packageName === plugin.packageName)
-          return React.createElement('article', { key: plugin.packageName, style: styles.card },
-            React.createElement('div', { style: styles.row }, React.createElement('div', { style: styles.name }, plugin.packageName), React.createElement('span', { style: styles.badge }, plugin.official ? '官方 · 只读' : plugin.source)),
-            React.createElement('div', { style: styles.muted }, `${plugin.version || '版本未知'} · ${plugin.declaredAsBundle ? 'Bundle' : '依赖'}`),
-            market ? React.createElement(React.Fragment, null,
-              React.createElement('div', { style: styles.muted }, market.installOrigin === 'marketplace-managed' ? '通过本商城安装' : market.installOrigin === 'local-development' ? '本地开发安装' : '外部安装或渠道未知'),
-              React.createElement(PluginActions, { entry: market, health: state.health, beginPlan }))
-              : React.createElement('div', { style: styles.badge }, '外部插件 · 未进入集中目录'))
-        }))
-      } else {
-        const categoryIds = [...new Set(state.market.entries.filter(entry => entry.listed !== false).flatMap(entry => entry.categories))].sort()
         content = React.createElement(React.Fragment, null,
-          React.createElement('div', { style: styles.toolbar },
-            React.createElement('input', { type: 'search', value: query, onChange: event => setQuery(event.target.value), style: { ...styles.input, flex: '1 1 360px' }, placeholder: '搜索名称、包名、分类、权限或 GitHub 仓库' }),
-            React.createElement('select', { value: category, onChange: event => setCategory(event.target.value), style: styles.select, 'aria-label': '按分类筛选' },
-              React.createElement('option', { value: '' }, '全部分类'),
-              categoryIds.map(id => React.createElement('option', { key: id, value: id }, state.market.registry.categories?.[id] || id)))),
+          filters,
           React.createElement('div', { style: styles.notice },
-            `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${entries.length} / ${state.market.entries.filter(entry => entry.listed !== false).length} 个在架条目`,
+            `${entries.length} / ${scopedEntries.length} 个目录内已安装插件`,
+            uncataloguedInstalledAll.length > 0 ? ` · 另有 ${uncataloguedInstalledAll.length} 个目录外只读项` : ''),
+          React.createElement('div', { style: styles.grid }, entries.map(entry => React.createElement(MarketCard, {
+            key: entry.id, entry, health: state.health, beginPlan, openDetails: setDetailEntry, categoryLabels,
+          }))),
+          uncataloguedInstalled.length > 0
+            ? React.createElement(React.Fragment, null,
+              React.createElement('h4', { style: styles.title }, '未进入商城目录'),
+              React.createElement('div', { style: styles.muted }, '以下项目只展示本地 manifest 的真实信息，不提供 catalog 权限详情或商城操作。'),
+              React.createElement('div', { style: styles.grid }, uncataloguedInstalled.map(plugin =>
+                React.createElement(InventoryOnlyCard, { key: plugin.packageName, plugin }))))
+            : null)
+      } else {
+        content = React.createElement(React.Fragment, null,
+          filters,
+          React.createElement('div', { style: styles.notice },
+            `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${entries.length} / ${scopedEntries.length} 个在架条目`,
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
           React.createElement('div', { style: styles.grid }, entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, openDetails: setDetailEntry,
-            categoryLabels: state.market.registry.categories,
+            categoryLabels,
           }))))
       }
 
