@@ -15,6 +15,15 @@ npm run check
 - Bundle 只插入自身，不禁用官方清单；
 - Host 源码不存在文件写入、子进程或 Loader/Fiber 变更原语。
 
+当前 `npm run check` 还必须通过：
+
+- GitHub-only 目录 Schema、重复包名与固定 Commit 校验；
+- GitHub 来源 manifest/Bundle/生命周期脚本复核；
+- 托管 Patch 外部字节保持不变；
+- 计划确认、单次使用、官方组件保护；
+- 失败安装恢复 Profile 控制文件；
+- 写命令使用 `execFile` 参数数组且不启用 Shell。
+
 ## 已执行：真实 `web` Profile 只读验收
 
 根据用户明确要求，已在真实 `web` Profile 完成以下检查：
@@ -28,17 +37,19 @@ npm run check
 
 尚未执行卸载恢复，因此这不是完整的安装—卸载闭环。
 
-## M1 一次性 Profile 补充验收
+## M2 一次性 Profile 写入验收
 
-以下高风险/异常矩阵仍应在一次性 Profile 中执行：
+以下高风险/异常矩阵仍未在真实 DSH 中执行：
 
 1. 创建专用测试 `DSH_HOME` 或一次性 Profile；
 2. 记录安装前目录清单和关键文件 SHA-256；
-3. 通过官方 `dsh plugin --profile <test> add .` 安装本地项目；
-4. 连续刷新、切换主题、重复重启 DSH；
-5. 比较“安装完成基线”和“运行测试完成”之间的关键文件哈希；
-6. 验证 headless、manifest 损坏、缺失依赖和坏链接时 DSH 的行为；
-7. 卸载插件并确认测试 Profile 恢复，不留下自有缓存。
+3. 安装管理器并通过市场安装一个固定 GitHub Commit 插件；
+4. 重启并用官方 Plugin Inventory 核验运行态；
+5. 停用、启用、更新并检查托管区块外字节；
+6. 卸载并核对依赖、Bundle、lockfile 和 `node_modules`；
+7. 对命令失败、配置合成失败、并发改动、断网和损坏 Patch 做故障注入；
+8. 验证失败后控制文件逐字恢复、依赖可解析、审计状态正确；
+9. 卸载管理器并确认测试 Profile 恢复。
 
 ## 不可替代的证据
 

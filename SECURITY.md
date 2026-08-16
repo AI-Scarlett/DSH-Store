@@ -11,17 +11,17 @@
 - No secret, credential, environment dump, or absolute user-file content in
   HTTP responses or logs.
 
-## Read-only milestone
+## Read-only surfaces
 
-The current implementation only reads a selected Profile manifest and installed
-package manifests. Its HTTP endpoint accepts same-origin JSON `POST` requests,
-limits request size, validates Profile names, and returns a narrow inventory
-schema. It does not query the network or create a cache.
+Inventory, market search, health inspection, and operation planning do not write
+the selected Profile. HTTP endpoints accept same-origin JSON `POST` requests,
+limit request size, validate Profile names, and disable caches. The registry is
+GitHub-only; install/update re-fetches manifests and Bundle Patches from the
+pinned commit and fails closed when source evidence is unavailable.
 
-## Requirements before any mutation ships
+## Guarded mutations
 
-Every write operation must be introduced behind an explicit management-mode
-gate and implement all of the following:
+Every write operation implements all of the following:
 
 1. Show the exact target Profile, files, current version, target version, and
    command plan before confirmation.
@@ -30,11 +30,13 @@ gate and implement all of the following:
 3. Acquire a Profile lock and verify precondition hashes immediately before
    execution.
 4. Back up only the exact affected files, with owner-only permissions.
-5. Stage and validate the result away from the live Profile when possible.
-6. Commit with atomic rename; never overwrite concurrent user changes.
-7. Run dependency, bundle-patch, boot, API, and UI health checks.
-8. Roll back automatically on failure and retain an auditable local result.
+5. Invoke only the current DSH CLI with fixed argument arrays and `shell=false`.
+6. Restrict enable/disable edits to the delimited manager-owned Patch block.
+7. Commit manager Patch changes with atomic rename; never overwrite concurrent changes.
+8. Run dependency and DSH configuration-composition health checks.
+9. Restore exact Profile files and reconcile dependencies offline on failure.
+10. Retain a secret-free JSONL audit result in the manager's own data directory.
 
-Until those gates exist and pass, installation, deletion, enable/disable, and
-update controls must remain absent from the UI and API.
-
+The current health gate does not prove every plugin business function or live
+Fiber is healthy. Package operations therefore report `restartRequired`; the
+official DSH inventory remains the runtime authority after restart.

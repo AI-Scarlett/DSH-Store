@@ -3,90 +3,238 @@ window.__ModuleLoader__.load({
   factory: (require) => {
     const module = { exports: {} }
     const React = require('react')
-    const { useCallback, useEffect, useState } = React
-    const ROUTE = '/api2/dsh-safe-plugin-manager/inventory'
+    const { useCallback, useEffect, useMemo, useState } = React
+    const ROUTES = {
+      inventory: '/api2/dsh-safe-plugin-manager/inventory',
+      market: '/api2/dsh-safe-plugin-manager/market',
+      health: '/api2/dsh-safe-plugin-manager/health',
+      plan: '/api2/dsh-safe-plugin-manager/plan',
+      execute: '/api2/dsh-safe-plugin-manager/execute',
+    }
 
-    async function loadInventory() {
-      const response = await fetch(ROUTE, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: '{}',
-      })
+    async function post(route, body = {}, intent = null) {
+      const headers = { 'content-type': 'application/json' }
+      if (intent) headers['x-dsh-safe-intent'] = intent
+      const response = await fetch(route, { method: 'POST', headers, body: JSON.stringify(body) })
       const payload = await response.json()
       if (!response.ok || !payload.ok) {
-        throw new Error(payload?.error?.message || `HTTP ${response.status}`)
+        const error = new Error(payload?.error?.message || `HTTP ${response.status}`)
+        error.code = payload?.error?.code || 'REQUEST_FAILED'
+        throw error
       }
       return payload.value
     }
 
     const styles = {
-      root: { display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', maxWidth: '760px' },
-      toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' },
-      title: { margin: 0, fontSize: '15px', lineHeight: '22px', fontWeight: 600 },
-      muted: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
+      root: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '920px' },
+      toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' },
+      nav: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
+      title: { margin: 0, fontSize: '16px', lineHeight: '24px', fontWeight: 650 },
+      subtitle: { margin: '3px 0 0', color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
+      input: {
+        width: '100%', boxSizing: 'border-box', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '9px',
+        padding: '9px 11px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
+      },
       button: {
-        border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px', padding: '7px 12px',
-        background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', cursor: 'pointer',
+        border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px', padding: '7px 11px',
+        background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', cursor: 'pointer', fontSize: '12px',
       },
+      activeButton: { background: 'var(--dsw-alias-bg-layer-3)', borderColor: 'var(--dsw-alias-label-secondary)', fontWeight: 600 },
+      dangerButton: { borderColor: 'var(--dsw-alias-state-error-primary)', color: 'var(--dsw-alias-state-error-primary)' },
+      primaryButton: { borderColor: 'var(--dsw-alias-label-primary)', fontWeight: 600 },
+      disabledButton: { opacity: 0.45, cursor: 'not-allowed' },
+      grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' },
       card: {
-        display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: '8px 16px',
-        border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '10px', padding: '12px 14px',
-        background: 'var(--dsw-alias-bg-layer-3)',
+        display: 'flex', flexDirection: 'column', gap: '8px', border: '1px solid var(--dsw-alias-border-l2)',
+        borderRadius: '11px', padding: '13px 14px', background: 'var(--dsw-alias-bg-layer-3)', minWidth: 0,
       },
-      name: { minWidth: 0, overflowWrap: 'anywhere', fontSize: '13px', fontWeight: 600 },
-      badge: { fontSize: '11px', color: 'var(--dsw-alias-label-secondary)' },
+      row: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' },
+      name: { minWidth: 0, overflowWrap: 'anywhere', fontSize: '13px', fontWeight: 650 },
+      muted: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
+      badge: { display: 'inline-flex', alignItems: 'center', borderRadius: '999px', padding: '3px 7px', background: 'var(--dsw-alias-bg-layer-2)', fontSize: '11px' },
+      actions: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '2px' },
       error: { color: 'var(--dsw-alias-state-error-primary)', fontSize: '13px' },
+      notice: { border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '10px', padding: '11px 13px', fontSize: '12px', lineHeight: '18px' },
+      plan: { border: '1px solid var(--dsw-alias-label-secondary)', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' },
+      code: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', overflowWrap: 'anywhere', fontSize: '12px' },
+      link: { color: 'var(--dsw-alias-label-primary)', fontSize: '12px' },
     }
 
-    function InventoryPanel({ load = loadInventory }) {
+    function Button({ children, active = false, danger = false, primary = false, disabled = false, onClick }) {
+      return React.createElement('button', {
+        type: 'button', disabled, onClick,
+        style: { ...styles.button, ...(active ? styles.activeButton : {}), ...(danger ? styles.dangerButton : {}), ...(primary ? styles.primaryButton : {}), ...(disabled ? styles.disabledButton : {}) },
+      }, children)
+    }
+
+    function PluginActions({ entry, health, beginPlan }) {
+      if (!entry.manageable) return React.createElement('div', { style: styles.muted }, entry.managementBlockedReason || '当前不可管理')
+      const disabled = entry.entryIds.length > 0 && entry.entryIds.every(id => health?.disabledEntryIds?.includes(id))
+      const actions = []
+      if (!entry.installed) actions.push(React.createElement(Button, { key: 'install', primary: true, onClick: () => beginPlan('install', entry) }, '安装'))
+      if (entry.installed && entry.updateAvailable) actions.push(React.createElement(Button, { key: 'update', primary: true, onClick: () => beginPlan('update', entry) }, '更新'))
+      if (entry.installed && entry.entryIds.length > 0) {
+        actions.push(React.createElement(Button, { key: 'toggle', onClick: () => beginPlan(disabled ? 'enable' : 'disable', entry) }, disabled ? '启用' : '停用'))
+      }
+      if (entry.installed) actions.push(React.createElement(Button, { key: 'remove', danger: true, onClick: () => beginPlan('uninstall', entry) }, '卸载'))
+      return React.createElement('div', { style: styles.actions }, actions)
+    }
+
+    function MarketCard({ entry, health, beginPlan }) {
+      const state = entry.status === 'blocked' ? '策略阻止'
+        : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
+      return React.createElement('article', { style: styles.card },
+        React.createElement('div', { style: styles.row },
+          React.createElement('div', { style: styles.name }, entry.name),
+          React.createElement('span', { style: styles.badge }, state)),
+        React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
+        React.createElement('div', { style: styles.muted }, entry.description),
+        React.createElement('div', { style: styles.muted }, `Commit ${entry.commit.slice(0, 12)} · ${entry.categories.join(' / ')}`),
+        entry.risk.installScripts.length > 0
+          ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join(', ')}`)
+          : null,
+        React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub 仓库'),
+        React.createElement(PluginActions, { entry, health, beginPlan }))
+    }
+
+    function HealthPanel({ health }) {
+      if (!health) return React.createElement('p', { style: styles.muted }, '正在执行健康检查…')
+      return React.createElement(React.Fragment, null,
+        React.createElement('div', { style: styles.notice }, `总体状态：${health.status} · Profile: ${health.profile}`),
+        React.createElement('div', { style: styles.grid }, health.checks.map(item => React.createElement('article', { key: item.id, style: styles.card },
+          React.createElement('div', { style: styles.row }, React.createElement('div', { style: styles.name }, item.id), React.createElement('span', { style: styles.badge }, item.status)),
+          React.createElement('div', { style: styles.muted }, item.message)))))
+    }
+
+    function PlanPanel({ operation, confirmation, setConfirmation, execute, cancel }) {
+      if (!operation || operation.status === 'idle') return null
+      if (operation.status === 'planning' || operation.status === 'executing') {
+        return React.createElement('div', { style: styles.notice }, operation.status === 'planning' ? '正在生成只读操作计划…' : '正在执行事务与健康检查…')
+      }
+      if (operation.status === 'error') return React.createElement('div', { style: styles.plan },
+        React.createElement('div', { style: styles.error }, `${operation.code || 'ERROR'}：${operation.message}`),
+        React.createElement(Button, { onClick: cancel }, '关闭'))
+      if (operation.status === 'result') {
+        const result = operation.value
+        return React.createElement('div', { style: styles.plan },
+          React.createElement('strong', null, result.status === 'applied' ? '操作已应用' : '操作失败并已触发回滚'),
+          React.createElement('div', { style: styles.muted }, `事务 ${result.transactionId} · 回滚 ${result.rollback || '不需要'}`),
+          result.error ? React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`) : null,
+          React.createElement(Button, { onClick: cancel }, '完成'))
+      }
+      const plan = operation.value
+      const matches = confirmation === plan.confirmation
+      return React.createElement('div', { style: styles.plan },
+        React.createElement('strong', null, '操作预览与确认'),
+        React.createElement('div', { style: styles.code }, `${plan.action} · ${plan.plugin.packageName} · ${plan.profile}`),
+        React.createElement('div', { style: styles.muted }, `GitHub Commit：${plan.plugin.commit}`),
+        React.createElement('div', { style: styles.muted }, `可能修改：${plan.impact.mayModify.join('、')}`),
+        React.createElement('div', { style: styles.muted }, `永久保护：${plan.impact.neverModify.join('、')}`),
+        plan.impact.installScripts.length > 0 ? React.createElement('div', { style: styles.error }, `此插件会运行：${plan.impact.installScripts.join('、')}`) : null,
+        React.createElement('label', { style: styles.muted }, '输入以下确认语后才能执行：'),
+        React.createElement('div', { style: styles.code }, plan.confirmation),
+        React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' }),
+        React.createElement('div', { style: styles.actions },
+          React.createElement(Button, { onClick: cancel }, '取消'),
+          React.createElement(Button, { primary: true, danger: true, disabled: !matches, onClick: execute }, '执行并启用自动回滚')))
+    }
+
+    function ManagerPanel() {
+      const [view, setView] = useState('market')
+      const [query, setQuery] = useState('')
       const [state, setState] = useState({ status: 'loading' })
-      const refresh = useCallback(async () => {
+      const [confirmation, setConfirmation] = useState('')
+      const [operation, setOperation] = useState({ status: 'idle' })
+
+      const refresh = useCallback(async (force = false) => {
         setState({ status: 'loading' })
         try {
-          setState({ status: 'ready', value: await load() })
+          const [inventory, market, health] = await Promise.all([
+            post(ROUTES.inventory), post(ROUTES.market, { refresh: force }), post(ROUTES.health),
+          ])
+          setState({ status: 'ready', inventory, market, health })
         } catch (error) {
           setState({ status: 'error', message: String(error?.message || error) })
         }
-      }, [load])
-      useEffect(() => { void refresh() }, [refresh])
+      }, [])
+      useEffect(() => { void refresh(false) }, [refresh])
 
-      const children = [
-        React.createElement('div', { key: 'toolbar', style: styles.toolbar },
-          React.createElement('div', null,
-            React.createElement('h3', { style: styles.title }, '安全插件管理'),
-            React.createElement('div', { style: styles.muted }, '只读预览：当前版本不提供安装、删除、启停或更新')),
-          React.createElement('button', { type: 'button', style: styles.button, onClick: refresh }, '刷新')),
-      ]
+      const entries = useMemo(() => {
+        if (state.status !== 'ready') return []
+        const needle = query.trim().toLowerCase()
+        if (!needle) return state.market.entries
+        return state.market.entries.filter(entry => [entry.name, entry.packageName, entry.description, entry.repositoryUrl, ...entry.categories]
+          .some(value => value.toLowerCase().includes(needle)))
+      }, [query, state])
 
-      if (state.status === 'loading') {
-        children.push(React.createElement('p', { key: 'loading', style: styles.muted }, '正在读取插件清单…'))
-      } else if (state.status === 'error') {
-        children.push(React.createElement('p', { key: 'error', style: styles.error }, state.message))
-      } else {
-        children.push(React.createElement('p', { key: 'summary', style: styles.muted },
-          `Profile: ${state.value.profile} · ${state.value.plugins.length} 个条目 · 运行态尚未核验`))
-        for (const plugin of state.value.plugins) {
-          children.push(React.createElement('div', { key: plugin.packageName, style: styles.card },
-            React.createElement('div', { style: styles.name }, plugin.packageName),
-            React.createElement('div', { style: styles.badge }, plugin.official ? '官方 · 只读' : '第三方'),
-            React.createElement('div', { style: styles.muted }, plugin.description || '无描述'),
-            React.createElement('div', { style: styles.muted }, plugin.version || '版本未知')))
+      const beginPlan = useCallback(async (action, entry) => {
+        setConfirmation('')
+        setOperation({ status: 'planning' })
+        try {
+          const value = await post(ROUTES.plan, { action, pluginId: entry.id }, 'plan')
+          setOperation({ status: 'plan', value })
+        } catch (error) {
+          setOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
         }
+      }, [])
+
+      const execute = useCallback(async () => {
+        if (operation.status !== 'plan') return
+        const plan = operation.value
+        setOperation({ status: 'executing', value: plan })
+        try {
+          const value = await post(ROUTES.execute, { planId: plan.planId, confirmation }, 'execute')
+          setOperation({ status: 'result', value })
+          await refresh(false)
+        } catch (error) {
+          setOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
+        }
+      }, [confirmation, operation, refresh])
+
+      const cancel = useCallback(() => { setConfirmation(''); setOperation({ status: 'idle' }) }, [])
+      const heading = React.createElement('div', { style: styles.toolbar },
+        React.createElement('div', null,
+          React.createElement('h3', { style: styles.title }, 'DSH 安全插件管理'),
+          React.createElement('p', { style: styles.subtitle }, 'GitHub-only 目录 · 计划确认 · Profile 备份 · 健康检查 · 失败回滚')),
+        React.createElement(Button, { onClick: () => refresh(true) }, '刷新 GitHub 目录'))
+
+      const nav = React.createElement('div', { style: styles.nav },
+        [['market', '插件市场'], ['installed', '已安装'], ['health', '健康检查']].map(([id, label]) =>
+          React.createElement(Button, { key: id, active: view === id, onClick: () => setView(id) }, label)))
+
+      let content
+      if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
+      else if (state.status === 'error') content = React.createElement('p', { style: styles.error }, state.message)
+      else if (view === 'health') content = React.createElement(HealthPanel, { health: state.health })
+      else if (view === 'installed') {
+        content = React.createElement('div', { style: styles.grid }, state.inventory.plugins.map(plugin => {
+          const market = state.market.entries.find(entry => entry.packageName === plugin.packageName)
+          return React.createElement('article', { key: plugin.packageName, style: styles.card },
+            React.createElement('div', { style: styles.row }, React.createElement('div', { style: styles.name }, plugin.packageName), React.createElement('span', { style: styles.badge }, plugin.official ? '官方 · 只读' : plugin.source)),
+            React.createElement('div', { style: styles.muted }, `${plugin.version || '版本未知'} · ${plugin.declaredAsBundle ? 'Bundle' : '依赖'}`),
+            market ? React.createElement(PluginActions, { entry: market, health: state.health, beginPlan }) : React.createElement('div', { style: styles.muted }, '未进入集中 GitHub 目录，只读'))
+        }))
+      } else {
+        content = React.createElement(React.Fragment, null,
+          React.createElement('input', { type: 'search', value: query, onChange: event => setQuery(event.target.value), style: styles.input, placeholder: '搜索名称、包名、分类或 GitHub 仓库' }),
+          React.createElement('div', { style: styles.notice },
+            `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${state.market.entries.length} 个条目`,
+            state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
+          React.createElement('div', { style: styles.grid }, entries.map(entry => React.createElement(MarketCard, { key: entry.id, entry, health: state.health, beginPlan }))))
       }
-      return React.createElement('section', { style: styles.root }, children)
+
+      return React.createElement('section', { style: styles.root },
+        heading, nav, content,
+        React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, cancel }))
     }
 
     const name = 'dsh-safe-plugin-manager'
     const inject = ['slots']
-
     function apply(ctx) {
       ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
-        name: 'settings.plugins.tab',
-        id: 'safe-plugin-manager',
-        order: 90,
-        label: () => '安全管理',
-        inject: () => ({ load: loadInventory }),
-      }, InventoryPanel))
+        name: 'settings.plugins.tab', id: 'safe-plugin-manager', order: 90,
+        label: () => '安全管理', inject: () => ({}),
+      }, ManagerPanel))
     }
 
     module.exports = { name, inject, apply }

@@ -1,0 +1,51 @@
+name: Submit a DSH plugin
+description: Propose a GitHub-hosted plugin for the guarded registry.
+title: "[Plugin] "
+labels: ["registry-review"]
+body:
+  - type: input
+    id: repository
+    attributes:
+      label: GitHub repository
+      description: Public https://github.com/owner/repository URL.
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Immutable commit
+      description: Full 40-character commit SHA to review.
+    validations:
+      required: true
+  - type: input
+    id: package
+    attributes:
+      label: Package name and version
+      placeholder: dsh-example@1.0.0
+    validations:
+      required: true
+  - type: input
+    id: entries
+    attributes:
+      label: DSH entry IDs
+      description: Comma-separated IDs inserted by the Bundle Patch.
+    validations:
+      required: true
+  - type: textarea
+    id: scripts
+    attributes:
+      label: Install lifecycle scripts
+      description: List preinstall, install, postinstall, or prepare scripts; write "none" if absent.
+    validations:
+      required: true
+  - type: checkboxes
+    id: guarantees
+    attributes:
+      label: Registry guarantees
+      options:
+        - label: The repository root declares dsh.bundle.patch.
+          required: true
+        - label: The Bundle Patch does not disable or replace official DSH components.
+          required: true
+        - label: The submitted commit and version are immutable and match package.json.
+          required: true

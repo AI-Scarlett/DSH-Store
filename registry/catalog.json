@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "registry": {
+    "name": "DSH Safe GitHub Plugin Registry",
+    "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
+    "homepageUrl": "https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/",
+    "updatedAt": "2026-08-16T00:00:00Z"
+  },
+  "entries": [
+    {
+      "id": "dsh-chat-import",
+      "name": "DSH Chat Import",
+      "packageName": "dsh-chat-import",
+      "description": "将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-chat-import",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "65979dd9a7935ad5d9c48d28d327ed3307c2c013",
+      "version": "0.3.1",
+      "categories": ["sessions", "import"],
+      "entryIds": ["import-claude"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=22.13.0" },
+      "risk": { "installScripts": [], "review": "curated-not-security-audited" }
+    },
+    {
+      "id": "dsh-market",
+      "name": "DSH Market",
+      "packageName": "dshmarket",
+      "description": "DSH 内的社区插件市场界面，支持浏览、搜索和插件管理。",
+      "repositoryUrl": "https://github.com/dsh-market/dsh-market",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "beb8576cebc48c0982321d547d67c0d15522b07b",
+      "version": "1.7.0",
+      "categories": ["marketplace", "management"],
+      "entryIds": ["dsh-market"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=22.13.0" },
+      "risk": { "installScripts": ["prepare"], "review": "curated-not-security-audited" }
+    },
+    {
+      "id": "dsh-web-plugin-manager",
+      "name": "DSH Web Plugin Manager",
+      "packageName": "dsh-web-plugin-manager",
+      "description": "第三方综合插件管理器；当前版本会遮蔽 DSH 官方插件清单，因此仅展示、不允许安装。",
+      "repositoryUrl": "https://github.com/LX2000WASD/dsh-web-plugin-manager",
+      "defaultBranch": "master",
+      "manifestPath": "package.json",
+      "commit": "1162fb2182e5ec61f90614c79dd4900465ffd097",
+      "version": "0.4.0",
+      "categories": ["marketplace", "management"],
+      "entryIds": ["plugin-manager"],
+      "status": "blocked",
+      "statusReason": "Bundle Patch 会禁用官方 ui-settings-plugin-inventory，不符合本市场的永久保护规则。",
+      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=22.13.0" },
+      "risk": { "installScripts": ["prepare"], "review": "blocked-by-policy" }
+    }
+  ]
+}

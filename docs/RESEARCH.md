@@ -24,11 +24,29 @@
 可以在不修改 DSH 源码的前提下增加 Host 与 Web 能力。本项目采用同类扩展边界，
 但不复用其会话读写功能。
 
+### dsh-market/dsh-market
+
+当前 `main` 为 `beb8576cebc48c0982321d547d67c0d15522b07b`。其市场体验和
+`awesome-dsh-plugin` 目录关系证明社区已有较大规模的 GitHub 插件发现需求；本项目
+不复制其实现，而是采用更小的、固定 Commit 的自有目录，并把每次写入纳入事务。
+
+### awesome-dsh-plugin/awesome-dsh-plugin
+
+当前 `main` 为 `219bdf0143e655118175bd42b6a71106bc745649`。该项目是 GitHub
+社区目录和数据采集来源，且明确警告目录收录不等于安全审计。本项目沿用这一风险
+边界，但不直接把其全部条目当作可安装白名单。
+
 ### LX2000WASD/dsh-web-plugin-manager
 
 功能覆盖查看、启停、安装、更新、健康检查和市场，设置 Slot 与路由结构有参考价值。
 其 Bundle 会禁用官方只读插件清单，并包含 Loader 实时应用、文件写入和命令执行等
 高权限路径；这些行为不进入本项目首版。
+
+### hrhgit/deepseek-harness-plugin-manager
+
+当前 `main` 为 `ba682b78d11741e86e100575169044b95ebaa3db`。其固定目录、
+manifest 校验和 GitHub Topic 采集为数据模型参考；本项目不复制其 npm 安装路径，
+所有目标都必须是 GitHub 仓库固定 Commit。
 
 ### MAXeaglet/dsh-plugin-manager
 
@@ -38,9 +56,8 @@ Web UI，并直接读写 Profile；桌面端、进程管理和外置恢复不符
 ## 产品决策
 
 1. 只做标准 DSH 插件，不做桌面端、CLI 或独立服务；
-2. 首版只读，并保留官方只读清单；
+2. 默认查看/搜索/计划只读，并保留官方只读清单；
 3. Bundle、Host、Client 三层分离，Host 入口保持薄；
 4. 声明态与运行态分开，不把 Bundle 记录当成“正在运行”；
-5. 更新检测与写入引擎分里程碑开发；
-6. 写入能力必须另行批准，默认关闭，并具备事务与回滚。
-
+5. GitHub 目录与写入引擎分模块，目录失效不得产生未知安装目标；
+6. 写入能力已获批准，但每次仍需独立计划、精确确认、备份、健康检查与回滚。

@@ -10,7 +10,7 @@
 ### Host plugin
 
 `src/index.mjs` 是薄组合层。它不把 `webServer` 设为硬依赖，而是通过
-`ctx.inject(['webServer'], ...)` 延迟注册只读路由。这样 headless Profile 仍可挂载
+`ctx.inject(['webServer'], ...)` 延迟注册管理路由。这样 headless Profile 仍可挂载
 Bundle，Web 能力缺失时不阻断启动。
 
 ### Inventory core
@@ -25,6 +25,12 @@ Bundle，Web 能力缺失时不阻断启动。
 
 它不解析或修改 `cordis.patch.yml`，也不读取 Loader/Fiber。运行状态因此明确标记为
 `unverified`，避免从“已声明”错误推断为“已启用且正在运行”。
+
+### GitHub registry
+
+`registry/catalog.json` 是 GitHub Pages 与 DSH 市场的单一事实源。运行时优先读取
+GitHub Raw；不可用时回退到随包快照，但安装/更新前仍必须从固定 Commit 重新核对
+manifest 与 Bundle Patch。
 
 ### Host API
 
@@ -54,6 +60,22 @@ Bundle，Web 能力缺失时不阻断启动。
 
 API 只接受 JSON POST，限制为 16 KiB，并拒绝跨 Origin 请求。响应禁用缓存。
 
+其余路由：
+
+- `POST /market`：读取、搜索并合并 GitHub 目录与本地安装状态；
+- `POST /health`：依赖、托管 Patch 和 DSH 配置合成；
+- `POST /plan`：生成限时、单次、无写入的操作计划；
+- `POST /execute`：校验精确确认语后执行事务。
+
+`plan` 与 `execute` 还要求独立 intent Header。它是防误调用措施，不应被误解为对
+同源恶意插件的认证边界。
+
+### Transaction core
+
+安装、更新、卸载只使用当前 DSH CLI 的固定参数数组；启停只编辑带双标记的托管
+区块。事务持有 Profile 锁，检查四个文件的前置哈希，创建权限收紧的备份，执行后
+运行健康检查。失败时恢复控制文件并通过官方边界离线协调依赖。
+
 ### Client plugin
 
 `src/client.js` 通过 `window.__ModuleLoader__.load()` 注册，通过
@@ -64,20 +86,18 @@ API 只接受 JSON POST，限制为 16 KiB，并拒绝跨 Origin 请求。响应
 
 ```text
 Browser UI (untrusted input)
-    │ same-origin + schema/size validation
+    │ same-origin + schema/size + intent + exact confirmation
     ▼
-Host route (read-only contract)
-    │ validated profile name
+Host routes
+    │ validated Profile + catalog entry + one-time plan
     ▼
-Inventory core
-    │ readFile only
+Transaction core
+    │ lock + hash + backup + official CLI / managed block
     ▼
 Selected DSH Profile manifests
 ```
 
 ## 后续扩展原则
 
-更新查询应作为独立只读适配器加入，并返回 `fresh`、`stale`、`offline`、
-`unsupported` 等证据状态。任何写入引擎必须是另一模块、另一 API 命名空间和另一轮
-安全评审，不能把现有只读函数悄悄改成可写。
-
+下一阶段应接入官方 Plugin Inventory 的只读运行态状态，并在一次性 Profile 完成
+真实写入和重启矩阵。不得通过 Loader/Fiber 变更替代官方运行时权威状态。

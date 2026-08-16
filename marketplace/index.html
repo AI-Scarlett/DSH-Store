@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DSH Safe GitHub Plugin Registry</title>
+  <style>
+    :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
+    body { max-width: 980px; margin: 0 auto; padding: 32px 20px 64px; background: #0b1020; color: #ecf1ff; }
+    h1 { margin-bottom: 8px; } p { color: #aeb9d5; line-height: 1.6; }
+    input { width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 10px; border: 1px solid #34405e; background: #111831; color: inherit; }
+    #meta { margin: 14px 0; font-size: 13px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+    article { padding: 16px; border: 1px solid #2a3654; border-radius: 14px; background: #111831; }
+    article h2 { margin: 0 0 6px; font-size: 17px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+    .badge { border-radius: 999px; padding: 4px 8px; background: #233052; font-size: 12px; }
+    .blocked { background: #5d2731; } a { color: #8db6ff; }
+    code { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>DSH Safe GitHub Plugin Registry</h1>
+  <p>集中管理 GitHub 来源的 DSH 插件。目录条目固定到不可变 Commit；收录不代表安全审计。</p>
+  <input id="search" type="search" placeholder="搜索名称、包名、分类或仓库">
+  <p id="meta">正在加载目录…</p>
+  <main id="plugins" class="grid"></main>
+  <script type="module">
+    const response = await fetch('../registry/catalog.json', { cache: 'no-store' })
+    const catalog = await response.json()
+    const search = document.querySelector('#search')
+    const meta = document.querySelector('#meta')
+    const plugins = document.querySelector('#plugins')
+    const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))
+    function render() {
+      const query = search.value.trim().toLowerCase()
+      const entries = catalog.entries.filter(entry => [entry.name, entry.packageName, entry.description, entry.repositoryUrl, ...(entry.categories || [])].some(value => String(value).toLowerCase().includes(query)))
+      meta.textContent = `${entries.length} / ${catalog.entries.length} 个条目 · 更新于 ${catalog.registry.updatedAt}`
+      plugins.innerHTML = entries.map(entry => `<article>
+        <h2>${escape(entry.name)}</h2>
+        <code>${escape(entry.packageName)} · ${escape(entry.version)}</code>
+        <p>${escape(entry.description)}</p>
+        <div class="badges">${entry.categories.map(category => `<span class="badge">${escape(category)}</span>`).join('')}<span class="badge ${entry.status === 'blocked' ? 'blocked' : ''}">${entry.status === 'approved' ? '可安装' : '策略阻止'}</span></div>
+        ${entry.statusReason ? `<p>${escape(entry.statusReason)}</p>` : ''}
+        <a href="${escape(entry.repositoryUrl)}">查看 GitHub 仓库</a>
+      </article>`).join('')
+    }
+    search.addEventListener('input', render)
+    render()
+  </script>
+</body>
+</html>

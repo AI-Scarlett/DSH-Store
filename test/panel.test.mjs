@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import test from 'node:test'
-import { handleInventoryRequest } from '../src/panel.mjs'
+import { handleInventoryRequest, handleMarketRequest, handlePlanRequest } from '../src/panel.mjs'
 
 function request(body, headers = {}) {
   const req = Readable.from([JSON.stringify(body)])
@@ -57,3 +57,45 @@ test('inventory endpoint rejects a cross-origin request', async () => {
   assert.equal(JSON.parse(res.body).ok, false)
 })
 
+test('market endpoint joins the GitHub catalog with installed state', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-market-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(join(profileDir, 'node_modules', 'dsh-demo'), { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: { 'dsh-demo': '^1.0.0' }, dsh: { profile: { bundles: ['dsh-demo'] } },
+    }))
+    await writeFile(join(profileDir, 'node_modules', 'dsh-demo', 'package.json'), JSON.stringify({ name: 'dsh-demo', version: '1.0.0' }))
+    const catalog = {
+      schemaVersion: 1,
+      registry: { name: 'Fixture' }, source: { kind: 'fixture' },
+      entries: [{
+        id: 'demo', name: 'Demo', packageName: 'dsh-demo', description: 'demo', repositoryUrl: 'https://github.com/example/demo',
+        commit: 'a'.repeat(40), version: '2.0.0', categories: ['tools'], entryIds: ['demo'], status: 'approved',
+        statusReason: null, compatibility: { dsh: null, node: null }, risk: { installScripts: [], review: 'fixture' },
+      }],
+    }
+    const req = request({ query: 'demo' })
+    const res = response()
+    await handleMarketRequest(req, res, { dshHome: root, catalogService: { load: async () => catalog } })
+    const payload = JSON.parse(res.body)
+    assert.equal(res.status, 200)
+    assert.equal(payload.value.entries[0].installed, true)
+    assert.equal(payload.value.entries[0].updateAvailable, true)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('plan endpoint requires explicit operation intent header', async () => {
+  let called = false
+  const operationService = { createPlan: async () => { called = true; return { planId: 'one' } } }
+  const denied = response()
+  await handlePlanRequest(request({ action: 'install' }), denied, { operationService })
+  assert.equal(denied.status, 403)
+  assert.equal(called, false)
+  const allowed = response()
+  await handlePlanRequest(request({ action: 'install' }, { 'x-dsh-safe-intent': 'plan' }), allowed, { operationService })
+  assert.equal(allowed.status, 200)
+  assert.equal(JSON.parse(allowed.body).value.planId, 'one')
+})
