@@ -14,6 +14,8 @@ Bundle + Host Plugin + Client Bundle 结构，不开发桌面端，不修改 DSH
   本地版本和官方/第三方属性；
 - 已实现：集中 GitHub 目录、搜索、分类筛选、推荐排序、上下架、固定 Commit 来源复核
   和离线内置快照；
+- 当前目录：31 个条目、22 个分类，其中 26 个可安装、5 个策略阻止；推荐仍只标记
+  `AI-Scarlett` 自有的四个插件；
 - 已实现：安装、更新、本地链接迁移、卸载、启用、停用的计划/确认/执行 API；
 - 已实现：Profile 文件锁、前置哈希、精确备份、官方 DSH 命令、配置健康检查、
   失败回滚与脱敏审计；
@@ -80,7 +82,7 @@ npm run check
 - 固定 Commit 在线复核：`npm run verify:registry-sources`。
 
 在线目录默认从本仓库的 GitHub Raw 地址读取，人工浏览页面位于
-[DSH Safe GitHub Plugin Registry](https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/)；
+[DSH第三方插件商城](https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/)；
 任何网络失败都只会回退到随包发布的已知目录快照，不会自动改用未知安装地址。
 
 `approved` 表示上架，`blocked` 表示展示但禁止安装，`unlisted` 表示下架且不在商城
