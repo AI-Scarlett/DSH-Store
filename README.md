@@ -1,8 +1,10 @@
 # DSH第三方插件商城
+<img width="900" height="383" alt="cover_dsh_plugin_market_900x383" src="https://github.com/user-attachments/assets/2b03ff48-a39b-427d-87c1-62190560a496" />
 
 DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 插件商城与安全生命周期管理器。它使用标准 DSH Bundle + Host Plugin + Client Bundle
 结构，不开发独立桌面端，不修改 DSH 源码，也不替换任何 `@deepseek-ai/*` 官方包。
+
 
 [打开在线插件商城](https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/) ·
 [查看机器目录](registry/catalog.json) ·
@@ -24,6 +26,9 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 商城已经在真实 DSH `web` Profile 中完成只读扫描、GitHub 在线目录刷新、配置合成、
 Host API 和设置页显示验证。单元、契约和事务测试已通过；真实生产 Profile 的完整
 “安装—重启—停用—启用—更新—卸载—回滚”闭环仍是独立验收项，不能由测试结果替代。
+<img width="1200" height="1103" alt="01_DSH插件商城总览" src="https://github.com/user-attachments/assets/2070b56a-fa3a-4fc1-b7fd-5926015887e4" />
+<img width="1200" height="1323" alt="02_DSH插件权限详情" src="https://github.com/user-attachments/assets/dff94448-5dcd-4542-b5d5-39b040b8cd41" />
+<img width="1200" height="1098" alt="03_DSH操作预览与确认" src="https://github.com/user-attachments/assets/5eb4f589-21c5-4ced-8133-a22bc6baeb49" />
 
 ## 功能介绍
 
