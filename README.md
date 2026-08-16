@@ -12,11 +12,48 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 [目录准入规则](registry/README.md) ·
 [安全说明](SECURITY.md)
 
+## 安装插件商城
+
+### 前置条件
+
+- DeepSeek Harness `0.1.0-rc.5` 或更高版本，并且官方 `dsh` CLI 已加入 `PATH`；
+- Node.js `22.13.0` 或更高版本；
+- 一个启用了 Web 客户端的目标 Profile。下面以 `web` 为例，如果你的 Profile 名称不同，
+  请替换命令中的 `web`。
+
+首次安装发生在本管理器尚未运行之前，因此还没有计划确认、自动备份、健康检查和失败
+回滚保护。运行命令前，请先备份目标 Profile 的 `package.json`、`pnpm-lock.yaml`、
+`pnpm-workspace.yaml` 和 `cordis.patch.yml`（文件存在时）。
+
+### 使用固定 GitHub Commit 安装
+
+通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
+
+```bash
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#10bc2f5ef79dd10892a8a90849a1fd2684dfc3f6'
+```
+
+这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
+不要把 Commit 换成 `main` 等浮动分支，也不要绕过 DSH CLI 直接运行 pnpm 或手工编辑
+Profile。命令失败时请保留完整错误和安装前备份，不要连续重复执行。
+
+### 重启与验收
+
+1. 运行 `dsh --profile web --dump-config`，确认配置可以成功合成；
+2. 按你原本的 DSH 启动方式重启目标 Profile；本项目不接管 DSH 进程；
+3. 打开 DSH 的“设置 → 插件 → 插件商城”，确认可以看到商城、已安装和健康检查页面；
+4. 如果安装、重启或页面显示异常，请在
+   [GitHub Issues](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues) 提交原始错误，
+   不要提交凭据、完整 Profile 文件或环境变量。
+
+安装完成后，从商城发起的安装、更新、迁移、停用、启用和卸载才会进入一次性计划、
+精确确认、Profile 前置哈希、备份、健康检查和失败回滚流程。
+
 ## 当前概况
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.4.0` |
+| 商城版本 | `0.4.1` |
 | 收录条目 | 32 个 |
 | 可安装 | 27 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
