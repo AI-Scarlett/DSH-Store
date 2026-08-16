@@ -4,7 +4,7 @@
 
 ## 已通过
 
-- `npm run check`：语法检查、目录校验和 25 项单元/契约/事务测试全部通过；
+- `npm run check`：语法检查、目录校验和 29 项单元/契约/事务测试全部通过；
 - `npm pack --dry-run --json`：打包预览成功，运行包只包含 README、安全说明、
   第三方说明、manifest、Bundle Patch 与 4 个 `src` 文件；
 - 真实 Profile 只读检查：扫描器读取本机现有 `web` Profile，识别 5 个条目、
@@ -12,7 +12,7 @@
 - 零写入核对：扫描前后比较 `package.json`、`cordis.patch.yml`、
   `pnpm-lock.yaml` 的 SHA-256，结果为 `LIVE_PROFILE_HASHES_UNCHANGED`；
 - 敏感信息扫描：项目内没有本机绝对路径、私有聊天链接或凭据值。
-- `npm run verify:registry-sources`：两个 approved 条目的 GitHub 固定 Commit
+- `npm run verify:registry-sources`：15 个 approved 条目的 GitHub 固定 Commit
   manifest、版本、Bundle 入口与生命周期脚本复核通过；
 - 安装失败故障注入：临时 Profile 的控制文件恢复到精确前置内容，依赖恢复命令走
   官方 DSH 边界；
@@ -51,10 +51,23 @@
 
 - 公开仓库：`https://github.com/AI-Scarlett/dsh-safe-plugin-manager`；
 - GitHub Pages 工作流完成，市场页面与 Pages 目录 JSON 均返回有效内容；
-- GitHub Raw 默认目录返回 3 个目录条目；
+- GitHub Raw 默认目录返回 17 个目录条目，其中 15 个 approved、2 个 blocked；
 - 真实 DSH 强制刷新市场后返回 `source.kind=github`、`errorCode=null`，来源 URL
   为本仓库的 `registry/catalog.json`，不再使用内置目录回退；
 - 本次发布没有执行任何第三方插件安装、更新、启停或卸载操作。
+
+### `0.3.0` 分类市场验收
+
+- 目录声明 14 个分类、17 个在架条目和 11 个推荐条目；
+- GitHub Pages 浏览器实测出现分类选择器与推荐徽标；选择“模型与账号”后仅显示
+  `DSH CLIAPI`、`DSH Command Code Provider`、`DSHLLM API`；
+- 推荐条目在当前分类中优先排序，未声明 `featured` 的普通条目按 `false` 处理；
+- 自有 `DSH_CLIAPI` 与 `DSHLLM_API` 的 `plugin/` 子目录通过 pnpm 固定 Commit
+  安装解析测试；商城自身固定到 `0.3.0` 源提交，且只允许更新；
+- 真实 DSH 刷新后返回 `source.kind=github`、17 个条目、14 个分类；健康状态为
+  `healthy`，本机 4 个自有插件均标记为“本地开发安装”；
+- 安装来源台账、`unlisted` 下架隐藏和最小化安装回执均有自动测试；回执默认关闭，
+  尚未部署统计接收服务，因此没有声称真实安装次数。
 
 官方安装命令曾把 Profile 中两个既有本地依赖也识别为 Bundle，但它们的链接包未
 提供所声明的 Bundle Patch，导致首次重启失败。最终仅从 `bundles` 数组移除这两个
@@ -66,7 +79,8 @@
 - 尚未验证卸载并恢复到安装前状态；
 - 尚未在一次性 Profile 中覆盖 headless、损坏 manifest、缺失依赖和坏链接；
 - 运行态 Loader/Fiber 状态仍明确显示为“尚未核验”；
-- 尚未在真实 Profile 执行 `0.2.0` 的写操作；当前写入证据仅来自临时目录事务测试；
+- 尚未在真实 Profile 执行 `0.3.0` 的插件安装、更新、启停或卸载；当前写入证据仅
+  来自临时目录事务测试；
 
 因此当前结论是“安全写入代码和临时目录故障注入通过”；只有重新完成真实 UI
 只读验收，不能把它表述成“真实第三方插件生命周期闭环已通过”。

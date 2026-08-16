@@ -62,3 +62,10 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /执行并启用自动回滚/)
   assert.doesNotMatch(client, /id:\s*'all'/)
 })
+
+test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
+  const source = await readFile(new URL('marketplace/index.html', project), 'utf8')
+  assert.match(source, /featured === true/)
+  assert.match(source, /status !== 'unlisted'/)
+  assert.match(source, /按分类筛选/)
+})
