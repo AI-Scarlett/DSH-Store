@@ -116,6 +116,19 @@
 - 以上不等于真实 `web` Profile 已迁移到 `0.4.0`，也不等于 5 个手动安装项目已获
   商城安全批准。
 
+### README 首次安装入口与商城自身来源同步
+
+- README 顶部新增首次安装前置条件、Profile 文件备份边界、官方 DSH CLI 固定 Commit
+  命令、配置合成、重启和设置页验收步骤；
+- 安装目标与商城自身目录条目统一固定到已进入 `main` 的提交
+  `279b52641e44bcc5f282a04d5e3accce1ba151de`，不使用 `main` 等浮动来源；
+- 目录契约测试要求 README 安装 specifier 与 `catalog.json` 的商城自身条目完全一致，
+  防止文档与更新目标再次漂移；
+- `npm run check` 的目录校验和 38 项测试通过，27 个可安装条目的在线固定来源复核均为
+  `SOURCE_OK`，`npm pack --dry-run --json` 确认 README 包含在 20 个发布文件中；
+- 本轮只验证仓库、GitHub 固定来源与打包内容，不修改真实 Profile，也不把命令存在或
+  单元测试通过当作真实 DSH 安装、重启和 UI 验收成功。
+
 ### DSH Web UI All 精选推荐
 
 - 该项目此前已作为 `@linxin666/dsh-web-ui-all` 收录，版本 `0.1.17`，固定 Commit
