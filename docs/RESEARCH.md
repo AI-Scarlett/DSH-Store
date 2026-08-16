@@ -80,4 +80,5 @@ Web UI，并直接读写 Profile；桌面端、进程管理和外置恢复不符
   包名 `@dsh-external/dsh-client-ui-skin-maid-atelier`，会造成安装和更新身份冲突；目录
   保留现有的较高版本条目，不生成第二张重复卡片。这是包身份去重，不是功能类型排除。
 
-新增项目均未设置 `featured`。推荐标记继续只属于 `AI-Scarlett` 自有四个插件。
+新增项目初次上架时均未设置 `featured`。后续按用户明确选择，将已通过固定 Commit
+来源复核的 DSH Web UI All 加入精选推荐；推荐不会改变其社区来源或安全审核边界。

@@ -116,6 +116,15 @@
 - 以上不等于真实 `web` Profile 已迁移到 `0.4.0`，也不等于 5 个手动安装项目已获
   商城安全批准。
 
+### DSH Web UI All 精选推荐
+
+- 该项目此前已作为 `@linxin666/dsh-web-ui-all` 收录，版本 `0.1.17`，固定 Commit
+  `5f7da01c4241eddb17d9d3326235f4219eb5b4ab`，不是重复新增条目；
+- 用户明确选择后设置 `featured: true`，推荐总数由 4 个变为 5 个；自研四件套继续
+  保持推荐，新增的第 5 个推荐明确标注为社区来源；
+- 固定 Commit 的 manifest、Apache-2.0 许可证、Bundle Patch、12 个入口 ID 和
+  `prepare` 生命周期脚本再次通过目录来源复核；推荐不等于安全审计。
+
 官方安装命令曾把 Profile 中两个既有本地依赖也识别为 Bundle，但它们的链接包未
 提供所声明的 Bundle Patch，导致首次重启失败。最终仅从 `bundles` 数组移除这两个
 误识别条目，保留原依赖及原有 Patch 加载方式；当前 Bundle 集合为安装前 3 项加
