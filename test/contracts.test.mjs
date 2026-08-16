@@ -39,6 +39,7 @@ test('current Host implementation contains no mutation or shell primitives', asy
 test('client registers through ModuleLoader and a separate settings tab', async () => {
   const client = await readFile(new URL('src/client.js', project), 'utf8')
   assert.match(client, /window\.__ModuleLoader__\.load/)
+  assert.match(client, /const module = \{ exports: \{\} \}/)
   assert.match(client, /settings\.plugins\.tab/)
   assert.match(client, /id:\s*'safe-plugin-manager'/)
   assert.doesNotMatch(client, /id:\s*'all'/)

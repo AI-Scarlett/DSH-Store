@@ -1,6 +1,7 @@
 window.__ModuleLoader__.load({
   id: 'dsh-safe-plugin-manager',
   factory: (require) => {
+    const module = { exports: {} }
     const React = require('react')
     const { useCallback, useEffect, useState } = React
     const ROUTE = '/api2/dsh-safe-plugin-manager/inventory'
@@ -92,4 +93,3 @@ window.__ModuleLoader__.load({
     return module.exports
   },
 })
-
