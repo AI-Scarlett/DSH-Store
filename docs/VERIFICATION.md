@@ -12,7 +12,7 @@
 - 零写入核对：扫描前后比较 `package.json`、`cordis.patch.yml`、
   `pnpm-lock.yaml` 的 SHA-256，结果为 `LIVE_PROFILE_HASHES_UNCHANGED`；
 - 敏感信息扫描：项目内没有本机绝对路径、私有聊天链接或凭据值。
-- `npm run verify:registry-sources`：15 个 approved 条目的 GitHub 固定 Commit
+- `npm run verify:registry-sources`：26 个 approved 条目的 GitHub 固定 Commit
   manifest、版本、Bundle 入口与生命周期脚本复核通过；
 - 安装失败故障注入：临时 Profile 的控制文件恢复到精确前置内容，依赖恢复命令走
   官方 DSH 边界；
@@ -86,6 +86,16 @@
   Profile 已迁移；真实 Profile 仍留给用户在 UI 中生成计划并精确确认。
 - 商城自身目录条目升级为 `0.3.1`，并固定到包版本为 `0.3.1` 的功能
   提交 `80fefeca68d9a206b1811e54edc6905f24c08269`。
+
+### 热门插件清单扩充
+
+- 按指定会话的 20 个项目核对，5 个既有仓库去重，新增 14 个目录卡片；另有 1 个
+  仓库因声明与既有主题完全相同的包身份而不重复建卡；
+- 当前目录共 31 个条目、22 个分类：26 个 `approved`、5 个 `blocked`，没有
+  `unlisted`；推荐仍严格只有 `AI-Scarlett` 自有四个插件；
+- 11 个新增可安装条目的固定 Commit 来源复核通过；3 个不满足单包标准 Bundle 或
+  当前 Web Profile 边界的项目仍分类展示，但不会出现安装操作；
+- GitHub Pages 页面标题同步为“DSH第三方插件商城”。
 
 官方安装命令曾把 Profile 中两个既有本地依赖也识别为 Bundle，但它们的链接包未
 提供所声明的 Bundle Patch，导致首次重启失败。最终仅从 `bundles` 数组移除这两个
