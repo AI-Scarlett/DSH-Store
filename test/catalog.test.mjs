@@ -55,6 +55,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   const source = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
   const catalog = validateCatalog(source)
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8')
+  const packageManifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
   assert.equal(catalog.entries.length, source.entries.length)
   for (const item of source.entries) {
     assert.ok(item.details, `${item.id} must declare details in the GitHub catalog`)
@@ -67,7 +68,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   ])
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
+  assert.equal(manager.version, packageManifest.version, 'catalog manager version must match package.json')
   assert.ok(readme.includes(githubInstallSpecifier(manager)), 'README install command must match the catalog fixed commit')
+  assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
   assert.match(readme, /dsh plugin --profile web add/)
   assert.match(readme, /设置 → 插件 → 插件商城/)
   assert.doesNotMatch(readme, /dsh-safe-plugin-manager\.git#main/)

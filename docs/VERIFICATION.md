@@ -116,14 +116,16 @@
 - 以上不等于真实 `web` Profile 已迁移到 `0.4.0`，也不等于 5 个手动安装项目已获
   商城安全批准。
 
-### README 首次安装入口与商城自身来源同步
+### `0.4.1` 首次安装入口与商城自身来源同步
 
 - README 顶部新增首次安装前置条件、Profile 文件备份边界、官方 DSH CLI 固定 Commit
   命令、配置合成、重启和设置页验收步骤；
-- 安装目标与商城自身目录条目统一固定到已进入 `main` 的提交
-  `279b52641e44bcc5f282a04d5e3accce1ba151de`，不使用 `main` 等浮动来源；
-- 目录契约测试要求 README 安装 specifier 与 `catalog.json` 的商城自身条目完全一致，
-  防止文档与更新目标再次漂移；
+- `package.json` 与 README 商城概况同步升级为 `0.4.1`，发布锚点
+  `10bc2f5ef79dd10892a8a90849a1fd2684dfc3f6` 包含截至本轮的已安装页、详情、操作按钮、
+  高对比 Tab 与首次安装说明；
+- README 安装目标与商城自身目录条目统一固定到该发布锚点，不使用 `main` 等浮动来源；
+- 目录契约测试要求 `package.json`、README 商城版本、README 安装 specifier 与
+  `catalog.json` 商城自身条目完全一致，防止版本、文档与更新目标再次漂移；
 - `npm run check` 的目录校验和 38 项测试通过，27 个可安装条目的在线固定来源复核均为
   `SOURCE_OK`，`npm pack --dry-run --json` 确认 README 包含在 20 个发布文件中；
 - 本轮只验证仓库、GitHub 固定来源与打包内容，不修改真实 Profile，也不把命令存在或
