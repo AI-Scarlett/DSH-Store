@@ -6,8 +6,9 @@ Bundle + Host Plugin + Client Bundle 结构，不开发桌面端，不修改 DSH
 
 ## 当前状态
 
-当前仓库已升级为 `0.2.0` GitHub-only 安全管理版，并以本地链接安装在真实 DSH
-`web` Profile，但尚未发布到 GitHub 或 npm：
+当前仓库已升级为 `0.2.0` GitHub-only 安全管理版，已发布到
+[`AI-Scarlett/dsh-safe-plugin-manager`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager)，
+并以本地链接安装在真实 DSH `web` Profile：
 
 - 已实现：读取指定 Profile 的 `package.json`，归并 Bundle 与依赖，识别来源、
   本地版本和官方/第三方属性；
@@ -72,8 +73,9 @@ npm run check
 - 本地校验：`npm run validate:registry`；
 - 固定 Commit 在线复核：`npm run verify:registry-sources`。
 
-GitHub Pages 尚未发布时，DSH 市场会明确显示“内置目录回退”。发布仓库并启用 Pages
-后，在线目录会成为默认来源；任何网络失败都不会自动改用未知安装地址。
+在线目录默认从本仓库的 GitHub Raw 地址读取，人工浏览页面位于
+[DSH Safe GitHub Plugin Registry](https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/)；
+任何网络失败都只会回退到随包发布的已知目录快照，不会自动改用未知安装地址。
 
 ## 文档
 

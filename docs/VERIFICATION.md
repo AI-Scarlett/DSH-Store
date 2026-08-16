@@ -37,7 +37,7 @@
 - DSH 重启后管理器清单版本为 `0.2.0`，Web 首页与 5 个 Host API 均可用；
 - 市场页显示 3 个种子条目：1 个已安装本地链接、1 个可安装、1 个因遮蔽官方清单
   被策略阻止；
-- GitHub Raw 默认目录尚未发布，页面明确显示 `内置目录回退` 与
+- 发布前 GitHub Raw 目录不可用时，页面明确显示 `内置目录回退` 与
   `CATALOG_UNAVAILABLE`，没有伪装成在线目录；
 - 搜索 `chat` 后浏览器只显示 1 个匹配条目；
 - 健康检查显示 `healthy`，inventory、dependencies、managed-patch、
@@ -46,6 +46,15 @@
   保护范围和确认语均可见；确认语为空时执行按钮保持禁用；
 - API 与浏览器只读验收前后，`package.json`、`cordis.patch.yml`、lockfile、
   workspace 文件 SHA-256 均保持不变；没有执行安装计划。
+
+### GitHub 发布验收
+
+- 公开仓库：`https://github.com/AI-Scarlett/dsh-safe-plugin-manager`；
+- GitHub Pages 工作流完成，市场页面与 Pages 目录 JSON 均返回有效内容；
+- GitHub Raw 默认目录返回 3 个目录条目；
+- 真实 DSH 强制刷新市场后返回 `source.kind=github`、`errorCode=null`，来源 URL
+  为本仓库的 `registry/catalog.json`，不再使用内置目录回退；
+- 本次发布没有执行任何第三方插件安装、更新、启停或卸载操作。
 
 官方安装命令曾把 Profile 中两个既有本地依赖也识别为 Bundle，但它们的链接包未
 提供所声明的 Bundle Patch，导致首次重启失败。最终仅从 `bundles` 数组移除这两个
@@ -58,7 +67,6 @@
 - 尚未在一次性 Profile 中覆盖 headless、损坏 manifest、缺失依赖和坏链接；
 - 运行态 Loader/Fiber 状态仍明确显示为“尚未核验”；
 - 尚未在真实 Profile 执行 `0.2.0` 的写操作；当前写入证据仅来自临时目录事务测试；
-- GitHub Pages 与 Raw 默认目录尚未发布，因此真实 UI 应显示内置目录回退。
 
 因此当前结论是“安全写入代码和临时目录故障注入通过”；只有重新完成真实 UI
 只读验收，不能把它表述成“真实第三方插件生命周期闭环已通过”。
