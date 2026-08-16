@@ -31,7 +31,10 @@ window.__ModuleLoader__.load({
       root: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '920px' },
       toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' },
       nav: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', width: '100%' },
-      navTabs: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
+      navTabs: {
+        display: 'inline-flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap', padding: '3px',
+        border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '12px', background: 'var(--dsw-alias-bg-layer-2)',
+      },
       title: { margin: 0, fontSize: '16px', lineHeight: '24px', fontWeight: 650 },
       subtitle: { margin: '3px 0 0', color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       input: {
@@ -47,7 +50,15 @@ window.__ModuleLoader__.load({
         background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', cursor: 'pointer', fontSize: '12px',
       },
       compactButton: { borderRadius: '7px', padding: '4px 8px', fontSize: '11px', lineHeight: '18px' },
-      activeButton: { background: 'var(--dsw-alias-bg-layer-3)', borderColor: 'var(--dsw-alias-label-secondary)', fontWeight: 600 },
+      tabButton: {
+        border: '1px solid transparent', borderRadius: '9px', padding: '7px 13px', background: 'transparent',
+        color: 'var(--dsw-alias-label-secondary)', cursor: 'pointer', fontSize: '12px', lineHeight: '20px', fontWeight: 500,
+        transition: 'background-color 120ms ease, color 120ms ease, border-color 120ms ease, box-shadow 120ms ease',
+      },
+      activeTabButton: {
+        background: 'var(--dsw-alias-button-primary-fill)', color: 'var(--dsw-alias-label-primary-foreground)',
+        borderColor: 'var(--dsw-alias-button-primary-fill)', fontWeight: 650, boxShadow: '0 1px 3px rgba(0, 0, 0, 0.24)',
+      },
       dangerButton: { borderColor: 'var(--dsw-alias-state-error-primary)', color: 'var(--dsw-alias-state-error-primary)' },
       primaryButton: { borderColor: 'var(--dsw-alias-label-primary)', fontWeight: 600 },
       disabledButton: { opacity: 0.45, cursor: 'not-allowed' },
@@ -164,10 +175,17 @@ window.__ModuleLoader__.load({
       return `${detailLabel('installSource', entry.details.installSource)}（目录声明）`
     }
 
-    function Button({ children, active = false, danger = false, primary = false, compact = false, disabled = false, onClick }) {
+    function Button({ children, danger = false, primary = false, compact = false, disabled = false, onClick }) {
       return React.createElement('button', {
         type: 'button', disabled, onClick,
-        style: { ...styles.button, ...(compact ? styles.compactButton : {}), ...(active ? styles.activeButton : {}), ...(danger ? styles.dangerButton : {}), ...(primary ? styles.primaryButton : {}), ...(disabled ? styles.disabledButton : {}) },
+        style: { ...styles.button, ...(compact ? styles.compactButton : {}), ...(danger ? styles.dangerButton : {}), ...(primary ? styles.primaryButton : {}), ...(disabled ? styles.disabledButton : {}) },
+      }, children)
+    }
+
+    function TabButton({ children, active, onClick }) {
+      return React.createElement('button', {
+        type: 'button', role: 'tab', 'aria-selected': active, onClick,
+        style: { ...styles.tabButton, ...(active ? styles.activeTabButton : {}) },
       }, children)
     }
 
@@ -462,9 +480,9 @@ window.__ModuleLoader__.load({
             }, '技术支持：GitHub'))))
 
       const nav = React.createElement('div', { style: styles.nav },
-        React.createElement('div', { style: styles.navTabs },
+        React.createElement('div', { style: styles.navTabs, role: 'tablist', 'aria-label': '插件商城视图' },
           [['market', '插件市场'], ['installed', '已安装'], ['health', '健康检查']].map(([id, label]) =>
-            React.createElement(Button, { key: id, active: view === id, onClick: () => setView(id) }, label))),
+            React.createElement(TabButton, { key: id, active: view === id, onClick: () => setView(id) }, label))),
         React.createElement(Button, { compact: true, onClick: () => refresh(true) }, '刷新 GitHub 目录'))
 
       const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories))].sort()
