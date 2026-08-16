@@ -47,7 +47,7 @@
       const entries = visible
         .filter(entry => !category.value || entry.categories.includes(category.value))
         .filter(entry => [entry.name, entry.packageName, entry.description, entry.repositoryUrl, ...(entry.categories || [])].some(value => String(value).toLowerCase().includes(query)))
-        .sort((a, b) => Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || a.name.localeCompare(b.name, 'zh-CN'))
+        .sort((a, b) => Number(b.featured === true) - Number(a.featured === true) || (b.installCount ?? -1) - (a.installCount ?? -1) || a.name.localeCompare(b.name, 'zh-CN'))
       meta.textContent = `${entries.length} / ${visible.length} 个在架条目 · 更新于 ${catalog.registry.updatedAt}`
       plugins.innerHTML = entries.map(entry => `<article>
         <h2>${escape(entry.name)}</h2>
