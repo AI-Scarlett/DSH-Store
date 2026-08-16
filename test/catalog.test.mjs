@@ -56,13 +56,15 @@ test('catalog service falls back to bundled snapshot when GitHub is unavailable'
   assert.ok(catalog.entries.length >= 2)
 })
 
-test('marketplace protects local links and reports version updates', () => {
+test('marketplace offers explicit migration for local links and reports version updates', () => {
   const catalog = { ...validateCatalog(document()), source: { kind: 'fixture' } }
   const local = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'link', version: '1.0.0' }],
   })
   assert.equal(local.entries[0].updateAvailable, true)
-  assert.equal(local.entries[0].manageable, false)
+  assert.equal(local.entries[0].migrationAvailable, true)
+  assert.deepEqual(local.entries[0].allowedActions, ['migrate'])
+  assert.equal(local.entries[0].manageable, true)
   const npm = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'npm', version: '1.0.0' }],
   })

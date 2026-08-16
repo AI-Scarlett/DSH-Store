@@ -78,6 +78,7 @@ window.__ModuleLoader__.load({
       const actions = []
       if (allowed.has('install')) actions.push(React.createElement(Button, { key: 'install', primary: true, onClick: () => beginPlan('install', entry) }, '安装'))
       if (allowed.has('update')) actions.push(React.createElement(Button, { key: 'update', primary: true, onClick: () => beginPlan('update', entry) }, '更新'))
+      if (allowed.has('migrate')) actions.push(React.createElement(Button, { key: 'migrate', primary: true, onClick: () => beginPlan('migrate', entry) }, '迁移到商城版'))
       if (entry.entryIds.length > 0 && (allowed.has('enable') || allowed.has('disable'))) {
         actions.push(React.createElement(Button, { key: 'toggle', onClick: () => beginPlan(disabled ? 'enable' : 'disable', entry) }, disabled ? '启用' : '停用'))
       }
@@ -87,7 +88,8 @@ window.__ModuleLoader__.load({
 
     function MarketCard({ entry, health, beginPlan, categoryLabels = {} }) {
       const state = entry.status === 'blocked' ? '策略阻止'
-        : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
+        : entry.migrationAvailable ? (entry.updateAvailable ? '可迁移并更新' : '可迁移到商城')
+          : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
       const origin = entry.installOrigin === 'marketplace-managed' ? '商城安装'
         : entry.installOrigin === 'catalog-source-matched' ? '目录来源匹配 · 渠道未知'
           : entry.installOrigin === 'local-development' ? '本地开发安装'
@@ -141,6 +143,7 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.muted }, `GitHub Commit：${plan.plugin.commit}`),
         React.createElement('div', { style: styles.muted }, `可能修改：${plan.impact.mayModify.join('、')}`),
         React.createElement('div', { style: styles.muted }, `永久保护：${plan.impact.neverModify.join('、')}`),
+        plan.impact.sourceTransition ? React.createElement('div', { style: styles.notice }, plan.impact.sourceTransition) : null,
         plan.impact.installScripts.length > 0 ? React.createElement('div', { style: styles.error }, `此插件会运行：${plan.impact.installScripts.join('、')}`) : null,
         React.createElement('label', { style: styles.muted }, '输入以下确认语后才能执行：'),
         React.createElement('div', { style: styles.code }, plan.confirmation),
@@ -209,7 +212,7 @@ window.__ModuleLoader__.load({
       const cancel = useCallback(() => { setConfirmation(''); setOperation({ status: 'idle' }) }, [])
       const heading = React.createElement('div', { style: styles.toolbar },
         React.createElement('div', null,
-          React.createElement('h3', { style: styles.title }, 'DSH 安全插件管理'),
+          React.createElement('h3', { style: styles.title }, 'DSH第三方插件商城'),
           React.createElement('p', { style: styles.subtitle }, 'GitHub-only 目录 · 计划确认 · Profile 备份 · 健康检查 · 失败回滚')),
         React.createElement(Button, { onClick: () => refresh(true) }, '刷新 GitHub 目录'))
 
@@ -256,7 +259,7 @@ window.__ModuleLoader__.load({
     function apply(ctx) {
       ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
         name: 'settings.plugins.tab', id: 'safe-plugin-manager', order: 90,
-        label: () => '安全管理', inject: () => ({}),
+        label: () => '插件商城', inject: () => ({}),
       }, ManagerPanel))
     }
 

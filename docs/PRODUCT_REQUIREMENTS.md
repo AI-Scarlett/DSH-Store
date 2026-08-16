@@ -32,7 +32,8 @@
 - 单一 GitHub `catalog.json`、搜索、分类和 GitHub Pages 目录页；
 - 只允许固定 GitHub Commit，不接受 npm-only、浮动分支、本地路径或任意 URL；
 - GitHub manifest、版本、Bundle Patch、入口 ID 与安装脚本在线复核；
-- 本地/link 插件明确保护，不被市场版本覆盖；
+- 本地/link 插件明确保护，不被普通更新覆盖；只能通过单独计划将
+  Profile 依赖迁移到固定 GitHub Commit，不删除原本地目录；
 - 目录离线时只读回退，安装与更新失败关闭；
 - 只允许目录中已批准的第三方插件；
 - 操作计划、人工确认、Profile 锁、前置哈希、备份、原子提交；

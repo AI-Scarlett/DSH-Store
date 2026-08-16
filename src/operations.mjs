@@ -8,7 +8,7 @@ import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, resolveProfileDirectory, validateProfileName } from './inventory.mjs'
 import { readManagedDisabledIds, setManagedDisabled } from './managed-patch.mjs'
 
-const ACTIONS = new Set(['install', 'update', 'uninstall', 'disable', 'enable'])
+const ACTIONS = new Set(['install', 'update', 'migrate', 'uninstall', 'disable', 'enable'])
 const PROFILE_FILES = ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'cordis.patch.yml']
 const CRITICAL_ENTRY_IDS = new Set([
   'loader', 'web-server', 'ui-settings-plugin-inventory', 'dsh-safe-plugin-manager',
@@ -51,17 +51,17 @@ function publicPlan(plan) {
 function assertManageable(entry, installed, action) {
   if (!entry) throw Object.assign(new Error('plugin is not present in the GitHub registry'), { code: 'NOT_IN_REGISTRY' })
   if (entry.status === 'blocked') throw Object.assign(new Error(entry.statusReason), { code: 'REGISTRY_BLOCKED' })
-  if (entry.status === 'unlisted' && ['install', 'update'].includes(action)) {
+  if (entry.status === 'unlisted' && ['install', 'update', 'migrate'].includes(action)) {
     throw Object.assign(new Error(entry.statusReason), { code: 'REGISTRY_UNLISTED' })
   }
   if (entry.packageName.startsWith('@deepseek-ai/') || installed?.official) {
     throw Object.assign(new Error('official DSH components are permanently read-only'), { code: 'OFFICIAL_PROTECTED' })
   }
-  const selfUpdate = entry.packageName === 'dsh-safe-plugin-manager' && action === 'update'
-  if (entry.packageName === 'dsh-safe-plugin-manager' && !selfUpdate) {
+  const selfPackageAction = entry.packageName === 'dsh-safe-plugin-manager' && ['update', 'migrate'].includes(action)
+  if (entry.packageName === 'dsh-safe-plugin-manager' && !selfPackageAction) {
     throw Object.assign(new Error('the manager only allows self-update'), { code: 'SELF_PROTECTED' })
   }
-  if (!selfUpdate && entry.entryIds.some(id => CRITICAL_ENTRY_IDS.has(id))) {
+  if (!selfPackageAction && entry.entryIds.some(id => CRITICAL_ENTRY_IDS.has(id))) {
     throw Object.assign(new Error('plugin targets a protected DSH entry id'), { code: 'CRITICAL_ENTRY_PROTECTED' })
   }
 }
@@ -140,14 +140,17 @@ async function acquireLock(dshHome, profile) {
 }
 
 function planImpact(action, entry) {
-  const packageOperation = ['install', 'update', 'uninstall'].includes(action)
+  const packageOperation = ['install', 'update', 'migrate', 'uninstall'].includes(action)
   return {
     mayModify: packageOperation
       ? ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'node_modules', 'dsh.profile.bundles']
       : ['cordis.patch.yml managed block'],
     neverModify: ['DeepSeek Harness source', '@deepseek-ai/* packages', 'other Profiles', 'managed-block external content'],
     restartRequired: packageOperation,
-    installScripts: ['install', 'update'].includes(action) ? entry.risk.installScripts : [],
+    installScripts: ['install', 'update', 'migrate'].includes(action) ? entry.risk.installScripts : [],
+    sourceTransition: action === 'migrate'
+      ? '仅将 Profile 依赖从本地链接切换为目录固定的 GitHub Commit，不删除或修改原本地目录'
+      : null,
   }
 }
 
@@ -177,14 +180,17 @@ export function createOperationService(options = {}) {
     if (action !== 'install' && !installed) throw Object.assign(new Error('plugin is not installed'), { code: 'NOT_INSTALLED' })
     if (action === 'update') {
       if (['link', 'file', 'workspace'].includes(installed.source)) {
-        throw Object.assign(new Error('local development links cannot be replaced by the market'), { code: 'LOCAL_SOURCE_PROTECTED' })
+        throw Object.assign(new Error('use the explicit marketplace migration action for local development links'), { code: 'LOCAL_SOURCE_PROTECTED' })
       }
       const market = buildMarketplaceSnapshot(catalog, inventory)
       const state = market.entries.find(item => item.id === entry.id)
       if (!state?.updateAvailable) throw Object.assign(new Error('registry does not contain a newer version'), { code: 'NO_UPDATE' })
     }
+    if (action === 'migrate' && !['link', 'file', 'workspace'].includes(installed.source)) {
+      throw Object.assign(new Error('only local development links can be migrated to the marketplace source'), { code: 'MIGRATION_NOT_REQUIRED' })
+    }
     let sourceVerification = { status: 'not-required', verifiedAt: null }
-    if (['install', 'update'].includes(action)) {
+    if (['install', 'update', 'migrate'].includes(action)) {
       try {
         sourceVerification = await sourceVerifier(entry)
       } catch {
@@ -213,7 +219,7 @@ export function createOperationService(options = {}) {
         id: entry.id,
         packageName: entry.packageName,
         currentVersion: installed?.version ?? null,
-        targetVersion: ['install', 'update'].includes(action) ? entry.version : null,
+        targetVersion: ['install', 'update', 'migrate'].includes(action) ? entry.version : null,
         repositoryUrl: entry.repositoryUrl,
         commit: entry.commit,
         entryIds: entry.entryIds,
@@ -243,7 +249,7 @@ export function createOperationService(options = {}) {
       backupDir = await backupProfile(dshHome, plan.privateData.profileDir, transactionId, plan.preconditions)
       const { action } = plan
       const { entry } = plan.privateData
-      if (action === 'install' || action === 'update') {
+      if (action === 'install' || action === 'update' || action === 'migrate') {
         packageCommandStarted = true
         const result = await runner.plugin(plan.profile, ['add', githubInstallSpecifier(entry)])
         if (!result.ok) throw Object.assign(new Error('official DSH plugin command failed'), { code: 'DSH_PLUGIN_COMMAND_FAILED', exitCode: result.exitCode })
