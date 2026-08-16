@@ -58,7 +58,8 @@
 
 ### `0.3.0` 分类市场验收
 
-- 目录声明 14 个分类、17 个在架条目和 11 个推荐条目；
+- 目录声明 14 个分类、17 个在架条目和 4 个推荐条目；推荐范围仅限
+  `AI-Scarlett` 自有的商城管理器、会话导入、CLIAPI 和 DSHLLM API；
 - GitHub Pages 浏览器实测出现分类选择器与推荐徽标；选择“模型与账号”后仅显示
   `DSH CLIAPI`、`DSH Command Code Provider`、`DSHLLM API`；
 - 推荐条目在当前分类中优先排序，未声明 `featured` 的普通条目按 `false` 处理；
