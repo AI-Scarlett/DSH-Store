@@ -25,7 +25,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "name", "packageName", "description", "repositoryUrl", "commit", "version", "entryIds", "status", "risk"],
+        "required": ["id", "name", "packageName", "description", "repositoryUrl", "commit", "version", "entryIds", "status", "compatibility", "details", "risk"],
         "properties": {
           "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$" },
           "name": { "type": "string", "minLength": 1 },
@@ -43,7 +43,46 @@
           "entryIds": { "type": "array", "items": { "type": "string" } },
           "status": { "enum": ["approved", "blocked", "unlisted"] },
           "statusReason": { "type": "string" },
-          "compatibility": { "type": "object" },
+          "compatibility": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dsh", "node", "systems", "profiles"],
+            "properties": {
+              "dsh": { "type": ["string", "null"] },
+              "node": { "type": ["string", "null"] },
+              "systems": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+              "profiles": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+            }
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["pluginType", "installSource", "license", "permissions", "externalDependencies", "reviewStatus"],
+            "properties": {
+              "pluginType": { "enum": ["feature", "theme", "suite", "client", "provider", "unknown"] },
+              "installSource": { "enum": ["npm", "github", "local-bundle", "unknown"] },
+              "license": { "type": "string", "minLength": 1 },
+              "permissions": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["level", "files", "network", "commands", "credentials"],
+                "properties": {
+                  "level": { "enum": ["low", "medium", "high", "unknown"] },
+                  "files": { "enum": ["none", "read-only", "write", "unknown"] },
+                  "network": { "enum": ["none", "specified-services", "any", "unknown"] },
+                  "commands": { "enum": ["none", "restricted", "shell", "unknown"] },
+                  "credentials": {
+                    "type": "array",
+                    "items": { "enum": ["none", "api-key", "oauth", "keychain", "unknown"] },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                }
+              },
+              "externalDependencies": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+              "reviewStatus": { "enum": ["unreviewed", "automated-scan", "manual-review", "author-verified"] }
+            }
+          },
           "risk": {
             "type": "object",
             "required": ["installScripts", "review"],

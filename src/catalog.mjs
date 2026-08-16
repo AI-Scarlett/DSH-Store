@@ -78,6 +78,12 @@ export async function verifyCatalogEntry(entry, options = {}) {
   const manifest = JSON.parse(await fetchPinnedText(manifestUrl, request, timeoutMs, 512 * 1024))
   if (manifest.name !== entry.packageName) throw new Error('GitHub manifest package name does not match the registry')
   if (manifest.version !== entry.version) throw new Error('GitHub manifest version does not match the registry')
+  const manifestLicense = typeof manifest.license === 'string' && manifest.license.trim() !== ''
+    ? manifest.license.trim()
+    : null
+  if (manifestLicense !== null && manifestLicense !== entry.details.license) {
+    throw new Error('GitHub manifest license does not match the registry')
+  }
   const patchRelative = manifest?.dsh?.bundle?.patch
   if (typeof patchRelative !== 'string' || patchRelative.trim() === '' || patchRelative.includes('..') || patchRelative.startsWith('/')) {
     throw new Error('GitHub manifest does not declare a safe dsh.bundle.patch')
@@ -103,7 +109,8 @@ export async function verifyCatalogEntry(entry, options = {}) {
   }
   return {
     status: 'verified', verifiedAt: new Date().toISOString(), manifestUrl, patchUrl,
-    packageName: manifest.name, version: manifest.version, installScripts: lifecycle,
+    packageName: manifest.name, version: manifest.version,
+    license: manifestLicense ?? entry.details.license, installScripts: lifecycle,
   }
 }
 
@@ -116,9 +123,44 @@ function stringArray(value, label, options = {}) {
   return [...new Set(result)]
 }
 
+function enumValue(value, label, allowed, fallback = 'unknown') {
+  const candidate = value === undefined || value === null ? fallback : value
+  if (typeof candidate !== 'string' || !allowed.includes(candidate)) {
+    throw new TypeError(`${label} must be one of ${allowed.join(', ')}`)
+  }
+  return candidate
+}
+
+function enumArray(value, label, allowed, fallback = [], minimum = 0) {
+  const items = stringArray(value ?? fallback, label, { simple: true })
+  if (items.some(item => !allowed.includes(item))) {
+    throw new TypeError(`${label} contains an unsupported value`)
+  }
+  if (items.length < minimum) throw new TypeError(`${label} must contain at least ${minimum} value`)
+  return items
+}
+
 function validateEntry(value, index) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new TypeError(`entries[${index}] must be an object`)
+  }
+  if (!value.compatibility || typeof value.compatibility !== 'object' || Array.isArray(value.compatibility)) {
+    throw new TypeError(`entries[${index}].compatibility must be an object`)
+  }
+  if (!value.details || typeof value.details !== 'object' || Array.isArray(value.details)) {
+    throw new TypeError(`entries[${index}].details must be an object`)
+  }
+  if (!value.details.permissions || typeof value.details.permissions !== 'object' || Array.isArray(value.details.permissions)) {
+    throw new TypeError(`entries[${index}].details.permissions must be an object`)
+  }
+  for (const field of ['dsh', 'node', 'systems', 'profiles']) {
+    if (!Object.hasOwn(value.compatibility, field)) throw new TypeError(`entries[${index}].compatibility.${field} is required`)
+  }
+  for (const field of ['pluginType', 'installSource', 'license', 'permissions', 'externalDependencies', 'reviewStatus']) {
+    if (!Object.hasOwn(value.details, field)) throw new TypeError(`entries[${index}].details.${field} is required`)
+  }
+  for (const field of ['level', 'files', 'network', 'commands', 'credentials']) {
+    if (!Object.hasOwn(value.details.permissions, field)) throw new TypeError(`entries[${index}].details.permissions.${field} is required`)
   }
   const id = nonEmptyString(value.id, `entries[${index}].id`, 96)
   if (!SIMPLE_ID.test(id)) throw new TypeError(`entries[${index}].id is invalid`)
@@ -173,6 +215,42 @@ function validateEntry(value, index) {
     compatibility: {
       dsh: typeof value.compatibility?.dsh === 'string' ? value.compatibility.dsh.slice(0, 120) : null,
       node: typeof value.compatibility?.node === 'string' ? value.compatibility.node.slice(0, 120) : null,
+      systems: stringArray(value.compatibility?.systems ?? [], `entries[${index}].compatibility.systems`),
+      profiles: stringArray(value.compatibility?.profiles ?? [], `entries[${index}].compatibility.profiles`),
+    },
+    details: {
+      pluginType: enumValue(value.details?.pluginType, `entries[${index}].details.pluginType`, [
+        'feature', 'theme', 'suite', 'client', 'provider', 'unknown',
+      ]),
+      installSource: enumValue(value.details?.installSource, `entries[${index}].details.installSource`, [
+        'npm', 'github', 'local-bundle', 'unknown',
+      ]),
+      license: typeof value.details?.license === 'string' && value.details.license.trim() !== ''
+        ? value.details.license.trim().slice(0, 120)
+        : 'UNKNOWN',
+      permissions: {
+        level: enumValue(value.details?.permissions?.level, `entries[${index}].details.permissions.level`, [
+          'low', 'medium', 'high', 'unknown',
+        ]),
+        files: enumValue(value.details?.permissions?.files, `entries[${index}].details.permissions.files`, [
+          'none', 'read-only', 'write', 'unknown',
+        ]),
+        network: enumValue(value.details?.permissions?.network, `entries[${index}].details.permissions.network`, [
+          'none', 'specified-services', 'any', 'unknown',
+        ]),
+        commands: enumValue(value.details?.permissions?.commands, `entries[${index}].details.permissions.commands`, [
+          'none', 'restricted', 'shell', 'unknown',
+        ]),
+        credentials: enumArray(value.details?.permissions?.credentials, `entries[${index}].details.permissions.credentials`, [
+          'none', 'api-key', 'oauth', 'keychain', 'unknown',
+        ], ['unknown'], 1),
+      },
+      externalDependencies: stringArray(
+        value.details?.externalDependencies ?? [], `entries[${index}].details.externalDependencies`, { max: 160 },
+      ),
+      reviewStatus: enumValue(value.details?.reviewStatus, `entries[${index}].details.reviewStatus`, [
+        'unreviewed', 'automated-scan', 'manual-review', 'author-verified',
+      ], 'unreviewed'),
     },
     risk: {
       installScripts,
@@ -252,7 +330,11 @@ export function searchCatalog(catalog, query = '', options = {}) {
     .filter(entry => category === '' || entry.categories.includes(category))
     .filter(entry => needle === '' || [
       entry.id, entry.name, entry.packageName, entry.description,
-      entry.repositoryUrl, ...entry.categories,
+      entry.repositoryUrl, entry.details?.pluginType ?? '', entry.details?.installSource ?? '', entry.details?.license ?? '',
+      entry.details?.permissions?.level ?? '', entry.details?.permissions?.files ?? '', entry.details?.permissions?.network ?? '',
+      entry.details?.permissions?.commands ?? '', ...(entry.details?.permissions?.credentials ?? []),
+      ...(entry.details?.externalDependencies ?? []), ...(entry.compatibility?.systems ?? []), ...(entry.compatibility?.profiles ?? []),
+      ...entry.categories,
     ].some(value => value.toLowerCase().includes(needle)))
     .sort((left, right) => Number(right.featured) - Number(left.featured)
       || (right.installCount ?? -1) - (left.installCount ?? -1)

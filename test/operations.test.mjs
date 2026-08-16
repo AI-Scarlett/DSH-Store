@@ -10,7 +10,13 @@ const demoEntry = {
   id: 'demo', name: 'Demo', packageName: 'dsh-demo', description: 'demo plugin',
   repositoryUrl: 'https://github.com/example/dsh-demo', defaultBranch: 'main', manifestPath: 'package.json',
   commit: 'b'.repeat(40), version: '2.0.0', categories: ['tools'], entryIds: ['demo-entry'], status: 'approved',
-  compatibility: { dsh: '>=0.1.0', node: '>=22' }, risk: { installScripts: [], review: 'curated-not-security-audited' },
+  compatibility: { dsh: '>=0.1.0', node: '>=22', systems: ['Linux'], profiles: ['web'] },
+  details: {
+    pluginType: 'feature', installSource: 'github', license: 'MIT',
+    permissions: { level: 'medium', files: 'read-only', network: 'none', commands: 'none', credentials: ['none'] },
+    externalDependencies: [], reviewStatus: 'automated-scan',
+  },
+  risk: { installScripts: [], review: 'curated-not-security-audited' },
 }
 
 function catalog() {
@@ -88,8 +94,36 @@ test('failed GitHub install restores exact profile files', async () => {
     const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
     assert.equal(result.status, 'rolled-back')
     assert.equal(result.rollback, 'succeeded')
+    assert.deepEqual(result.rollbackDetails, { profileFiles: 'succeeded', dependencies: 'succeeded' })
     assert.equal(await readFile(join(profile, 'package.json'), 'utf8'), before)
     assert.equal(calls, 2)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('missing pnpm reports a precise failure and does not run an unnecessary dependency restore', async () => {
+  const { root, profile } = await fixture({ specifier: 'link:/tmp/dsh-demo-local-source' })
+  const before = await readFile(join(profile, 'package.json'), 'utf8')
+  const calls = []
+  const runner = {
+    async plugin(_profile, args) {
+      calls.push(args)
+      return { ok: false, exitCode: 127 }
+    },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner)
+    const plan = await operations.createPlan({ action: 'migrate', pluginId: 'demo' })
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'rolled-back')
+    assert.equal(result.error.code, 'DSH_PNPM_NOT_FOUND')
+    assert.equal(result.error.exitCode, 127)
+    assert.equal(result.rollback, 'succeeded')
+    assert.deepEqual(result.rollbackDetails, { profileFiles: 'succeeded', dependencies: 'not-required' })
+    assert.deepEqual(calls, [['add', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`]])
+    assert.equal(await readFile(join(profile, 'package.json'), 'utf8'), before)
   } finally {
     await rm(root, { recursive: true, force: true })
   }

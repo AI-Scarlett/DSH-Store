@@ -30,6 +30,9 @@
 ### V0.2 GitHub 市场与安全管理
 
 - 单一 GitHub `catalog.json`、搜索、分类和 GitHub Pages 目录页；
+- 卡片可打开与官方设置视觉一致的详情弹窗；详情由 GitHub `catalog.json` 提供，展示
+  插件类型、安装来源、许可证、文件/网络/命令/凭据权限、外部依赖、审核状态和
+  DSH/系统/Profile 兼容性，本地副本仅作只读离线回退；
 - 只允许固定 GitHub Commit，不接受 npm-only、浮动分支、本地路径或任意 URL；
 - GitHub manifest、版本、Bundle Patch、入口 ID 与安装脚本在线复核；
 - 本地/link 插件明确保护，不被普通更新覆盖；只能通过单独计划将

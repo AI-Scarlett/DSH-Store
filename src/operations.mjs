@@ -48,6 +48,16 @@ function publicPlan(plan) {
   return value
 }
 
+function pluginCommandError(result) {
+  const pnpmUnavailable = result?.exitCode === 127
+  return Object.assign(new Error(pnpmUnavailable
+    ? 'pnpm is unavailable in the DSH plugin runtime PATH'
+    : 'official DSH plugin command failed'), {
+    code: pnpmUnavailable ? 'DSH_PNPM_NOT_FOUND' : 'DSH_PLUGIN_COMMAND_FAILED',
+    exitCode: result?.exitCode ?? null,
+  })
+}
+
 function assertManageable(entry, installed, action) {
   if (!entry) throw Object.assign(new Error('plugin is not present in the GitHub registry'), { code: 'NOT_IN_REGISTRY' })
   if (entry.status === 'blocked') throw Object.assign(new Error(entry.statusReason), { code: 'REGISTRY_BLOCKED' })
@@ -243,20 +253,20 @@ export function createOperationService(options = {}) {
     const transactionId = randomUUID()
     const release = await acquireLock(dshHome, plan.profile)
     let backupDir = null
-    let packageCommandStarted = false
+    let packageCommandMayHaveMutated = false
     try {
       await verifyPreconditions(plan.privateData.profileDir, plan.preconditions)
       backupDir = await backupProfile(dshHome, plan.privateData.profileDir, transactionId, plan.preconditions)
       const { action } = plan
       const { entry } = plan.privateData
       if (action === 'install' || action === 'update' || action === 'migrate') {
-        packageCommandStarted = true
         const result = await runner.plugin(plan.profile, ['add', githubInstallSpecifier(entry)])
-        if (!result.ok) throw Object.assign(new Error('official DSH plugin command failed'), { code: 'DSH_PLUGIN_COMMAND_FAILED', exitCode: result.exitCode })
+        packageCommandMayHaveMutated = result.ok || result.exitCode !== 127
+        if (!result.ok) throw pluginCommandError(result)
       } else if (action === 'uninstall') {
-        packageCommandStarted = true
         const result = await runner.plugin(plan.profile, ['remove', entry.packageName])
-        if (!result.ok) throw Object.assign(new Error('official DSH plugin command failed'), { code: 'DSH_PLUGIN_COMMAND_FAILED', exitCode: result.exitCode })
+        packageCommandMayHaveMutated = result.ok || result.exitCode !== 127
+        if (!result.ok) throw pluginCommandError(result)
         await updateDisabledPatch(plan.privateData.profileDir, entry.entryIds, false)
       } else {
         await updateDisabledPatch(plan.privateData.profileDir, entry.entryIds, action === 'disable')
@@ -273,23 +283,31 @@ export function createOperationService(options = {}) {
       return value
     } catch (error) {
       let rollback = 'not-required'
+      const rollbackDetails = { profileFiles: 'not-required', dependencies: 'not-required' }
       if (backupDir) {
         try {
           await restoreBackup(plan.privateData.profileDir, backupDir, plan.preconditions)
-          if (packageCommandStarted) {
+          rollbackDetails.profileFiles = 'succeeded'
+        } catch {
+          rollbackDetails.profileFiles = 'failed'
+        }
+        if (rollbackDetails.profileFiles === 'succeeded' && packageCommandMayHaveMutated) {
+          try {
             const restoreInstall = await runner.plugin(plan.profile, ['install', '--offline'])
             if (!restoreInstall.ok) throw new Error('dependency restore command failed')
+            rollbackDetails.dependencies = 'succeeded'
+          } catch {
+            rollbackDetails.dependencies = 'failed'
           }
-          rollback = 'succeeded'
-        } catch {
-          rollback = 'failed'
         }
+        rollback = rollbackDetails.profileFiles === 'succeeded'
+          && rollbackDetails.dependencies !== 'failed' ? 'succeeded' : 'failed'
       }
       const value = {
         schemaVersion: 1, transactionId, status: 'rolled-back', action: plan.action,
         profile: plan.profile, packageName: plan.plugin.packageName, backupId: backupDir ? transactionId : null,
         error: { code: error?.code ?? 'OPERATION_FAILED', message: String(error?.message ?? error), exitCode: error?.exitCode ?? null },
-        rollback,
+        rollback, rollbackDetails,
       }
       await appendAudit(dshHome, { ...value, at: new Date().toISOString() })
       return value

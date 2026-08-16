@@ -73,7 +73,7 @@ Web UI，并直接读写 Profile；桌面端、进程管理和外置恢复不符
 - 11 个新增项目通过固定 Commit 的 manifest、Bundle Patch、入口 ID 与生命周期脚本
   复核，作为可安装条目上架：At File、GenUI、Visualize、OpenPencil、AnySearch、
   Gomoku、Web UI All、Shortcuts、Diagram、Egress Guard、Achievements；
-- 3 个项目分类展示但策略阻止：Memory Evolve 缺少 `dsh.bundle.patch`，DSH TUI 是
+- 3 个项目分类展示但商城不可安装：Memory Evolve 缺少 `dsh.bundle.patch`，DSH TUI 是
   会覆盖/停用基础 Profile 行的独立终端入口，Explorer 需要 Host 与浏览器两个 Bundle
   原子联装而当前目录只支持单包事务；
 - `Small-tailqwq/dsh-deep-whale` 与目录中已有的 Deep Whale Day Night Theme 声明相同

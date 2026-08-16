@@ -17,6 +17,19 @@
     .badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
     .badge { border-radius: 999px; padding: 4px 8px; background: #233052; font-size: 12px; }
     .blocked { background: #5d2731; } .featured { background: #655018; color: #ffe394; } a { color: #8db6ff; }
+    .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    button { border: 1px solid #455575; border-radius: 8px; padding: 7px 11px; background: #18223d; color: inherit; cursor: pointer; }
+    button:hover { border-color: #8db6ff; }
+    dialog { width: min(680px, calc(100vw - 32px)); max-height: min(780px, calc(100vh - 32px)); box-sizing: border-box; padding: 0; border: 1px solid #34405e; border-radius: 20px; background: #111831; color: #ecf1ff; box-shadow: 0 24px 80px #0009; }
+    dialog[open] { display: flex; flex-direction: column; }
+    dialog::backdrop { background: #050812b8; backdrop-filter: blur(2px); }
+    .dialog-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px 12px; background: #111831; border-bottom: 1px solid #2a3654; }
+    .dialog-head h2 { margin: 0; font-size: 19px; }
+    .dialog-body { min-height: 0; padding: 4px 20px 20px; overflow-y: auto; }
+    .detail-title { margin: 18px 0 8px; font-size: 14px; }
+    .details { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px 14px; margin: 0; font-size: 13px; line-height: 1.55; }
+    .details dt { color: #8e9ab8; } .details dd { margin: 0; overflow-wrap: anywhere; }
+    .detail-note { margin-top: 18px; padding: 11px 13px; border: 1px solid #34405e; border-radius: 10px; font-size: 12px; }
     code { overflow-wrap: anywhere; }
     @media (max-width: 640px) { .filters { grid-template-columns: 1fr; } }
   </style>
@@ -25,11 +38,18 @@
   <h1>DSH第三方插件商城</h1>
   <p>集中管理 GitHub 来源的 DSH 插件。目录条目固定到不可变 Commit；收录不代表安全审计。</p>
   <div class="filters">
-    <input id="search" type="search" placeholder="搜索名称、包名、分类或仓库">
+    <input id="search" type="search" placeholder="搜索名称、包名、分类、权限或仓库">
     <select id="category" aria-label="按分类筛选"></select>
   </div>
   <p id="meta">正在加载目录…</p>
   <main id="plugins" class="grid"></main>
+  <dialog id="details" aria-labelledby="details-title">
+    <div class="dialog-head">
+      <h2 id="details-title">插件详情</h2>
+      <button id="close-details" type="button" aria-label="关闭插件详情">关闭</button>
+    </div>
+    <div id="details-body" class="dialog-body"></div>
+  </dialog>
   <script type="module">
     const response = await fetch('../registry/catalog.json', { cache: 'no-store' })
     const catalog = await response.json()
@@ -37,7 +57,38 @@
     const category = document.querySelector('#category')
     const meta = document.querySelector('#meta')
     const plugins = document.querySelector('#plugins')
+    const detailsDialog = document.querySelector('#details')
+    const detailsTitle = document.querySelector('#details-title')
+    const detailsBody = document.querySelector('#details-body')
     const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))
+    const labels = {
+      pluginType: { feature: '功能插件', theme: '主题', suite: '套件', client: '客户端', provider: 'Provider', unknown: '未知' },
+      installSource: { npm: 'npm', github: 'GitHub', 'local-bundle': '本地 Bundle', unknown: '未知' },
+      level: { low: '低', medium: '中', high: '高', unknown: '未知' },
+      files: { none: '不访问', 'read-only': '只读', write: '可写', unknown: '未知' },
+      network: { none: '无', 'specified-services': '指定服务', any: '任意网络', unknown: '未知' },
+      commands: { none: '否', restricted: '受限', shell: '任意 Shell', unknown: '未知' },
+      credentials: { none: '否', 'api-key': 'API Key', oauth: 'OAuth', keychain: '系统 Keychain', unknown: '未知' },
+      reviewStatus: { unreviewed: '未审核', 'automated-scan': '自动扫描', 'manual-review': '人工检查', 'author-verified': '作者认证' },
+    }
+    const label = (group, value) => labels[group]?.[value] || String(value || '未知')
+    const licenseLabel = value => value === 'UNKNOWN' || !value ? '未知'
+      : value === 'UNLICENSED' ? '未公开许可证'
+        : value === 'CC-BY-NC-SA-4.0' ? '非商业（CC BY-NC-SA 4.0）' : value
+    const list = (values, empty = '未声明') => Array.isArray(values) && values.length > 0 ? values.join(' / ') : empty
+    const row = (name, value, code = false) => `<dt>${escape(name)}</dt><dd${code ? '><code' : ''}>${escape(value)}${code ? '</code>' : ''}</dd>`
+    const searchValues = entry => {
+      const detail = entry.details || {}
+      const permissions = detail.permissions || {}
+      return [
+        entry.name, entry.packageName, entry.description, entry.repositoryUrl, detail.license,
+        label('pluginType', detail.pluginType), label('installSource', detail.installSource),
+        label('level', permissions.level), label('files', permissions.files), label('network', permissions.network),
+        label('commands', permissions.commands), ...(permissions.credentials || []).map(value => label('credentials', value)),
+        label('reviewStatus', detail.reviewStatus), ...(detail.externalDependencies || []),
+        ...(entry.compatibility?.systems || []), ...(entry.compatibility?.profiles || []), ...(entry.categories || []),
+      ]
+    }
     const visible = catalog.entries.filter(entry => entry.status !== 'unlisted')
     const categoryIds = [...new Set(visible.flatMap(entry => entry.categories || []))].sort()
     category.innerHTML = `<option value="">全部分类</option>` + categoryIds.map(id =>
@@ -46,20 +97,67 @@
       const query = search.value.trim().toLowerCase()
       const entries = visible
         .filter(entry => !category.value || entry.categories.includes(category.value))
-        .filter(entry => [entry.name, entry.packageName, entry.description, entry.repositoryUrl, ...(entry.categories || [])].some(value => String(value).toLowerCase().includes(query)))
+        .filter(entry => searchValues(entry).some(value => String(value).toLowerCase().includes(query)))
         .sort((a, b) => Number(b.featured === true) - Number(a.featured === true) || (b.installCount ?? -1) - (a.installCount ?? -1) || a.name.localeCompare(b.name, 'zh-CN'))
       meta.textContent = `${entries.length} / ${visible.length} 个在架条目 · 更新于 ${catalog.registry.updatedAt}`
-      plugins.innerHTML = entries.map(entry => `<article>
+      plugins.innerHTML = entries.map(entry => {
+        const status = entry.status === 'approved' ? '可安装' : entry.status === 'blocked' ? '商城不可安装' : '已下架'
+        const repositoryAction = entry.status === 'blocked' ? '前往 GitHub 手动安装' : '查看 GitHub 仓库'
+        return `<article>
         <h2>${escape(entry.name)}</h2>
         <code>${escape(entry.packageName)} · ${escape(entry.version)}</code>
         <p>${escape(entry.description)}</p>
-        <div class="badges">${entry.featured ? '<span class="badge featured">推荐</span>' : ''}${entry.categories.map(id => `<span class="badge">${escape(catalog.registry.categories?.[id] || id)}</span>`).join('')}<span class="badge ${entry.status === 'blocked' ? 'blocked' : ''}">${entry.status === 'approved' ? '可安装' : '策略阻止'}</span>${Number.isInteger(entry.installCount) ? `<span class="badge">安装 ${entry.installCount}</span>` : ''}</div>
+        <div class="badges">${entry.featured ? '<span class="badge featured">推荐</span>' : ''}${entry.categories.map(id => `<span class="badge">${escape(catalog.registry.categories?.[id] || id)}</span>`).join('')}<span class="badge ${entry.status === 'blocked' ? 'blocked' : ''}">${status}</span>${Number.isInteger(entry.installCount) ? `<span class="badge">安装 ${entry.installCount}</span>` : ''}</div>
         ${entry.statusReason ? `<p>${escape(entry.statusReason)}</p>` : ''}
-        <a href="${escape(entry.repositoryUrl)}">查看 GitHub 仓库</a>
-      </article>`).join('')
+        <div class="actions"><button type="button" data-details-id="${escape(entry.id)}">查看详情</button><a href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${repositoryAction}</a></div>
+      </article>`
+      }).join('')
+    }
+    function showDetails(entry) {
+      const detail = entry.details || {}
+      const permissions = detail.permissions || {}
+      const compatibility = entry.compatibility || {}
+      const status = entry.status === 'approved' ? '可安装' : entry.status === 'blocked' ? '商城不可安装' : '已下架'
+      detailsTitle.textContent = entry.name
+      detailsBody.innerHTML = `
+        <p>${escape(entry.description)}</p>
+        <div class="badges">${entry.featured ? '<span class="badge featured">推荐</span>' : ''}${entry.categories.map(id => `<span class="badge">${escape(catalog.registry.categories?.[id] || id)}</span>`).join('')}<span class="badge ${entry.status === 'blocked' ? 'blocked' : ''}">${status}</span></div>
+        <h3 class="detail-title">基本信息</h3>
+        <dl class="details">
+          ${row('包名', entry.packageName, true)}${row('版本', entry.version)}${row('Git Commit', entry.commit, true)}
+          ${row('分类', entry.categories.map(id => catalog.registry.categories?.[id] || id).join(' / '))}${row('上架状态', status)}
+          ${Number.isInteger(entry.installCount) ? row('累计安装', String(entry.installCount)) : ''}
+        </dl>
+        <h3 class="detail-title">权限与审核</h3>
+        <dl class="details">
+          ${row('插件类型', label('pluginType', detail.pluginType))}${row('安装来源', label('installSource', detail.installSource))}
+          ${row('许可证', licenseLabel(detail.license))}${row('权限等级', label('level', permissions.level))}
+          ${row('文件权限', label('files', permissions.files))}${row('网络权限', label('network', permissions.network))}
+          ${row('命令执行', label('commands', permissions.commands))}${row('凭据访问', list((permissions.credentials || []).map(value => label('credentials', value)), '未知'))}
+          ${row('外部依赖', list(detail.externalDependencies, '无'))}${row('审核状态', label('reviewStatus', detail.reviewStatus))}
+        </dl>
+        <h3 class="detail-title">兼容性</h3>
+        <dl class="details">
+          ${row('DSH', compatibility.dsh || '未声明')}${row('Node.js', compatibility.node || '未声明')}
+          ${row('系统', list(compatibility.systems))}${row('Profile', list(compatibility.profiles))}
+        </dl>
+        ${entry.statusReason ? `<p class="blocked">策略说明：${escape(entry.statusReason)}</p>` : ''}
+        ${entry.status === 'blocked' ? '<p class="detail-note">可前往 GitHub 阅读项目说明并自行决定是否手动安装；手动安装不受本商城的计划、备份、健康检查和失败回滚保护。</p>' : ''}
+        ${entry.risk?.installScripts?.length ? `<p class="blocked">安装生命周期脚本：${escape(entry.risk.installScripts.join(', '))}</p>` : ''}
+        <p class="detail-note">详情来自 GitHub catalog.json 的固定 Commit 核验与声明；自动扫描或作者认证均不等于完成安全审计。</p>
+        <p><a href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${entry.status === 'blocked' ? '前往 GitHub 手动安装' : '查看 GitHub 仓库'}</a></p>`
+      detailsDialog.showModal()
     }
     search.addEventListener('input', render)
     category.addEventListener('change', render)
+    plugins.addEventListener('click', event => {
+      const button = event.target.closest('[data-details-id]')
+      if (!button) return
+      const entry = visible.find(item => item.id === button.dataset.detailsId)
+      if (entry) showDetails(entry)
+    })
+    document.querySelector('#close-details').addEventListener('click', () => detailsDialog.close())
+    detailsDialog.addEventListener('click', event => { if (event.target === detailsDialog) detailsDialog.close() })
     render()
   </script>
 </body>
