@@ -4,7 +4,7 @@
     "name": "DSH Safe GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/",
-    "updatedAt": "2026-08-16T07:04:27Z",
+    "updatedAt": "2026-08-16T07:33:55Z",
     "categories": {
       "marketplace": "插件市场",
       "management": "管理工具",
@@ -120,6 +120,27 @@
         "externalDependencies": ["DSH CLIAPI", "第三方 API"], "reviewStatus": "author-verified"
       },
       "risk": { "installScripts": [], "review": "owner-curated-not-security-audited" }
+    },
+    {
+      "id": "dsh-agent-reach",
+      "name": "Agent Reach for DSH",
+      "packageName": "dsh-agent-reach",
+      "description": "将 Agent Reach 联网能力路由 Skill 安全挂载到 DSH；Python CLI 与所选渠道依赖需另行安装授权。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-agent-reach",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "d37fb46edf783446b430d324c68ac911b84a14b0",
+      "version": "0.1.0",
+      "categories": ["search", "tools", "workflow"],
+      "entryIds": ["dsh-agent-reach-skill-provider"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web", "headless"] },
+      "details": {
+        "pluginType": "suite", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "shell", "credentials": ["api-key", "oauth", "unknown"] },
+        "externalDependencies": ["Python 3.10+", "Agent Reach CLI 1.5.0", "第三方 CLI/API（按渠道）"], "reviewStatus": "manual-review"
+      },
+      "risk": { "installScripts": [], "review": "owner-adapter-upstream-manual-review-not-security-audited" }
     },
     {
       "id": "dsh-market",

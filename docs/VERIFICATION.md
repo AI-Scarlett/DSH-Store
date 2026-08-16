@@ -12,7 +12,7 @@
 - 零写入核对：扫描前后比较 `package.json`、`cordis.patch.yml`、
   `pnpm-lock.yaml` 的 SHA-256，结果为 `LIVE_PROFILE_HASHES_UNCHANGED`；
 - 敏感信息扫描：项目内没有本机绝对路径、私有聊天链接或凭据值。
-- `npm run verify:registry-sources`：26 个 approved 条目的 GitHub 固定 Commit
+- `npm run verify:registry-sources`：27 个 approved 条目的 GitHub 固定 Commit
   manifest、版本、Bundle 入口与生命周期脚本复核通过；
 - 安装失败故障注入：临时 Profile 的控制文件恢复到精确前置内容，依赖恢复命令走
   官方 DSH 边界；
@@ -124,6 +124,23 @@
   保持推荐，新增的第 5 个推荐明确标注为社区来源；
 - 固定 Commit 的 manifest、Apache-2.0 许可证、Bundle Patch、12 个入口 ID 和
   `prepare` 生命周期脚本再次通过目录来源复核；推荐不等于安全审计。
+
+### Agent Reach for DSH 适配上架
+
+- 上游 `Panniantong/Agent-Reach` 固定核验到版本 `1.5.0`、Commit
+  `93ae1d18c37b707dec053c7c4f9d91cd8ef8943d`；确认其是 Python CLI/MCP/Skill 项目，
+  不是可直接安装的标准 DSH Bundle；
+- 新建公开适配仓库 `AI-Scarlett/dsh-agent-reach`，版本 `0.1.0`、固定 Commit
+  `d37fb46edf783446b430d324c68ac911b84a14b0`；适配包无生命周期脚本，仅通过隔离的
+  `@deepseek-ai/dsh-skill-filesystem` Provider 挂载 Skill；
+- 适配仓库 `npm run check` 的 3 项契约测试与 `npm pack --dry-run --json` 通过，打包
+  结果为 7 个运行文件、无 bundled dependencies；
+- 一次性 `DSH_HOME` 中通过官方 `dsh plugin --profile web add <local-checkout>` 安装，
+  `dsh --profile web --dump-config` 成功合成 `dsh-agent-reach-skill-provider`；没有写入
+  真实 `web` Profile，也没有安装或调用 Agent Reach Python 运行时；
+- 商城目录增加为 32 个条目，其中 27 个 `approved`、5 个 `blocked`；推荐条目仍为
+  原有 5 个，Agent Reach 未设置推荐；目录明确披露高权限、外部 Python/CLI/API 依赖
+  和“人工检查、非安全审计”状态。
 
 官方安装命令曾把 Profile 中两个既有本地依赖也识别为 Bundle，但它们的链接包未
 提供所声明的 Bundle Patch，导致首次重启失败。最终仅从 `bundles` 数组移除这两个

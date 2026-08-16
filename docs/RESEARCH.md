@@ -82,3 +82,22 @@ Web UI，并直接读写 Profile；桌面端、进程管理和外置恢复不符
 
 新增项目初次上架时均未设置 `featured`。后续按用户明确选择，将已通过固定 Commit
 来源复核的 DSH Web UI All 加入精选推荐；推荐不会改变其社区来源或安全审核边界。
+
+## Panniantong/Agent-Reach 适配评估
+
+上游 `Panniantong/Agent-Reach` 固定核验 Commit 为
+`93ae1d18c37b707dec053c7c4f9d91cd8ef8943d`，版本 `1.5.0`、MIT 许可证，运行时要求
+Python 3.10+。仓库提供 Python CLI、MCP Server 和 Agent Skill，但没有 `package.json`、
+`dsh.bundle.patch` 或 DSH 入口，因此不能把上游仓库本身作为标准 DSH Bundle 上架。
+
+DSH 的 `@deepseek-ai/dsh-skill-filesystem` 支持由独立 Bundle 通过 `customSkillDirs` 挂载
+隔离 Skill 目录。基于这一官方扩展面，新建
+[`AI-Scarlett/dsh-agent-reach`](https://github.com/AI-Scarlett/dsh-agent-reach) 适配仓库；
+其 `0.1.0` 固定 Commit 为 `d37fb46edf783446b430d324c68ac911b84a14b0`。适配器只有
+Bundle Patch 与 Skill 文档，不含 npm 生命周期脚本，不会在商城安装阶段执行 pip、
+Homebrew、浏览器扩展安装或读取 Cookie/API Key。
+
+目录将其作为可安装的高权限套件上架，但没有设置推荐。高权限画像来自实际使用阶段：
+Skill 会调用外部 Agent Reach/渠道 CLI，可能执行命令、访问任意网络、写入下载文件并
+使用用户另行授权的 API Key、OAuth 或平台登录态。商城准入只验证适配器契约与固定
+来源，不等于对上游全部渠道和依赖完成安全审计。
