@@ -64,6 +64,14 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.deepEqual(source.entries.filter(item => item.featured === true).map(item => item.id), [
     'dsh-safe-plugin-manager', 'dsh-chat-import', 'dsh-cliapi', 'dshllm-api', 'dsh-web-ui-all',
   ])
+  const agentReach = source.entries.find(item => item.id === 'dsh-agent-reach')
+  assert.ok(agentReach, 'Agent Reach adapter must be listed')
+  assert.equal(agentReach.status, 'approved')
+  assert.equal(agentReach.featured, undefined)
+  assert.equal(agentReach.commit, 'd37fb46edf783446b430d324c68ac911b84a14b0')
+  assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
+  assert.equal(agentReach.details.permissions.level, 'high')
+  assert.ok(agentReach.details.externalDependencies.includes('Agent Reach CLI 1.5.0'))
 })
 
 test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {
