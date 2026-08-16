@@ -190,6 +190,8 @@ npm run verify:registry-sources
 
 测试使用临时目录，不会修改真实 `~/.dsh`。更完整的开发和验收资料：
 
+GitHub 默认 CodeQL 已启用，对 Actions 与 JavaScript/TypeScript 变更执行代码扫描。
+
 - [产品需求](docs/PRODUCT_REQUIREMENTS.md)
 - [技术架构](docs/ARCHITECTURE.md)
 - [开发路线](docs/DEVELOPMENT_PLAN.md)
