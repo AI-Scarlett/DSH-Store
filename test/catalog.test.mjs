@@ -90,8 +90,25 @@ test('catalog service falls back to bundled snapshot when GitHub is unavailable'
   })
   const catalog = await service.load()
   assert.equal(catalog.source.kind, 'bundled')
-  assert.equal(catalog.source.errorCode, 'CATALOG_UNAVAILABLE')
+  assert.equal(catalog.source.errorCode, 'CATALOG_HTTP_ERROR')
   assert.ok(catalog.entries.length >= 2)
+})
+
+test('catalog service retries a transient GitHub transport failure before using the bundle', async () => {
+  let calls = 0
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [0],
+    fetch: async () => {
+      calls += 1
+      if (calls === 1) throw new TypeError('fetch failed')
+      return new Response(JSON.stringify(document()))
+    },
+  })
+  const catalog = await service.load()
+  assert.equal(catalog.source.kind, 'github')
+  assert.equal(catalog.source.errorCode, null)
+  assert.equal(calls, 2)
 })
 
 test('marketplace offers explicit migration for local links and reports version updates', () => {
@@ -142,6 +159,34 @@ test('source verification retries transient GitHub transport failures', async ()
     }))
     return new Response('- insert:\n    - id: demo\n      name: dsh-demo\n')
   }
-  assert.equal((await verifyCatalogEntry(catalogEntry, { fetch: request })).status, 'verified')
+  assert.equal((await verifyCatalogEntry(catalogEntry, { fetch: request, retryDelaysMs: [0, 0] })).status, 'verified')
   assert.equal(calls, 3)
+})
+
+test('source verification distinguishes timeout, HTTP, manifest, and patch failures', async () => {
+  const catalogEntry = validateCatalog(document()).entries[0]
+  const manifest = JSON.stringify({
+    name: 'dsh-demo', version: '1.2.0', license: 'MIT',
+    dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {},
+  })
+  const timeout = Object.assign(new Error('aborted'), { name: 'AbortError' })
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, { fetch: async () => { throw timeout }, retryDelaysMs: [] }),
+    error => error.code === 'SOURCE_VERIFICATION_TIMEOUT',
+  )
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, { fetch: async () => new Response('missing', { status: 404 }), retryDelaysMs: [] }),
+    error => error.code === 'SOURCE_VERIFICATION_HTTP',
+  )
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, { fetch: async () => new Response('{'), retryDelaysMs: [] }),
+    error => error.code === 'SOURCE_MANIFEST_INVALID',
+  )
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, {
+      fetch: async url => new Response(url.endsWith('/package.json') ? manifest : '- insert:\n    - id: wrong\n'),
+      retryDelaysMs: [],
+    }),
+    error => error.code === 'SOURCE_PATCH_MISMATCH',
+  )
 })

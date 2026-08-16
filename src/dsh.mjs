@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { delimiter, dirname } from 'node:path'
+import { delimiter, dirname, isAbsolute } from 'node:path'
 
 const MAX_OUTPUT_BYTES = 2 * 1024 * 1024
 
@@ -26,15 +26,20 @@ function runFile(file, args, options = {}) {
 
 export function createDshRunner(options = {}) {
   const nodePath = options.nodePath ?? process.execPath
+  const nodeLauncherPath = options.nodeLauncherPath ?? process.argv0
   const cliPath = options.cliPath ?? process.argv[1]
   const timeoutMs = options.timeoutMs ?? 180_000
   const inheritedEnvironment = options.environment ?? process.env
   const inheritedPath = typeof inheritedEnvironment.PATH === 'string' ? inheritedEnvironment.PATH : ''
   const executableDirectory = dirname(nodePath)
+  const launcherDirectory = typeof nodeLauncherPath === 'string' && isAbsolute(nodeLauncherPath)
+    ? dirname(nodeLauncherPath)
+    : null
   const commandPath = [...new Set([
+    launcherDirectory,
     executableDirectory,
     ...inheritedPath.split(delimiter).filter(Boolean),
-  ])].join(delimiter)
+  ].filter(Boolean))].join(delimiter)
   const commandEnvironment = { ...inheritedEnvironment, PATH: commandPath }
   if (typeof cliPath !== 'string' || cliPath.trim() === '') {
     throw new TypeError('DSH CLI path is unavailable')

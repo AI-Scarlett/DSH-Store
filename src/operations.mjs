@@ -14,9 +14,41 @@ const CRITICAL_ENTRY_IDS = new Set([
   'loader', 'web-server', 'ui-settings-plugin-inventory', 'dsh-safe-plugin-manager',
 ])
 const PLAN_TTL_MS = 5 * 60_000
+const SOURCE_VERIFICATION_CACHE_TTL_MS = 30 * 60_000
+const SOURCE_VERIFICATION_MESSAGES = new Map([
+  ['SOURCE_VERIFICATION_TIMEOUT', 'GitHub 固定 Commit 校验超时，请稍后重新校验。'],
+  ['SOURCE_VERIFICATION_NETWORK', 'GitHub 网络暂时不可用，请稍后重新校验固定 Commit。'],
+  ['SOURCE_VERIFICATION_HTTP', 'GitHub 固定 Commit 文件返回 HTTP 错误，请检查目录中的 Commit 与文件路径。'],
+  ['SOURCE_MANIFEST_INVALID', 'GitHub 固定 Commit 的 package.json 不是有效 JSON。'],
+  ['SOURCE_MANIFEST_MISMATCH', 'GitHub package.json 与商城目录声明不一致。'],
+  ['SOURCE_PATCH_REJECTED', 'GitHub Bundle Patch 触及受保护的 DSH 组件，已拒绝操作。'],
+  ['SOURCE_PATCH_MISMATCH', 'GitHub Bundle Patch 与商城目录声明的入口不一致。'],
+  ['SOURCE_VERIFICATION_FAILED', 'GitHub 固定 Commit 来源校验失败。'],
+])
 
 function digest(value) {
   return createHash('sha256').update(value).digest('hex')
+}
+
+function sourceVerificationKey(entry) {
+  return digest(JSON.stringify({
+    repositoryUrl: entry.repositoryUrl,
+    commit: entry.commit,
+    manifestPath: entry.manifestPath,
+    installPath: entry.installPath ?? null,
+    packageName: entry.packageName,
+    version: entry.version,
+    license: entry.details?.license ?? null,
+    entryIds: [...entry.entryIds].sort(),
+    installScripts: [...entry.risk.installScripts].sort(),
+  }))
+}
+
+function publicSourceVerificationError(error) {
+  const code = SOURCE_VERIFICATION_MESSAGES.has(error?.code)
+    ? error.code
+    : 'SOURCE_VERIFICATION_FAILED'
+  return Object.assign(new Error(SOURCE_VERIFICATION_MESSAGES.get(code)), { code })
 }
 
 async function fileState(profileDir, relative) {
@@ -173,7 +205,25 @@ export function createOperationService(options = {}) {
   const sourceVerifier = options.sourceVerifier ?? verifyCatalogEntry
   const telemetryClient = options.telemetryClient ?? { recordInstall: async () => ({ status: 'disabled' }) }
   const planTtlMs = options.planTtlMs ?? PLAN_TTL_MS
+  const sourceVerificationCacheTtlMs = options.sourceVerificationCacheTtlMs ?? SOURCE_VERIFICATION_CACHE_TTL_MS
   const plans = new Map()
+  const sourceVerificationCache = new Map()
+
+  async function verifySource(entry) {
+    const key = sourceVerificationKey(entry)
+    const cached = sourceVerificationCache.get(key)
+    if (cached && Date.now() - cached.cachedAt < sourceVerificationCacheTtlMs) {
+      return { ...cached.value, cacheStatus: 'memory-cache', reusedAt: new Date().toISOString() }
+    }
+    const value = await sourceVerifier(entry)
+    if (!value || value.status !== 'verified') {
+      throw Object.assign(new Error('source verifier did not return a verified result'), {
+        code: 'SOURCE_VERIFICATION_FAILED',
+      })
+    }
+    sourceVerificationCache.set(key, { cachedAt: Date.now(), value })
+    return { ...value, cacheStatus: 'fresh' }
+  }
 
   async function createPlan(input = {}) {
     if (!mutationsEnabled) throw Object.assign(new Error('guarded write mode is disabled by configuration'), { code: 'MUTATIONS_DISABLED' })
@@ -202,9 +252,9 @@ export function createOperationService(options = {}) {
     let sourceVerification = { status: 'not-required', verifiedAt: null }
     if (['install', 'update', 'migrate'].includes(action)) {
       try {
-        sourceVerification = await sourceVerifier(entry)
-      } catch {
-        throw Object.assign(new Error('GitHub fixed-commit source verification failed'), { code: 'SOURCE_VERIFICATION_FAILED' })
+        sourceVerification = await verifySource(entry)
+      } catch (error) {
+        throw publicSourceVerificationError(error)
       }
     }
     const disabledIds = new Set(await readDisabled(profileDir))
