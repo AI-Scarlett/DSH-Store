@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process'
+import { delimiter, dirname } from 'node:path'
 
 const MAX_OUTPUT_BYTES = 2 * 1024 * 1024
 
@@ -27,15 +28,25 @@ export function createDshRunner(options = {}) {
   const nodePath = options.nodePath ?? process.execPath
   const cliPath = options.cliPath ?? process.argv[1]
   const timeoutMs = options.timeoutMs ?? 180_000
+  const inheritedEnvironment = options.environment ?? process.env
+  const inheritedPath = typeof inheritedEnvironment.PATH === 'string' ? inheritedEnvironment.PATH : ''
+  const executableDirectory = dirname(nodePath)
+  const commandPath = [...new Set([
+    executableDirectory,
+    ...inheritedPath.split(delimiter).filter(Boolean),
+  ])].join(delimiter)
+  const commandEnvironment = { ...inheritedEnvironment, PATH: commandPath }
   if (typeof cliPath !== 'string' || cliPath.trim() === '') {
     throw new TypeError('DSH CLI path is unavailable')
   }
   return {
     async plugin(profile, args) {
-      return runFile(nodePath, [cliPath, 'plugin', '--profile', profile, ...args], { timeoutMs })
+      return runFile(nodePath, [cliPath, 'plugin', '--profile', profile, ...args], { timeoutMs, env: commandEnvironment })
     },
     async dumpConfig(profile) {
-      return runFile(nodePath, [cliPath, '--profile', profile, '--dump-config'], { timeoutMs: Math.min(timeoutMs, 30_000) })
+      return runFile(nodePath, [cliPath, '--profile', profile, '--dump-config'], {
+        timeoutMs: Math.min(timeoutMs, 30_000), env: commandEnvironment,
+      })
     },
   }
 }

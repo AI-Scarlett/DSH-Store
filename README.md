@@ -13,10 +13,10 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.3.1` |
+| 商城版本 | `0.4.0` |
 | 收录条目 | 31 个 |
 | 可安装 | 26 个 |
-| 策略阻止 | 5 个，仍展示原因但不允许安装 |
+| 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
 | 推荐 | 4 个，仅限 `AI-Scarlett` 自研插件 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
@@ -31,7 +31,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 - 从 GitHub 在线目录读取插件，网络失败时只回退到随包发布的已知快照；
 - 按名称、包名、分类或 GitHub 仓库搜索；
-- 支持 22 个分类筛选、推荐置顶、上架、策略阻止和下架；
+- 支持 22 个分类筛选、推荐置顶、上架、商城不可安装和下架；
 - 目录中的安装目标固定到 40 位 Git Commit，不接受 npm-only、任意下载地址或浮动分支；
 - 商城页面和 DSH 内置界面共享同一个 `registry/catalog.json` 数据源。
 
@@ -58,13 +58,22 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 - 检查 Profile 清单、依赖、管理器托管 Patch 与 DSH 配置合成；
 - 合并 Bundle 和依赖信息，显示已安装版本、声明来源和官方/第三方属性；
-- 区分“已验证”“部分验证”“策略阻止”和“尚未验证”，不把声明态当成运行态；
+- 区分“已验证”“部分验证”“商城不可安装”和“尚未验证”，不把声明态当成运行态；
 - 运行态 Loader/Fiber 状态继续以 DSH 官方清单为权威，商城不直接控制官方运行时。
+
+### 插件详情与权限画像
+
+- 每张商城卡片可打开详情弹窗，集中显示插件类型、安装来源和许可证；
+- 展示权限等级，以及文件、网络、命令和凭据访问范围；
+- 展示外部依赖、审核状态、DSH/Node.js 版本、系统和 Profile 兼容性；
+- 字段来自 GitHub 目录固定 Commit 的 manifest、README 与代码信号；无法确认时显示
+  “未知”或“未声明”，不会用本地猜测覆盖目录数据；
+- 自动扫描、人工检查和作者认证只表示元数据核验层级，均不等于安全审计。
 
 ### 上下架、推荐与安装计数
 
 - `approved`：正常上架并允许生成安装计划；
-- `blocked`：商城中继续展示，但明确说明阻止原因且不提供安装操作；
+- `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
 - `featured: true`：在全部视图和所属分类中优先显示；当前仅推荐自研四件套；
 - 可选安装回执只发送插件 ID 和版本，不发送设备、Profile 或用户标识；默认关闭；
@@ -137,13 +146,13 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | [DSH Diagram](https://github.com/hanzhangzzz/dsh-diagram) | 可视化、设计与原型、新锐实验 | 可安装 | 将文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。 |
 | [DSH Egress Guard](https://github.com/tancheng33/dsh-egress-guard) | 安全与隐私、工具能力、新锐实验 | 可安装 | 提供出站域名策略、工具结果密钥脱敏和追加式审计日志，默认监控模式。 |
 | [DSH Achievements](https://github.com/WJNCT55555/dsh-achievements) | 娱乐、界面增强、新锐实验 | 可安装 | 添加成就引擎、图鉴、提示、奖杯与进度持久化。 |
-| [DSH Memory Evolve](https://github.com/csyangwen/dsh-memory-evolve) | 记忆、工作流与自动化、工具能力 | 策略阻止 | 分层长期记忆、自我进化、技能与待办管理，以及外部 CLI Agent 调度。 |
-| [DSH TUI](https://github.com/ccch1mneyyy/dsh-TUI) | 客户端与生态、开发与运行时 | 策略阻止 | Claude Code 风格的独立 DSH 终端客户端。 |
-| [DSH Explorer](https://github.com/No-PRM/dsh-explorer) | 文件与输入、界面增强、工具能力 | 策略阻止 | Host 与浏览器双 Bundle 文件树侧栏，支持 Git 标记、媒体预览与拖拽引用。 |
-| [DSH Web Plugin Manager](https://github.com/LX2000WASD/dsh-web-plugin-manager) | 插件市场、管理工具 | 策略阻止 | 第三方综合插件管理器，当前 Bundle 会遮蔽 DSH 官方插件清单。 |
-| [DSH Plugin Hub](https://github.com/Noob-stupid/dsh-plugin-hub) | 插件市场、管理工具 | 策略阻止 | 社区插件控制台，当前使用受保护的 `@deepseek-ai` 官方命名空间。 |
+| [DSH Memory Evolve](https://github.com/csyangwen/dsh-memory-evolve) | 记忆、工作流与自动化、工具能力 | 商城不可安装（GitHub 手动） | 分层长期记忆、自我进化、技能与待办管理，以及外部 CLI Agent 调度。 |
+| [DSH TUI](https://github.com/ccch1mneyyy/dsh-TUI) | 客户端与生态、开发与运行时 | 商城不可安装（GitHub 手动） | Claude Code 风格的独立 DSH 终端客户端。 |
+| [DSH Explorer](https://github.com/No-PRM/dsh-explorer) | 文件与输入、界面增强、工具能力 | 商城不可安装（GitHub 手动） | Host 与浏览器双 Bundle 文件树侧栏，支持 Git 标记、媒体预览与拖拽引用。 |
+| [DSH Web Plugin Manager](https://github.com/LX2000WASD/dsh-web-plugin-manager) | 插件市场、管理工具 | 商城不可安装（GitHub 手动） | 第三方综合插件管理器，当前 Bundle 会遮蔽 DSH 官方插件清单。 |
+| [DSH Plugin Hub](https://github.com/Noob-stupid/dsh-plugin-hub) | 插件市场、管理工具 | 商城不可安装（GitHub 手动） | 社区插件控制台，当前使用受保护的 `@deepseek-ai` 官方命名空间。 |
 
-### 策略阻止说明
+### 商城不可安装说明
 
 - **DSH Memory Evolve**：固定 Commit 的 manifest 未声明 `dsh.bundle.patch`；
 - **DSH TUI**：属于独立终端入口，Bundle Patch 会覆盖或停用多项基础 Profile 行；
@@ -151,9 +160,10 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - **DSH Web Plugin Manager**：会禁用官方 `ui-settings-plugin-inventory`；
 - **DSH Plugin Hub**：第三方仓库声明受保护的 `@deepseek-ai` 官方命名空间。
 
-“策略阻止”不是下架：用户仍可查看项目介绍和 GitHub 仓库，但商城不会为其生成安装
-计划。目录收录也不代表完成安全审计；第三方插件会以 DSH 进程权限运行，安装前仍应
-核对仓库、固定 Commit、许可证、生命周期脚本和影响范围。
+“商城不可安装”不是下架：用户仍可查看项目介绍和 GitHub 仓库，并按项目文档自行决定
+是否手动安装，但商城不会为其生成安装计划。手动安装不受商城的备份、健康检查或失败
+回滚保护。目录收录也不代表完成安全审计；第三方插件会以 DSH 进程权限运行，安装前
+仍应核对仓库、固定 Commit、许可证、生命周期脚本和影响范围。
 
 ## 架构
 
@@ -179,7 +189,7 @@ Host 端使用 `ctx.inject(['webServer'], ...)` 等待可选 Web 服务。Client
 - 每个可安装条目必须固定 GitHub Commit，并通过 manifest、版本、Bundle Patch、
   DSH 入口 ID 和生命周期脚本复核；
 - 同一个 DSH `packageName` 只允许出现一次，避免安装和更新身份冲突；
-- 收录不代表安全审计，策略阻止和未验证状态必须保留真实原因。
+- 收录不代表安全审计，商城不可安装和未验证状态必须保留真实原因。
 
 ## 本地验证
 
