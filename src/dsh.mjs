@@ -3,6 +3,21 @@ import { delimiter, dirname, isAbsolute } from 'node:path'
 
 const MAX_OUTPUT_BYTES = 2 * 1024 * 1024
 
+function safeRuntimeArgs(values) {
+  if (!Array.isArray(values)) return []
+  const result = []
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index]
+    if (['--import', '--loader', '--require'].includes(value) && typeof values[index + 1] === 'string') {
+      result.push(value, values[index + 1])
+      index += 1
+    } else if (/^--(?:import|loader|require)=/.test(value)) {
+      result.push(value)
+    }
+  }
+  return result
+}
+
 function runFile(file, args, options = {}) {
   return new Promise((resolve) => {
     execFile(file, args, {
@@ -26,6 +41,7 @@ function runFile(file, args, options = {}) {
 
 export function createDshRunner(options = {}) {
   const nodePath = options.nodePath ?? process.execPath
+  const runtimeArgs = safeRuntimeArgs(options.runtimeArgs ?? process.execArgv)
   const nodeLauncherPath = options.nodeLauncherPath ?? process.argv0
   const cliPath = options.cliPath ?? process.argv[1]
   const timeoutMs = options.timeoutMs ?? 180_000
@@ -46,10 +62,10 @@ export function createDshRunner(options = {}) {
   }
   return {
     async plugin(profile, args) {
-      return runFile(nodePath, [cliPath, 'plugin', '--profile', profile, ...args], { timeoutMs, env: commandEnvironment })
+      return runFile(nodePath, [...runtimeArgs, cliPath, 'plugin', '--profile', profile, ...args], { timeoutMs, env: commandEnvironment })
     },
     async dumpConfig(profile) {
-      return runFile(nodePath, [cliPath, '--profile', profile, '--dump-config'], {
+      return runFile(nodePath, [...runtimeArgs, cliPath, '--profile', profile, '--dump-config'], {
         timeoutMs: Math.min(timeoutMs, 30_000), env: commandEnvironment,
       })
     },

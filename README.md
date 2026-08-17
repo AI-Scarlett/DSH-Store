@@ -30,7 +30,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#10bc2f5ef79dd10892a8a90849a1fd2684dfc3f6'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#4eb9c354d54b6ea60d821239eedf25d7691e3ca6'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -53,7 +53,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.4.1` |
+| 商城版本 | `0.4.2` |
 | 收录条目 | 32 个 |
 | 可安装 | 27 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
@@ -209,9 +209,20 @@ DSH Web UI All；推荐不会绕过固定 Commit、来源和风险校验。以�
 - **DSH Plugin Hub**：第三方仓库声明受保护的 `@deepseek-ai` 官方命名空间。
 
 “商城不可安装”不是下架：用户仍可查看项目介绍和 GitHub 仓库，并按项目文档自行决定
-是否手动安装，但商城不会为其生成安装计划。手动安装不受商城的备份、健康检查或失败
-回滚保护。目录收录也不代表完成安全审计；第三方插件会以 DSH 进程权限运行，安装前
+是否手动安装，但商城不会为其生成安装计划。手动安装可进入只读健康检查，但没有固定
+目录证据，也不受商城的备份或失败回滚保护。目录收录也不代表完成安全审计；第三方插件会以 DSH 进程权限运行，安装前
 仍应核对仓库、固定 Commit、许可证、生命周期脚本和影响范围。
+
+## 详细健康检查与权限选择
+
+健康检查覆盖当前 Profile 中的全部声明项，包括商城安装、外部安装、目录外插件和官方
+组件，并分别显示本地 manifest、Bundle 注册、来源与固定 Commit、版本漂移、安装脚本、
+配置合成以及运行时证据。报告不会用单一 `pass` 代替未知事实；没有独立业务探针时会明确
+显示“未验证”。
+
+第三方插件的文件、网络、命令和凭据权限默认处于“待选择”。用户可逐项选择允许或拒绝，
+目录外插件则需决定是否接受未知权限边界。选择仅用于形成个人健康审核结论，不会修改
+Profile，也不会限制插件进程的真实能力；真正的权限隔离仍由 DSH 宿主和沙箱负责。
 
 ## 架构
 

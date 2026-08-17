@@ -13,11 +13,16 @@
 
 ## Read-only surfaces
 
-Inventory, market search, health inspection, and operation planning do not write
+Inventory, market search, health inspection, permission-review choices, and operation planning do not write
 the selected Profile. HTTP endpoints accept same-origin JSON `POST` requests,
 limit request size, validate Profile names, and disable caches. The registry is
 GitHub-only; install/update re-fetches manifests and Bundle Patches from the
 pinned commit and fails closed when source evidence is unavailable.
+
+Health permission choices are review decisions, not runtime enforcement. The
+report covers catalogued and uncatalogued Profile plugins, keeps source drift,
+unknown permissions, and missing per-plugin runtime probes visible, and never
+turns user acceptance into a security-audit claim.
 
 ## Guarded mutations
 
@@ -37,6 +42,7 @@ Every write operation implements all of the following:
 9. Restore exact Profile files and reconcile dependencies offline on failure.
 10. Retain a secret-free JSONL audit result in the manager's own data directory.
 
-The current health gate does not prove every plugin business function or live
-Fiber is healthy. Package operations therefore report `restartRequired`; the
-official DSH inventory remains the runtime authority after restart.
+The health gate does not prove every plugin business function or live Fiber is
+healthy unless a dedicated probe provides that evidence. Package operations
+therefore report `restartRequired`; the official DSH inventory remains the
+runtime authority after restart.
