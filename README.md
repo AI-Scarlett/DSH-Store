@@ -30,7 +30,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9eeb4f1cab9df4a1afbfd7c7951db9c3781d06db'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -61,8 +61,8 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 | 项目 | 当前状态 |
 | --- | --- |
 | 商城版本 | `0.4.8` |
-| 收录条目 | 32 个 |
-| 可安装 | 27 个 |
+| 收录条目 | 38 个 |
+| 可安装 | 33 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
 | 推荐 | 5 个：自研四件套 + DSH Web UI All |
@@ -184,6 +184,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 内置 Guardian `0.4.4` | [`ca297cc`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ca297cc6f68cbe007b07b30815a9811d09f9ffcc) | 将重启切换为商城自带的进程外 launchd Guardian，加入冷启动入口冲突检查、有界重启、熔断和事务回滚隔离。 |
 | Guardian 心跳修复 `0.4.5` | [`3f0d117`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3f0d1177f024bf159532370fa2a3861dc1b4ba83) | 稳定期只执行一次；进入健康状态后持续刷新心跳与稳定时长，避免商城误报守护进程离线。 |
 | 健康权限交互修复 `0.4.6` | [`e645ede`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/e645edefe8ece8972d3fd723875b0f49ffeb272b) | 将权限定位与重新检查拆分，补充未选择数量、按钮禁用、检查中和完成/失败反馈。 |
+| Guardian 单一所有者 `0.4.8` | [`ed8722b`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d) | 以首页 HTTP 与 runtime Profile/Boot ID 共同判定健康；拒绝接管外部或未知端口进程，连续失败才有界重启，并移除会启动第二实例的 UI 命令。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见

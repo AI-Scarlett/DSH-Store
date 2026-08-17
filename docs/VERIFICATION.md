@@ -162,6 +162,22 @@
 误识别条目，保留原依赖及原有 Patch 加载方式；当前 Bundle 集合为安装前 3 项加
 本管理器 1 项。该兼容性处理没有改动两个本地插件的代码。
 
+### `0.4.8` Guardian 单一所有者与健康探测
+
+- 功能源码固定到 `ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d`；商城自身目录条目、
+  README 安装命令和 `package.json` 统一为 `0.4.8` 与该不可变 Commit；
+- Guardian 不再用“3080 端口可连接”替代健康结论；首页 HTTP、商城 runtime API、
+  Profile 和 Boot ID 必须同时匹配，连续探测失败并超过启动宽限期后才进入有界重启；
+- 已覆盖 Guardian 自有子进程半挂、未知进程占用端口、外部 DSH 身份匹配但未持有所有权、
+  旧版心跳兼容以及固定 launchctl 参数等自动化故障场景；
+- 商城不再显示复制或手工启动第二个 `dsh web` 实例的命令；端口所有权不明确时，一键重启
+  保持禁用，Guardian 不杀死、不冒充接管外部进程；
+- 一次性 `DSH_HOME` 使用官方 DSH CLI、Node `v24.19.0` 与 pnpm `10.32.1` 安装固定 Commit，
+  `--dump-config`、随机 loopback 端口首页、runtime API 和 inventory API 均通过；读取到的商城
+  版本为 `0.4.8`，临时目录随后清理，真实 `web` Profile 三个控制文件哈希保持不变；
+- 本节是仓库发布证据，不代表真实 `web` Profile 已更新或当前进程已由新版 Guardian 接管；
+  真实安装、重启、单进程与可见 UI 仍属于独立 E4 验收。
+
 ## 尚未验证
 
 - 尚未验证卸载并恢复到安装前状态；
