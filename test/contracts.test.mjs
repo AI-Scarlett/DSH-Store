@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.4.1')
+  assert.equal(pkg.version, '0.4.2')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -122,6 +122,14 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(navSource, /compact: true/)
   assert.match(navSource, /刷新 GitHub 目录/)
   assert.doesNotMatch(client, /id:\s*'all'/)
+})
+
+test('client fails closed when the live health endpoint still uses the legacy schema', async () => {
+  const client = await readFile(new URL('../src/client.js', import.meta.url), 'utf8')
+  assert.match(client, /health\.schemaVersion !== 2/)
+  assert.match(client, /这些结果不等于逐插件健康/)
+  assert.match(client, /重启 DSH Host 后才能逐插件检查/)
+  assert.match(client, /pnpm dsh web/)
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {

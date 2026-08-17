@@ -130,7 +130,14 @@ export function handleMarketRequest(req, res, options = {}) {
 export function handleHealthRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, async body => {
     const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
-    return checkProfileHealth({ dshHome: options.dshHome, profile, runner: options.runner })
+    const catalog = await options.catalogService.load({ force: body.refresh === true })
+    return checkProfileHealth({
+      dshHome: options.dshHome,
+      profile,
+      runner: options.runner,
+      catalog,
+      permissionDecisions: body.permissionDecisions,
+    })
   })
 }
 
