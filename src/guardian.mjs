@@ -42,7 +42,13 @@ export function createGuardianService(options = {}) {
     try {
       const value = JSON.parse(await readFile(location.status, 'utf8'))
       const heartbeatAgeMs = Math.max(0, Date.now() - Date.parse(value.heartbeatAt))
-      return { ...value, heartbeatAgeMs, available: heartbeatAgeMs <= staleMs }
+      const heartbeatFresh = Number.isFinite(heartbeatAgeMs) && heartbeatAgeMs <= staleMs
+      const owner = value.owner ?? (Number.isInteger(value.pid) ? 'guardian-legacy' : 'unknown')
+      const guardianOwnsHost = owner === 'guardian' || owner === 'guardian-legacy'
+      const available = heartbeatFresh && guardianOwnsHost && value.available !== false
+      const errorCode = available ? null : value.errorCode ?? (heartbeatFresh && !guardianOwnsHost
+        ? 'GUARDIAN_NOT_OWNER' : 'GUARDIAN_UNAVAILABLE')
+      return { ...value, owner, heartbeatAgeMs, heartbeatFresh, available, errorCode }
     } catch (error) {
       if (!['ENOENT', 'ENOTDIR'].includes(error?.code)) {
         return { schemaVersion: 1, installed: true, available: false, state: 'invalid-status', errorCode: 'GUARDIAN_STATUS_INVALID' }
@@ -101,6 +107,7 @@ export function createGuardianService(options = {}) {
       schemaVersion: 1, ...restart, stateDir: location.root, host: '127.0.0.1', port: 3080,
       profileDir: join(options.dshHome, 'profiles', plan.profile),
       stableMs: 30_000, restartWindowMs: 300_000, maxRestarts: 3,
+      healthProbeTimeoutMs: 1_500, unhealthyThreshold: 3, startupGraceMs: 10_000,
     })
     const plist = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${label}</string>\n<key>ProgramArguments</key><array><string>${xml(restart.nodePath)}</string><string>${xml(daemonTarget)}</string><string>${xml(join(location.root, 'config.json'))}</string></array>\n<key>RunAtLoad</key><true/><key>KeepAlive</key><true/><key>ThrottleInterval</key><integer>10</integer>\n<key>StandardOutPath</key><string>${xml(join(location.root, 'guardian.log'))}</string><key>StandardErrorPath</key><string>${xml(join(location.root, 'guardian.log'))}</string>\n</dict></plist>\n`
     if (plan.preconditions.plistSha256) await copyFile(plistPath, join(location.root, `launch-agent-${plan.preconditions.plistSha256}.backup.plist`))

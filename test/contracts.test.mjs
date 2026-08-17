@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.4.7')
+  assert.equal(pkg.version, '0.4.8')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -114,6 +114,10 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /一键安全重启 DSH Host/)
   assert.match(client, /restart-execute/)
   assert.match(client, /新的 DSH Host/)
+  assert.match(client, /唯一启动所有者/)
+  assert.match(client, /请勿再运行 pnpm dsh web 或 dsh web/)
+  assert.match(client, /GUARDIAN_PORT_CONFLICT/)
+  assert.doesNotMatch(client, /复制重启命令|请手动运行：/)
   assert.equal(client.match(/操作失败并已触发回滚/g)?.length, 1)
   const headingSource = client.slice(client.indexOf('const heading ='), client.indexOf('const nav ='))
   const navSource = client.slice(client.indexOf('const nav ='), client.indexOf('let content'))
@@ -132,11 +136,27 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /健康检查已完成/)
 })
 
+test('guardian health requires DSH HTTP identity and fails closed on an unowned port', async () => {
+  const [daemon, service] = await Promise.all([
+    readFile(new URL('src/guardian-daemon.mjs', project), 'utf8'),
+    readFile(new URL('src/guardian.mjs', project), 'utf8'),
+  ])
+  assert.match(daemon, /\/api2\/dsh-safe-plugin-manager\/runtime/)
+  assert.match(daemon, /runtime-identity-mismatch/)
+  assert.match(daemon, /external-dsh-detected/)
+  assert.match(daemon, /port-conflict/)
+  assert.match(daemon, /consecutiveProbeFailures/)
+  assert.match(service, /healthProbeTimeoutMs:\s*1_500/)
+  assert.match(service, /unhealthyThreshold:\s*3/)
+  assert.match(service, /startupGraceMs:\s*10_000/)
+  assert.doesNotMatch(daemon, /adopting-existing-host/)
+})
+
 test('client fails closed when the live health endpoint still uses the legacy schema', async () => {
   const client = await readFile(new URL('../src/client.js', import.meta.url), 'utf8')
   assert.match(client, /health\.schemaVersion !== 2/)
   assert.match(client, /这些结果不等于逐插件健康/)
-  assert.match(client, /重启 DSH Host 后才能逐插件检查/)
+  assert.match(client, /恢复 Guardian 后才能逐插件检查/)
   assert.match(client, /pnpm dsh web/)
 })
 
