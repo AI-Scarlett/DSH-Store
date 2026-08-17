@@ -51,6 +51,7 @@ export async function runGuardian(rawConfig, options = {}) {
   const spawnProcess = options.spawn ?? spawn
   const portReady = options.listening ?? listening
   const sleep = options.delay ?? delay
+  const currentTime = options.now ?? Date.now
   const statePath = join(config.stateDir, 'status.json')
   const requestPath = join(config.stateDir, 'request.json')
   const windowMs = config.restartWindowMs ?? 300_000
@@ -61,6 +62,8 @@ export async function runGuardian(rawConfig, options = {}) {
   let failures = []
   let lastError = null
   let recoveryAttempted = false
+  let childStartedAt = null
+  let healthyPid = null
 
   async function digestFile(path) {
     try { return createHash('sha256').update(await readFile(path)).digest('hex') } catch (error) {
@@ -101,11 +104,13 @@ export async function runGuardian(rawConfig, options = {}) {
   }
 
   async function publish(state, extra = {}) {
-    await atomicJson(statePath, {
+    const value = {
       schemaVersion: 1, installed: true, available: true, state, heartbeatAt: now(),
       profile: config.profile, pid: child?.pid ?? null, failureCount: failures.length,
       lastError, circuit: failures.length >= maxRestarts ? 'open' : 'closed', ...extra,
-    })
+    }
+    await atomicJson(statePath, value)
+    options.onPublish?.(value)
   }
 
   function launch() {
@@ -113,10 +118,14 @@ export async function runGuardian(rawConfig, options = {}) {
     child = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, ...profileArgs], {
       cwd: config.cwd, env: process.env, shell: false, stdio: ['ignore', 'ignore', 'pipe'],
     })
+    childStartedAt = currentTime()
+    healthyPid = null
     let tail = ''
     child.stderr?.on?.('data', chunk => { tail = `${tail}${String(chunk)}`.slice(-4096) })
     child.once('exit', (code, signal) => {
       child = null
+      childStartedAt = null
+      healthyPid = null
       if (!stopping) lastError = { code: Number.isInteger(code) ? code : null, signal: signal ?? null, ...safeFailureSummary(tail) }
     })
   }
@@ -127,15 +136,17 @@ export async function runGuardian(rawConfig, options = {}) {
     child.kill('SIGTERM')
     for (let count = 0; child && count < 50; count += 1) await sleep(100)
     if (child) child.kill('SIGKILL')
+    childStartedAt = null
+    healthyPid = null
     stopping = false
   }
 
   await mkdir(config.stateDir, { recursive: true, mode: 0o700 })
   while (options.signal?.aborted !== true) {
-    const cutoff = Date.now() - windowMs
+    const cutoff = currentTime() - windowMs
     failures = failures.filter(value => value >= cutoff)
     const request = await readJson(requestPath)
-    if (request?.type === 'restart' && Date.parse(request.expiresAt) >= Date.now()) {
+    if (request?.type === 'restart' && Date.parse(request.expiresAt) >= currentTime()) {
       await rm(requestPath, { force: true })
       await publish('restarting', { requestId: request.requestId })
       await stopChild()
@@ -144,22 +155,23 @@ export async function runGuardian(rawConfig, options = {}) {
     if (externalHostReady) {
       await publish('adopting-existing-host')
     } else if (!child && failures.length < maxRestarts) {
-      failures.push(Date.now())
+      failures.push(currentTime())
       await publish('starting')
       launch()
       await sleep(Math.min(2 ** (failures.length - 1) * 1000, 15_000))
     }
     if (child && await portReady(config.host, config.port)) {
-      const observedPid = child.pid
-      await publish('health-checking', { stableForMs: 0 })
-      await sleep(stableMs)
-      if (child?.pid === observedPid && await portReady(config.host, config.port)) {
+      const stableForMs = Math.max(0, currentTime() - childStartedAt)
+      if (healthyPid === child.pid) {
+        await publish('healthy', { stableForMs })
+      } else if (stableForMs >= stableMs) {
+        healthyPid = child.pid
         failures = []
         recoveryAttempted = false
         lastError = null
         await rm(join(config.stateDir, 'pending-recovery.json'), { force: true })
-        await publish('healthy', { stableForMs: stableMs })
-      }
+        await publish('healthy', { stableForMs })
+      } else await publish('health-checking', { stableForMs })
     } else if (externalHostReady) {
       await sleep(options.pollMs ?? 1_000)
     } else if (!child && failures.length >= maxRestarts) {
