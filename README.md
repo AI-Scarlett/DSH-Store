@@ -30,7 +30,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#2f8962a07bb5cad2a13352bdebddf45a340ce1b8'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#4eb9c354d54b6ea60d821239eedf25d7691e3ca6'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
