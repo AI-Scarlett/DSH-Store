@@ -4,7 +4,7 @@
     "name": "DSH Safe GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/",
-    "updatedAt": "2026-08-16T14:44:49Z",
+    "updatedAt": "2026-08-17T02:58:00Z",
     "categories": {
       "marketplace": "插件市场",
       "management": "管理工具",
@@ -39,8 +39,8 @@
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "10bc2f5ef79dd10892a8a90849a1fd2684dfc3f6",
-      "version": "0.4.1",
+      "commit": "4eb9c354d54b6ea60d821239eedf25d7691e3ca6",
+      "version": "0.4.2",
       "categories": ["marketplace", "management"],
       "featured": true,
       "entryIds": ["dsh-safe-plugin-manager"],
@@ -605,6 +605,111 @@
         "externalDependencies": [], "reviewStatus": "automated-scan"
       },
       "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+    },
+    {
+      "id": "dsh-context",
+      "name": "DSH Context",
+      "packageName": "dsh-context",
+      "description": "在 DSH 会话中展示上下文组成、历史变化与相关命令，帮助定位上下文占用和演化。",
+      "repositoryUrl": "https://github.com/bowenliang123/dsh-context",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "a4deb93e21104be439b8ca789c38445d37cabd4f",
+      "version": "0.10.1",
+      "categories": ["sessions", "visualization", "ui"],
+      "entryIds": ["dsh-context"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "Apache-2.0",
+        "permissions": { "level": "medium", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+    },
+    {
+      "id": "dsh-theme-plugin",
+      "name": "Chinese Traditional Color Themes",
+      "packageName": "dsh-theme-plugin",
+      "description": "为 DSH Web 提供中国传统色主题包，并包含主题生成和对比度检查工具。",
+      "repositoryUrl": "https://github.com/nevertoday/dsh-theme-plugin",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "b85a37bc252ad423b2d3aee45fa4e2a72e15ca94",
+      "version": "0.3.3",
+      "categories": ["themes", "ui"],
+      "entryIds": ["theme-zhongguo"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=20", "systems": [], "profiles": ["web"] },
+      "details": {
+        "pluginType": "theme", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+    },
+    {
+      "id": "dsh-blender",
+      "name": "DSH Blender",
+      "packageName": "dsh-blender",
+      "description": "为 DSH 提供 Blender 三维建模、重建、渲染、验证和导出工具及配套技能。",
+      "repositoryUrl": "https://github.com/CheshireJCat/blender",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "3d641dae1c84248f213095f322f6beace0631409",
+      "version": "0.2.1",
+      "categories": ["design", "tools", "workflow"],
+      "entryIds": ["blender-modeling"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=20", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web", "headless"] },
+      "details": {
+        "pluginType": "suite", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "high", "files": "write", "network": "none", "commands": "shell", "credentials": ["none"] },
+        "externalDependencies": ["Blender", "Python（可选分析与辅助功能）"], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": [], "review": "community-tool-execution-not-security-audited" }
+    },
+    {
+      "id": "powercontext-dsh",
+      "name": "PowerContext for DSH",
+      "packageName": "powercontext-dsh",
+      "description": "连接本地 PowerContext 服务，为 DSH 提供召回、记忆、交接、经验和技能能力。",
+      "repositoryUrl": "https://github.com/knqiufan/powercontext-dsh",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "482d082ded7d22663f131a1f004e2cf586f9fcc9",
+      "version": "0.0.3",
+      "categories": ["memory", "workflow"],
+      "entryIds": ["powercontext-dsh"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=20", "systems": [], "profiles": ["web", "headless"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "Apache-2.0",
+        "permissions": { "level": "high", "files": "none", "network": "specified-services", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": ["PowerContext Server"], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": ["prepare"], "review": "community-context-egress-not-security-audited" }
+    },
+    {
+      "id": "dsh-lark",
+      "name": "DSH Lark",
+      "packageName": "@sugarforever/dsh-lark",
+      "description": "将飞书或 Lark 消息接入 DSH 会话，支持私聊、群聊提及和模型回复。",
+      "repositoryUrl": "https://github.com/sugarforever/dsh-lark",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "bef110c073e3ebc1d6a38b05e45302b83328b5cc",
+      "version": "0.1.1",
+      "categories": ["notifications", "workflow"],
+      "entryIds": ["lark-channel"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web", "headless"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "high", "files": "none", "network": "specified-services", "commands": "none", "credentials": ["api-key"] },
+        "externalDependencies": ["飞书/Lark Open Platform"], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": [], "review": "community-messaging-integration-not-security-audited" }
     },
     {
       "id": "dsh-memory-evolve",

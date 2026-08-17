@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import test from 'node:test'
-import { handleInventoryRequest, handleMarketRequest, handlePlanRequest } from '../src/panel.mjs'
+import { handleHealthRequest, handleInventoryRequest, handleMarketRequest, handlePlanRequest } from '../src/panel.mjs'
 
 function request(body, headers = {}) {
   const req = Readable.from([JSON.stringify(body)])
@@ -98,4 +98,35 @@ test('plan endpoint requires explicit operation intent header', async () => {
   await handlePlanRequest(request({ action: 'install' }, { 'x-dsh-safe-intent': 'plan' }), allowed, { operationService })
   assert.equal(allowed.status, 200)
   assert.equal(JSON.parse(allowed.body).value.planId, 'one')
+})
+
+test('health endpoint audits installed catalog plugins and forwards permission choices', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-health-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(join(profileDir, 'node_modules', 'dsh-demo'), { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: { 'dsh-demo': 'git+https://github.com/example/demo.git#' + 'a'.repeat(40) },
+      dsh: { profile: { bundles: ['dsh-demo'] } },
+    }))
+    await writeFile(join(profileDir, 'cordis.patch.yml'), '# fixture\n')
+    await writeFile(join(profileDir, 'node_modules', 'dsh-demo', 'package.json'), JSON.stringify({ name: 'dsh-demo', version: '1.0.0' }))
+    const catalog = { entries: [{
+      id: 'demo', name: 'Demo', packageName: 'dsh-demo', commit: 'a'.repeat(40), version: '1.0.0',
+      details: { permissions: { level: 'medium', files: 'read-only', network: 'none', commands: 'none', credentials: ['none'] } },
+      risk: { installScripts: [] },
+    }] }
+    const req = request({ permissionDecisions: { 'dsh-demo': { files: true } } })
+    const res = response()
+    await handleHealthRequest(req, res, {
+      dshHome: root, defaultProfile: 'web', catalogService: { load: async () => catalog },
+      runner: { dumpConfig: async () => ({ ok: true }) },
+    })
+    const payload = JSON.parse(res.body)
+    assert.equal(res.status, 200)
+    assert.equal(payload.value.schemaVersion, 2)
+    assert.equal(payload.value.plugins[0].permissions.status, 'accepted')
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
 })
