@@ -14,6 +14,9 @@ window.__ModuleLoader__.load({
       execute: '/api2/dsh-safe-plugin-manager/execute',
       restartPlan: '/api2/dsh-safe-plugin-manager/restart/plan',
       restartExecute: '/api2/dsh-safe-plugin-manager/restart/execute',
+      guardian: '/api2/dsh-safe-plugin-manager/guardian',
+      guardianPlan: '/api2/dsh-safe-plugin-manager/guardian/plan',
+      guardianExecute: '/api2/dsh-safe-plugin-manager/guardian/execute',
     }
     const PROJECT_REPOSITORY_URL = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
     const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
@@ -555,6 +558,32 @@ window.__ModuleLoader__.load({
         React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
     }
 
+    function GuardianModal({ operation, confirmation, setConfirmation, execute, cancel }) {
+      if (!operation || operation.status === 'idle') return null
+      if (operation.status === 'planning' || operation.status === 'executing') return React.createElement(Modal, {
+        open: true, onClose: operation.status === 'planning' ? cancel : () => {}, title: '安装 DSH Guardian',
+        footer: null, className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+      }, React.createElement('div', { style: styles.notice }, operation.status === 'planning' ? '正在核对 launchd 与守护文件预条件…' : '正在原子安装并接管 DSH Host…'))
+      if (operation.status === 'error' || operation.status === 'result') return React.createElement(Modal, {
+        open: true, onClose: cancel, title: operation.status === 'result' ? 'Guardian 已安装' : 'Guardian 安装失败',
+        footer: React.createElement(Button, { onClick: cancel }, '关闭'), className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+      }, React.createElement('div', { style: operation.status === 'result' ? styles.notice : styles.error },
+        operation.status === 'result' ? '外部 Guardian 已接管 DSH 启动监督；请等待健康状态变为正常。' : `${operation.code || 'GUARDIAN_FAILED'}：${operation.message}`))
+      const plan = operation.value
+      return React.createElement(Modal, {
+        open: true, onClose: cancel, title: '确认安装商城内置 Guardian',
+        description: 'Guardian 独立于 DSH 运行，并将替换当前 local.dsh.web 启动任务。',
+        footer: React.createElement(React.Fragment, null,
+          React.createElement(Button, { onClick: cancel }, '取消'),
+          React.createElement(Button, { primary: true, danger: true, disabled: confirmation !== plan.confirmation, onClick: execute }, '安装并接管')),
+        className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+      }, React.createElement('div', { style: styles.detailSection },
+        React.createElement('div', { style: styles.muted }, `写入：${plan.impact.writes.join('、')}`),
+        React.createElement('div', { style: styles.muted }, `永久保护：${plan.impact.neverModifies.join('、')}`),
+        React.createElement('div', { style: styles.code }, plan.confirmation),
+        React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
+    }
+
     function ManagerPanel() {
       const [view, setView] = useState('market')
       const [query, setQuery] = useState('')
@@ -567,16 +596,19 @@ window.__ModuleLoader__.load({
       const [pendingRestart, setPendingRestart] = useState(() => readPendingRestart())
       const [restartConfirmation, setRestartConfirmation] = useState('')
       const [restartOperation, setRestartOperation] = useState({ status: 'idle' })
+      const [guardianConfirmation, setGuardianConfirmation] = useState('')
+      const [guardianOperation, setGuardianOperation] = useState({ status: 'idle' })
 
       const refresh = useCallback(async (force = false, decisions = {}) => {
         setState({ status: 'loading' })
         try {
-          const [inventory, market, health, runtime] = await Promise.all([
+          const [inventory, market, health, runtime, guardian] = await Promise.all([
             post(ROUTES.inventory), post(ROUTES.market, { refresh: force }),
             post(ROUTES.health, { refresh: force, permissionDecisions: decisions }),
             post(ROUTES.runtime),
+            post(ROUTES.guardian),
           ])
-          setState({ status: 'ready', inventory, market, health, runtime })
+          setState({ status: 'ready', inventory, market, health, runtime, guardian })
         } catch (error) {
           setState({ status: 'error', message: String(error?.message || error) })
         }
@@ -659,6 +691,20 @@ window.__ModuleLoader__.load({
 
       const cancel = useCallback(() => { setConfirmation(''); setOperation({ status: 'idle' }) }, [])
       const cancelRestart = useCallback(() => { setRestartConfirmation(''); setRestartOperation({ status: 'idle' }) }, [])
+      const cancelGuardian = useCallback(() => { setGuardianConfirmation(''); setGuardianOperation({ status: 'idle' }) }, [])
+      const beginGuardianInstall = useCallback(async () => {
+        setGuardianConfirmation(''); setGuardianOperation({ status: 'planning' })
+        try { setGuardianOperation({ status: 'plan', value: await post(ROUTES.guardianPlan, {}, 'guardian-plan') }) }
+        catch (error) { setGuardianOperation({ status: 'error', code: error?.code, message: String(error?.message || error) }) }
+      }, [])
+      const executeGuardianInstall = useCallback(async () => {
+        if (guardianOperation.status !== 'plan') return
+        const plan = guardianOperation.value; setGuardianOperation({ status: 'executing', value: plan })
+        try {
+          const value = await post(ROUTES.guardianExecute, { planId: plan.planId, confirmation: guardianConfirmation }, 'guardian-execute')
+          setGuardianOperation({ status: 'result', value })
+        } catch (error) { setGuardianOperation({ status: 'error', code: error?.code, message: String(error?.message || error) }) }
+      }, [guardianConfirmation, guardianOperation])
       const beginRestart = useCallback(async () => {
         setRestartConfirmation('')
         setRestartOperation({ status: 'planning' })
@@ -746,6 +792,16 @@ window.__ModuleLoader__.load({
         `目标 ${pendingRestart.packageName}${pendingRestart.targetVersion ? ` ${pendingRestart.targetVersion}` : ''} 未在新实例中确认加载，请查看健康检查详情。`) : null,
       restartState.status !== 'pending' ? React.createElement(Button, { onClick: dismissRestart }, '完成') : null)
 
+      const guardianBanner = state.status !== 'ready' ? null : React.createElement('div', {
+        style: state.guardian.available ? styles.notice : styles.error,
+      }, React.createElement('div', { style: styles.name }, state.guardian.available
+        ? `DSH Guardian：${state.guardian.state} · 独立守护已连接`
+        : 'DSH Guardian 未运行：一键重启已被安全禁用'),
+      React.createElement('div', { style: styles.muted }, state.guardian.available
+        ? `心跳 ${state.guardian.heartbeatAgeMs}ms · 失败次数 ${state.guardian.failureCount || 0} · 熔断 ${state.guardian.circuit || '未知'}`
+        : '安装商城自带的外部 Guardian 后，即使 DSH 冷启动失败也能继续诊断和恢复。'),
+      !state.guardian.available ? React.createElement(Button, { primary: true, onClick: beginGuardianInstall }, '安装并接管 DSH 守护') : null)
+
       let content
       if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
       else if (state.status === 'error') content = React.createElement('p', { style: styles.error }, state.message)
@@ -782,11 +838,15 @@ window.__ModuleLoader__.load({
 
       return React.createElement('section', { style: styles.root },
         React.createElement('style', null, DETAIL_MODAL_CSS),
-        heading, nav, restartBanner, content,
+        heading, nav, guardianBanner, restartBanner, content,
         React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }),
         React.createElement(RestartModal, {
           operation: restartOperation, confirmation: restartConfirmation, setConfirmation: setRestartConfirmation,
           execute: executeRestart, cancel: cancelRestart,
+        }),
+        React.createElement(GuardianModal, {
+          operation: guardianOperation, confirmation: guardianConfirmation, setConfirmation: setGuardianConfirmation,
+          execute: executeGuardianInstall, cancel: cancelGuardian,
         }),
         React.createElement(PluginDetailsModal, {
           entry: detailEntry, categoryLabels: state.status === 'ready' ? state.market.registry.categories : {},

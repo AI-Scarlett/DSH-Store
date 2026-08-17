@@ -185,7 +185,7 @@ function planImpact(action, entry) {
   const packageOperation = ['install', 'update', 'migrate', 'uninstall'].includes(action)
   return {
     mayModify: packageOperation
-      ? ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'node_modules', 'dsh.profile.bundles']
+      ? ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'node_modules', 'dsh.profile.bundles', 'guardian pending recovery record']
       : ['cordis.patch.yml managed block'],
     neverModify: ['DeepSeek Harness source', '@deepseek-ai/* packages', 'other Profiles', 'managed-block external content'],
     restartRequired: packageOperation,
@@ -324,6 +324,16 @@ export function createOperationService(options = {}) {
       }
       const health = await checkProfileHealth({ dshHome, profile: plan.profile, runner })
       if (health.status === 'unhealthy') throw Object.assign(new Error('post-operation health check failed'), { code: 'HEALTH_CHECK_FAILED' })
+      if (plan.impact.restartRequired) {
+        const postconditions = await capturePreconditions(plan.privateData.profileDir)
+        const recoveryDir = join(dshHome, 'dsh-safe-plugin-manager', 'guardian')
+        await mkdir(recoveryDir, { recursive: true, mode: 0o700 })
+        await atomicWrite(join(recoveryDir, 'pending-recovery.json'), `${JSON.stringify({
+          schemaVersion: 1, transactionId, profile: plan.profile, packageName: entry.packageName,
+          backupDir, preconditions: plan.preconditions, postconditions,
+          authorizedByConfirmation: plan.confirmation, createdAt: new Date().toISOString(),
+        }, null, 2)}\n`)
+      }
       const value = {
         schemaVersion: 1, transactionId, status: 'applied', action,
         profile: plan.profile, packageName: entry.packageName, backupId: transactionId,
