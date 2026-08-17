@@ -19,6 +19,7 @@ function normalizeConfig(config = {}) {
     mutationsEnabled: config.mutationsEnabled === true,
     telemetryEnabled: config.telemetryEnabled === true,
     telemetryUrl: typeof config.telemetryUrl === 'string' ? config.telemetryUrl : null,
+    installCountsUrl: typeof config.installCountsUrl === 'string' ? config.installCountsUrl : null,
     dshCliPath: typeof config.dshCliPath === 'string' && config.dshCliPath.trim() !== ''
       ? config.dshCliPath
       : process.argv[1],
@@ -27,7 +28,7 @@ function normalizeConfig(config = {}) {
 
 export function apply(ctx, config = {}) {
   const options = normalizeConfig(config)
-  const catalogService = createCatalogService({ catalogUrl: options.catalogUrl })
+  const catalogService = createCatalogService({ catalogUrl: options.catalogUrl, installCountsUrl: options.installCountsUrl })
   const runner = createDshRunner({ cliPath: options.dshCliPath })
   const launchSpec = runner.restartSpec(options.defaultProfile)
   const launchProfileArgs = options.defaultProfile === 'web' ? ['web'] : ['--profile', options.defaultProfile]

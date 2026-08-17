@@ -14,7 +14,7 @@ export function createTelemetryClient(options = {}) {
   const enabled = options.enabled === true && endpoint !== null
   const request = options.fetch ?? globalThis.fetch
 
-  async function recordInstall({ pluginId, version }) {
+  async function recordInstall({ pluginId, version, receiptId }) {
     if (!enabled) return { status: 'disabled' }
     if (typeof request !== 'function') return { status: 'failed', code: 'FETCH_UNAVAILABLE' }
     const controller = new AbortController()
@@ -23,7 +23,7 @@ export function createTelemetryClient(options = {}) {
       const response = await request(endpoint, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ schemaVersion: 1, event: 'install', pluginId, version }),
+        body: JSON.stringify({ schemaVersion: 1, event: 'install', pluginId, version, receiptId }),
         signal: controller.signal,
       })
       return response.ok ? { status: 'recorded' } : { status: 'failed', code: `HTTP_${response.status}` }
