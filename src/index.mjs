@@ -5,6 +5,7 @@ import { createOperationService } from './operations.mjs'
 import { registerManagerRoutes } from './panel.mjs'
 import { createRuntimeStatus } from './runtime.mjs'
 import { createRestartService } from './restart.mjs'
+import { createGuardianService } from './guardian.mjs'
 import { createTelemetryClient } from './telemetry.mjs'
 
 export const name = 'dsh-safe-plugin-manager'
@@ -35,10 +36,10 @@ export function apply(ctx, config = {}) {
     restartCommand: [launchSpec.nodePath, ...launchSpec.runtimeArgs, launchSpec.cliPath, ...launchProfileArgs],
     restartWorkingDirectory: launchSpec.cwd,
   })
-  const restartService = createRestartService({
-    runtimeStatus,
-    restartSpec: profile => runner.restartSpec(profile),
+  const guardianService = createGuardianService({
+    dshHome: options.dshHome, restartSpec: profile => runner.restartSpec(profile),
   })
+  const restartService = createRestartService({ runtimeStatus, guardianService })
   const telemetryClient = createTelemetryClient({ endpoint: options.telemetryUrl, enabled: options.telemetryEnabled })
   const operationService = createOperationService({
     dshHome: options.dshHome,
@@ -51,7 +52,7 @@ export function apply(ctx, config = {}) {
   })
   ctx.inject(['webServer'], (webCtx) => {
     const dispose = registerManagerRoutes(webCtx.webServer, {
-      ...options, catalogService, runner, operationService, runtimeStatus, restartService,
+      ...options, catalogService, runner, operationService, runtimeStatus, restartService, guardianService,
     })
     if (typeof dispose === 'function' && typeof webCtx.effect === 'function') {
       webCtx.effect(() => dispose, 'dsh-safe-plugin-manager: inventory route')

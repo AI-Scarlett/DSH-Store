@@ -30,7 +30,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#089351adf7bd40acd51bb7d38ec1e13511b10f9f'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#ca297cc6f68cbe007b07b30815a9811d09f9ffcc'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -40,10 +40,12 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 ### 重启与验收
 
 1. 运行 `dsh --profile web --dump-config`，确认配置可以成功合成；
-2. 包操作完成后，商城会明确标记“待重启”，可复制原启动命令或生成一次性的
-   `RESTART DSH <profile>` 计划来执行一键安全重启；
-3. 一键重启由独立助手等待旧 Host 退出。若外部监督器已恢复监听，助手不会重复启动；
-4. 页面检测到新的 Boot ID 后重新读取插件清单与健康报告，只有通过才显示“已重启并生效”；
+2. 在商城中用独立计划安装随包提供的 DSH Guardian；它由 macOS launchd 在 DSH 进程外运行，
+   不是另一个普通 DSH 插件；
+3. 包操作完成后，商城会明确标记“待重启”。只有 Guardian 心跳正常时才允许生成一次性的
+   `RESTART DSH <profile>` 计划；
+4. Guardian 负责有界重启、30 秒稳定性观察和熔断；5 分钟内最多自动启动 3 次，不会无限循环；
+5. 页面检测到新的 Boot ID 后重新读取插件清单与健康报告，只有通过才显示“已重启并生效”；
 5. 如果安装、重启或页面显示异常，请在
    [GitHub Issues](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues) 提交原始错误，
    不要提交凭据、完整 Profile 文件或环境变量。
@@ -55,7 +57,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.4.3` |
+| 商城版本 | `0.4.4` |
 | 收录条目 | 32 个 |
 | 可安装 | 27 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
@@ -99,9 +101,19 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - 写入前创建备份，完成后执行配置健康检查，失败时自动回滚；
 - 永久保护 DSH 源码、官方包、官方插件清单、用户 Patch 区块、会话、设置和凭据。
 
+### 商城内置 DSH Guardian
+
+- Guardian 随商城发布，但复制到商城自己的持久状态目录并由 launchd 独立运行；DSH
+  启动失败时不依赖 Host Plugin 或设置页存活；
+- 安装 Guardian 仍需一次性计划、精确确认和文件哈希预条件，并明确展示将替换的启动任务；
+- 使用固定参数数组启动 DSH，不使用 `bash -c`，记录心跳、启动状态、失败次数和熔断状态；
+- 重启前扫描 Profile Patch 与所有已安装 Bundle Patch 的入口 ID；发现重复入口时将包操作
+  判为不健康并立即恢复事务备份，不关闭当前 Host；
+- Guardian 连续失败会打开熔断并保留故障摘要，不会把“端口暂时出现”误报成插件已健康。
+
 ### 健康检查与来源识别
 
-- 检查 Profile 清单、依赖、管理器托管 Patch 与 DSH 配置合成；
+- 检查 Profile 清单、依赖、管理器托管 Patch、DSH 配置合成与冷启动入口 ID 冲突；
 - 合并 Bundle 和依赖信息，显示已安装版本、声明来源和官方/第三方属性；
 - 区分“已验证”“部分验证”“商城不可安装”和“尚未验证”，不把声明态当成运行态；
 - 运行态 Loader/Fiber 状态继续以 DSH 官方清单为权威，商城不直接控制官方运行时。
@@ -156,6 +168,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 本地来源迁移 `0.3.1` | [`80fefec`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/80fefec) | 将本地开发安装从普通更新中隔离，新增显式“迁移到商城版”流程。 |
 | 热门插件扩充 | [`7aaba17`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/7aaba17) | 按推荐清单扩充到 31 个条目和 22 个分类，并为不兼容项目保留展示型阻止。 |
 | 插件详情与更新修复 `0.4.0` | [`f3a93c2`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/f3a93c2) | 补齐 31 个插件的权限、许可证、审核与兼容性详情；为商城不可安装项目提供 GitHub 手动入口，并修复 DSH 运行环境中的 pnpm PATH。 |
+| 内置 Guardian `0.4.4` | [`ca297cc`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ca297cc6f68cbe007b07b30815a9811d09f9ffcc) | 将重启切换为商城自带的进程外 launchd Guardian，加入冷启动入口冲突检查、有界重启、熔断和事务回滚隔离。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见

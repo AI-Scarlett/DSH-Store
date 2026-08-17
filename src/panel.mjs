@@ -11,6 +11,9 @@ export const EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/execute'
 export const RUNTIME_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/runtime'
 export const RESTART_PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/restart/plan'
 export const RESTART_EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/restart/execute'
+export const GUARDIAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/guardian'
+export const GUARDIAN_PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/guardian/plan'
+export const GUARDIAN_EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/guardian/execute'
 const MAX_BODY_BYTES = 16 * 1024
 
 class HttpError extends Error {
@@ -170,6 +173,18 @@ export function handleRestartExecuteRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, body => options.restartService.execute(body), 'restart-execute')
 }
 
+export function handleGuardianRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, () => options.guardianService.status())
+}
+
+export function handleGuardianPlanRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, body => options.guardianService.createInstallPlan(body), 'guardian-plan')
+}
+
+export function handleGuardianExecuteRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, body => options.guardianService.executeInstall(body), 'guardian-execute')
+}
+
 export function registerInventoryRoute(webServer, options = {}) {
   return webServer.register({
     kind: 'exact',
@@ -188,6 +203,9 @@ export function registerManagerRoutes(webServer, options = {}) {
     [RUNTIME_ROUTE_PATH, (req, res) => handleRuntimeRequest(req, res, options)],
     [RESTART_PLAN_ROUTE_PATH, (req, res) => handleRestartPlanRequest(req, res, options)],
     [RESTART_EXECUTE_ROUTE_PATH, (req, res) => handleRestartExecuteRequest(req, res, options)],
+    [GUARDIAN_ROUTE_PATH, (req, res) => handleGuardianRequest(req, res, options)],
+    [GUARDIAN_PLAN_ROUTE_PATH, (req, res) => handleGuardianPlanRequest(req, res, options)],
+    [GUARDIAN_EXECUTE_ROUTE_PATH, (req, res) => handleGuardianExecuteRequest(req, res, options)],
   ]
   const disposers = routes.map(([path, handler]) => webServer.register({ kind: 'exact', path, handler }))
   return () => {

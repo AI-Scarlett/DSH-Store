@@ -22,7 +22,7 @@ export function createRuntimeStatus(options = {}) {
     restartCommandText: command.map(shellQuote).join(' '),
     restartWorkingDirectory: options.restartWorkingDirectory ?? null,
     restartSupported: true,
-    restartMode: 'guarded-helper',
-    restartReason: 'DSH CLI has no native restart command; the manager uses a confirmed detached helper and the original fixed launcher arguments.',
+    restartMode: 'external-guardian',
+    restartReason: 'Restart is accepted only by the marketplace-bundled Guardian running outside the DSH process.',
   })
 }

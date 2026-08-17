@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { readProfileInventory, resolveProfileDirectory, validateProfileName } from './inventory.mjs'
 import { readManagedDisabledIds } from './managed-patch.mjs'
+import { inspectColdStartContract } from './cold-start.mjs'
 
 const PERMISSION_FIELDS = ['files', 'network', 'commands', 'credentials']
 const check = (id, status, message, details = null) => ({ id, status, message, details })
@@ -142,6 +143,10 @@ export async function checkProfileHealth(options = {}) {
     checks.push(composition.ok ? check('config-composition', 'pass', 'DSH 配置合成通过')
       : check('config-composition', 'error', composition.timedOut ? 'DSH 配置合成超时' : 'DSH 配置合成失败', { exitCode: composition.exitCode }))
   } else checks.push(check('config-composition', 'unverified', '未配置 DSH 命令执行器'))
+
+  const coldStart = await inspectColdStartContract({ dshHome: options.dshHome, profile, inventory })
+  checks.push(check('cold-start-entry-ids', coldStart.status, coldStart.message,
+    coldStart.collisions.length > 0 ? { collisions: coldStart.collisions } : null))
 
   const plugins = inventory.plugins.map(plugin => buildPluginReport(
     plugin, catalogByPackage.get(plugin.packageName), safeObject(decisions[plugin.packageName]),

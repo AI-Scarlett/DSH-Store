@@ -71,7 +71,7 @@ function installedManifestCandidates(dshHome, profileDir, packageName, specifier
 async function firstInstalledManifest(candidates) {
   for (const path of candidates) {
     const manifest = await readJson(path)
-    if (manifest) return manifest
+    if (manifest) return { manifest, path }
   }
   return null
 }
@@ -124,9 +124,10 @@ export async function readProfileInventory(options = {}) {
       source: classifySpecifier(specifier),
       official: packageName.startsWith('@deepseek-ai/'),
       installed: installed !== null,
-      version: typeof installed?.version === 'string' ? installed.version : null,
-      description: typeof installed?.description === 'string' ? installed.description : null,
-      repository: repositoryUrl(installed?.repository),
+      version: typeof installed?.manifest?.version === 'string' ? installed.manifest.version : null,
+      description: typeof installed?.manifest?.description === 'string' ? installed.manifest.description : null,
+      repository: repositoryUrl(installed?.manifest?.repository),
+      manifestPath: installed?.path ?? null,
       runtime: { status: 'unverified', phase: null },
     })
   }
@@ -141,4 +142,3 @@ export async function readProfileInventory(options = {}) {
     diagnostics,
   }
 }
-
