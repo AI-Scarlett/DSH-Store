@@ -38,3 +38,23 @@ process.stdout.write(JSON.stringify({ argv: process.argv.slice(2), path: process
     await rm(root, { recursive: true, force: true })
   }
 })
+
+test('DSH runner preserves only module-loading Node arguments for a TypeScript CLI entry', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-runner-loader-'))
+  try {
+    const loader = join(root, 'loader.mjs')
+    const cli = join(root, 'cli.mjs')
+    await writeFile(loader, 'export async function resolve(specifier, context, nextResolve) { return nextResolve(specifier, context) }\n')
+    await writeFile(cli, 'process.stdout.write(JSON.stringify(process.execArgv))\n')
+    const runner = createDshRunner({
+      nodePath: process.execPath,
+      cliPath: cli,
+      runtimeArgs: ['--inspect=0', '--import', loader, '--trace-warnings'],
+    })
+    const result = await runner.dumpConfig('web')
+    assert.equal(result.ok, true)
+    assert.deepEqual(JSON.parse(result.stdout), ['--import', loader])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
