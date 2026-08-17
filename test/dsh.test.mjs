@@ -54,6 +54,10 @@ test('DSH runner preserves only module-loading Node arguments for a TypeScript C
     const result = await runner.dumpConfig('web')
     assert.equal(result.ok, true)
     assert.deepEqual(JSON.parse(result.stdout), ['--import', loader])
+    assert.deepEqual(runner.restartSpec('web'), {
+      nodePath: process.execPath, runtimeArgs: ['--import', loader], cliPath: cli,
+      cwd: process.cwd(), profile: 'web',
+    })
   } finally {
     await rm(root, { recursive: true, force: true })
   }

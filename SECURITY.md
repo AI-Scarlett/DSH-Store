@@ -46,3 +46,10 @@ The health gate does not prove every plugin business function or live Fiber is
 healthy unless a dedicated probe provides that evidence. Package operations
 therefore report `restartRequired`; the official DSH inventory remains the
 runtime authority after restart.
+
+Host restart is a separate single-use operation requiring the exact
+`RESTART DSH <profile>` confirmation. It launches only the current Node/DSH CLI
+with fixed argument arrays and `shell=false`. A detached helper waits for the
+old PID to exit, escalates only that exact PID if graceful termination times
+out, and refuses to launch a duplicate when the loopback web port is already
+restored by an external supervisor.

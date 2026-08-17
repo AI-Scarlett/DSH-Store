@@ -3,6 +3,8 @@ import { createDshRunner } from './dsh.mjs'
 import { resolveDshHome, validateProfileName } from './inventory.mjs'
 import { createOperationService } from './operations.mjs'
 import { registerManagerRoutes } from './panel.mjs'
+import { createRuntimeStatus } from './runtime.mjs'
+import { createRestartService } from './restart.mjs'
 import { createTelemetryClient } from './telemetry.mjs'
 
 export const name = 'dsh-safe-plugin-manager'
@@ -26,6 +28,17 @@ export function apply(ctx, config = {}) {
   const options = normalizeConfig(config)
   const catalogService = createCatalogService({ catalogUrl: options.catalogUrl })
   const runner = createDshRunner({ cliPath: options.dshCliPath })
+  const launchSpec = runner.restartSpec(options.defaultProfile)
+  const launchProfileArgs = options.defaultProfile === 'web' ? ['web'] : ['--profile', options.defaultProfile]
+  const runtimeStatus = createRuntimeStatus({
+    profile: options.defaultProfile,
+    restartCommand: [launchSpec.nodePath, ...launchSpec.runtimeArgs, launchSpec.cliPath, ...launchProfileArgs],
+    restartWorkingDirectory: launchSpec.cwd,
+  })
+  const restartService = createRestartService({
+    runtimeStatus,
+    restartSpec: profile => runner.restartSpec(profile),
+  })
   const telemetryClient = createTelemetryClient({ endpoint: options.telemetryUrl, enabled: options.telemetryEnabled })
   const operationService = createOperationService({
     dshHome: options.dshHome,
@@ -34,10 +47,11 @@ export function apply(ctx, config = {}) {
     runner,
     mutationsEnabled: options.mutationsEnabled,
     telemetryClient,
+    runtimeInstanceId: runtimeStatus.bootId,
   })
   ctx.inject(['webServer'], (webCtx) => {
     const dispose = registerManagerRoutes(webCtx.webServer, {
-      ...options, catalogService, runner, operationService,
+      ...options, catalogService, runner, operationService, runtimeStatus, restartService,
     })
     if (typeof dispose === 'function' && typeof webCtx.effect === 'function') {
       webCtx.effect(() => dispose, 'dsh-safe-plugin-manager: inventory route')

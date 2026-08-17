@@ -1,6 +1,6 @@
 {
   "name": "dsh-safe-plugin-manager",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
   "private": true,
   "type": "module",
@@ -39,7 +39,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "check": "node --check src/index.mjs && node --check src/inventory.mjs && node --check src/catalog.mjs && node --check src/dsh.mjs && node --check src/health.mjs && node --check src/managed-patch.mjs && node --check src/operations.mjs && node --check src/panel.mjs && node --check src/provenance.mjs && node --check src/telemetry.mjs && node --check src/client.js && npm run validate:registry && npm test",
+    "check": "node --check src/index.mjs && node --check src/inventory.mjs && node --check src/catalog.mjs && node --check src/dsh.mjs && node --check src/health.mjs && node --check src/managed-patch.mjs && node --check src/operations.mjs && node --check src/panel.mjs && node --check src/provenance.mjs && node --check src/restart.mjs && node --check src/restart-helper.mjs && node --check src/runtime.mjs && node --check src/telemetry.mjs && node --check src/client.js && npm run validate:registry && npm test",
     "test": "node --test \"test/*.test.mjs\"",
     "validate:registry": "node scripts/validate-registry.mjs",
     "verify:registry-sources": "node scripts/verify-registry-sources.mjs"

@@ -4,7 +4,10 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import test from 'node:test'
-import { handleHealthRequest, handleInventoryRequest, handleMarketRequest, handlePlanRequest } from '../src/panel.mjs'
+import {
+  handleHealthRequest, handleInventoryRequest, handleMarketRequest, handlePlanRequest,
+  handleRestartExecuteRequest, handleRestartPlanRequest, handleRuntimeRequest,
+} from '../src/panel.mjs'
 
 function request(body, headers = {}) {
   const req = Readable.from([JSON.stringify(body)])
@@ -98,6 +101,38 @@ test('plan endpoint requires explicit operation intent header', async () => {
   await handlePlanRequest(request({ action: 'install' }, { 'x-dsh-safe-intent': 'plan' }), allowed, { operationService })
   assert.equal(allowed.status, 200)
   assert.equal(JSON.parse(allowed.body).value.planId, 'one')
+})
+
+test('runtime endpoint is read-only and restart endpoints require separate intents', async () => {
+  const runtimeStatus = {
+    schemaVersion: 1, profile: 'web', bootId: 'boot-one', startedAt: '2026-08-17T00:00:00Z',
+    restartCommand: ['dsh', 'web'], restartSupported: false,
+  }
+  const runtimeResponse = response()
+  await handleRuntimeRequest(request({}), runtimeResponse, { defaultProfile: 'web', runtimeStatus })
+  assert.equal(runtimeResponse.status, 200)
+  assert.equal(JSON.parse(runtimeResponse.body).value.bootId, 'boot-one')
+
+  let planCalled = false
+  let executeCalled = false
+  const restartService = {
+    createPlan: () => { planCalled = true; return { planId: 'restart-one' } },
+    execute: () => { executeCalled = true; return { status: 'restart-scheduled' } },
+  }
+  const deniedPlan = response()
+  await handleRestartPlanRequest(request({}), deniedPlan, { restartService })
+  assert.equal(deniedPlan.status, 403)
+  assert.equal(planCalled, false)
+  const allowedPlan = response()
+  await handleRestartPlanRequest(request({}, { 'x-dsh-safe-intent': 'restart-plan' }), allowedPlan, { restartService })
+  assert.equal(allowedPlan.status, 200)
+  const deniedExecute = response()
+  await handleRestartExecuteRequest(request({}), deniedExecute, { restartService })
+  assert.equal(deniedExecute.status, 403)
+  assert.equal(executeCalled, false)
+  const allowedExecute = response()
+  await handleRestartExecuteRequest(request({}, { 'x-dsh-safe-intent': 'restart-execute' }), allowedExecute, { restartService })
+  assert.equal(allowedExecute.status, 200)
 })
 
 test('health endpoint audits installed catalog plugins and forwards permission choices', async () => {

@@ -204,6 +204,7 @@ export function createOperationService(options = {}) {
   const mutationsEnabled = options.mutationsEnabled === true
   const sourceVerifier = options.sourceVerifier ?? verifyCatalogEntry
   const telemetryClient = options.telemetryClient ?? { recordInstall: async () => ({ status: 'disabled' }) }
+  const runtimeInstanceId = typeof options.runtimeInstanceId === 'string' ? options.runtimeInstanceId : null
   const planTtlMs = options.planTtlMs ?? PLAN_TTL_MS
   const sourceVerificationCacheTtlMs = options.sourceVerificationCacheTtlMs ?? SOURCE_VERIFICATION_CACHE_TTL_MS
   const plans = new Map()
@@ -326,7 +327,8 @@ export function createOperationService(options = {}) {
       const value = {
         schemaVersion: 1, transactionId, status: 'applied', action,
         profile: plan.profile, packageName: entry.packageName, backupId: transactionId,
-        restartRequired: plan.impact.restartRequired, health,
+        restartRequired: plan.impact.restartRequired, runtimeInstanceId,
+        targetVersion: plan.plugin.targetVersion, health,
       }
       if (action === 'install') value.installReceipt = await telemetryClient.recordInstall({ pluginId: entry.id, version: entry.version })
       await appendAudit(dshHome, { ...value, at: new Date().toISOString() })

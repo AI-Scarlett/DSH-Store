@@ -9,10 +9,14 @@ window.__ModuleLoader__.load({
       inventory: '/api2/dsh-safe-plugin-manager/inventory',
       market: '/api2/dsh-safe-plugin-manager/market',
       health: '/api2/dsh-safe-plugin-manager/health',
+      runtime: '/api2/dsh-safe-plugin-manager/runtime',
       plan: '/api2/dsh-safe-plugin-manager/plan',
       execute: '/api2/dsh-safe-plugin-manager/execute',
+      restartPlan: '/api2/dsh-safe-plugin-manager/restart/plan',
+      restartExecute: '/api2/dsh-safe-plugin-manager/restart/execute',
     }
     const PROJECT_REPOSITORY_URL = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
+    const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
 
     async function post(route, body = {}, intent = null) {
       const headers = { 'content-type': 'application/json' }
@@ -26,6 +30,46 @@ window.__ModuleLoader__.load({
       }
       return payload.value
     }
+
+    function readPendingRestart() {
+      try {
+        const value = JSON.parse(window.localStorage.getItem(RESTART_STORAGE_KEY) || 'null')
+        return value && value.schemaVersion === 1 ? value : null
+      } catch { return null }
+    }
+
+    function storePendingRestart(result) {
+      const value = {
+        schemaVersion: 1, transactionId: result.transactionId, action: result.action,
+        profile: result.profile, packageName: result.packageName, targetVersion: result.targetVersion,
+        runtimeInstanceId: result.runtimeInstanceId, createdAt: new Date().toISOString(),
+      }
+      try { window.localStorage.setItem(RESTART_STORAGE_KEY, JSON.stringify(value)) } catch {}
+      return value
+    }
+
+    function clearPendingRestart() {
+      try { window.localStorage.removeItem(RESTART_STORAGE_KEY) } catch {}
+    }
+
+    function restartOutcome(pending, state) {
+      if (!pending || state.status !== 'ready') return null
+      if (!state.runtime || state.runtime.bootId === pending.runtimeInstanceId) return { status: 'pending' }
+      const plugin = state.inventory.plugins.find(item => item.packageName === pending.packageName)
+      const activated = pending.action === 'uninstall'
+        ? !plugin
+        : Boolean(plugin?.installed && (!pending.targetVersion || plugin.version === pending.targetVersion))
+      const pluginHealth = state.health.plugins?.find(item => item.packageName === pending.packageName)
+      if (activated && pluginHealth?.status !== 'unhealthy') return { status: 'verified', plugin, pluginHealth }
+      return { status: 'failed', plugin, pluginHealth }
+    }
+
+    function copyCommand(command) {
+      if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(command)
+      return Promise.reject(new Error('clipboard API unavailable'))
+    }
+
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
     const styles = {
       root: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '920px' },
@@ -402,7 +446,7 @@ window.__ModuleLoader__.load({
         })))
     }
 
-    function PlanPanel({ operation, confirmation, setConfirmation, execute, retryPlan, cancel }) {
+    function PlanPanel({ operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }) {
       if (!operation || operation.status === 'idle') return null
       if (operation.status === 'planning' || operation.status === 'executing') {
         const planning = operation.status === 'planning'
@@ -427,15 +471,25 @@ window.__ModuleLoader__.load({
       }
       if (operation.status === 'result') {
         const result = operation.value
+        const command = result.restartCommand || 'dsh web'
+        const footer = React.createElement(React.Fragment, null,
+          React.createElement(Button, { onClick: cancel }, '完成'),
+          result.status === 'applied' && result.restartRequired
+            ? React.createElement(Button, { primary: true, onClick: beginRestart }, '一键安全重启 DSH Host') : null)
         return React.createElement(Modal, {
           open: true, onClose: cancel, title: result.status === 'applied' ? '操作已应用' : '操作失败并已触发回滚',
-          closeLabel: '关闭操作结果', footer: React.createElement(Button, { onClick: cancel }, '完成'),
+          closeLabel: '关闭操作结果', footer,
           className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
         }, React.createElement('div', { style: styles.detailSection },
           React.createElement('div', { style: styles.muted }, `事务 ${result.transactionId} · 回滚 ${result.rollback || '不需要'}`),
           result.rollbackDetails ? React.createElement('div', { style: styles.muted },
             `Profile 文件恢复：${result.rollbackDetails.profileFiles} · 依赖恢复：${result.rollbackDetails.dependencies}`) : null,
-          result.error ? React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`) : null))
+          result.error ? React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`) : null,
+          result.status === 'applied' && result.restartRequired ? React.createElement('div', { style: styles.notice },
+            React.createElement('div', { style: styles.name }, '插件变更已写入，但尚未在当前 DSH Host 中生效'),
+            React.createElement('div', { style: styles.muted }, '请先停止当前 Host，再运行以下命令；重启后返回本页会自动复检。'),
+            React.createElement('div', { style: styles.code }, command),
+            React.createElement(Button, { onClick: () => { void copyCommand(command) } }, '复制重启命令')) : null))
       }
       const plan = operation.value
       const matches = confirmation === plan.confirmation
@@ -458,6 +512,49 @@ window.__ModuleLoader__.load({
         React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
     }
 
+    function RestartModal({ operation, confirmation, setConfirmation, execute, cancel }) {
+      if (!operation || operation.status === 'idle') return null
+      if (operation.status === 'planning' || operation.status === 'executing') {
+        return React.createElement(Modal, {
+          open: true, onClose: operation.status === 'planning' ? cancel : () => {},
+          title: operation.status === 'planning' ? '正在生成重启计划' : '正在安排安全重启',
+          closeLabel: '关闭重启流程', footer: operation.status === 'planning' ? React.createElement(Button, { onClick: cancel }, '取消') : null,
+          className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+        }, React.createElement('div', { style: styles.notice }, operation.status === 'planning'
+          ? '只读核对当前 Host 和 Profile，不会立即停止进程。'
+          : '独立助手已准备接管；页面将等待新 Host 上线。'))
+      }
+      if (operation.status === 'error') {
+        return React.createElement(Modal, {
+          open: true, onClose: cancel, title: 'DSH Host 重启失败', closeLabel: '关闭重启错误',
+          footer: React.createElement(Button, { onClick: cancel }, '关闭'),
+          className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+        }, React.createElement('div', { style: styles.detailSection },
+          React.createElement('div', { style: styles.error }, `${operation.code || 'RESTART_FAILED'}：${operation.message}`),
+          operation.fallbackCommand ? React.createElement(React.Fragment, null,
+            React.createElement('div', { style: styles.muted }, '请手动运行：'),
+            React.createElement('div', { style: styles.code }, operation.fallbackCommand),
+            React.createElement(Button, { onClick: () => { void copyCommand(operation.fallbackCommand) } }, '复制命令')) : null))
+      }
+      const plan = operation.value
+      const matches = confirmation === plan.confirmation
+      const command = plan.impact.fallbackCommandText || plan.impact.fallbackCommand.join(' ')
+      return React.createElement(Modal, {
+        open: true, onClose: cancel, title: '确认重启 DSH Host', closeLabel: '取消重启',
+        description: '当前页面会短暂断开；新 Host 上线后将自动重新载入并验证插件。',
+        footer: React.createElement(React.Fragment, null,
+          React.createElement(Button, { onClick: cancel }, '取消'),
+          React.createElement(Button, { primary: true, danger: true, disabled: !matches, onClick: execute }, '确认并重启')),
+        className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+      }, React.createElement('div', { style: styles.detailSection },
+        React.createElement('div', { style: styles.muted }, `当前 Boot ID：${plan.currentBootId}`),
+        React.createElement('div', { style: styles.muted }, '不会修改 Profile；若自动恢复失败，可运行：'),
+        React.createElement('div', { style: styles.code }, command),
+        React.createElement('label', { style: styles.muted }, '输入以下确认语后才能重启：'),
+        React.createElement('div', { style: styles.code }, plan.confirmation),
+        React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
+    }
+
     function ManagerPanel() {
       const [view, setView] = useState('market')
       const [query, setQuery] = useState('')
@@ -467,15 +564,19 @@ window.__ModuleLoader__.load({
       const [operation, setOperation] = useState({ status: 'idle' })
       const [detailEntry, setDetailEntry] = useState(null)
       const [permissionDecisions, setPermissionDecisions] = useState({})
+      const [pendingRestart, setPendingRestart] = useState(() => readPendingRestart())
+      const [restartConfirmation, setRestartConfirmation] = useState('')
+      const [restartOperation, setRestartOperation] = useState({ status: 'idle' })
 
       const refresh = useCallback(async (force = false, decisions = {}) => {
         setState({ status: 'loading' })
         try {
-          const [inventory, market, health] = await Promise.all([
+          const [inventory, market, health, runtime] = await Promise.all([
             post(ROUTES.inventory), post(ROUTES.market, { refresh: force }),
             post(ROUTES.health, { refresh: force, permissionDecisions: decisions }),
+            post(ROUTES.runtime),
           ])
-          setState({ status: 'ready', inventory, market, health })
+          setState({ status: 'ready', inventory, market, health, runtime })
         } catch (error) {
           setState({ status: 'error', message: String(error?.message || error) })
         }
@@ -543,14 +644,56 @@ window.__ModuleLoader__.load({
         setOperation({ status: 'executing', value: plan })
         try {
           const value = await post(ROUTES.execute, { planId: plan.planId, confirmation }, 'execute')
+          if (value.status === 'applied' && value.restartRequired) {
+            const pending = storePendingRestart(value)
+            setPendingRestart(pending)
+            value.restartCommand = state.status === 'ready'
+              ? (state.runtime.restartCommandText || state.runtime.restartCommand.join(' ')) : 'dsh web'
+          }
           setOperation({ status: 'result', value })
           await refresh(false, permissionDecisions)
         } catch (error) {
           setOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
         }
-      }, [confirmation, operation, permissionDecisions, refresh])
+      }, [confirmation, operation, permissionDecisions, refresh, state])
 
       const cancel = useCallback(() => { setConfirmation(''); setOperation({ status: 'idle' }) }, [])
+      const cancelRestart = useCallback(() => { setRestartConfirmation(''); setRestartOperation({ status: 'idle' }) }, [])
+      const beginRestart = useCallback(async () => {
+        setRestartConfirmation('')
+        setRestartOperation({ status: 'planning' })
+        try {
+          const value = await post(ROUTES.restartPlan, {}, 'restart-plan')
+          setOperation({ status: 'idle' })
+          setRestartOperation({ status: 'plan', value })
+        } catch (error) {
+          setRestartOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
+        }
+      }, [])
+      const executeRestart = useCallback(async () => {
+        if (restartOperation.status !== 'plan') return
+        const plan = restartOperation.value
+        const fallbackCommand = plan.impact.fallbackCommandText || plan.impact.fallbackCommand.join(' ')
+        setRestartOperation({ status: 'executing', value: plan })
+        try {
+          const result = await post(ROUTES.restartExecute, {
+            planId: plan.planId, confirmation: restartConfirmation,
+          }, 'restart-execute')
+          for (let attempt = 0; attempt < 60; attempt += 1) {
+            await delay(1000)
+            try {
+              const runtime = await post(ROUTES.runtime)
+              if (runtime.bootId !== result.previousBootId) {
+                window.location.reload()
+                return
+              }
+            } catch {}
+          }
+          setRestartOperation({ status: 'error', code: 'RESTART_TIMEOUT', message: '60 秒内未检测到新的 DSH Host', fallbackCommand })
+        } catch (error) {
+          setRestartOperation({ status: 'error', code: error?.code, message: String(error?.message || error), fallbackCommand })
+        }
+      }, [restartConfirmation, restartOperation])
       const closeDetails = useCallback(() => setDetailEntry(null), [])
       const heading = React.createElement('div', { style: styles.toolbar },
         React.createElement('div', null,
@@ -581,6 +724,27 @@ window.__ModuleLoader__.load({
         .filter(plugin => !needle || [plugin.packageName, plugin.version, plugin.description, plugin.repository, plugin.source]
           .some(value => String(value || '').toLowerCase().includes(needle)))
         .sort((a, b) => a.packageName.localeCompare(b.packageName, 'en'))
+
+      const restartState = restartOutcome(pendingRestart, state)
+      const restartCommand = state.status === 'ready'
+        ? (state.runtime.restartCommandText || state.runtime.restartCommand.join(' ')) : 'dsh web'
+      const dismissRestart = () => { clearPendingRestart(); setPendingRestart(null) }
+      const restartBanner = !restartState ? null : React.createElement('div', {
+        style: restartState.status === 'failed' ? styles.error : styles.notice,
+      },
+      React.createElement('div', { style: styles.name }, restartState.status === 'pending'
+        ? '等待重启 DSH Host：插件变更尚未生效'
+        : restartState.status === 'verified' ? '已检测到新的 DSH Host，插件变更已生效' : 'DSH 已重启，但插件变更未通过验收'),
+      restartState.status === 'pending' ? React.createElement(React.Fragment, null,
+        React.createElement('div', { style: styles.muted }, '停止当前 Host 后运行：'),
+        React.createElement('div', { style: styles.code }, restartCommand),
+        React.createElement('div', { style: styles.actions },
+          React.createElement(Button, { onClick: () => { void copyCommand(restartCommand) } }, '复制重启命令'),
+          React.createElement(Button, { primary: true, onClick: beginRestart }, '一键安全重启'),
+          React.createElement(Button, { onClick: () => { void refresh(false, permissionDecisions) } }, '我已重启，重新检查'))) : null,
+      restartState.status === 'failed' ? React.createElement('div', { style: styles.muted },
+        `目标 ${pendingRestart.packageName}${pendingRestart.targetVersion ? ` ${pendingRestart.targetVersion}` : ''} 未在新实例中确认加载，请查看健康检查详情。`) : null,
+      restartState.status !== 'pending' ? React.createElement(Button, { onClick: dismissRestart }, '完成') : null)
 
       let content
       if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
@@ -618,8 +782,12 @@ window.__ModuleLoader__.load({
 
       return React.createElement('section', { style: styles.root },
         React.createElement('style', null, DETAIL_MODAL_CSS),
-        heading, nav, content,
-        React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel }),
+        heading, nav, restartBanner, content,
+        React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }),
+        React.createElement(RestartModal, {
+          operation: restartOperation, confirmation: restartConfirmation, setConfirmation: setRestartConfirmation,
+          execute: executeRestart, cancel: cancelRestart,
+        }),
         React.createElement(PluginDetailsModal, {
           entry: detailEntry, categoryLabels: state.status === 'ready' ? state.market.registry.categories : {},
           health: state.status === 'ready' ? state.health : null, beginPlan, close: closeDetails,
