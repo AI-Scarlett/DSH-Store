@@ -4,7 +4,7 @@
     "name": "DSH Safe GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/",
-    "updatedAt": "2026-08-17T10:27:00Z",
+    "updatedAt": "2026-08-17T10:58:35Z",
     "categories": {
       "marketplace": "插件市场",
       "management": "管理工具",
@@ -33,7 +33,7 @@
   "entries": [
     {
       "id": "dsh-safe-plugin-manager",
-      "name": "DSH Safe Plugin Manager",
+      "name": "安全插件商城（DSH Safe Plugin Manager）",
       "packageName": "dsh-safe-plugin-manager",
       "description": "本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。",
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
@@ -55,14 +55,14 @@
     },
     {
       "id": "dsh-token-monitor",
-      "name": "DSH Token Monitor",
+      "name": "用量统计（DSH Token Monitor）",
       "packageName": "dsh-token-monitor",
-      "description": "汇总当前 Profile 可见会话的 Provider 实际 Token 用量，并在浏览器本地估算费用、预算和每日趋势。",
+      "description": "按上海自然日和实际 Provider／模型汇总 DSH 持久会话中的真实 Token 用量，提供当日、7 日、30 日、总用量、每日明细与热力图。",
       "repositoryUrl": "https://github.com/AI-Scarlett/DSH_TokenMonitor",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "e123a10c7309a192825f36491c786627382a607c",
-      "version": "1.2.1",
+      "commit": "75b9b92ad1529b272cb2d4125a4da594e905c9d5",
+      "version": "1.3.0",
       "categories": ["models", "visualization"],
       "featured": false,
       "entryIds": ["dsh-token-monitor"],
@@ -73,11 +73,11 @@
         "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
         "externalDependencies": [], "reviewStatus": "author-verified"
       },
-      "risk": { "installScripts": [], "review": "owner-curated-projection-consumer-not-security-audited" }
+      "risk": { "installScripts": [], "review": "owner-curated-read-only-model-usage-projection-not-security-audited" }
     },
     {
       "id": "dsh-chat-import",
-      "name": "DSH Chat Import",
+      "name": "会话导入（DSH Chat Import）",
       "packageName": "dsh-chat-import",
       "description": "将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。",
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-chat-import",
@@ -99,7 +99,7 @@
     },
     {
       "id": "dsh-cliapi",
-      "name": "DSH CLIAPI",
+      "name": "授权与模型路由（DSH CLIAPI）",
       "packageName": "@local/dsh-cliapi",
       "description": "DSH 的授权中心与自动本地模型路由器。",
       "repositoryUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI",
@@ -122,7 +122,7 @@
     },
     {
       "id": "dshllm-api",
-      "name": "DSHLLM API",
+      "name": "多模态模型路由（DSHLLM API）",
       "packageName": "@local/dshllm-api",
       "description": "面向 DeepSeek Harness 的多模态感知模型路由器，需要 DSH CLIAPI。",
       "repositoryUrl": "https://github.com/AI-Scarlett/DSHLLM_API",
@@ -145,7 +145,7 @@
     },
     {
       "id": "dsh-agent-reach",
-      "name": "Agent Reach for DSH",
+      "name": "联网能力（Agent Reach for DSH）",
       "packageName": "dsh-agent-reach",
       "description": "将 Agent Reach 联网能力路由 Skill 安全挂载到 DSH；Python CLI 与所选渠道依赖需另行安装授权。",
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-agent-reach",
@@ -166,7 +166,7 @@
     },
     {
       "id": "dsh-market",
-      "name": "DSH Market",
+      "name": "社区插件市场（DSH Market）",
       "packageName": "dshmarket",
       "description": "DSH 内的社区插件市场界面，支持浏览、搜索和插件管理。",
       "repositoryUrl": "https://github.com/dsh-market/dsh-market",
@@ -187,7 +187,7 @@
     },
     {
       "id": "dsh-webui-market-plugin",
-      "name": "DSH WebUI Market Plugin",
+      "name": "Web 插件市场（DSH WebUI Market Plugin）",
       "packageName": "@sanqi-normal/dsh-webui-market-plugin",
       "description": "在 DSH Web 界面浏览 awesome-dsh-plugin.com 并管理社区插件。",
       "repositoryUrl": "https://github.com/Sanqi-normal/dsh-webui-market-plugin",
@@ -208,7 +208,7 @@
     },
     {
       "id": "dsh-better-sidebar",
-      "name": "DSH Better Sidebar",
+      "name": "增强侧栏（DSH Better Sidebar）",
       "packageName": "dsh-better-sidebar",
       "description": "为 DSH Web 提供文件预览编辑、终端、Git 与子代理工作台侧栏。",
       "repositoryUrl": "https://github.com/omdsh-dev/DSH-better-sidebar",
@@ -229,7 +229,7 @@
     },
     {
       "id": "deep-whale-day-night-theme",
-      "name": "Deep Whale Day Night Theme",
+      "name": "深海鲸昼夜主题（Deep Whale Day Night Theme）",
       "packageName": "@dsh-external/dsh-client-ui-skin-maid-atelier",
       "description": "为 DSH Web 提供可切换的日间与夜间主题外观。",
       "repositoryUrl": "https://github.com/GGBond2424648901/deep-whale-day-night-theme",
@@ -250,7 +250,7 @@
     },
     {
       "id": "dsh-turn-rewind",
-      "name": "DSH Turn Rewind",
+      "name": "会话回退（DSH Turn Rewind）",
       "packageName": "@anionex/dsh-turn-rewind",
       "description": "为 DSH 会话提供回合回退能力。",
       "repositoryUrl": "https://github.com/Anionex/dsh-turn-rewind",
@@ -271,7 +271,7 @@
     },
     {
       "id": "dsh-mnemon",
-      "name": "DSH Mnemon",
+      "name": "持久记忆（DSH Mnemon）",
       "packageName": "dsh-mnemon",
       "description": "为 DSH 提供持久化记忆能力。",
       "repositoryUrl": "https://github.com/omdsh-dev/dsh-mnemon",
@@ -292,7 +292,7 @@
     },
     {
       "id": "dsh-vision-toolkit",
-      "name": "DSH Vision Toolkit",
+      "name": "视觉工具箱（DSH Vision Toolkit）",
       "packageName": "@anionex/dsh-vision-toolkit",
       "description": "为 DSH 增加图像与视觉处理工具。",
       "repositoryUrl": "https://github.com/Anionex/dsh-vision-toolkit",
@@ -313,7 +313,7 @@
     },
     {
       "id": "dsh-agent-teams",
-      "name": "DSH Agent Teams",
+      "name": "多代理团队（DSH Agent Teams）",
       "packageName": "@nanmicoder/dsh-agent-teams",
       "description": "自然语言驱动的多代理团队协作、依赖任务与消息通信。",
       "repositoryUrl": "https://github.com/NanmiCoder/dsh-agent-teams",
@@ -334,7 +334,7 @@
     },
     {
       "id": "dsh-notification",
-      "name": "DSH Notification",
+      "name": "完成通知（DSH Notification）",
       "packageName": "dsh-notification",
       "description": "DSH 回合完成后发送可配置的浏览器桌面通知。",
       "repositoryUrl": "https://github.com/omdsh-dev/dsh-notification",
@@ -355,7 +355,7 @@
     },
     {
       "id": "dsh-commandcode-provider",
-      "name": "DSH Command Code Provider",
+      "name": "Command Code 模型提供商（DSH Command Code Provider）",
       "packageName": "@mars-sea/dsh-commandcode-provider",
       "description": "为 DSH 注册 Command Code 模型提供商与模型目录。",
       "repositoryUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
@@ -376,7 +376,7 @@
     },
     {
       "id": "dsh-ads",
-      "name": "DSH Ads",
+      "name": "趣味广告（DSH Ads）",
       "packageName": "@dsh-external/dsh-ads",
       "description": "为 DSH 添加中文门户广告与英文诈骗广告的恶搞体验。",
       "repositoryUrl": "https://github.com/Nagi-ovo/dsh-ads",
@@ -397,7 +397,7 @@
     },
     {
       "id": "dsh-at-file",
-      "name": "DSH At File",
+      "name": "文件引用（DSH At File）",
       "packageName": "dsh-at-file",
       "description": "在 DSH Web 输入框中提供 Codex 风格的 @path 工作区文件引用与搜索。",
       "repositoryUrl": "https://github.com/omdsh-dev/dsh-at-file",
@@ -418,7 +418,7 @@
     },
     {
       "id": "dsh-genui",
-      "name": "DSH GenUI",
+      "name": "生成式界面（DSH GenUI）",
       "packageName": "@omdsh-dev/dsh-genui",
       "description": "在助手回复中渲染图表、表单、测验、Mermaid 和 3D 场景等交互式生成界面。",
       "repositoryUrl": "https://github.com/omdsh-dev/dsh-genui",
@@ -439,7 +439,7 @@
     },
     {
       "id": "dsh-visualize",
-      "name": "DSH Visualize",
+      "name": "交互可视化（DSH Visualize）",
       "packageName": "@dsh-external/dsh-visualize",
       "description": "通过工具与内置技能在对话中渲染沙箱化的交互式 HTML 可视化卡片。",
       "repositoryUrl": "https://github.com/Nagi-ovo/dsh-visualize",
@@ -460,7 +460,7 @@
     },
     {
       "id": "dsh-openpencil",
-      "name": "DSH OpenPencil",
+      "name": "画板工作台（DSH OpenPencil）",
       "packageName": "@zseven-w/dsh-openpencil",
       "description": "把 OpenPencil 多画板预览、交互画布与托管编辑工作台集成到 DSH。",
       "repositoryUrl": "https://github.com/ZSeven-W/dsh-openpencil",
@@ -481,7 +481,7 @@
     },
     {
       "id": "anysearch-dsh",
-      "name": "AnySearch for DSH",
+      "name": "联网搜索（AnySearch for DSH）",
       "packageName": "@anysearch/anysearch-dsh",
       "description": "为 DSH 注册 AnySearch 网络搜索提供商与增强搜索工具，需要配置 API Key。",
       "repositoryUrl": "https://github.com/anysearch-team/anysearch-dsh",
@@ -502,7 +502,7 @@
     },
     {
       "id": "dsh-gomoku",
-      "name": "DSH Gomoku",
+      "name": "五子棋（DSH Gomoku）",
       "packageName": "@yejiming/dsh-gomoku",
       "description": "在 DSH Web 对话界面中加入五子棋棋盘、AI 落子路由与模型目录。",
       "repositoryUrl": "https://github.com/omdsh-dev/dsh-gomoku",
@@ -523,7 +523,7 @@
     },
     {
       "id": "dsh-web-ui-all",
-      "name": "DSH Web UI All",
+      "name": "Web UI 综合套件（DSH Web UI All）",
       "packageName": "@linxin666/dsh-web-ui-all",
       "description": "Web UI 综合套件，聚合任务板、Git 图、宠物、远程界面、实时统计、SSH、视觉工具与多款皮肤。",
       "repositoryUrl": "https://github.com/zhu1090093659/dsh-web-ui",
@@ -546,7 +546,7 @@
     },
     {
       "id": "dsh-shortcuts",
-      "name": "DSH Shortcuts",
+      "name": "快捷键（DSH Shortcuts）",
       "packageName": "dsh-shortcuts",
       "description": "为 DSH WebUI 提供可录制、可配置的键盘快捷键与权限切换反馈。",
       "repositoryUrl": "https://github.com/Ricketts-Guo/dsh-shortcuts",
@@ -567,7 +567,7 @@
     },
     {
       "id": "dsh-diagram",
-      "name": "DSH Diagram",
+      "name": "文章图解（DSH Diagram）",
       "packageName": "dsh-diagram",
       "description": "将 DSH 中的文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。",
       "repositoryUrl": "https://github.com/hanzhangzzz/dsh-diagram",
@@ -588,7 +588,7 @@
     },
     {
       "id": "dsh-egress-guard",
-      "name": "DSH Egress Guard",
+      "name": "出站安全防护（DSH Egress Guard）",
       "packageName": "dsh-egress-guard",
       "description": "提供出站域名策略、工具结果密钥脱敏与追加式审计日志，默认以监控模式运行。",
       "repositoryUrl": "https://github.com/tancheng33/dsh-egress-guard",
@@ -609,7 +609,7 @@
     },
     {
       "id": "dsh-achievements",
-      "name": "DSH Achievements",
+      "name": "成就系统（DSH Achievements）",
       "packageName": "@wjnct55555/dsh-achievements-bundle",
       "description": "为 DSH Web 添加成就引擎、图鉴、提示、奖杯与进度持久化。",
       "repositoryUrl": "https://github.com/WJNCT55555/dsh-achievements",
@@ -630,7 +630,7 @@
     },
     {
       "id": "dsh-context",
-      "name": "DSH Context",
+      "name": "上下文分析（DSH Context）",
       "packageName": "dsh-context",
       "description": "在 DSH 会话中展示上下文组成、历史变化与相关命令，帮助定位上下文占用和演化。",
       "repositoryUrl": "https://github.com/bowenliang123/dsh-context",
@@ -651,7 +651,7 @@
     },
     {
       "id": "dsh-theme-plugin",
-      "name": "Chinese Traditional Color Themes",
+      "name": "中国传统色主题（Chinese Traditional Color Themes）",
       "packageName": "dsh-theme-plugin",
       "description": "为 DSH Web 提供中国传统色主题包，并包含主题生成和对比度检查工具。",
       "repositoryUrl": "https://github.com/nevertoday/dsh-theme-plugin",
@@ -672,7 +672,7 @@
     },
     {
       "id": "dsh-blender",
-      "name": "DSH Blender",
+      "name": "Blender 三维工具（DSH Blender）",
       "packageName": "dsh-blender",
       "description": "为 DSH 提供 Blender 三维建模、重建、渲染、验证和导出工具及配套技能。",
       "repositoryUrl": "https://github.com/CheshireJCat/blender",
@@ -693,7 +693,7 @@
     },
     {
       "id": "powercontext-dsh",
-      "name": "PowerContext for DSH",
+      "name": "上下文与记忆服务（PowerContext for DSH）",
       "packageName": "powercontext-dsh",
       "description": "连接本地 PowerContext 服务，为 DSH 提供召回、记忆、交接、经验和技能能力。",
       "repositoryUrl": "https://github.com/knqiufan/powercontext-dsh",
@@ -714,7 +714,7 @@
     },
     {
       "id": "dsh-lark",
-      "name": "DSH Lark",
+      "name": "飞书连接器（DSH Lark）",
       "packageName": "@sugarforever/dsh-lark",
       "description": "将飞书或 Lark 消息接入 DSH 会话，支持私聊、群聊提及和模型回复。",
       "repositoryUrl": "https://github.com/sugarforever/dsh-lark",
@@ -735,7 +735,7 @@
     },
     {
       "id": "dsh-memory-evolve",
-      "name": "DSH Memory Evolve",
+      "name": "记忆进化（DSH Memory Evolve）",
       "packageName": "dsh-memory-evolve",
       "description": "分层长期记忆、自我进化、技能与待办管理，并提供外部 CLI Agent 调度界面。",
       "repositoryUrl": "https://github.com/csyangwen/dsh-memory-evolve",
@@ -757,7 +757,7 @@
     },
     {
       "id": "dsh-tui",
-      "name": "DSH TUI",
+      "name": "终端客户端（DSH TUI）",
       "packageName": "@deepseek-harness-tui/dsh-tui",
       "description": "Claude Code 风格的 DSH 终端客户端，可读取共享会话，但不是当前 Web Profile 的普通界面插件。",
       "repositoryUrl": "https://github.com/ccch1mneyyy/dsh-TUI",
@@ -779,7 +779,7 @@
     },
     {
       "id": "dsh-explorer",
-      "name": "DSH Explorer",
+      "name": "文件浏览器（DSH Explorer）",
       "packageName": "dsh-explorer",
       "description": "由 Host 与浏览器两个 Bundle 组成的实时文件树侧栏，支持 Git 标记、媒体预览与拖拽引用。",
       "repositoryUrl": "https://github.com/No-PRM/dsh-explorer",
@@ -802,7 +802,7 @@
     },
     {
       "id": "dsh-web-plugin-manager",
-      "name": "DSH Web Plugin Manager",
+      "name": "第三方插件管理器（DSH Web Plugin Manager）",
       "packageName": "dsh-web-plugin-manager",
       "description": "第三方综合插件管理器；当前版本会遮蔽 DSH 官方插件清单，因此仅展示、不允许安装。",
       "repositoryUrl": "https://github.com/LX2000WASD/dsh-web-plugin-manager",
@@ -824,7 +824,7 @@
     },
     {
       "id": "dsh-plugin-hub",
-      "name": "DSH Plugin Hub",
+      "name": "社区插件中心（DSH Plugin Hub）",
       "packageName": "@deepseek-ai/dsh-plugin-console",
       "description": "社区插件控制台；当前使用官方命名空间，按供应链保护策略禁止安装。",
       "repositoryUrl": "https://github.com/Noob-stupid/dsh-plugin-hub",
