@@ -380,6 +380,7 @@ window.__ModuleLoader__.load({
     }
 
     function HealthPanel({ health, permissionDecisions, setPermissionDecision, rerun }) {
+      const [rerunState, setRerunState] = useState({ status: 'idle', message: '' })
       if (!health) return React.createElement('p', { style: styles.muted }, '正在执行健康检查…')
       const statusLabel = value => ({
         healthy: '健康', warning: '有警告', unhealthy: '不健康', 'action-required': '需要选择权限',
@@ -387,6 +388,28 @@ window.__ModuleLoader__.load({
         'action-required': '需要操作', denied: '用户拒绝',
       }[value] || value)
       const permissionName = field => ({ files: '文件访问', network: '网络访问', commands: '命令执行', credentials: '凭据访问', acceptUnknown: '未知权限' }[field] || field)
+      const permissionFields = plugin => {
+        const requested = plugin.permissions?.requested
+        if (!requested) return plugin.official ? [] : ['acceptUnknown']
+        return ['files', 'network', 'commands', 'credentials'].filter(field => field === 'credentials'
+          ? requested.credentials?.some(value => value !== 'none') : requested[field] !== 'none')
+      }
+      const healthPlugins = Array.isArray(health.plugins) ? health.plugins : []
+      const unresolved = healthPlugins.flatMap((plugin, pluginIndex) => permissionFields(plugin)
+        .filter(field => typeof permissionDecisions[plugin.packageName]?.[field] !== 'boolean')
+        .map(field => ({ plugin, pluginIndex, field })))
+      const unresolvedPlugins = new Set(unresolved.map(item => item.plugin.packageName)).size
+      const goToPermissions = () => document.getElementById('dsh-health-permissions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const runHealthCheck = async () => {
+        if (unresolved.length > 0 || rerunState.status === 'checking') return
+        setRerunState({ status: 'checking', message: '正在按当前权限选择重新检查…' })
+        try {
+          await rerun()
+          setRerunState({ status: 'complete', message: `健康检查已完成 · ${new Date().toLocaleTimeString()}` })
+        } catch (error) {
+          setRerunState({ status: 'error', message: `健康检查失败：${String(error?.message || error)}` })
+        }
+      }
       const selector = (plugin, field, value) => React.createElement('label', { key: field, style: styles.muted },
         `${permissionName(field)}：`,
         React.createElement('select', {
@@ -417,20 +440,20 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.muted },
             `共 ${health.summary?.total || 0} 项 · 待选择 ${health.summary?.actionRequired || 0} · 用户拒绝 ${health.summary?.blockedByUser || 0} · 不健康 ${health.summary?.unhealthy || 0} · 目录外 ${health.summary?.uncatalogued || 0}`),
           React.createElement('div', { style: styles.error }, '权限选择仅用于健康审核结论，不会修改或限制插件的真实运行权限。')),
-        React.createElement('div', { style: styles.actions },
-          React.createElement(Button, { primary: true, onClick: rerun }, '按当前权限选择重新检查')),
+        unresolved.length > 0 ? React.createElement('div', { style: styles.notice },
+          React.createElement('div', { style: styles.name }, `还需完成 ${unresolvedPlugins} 个插件、${unresolved.length} 项权限选择`),
+          React.createElement('div', { style: styles.muted }, '商城不会自动替你允许或拒绝权限。请先逐项选择，再运行健康检查。'),
+          React.createElement(Button, { primary: true, onClick: goToPermissions }, `前往选择 ${unresolvedPlugins} 个插件的权限`)) : null,
         React.createElement('h4', { style: styles.title }, 'Profile 基础检查'),
         React.createElement('div', { style: styles.grid }, health.checks.map(item => React.createElement('article', { key: item.id, style: styles.card },
           React.createElement('div', { style: styles.row }, React.createElement('div', { style: styles.name }, item.id), React.createElement('span', { style: styles.badge }, statusLabel(item.status))),
           React.createElement('div', { style: styles.muted }, item.message)))),
         React.createElement('h4', { style: styles.title }, '逐插件健康报告'),
-        React.createElement('div', { style: styles.grid }, (health.plugins || []).map(plugin => {
+        React.createElement('div', { id: 'dsh-health-permissions', style: styles.grid }, (health.plugins || []).map(plugin => {
           const decisions = permissionDecisions[plugin.packageName] || {}
           const requested = plugin.permissions?.requested
-          const fields = requested
-            ? ['files', 'network', 'commands', 'credentials'].filter(field => field === 'credentials'
-              ? requested.credentials?.some(value => value !== 'none') : requested[field] !== 'none')
-            : plugin.official ? [] : ['unknown']
+          const fields = permissionFields(plugin)
+          const pluginPending = fields.filter(field => typeof decisions[field] !== 'boolean')
           return React.createElement('article', { key: plugin.packageName, style: styles.card },
             React.createElement('div', { style: styles.row },
               React.createElement('div', { style: styles.name }, plugin.catalogName || plugin.packageName),
@@ -439,14 +462,26 @@ window.__ModuleLoader__.load({
             requested ? React.createElement('div', { style: styles.muted },
               `声明权限：文件 ${detailLabel('files', requested.files)}；网络 ${detailLabel('network', requested.network)}；命令 ${detailLabel('commands', requested.commands)}；凭据 ${(requested.credentials || []).map(value => detailLabel('credentials', value)).join(' / ')}`)
               : React.createElement('div', { style: styles.error }, plugin.official ? '官方组件：不由商城授权' : '目录外插件：权限声明未知'),
+            pluginPending.length > 0 ? React.createElement('div', { style: styles.error },
+              `还需选择：${pluginPending.map(permissionName).join('、')}`) : null,
             fields.length > 0 ? React.createElement('div', { style: styles.detailSection }, fields.map(field => selector(
-              plugin, field === 'unknown' ? 'acceptUnknown' : field,
-              decisions[field === 'unknown' ? 'acceptUnknown' : field],
+              plugin, field, decisions[field],
             ))) : null,
             React.createElement('div', { style: styles.detailSection }, plugin.checks.map(item => React.createElement('div', { key: item.id, style: styles.muted },
               `${statusLabel(item.status)} · ${item.id}：${item.message}`)))
           )
-        })))
+        })),
+        React.createElement('div', { style: styles.notice },
+          React.createElement('div', { style: styles.name }, unresolved.length > 0
+            ? `完成剩余 ${unresolved.length} 项权限选择后才能重新检查`
+            : '权限选择已完成，可以重新检查'),
+          React.createElement('div', { style: styles.actions },
+            React.createElement(Button, {
+              primary: true, disabled: unresolved.length > 0 || rerunState.status === 'checking', onClick: runHealthCheck,
+            }, rerunState.status === 'checking' ? '正在检查…' : '按当前权限选择重新检查')),
+          rerunState.message ? React.createElement('div', {
+            style: rerunState.status === 'error' ? styles.error : styles.muted,
+          }, rerunState.message) : null))
     }
 
     function PlanPanel({ operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }) {
@@ -626,12 +661,9 @@ window.__ModuleLoader__.load({
 
       const rerunHealth = useCallback(async () => {
         if (state.status !== 'ready') return
-        try {
-          const health = await post(ROUTES.health, { permissionDecisions })
-          setState(current => current.status === 'ready' ? { ...current, health } : current)
-        } catch (error) {
-          setState({ status: 'error', message: String(error?.message || error) })
-        }
+        const health = await post(ROUTES.health, { permissionDecisions })
+        setState(current => current.status === 'ready' ? { ...current, health } : current)
+        return health
       }, [permissionDecisions, state.status])
 
       const normalizedEntries = useMemo(() => {

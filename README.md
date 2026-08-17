@@ -30,7 +30,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#3f0d1177f024bf159532370fa2a3861dc1b4ba83'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#e645edefe8ece8972d3fd723875b0f49ffeb272b'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -57,7 +57,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.4.5` |
+| 商城版本 | `0.4.6` |
 | 收录条目 | 32 个 |
 | 可安装 | 27 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
@@ -151,6 +151,10 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 2. **已安装**：查看来源、版本、商城托管状态，并停用、启用或卸载；
 3. **健康检查**：检查 Profile、依赖、托管 Patch 和配置合成状态。
 
+健康检查不会自动替用户批准权限。有待选项时，顶部操作会定位到逐插件权限列表；只有
+所有声明权限均明确选择“允许”或“拒绝”后，底部重新检查按钮才会启用，并显示检查中、
+完成时间或失败原因。
+
 刷新按钮会重新读取 GitHub `main` 分支上的在线目录。以本地开发链接安装的管理器或
 插件不会被普通“更新”静默覆盖；需要先生成并确认“迁移到商城版”计划。迁移只切换
 目标 Profile 的依赖来源，不删除或修改原本地项目。
@@ -170,6 +174,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 插件详情与更新修复 `0.4.0` | [`f3a93c2`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/f3a93c2) | 补齐 31 个插件的权限、许可证、审核与兼容性详情；为商城不可安装项目提供 GitHub 手动入口，并修复 DSH 运行环境中的 pnpm PATH。 |
 | 内置 Guardian `0.4.4` | [`ca297cc`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ca297cc6f68cbe007b07b30815a9811d09f9ffcc) | 将重启切换为商城自带的进程外 launchd Guardian，加入冷启动入口冲突检查、有界重启、熔断和事务回滚隔离。 |
 | Guardian 心跳修复 `0.4.5` | [`3f0d117`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3f0d1177f024bf159532370fa2a3861dc1b4ba83) | 稳定期只执行一次；进入健康状态后持续刷新心跳与稳定时长，避免商城误报守护进程离线。 |
+| 健康权限交互修复 `0.4.6` | [`e645ede`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/e645edefe8ece8972d3fd723875b0f49ffeb272b) | 将权限定位与重新检查拆分，补充未选择数量、按钮禁用、检查中和完成/失败反馈。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
