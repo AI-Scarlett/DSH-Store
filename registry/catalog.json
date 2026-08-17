@@ -4,7 +4,7 @@
     "name": "DSH Safe GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/",
-    "updatedAt": "2026-08-17T04:27:07Z",
+    "updatedAt": "2026-08-17T09:37:07Z",
     "categories": {
       "marketplace": "插件市场",
       "management": "管理工具",
@@ -52,6 +52,28 @@
         "externalDependencies": ["GitHub Raw/API", "macOS launchd (optional bundled Guardian)"], "reviewStatus": "author-verified"
       },
       "risk": { "installScripts": [], "review": "owner-curated-not-security-audited" }
+    },
+    {
+      "id": "dsh-token-monitor",
+      "name": "DSH Token Monitor",
+      "packageName": "dsh-token-monitor",
+      "description": "汇总当前 Profile 可见会话的 Provider 实际 Token 用量，并在浏览器本地估算费用、预算和每日趋势。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/DSH_TokenMonitor",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "ea6c31b20ef942e73d176763fe8ca3d82cb54bdc",
+      "version": "1.1.0",
+      "categories": ["models", "visualization"],
+      "featured": false,
+      "entryIds": ["dsh-token-monitor"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "author-verified"
+      },
+      "risk": { "installScripts": [], "review": "owner-curated-projection-consumer-not-security-audited" }
     },
     {
       "id": "dsh-chat-import",
