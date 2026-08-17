@@ -69,5 +69,11 @@ export function createDshRunner(options = {}) {
         timeoutMs: Math.min(timeoutMs, 30_000), env: commandEnvironment,
       })
     },
+    restartSpec(profile) {
+      return {
+        nodePath, runtimeArgs: [...runtimeArgs], cliPath,
+        cwd: process.cwd(), profile,
+      }
+    },
   }
 }

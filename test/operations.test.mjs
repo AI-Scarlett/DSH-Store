@@ -53,6 +53,7 @@ function service(root, runner, options = {}) {
     runner, mutationsEnabled: true,
     sourceVerifier: options.sourceVerifier ?? (async entry => ({ status: 'verified', packageName: entry.packageName })),
     sourceVerificationCacheTtlMs: options.sourceVerificationCacheTtlMs,
+    runtimeInstanceId: options.runtimeInstanceId,
   })
 }
 
@@ -131,7 +132,7 @@ test('failed GitHub install restores exact profile files', async () => {
     dumpConfig: async () => ({ ok: true, exitCode: 0 }),
   }
   try {
-    const operations = service(root, runner)
+    const operations = service(root, runner, { runtimeInstanceId: 'boot-fixture' })
     const plan = await operations.createPlan({ action: 'install', pluginId: 'demo' })
     assert.match(plan.confirmation, /INSTALL dsh-demo web/)
     const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
@@ -183,7 +184,7 @@ test('local development links require an explicit migration plan', async () => {
     dumpConfig: async () => ({ ok: true, exitCode: 0 }),
   }
   try {
-    const operations = service(root, runner)
+    const operations = service(root, runner, { runtimeInstanceId: 'boot-fixture' })
     await assert.rejects(operations.createPlan({ action: 'update', pluginId: 'demo' }), error => error.code === 'LOCAL_SOURCE_PROTECTED')
     const plan = await operations.createPlan({ action: 'migrate', pluginId: 'demo' })
     assert.equal(plan.confirmation, 'MIGRATE dsh-demo web')
@@ -191,6 +192,8 @@ test('local development links require an explicit migration plan', async () => {
     assert.match(plan.impact.sourceTransition, /不删除或修改原本地目录/)
     const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
     assert.equal(result.status, 'applied')
+    assert.equal(result.runtimeInstanceId, 'boot-fixture')
+    assert.equal(result.targetVersion, '2.0.0')
     assert.deepEqual(calls[0], ['web', ['add', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`]])
   } finally {
     await rm(root, { recursive: true, force: true })

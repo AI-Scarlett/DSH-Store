@@ -8,6 +8,9 @@ export const MARKET_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/market'
 export const HEALTH_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/health'
 export const PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/plan'
 export const EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/execute'
+export const RUNTIME_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/runtime'
+export const RESTART_PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/restart/plan'
+export const RESTART_EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/restart/execute'
 const MAX_BODY_BYTES = 16 * 1024
 
 class HttpError extends Error {
@@ -149,6 +152,24 @@ export function handleExecuteRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, body => options.operationService.execute(body), 'execute')
 }
 
+export function handleRuntimeRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, async body => {
+    const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+    if (!options.runtimeStatus || options.runtimeStatus.profile !== profile) {
+      throw Object.assign(new Error('runtime status is unavailable for this Profile'), { code: 'RUNTIME_STATUS_UNAVAILABLE' })
+    }
+    return options.runtimeStatus
+  })
+}
+
+export function handleRestartPlanRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, body => options.restartService.createPlan(body), 'restart-plan')
+}
+
+export function handleRestartExecuteRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, body => options.restartService.execute(body), 'restart-execute')
+}
+
 export function registerInventoryRoute(webServer, options = {}) {
   return webServer.register({
     kind: 'exact',
@@ -164,6 +185,9 @@ export function registerManagerRoutes(webServer, options = {}) {
     [HEALTH_ROUTE_PATH, (req, res) => handleHealthRequest(req, res, options)],
     [PLAN_ROUTE_PATH, (req, res) => handlePlanRequest(req, res, options)],
     [EXECUTE_ROUTE_PATH, (req, res) => handleExecuteRequest(req, res, options)],
+    [RUNTIME_ROUTE_PATH, (req, res) => handleRuntimeRequest(req, res, options)],
+    [RESTART_PLAN_ROUTE_PATH, (req, res) => handleRestartPlanRequest(req, res, options)],
+    [RESTART_EXECUTE_ROUTE_PATH, (req, res) => handleRestartExecuteRequest(req, res, options)],
   ]
   const disposers = routes.map(([path, handler]) => webServer.register({ kind: 'exact', path, handler }))
   return () => {
