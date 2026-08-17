@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.4.5')
+  assert.equal(pkg.version, '0.4.6')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -125,6 +125,11 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(navSource, /compact: true/)
   assert.match(navSource, /刷新 GitHub 目录/)
   assert.doesNotMatch(client, /id:\s*'all'/)
+  assert.match(client, /前往选择.*个插件的权限/)
+  assert.match(client, /dsh-health-permissions/)
+  assert.match(client, /完成剩余.*项权限选择后才能重新检查/)
+  assert.match(client, /正在检查…/)
+  assert.match(client, /健康检查已完成/)
 })
 
 test('client fails closed when the live health endpoint still uses the legacy schema', async () => {
