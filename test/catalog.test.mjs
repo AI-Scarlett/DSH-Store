@@ -121,6 +121,19 @@ test('catalog service retries a transient GitHub transport failure before using 
   assert.equal(calls, 2)
 })
 
+test('catalog overlays live marketplace install counts without changing catalog authority', async () => {
+  const service = createCatalogService({
+    catalogUrl: 'https://catalog.test/catalog.json', installCountsUrl: 'https://counts.test/v1/counts', retryDelaysMs: [],
+    fetch: async url => url.includes('counts')
+      ? new Response(JSON.stringify({ schemaVersion: 1, updatedAt: '2026-08-17T00:00:00Z', counts: { demo: 42 } }))
+      : new Response(JSON.stringify(document())),
+  })
+  const catalog = await service.load()
+  assert.equal(catalog.entries[0].installCount, 42)
+  assert.equal(catalog.installCounts.status, 'live')
+  assert.equal(catalog.source.kind, 'github')
+})
+
 test('marketplace offers explicit migration for local links and reports version updates', () => {
   const catalog = { ...validateCatalog(document()), source: { kind: 'fixture' } }
   const local = buildMarketplaceSnapshot(catalog, {

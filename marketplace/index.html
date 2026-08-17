@@ -53,6 +53,15 @@
   <script type="module">
     const response = await fetch('../registry/catalog.json', { cache: 'no-store' })
     const catalog = await response.json()
+    if (catalog.registry.installCountsUrl) {
+      try {
+        const countsResponse = await fetch(catalog.registry.installCountsUrl, { cache: 'no-store' })
+        const payload = await countsResponse.json()
+        if (countsResponse.ok && payload.schemaVersion === 1 && payload.counts) {
+          for (const entry of catalog.entries) if (Number.isInteger(payload.counts[entry.id])) entry.installCount = payload.counts[entry.id]
+        }
+      } catch {}
+    }
     const search = document.querySelector('#search')
     const category = document.querySelector('#category')
     const meta = document.querySelector('#meta')

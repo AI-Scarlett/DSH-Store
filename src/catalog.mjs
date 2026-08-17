@@ -8,6 +8,7 @@ const MAX_CATALOG_BYTES = 2 * 1024 * 1024
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
+const MAX_COUNTS_BYTES = 256 * 1024
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json'
@@ -342,6 +343,9 @@ export function validateCatalog(document) {
       homepageUrl: typeof document.registry.homepageUrl === 'string'
         ? document.registry.homepageUrl.slice(0, 400)
         : null,
+      installCountsUrl: typeof document.registry.installCountsUrl === 'string'
+        ? new URL(document.registry.installCountsUrl).href
+        : null,
       updatedAt: nonEmptyString(document.registry.updatedAt, 'registry.updatedAt', 80),
       categories,
     },
@@ -471,6 +475,7 @@ export function createCatalogService(options = {}) {
   const catalogUrl = options.catalogUrl === null ? null : (options.catalogUrl ?? DEFAULT_CATALOG_URL)
   const bundledUrl = options.bundledUrl ?? new URL('../registry/catalog.json', import.meta.url)
   const request = options.fetch ?? globalThis.fetch
+  const installCountsUrl = typeof options.installCountsUrl === 'string' ? options.installCountsUrl : null
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   const retryDelaysMs = options.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS
   const cacheTtlMs = options.cacheTtlMs ?? DEFAULT_CACHE_TTL_MS
@@ -533,6 +538,23 @@ export function createCatalogService(options = {}) {
         value = await bundled(code)
       }
     }
+    let installCounts = { status: installCountsUrl === null ? 'disabled' : 'unavailable', url: installCountsUrl, updatedAt: null }
+    if (installCountsUrl !== null && typeof request === 'function') {
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), Math.min(timeoutMs, 3_000))
+      try {
+        const response = await request(installCountsUrl, { headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' }, signal: controller.signal })
+        if (!response.ok) throw new Error(`counts returned HTTP ${response.status}`)
+        const text = await response.text()
+        if (Buffer.byteLength(text) > MAX_COUNTS_BYTES) throw new Error('counts response is too large')
+        const payload = JSON.parse(text)
+        if (payload?.schemaVersion !== 1 || !payload.counts || typeof payload.counts !== 'object') throw new Error('counts response is invalid')
+        value = { ...value, entries: value.entries.map(entry => ({ ...entry, installCount: Number.isSafeInteger(payload.counts[entry.id]) && payload.counts[entry.id] >= 0 ? payload.counts[entry.id] : entry.installCount })) }
+        installCounts = { status: 'live', url: installCountsUrl, updatedAt: typeof payload.updatedAt === 'string' ? payload.updatedAt : null }
+      } catch {}
+      finally { clearTimeout(timer) }
+    }
+    value = { ...value, installCounts }
     cached = value
     cachedAt = Date.now()
     return value

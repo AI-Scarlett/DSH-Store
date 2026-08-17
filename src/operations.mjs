@@ -340,7 +340,7 @@ export function createOperationService(options = {}) {
         restartRequired: plan.impact.restartRequired, runtimeInstanceId,
         targetVersion: plan.plugin.targetVersion, health,
       }
-      if (action === 'install') value.installReceipt = await telemetryClient.recordInstall({ pluginId: entry.id, version: entry.version })
+      if (action === 'install') value.installReceipt = await telemetryClient.recordInstall({ pluginId: entry.id, version: entry.version, receiptId: transactionId })
       await appendAudit(dshHome, { ...value, at: new Date().toISOString() })
       return value
     } catch (error) {
