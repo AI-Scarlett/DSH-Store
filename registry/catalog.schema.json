@@ -14,6 +14,7 @@
         "name": { "type": "string", "minLength": 1 },
         "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
         "homepageUrl": { "type": "string" },
+        "installCountsUrl": { "type": "string", "pattern": "^https://" },
         "updatedAt": { "type": "string" },
         "categories": {
           "type": "object",

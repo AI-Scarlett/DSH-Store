@@ -343,6 +343,9 @@ export function validateCatalog(document) {
       homepageUrl: typeof document.registry.homepageUrl === 'string'
         ? document.registry.homepageUrl.slice(0, 400)
         : null,
+      installCountsUrl: typeof document.registry.installCountsUrl === 'string'
+        ? new URL(document.registry.installCountsUrl).href
+        : null,
       updatedAt: nonEmptyString(document.registry.updatedAt, 'registry.updatedAt', 80),
       categories,
     },
