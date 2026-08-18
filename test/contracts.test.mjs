@@ -189,7 +189,7 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     readFile(new URL('marketplace/dsh-store-logo.svg', project), 'utf8'),
     readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
   ])
-  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#3ca90bf245fe54a097c787c216ad7353d7769ebb'"
+  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9a6e41f7875726f7124d2cfde618df284342e5f3'"
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)
   assert.match(html, /data-locale="en"/)
