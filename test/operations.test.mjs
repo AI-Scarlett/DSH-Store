@@ -203,6 +203,31 @@ test('failed GitHub install restores exact profile files', async () => {
   }
 })
 
+test('failed GitHub prepare returns a bounded actionable diagnostic without command output', async () => {
+  const { root } = await fixture({ installed: false })
+  const runner = {
+    async plugin(_profile, args) {
+      if (args[0] === 'add') return {
+        ok: false, exitCode: 1,
+        stderr: 'token=must-not-leak\nERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED private/path',
+      }
+      return { ok: true, exitCode: 0 }
+    },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner)
+    const plan = await operations.createPlan({ action: 'install', pluginId: 'demo' })
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.error.code, 'DSH_PLUGIN_COMMAND_FAILED')
+    assert.equal(result.error.diagnostic.code, 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED')
+    assert.match(result.error.diagnostic.message, /不会自动放宽权限/)
+    assert.doesNotMatch(JSON.stringify(result), /must-not-leak|private\/path/)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('missing pnpm reports a precise failure and does not run an unnecessary dependency restore', async () => {
   const { root, profile } = await fixture({ specifier: 'link:/tmp/dsh-demo-local-source' })
   const before = await readFile(join(profile, 'package.json'), 'utf8')

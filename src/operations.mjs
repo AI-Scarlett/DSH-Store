@@ -82,11 +82,32 @@ function publicPlan(plan) {
 
 function pluginCommandError(result) {
   const pnpmUnavailable = result?.exitCode === 127
+  const output = `${String(result?.stderr ?? '')}\n${String(result?.stdout ?? '')}`
+  const pnpmCode = output.match(/\b(ERR_PNPM_[A-Z0-9_]+)\b/)?.[1] ?? null
+  const diagnostic = pnpmCode === 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED'
+    ? {
+        code: pnpmCode,
+        message: 'pnpm 已阻止固定 Git 源运行 prepare；该插件缺少经过审核的构建许可，商城不会自动放宽权限。',
+      }
+    : pnpmCode === 'ERR_PNPM_PREPARE_PACKAGE'
+      ? {
+          code: pnpmCode,
+          message: '插件固定 Git 源的 prepare 构建失败；这是插件发布包或安装契约问题，不是 Profile 写入失败。',
+        }
+      : pnpmCode === 'ERR_PNPM_WORKSPACE_PKG_NOT_FOUND'
+        ? {
+            code: pnpmCode,
+            message: '插件使用 workspace:* 依赖，但固定 Git 子目录安装不包含完整工作区；该发布源不满足商城安装契约。',
+          }
+      : pnpmCode
+        ? { code: pnpmCode, message: `pnpm 安装失败（${pnpmCode}）。` }
+        : null
   return Object.assign(new Error(pnpmUnavailable
     ? 'pnpm is unavailable in the DSH plugin runtime PATH'
     : 'official DSH plugin command failed'), {
     code: pnpmUnavailable ? 'DSH_PNPM_NOT_FOUND' : 'DSH_PLUGIN_COMMAND_FAILED',
     exitCode: result?.exitCode ?? null,
+    diagnostic,
   })
 }
 
@@ -389,7 +410,10 @@ export function createOperationService(options = {}) {
       const value = {
         schemaVersion: 1, transactionId, status: 'rolled-back', action: plan.action,
         profile: plan.profile, packageName: plan.plugin.packageName, backupId: backupDir ? transactionId : null,
-        error: { code: error?.code ?? 'OPERATION_FAILED', message: String(error?.message ?? error), exitCode: error?.exitCode ?? null },
+        error: {
+          code: error?.code ?? 'OPERATION_FAILED', message: String(error?.message ?? error),
+          exitCode: error?.exitCode ?? null, diagnostic: error?.diagnostic ?? null,
+        },
         rollback, rollbackDetails,
       }
       await appendAudit(dshHome, { ...value, at: new Date().toISOString() })
