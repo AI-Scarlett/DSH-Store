@@ -64,7 +64,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.ok(item.details.permissions.credentials.length > 0, `${item.id} must declare credential access`)
   }
   assert.deepEqual(source.entries.filter(item => item.featured === true).map(item => item.id), [
-    'dsh-safe-plugin-manager', 'dsh-chat-import', 'dsh-cliapi', 'dshllm-api', 'dsh-web-ui-all',
+    'dsh-safe-plugin-manager', 'dsh-codex-shell', 'dsh-chat-import', 'dsh-cliapi', 'dshllm-api', 'dsh-web-ui-all',
   ])
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')

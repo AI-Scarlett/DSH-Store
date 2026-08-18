@@ -61,11 +61,11 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 | 项目 | 当前状态 |
 | --- | --- |
 | 商城版本 | `0.4.9` |
-| 收录条目 | 42 个 |
-| 可安装 | 37 个 |
+| 收录条目 | 43 个 |
+| 可安装 | 38 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
-| 推荐 | 5 个：自研四件套 + DSH Web UI All |
+| 推荐 | 6 个：自研四件套 + DSH Codex Shell + DSH Web UI All |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
 商城已经在真实 DSH `web` Profile 中完成只读扫描、GitHub 在线目录刷新、配置合成、
@@ -140,8 +140,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - `approved`：正常上架并允许生成安装计划；
 - `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
-- `featured: true`：在全部视图和所属分类中优先显示；当前推荐自研四件套和用户精选的
-  DSH Web UI All；
+- `featured: true`：在全部视图和所属分类中优先显示；当前推荐自研四件套、用户精选的
+  DSH Codex Shell 和 DSH Web UI All；
 - 可选安装回执只发送插件 ID 和版本，不发送设备、Profile 或用户标识；默认关闭；
 - GitHub Pages 不能直接写回 `catalog.json`，真实计数需要独立匿名聚合服务。
 - `0.4.7` 内置幂等安装回执与 Cloudflare Worker + D1 聚合器；只在商城安装、健康检查通过后提交插件 ID、版本和随机事务 ID，不提交账号、设备或 Profile。计数服务未部署或未配置时保持关闭，不显示虚假安装量。
@@ -194,12 +194,13 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 ## 已收录插件
 
 `★` 表示推荐。当前推荐 `AI-Scarlett` 自研四件套，以及用户精选的社区插件
-DSH Web UI All；推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
+DSH Codex Shell 和 DSH Web UI All；推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
 `registry/catalog.json` 一致。
 
 | 插件 | 分类 | 状态 | 介绍 |
 | --- | --- | --- | --- |
 | ★ [DSH-Store](https://github.com/AI-Scarlett/dsh-safe-plugin-manager) | 插件市场、管理工具 | 可安装 | 本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。 |
+| ★ [DSH Codex Shell](https://github.com/Ephemeral-AI-Lab/dsh-plugins/tree/0ff29d7bb4c26e62c8bce9b867965fd2211fa670/codex-shell) | 工具能力、开发与运行时 | 可安装 | 为编码 Agent 提供 Codex 风格的持续终端工具；可执行任意 Shell，安装前必须确认高权限和精确 allowBuilds。 |
 | ★ [DSH Chat Import](https://github.com/AI-Scarlett/dsh-chat-import) | 会话与消息、导入迁移 | 可安装 | 将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。 |
 | ★ [DSH CLIAPI](https://github.com/AI-Scarlett/DSH_CLIAPI) | 模型与账号、模型路由 | 可安装 | DSH 的授权中心与自动本地模型路由器。 |
 | ★ [DSHLLM API](https://github.com/AI-Scarlett/DSHLLM_API) | 模型与账号、模型路由 | 可安装 | 面向 DSH 的多模态感知模型路由器，需要 DSH CLIAPI。 |
@@ -290,11 +291,18 @@ Host 端使用 `ctx.inject(['webServer'], ...)` 等待可选 Web 服务。Client
 
 如果你开发或发现了值得收录的 DSH 插件，可以通过
 [插件上架申请表](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
-留言提交。申请需要提供公开 GitHub 仓库、完整 40 位 Commit、包名和版本、DSH 入口 ID，
-并如实声明安装生命周期脚本。
+留言提交。表单支持仓库根包和 monorepo 子目录，需要提供公开 GitHub 仓库、完整 40 位
+Commit、manifest/安装路径、包名和版本、DSH 入口 ID，并如实声明安装生命周期脚本、
+权限、外部依赖和兼容性。
+
+Issue 创建、编辑或重新打开后，GitHub Actions 会自动读取固定 Commit，对 manifest、
+Bundle Patch、包名/版本、入口 ID、生命周期脚本、受保护命名空间和目录字段执行静态预检，
+并幂等更新同一条机器人评论和 `submission-passed` / `submission-failed` 标签。未通过的申请
+不会进入人工评审；修正 Issue 后会自动重检。工作流只读取公开固定源，不克隆或执行第三方
+安装、构建和测试脚本。静态预检通过不代表安全审计、运行验证或自动上架。
 
 联合审核任务每天北京时间 06:00 和 18:00 依次处理 GitHub 主动发现项目与用户提交，
-统一去重后按照“热门、有用、有趣”三个维度筛选，并复核许可证、来源、权限、兼容性、
+只处理带 `submission-passed` 的申请，统一去重后按照“热门、有用、有趣”三个维度筛选，并复核许可证、来源、权限、兼容性、
 Bundle Patch、受保护条目和固定 Commit。审核通过只会生成候选目录草案与一次性变更计划；
 实际写入商城目录、提交 Pull Request 或合并仍需要逐次人工确认。
 

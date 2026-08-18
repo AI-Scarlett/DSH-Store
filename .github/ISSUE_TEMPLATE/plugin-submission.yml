@@ -1,8 +1,34 @@
 name: Submit a DSH plugin
-description: Propose a GitHub-hosted plugin for the guarded registry.
+description: Submit a fixed GitHub commit for automated static precheck and human marketplace review.
 title: "[Plugin] "
 labels: ["plugin-submission"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        The bot checks the fixed commit immediately after this Issue is opened or edited. It validates public source metadata and the Bundle Patch without executing third-party code. Passing is required for review, but is not a security audit, runtime test, or automatic listing.
+  - type: input
+    id: catalog-id
+    attributes:
+      label: Catalog ID
+      description: Stable unscoped registry ID, for example dsh-example.
+      placeholder: dsh-example
+    validations:
+      required: true
+  - type: input
+    id: display-name
+    attributes:
+      label: Display name
+      placeholder: DSH Example
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What the plugin does and why it is useful, popular, or interesting.
+    validations:
+      required: true
   - type: input
     id: repository
     attributes:
@@ -14,14 +40,44 @@ body:
     id: commit
     attributes:
       label: Immutable commit
-      description: Full 40-character commit SHA to review.
+      description: Full 40-character lowercase commit SHA to review.
     validations:
       required: true
   - type: input
-    id: package
+    id: manifest-path
     attributes:
-      label: Package name and version
-      placeholder: dsh-example@1.0.0
+      label: Manifest path
+      description: Repository-relative package.json path.
+      placeholder: package.json or plugins/example/package.json
+    validations:
+      required: true
+  - type: input
+    id: install-path
+    attributes:
+      label: Install path
+      description: Use "." for the repository root, or the package directory for a monorepo.
+      placeholder: . or plugins/example
+    validations:
+      required: true
+  - type: input
+    id: package-name
+    attributes:
+      label: Package name
+      placeholder: dsh-example
+    validations:
+      required: true
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: categories
+    attributes:
+      label: Categories
+      description: Comma-separated IDs from registry/catalog.json, for example tools,workflow.
     validations:
       required: true
   - type: input
@@ -31,11 +87,119 @@ body:
       description: Comma-separated IDs inserted by the Bundle Patch.
     validations:
       required: true
-  - type: textarea
+  - type: input
     id: scripts
     attributes:
       label: Install lifecycle scripts
-      description: List preinstall, install, postinstall, or prepare scripts; write "none" if absent.
+      description: Comma-separated preinstall, install, postinstall, or prepare; write "none" if absent.
+    validations:
+      required: true
+  - type: dropdown
+    id: plugin-type
+    attributes:
+      label: Plugin type
+      options:
+        - feature — 功能插件
+        - theme — 主题
+        - suite — 套件
+        - client — 客户端
+        - provider — Provider
+        - unknown — 未知
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License
+      description: SPDX identifier or UNKNOWN. It must match package.json when the manifest declares a license.
+      placeholder: MIT
+    validations:
+      required: true
+  - type: dropdown
+    id: permission-level
+    attributes:
+      label: Permission level
+      options:
+        - low — 低
+        - medium — 中
+        - high — 高
+        - unknown — 未知
+    validations:
+      required: true
+  - type: dropdown
+    id: file-permission
+    attributes:
+      label: File permission
+      options:
+        - none — 不访问
+        - read-only — 只读
+        - write — 可写
+        - unknown — 未知
+    validations:
+      required: true
+  - type: dropdown
+    id: network-permission
+    attributes:
+      label: Network permission
+      options:
+        - none — 无
+        - specified-services — 指定服务
+        - any — 任意网络
+        - unknown — 未知
+    validations:
+      required: true
+  - type: dropdown
+    id: command-permission
+    attributes:
+      label: Command execution
+      options:
+        - none — 否
+        - restricted — 受限
+        - shell — 任意 Shell
+        - unknown — 未知
+    validations:
+      required: true
+  - type: input
+    id: credential-access
+    attributes:
+      label: Credential access
+      description: Comma-separated none, api-key, oauth, keychain, or unknown.
+      placeholder: none
+    validations:
+      required: true
+  - type: input
+    id: external-dependencies
+    attributes:
+      label: External dependencies
+      description: Comma-separated runtimes/services such as Python, FFmpeg, Docker, or an API; write "none" if absent.
+    validations:
+      required: true
+  - type: input
+    id: dsh-compatibility
+    attributes:
+      label: DSH compatibility
+      placeholder: ">=0.1.0-rc.7 or unknown"
+    validations:
+      required: true
+  - type: input
+    id: node-compatibility
+    attributes:
+      label: Node.js compatibility
+      placeholder: "^22.19.0 || >=24.0.0 or unknown"
+    validations:
+      required: true
+  - type: input
+    id: systems
+    attributes:
+      label: Supported systems
+      description: Comma-separated macOS, Linux, Windows, or unknown.
+    validations:
+      required: true
+  - type: input
+    id: profiles
+    attributes:
+      label: Supported profiles
+      description: Comma-separated DSH Profile types, for example web,headless.
     validations:
       required: true
   - type: checkboxes
@@ -43,9 +207,9 @@ body:
     attributes:
       label: Registry guarantees
       options:
-        - label: The repository root declares dsh.bundle.patch.
+        - label: The declared package path contains package.json and a package-resolvable dsh.bundle.patch.
           required: true
-        - label: The Bundle Patch does not disable or replace official DSH components.
+        - label: The Bundle Patch does not disable, replace, or impersonate official DSH components.
           required: true
-        - label: The submitted commit and version are immutable and match package.json.
+        - label: The submitted commit, package, version, lifecycle scripts, permissions, and compatibility claims are complete and accurate.
           required: true
