@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-18T01:45:40Z",
+    "updatedAt": "2026-08-18T03:48:31Z",
     "categories": {
       "marketplace": "插件市场",
       "management": "管理工具",
@@ -74,6 +74,29 @@
         "externalDependencies": [], "reviewStatus": "author-verified"
       },
       "risk": { "installScripts": [], "review": "owner-curated-read-only-model-usage-projection-not-security-audited" }
+    },
+    {
+      "id": "dsh-codex-shell",
+      "name": "交互式终端（DSH Codex Shell）",
+      "packageName": "dsh-codex-shell",
+      "description": "为编码 Agent 提供 Codex 风格的 exec_command 与 write_stdin，可在同一主机进程中持续读取输出、发送输入并运行任意 Shell 命令。",
+      "repositoryUrl": "https://github.com/Ephemeral-AI-Lab/dsh-plugins",
+      "defaultBranch": "main",
+      "manifestPath": "codex-shell/package.json",
+      "installPath": "codex-shell",
+      "commit": "0ff29d7bb4c26e62c8bce9b867965fd2211fa670",
+      "version": "0.1.2",
+      "categories": ["tools", "development"],
+      "featured": true,
+      "entryIds": ["codex-shell"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": "^22.19.0 || >=24.0.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "shell", "credentials": ["api-key", "oauth", "keychain"] },
+        "externalDependencies": ["主机 Shell", "pnpm allowBuilds：固定 Git 源与 node-pty@1.1.0"], "reviewStatus": "manual-review"
+      },
+      "risk": { "installScripts": ["prepare"], "review": "manual-source-and-disposable-profile-review-high-risk-arbitrary-shell-not-security-audited" }
     },
     {
       "id": "dsh-chat-import",

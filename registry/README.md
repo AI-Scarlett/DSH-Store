@@ -15,6 +15,23 @@
 7. 不禁用、替换或重复安装任何 `@deepseek-ai/*` 官方组件；
 8. `npm run validate:registry` 通过。
 
+## GitHub 上架申请预检
+
+[上架申请表](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
+支持仓库根包和 monorepo 子目录。Issue 创建、编辑或重新打开后，
+`.github/workflows/plugin-submission.yml` 会调用 `scripts/check-plugin-submission.mjs`，读取公开
+固定 Commit，并复用目录校验器检查 manifest、Bundle Patch、包名/版本、入口 ID、生命周期
+脚本、受保护条目、分类、权限和兼容性字段。
+
+预检通过时添加 `submission-passed`，失败时添加 `submission-failed`，并幂等更新一条带固定
+标记的机器人评论；修改 Issue 会重新检查并移除相反状态标签。只有通过预检的申请才进入
+每天北京时间 06:00 和 18:00 的“热门、有用、有趣”人工筛选。工作流权限只包含
+`contents: read` 与 `issues: write`，不会检出申请仓库，也不会运行第三方 install、prepare、
+build 或 test 脚本。
+
+该门禁是固定源静态一致性检查，不是安全审计或 DSH 运行验证。通过不会自动修改
+`catalog.json`、创建 Pull Request 或合并；正式上架仍需人工复核、一次性变更计划和明确确认。
+
 ## 详情元数据
 
 商城详情由 GitHub 上的同一份 `catalog.json` 提供。每个条目必须显式声明：

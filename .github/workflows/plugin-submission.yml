@@ -1,0 +1,104 @@
+name: Plugin submission precheck
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: plugin-submission-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  precheck:
+    if: contains(github.event.issue.labels.*.name, 'plugin-submission') || startsWith(github.event.issue.title, '[Plugin]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check fixed source without executing third-party code
+        id: check
+        continue-on-error: true
+        run: >-
+          node scripts/check-plugin-submission.mjs
+          --event "$GITHUB_EVENT_PATH"
+          --report "$RUNNER_TEMP/plugin-submission-report.md"
+          --result "$RUNNER_TEMP/plugin-submission-result.json"
+      - name: Upsert report and gate labels
+        uses: actions/github-script@v7
+        env:
+          REPORT_PATH: ${{ runner.temp }}/plugin-submission-report.md
+          RESULT_PATH: ${{ runner.temp }}/plugin-submission-result.json
+        with:
+          script: |
+            const fs = require('node:fs')
+            const marker = '<!-- dsh-plugin-submission-check -->'
+            const fallback = `${marker}
+            ### DSH 插件提交自动预检：未通过
+
+            - 错误代码：\`SUBMISSION_CHECK_INFRASTRUCTURE\`
+            - 原因：预检程序未生成完整报告，请查看本次 Actions 日志后重试。`
+            const report = fs.existsSync(process.env.REPORT_PATH)
+              ? fs.readFileSync(process.env.REPORT_PATH, 'utf8').slice(0, 60000)
+              : fallback
+            let result = { status: 'failed' }
+            if (fs.existsSync(process.env.RESULT_PATH)) {
+              try { result = JSON.parse(fs.readFileSync(process.env.RESULT_PATH, 'utf8')) } catch {}
+            }
+            const passed = result.status === 'passed'
+            const definitions = {
+              'plugin-submission': { color: '5319e7', description: 'DSH marketplace plugin submission' },
+              'submission-passed': { color: '0e8a16', description: 'Fixed-source static precheck passed' },
+              'submission-failed': { color: 'd73a4a', description: 'Fixed-source static precheck failed' },
+            }
+            for (const [name, properties] of Object.entries(definitions)) {
+              try {
+                await github.rest.issues.getLabel({ owner: context.repo.owner, repo: context.repo.repo, name })
+              } catch (error) {
+                if (error.status !== 404) throw error
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner, repo: context.repo.repo, name, ...properties,
+                })
+              }
+            }
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            })
+            const previous = comments.find(comment =>
+              comment.user?.login === 'github-actions[bot]' && comment.body?.includes(marker))
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner, repo: context.repo.repo, comment_id: previous.id, body: report,
+              })
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number, body: report,
+              })
+            }
+            const wanted = passed ? 'submission-passed' : 'submission-failed'
+            const unwanted = passed ? 'submission-failed' : 'submission-passed'
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, labels: ['plugin-submission', wanted],
+            })
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number, name: unwanted,
+              })
+            } catch (error) {
+              if (error.status !== 404) throw error
+            }
+      - name: Enforce precheck result
+        if: steps.check.outcome != 'success'
+        run: exit 1
