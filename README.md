@@ -32,7 +32,7 @@ DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9a6e41f7875726f7124d2cfde618df284342e5f3'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#5e6c2b9cde9c3992d55a88aa7223da76a5746b78'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -199,6 +199,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | DSH-Store 与目录扩充 `0.4.9` | [`8a76190`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/8a76190b516258e37ba0604891058c87d979295e) | 英文品牌统一为 DSH-Store，技术支持入口切换到 dsh.store，并将目录扩充到 42 个条目。 |
 | rc.7 卡片与提交门禁 `0.5.0` | [`3ca90bf`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3ca90bf245fe54a097c787c216ad7353d7769ebb) | 修复 Guardian/全局 DSH CLI 的 pnpm PATH，升级响应式插件卡片与发布者展示，并将上架表单简化为 GitHub 地址驱动的自动静态预检。 |
 | 本机按需源更新 `0.5.1` | [`9a6e41f`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/9a6e41f7875726f7124d2cfde618df284342e5f3) | 用户本机按需读取插件源 GitHub，解析完整 Commit 并在安装前审核；低风险候选可固定 SHA 更新，高风险或契约漂移返回 Registry 复审。 |
+| 本机高风险自主决策 `0.5.2` | [`5e6c2b9`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/5e6c2b9cde9c3992d55a88aa7223da76a5746b78) | 进入已安装页后由用户本机有限并发检查源 GitHub；低风险生成固定 SHA 计划，高风险展示变化并逐次确认，触碰 DSH 原生代码或受保护组件则仅保留不受商城保护的外部入口。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
