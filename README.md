@@ -396,3 +396,7 @@ GitHub 默认 CodeQL 已启用，对 Actions 与 JavaScript/TypeScript 变更执
 在一次性 Profile 中补齐 GitHub 安装、更新、启停、卸载和故障回滚的真实闭环，覆盖
 headless、损坏 manifest、缺失依赖、坏链接和无 Web Server Profile 等异常矩阵；
 生产 Profile 的每次写操作仍必须由用户查看计划并输入精确确认语。
+
+## 许可证
+
+本项目采用 [MIT License](./LICENSE) 开源。Copyright (c) 2026 AI-Scarlett。
