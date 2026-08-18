@@ -8,6 +8,8 @@ DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > **想把插件上架到 DSH-Store？** [提交一个公开 GitHub 项目地址](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) 即可。机器人会自动读取必要文件，不再要求手填整份 Catalog。开发或提交前，建议先用 [`build-dsh-plugin`](https://github.com/AI-Scarlett/build-dsh-plugin) 制作或执行只读商城预检。
 
 [打开在线插件商城](https://dsh.store/) ·
+[浏览完整插件目录](https://dsh.store/plugins/) ·
+[English DSH plugin catalog](https://dsh.store/en/plugins/) ·
 [提交项目上架](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) ·
 [使用 build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) ·
 [查看机器目录](registry/catalog.json) ·
