@@ -88,3 +88,20 @@ test('matching source commit is current without downloading or installing source
   assert.equal(result.status, 'current')
   assert.equal(result.candidate, null)
 })
+
+test('numeric DOMException abort codes map to a stable source update timeout', async () => {
+  const service = createSourceUpdateService({
+    fetch: async () => {
+      const error = new Error('This operation was aborted')
+      error.name = 'AbortError'
+      error.code = 20
+      throw error
+    },
+    timeoutMs: 1,
+  })
+  await assert.rejects(
+    service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` }),
+    error => error.code === 'SOURCE_UPDATE_TIMEOUT'
+      && error.message === 'GitHub 源更新检查超时。',
+  )
+})

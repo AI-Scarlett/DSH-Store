@@ -584,7 +584,10 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.muted }, `事务 ${result.transactionId} · 回滚 ${result.rollback || '不需要'}`),
           result.rollbackDetails ? React.createElement('div', { style: styles.muted },
             `Profile 文件恢复：${result.rollbackDetails.profileFiles} · 依赖恢复：${result.rollbackDetails.dependencies}`) : null,
-          result.error ? React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`) : null,
+          result.error ? React.createElement(React.Fragment, null,
+            React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`),
+            result.error.diagnostic ? React.createElement('div', { style: styles.notice },
+              `${result.error.diagnostic.code}：${result.error.diagnostic.message}`) : null) : null,
           result.status === 'applied' && result.restartRequired ? React.createElement('div', { style: styles.notice },
             React.createElement('div', { style: styles.name }, '插件变更已写入，但尚未在当前 DSH Host 中生效'),
             React.createElement('div', { style: styles.muted }, '请使用“一键安全重启”；Guardian 会停止并启动同一个 web Profile。不要再手工启动第二个 DSH 实例。')) : null))

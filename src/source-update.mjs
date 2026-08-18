@@ -29,7 +29,9 @@ async function fetchJson(url, request, timeoutMs) {
     if (!response.ok) throw updateError('SOURCE_UPDATE_GITHUB_HTTP', `GitHub 返回 HTTP ${response.status}。`)
     return await response.json()
   } catch (error) {
-    if (error?.code) throw error
+    // DOMException AbortError exposes the legacy numeric `code` 20. Only our
+    // own string codes are safe to pass through to the HTTP boundary.
+    if (typeof error?.code === 'string') throw error
     throw updateError(error?.name === 'AbortError' ? 'SOURCE_UPDATE_TIMEOUT' : 'SOURCE_UPDATE_NETWORK',
       error?.name === 'AbortError' ? 'GitHub 源更新检查超时。' : '暂时无法连接 GitHub 检查源更新。')
   } finally {
@@ -50,7 +52,10 @@ async function fetchText(url, request, timeoutMs, maxBytes = 512 * 1024) {
     if (Buffer.byteLength(text) > maxBytes) throw updateError('SOURCE_UPDATE_TOO_LARGE', '候选源文件超过本机审核上限。')
     return text
   } catch (error) {
-    if (error?.code) throw error
+    // Do not mistake DOMException's numeric AbortError code for an application
+    // error code, otherwise the panel leaks "This operation was aborted" as a
+    // generic MANAGER_REQUEST_FAILED response.
+    if (typeof error?.code === 'string') throw error
     throw updateError(error?.name === 'AbortError' ? 'SOURCE_UPDATE_TIMEOUT' : 'SOURCE_UPDATE_NETWORK',
       error?.name === 'AbortError' ? 'GitHub 源更新检查超时。' : '暂时无法连接 GitHub 检查源更新。')
   } finally {
