@@ -1,12 +1,14 @@
 import { spawn } from 'node:child_process'
 import { createHash, randomUUID } from 'node:crypto'
-import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { appendFile, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { request as requestHttp } from 'node:http'
 import { connect } from 'node:net'
 import { delimiter, dirname, isAbsolute, join } from 'node:path'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 const now = () => new Date().toISOString()
+const PROBE_RETENTION_MS = 24 * 60 * 60 * 1_000
+const PROBE_LOG_MAX_BYTES = 4 * 1_024 * 1_024
 
 async function atomicJson(path, value) {
   await mkdir(dirname(path), { recursive: true, mode: 0o700 })
@@ -33,11 +35,12 @@ function listening(host, port) {
 
 function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, maxBytes = 65_536 }) {
   return new Promise(resolve => {
+    const startedAt = Date.now()
     let settled = false
     const finish = value => {
       if (settled) return
       settled = true
-      resolve(value)
+      resolve({ ...value, durationMs: Math.max(0, Date.now() - startedAt) })
     }
     const request = requestHttp({
       host, port, path, method,
@@ -49,13 +52,13 @@ function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, 
         size += chunk.length
         if (size > maxBytes) {
           response.destroy()
-          finish({ ok: false, statusCode: response.statusCode, reason: 'response-too-large' })
+          finish({ ok: false, statusCode: response.statusCode, bytes: size, reason: 'response-too-large' })
           return
         }
         chunks.push(chunk)
       })
       response.once('end', () => finish({
-        ok: true, statusCode: response.statusCode, body: Buffer.concat(chunks).toString('utf8'),
+        ok: true, statusCode: response.statusCode, bytes: size, body: Buffer.concat(chunks).toString('utf8'),
       }))
       response.once('error', () => finish({ ok: false, statusCode: response.statusCode, reason: 'response-error' }))
     })
@@ -72,7 +75,10 @@ async function probeDshHost(config) {
   const timeoutMs = config.healthProbeTimeoutMs ?? 1_500
   const root = await httpExchange({ host: config.host, port: config.port, path: '/', timeoutMs })
   if (!root.ok || root.statusCode !== 200) {
-    return { healthy: false, reason: root.reason ?? `root-http-${root.statusCode ?? 'unknown'}`, rootStatus: root.statusCode ?? null }
+    return {
+      healthy: false, reason: root.reason ?? `root-http-${root.statusCode ?? 'unknown'}`,
+      rootStatus: root.statusCode ?? null, rootDurationMs: root.durationMs, rootBytes: root.bytes ?? null,
+    }
   }
   const runtime = await httpExchange({
     host: config.host, port: config.port, path: '/api2/dsh-safe-plugin-manager/runtime', method: 'POST',
@@ -82,23 +88,108 @@ async function probeDshHost(config) {
     return {
       healthy: false, reason: runtime.reason ?? `runtime-http-${runtime.statusCode ?? 'unknown'}`,
       rootStatus: root.statusCode, runtimeStatus: runtime.statusCode ?? null,
+      rootDurationMs: root.durationMs, rootBytes: root.bytes ?? null,
+      runtimeDurationMs: runtime.durationMs, runtimeBytes: runtime.bytes ?? null,
     }
   }
   let payload
   try { payload = JSON.parse(runtime.body) } catch {
-    return { healthy: false, reason: 'runtime-json-invalid', rootStatus: root.statusCode, runtimeStatus: runtime.statusCode }
+    return {
+      healthy: false, reason: 'runtime-json-invalid', rootStatus: root.statusCode, runtimeStatus: runtime.statusCode,
+      rootDurationMs: root.durationMs, rootBytes: root.bytes ?? null,
+      runtimeDurationMs: runtime.durationMs, runtimeBytes: runtime.bytes ?? null,
+    }
   }
   const value = payload?.value
   if (payload?.ok !== true || value?.profile !== config.profile || typeof value?.bootId !== 'string' || value.bootId.length === 0) {
     return {
       healthy: false, reason: 'runtime-identity-mismatch', rootStatus: root.statusCode,
       runtimeStatus: runtime.statusCode, profile: typeof value?.profile === 'string' ? value.profile : null,
+      rootDurationMs: root.durationMs, rootBytes: root.bytes ?? null,
+      runtimeDurationMs: runtime.durationMs, runtimeBytes: runtime.bytes ?? null,
     }
   }
   return {
     healthy: true, reason: null, rootStatus: root.statusCode, runtimeStatus: runtime.statusCode,
     profile: value.profile, bootId: value.bootId,
+    rootDurationMs: root.durationMs, rootBytes: root.bytes ?? null,
+    runtimeDurationMs: runtime.durationMs, runtimeBytes: runtime.bytes ?? null,
   }
+}
+
+function boundedText(value, max = 128) {
+  return typeof value === 'string' ? value.slice(0, max) : null
+}
+
+export function createProbeJournal(options) {
+  const path = options.path
+  const currentTime = options.now ?? Date.now
+  const retentionMs = options.retentionMs ?? PROBE_RETENTION_MS
+  const maxBytes = options.maxBytes ?? PROBE_LOG_MAX_BYTES
+  const healthySampleMs = options.healthySampleMs ?? 60_000
+  const pruneIntervalMs = options.pruneIntervalMs ?? 300_000
+  let lastHealthyAt = null
+  let lastPrunedAt = 0
+
+  async function prune(force = false) {
+    const timestamp = currentTime()
+    if (!force && timestamp - lastPrunedAt < pruneIntervalMs) return
+    lastPrunedAt = timestamp
+    let content
+    try { content = await readFile(path, 'utf8') } catch (error) {
+      if (error?.code === 'ENOENT') return
+      throw error
+    }
+    const cutoff = timestamp - retentionMs
+    const valid = content.split('\n').filter(Boolean).flatMap(line => {
+      try {
+        const parsed = JSON.parse(line)
+        return Number.isFinite(Date.parse(parsed.at)) && Date.parse(parsed.at) >= cutoff ? [line] : []
+      } catch { return [] }
+    })
+    const kept = []
+    let bytes = 0
+    for (let index = valid.length - 1; index >= 0; index -= 1) {
+      const lineBytes = Buffer.byteLength(`${valid[index]}\n`)
+      if (bytes + lineBytes > maxBytes) break
+      kept.unshift(valid[index]); bytes += lineBytes
+    }
+    const temporary = `${path}.${randomUUID()}.tmp`
+    await writeFile(temporary, kept.length ? `${kept.join('\n')}\n` : '', { mode: 0o600 })
+    await rename(temporary, path)
+  }
+
+  async function record(input) {
+    const timestamp = currentTime()
+    if (input.healthy === true && lastHealthyAt !== null && timestamp - lastHealthyAt < healthySampleMs) return false
+    if (input.healthy === true) lastHealthyAt = timestamp
+    await mkdir(dirname(path), { recursive: true, mode: 0o700 })
+    const entry = {
+      schemaVersion: 1, at: new Date(timestamp).toISOString(), kind: 'dsh-host-probe',
+      profile: boundedText(input.profile, 64), owner: boundedText(input.owner, 32),
+      pid: Number.isInteger(input.pid) ? input.pid : null,
+      state: boundedText(input.state, 64), portOpen: input.portOpen === true,
+      healthy: input.healthy === true, reason: boundedText(input.reason),
+      root: {
+        status: Number.isInteger(input.rootStatus) ? input.rootStatus : null,
+        durationMs: Number.isFinite(input.rootDurationMs) ? input.rootDurationMs : null,
+        bytes: Number.isInteger(input.rootBytes) ? input.rootBytes : null,
+      },
+      runtime: {
+        status: Number.isInteger(input.runtimeStatus) ? input.runtimeStatus : null,
+        durationMs: Number.isFinite(input.runtimeDurationMs) ? input.runtimeDurationMs : null,
+        bytes: Number.isInteger(input.runtimeBytes) ? input.runtimeBytes : null,
+      },
+      bootId: boundedText(input.bootId),
+      consecutiveFailures: Number.isInteger(input.consecutiveFailures) ? input.consecutiveFailures : 0,
+      restartRequired: input.restartRequired === true,
+    }
+    await appendFile(path, `${JSON.stringify(entry)}\n`, { mode: 0o600 })
+    await prune()
+    return true
+  }
+
+  return { record, prune }
 }
 
 function validate(config) {
@@ -111,7 +202,10 @@ function validate(config) {
     const entries = config.commandPath.split(delimiter)
     if (entries.some(value => !value || !isAbsolute(value))) throw new Error('command path entries must be absolute')
   }
-  for (const field of ['healthProbeTimeoutMs', 'unhealthyThreshold', 'startupGraceMs']) {
+  for (const field of [
+    'healthProbeTimeoutMs', 'unhealthyThreshold', 'startupGraceMs', 'probeRetentionMs',
+    'probeLogMaxBytes', 'healthyProbeLogIntervalMs', 'probePruneIntervalMs',
+  ]) {
     if (config[field] !== undefined && (!Number.isInteger(config[field]) || config[field] <= 0)) throw new Error(`invalid ${field}`)
   }
   return config
@@ -150,6 +244,21 @@ export async function runGuardian(rawConfig, options = {}) {
   let childStartedAt = null
   let healthyPid = null
   let consecutiveProbeFailures = 0
+  const probeJournal = options.probeJournal ?? createProbeJournal({
+    path: join(config.stateDir, 'probe-log.jsonl'), now: currentTime,
+    retentionMs: config.probeRetentionMs, maxBytes: config.probeLogMaxBytes,
+    healthySampleMs: config.healthyProbeLogIntervalMs, pruneIntervalMs: config.probePruneIntervalMs,
+  })
+
+  async function recordProbe(probe, extra = {}) {
+    try {
+      await probeJournal.record({
+        profile: config.profile, owner: child ? 'guardian' : extra.owner, pid: child?.pid,
+        state: extra.state, portOpen: extra.portOpen, consecutiveFailures: consecutiveProbeFailures,
+        restartRequired: extra.restartRequired, ...probe,
+      })
+    } catch { /* Probe logging must never stop Guardian supervision. */ }
+  }
 
   async function digestFile(path) {
     try { return createHash('sha256').update(await readFile(path)).digest('hex') } catch (error) {
@@ -242,6 +351,8 @@ export async function runGuardian(rawConfig, options = {}) {
       healthy: probe.healthy === true, reason: probe.reason ?? null,
       rootStatus: probe.rootStatus ?? null, runtimeStatus: probe.runtimeStatus ?? null,
       profile: probe.profile ?? null, bootId: probe.bootId ?? null,
+      rootDurationMs: probe.rootDurationMs ?? null, rootBytes: probe.rootBytes ?? null,
+      runtimeDurationMs: probe.runtimeDurationMs ?? null, runtimeBytes: probe.runtimeBytes ?? null,
     }
   }
 
@@ -259,8 +370,10 @@ export async function runGuardian(rawConfig, options = {}) {
     if (!child && portOpen) {
       const probe = probeSummary(await probeHost(config))
       if (probe.healthy) {
+        await recordProbe(probe, { owner: 'external', state: 'external-dsh-detected', portOpen: true })
         await publish('external-dsh-detected', { available: false, owner: 'external', health: probe, errorCode: 'GUARDIAN_NOT_OWNER' })
       } else {
+        await recordProbe(probe, { owner: 'unknown', state: 'port-conflict', portOpen: true })
         await publish('port-conflict', { available: false, owner: 'unknown', health: probe, errorCode: 'GUARDIAN_PORT_CONFLICT' })
       }
       await sleep(options.pollMs ?? 1_000)
@@ -295,6 +408,7 @@ export async function runGuardian(rawConfig, options = {}) {
       : { healthy: false, reason: 'port-not-ready', rootStatus: null, runtimeStatus: null, profile: null, bootId: null }
     if (probe.healthy) {
       consecutiveProbeFailures = 0
+      await recordProbe(probe, { state: healthyPid === child.pid || stableForMs >= stableMs ? 'healthy' : 'health-checking', portOpen })
       if (healthyPid === child.pid) {
         await publish('healthy', { owner: 'guardian', stableForMs, health: probe })
       } else if (stableForMs >= stableMs) {
@@ -307,6 +421,7 @@ export async function runGuardian(rawConfig, options = {}) {
     } else {
       consecutiveProbeFailures += 1
       const restartRequired = stableForMs >= startupGraceMs && consecutiveProbeFailures >= unhealthyThreshold
+      await recordProbe(probe, { state: restartRequired ? 'restarting-unhealthy' : (portOpen ? 'health-checking' : 'waiting-for-health'), portOpen, restartRequired })
       if (restartRequired) {
         failures.push(currentTime())
         lastError = { category: 'health-probe-failed', reason: probe.reason }

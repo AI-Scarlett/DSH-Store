@@ -964,22 +964,26 @@ window.__ModuleLoader__.load({
 
       const guardianIsExternal = state.status === 'ready' && state.guardian.owner === 'external'
       const guardianHasPortConflict = state.status === 'ready' && state.guardian.errorCode === 'GUARDIAN_PORT_CONFLICT'
+      const guardianNeedsUpgrade = state.status === 'ready' && state.guardian.upgradeRequired === true
       const guardianBanner = state.status !== 'ready' ? null : React.createElement('div', {
         style: state.guardian.available ? styles.notice : styles.error,
       }, React.createElement('div', { style: styles.name }, state.guardian.available
         ? `DSH Guardian：${state.guardian.state} · 唯一启动所有者`
-        : guardianIsExternal ? '检测到外部 DSH 实例：Guardian 未接管'
+        : guardianNeedsUpgrade ? 'DSH Guardian 探针版本过旧：安全重启已禁用'
+          : guardianIsExternal ? '检测到外部 DSH 实例：Guardian 未接管'
           : guardianHasPortConflict ? '3080 端口被未知进程占用：Guardian 已拒绝接管'
             : 'DSH Guardian 未运行：一键重启已被安全禁用'),
       React.createElement('div', { style: styles.muted }, state.guardian.available
-        ? `DSH 已由 Guardian 管理；请勿再运行 pnpm dsh web 或 dsh web。心跳 ${state.guardian.heartbeatAgeMs}ms · 失败次数 ${state.guardian.failureCount || 0} · 熔断 ${state.guardian.circuit || '未知'}`
-        : guardianIsExternal
+        ? `DSH 已由 Guardian 管理；请勿再运行 pnpm dsh web 或 dsh web。心跳 ${state.guardian.heartbeatAgeMs}ms · 失败次数 ${state.guardian.failureCount || 0} · 熔断 ${state.guardian.circuit || '未知'} · 探针日志保留 24 小时`
+        : guardianNeedsUpgrade
+          ? '当前守护文件与商城内置版本不一致。升级后会记录端口、首页、运行时身份、耗时和重启判断；不记录响应正文、Profile 内容或凭据，超过 24 小时自动清理。'
+          : guardianIsExternal
           ? '当前 DSH 不是由 Guardian 启动。请先停止手工实例，再让 Guardian 启动；商城不会杀死或冒充接管该进程。'
           : guardianHasPortConflict
             ? '商城无法验证该进程属于 DSH，因此不会终止进程，也不会启动第二个实例。'
             : '安装商城自带的外部 Guardian 后，即使 DSH 冷启动失败也能继续诊断和恢复。'),
       !state.guardian.available && !guardianIsExternal && !guardianHasPortConflict
-        ? React.createElement(Button, { primary: true, onClick: beginGuardianInstall }, '安装并接管 DSH 守护') : null)
+        ? React.createElement(Button, { primary: true, onClick: beginGuardianInstall }, guardianNeedsUpgrade ? '升级并重启 Guardian' : '安装并接管 DSH 守护') : null)
 
       let content
       if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
