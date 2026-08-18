@@ -111,6 +111,13 @@ function pluginCommandError(result) {
   })
 }
 
+function pluginAddArgs(entry) {
+  const args = ['add']
+  if (entry.risk.installScripts.length > 0) args.push(`--allow-build=${entry.packageName}`)
+  args.push(githubInstallSpecifier(entry))
+  return args
+}
+
 function assertManageable(entry, installed, action) {
   if (!entry) throw Object.assign(new Error('plugin is not present in the GitHub registry'), { code: 'NOT_IN_REGISTRY' })
   if (entry.status === 'blocked') throw Object.assign(new Error(entry.statusReason), { code: 'REGISTRY_BLOCKED' })
@@ -353,7 +360,7 @@ export function createOperationService(options = {}) {
       const { action } = plan
       const { entry } = plan.privateData
       if (action === 'install' || action === 'update' || action === 'migrate') {
-        const result = await runner.plugin(plan.profile, ['add', githubInstallSpecifier(entry)])
+        const result = await runner.plugin(plan.profile, pluginAddArgs(entry))
         packageCommandMayHaveMutated = result.ok || result.exitCode !== 127
         if (!result.ok) throw pluginCommandError(result)
       } else if (action === 'uninstall') {

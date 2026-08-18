@@ -19,12 +19,12 @@ const demoEntry = {
   risk: { installScripts: [], review: 'curated-not-security-audited' },
 }
 
-function catalog() {
+function catalog(entry = demoEntry) {
   return {
     ...validateCatalog({
       schemaVersion: 1,
       registry: { name: 'Fixture', repositoryUrl: 'https://github.com/example/registry', updatedAt: '2026-08-16T00:00:00Z', categories: { tools: '工具' } },
-      entries: [demoEntry],
+      entries: [entry],
     }),
     source: { kind: 'fixture' },
   }
@@ -49,7 +49,7 @@ async function fixture({ installed = true, specifier = '^1.0.0' } = {}) {
 
 function service(root, runner, options = {}) {
   return createOperationService({
-    dshHome: root, defaultProfile: 'web', catalogService: { load: async () => catalog() },
+    dshHome: root, defaultProfile: 'web', catalogService: { load: async () => catalog(options.entry) },
     runner, mutationsEnabled: true,
     sourceVerifier: options.sourceVerifier ?? (async entry => ({ status: 'verified', packageName: entry.packageName })),
     sourceVerificationCacheTtlMs: options.sourceVerificationCacheTtlMs,
@@ -223,6 +223,28 @@ test('failed GitHub prepare returns a bounded actionable diagnostic without comm
     assert.equal(result.error.diagnostic.code, 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED')
     assert.match(result.error.diagnostic.message, /不会自动放宽权限/)
     assert.doesNotMatch(JSON.stringify(result), /must-not-leak|private\/path/)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('reviewed lifecycle plugins receive an exact package-scoped pnpm build allowance', async () => {
+  const { root } = await fixture({ installed: false })
+  const calls = []
+  const lifecycleEntry = { ...demoEntry, risk: { ...demoEntry.risk, installScripts: ['prepare'] } }
+  const runner = {
+    plugin: async (_profile, args) => { calls.push(args); return { ok: true, exitCode: 0 } },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner, { entry: lifecycleEntry })
+    const plan = await operations.createPlan({ action: 'install', pluginId: 'demo' })
+    assert.deepEqual(plan.impact.installScripts, ['prepare'])
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'applied')
+    assert.deepEqual(calls[0], [
+      'add', '--allow-build=dsh-demo', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`,
+    ])
   } finally {
     await rm(root, { recursive: true, force: true })
   }
