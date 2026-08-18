@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { readProfileInventory, resolveProfileDirectory, validateProfileName } from './inventory.mjs'
@@ -5,6 +6,8 @@ import { readManagedDisabledIds } from './managed-patch.mjs'
 import { inspectColdStartContract } from './cold-start.mjs'
 
 const PERMISSION_FIELDS = ['files', 'network', 'commands', 'credentials']
+const DECISION_FIELDS = [...PERMISSION_FIELDS, 'acceptUnknown']
+const PERMISSION_DECISION_SCHEMA_VERSION = 1
 const check = (id, status, message, details = null) => ({ id, status, message, details })
 
 function safeObject(value) {
@@ -17,14 +20,55 @@ function permissionRequested(field, value) {
     : value !== 'none'
 }
 
-function permissionReport(plugin, catalogEntry, decisions) {
+function canonicalJson(value) {
+  if (value === null) return 'null'
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`
+  if (typeof value === 'object') {
+    return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`
+  }
+  return JSON.stringify(value)
+}
+
+function permissionDecisionRevision(plugin, catalogEntry) {
+  const identity = {
+    schemaVersion: PERMISSION_DECISION_SCHEMA_VERSION,
+    packageName: plugin.packageName,
+    installed: {
+      version: plugin.version ?? null,
+      source: plugin.source ?? null,
+      declaredSpecifier: plugin.declaredSpecifier ?? null,
+    },
+    catalog: catalogEntry ? {
+      id: catalogEntry.id ?? null,
+      packageName: catalogEntry.packageName ?? null,
+      commit: catalogEntry.commit ?? null,
+      version: catalogEntry.version ?? null,
+    } : null,
+    declaredPermissions: catalogEntry?.details?.permissions ?? null,
+  }
+  return createHash('sha256').update(canonicalJson(identity)).digest('hex')
+}
+
+function acceptedDecisionValues(value, revision) {
+  const record = safeObject(value)
+  if (record.schemaVersion !== PERMISSION_DECISION_SCHEMA_VERSION || record.revision !== revision) return {}
+  const raw = safeObject(record.decisions)
+  return Object.fromEntries(DECISION_FIELDS
+    .filter(field => typeof raw[field] === 'boolean')
+    .map(field => [field, raw[field]]))
+}
+
+function permissionReport(plugin, catalogEntry, decisionRecord) {
   if (plugin.official) {
     return {
       status: 'official', decision: 'official-host-trust', requested: null,
+      decisionRevision: null,
       approved: [], pending: [], denied: [],
       message: '官方组件由 DSH 宿主信任边界管理，本商城不替用户重新授权。',
     }
   }
+  const decisionRevision = permissionDecisionRevision(plugin, catalogEntry)
+  const decisions = acceptedDecisionValues(decisionRecord, decisionRevision)
   const declared = catalogEntry?.details?.permissions
   if (!declared) {
     const accepted = decisions.acceptUnknown === true
@@ -32,6 +76,7 @@ function permissionReport(plugin, catalogEntry, decisions) {
     return {
       status: accepted ? 'accepted-unknown' : denied ? 'denied' : 'unknown',
       decision: accepted ? 'accepted' : denied ? 'denied' : 'review-required', requested: null,
+      decisionRevision,
       approved: [], pending: accepted || denied ? [] : ['unknown'], denied: denied ? ['unknown'] : [],
       message: accepted
         ? '用户已明确接受该目录外插件的未知权限边界。'
@@ -54,7 +99,7 @@ function permissionReport(plugin, catalogEntry, decisions) {
   }
   const status = denied.length > 0 ? 'denied' : pending.length > 0 ? 'review-required' : 'accepted'
   return {
-    status, decision: status, requested, approved, pending, denied,
+    status, decision: status, requested, decisionRevision, approved, pending, denied,
     message: status === 'accepted' ? '用户已逐项接受该插件声明的权限。'
       : status === 'denied' ? `用户拒绝权限：${denied.join('、')}`
         : `等待用户选择权限：${pending.join('、')}`,
@@ -69,7 +114,7 @@ function pluginStatus(checks) {
   return 'healthy'
 }
 
-function buildPluginReport(plugin, catalogEntry, decisions) {
+function buildPluginReport(plugin, catalogEntry, decisionRecord) {
   const checks = []
   checks.push(plugin.installed
     ? check('installation', 'pass', `已解析本地 manifest，版本 ${plugin.version || '未知'}`)
@@ -99,7 +144,7 @@ function buildPluginReport(plugin, catalogEntry, decisions) {
       : check('lifecycle-scripts', 'warning', `包含安装生命周期脚本：${catalogEntry.risk.installScripts.join('、')}`))
   }
 
-  const permissions = permissionReport(plugin, catalogEntry, decisions)
+  const permissions = permissionReport(plugin, catalogEntry, decisionRecord)
   const permissionStatus = permissions.status === 'denied' ? 'denied'
     : ['review-required', 'unknown'].includes(permissions.status) ? 'action-required'
       : permissions.status === 'official' ? 'unverified' : 'pass'
@@ -171,7 +216,7 @@ export async function checkProfileHealth(options = {}) {
       ? '当前已执行的检查未发现问题；这不是插件业务功能或安全性的完整证明。'
       : '不能直接判定通过，请查看逐插件证据并完成权限选择。',
     runtime: 'current-web-process-responsive',
-    permissionModel: 'user-review-only-not-runtime-enforcement',
+    permissionModel: 'revision-bound-browser-local-user-review-only-not-runtime-enforcement',
     disabledEntryIds, summary, checks, plugins,
   }
 }

@@ -22,6 +22,8 @@ window.__ModuleLoader__.load({
     }
     const SUPPORT_URL = 'https://dsh.store/'
     const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
+    const HEALTH_PERMISSION_STORAGE_KEY = 'dsh-safe-plugin-manager:health-permission-decisions:v1'
+    const HEALTH_PERMISSION_FIELDS = ['files', 'network', 'commands', 'credentials', 'acceptUnknown']
 
     async function post(route, body = {}, intent = null) {
       const headers = { 'content-type': 'application/json' }
@@ -55,6 +57,47 @@ window.__ModuleLoader__.load({
 
     function clearPendingRestart() {
       try { window.localStorage.removeItem(RESTART_STORAGE_KEY) } catch {}
+    }
+
+    function validPermissionRevision(value) {
+      return typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)
+    }
+
+    function normalizeHealthPermissionDecisions(value) {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+      const normalized = {}
+      for (const [packageName, record] of Object.entries(value).slice(0, 512)) {
+        if (typeof packageName !== 'string' || packageName.length === 0 || packageName.length > 255) continue
+        if (!record || typeof record !== 'object' || Array.isArray(record)
+          || record.schemaVersion !== 1 || !validPermissionRevision(record.revision)) continue
+        const raw = record.decisions && typeof record.decisions === 'object' && !Array.isArray(record.decisions)
+          ? record.decisions : {}
+        const decisions = Object.fromEntries(HEALTH_PERMISSION_FIELDS
+          .filter(field => typeof raw[field] === 'boolean')
+          .map(field => [field, raw[field]]))
+        if (Object.keys(decisions).length > 0) normalized[packageName] = { schemaVersion: 1, revision: record.revision, decisions }
+      }
+      return normalized
+    }
+
+    function readHealthPermissionDecisions() {
+      try { return normalizeHealthPermissionDecisions(JSON.parse(window.localStorage.getItem(HEALTH_PERMISSION_STORAGE_KEY) || 'null')) } catch { return {} }
+    }
+
+    function storeHealthPermissionDecisions(value) {
+      const normalized = normalizeHealthPermissionDecisions(value)
+      try {
+        if (Object.keys(normalized).length === 0) window.localStorage.removeItem(HEALTH_PERMISSION_STORAGE_KEY)
+        else window.localStorage.setItem(HEALTH_PERMISSION_STORAGE_KEY, JSON.stringify(normalized))
+      } catch {}
+      return normalized
+    }
+
+    function permissionValuesForPlugin(permissionDecisions, plugin) {
+      const revision = plugin?.permissions?.decisionRevision
+      const record = permissionDecisions?.[plugin?.packageName]
+      if (!validPermissionRevision(revision) || record?.schemaVersion !== 1 || record.revision !== revision) return {}
+      return record.decisions || {}
     }
 
     function restartOutcome(pending, state) {
@@ -461,7 +504,7 @@ window.__ModuleLoader__.load({
       }
       const healthPlugins = Array.isArray(health.plugins) ? health.plugins : []
       const unresolved = healthPlugins.flatMap((plugin, pluginIndex) => permissionFields(plugin)
-        .filter(field => typeof permissionDecisions[plugin.packageName]?.[field] !== 'boolean')
+        .filter(field => typeof permissionValuesForPlugin(permissionDecisions, plugin)[field] !== 'boolean')
         .map(field => ({ plugin, pluginIndex, field })))
       const unresolvedPlugins = new Set(unresolved.map(item => item.plugin.packageName)).size
       const goToPermissions = () => document.getElementById('dsh-health-permissions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -479,7 +522,7 @@ window.__ModuleLoader__.load({
         `${permissionName(field)}：`,
         React.createElement('select', {
           value: value === true ? 'allow' : value === false ? 'deny' : 'pending',
-          onChange: event => setPermissionDecision(plugin.packageName, field, event.target.value),
+          onChange: event => setPermissionDecision(plugin.packageName, plugin.permissions?.decisionRevision, field, event.target.value),
           style: { ...styles.select, minWidth: '132px', marginLeft: '6px', padding: '5px 8px' },
         },
         React.createElement('option', { value: 'pending' }, '待选择'),
@@ -502,7 +545,7 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.muted }, health.verdict),
           React.createElement('div', { style: styles.muted },
             `共 ${health.summary?.total || 0} 项 · 待选择 ${health.summary?.actionRequired || 0} · 用户拒绝 ${health.summary?.blockedByUser || 0} · 不健康 ${health.summary?.unhealthy || 0} · 目录外 ${health.summary?.uncatalogued || 0}`),
-          React.createElement('div', { style: styles.error }, '权限选择仅用于健康审核结论，不会修改或限制插件的真实运行权限。')),
+          React.createElement('div', { style: styles.error }, '权限选择仅保存在此浏览器；插件版本、固定 Commit 或权限声明变化时会失效并要求重新确认，不会修改或限制插件的真实运行权限。')),
         unresolved.length > 0 ? React.createElement('div', { style: styles.notice },
           React.createElement('div', { style: styles.name }, `还需完成 ${unresolvedPlugins} 个插件、${unresolved.length} 项权限选择`),
           React.createElement('div', { style: styles.muted }, '商城不会自动替你允许或拒绝权限。请先逐项选择，再运行健康检查。'),
@@ -513,7 +556,7 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.muted }, item.message)))),
         React.createElement('h4', { style: styles.title }, '逐插件健康报告'),
         React.createElement('div', { id: 'dsh-health-permissions', style: styles.grid }, (health.plugins || []).map(plugin => {
-          const decisions = permissionDecisions[plugin.packageName] || {}
+          const decisions = permissionValuesForPlugin(permissionDecisions, plugin)
           const requested = plugin.permissions?.requested
           const fields = permissionFields(plugin)
           const pluginPending = fields.filter(field => typeof decisions[field] !== 'boolean')
@@ -657,10 +700,14 @@ window.__ModuleLoader__.load({
 
     function GuardianModal({ operation, confirmation, setConfirmation, execute, cancel }) {
       if (!operation || operation.status === 'idle') return null
-      if (operation.status === 'planning' || operation.status === 'executing') return React.createElement(Modal, {
+      if (operation.status === 'planning' || operation.status === 'executing' || operation.status === 'handoff') return React.createElement(Modal, {
         open: true, onClose: operation.status === 'planning' ? cancel : () => {}, title: '安装 DSH Guardian',
         footer: null, className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
-      }, React.createElement('div', { style: styles.notice }, operation.status === 'planning' ? '正在核对 launchd 与守护文件预条件…' : '正在原子安装并接管 DSH Host…'))
+      }, React.createElement('div', { style: styles.notice }, operation.status === 'planning'
+        ? '正在核对 launchd 与守护文件预条件…'
+        : operation.status === 'handoff'
+          ? 'Guardian 已验证，DSH 正在交接，页面会自动重新连接。'
+          : '正在原子安装并验证 Guardian 心跳…'))
       if (operation.status === 'error' || operation.status === 'result') return React.createElement(Modal, {
         open: true, onClose: cancel, title: operation.status === 'result' ? 'Guardian 已安装' : 'Guardian 安装失败',
         footer: React.createElement(Button, { onClick: cancel }, '关闭'), className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
@@ -691,7 +738,7 @@ window.__ModuleLoader__.load({
       const [sourceUpdates, setSourceUpdates] = useState({})
       const [sourceAutoScanStarted, setSourceAutoScanStarted] = useState(false)
       const [detailEntry, setDetailEntry] = useState(null)
-      const [permissionDecisions, setPermissionDecisions] = useState({})
+      const [permissionDecisions, setPermissionDecisions] = useState(() => readHealthPermissionDecisions())
       const [pendingRestart, setPendingRestart] = useState(() => readPendingRestart())
       const [restartConfirmation, setRestartConfirmation] = useState('')
       const [restartOperation, setRestartOperation] = useState({ status: 'idle' })
@@ -700,7 +747,7 @@ window.__ModuleLoader__.load({
       const [versionChecking, setVersionChecking] = useState(false)
       const [versionFeedback, setVersionFeedback] = useState('')
 
-      const refresh = useCallback(async (force = false, decisions = {}) => {
+      const refresh = useCallback(async (force = false, decisions = readHealthPermissionDecisions()) => {
         setState({ status: 'loading' })
         try {
           const [inventory, market, health, runtime, guardian, dshVersion] = await Promise.all([
@@ -742,12 +789,17 @@ window.__ModuleLoader__.load({
         } catch { setVersionFeedback('复制失败，请打开官方 Release') }
       }, [state])
 
-      const setPermissionDecision = useCallback((packageName, field, choice) => {
+      const setPermissionDecision = useCallback((packageName, revision, field, choice) => {
+        if (!validPermissionRevision(revision) || !HEALTH_PERMISSION_FIELDS.includes(field)) return
         setPermissionDecisions(current => {
-          const plugin = { ...(current[packageName] || {}) }
-          if (choice === 'pending') delete plugin[field]
-          else plugin[field] = choice === 'allow'
-          return { ...current, [packageName]: plugin }
+          const previous = current[packageName]
+          const decisions = previous?.schemaVersion === 1 && previous.revision === revision ? { ...previous.decisions } : {}
+          if (choice === 'pending') delete decisions[field]
+          else decisions[field] = choice === 'allow'
+          const next = { ...current }
+          if (Object.keys(decisions).length === 0) delete next[packageName]
+          else next[packageName] = { schemaVersion: 1, revision, decisions }
+          return storeHealthPermissionDecisions(next)
         })
       }, [])
 
@@ -856,9 +908,25 @@ window.__ModuleLoader__.load({
         const plan = guardianOperation.value; setGuardianOperation({ status: 'executing', value: plan })
         try {
           const value = await post(ROUTES.guardianExecute, { planId: plan.planId, confirmation: guardianConfirmation }, 'guardian-execute')
-          setGuardianOperation({ status: 'result', value })
+          const previousBootId = state.status === 'ready' ? state.runtime?.bootId : null
+          if (!previousBootId || value.handoff?.status !== 'scheduled') {
+            setGuardianOperation({ status: 'result', value })
+            return
+          }
+          setGuardianOperation({ status: 'handoff', value })
+          for (let attempt = 0; attempt < 60; attempt += 1) {
+            await delay(1000)
+            try {
+              const runtime = await post(ROUTES.runtime)
+              if (runtime.bootId !== previousBootId) {
+                window.location.reload()
+                return
+              }
+            } catch {}
+          }
+          setGuardianOperation({ status: 'error', code: 'GUARDIAN_HANDOFF_TIMEOUT', message: '60 秒内未检测到 Guardian 接管后的新 DSH Host' })
         } catch (error) { setGuardianOperation({ status: 'error', code: error?.code, message: String(error?.message || error) }) }
-      }, [guardianConfirmation, guardianOperation])
+      }, [guardianConfirmation, guardianOperation, state])
       const beginRestart = useCallback(async () => {
         setRestartConfirmation('')
         setRestartOperation({ status: 'planning' })
