@@ -1024,12 +1024,12 @@
       "id": "dsh-wecom-cli",
       "name": "企业微信办公技能（DSH WeCom CLI）",
       "packageName": "dsh-wecom-cli",
-      "description": "将企业微信官方 CLI 的 14 个办公 Skill 以隔离的 DSH Skill Provider 挂载到 DSH；外部 CLI 与账号授权由用户独立安装和配置。",
+      "description": "通过受控 DSH Host Bridge 提供 14 个企业微信办公领域的有限只读查询；固定 argv、无 Shell，禁止写入、文件传输、SQL、Secret、URL 和副作用公式。",
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-wecom-cli",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "7f2f75c0ffebfcf556bc802276b1b675279c124d",
-      "version": "0.1.0",
+      "commit": "5c266b0e55c485dd9c46583a466be1b6769d635d",
+      "version": "0.1.2",
       "categories": [
         "tools",
         "workflow",
@@ -1037,10 +1037,10 @@
       ],
       "featured": false,
       "entryIds": [
+        "dsh-wecom-cli-host",
         "dsh-wecom-cli-skill-provider"
       ],
-      "status": "blocked",
-      "statusReason": "v0.1.0 的 Skill 指令仍允许未经统一边界控制的外部命令、批量业务写入、文件上传下载与能力 URL 处理；完成 v0.1.1 受控 Host Bridge、预算、脱敏和目标绑定确认前暂停安装。",
+      "status": "approved",
       "compatibility": {
         "dsh": ">=0.1.0-rc.7",
         "node": ">=22.13.0",
@@ -1058,11 +1058,10 @@
         "license": "MIT",
         "permissions": {
           "level": "high",
-          "files": "write",
+          "files": "none",
           "network": "specified-services",
           "commands": "restricted",
           "credentials": [
-            "api-key",
             "keychain",
             "unknown"
           ]
@@ -1076,7 +1075,7 @@
       },
       "risk": {
         "installScripts": [],
-        "review": "blocked-pending-v0.1.1-controlled-host-bridge-bounds-redaction-and-confirmation-hardening"
+        "review": "read-only-host-bridge-fixed-argv-bounded-redacted-no-file-or-business-write-external-cli-account-not-security-audited"
       }
     }
   ]
