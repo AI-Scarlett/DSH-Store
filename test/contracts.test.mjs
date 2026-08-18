@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.5.2')
+  assert.equal(pkg.version, '0.5.3')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -153,6 +153,12 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /检查源仓库更新/)
   assert.match(client, /不会直接安装浮动 main/)
   assert.match(client, /source-update/)
+  assert.match(client, /dsh-version/)
+  assert.match(client, /DSH 版本与升级/)
+  assert.match(client, /检测升级/)
+  assert.match(client, /复制升级命令/)
+  assert.match(client, /插件源更新规则/)
+  assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
 test('guardian health requires DSH HTTP identity and fails closed on an unowned port', async () => {

@@ -7,6 +7,7 @@ export const ROUTE_PATH = '/api2/dsh-safe-plugin-manager/inventory'
 export const MARKET_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/market'
 export const HEALTH_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/health'
 export const SOURCE_UPDATE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/source-update'
+export const DSH_VERSION_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/dsh-version'
 export const PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/plan'
 export const EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/execute'
 export const RUNTIME_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/runtime'
@@ -160,6 +161,10 @@ export function handleSourceUpdateRequest(req, res, options = {}) {
   })
 }
 
+export function handleDshVersionRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, body => options.dshVersionService.inspect({ force: body.refresh === true }))
+}
+
 export function handlePlanRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, body => options.operationService.createPlan(body), 'plan')
 }
@@ -212,6 +217,7 @@ export function registerManagerRoutes(webServer, options = {}) {
     [MARKET_ROUTE_PATH, (req, res) => handleMarketRequest(req, res, options)],
     [HEALTH_ROUTE_PATH, (req, res) => handleHealthRequest(req, res, options)],
     [SOURCE_UPDATE_ROUTE_PATH, (req, res) => handleSourceUpdateRequest(req, res, options)],
+    [DSH_VERSION_ROUTE_PATH, (req, res) => handleDshVersionRequest(req, res, options)],
     [PLAN_ROUTE_PATH, (req, res) => handlePlanRequest(req, res, options)],
     [EXECUTE_ROUTE_PATH, (req, res) => handleExecuteRequest(req, res, options)],
     [RUNTIME_ROUTE_PATH, (req, res) => handleRuntimeRequest(req, res, options)],

@@ -10,6 +10,7 @@ window.__ModuleLoader__.load({
       market: '/api2/dsh-safe-plugin-manager/market',
       health: '/api2/dsh-safe-plugin-manager/health',
       sourceUpdate: '/api2/dsh-safe-plugin-manager/source-update',
+      dshVersion: '/api2/dsh-safe-plugin-manager/dsh-version',
       runtime: '/api2/dsh-safe-plugin-manager/runtime',
       plan: '/api2/dsh-safe-plugin-manager/plan',
       execute: '/api2/dsh-safe-plugin-manager/execute',
@@ -73,6 +74,11 @@ window.__ModuleLoader__.load({
     const styles = {
       root: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '920px' },
       toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' },
+      headingCopy: { minWidth: '240px', flex: '1 1 360px' },
+      versionBox: {
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexWrap: 'wrap', gap: '7px',
+        minWidth: 'min(100%, 320px)', flex: '1 1 320px',
+      },
       nav: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', width: '100%' },
       navTabs: {
         display: 'inline-flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap', padding: '3px',
@@ -126,6 +132,7 @@ window.__ModuleLoader__.load({
       muted: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       badge: { display: 'inline-flex', alignItems: 'center', borderRadius: '999px', padding: '3px 7px', background: 'var(--dsw-alias-bg-layer-2)', fontSize: '11px' },
       statusPill: { display: 'inline-flex', alignItems: 'center', gap: '5px', flexShrink: 0, borderRadius: '999px', padding: '3px 7px', background: 'var(--dsw-alias-bg-layer-2)', fontSize: '11px' },
+      versionPill: { display: 'inline-flex', alignItems: 'center', gap: '6px', borderRadius: '999px', padding: '5px 9px', background: 'var(--dsw-alias-bg-layer-2)', fontSize: '11px', whiteSpace: 'nowrap' },
       stateDot: { width: '7px', height: '7px', borderRadius: '50%', flex: '0 0 7px' },
       actions: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '2px' },
       error: { color: 'var(--dsw-alias-state-error-primary)', fontSize: '13px' },
@@ -687,22 +694,50 @@ window.__ModuleLoader__.load({
       const [restartOperation, setRestartOperation] = useState({ status: 'idle' })
       const [guardianConfirmation, setGuardianConfirmation] = useState('')
       const [guardianOperation, setGuardianOperation] = useState({ status: 'idle' })
+      const [versionChecking, setVersionChecking] = useState(false)
+      const [versionFeedback, setVersionFeedback] = useState('')
 
       const refresh = useCallback(async (force = false, decisions = {}) => {
         setState({ status: 'loading' })
         try {
-          const [inventory, market, health, runtime, guardian] = await Promise.all([
+          const [inventory, market, health, runtime, guardian, dshVersion] = await Promise.all([
             post(ROUTES.inventory), post(ROUTES.market, { refresh: force }),
             post(ROUTES.health, { refresh: force, permissionDecisions: decisions }),
             post(ROUTES.runtime),
             post(ROUTES.guardian),
+            post(ROUTES.dshVersion, { refresh: force }).catch(error => ({
+              status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED',
+              message: String(error?.message || error),
+            })),
           ])
-          setState({ status: 'ready', inventory, market, health, runtime, guardian })
+          setState({ status: 'ready', inventory, market, health, runtime, guardian, dshVersion })
         } catch (error) {
           setState({ status: 'error', message: String(error?.message || error) })
         }
       }, [])
       useEffect(() => { void refresh(false) }, [refresh])
+
+      const refreshDshVersion = useCallback(async () => {
+        setVersionChecking(true); setVersionFeedback('')
+        try {
+          const dshVersion = await post(ROUTES.dshVersion, { refresh: true })
+          setState(current => current.status === 'ready' ? { ...current, dshVersion } : current)
+        } catch (error) {
+          setState(current => current.status === 'ready' ? {
+            ...current,
+            dshVersion: { status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED', message: String(error?.message || error) },
+          } : current)
+        } finally { setVersionChecking(false) }
+      }, [])
+
+      const copyUpgradeCommand = useCallback(async () => {
+        const command = state.status === 'ready' ? state.dshVersion?.upgrade?.commandText : ''
+        if (!command) return
+        try {
+          await window.navigator.clipboard.writeText(command)
+          setVersionFeedback('升级命令已复制')
+        } catch { setVersionFeedback('复制失败，请打开官方 Release') }
+      }, [state])
 
       const setPermissionDecision = useCallback((packageName, field, choice) => {
         setPermissionDecisions(current => {
@@ -856,14 +891,33 @@ window.__ModuleLoader__.load({
         }
       }, [restartConfirmation, restartOperation])
       const closeDetails = useCallback(() => setDetailEntry(null), [])
+      const dshVersion = state.status === 'ready' ? state.dshVersion : null
+      const versionLabel = dshVersion?.currentVersion
+        ? `DSH ${dshVersion.currentVersion}${dshVersion.updateAvailable ? ` → ${dshVersion.latestVersion}` : dshVersion.status === 'current' ? ' · 已是最新' : ''}`
+        : 'DSH 版本待检测'
       const heading = React.createElement('div', { style: styles.toolbar },
-        React.createElement('div', null,
+        React.createElement('div', { style: styles.headingCopy },
           React.createElement('h3', { style: styles.title }, 'DSH第三方插件商城'),
           React.createElement('p', { style: styles.subtitle },
             'GitHub-only 目录 · 计划确认 · Profile 备份 · 健康检查 · 失败回滚 · ',
             React.createElement('a', {
               href: SUPPORT_URL, target: '_blank', rel: 'noreferrer', style: styles.link,
-            }, '技术支持：DSH-Store'))))
+            }, '技术支持：DSH-Store'))),
+        React.createElement('div', { style: styles.versionBox, 'aria-label': 'DSH 版本与升级' },
+          React.createElement('span', {
+            style: styles.versionPill,
+            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH 与 npm 官方最新版本',
+          }, versionLabel),
+          React.createElement(Button, { compact: true, disabled: versionChecking, onClick: refreshDshVersion },
+            versionChecking ? '检测中…' : '检测升级'),
+          dshVersion?.updateAvailable ? React.createElement(Button, {
+            compact: true, primary: true, onClick: copyUpgradeCommand,
+            title: dshVersion.upgrade.reason,
+          }, '复制升级命令') : null,
+          dshVersion?.releaseUrl ? React.createElement('a', {
+            href: dshVersion.releaseUrl, target: '_blank', rel: 'noreferrer', style: styles.link,
+          }, '官方 Release') : null,
+          versionFeedback ? React.createElement('span', { style: styles.muted }, versionFeedback) : null))
 
       const nav = React.createElement('div', { style: styles.nav },
         React.createElement('div', { style: styles.navTabs, role: 'tablist', 'aria-label': '插件商城视图' },
@@ -961,8 +1015,10 @@ window.__ModuleLoader__.load({
       return React.createElement('section', { style: styles.root, 'aria-label': 'DSH-Store 插件商城' },
         React.createElement('style', null, DETAIL_MODAL_CSS),
         heading, nav,
-        React.createElement('div', { style: styles.notice },
-          '更新检查由本机直接读取已安装插件的 GitHub 源仓库：进入“已安装”页后以最多 3 个并发检查，并把默认分支解析为完整 Commit。低风险候选可直接生成单次计划；高风险候选展示权限、脚本和代码变化后由用户决定。修改 DSH 原生代码、冒用官方命名空间或停用受保护组件的项目禁止商城安装/更新，只保留不受保护的 GitHub 外部入口。不会直接安装浮动 main，也不依赖商城服务端巡检全部插件。'),
+        React.createElement('details', { style: styles.notice },
+          React.createElement('summary', { style: { cursor: 'pointer', fontWeight: 600 } }, '插件源更新规则'),
+          React.createElement('p', { style: { ...styles.muted, margin: '8px 0 0' } },
+            '本机只检查已安装插件并固定完整 Commit：低风险生成计划，高风险展示变化后由用户决定；修改 DSH 原生代码、冒用官方命名空间或停用受保护组件时禁止商城安装/更新。不会直接安装浮动 main，也不依赖服务端巡检全部仓库。')),
         guardianBanner, restartBanner, content,
         React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }),
         React.createElement(RestartModal, {
