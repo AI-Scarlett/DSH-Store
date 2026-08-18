@@ -3,171 +3,103 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DSH第三方插件商城</title>
-  <style>
-    :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
-    body { max-width: 980px; margin: 0 auto; padding: 32px 20px 64px; background: #0b1020; color: #ecf1ff; }
-    h1 { margin-bottom: 8px; } p { color: #aeb9d5; line-height: 1.6; }
-    .filters { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 10px; }
-    input, select { width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 10px; border: 1px solid #34405e; background: #111831; color: inherit; }
-    #meta { margin: 14px 0; font-size: 13px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
-    article { padding: 16px; border: 1px solid #2a3654; border-radius: 14px; background: #111831; }
-    article h2 { margin: 0 0 6px; font-size: 17px; }
-    .badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
-    .badge { border-radius: 999px; padding: 4px 8px; background: #233052; font-size: 12px; }
-    .blocked { background: #5d2731; } .featured { background: #655018; color: #ffe394; } a { color: #8db6ff; }
-    .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-    button { border: 1px solid #455575; border-radius: 8px; padding: 7px 11px; background: #18223d; color: inherit; cursor: pointer; }
-    button:hover { border-color: #8db6ff; }
-    dialog { width: min(680px, calc(100vw - 32px)); max-height: min(780px, calc(100vh - 32px)); box-sizing: border-box; padding: 0; border: 1px solid #34405e; border-radius: 20px; background: #111831; color: #ecf1ff; box-shadow: 0 24px 80px #0009; }
-    dialog[open] { display: flex; flex-direction: column; }
-    dialog::backdrop { background: #050812b8; backdrop-filter: blur(2px); }
-    .dialog-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px 12px; background: #111831; border-bottom: 1px solid #2a3654; }
-    .dialog-head h2 { margin: 0; font-size: 19px; }
-    .dialog-body { min-height: 0; padding: 4px 20px 20px; overflow-y: auto; }
-    .detail-title { margin: 18px 0 8px; font-size: 14px; }
-    .details { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px 14px; margin: 0; font-size: 13px; line-height: 1.55; }
-    .details dt { color: #8e9ab8; } .details dd { margin: 0; overflow-wrap: anywhere; }
-    .detail-note { margin-top: 18px; padding: 11px 13px; border: 1px solid #34405e; border-radius: 10px; font-size: 12px; }
-    code { overflow-wrap: anywhere; }
-    @media (max-width: 640px) { .filters { grid-template-columns: 1fr; } }
-  </style>
+  <meta name="description" content="DSH-Store 第三方插件商城：浏览固定到 Git Commit 的 DeepSeek Harness 插件，并在安装前了解权限、兼容性与审核状态。">
+  <meta name="theme-color" content="#f6f8ff">
+  <title>DSH-Store｜DeepSeek Harness 插件商城</title>
+  <link rel="icon" type="image/svg+xml" href="./dsh-store-logo.svg">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <h1>DSH第三方插件商城</h1>
-  <p>集中管理 GitHub 来源的 DSH 插件。目录条目固定到不可变 Commit；收录不代表安全审计。</p>
-  <div class="filters">
-    <input id="search" type="search" placeholder="搜索名称、包名、分类、权限或仓库">
-    <select id="category" aria-label="按分类筛选"></select>
-  </div>
-  <p id="meta">正在加载目录…</p>
-  <main id="plugins" class="grid"></main>
-  <dialog id="details" aria-labelledby="details-title">
-    <div class="dialog-head">
-      <h2 id="details-title">插件详情</h2>
-      <button id="close-details" type="button" aria-label="关闭插件详情">关闭</button>
+  <a class="skip-link" href="#discover" data-i18n="a11y.skip">跳到插件目录</a>
+  <div class="ambient-grid" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="DSH-Store">
+      <img class="brand-logo" src="./dsh-store-logo.svg" alt="" width="44" height="44">
+      <span class="brand-copy"><strong>DSH-Store</strong><small>EXTENSION NETWORK</small></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#discover" data-i18n="nav.discover">发现插件</a>
+      <a href="#safety" data-i18n="nav.safety">安全机制</a>
+      <a class="manager-tab" href="#manager"><span data-i18n="nav.manager">管理器插件</span><i aria-hidden="true">↗</i></a>
+    </nav>
+    <div class="header-tools">
+      <div class="locale-switch" role="group" aria-label="Language">
+        <button type="button" data-locale="zh" aria-pressed="true">中文</button>
+        <button type="button" data-locale="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="header-action" href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
     </div>
-    <div id="details-body" class="dialog-body"></div>
-  </dialog>
-  <script type="module">
-    const response = await fetch('../registry/catalog.json', { cache: 'no-store' })
-    const catalog = await response.json()
-    if (catalog.registry.installCountsUrl) {
-      try {
-        const countsResponse = await fetch(catalog.registry.installCountsUrl, { cache: 'no-store' })
-        const payload = await countsResponse.json()
-        if (countsResponse.ok && payload.schemaVersion === 1 && payload.counts) {
-          for (const entry of catalog.entries) if (Number.isInteger(payload.counts[entry.id])) entry.installCount = payload.counts[entry.id]
-        }
-      } catch {}
-    }
-    const search = document.querySelector('#search')
-    const category = document.querySelector('#category')
-    const meta = document.querySelector('#meta')
-    const plugins = document.querySelector('#plugins')
-    const detailsDialog = document.querySelector('#details')
-    const detailsTitle = document.querySelector('#details-title')
-    const detailsBody = document.querySelector('#details-body')
-    const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))
-    const labels = {
-      pluginType: { feature: '功能插件', theme: '主题', suite: '套件', client: '客户端', provider: 'Provider', unknown: '未知' },
-      installSource: { npm: 'npm', github: 'GitHub', 'local-bundle': '本地 Bundle', unknown: '未知' },
-      level: { low: '低', medium: '中', high: '高', unknown: '未知' },
-      files: { none: '不访问', 'read-only': '只读', write: '可写', unknown: '未知' },
-      network: { none: '无', 'specified-services': '指定服务', any: '任意网络', unknown: '未知' },
-      commands: { none: '否', restricted: '受限', shell: '任意 Shell', unknown: '未知' },
-      credentials: { none: '否', 'api-key': 'API Key', oauth: 'OAuth', keychain: '系统 Keychain', unknown: '未知' },
-      reviewStatus: { unreviewed: '未审核', 'automated-scan': '自动扫描', 'manual-review': '人工检查', 'author-verified': '作者认证' },
-    }
-    const label = (group, value) => labels[group]?.[value] || String(value || '未知')
-    const licenseLabel = value => value === 'UNKNOWN' || !value ? '未知'
-      : value === 'UNLICENSED' ? '未公开许可证'
-        : value === 'CC-BY-NC-SA-4.0' ? '非商业（CC BY-NC-SA 4.0）' : value
-    const list = (values, empty = '未声明') => Array.isArray(values) && values.length > 0 ? values.join(' / ') : empty
-    const row = (name, value, code = false) => `<dt>${escape(name)}</dt><dd${code ? '><code' : ''}>${escape(value)}${code ? '</code>' : ''}</dd>`
-    const searchValues = entry => {
-      const detail = entry.details || {}
-      const permissions = detail.permissions || {}
-      return [
-        entry.name, entry.packageName, entry.description, entry.repositoryUrl, detail.license,
-        label('pluginType', detail.pluginType), label('installSource', detail.installSource),
-        label('level', permissions.level), label('files', permissions.files), label('network', permissions.network),
-        label('commands', permissions.commands), ...(permissions.credentials || []).map(value => label('credentials', value)),
-        label('reviewStatus', detail.reviewStatus), ...(detail.externalDependencies || []),
-        ...(entry.compatibility?.systems || []), ...(entry.compatibility?.profiles || []), ...(entry.categories || []),
-      ]
-    }
-    const visible = catalog.entries.filter(entry => entry.status !== 'unlisted')
-    const categoryIds = [...new Set(visible.flatMap(entry => entry.categories || []))].sort()
-    category.innerHTML = `<option value="">全部分类</option>` + categoryIds.map(id =>
-      `<option value="${escape(id)}">${escape(catalog.registry.categories?.[id] || id)}</option>`).join('')
-    function render() {
-      const query = search.value.trim().toLowerCase()
-      const entries = visible
-        .filter(entry => !category.value || entry.categories.includes(category.value))
-        .filter(entry => searchValues(entry).some(value => String(value).toLowerCase().includes(query)))
-        .sort((a, b) => Number(b.featured === true) - Number(a.featured === true) || (b.installCount ?? -1) - (a.installCount ?? -1) || a.name.localeCompare(b.name, 'zh-CN'))
-      meta.textContent = `${entries.length} / ${visible.length} 个在架条目 · 更新于 ${catalog.registry.updatedAt}`
-      plugins.innerHTML = entries.map(entry => {
-        const status = entry.status === 'approved' ? '可安装' : entry.status === 'blocked' ? '商城不可安装' : '已下架'
-        const repositoryAction = entry.status === 'blocked' ? '前往 GitHub 手动安装' : '查看 GitHub 仓库'
-        return `<article>
-        <h2>${escape(entry.name)}</h2>
-        <code>${escape(entry.packageName)} · ${escape(entry.version)}</code>
-        <p>${escape(entry.description)}</p>
-        <div class="badges">${entry.featured ? '<span class="badge featured">推荐</span>' : ''}${entry.categories.map(id => `<span class="badge">${escape(catalog.registry.categories?.[id] || id)}</span>`).join('')}<span class="badge ${entry.status === 'blocked' ? 'blocked' : ''}">${status}</span>${Number.isInteger(entry.installCount) ? `<span class="badge">安装 ${entry.installCount}</span>` : ''}</div>
-        ${entry.statusReason ? `<p>${escape(entry.statusReason)}</p>` : ''}
-        <div class="actions"><button type="button" data-details-id="${escape(entry.id)}">查看详情</button><a href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${repositoryAction}</a></div>
-      </article>`
-      }).join('')
-    }
-    function showDetails(entry) {
-      const detail = entry.details || {}
-      const permissions = detail.permissions || {}
-      const compatibility = entry.compatibility || {}
-      const status = entry.status === 'approved' ? '可安装' : entry.status === 'blocked' ? '商城不可安装' : '已下架'
-      detailsTitle.textContent = entry.name
-      detailsBody.innerHTML = `
-        <p>${escape(entry.description)}</p>
-        <div class="badges">${entry.featured ? '<span class="badge featured">推荐</span>' : ''}${entry.categories.map(id => `<span class="badge">${escape(catalog.registry.categories?.[id] || id)}</span>`).join('')}<span class="badge ${entry.status === 'blocked' ? 'blocked' : ''}">${status}</span></div>
-        <h3 class="detail-title">基本信息</h3>
-        <dl class="details">
-          ${row('包名', entry.packageName, true)}${row('版本', entry.version)}${row('Git Commit', entry.commit, true)}
-          ${row('分类', entry.categories.map(id => catalog.registry.categories?.[id] || id).join(' / '))}${row('上架状态', status)}
-          ${Number.isInteger(entry.installCount) ? row('累计安装', String(entry.installCount)) : ''}
-        </dl>
-        <h3 class="detail-title">权限与审核</h3>
-        <dl class="details">
-          ${row('插件类型', label('pluginType', detail.pluginType))}${row('安装来源', label('installSource', detail.installSource))}
-          ${row('许可证', licenseLabel(detail.license))}${row('权限等级', label('level', permissions.level))}
-          ${row('文件权限', label('files', permissions.files))}${row('网络权限', label('network', permissions.network))}
-          ${row('命令执行', label('commands', permissions.commands))}${row('凭据访问', list((permissions.credentials || []).map(value => label('credentials', value)), '未知'))}
-          ${row('外部依赖', list(detail.externalDependencies, '无'))}${row('审核状态', label('reviewStatus', detail.reviewStatus))}
-        </dl>
-        <h3 class="detail-title">兼容性</h3>
-        <dl class="details">
-          ${row('DSH', compatibility.dsh || '未声明')}${row('Node.js', compatibility.node || '未声明')}
-          ${row('系统', list(compatibility.systems))}${row('Profile', list(compatibility.profiles))}
-        </dl>
-        ${entry.statusReason ? `<p class="blocked">策略说明：${escape(entry.statusReason)}</p>` : ''}
-        ${entry.status === 'blocked' ? '<p class="detail-note">可前往 GitHub 阅读项目说明并自行决定是否手动安装；手动安装不受本商城的计划、备份、健康检查和失败回滚保护。</p>' : ''}
-        ${entry.risk?.installScripts?.length ? `<p class="blocked">安装生命周期脚本：${escape(entry.risk.installScripts.join(', '))}</p>` : ''}
-        <p class="detail-note">详情来自 GitHub catalog.json 的固定 Commit 核验与声明；自动扫描或作者认证均不等于完成安全审计。</p>
-        <p><a href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${entry.status === 'blocked' ? '前往 GitHub 手动安装' : '查看 GitHub 仓库'}</a></p>`
-      detailsDialog.showModal()
-    }
-    search.addEventListener('input', render)
-    category.addEventListener('change', render)
-    plugins.addEventListener('click', event => {
-      const button = event.target.closest('[data-details-id]')
-      if (!button) return
-      const entry = visible.find(item => item.id === button.dataset.detailsId)
-      if (entry) showDetails(entry)
-    })
-    document.querySelector('#close-details').addEventListener('click', () => detailsDialog.close())
-    detailsDialog.addEventListener('click', event => { if (event.target === detailsDialog) detailsDialog.close() })
-    render()
-  </script>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span class="live-dot"></span><span data-i18n="hero.eyebrow">DEEPSEEK HARNESS 扩展网络</span></div>
+        <h1 id="hero-title"><span data-i18n="hero.title1">下一块能力，</span><br><em data-i18n="hero.title2">已准备接入 DSH。</em></h1>
+        <p class="hero-lead" data-i18n="hero.lead">浏览固定来源、明确权限与兼容性的第三方插件。先看证据，再决定是否安装。</p>
+        <div class="hero-install" aria-label="DSH-Store install command">
+          <div class="hero-install-head"><span><i aria-hidden="true"></i><span data-i18n="install.title">安装商城管理器</span></span><small>v0.4.9 · <span data-i18n="install.pinned">固定 Commit</span></small></div>
+          <div class="command-box"><code id="install-command">dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9eeb4f1cab9df4a1afbfd7c7951db9c3781d06db'</code><button class="command-copy" type="button" data-copy-target="install-command"><span data-i18n="action.copyCommand">复制命令</span><i aria-hidden="true">⧉</i></button></div>
+          <ol class="hero-install-steps"><li><b>01</b><span data-i18n="install.step1">打开终端</span></li><li><b>02</b><span data-i18n="install.step2">粘贴命令并按回车</span></li><li><b>03</b><span data-i18n="install.step3">重启 DSH，进入插件商城</span></li></ol>
+          <p><span data-i18n="install.warning">命令会修改 web Profile；请先备份，失败后不要连续重试。</span><a href="#manager" data-i18n="action.fullGuide">完整步骤 ↗</a></p>
+        </div>
+        <div class="hero-actions"><a class="button button-primary" href="#discover"><span data-i18n="action.explore">浏览全部插件</span><span aria-hidden="true">↓</span></a><a class="button button-secondary" href="#manager"><span data-i18n="action.manager">了解管理器插件</span><span aria-hidden="true">↗</span></a></div>
+        <div class="hero-trust" aria-label="Marketplace principles"><span><i>01</i><span data-i18n="trust.commit">固定 Git Commit</span></span><span><i>02</i><span data-i18n="trust.permissions">权限信息先展示</span></span><span><i>03</i><span data-i18n="trust.readonly">浏览不改 Profile</span></span></div>
+      </div>
+
+      <div class="hero-stage reveal" aria-label="DSH marketplace signal console">
+        <div class="signal-ring ring-one" aria-hidden="true"></div><div class="signal-ring ring-two" aria-hidden="true"></div>
+        <div class="signal-console">
+          <div class="console-topbar"><span><i></i><i></i><i></i></span><b>DSH-Store // MODULE BUS</b><small><i></i><span data-i18n="console.online">目录在线</span></small></div>
+          <div class="console-body"><aside aria-hidden="true"><span>D</span><i class="active"></i><i></i><i></i><i></i></aside><div class="console-main"><div class="console-heading"><span><small data-i18n="console.network">EXTENSION NETWORK</small><b data-i18n="console.heading">找到新能力</b></span><em>⌕</em></div><div class="console-tabs"><span class="active" data-i18n="tab.featured">推荐</span><span data-i18n="tab.workflow">工作流</span><span data-i18n="tab.visual">视觉</span></div><div id="hero-preview" class="preview-list" aria-live="polite"><div class="preview-skeleton"></div><div class="preview-skeleton"></div><div class="preview-skeleton"></div></div><div class="console-scan" aria-hidden="true"><span></span><i></i><span></span></div></div></div>
+        </div>
+        <span class="float-card float-safe"><i aria-hidden="true">✓</i><b data-i18n="float.pinned">来源已固定</b><small data-i18n="float.commit">40 位 Commit</small></span>
+        <span class="float-card float-count"><b id="float-count">—</b><small data-i18n="stats.plugins">在架插件</small></span>
+        <span class="float-card float-node"><i></i><b>DSH READY</b><small>HOST + CLIENT</small></span>
+      </div>
+    </section>
+
+    <section class="stats-strip" aria-label="Marketplace metrics">
+      <div class="stat"><small>ACTIVE</small><strong id="stat-total">—</strong><span data-i18n="stats.plugins">在架插件</span></div>
+      <div class="stat"><small>PLANNABLE</small><strong id="stat-approved">—</strong><span data-i18n="stats.plannable">可生成安装计划</span></div>
+      <div class="stat"><small>CAPABILITIES</small><strong id="stat-categories">—</strong><span data-i18n="stats.categories">能力分类</span></div>
+      <div class="stat stat-source"><span class="source-icon" aria-hidden="true">⌁</span><span><b data-i18n="stats.source">GitHub 目录源</b><small id="catalog-date" data-i18n="stats.connecting">正在连接 catalog.json…</small></span></div>
+    </section>
+
+    <section class="manager-section section-shell" id="manager" aria-labelledby="manager-title">
+      <div class="section-heading reveal"><div><span class="section-index">01 / MANAGER PLUGIN</span><h2 id="manager-title" data-i18n="manager.title">商城本身，也是一个标准 DSH 插件。</h2></div><p data-i18n="manager.lead">通过官方 Bundle、Host Plugin 与 Client Slot 接入，不修改 DSH 核心，也不遮蔽官方插件清单。</p></div>
+      <div class="manager-layout">
+        <article class="manager-card manager-card-primary reveal"><div class="manager-chip"><span>D</span><div><b>DSH-Store</b><small>HOST + CLIENT BUNDLE</small></div></div><p data-i18n="manager.body">把第三方插件发现、权限核对与受控生命周期放进“设置 → 插件”的独立页面。</p><div class="manager-facts"><span><b>0.4.9</b><small data-i18n="manager.version">当前版本</small></span><span><b>R3</b><small data-i18n="manager.risk">生命周期风险</small></span><span><b>40</b><small data-i18n="manager.identity">位固定身份</small></span></div><a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager" target="_blank" rel="noreferrer"><span data-i18n="action.source">查看源码与说明</span> ↗</a></article>
+        <div class="install-guide reveal"><div class="install-guide-head"><span>INSTALL SEQUENCE</span><b data-i18n="guide.order">按顺序操作</b></div><ol><li><span>01</span><div><h3 data-i18n="guide.title1">备份目标 Profile</h3><p data-i18n="guide.body1">备份 package.json、锁文件、工作区文件和 cordis.patch.yml。</p></div></li><li><span>02</span><div><h3 data-i18n="guide.title2">执行固定来源命令</h3><p data-i18n="guide.body2">使用 DSH 官方 CLI；不要把 40 位 Commit 改成 main。</p></div></li><li><span>03</span><div><h3 data-i18n="guide.title3">检查结果并重启</h3><p data-i18n="guide.body3">命令成功后重启 DSH Web，再进入设置里的插件商城。</p></div></li></ol><a class="guide-back" href="#top" data-i18n="action.backCommand">回到首屏复制命令 ↑</a></div>
+      </div>
+    </section>
+
+    <section class="featured-section section-shell" aria-labelledby="featured-title"><div class="section-heading reveal"><div><span class="section-index">02 / SIGNAL PICKS</span><h2 id="featured-title" data-i18n="featured.title">本周信号最强的插件</h2></div><p data-i18n="featured.lead">从固定来源的目录中挑出值得优先了解的扩展能力。</p></div><div id="featured-grid" class="featured-grid" aria-live="polite"><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div></div></section>
+
+    <section class="catalog-section" id="discover" aria-labelledby="catalog-title"><div class="catalog-shell section-shell">
+      <div class="section-heading reveal"><div><span class="section-index">03 / EXTENSION NETWORK</span><h2 id="catalog-title" data-i18n="catalog.title">接入你的下一块能力</h2></div><p data-i18n="catalog.lead">搜索名称、分类、权限、兼容性或仓库。无法确认的信息继续保持未知。</p></div>
+      <div class="catalog-toolbar reveal"><label class="search-box" for="search"><span aria-hidden="true">⌕</span><input id="search" type="search" autocomplete="off" aria-label="Search plugins" data-i18n-placeholder="catalog.search" placeholder="搜索插件、能力或 GitHub 仓库"><kbd>⌘ K</kbd></label><label class="select-box" for="sort"><span data-i18n="catalog.sort">排序</span><select id="sort"><option value="recommended" data-i18n="sort.recommended">推荐优先</option><option value="name" data-i18n="sort.name">名称 A–Z</option><option value="recent" data-i18n="sort.recent">版本更新</option><option value="risk" data-i18n="sort.risk">权限由低到高</option></select></label></div>
+      <div class="catalog-controls reveal"><div id="category-pills" class="category-pills" aria-label="Categories"></div><button id="clear-filter" class="text-button" type="button" hidden data-i18n="action.clear">清除筛选</button></div>
+      <div class="result-row"><p id="catalog-meta" role="status" data-i18n="catalog.loading">正在读取目录…</p><span class="legend"><i class="legend-approved"></i><span data-i18n="status.available">可安装</span><i class="legend-blocked"></i><span data-i18n="status.viewOnly">仅展示</span></span></div>
+      <div id="plugin-grid" class="plugin-grid" aria-live="polite"></div>
+      <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h3 data-i18n="empty.title">没有找到匹配插件</h3><p data-i18n="empty.body">换个关键词，或清除当前分类筛选。</p><button id="empty-clear" class="button button-primary" type="button" data-i18n="action.viewAll">查看全部插件</button></div>
+      <div id="load-error" class="load-error" hidden><span aria-hidden="true">!</span><div><h3 data-i18n="error.title">目录暂时没有加载成功</h3><p data-i18n="error.body">请从仓库根目录启动本地服务器。</p><code>npm run dev:marketplace</code></div></div>
+    </div></section>
+
+    <section class="safety-section" id="safety" aria-labelledby="safety-title"><div class="section-shell"><div class="section-heading section-heading-light reveal"><div><span class="section-index">04 / TRUST CIRCUIT</span><h2 id="safety-title" data-i18n="safety.title">把“放心”做成可见电路</h2></div><p data-i18n="safety.lead">收录不是安全审计。来源、权限、变更计划与恢复路径必须分别展示。</p></div><div class="safety-grid"><article class="safety-card reveal"><span>01</span><div class="safety-visual commit-visual"><i>main</i><b>9eeb4f1</b><em>FIXED</em></div><h3 data-i18n="safety.card1.title">不可变来源</h3><p data-i18n="safety.card1.body">可安装条目指向完整 40 位 Git Commit，浮动分支不进入受保护流程。</p></article><article class="safety-card reveal"><span>02</span><div class="safety-visual radar-visual"><i></i><i></i><b>PERMISSION</b></div><h3 data-i18n="safety.card2.title">权限雷达</h3><p data-i18n="safety.card2.body">文件、网络、命令、凭据与兼容性集中展示，未知字段不猜测。</p></article><article class="safety-card reveal"><span>03</span><div class="safety-visual rollback-visual"><b>PLAN</b><i>→</i><b>BACKUP</b><i>→</i><b>CHECK</b></div><h3 data-i18n="safety.card3.title">先计划，再改变</h3><p data-i18n="safety.card3.body">真实 Profile 操作需要单次计划、精确确认、备份、健康检查与失败回滚。</p></article></div></div></section>
+
+    <section class="workflow-section" id="workflow" aria-labelledby="workflow-title"><div class="workflow-inner section-shell"><span class="section-index">05 / DISCOVER → PLAN → VERIFY</span><h2 id="workflow-title" class="reveal" data-i18n="workflow.title">三步，把新能力接入 DSH</h2><div class="workflow-list"><article class="workflow-step reveal"><span>01</span><div><h3 data-i18n="workflow.step1.title">发现与核对</h3><p data-i18n="workflow.step1.body">搜索能力，确认来源、兼容性和权限边界。</p></div></article><article class="workflow-step reveal"><span>02</span><div><h3 data-i18n="workflow.step2.title">生成一次性计划</h3><p data-i18n="workflow.step2.body">在 DSH 内创建新计划并核对文件范围、备份与回滚路径。</p></div></article><article class="workflow-step reveal"><span>03</span><div><h3 data-i18n="workflow.step3.title">确认并验证</h3><p data-i18n="workflow.step3.body">执行后检查配置与运行状态；测试通过不等于真实 Profile 已生效。</p></div></article></div></div></section>
+
+    <section class="faq-section section-shell" aria-labelledby="faq-title"><div class="section-heading reveal"><div><span class="section-index">06 / FAQ</span><h2 id="faq-title" data-i18n="faq.title">安装之前，你可能还想知道</h2></div></div><div class="faq-list"><details><summary><span data-i18n="faq.q1">官网会直接安装插件吗？</span><i>＋</i></summary><p data-i18n="faq.a1">不会。官网只负责浏览与详情展示；生命周期操作必须在 DSH 内生成计划并确认。</p></details><details><summary><span data-i18n="faq.q2">“可安装”等于完成安全审计吗？</span><i>＋</i></summary><p data-i18n="faq.a2">不等于。它只表示条目满足固定来源、标准 Bundle 与当前策略检查。</p></details><details><summary><span data-i18n="faq.q3">目录离线时会怎样？</span><i>＋</i></summary><p data-i18n="faq.a3">可使用随包快照只读浏览，但安装与更新失败关闭，直到重新核验在线来源。</p></details></div></section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="#top" aria-label="DSH-Store"><img class="brand-logo" src="./dsh-store-logo.svg" alt="" width="44" height="44"><span class="brand-copy"><strong>DSH-Store</strong><small>EXTENSION NETWORK</small></span></a><p data-i18n="footer.lead">一个明亮、清楚、可追溯的 DeepSeek Harness 第三方插件入口。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>GitHub <code>registry/catalog.json</code></span><span data-i18n="footer.note">收录不代表安全审计 · 浏览不会改写 Profile</span></div></footer>
+
+  <dialog id="plugin-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><header class="dialog-header"><div><span id="dialog-kicker" class="dialog-kicker">PLUGIN DETAIL</span><h2 id="dialog-title" data-i18n="dialog.title">插件详情</h2></div><button id="dialog-close" class="dialog-close" type="button" aria-label="Close">×</button></header><div id="dialog-body" class="dialog-body"></div></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script defer src="./app.js"></script>
 </body>
 </html>

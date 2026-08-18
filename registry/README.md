@@ -1,6 +1,6 @@
-# DSH Safe GitHub Plugin Registry
+# DSH-Store GitHub Plugin Registry
 
-`catalog.json` 是 DSH Safe Plugin Manager 与 GitHub Pages 市场页共同读取的唯一目录。
+`catalog.json` 是 DSH-Store 与 GitHub Pages 市场页共同读取的唯一目录。
 目录只接受 GitHub 仓库，不接受 npm-only、任意下载 URL、本地路径或浮动安装目标。
 
 新增或更新插件必须通过 Pull Request 修改一个条目，并同时满足：

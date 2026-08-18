@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process'
 import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { request as requestHttp } from 'node:http'
 import { connect } from 'node:net'
 import { dirname, isAbsolute, join } from 'node:path'
 
@@ -30,11 +31,84 @@ function listening(host, port) {
   })
 }
 
+function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, maxBytes = 65_536 }) {
+  return new Promise(resolve => {
+    let settled = false
+    const finish = value => {
+      if (settled) return
+      settled = true
+      resolve(value)
+    }
+    const request = requestHttp({
+      host, port, path, method,
+      headers: body ? { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) } : undefined,
+    }, response => {
+      const chunks = []
+      let size = 0
+      response.on('data', chunk => {
+        size += chunk.length
+        if (size > maxBytes) {
+          response.destroy()
+          finish({ ok: false, statusCode: response.statusCode, reason: 'response-too-large' })
+          return
+        }
+        chunks.push(chunk)
+      })
+      response.once('end', () => finish({
+        ok: true, statusCode: response.statusCode, body: Buffer.concat(chunks).toString('utf8'),
+      }))
+      response.once('error', () => finish({ ok: false, statusCode: response.statusCode, reason: 'response-error' }))
+    })
+    request.setTimeout(timeoutMs, () => {
+      request.destroy()
+      finish({ ok: false, reason: 'timeout' })
+    })
+    request.once('error', () => finish({ ok: false, reason: 'request-error' }))
+    request.end(body || undefined)
+  })
+}
+
+async function probeDshHost(config) {
+  const timeoutMs = config.healthProbeTimeoutMs ?? 1_500
+  const root = await httpExchange({ host: config.host, port: config.port, path: '/', timeoutMs })
+  if (!root.ok || root.statusCode !== 200) {
+    return { healthy: false, reason: root.reason ?? `root-http-${root.statusCode ?? 'unknown'}`, rootStatus: root.statusCode ?? null }
+  }
+  const runtime = await httpExchange({
+    host: config.host, port: config.port, path: '/api2/dsh-safe-plugin-manager/runtime', method: 'POST',
+    body: JSON.stringify({ profile: config.profile }), timeoutMs,
+  })
+  if (!runtime.ok || runtime.statusCode !== 200) {
+    return {
+      healthy: false, reason: runtime.reason ?? `runtime-http-${runtime.statusCode ?? 'unknown'}`,
+      rootStatus: root.statusCode, runtimeStatus: runtime.statusCode ?? null,
+    }
+  }
+  let payload
+  try { payload = JSON.parse(runtime.body) } catch {
+    return { healthy: false, reason: 'runtime-json-invalid', rootStatus: root.statusCode, runtimeStatus: runtime.statusCode }
+  }
+  const value = payload?.value
+  if (payload?.ok !== true || value?.profile !== config.profile || typeof value?.bootId !== 'string' || value.bootId.length === 0) {
+    return {
+      healthy: false, reason: 'runtime-identity-mismatch', rootStatus: root.statusCode,
+      runtimeStatus: runtime.statusCode, profile: typeof value?.profile === 'string' ? value.profile : null,
+    }
+  }
+  return {
+    healthy: true, reason: null, rootStatus: root.statusCode, runtimeStatus: runtime.statusCode,
+    profile: value.profile, bootId: value.bootId,
+  }
+}
+
 function validate(config) {
   if (!isAbsolute(config.nodePath) || !isAbsolute(config.cliPath) || !isAbsolute(config.cwd) || !isAbsolute(config.stateDir) || !isAbsolute(config.profileDir)) throw new Error('guardian paths must be absolute')
   if (!Array.isArray(config.runtimeArgs) || config.runtimeArgs.some(value => typeof value !== 'string')) throw new Error('invalid runtime arguments')
   if (!/^[A-Za-z0-9._-]+$/.test(config.profile)) throw new Error('invalid profile')
   if (config.host !== '127.0.0.1' || !Number.isInteger(config.port)) throw new Error('invalid listener')
+  for (const field of ['healthProbeTimeoutMs', 'unhealthyThreshold', 'startupGraceMs']) {
+    if (config[field] !== undefined && (!Number.isInteger(config[field]) || config[field] <= 0)) throw new Error(`invalid ${field}`)
+  }
   return config
 }
 
@@ -50,6 +124,7 @@ export async function runGuardian(rawConfig, options = {}) {
   const config = validate(rawConfig)
   const spawnProcess = options.spawn ?? spawn
   const portReady = options.listening ?? listening
+  const probeHost = options.probeHost ?? probeDshHost
   const sleep = options.delay ?? delay
   const currentTime = options.now ?? Date.now
   const statePath = join(config.stateDir, 'status.json')
@@ -57,13 +132,16 @@ export async function runGuardian(rawConfig, options = {}) {
   const windowMs = config.restartWindowMs ?? 300_000
   const maxRestarts = config.maxRestarts ?? 3
   const stableMs = config.stableMs ?? 30_000
+  const startupGraceMs = config.startupGraceMs ?? 10_000
+  const unhealthyThreshold = config.unhealthyThreshold ?? 3
   let child = null
-  let stopping = false
+  const intentionalStops = new WeakSet()
   let failures = []
   let lastError = null
   let recoveryAttempted = false
   let childStartedAt = null
   let healthyPid = null
+  let consecutiveProbeFailures = 0
 
   async function digestFile(path) {
     try { return createHash('sha256').update(await readFile(path)).digest('hex') } catch (error) {
@@ -107,7 +185,8 @@ export async function runGuardian(rawConfig, options = {}) {
     const value = {
       schemaVersion: 1, installed: true, available: true, state, heartbeatAt: now(),
       profile: config.profile, pid: child?.pid ?? null, failureCount: failures.length,
-      lastError, circuit: failures.length >= maxRestarts ? 'open' : 'closed', ...extra,
+      owner: child ? 'guardian' : 'unknown', lastError,
+      circuit: failures.length >= maxRestarts ? 'open' : 'closed', ...extra,
     }
     await atomicJson(statePath, value)
     options.onPublish?.(value)
@@ -115,30 +194,47 @@ export async function runGuardian(rawConfig, options = {}) {
 
   function launch() {
     const profileArgs = config.profile === 'web' ? ['web'] : ['--profile', config.profile]
-    child = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, ...profileArgs], {
+    const launched = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, ...profileArgs], {
       cwd: config.cwd, env: process.env, shell: false, stdio: ['ignore', 'ignore', 'pipe'],
     })
+    child = launched
     childStartedAt = currentTime()
     healthyPid = null
+    consecutiveProbeFailures = 0
     let tail = ''
-    child.stderr?.on?.('data', chunk => { tail = `${tail}${String(chunk)}`.slice(-4096) })
-    child.once('exit', (code, signal) => {
-      child = null
-      childStartedAt = null
-      healthyPid = null
-      if (!stopping) lastError = { code: Number.isInteger(code) ? code : null, signal: signal ?? null, ...safeFailureSummary(tail) }
+    launched.stderr?.on?.('data', chunk => { tail = `${tail}${String(chunk)}`.slice(-4096) })
+    launched.once('exit', (code, signal) => {
+      if (child === launched) {
+        child = null
+        childStartedAt = null
+        healthyPid = null
+      }
+      if (!intentionalStops.delete(launched)) {
+        failures.push(currentTime())
+        lastError = { code: Number.isInteger(code) ? code : null, signal: signal ?? null, ...safeFailureSummary(tail) }
+      }
     })
   }
 
   async function stopChild() {
     if (!child) return
-    stopping = true
-    child.kill('SIGTERM')
-    for (let count = 0; child && count < 50; count += 1) await sleep(100)
-    if (child) child.kill('SIGKILL')
+    const target = child
+    intentionalStops.add(target)
+    target.kill('SIGTERM')
+    for (let count = 0; child === target && count < 50; count += 1) await sleep(100)
+    if (child === target) target.kill('SIGKILL')
+    for (let count = 0; child === target && count < 20; count += 1) await sleep(100)
     childStartedAt = null
     healthyPid = null
-    stopping = false
+    consecutiveProbeFailures = 0
+  }
+
+  function probeSummary(probe) {
+    return {
+      healthy: probe.healthy === true, reason: probe.reason ?? null,
+      rootStatus: probe.rootStatus ?? null, runtimeStatus: probe.runtimeStatus ?? null,
+      profile: probe.profile ?? null, bootId: probe.bootId ?? null,
+    }
   }
 
   await mkdir(config.stateDir, { recursive: true, mode: 0o700 })
@@ -146,44 +242,74 @@ export async function runGuardian(rawConfig, options = {}) {
     const cutoff = currentTime() - windowMs
     failures = failures.filter(value => value >= cutoff)
     const request = await readJson(requestPath)
-    if (request?.type === 'restart' && Date.parse(request.expiresAt) >= currentTime()) {
+    if (request?.type === 'restart' && request.profile === config.profile && Date.parse(request.expiresAt) >= currentTime()) {
       await rm(requestPath, { force: true })
-      await publish('restarting', { requestId: request.requestId })
+      await publish('restarting', { owner: child ? 'guardian' : 'unknown', requestId: request.requestId })
       await stopChild()
     }
-    const externalHostReady = !child && await portReady(config.host, config.port)
-    if (externalHostReady) {
-      await publish('adopting-existing-host')
-    } else if (!child && failures.length < maxRestarts) {
-      failures.push(currentTime())
-      await publish('starting')
-      launch()
-      await sleep(Math.min(2 ** (failures.length - 1) * 1000, 15_000))
-    }
-    if (child && await portReady(config.host, config.port)) {
-      const stableForMs = Math.max(0, currentTime() - childStartedAt)
-      if (healthyPid === child.pid) {
-        await publish('healthy', { stableForMs })
-      } else if (stableForMs >= stableMs) {
-        healthyPid = child.pid
-        failures = []
-        recoveryAttempted = false
-        lastError = null
-        await rm(join(config.stateDir, 'pending-recovery.json'), { force: true })
-        await publish('healthy', { stableForMs })
-      } else await publish('health-checking', { stableForMs })
-    } else if (externalHostReady) {
+    let portOpen = !child && await portReady(config.host, config.port)
+    if (!child && portOpen) {
+      const probe = probeSummary(await probeHost(config))
+      if (probe.healthy) {
+        await publish('external-dsh-detected', { available: false, owner: 'external', health: probe, errorCode: 'GUARDIAN_NOT_OWNER' })
+      } else {
+        await publish('port-conflict', { available: false, owner: 'unknown', health: probe, errorCode: 'GUARDIAN_PORT_CONFLICT' })
+      }
       await sleep(options.pollMs ?? 1_000)
-    } else if (!child && failures.length >= maxRestarts) {
+      continue
+    }
+    if (!child && failures.length >= maxRestarts) {
       if (!recoveryAttempted) {
         recoveryAttempted = true
         const recovery = await restorePendingRecovery()
         if (recovery.status === 'rolled-back-and-quarantined') {
           failures = []
-          await publish('rolled-back', { recovery })
-        } else await publish('circuit-open', { recovery })
-      } else await publish('circuit-open', { recovery: 'manual-confirmation-required' })
-    } else await publish(child ? 'waiting-for-health' : 'backoff')
+          await publish('rolled-back', { owner: 'guardian', recovery })
+        } else await publish('circuit-open', { available: false, owner: 'guardian', recovery })
+      } else await publish('circuit-open', { available: false, owner: 'guardian', recovery: 'manual-confirmation-required' })
+      await sleep(options.pollMs ?? 1_000)
+      continue
+    }
+    if (!child) {
+      await publish('starting', { owner: 'guardian' })
+      try { launch() } catch {
+        failures.push(currentTime())
+        lastError = { category: 'startup-spawn-failed' }
+      }
+      await sleep(Math.min(2 ** failures.length * 1_000, 15_000))
+      continue
+    }
+
+    portOpen = await portReady(config.host, config.port)
+    const stableForMs = Math.max(0, currentTime() - childStartedAt)
+    const probe = portOpen
+      ? probeSummary(await probeHost(config))
+      : { healthy: false, reason: 'port-not-ready', rootStatus: null, runtimeStatus: null, profile: null, bootId: null }
+    if (probe.healthy) {
+      consecutiveProbeFailures = 0
+      if (healthyPid === child.pid) {
+        await publish('healthy', { owner: 'guardian', stableForMs, health: probe })
+      } else if (stableForMs >= stableMs) {
+        healthyPid = child.pid
+        recoveryAttempted = false
+        lastError = null
+        await rm(join(config.stateDir, 'pending-recovery.json'), { force: true })
+        await publish('healthy', { owner: 'guardian', stableForMs, health: probe })
+      } else await publish('health-checking', { owner: 'guardian', stableForMs, health: probe, consecutiveProbeFailures })
+    } else {
+      consecutiveProbeFailures += 1
+      const restartRequired = stableForMs >= startupGraceMs && consecutiveProbeFailures >= unhealthyThreshold
+      if (restartRequired) {
+        failures.push(currentTime())
+        lastError = { category: 'health-probe-failed', reason: probe.reason }
+        await publish('restarting-unhealthy', {
+          owner: 'guardian', stableForMs, health: probe, consecutiveProbeFailures,
+        })
+        await stopChild()
+      } else await publish(portOpen ? 'health-checking' : 'waiting-for-health', {
+        owner: 'guardian', stableForMs, health: probe, consecutiveProbeFailures,
+      })
+    }
     await sleep(options.pollMs ?? 1_000)
   }
   await stopChild()

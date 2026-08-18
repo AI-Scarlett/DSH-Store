@@ -1,12 +1,12 @@
-# DSH第三方插件商城
+# DSH-Store｜DSH 第三方插件商城
 <img width="900" height="383" alt="cover_dsh_plugin_market_900x383" src="https://github.com/user-attachments/assets/2b03ff48-a39b-427d-87c1-62190560a496" />
 
-DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
+DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 插件商城与安全生命周期管理器。它使用标准 DSH Bundle + Host Plugin + Client Bundle
 结构，不开发独立桌面端，不修改 DSH 源码，也不替换任何 `@deepseek-ai/*` 官方包。
 
 
-[打开在线插件商城](https://ai-scarlett.github.io/dsh-safe-plugin-manager/marketplace/) ·
+[打开在线插件商城](https://dsh.store/) ·
 [提交插件上架申请](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) ·
 [查看机器目录](registry/catalog.json) ·
 [目录准入规则](registry/README.md) ·
@@ -30,7 +30,7 @@ DSH Safe Plugin Manager 是一个运行在 DeepSeek Harness（DSH）设置页中
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9eeb4f1cab9df4a1afbfd7c7951db9c3781d06db'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -44,9 +44,12 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
    不是另一个普通 DSH 插件；
 3. 包操作完成后，商城会明确标记“待重启”。只有 Guardian 心跳正常时才允许生成一次性的
    `RESTART DSH <profile>` 计划；
-4. Guardian 负责有界重启、30 秒稳定性观察和熔断；5 分钟内最多自动启动 3 次，不会无限循环；
-5. 页面检测到新的 Boot ID 后重新读取插件清单与健康报告，只有通过才显示“已重启并生效”；
-5. 如果安装、重启或页面显示异常，请在
+4. Guardian 是 DSH web Profile 的唯一启动所有者。启用后不要再手工运行 `pnpm dsh web` 或
+   `dsh web`，否则第二个实例会因争抢 `127.0.0.1:3080` 而以 `EADDRINUSE` 退出；
+5. Guardian 同时验证首页 HTTP、商城 runtime API、Profile 和 Boot ID；只有身份一致并持续稳定
+   30 秒才判定健康。连续探测失败才执行有界重启，5 分钟内最多失败 3 次；
+6. 页面检测到新的 Boot ID 后重新读取插件清单与健康报告，只有通过才显示“已重启并生效”；
+7. 如果安装、重启或页面显示异常，请在
    [GitHub Issues](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues) 提交原始错误，
    不要提交凭据、完整 Profile 文件或环境变量。
 
@@ -57,9 +60,9 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.4.7` |
-| 收录条目 | 32 个 |
-| 可安装 | 27 个 |
+| 商城版本 | `0.4.9` |
+| 收录条目 | 42 个 |
+| 可安装 | 37 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
 | 推荐 | 5 个：自研四件套 + DSH Web UI All |
@@ -107,9 +110,14 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
   启动失败时不依赖 Host Plugin 或设置页存活；
 - 安装 Guardian 仍需一次性计划、精确确认和文件哈希预条件，并明确展示将替换的启动任务；
 - 使用固定参数数组启动 DSH，不使用 `bash -c`，记录心跳、启动状态、失败次数和熔断状态；
+- Guardian 是 DSH web Profile 的唯一启动所有者；商城不再提供会启动第二个实例的复制命令；
+- 健康判定要求首页 HTTP 和 `/api2/dsh-safe-plugin-manager/runtime` 同时成功，并核对 Profile 与
+  Boot ID。单纯能连接 3080 端口不再代表 DSH 健康；
+- 端口若由外部 DSH 或未知进程占用，Guardian 会明确报告未持有所有权并停止启动，不会杀死、
+  冒充接管或再启动一个 DSH；
 - 重启前扫描 Profile Patch 与所有已安装 Bundle Patch 的入口 ID；发现重复入口时将包操作
   判为不健康并立即恢复事务备份，不关闭当前 Host；
-- Guardian 连续失败会打开熔断并保留故障摘要，不会把“端口暂时出现”误报成插件已健康。
+- Guardian 连续失败会打开熔断并保留脱敏故障摘要，不会把“端口暂时出现”误报成插件已健康。
 
 ### 健康检查与来源识别
 
@@ -176,6 +184,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 内置 Guardian `0.4.4` | [`ca297cc`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ca297cc6f68cbe007b07b30815a9811d09f9ffcc) | 将重启切换为商城自带的进程外 launchd Guardian，加入冷启动入口冲突检查、有界重启、熔断和事务回滚隔离。 |
 | Guardian 心跳修复 `0.4.5` | [`3f0d117`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3f0d1177f024bf159532370fa2a3861dc1b4ba83) | 稳定期只执行一次；进入健康状态后持续刷新心跳与稳定时长，避免商城误报守护进程离线。 |
 | 健康权限交互修复 `0.4.6` | [`e645ede`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/e645edefe8ece8972d3fd723875b0f49ffeb272b) | 将权限定位与重新检查拆分，补充未选择数量、按钮禁用、检查中和完成/失败反馈。 |
+| Guardian 单一所有者 `0.4.8` | [`ed8722b`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d) | 以首页 HTTP 与 runtime Profile/Boot ID 共同判定健康；拒绝接管外部或未知端口进程，连续失败才有界重启，并移除会启动第二实例的 UI 命令。 |
+| DSH-Store 与目录扩充 `0.4.9` | 本次发布固定 Commit | 英文品牌统一为 DSH-Store，技术支持入口切换到 dsh.store，并将目录扩充到 42 个条目。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
@@ -189,7 +199,7 @@ DSH Web UI All；推荐不会绕过固定 Commit、来源和风险校验。以�
 
 | 插件 | 分类 | 状态 | 介绍 |
 | --- | --- | --- | --- |
-| ★ [DSH Safe Plugin Manager](https://github.com/AI-Scarlett/dsh-safe-plugin-manager) | 插件市场、管理工具 | 可安装 | 本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。 |
+| ★ [DSH-Store](https://github.com/AI-Scarlett/dsh-safe-plugin-manager) | 插件市场、管理工具 | 可安装 | 本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。 |
 | ★ [DSH Chat Import](https://github.com/AI-Scarlett/dsh-chat-import) | 会话与消息、导入迁移 | 可安装 | 将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。 |
 | ★ [DSH CLIAPI](https://github.com/AI-Scarlett/DSH_CLIAPI) | 模型与账号、模型路由 | 可安装 | DSH 的授权中心与自动本地模型路由器。 |
 | ★ [DSHLLM API](https://github.com/AI-Scarlett/DSHLLM_API) | 模型与账号、模型路由 | 可安装 | 面向 DSH 的多模态感知模型路由器，需要 DSH CLIAPI。 |
@@ -216,6 +226,10 @@ DSH Web UI All；推荐不会绕过固定 Commit、来源和风险校验。以�
 | [DSH Diagram](https://github.com/hanzhangzzz/dsh-diagram) | 可视化、设计与原型、新锐实验 | 可安装 | 将文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。 |
 | [DSH Egress Guard](https://github.com/tancheng33/dsh-egress-guard) | 安全与隐私、工具能力、新锐实验 | 可安装 | 提供出站域名策略、工具结果密钥脱敏和追加式审计日志，默认监控模式。 |
 | [DSH Achievements](https://github.com/WJNCT55555/dsh-achievements) | 娱乐、界面增强、新锐实验 | 可安装 | 添加成就引擎、图鉴、提示、奖杯与进度持久化。 |
+| [DSH Plugin Outline](https://github.com/iluluyu/dsh-plugin-outline) | 会话与消息、界面增强、可视化 | 可安装 | 提供右侧会话轮次大纲、当前位置高亮和点击跳转。 |
+| [DSH IP Calculator](https://github.com/TYEclipse/dsh-ipcalc) | 工具能力、开发与运行时 | 可安装 | 提供 IPv4 子网计算、CIDR 汇总以及 IPv4/IPv6 解析和规范化工具。 |
+| [DSH Stats Board](https://github.com/PastSheep/dsh-stats-board) | 会话与消息、界面增强、可视化 | 可安装 | 增加会话与工具调用统计视图，并按轮次展示 Token 使用情况。 |
+| [DSH Ventus Whale](https://github.com/mmzm0808/dsh-ventus-whale) | 界面增强、主题外观 | 可安装 | 添加可拖动和配置的 3D 虎鲸桌宠、快捷交互与设置面板。 |
 | [DSH Memory Evolve](https://github.com/csyangwen/dsh-memory-evolve) | 记忆、工作流与自动化、工具能力 | 商城不可安装（GitHub 手动） | 分层长期记忆、自我进化、技能与待办管理，以及外部 CLI Agent 调度。 |
 | [DSH TUI](https://github.com/ccch1mneyyy/dsh-TUI) | 客户端与生态、开发与运行时 | 商城不可安装（GitHub 手动） | Claude Code 风格的独立 DSH 终端客户端。 |
 | [DSH Explorer](https://github.com/No-PRM/dsh-explorer) | 文件与输入、界面增强、工具能力 | 商城不可安装（GitHub 手动） | Host 与浏览器双 Bundle 文件树侧栏，支持 Git 标记、媒体预览与拖拽引用。 |

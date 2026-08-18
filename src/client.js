@@ -18,7 +18,7 @@ window.__ModuleLoader__.load({
       guardianPlan: '/api2/dsh-safe-plugin-manager/guardian/plan',
       guardianExecute: '/api2/dsh-safe-plugin-manager/guardian/execute',
     }
-    const PROJECT_REPOSITORY_URL = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
+    const SUPPORT_URL = 'https://dsh.store/'
     const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
 
     async function post(route, body = {}, intent = null) {
@@ -65,11 +65,6 @@ window.__ModuleLoader__.load({
       const pluginHealth = state.health.plugins?.find(item => item.packageName === pending.packageName)
       if (activated && pluginHealth?.status !== 'unhealthy') return { status: 'verified', plugin, pluginHealth }
       return { status: 'failed', plugin, pluginHealth }
-    }
-
-    function copyCommand(command) {
-      if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(command)
-      return Promise.reject(new Error('clipboard API unavailable'))
     }
 
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -425,10 +420,8 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.error },
             `健康接口仍是旧版 schema v${health.schemaVersion || '未知'}。当前页面不能判断每个插件是否健康，请更新并重启 DSH Host。`),
           React.createElement('div', { style: styles.notice },
-            '下面只能展示旧版 Profile 基础检查；这些结果不等于逐插件健康。请先更新插件商城，再在运行 DSH 的终端按 Ctrl+C，然后使用原启动命令重新启动。'),
-          React.createElement('div', { style: styles.code },
-            'cd <DeepSeek-Harness 源码目录>\npnpm dsh web'),
-          React.createElement(Button, { primary: true, disabled: true }, '重启 DSH Host 后才能逐插件检查'),
+            '下面只能展示旧版 Profile 基础检查；这些结果不等于逐插件健康。请先更新插件商城，再通过 Guardian 执行一次安全重启。不要另开终端运行 pnpm dsh web 或 dsh web。'),
+          React.createElement(Button, { primary: true, disabled: true }, '恢复 Guardian 后才能逐插件检查'),
           React.createElement('div', { style: styles.grid }, (health.checks || []).map(item => React.createElement('article', { key: item.id, style: styles.card },
             React.createElement('div', { style: styles.row }, React.createElement('div', { style: styles.name }, item.id), React.createElement('span', { style: styles.badge }, statusLabel(item.status))),
             React.createElement('div', { style: styles.muted }, item.message)))))
@@ -509,7 +502,6 @@ window.__ModuleLoader__.load({
       }
       if (operation.status === 'result') {
         const result = operation.value
-        const command = result.restartCommand || 'dsh web'
         const footer = React.createElement(React.Fragment, null,
           React.createElement(Button, { onClick: cancel }, '完成'),
           result.status === 'applied' && result.restartRequired
@@ -525,9 +517,7 @@ window.__ModuleLoader__.load({
           result.error ? React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`) : null,
           result.status === 'applied' && result.restartRequired ? React.createElement('div', { style: styles.notice },
             React.createElement('div', { style: styles.name }, '插件变更已写入，但尚未在当前 DSH Host 中生效'),
-            React.createElement('div', { style: styles.muted }, '请先停止当前 Host，再运行以下命令；重启后返回本页会自动复检。'),
-            React.createElement('div', { style: styles.code }, command),
-            React.createElement(Button, { onClick: () => { void copyCommand(command) } }, '复制重启命令')) : null))
+            React.createElement('div', { style: styles.muted }, '请使用“一键安全重启”；Guardian 会停止并启动同一个 web Profile。不要再手工启动第二个 DSH 实例。')) : null))
       }
       const plan = operation.value
       const matches = confirmation === plan.confirmation
@@ -569,14 +559,10 @@ window.__ModuleLoader__.load({
           className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
         }, React.createElement('div', { style: styles.detailSection },
           React.createElement('div', { style: styles.error }, `${operation.code || 'RESTART_FAILED'}：${operation.message}`),
-          operation.fallbackCommand ? React.createElement(React.Fragment, null,
-            React.createElement('div', { style: styles.muted }, '请手动运行：'),
-            React.createElement('div', { style: styles.code }, operation.fallbackCommand),
-            React.createElement(Button, { onClick: () => { void copyCommand(operation.fallbackCommand) } }, '复制命令')) : null))
+          React.createElement('div', { style: styles.muted }, 'Guardian 未完成重启时请查看守护状态；不要手工再运行 dsh web，以免与唯一启动所有者争抢 3080 端口。')))
       }
       const plan = operation.value
       const matches = confirmation === plan.confirmation
-      const command = plan.impact.fallbackCommandText || plan.impact.fallbackCommand.join(' ')
       return React.createElement(Modal, {
         open: true, onClose: cancel, title: '确认重启 DSH Host', closeLabel: '取消重启',
         description: '当前页面会短暂断开；新 Host 上线后将自动重新载入并验证插件。',
@@ -586,8 +572,7 @@ window.__ModuleLoader__.load({
         className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
       }, React.createElement('div', { style: styles.detailSection },
         React.createElement('div', { style: styles.muted }, `当前 Boot ID：${plan.currentBootId}`),
-        React.createElement('div', { style: styles.muted }, '不会修改 Profile；若自动恢复失败，可运行：'),
-        React.createElement('div', { style: styles.code }, command),
+        React.createElement('div', { style: styles.muted }, '不会修改 Profile；Guardian 是唯一启动所有者，并负责停止旧实例后再启动同一个 Profile。'),
         React.createElement('label', { style: styles.muted }, '输入以下确认语后才能重启：'),
         React.createElement('div', { style: styles.code }, plan.confirmation),
         React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
@@ -711,8 +696,6 @@ window.__ModuleLoader__.load({
           if (value.status === 'applied' && value.restartRequired) {
             const pending = storePendingRestart(value)
             setPendingRestart(pending)
-            value.restartCommand = state.status === 'ready'
-              ? (state.runtime.restartCommandText || state.runtime.restartCommand.join(' ')) : 'dsh web'
           }
           setOperation({ status: 'result', value })
           await refresh(false, permissionDecisions)
@@ -751,7 +734,6 @@ window.__ModuleLoader__.load({
       const executeRestart = useCallback(async () => {
         if (restartOperation.status !== 'plan') return
         const plan = restartOperation.value
-        const fallbackCommand = plan.impact.fallbackCommandText || plan.impact.fallbackCommand.join(' ')
         setRestartOperation({ status: 'executing', value: plan })
         try {
           const result = await post(ROUTES.restartExecute, {
@@ -767,9 +749,9 @@ window.__ModuleLoader__.load({
               }
             } catch {}
           }
-          setRestartOperation({ status: 'error', code: 'RESTART_TIMEOUT', message: '60 秒内未检测到新的 DSH Host', fallbackCommand })
+          setRestartOperation({ status: 'error', code: 'RESTART_TIMEOUT', message: '60 秒内未检测到新的 DSH Host' })
         } catch (error) {
-          setRestartOperation({ status: 'error', code: error?.code, message: String(error?.message || error), fallbackCommand })
+          setRestartOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
         }
       }, [restartConfirmation, restartOperation])
       const closeDetails = useCallback(() => setDetailEntry(null), [])
@@ -779,8 +761,8 @@ window.__ModuleLoader__.load({
           React.createElement('p', { style: styles.subtitle },
             'GitHub-only 目录 · 计划确认 · Profile 备份 · 健康检查 · 失败回滚 · ',
             React.createElement('a', {
-              href: PROJECT_REPOSITORY_URL, target: '_blank', rel: 'noreferrer', style: styles.link,
-            }, '技术支持：GitHub'))))
+              href: SUPPORT_URL, target: '_blank', rel: 'noreferrer', style: styles.link,
+            }, '技术支持：DSH-Store'))))
 
       const nav = React.createElement('div', { style: styles.nav },
         React.createElement('div', { style: styles.navTabs, role: 'tablist', 'aria-label': '插件商城视图' },
@@ -804,8 +786,6 @@ window.__ModuleLoader__.load({
         .sort((a, b) => a.packageName.localeCompare(b.packageName, 'en'))
 
       const restartState = restartOutcome(pendingRestart, state)
-      const restartCommand = state.status === 'ready'
-        ? (state.runtime.restartCommandText || state.runtime.restartCommand.join(' ')) : 'dsh web'
       const dismissRestart = () => { clearPendingRestart(); setPendingRestart(null) }
       const restartBanner = !restartState ? null : React.createElement('div', {
         style: restartState.status === 'failed' ? styles.error : styles.notice,
@@ -814,25 +794,34 @@ window.__ModuleLoader__.load({
         ? '等待重启 DSH Host：插件变更尚未生效'
         : restartState.status === 'verified' ? '已检测到新的 DSH Host，插件变更已生效' : 'DSH 已重启，但插件变更未通过验收'),
       restartState.status === 'pending' ? React.createElement(React.Fragment, null,
-        React.createElement('div', { style: styles.muted }, '停止当前 Host 后运行：'),
-        React.createElement('div', { style: styles.code }, restartCommand),
+        React.createElement('div', { style: styles.muted }, state.guardian.available
+          ? 'DSH 已由 Guardian 管理；无需也不要再运行 pnpm dsh web 或 dsh web。'
+          : 'Guardian 尚未成为唯一启动所有者，安全重启已禁用；不要手工启动第二个 DSH 实例。'),
         React.createElement('div', { style: styles.actions },
-          React.createElement(Button, { onClick: () => { void copyCommand(restartCommand) } }, '复制重启命令'),
-          React.createElement(Button, { primary: true, onClick: beginRestart }, '一键安全重启'),
+          React.createElement(Button, { primary: true, disabled: !state.guardian.available, onClick: beginRestart }, '一键安全重启'),
           React.createElement(Button, { onClick: () => { void refresh(false, permissionDecisions) } }, '我已重启，重新检查'))) : null,
       restartState.status === 'failed' ? React.createElement('div', { style: styles.muted },
         `目标 ${pendingRestart.packageName}${pendingRestart.targetVersion ? ` ${pendingRestart.targetVersion}` : ''} 未在新实例中确认加载，请查看健康检查详情。`) : null,
       restartState.status !== 'pending' ? React.createElement(Button, { onClick: dismissRestart }, '完成') : null)
 
+      const guardianIsExternal = state.status === 'ready' && state.guardian.owner === 'external'
+      const guardianHasPortConflict = state.status === 'ready' && state.guardian.errorCode === 'GUARDIAN_PORT_CONFLICT'
       const guardianBanner = state.status !== 'ready' ? null : React.createElement('div', {
         style: state.guardian.available ? styles.notice : styles.error,
       }, React.createElement('div', { style: styles.name }, state.guardian.available
-        ? `DSH Guardian：${state.guardian.state} · 独立守护已连接`
-        : 'DSH Guardian 未运行：一键重启已被安全禁用'),
+        ? `DSH Guardian：${state.guardian.state} · 唯一启动所有者`
+        : guardianIsExternal ? '检测到外部 DSH 实例：Guardian 未接管'
+          : guardianHasPortConflict ? '3080 端口被未知进程占用：Guardian 已拒绝接管'
+            : 'DSH Guardian 未运行：一键重启已被安全禁用'),
       React.createElement('div', { style: styles.muted }, state.guardian.available
-        ? `心跳 ${state.guardian.heartbeatAgeMs}ms · 失败次数 ${state.guardian.failureCount || 0} · 熔断 ${state.guardian.circuit || '未知'}`
-        : '安装商城自带的外部 Guardian 后，即使 DSH 冷启动失败也能继续诊断和恢复。'),
-      !state.guardian.available ? React.createElement(Button, { primary: true, onClick: beginGuardianInstall }, '安装并接管 DSH 守护') : null)
+        ? `DSH 已由 Guardian 管理；请勿再运行 pnpm dsh web 或 dsh web。心跳 ${state.guardian.heartbeatAgeMs}ms · 失败次数 ${state.guardian.failureCount || 0} · 熔断 ${state.guardian.circuit || '未知'}`
+        : guardianIsExternal
+          ? '当前 DSH 不是由 Guardian 启动。请先停止手工实例，再让 Guardian 启动；商城不会杀死或冒充接管该进程。'
+          : guardianHasPortConflict
+            ? '商城无法验证该进程属于 DSH，因此不会终止进程，也不会启动第二个实例。'
+            : '安装商城自带的外部 Guardian 后，即使 DSH 冷启动失败也能继续诊断和恢复。'),
+      !state.guardian.available && !guardianIsExternal && !guardianHasPortConflict
+        ? React.createElement(Button, { primary: true, onClick: beginGuardianInstall }, '安装并接管 DSH 守护') : null)
 
       let content
       if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
