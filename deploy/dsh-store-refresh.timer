@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh DSH STORE every six hours after its GitHub Pages build
+
+[Timer]
+OnCalendar=*-*-* 00,06,12,18:47:00 UTC
+RandomizedDelaySec=5m
+Persistent=true
+Unit=dsh-store-refresh.service
+
+[Install]
+WantedBy=timers.target

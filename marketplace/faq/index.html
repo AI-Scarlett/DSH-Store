@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DSH STORE 常见问题：了解 DeepSeek Harness 插件商城、插件安装、安全边界、目录来源、插件提交、开发方式与隐私说明。">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+  <meta name="author" content="DSH STORE">
+  <meta name="application-name" content="DSH STORE">
+  <meta name="theme-color" content="#07113f">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="常见问题｜DSH STORE">
+  <meta property="og:description" content="关于 DSH STORE、插件安装、安全、目录、开发与隐私的中英文常见问题。">
+  <meta property="og:url" content="https://dsh.store/faq/">
+  <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
+  <meta property="og:image:alt" content="DSH STORE">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="常见问题｜DSH STORE">
+  <meta name="twitter:description" content="DSH STORE 中英文 FAQ：产品、安装、安全、开发与隐私。">
+  <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
+  <title>常见问题｜DSH STORE</title>
+  <link rel="canonical" href="https://dsh.store/faq/">
+  <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
+  <link rel="apple-touch-icon" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "FAQPage",
+        "@id": "https://dsh.store/faq/#page",
+        "url": "https://dsh.store/faq/",
+        "name": "DSH STORE 常见问题",
+        "description": "关于 DSH STORE、DeepSeek Harness 插件发现、安装、安全、开发与隐私的常见问题。",
+        "inLanguage": ["zh-CN", "en"],
+        "isPartOf": {"@id": "https://dsh.store/#website"},
+        "mainEntity": [
+          {"@type":"Question","name":"什么是 DSH STORE？","acceptedAnswer":{"@type":"Answer","text":"DSH STORE 是面向 DeepSeek Harness（DSH）的第三方插件商城与开发者入口，帮助用户发现插件、核对来源、权限和兼容性，并了解安全接入路径。"}},
+          {"@type":"Question","name":"DSH STORE 是 DeepSeek 或 DSH 官方商城吗？","acceptedAnswer":{"@type":"Answer","text":"不是。DSH STORE 是第三方产品，不代表 DeepSeek 或 DSH 官方，也不会替换、隐藏或冒充官方插件清单。"}},
+          {"@type":"Question","name":"插件被收录或标记为可安装，等于完成安全审计吗？","acceptedAnswer":{"@type":"Answer","text":"不等于。收录表示条目满足当前目录的固定来源、标准结构和策略检查；它不是完整的代码安全审计、运行验收或零风险承诺。"}},
+          {"@type":"Question","name":"官网会直接修改我的 DSH Profile 或安装插件吗？","acceptedAnswer":{"@type":"Answer","text":"不会。浏览、搜索和查看详情默认只读。实际安装或启停需要在 DSH 中使用明确的命令或计划，并由用户确认。"}},
+          {"@type":"Question","name":"安装插件前应该检查什么？","acceptedAnswer":{"@type":"Answer","text":"先确认插件能力是否符合需求，再检查固定来源、提交版本、权限、兼容性、维护状态和恢复说明；未知信息应保持为未知。"}},
+          {"@type":"Question","name":"DSH STORE 如何展示插件权限？","acceptedAnswer":{"@type":"Answer","text":"目录会尽可能区分读取、写入、网络、凭据和生命周期能力，并说明用途与边界。无法由当前证据确认的权限不会被包装成已验证结论。"}},
+          {"@type":"Question","name":"插件出现问题时如何停用或恢复？","acceptedAnswer":{"@type":"Answer","text":"使用 DSH 或插件管理器提供的明确停用路径，并保留安装前备份。真实变更应包含计划、前置哈希、健康检查和回滚；插件自身创建的数据需按其文档另行处理。"}},
+          {"@type":"Question","name":"插件目录的数据来自哪里？","acceptedAnswer":{"@type":"Answer","text":"运行时目录权威来源是公开 GitHub 仓库中的 registry/catalog.json。插件源码使用固定提交引用，目录页面不会把临时搜索结果当作权威数据。"}},
+          {"@type":"Question","name":"如何向 DSH STORE 提交插件？","acceptedAnswer":{"@type":"Answer","text":"通过 GitHub 的插件提交表单提供仓库、固定提交、清单、权限和兼容性信息。提交进入评审流程，不代表自动收录。"}},
+          {"@type":"Question","name":"如何开发自己的 DSH 插件？","acceptedAnswer":{"@type":"Answer","text":"可以在开发插件页面安装开源 build-dsh-plugin Skill，用问题、目标结果和成功标准生成标准 Bundle、风险边界、测试和证据门槛。"}},
+          {"@type":"Question","name":"搜索插件会上传我的关键词吗？","acceptedAnswer":{"@type":"Answer","text":"不会。目录搜索、筛选和排序在浏览器本地完成。站点只记录有限的匿名交互事件，不发送搜索词、邮件地址或 Profile 内容。"}},
+          {"@type":"Question","name":"遇到问题或希望合作，如何联系 DSH STORE？","acceptedAnswer":{"@type":"Answer","text":"可以发送邮件至 jadename.zhou@gmail.com，或通过 X 上的 @JadeNameCulture 联系。插件提交请优先使用 GitHub 提交表单。"}}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://dsh.store/faq/#breadcrumb",
+        "itemListElement": [
+          {"@type":"ListItem","position":1,"name":"DSH STORE","item":"https://dsh.store/"},
+          {"@type":"ListItem","position":2,"name":"FAQ","item":"https://dsh.store/faq/"}
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="faq-page">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
+  <div class="tech-grid" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="../" aria-label="DSH STORE">
+      <span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="../" data-i18n="nav.home">首页</a>
+      <a href="../plugins/" data-i18n="nav.store">插件目录</a>
+      <a href="../build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="faq_header">开发插件</a>
+      <a href="./" aria-current="page" data-i18n="nav.faq">常见问题</a>
+      <a href="../about/" data-i18n="nav.about" data-analytics-event="about_open" data-analytics-item="faq_header">关于我们</a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/README.md" target="_blank" rel="noreferrer" data-analytics-event="usage_guide_open" data-analytics-item="faq_header"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="faq_header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
+    </nav>
+    <div class="header-tools">
+      <div class="locale-switch" role="group" aria-label="Language">
+        <button type="button" data-locale="zh" aria-pressed="true">中文</button>
+        <button type="button" data-locale="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="faq-hero">
+      <div class="faq-hero-copy reveal">
+        <div class="system-status"><span></span><b>FAQ / KNOWLEDGE BASE</b><em>BILINGUAL</em></div>
+        <h1><span data-i18n="hero.title1">常见问题，</span><br><em data-i18n="hero.title2">先把边界说清楚。</em></h1>
+        <p data-i18n="hero.lead">从产品定位、插件安装到安全、开发和隐私，集中回答使用 DSH STORE 前最需要确认的问题。</p>
+        <div class="faq-hero-actions">
+          <a class="button button-primary" href="#product"><span data-i18n="action.read">开始阅读</span><i aria-hidden="true">↓</i></a>
+          <a class="button button-secondary" href="../plugins/"><span data-i18n="action.catalog">浏览插件目录</span><i aria-hidden="true">↗</i></a>
+        </div>
+      </div>
+      <aside class="faq-signal-card reveal" aria-label="FAQ coverage">
+        <div class="faq-signal-head"><span>KNOWLEDGE MAP / 01</span><i><b></b> VERIFIED COPY</i></div>
+        <strong>12</strong>
+        <p data-i18n="signal.answerCount">个核心问题，覆盖使用 DSH STORE 的完整决策路径。</p>
+        <div class="faq-signal-grid">
+          <a href="#product"><small>01</small><b data-i18n="topic.product">产品与信任</b></a>
+          <a href="#install"><small>02</small><b data-i18n="topic.install">安装与权限</b></a>
+          <a href="#catalog"><small>03</small><b data-i18n="topic.catalog">目录与开发</b></a>
+          <a href="#support"><small>04</small><b data-i18n="topic.support">隐私与支持</b></a>
+        </div>
+      </aside>
+    </section>
+
+    <section class="faq-index section-shell" aria-label="FAQ topics">
+      <a href="#product"><span>01</span><b data-i18n="topic.product">产品与信任</b><i>↓</i></a>
+      <a href="#install"><span>02</span><b data-i18n="topic.install">安装与权限</b><i>↓</i></a>
+      <a href="#catalog"><span>03</span><b data-i18n="topic.catalog">目录与开发</b><i>↓</i></a>
+      <a href="#support"><span>04</span><b data-i18n="topic.support">隐私与支持</b><i>↓</i></a>
+    </section>
+
+    <section class="faq-library section-shell">
+      <article class="faq-group reveal" id="product">
+        <header><span>01 / PRODUCT &amp; TRUST</span><h2 data-i18n="topic.product">产品与信任</h2><p data-i18n="group.productLead">先确认 DSH STORE 是什么，以及“可信”在这里具体代表什么。</p></header>
+        <div class="faq-list faq-page-list">
+          <details open><summary><span data-i18n="q1">什么是 DSH STORE？</span><i>＋</i></summary><p data-i18n="a1">DSH STORE 是面向 DeepSeek Harness（DSH）的第三方插件商城与开发者入口，帮助用户发现插件、核对来源、权限和兼容性，并了解安全接入路径。</p></details>
+          <details><summary><span data-i18n="q2">DSH STORE 是 DeepSeek 或 DSH 官方商城吗？</span><i>＋</i></summary><p data-i18n="a2">不是。DSH STORE 是第三方产品，不代表 DeepSeek 或 DSH 官方，也不会替换、隐藏或冒充官方插件清单。</p></details>
+          <details><summary><span data-i18n="q3">插件被收录或标记为可安装，等于完成安全审计吗？</span><i>＋</i></summary><p data-i18n="a3">不等于。收录表示条目满足当前目录的固定来源、标准结构和策略检查；它不是完整的代码安全审计、运行验收或零风险承诺。</p></details>
+        </div>
+      </article>
+
+      <article class="faq-group reveal" id="install">
+        <header><span>02 / INSTALL &amp; PERMISSIONS</span><h2 data-i18n="topic.install">安装与权限</h2><p data-i18n="group.installLead">理解网页、DSH Profile 与真实插件变更之间的边界。</p></header>
+        <div class="faq-list faq-page-list">
+          <details><summary><span data-i18n="q4">官网会直接修改我的 DSH Profile 或安装插件吗？</span><i>＋</i></summary><p data-i18n="a4">不会。浏览、搜索和查看详情默认只读。实际安装或启停需要在 DSH 中使用明确的命令或计划，并由用户确认。</p></details>
+          <details><summary><span data-i18n="q5">安装插件前应该检查什么？</span><i>＋</i></summary><p data-i18n="a5">先确认插件能力是否符合需求，再检查固定来源、提交版本、权限、兼容性、维护状态和恢复说明；未知信息应保持为未知。</p></details>
+          <details><summary><span data-i18n="q6">DSH STORE 如何展示插件权限？</span><i>＋</i></summary><p data-i18n="a6">目录会尽可能区分读取、写入、网络、凭据和生命周期能力，并说明用途与边界。无法由当前证据确认的权限不会被包装成已验证结论。</p></details>
+          <details><summary><span data-i18n="q7">插件出现问题时如何停用或恢复？</span><i>＋</i></summary><p data-i18n="a7">使用 DSH 或插件管理器提供的明确停用路径，并保留安装前备份。真实变更应包含计划、前置哈希、健康检查和回滚；插件自身创建的数据需按其文档另行处理。</p></details>
+        </div>
+      </article>
+
+      <article class="faq-group reveal" id="catalog">
+        <header><span>03 / CATALOG &amp; BUILD</span><h2 data-i18n="topic.catalog">目录与开发</h2><p data-i18n="group.catalogLead">了解目录权威来源，以及插件提交和开发路径。</p></header>
+        <div class="faq-list faq-page-list">
+          <details><summary><span data-i18n="q8">插件目录的数据来自哪里？</span><i>＋</i></summary><p data-i18n="a8">运行时目录权威来源是公开 GitHub 仓库中的 registry/catalog.json。插件源码使用固定提交引用，目录页面不会把临时搜索结果当作权威数据。</p></details>
+          <details><summary><span data-i18n="q9">如何向 DSH STORE 提交插件？</span><i>＋</i></summary><p data-i18n="a9">通过 GitHub 的插件提交表单提供仓库、固定提交、清单、权限和兼容性信息。提交进入评审流程，不代表自动收录。</p></details>
+          <details><summary><span data-i18n="q10">如何开发自己的 DSH 插件？</span><i>＋</i></summary><p data-i18n="a10">可以在开发插件页面安装开源 build-dsh-plugin Skill，用问题、目标结果和成功标准生成标准 Bundle、风险边界、测试和证据门槛。</p></details>
+        </div>
+      </article>
+
+      <article class="faq-group reveal" id="support">
+        <header><span>04 / PRIVACY &amp; SUPPORT</span><h2 data-i18n="topic.support">隐私与支持</h2><p data-i18n="group.supportLead">确认网站收集什么，以及遇到问题时去哪里。</p></header>
+        <div class="faq-list faq-page-list">
+          <details><summary><span data-i18n="q11">搜索插件会上传我的关键词吗？</span><i>＋</i></summary><p data-i18n="a11">不会。目录搜索、筛选和排序在浏览器本地完成。站点只记录有限的匿名交互事件，不发送搜索词、邮件地址或 Profile 内容。</p></details>
+          <details><summary><span data-i18n="q12">遇到问题或希望合作，如何联系 DSH STORE？</span><i>＋</i></summary><p data-i18n="a12">可以发送邮件至 jadename.zhou@gmail.com，或通过 X 上的 @JadeNameCulture 联系。插件提交请优先使用 GitHub 提交表单。</p></details>
+        </div>
+      </article>
+    </section>
+
+    <section class="faq-cta section-shell reveal">
+      <div><span>STILL NEED HELP?</span><h2 data-i18n="cta.title">没有找到你的问题？</h2><p data-i18n="cta.lead">使用说明适合具体操作，联系我们适合反馈、合作与品牌交流。</p></div>
+      <div><a class="button button-primary" href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/README.md" target="_blank" rel="noreferrer"><span data-i18n="nav.guide">使用说明</span><i>↗</i></a><a class="button button-secondary" href="../about/#contact"><span data-i18n="action.contact">联系我们</span><i>↗</i></a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">先看清能力、来源、权限与边界，再决定下一步。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>FAQ · ZH-CN / EN</span><span data-i18n="footer.note">第三方商城 · 收录不等于安全审计</span></div></footer>
+  <script defer src="./faq.js"></script>
+</body>
+</html>

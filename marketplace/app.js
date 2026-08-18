@@ -1,41 +1,57 @@
-const CATALOG_URL = '../registry/catalog.json'
+const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.json'
+const IS_DIRECTORY = document.body.classList.contains('plugins-page')
 
 const translations = {
   zh: {
-    'meta.title': 'DSH-Store｜DeepSeek Harness 插件商城',
-    'meta.description': 'DSH-Store 第三方插件商城：浏览固定到 Git Commit 的 DeepSeek Harness 插件，并在安装前了解权限、兼容性与审核状态。',
-    'a11y.skip': '跳到插件目录',
-    'nav.discover': '发现插件', 'nav.safety': '安全机制', 'nav.manager': '管理器插件',
-    'hero.eyebrow': 'DEEPSEEK HARNESS 扩展网络', 'hero.title1': '下一块能力，', 'hero.title2': '已准备接入 DSH。',
-    'hero.lead': '浏览固定来源、明确权限与兼容性的第三方插件。先看证据，再决定是否安装。',
-    'install.title': '安装商城管理器', 'install.pinned': '固定 Commit', 'install.step1': '打开终端', 'install.step2': '粘贴命令并按回车', 'install.step3': '重启 DSH，进入插件商城',
-    'install.warning': '命令会修改 web Profile；请先备份，失败后不要连续重试。',
-    'action.copyCommand': '复制命令', 'action.fullGuide': '完整步骤 ↗', 'action.explore': '浏览全部插件', 'action.manager': '了解管理器插件',
-    'action.source': '查看源码与说明', 'action.backCommand': '回到首屏复制命令 ↑', 'action.clear': '清除筛选', 'action.viewAll': '查看全部插件', 'action.top': '回到顶部 ↑',
-    'action.details': '查看插件详情', 'action.copyCommit': '复制 Commit', 'action.repo': '查看 GitHub 仓库', 'action.manual': '前往 GitHub 手动安装', 'publisher': 'GitHub 发布者',
-    'trust.commit': '固定 Git Commit', 'trust.permissions': '权限信息先展示', 'trust.readonly': '浏览不改 Profile',
+    'meta.title': 'DSH STORE｜DeepSeek Harness（DSH）插件商城',
+    'meta.description': 'DSH STORE（dsh.store）是面向 DeepSeek Harness（DSH）的第三方插件商城，提供插件发现、权限与来源核对、安全接入说明及插件开发工具。',
+    'directory.meta.title': '全部 DSH 插件｜DSH STORE',
+    'directory.meta.description': '浏览 DSH STORE 完整插件目录，按名称、能力、权限与兼容性搜索和筛选。',
+    'a11y.skip': '跳到主要内容', 'a11y.skipCatalog': '跳到插件目录',
+    'nav.home': '首页', 'nav.discover': '插件目录', 'nav.safety': '信任机制', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
+    'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': '可信插件，', 'hero.title2': '安全接入 DSH。',
+    'hero.lead': '面向 DeepSeek Harness（DSH）的第三方插件商城。发现插件、核对来源与权限，再通过清楚、可恢复的路径安全接入。',
+    'install.title': '安装 DSH Store', 'install.pinned': '固定 Commit', 'install.step1': '打开终端', 'install.step2': '粘贴命令并执行', 'install.step3': '重启 DSH 后打开商城',
+    'install.note1': '确认正在操作目标设备', 'install.note2': '来源锁定到完整 Commit', 'install.note3': '在“设置 → 插件”中进入',
+    'install.warning': '命令会修改 web Profile。请先备份；如执行失败，不要连续重试。',
+    'action.copyCommand': '复制', 'action.fullGuide': '查看说明 ↗', 'action.explore': '查看全部插件', 'action.manager': '了解 DSH Store', 'action.build': '开发 DSH 插件', 'action.installSkill': '安装 build-dsh-plugin', 'action.trust': '了解安全机制', 'action.allFaq': '查看完整常见问题', 'action.home': '返回首页',
+    'action.source': '查看源码与说明', 'action.backCommand': '回到首屏复制命令 ↑', 'action.clear': '清除筛选', 'action.viewAll': '查看全部插件', 'action.loadMore': '加载更多插件', 'action.retry': '重新加载', 'action.githubCatalog': '查看 GitHub 目录 ↗', 'action.top': '回到顶部 ↑',
+    'action.details': '查看插件详情', 'action.copyCommit': '复制 Commit', 'action.repo': '查看 GitHub 仓库', 'action.manual': '前往 GitHub 手动安装',
+    'trust.commit': '固定 Git Commit', 'trust.permissions': '权限先于安装', 'trust.readonly': '浏览保持只读',
     'console.online': '目录在线', 'console.network': 'EXTENSION NETWORK', 'console.heading': '找到新能力',
     'tab.featured': '推荐', 'tab.workflow': '工作流', 'tab.visual': '视觉', 'float.pinned': '来源已固定', 'float.commit': '40 位 Commit',
-    'stats.plugins': '在架插件', 'stats.plannable': '可生成安装计划', 'stats.categories': '能力分类', 'stats.source': 'GitHub 目录源', 'stats.connecting': '正在连接 catalog.json…',
-    'manager.title': '商城本身，也是一个标准 DSH 插件。', 'manager.lead': '通过官方 Bundle、Host Plugin 与 Client Slot 接入，不修改 DSH 核心，也不遮蔽官方插件清单。',
-    'manager.body': '把第三方插件发现、权限核对与受控生命周期放进“设置 → 插件”的独立页面。', 'manager.version': '当前版本', 'manager.risk': '生命周期风险', 'manager.identity': '位固定身份',
+    'stats.plugins': '在架插件', 'stats.plannable': '可生成计划', 'stats.categories': '能力分类', 'stats.source': 'GitHub 权威目录', 'stats.connecting': '正在核对 catalog.json…',
+    'manager.title': '商城本身，也是一个受约束的 DSH 插件。', 'manager.lead': 'DSH Store 通过标准 Host Plugin 与 Client Bundle 接入，把发现、核对和受控操作放进 DSH，而不是改造 DSH。',
+    'manager.body': '它不修改 DSH 核心，不遮蔽官方插件清单；任何生命周期变更都需要单次计划、精确确认、备份、检查和回滚。', 'manager.version': '当前版本', 'manager.risk': '生命周期风险', 'manager.identity': '位固定身份',
+    'manager.fact1': '标准扩展面', 'manager.fact2': '浏览默认只读', 'manager.fact3': '失败关闭',
     'guide.order': '按顺序操作', 'guide.title1': '备份目标 Profile', 'guide.body1': '备份 package.json、锁文件、工作区文件和 cordis.patch.yml。',
     'guide.title2': '执行固定来源命令', 'guide.body2': '使用 DSH 官方 CLI；不要把 40 位 Commit 改成 main。', 'guide.title3': '检查结果并重启', 'guide.body3': '命令成功后重启 DSH Web，再进入设置里的插件商城。',
-    'featured.title': '本周信号最强的插件', 'featured.lead': '从固定来源的目录中挑出值得优先了解的扩展能力。',
-    'catalog.title': '接入你的下一块能力', 'catalog.lead': '搜索名称、分类、权限、兼容性或仓库。无法确认的信息继续保持未知。', 'catalog.search': '搜索插件、能力或 GitHub 仓库', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
+    'builder.title': '没有合适的插件？从一个真实问题开始构建。', 'builder.lead': '使用开源 build-dsh-plugin Skill，把问题、结果和成功标准转换为标准工程与证据门槛。',
+    'builder.cardTitle': '三个答案，就是开发起点。', 'builder.input1': '现在遇到什么问题？', 'builder.input2': '希望达到什么结果？', 'builder.input3': '怎样观察到它成功？', 'builder.action': '打开开发插件工作台',
+    'builder.outputTitle': '从 Brief 到可验证交付物', 'builder.output1': '宿主兼容性', 'builder.output2': '风险与权限', 'builder.output3': '标准源码工程', 'builder.output4': '验证证据等级', 'builder.note': '真实 Profile、重启与发布保持为独立确认步骤。',
+    'featured.title': '精选插件，扩展你的 DSH 工作流。', 'featured.lead': '从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。',
+    'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索插件、能力或 GitHub 仓库', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
+    'catalog.gatewayKicker': '探索更多能力', 'catalog.gatewayTitle': '查看全部 DSH 插件、权限与兼容性',
     'sort.recommended': '推荐优先', 'sort.name': '名称 A–Z', 'sort.recent': '版本更新', 'sort.risk': '权限由低到高',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
-    'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请从仓库根目录启动本地服务器。',
-    'safety.title': '把“放心”做成可见电路', 'safety.lead': '收录不是安全审计。来源、权限、变更计划与恢复路径必须分别展示。',
-    'safety.card1.title': '不可变来源', 'safety.card1.body': '可安装条目指向完整 40 位 Git Commit，浮动分支不进入受保护流程。',
-    'safety.card2.title': '权限雷达', 'safety.card2.body': '文件、网络、命令、凭据与兼容性集中展示，未知字段不猜测。',
-    'safety.card3.title': '先计划，再改变', 'safety.card3.body': '真实 Profile 操作需要单次计划、精确确认、备份、健康检查与失败回滚。',
-    'workflow.title': '三步，把新能力接入 DSH', 'workflow.step1.title': '发现与核对', 'workflow.step1.body': '搜索能力，确认来源、兼容性和权限边界。',
-    'workflow.step2.title': '生成一次性计划', 'workflow.step2.body': '在 DSH 内创建新计划并核对文件范围、备份与回滚路径。', 'workflow.step3.title': '确认并验证', 'workflow.step3.body': '执行后检查配置与运行状态；测试通过不等于真实 Profile 已生效。',
-    'faq.title': '安装之前，你可能还想知道', 'faq.q1': '官网会直接安装插件吗？', 'faq.a1': '不会。官网只负责浏览与详情展示；生命周期操作必须在 DSH 内生成计划并确认。',
-    'faq.q2': '“可安装”等于完成安全审计吗？', 'faq.a2': '不等于。它只表示条目满足固定来源、标准 Bundle 与当前策略检查。', 'faq.q3': '目录离线时会怎样？', 'faq.a3': '可使用随包快照只读浏览，但安装与更新失败关闭，直到重新核验在线来源。',
-    'faq.q4': '插件作者只更新 GitHub，用户能收到提醒吗？', 'faq.a4': '可以。进入已安装页后，DSH 内商城在用户本机以有限并发检查源仓库，把默认分支解析为完整 Commit，并审核版本、Bundle、入口、生命周期、依赖与权限信号。低风险候选可生成更新计划；高风险候选展示变化后由用户逐次决定。修改 DSH 原生代码、冒用官方命名空间或停用受保护组件的项目禁止商城安装/更新，只保留不受保护的 GitHub 外部入口。商城不会安装浮动 main，也不需要服务端巡检所有仓库。',
-    'footer.lead': '一个明亮、清楚、可追溯的 DeepSeek Harness 第三方插件入口。', 'footer.note': '收录不代表安全审计 · 浏览不会改写 Profile', 'dialog.title': '插件详情',
+    'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
+    'safety.title': '信任不是口号，是四个可检查的状态。', 'safety.lead': '收录从不等于安全审计。我们把来源、权限、变更与恢复分开显示，未知事实保持未知。',
+    'safety.card1.title': '来源固定', 'safety.card1.body': '可安装条目指向完整 40 位 Git Commit，不把浮动分支伪装成稳定版本。',
+    'safety.card2.title': '权限可见', 'safety.card2.body': '文件、网络、命令和凭据边界在操作前集中展示。',
+    'safety.card3.title': '先计划再改变', 'safety.card3.body': '每次真实变更使用新的一次性计划，并核对精确文件范围。',
+    'safety.card4.title': '随时可恢复', 'safety.card4.body': '执行前备份，执行后健康检查；失败时恢复原始状态。',
+    'workflow.title': '安全流程，也可以很方便。', 'workflow.lead': '一个入口、一个命令、一个清楚的验证路径。复杂性留在系统里，决定权留给你。',
+    'workflow.step1.title': '找到适合的插件', 'workflow.step1.body': '按能力与使用场景缩小范围，再查看来源、权限和兼容性。',
+    'workflow.step2.title': '复制固定来源命令', 'workflow.step2.body': '首屏直接给出命令和执行顺序，不需要翻找文档。', 'workflow.step3.title': '重启后进入 DSH Store', 'workflow.step3.body': '在 DSH 内查看并管理，真实结果与测试状态明确区分。',
+    'relation.title': 'DSH STORE 与 DeepSeek Harness 如何连接？', 'relation.lead': '这是面向 DeepSeek Harness 的第三方插件发现与管理入口，不是官方插件清单的替代品。',
+    'relation.card1.title': '标准 DSH 接入', 'relation.card1.body': '管理器以 Host Plugin 与 Client Bundle 接入 DSH，不修改 DSH 核心，也不遮蔽官方插件清单。',
+    'relation.card2.title': '目录有明确权威源', 'relation.card2.body': '商城运行时信息来自 GitHub registry/catalog.json；安全、权限或兼容性未核实时明确显示未知。',
+    'relation.card3.title': '浏览与变更分离', 'relation.card3.body': '在官网浏览不会改写 Profile。真实安装必须使用 DSH 官方 CLI，并经过计划、确认、备份、检查与回滚。',
+    'faq.title': '安装之前，先把边界说清楚。', 'faq.q1': '官网会直接安装插件吗？', 'faq.a1': '不会。官网只负责发现与详情展示；生命周期操作需要在 DSH 内生成计划并确认。',
+    'faq.q2': '“可安装”等于完成安全审计吗？', 'faq.a2': '不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。', 'faq.q3': '如何选择适合自己的插件？', 'faq.a3': '先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。',
+    'directory.title1': '发现插件，', 'directory.title2': '扩展 DSH 能力。', 'directory.lead': '按能力、名称、权限或仓库快速查找。每个条目都提供可追溯来源、版本、权限与兼容性信息。',
+    'directory.capacity': '搜索关键词留在你的浏览器里', 'directory.capacityNote': '筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。',
+    'footer.lead': '科技感来自清晰的系统，信任来自可检查的边界。', 'footer.catalogLead': '发现插件、看清权限，再决定是否接入。', 'footer.note': '收录不等于安全审计 · 浏览不会改写 Profile', 'dialog.title': '插件详情',
     'value.unknown': '未知', 'value.undeclared': '未声明', 'value.none': '无', 'value.noStats': '未启用统计', 'filter.all': '全部',
     'catalog.failed': '目录加载失败', 'catalog.offline': '本地目录未连接', 'catalog.meta': '显示 {shown} / {total} 个插件',
     'toast.commandCopied': '安装命令已复制', 'toast.copyDenied': '浏览器未允许复制，请手动选择命令', 'toast.commitCopied': 'Commit 已复制',
@@ -43,40 +59,55 @@ const translations = {
     'dialog.note': '详情来自 GitHub catalog.json 的目录声明与固定 Commit 核验。收录、扫描或审核均不等于完成安全审计；官网不会直接修改你的 DSH Profile。',
   },
   en: {
-    'meta.title': 'DSH-Store | DeepSeek Harness Plugin Market',
-    'meta.description': 'DSH-Store is a third-party plugin market for exploring fixed-commit DeepSeek Harness extensions with visible permissions, compatibility, and review status.',
-    'a11y.skip': 'Skip to plugin directory',
-    'nav.discover': 'Discover', 'nav.safety': 'Trust circuit', 'nav.manager': 'Manager plugin',
-    'hero.eyebrow': 'DEEPSEEK HARNESS EXTENSION NETWORK', 'hero.title1': 'Your next capability', 'hero.title2': 'is ready for DSH.',
-    'hero.lead': 'Explore third-party plugins with fixed sources, visible permissions, and explicit compatibility. Check the evidence before installing.',
-    'install.title': 'Install the market manager', 'install.pinned': 'Pinned commit', 'install.step1': 'Open Terminal', 'install.step2': 'Paste and press Enter', 'install.step3': 'Restart DSH and open the market',
-    'install.warning': 'This command changes the web Profile. Back it up first, and do not retry repeatedly after an error.',
-    'action.copyCommand': 'Copy command', 'action.fullGuide': 'Full guide ↗', 'action.explore': 'Explore plugins', 'action.manager': 'Meet the manager',
-    'action.source': 'View source and docs', 'action.backCommand': 'Back to the command ↑', 'action.clear': 'Clear filters', 'action.viewAll': 'View all plugins', 'action.top': 'Back to top ↑',
-    'action.details': 'View plugin details', 'action.copyCommit': 'Copy commit', 'action.repo': 'View GitHub repository', 'action.manual': 'Install manually on GitHub', 'publisher': 'GitHub publisher',
-    'trust.commit': 'Pinned Git commit', 'trust.permissions': 'Permissions first', 'trust.readonly': 'Browsing is read-only',
+    'meta.title': 'DSH STORE | DeepSeek Harness Plugin Marketplace',
+    'meta.description': 'DSH STORE is a third-party marketplace for discovering, evaluating, building, and safely connecting DeepSeek Harness plugins.',
+    'directory.meta.title': 'All DSH Plugins | DSH STORE',
+    'directory.meta.description': 'Browse the complete DSH STORE catalog and filter by name, capability, permission, or compatibility.',
+    'a11y.skip': 'Skip to main content', 'a11y.skipCatalog': 'Skip to plugin catalog',
+    'nav.home': 'Home', 'nav.discover': 'Plugin catalog', 'nav.safety': 'Trust protocol', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
+    'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': 'Trusted plugins.', 'hero.title2': 'Safe access to DSH.',
+    'hero.lead': 'A third-party marketplace for DeepSeek Harness (DSH). Discover plugins, inspect sources and permissions, then connect them through a clear, recoverable path.',
+    'install.title': 'Install DSH Store', 'install.pinned': 'Pinned commit', 'install.step1': 'Open Terminal', 'install.step2': 'Paste and run the command', 'install.step3': 'Restart DSH and open the store',
+    'install.note1': 'Confirm the target device', 'install.note2': 'Source pinned to a full commit', 'install.note3': 'Open Settings → Plugins',
+    'install.warning': 'This command changes the web Profile. Back it up first; if it fails, do not retry repeatedly.',
+    'action.copyCommand': 'Copy', 'action.fullGuide': 'View guide ↗', 'action.explore': 'View all plugins', 'action.manager': 'Meet DSH Store', 'action.build': 'Build a DSH plugin', 'action.installSkill': 'Install build-dsh-plugin', 'action.trust': 'See the trust protocol', 'action.allFaq': 'View the complete FAQ', 'action.home': 'Back home',
+    'action.source': 'View source and docs', 'action.backCommand': 'Back to the command ↑', 'action.clear': 'Clear filters', 'action.viewAll': 'View all plugins', 'action.loadMore': 'Load more plugins', 'action.retry': 'Retry', 'action.githubCatalog': 'View GitHub catalog ↗', 'action.top': 'Back to top ↑',
+    'action.details': 'View plugin details', 'action.copyCommit': 'Copy commit', 'action.repo': 'View GitHub repository', 'action.manual': 'Install manually on GitHub',
+    'trust.commit': 'Pinned Git commit', 'trust.permissions': 'Permissions before install', 'trust.readonly': 'Browsing stays read-only',
     'console.online': 'Catalog online', 'console.network': 'EXTENSION NETWORK', 'console.heading': 'Find a new capability',
     'tab.featured': 'Featured', 'tab.workflow': 'Workflow', 'tab.visual': 'Visual', 'float.pinned': 'Source pinned', 'float.commit': '40-char commit',
-    'stats.plugins': 'active plugins', 'stats.plannable': 'plan-ready', 'stats.categories': 'capability groups', 'stats.source': 'GitHub catalog source', 'stats.connecting': 'Connecting to catalog.json…',
-    'manager.title': 'The market itself is a standard DSH plugin.', 'manager.lead': 'It connects through the official Bundle, Host Plugin, and Client Slot without changing DSH core or hiding the official inventory.',
-    'manager.body': 'It brings third-party discovery, permission review, and guarded lifecycle controls into a dedicated Settings → Plugins view.', 'manager.version': 'current version', 'manager.risk': 'lifecycle risk', 'manager.identity': 'char identity',
+    'stats.plugins': 'active plugins', 'stats.plannable': 'plan-ready', 'stats.categories': 'capability groups', 'stats.source': 'GitHub authority', 'stats.connecting': 'Verifying catalog.json…',
+    'manager.title': 'The store is itself a constrained DSH plugin.', 'manager.lead': 'DSH Store connects through a standard Host Plugin and Client Bundle, bringing discovery, inspection, and guarded operations into DSH without remaking DSH.',
+    'manager.body': 'It never changes DSH core or hides the official inventory. Every lifecycle change needs a single-use plan, exact confirmation, backup, checks, and rollback.', 'manager.version': 'current version', 'manager.risk': 'lifecycle risk', 'manager.identity': 'char identity',
+    'manager.fact1': 'Standard extension surface', 'manager.fact2': 'Read-only browsing', 'manager.fact3': 'Fail closed',
     'guide.order': 'Follow in order', 'guide.title1': 'Back up the target Profile', 'guide.body1': 'Back up package.json, lockfiles, workspace files, and cordis.patch.yml.',
     'guide.title2': 'Run the pinned-source command', 'guide.body2': 'Use the official DSH CLI. Never replace the 40-character commit with main.', 'guide.title3': 'Check and restart', 'guide.body3': 'After a clean command, restart DSH Web and open the plugin market in Settings.',
-    'featured.title': 'This week’s strongest signals', 'featured.lead': 'A focused selection of extensions worth inspecting first.',
-    'catalog.title': 'Connect your next capability', 'catalog.lead': 'Search by name, category, permission, compatibility, or repository. Unknown facts stay unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
+    'builder.title': 'No suitable plugin? Start with a real problem.', 'builder.lead': 'Use the open-source build-dsh-plugin Skill to turn a problem, outcome, and success criterion into a standard project and evidence gates.',
+    'builder.cardTitle': 'Three answers start the build.', 'builder.input1': 'What problem exists today?', 'builder.input2': 'What outcome should change?', 'builder.input3': 'How will success be observed?', 'builder.action': 'Open the plugin build lab',
+    'builder.outputTitle': 'From brief to verifiable artifacts', 'builder.output1': 'Host compatibility', 'builder.output2': 'Risk and permissions', 'builder.output3': 'Standard source project', 'builder.output4': 'Evidence level', 'builder.note': 'Real Profile changes, restart, and release remain separately confirmed steps.',
+    'featured.title': 'Featured plugins for better DSH workflows.', 'featured.lead': 'Discover practical plugins for automation, knowledge, and development with traceable sources and transparent details. Review capabilities and permissions before connecting.',
+    'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
+    'catalog.gatewayKicker': 'Explore more capabilities', 'catalog.gatewayTitle': 'View every DSH plugin, permission, and compatibility detail',
     'sort.recommended': 'Recommended', 'sort.name': 'Name A–Z', 'sort.recent': 'Latest version', 'sort.risk': 'Lowest permission first',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
-    'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Start the local server from the repository root.',
-    'safety.title': 'Turn trust into a visible circuit', 'safety.lead': 'Listing is not a security audit. Source, permissions, change plans, and recovery paths remain distinct.',
-    'safety.card1.title': 'Immutable source', 'safety.card1.body': 'Installable entries point to a full 40-character Git commit. Floating branches do not enter the guarded flow.',
-    'safety.card2.title': 'Permission radar', 'safety.card2.body': 'Files, network, commands, credentials, and compatibility are shown together. Unknown fields are never guessed.',
-    'safety.card3.title': 'Plan before change', 'safety.card3.body': 'Real Profile operations require a single-use plan, exact confirmation, backup, health checks, and rollback.',
-    'workflow.title': 'Three steps to extend DSH', 'workflow.step1.title': 'Discover and inspect', 'workflow.step1.body': 'Find the capability and verify its source, compatibility, and permission boundary.',
-    'workflow.step2.title': 'Create a single-use plan', 'workflow.step2.body': 'Inside DSH, review exact file scope, backup, and rollback before changing anything.', 'workflow.step3.title': 'Confirm and verify', 'workflow.step3.body': 'Check configuration and runtime state afterward. Passing tests do not prove a real Profile is active.',
-    'faq.title': 'Before you install', 'faq.q1': 'Does the website install plugins directly?', 'faq.a1': 'No. The site is for discovery and details only. Lifecycle actions require a confirmed plan inside DSH.',
-    'faq.q2': 'Does “Available” mean security-audited?', 'faq.a2': 'No. It means the entry passes the current fixed-source, standard-bundle, and policy checks.', 'faq.q3': 'What happens when the catalog is offline?', 'faq.a3': 'The bundled snapshot remains available for read-only browsing, while install and update fail closed until the live source is verified.',
-    'faq.q4': 'Will users see an update when only the plugin repository changes?', 'faq.a4': 'Yes. Opening Installed triggers a concurrency-limited scan from the user device, resolves each default branch to a full commit, and checks version, bundle, entry IDs, lifecycle, dependencies, and permission signals. Low-risk candidates can produce an update plan; higher-risk candidates show the changes and let the user decide each time. Projects that modify DSH native code, claim a protected namespace, or disable protected components cannot use guarded market install/update and only retain an unprotected GitHub link. Floating main is never installed, and no server-wide crawler is required.',
-    'footer.lead': 'A bright, legible, and traceable gateway to third-party DeepSeek Harness plugins.', 'footer.note': 'Listing is not a security audit · Browsing never writes to your Profile', 'dialog.title': 'Plugin details',
+    'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
+    'safety.title': 'Trust is four inspectable states, not a slogan.', 'safety.lead': 'Listing is never a security audit. Source, permissions, change, and recovery stay separate, and unknown facts stay unknown.',
+    'safety.card1.title': 'Pinned source', 'safety.card1.body': 'Installable entries point to a full 40-character Git commit, never a floating branch presented as stable.',
+    'safety.card2.title': 'Visible permissions', 'safety.card2.body': 'File, network, command, and credential boundaries are shown before any operation.',
+    'safety.card3.title': 'Plan before change', 'safety.card3.body': 'Every real change uses a new single-use plan with exact file scope.',
+    'safety.card4.title': 'Recovery ready', 'safety.card4.body': 'Back up before execution, check health afterward, and restore the original state on failure.',
+    'workflow.title': 'A safe flow can still be convenient.', 'workflow.lead': 'One entry point, one command, and one clear verification path. The system keeps the complexity; you keep the decision.',
+    'workflow.step1.title': 'Find the right plugin', 'workflow.step1.body': 'Narrow the field by capability and use case, then inspect source, permissions, and compatibility.',
+    'workflow.step2.title': 'Copy the pinned command', 'workflow.step2.body': 'The first screen shows the command and execution order without making you hunt through docs.', 'workflow.step3.title': 'Restart and open DSH Store', 'workflow.step3.body': 'Inspect and manage inside DSH, with runtime results kept distinct from test status.',
+    'relation.title': 'How does DSH STORE connect to DeepSeek Harness?', 'relation.lead': 'It is a third-party discovery and management entry point for DeepSeek Harness, not a replacement for the official plugin inventory.',
+    'relation.card1.title': 'Standard DSH integration', 'relation.card1.body': 'The manager connects as a Host Plugin and Client Bundle without changing DSH core or hiding the official inventory.',
+    'relation.card2.title': 'One authoritative catalog', 'relation.card2.body': 'Runtime marketplace facts come from GitHub registry/catalog.json. Unverified security, permission, or compatibility facts stay visibly unknown.',
+    'relation.card3.title': 'Browsing is separate from change', 'relation.card3.body': 'Browsing the site never writes to a Profile. Real installation uses the official DSH CLI with a plan, confirmation, backup, checks, and rollback.',
+    'faq.title': 'Make the boundary clear before installing.', 'faq.q1': 'Does the website install plugins directly?', 'faq.a1': 'No. The site is for discovery and details only. Lifecycle actions require a confirmed plan inside DSH.',
+    'faq.q2': 'Does “Available” mean security-audited?', 'faq.a2': 'No. It means the entry passes the current fixed-source, standard-bundle, and policy checks.', 'faq.q3': 'How should I choose a plugin?', 'faq.a3': 'Confirm the capability first, then review source, permissions, compatibility, and maintenance. Treat unknown information with caution.',
+    'directory.title1': 'Discover plugins.', 'directory.title2': 'Extend DSH.', 'directory.lead': 'Find plugins by capability, name, permission, or repository. Every entry includes traceable source, version, permission, and compatibility details.',
+    'directory.capacity': 'Your search terms stay in your browser', 'directory.capacityNote': 'Filtering and sorting never upload your query; catalog data comes from the traceable GitHub catalog.json.',
+    'footer.lead': 'Technology feels clear when the system is clear; trust comes from inspectable boundaries.', 'footer.catalogLead': 'Discover plugins, review permissions, then decide whether to connect.', 'footer.note': 'Listing is not a security audit · Browsing never writes to your Profile', 'dialog.title': 'Plugin details',
     'value.unknown': 'Unknown', 'value.undeclared': 'Not declared', 'value.none': 'None', 'value.noStats': 'Stats disabled', 'filter.all': 'All',
     'catalog.failed': 'Catalog load failed', 'catalog.offline': 'Local catalog unavailable', 'catalog.meta': 'Showing {shown} / {total} plugins',
     'toast.commandCopied': 'Install command copied', 'toast.copyDenied': 'Clipboard access was denied. Select the command manually.', 'toast.commitCopied': 'Commit copied',
@@ -94,6 +125,7 @@ const state = {
   query: '',
   category: '',
   sort: 'recommended',
+  visibleLimit: 24,
   locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
   selectedEntry: null,
 }
@@ -108,6 +140,9 @@ const els = {
   grid: document.querySelector('#plugin-grid'),
   empty: document.querySelector('#empty-state'),
   error: document.querySelector('#load-error'),
+  retry: document.querySelector('#retry-catalog'),
+  pagination: document.querySelector('#catalog-pagination'),
+  loadMore: document.querySelector('#load-more'),
   featured: document.querySelector('#featured-grid'),
   preview: document.querySelector('#hero-preview'),
   dialog: document.querySelector('#plugin-dialog'),
@@ -149,6 +184,7 @@ const englishCategories = {
 
 const palette = ['#6f83ff', '#ff6c4a', '#8c6ce8', '#00a991', '#e0568c', '#4385c6', '#a36c45', '#6a9f39']
 const riskOrder = { low: 0, medium: 1, high: 2, unknown: 3 }
+const analyticsToken = value => String(value ?? '').toLowerCase().replace(/[^a-z0-9._-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80)
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character])
 const detailLabel = (group, value) => labels[state.locale]?.[group]?.[value] || String(value || t('value.unknown'))
 const categoryLabel = id => state.locale === 'en' ? englishCategories[id] || id : state.catalog?.registry?.categories?.[id] || id
@@ -161,13 +197,6 @@ const licenseLabel = value => {
   if (value === 'UNLICENSED') return state.locale === 'en' ? 'License not published' : '未公开许可证'
   if (value === 'CC-BY-NC-SA-4.0') return state.locale === 'en' ? 'Non-commercial (CC BY-NC-SA 4.0)' : '非商业（CC BY-NC-SA 4.0）'
   return value
-}
-const githubPublisher = repositoryUrl => {
-  try {
-    const url = new URL(repositoryUrl)
-    const owner = url.hostname.toLowerCase() === 'github.com' ? decodeURIComponent(url.pathname.split('/').filter(Boolean)[0] || '') : ''
-    return owner ? `@${owner}` : t('value.unknown')
-  } catch { return t('value.unknown') }
 }
 
 function normalizeEntry(entry) {
@@ -203,7 +232,7 @@ function normalizeEntry(entry) {
 function searchValues(entry) {
   const permissions = entry.details.permissions
   return [
-    entry.name, entry.packageName, entry.description, entry.repositoryUrl, githubPublisher(entry.repositoryUrl), entry.version,
+    entry.name, entry.packageName, entry.description, entry.repositoryUrl, entry.version,
     ...entry.categories.map(categoryLabel), detailLabel('pluginType', entry.details.pluginType),
     detailLabel('level', permissions.level), detailLabel('files', permissions.files),
     detailLabel('network', permissions.network), detailLabel('commands', permissions.commands),
@@ -232,17 +261,38 @@ function visibleEntries() {
 function renderStats() {
   const entries = state.entries.filter(entry => entry.status !== 'unlisted')
   const categoryCount = new Set(entries.flatMap(entry => entry.categories)).size
-  document.querySelector('#stat-total').textContent = String(entries.length).padStart(2, '0')
-  document.querySelector('#stat-approved').textContent = String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0')
-  document.querySelector('#stat-categories').textContent = String(categoryCount).padStart(2, '0')
-  document.querySelector('#float-count').textContent = String(entries.length)
+  const setText = (selector, value) => {
+    const element = document.querySelector(selector)
+    if (element) element.textContent = value
+  }
+  setText('#stat-total', String(entries.length).padStart(2, '0'))
+  setText('#stat-approved', String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
+  setText('#stat-categories', String(categoryCount).padStart(2, '0'))
+  setText('#float-count', String(entries.length))
   const updatedAt = state.catalog?.registry?.updatedAt
-  document.querySelector('#catalog-date').textContent = updatedAt
+  setText('#catalog-date', updatedAt
     ? `catalog.json · ${new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(updatedAt))}`
-    : 'GitHub catalog.json'
+    : 'GitHub catalog.json')
+}
+
+function renderManagerMetadata() {
+  const manager = state.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
+  if (!manager) return
+  const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+  const values = {
+    '#install-version': `v${manager.version} · SHA PINNED`,
+    '#install-command': installCommand,
+    '#manager-protocol': `STANDARD BUNDLE / v${manager.version}`,
+    '#manager-commit-short': manager.commit.slice(0, 7),
+  }
+  Object.entries(values).forEach(([selector, value]) => {
+    const element = document.querySelector(selector)
+    if (element) element.textContent = value
+  })
 }
 
 function renderHeroPreview() {
+  if (!els.preview) return
   const featured = state.entries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 3)
   els.preview.innerHTML = featured.map((entry, index) => `
     <article class="preview-plugin" style="--plugin-color:${pluginColor(entry.id)}">
@@ -253,13 +303,13 @@ function renderHeroPreview() {
 }
 
 function renderFeatured() {
-  const featured = state.entries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 3)
+  if (!els.featured) return
+  const featured = state.entries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
   els.featured.innerHTML = featured.map((entry, index) => `
     <article class="featured-card reveal" style="--plugin-color:${pluginColor(entry.id)}">
       <div class="featured-top"><span class="feature-number">PICK / 0${index + 1}</span><span class="dialog-badge">${escape(categoryLabel(entry.categories[0] || 'tools'))}</span></div>
       <span class="featured-icon" aria-hidden="true"><span>${escape(initials(entry.name))}</span></span>
       <h3>${escape(entry.name)}</h3>
-      <span class="package-line">${escape(t('publisher'))} ${escape(githubPublisher(entry.repositoryUrl))}</span>
       <p>${escape(entry.description)}</p>
       <button class="featured-link details-button" type="button" data-details-id="${escape(entry.id)}"><span>${escape(t('action.details'))}</span><i aria-hidden="true">↗</i></button>
     </article>`).join('')
@@ -267,6 +317,7 @@ function renderFeatured() {
 }
 
 function renderCategories() {
+  if (!els.categories) return
   const counts = new Map()
   state.entries.filter(entry => entry.status !== 'unlisted').forEach(entry => entry.categories.forEach(id => counts.set(id, (counts.get(id) || 0) + 1)))
   const ids = [...counts].sort((a, b) => b[1] - a[1]).map(([id]) => id)
@@ -274,7 +325,7 @@ function renderCategories() {
     `<button class="category-pill${state.category ? '' : ' active'}" type="button" data-category="" aria-pressed="${state.category ? 'false' : 'true'}">${escape(t('filter.all'))} <span>${state.entries.filter(entry => entry.status !== 'unlisted').length}</span></button>`,
     ...ids.map(id => `<button class="category-pill${state.category === id ? ' active' : ''}" type="button" data-category="${escape(id)}" aria-pressed="${state.category === id ? 'true' : 'false'}">${escape(categoryLabel(id))} <span>${counts.get(id)}</span></button>`),
   ].join('')
-  els.clear.hidden = !state.category && !state.query
+  if (els.clear) els.clear.hidden = !state.category && !state.query
 }
 
 function cardTemplate(entry) {
@@ -287,7 +338,6 @@ function cardTemplate(entry) {
     </div>
     <h3>${escape(entry.name)}</h3>
     <span class="package-line">${escape(entry.packageName)} · v${escape(entry.version)}</span>
-    <span class="package-line">${escape(t('publisher'))} ${escape(githubPublisher(entry.repositoryUrl))}</span>
     <p class="plugin-description">${escape(entry.description)}</p>
     <div class="plugin-badges">
       ${topCategories.map(id => `<span class="plugin-badge">${escape(categoryLabel(id))}</span>`).join('')}
@@ -295,19 +345,21 @@ function cardTemplate(entry) {
     </div>
     <footer class="plugin-card-footer">
       <button class="details-button" type="button" data-details-id="${escape(entry.id)}">${escape(t('action.details'))} →</button>
-      <a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(entry.name)}">↗</a>
+      <a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(entry.name)}" data-repo-id="${escape(entry.id)}">↗</a>
     </footer>
   </article>`
 }
 
 function renderCatalog() {
-  if (!state.catalog) return
-  const entries = visibleEntries()
-  const total = state.entries.filter(entry => entry.status !== 'unlisted').length
+  if (!state.catalog || !els.grid || !els.meta || !els.empty) return
+  const matchingEntries = visibleEntries()
+  const entries = matchingEntries.slice(0, state.visibleLimit)
+  const total = matchingEntries.length
   els.grid.innerHTML = entries.map(cardTemplate).join('')
   els.grid.hidden = entries.length === 0
   els.empty.hidden = entries.length !== 0
   els.meta.innerHTML = `${escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
+  if (els.pagination) els.pagination.hidden = entries.length === 0 || entries.length >= matchingEntries.length
   renderCategories()
 }
 
@@ -318,6 +370,7 @@ function detailItem(name, value, code = false) {
 function showDetails(entry) {
   const permissions = entry.details.permissions
   const compatibility = entry.compatibility
+  const github = entry.github && typeof entry.github === 'object' ? entry.github : {}
   const color = pluginColor(entry.id)
   state.selectedEntry = entry
   els.dialogTitle.textContent = entry.name
@@ -332,7 +385,6 @@ function showDetails(entry) {
     </div>
     <section class="dialog-section"><h3>${escape(t('dialog.basic'))}</h3><dl class="dialog-grid">
       ${detailItem(state.locale === 'en' ? 'Package' : '包名', entry.packageName, true)}${detailItem(state.locale === 'en' ? 'Version' : '版本', entry.version)}
-      ${detailItem(t('publisher'), githubPublisher(entry.repositoryUrl))}
       ${detailItem('Git Commit', entry.commit || t('value.undeclared'), true)}${detailItem(state.locale === 'en' ? 'License' : '许可证', licenseLabel(entry.details.license))}
       ${detailItem(state.locale === 'en' ? 'Plugin type' : '插件类型', detailLabel('pluginType', entry.details.pluginType))}${detailItem(state.locale === 'en' ? 'Install source' : '安装来源', detailLabel('installSource', entry.details.installSource))}
     </dl></section>
@@ -348,12 +400,13 @@ function showDetails(entry) {
       ${detailItem('DSH', compatibility.dsh === 'unknown' ? t('value.undeclared') : compatibility.dsh)}${detailItem('Node.js', compatibility.node === 'unknown' ? t('value.undeclared') : compatibility.node)}
       ${detailItem(state.locale === 'en' ? 'Systems' : '系统', listLabel(compatibility.systems))}${detailItem('Profile', listLabel(compatibility.profiles))}
       ${detailItem(state.locale === 'en' ? 'External dependencies' : '外部依赖', listLabel(entry.details.externalDependencies, t('value.none')))}${detailItem(state.locale === 'en' ? 'Installs' : '累计安装', Number.isInteger(entry.installCount) ? String(entry.installCount) : t('value.noStats'))}
+      ${Number.isInteger(github.stars) ? detailItem('GitHub Stars', String(github.stars)) : ''}${github.pushedAt ? detailItem(state.locale === 'en' ? 'Last GitHub push' : 'GitHub 最近更新', new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(github.pushedAt))) : ''}
     </dl></section>
     ${entry.statusReason ? `<p class="dialog-note danger"><b>${escape(t('dialog.policy'))}</b>${escape(entry.statusReason)}</p>` : ''}
     <p class="dialog-note">${escape(t('dialog.note'))}</p>
     <div class="dialog-actions">
       <button class="copy-button" type="button" data-copy-commit="${escape(entry.commit || '')}">${escape(t('action.copyCommit'))}</button>
-      <a class="dialog-repo" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${escape(entry.status === 'blocked' ? t('action.manual') : t('action.repo'))} <span aria-hidden="true">↗</span></a>
+      <a class="dialog-repo" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" data-repo-id="${escape(entry.id)}">${escape(entry.status === 'blocked' ? t('action.manual') : t('action.repo'))} <span aria-hidden="true">↗</span></a>
     </div>`
   els.dialog.showModal()
 }
@@ -361,7 +414,8 @@ function showDetails(entry) {
 function clearFilters() {
   state.query = ''
   state.category = ''
-  els.search.value = ''
+  state.visibleLimit = 24
+  if (els.search) els.search.value = ''
   renderCatalog()
 }
 
@@ -375,8 +429,8 @@ function showToast(message) {
 
 function applyLocale() {
   document.documentElement.lang = state.locale === 'en' ? 'en' : 'zh-CN'
-  document.title = t('meta.title')
-  document.querySelector('meta[name="description"]')?.setAttribute('content', t('meta.description'))
+  document.title = t(IS_DIRECTORY ? 'directory.meta.title' : 'meta.title')
+  document.querySelector('meta[name="description"]')?.setAttribute('content', t(IS_DIRECTORY ? 'directory.meta.description' : 'meta.description'))
   document.querySelectorAll('[data-i18n]').forEach(element => {
     element.textContent = t(element.dataset.i18n)
   })
@@ -386,16 +440,17 @@ function applyLocale() {
   document.querySelectorAll('[data-locale]').forEach(button => {
     button.setAttribute('aria-pressed', String(button.dataset.locale === state.locale))
   })
-  els.search.setAttribute('aria-label', t('catalog.search'))
-  els.categories.setAttribute('aria-label', state.locale === 'en' ? 'Filter by category' : '按分类筛选')
+  els.search?.setAttribute('aria-label', t('catalog.search'))
+  els.categories?.setAttribute('aria-label', state.locale === 'en' ? 'Filter by category' : '按分类筛选')
   document.querySelector('#dialog-close')?.setAttribute('aria-label', state.locale === 'en' ? 'Close plugin details' : '关闭插件详情')
 
   if (state.catalog) {
     renderStats()
+    renderManagerMetadata()
     renderHeroPreview()
     renderFeatured()
     renderCatalog()
-    if (els.dialog.open && state.selectedEntry) {
+    if (els.dialog?.open && state.selectedEntry) {
       els.dialog.close()
       showDetails(state.selectedEntry)
     }
@@ -428,6 +483,23 @@ async function copyText(text) {
   if (!copied) throw new Error('clipboard unavailable')
 }
 
+function sendDshEvent(event, details = {}) {
+  if (!/^https?:$/.test(location.protocol)) return
+  const eventName = analyticsToken(event)
+  if (!eventName) return
+  const url = new URL('/_events/dsh', location.origin)
+  url.searchParams.set('event', eventName)
+  url.searchParams.set('locale', state.locale)
+  for (const field of ['item', 'value']) {
+    const token = analyticsToken(details[field])
+    if (token) url.searchParams.set(field, token)
+  }
+  try {
+    if (navigator.sendBeacon?.(url, new Blob([], { type: 'text/plain' }))) return
+    fetch(url, { method: 'POST', keepalive: true, cache: 'no-store', credentials: 'omit' }).catch(() => {})
+  } catch {}
+}
+
 function observeReveals() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('.reveal').forEach(element => element.classList.add('visible'))
@@ -456,46 +528,110 @@ async function loadInstallCounts() {
   } catch {}
 }
 
-async function init() {
-  applyLocale()
-  observeReveals()
+function catalogCandidates() {
+  return [...new Set([
+    new URL(CATALOG_URL, window.location.href).href,
+    new URL('/registry/catalog.json', window.location.origin).href,
+  ])]
+}
+
+function embeddedCatalog() {
+  const element = document.querySelector('#catalog-snapshot')
+  if (!element?.textContent?.trim()) return null
+  const payload = JSON.parse(element.textContent)
+  if (!payload || !Array.isArray(payload.entries)) throw new Error('Invalid embedded catalog payload')
+  return payload
+}
+
+async function fetchCatalog() {
+  const embedded = embeddedCatalog()
+  if (embedded) return embedded
+  const failures = []
+  for (const url of catalogCandidates()) {
+    try {
+      const response = await fetch(url, { cache: 'no-store' })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const payload = await response.json()
+      if (!payload || !Array.isArray(payload.entries)) throw new Error('Invalid catalog payload')
+      return payload
+    } catch (error) {
+      failures.push(`${url}: ${error.message}`)
+    }
+  }
+  throw new Error(failures.join(' | '))
+}
+
+async function loadCatalog() {
+  if (els.meta) els.meta.textContent = t('catalog.loading')
+  if (els.error) els.error.hidden = true
+  if (els.empty) els.empty.hidden = true
+  if (els.pagination) els.pagination.hidden = true
+  if (els.retry) els.retry.disabled = true
   try {
-    const response = await fetch(CATALOG_URL, { cache: 'no-store' })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    state.catalog = await response.json()
+    state.catalog = await fetchCatalog()
     state.entries = state.catalog.entries.map(normalizeEntry)
     renderStats()
+    renderManagerMetadata()
     renderHeroPreview()
     renderFeatured()
-    renderCategories()
     renderCatalog()
     loadInstallCounts()
   } catch (error) {
-    els.meta.textContent = t('catalog.failed')
-    els.grid.hidden = true
-    els.empty.hidden = true
-    els.error.hidden = false
-    document.querySelector('#catalog-date').textContent = t('catalog.offline')
+    if (els.meta) els.meta.textContent = t('catalog.failed')
+    if (els.grid) els.grid.hidden = true
+    if (els.empty) els.empty.hidden = true
+    if (els.pagination) els.pagination.hidden = true
+    if (els.error) els.error.hidden = false
+    const catalogDate = document.querySelector('#catalog-date')
+    if (catalogDate) catalogDate.textContent = t('catalog.offline')
     console.error('Failed to load marketplace catalog:', error)
+  } finally {
+    if (els.retry) els.retry.disabled = false
   }
 }
 
-els.search.addEventListener('input', event => {
+async function init() {
+  applyLocale()
+  observeReveals()
+  await loadCatalog()
+}
+
+els.search?.addEventListener('input', event => {
   state.query = event.currentTarget.value
+  state.visibleLimit = 24
   renderCatalog()
+  clearTimeout(state.searchEventTimer)
+  if (state.query.trim()) {
+    state.searchEventTimer = setTimeout(() => {
+      sendDshEvent('catalog_search', {
+        item: `results_${visibleEntries().length}`,
+        value: `chars_${Math.min(state.query.trim().length, 20)}`,
+      })
+    }, 700)
+  }
 })
-els.sort.addEventListener('change', event => {
+els.sort?.addEventListener('change', event => {
   state.sort = event.currentTarget.value
+  state.visibleLimit = 24
   renderCatalog()
+  sendDshEvent('catalog_sort', { item: state.sort })
 })
-els.categories.addEventListener('click', event => {
+els.categories?.addEventListener('click', event => {
   const button = event.target.closest('[data-category]')
   if (!button) return
   state.category = button.dataset.category
+  state.visibleLimit = 24
   renderCatalog()
+  sendDshEvent('catalog_category', { item: state.category || 'all' })
 })
-els.clear.addEventListener('click', clearFilters)
-els.emptyClear.addEventListener('click', clearFilters)
+els.clear?.addEventListener('click', clearFilters)
+els.emptyClear?.addEventListener('click', clearFilters)
+els.retry?.addEventListener('click', loadCatalog)
+els.loadMore?.addEventListener('click', () => {
+  state.visibleLimit += 24
+  renderCatalog()
+  sendDshEvent('catalog_load_more', { value: String(state.visibleLimit) })
+})
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-copy-target]')
   if (!button) return
@@ -508,6 +644,7 @@ document.addEventListener('click', async event => {
     await copyText(text)
     if (label) label.textContent = state.locale === 'en' ? 'Copied' : '已复制'
     showToast(t('toast.commandCopied'))
+    sendDshEvent('install_command_copy', { item: 'dsh_safe_plugin_manager' })
   } catch {
     showToast(t('toast.copyDenied'))
   } finally {
@@ -518,31 +655,57 @@ document.addEventListener('click', event => {
   const detailsButton = event.target.closest('[data-details-id]')
   if (!detailsButton) return
   const entry = state.entries.find(item => item.id === detailsButton.dataset.detailsId)
-  if (entry) showDetails(entry)
+  if (entry) {
+    showDetails(entry)
+    sendDshEvent('plugin_detail', { item: entry.id })
+  }
 })
-document.querySelector('.locale-switch').addEventListener('click', event => {
+document.querySelector('.locale-switch')?.addEventListener('click', event => {
   const button = event.target.closest('[data-locale]')
-  if (button) setLocale(button.dataset.locale)
+  if (button && button.dataset.locale !== state.locale) {
+    setLocale(button.dataset.locale)
+    sendDshEvent('locale_switch', { item: state.locale })
+  }
+})
+document.addEventListener('click', event => {
+  const repoLink = event.target.closest('[data-repo-id]')
+  if (repoLink) sendDshEvent('plugin_repository_open', { item: repoLink.dataset.repoId })
+  const trackedLink = event.target.closest('[data-analytics-event]')
+  if (trackedLink) sendDshEvent(trackedLink.dataset.analyticsEvent, { item: trackedLink.dataset.analyticsItem })
 })
 document.addEventListener('keydown', event => {
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k' && !els.dialog.open) {
+  if (els.search && (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k' && !els.dialog?.open) {
     event.preventDefault()
     els.search.focus()
   }
 })
-document.querySelector('#dialog-close').addEventListener('click', () => els.dialog.close())
-els.dialog.addEventListener('click', event => {
+document.querySelector('#dialog-close')?.addEventListener('click', () => els.dialog?.close())
+els.dialog?.addEventListener('click', event => {
   if (event.target === els.dialog) els.dialog.close()
 })
-els.dialogBody.addEventListener('click', async event => {
+els.dialogBody?.addEventListener('click', async event => {
   const button = event.target.closest('[data-copy-commit]')
   if (!button || !button.dataset.copyCommit) return
   try {
     await copyText(button.dataset.copyCommit)
     showToast(t('toast.commitCopied'))
+    sendDshEvent('plugin_commit_copy', { item: state.selectedEntry?.id })
   } catch {
     showToast(t('toast.copyDenied'))
   }
 })
+
+const reachedDepths = new Set()
+window.addEventListener('scroll', () => {
+  const available = document.documentElement.scrollHeight - innerHeight
+  if (available <= 0) return
+  const depth = Math.round(scrollY / available * 100)
+  for (const threshold of [50, 90]) {
+    if (depth >= threshold && !reachedDepths.has(threshold)) {
+      reachedDepths.add(threshold)
+      sendDshEvent('scroll_depth', { value: String(threshold) })
+    }
+  }
+}, { passive: true })
 
 init()

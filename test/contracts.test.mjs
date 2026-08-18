@@ -188,26 +188,42 @@ test('client fails closed when the live health endpoint still uses the legacy sc
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const [html, app, readme, logo, previewServer] = await Promise.all([
+  const [html, app, pluginsHtml, buildHtml, faqHtml, aboutHtml, readme, previewServer, styles] = await Promise.all([
     readFile(new URL('marketplace/index.html', project), 'utf8'),
     readFile(new URL('marketplace/app.js', project), 'utf8'),
+    readFile(new URL('marketplace/plugins/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/build/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/faq/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/about/index.html', project), 'utf8'),
     readFile(new URL('README.md', project), 'utf8'),
-    readFile(new URL('marketplace/dsh-store-logo.svg', project), 'utf8'),
     readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
+    readFile(new URL('marketplace/styles.css', project), 'utf8'),
   ])
   const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#74ca4d4c07a21ae1ac1a5e8372e98097e75565b9'"
+  const submissionUrl = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml'
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)
   assert.match(html, /data-locale="en"/)
   assert.match(html, /data-i18n="hero\.title1"/)
-  assert.match(html, /data-i18n-placeholder="catalog\.search"/)
-  assert.match(html, /<strong>DSH-Store<\/strong>/)
-  assert.match(html, /href="\.\/dsh-store-logo\.svg"/)
-  assert.match(html, /src="\.\/dsh-store-logo\.svg"/)
-  assert.match(html, /class="manager-tab"/)
+  assert.match(pluginsHtml, /data-i18n-placeholder="catalog\.search"/)
+  assert.match(html, /class="brand-wordmark-frame"/)
+  assert.match(html, /src="\.\/dsh-store-wordmark\.png"/)
+  assert.match(html, /href="\.\/plugins\/"/)
+  assert.match(html, /href="\.\/build\/"/)
+  assert.match(html, /href="\.\/faq\/"/)
+  assert.match(html, /href="\.\/about\/"/)
+  assert.ok(html.includes(submissionUrl))
+  assert.ok(pluginsHtml.includes(submissionUrl))
+  assert.ok(buildHtml.includes(submissionUrl))
   assert.match(html, /id="manager"/)
+  assert.match(html, /id="featured-grid"/)
+  assert.doesNotMatch(html, /id="plugin-grid"/)
+  assert.match(pluginsHtml, /id="plugin-grid"/)
+  assert.match(pluginsHtml, /id="retry-catalog"/)
   assert.match(html, /data-copy-target="install-command"/)
-  assert.ok(html.includes(installCommand))
+  assert.match(html, /DSH_STATIC_CATALOG/)
+  assert.match(html, /softwareVersion": "catalog-derived"/)
+  assert.doesNotMatch(html, /git\+https:\/\/github\.com\/AI-Scarlett\/dsh-safe-plugin-manager\.git#[0-9a-f]{40}/)
   assert.ok(readme.includes(installCommand))
   assert.match(app, /featured === true/)
   assert.match(app, /status !== 'unlisted'/)
@@ -215,29 +231,21 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(app, /showDetails/)
   assert.match(app, /dsh-marketplace-locale/)
   assert.match(app, /function setLocale/)
-  assert.match(app, /DSH-Store｜DeepSeek Harness 插件商城/)
-  assert.match(app, /DSH-Store \| DeepSeek Harness Plugin Market/)
-  assert.match(app, /'hero\.title1': 'Your next capability'/)
+  assert.match(app, /function embeddedCatalog/)
+  assert.match(app, /function renderManagerMetadata/)
+  assert.match(app, /github\.stars/)
   assert.match(app, /详情来自 GitHub catalog\.json/)
-  assert.match(app, /GitHub 发布者/)
-  assert.match(app, /GitHub publisher/)
-  assert.match(app, /githubPublisher\(entry\.repositoryUrl\)/)
   assert.match(app, /前往 GitHub 手动安装/)
-  assert.match(app, /不需要服务端巡检所有仓库/)
-  assert.match(html, /data-i18n="faq\.q4"/)
-  assert.match(logo, /viewBox="0 0 64 64"/)
-  assert.match(logo, /<title id="logo-title">DSH-Store<\/title>/)
+  assert.match(buildHtml, /id="install-skill"/)
+  assert.match(faqHtml, /"@type": "FAQPage"/)
+  assert.match(aboutHtml, /mailto:jadename\.zhou@gmail\.com/)
+  assert.match(aboutHtml, /https:\/\/x\.com\/JadeNameCulture/)
+  assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
   assert.match(readme, /AI-Scarlett\/build-dsh-plugin/)
   assert.match(readme, /上架必要条件/)
   assert.ok(readme.indexOf('提交一个公开 GitHub 项目地址') < readme.indexOf('## 安装插件商城'))
-  assert.doesNotMatch(`${html}\n${app}\n${logo}`, /DSH STORE/)
-  assert.match(previewServer, /switch \(pathname\)/)
-  for (const allowedPath of [
-    '/marketplace/index.html', '/marketplace/app.js', '/marketplace/styles.css',
-    '/marketplace/dsh-store-logo.svg', '/registry/catalog.json',
-  ]) {
-    assert.ok(previewServer.includes(`case '${allowedPath}'`), `${allowedPath} must be explicitly allowlisted`)
-  }
-  assert.match(previewServer, /default:\s*return null/)
-  assert.doesNotMatch(previewServer, /resolve\(root,\s*relative\)|target\.startsWith/)
+  assert.match(previewServer, /pathname\.startsWith\('\/marketplace\/'\)/)
+  assert.match(previewServer, /relative\(marketplaceRoot, target\)/)
+  assert.match(previewServer, /scoped\.startsWith\('\.\.'\)/)
+  assert.match(previewServer, /isAbsolute\(scoped\)/)
 })

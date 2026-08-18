@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="使用 build-dsh-plugin Agent Skill，把问题、期望结果和成功标准转换为标准、非破坏性的 DeepSeek Harness 插件工程与验证流程。">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+  <meta name="theme-color" content="#07113f">
+  <meta name="application-name" content="DSH STORE">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="开发 DSH 插件｜DSH STORE Build Lab">
+  <meta property="og:description" content="用三个答案启动一个标准 DSH 插件工程：问题、结果、成功标准。">
+  <meta property="og:url" content="https://dsh.store/build/">
+  <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="开发 DSH 插件｜DSH STORE Build Lab">
+  <meta name="twitter:description" content="从 Brief 到标准 Bundle、风险边界、测试与证据。">
+  <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
+  <title>开发 DSH 插件｜DSH STORE Build Lab</title>
+  <link rel="canonical" href="https://dsh.store/build/">
+  <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
+  <link rel="apple-touch-icon" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://dsh.store/build/#page",
+        "url": "https://dsh.store/build/",
+        "name": "DSH STORE Build Lab",
+        "description": "A guided entry point for building standard, non-destructive DeepSeek Harness plugins.",
+        "inLanguage": ["zh-CN", "en"]
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://dsh.store/build/#skill",
+        "name": "build-dsh-plugin",
+        "codeRepository": "https://github.com/AI-Scarlett/build-dsh-plugin",
+        "license": "https://opensource.org/license/mit",
+        "programmingLanguage": ["Markdown", "JavaScript"],
+        "description": "An Agent Skill for converting a product brief into a standard DSH plugin plan, source project, audit, package, and evidence-driven acceptance workflow."
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to start a DSH plugin with build-dsh-plugin",
+        "step": [
+          {"@type": "HowToStep", "name": "Install the build-dsh-plugin Agent Skill"},
+          {"@type": "HowToStep", "name": "Describe the current problem"},
+          {"@type": "HowToStep", "name": "Define the expected outcome"},
+          {"@type": "HowToStep", "name": "Write an observable success criterion"},
+          {"@type": "HowToStep", "name": "Run the build-dsh-plugin Skill and review its evidence gates"}
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="build-page">
+  <a class="skip-link" href="#install-skill" data-i18n="a11y.skip">跳到 Skill 安装</a>
+  <div class="ambient-grid" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="../" aria-label="DSH STORE">
+      <span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="../" data-i18n="nav.home">首页</a>
+      <a href="../plugins/" data-i18n="nav.store">插件目录</a>
+      <a href="./" aria-current="page" data-i18n="nav.build">开发插件</a>
+      <a href="../faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="build_header">常见问题</a>
+      <a href="../about/" data-i18n="nav.about" data-analytics-event="about_open" data-analytics-item="build_header">关于我们</a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/README.md" target="_blank" rel="noreferrer" data-analytics-event="usage_guide_open" data-analytics-item="build_header"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="build_header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
+    </nav>
+    <div class="header-tools">
+      <div class="locale-switch" role="group" aria-label="Language">
+        <button type="button" data-locale="zh" aria-pressed="true">中文</button>
+        <button type="button" data-locale="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="build-hero" aria-labelledby="build-hero-title">
+      <div class="build-hero-copy reveal">
+        <div class="eyebrow"><span class="live-dot"></span><span>DSH STORE // BUILD LAB</span></div>
+        <h1 id="build-hero-title"><span data-i18n="hero.title1">用三个答案，</span><br><em data-i18n="hero.title2">启动一个 DSH 插件。</em></h1>
+        <p data-i18n="hero.lead">把自然语言 Brief 转换为标准 Bundle、风险边界、源码、测试和证据门槛。开发从用户结果开始，不从内部 API 开始。</p>
+        <div class="build-hero-actions">
+          <a class="button button-primary" href="#install-skill" data-analytics-event="skill_install_open" data-analytics-item="hero"><span data-i18n="action.install">安装 Skill</span><span aria-hidden="true">↓</span></a>
+          <a class="button button-secondary" href="https://github.com/AI-Scarlett/build-dsh-plugin/" target="_blank" rel="noreferrer" data-analytics-event="skill_github_open" data-analytics-item="hero"><span data-i18n="action.github">查看开源 Skill</span><span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="build-hero-badges"><span>MIT OPEN SOURCE</span><span>R0–R3 RISK MODEL</span><span>E0–E5 EVIDENCE</span></div>
+      </div>
+      <div class="brief-console reveal" aria-label="Plugin brief preview">
+        <div class="brief-console-head"><span><i></i><i></i><i></i></span><b>PLUGIN_BRIEF.DSH</b><small>READY_WITH_ASSUMPTIONS</small></div>
+        <div class="brief-console-body">
+          <div class="brief-line"><i>01</i><span><small>PROBLEM</small><b data-i18n="console.problem">现在的问题是什么？</b></span><em>REQUIRED</em></div>
+          <div class="brief-line"><i>02</i><span><small>OUTCOME</small><b data-i18n="console.outcome">希望发生什么改变？</b></span><em>REQUIRED</em></div>
+          <div class="brief-line"><i>03</i><span><small>ACCEPTANCE</small><b data-i18n="console.success">怎么观察到它成功？</b></span><em>REQUIRED</em></div>
+          <div class="brief-path" aria-hidden="true"><span>BRIEF</span><i>→</i><span>HOST FIT</span><i>→</i><span>RISK</span><i>→</i><span>SOURCE</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="build-trust-strip" aria-label="Build principles">
+      <span><b>01</b><small data-i18n="principle.one">标准 DSH Bundle</small></span>
+      <span><b>02</b><small data-i18n="principle.two">默认只读与最小权限</small></span>
+      <span><b>03</b><small data-i18n="principle.three">一次性 Profile 测试</small></span>
+      <span><b>04</b><small data-i18n="principle.four">发行与真实安装分离</small></span>
+    </section>
+
+    <section class="skill-install section-shell" id="install-skill" aria-labelledby="install-title">
+      <div class="section-heading reveal"><div><span class="section-index">01 / INSTALL SKILL</span><h2 id="install-title" data-i18n="install.title">先把 Skill 装进你的 Agent。</h2></div><p data-i18n="install.lead">选择目标环境，复制固定版本的安装指令。发行信息会从最新 GitHub Release 与对应标签的 manifest.json 实时核对。</p></div>
+      <div class="skill-install-workbench reveal">
+        <div class="install-targets" role="tablist" aria-label="Skill installation target">
+          <button type="button" role="tab" aria-selected="true" data-install-target="codex"><span>01</span><b>Codex</b><small data-i18n="install.targetCodex">复制给 Codex 的安装指令</small></button>
+          <button type="button" role="tab" aria-selected="false" data-install-target="dsh"><span>02</span><b>DSH PLUGIN ADD</b><small data-i18n="install.targetDsh">安装兼容版到 DSH Profile</small></button>
+          <button type="button" role="tab" aria-selected="false" data-install-target="agent"><span>03</span><b>OTHER AGENTS</b><small data-i18n="install.targetAgent">下载 ZIP 到兼容的 Skills 目录</small></button>
+        </div>
+        <div class="install-instruction">
+          <div class="install-instruction-head"><span id="install-kicker">CODEX / SKILL INSTALLER</span><small id="release-status" data-status="loading" data-i18n="install.loading">正在核对固定发行…</small></div>
+          <h3 id="install-mode-title" data-i18n="install.codexTitle">复制到 Codex，交给 Skill Installer 安装</h3>
+          <p id="install-mode-body" data-i18n="install.codexBody">指令会锁定到最新已验证发行标签，不使用浮动的 main。</p>
+          <div class="install-command-box"><pre><code id="install-command" aria-live="polite" data-i18n="install.loadingCommand">正在读取并验证 GitHub Release…</code></pre><button id="copy-install" type="button" data-copy-target="install-command" data-copy-kind="install" data-analytics-event="skill_install_copy" data-analytics-item="codex" disabled><span data-i18n="action.copyInstall">复制安装指令</span><i aria-hidden="true">⧉</i></button></div>
+          <div class="install-actions">
+            <a id="skill-download" class="button button-primary disabled" aria-disabled="true" data-analytics-event="skill_zip_download" data-analytics-item="build_dsh_plugin"><span id="download-label" data-i18n="action.download">下载已验证 ZIP</span><i aria-hidden="true">↓</i></a>
+            <a class="button button-secondary" href="https://github.com/AI-Scarlett/build-dsh-plugin/" target="_blank" rel="noreferrer" data-analytics-event="skill_github_open" data-analytics-item="install"><span data-i18n="action.source">查看源码</span><i aria-hidden="true">↗</i></a>
+          </div>
+          <p class="install-boundary"><b data-i18n="install.boundaryLabel">安装边界：</b><span id="install-boundary" data-i18n="install.boundary">不同宿主使用各自经过验证的安装入口；网页只复制命令，不会直接修改本机。</span></p>
+        </div>
+        <aside class="release-proof" aria-labelledby="release-proof-title">
+          <div class="release-proof-head"><span>VERIFIED RELEASE</span><b id="release-proof-title" data-i18n="install.proofTitle">发行身份</b></div>
+          <dl>
+            <div><dt data-i18n="install.version">版本</dt><dd id="release-version">—</dd></div>
+            <div><dt data-i18n="install.files">文件</dt><dd id="release-files">—</dd></div>
+            <div><dt data-i18n="install.license">许可</dt><dd id="release-license">MIT</dd></div>
+            <div><dt>DSH PLUGIN ADD</dt><dd id="release-dsh">—</dd></div>
+          </dl>
+          <div class="release-hash"><span>SHA-256</span><code id="release-hash">—</code></div>
+          <div class="release-links">
+            <a id="skill-checksum" aria-disabled="true" data-i18n="install.checksum">校验文件</a>
+            <a id="skill-release" href="https://github.com/AI-Scarlett/build-dsh-plugin/releases" target="_blank" rel="noreferrer" data-i18n="install.releasePage">发行页面 ↗</a>
+            <a id="skill-license" href="https://github.com/AI-Scarlett/build-dsh-plugin/blob/main/LICENSE" target="_blank" rel="noreferrer" data-i18n="install.licensePage">MIT License ↗</a>
+          </div>
+          <p id="release-error" class="release-error" hidden data-i18n="install.unavailable">当前无法完成发行核验，下载已保持关闭；仍可前往 GitHub 查看源码。</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="build-start section-shell" id="start" aria-labelledby="start-title">
+      <div class="section-heading reveal"><div><span class="section-index">02 / STARTER BRIEF</span><h2 id="start-title" data-i18n="start.title">先把意图写清楚，技术结构交给 Skill。</h2></div><p data-i18n="start.lead">下面的模板可以直接复制到支持 Skill 的 Agent。缺省字段会采用安全默认值，并作为假设明确展示。</p></div>
+      <div class="brief-copy-panel reveal">
+        <div class="brief-copy-head"><span>MINIMAL BRIEF / ZH-CN</span><button type="button" data-copy-target="starter-brief" data-analytics-event="skill_brief_copy" data-analytics-item="starter"><span data-i18n="action.copy">复制模板</span> ⧉</button></div>
+        <pre><code id="starter-brief">使用 $build-dsh-plugin，直接生成一个标准 DSH 插件源码工程。
+
+现在的问题：
+希望达到的结果：
+核心能力：（可选）
+需要读取的数据：（可选；默认无）
+需要执行的动作：（可选；默认只读）
+需要界面：（可选；默认 Host-only）
+明确不能做什么：（可选；默认不改 DSH 核心、官方插件和真实 Profile）
+怎么才算成功：</code></pre>
+        <p data-i18n="start.note">不要在 Brief 中放入 Token、密码、Cookie 或私有文件内容。</p>
+      </div>
+    </section>
+
+    <section class="build-process" aria-labelledby="process-title"><div class="section-shell">
+      <div class="section-heading section-heading-light reveal"><div><span class="section-index">03 / STAGE GATES</span><h2 id="process-title" data-i18n="process.title">每一步都有输出，也有停止条件。</h2></div><p data-i18n="process.lead">通过当前证据再进入下一阶段；无法证明时保持 Partial 或 Blocked。</p></div>
+      <div class="process-grid">
+        <article class="process-card reveal"><span>00</span><b>OUTCOME</b><h3 data-i18n="process.step0">归一化目标</h3><p data-i18n="process.body0">把问题、结果和成功标准整理为可测试 Brief。</p></article>
+        <article class="process-card reveal"><span>01</span><b>HOST FIT</b><h3 data-i18n="process.step1">核对 DSH 宿主</h3><p data-i18n="process.body1">确认标准 Bundle、公开扩展面和适配器边界。</p></article>
+        <article class="process-card reveal"><span>02</span><b>R0–R3</b><h3 data-i18n="process.step2">判断风险</h3><p data-i18n="process.body2">根据写入、网络、凭据与生命周期选择控制强度。</p></article>
+        <article class="process-card reveal"><span>03</span><b>ARCH</b><h3 data-i18n="process.step3">选择最小架构</h3><p data-i18n="process.body3">比较 Host、Client、Skill Adapter 与生命周期方案。</p></article>
+        <article class="process-card reveal"><span>04</span><b>SOURCE</b><h3 data-i18n="process.step4">生成源码与测试</h3><p data-i18n="process.body4">输出标准结构、权限矩阵、失败行为和测试夹具。</p></article>
+        <article class="process-card reveal"><span>05</span><b>EVIDENCE</b><h3 data-i18n="process.step5">按证据验收</h3><p data-i18n="process.body5">区分源码、测试、一次性 Profile、真实运行与外部验收。</p></article>
+      </div>
+    </div></section>
+
+    <section class="build-deliverables section-shell" aria-labelledby="deliverables-title">
+      <div class="section-heading reveal"><div><span class="section-index">04 / OUTPUT</span><h2 id="deliverables-title" data-i18n="deliverables.title">交付的不只是代码。</h2></div><p data-i18n="deliverables.lead">每个插件都带着它为什么这样设计、能做什么、不能做什么以及如何证明。</p></div>
+      <div class="deliverables-grid">
+        <article class="deliverable-card reveal"><b>01</b><h3 data-i18n="deliverables.one">宿主与架构记录</h3><p data-i18n="deliverables.oneBody">兼容、需适配或不兼容，并附当前 DSH 证据。</p></article>
+        <article class="deliverable-card reveal"><b>02</b><h3 data-i18n="deliverables.two">权限与风险矩阵</h3><p data-i18n="deliverables.twoBody">每项数据和动作都对应用户结果、边界与测试。</p></article>
+        <article class="deliverable-card reveal"><b>03</b><h3 data-i18n="deliverables.three">标准源码工程</h3><p data-i18n="deliverables.threeBody">Bundle、Host、可选 Client、测试和安全说明。</p></article>
+        <article class="deliverable-card reveal"><b>04</b><h3 data-i18n="deliverables.four">证据与下一道门</h3><p data-i18n="deliverables.fourBody">当前 E0–E5 状态、缺失证据和允许的下一步。</p></article>
+      </div>
+    </section>
+
+    <section class="build-boundary" aria-labelledby="boundary-title"><div class="section-shell boundary-layout">
+      <div class="boundary-copy reveal"><span>NON-DESTRUCTIVE BY DEFAULT</span><h2 id="boundary-title" data-i18n="boundary.title">扩展 DSH，不改造 DSH。</h2><p data-i18n="boundary.lead">Skill 构建标准插件，不修改 DSH 源码、不遮蔽官方清单，也不会把测试写入真实 Profile。</p></div>
+      <div class="boundary-list reveal">
+        <span><i>✓</i><b data-i18n="boundary.one">标准 Bundle 与公开扩展面</b></span>
+        <span><i>✓</i><b data-i18n="boundary.two">一次性目录与 Profile 夹具</b></span>
+        <span><i>✓</i><b data-i18n="boundary.three">真实变更单独计划与确认</b></span>
+        <span><i>✓</i><b data-i18n="boundary.four">未知事实保持未知</b></span>
+      </div>
+    </div></section>
+
+    <section class="build-cta section-shell reveal">
+      <div><span>OPEN SOURCE // MIT</span><h2 data-i18n="cta.title">从一个真实问题开始。</h2><p data-i18n="cta.lead">复制 Brief，或者前往 GitHub 查看完整 Skill、模板和验证方法。</p></div>
+      <div><button class="button button-primary" type="button" data-copy-target="starter-brief" data-analytics-event="skill_brief_copy" data-analytics-item="footer"><span data-i18n="action.copyBrief">复制开发 Brief</span><span aria-hidden="true">⧉</span></button><a class="button button-secondary" href="https://github.com/AI-Scarlett/build-dsh-plugin/" target="_blank" rel="noreferrer" data-analytics-event="skill_github_open" data-analytics-item="footer"><span data-i18n="action.github">查看开源 Skill</span><span aria-hidden="true">↗</span></a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">面向 DeepSeek Harness 的第三方插件发现与开发入口。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>MIT · AI-Scarlett/build-dsh-plugin</span><span data-i18n="footer.note">Skill 不是 DSH Profile 插件 · 真实变更需要单独确认</span></div></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script defer src="./build.js"></script>
+</body>
+</html>

@@ -3,100 +3,240 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DSH-Store 第三方插件商城：浏览固定到 Git Commit 的 DeepSeek Harness 插件，并在安装前了解权限、兼容性与审核状态。">
-  <meta name="theme-color" content="#f6f8ff">
-  <title>DSH-Store｜DeepSeek Harness 插件商城</title>
-  <link rel="icon" type="image/svg+xml" href="./dsh-store-logo.svg">
+  <meta name="description" content="DSH STORE（dsh.store）是面向 DeepSeek Harness（DSH）的第三方插件商城，提供插件发现、权限与来源核对、安全接入说明及插件开发工具。">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="DSH STORE">
+  <meta name="application-name" content="DSH STORE">
+  <meta name="theme-color" content="#07113f">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="DSH STORE｜DeepSeek Harness（DSH）插件商城">
+  <meta property="og:description" content="发现 DeepSeek Harness 插件，核对来源、权限与兼容性，并通过清楚的安全路径接入 DSH。">
+  <meta property="og:url" content="https://dsh.store/">
+  <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
+  <meta property="og:image:width" content="1254">
+  <meta property="og:image:height" content="1254">
+  <meta property="og:image:alt" content="DSH STORE — Trusted DeepSeek Harness Plugins">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DSH STORE｜DeepSeek Harness（DSH）插件商城">
+  <meta name="twitter:description" content="发现 DSH 插件，核对来源与权限，按计划安全接入 DeepSeek Harness。">
+  <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
+  <title>DSH STORE｜DeepSeek Harness（DSH）插件商城</title>
+  <link rel="canonical" href="https://dsh.store/">
+  <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="icon" type="image/png" sizes="1254x1254" href="./dsh-store-icon.png">
+  <link rel="apple-touch-icon" href="./dsh-store-icon.png">
+  <link rel="manifest" href="./site.webmanifest">
   <link rel="stylesheet" href="./styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://dsh.store/#organization",
+        "name": "DSH STORE",
+        "alternateName": ["DSH.STORE", "dsh.store"],
+        "url": "https://dsh.store/",
+        "logo": "https://dsh.store/dsh-store-icon.png",
+        "email": "mailto:jadename.zhou@gmail.com",
+        "sameAs": [
+          "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
+          "https://x.com/JadeNameCulture"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "general inquiries",
+          "email": "jadename.zhou@gmail.com",
+          "availableLanguage": ["zh-CN", "en"]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://dsh.store/#website",
+        "url": "https://dsh.store/",
+        "name": "DSH STORE",
+        "alternateName": ["DSH.STORE", "dsh.store", "DeepSeek Harness Plugin Store"],
+        "inLanguage": ["zh-CN", "en"],
+        "publisher": {"@id": "https://dsh.store/#organization"},
+        "description": "A trusted third-party gateway for discovering DeepSeek Harness plugins with pinned sources, visible permissions, guarded plans, and rollback paths."
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://dsh.store/#webpage",
+        "url": "https://dsh.store/",
+        "name": "DSH STORE — DeepSeek Harness Plugin Marketplace",
+        "description": "A third-party marketplace for discovering, evaluating, building, and safely connecting DeepSeek Harness plugins.",
+        "isPartOf": {"@id": "https://dsh.store/#website"},
+        "about": [
+          {"@type": "SoftwareApplication", "name": "DeepSeek Harness"},
+          {"@type": "Thing", "name": "DSH plugins"},
+          {"@type": "Thing", "name": "AI agent plugin security"}
+        ],
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://dsh.store/dsh-store-icon.png",
+          "width": 1254,
+          "height": 1254
+        }
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": "https://dsh.store/plugins/#catalog",
+        "url": "https://dsh.store/plugins/",
+        "name": "DSH STORE Plugin Catalog",
+        "isPartOf": {"@id": "https://dsh.store/#website"},
+        "about": ["DeepSeek Harness", "DSH plugins", "plugin security"]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "DSH Store",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "Plugin manager",
+        "softwareVersion": "catalog-derived",
+        "operatingSystem": "Any system supported by DeepSeek Harness",
+        "url": "https://dsh.store/#manager",
+        "downloadUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
+        "description": "A standard Host Plugin and Client Bundle for discovering and managing DeepSeek Harness plugins through guarded, reviewable operations."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {"@type": "Question", "name": "官网会直接安装 DSH 插件吗？", "acceptedAnswer": {"@type": "Answer", "text": "不会。官网只负责发现与查看；真实操作需要在 DSH 内生成一次性计划并确认。"}},
+          {"@type": "Question", "name": "可安装是否等于完成安全审计？", "acceptedAnswer": {"@type": "Answer", "text": "不等于。可安装表示条目满足当前固定来源、标准 Bundle 与策略检查。"}},
+          {"@type": "Question", "name": "插件目录的数据来自哪里？", "acceptedAnswer": {"@type": "Answer", "text": "运行时目录以 GitHub registry/catalog.json 为权威源，无法核验的安全与兼容性字段保持未知。"}}
+        ]
+      }
+    ]
+  }
+  </script>
+  <!-- DSH_STATIC_CATALOG -->
 </head>
-<body>
-  <a class="skip-link" href="#discover" data-i18n="a11y.skip">跳到插件目录</a>
-  <div class="ambient-grid" aria-hidden="true"></div>
+<body class="home-page" data-catalog-url="../registry/catalog.json">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
+  <div class="tech-grid" aria-hidden="true"></div>
 
   <header class="site-header" id="top">
-    <a class="brand" href="#top" aria-label="DSH-Store">
-      <img class="brand-logo" src="./dsh-store-logo.svg" alt="" width="44" height="44">
-      <span class="brand-copy"><strong>DSH-Store</strong><small>EXTENSION NETWORK</small></span>
+    <a class="brand" href="./" aria-label="DSH STORE">
+      <span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="./dsh-store-wordmark.png" alt="" width="1448" height="1086"></span>
     </a>
     <nav class="site-nav" aria-label="Primary navigation">
-      <a href="#discover" data-i18n="nav.discover">发现插件</a>
-      <a href="#safety" data-i18n="nav.safety">安全机制</a>
-      <a class="manager-tab" href="#manager"><span data-i18n="nav.manager">管理器插件</span><i aria-hidden="true">↗</i></a>
+      <a href="./" aria-current="page" data-i18n="nav.home">首页</a>
+      <a href="./plugins/" data-i18n="nav.discover">插件目录</a>
+      <a href="./build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="header">开发插件</a>
+      <a href="./faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="header">常见问题</a>
+      <a href="./about/" data-i18n="nav.about" data-analytics-event="about_open" data-analytics-item="header">关于我们</a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/README.md" target="_blank" rel="noreferrer" data-analytics-event="usage_guide_open" data-analytics-item="header"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
     </nav>
     <div class="header-tools">
       <div class="locale-switch" role="group" aria-label="Language">
         <button type="button" data-locale="zh" aria-pressed="true">中文</button>
         <button type="button" data-locale="en" aria-pressed="false">EN</button>
       </div>
-      <a class="header-action" href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
-  <main>
+  <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
-      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
       <div class="hero-copy reveal">
-        <div class="eyebrow"><span class="live-dot"></span><span data-i18n="hero.eyebrow">DEEPSEEK HARNESS 扩展网络</span></div>
-        <h1 id="hero-title"><span data-i18n="hero.title1">下一块能力，</span><br><em data-i18n="hero.title2">已准备接入 DSH。</em></h1>
-        <p class="hero-lead" data-i18n="hero.lead">浏览固定来源、明确权限与兼容性的第三方插件。先看证据，再决定是否安装。</p>
-        <div class="hero-install" aria-label="DSH-Store install command">
-          <div class="hero-install-head"><span><i aria-hidden="true"></i><span data-i18n="install.title">安装商城管理器</span></span><small>v0.5.5 · <span data-i18n="install.pinned">固定 Commit</span></small></div>
-          <div class="command-box"><code id="install-command">dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#74ca4d4c07a21ae1ac1a5e8372e98097e75565b9'</code><button class="command-copy" type="button" data-copy-target="install-command"><span data-i18n="action.copyCommand">复制命令</span><i aria-hidden="true">⧉</i></button></div>
-          <ol class="hero-install-steps"><li><b>01</b><span data-i18n="install.step1">打开终端</span></li><li><b>02</b><span data-i18n="install.step2">粘贴命令并按回车</span></li><li><b>03</b><span data-i18n="install.step3">重启 DSH，进入插件商城</span></li></ol>
-          <p><span data-i18n="install.warning">命令会修改 web Profile；请先备份，失败后不要连续重试。</span><a href="#manager" data-i18n="action.fullGuide">完整步骤 ↗</a></p>
+        <div class="system-status"><span></span><b data-i18n="hero.eyebrow">DSH TRUSTED EXTENSION LAYER</b><em>ONLINE</em></div>
+        <h1 id="hero-title"><span class="hero-brand-title">DSH STORE</span><span data-i18n="hero.title1">可信插件，</span><br><em data-i18n="hero.title2">安全接入 DSH。</em></h1>
+        <p class="hero-lead" data-i18n="hero.lead">面向 DeepSeek Harness（DSH）的第三方插件商城。发现插件、核对来源与权限，再通过清楚、可恢复的路径安全接入。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="hero"><span data-i18n="action.explore">查看全部插件</span><i aria-hidden="true">↗</i></a>
+          <a class="button button-secondary" href="#safety"><span data-i18n="action.trust">了解安全机制</span><i aria-hidden="true">↓</i></a>
         </div>
-        <div class="hero-actions"><a class="button button-primary" href="#discover"><span data-i18n="action.explore">浏览全部插件</span><span aria-hidden="true">↓</span></a><a class="button button-secondary" href="#manager"><span data-i18n="action.manager">了解管理器插件</span><span aria-hidden="true">↗</span></a></div>
-        <div class="hero-trust" aria-label="Marketplace principles"><span><i>01</i><span data-i18n="trust.commit">固定 Git Commit</span></span><span><i>02</i><span data-i18n="trust.permissions">权限信息先展示</span></span><span><i>03</i><span data-i18n="trust.readonly">浏览不改 Profile</span></span></div>
+        <div class="trust-rail" aria-label="Trust principles">
+          <span><i>01</i><b data-i18n="trust.commit">固定 Git Commit</b><small>IMMUTABLE</small></span>
+          <span><i>02</i><b data-i18n="trust.permissions">权限先于安装</b><small>VISIBLE</small></span>
+          <span><i>03</i><b data-i18n="trust.readonly">浏览保持只读</b><small>READ ONLY</small></span>
+        </div>
       </div>
 
-      <div class="hero-stage reveal" aria-label="DSH marketplace signal console">
-        <div class="signal-ring ring-one" aria-hidden="true"></div><div class="signal-ring ring-two" aria-hidden="true"></div>
-        <div class="signal-console">
-          <div class="console-topbar"><span><i></i><i></i><i></i></span><b>DSH-Store // MODULE BUS</b><small><i></i><span data-i18n="console.online">目录在线</span></small></div>
-          <div class="console-body"><aside aria-hidden="true"><span>D</span><i class="active"></i><i></i><i></i><i></i></aside><div class="console-main"><div class="console-heading"><span><small data-i18n="console.network">EXTENSION NETWORK</small><b data-i18n="console.heading">找到新能力</b></span><em>⌕</em></div><div class="console-tabs"><span class="active" data-i18n="tab.featured">推荐</span><span data-i18n="tab.workflow">工作流</span><span data-i18n="tab.visual">视觉</span></div><div id="hero-preview" class="preview-list" aria-live="polite"><div class="preview-skeleton"></div><div class="preview-skeleton"></div><div class="preview-skeleton"></div></div><div class="console-scan" aria-hidden="true"><span></span><i></i><span></span></div></div></div>
+      <div class="install-terminal reveal" aria-label="DSH Store install command">
+        <div class="terminal-head"><span><i></i><i></i><i></i></span><b>SECURE_INSTALL.DSH</b><em><i></i> VERIFIED SOURCE</em></div>
+        <div class="terminal-body">
+          <div class="terminal-label"><span data-i18n="install.title">安装 DSH Store</span><small id="install-version">正在读取 GitHub Catalog…</small></div>
+          <div class="command-box"><span aria-hidden="true">$</span><code id="install-command">正在从 GitHub Catalog 生成安装命令…</code><button class="command-copy" type="button" data-copy-target="install-command"><span data-i18n="action.copyCommand">复制</span><i aria-hidden="true">⧉</i></button></div>
+          <ol class="install-sequence">
+            <li><span>01</span><div><b data-i18n="install.step1">打开终端</b><small data-i18n="install.note1">确认正在操作目标设备</small></div><i>READY</i></li>
+            <li><span>02</span><div><b data-i18n="install.step2">粘贴命令并执行</b><small data-i18n="install.note2">来源锁定到完整 Commit</small></div><i>PINNED</i></li>
+            <li><span>03</span><div><b data-i18n="install.step3">重启 DSH 后打开商城</b><small data-i18n="install.note3">在“设置 → 插件”中进入</small></div><i>CHECK</i></li>
+          </ol>
+          <div class="terminal-warning"><span>!</span><p data-i18n="install.warning">命令会修改 web Profile。请先备份；如执行失败，不要连续重试。</p><a href="#manager" data-i18n="action.fullGuide">查看说明 ↗</a></div>
         </div>
-        <span class="float-card float-safe"><i aria-hidden="true">✓</i><b data-i18n="float.pinned">来源已固定</b><small data-i18n="float.commit">40 位 Commit</small></span>
-        <span class="float-card float-count"><b id="float-count">—</b><small data-i18n="stats.plugins">在架插件</small></span>
-        <span class="float-card float-node"><i></i><b>DSH READY</b><small>HOST + CLIENT</small></span>
       </div>
     </section>
 
-    <section class="stats-strip" aria-label="Marketplace metrics">
-      <div class="stat"><small>ACTIVE</small><strong id="stat-total">—</strong><span data-i18n="stats.plugins">在架插件</span></div>
-      <div class="stat"><small>PLANNABLE</small><strong id="stat-approved">—</strong><span data-i18n="stats.plannable">可生成安装计划</span></div>
-      <div class="stat"><small>CAPABILITIES</small><strong id="stat-categories">—</strong><span data-i18n="stats.categories">能力分类</span></div>
-      <div class="stat stat-source"><span class="source-icon" aria-hidden="true">⌁</span><span><b data-i18n="stats.source">GitHub 目录源</b><small id="catalog-date" data-i18n="stats.connecting">正在连接 catalog.json…</small></span></div>
+    <section class="metric-deck" aria-label="Marketplace metrics">
+      <article><small>CATALOG</small><strong id="stat-total">—</strong><span data-i18n="stats.plugins">在架插件</span></article>
+      <article><small>PLAN READY</small><strong id="stat-approved">—</strong><span data-i18n="stats.plannable">可生成计划</span></article>
+      <article><small>CAPABILITY</small><strong id="stat-categories">—</strong><span data-i18n="stats.categories">能力分类</span></article>
+      <article class="metric-source"><span class="pulse-node"></span><div><b data-i18n="stats.source">GitHub 权威目录</b><small id="catalog-date" data-i18n="stats.connecting">正在核对 catalog.json…</small></div></article>
     </section>
 
     <section class="manager-section section-shell" id="manager" aria-labelledby="manager-title">
-      <div class="section-heading reveal"><div><span class="section-index">01 / MANAGER PLUGIN</span><h2 id="manager-title" data-i18n="manager.title">商城本身，也是一个标准 DSH 插件。</h2></div><p data-i18n="manager.lead">通过官方 Bundle、Host Plugin 与 Client Slot 接入，不修改 DSH 核心，也不遮蔽官方插件清单。</p></div>
-      <div class="manager-layout">
-        <article class="manager-card manager-card-primary reveal"><div class="manager-chip"><span>D</span><div><b>DSH-Store</b><small>HOST + CLIENT BUNDLE</small></div></div><p data-i18n="manager.body">把第三方插件发现、权限核对与受控生命周期放进“设置 → 插件”的独立页面。</p><div class="manager-facts"><span><b>0.5.5</b><small data-i18n="manager.version">当前版本</small></span><span><b>R3</b><small data-i18n="manager.risk">生命周期风险</small></span><span><b>40</b><small data-i18n="manager.identity">位固定身份</small></span></div><a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager" target="_blank" rel="noreferrer"><span data-i18n="action.source">查看源码与说明</span> ↗</a></article>
-        <div class="install-guide reveal"><div class="install-guide-head"><span>INSTALL SEQUENCE</span><b data-i18n="guide.order">按顺序操作</b></div><ol><li><span>01</span><div><h3 data-i18n="guide.title1">备份目标 Profile</h3><p data-i18n="guide.body1">备份 package.json、锁文件、工作区文件和 cordis.patch.yml。</p></div></li><li><span>02</span><div><h3 data-i18n="guide.title2">执行固定来源命令</h3><p data-i18n="guide.body2">使用 DSH 官方 CLI；不要把 40 位 Commit 改成 main。</p></div></li><li><span>03</span><div><h3 data-i18n="guide.title3">检查结果并重启</h3><p data-i18n="guide.body3">命令成功后重启 DSH Web，再进入设置里的插件商城。</p></div></li></ol><a class="guide-back" href="#top" data-i18n="action.backCommand">回到首屏复制命令 ↑</a></div>
+      <div class="section-heading reveal"><div><span class="section-index">01 / CONTROL PLANE</span><h2 id="manager-title" data-i18n="manager.title">商城本身，也是一个受约束的 DSH 插件。</h2></div><p data-i18n="manager.lead">DSH Store 通过标准 Host Plugin 与 Client Bundle 接入，把发现、核对和受控操作放进 DSH，而不是改造 DSH。</p></div>
+      <div class="manager-console reveal">
+        <div class="architecture-map" aria-hidden="true">
+          <div class="arch-node arch-source"><small>AUTHORITY</small><b>catalog.json</b><span>GITHUB</span></div>
+          <i class="arch-line line-one"></i>
+          <div class="arch-core"><span class="arch-brand-icon"><img src="./dsh-store-icon.png" alt="" width="1254" height="1254"></span><div><b>DSH Store</b><small>HOST + CLIENT</small></div></div>
+          <i class="arch-line line-two"></i>
+          <div class="arch-node arch-profile"><small>TARGET</small><b>DSH Profile</b><span>GUARDED</span></div>
+        </div>
+        <div class="manager-copy">
+          <span class="protocol-tag" id="manager-protocol">STANDARD BUNDLE / CATALOG</span>
+          <p data-i18n="manager.body">它不修改 DSH 核心，不遮蔽官方插件清单；任何生命周期变更都需要单次计划、精确确认、备份、检查和回滚。</p>
+          <div class="manager-facts"><span><i></i><b data-i18n="manager.fact1">标准扩展面</b></span><span><i></i><b data-i18n="manager.fact2">浏览默认只读</b></span><span><i></i><b data-i18n="manager.fact3">失败关闭</b></span></div>
+          <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager" target="_blank" rel="noreferrer" data-analytics-event="github_open" data-analytics-item="manager"><span data-i18n="action.source">查看源码与边界</span> ↗</a>
+        </div>
       </div>
     </section>
 
-    <section class="featured-section section-shell" aria-labelledby="featured-title"><div class="section-heading reveal"><div><span class="section-index">02 / SIGNAL PICKS</span><h2 id="featured-title" data-i18n="featured.title">本周信号最强的插件</h2></div><p data-i18n="featured.lead">从固定来源的目录中挑出值得优先了解的扩展能力。</p></div><div id="featured-grid" class="featured-grid" aria-live="polite"><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div></div></section>
+    <section class="featured-section section-shell" aria-labelledby="featured-title">
+      <div class="section-heading reveal"><div><span class="section-index">02 / SELECTED SIGNALS</span><h2 id="featured-title" data-i18n="featured.title">精选插件，扩展你的 DSH 工作流。</h2></div><p data-i18n="featured.lead">从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。</p></div>
+      <div id="featured-grid" class="featured-grid" aria-live="polite"><!-- DSH_STATIC_FEATURED_BEGIN --><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><!-- DSH_STATIC_FEATURED_END --></div>
+      <a class="catalog-gateway reveal" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="featured_footer"><span><small data-i18n="catalog.gatewayKicker">探索更多能力</small><b data-i18n="catalog.gatewayTitle">查看全部 DSH 插件、权限与兼容性</b></span><em data-i18n="action.explore">查看全部插件</em><i aria-hidden="true">↗</i></a>
+    </section>
 
-    <section class="catalog-section" id="discover" aria-labelledby="catalog-title"><div class="catalog-shell section-shell">
-      <div class="section-heading reveal"><div><span class="section-index">03 / EXTENSION NETWORK</span><h2 id="catalog-title" data-i18n="catalog.title">接入你的下一块能力</h2></div><p data-i18n="catalog.lead">搜索名称、分类、权限、兼容性或仓库。无法确认的信息继续保持未知。</p></div>
-      <div class="catalog-toolbar reveal"><label class="search-box" for="search"><span aria-hidden="true">⌕</span><input id="search" type="search" autocomplete="off" aria-label="Search plugins" data-i18n-placeholder="catalog.search" placeholder="搜索插件、能力或 GitHub 仓库"><kbd>⌘ K</kbd></label><label class="select-box" for="sort"><span data-i18n="catalog.sort">排序</span><select id="sort"><option value="recommended" data-i18n="sort.recommended">推荐优先</option><option value="name" data-i18n="sort.name">名称 A–Z</option><option value="recent" data-i18n="sort.recent">版本更新</option><option value="risk" data-i18n="sort.risk">权限由低到高</option></select></label></div>
-      <div class="catalog-controls reveal"><div id="category-pills" class="category-pills" aria-label="Categories"></div><button id="clear-filter" class="text-button" type="button" hidden data-i18n="action.clear">清除筛选</button></div>
-      <div class="result-row"><p id="catalog-meta" role="status" data-i18n="catalog.loading">正在读取目录…</p><span class="legend"><i class="legend-approved"></i><span data-i18n="status.available">可安装</span><i class="legend-blocked"></i><span data-i18n="status.viewOnly">仅展示</span></span></div>
-      <div id="plugin-grid" class="plugin-grid" aria-live="polite"></div>
-      <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h3 data-i18n="empty.title">没有找到匹配插件</h3><p data-i18n="empty.body">换个关键词，或清除当前分类筛选。</p><button id="empty-clear" class="button button-primary" type="button" data-i18n="action.viewAll">查看全部插件</button></div>
-      <div id="load-error" class="load-error" hidden><span aria-hidden="true">!</span><div><h3 data-i18n="error.title">目录暂时没有加载成功</h3><p data-i18n="error.body">请从仓库根目录启动本地服务器。</p><code>npm run dev:marketplace</code></div></div>
+    <section class="safety-section" id="safety" aria-labelledby="safety-title"><div class="section-shell">
+      <div class="section-heading reveal"><div><span class="section-index">03 / TRUST PROTOCOL</span><h2 id="safety-title" data-i18n="safety.title">信任不是口号，是四个可检查的状态。</h2></div><p data-i18n="safety.lead">收录从不等于安全审计。我们把来源、权限、变更与恢复分开显示，未知事实保持未知。</p></div>
+      <div class="safety-grid">
+        <article class="safety-card reveal"><span>01</span><div class="security-glyph glyph-hash"><i></i><b id="manager-commit-short">CATALOG</b><em>FIXED</em></div><h3 data-i18n="safety.card1.title">来源固定</h3><p data-i18n="safety.card1.body">可安装条目指向完整 40 位 Git Commit，不把浮动分支伪装成稳定版本。</p><small>INTEGRITY / SOURCE</small></article>
+        <article class="safety-card reveal"><span>02</span><div class="security-glyph glyph-radar"><i></i><i></i><b>R0–R3</b></div><h3 data-i18n="safety.card2.title">权限可见</h3><p data-i18n="safety.card2.body">文件、网络、命令和凭据边界在操作前集中展示。</p><small>PERMISSION / SCOPE</small></article>
+        <article class="safety-card reveal"><span>03</span><div class="security-glyph glyph-plan"><b>PLAN</b><i>→</i><b>CONFIRM</b></div><h3 data-i18n="safety.card3.title">先计划再改变</h3><p data-i18n="safety.card3.body">每次真实变更使用新的一次性计划，并核对精确文件范围。</p><small>CONTROL / INTENT</small></article>
+        <article class="safety-card reveal"><span>04</span><div class="security-glyph glyph-rollback"><i>↶</i><b>ROLLBACK</b><em>READY</em></div><h3 data-i18n="safety.card4.title">随时可恢复</h3><p data-i18n="safety.card4.body">执行前备份，执行后健康检查；失败时恢复原始状态。</p><small>RECOVERY / HEALTH</small></article>
+      </div>
     </div></section>
 
-    <section class="safety-section" id="safety" aria-labelledby="safety-title"><div class="section-shell"><div class="section-heading section-heading-light reveal"><div><span class="section-index">04 / TRUST CIRCUIT</span><h2 id="safety-title" data-i18n="safety.title">把“放心”做成可见电路</h2></div><p data-i18n="safety.lead">收录不是安全审计。来源、权限、变更计划与恢复路径必须分别展示。</p></div><div class="safety-grid"><article class="safety-card reveal"><span>01</span><div class="safety-visual commit-visual"><i>main</i><b>72d7ebb</b><em>FIXED</em></div><h3 data-i18n="safety.card1.title">不可变来源</h3><p data-i18n="safety.card1.body">可安装条目指向完整 40 位 Git Commit，浮动分支不进入受保护流程。</p></article><article class="safety-card reveal"><span>02</span><div class="safety-visual radar-visual"><i></i><i></i><b>PERMISSION</b></div><h3 data-i18n="safety.card2.title">权限雷达</h3><p data-i18n="safety.card2.body">文件、网络、命令、凭据与兼容性集中展示，未知字段不猜测。</p></article><article class="safety-card reveal"><span>03</span><div class="safety-visual rollback-visual"><b>PLAN</b><i>→</i><b>BACKUP</b><i>→</i><b>CHECK</b></div><h3 data-i18n="safety.card3.title">先计划，再改变</h3><p data-i18n="safety.card3.body">真实 Profile 操作需要单次计划、精确确认、备份、健康检查与失败回滚。</p></article></div></div></section>
+    <section class="workflow-section section-shell" aria-labelledby="workflow-title">
+      <div class="section-heading reveal"><div><span class="section-index">04 / CONVENIENCE</span><h2 id="workflow-title" data-i18n="workflow.title">安全流程，也可以很方便。</h2></div><p data-i18n="workflow.lead">一个入口、一个命令、一个清楚的验证路径。复杂性留在系统里，决定权留给你。</p></div>
+      <div class="workflow-list">
+        <article class="workflow-step reveal"><span>01</span><div><small>DISCOVER</small><h3 data-i18n="workflow.step1.title">找到适合的插件</h3><p data-i18n="workflow.step1.body">按能力与使用场景缩小范围，再查看来源、权限和兼容性。</p></div><i>⌕</i></article>
+        <article class="workflow-step reveal"><span>02</span><div><small>INSTALL</small><h3 data-i18n="workflow.step2.title">复制固定来源命令</h3><p data-i18n="workflow.step2.body">首屏直接给出命令和执行顺序，不需要翻找文档。</p></div><i>⧉</i></article>
+        <article class="workflow-step reveal"><span>03</span><div><small>VERIFY</small><h3 data-i18n="workflow.step3.title">重启后进入 DSH Store</h3><p data-i18n="workflow.step3.body">在 DSH 内查看并管理，真实结果与测试状态明确区分。</p></div><i>✓</i></article>
+      </div>
+    </section>
 
-    <section class="workflow-section" id="workflow" aria-labelledby="workflow-title"><div class="workflow-inner section-shell"><span class="section-index">05 / DISCOVER → PLAN → VERIFY</span><h2 id="workflow-title" class="reveal" data-i18n="workflow.title">三步，把新能力接入 DSH</h2><div class="workflow-list"><article class="workflow-step reveal"><span>01</span><div><h3 data-i18n="workflow.step1.title">发现与核对</h3><p data-i18n="workflow.step1.body">搜索能力，确认来源、兼容性和权限边界。</p></div></article><article class="workflow-step reveal"><span>02</span><div><h3 data-i18n="workflow.step2.title">生成一次性计划</h3><p data-i18n="workflow.step2.body">在 DSH 内创建新计划并核对文件范围、备份与回滚路径。</p></div></article><article class="workflow-step reveal"><span>03</span><div><h3 data-i18n="workflow.step3.title">确认并验证</h3><p data-i18n="workflow.step3.body">执行后检查配置与运行状态；测试通过不等于真实 Profile 已生效。</p></div></article></div></div></section>
+    <section class="build-bridge section-shell reveal">
+      <div><span>BUILD LAB / OPEN SOURCE</span><h2 data-i18n="builder.title">没有合适的插件？从一个真实问题开始构建。</h2><p data-i18n="builder.lead">使用开源 build-dsh-plugin Skill，把问题、结果和成功标准转换为标准工程与证据门槛。</p></div>
+      <a class="button button-primary" href="./build/#install-skill" data-analytics-event="skill_install_open" data-analytics-item="home_footer"><span data-i18n="action.installSkill">安装 build-dsh-plugin</span><i aria-hidden="true">↗</i></a>
+    </section>
 
-    <section class="faq-section section-shell" aria-labelledby="faq-title"><div class="section-heading reveal"><div><span class="section-index">06 / FAQ</span><h2 id="faq-title" data-i18n="faq.title">安装之前，你可能还想知道</h2></div></div><div class="faq-list"><details><summary><span data-i18n="faq.q1">官网会直接安装插件吗？</span><i>＋</i></summary><p data-i18n="faq.a1">不会。官网只负责浏览与详情展示；生命周期操作必须在 DSH 内生成计划并确认。</p></details><details><summary><span data-i18n="faq.q2">“可安装”等于完成安全审计吗？</span><i>＋</i></summary><p data-i18n="faq.a2">不等于。它只表示条目满足固定来源、标准 Bundle 与当前策略检查。</p></details><details><summary><span data-i18n="faq.q3">目录离线时会怎样？</span><i>＋</i></summary><p data-i18n="faq.a3">可使用随包快照只读浏览，但安装与更新失败关闭，直到重新核验在线来源。</p></details><details><summary><span data-i18n="faq.q4">插件作者只更新 GitHub，用户能收到提醒吗？</span><i>＋</i></summary><p data-i18n="faq.a4">可以。已安装页由用户本机扫描源仓库；低风险可生成固定 Commit 计划，高风险展示变化后由用户决定。修改 DSH 原生代码或受保护组件的项目只保留不受商城保护的 GitHub 入口。</p></details></div></section>
+    <section class="faq-section section-shell" aria-labelledby="faq-title">
+      <div class="section-heading reveal"><div><span class="section-index">05 / FAQ</span><h2 id="faq-title" data-i18n="faq.title">安装之前，先把边界说清楚。</h2></div></div>
+      <div class="faq-list">
+        <details><summary><span data-i18n="faq.q1">官网会直接安装插件吗？</span><i>＋</i></summary><p data-i18n="faq.a1">不会。官网只负责发现与详情展示；生命周期操作需要在 DSH 内生成计划并确认。</p></details>
+        <details><summary><span data-i18n="faq.q2">“可安装”等于完成安全审计吗？</span><i>＋</i></summary><p data-i18n="faq.a2">不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。</p></details>
+        <details><summary><span data-i18n="faq.q3">如何选择适合自己的插件？</span><i>＋</i></summary><p data-i18n="faq.a3">先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。</p></details>
+      </div>
+      <a class="faq-more reveal" href="./faq/" data-analytics-event="faq_open" data-analytics-item="home_faq"><span data-i18n="action.allFaq">查看完整常见问题</span><i aria-hidden="true">↗</i></a>
+    </section>
   </main>
 
-  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="#top" aria-label="DSH-Store"><img class="brand-logo" src="./dsh-store-logo.svg" alt="" width="44" height="44"><span class="brand-copy"><strong>DSH-Store</strong><small>EXTENSION NETWORK</small></span></a><p data-i18n="footer.lead">一个明亮、清楚、可追溯的 DeepSeek Harness 第三方插件入口。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>GitHub <code>registry/catalog.json</code></span><span data-i18n="footer.note">收录不代表安全审计 · 浏览不会改写 Profile</span></div></footer>
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="#top" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="./dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">科技感来自清晰的系统，信任来自可检查的边界。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>AUTHORITY · GitHub <code>registry/catalog.json</code></span><span data-i18n="footer.note">收录不等于安全审计 · 浏览不会改写 Profile</span></div></footer>
 
   <dialog id="plugin-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><header class="dialog-header"><div><span id="dialog-kicker" class="dialog-kicker">PLUGIN DETAIL</span><h2 id="dialog-title" data-i18n="dialog.title">插件详情</h2></div><button id="dialog-close" class="dialog-close" type="button" aria-label="Close">×</button></header><div id="dialog-body" class="dialog-body"></div></div></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>

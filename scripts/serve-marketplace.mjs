@@ -1,17 +1,15 @@
 import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
-import { extname, resolve } from 'node:path'
+import { extname, isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const requestedPort = Number.parseInt(process.env.DSH_MARKETPLACE_PORT || '4173', 10)
 const port = Number.isInteger(requestedPort) && requestedPort > 0 && requestedPort < 65536 ? requestedPort : 4173
 const host = '127.0.0.1'
-const marketplaceIndex = resolve(root, 'marketplace/index.html')
-const marketplaceApp = resolve(root, 'marketplace/app.js')
-const marketplaceStyles = resolve(root, 'marketplace/styles.css')
-const marketplaceLogo = resolve(root, 'marketplace/dsh-store-logo.svg')
+const marketplaceRoot = resolve(root, 'marketplace')
+const marketplaceIndex = resolve(marketplaceRoot, 'index.html')
 const catalog = resolve(root, 'registry/catalog.json')
 const mimeTypes = new Map([
   ['.css', 'text/css; charset=utf-8'],
@@ -24,28 +22,22 @@ const mimeTypes = new Map([
   ['.jpg', 'image/jpeg'],
   ['.jpeg', 'image/jpeg'],
   ['.webp', 'image/webp'],
+  ['.txt', 'text/plain; charset=utf-8'],
+  ['.xml', 'application/xml; charset=utf-8'],
+  ['.webmanifest', 'application/manifest+json; charset=utf-8'],
 ])
 
 function safePath(urlPath) {
   let pathname
   try { pathname = new URL(urlPath, 'http://127.0.0.1').pathname } catch { return null }
-  switch (pathname) {
-    case '/':
-    case '/marketplace':
-    case '/marketplace/':
-    case '/marketplace/index.html':
-      return marketplaceIndex
-    case '/marketplace/app.js':
-      return marketplaceApp
-    case '/marketplace/styles.css':
-      return marketplaceStyles
-    case '/marketplace/dsh-store-logo.svg':
-      return marketplaceLogo
-    case '/registry/catalog.json':
-      return catalog
-    default:
-      return null
-  }
+  if (pathname === '/' || pathname === '/marketplace' || pathname === '/marketplace/') return marketplaceIndex
+  if (pathname === '/registry/catalog.json') return catalog
+  if (!pathname.startsWith('/marketplace/')) return null
+  const requested = pathname.endsWith('/') ? `${pathname}index.html` : pathname
+  const target = resolve(marketplaceRoot, requested.slice('/marketplace/'.length))
+  const scoped = relative(marketplaceRoot, target)
+  if (!scoped || scoped.startsWith('..') || isAbsolute(scoped)) return null
+  return target
 }
 
 const server = createServer(async (request, response) => {

@@ -1,0 +1,195 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+umask 022
+
+readonly pages_base='https://ai-scarlett.github.io/dsh-safe-plugin-manager'
+readonly deploy_root='/opt/dsh-store'
+readonly current_link="$deploy_root/current"
+readonly lock_file='/run/lock/dsh-store-refresh.lock'
+
+exec 9>"$lock_file"
+if ! flock -n 9; then
+  printf '%s\n' 'DSH_STORE_REFRESH_SKIPPED reason=already-running'
+  exit 0
+fi
+
+install -d -o root -g root -m 0755 "$deploy_root/incoming" "$deploy_root/releases" "$deploy_root/backups"
+incoming=$(mktemp -d "$deploy_root/incoming/pages-sync.XXXXXX")
+candidate=''
+backup=''
+old_target=''
+switched=0
+
+cleanup_incoming() {
+  case "$incoming" in
+    "$deploy_root"/incoming/pages-sync.*) rm -rf -- "$incoming" ;;
+    *) printf 'Refusing to remove unexpected incoming path: %s\n' "$incoming" >&2 ;;
+  esac
+}
+
+rollback_on_error() {
+  rc=$?
+  trap - ERR EXIT
+  if test "$switched" -eq 1 && test -n "$old_target"; then
+    ln -s "$old_target" "$current_link.rollback.$BASHPID"
+    mv -Tf "$current_link.rollback.$BASHPID" "$current_link"
+    curl -fsS --resolve dsh.store:443:127.0.0.1 --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null https://dsh.store/
+    curl -fsS --resolve dsh.store:443:127.0.0.1 --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null https://dsh.store/registry/catalog.json
+    printf 'DSH_STORE_REFRESH_ROLLBACK restored=%s failed_candidate=%s\n' "$old_target" "$candidate" >&2
+  fi
+  cleanup_incoming
+  exit "$rc"
+}
+trap rollback_on_error ERR
+trap cleanup_incoming EXIT
+
+curl -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
+  "$pages_base/release-manifest.json" -o "$incoming/release-manifest.json"
+
+python3 - "$incoming/release-manifest.json" > "$incoming/files.list" <<'PY'
+import json, pathlib, re, sys
+
+manifest = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
+if manifest.get('schemaVersion') != 1:
+    raise SystemExit('unsupported release manifest')
+source = manifest.get('sourceCommit', '')
+if not re.fullmatch(r'[0-9a-f]{40}', source):
+    raise SystemExit('release manifest source commit is not pinned')
+files = manifest.get('files')
+if not isinstance(files, dict):
+    raise SystemExit('release manifest files are missing')
+required = {
+    'build-manifest.json',
+    'marketplace/index.html',
+    'marketplace/plugins/index.html',
+    'marketplace/build/index.html',
+    'marketplace/faq/index.html',
+    'marketplace/about/index.html',
+    'registry/catalog.json',
+}
+if not required.issubset(files):
+    raise SystemExit('release manifest is incomplete')
+for path, metadata in sorted(files.items()):
+    if not re.fullmatch(r'[A-Za-z0-9._/-]+', path) or path.startswith('/') or '..' in path.split('/'):
+        raise SystemExit(f'unsafe release path: {path}')
+    if not isinstance(metadata, dict) or not re.fullmatch(r'[0-9a-f]{64}', str(metadata.get('sha256', ''))):
+        raise SystemExit(f'invalid release hash: {path}')
+    if not isinstance(metadata.get('size'), int) or metadata['size'] < 0:
+        raise SystemExit(f'invalid release size: {path}')
+    print(path)
+PY
+
+source_sha=$(python3 - "$incoming/release-manifest.json" <<'PY'
+import json,sys
+print(json.load(open(sys.argv[1], encoding='utf-8'))['sourceCommit'])
+PY
+)
+
+if test -f "$current_link/release-manifest.json" && cmp -s "$incoming/release-manifest.json" "$current_link/release-manifest.json"; then
+  printf 'DSH_STORE_REFRESH_SKIPPED reason=already-current source=%s\n' "$source_sha"
+  exit 0
+fi
+
+release_id="$(date -u +%Y%m%dT%H%M%SZ)-pages-${source_sha:0:12}"
+candidate="$deploy_root/releases/$release_id"
+backup="$deploy_root/backups/$release_id-before"
+test ! -e "$candidate"
+test ! -e "$backup"
+install -d -o root -g root -m 0755 "$candidate"
+
+while IFS= read -r path; do
+  install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
+  curl -fsSL --connect-timeout 10 --max-time 90 --retry 4 --retry-all-errors --retry-delay 2 \
+    "$pages_base/$path" -o "$candidate/$path"
+done < "$incoming/files.list"
+install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
+
+python3 - "$candidate" <<'PY'
+import hashlib, json, os, pathlib, re, sys
+
+root = pathlib.Path(sys.argv[1]).resolve()
+manifest = json.loads((root / 'release-manifest.json').read_text(encoding='utf-8'))
+for path, metadata in manifest['files'].items():
+    target = (root / path).resolve()
+    if root not in target.parents or not target.is_file() or target.is_symlink():
+        raise SystemExit(f'unsafe or missing artifact: {path}')
+    data = target.read_bytes()
+    if len(data) != metadata['size'] or hashlib.sha256(data).hexdigest() != metadata['sha256']:
+        raise SystemExit(f'artifact mismatch: {path}')
+
+catalog = json.loads((root / 'registry/catalog.json').read_text(encoding='utf-8'))
+build = json.loads((root / 'build-manifest.json').read_text(encoding='utf-8'))
+manager = next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
+actual = (manager['version'], manager['commit'], manager['status'], manager['details']['license'])
+expected = (build['manager']['version'], build['manager']['commit'], build['manager']['status'], build['manager']['license'])
+if actual != expected or build['sourceCommit'] != manifest['sourceCommit']:
+    raise SystemExit('catalog and static build identities do not match')
+home = (root / 'marketplace/index.html').read_text(encoding='utf-8')
+plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
+styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')
+if manager['commit'] not in home or 'id="catalog-snapshot"' not in home or 'data-static-plugin-id=' not in plugins:
+    raise SystemExit('static marketplace content is incomplete')
+if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
+    raise SystemExit('catalog error visibility guard is missing')
+for path in root.rglob('*'):
+    if path.is_symlink() or path.name == '.git' or path.name.startswith('.env') or path.name.startswith('._'):
+        raise SystemExit(f'forbidden artifact entry: {path.relative_to(root)}')
+print('DSH_STORE_CANDIDATE_OK', build['sourceCommit'], *actual)
+PY
+
+chown -R root:root "$candidate"
+find "$candidate" -type d -exec chmod 0755 {} +
+find "$candidate" -type f -exec chmod 0644 {} +
+
+old_target=$(readlink -f "$current_link")
+test -d "$old_target"
+install -d -o root -g root -m 0750 "$backup"
+cp -a "$old_target"/. "$backup"/
+if test -f /etc/nginx/sites-available/dsh-store-pending.conf; then
+  cp -a /etc/nginx/sites-available/dsh-store-pending.conf "$backup/dsh-store-pending.conf.before"
+fi
+printf 'backup_utc=%s\nold_target=%s\nnew_source_commit=%s\n' \
+  "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$old_target" "$source_sha" > "$backup/BACKUP.txt"
+(
+  cd "$backup"
+  find . -type f ! -name MANIFEST.sha256 -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > MANIFEST.sha256
+  sha256sum -c MANIFEST.sha256 >/dev/null
+)
+
+ln -s "$candidate" "$current_link.next.$BASHPID"
+mv -Tf "$current_link.next.$BASHPID" "$current_link"
+switched=1
+
+for spec in \
+  'home /' \
+  'plugins /plugins/' \
+  'build /build/' \
+  'faq /faq/' \
+  'about /about/' \
+  'catalog /registry/catalog.json'; do
+  set -- $spec
+  label=$1
+  path=$2
+  code='000'
+  for attempt in 1 2 3 4 5; do
+    code=$(curl -sS --resolve dsh.store:443:127.0.0.1 --connect-timeout 5 --max-time 30 \
+      -o "$incoming/health-$label" -w '%{http_code}' "https://dsh.store$path" || true)
+    test "$code" = 200 && break
+    sleep 1
+  done
+  test "$code" = 200
+done
+
+python3 - "$incoming/health-home" "$incoming/health-catalog" <<'PY'
+import json,sys
+home=open(sys.argv[1],encoding='utf-8').read()
+catalog=json.load(open(sys.argv[2],encoding='utf-8'))
+manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
+if manager['commit'] not in home:
+    raise SystemExit('public homepage install identity mismatch')
+print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'])
+PY
+
+switched=0
+printf 'DSH_STORE_REFRESH_OK source=%s release=%s backup=%s\n' "$source_sha" "$candidate" "$backup"
