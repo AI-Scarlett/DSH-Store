@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-18T05:58:45Z",
+    "updatedAt": "2026-08-18T06:22:25Z",
     "categories": {
       "marketplace": "插件市场",
       "management": "管理工具",
@@ -31,6 +31,28 @@
     }
   },
   "entries": [
+    {
+      "id": "build-dsh-plugin",
+      "name": "DSH 插件开发工作流（Build DSH Plugin）",
+      "packageName": "dsh-build-plugin",
+      "description": "把插件需求转化为标准 DSH Bundle、卡片契约、审计、发布和商城候选，并强制执行非破坏性边界与分级验收。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "de76da81a25058dacbb067153ce22025a8f43271",
+      "version": "0.1.0",
+      "categories": ["development", "workflow", "tools"],
+      "featured": true,
+      "entryIds": ["dsh-build-plugin-skill-provider"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.7", "node": ">=22.13.0", "systems": ["macOS"], "profiles": ["web", "headless"] },
+      "details": {
+        "pluginType": "suite", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "shell", "credentials": ["unknown"] },
+        "externalDependencies": ["Git（发布与固定源验证时）", "GitHub（发布与 DSH STORE 上架时）"], "reviewStatus": "author-verified"
+      },
+      "risk": { "installScripts": [], "review": "owner-skill-development-workflow-can-direct-high-privilege-agent-actions-not-security-audited" }
+    },
     {
       "id": "dsh-safe-plugin-manager",
       "name": "安全插件商城（DSH-Store）",
