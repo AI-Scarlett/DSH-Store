@@ -3,11 +3,25 @@ import { execFile } from 'node:child_process'
 import { copyFile, mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
-import { join } from 'node:path'
+import { delimiter, isAbsolute, join } from 'node:path'
 
 function paths(dshHome) {
   const root = join(dshHome, 'dsh-safe-plugin-manager', 'guardian')
   return { root, status: join(root, 'status.json'), request: join(root, 'request.json') }
+}
+
+function validateRestartSpec(value, profile) {
+  if (!value || !isAbsolute(value.nodePath) || !isAbsolute(value.cliPath) || !isAbsolute(value.cwd)) {
+    throw Object.assign(new Error('Guardian 重启路径必须是绝对路径。'), { code: 'GUARDIAN_RESTART_SPEC_INVALID' })
+  }
+  if (!Array.isArray(value.runtimeArgs) || value.runtimeArgs.some(item => typeof item !== 'string') || value.profile !== profile) {
+    throw Object.assign(new Error('Guardian 重启参数无效。'), { code: 'GUARDIAN_RESTART_SPEC_INVALID' })
+  }
+  if (typeof value.commandPath !== 'string' || value.commandPath.length === 0
+    || value.commandPath.split(delimiter).some(item => !item || !isAbsolute(item))) {
+    throw Object.assign(new Error('Guardian 命令 PATH 无效。'), { code: 'GUARDIAN_COMMAND_PATH_INVALID' })
+  }
+  return value
 }
 
 async function atomicJson(path, value) {
@@ -97,12 +111,12 @@ export function createGuardianService(options = {}) {
     if (await fileDigest(plistPath) !== plan.preconditions.plistSha256 || await fileDigest(daemonSource) !== plan.preconditions.daemonSha256) {
       throw Object.assign(new Error('Guardian 文件在确认后发生变化。'), { code: 'GUARDIAN_PRECONDITION_CHANGED' })
     }
+    const restart = validateRestartSpec(options.restartSpec(plan.profile), plan.profile)
     await mkdir(location.root, { recursive: true, mode: 0o700 })
     await mkdir(launchAgentsDir, { recursive: true, mode: 0o700 })
     const daemonTarget = join(location.root, 'guardian-daemon.mjs')
     const daemonTemporary = `${daemonTarget}.${randomUUID()}.tmp`
     await copyFile(daemonSource, daemonTemporary); await rename(daemonTemporary, daemonTarget)
-    const restart = options.restartSpec(plan.profile)
     await atomicJson(join(location.root, 'config.json'), {
       schemaVersion: 1, ...restart, stateDir: location.root, host: '127.0.0.1', port: 3080,
       profileDir: join(options.dshHome, 'profiles', plan.profile),

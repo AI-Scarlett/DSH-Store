@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { delimiter, join } from 'node:path'
 import test from 'node:test'
 import { createGuardianService } from '../src/guardian.mjs'
 import { runGuardian } from '../src/guardian-daemon.mjs'
@@ -25,9 +25,10 @@ test('guardian installation uses a single-use plan and fixed launchctl arguments
     const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
     await mkdir(launchAgentsDir); await writeFile(daemonSource, 'export {}\n')
     const calls = []
+    const commandPath = ['/opt/homebrew/bin', '/usr/bin', '/bin'].join(delimiter)
     const service = createGuardianService({
       dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true,
-      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: ['--import', '/loader'], cliPath: '/dsh.js', cwd: '/repo', profile }),
+      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: ['--import', '/loader'], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath }),
       execFile: async (file, args) => { calls.push([file, args]) },
     })
     const plan = await service.createInstallPlan({ profile: 'web' })
@@ -43,6 +44,33 @@ test('guardian installation uses a single-use plan and fixed launchctl arguments
     assert.equal(config.healthProbeTimeoutMs, 1_500)
     assert.equal(config.unhealthyThreshold, 3)
     assert.equal(config.startupGraceMs, 10_000)
+    assert.equal(config.commandPath, commandPath)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('guardian launches DSH with the validated command PATH captured by the manager', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-path-'))
+  const controller = new AbortController()
+  const commandPath = ['/opt/homebrew/bin', '/usr/bin', '/bin'].join(delimiter)
+  let launchOptions
+  const child = new EventEmitter()
+  child.pid = 4242
+  child.stderr = new EventEmitter()
+  child.kill = signal => { child.emit('exit', 0, signal); return true }
+  try {
+    await runGuardian({
+      nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', stateDir: join(root, 'state'),
+      profileDir: join(root, 'profile'), profile: 'web', host: '127.0.0.1', port: 3080, commandPath,
+    }, {
+      signal: controller.signal,
+      listening: async () => false,
+      spawn: (file, args, options) => { launchOptions = { file, args, options }; return child },
+      delay: async () => controller.abort(),
+    })
+    assert.equal(launchOptions.file, '/node')
+    assert.deepEqual(launchOptions.args, ['/dsh.js', 'web'])
+    assert.equal(launchOptions.options.shell, false)
+    assert.equal(launchOptions.options.env.PATH, commandPath)
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 

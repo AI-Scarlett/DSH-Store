@@ -25,6 +25,8 @@ jobs:
       - name: Check fixed source without executing third-party code
         id: check
         continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: >-
           node scripts/check-plugin-submission.mjs
           --event "$GITHUB_EVENT_PATH"

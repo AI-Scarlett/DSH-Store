@@ -5,9 +5,11 @@ DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 插件商城与安全生命周期管理器。它使用标准 DSH Bundle + Host Plugin + Client Bundle
 结构，不开发独立桌面端，不修改 DSH 源码，也不替换任何 `@deepseek-ai/*` 官方包。
 
+> **想把插件上架到 DSH-Store？** [提交一个公开 GitHub 项目地址](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) 即可。机器人会自动读取必要文件，不再要求手填整份 Catalog。开发或提交前，建议先用 [`build-dsh-plugin`](https://github.com/AI-Scarlett/build-dsh-plugin) 制作或执行只读商城预检。
 
 [打开在线插件商城](https://dsh.store/) ·
-[提交插件上架申请](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) ·
+[提交项目上架](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) ·
+[使用 build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) ·
 [查看机器目录](registry/catalog.json) ·
 [目录准入规则](registry/README.md) ·
 [安全说明](SECURITY.md)
@@ -16,7 +18,7 @@ DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 
 ### 前置条件
 
-- DeepSeek Harness `0.1.0-rc.5` 或更高版本，并且官方 `dsh` CLI 已加入 `PATH`；
+- DeepSeek Harness `0.1.0-rc.7` 或更高版本，并且官方 `dsh` CLI 可用；
 - Node.js `22.13.0` 或更高版本；
 - 一个启用了 Web 客户端的目标 Profile。下面以 `web` 为例，如果你的 Profile 名称不同，
   请替换命令中的 `web`。
@@ -30,7 +32,7 @@ DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#8a76190b516258e37ba0604891058c87d979295e'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#3ca90bf245fe54a097c787c216ad7353d7769ebb'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -60,7 +62,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.4.9` |
+| 商城版本 | `0.5.0` |
 | 收录条目 | 43 个 |
 | 可安装 | 38 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
@@ -110,6 +112,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
   启动失败时不依赖 Host Plugin 或设置页存活；
 - 安装 Guardian 仍需一次性计划、精确确认和文件哈希预条件，并明确展示将替换的启动任务；
 - 使用固定参数数组启动 DSH，不使用 `bash -c`，记录心跳、启动状态、失败次数和熔断状态；
+- 将管理器验证过的命令 PATH 固化到 Guardian 配置；即使 launchd 与 Node 运行时 PATH 中没有
+  Homebrew，启动与离线依赖恢复仍能从全局 DSH CLI 安装位置找到可执行的 `pnpm`；
 - Guardian 是 DSH web Profile 的唯一启动所有者；商城不再提供会启动第二个实例的复制命令；
 - 健康判定要求首页 HTTP 和 `/api2/dsh-safe-plugin-manager/runtime` 同时成功，并核对 Profile 与
   Boot ID。单纯能连接 3080 端口不再代表 DSH 健康；
@@ -128,7 +132,10 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 ### 插件详情与权限画像
 
+- DSH `0.1.0-rc.7` 中使用紧凑的响应式卡片、状态圆点、清晰的操作区和无障碍列表语义；
 - 每张商城卡片可打开详情弹窗，集中显示插件类型、安装来源和许可证；
+- 列表与详情均显示由 GitHub 仓库链接可靠派生的发布者账号；组织仓库显示组织账号，
+  不把它误写成具体个人开发者；
 - 展示权限等级，以及文件、网络、命令和凭据访问范围；
 - 展示外部依赖、审核状态、DSH/Node.js 版本、系统和 Profile 兼容性；
 - 字段来自 GitHub 目录固定 Commit 的 manifest、README 与代码信号；无法确认时显示
@@ -186,6 +193,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 健康权限交互修复 `0.4.6` | [`e645ede`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/e645edefe8ece8972d3fd723875b0f49ffeb272b) | 将权限定位与重新检查拆分，补充未选择数量、按钮禁用、检查中和完成/失败反馈。 |
 | Guardian 单一所有者 `0.4.8` | [`ed8722b`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d) | 以首页 HTTP 与 runtime Profile/Boot ID 共同判定健康；拒绝接管外部或未知端口进程，连续失败才有界重启，并移除会启动第二实例的 UI 命令。 |
 | DSH-Store 与目录扩充 `0.4.9` | [`8a76190`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/8a76190b516258e37ba0604891058c87d979295e) | 英文品牌统一为 DSH-Store，技术支持入口切换到 dsh.store，并将目录扩充到 42 个条目。 |
+| rc.7 卡片与提交门禁 `0.5.0` | [`3ca90bf`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3ca90bf245fe54a097c787c216ad7353d7769ebb) | 修复 Guardian/全局 DSH CLI 的 pnpm PATH，升级响应式插件卡片与发布者展示，并将上架表单简化为 GitHub 地址驱动的自动静态预检。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
@@ -289,17 +297,60 @@ Host 端使用 `ctx.inject(['webServer'], ...)` 等待可选 Web 服务。Client
 
 ### 提交插件上架申请
 
-如果你开发或发现了值得收录的 DSH 插件，可以通过
-[插件上架申请表](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
-留言提交。表单支持仓库根包和 monorepo 子目录，需要提供公开 GitHub 仓库、完整 40 位
-Commit、manifest/安装路径、包名和版本、DSH 入口 ID，并如实声明安装生命周期脚本、
-权限、外部依赖和兼容性。
+如果你开发或发现了值得收录的 DSH 插件，只需打开
+[项目上架入口](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
+并填写公开 GitHub 地址。仓库只有一个 DSH 插件时无需填写其他技术字段；若机器人发现多个
+插件，会列出候选目录，此时编辑 Issue 补一个 `Plugin path` 即可。
 
-Issue 创建、编辑或重新打开后，GitHub Actions 会自动读取固定 Commit，对 manifest、
-Bundle Patch、包名/版本、入口 ID、生命周期脚本、受保护命名空间和目录字段执行静态预检，
-并幂等更新同一条机器人评论和 `submission-passed` / `submission-failed` 标签。未通过的申请
-不会进入人工评审；修正 Issue 后会自动重检。工作流只读取公开固定源，不克隆或执行第三方
-安装、构建和测试脚本。静态预检通过不代表安全审计、运行验证或自动上架。
+开发新插件或准备提交前，建议安装并使用
+[`build-dsh-plugin`](https://github.com/AI-Scarlett/build-dsh-plugin)。它可以从 Brief 生成标准
+Host Plugin + Client Bundle，判断 R0–R3 风险，生成 Catalog 候选并做只读预检；它不会
+静默修改 DSH-Store 或真实 Profile。可以直接告诉支持该 Skill 的 Agent：
+
+```text
+使用 $build-dsh-plugin，只读检查这个 DSH 插件是否满足 DSH-Store 上架条件：
+https://github.com/owner/repository
+不要安装到真实 Profile，不要执行第三方生命周期脚本。
+```
+
+#### 上架必要条件
+
+1. 仓库必须公开托管在 GitHub；最终安装源固定到完整 40 位 Commit，不接受浮动分支、
+   npm-only、本地路径或任意下载 URL；
+2. 目标目录包含有效 `package.json`，声明语义化包版本和可解析的 `dsh.bundle.patch`；
+3. Bundle Patch 至少声明一个唯一 DSH 入口 ID，且不禁用、替换、遮蔽或冒充
+   `@deepseek-ai/*` 官方组件与官方插件清单；
+4. 包名、版本、许可证、`preinstall/install/postinstall/prepare` 生命周期脚本必须与固定
+   Commit 的实际文件一致；第三方包不得使用 `@deepseek-ai` 命名空间；
+5. README 至少说明插件用途、安装或启用方式、外部依赖和主要风险；monorepo 必须能唯一定位
+   插件目录；
+6. 上架前必须明确 DSH/Node.js、系统和 Profile 兼容范围，以及文件、网络、命令、凭据权限。
+   无法确认时必须写“未知”，不得把“没有搜到”推断成“不访问”；
+7. 插件应具备清晰用途，并在“热门、有用、有趣”至少一个维度具有收录价值；高权限、安装
+   脚本和外部服务不会自动拒绝，但必须显著披露并接受更严格复核；
+8. 自动预检、人工检查和作者认证都不等于完整安全审计；可安装插件仍需在一次性 Profile 中
+   完成适配版本的安装、配置合成、页面或工具可见性与卸载/回滚验收。
+
+#### GitHub 自动检查
+
+Issue 创建、编辑或重新打开后，GitHub Actions 会自动取得默认分支当前 HEAD 的 40 位 Commit，
+读取仓库树、目标 `package.json`、README 和 Bundle Patch，并检查：公开/归档状态、包名和版本、
+许可证、Bundle 声明、入口 ID、生命周期脚本、受保护命名空间、现有 Catalog 冲突，以及 manifest
+中明确声明的 Node.js、系统和 Profile 兼容信息。结果会更新到同一条机器人评论，并设置
+`submission-passed` 或 `submission-failed` 标签。
+
+工作流不检出申请仓库，不执行第三方 `install`、`prepare`、`build` 或 `test`。静态证据不能
+可靠证明的权限、凭据和外部依赖保持“未知”，由人工阅读固定源码后补齐；预检通过只表示进入
+人工评审的结构门槛，不会自动改 `catalog.json`、创建 PR、上架、推荐或合并。
+
+#### 人工复核与自检清单
+
+- 对照固定 Commit 复核 README、许可证、生命周期脚本、权限、外部依赖和供应链来源；
+- 确认入口 ID 与现有插件不冲突，且没有修改 DSH 核心、官方包或官方清单；
+- 判断直接安装、monorepo 子目录、需要 Adapter 或应阻止上架，并给出真实原因；
+- 在一次性 DSH `0.1.0-rc.7` Profile 中使用官方 CLI 验证安装、配置合成和功能可见性；
+- 高权限或原生构建依赖需要额外核对 `allowBuilds`、平台支持、失败清理和回滚；
+- 最终目录字段、推荐状态和公开页面必须从 GitHub `registry/catalog.json` 读回后才算完成。
 
 联合审核任务每天北京时间 06:00 和 18:00 依次处理 GitHub 主动发现项目与用户提交，
 只处理带 `submission-passed` 的申请，统一去重后按照“热门、有用、有趣”三个维度筛选，并复核许可证、来源、权限、兼容性、

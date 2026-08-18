@@ -3,203 +3,195 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
   SUBMISSION_REPORT_MARKER,
-  buildCandidateEntry,
   checkSubmission,
   parseIssueForm,
+  parseRepositoryInput,
   renderSubmissionReport,
 } from '../scripts/check-plugin-submission.mjs'
 
-const baseFields = {
-  'Catalog ID': 'dsh-demo',
-  'Display name': 'DSH Demo',
-  Description: 'A useful DSH fixture plugin.',
-  'GitHub repository': 'https://github.com/example/dsh-demo',
-  'Immutable commit': 'a'.repeat(40),
-  'Manifest path': 'package.json',
-  'Install path': '.',
-  'Package name': 'dsh-demo',
-  'Package version': '1.2.0',
-  Categories: 'tools, workflow',
-  'DSH entry IDs': 'demo',
-  'Install lifecycle scripts': 'none',
-  'Plugin type': 'feature — 功能插件',
-  License: 'MIT',
-  'Permission level': 'low — 低',
-  'File permission': 'none — 不访问',
-  'Network permission': 'none — 无',
-  'Command execution': 'none — 否',
-  'Credential access': 'none',
-  'External dependencies': 'none',
-  'DSH compatibility': '>=0.1.0-rc.7',
-  'Node.js compatibility': '^22.19.0 || >=24.0.0',
-  'Supported systems': 'macOS, Linux, Windows',
-  'Supported profiles': 'web, headless',
-  'Registry guarantees': [
-    '- [x] The package declares a Bundle Patch.',
-    '- [x] The patch does not disable official entries.',
-    '- [x] The metadata is accurate.',
-  ].join('\n'),
-}
+const SHA = 'a'.repeat(40)
 
 function issueBody(overrides = {}) {
-  const fields = { ...baseFields, ...overrides }
+  const fields = {
+    'GitHub repository': 'https://github.com/example/dsh-demo',
+    'Plugin path (optional)': '_No response_',
+    'Notes (optional)': '_No response_',
+    ...overrides,
+  }
   return Object.entries(fields).map(([label, value]) => `### ${label}\n\n${value}`).join('\n\n')
+}
+
+function manifest(overrides = {}) {
+  return {
+    name: 'dsh-demo', version: '1.2.0', description: 'A useful DSH fixture plugin.', license: 'MIT',
+    engines: { node: '^22.19.0 || >=24.0.0' },
+    dsh: { bundle: { patch: './cordis.patch.yml' }, client: { platform: 'web' } },
+    scripts: {}, ...overrides,
+  }
 }
 
 function catalog(entries = []) {
   return {
     schemaVersion: 1,
     registry: {
-      name: 'Fixture registry',
-      repositoryUrl: 'https://github.com/example/registry',
-      homepageUrl: 'https://example.test',
-      updatedAt: '2026-08-18T00:00:00Z',
-      categories: { tools: '工具', workflow: '工作流与自动化' },
+      name: 'Fixture registry', repositoryUrl: 'https://github.com/example/registry',
+      homepageUrl: 'https://example.test', updatedAt: '2026-08-18T00:00:00Z',
+      categories: { experimental: '实验', tools: '工具' },
     },
     entries,
   }
 }
 
 function sourceFetch(options = {}) {
+  const packages = options.packages ?? { 'package.json': manifest(options.manifest) }
+  const patches = options.patches ?? Object.fromEntries(Object.keys(packages).map(path => {
+    const directory = path === 'package.json' ? '' : `${path.slice(0, -'package.json'.length)}`
+    return [`${directory}cordis.patch.yml`, options.patch ?? '- insert:\n    - id: demo\n      name: dsh-demo\n']
+  }))
   return async url => {
-    if (url.endsWith('/package.json') || url.endsWith('/plugins/demo/package.json')) {
+    const parsed = new URL(url)
+    if (parsed.hostname === 'api.github.com' && parsed.pathname === '/repos/example/dsh-demo') {
       return new Response(JSON.stringify({
-        name: options.packageName ?? 'dsh-demo',
-        version: options.version ?? '1.2.0',
-        license: 'MIT',
-        dsh: { bundle: { patch: './cordis.patch.yml' } },
-        scripts: options.scripts ?? {},
+        private: options.private === true, archived: options.archived === true, default_branch: 'main',
       }))
     }
-    return new Response(options.patch ?? '- insert:\n    - id: demo\n      name: dsh-demo\n')
+    if (parsed.hostname === 'api.github.com' && parsed.pathname.endsWith('/commits/main')) {
+      return new Response(JSON.stringify({ sha: SHA }))
+    }
+    if (parsed.hostname === 'api.github.com' && parsed.pathname.includes('/git/trees/')) {
+      return new Response(JSON.stringify({
+        truncated: options.truncated === true,
+        tree: Object.keys(packages).map(path => ({ type: 'blob', path })),
+      }))
+    }
+    if (parsed.hostname === 'raw.githubusercontent.com') {
+      const prefix = `/example/dsh-demo/${SHA}/`
+      const path = decodeURIComponent(parsed.pathname.slice(prefix.length))
+      if (Object.hasOwn(packages, path)) return new Response(JSON.stringify(packages[path]))
+      if (Object.hasOwn(patches, path)) return new Response(patches[path])
+      if (path === 'README.md' || path.endsWith('/README.md')) {
+        return new Response('# DSH Demo\n\nA fixture README description for the marketplace.\n')
+      }
+      return new Response('missing', { status: 404 })
+    }
+    throw new Error(`unexpected URL ${url}`)
   }
 }
 
-test('submission checker accepts a fixed root package without executing it', async () => {
-  const result = await checkSubmission(issueBody(), { catalogDocument: catalog(), fetch: sourceFetch() })
+test('simple submission reads a fixed root package without executing it', async () => {
+  const result = await checkSubmission(issueBody(), {
+    catalogDocument: catalog(), fetch: sourceFetch(), retryDelaysMs: [],
+  })
   assert.equal(result.status, 'passed')
   assert.equal(result.candidate.installPath, null)
-  assert.equal(result.source.packageName, 'dsh-demo')
+  assert.equal(result.candidate.packageName, 'dsh-demo')
+  assert.equal(result.candidate.commit, SHA)
+  assert.equal(result.candidate.details.permissions.level, 'unknown')
+  assert.equal(result.candidate.compatibility.node, '^22.19.0 || >=24.0.0')
+  assert.deepEqual(result.candidate.compatibility.profiles, ['web'])
+  assert.equal(result.discovery.publisher, 'example')
   const report = renderSubmissionReport(result)
   assert.ok(report.startsWith(SUBMISSION_REPORT_MARKER))
-  assert.match(report, /不会执行第三方代码/)
+  assert.match(report, /没有执行第三方代码/)
+  assert.match(report, /不是安全审计、运行验证或自动上架/)
 })
 
-test('submission report escapes backslashes and backticks before rendering untrusted text', () => {
-  const report = renderSubmissionReport({
-    status: 'failed',
-    code: 'SUBMISSION_TEST',
-    message: 'path\\`break\nnext',
-  })
-  assert.match(report, /path\\\\\\`break next/)
-  assert.doesNotMatch(report, /break\nnext/)
-})
-
-test('submission checker accepts a monorepo package path', async () => {
+test('repository tree link supplies a monorepo plugin path automatically', async () => {
+  const packages = { 'plugins/demo/package.json': manifest() }
   const result = await checkSubmission(issueBody({
-    'Manifest path': 'plugins/demo/package.json',
-    'Install path': 'plugins/demo',
-  }), { catalogDocument: catalog(), fetch: sourceFetch() })
+    'GitHub repository': 'https://github.com/example/dsh-demo/tree/main/plugins/demo',
+  }), { catalogDocument: catalog(), fetch: sourceFetch({ packages }), retryDelaysMs: [] })
   assert.equal(result.candidate.installPath, 'plugins/demo')
   assert.equal(result.candidate.manifestPath, 'plugins/demo/package.json')
 })
 
-test('submission checker rejects missing fields, moving refs, and path traversal', () => {
-  assert.throws(
-    () => buildCandidateEntry(parseIssueForm(issueBody({ 'Package version': '_No response_' }))),
-    error => error.code === 'SUBMISSION_FIELD_MISSING',
+test('multiple DSH packages ask only for an optional plugin path and then resolve deterministically', async () => {
+  const packages = {
+    'plugins/one/package.json': manifest({ name: 'dsh-one' }),
+    'plugins/two/package.json': manifest({ name: 'dsh-two' }),
+  }
+  const fetch = sourceFetch({ packages })
+  await assert.rejects(
+    () => checkSubmission(issueBody(), { catalogDocument: catalog(), fetch, retryDelaysMs: [] }),
+    error => error.code === 'SUBMISSION_PACKAGE_AMBIGUOUS' && /plugins\/one/.test(error.message),
   )
-  assert.throws(
-    () => buildCandidateEntry(parseIssueForm(issueBody({ 'Immutable commit': 'main' }))),
-    error => error.code === 'SUBMISSION_COMMIT_INVALID',
-  )
-  assert.throws(
-    () => buildCandidateEntry(parseIssueForm(issueBody({ 'Manifest path': '../package.json' }))),
+  const selected = await checkSubmission(issueBody({ 'Plugin path (optional)': 'plugins/two' }), {
+    catalogDocument: catalog(), fetch, retryDelaysMs: [],
+  })
+  assert.equal(selected.candidate.packageName, 'dsh-two')
+})
+
+test('submission input rejects non-GitHub and escaping paths', async () => {
+  assert.equal(parseRepositoryInput('https://github.com/example/dsh-demo').repositoryUrl, 'https://github.com/example/dsh-demo')
+  assert.throws(() => parseRepositoryInput('https://example.test/dsh-demo'), error => error.code === 'SUBMISSION_REPOSITORY_INVALID')
+  await assert.rejects(
+    () => checkSubmission(issueBody({ 'Plugin path (optional)': '../secret' }), {
+      catalogDocument: catalog(), fetch: sourceFetch(), retryDelaysMs: [],
+    }),
     error => error.code === 'SUBMISSION_PATH_INVALID',
   )
-  assert.throws(
-    () => buildCandidateEntry(parseIssueForm(issueBody({
-      'Manifest path': 'plugins/demo/package.json',
-      'Install path': '.',
-    }))),
-    error => error.code === 'SUBMISSION_INSTALL_PATH_MISMATCH',
-  )
+  assert.equal(parseIssueForm(issueBody()).get('GitHub repository'), 'https://github.com/example/dsh-demo')
 })
 
-test('submission checker rejects manifest and lifecycle mismatches', async () => {
+test('submission rejects private, archived, protected, and malformed plugin sources', async () => {
+  await assert.rejects(
+    () => checkSubmission(issueBody(), { catalogDocument: catalog(), fetch: sourceFetch({ private: true }), retryDelaysMs: [] }),
+    error => error.code === 'SUBMISSION_REPOSITORY_PRIVATE',
+  )
+  await assert.rejects(
+    () => checkSubmission(issueBody(), { catalogDocument: catalog(), fetch: sourceFetch({ archived: true }), retryDelaysMs: [] }),
+    error => error.code === 'SUBMISSION_REPOSITORY_ARCHIVED',
+  )
   await assert.rejects(
     () => checkSubmission(issueBody(), {
-      catalogDocument: catalog(),
-      fetch: sourceFetch({ packageName: 'dsh-other' }),
+      catalogDocument: catalog(), fetch: sourceFetch({ manifest: { name: '@deepseek-ai/fake' } }), retryDelaysMs: [],
     }),
-    error => error.code === 'SOURCE_MANIFEST_MISMATCH',
+    error => error.code === 'SUBMISSION_PACKAGE_PROTECTED',
   )
   await assert.rejects(
-    () => checkSubmission(issueBody({ 'Install lifecycle scripts': 'prepare' }), {
-      catalogDocument: catalog(),
-      fetch: sourceFetch({ scripts: {} }),
+    () => checkSubmission(issueBody(), {
+      catalogDocument: catalog(), fetch: sourceFetch({ patch: '- insert:\n    - id: dsh-safe-plugin-manager\n      name: fake\n' }), retryDelaysMs: [],
     }),
-    error => error.code === 'SOURCE_MANIFEST_MISMATCH',
+    error => error.code === 'SUBMISSION_ENTRY_PROTECTED',
   )
 })
 
-test('submission checker rejects protected packages, protected entries, and catalog collisions', async () => {
-  assert.throws(
-    () => buildCandidateEntry(parseIssueForm(issueBody({ 'Package name': '@deepseek-ai/dsh-fake' }))),
-    error => error.code === 'SUBMISSION_PACKAGE_PROTECTED',
-  )
-  assert.throws(
-    () => buildCandidateEntry(parseIssueForm(issueBody({ 'DSH entry IDs': 'ui-settings-plugin-inventory' }))),
-    error => error.code === 'SUBMISSION_ENTRY_PROTECTED',
-  )
-  assert.throws(
-    () => buildCandidateEntry(parseIssueForm(issueBody({ 'Credential access': 'none, api-key' }))),
-    error => error.code === 'SUBMISSION_CREDENTIAL_INVALID',
-  )
-  const existing = buildCandidateEntry(parseIssueForm(issueBody({
-    'Catalog ID': 'existing',
-    'Package name': 'dsh-existing',
-    'DSH entry IDs': 'taken',
-  })))
+test('submission derives lifecycle scripts and rejects existing entry collisions', async () => {
+  const first = await checkSubmission(issueBody(), {
+    catalogDocument: catalog(), fetch: sourceFetch({ manifest: { scripts: { prepare: 'node build.mjs' } } }), retryDelaysMs: [],
+  })
+  assert.deepEqual(first.candidate.risk.installScripts, ['prepare'])
   await assert.rejects(
-    () => checkSubmission(issueBody({ 'DSH entry IDs': 'taken' }), {
-      catalogDocument: catalog([existing]),
-      fetch: sourceFetch(),
+    () => checkSubmission(issueBody(), {
+      catalogDocument: catalog([{ ...first.candidate, id: 'existing', packageName: 'dsh-existing', repositoryUrl: 'https://github.com/example/existing' }]),
+      fetch: sourceFetch({ manifest: { name: 'dsh-other' } }), retryDelaysMs: [],
     }),
     error => error.code === 'SUBMISSION_ENTRY_COLLISION',
   )
 })
 
-test('submission checker rejects undeclared patch entries and protected package impersonation', async () => {
-  await assert.rejects(
-    () => checkSubmission(issueBody(), {
-      catalogDocument: catalog(),
-      fetch: sourceFetch({ patch: '- insert:\n    - id: demo\n      name: dsh-demo\n    - id: hidden\n      name: dsh-hidden\n' }),
-    }),
-    error => error.code === 'SUBMISSION_PATCH_ENTRIES_MISMATCH',
-  )
-  await assert.rejects(
-    () => checkSubmission(issueBody(), {
-      catalogDocument: catalog(),
-      fetch: sourceFetch({ patch: '- insert:\n    - id: demo\n      name: "@deepseek-ai/dsh-fake"\n' }),
-    }),
-    error => error.code === 'SUBMISSION_PATCH_PROTECTED',
-  )
+test('submission report escapes untrusted failure text', () => {
+  const report = renderSubmissionReport({ status: 'failed', code: 'SUBMISSION_TEST', message: 'path\\`break\nnext' })
+  assert.match(report, /path\\\\\\`break next/)
+  assert.doesNotMatch(report, /break\nnext/)
 })
 
-test('GitHub issue workflow gates opened and edited submissions with one upserted bot report', async () => {
+test('GitHub workflow gates a one-required-field form with an upserted bot report', async () => {
   const workflow = await readFile(new URL('../.github/workflows/plugin-submission.yml', import.meta.url), 'utf8')
   const form = await readFile(new URL('../.github/ISSUE_TEMPLATE/plugin-submission.yml', import.meta.url), 'utf8')
   assert.match(workflow, /types: \[opened, edited, reopened\]/)
   assert.match(workflow, /contents: read/)
   assert.match(workflow, /issues: write/)
+  assert.match(workflow, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/)
   assert.match(workflow, /continue-on-error: true/)
   assert.match(workflow, /dsh-plugin-submission-check/)
   assert.match(workflow, /updateComment/)
   assert.match(workflow, /submission-passed/)
   assert.match(workflow, /submission-failed/)
   assert.doesNotMatch(workflow, /npm (?:install|ci)|pnpm|yarn/)
-  assert.match(form, /label: Manifest path/)
-  assert.match(form, /label: Install path/)
-  assert.match(form, /without executing third-party code/)
+  assert.equal((form.match(/required: true/g) || []).length, 1)
+  assert.match(form, /label: GitHub repository/)
+  assert.match(form, /label: Plugin path \(optional\)/)
+  assert.doesNotMatch(form, /label: (?:Manifest path|Package name|Permission level|Immutable commit)/)
+  assert.match(form, /不会.*运行第三方/)
 })
