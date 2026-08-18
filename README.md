@@ -62,12 +62,12 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.5.1` |
+| 商城版本 | `0.5.2` |
 | 收录条目 | 47 个 |
 | 可安装 | 41 个 |
 | 商城不可安装 | 6 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
-| 推荐 | 6 个：自研四件套 + DSH Codex Shell + DSH Web UI All |
+| 推荐 | 8 个：自研工作流与商城、DSH Codex Shell、DSH Web UI All、DSH WeCom CLI 等 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
 商城已经在真实 DSH `web` Profile 中完成只读扫描、GitHub 在线目录刷新、配置合成、
@@ -93,7 +93,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - 不依赖商城服务端巡检全部仓库：仅在用户本机按需检查已安装插件或用户主动选择的插件；
 - 从插件 GitHub 默认分支解析最新完整 Commit，绝不直接安装浮动 `main`；
 - 安装前在该 Commit 上核对版本、许可证、Bundle Patch、入口 ID、生命周期脚本和变更中的权限信号；
-- 低风险且安全契约未漂移的候选可以生成固定 SHA 更新计划；高风险、权限变化或审核不完整的候选必须等待 Registry 复审；
+- 低风险候选可以生成固定 SHA 更新计划；高风险候选在本机展示权限、脚本、依赖和代码变化，由用户逐次确认是否更新；
+- 修改 DSH 原生代码、冒用 `@deepseek-ai/*`、停用/覆盖受保护组件或来源与安装契约不可验证的候选，商城禁止安装/更新，只显示不受商城保护的 GitHub 外部入口；
 - 停用、启用和卸载第三方插件；
 - 识别 `link:`、`file:`、`workspace:` 等本地开发来源，并单独提供“迁移到商城版”；
 - 识别并标记不是通过本商城安装、来源漂移或与目录 Commit 不一致的插件；
@@ -150,8 +151,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - `approved`：正常上架并允许生成安装计划；
 - `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
-- `featured: true`：在全部视图和所属分类中优先显示；当前推荐自研四件套、用户精选的
-  DSH Codex Shell 和 DSH Web UI All；
+- `featured: true`：在全部视图和所属分类中优先显示；当前推荐自研工作流与商城，以及用户精选的
+  DSH Codex Shell、DSH Web UI All 和 DSH WeCom CLI 等；
 - 可选安装回执只发送插件 ID 和版本，不发送设备、Profile 或用户标识；默认关闭；
 - GitHub Pages 不能直接写回 `catalog.json`，真实计数需要独立匿名聚合服务。
 - `0.4.7` 内置幂等安装回执与 Cloudflare Worker + D1 聚合器；只在商城安装、健康检查通过后提交插件 ID、版本和随机事务 ID，不提交账号、设备或 Profile。计数服务未部署或未配置时保持关闭，不显示虚假安装量。
@@ -205,8 +206,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 ## 已收录插件
 
-`★` 表示推荐。当前推荐 `AI-Scarlett` 自研四件套，以及用户精选的社区插件
-DSH Codex Shell 和 DSH Web UI All；推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
+`★` 表示推荐。当前推荐 `AI-Scarlett` 自研工作流与商城，以及用户精选的社区插件
+DSH Codex Shell、DSH Web UI All 和 DSH WeCom CLI 等；推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
 `registry/catalog.json` 一致。
 
 | 插件 | 分类 | 状态 | 介绍 |
@@ -235,6 +236,7 @@ DSH Codex Shell 和 DSH Web UI All；推荐不会绕过固定 Commit、来源和
 | [AnySearch for DSH](https://github.com/anysearch-team/anysearch-dsh) | 搜索与网络、工具能力 | 可安装 | 注册 AnySearch 网络搜索提供商与增强搜索工具，需要配置 API Key。 |
 | [DSH Gomoku](https://github.com/omdsh-dev/dsh-gomoku) | 娱乐、界面增强 | 可安装 | 在对话界面加入五子棋棋盘、AI 落子路由与模型目录。 |
 | ★ [DSH Web UI All](https://github.com/zhu1090093659/dsh-web-ui) | 综合套件、界面增强、工具能力 | 可安装 | 聚合任务板、Git 图、宠物、远程界面、实时统计、SSH、视觉工具与多款皮肤。 |
+| ★ [DSH WeCom CLI](https://github.com/AI-Scarlett/dsh-wecom-cli) | 工具能力、工作流与自动化、通知与集成 | 可安装 | 通过受控 Host Bridge 提供企业微信只读查询；固定 argv、无 Shell，外部 CLI 和账号授权由用户独立管理。 |
 | [DSH Shortcuts](https://github.com/Ricketts-Guo/dsh-shortcuts) | 界面增强、工具能力、新锐实验 | 可安装 | 提供可录制、可配置的键盘快捷键与权限切换反馈。 |
 | [DSH Diagram](https://github.com/hanzhangzzz/dsh-diagram) | 可视化、设计与原型、新锐实验 | 可安装 | 将文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。 |
 | [DSH Egress Guard](https://github.com/tancheng33/dsh-egress-guard) | 安全与隐私、工具能力、新锐实验 | 可安装 | 提供出站域名策略、工具结果密钥脱敏和追加式审计日志，默认监控模式。 |

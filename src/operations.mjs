@@ -190,6 +190,7 @@ function planImpact(action, entry) {
     neverModify: ['DeepSeek Harness source', '@deepseek-ai/* packages', 'other Profiles', 'managed-block external content'],
     restartRequired: packageOperation,
     installScripts: ['install', 'update', 'migrate'].includes(action) ? entry.risk.installScripts : [],
+    sourceReview: entry.sourceReview ?? null,
     sourceTransition: action === 'migrate'
       ? '仅将 Profile 依赖从本地链接切换为目录固定的 GitHub Commit，不删除或修改原本地目录'
       : null,
@@ -247,7 +248,9 @@ export function createOperationService(options = {}) {
       }
       if (typeof input.sourceCommit === 'string' && input.sourceCommit !== '') {
         if (!sourceUpdateService) throw Object.assign(new Error('source update service is unavailable'), { code: 'SOURCE_UPDATE_UNAVAILABLE' })
-        targetEntry = sourceUpdateService.approvedCandidate(entry, input.sourceCommit)
+        targetEntry = sourceUpdateService.approvedCandidate(entry, input.sourceCommit, {
+          userAcceptedRisk: input.sourceRiskAccepted === true,
+        })
         if (targetEntry.id !== entry.id || targetEntry.packageName !== entry.packageName || targetEntry.repositoryUrl !== entry.repositoryUrl) {
           throw Object.assign(new Error('source update candidate identity does not match the registry'), { code: 'SOURCE_UPDATE_IDENTITY_MISMATCH' })
         }
@@ -281,7 +284,10 @@ export function createOperationService(options = {}) {
     const planId = randomUUID()
     const createdAt = new Date()
     const preconditions = await capturePreconditions(profileDir)
-    const confirmation = `${action.toUpperCase()} ${entry.packageName} ${profile}`
+    const riskReviewed = targetEntry.sourceReview?.status === 'user-review-required'
+    const confirmation = riskReviewed
+      ? `UPDATE-RISK ${entry.packageName} ${profile} ${targetEntry.commit.slice(0, 12)}`
+      : `${action.toUpperCase()} ${entry.packageName} ${profile}`
     const plan = {
       schemaVersion: 1,
       planId,
@@ -298,6 +304,7 @@ export function createOperationService(options = {}) {
         commit: targetEntry.commit,
         entryIds: entry.entryIds,
         sourceUpdate: targetEntry.commit !== entry.commit,
+        sourceReview: targetEntry.sourceReview ?? null,
       },
       confirmation,
       impact: planImpact(action, targetEntry),

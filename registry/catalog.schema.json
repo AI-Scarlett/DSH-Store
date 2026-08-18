@@ -45,7 +45,7 @@
           "defaultBranch": { "type": "string" },
           "manifestPath": { "type": "string" },
           "installPath": { "type": "string" },
-          "updatePolicy": { "enum": ["source-verified", "registry-reviewed"] },
+          "updatePolicy": { "enum": ["source-verified", "user-reviewed", "external-only"] },
           "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
           "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+" },
           "categories": { "type": "array", "items": { "type": "string" } },
