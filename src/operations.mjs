@@ -3,7 +3,7 @@ import {
   appendFile, chmod, copyFile, mkdir, readFile, rename, rm, writeFile,
 } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { buildMarketplaceSnapshot, githubInstallSpecifier, verifyCatalogEntry } from './catalog.mjs'
+import { buildMarketplaceSnapshot, compareVersions, githubInstallSpecifier, verifyCatalogEntry } from './catalog.mjs'
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, resolveProfileDirectory, validateProfileName } from './inventory.mjs'
 import { readManagedDisabledIds, setManagedDisabled } from './managed-patch.mjs'
@@ -203,6 +203,7 @@ export function createOperationService(options = {}) {
   const runner = options.runner
   const mutationsEnabled = options.mutationsEnabled === true
   const sourceVerifier = options.sourceVerifier ?? verifyCatalogEntry
+  const sourceUpdateService = options.sourceUpdateService ?? null
   const telemetryClient = options.telemetryClient ?? { recordInstall: async () => ({ status: 'disabled' }) }
   const runtimeInstanceId = typeof options.runtimeInstanceId === 'string' ? options.runtimeInstanceId : null
   const planTtlMs = options.planTtlMs ?? PLAN_TTL_MS
@@ -237,15 +238,27 @@ export function createOperationService(options = {}) {
     const entry = catalog.entries.find(item => item.id === input.pluginId) ?? null
     const installed = entry ? inventory.plugins.find(item => item.packageName === entry.packageName) ?? null : null
     assertManageable(entry, installed, action)
+    let targetEntry = entry
     if (action === 'install' && installed) throw Object.assign(new Error('plugin is already installed'), { code: 'ALREADY_INSTALLED' })
     if (action !== 'install' && !installed) throw Object.assign(new Error('plugin is not installed'), { code: 'NOT_INSTALLED' })
     if (action === 'update') {
       if (['link', 'file', 'workspace'].includes(installed.source)) {
         throw Object.assign(new Error('use the explicit marketplace migration action for local development links'), { code: 'LOCAL_SOURCE_PROTECTED' })
       }
-      const market = buildMarketplaceSnapshot(catalog, inventory)
-      const state = market.entries.find(item => item.id === entry.id)
-      if (!state?.updateAvailable) throw Object.assign(new Error('registry does not contain a newer version'), { code: 'NO_UPDATE' })
+      if (typeof input.sourceCommit === 'string' && input.sourceCommit !== '') {
+        if (!sourceUpdateService) throw Object.assign(new Error('source update service is unavailable'), { code: 'SOURCE_UPDATE_UNAVAILABLE' })
+        targetEntry = sourceUpdateService.approvedCandidate(entry, input.sourceCommit)
+        if (targetEntry.id !== entry.id || targetEntry.packageName !== entry.packageName || targetEntry.repositoryUrl !== entry.repositoryUrl) {
+          throw Object.assign(new Error('source update candidate identity does not match the registry'), { code: 'SOURCE_UPDATE_IDENTITY_MISMATCH' })
+        }
+        if (compareVersions(installed.version, targetEntry.version) !== -1) {
+          throw Object.assign(new Error('source update candidate is not newer than the installed version'), { code: 'NO_UPDATE' })
+        }
+      } else {
+        const market = buildMarketplaceSnapshot(catalog, inventory)
+        const state = market.entries.find(item => item.id === entry.id)
+        if (!state?.updateAvailable) throw Object.assign(new Error('registry does not contain a newer version'), { code: 'NO_UPDATE' })
+      }
     }
     if (action === 'migrate' && !['link', 'file', 'workspace'].includes(installed.source)) {
       throw Object.assign(new Error('only local development links can be migrated to the marketplace source'), { code: 'MIGRATION_NOT_REQUIRED' })
@@ -253,7 +266,7 @@ export function createOperationService(options = {}) {
     let sourceVerification = { status: 'not-required', verifiedAt: null }
     if (['install', 'update', 'migrate'].includes(action)) {
       try {
-        sourceVerification = await verifySource(entry)
+        sourceVerification = await verifySource(targetEntry)
       } catch (error) {
         throw publicSourceVerificationError(error)
       }
@@ -280,16 +293,17 @@ export function createOperationService(options = {}) {
         id: entry.id,
         packageName: entry.packageName,
         currentVersion: installed?.version ?? null,
-        targetVersion: ['install', 'update', 'migrate'].includes(action) ? entry.version : null,
+        targetVersion: ['install', 'update', 'migrate'].includes(action) ? targetEntry.version : null,
         repositoryUrl: entry.repositoryUrl,
-        commit: entry.commit,
+        commit: targetEntry.commit,
         entryIds: entry.entryIds,
+        sourceUpdate: targetEntry.commit !== entry.commit,
       },
       confirmation,
-      impact: planImpact(action, entry),
+      impact: planImpact(action, targetEntry),
       sourceVerification,
       preconditions,
-      privateData: { entry, profileDir },
+      privateData: { entry: targetEntry, profileDir },
     }
     plans.set(planId, plan)
     return publicPlan(plan)

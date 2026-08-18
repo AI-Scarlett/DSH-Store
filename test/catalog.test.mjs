@@ -152,6 +152,13 @@ test('marketplace offers explicit migration for local links and reports version 
   })
   assert.equal(git.entries[0].updateAvailable, true)
   assert.equal(git.entries[0].commitMatched, false)
+  assert.equal(git.entries[0].sourceDrift, true)
+  const sourceNewer = buildMarketplaceSnapshot(catalog, {
+    profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '2.0.0', declaredSpecifier: 'github:example/dsh-demo#newer' }],
+  })
+  assert.equal(sourceNewer.entries[0].versionState, 'ahead')
+  assert.equal(sourceNewer.entries[0].sourceDrift, true)
+  assert.equal(sourceNewer.entries[0].updateAvailable, false, 'a newer source-verified install must not be offered a catalog downgrade')
 })
 
 test('source verification checks manifest, lifecycle scripts, and Bundle ids at the pinned commit', async () => {

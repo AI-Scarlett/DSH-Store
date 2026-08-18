@@ -7,6 +7,7 @@ import { createRuntimeStatus } from './runtime.mjs'
 import { createRestartService } from './restart.mjs'
 import { createGuardianService } from './guardian.mjs'
 import { createTelemetryClient } from './telemetry.mjs'
+import { createSourceUpdateService } from './source-update.mjs'
 
 export const name = 'dsh-safe-plugin-manager'
 export const inject = []
@@ -42,6 +43,7 @@ export function apply(ctx, config = {}) {
   })
   const restartService = createRestartService({ runtimeStatus, guardianService })
   const telemetryClient = createTelemetryClient({ endpoint: options.telemetryUrl, enabled: options.telemetryEnabled })
+  const sourceUpdateService = createSourceUpdateService()
   const operationService = createOperationService({
     dshHome: options.dshHome,
     defaultProfile: options.defaultProfile,
@@ -49,11 +51,12 @@ export function apply(ctx, config = {}) {
     runner,
     mutationsEnabled: options.mutationsEnabled,
     telemetryClient,
+    sourceUpdateService,
     runtimeInstanceId: runtimeStatus.bootId,
   })
   ctx.inject(['webServer'], (webCtx) => {
     const dispose = registerManagerRoutes(webCtx.webServer, {
-      ...options, catalogService, runner, operationService, runtimeStatus, restartService, guardianService,
+      ...options, catalogService, runner, operationService, sourceUpdateService, runtimeStatus, restartService, guardianService,
     })
     if (typeof dispose === 'function' && typeof webCtx.effect === 'function') {
       webCtx.effect(() => dispose, 'dsh-safe-plugin-manager: inventory route')

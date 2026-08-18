@@ -53,9 +53,37 @@ function service(root, runner, options = {}) {
     runner, mutationsEnabled: true,
     sourceVerifier: options.sourceVerifier ?? (async entry => ({ status: 'verified', packageName: entry.packageName })),
     sourceVerificationCacheTtlMs: options.sourceVerificationCacheTtlMs,
+    sourceUpdateService: options.sourceUpdateService,
     runtimeInstanceId: options.runtimeInstanceId,
   })
 }
+
+test('source-verified update plan pins the locally approved candidate commit', async () => {
+  const { root } = await fixture({ specifier: `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}` })
+  const calls = []
+  const candidate = { ...demoEntry, commit: 'c'.repeat(40), version: '3.0.0' }
+  const runner = {
+    plugin: async (_profile, args) => { calls.push(args); return { ok: true, exitCode: 0 } },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner, {
+      sourceUpdateService: { approvedCandidate: (_entry, commit) => {
+        assert.equal(commit, candidate.commit)
+        return candidate
+      } },
+    })
+    const plan = await operations.createPlan({ action: 'update', pluginId: 'demo', sourceCommit: candidate.commit })
+    assert.equal(plan.plugin.commit, candidate.commit)
+    assert.equal(plan.plugin.targetVersion, '3.0.0')
+    assert.equal(plan.plugin.sourceUpdate, true)
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'applied')
+    assert.deepEqual(calls[0], ['add', `git+https://github.com/example/dsh-demo.git#${candidate.commit}`])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
 
 test('source verification success is reused only for the same immutable catalog fingerprint', async () => {
   const { root } = await fixture({ installed: false })

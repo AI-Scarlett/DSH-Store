@@ -249,6 +249,9 @@ function validateEntry(value, index) {
     defaultBranch: nonEmptyString(value.defaultBranch ?? 'main', `entries[${index}].defaultBranch`, 120),
     manifestPath,
     installPath,
+    updatePolicy: value.updatePolicy === undefined || value.updatePolicy === null
+      ? null
+      : enumValue(value.updatePolicy, `entries[${index}].updatePolicy`, ['source-verified', 'registry-reviewed']),
     commit,
     version,
     categories: stringArray(value.categories ?? [], `entries[${index}].categories`, { simple: true }),
@@ -347,6 +350,10 @@ export function validateCatalog(document) {
         ? new URL(document.registry.installCountsUrl).href
         : null,
       updatedAt: nonEmptyString(document.registry.updatedAt, 'registry.updatedAt', 80),
+      sourceUpdates: {
+        mode: document.registry.sourceUpdates?.mode === 'client-on-demand' ? 'client-on-demand' : 'client-on-demand',
+        defaultPolicy: document.registry.sourceUpdates?.defaultPolicy === 'risk-derived' ? 'risk-derived' : 'risk-derived',
+      },
       categories,
     },
     entries,
@@ -402,7 +409,8 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       && typeof installed.declaredSpecifier === 'string'
       && installed.declaredSpecifier.toLowerCase().includes(entry.commit)
     const commitDrift = installed?.source === 'git' && !commitMatched
-    const updateAvailable = installed !== null && (versionComparison === -1 || commitDrift)
+    const updateAvailable = installed !== null
+      && (versionComparison === -1 || (commitDrift && versionComparison !== 1))
     const migrationAvailable = localProtected && entry.status === 'approved' && !installed?.official
     const self = entry.packageName === 'dsh-safe-plugin-manager'
     let managementBlockedReason = null
@@ -435,6 +443,7 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       updateAvailable,
       migrationAvailable,
       commitMatched,
+      sourceDrift: commitDrift,
       versionState: versionComparison === null ? 'unknown' : versionComparison < 0 ? 'behind' : versionComparison > 0 ? 'ahead' : 'equal',
       installOrigin,
       allowedActions,
