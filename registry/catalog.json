@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-18T14:58:00Z",
+    "updatedAt": "2026-08-18T15:12:25.297Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -11351,6 +11351,948 @@
       "risk": {
         "installScripts": [],
         "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "chicheng-cron",
+      "name": "chicheng-cron",
+      "packageName": "chicheng-cron",
+      "description": "dsh 定时任务插件：在左侧栏“新会话”下方提供“定时任务”入口，支持 cron 定时执行 shell / python / nodejs 脚本、skills 与自定义 agent 任务，可对接 chicheng-push 与 messaging-core 推送通知、成功后自动归档会话，移动端适配",
+      "repositoryUrl": "https://github.com/534119219/chicheng-cron",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "31a8627ebf9af56d30c2e385f0f72ee22cc78a08",
+      "version": "0.1.1",
+      "categories": [
+        "workflow"
+      ],
+      "featured": false,
+      "entryIds": [
+        "chicheng-cron"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-free-search",
+      "name": "dsh-free-search",
+      "packageName": "dsh-free-search",
+      "description": "Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
+      "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
+      "defaultBranch": "master",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "7c093e6d59b8ffc43ee02f7021697aeddf75c837",
+      "version": "0.4.6",
+      "categories": [
+        "search"
+      ],
+      "featured": false,
+      "entryIds": [
+        "web-search-free"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": ">=20",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-routines-bundle",
+      "name": "@dsh-routines/bundle",
+      "packageName": "@dsh-routines/bundle",
+      "description": "dsh-routines — scheduled agents for DSH: run a prompt on a cron, get the digest where you already are (file digests, chatnode delivery, unattended-safe)",
+      "repositoryUrl": "https://github.com/Jesse-njx/dsh-routines",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "f59b4f03e7b36648b804fd07e57a53e276da5d81",
+      "version": "0.1.0",
+      "categories": [
+        "workflow"
+      ],
+      "featured": false,
+      "entryIds": [
+        "routines-store",
+        "routines-scheduler",
+        "routines-cli"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": ">=20",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-image-gen",
+      "name": "dsh-image-gen",
+      "packageName": "dsh-image-gen",
+      "description": "GPT Image 2 generation through Codex subscriptions or API keys, with progressive previews for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/LeemanCheung/dsh-image-gen",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "88c74323a5a04048a863128a0de6aa5daa3b7981",
+      "version": "0.2.0",
+      "categories": [
+        "visualization",
+        "tools"
+      ],
+      "featured": false,
+      "entryIds": [
+        "image-gen"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "read-only",
+          "network": "none",
+          "commands": "shell",
+          "credentials": [
+            "oauth"
+          ]
+        },
+        "externalDependencies": [
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-task-dag",
+      "name": "dsh-task-dag",
+      "packageName": "dsh-task-dag",
+      "description": "Persistent live DAG visualization for DeepSeek Harness subagents and workflows",
+      "repositoryUrl": "https://github.com/LeemanCheung/dsh-task-dag",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "256cfdab272e35b1e72dd11f948a74d2dcfc4ee0",
+      "version": "1.2.0",
+      "categories": [
+        "workflow"
+      ],
+      "featured": false,
+      "entryIds": [
+        "task-dag"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": ">=20",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "max-null-dsh-plugin-center",
+      "name": "@max-null/dsh-plugin-center",
+      "packageName": "@max-null/dsh-plugin-center",
+      "description": "Plugin center for DeepSeek Harness — installed metadata, community market, update detection, and What's New",
+      "repositoryUrl": "https://github.com/Max-Null/dsh-plugin-center",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "ebc3c0d2cd7251babe2c74d6ddf43c04a3a3fd65",
+      "version": "0.1.5",
+      "categories": [
+        "marketplace"
+      ],
+      "featured": false,
+      "entryIds": [
+        "plugin-center"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-llm-codex",
+      "name": "dsh-llm-codex",
+      "packageName": "dsh-llm-codex",
+      "description": "ChatGPT Codex login, sortable catalog, and Fast models for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/NOirBRight/dsh-llm-codex",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "816e994e4bfac4944b4c825ea979e93195fbc2d4",
+      "version": "0.2.0",
+      "categories": [
+        "models"
+      ],
+      "featured": false,
+      "entryIds": [
+        "llm-codex"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "read-only",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "oauth"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-llm-grok",
+      "name": "dsh-llm-grok",
+      "packageName": "dsh-llm-grok",
+      "description": "xAI Grok subscription login and chat for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/NOirBRight/dsh-llm-grok",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "964d0871ce5170ca94fbe3695e0e8dbaceba9a69",
+      "version": "0.2.0",
+      "categories": [
+        "models"
+      ],
+      "featured": false,
+      "entryIds": [
+        "llm-grok"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "oauth"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-memento",
+      "name": "dsh-memento",
+      "packageName": "dsh-memento",
+      "description": "Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "ad3d7d791e13a1665e453eb8d09b0bf9807f6e63",
+      "version": "0.4.0",
+      "categories": [
+        "memory"
+      ],
+      "featured": false,
+      "entryIds": [
+        "memento"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-whale-musume",
+      "name": "dsh-whale-musume",
+      "packageName": "dsh-whale-musume",
+      "description": "A whale-girl Kanban Musume mascot for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "032ff113d75116d573a555bc32eca52f788dbdc9",
+      "version": "1.4.1",
+      "categories": [
+        "themes"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-whale-musume"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "theme",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "tonydua-dsh-web-search-exa",
+      "name": "@tonydua/dsh-web-search-exa",
+      "packageName": "@tonydua/dsh-web-search-exa",
+      "description": "Zero-config Exa web search provider for DeepSeek Harness (dsh): keyless anonymous MCP fallback (mcp.exa.ai/mcp) plus keyed REST search — a drop-in WebSearchProvider for the ctx.web seam, no API key required.",
+      "repositoryUrl": "https://github.com/TonyDua/dsh-web-search-exa",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "083706bae60af8e1f3776b02448f17c140c3f571",
+      "version": "0.1.3",
+      "categories": [
+        "search"
+      ],
+      "featured": false,
+      "entryIds": [
+        "web-search-exa"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": ">=18",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "none",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-find-plugin",
+      "name": "dsh-find-plugin",
+      "packageName": "dsh-find-plugin",
+      "description": "Find DeepSeek Harness plugins inside the agent — live GitHub dsh-plugin topic search, ranked by stars.",
+      "repositoryUrl": "https://github.com/awesome-dsh-plugin/dsh-find-plugin",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "e75dc2e865c3cfbfd336f7b4bb753fec25d373e1",
+      "version": "0.3.6",
+      "categories": [
+        "marketplace"
+      ],
+      "featured": false,
+      "entryIds": [
+        "find-dsh-plugin"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "read-only",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "oauth"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-omni-bridge",
+      "name": "dsh-omni-bridge",
+      "packageName": "dsh-omni-bridge",
+      "description": "Multi-channel message bridge for DeepSeek Harness (DSH): route WeChat (ClawBot/iLink), QQ, and Feishu (Lark) chat messages to a DSH agent and relay its replies back. 多通道桥接：微信 ClawBot / QQ / 飞书消息接入 DSH agent 并回传回复。",
+      "repositoryUrl": "https://github.com/baisama-cloud/dsh-omni-bridge",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "cdb51787173ba9b46e0e8ee4ebfc38b9ae0f2dcd",
+      "version": "0.2.0",
+      "categories": [
+        "notifications"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-omni-bridge"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-mobile",
+      "name": "dsh-mobile",
+      "packageName": "dsh-mobile",
+      "description": "Use DeepSeek Harness from iPhone / iPad: LAN reverse proxy, iOS PWA (add-to-home-screen) chrome, and touch/mobile CSS for the web GUI.",
+      "repositoryUrl": "https://github.com/cindyguyuehu123/dsh-mobile",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "33415c77045cbf47d85256b60f4d3fa8802cdd90",
+      "version": "0.1.0",
+      "categories": [
+        "clients"
+      ],
+      "featured": false,
+      "entryIds": [
+        "mobile"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "client",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "none",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-mobile-remote",
+      "name": "dsh-mobile-remote",
+      "packageName": "dsh-mobile-remote",
+      "description": "DeepSeek Harness WeChat remote-control plugin: control your dsh agent from WeChat (iLink long-polling, fully outbound, works over any network)",
+      "repositoryUrl": "https://github.com/good-boy4069/dsh-mobile-remote",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "f0ce76aeac09896835f3ca482d78d7854185ad82",
+      "version": "0.1.0",
+      "categories": [
+        "clients"
+      ],
+      "featured": false,
+      "entryIds": [
+        "mobile-remote-weixin"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": ">=22.12.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "client",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-chatgpt-subscription",
+      "name": "dsh-chatgpt-subscription",
+      "packageName": "dsh-chatgpt-subscription",
+      "description": "DeepSeek Harness (DSH) 插件：用官方 OAuth 一键绑定 ChatGPT 订阅（Codex），在 DSH 内直接使用 ChatGPT 模型对话（消耗 ChatGPT Plus/Pro 订阅额度），并在设置侧边栏「订阅」页展示绑定状态与剩余额度。",
+      "repositoryUrl": "https://github.com/songoao25/dsh-chatgpt-subscription",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "317d5415379562bcde8b2b67253f87beb1bae496",
+      "version": "0.1.0",
+      "categories": [
+        "models"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-chatgpt-subscription"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "oauth"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-draw-router",
+      "name": "dsh-draw-router",
+      "packageName": "dsh-draw-router",
+      "description": "Unified image generation router for DeepSeek Harness (DSH). Auto-discovers image models from any OpenAI-compatible endpoint. Supports SenseNova, StepFun, Agnes, Qwen, Tongyi Wanxiang, Jimeng/Seedream, Hunyuan, GPT Image, Flux, Stable Diffusion, Imagen, and more. | DeepSeek Harness 统一绘图路由器：自动识别任意 OpenAI 兼容端点的绘图模型，支持商汤、阶跃、Agnes、千问、通义万相、即梦、混元、GPT Image、Flux、Stable Diffusion、Imagen 等。",
+      "repositoryUrl": "https://github.com/xiaozhe7772222/dsh-draw-router",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "4da1e76a4178b9442d8562dbec205f11cf166e1b",
+      "version": "0.1.0",
+      "categories": [
+        "visualization",
+        "models"
+      ],
+      "featured": false,
+      "entryIds": [
+        "draw-router"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-subscribe",
+      "name": "dsh-subscribe",
+      "packageName": "dsh-subscribe",
+      "description": "Agent-native plugin marketplace for DeepSeek Harness: search 500+ community plugins, market stats, and install commands — right from the chat.",
+      "repositoryUrl": "https://github.com/zoahdev/dsh-subscribe",
+      "defaultBranch": "main",
+      "manifestPath": "plugin/package.json",
+      "installPath": "plugin",
+      "updatePolicy": "user-reviewed",
+      "commit": "dadfb28660cbc46fa73b94d1ede5fcc3f90ffaae",
+      "version": "0.3.1",
+      "categories": [
+        "models"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-subscribe"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": ">=20",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "keychain"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+      }
+    },
+    {
+      "id": "dsh-mobile-pwa",
+      "name": "dsh-mobile-pwa",
+      "packageName": "dsh-mobile-pwa",
+      "description": "Complete mobile PWA for DeepSeek Harness (DSH): secure LAN/Tailscale remote access gateway + install-to-homescreen (manifest), offline-capable service worker, touch-first gestures, agent-done notifications, and dark compact mobile UI. 移动端 PWA 完整方案 for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/zylzyqzz/dsh-mobile-pwa",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "258607721a76cd54c8297c3fe74511c5cc7c485c",
+      "version": "0.1.0",
+      "categories": [
+        "clients"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-mobile-pwa"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "node": ">=18",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "client",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（按插件运行配置）",
+          "主机 Shell 或外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
       }
     }
   ]
