@@ -18,10 +18,11 @@
 ## GitHub 上架申请预检
 
 [上架申请表](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
-支持仓库根包和 monorepo 子目录。Issue 创建、编辑或重新打开后，
-`.github/workflows/plugin-submission.yml` 会调用 `scripts/check-plugin-submission.mjs`，读取公开
-固定 Commit，并复用目录校验器检查 manifest、Bundle Patch、包名/版本、入口 ID、生命周期
-脚本、受保护条目、分类、权限和兼容性字段。
+只要求一个公开 GitHub 项目地址。Issue 创建、编辑或重新打开后，
+`.github/workflows/plugin-submission.yml` 会调用 `scripts/check-plugin-submission.mjs`，自动固定默认
+分支当前 Commit，读取仓库树、`package.json`、README 和 Bundle Patch，并提取包名、版本、
+许可证、入口 ID、生命周期脚本和已声明的兼容范围。若 monorepo 中发现多个 DSH 插件，
+机器人会列出候选目录；提交者只需补充可选的 `Plugin path`。
 
 预检通过时添加 `submission-passed`，失败时添加 `submission-failed`，并幂等更新一条带固定
 标记的机器人评论；修改 Issue 会重新检查并移除相反状态标签。只有通过预检的申请才进入
@@ -31,6 +32,27 @@ build 或 test 脚本。
 
 该门禁是固定源静态一致性检查，不是安全审计或 DSH 运行验证。通过不会自动修改
 `catalog.json`、创建 Pull Request 或合并；正式上架仍需人工复核、一次性变更计划和明确确认。
+静态证据无法可靠判断的文件、网络、命令、凭据权限和外部依赖保持 `unknown`，不得为了通过
+门禁而推断成 `none`。
+
+提交前建议使用 [`build-dsh-plugin`](https://github.com/AI-Scarlett/build-dsh-plugin) 制作标准
+Bundle、生成 Catalog 候选或执行只读上架预检。它同样遵循“不修改 DSH 核心、不写真实
+Profile、不用低层测试冒充运行验收”的边界。
+
+## 提交者自检清单
+
+- 公开 GitHub 仓库，且目标包能够固定到 40 位 Commit；
+- `package.json` 具有合法包名、语义化版本和可解析的 `dsh.bundle.patch`；
+- Bundle Patch 入口 ID 唯一，不禁用、遮蔽或冒充官方组件；
+- manifest 与实际许可证、生命周期脚本、Node.js/DSH 兼容声明一致；
+- README 说明用途、安装/启用方式、外部依赖、权限和已知风险；
+- monorepo 能唯一定位插件目录；第三方包不使用 `@deepseek-ai/*` 命名空间；
+- 高权限、原生构建或外部服务明确披露，并准备一次性 Profile 的安装与功能验收证据；
+- 插件在“热门、有用、有趣”至少一个维度具有收录价值。
+
+人工审核还会复核固定源码、权限、凭据、外部依赖、供应链、`allowBuilds`、Catalog 冲突，
+并在与声明兼容的 DSH 版本上使用一次性 Profile 做实际安装与可见性验证。预检、人工检查、
+作者认证和最终上架是四个不同证据层级。
 
 ## 详情元数据
 

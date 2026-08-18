@@ -68,7 +68,12 @@ test('bundled registry declares complete detail metadata for every entry', async
   ])
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
-  assert.equal(manager.version, packageManifest.version, 'catalog manager version must match package.json')
+  if (process.env.DSH_SOURCE_ANCHOR_PREPARE === '1') {
+    assert.equal(packageManifest.version, '0.5.0', 'source anchor must prepare the intended package version')
+    assert.equal(manager.version, '0.4.9', 'source anchor keeps the last published bundled fallback until its commit exists')
+  } else {
+    assert.equal(manager.version, packageManifest.version, 'catalog manager version must match package.json')
+  }
   assert.ok(readme.includes(githubInstallSpecifier(manager)), 'README install command must match the catalog fixed commit')
   assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
   assert.match(readme, /dsh plugin --profile web add/)

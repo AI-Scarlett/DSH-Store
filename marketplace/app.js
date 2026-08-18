@@ -12,7 +12,7 @@ const translations = {
     'install.warning': '命令会修改 web Profile；请先备份，失败后不要连续重试。',
     'action.copyCommand': '复制命令', 'action.fullGuide': '完整步骤 ↗', 'action.explore': '浏览全部插件', 'action.manager': '了解管理器插件',
     'action.source': '查看源码与说明', 'action.backCommand': '回到首屏复制命令 ↑', 'action.clear': '清除筛选', 'action.viewAll': '查看全部插件', 'action.top': '回到顶部 ↑',
-    'action.details': '查看插件详情', 'action.copyCommit': '复制 Commit', 'action.repo': '查看 GitHub 仓库', 'action.manual': '前往 GitHub 手动安装',
+    'action.details': '查看插件详情', 'action.copyCommit': '复制 Commit', 'action.repo': '查看 GitHub 仓库', 'action.manual': '前往 GitHub 手动安装', 'publisher': 'GitHub 发布者',
     'trust.commit': '固定 Git Commit', 'trust.permissions': '权限信息先展示', 'trust.readonly': '浏览不改 Profile',
     'console.online': '目录在线', 'console.network': 'EXTENSION NETWORK', 'console.heading': '找到新能力',
     'tab.featured': '推荐', 'tab.workflow': '工作流', 'tab.visual': '视觉', 'float.pinned': '来源已固定', 'float.commit': '40 位 Commit',
@@ -52,7 +52,7 @@ const translations = {
     'install.warning': 'This command changes the web Profile. Back it up first, and do not retry repeatedly after an error.',
     'action.copyCommand': 'Copy command', 'action.fullGuide': 'Full guide ↗', 'action.explore': 'Explore plugins', 'action.manager': 'Meet the manager',
     'action.source': 'View source and docs', 'action.backCommand': 'Back to the command ↑', 'action.clear': 'Clear filters', 'action.viewAll': 'View all plugins', 'action.top': 'Back to top ↑',
-    'action.details': 'View plugin details', 'action.copyCommit': 'Copy commit', 'action.repo': 'View GitHub repository', 'action.manual': 'Install manually on GitHub',
+    'action.details': 'View plugin details', 'action.copyCommit': 'Copy commit', 'action.repo': 'View GitHub repository', 'action.manual': 'Install manually on GitHub', 'publisher': 'GitHub publisher',
     'trust.commit': 'Pinned Git commit', 'trust.permissions': 'Permissions first', 'trust.readonly': 'Browsing is read-only',
     'console.online': 'Catalog online', 'console.network': 'EXTENSION NETWORK', 'console.heading': 'Find a new capability',
     'tab.featured': 'Featured', 'tab.workflow': 'Workflow', 'tab.visual': 'Visual', 'float.pinned': 'Source pinned', 'float.commit': '40-char commit',
@@ -160,6 +160,13 @@ const licenseLabel = value => {
   if (value === 'CC-BY-NC-SA-4.0') return state.locale === 'en' ? 'Non-commercial (CC BY-NC-SA 4.0)' : '非商业（CC BY-NC-SA 4.0）'
   return value
 }
+const githubPublisher = repositoryUrl => {
+  try {
+    const url = new URL(repositoryUrl)
+    const owner = url.hostname.toLowerCase() === 'github.com' ? decodeURIComponent(url.pathname.split('/').filter(Boolean)[0] || '') : ''
+    return owner ? `@${owner}` : t('value.unknown')
+  } catch { return t('value.unknown') }
+}
 
 function normalizeEntry(entry) {
   const details = entry?.details && typeof entry.details === 'object' ? entry.details : {}
@@ -194,7 +201,7 @@ function normalizeEntry(entry) {
 function searchValues(entry) {
   const permissions = entry.details.permissions
   return [
-    entry.name, entry.packageName, entry.description, entry.repositoryUrl, entry.version,
+    entry.name, entry.packageName, entry.description, entry.repositoryUrl, githubPublisher(entry.repositoryUrl), entry.version,
     ...entry.categories.map(categoryLabel), detailLabel('pluginType', entry.details.pluginType),
     detailLabel('level', permissions.level), detailLabel('files', permissions.files),
     detailLabel('network', permissions.network), detailLabel('commands', permissions.commands),
@@ -250,6 +257,7 @@ function renderFeatured() {
       <div class="featured-top"><span class="feature-number">PICK / 0${index + 1}</span><span class="dialog-badge">${escape(categoryLabel(entry.categories[0] || 'tools'))}</span></div>
       <span class="featured-icon" aria-hidden="true"><span>${escape(initials(entry.name))}</span></span>
       <h3>${escape(entry.name)}</h3>
+      <span class="package-line">${escape(t('publisher'))} ${escape(githubPublisher(entry.repositoryUrl))}</span>
       <p>${escape(entry.description)}</p>
       <button class="featured-link details-button" type="button" data-details-id="${escape(entry.id)}"><span>${escape(t('action.details'))}</span><i aria-hidden="true">↗</i></button>
     </article>`).join('')
@@ -277,6 +285,7 @@ function cardTemplate(entry) {
     </div>
     <h3>${escape(entry.name)}</h3>
     <span class="package-line">${escape(entry.packageName)} · v${escape(entry.version)}</span>
+    <span class="package-line">${escape(t('publisher'))} ${escape(githubPublisher(entry.repositoryUrl))}</span>
     <p class="plugin-description">${escape(entry.description)}</p>
     <div class="plugin-badges">
       ${topCategories.map(id => `<span class="plugin-badge">${escape(categoryLabel(id))}</span>`).join('')}
@@ -321,6 +330,7 @@ function showDetails(entry) {
     </div>
     <section class="dialog-section"><h3>${escape(t('dialog.basic'))}</h3><dl class="dialog-grid">
       ${detailItem(state.locale === 'en' ? 'Package' : '包名', entry.packageName, true)}${detailItem(state.locale === 'en' ? 'Version' : '版本', entry.version)}
+      ${detailItem(t('publisher'), githubPublisher(entry.repositoryUrl))}
       ${detailItem('Git Commit', entry.commit || t('value.undeclared'), true)}${detailItem(state.locale === 'en' ? 'License' : '许可证', licenseLabel(entry.details.license))}
       ${detailItem(state.locale === 'en' ? 'Plugin type' : '插件类型', detailLabel('pluginType', entry.details.pluginType))}${detailItem(state.locale === 'en' ? 'Install source' : '安装来源', detailLabel('installSource', entry.details.installSource))}
     </dl></section>

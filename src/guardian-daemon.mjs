@@ -3,7 +3,7 @@ import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { request as requestHttp } from 'node:http'
 import { connect } from 'node:net'
-import { dirname, isAbsolute, join } from 'node:path'
+import { delimiter, dirname, isAbsolute, join } from 'node:path'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 const now = () => new Date().toISOString()
@@ -106,6 +106,11 @@ function validate(config) {
   if (!Array.isArray(config.runtimeArgs) || config.runtimeArgs.some(value => typeof value !== 'string')) throw new Error('invalid runtime arguments')
   if (!/^[A-Za-z0-9._-]+$/.test(config.profile)) throw new Error('invalid profile')
   if (config.host !== '127.0.0.1' || !Number.isInteger(config.port)) throw new Error('invalid listener')
+  if (config.commandPath !== undefined) {
+    if (typeof config.commandPath !== 'string' || config.commandPath.length === 0) throw new Error('invalid command path')
+    const entries = config.commandPath.split(delimiter)
+    if (entries.some(value => !value || !isAbsolute(value))) throw new Error('command path entries must be absolute')
+  }
   for (const field of ['healthProbeTimeoutMs', 'unhealthyThreshold', 'startupGraceMs']) {
     if (config[field] !== undefined && (!Number.isInteger(config[field]) || config[field] <= 0)) throw new Error(`invalid ${field}`)
   }
@@ -134,6 +139,9 @@ export async function runGuardian(rawConfig, options = {}) {
   const stableMs = config.stableMs ?? 30_000
   const startupGraceMs = config.startupGraceMs ?? 10_000
   const unhealthyThreshold = config.unhealthyThreshold ?? 3
+  const commandEnvironment = config.commandPath
+    ? { ...process.env, PATH: config.commandPath }
+    : process.env
   let child = null
   const intentionalStops = new WeakSet()
   let failures = []
@@ -167,7 +175,7 @@ export async function runGuardian(rawConfig, options = {}) {
     }
     const install = await new Promise(resolve => {
       const command = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, 'plugin', '--profile', config.profile, 'install', '--offline'], {
-        cwd: config.cwd, env: process.env, shell: false, stdio: 'ignore',
+        cwd: config.cwd, env: commandEnvironment, shell: false, stdio: 'ignore',
       })
       command.once('exit', code => resolve(code === 0))
       command.once('error', () => resolve(false))
@@ -195,7 +203,7 @@ export async function runGuardian(rawConfig, options = {}) {
   function launch() {
     const profileArgs = config.profile === 'web' ? ['web'] : ['--profile', config.profile]
     const launched = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, ...profileArgs], {
-      cwd: config.cwd, env: process.env, shell: false, stdio: ['ignore', 'ignore', 'pipe'],
+      cwd: config.cwd, env: commandEnvironment, shell: false, stdio: ['ignore', 'ignore', 'pipe'],
     })
     child = launched
     childStartedAt = currentTime()

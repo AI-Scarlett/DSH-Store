@@ -104,17 +104,28 @@ window.__ModuleLoader__.load({
       dangerButton: { borderColor: 'var(--dsw-alias-state-error-primary)', color: 'var(--dsw-alias-state-error-primary)' },
       primaryButton: { borderColor: 'var(--dsw-alias-label-primary)', fontWeight: 600 },
       disabledButton: { opacity: 0.45, cursor: 'not-allowed' },
-      grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' },
+      grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '12px' },
       card: {
-        display: 'flex', flexDirection: 'column', gap: '8px', border: '1px solid var(--dsw-alias-border-l2)',
-        borderRadius: '11px', padding: '13px 14px', background: 'var(--dsw-alias-bg-layer-3)', minWidth: 0,
+        display: 'flex', flexDirection: 'column', gap: '10px', border: '1px solid var(--dsw-alias-border-l2)',
+        borderRadius: '12px', padding: '14px', background: 'var(--dsw-alias-bg-layer-3)', minWidth: 0,
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.08)',
       },
+      cardHeader: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' },
+      cardHeading: { display: 'flex', alignItems: 'center', gap: '7px', minWidth: 0 },
+      featuredMark: { color: 'var(--dsw-alias-label-primary)', fontSize: '12px', lineHeight: '18px' },
+      cardDescription: {
+        color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px', minHeight: '36px',
+        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+      },
+      cardTags: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px' },
       cardFooter: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginTop: 'auto' },
       detailAction: { display: 'flex', marginLeft: 'auto' },
       row: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' },
       name: { minWidth: 0, overflowWrap: 'anywhere', fontSize: '13px', fontWeight: 650 },
       muted: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       badge: { display: 'inline-flex', alignItems: 'center', borderRadius: '999px', padding: '3px 7px', background: 'var(--dsw-alias-bg-layer-2)', fontSize: '11px' },
+      statusPill: { display: 'inline-flex', alignItems: 'center', gap: '5px', flexShrink: 0, borderRadius: '999px', padding: '3px 7px', background: 'var(--dsw-alias-bg-layer-2)', fontSize: '11px' },
+      stateDot: { width: '7px', height: '7px', borderRadius: '50%', flex: '0 0 7px' },
       actions: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '2px' },
       error: { color: 'var(--dsw-alias-state-error-primary)', fontSize: '13px' },
       notice: { border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '10px', padding: '11px 13px', fontSize: '12px', lineHeight: '18px' },
@@ -158,10 +169,18 @@ window.__ModuleLoader__.load({
       return value
     }
 
+    function githubPublisher(repositoryUrl) {
+      try {
+        const url = new URL(repositoryUrl)
+        const owner = url.hostname.toLowerCase() === 'github.com' ? decodeURIComponent(url.pathname.split('/').filter(Boolean)[0] || '') : ''
+        return owner ? `@${owner}` : '未知'
+      } catch { return '未知' }
+    }
+
     function detailSearchValues(entry) {
       const permissions = entry.details.permissions
       return [
-        entry.name, entry.packageName, entry.description, entry.repositoryUrl, entry.details.license,
+        entry.name, entry.packageName, entry.description, entry.repositoryUrl, githubPublisher(entry.repositoryUrl), entry.details.license,
         detailLabel('pluginType', entry.details.pluginType), detailLabel('installSource', entry.details.installSource),
         detailLabel('level', permissions.level), detailLabel('files', permissions.files),
         detailLabel('network', permissions.network), detailLabel('commands', permissions.commands),
@@ -217,11 +236,17 @@ window.__ModuleLoader__.load({
       return `${detailLabel('installSource', entry.details.installSource)}（目录声明）`
     }
 
-    function Button({ children, danger = false, primary = false, compact = false, disabled = false, onClick }) {
+    function Button({ children, danger = false, primary = false, compact = false, disabled = false, onClick, ariaLabel, title }) {
       return React.createElement('button', {
-        type: 'button', disabled, onClick,
+        type: 'button', disabled, onClick, title, 'aria-label': ariaLabel,
         style: { ...styles.button, ...(compact ? styles.compactButton : {}), ...(danger ? styles.dangerButton : {}), ...(primary ? styles.primaryButton : {}), ...(disabled ? styles.disabledButton : {}) },
       }, children)
+    }
+
+    function StatusPill({ label, tone = 'var(--dsw-alias-label-tertiary)' }) {
+      return React.createElement('span', { style: styles.statusPill },
+        React.createElement('span', { 'aria-hidden': true, style: { ...styles.stateDot, background: tone } }),
+        label)
     }
 
     function TabButton({ children, active, onClick }) {
@@ -268,15 +293,24 @@ window.__ModuleLoader__.load({
         : entry.installOrigin === 'catalog-source-matched' ? '目录来源匹配 · 渠道未知'
           : entry.installOrigin === 'local-development' ? '本地开发安装'
             : entry.installOrigin === 'external-or-drifted' ? '外部安装 / 来源漂移' : null
-      return React.createElement('article', { style: styles.card },
-        React.createElement('div', { style: styles.row },
-          React.createElement('div', { style: styles.name }, `${entry.featured ? '★ ' : ''}${entry.name}`),
-          React.createElement('span', { style: styles.badge }, state)),
+      const stateTone = entry.status === 'blocked' ? 'var(--dsw-alias-state-error-primary)'
+        : entry.updateAvailable || entry.migrationAvailable ? 'var(--dsw-alias-label-primary)'
+          : entry.installed ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)'
+      const titleId = `dsh-store-plugin-${entry.id}`
+      return React.createElement('article', { style: styles.card, role: 'listitem', 'aria-labelledby': titleId },
+        React.createElement('div', { style: styles.cardHeader },
+          React.createElement('div', { style: styles.cardHeading },
+            entry.featured ? React.createElement('span', { style: styles.featuredMark, title: '推荐插件', 'aria-label': '推荐插件' }, '★') : null,
+            React.createElement('div', { id: titleId, style: styles.name }, entry.name)),
+          React.createElement(StatusPill, { label: state, tone: stateTone })),
         React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
-        React.createElement('div', { style: styles.muted }, entry.description),
+        React.createElement('div', { style: styles.cardDescription }, entry.description),
         React.createElement('div', { style: styles.muted }, `Commit ${entry.commit.slice(0, 12)} · ${entry.categories.map(id => categoryLabels[id] || id).join(' / ')}`),
-        origin ? React.createElement('div', { style: styles.badge }, origin) : null,
-        Number.isInteger(entry.installCount) ? React.createElement('div', { style: styles.muted }, `累计安装 ${entry.installCount}`) : null,
+        React.createElement('div', { style: styles.cardTags },
+          React.createElement('span', { style: styles.badge }, `GitHub 发布者 ${githubPublisher(entry.repositoryUrl)}`),
+          origin ? React.createElement('span', { style: styles.badge }, origin) : null,
+          ...entry.categories.map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id)),
+          Number.isInteger(entry.installCount) ? React.createElement('span', { style: styles.badge }, `累计安装 ${entry.installCount}`) : null),
         entry.risk.installScripts.length > 0
           ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join(', ')}`)
           : null,
@@ -287,17 +321,18 @@ window.__ModuleLoader__.load({
               ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '前往 GitHub 手动安装')
               : null),
           React.createElement('div', { style: styles.detailAction },
-            React.createElement(Button, { onClick: () => openDetails(entry) }, '查看详情'))))
+            React.createElement(Button, { compact: true, onClick: () => openDetails(entry), ariaLabel: `查看 ${entry.name} 详情` }, '查看详情'))))
     }
 
     function InventoryOnlyCard({ plugin }) {
       const source = plugin.official ? '官方 · 只读' : `${plugin.source || 'unknown'} · 目录外只读`
-      return React.createElement('article', { style: styles.card },
-        React.createElement('div', { style: styles.row },
-          React.createElement('div', { style: styles.name }, plugin.packageName),
-          React.createElement('span', { style: styles.badge }, source)),
+      const titleId = `dsh-store-inventory-${String(plugin.packageName).replaceAll(/[^A-Za-z0-9_-]/g, '-')}`
+      return React.createElement('article', { style: styles.card, role: 'listitem', 'aria-labelledby': titleId },
+        React.createElement('div', { style: styles.cardHeader },
+          React.createElement('div', { id: titleId, style: styles.name }, plugin.packageName),
+          React.createElement(StatusPill, { label: source })),
         React.createElement('div', { style: styles.code }, `${plugin.version || '版本未知'} · ${plugin.declaredAsBundle ? 'Bundle' : '依赖'}`),
-        React.createElement('div', { style: styles.muted }, plugin.description || '本地 manifest 未提供插件介绍'),
+        React.createElement('div', { style: styles.cardDescription }, plugin.description || '本地 manifest 未提供插件介绍'),
         React.createElement('div', { style: styles.notice }, '该插件未进入 GitHub catalog.json，无法提供目录详情或商城受保护操作。'),
         plugin.repository
           ? React.createElement('div', { style: styles.cardFooter },
@@ -340,6 +375,7 @@ window.__ModuleLoader__.load({
         React.createElement('dl', { style: styles.detailGrid },
           React.createElement(DetailRow, { label: '包名', value: entry.packageName, code: true }),
           React.createElement(DetailRow, { label: '版本', value: entry.version }),
+          React.createElement(DetailRow, { label: 'GitHub 发布者', value: githubPublisher(entry.repositoryUrl) }),
           React.createElement(DetailRow, { label: 'Git Commit', value: entry.commit, code: true }),
           React.createElement(DetailRow, { label: '分类', value: entry.categories.map(id => categoryLabels[id] || id).join(' / ') }),
           React.createElement(DetailRow, { label: '上架状态', value: status }),
@@ -835,14 +871,14 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.notice },
             `${entries.length} / ${scopedEntries.length} 个目录内已安装插件`,
             uncataloguedInstalledAll.length > 0 ? ` · 另有 ${uncataloguedInstalledAll.length} 个目录外只读项` : ''),
-          React.createElement('div', { style: styles.grid }, entries.map(entry => React.createElement(MarketCard, {
+          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '已安装插件' }, entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, openDetails: setDetailEntry, categoryLabels,
           }))),
           uncataloguedInstalled.length > 0
             ? React.createElement(React.Fragment, null,
               React.createElement('h4', { style: styles.title }, '未进入商城目录'),
               React.createElement('div', { style: styles.muted }, '以下项目只展示本地 manifest 的真实信息，不提供 catalog 权限详情或商城操作。'),
-              React.createElement('div', { style: styles.grid }, uncataloguedInstalled.map(plugin =>
+              React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '目录外已安装插件' }, uncataloguedInstalled.map(plugin =>
                 React.createElement(InventoryOnlyCard, { key: plugin.packageName, plugin }))))
             : null)
       } else {
@@ -851,13 +887,13 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.notice },
             `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${entries.length} / ${scopedEntries.length} 个在架条目`,
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
-          React.createElement('div', { style: styles.grid }, entries.map(entry => React.createElement(MarketCard, {
+          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, openDetails: setDetailEntry,
             categoryLabels,
           }))))
       }
 
-      return React.createElement('section', { style: styles.root },
+      return React.createElement('section', { style: styles.root, 'aria-label': 'DSH-Store 插件商城' },
         React.createElement('style', null, DETAIL_MODAL_CSS),
         heading, nav, guardianBanner, restartBanner, content,
         React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }),
