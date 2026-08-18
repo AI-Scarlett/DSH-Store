@@ -62,12 +62,12 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.5.3` |
-| 收录条目 | 47 个 |
-| 可安装 | 41 个 |
-| 商城不可安装 | 6 个，保留 GitHub 手动安装入口和风险原因 |
+| 商城版本 | `0.5.4` |
+| 收录条目 | 48 个 |
+| 可安装 | 43 个 |
+| 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
-| 推荐 | 8 个：自研工作流与商城、DSH Codex Shell、DSH Web UI All、DSH WeCom CLI 等 |
+| 推荐 | 4 个：DSH-Store、DSH WeCom CLI、Build DSH Plugin、Agent Workflow |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
 商城已经在真实 DSH `web` Profile 中完成只读扫描、GitHub 在线目录刷新、配置合成、
@@ -158,8 +158,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - `approved`：正常上架并允许生成安装计划；
 - `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
-- `featured: true`：在全部视图和所属分类中优先显示；当前推荐自研工作流与商城，以及用户精选的
-  DSH Codex Shell、DSH Web UI All 和 DSH WeCom CLI 等；
+- `featured: true`：在全部视图和所属分类中优先显示；当前仅推荐 DSH-Store、DSH WeCom CLI、
+  Build DSH Plugin 和 Agent Workflow；
 - 可选安装回执只发送插件 ID 和版本，不发送设备、Profile 或用户标识；默认关闭；
 - GitHub Pages 不能直接写回 `catalog.json`，真实计数需要独立匿名聚合服务。
 - `0.4.7` 内置幂等安装回执与 Cloudflare Worker + D1 聚合器；只在商城安装、健康检查通过后提交插件 ID、版本和随机事务 ID，不提交账号、设备或 Profile。计数服务未部署或未配置时保持关闭，不显示虚假安装量。
@@ -208,6 +208,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 本机按需源更新 `0.5.1` | [`9a6e41f`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/9a6e41f7875726f7124d2cfde618df284342e5f3) | 用户本机按需读取插件源 GitHub，解析完整 Commit 并在安装前审核；低风险候选可固定 SHA 更新，高风险或契约漂移返回 Registry 复审。 |
 | 本机高风险自主决策 `0.5.2` | [`5e6c2b9`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/5e6c2b9cde9c3992d55a88aa7223da76a5746b78) | 进入已安装页后由用户本机有限并发检查源 GitHub；低风险生成固定 SHA 计划，高风险展示变化并逐次确认，触碰 DSH 原生代码或受保护组件则仅保留不受商城保护的外部入口。 |
 | DSH 版本与升级提示 `0.5.3` | [`2655055`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/2655055671fa2dc23a178cc251402bc5748c7e2a) | 在商城标题右侧显示当前 DSH 版本并按需检查 npm 官方最新版；提供固定版本升级命令与官方 Release，同时折叠长说明并保持 DSH 源码不可修改。 |
+| 安装诊断与构建许可 `0.5.4` | 待发布源码 Commit | 将源更新超时映射为稳定错误码，显示脱敏 pnpm 诊断，并仅为已审核且声明安装生命周期脚本的插件传入精确包名构建许可。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
@@ -215,8 +216,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 ## 已收录插件
 
-`★` 表示推荐。当前推荐 `AI-Scarlett` 自研工作流与商城，以及用户精选的社区插件
-DSH Codex Shell、DSH Web UI All 和 DSH WeCom CLI 等；推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
+`★` 表示推荐。当前仅推荐 DSH-Store、DSH WeCom CLI、Build DSH Plugin 和 Agent Workflow；
+推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
 `registry/catalog.json` 一致。
 
 | 插件 | 分类 | 状态 | 介绍 |
