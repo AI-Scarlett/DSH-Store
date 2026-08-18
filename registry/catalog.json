@@ -843,6 +843,90 @@
         "externalDependencies": ["GitHub API", "npm Registry"], "reviewStatus": "manual-review"
       },
       "risk": { "installScripts": [], "review": "blocked-by-policy" }
+    },
+    {
+      "id": "dsh-plugin-outline",
+      "name": "DSH Plugin Outline",
+      "packageName": "dsh-plugin-outline",
+      "description": "为 DSH Web 提供右侧会话轮次大纲、当前位置高亮和点击跳转。",
+      "repositoryUrl": "https://github.com/iluluyu/dsh-plugin-outline",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "59dfc8019a0a202450b8d5fd8da0436a5fe0e0a2",
+      "version": "0.2.2",
+      "categories": ["sessions", "ui", "visualization"],
+      "entryIds": ["outline"],
+      "status": "approved",
+      "compatibility": { "dsh": "unknown", "node": "unknown", "systems": [], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+    },
+    {
+      "id": "dsh-ipcalc",
+      "name": "DSH IP Calculator",
+      "packageName": "dsh-ipcalc",
+      "description": "为 DSH 提供 IPv4 子网计算、CIDR 汇总以及 IPv4/IPv6 解析和规范化工具。",
+      "repositoryUrl": "https://github.com/TYEclipse/dsh-ipcalc",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "6a267cdfc139167ace09abaa33c4df2080f6d093",
+      "version": "0.1.0",
+      "categories": ["tools", "development"],
+      "entryIds": ["ipcalc"],
+      "status": "approved",
+      "compatibility": { "dsh": "unknown", "node": "unknown", "systems": [], "profiles": ["web", "headless"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": [], "review": "community-pure-computation-not-security-audited" }
+    },
+    {
+      "id": "dsh-stats-board",
+      "name": "DSH Stats Board",
+      "packageName": "dsh-stats-board",
+      "description": "在 DSH Web 中增加会话与工具调用统计视图，并按轮次展示 Token 使用情况。",
+      "repositoryUrl": "https://github.com/PastSheep/dsh-stats-board",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "69ba2127fc88891efed26890081a1ff741a35d2e",
+      "version": "0.1.0",
+      "categories": ["sessions", "ui", "visualization"],
+      "entryIds": ["stats-board"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "unknown", "systems": [], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "medium", "files": "read-only", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": [], "review": "community-session-metadata-not-security-audited" }
+    },
+    {
+      "id": "dsh-ventus-whale",
+      "name": "DSH Ventus Whale",
+      "packageName": "dsh-ventus-whale",
+      "description": "为 DSH Web 添加可拖动和配置的 3D 虎鲸桌宠、快捷交互与设置面板。",
+      "repositoryUrl": "https://github.com/mmzm0808/dsh-ventus-whale",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "63622ee836d341e8c418135d1b185b7cb1d51c4c",
+      "version": "0.1.0",
+      "categories": ["ui", "themes"],
+      "entryIds": ["dsh-ventus-whale"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "unknown", "systems": [], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "medium", "files": "write", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": [], "review": "community-plugin-state-write-not-security-audited" }
     }
   ]
 }

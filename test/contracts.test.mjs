@@ -141,12 +141,43 @@ test('client fails closed when the live health endpoint still uses the legacy sc
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const source = await readFile(new URL('marketplace/index.html', project), 'utf8')
-  assert.match(source, /featured === true/)
-  assert.match(source, /status !== 'unlisted'/)
-  assert.match(source, /按分类筛选/)
-  assert.match(source, /data-details-id/)
-  assert.match(source, /showDetails/)
-  assert.match(source, /详情来自 GitHub catalog\.json/)
-  assert.match(source, /前往 GitHub 手动安装/)
+  const [html, app, readme, logo, pendingNginx] = await Promise.all([
+    readFile(new URL('marketplace/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/app.js', project), 'utf8'),
+    readFile(new URL('README.md', project), 'utf8'),
+    readFile(new URL('marketplace/dsh-store-logo.svg', project), 'utf8'),
+    readFile(new URL('deploy/nginx-dsh-store-pending.conf', project), 'utf8'),
+  ])
+  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9eeb4f1cab9df4a1afbfd7c7951db9c3781d06db'"
+  assert.match(html, /defer src="\.\/app\.js"/)
+  assert.match(html, /data-locale="zh"/)
+  assert.match(html, /data-locale="en"/)
+  assert.match(html, /data-i18n="hero\.title1"/)
+  assert.match(html, /data-i18n-placeholder="catalog\.search"/)
+  assert.match(html, /<strong>DSH STORE<\/strong>/)
+  assert.match(html, /href="\.\/dsh-store-logo\.svg"/)
+  assert.match(html, /src="\.\/dsh-store-logo\.svg"/)
+  assert.match(html, /class="manager-tab"/)
+  assert.match(html, /id="manager"/)
+  assert.match(html, /data-copy-target="install-command"/)
+  assert.ok(html.includes(installCommand))
+  assert.ok(readme.includes(installCommand))
+  assert.match(app, /featured === true/)
+  assert.match(app, /status !== 'unlisted'/)
+  assert.match(app, /data-details-id/)
+  assert.match(app, /showDetails/)
+  assert.match(app, /dsh-marketplace-locale/)
+  assert.match(app, /function setLocale/)
+  assert.match(app, /DSH STORE｜DeepSeek Harness 插件商城/)
+  assert.match(app, /DSH STORE \| DeepSeek Harness Plugin Market/)
+  assert.match(app, /'hero\.title1': 'Your next capability'/)
+  assert.match(app, /详情来自 GitHub catalog\.json/)
+  assert.match(app, /前往 GitHub 手动安装/)
+  assert.match(logo, /viewBox="0 0 64 64"/)
+  assert.match(logo, /<title id="logo-title">DSH STORE<\/title>/)
+  assert.match(pendingNginx, /listen 127\.0\.0\.1:31980;/)
+  assert.match(pendingNginx, /listen \[::1\]:31980;/)
+  assert.match(pendingNginx, /root \/opt\/dsh-store\/current\/marketplace;/)
+  assert.match(pendingNginx, /alias \/opt\/dsh-store\/current\/registry\/catalog\.json;/)
+  assert.doesNotMatch(pendingNginx, /listen (?:\[::\]:)?(?:80|443)\b/)
 })
