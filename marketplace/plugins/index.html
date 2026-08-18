@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="浏览 DSH STORE 完整 DeepSeek Harness 插件目录。按名称、能力、权限与兼容性搜索和筛选，来源与未知状态保持可见。">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+  <meta name="theme-color" content="#07113f">
+  <meta name="application-name" content="DSH STORE">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="全部 DSH 插件｜DSH STORE">
+  <meta property="og:description" content="独立、可扩展的 DeepSeek Harness 插件目录：搜索、分类、权限与固定来源。">
+  <meta property="og:url" content="https://dsh.store/plugins/">
+  <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="全部 DSH 插件｜DSH STORE">
+  <meta name="twitter:description" content="搜索完整 DSH 插件目录，先看权限与来源，再决定下一步。">
+  <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
+  <title>全部 DSH 插件｜DSH STORE</title>
+  <link rel="canonical" href="https://dsh.store/plugins/">
+  <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
+  <link rel="apple-touch-icon" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "https://dsh.store/plugins/#catalog",
+        "url": "https://dsh.store/plugins/",
+        "name": "DSH STORE Plugin Catalog",
+        "description": "A searchable catalog of third-party DeepSeek Harness plugins with pinned source, permissions, compatibility, and review status.",
+        "isPartOf": {"@type": "WebSite", "@id": "https://dsh.store/#website", "name": "DSH STORE"},
+        "about": ["DeepSeek Harness plugins", "plugin permissions", "plugin source verification"]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "DSH STORE", "item": "https://dsh.store/"},
+          {"@type": "ListItem", "position": 2, "name": "Plugin Catalog", "item": "https://dsh.store/plugins/"}
+        ]
+      }
+    ]
+  }
+  </script>
+  <!-- DSH_STATIC_CATALOG -->
+</head>
+<body class="plugins-page" data-catalog-url="../../registry/catalog.json">
+  <a class="skip-link" href="#catalog" data-i18n="a11y.skipCatalog">跳到插件目录</a>
+  <div class="tech-grid" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="../" aria-label="DSH STORE">
+      <span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="../" data-i18n="nav.home">首页</a>
+      <a href="./" aria-current="page" data-i18n="nav.discover">插件目录</a>
+      <a href="../build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="catalog_header">开发插件</a>
+      <a href="../faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="catalog_header">常见问题</a>
+      <a href="../about/" data-i18n="nav.about" data-analytics-event="about_open" data-analytics-item="catalog_header">关于我们</a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/README.md" target="_blank" rel="noreferrer" data-analytics-event="usage_guide_open" data-analytics-item="catalog_header"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="catalog_header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
+    </nav>
+    <div class="header-tools">
+      <div class="locale-switch" role="group" aria-label="Language">
+        <button type="button" data-locale="zh" aria-pressed="true">中文</button>
+        <button type="button" data-locale="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="catalog-hero">
+      <div class="catalog-hero-copy reveal">
+        <div class="system-status"><span></span><b>CATALOG / LIVE INDEX</b><em>READ ONLY</em></div>
+        <h1><span data-i18n="directory.title1">发现插件，</span><br><em data-i18n="directory.title2">扩展 DSH 能力。</em></h1>
+        <p data-i18n="directory.lead">按能力、名称、权限或仓库快速查找。每个条目都提供可追溯来源、版本、权限与兼容性信息。</p>
+      </div>
+      <div class="catalog-summary reveal">
+        <div><small>CATALOG</small><strong id="stat-total">—</strong><span data-i18n="stats.plugins">在架插件</span></div>
+        <div><small>PLAN READY</small><strong id="stat-approved">—</strong><span data-i18n="stats.plannable">可生成计划</span></div>
+        <div><small>CAPABILITY</small><strong id="stat-categories">—</strong><span data-i18n="stats.categories">能力分类</span></div>
+        <p><i class="pulse-node"></i><span><b data-i18n="stats.source">GitHub 权威目录</b><small id="catalog-date" data-i18n="stats.connecting">正在核对 catalog.json…</small></span></p>
+      </div>
+    </section>
+
+    <section class="catalog-section section-shell" id="catalog" aria-labelledby="catalog-title">
+      <div class="catalog-heading reveal"><div><span class="section-index">PLUGIN INDEX / SCALABLE</span><h2 id="catalog-title" data-i18n="catalog.title">找到你需要的能力</h2></div><p data-i18n="catalog.lead">目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。</p></div>
+      <div class="catalog-toolbar reveal">
+        <label class="search-box" for="search"><span aria-hidden="true">⌕</span><input id="search" type="search" autocomplete="off" aria-label="Search plugins" data-i18n-placeholder="catalog.search" placeholder="搜索插件、能力或 GitHub 仓库"><kbd>⌘ K</kbd></label>
+        <label class="select-box" for="sort"><span data-i18n="catalog.sort">排序</span><select id="sort"><option value="recommended" data-i18n="sort.recommended">推荐优先</option><option value="name" data-i18n="sort.name">名称 A–Z</option><option value="recent" data-i18n="sort.recent">版本更新</option><option value="risk" data-i18n="sort.risk">权限由低到高</option></select></label>
+      </div>
+      <div class="catalog-controls reveal"><div id="category-pills" class="category-pills" aria-label="Categories"></div><button id="clear-filter" class="text-button" type="button" hidden data-i18n="action.clear">清除筛选</button></div>
+      <div class="result-row"><p id="catalog-meta" role="status" data-i18n="catalog.loading">正在读取目录…</p><span class="legend"><i class="legend-approved"></i><span data-i18n="status.available">可安装</span><i class="legend-blocked"></i><span data-i18n="status.viewOnly">仅展示</span></span></div>
+      <div id="plugin-grid" class="plugin-grid" aria-live="polite"><!-- DSH_STATIC_PLUGIN_CARDS_BEGIN --><!-- DSH_STATIC_PLUGIN_CARDS_END --></div>
+      <div id="catalog-pagination" class="catalog-pagination" hidden><button id="load-more" type="button"><span data-i18n="action.loadMore">加载更多插件</span><i aria-hidden="true">↓</i></button></div>
+      <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h3 data-i18n="empty.title">没有找到匹配插件</h3><p data-i18n="empty.body">换个关键词，或清除当前分类筛选。</p><button id="empty-clear" class="button button-primary" type="button" data-i18n="action.viewAll">查看全部插件</button></div>
+      <div id="load-error" class="load-error" hidden><span aria-hidden="true">!</span><div><h3 data-i18n="error.title">目录暂时没有加载成功</h3><p data-i18n="error.body">请稍后重试，或前往 GitHub 查看最新目录。</p><div class="load-error-actions"><button id="retry-catalog" class="button button-primary" type="button" data-i18n="action.retry">重新加载</button><a class="button button-secondary" href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/catalog.json" target="_blank" rel="noreferrer" data-i18n="action.githubCatalog">查看 GitHub 目录 ↗</a></div></div></div>
+      <div class="catalog-capacity reveal"><span>PRIVACY BY DEFAULT</span><b data-i18n="directory.capacity">搜索关键词留在你的浏览器里</b><small data-i18n="directory.capacityNote">筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。</small></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.catalogLead">发现插件、看清权限，再决定是否接入。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>AUTHORITY · GitHub <code>registry/catalog.json</code></span><span data-i18n="footer.note">收录不等于安全审计 · 浏览不会改写 Profile</span></div></footer>
+
+  <dialog id="plugin-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><header class="dialog-header"><div><span id="dialog-kicker" class="dialog-kicker">PLUGIN DETAIL</span><h2 id="dialog-title" data-i18n="dialog.title">插件详情</h2></div><button id="dialog-close" class="dialog-close" type="button" aria-label="Close">×</button></header><div id="dialog-body" class="dialog-body"></div></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script defer src="../app.js"></script>
+</body>
+</html>

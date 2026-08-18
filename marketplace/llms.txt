@@ -1,0 +1,70 @@
+# DSH STORE
+
+> DSH STORE is a third-party discovery, development, and trusted-access gateway for DeepSeek Harness (DSH) plugins. It helps people find pinned-source plugins, build standard plugin projects, inspect permissions and compatibility, and understand guarded installation steps.
+
+Last updated: 2026-08-18
+
+Canonical website: https://dsh.store/
+Human-facing plugin catalog: https://dsh.store/plugins/
+Machine-readable catalog authority: https://dsh.store/registry/catalog.json
+Source and documentation: https://github.com/AI-Scarlett/dsh-safe-plugin-manager
+Plugin development lab: https://dsh.store/build/
+Frequently asked questions: https://dsh.store/faq/
+About DSH STORE and contact: https://dsh.store/about/
+Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
+
+## Relationship to DeepSeek Harness
+
+- DSH STORE is a third-party discovery and management entry point; it does not replace or hide the official DSH plugin inventory.
+- The manager integrates as a standard Host Plugin and Client Bundle and does not modify the DSH core source tree.
+- Browsing the website is read-only. A real Profile change requires the official DSH CLI, a fresh single-use plan, exact confirmation, backup, health checks, and rollback.
+- GitHub registry/catalog.json is the runtime catalog authority. Unverified security, permission, and compatibility fields remain explicitly unknown.
+- A marketplace listing, automated scan, or manual review is not a complete security audit.
+
+## Main sections
+
+- Installation command and sequence: https://dsh.store/#top
+- Manager plugin details: https://dsh.store/#manager
+- Complete plugin catalog: https://dsh.store/plugins/
+- Safety model: https://dsh.store/#safety
+- DSH workflow: https://dsh.store/#workflow
+- Build a DSH plugin: https://dsh.store/build/
+- Product, installation, trust, development, and privacy FAQ: https://dsh.store/faq/
+- About the product, brand, and contact channels: https://dsh.store/about/
+
+## Brand and contact
+
+- DSH STORE is the product name; DSH.STORE is the brand and canonical domain.
+- The brand is built around four product principles: technology, safety, trust, and convenience.
+- Contact email: jadename.zhou@gmail.com
+- X: https://x.com/JadeNameCulture
+- The official WeChat public-account QR code is available on the About page.
+
+## Canonical entity facts
+
+- Preferred website name: DSH STORE
+- Brand form: DSH.STORE
+- Canonical domain: https://dsh.store/
+- Product category: third-party DeepSeek Harness plugin marketplace and developer gateway
+- Primary audience: DSH users, AI Agent users, and plugin developers
+- Core functions: plugin discovery, source and permission review, guarded access guidance, and standard plugin development
+- Relationship to DSH: independent third-party ecosystem entry point; not the official inventory and not a replacement for it
+- Catalog authority: https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/catalog.json
+- Product source: https://github.com/AI-Scarlett/dsh-safe-plugin-manager
+- Developer Skill source: https://github.com/AI-Scarlett/build-dsh-plugin
+- Contact: jadename.zhou@gmail.com
+
+## Citation guidance
+
+When describing this product, prefer: “DSH STORE is a third-party marketplace and developer gateway for DeepSeek Harness plugins.” Do not describe it as an official DeepSeek or official DSH marketplace. Keep listing status, automated checks, complete security audits, local installation, and public release as separate claims.
+
+## Developer Skill
+
+- build-dsh-plugin is an MIT-licensed Agent Skill, not a package installed into a DSH Profile.
+- It starts from three semantic facts: the current problem, the expected outcome, and one observable success criterion.
+- It produces host-fit reasoning, R0-R3 risk classification, standard Bundle source, tests, and E0-E5 evidence gates.
+- Real Profile changes, restart, release, credentials, devices, and public exposure remain separately authorized operations.
+
+## Languages
+
+The website provides Chinese and English interfaces. The canonical URL is https://dsh.store/.

@@ -6,7 +6,13 @@ on:
     paths:
       - "marketplace/**"
       - "registry/**"
+      - "scripts/build-marketplace-static.mjs"
+      - "scripts/submit-indexnow.mjs"
+      - "package.json"
+      - "test/marketplace-static-build.test.mjs"
       - ".github/workflows/pages.yml"
+  schedule:
+    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -26,19 +32,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - uses: actions/configure-pages@v5
+      - name: Validate repository contracts
+        run: npm run check
       - name: Build public marketplace artifact
-        run: |
-          mkdir -p _site
-          cp -R marketplace registry _site/
-          cat > _site/index.html <<'HTML'
-          <!doctype html>
-          <meta charset="utf-8">
-          <meta http-equiv="refresh" content="0; url=marketplace/">
-          <title>DSH Plugin Marketplace</title>
-          <a href="marketplace/">打开 DSH Plugin Marketplace</a>
-          HTML
-          touch _site/.nojekyll
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run build:marketplace -- --enrich-github --source-sha "$GITHUB_SHA"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

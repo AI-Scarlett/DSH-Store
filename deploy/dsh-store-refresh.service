@@ -1,0 +1,21 @@
+[Unit]
+Description=Refresh DSH STORE from the validated GitHub Pages artifact
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/dsh-store/bin/refresh-from-pages.sh
+User=root
+Group=root
+UMask=0022
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/dsh-store /run/lock
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target
