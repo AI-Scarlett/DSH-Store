@@ -2,6 +2,16 @@ import { createHash } from 'node:crypto'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import {
+  renderEnglishAbout,
+  renderEnglishBuild,
+  renderEnglishCatalog,
+  renderEnglishFaq,
+  renderEnglishHome,
+  renderPluginDetailPage,
+  renderSitemap,
+  safeEntryId,
+} from './marketplace-seo-pages.mjs'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -173,7 +183,7 @@ function pluginCard(entry) {
       <span class="plugin-badge risk-${htmlEscape(permissions.level || 'unknown')}">${htmlEscape(riskLabels[permissions.level] || riskLabels.unknown)}</span>
     </div>
     <footer class="plugin-card-footer">
-      <button class="details-button" type="button" data-details-id="${htmlEscape(entry.id)}">查看插件详情 →</button>
+      <a class="details-button" href="./${htmlEscape(safeEntryId(entry.id))}/" data-analytics-event="plugin_record_open" data-analytics-item="${htmlEscape(entry.id)}">查看插件详情 →</a>
       <a class="repo-link" href="${htmlEscape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="打开 GitHub 仓库: ${htmlEscape(entry.name)}" data-repo-id="${htmlEscape(entry.id)}">↗</a>
     </footer>
   </article>`
@@ -185,7 +195,7 @@ function featuredCard(entry, index) {
     <span class="featured-icon" aria-hidden="true"><span>${htmlEscape(initials(entry.name))}</span></span>
     <h3>${htmlEscape(entry.name)}</h3>
     <p>${htmlEscape(entry.description)}</p>
-    <button class="featured-link details-button" type="button" data-details-id="${htmlEscape(entry.id)}"><span>查看插件详情</span><i aria-hidden="true">↗</i></button>
+    <a class="featured-link details-button" href="./plugins/${htmlEscape(safeEntryId(entry.id))}/" data-analytics-event="plugin_record_open" data-analytics-item="${htmlEscape(entry.id)}"><span>查看插件详情</span><i aria-hidden="true">↗</i></a>
   </article>`
 }
 
@@ -243,6 +253,32 @@ plugins = replaceElementText(plugins, 'stat-categories', String(categoryCount).p
 plugins = replaceElementText(plugins, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
 plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(24, visibleEntries.length)} / ${visibleEntries.length}`)
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
+
+// Public plugin records are deliberately generated from the same fixed Catalog
+// snapshot as the client-side marketplace. They expose catalog facts for search
+// and answer engines without making any installation or Profile mutation path
+// available from the static site.
+await Promise.all(visibleEntries.map(async entry => {
+  const id = safeEntryId(entry.id)
+  const pageDirectory = resolve(outputRoot, 'marketplace/plugins', id)
+  await mkdir(pageDirectory, { recursive: true })
+  await writeFile(resolve(pageDirectory, 'index.html'), renderPluginDetailPage(entry, {
+    categories,
+    updatedAt: snapshot.registry.updatedAt,
+  }))
+}))
+
+const englishRoot = resolve(outputRoot, 'marketplace/en')
+await Promise.all(['plugins', 'build', 'faq', 'about'].map(directory => mkdir(resolve(englishRoot, directory), { recursive: true })))
+await writeFile(resolve(englishRoot, 'index.html'), renderEnglishHome({ entries: snapshot.entries }))
+await writeFile(resolve(englishRoot, 'plugins/index.html'), renderEnglishCatalog({ entries: snapshot.entries, categories }))
+await writeFile(resolve(englishRoot, 'build/index.html'), renderEnglishBuild())
+await writeFile(resolve(englishRoot, 'faq/index.html'), renderEnglishFaq())
+await writeFile(resolve(englishRoot, 'about/index.html'), renderEnglishAbout())
+await writeFile(resolve(outputRoot, 'marketplace/sitemap.xml'), renderSitemap({
+  entries: snapshot.entries,
+  updatedAt: snapshot.registry.updatedAt,
+}))
 
 await writeFile(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), JSON.stringify(snapshot, null, 2) + '\n')
 await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({

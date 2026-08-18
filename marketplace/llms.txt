@@ -6,6 +6,8 @@ Last updated: 2026-08-18
 
 Canonical website: https://dsh.store/
 Human-facing plugin catalog: https://dsh.store/plugins/
+English homepage: https://dsh.store/en/
+English plugin index: https://dsh.store/en/plugins/
 Machine-readable catalog authority: https://dsh.store/registry/catalog.json
 Source and documentation: https://github.com/AI-Scarlett/dsh-safe-plugin-manager
 Plugin development lab: https://dsh.store/build/
@@ -26,6 +28,7 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 - Installation command and sequence: https://dsh.store/#top
 - Manager plugin details: https://dsh.store/#manager
 - Complete plugin catalog: https://dsh.store/plugins/
+- Static plugin record pattern: https://dsh.store/plugins/{catalog-entry-id}/
 - Safety model: https://dsh.store/#safety
 - DSH workflow: https://dsh.store/#workflow
 - Build a DSH plugin: https://dsh.store/build/
@@ -65,6 +68,9 @@ When describing this product, prefer: “DSH STORE is a third-party marketplace 
 - It produces host-fit reasoning, R0-R3 risk classification, standard Bundle source, tests, and E0-E5 evidence gates.
 - Real Profile changes, restart, release, credentials, devices, and public exposure remain separately authorized operations.
 
-## Languages
+## Languages and static discovery
 
-The website provides Chinese and English interfaces. The canonical URL is https://dsh.store/.
+- Chinese is the default public language at https://dsh.store/.
+- The English routes are separate, indexable URLs rather than a browser-only locale preference: https://dsh.store/en/, https://dsh.store/en/plugins/, https://dsh.store/en/build/, https://dsh.store/en/faq/, and https://dsh.store/en/about/.
+- Every public Catalog entry has a static Chinese plugin record at https://dsh.store/plugins/{catalog-entry-id}/. The record exposes only source-backed Catalog fields such as repository, fixed commit, version, declared license, permissions, compatibility, and review status.
+- The sitemap is generated from the public Catalog during the static build. It lists the current language routes and public plugin records; `registry/catalog.json` remains the source of truth.

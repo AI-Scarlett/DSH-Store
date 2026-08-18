@@ -106,7 +106,7 @@ const RELEASE_API = 'https://api.github.com/repos/AI-Scarlett/build-dsh-plugin/r
 const REPOSITORY_URL = 'https://github.com/AI-Scarlett/build-dsh-plugin/'
 const TAG_PATTERN = /^v\d{4}\.\d{2}\.\d{2}(?:\.\d+)?$/
 const state = {
-  locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
+  locale: 'zh',
   installTarget: 'codex',
   releaseStatus: 'loading',
   release: null,
@@ -140,7 +140,6 @@ const installEls = {
 
 function setLocale(locale) {
   state.locale = locale === 'en' ? 'en' : 'zh'
-  localStorage.setItem('dsh-marketplace-locale', state.locale)
   document.documentElement.lang = state.locale === 'en' ? 'en' : 'zh-CN'
   document.title = t('meta.title')
   document.querySelector('meta[name="description"]')?.setAttribute('content', t('meta.description'))
@@ -371,6 +370,11 @@ function observeReveals() {
 document.querySelector('.locale-switch').addEventListener('click', event => {
   const button = event.target.closest('[data-locale]')
   if (!button || button.dataset.locale === state.locale) return
+  if (button.dataset.localeHref) {
+    sendDshEvent('locale_switch', { item: button.dataset.locale, value: 'build' })
+    window.location.assign(button.dataset.localeHref)
+    return
+  }
   setLocale(button.dataset.locale)
   sendDshEvent('locale_switch', { item: state.locale, value: 'build' })
 })

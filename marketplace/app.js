@@ -1,5 +1,8 @@
 const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.json'
 const IS_DIRECTORY = document.body.classList.contains('plugins-page')
+// Kept as the compatibility key for integrations that still invoke the
+// in-page locale function. Canonical routes deliberately do not read it.
+const LOCALE_STORAGE_KEY = 'dsh-marketplace-locale'
 
 const translations = {
   zh: {
@@ -126,7 +129,9 @@ const state = {
   category: '',
   sort: 'recommended',
   visibleLimit: 24,
-  locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
+  // Canonical Chinese routes always render Chinese. English is served as a
+  // dedicated static route so search engines and shared links see real content.
+  locale: 'zh',
   selectedEntry: null,
 }
 
@@ -192,6 +197,7 @@ const initials = name => String(name || 'DSH').replace(/^DSH\s*/i, '').split(/[\
 const pluginColor = id => palette[[...String(id)].reduce((total, character) => total + character.charCodeAt(0), 0) % palette.length]
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
+const pluginRecordHref = entry => `${IS_DIRECTORY ? './' : './plugins/'}${encodeURIComponent(entry.id)}/`
 const licenseLabel = value => {
   if (!value || value === 'UNKNOWN') return t('value.unknown')
   if (value === 'UNLICENSED') return state.locale === 'en' ? 'License not published' : '未公开许可证'
@@ -311,7 +317,7 @@ function renderFeatured() {
       <span class="featured-icon" aria-hidden="true"><span>${escape(initials(entry.name))}</span></span>
       <h3>${escape(entry.name)}</h3>
       <p>${escape(entry.description)}</p>
-      <button class="featured-link details-button" type="button" data-details-id="${escape(entry.id)}"><span>${escape(t('action.details'))}</span><i aria-hidden="true">↗</i></button>
+      <a class="featured-link details-button" href="${pluginRecordHref(entry)}" data-analytics-event="plugin_record_open" data-analytics-item="${escape(entry.id)}"><span>${escape(t('action.details'))}</span><i aria-hidden="true">↗</i></a>
     </article>`).join('')
   observeReveals()
 }
@@ -344,7 +350,7 @@ function cardTemplate(entry) {
       <span class="plugin-badge risk-${escape(permissions.level)}">${escape(detailLabel('level', permissions.level))}${state.locale === 'en' ? ' permission' : '权限'}</span>
     </div>
     <footer class="plugin-card-footer">
-      <button class="details-button" type="button" data-details-id="${escape(entry.id)}">${escape(t('action.details'))} →</button>
+      <a class="details-button" href="${pluginRecordHref(entry)}" data-analytics-event="plugin_record_open" data-analytics-item="${escape(entry.id)}">${escape(t('action.details'))} →</a>
       <a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(entry.name)}" data-repo-id="${escape(entry.id)}">↗</a>
     </footer>
   </article>`
@@ -460,7 +466,7 @@ function applyLocale() {
 function setLocale(locale) {
   if (!['zh', 'en'].includes(locale) || locale === state.locale) return
   state.locale = locale
-  localStorage.setItem('dsh-marketplace-locale', locale)
+  try { localStorage.setItem(LOCALE_STORAGE_KEY, locale) } catch {}
   applyLocale()
 }
 
@@ -663,6 +669,11 @@ document.addEventListener('click', event => {
 document.querySelector('.locale-switch')?.addEventListener('click', event => {
   const button = event.target.closest('[data-locale]')
   if (button && button.dataset.locale !== state.locale) {
+    if (button.dataset.localeHref) {
+      sendDshEvent('locale_switch', { item: button.dataset.locale })
+      window.location.assign(button.dataset.localeHref)
+      return
+    }
     setLocale(button.dataset.locale)
     sendDshEvent('locale_switch', { item: state.locale })
   }

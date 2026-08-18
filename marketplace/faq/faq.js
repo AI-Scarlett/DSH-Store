@@ -81,16 +81,12 @@ const translations = {
   },
 }
 
-const storedLocale = (() => {
-  try { return localStorage.getItem('dsh-marketplace-locale') } catch { return null }
-})()
-const state = { locale: storedLocale === 'en' ? 'en' : 'zh' }
+const state = { locale: 'zh' }
 const t = key => translations[state.locale]?.[key] || translations.zh[key] || key
 const analyticsToken = value => String(value ?? '').toLowerCase().replace(/[^a-z0-9._-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80)
 
 function setLocale(locale) {
   state.locale = locale === 'en' ? 'en' : 'zh'
-  try { localStorage.setItem('dsh-marketplace-locale', state.locale) } catch {}
   document.documentElement.lang = state.locale === 'en' ? 'en' : 'zh-CN'
   document.title = t('meta.title')
   document.querySelector('meta[name="description"]')?.setAttribute('content', t('meta.description'))
@@ -135,6 +131,11 @@ function observeReveals() {
 document.querySelector('.locale-switch')?.addEventListener('click', event => {
   const button = event.target.closest('[data-locale]')
   if (!button || button.dataset.locale === state.locale) return
+  if (button.dataset.localeHref) {
+    sendDshEvent('locale_switch', { item: button.dataset.locale, value: 'faq' })
+    window.location.assign(button.dataset.localeHref)
+    return
+  }
   setLocale(button.dataset.locale)
   sendDshEvent('locale_switch', { item: state.locale, value: 'faq' })
 })
