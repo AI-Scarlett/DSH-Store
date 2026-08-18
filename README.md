@@ -62,9 +62,9 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.5.4` |
-| 收录条目 | 48 个 |
-| 可安装 | 43 个 |
+| 商城版本 | `0.5.5` |
+| 收录条目 | 234 个 |
+| 可安装 | 229 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
 | 推荐 | 4 个：DSH-Store、DSH WeCom CLI、Build DSH Plugin、Agent Workflow |
@@ -133,6 +133,11 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - 重启前扫描 Profile Patch 与所有已安装 Bundle Patch 的入口 ID；发现重复入口时将包操作
   判为不健康并立即恢复事务备份，不关闭当前 Host；
 - Guardian 连续失败会打开熔断并保留脱敏故障摘要，不会把“端口暂时出现”误报成插件已健康。
+- Guardian 将端口、首页 HTTP、runtime 身份、耗时、响应字节数和重启判断写入商城自己的
+  `probe-log.jsonl`。失败探测逐次记录，健康探测每分钟采样；不保存响应正文、Profile 内容或
+  凭据。日志仅保留 24 小时，并额外限制为 4 MiB，清理失败不会中断 Host 监督。
+- 商城会比较随包 Guardian 与已部署守护文件的 SHA-256；版本漂移时禁用一键重启，并要求
+  用户通过新的单次计划和精确确认升级 Guardian。
 
 ### 健康检查与来源识别
 
@@ -209,6 +214,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 本机高风险自主决策 `0.5.2` | [`5e6c2b9`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/5e6c2b9cde9c3992d55a88aa7223da76a5746b78) | 进入已安装页后由用户本机有限并发检查源 GitHub；低风险生成固定 SHA 计划，高风险展示变化并逐次确认，触碰 DSH 原生代码或受保护组件则仅保留不受商城保护的外部入口。 |
 | DSH 版本与升级提示 `0.5.3` | [`2655055`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/2655055671fa2dc23a178cc251402bc5748c7e2a) | 在商城标题右侧显示当前 DSH 版本并按需检查 npm 官方最新版；提供固定版本升级命令与官方 Release，同时折叠长说明并保持 DSH 源码不可修改。 |
 | 安装诊断与构建许可 `0.5.4` | [`74ca4d4`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/74ca4d4c07a21ae1ac1a5e8372e98097e75565b9) | 将源更新超时映射为稳定错误码，显示脱敏 pnpm 诊断，并仅为已审核且声明安装生命周期脚本的插件传入精确包名构建许可。 |
+| Guardian 探针留存 `0.5.5` | 待发布源码 Commit | 记录端口、首页、runtime 身份与耗时的脱敏探针；健康状态采样、故障逐次记录，24 小时/4 MiB 自动清理；部署 Guardian 与商城源码漂移时禁止安全重启，要求走新的确认升级流程。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见

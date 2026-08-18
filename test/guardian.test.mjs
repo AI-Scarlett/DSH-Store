@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { delimiter, join } from 'node:path'
 import test from 'node:test'
 import { createGuardianService } from '../src/guardian.mjs'
-import { runGuardian } from '../src/guardian-daemon.mjs'
+import { createProbeJournal, runGuardian } from '../src/guardian-daemon.mjs'
 import { EventEmitter } from 'node:events'
 
 test('guardian status fails closed without an external heartbeat', async () => {
@@ -45,6 +45,56 @@ test('guardian installation uses a single-use plan and fixed launchctl arguments
     assert.equal(config.unhealthyThreshold, 3)
     assert.equal(config.startupGraceMs, 10_000)
     assert.equal(config.commandPath, commandPath)
+    assert.equal(config.probeRetentionMs, 86_400_000)
+    assert.equal(config.probeLogMaxBytes, 4_194_304)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('guardian probe journal records safe fields, samples health, and removes entries older than 24 hours', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-probes-'))
+  try {
+    let clock = Date.parse('2026-08-18T12:00:00Z')
+    const path = join(root, 'probe-log.jsonl')
+    await writeFile(path, `${JSON.stringify({ schemaVersion: 1, at: '2026-08-17T11:59:59.000Z', secret: 'must-go' })}\n`)
+    const journal = createProbeJournal({ path, now: () => clock, healthySampleMs: 60_000, pruneIntervalMs: 1 })
+    const safeProbe = {
+      profile: 'web', owner: 'guardian', pid: 42, state: 'healthy', portOpen: true, healthy: true,
+      rootStatus: 200, rootDurationMs: 12, rootBytes: 900, runtimeStatus: 200,
+      runtimeDurationMs: 8, runtimeBytes: 80, bootId: 'boot-one', responseBody: 'SECRET',
+    }
+    assert.equal(await journal.record(safeProbe), true)
+    clock += 10_000
+    assert.equal(await journal.record(safeProbe), false)
+    assert.equal(await journal.record({ ...safeProbe, healthy: false, reason: 'timeout', consecutiveFailures: 1 }), true)
+    const lines = (await readFile(path, 'utf8')).trim().split('\n').map(line => JSON.parse(line))
+    assert.equal(lines.length, 2)
+    assert.equal(lines[0].kind, 'dsh-host-probe')
+    assert.equal(lines[0].root.durationMs, 12)
+    assert.equal(lines[0].runtime.bytes, 80)
+    assert.equal(lines[1].reason, 'timeout')
+    assert.equal(JSON.stringify(lines).includes('SECRET'), false)
+    assert.equal(JSON.stringify(lines).includes('must-go'), false)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('guardian status fails closed when the deployed daemon differs from the bundled probe', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-drift-'))
+  try {
+    const stateDir = join(root, 'dsh-safe-plugin-manager', 'guardian')
+    const daemonSource = join(root, 'source.mjs')
+    await mkdir(stateDir, { recursive: true })
+    await writeFile(daemonSource, 'export const current = true\n')
+    await writeFile(join(stateDir, 'guardian-daemon.mjs'), 'export const current = false\n')
+    await writeFile(join(stateDir, 'status.json'), JSON.stringify({
+      schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+      heartbeatAt: new Date().toISOString(), profile: 'web', pid: 42,
+    }))
+    const service = createGuardianService({ dshHome: root, daemonSource })
+    const status = await service.status()
+    assert.equal(status.available, false)
+    assert.equal(status.upgradeRequired, true)
+    assert.equal(status.errorCode, 'GUARDIAN_VERSION_DRIFT')
+    assert.deepEqual(status.probeLog, { enabled: false, retentionHours: 24 })
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 
