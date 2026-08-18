@@ -251,7 +251,7 @@ function validateEntry(value, index) {
     installPath,
     updatePolicy: value.updatePolicy === undefined || value.updatePolicy === null
       ? null
-      : enumValue(value.updatePolicy, `entries[${index}].updatePolicy`, ['source-verified', 'registry-reviewed']),
+      : enumValue(value.updatePolicy, `entries[${index}].updatePolicy`, ['source-verified', 'user-reviewed', 'external-only']),
     commit,
     version,
     categories: stringArray(value.categories ?? [], `entries[${index}].categories`, { simple: true }),

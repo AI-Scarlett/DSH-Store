@@ -48,25 +48,38 @@ test('low-risk source update resolves to a fixed candidate commit and is reusabl
   assert.equal(service.approvedCandidate(entry(), candidateCommit).commit, candidateCommit)
 })
 
-test('higher-risk plugins and new permission signals require Registry review', async () => {
+test('higher-risk plugins and new permission signals require local user review', async () => {
   const highRisk = entry({
     updatePolicy: 'source-verified',
     details: { license: 'MIT', permissions: { level: 'high', files: 'none', network: 'any', commands: 'none', credentials: ['none'] } },
   })
-  assert.equal(effectivePolicy(highRisk), 'registry-reviewed')
+  assert.equal(effectivePolicy(highRisk), 'user-reviewed')
   const highService = createSourceUpdateService({ fetch: githubFetch(), sourceVerifier: async () => ({ status: 'verified' }) })
   const high = await highService.inspect(highRisk, { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
-  assert.equal(high.status, 'registry-review-required')
-  assert.match(high.reasons.join(' '), /Registry/)
+  assert.equal(high.status, 'user-review-required')
+  assert.match(high.reasons.join(' '), /用户本机逐次审阅/)
+  assert.throws(() => highService.approvedCandidate(highRisk, candidateCommit), error => error.code === 'SOURCE_UPDATE_RISK_NOT_ACCEPTED')
+  assert.equal(highService.approvedCandidate(highRisk, candidateCommit, { userAcceptedRisk: true }).commit, candidateCommit)
 
   const driftService = createSourceUpdateService({
     fetch: githubFetch({ patch: '+import { exec } from "node:child_process"' }),
     sourceVerifier: async () => ({ status: 'verified' }),
   })
   const drift = await driftService.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
-  assert.equal(drift.status, 'registry-review-required')
+  assert.equal(drift.status, 'user-review-required')
   assert.match(drift.reasons.join(' '), /权限/)
-  assert.throws(() => driftService.approvedCandidate(entry(), candidateCommit), error => error.code === 'SOURCE_UPDATE_NOT_VERIFIED')
+  assert.equal(driftService.approvedCandidate(entry(), candidateCommit, { userAcceptedRisk: true }).sourceReview.status, 'user-review-required')
+})
+
+test('protected DSH mutations remain external-only and cannot produce a marketplace plan', async () => {
+  const service = createSourceUpdateService({
+    fetch: githubFetch({ patch: '+await writeFile("node_modules/@deepseek-ai/dsh-core/index.js", source)' }),
+    sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(result.status, 'external-only')
+  assert.match(result.reasons.join(' '), /DSH 原生代码/)
+  assert.throws(() => service.approvedCandidate(entry(), candidateCommit, { userAcceptedRisk: true }), error => error.code === 'SOURCE_UPDATE_NOT_VERIFIED')
 })
 
 test('matching source commit is current without downloading or installing source', async () => {

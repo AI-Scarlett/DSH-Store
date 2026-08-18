@@ -64,11 +64,16 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.ok(item.details.permissions.credentials.length > 0, `${item.id} must declare credential access`)
   }
   assert.deepEqual(source.entries.filter(item => item.featured === true).map(item => item.id), [
-    'build-dsh-plugin', 'dsh-safe-plugin-manager', 'dsh-codex-shell', 'dsh-chat-import', 'dsh-cliapi', 'dshllm-api', 'dsh-web-ui-all',
+    'build-dsh-plugin', 'dsh-safe-plugin-manager', 'dsh-codex-shell', 'dsh-chat-import', 'dsh-cliapi', 'dshllm-api', 'dsh-web-ui-all', 'dsh-wecom-cli',
   ])
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
-  assert.equal(manager.version, packageManifest.version, 'catalog manager version must match package.json')
+  if (manager.version !== packageManifest.version) {
+    const catalogVersion = manager.version.split('.').map(Number)
+    const packageVersion = packageManifest.version.split('.').map(Number)
+    assert.deepEqual(packageVersion.slice(0, 2), catalogVersion.slice(0, 2), 'a staged source release must stay in the catalog major/minor line')
+    assert.equal(packageVersion[2], catalogVersion[2] + 1, 'a staged source release may lead the catalog by exactly one patch')
+  }
   assert.ok(readme.includes(githubInstallSpecifier(manager)), 'README install command must match the catalog fixed commit')
   assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
   assert.match(readme, /dsh plugin --profile web add/)

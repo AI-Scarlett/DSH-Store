@@ -85,6 +85,35 @@ test('source-verified update plan pins the locally approved candidate commit', a
   }
 })
 
+test('high-risk source update requires local acceptance and binds warnings to the typed plan', async () => {
+  const { root } = await fixture({ specifier: `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}` })
+  const candidate = {
+    ...demoEntry, commit: 'c'.repeat(40), version: '3.0.0',
+    sourceReview: { status: 'user-review-required', warnings: ['新增 Shell 命令能力'] },
+  }
+  const runner = { plugin: async () => ({ ok: true, exitCode: 0 }), dumpConfig: async () => ({ ok: true, exitCode: 0 }) }
+  try {
+    const operations = service(root, runner, {
+      sourceUpdateService: { approvedCandidate: (_entry, _commit, options) => {
+        if (options.userAcceptedRisk !== true) throw Object.assign(new Error('risk not accepted'), { code: 'SOURCE_UPDATE_RISK_NOT_ACCEPTED' })
+        return candidate
+      } },
+    })
+    await assert.rejects(
+      operations.createPlan({ action: 'update', pluginId: 'demo', sourceCommit: candidate.commit }),
+      error => error.code === 'SOURCE_UPDATE_RISK_NOT_ACCEPTED',
+    )
+    const plan = await operations.createPlan({
+      action: 'update', pluginId: 'demo', sourceCommit: candidate.commit, sourceRiskAccepted: true,
+    })
+    assert.match(plan.confirmation, /^UPDATE-RISK dsh-demo web c{12}$/)
+    assert.deepEqual(plan.impact.sourceReview.warnings, ['新增 Shell 命令能力'])
+    assert.equal(plan.plugin.sourceReview.status, 'user-review-required')
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('source verification success is reused only for the same immutable catalog fingerprint', async () => {
   const { root } = await fixture({ installed: false })
   const runner = { plugin: async () => ({ ok: true }), dumpConfig: async () => ({ ok: true }) }

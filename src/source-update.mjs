@@ -6,6 +6,7 @@ const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 10 * 60_000
 const MAX_COMPARE_FILES = 100
 const RISK_PATTERN = /(?:node:)?child_process|\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true|(?:node:)?(?:fs|fs\/promises)|\b(?:fetch|WebSocket)\s*\(|process\.env|keychain|__ModuleLoader__.*(?:unload|remove)|\bFiber\b|@deepseek-ai\/.*disabled\s*:\s*true/i
+const DSH_NATIVE_MUTATION_PATTERN = /(?:^|[/\\])(?:node_modules|packages|vendor)[/\\]@deepseek-ai[/\\]|(?:writeFile|appendFile|rename|unlink|rm)\s*\([^\n]{0,240}(?:node_modules|packages)[/\\]@deepseek-ai|(?:git\s+(?:apply|checkout)|patch\s+)[^\n]{0,240}(?:deepseek|@deepseek-ai)/i
 
 function updateError(code, message) {
   return Object.assign(new Error(message), { code })
@@ -58,7 +59,8 @@ async function fetchText(url, request, timeoutMs, maxBytes = 512 * 1024) {
 }
 
 function effectivePolicy(entry) {
-  if (entry.updatePolicy === 'registry-reviewed') return 'registry-reviewed'
+  if (entry.updatePolicy === 'external-only') return 'external-only'
+  if (entry.updatePolicy === 'user-reviewed' || entry.updatePolicy === 'registry-reviewed') return 'user-reviewed'
   const permissions = entry.details?.permissions ?? {}
   const credentials = permissions.credentials ?? ['unknown']
   const sourceVerified = entry.status === 'approved'
@@ -67,7 +69,15 @@ function effectivePolicy(entry) {
     && permissions.network === 'none'
     && permissions.commands === 'none'
     && credentials.length === 1 && credentials[0] === 'none'
-  return sourceVerified ? 'source-verified' : 'registry-reviewed'
+  return sourceVerified ? 'source-verified' : 'user-reviewed'
+}
+
+function lifecycleScripts(manifest) {
+  return ['preinstall', 'install', 'postinstall', 'prepare'].filter(name => typeof manifest?.scripts?.[name] === 'string')
+}
+
+function patchEntryIds(patch) {
+  return [...patch.matchAll(/(?:^|\n)\s*- id:\s*['"]?([A-Za-z0-9][A-Za-z0-9._-]{0,95})['"]?\s*(?:\n|$)/g)].map(match => match[1])
 }
 
 function publicCandidate(entry) {
@@ -143,17 +153,34 @@ export function createSourceUpdateService(options = {}) {
       throw updateError('SOURCE_UPDATE_MANIFEST_INVALID', '候选 Commit 的 package.json 不是有效 JSON。')
     }
     const candidateVersion = typeof manifest?.version === 'string' ? manifest.version : ''
-    const candidate = { ...entry, commit, version: candidateVersion, updatePolicy: policy }
-    const reasons = []
-    if (policy !== 'source-verified') reasons.push('该插件权限或生命周期风险要求 Registry 复审')
-    if (compareVersions(candidateVersion, installed.version ?? entry.version) !== 1) reasons.push('候选版本没有高于当前安装版本')
+    const candidateLifecycle = lifecycleScripts(manifest)
+    const candidateLicense = typeof manifest?.license === 'string' && manifest.license.trim() ? manifest.license.trim() : entry.details.license
+    const candidate = {
+      ...entry, commit, version: candidateVersion, updatePolicy: policy,
+      details: { ...entry.details, license: candidateLicense },
+      risk: { ...entry.risk, installScripts: candidateLifecycle },
+    }
+    const warnings = []
+    const blockers = []
+    const externalOnly = []
+    if (policy === 'user-reviewed') warnings.push('该插件具有写文件、网络、命令、凭据或生命周期风险，必须由用户本机逐次审阅')
+    if (policy === 'external-only') externalOnly.push('目录策略禁止商城安装和更新，仅提供项目 GitHub 外部入口')
+    if (entry.packageName.startsWith('@deepseek-ai/') || manifest?.name?.startsWith('@deepseek-ai/')) {
+      externalOnly.push('项目使用受保护的 @deepseek-ai 命名空间')
+    }
+    if (manifest?.name !== entry.packageName) blockers.push('候选包名与商城登记身份不一致')
+    if (compareVersions(candidateVersion, installed.version ?? entry.version) !== 1) blockers.push('候选版本没有高于当前安装版本')
     if (JSON.stringify(manifestContract(manifest)) !== JSON.stringify(manifestContract(catalogManifest))) {
-      reasons.push('候选依赖、入口、文件清单、运行时或 Bundle 声明发生变化')
+      warnings.push('候选依赖、入口、文件清单、运行时或 Bundle 声明发生变化')
+    }
+    if (candidateLicense !== entry.details.license) warnings.push(`许可证声明从 ${entry.details.license} 变为 ${candidateLicense}`)
+    if (JSON.stringify(candidateLifecycle) !== JSON.stringify(lifecycleScripts(catalogManifest))) {
+      warnings.push(`安装生命周期脚本发生变化：${candidateLifecycle.join(', ') || '无'}`)
     }
     const candidatePatchRelative = manifest?.dsh?.bundle?.patch
     const catalogPatchRelative = catalogManifest?.dsh?.bundle?.patch
     if (typeof candidatePatchRelative !== 'string' || candidatePatchRelative !== catalogPatchRelative) {
-      reasons.push('候选 Bundle Patch 路径发生变化')
+      blockers.push('候选 Bundle Patch 路径缺失或发生变化，无法建立安全安装契约')
     } else {
       const base = entry.manifestPath.includes('/') ? entry.manifestPath.slice(0, entry.manifestPath.lastIndexOf('/') + 1) : ''
       const patchPath = `${base}${candidatePatchRelative.replace(/^\.\//, '')}`
@@ -161,49 +188,71 @@ export function createSourceUpdateService(options = {}) {
         fetchText(`${rawBase}${patchPath}`, request, timeoutMs),
         fetchText(`${catalogRawBase}${patchPath}`, request, timeoutMs),
       ])
-      if (candidatePatch !== catalogPatch) reasons.push('候选 Bundle Patch 内容发生变化')
+      if (candidatePatch !== catalogPatch) warnings.push('候选 Bundle Patch 内容发生变化')
+      const candidateIds = [...new Set(patchEntryIds(candidatePatch))].sort()
+      const catalogIds = [...entry.entryIds].sort()
+      if (JSON.stringify(candidateIds) !== JSON.stringify(catalogIds)) {
+        blockers.push('候选 Bundle 入口 ID 与商城登记身份不一致')
+      }
     }
     try {
       await sourceVerifier(candidate, { fetch: request, timeoutMs })
-    } catch {
-      reasons.push('候选 manifest、许可证、Bundle Patch、入口或生命周期与商城安全契约不一致')
+    } catch (error) {
+      if (error?.code === 'SOURCE_PATCH_REJECTED') {
+        externalOnly.push('候选尝试停用或覆盖 DSH 受保护/官方组件')
+      } else {
+        blockers.push('候选 manifest、Bundle Patch 或入口无法通过本机固定源验证')
+      }
     }
 
     const comparison = await fetchJson(
       `https://api.github.com/repos/${owner}/${repo}/compare/${entry.commit}...${commit}`, request, timeoutMs,
     )
     const files = Array.isArray(comparison?.files) ? comparison.files : []
-    if (comparison?.status !== 'ahead') reasons.push('候选 Commit 不是商城已审 Commit 的直接后继')
-    if (!Number.isInteger(comparison?.total_commits) || comparison.total_commits > 100) reasons.push('候选提交跨度超过本机审核上限')
-    if (files.length === 0 || files.length > MAX_COMPARE_FILES) reasons.push('候选文件清单为空或超过本机审核上限')
+    if (comparison?.status !== 'ahead') blockers.push('候选 Commit 不是商城已审 Commit 的直接后继')
+    if (!Number.isInteger(comparison?.total_commits) || comparison.total_commits > 100) blockers.push('候选提交跨度超过本机审核上限')
+    if (files.length === 0 || files.length > MAX_COMPARE_FILES) blockers.push('候选文件清单为空或超过本机审核上限')
     for (const file of files) {
       const name = typeof file?.filename === 'string' ? file.filename : ''
       const patch = typeof file?.patch === 'string' ? file.patch : null
       const sourceLike = /\.(?:[cm]?[jt]sx?|ya?ml|json)$/i.test(name)
       const ignored = /(?:^|\/)(?:test|tests|docs?|examples?)\//i.test(name) || /(?:^|\/)README(?:\.|$)/i.test(name)
-      if (sourceLike && !ignored && patch === null) reasons.push(`无法完整审核变更文件：${name}`)
-      if (sourceLike && !ignored && patch && RISK_PATTERN.test(patch)) reasons.push(`变更出现新的权限或受保护行为信号：${name}`)
+      if (sourceLike && !ignored && patch === null) blockers.push(`无法完整审核变更文件：${name}`)
+      if (sourceLike && !ignored && patch && RISK_PATTERN.test(patch)) warnings.push(`变更出现新的权限行为信号：${name}`)
+      if ((DSH_NATIVE_MUTATION_PATTERN.test(name) || (patch && DSH_NATIVE_MUTATION_PATTERN.test(patch)))) {
+        externalOnly.push(`变更可能修改 DSH 原生代码或 @deepseek-ai 包：${name}`)
+      }
     }
 
-    const uniqueReasons = [...new Set(reasons)]
-    const status = uniqueReasons.length === 0 ? 'update-ready' : 'registry-review-required'
+    const uniqueWarnings = [...new Set(warnings)]
+    const uniqueBlockers = [...new Set(blockers)]
+    const uniqueExternalOnly = [...new Set(externalOnly)]
+    const status = uniqueExternalOnly.length > 0 ? 'external-only'
+      : uniqueBlockers.length > 0 ? 'update-blocked'
+        : uniqueWarnings.length > 0 ? 'user-review-required' : 'update-ready'
     const value = {
       status, policy, branch, catalogCommit: entry.commit, candidateCommit: commit,
-      candidateVersion, candidate: publicCandidate(candidate), reasons: uniqueReasons,
+      candidateVersion, candidate: publicCandidate(candidate),
+      warnings: uniqueWarnings, blockers: uniqueBlockers, reasons: [...uniqueExternalOnly, ...uniqueBlockers, ...uniqueWarnings],
       checkedFiles: files.length, checkedCommits: comparison?.total_commits ?? null,
-      notice: '检查在用户本机按需完成；通过表示结构和权限信号未漂移，不等于完整安全审计。',
+      notice: '检查在用户本机按需完成；结果用于提示风险，不等于完整安全审计，也不替用户决定是否更新。',
     }
     cache.set(key, { cachedAt: now(), value })
-    if (status === 'update-ready') approved.set(`${entry.id}:${commit}`, { approvedAt: now(), candidate: { ...candidate } })
+    if (status === 'update-ready' || status === 'user-review-required') {
+      approved.set(`${entry.id}:${commit}`, { approvedAt: now(), candidate: { ...candidate }, status, warnings: uniqueWarnings })
+    }
     return { ...value, cacheStatus: 'fresh' }
   }
 
-  function approvedCandidate(entry, commit) {
+  function approvedCandidate(entry, commit, options = {}) {
     const value = approved.get(`${entry.id}:${String(commit).toLowerCase()}`)
     if (!value || now() - value.approvedAt >= cacheTtlMs || value.candidate.commit !== String(commit).toLowerCase()) {
       throw updateError('SOURCE_UPDATE_NOT_VERIFIED', '该候选 Commit 尚未通过本机按需审核，请重新检查更新。')
     }
-    return { ...value.candidate }
+    if (value.status === 'user-review-required' && options.userAcceptedRisk !== true) {
+      throw updateError('SOURCE_UPDATE_RISK_NOT_ACCEPTED', '该候选包含高风险变化，必须先在本机查看并接受风险提示。')
+    }
+    return { ...value.candidate, sourceReview: { status: value.status, warnings: [...value.warnings] } }
   }
 
   return { inspect, approvedCandidate, effectivePolicy }
