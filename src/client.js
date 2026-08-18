@@ -915,7 +915,7 @@ window.__ModuleLoader__.load({
     const inject = ['slots']
     function apply(ctx) {
       ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
-        name: 'settings.plugins.tab', id: 'safe-plugin-manager', order: 90,
+        name: 'settings.plugins.tab', id: 'safe-plugin-manager', order: -10,
         label: () => '插件商城', inject: () => ({}),
       }, ManagerPanel))
     }

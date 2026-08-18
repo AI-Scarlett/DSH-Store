@@ -69,6 +69,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /const module = \{ exports: \{\} \}/)
   assert.match(client, /settings\.plugins\.tab/)
   assert.match(client, /id:\s*'safe-plugin-manager'/)
+  assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
   assert.match(client, /GitHub-only/)
   assert.match(client, /DSH第三方插件商城/)
   assert.match(client, /const SUPPORT_URL = 'https:\/\/dsh\.store\/'/)
