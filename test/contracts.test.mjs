@@ -161,13 +161,14 @@ test('client fails closed when the live health endpoint still uses the legacy sc
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const [html, app, readme, logo] = await Promise.all([
+  const [html, app, readme, logo, previewServer] = await Promise.all([
     readFile(new URL('marketplace/index.html', project), 'utf8'),
     readFile(new URL('marketplace/app.js', project), 'utf8'),
     readFile(new URL('README.md', project), 'utf8'),
     readFile(new URL('marketplace/dsh-store-logo.svg', project), 'utf8'),
+    readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
   ])
-  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9eeb4f1cab9df4a1afbfd7c7951db9c3781d06db'"
+  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#8a76190b516258e37ba0604891058c87d979295e'"
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)
   assert.match(html, /data-locale="en"/)
@@ -195,4 +196,13 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(logo, /viewBox="0 0 64 64"/)
   assert.match(logo, /<title id="logo-title">DSH-Store<\/title>/)
   assert.doesNotMatch(`${html}\n${app}\n${logo}`, /DSH STORE/)
+  assert.match(previewServer, /switch \(pathname\)/)
+  for (const allowedPath of [
+    '/marketplace/index.html', '/marketplace/app.js', '/marketplace/styles.css',
+    '/marketplace/dsh-store-logo.svg', '/registry/catalog.json',
+  ]) {
+    assert.ok(previewServer.includes(`case '${allowedPath}'`), `${allowedPath} must be explicitly allowlisted`)
+  }
+  assert.match(previewServer, /default:\s*return null/)
+  assert.doesNotMatch(previewServer, /resolve\(root,\s*relative\)|target\.startsWith/)
 })
