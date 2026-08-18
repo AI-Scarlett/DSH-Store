@@ -950,6 +950,49 @@
         "externalDependencies": [], "reviewStatus": "automated-scan"
       },
       "risk": { "installScripts": [], "review": "community-plugin-state-write-not-security-audited" }
+    },
+    {
+      "id": "modlens",
+      "name": "ModLens",
+      "packageName": "@liustack/modlens",
+      "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
+      "repositoryUrl": "https://github.com/liustack/modlens",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "3d2469a519da858672be606c7731249295f1afe0",
+      "version": "3.18.3",
+      "categories": ["tools", "visualization"],
+      "entryIds": ["modlens"],
+      "status": "approved",
+      "compatibility": { "dsh": "unknown", "node": ">=22.19", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "restricted", "credentials": ["api-key"] },
+        "externalDependencies": ["Gemini API", "OpenAI-compatible API", "Anthropic API", "Antigravity CLI", "Claude CLI"], "reviewStatus": "manual-review"
+      },
+      "risk": { "installScripts": [], "review": "community-vision-bridge-external-process-and-credential-access-not-security-audited" }
+    },
+    {
+      "id": "dsh-loop",
+      "name": "DSH Loop",
+      "packageName": "dsh-loop",
+      "description": "为 DSH 会话提供可持久化的周期提醒、自提示循环、管理工具和 Web 状态面板。",
+      "repositoryUrl": "https://github.com/Ephemeral-AI-Lab/dsh-plugins",
+      "defaultBranch": "main",
+      "manifestPath": "loop/package.json",
+      "installPath": "loop",
+      "commit": "0d478b812a2ed6047b99fb09297323b8b83949d2",
+      "version": "0.1.3",
+      "categories": ["workflow", "sessions"],
+      "entryIds": ["loop"],
+      "status": "approved",
+      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": "unknown", "systems": [], "profiles": ["web"] },
+      "details": {
+        "pluginType": "feature", "installSource": "github", "license": "MIT",
+        "permissions": { "level": "medium", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
+        "externalDependencies": [], "reviewStatus": "automated-scan"
+      },
+      "risk": { "installScripts": [], "review": "community-session-loop-automation-not-security-audited" }
     }
   ]
 }
