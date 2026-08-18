@@ -85,6 +85,16 @@ test('submission checker accepts a fixed root package without executing it', asy
   assert.match(report, /不会执行第三方代码/)
 })
 
+test('submission report escapes backslashes and backticks before rendering untrusted text', () => {
+  const report = renderSubmissionReport({
+    status: 'failed',
+    code: 'SUBMISSION_TEST',
+    message: 'path\\`break\nnext',
+  })
+  assert.match(report, /path\\\\\\`break next/)
+  assert.doesNotMatch(report, /break\nnext/)
+})
+
 test('submission checker accepts a monorepo package path', async () => {
   const result = await checkSubmission(issueBody({
     'Manifest path': 'plugins/demo/package.json',

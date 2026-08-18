@@ -235,7 +235,11 @@ export async function checkSubmission(body, options = {}) {
 }
 
 function safeCode(value) {
-  return String(value ?? '').replace(/`/g, '\\`').slice(0, 500)
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/`/g, '\\`')
+    .replace(/[\r\n]+/g, ' ')
+    .slice(0, 500)
 }
 
 export function renderSubmissionReport(result) {
