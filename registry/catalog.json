@@ -1035,7 +1035,8 @@
       "entryIds": [
         "dsh-wecom-cli-skill-provider"
       ],
-      "status": "approved",
+      "status": "blocked",
+      "statusReason": "v0.1.0 的 Skill 指令仍允许未经统一边界控制的外部命令、批量业务写入、文件上传下载与能力 URL 处理；完成 v0.1.1 受控 Host Bridge、预算、脱敏和目标绑定确认前暂停安装。",
       "compatibility": {
         "dsh": ">=0.1.0-rc.7",
         "node": ">=22.13.0",
@@ -1071,7 +1072,7 @@
       },
       "risk": {
         "installScripts": [],
-        "review": "skill-adapter-external-cli-network-credentials-file-read-write-and-restricted-business-commands-not-security-audited"
+        "review": "blocked-pending-v0.1.1-controlled-host-bridge-bounds-redaction-and-confirmation-hardening"
       }
     }
   ]
