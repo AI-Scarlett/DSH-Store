@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import test from 'node:test'
 import {
-  handleHealthRequest, handleInventoryRequest, handleMarketRequest, handlePlanRequest, handleSourceUpdateRequest,
+  handleDshVersionRequest, handleHealthRequest, handleInventoryRequest, handleMarketRequest, handlePlanRequest, handleSourceUpdateRequest,
   handleRestartExecuteRequest, handleRestartPlanRequest, handleRuntimeRequest,
 } from '../src/panel.mjs'
 
@@ -129,6 +129,20 @@ test('source update endpoint checks only an installed catalog plugin through the
   } finally {
     await rm(root, { recursive: true, force: true })
   }
+})
+
+test('DSH version endpoint is read-only and forwards only the refresh choice', async () => {
+  let received = null
+  const res = response()
+  await handleDshVersionRequest(request({ refresh: true }), res, {
+    dshVersionService: { inspect: async options => {
+      received = options
+      return { schemaVersion: 1, currentVersion: '0.1.0-rc.7', latestVersion: '0.1.0-rc.7', status: 'current' }
+    } },
+  })
+  assert.equal(res.status, 200)
+  assert.deepEqual(received, { force: true })
+  assert.equal(JSON.parse(res.body).value.status, 'current')
 })
 
 test('runtime endpoint is read-only and restart endpoints require separate intents', async () => {

@@ -1,0 +1,56 @@
+import assert from 'node:assert/strict'
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import test from 'node:test'
+import { createDshVersionService } from '../src/dsh-version.mjs'
+
+async function fixture(version = '0.1.0-rc.6') {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-version-'))
+  const cliRoot = join(root, 'apps', 'cli')
+  const cliPath = join(cliRoot, 'src', 'bin.ts')
+  await mkdir(join(cliRoot, 'src'), { recursive: true })
+  await writeFile(join(cliRoot, 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh', version }))
+  await writeFile(cliPath, '')
+  return { root, cliPath }
+}
+
+test('DSH version check reads the running CLI package and pins the latest npm version command', async () => {
+  const { root, cliPath } = await fixture()
+  let requests = 0
+  try {
+    const service = createDshVersionService({
+      cliPath, now: () => Date.parse('2026-08-18T09:00:00Z'),
+      fetch: async (url, options) => {
+        requests += 1
+        assert.equal(url, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest')
+        assert.equal(options.headers.accept, 'application/json')
+        return new Response(JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.0-rc.7' }))
+      },
+    })
+    const value = await service.inspect()
+    assert.equal(value.currentVersion, '0.1.0-rc.6')
+    assert.equal(value.latestVersion, '0.1.0-rc.7')
+    assert.equal(value.status, 'update-available')
+    assert.equal(value.installationKind, 'source-checkout')
+    assert.equal(value.upgrade.executable, false)
+    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.0-rc.7'])
+    assert.match(value.upgrade.reason, /不会修改 DSH 源码/)
+    assert.equal((await service.inspect()).cacheStatus, 'hit')
+    assert.equal(requests, 1)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('DSH version check fails closed on an untrusted registry identity', async () => {
+  const { root, cliPath } = await fixture('0.1.0-rc.7')
+  try {
+    const service = createDshVersionService({
+      cliPath, fetch: async () => new Response(JSON.stringify({ name: 'other-package', version: '9.9.9' })),
+    })
+    await assert.rejects(service.inspect(), error => error.code === 'DSH_VERSION_REGISTRY_INVALID')
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
