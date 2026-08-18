@@ -9,6 +9,7 @@ window.__ModuleLoader__.load({
       inventory: '/api2/dsh-safe-plugin-manager/inventory',
       market: '/api2/dsh-safe-plugin-manager/market',
       health: '/api2/dsh-safe-plugin-manager/health',
+      sourceUpdate: '/api2/dsh-safe-plugin-manager/source-update',
       runtime: '/api2/dsh-safe-plugin-manager/runtime',
       plan: '/api2/dsh-safe-plugin-manager/plan',
       execute: '/api2/dsh-safe-plugin-manager/execute',
@@ -270,13 +271,22 @@ window.__ModuleLoader__.load({
         categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))))
     }
 
-    function PluginActions({ entry, health, beginPlan }) {
+    function PluginActions({ entry, health, beginPlan, checkSource }) {
       const allowed = new Set(entry.allowedActions || [])
       if (allowed.size === 0) return React.createElement('div', { style: styles.muted }, entry.managementBlockedReason || '当前没有可执行操作')
       const disabled = entry.entryIds.length > 0 && entry.entryIds.every(id => health?.disabledEntryIds?.includes(id))
       const actions = []
       if (allowed.has('install')) actions.push(React.createElement(Button, { key: 'install', primary: true, onClick: () => beginPlan('install', entry) }, '安装'))
-      if (allowed.has('update')) actions.push(React.createElement(Button, { key: 'update', primary: true, onClick: () => beginPlan('update', entry) }, '更新'))
+      if (entry.sourceUpdate?.status === 'update-ready') actions.push(React.createElement(Button, {
+        key: 'source-update', primary: true,
+        onClick: () => beginPlan('update', { ...entry, sourceCommit: entry.sourceUpdate.candidateCommit }),
+      }, `更新至 ${entry.sourceUpdate.candidateVersion}`))
+      else {
+        if (allowed.has('update')) actions.push(React.createElement(Button, { key: 'update', primary: true, onClick: () => beginPlan('update', entry) }, '更新'))
+        if (entry.installed && entry.status === 'approved' && typeof checkSource === 'function') actions.push(React.createElement(Button, {
+          key: 'check-source', compact: true, disabled: entry.sourceUpdate?.status === 'checking', onClick: () => checkSource(entry),
+        }, entry.sourceUpdate?.status === 'checking' ? '正在检查源仓库…' : '检查源仓库更新'))
+      }
       if (allowed.has('migrate')) actions.push(React.createElement(Button, { key: 'migrate', primary: true, onClick: () => beginPlan('migrate', entry) }, '迁移到商城版'))
       if (entry.entryIds.length > 0 && (allowed.has('enable') || allowed.has('disable'))) {
         actions.push(React.createElement(Button, { key: 'toggle', onClick: () => beginPlan(disabled ? 'enable' : 'disable', entry) }, disabled ? '启用' : '停用'))
@@ -285,8 +295,10 @@ window.__ModuleLoader__.load({
       return React.createElement('div', { style: styles.actions }, actions)
     }
 
-    function MarketCard({ entry, health, beginPlan, openDetails, categoryLabels = {} }) {
-      const state = entry.status === 'blocked' ? '商城不可安装'
+    function MarketCard({ entry, health, beginPlan, checkSource, openDetails, categoryLabels = {} }) {
+      const state = entry.sourceUpdate?.status === 'update-ready' ? '源更新审核通过'
+        : entry.sourceUpdate?.status === 'registry-review-required' ? '发现更新 · 需要复审'
+          : entry.status === 'blocked' ? '商城不可安装'
         : entry.migrationAvailable ? (entry.updateAvailable ? '可迁移并更新' : '可迁移到商城')
           : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
       const origin = entry.installOrigin === 'marketplace-managed' ? '商城安装'
@@ -314,9 +326,16 @@ window.__ModuleLoader__.load({
         entry.risk.installScripts.length > 0
           ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join(', ')}`)
           : null,
+        entry.sourceUpdate?.status === 'registry-review-required'
+          ? React.createElement('div', { style: styles.error }, entry.sourceUpdate.reasons.join('；'))
+          : entry.sourceUpdate?.status === 'current'
+            ? React.createElement('div', { style: styles.notice }, '已在本机按需检查 GitHub 源仓库，当前没有可用的新 Commit。')
+            : entry.sourceUpdate?.status === 'error'
+              ? React.createElement('div', { style: styles.error }, `${entry.sourceUpdate.code}：${entry.sourceUpdate.message}`)
+              : null,
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('div', { style: styles.actions },
-            React.createElement(PluginActions, { entry, health, beginPlan }),
+            React.createElement(PluginActions, { entry, health, beginPlan, checkSource }),
             entry.status === 'blocked'
               ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '前往 GitHub 手动安装')
               : null),
@@ -647,6 +666,7 @@ window.__ModuleLoader__.load({
       const [state, setState] = useState({ status: 'loading' })
       const [confirmation, setConfirmation] = useState('')
       const [operation, setOperation] = useState({ status: 'idle' })
+      const [sourceUpdates, setSourceUpdates] = useState({})
       const [detailEntry, setDetailEntry] = useState(null)
       const [permissionDecisions, setPermissionDecisions] = useState({})
       const [pendingRestart, setPendingRestart] = useState(() => readPendingRestart())
@@ -691,7 +711,20 @@ window.__ModuleLoader__.load({
         if (state.status !== 'ready') return []
         return state.market.entries
           .map(normalizeMarketEntry)
-      }, [state])
+          .map(entry => ({ ...entry, sourceUpdate: sourceUpdates[entry.id] ?? null }))
+      }, [sourceUpdates, state])
+
+      const checkSource = useCallback(async entry => {
+        setSourceUpdates(current => ({ ...current, [entry.id]: { status: 'checking' } }))
+        try {
+          const value = await post(ROUTES.sourceUpdate, { pluginId: entry.id })
+          setSourceUpdates(current => ({ ...current, [entry.id]: value }))
+        } catch (error) {
+          setSourceUpdates(current => ({ ...current, [entry.id]: {
+            status: 'error', code: error?.code || 'SOURCE_UPDATE_FAILED', message: String(error?.message || error),
+          } }))
+        }
+      }, [])
 
       const scopedEntries = useMemo(() => {
         return normalizedEntries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
@@ -709,7 +742,9 @@ window.__ModuleLoader__.load({
         setConfirmation('')
         setOperation({ status: 'planning' })
         try {
-          const value = await post(ROUTES.plan, { action, pluginId: entry.id }, 'plan')
+          const value = await post(ROUTES.plan, {
+            action, pluginId: entry.id, ...(entry.sourceCommit ? { sourceCommit: entry.sourceCommit } : {}),
+          }, 'plan')
           setOperation({ status: 'plan', value })
         } catch (error) {
           setOperation({
@@ -872,7 +907,7 @@ window.__ModuleLoader__.load({
             `${entries.length} / ${scopedEntries.length} 个目录内已安装插件`,
             uncataloguedInstalledAll.length > 0 ? ` · 另有 ${uncataloguedInstalledAll.length} 个目录外只读项` : ''),
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '已安装插件' }, entries.map(entry => React.createElement(MarketCard, {
-            key: entry.id, entry, health: state.health, beginPlan, openDetails: setDetailEntry, categoryLabels,
+            key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry, categoryLabels,
           }))),
           uncataloguedInstalled.length > 0
             ? React.createElement(React.Fragment, null,
@@ -888,14 +923,17 @@ window.__ModuleLoader__.load({
             `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${entries.length} / ${scopedEntries.length} 个在架条目`,
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, entries.map(entry => React.createElement(MarketCard, {
-            key: entry.id, entry, health: state.health, beginPlan, openDetails: setDetailEntry,
+            key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry,
             categoryLabels,
           }))))
       }
 
       return React.createElement('section', { style: styles.root, 'aria-label': 'DSH-Store 插件商城' },
         React.createElement('style', null, DETAIL_MODAL_CSS),
-        heading, nav, guardianBanner, restartBanner, content,
+        heading, nav,
+        React.createElement('div', { style: styles.notice },
+          '更新检查由本机按需直读插件 GitHub 源仓库：先把默认分支解析为完整 Commit，再检查版本、Bundle、入口、权限信号和生命周期。只有低风险且契约未漂移的候选才能生成单次更新计划；高风险或不确定变化必须等待 Registry 复审。不会直接安装浮动 main，也不依赖商城服务端巡检全部插件。'),
+        guardianBanner, restartBanner, content,
         React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }),
         React.createElement(RestartModal, {
           operation: restartOperation, confirmation: restartConfirmation, setConfirmation: setRestartConfirmation,

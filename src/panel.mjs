@@ -6,6 +6,7 @@ import { readMarketplaceProvenance } from './provenance.mjs'
 export const ROUTE_PATH = '/api2/dsh-safe-plugin-manager/inventory'
 export const MARKET_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/market'
 export const HEALTH_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/health'
+export const SOURCE_UPDATE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/source-update'
 export const PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/plan'
 export const EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/execute'
 export const RUNTIME_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/runtime'
@@ -147,6 +148,18 @@ export function handleHealthRequest(req, res, options = {}) {
   })
 }
 
+export function handleSourceUpdateRequest(req, res, options = {}) {
+  return handleJsonRequest(req, res, async body => {
+    const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+    const inventory = await readProfileInventory({ dshHome: options.dshHome, profile })
+    const catalog = await options.catalogService.load({ force: body.refresh === true })
+    const entry = catalog.entries.find(item => item.id === body.pluginId) ?? null
+    if (!entry) throw Object.assign(new Error('plugin is not present in the GitHub registry'), { code: 'NOT_IN_REGISTRY' })
+    const installed = inventory.plugins.find(item => item.packageName === entry.packageName) ?? null
+    return options.sourceUpdateService.inspect(entry, installed)
+  })
+}
+
 export function handlePlanRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, body => options.operationService.createPlan(body), 'plan')
 }
@@ -198,6 +211,7 @@ export function registerManagerRoutes(webServer, options = {}) {
     [ROUTE_PATH, (req, res) => handleInventoryRequest(req, res, options)],
     [MARKET_ROUTE_PATH, (req, res) => handleMarketRequest(req, res, options)],
     [HEALTH_ROUTE_PATH, (req, res) => handleHealthRequest(req, res, options)],
+    [SOURCE_UPDATE_ROUTE_PATH, (req, res) => handleSourceUpdateRequest(req, res, options)],
     [PLAN_ROUTE_PATH, (req, res) => handlePlanRequest(req, res, options)],
     [EXECUTE_ROUTE_PATH, (req, res) => handleExecuteRequest(req, res, options)],
     [RUNTIME_ROUTE_PATH, (req, res) => handleRuntimeRequest(req, res, options)],

@@ -9,13 +9,22 @@
     "schemaVersion": { "const": 1 },
     "registry": {
       "type": "object",
-      "required": ["name", "repositoryUrl", "updatedAt"],
+      "required": ["name", "repositoryUrl", "updatedAt", "sourceUpdates"],
       "properties": {
         "name": { "type": "string", "minLength": 1 },
         "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
         "homepageUrl": { "type": "string" },
         "installCountsUrl": { "type": "string", "pattern": "^https://" },
         "updatedAt": { "type": "string" },
+        "sourceUpdates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "defaultPolicy"],
+          "properties": {
+            "mode": { "const": "client-on-demand" },
+            "defaultPolicy": { "const": "risk-derived" }
+          }
+        },
         "categories": {
           "type": "object",
           "additionalProperties": { "type": "string", "minLength": 1 }
@@ -36,6 +45,7 @@
           "defaultBranch": { "type": "string" },
           "manifestPath": { "type": "string" },
           "installPath": { "type": "string" },
+          "updatePolicy": { "enum": ["source-verified", "registry-reviewed"] },
           "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
           "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+" },
           "categories": { "type": "array", "items": { "type": "string" } },

@@ -38,6 +38,8 @@ test('guarded write path uses exact process arguments and permanent protection c
   assert.match(operations, /CONFIRMATION_MISMATCH/)
   assert.match(operations, /DSH_PNPM_NOT_FOUND/)
   assert.match(operations, /rollbackDetails/)
+  assert.match(operations, /approvedCandidate/)
+  assert.match(operations, /sourceCommit/)
 })
 
 test('bundle patch inserts only the manager and does not shadow official inventory', async () => {
@@ -148,6 +150,9 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /完成剩余.*项权限选择后才能重新检查/)
   assert.match(client, /正在检查…/)
   assert.match(client, /健康检查已完成/)
+  assert.match(client, /检查源仓库更新/)
+  assert.match(client, /不会直接安装浮动 main/)
+  assert.match(client, /source-update/)
 })
 
 test('guardian health requires DSH HTTP identity and fails closed on an unowned port', async () => {
@@ -212,6 +217,8 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(app, /GitHub publisher/)
   assert.match(app, /githubPublisher\(entry\.repositoryUrl\)/)
   assert.match(app, /前往 GitHub 手动安装/)
+  assert.match(app, /不需要服务端巡检所有仓库/)
+  assert.match(html, /data-i18n="faq\.q4"/)
   assert.match(logo, /viewBox="0 0 64 64"/)
   assert.match(logo, /<title id="logo-title">DSH-Store<\/title>/)
   assert.match(readme, /AI-Scarlett\/build-dsh-plugin/)

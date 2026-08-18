@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import test from 'node:test'
 import {
-  handleHealthRequest, handleInventoryRequest, handleMarketRequest, handlePlanRequest,
+  handleHealthRequest, handleInventoryRequest, handleMarketRequest, handlePlanRequest, handleSourceUpdateRequest,
   handleRestartExecuteRequest, handleRestartPlanRequest, handleRuntimeRequest,
 } from '../src/panel.mjs'
 
@@ -101,6 +101,34 @@ test('plan endpoint requires explicit operation intent header', async () => {
   await handlePlanRequest(request({ action: 'install' }, { 'x-dsh-safe-intent': 'plan' }), allowed, { operationService })
   assert.equal(allowed.status, 200)
   assert.equal(JSON.parse(allowed.body).value.planId, 'one')
+})
+
+test('source update endpoint checks only an installed catalog plugin through the Host service', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-source-update-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(join(profileDir, 'node_modules', 'dsh-demo'), { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: { 'dsh-demo': 'git#old' }, dsh: { profile: { bundles: ['dsh-demo'] } },
+    }))
+    await writeFile(join(profileDir, 'node_modules', 'dsh-demo', 'package.json'), JSON.stringify({ name: 'dsh-demo', version: '1.0.0' }))
+    const entry = { id: 'demo', packageName: 'dsh-demo' }
+    let inspected = null
+    const res = response()
+    await handleSourceUpdateRequest(request({ pluginId: 'demo' }), res, {
+      dshHome: root,
+      catalogService: { load: async () => ({ entries: [entry] }) },
+      sourceUpdateService: { inspect: async (selected, installed) => {
+        inspected = { selected, installed }
+        return { status: 'current' }
+      } },
+    })
+    assert.equal(res.status, 200)
+    assert.equal(inspected.selected, entry)
+    assert.equal(inspected.installed.version, '1.0.0')
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
 })
 
 test('runtime endpoint is read-only and restart endpoints require separate intents', async () => {
