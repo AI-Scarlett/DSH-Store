@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-18T13:35:00Z",
+    "updatedAt": "2026-08-18T14:03:26Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -1047,12 +1047,12 @@
       "id": "dsh-wecom-cli",
       "name": "企业微信办公技能（DSH WeCom CLI）",
       "packageName": "dsh-wecom-cli",
-      "description": "提供企业微信 CLI 检测、安装引导、扫码授权、连接测试，以及 14 个办公领域的受控只读查询；固定 argv、无 Shell，不向浏览器返回凭据或身份详情。",
+      "description": "提供企业微信官方 CLI 的一键安装、扫码授权、连接测试，以及 14 个办公领域的受控只读查询；固定 argv、无 Shell，不向浏览器返回凭据或安装输出。",
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-wecom-cli",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "3d6911c7ee72d2e95f518c699075fe677d07644e",
-      "version": "0.2.0",
+      "commit": "1c46db62e8cb42ff2bb7aaf1225e6a84e9f31d43",
+      "version": "0.3.0",
       "categories": [
         "tools",
         "workflow",
@@ -1090,7 +1090,7 @@
           ]
         },
         "externalDependencies": [
-          "@wecom/cli >=1.1.0（用户独立安装）",
+          "@wecom/cli 1.1.0（设置页显式确认后固定 argv 安装）",
           "企业微信账号与授权（设置页显式扫码初始化）",
           "企业微信官方服务"
         ],
@@ -1098,7 +1098,7 @@
       },
       "risk": {
         "installScripts": [],
-        "review": "qr-onboarding-explicit-confirmation-temp-and-credential-write-read-only-business-fixed-argv-bounded-redacted"
+        "review": "confirmed-pinned-cli-install-qr-onboarding-temp-and-credential-write-read-only-business-fixed-argv-redacted"
       }
     }
   ]
