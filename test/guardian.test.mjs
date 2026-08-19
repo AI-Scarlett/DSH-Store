@@ -19,24 +19,41 @@ test('guardian status fails closed without an external heartbeat', async () => {
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 
-test('guardian installation uses a single-use plan and fixed launchctl arguments', async () => {
+test('guardian installation verifies a fresh heartbeat before scheduling fixed-argv Host handoff', async () => {
   const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-'))
   try {
     const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
     await mkdir(launchAgentsDir); await writeFile(daemonSource, 'export {}\n')
     const calls = []
+    const scheduled = []
     const commandPath = ['/opt/homebrew/bin', '/usr/bin', '/bin'].join(delimiter)
     const service = createGuardianService({
       dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true,
       restartSpec: profile => ({ nodePath: '/node', runtimeArgs: ['--import', '/loader'], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath }),
-      execFile: async (file, args) => { calls.push([file, args]) },
+      schedule: (callback, delay) => { scheduled.push({ callback, delay }) },
+      execFile: async (file, args) => {
+        calls.push([file, args])
+        if (args[0] === 'bootstrap') {
+          await writeFile(join(root, 'dsh-safe-plugin-manager', 'guardian', 'status.json'), JSON.stringify({
+            schemaVersion: 1, installed: true, available: false, state: 'external-dsh-detected',
+            heartbeatAt: new Date().toISOString(), profile: 'web', owner: 'external',
+          }))
+        }
+      },
     })
     const plan = await service.createInstallPlan({ profile: 'web' })
     await assert.rejects(service.executeInstall({ planId: plan.planId, confirmation: 'wrong' }), error => error.code === 'GUARDIAN_CONFIRMATION_MISMATCH')
     const accepted = await service.createInstallPlan({ profile: 'web' })
     const result = await service.executeInstall({ planId: accepted.planId, confirmation: accepted.confirmation })
     assert.equal(result.status, 'installed')
-    assert.deepEqual(calls.map(item => item[1][0]), ['bootout', 'bootstrap', 'bootout'])
+    assert.equal(result.handoff.status, 'scheduled')
+    assert.deepEqual(calls.map(item => item[1][0]), ['bootout', 'bootstrap', 'print'])
+    assert.equal(calls.some(item => item[1][1].endsWith('/local.dsh.web')), false)
+    assert.deepEqual(scheduled.map(item => item.delay), [750])
+    scheduled[0].callback()
+    await new Promise(resolve => setImmediate(resolve))
+    assert.deepEqual(calls.map(item => item[1][0]), ['bootout', 'bootstrap', 'print', 'bootout'])
+    assert.match(calls.at(-1)[1][1], /\/local\.dsh\.web$/)
     const plist = await readFile(join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'), 'utf8')
     assert.match(plist, /<string>\/node<\/string>/)
     assert.doesNotMatch(plist, /bash|-c/)
@@ -47,6 +64,61 @@ test('guardian installation uses a single-use plan and fixed launchctl arguments
     assert.equal(config.commandPath, commandPath)
     assert.equal(config.probeRetentionMs, 86_400_000)
     assert.equal(config.probeLogMaxBytes, 4_194_304)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('guardian does not stop the current Host when bootstrap heartbeat verification fails', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-unverified-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    await mkdir(launchAgentsDir); await writeFile(daemonSource, 'export {}\n')
+    let clock = Date.parse('2026-08-19T00:00:00Z')
+    const calls = []
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true,
+      bootstrapTimeoutMs: 500, bootstrapPollMs: 100, now: () => clock, delay: async ms => { clock += ms },
+      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      execFile: async (file, args) => { calls.push([file, args]) },
+      schedule: () => assert.fail('Host handoff must not be scheduled without a fresh Guardian heartbeat'),
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    await assert.rejects(service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation }), error => error.code === 'GUARDIAN_BOOTSTRAP_UNVERIFIED')
+    assert.equal(calls.some(item => item[1][1].endsWith('/local.dsh.web')), false)
+    for (const path of [
+      join(root, 'dsh-safe-plugin-manager', 'guardian', 'guardian-daemon.mjs'),
+      join(root, 'dsh-safe-plugin-manager', 'guardian', 'config.json'),
+      join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'),
+    ]) await assert.rejects(readFile(path), error => error.code === 'ENOENT')
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('guardian restores prior artifacts after a bootstrap failure without touching the Host job', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-rollback-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    const stateDir = join(root, 'dsh-safe-plugin-manager', 'guardian')
+    await mkdir(launchAgentsDir); await mkdir(stateDir, { recursive: true })
+    await writeFile(daemonSource, 'export const next = true\n')
+    await writeFile(join(stateDir, 'guardian-daemon.mjs'), 'export const previous = true\n')
+    await writeFile(join(stateDir, 'config.json'), '{"previous":true}\n')
+    const plistPath = join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist')
+    await writeFile(plistPath, '<plist>previous</plist>\n')
+    const calls = []
+    let bootstrapCalls = 0
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true,
+      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      execFile: async (file, args) => {
+        calls.push([file, args])
+        if (args[0] === 'bootstrap' && bootstrapCalls++ === 0) throw new Error('bootstrap failed')
+      },
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    await assert.rejects(service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation }), error => error.code === 'GUARDIAN_BOOTSTRAP_UNVERIFIED')
+    assert.equal(await readFile(join(stateDir, 'guardian-daemon.mjs'), 'utf8'), 'export const previous = true\n')
+    assert.equal(await readFile(join(stateDir, 'config.json'), 'utf8'), '{"previous":true}\n')
+    assert.equal(await readFile(plistPath, 'utf8'), '<plist>previous</plist>\n')
+    assert.equal(calls.some(item => item[1][1].endsWith('/local.dsh.web')), false)
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 

@@ -43,19 +43,36 @@ test('health report requires explicit per-permission user decisions', async () =
     assert.equal(pending.status, 'action-required')
     assert.deepEqual(pending.plugins[0].permissions.pending, ['files', 'network', 'credentials'])
     assert.match(pending.verdict, /不能直接判定通过/)
+    const revision = pending.plugins[0].permissions.decisionRevision
+    assert.match(revision, /^[a-f0-9]{64}$/)
 
     const accepted = await checkProfileHealth({
-      ...base, permissionDecisions: { 'dsh-demo': { files: true, network: true, credentials: true } },
+      ...base, permissionDecisions: {
+        'dsh-demo': { schemaVersion: 1, revision, decisions: { files: true, network: true, credentials: true } },
+      },
     })
     assert.equal(accepted.plugins[0].permissions.status, 'accepted')
     assert.equal(accepted.plugins[0].status, 'warning')
     assert.equal(accepted.status, 'warning')
 
     const denied = await checkProfileHealth({
-      ...base, permissionDecisions: { 'dsh-demo': { files: false, network: true, credentials: true } },
+      ...base, permissionDecisions: {
+        'dsh-demo': { schemaVersion: 1, revision, decisions: { files: false, network: true, credentials: true } },
+      },
     })
     assert.equal(denied.status, 'blocked-by-user')
     assert.deepEqual(denied.plugins[0].permissions.denied, ['files'])
+
+    const changed = await checkProfileHealth({
+      ...base,
+      inventory: inventory([plugin({ declaredSpecifier: `git+https://github.com/example/demo.git#${'b'.repeat(40)}` })]),
+      catalog: { entries: [{ ...catalogEntry, commit: 'b'.repeat(40), version: '1.0.1' }] },
+      permissionDecisions: {
+        'dsh-demo': { schemaVersion: 1, revision, decisions: { files: true, network: true, credentials: true } },
+      },
+    })
+    assert.equal(changed.plugins[0].permissions.status, 'review-required')
+    assert.notEqual(changed.plugins[0].permissions.decisionRevision, revision)
   } finally {
     await rm(root, { recursive: true, force: true })
   }
@@ -72,7 +89,14 @@ test('health report includes catalog-external installed plugins with unknown per
     const pending = await checkProfileHealth(base)
     assert.equal(pending.summary.uncatalogued, 1)
     assert.equal(pending.plugins[0].permissions.status, 'unknown')
-    const denied = await checkProfileHealth({ ...base, permissionDecisions: { 'outside-plugin': { acceptUnknown: false } } })
+    const denied = await checkProfileHealth({
+      ...base,
+      permissionDecisions: {
+        'outside-plugin': {
+          schemaVersion: 1, revision: pending.plugins[0].permissions.decisionRevision, decisions: { acceptUnknown: false },
+        },
+      },
+    })
     assert.equal(denied.plugins[0].status, 'blocked-by-user')
   } finally {
     await rm(root, { recursive: true, force: true })

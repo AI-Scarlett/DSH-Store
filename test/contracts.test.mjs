@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.5.5')
+  assert.equal(pkg.version, '0.5.6')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -148,6 +148,8 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /前往选择.*个插件的权限/)
   assert.match(client, /dsh-health-permissions/)
   assert.match(client, /完成剩余.*项权限选择后才能重新检查/)
+  assert.match(client, /health-permission-decisions:v1/)
+  assert.match(client, /插件版本、固定 Commit 或权限声明变化时会失效并要求重新确认/)
   assert.match(client, /正在检查…/)
   assert.match(client, /健康检查已完成/)
   assert.match(client, /检查源仓库更新/)
@@ -158,6 +160,8 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /检测升级/)
   assert.match(client, /复制升级命令/)
   assert.match(client, /插件源更新规则/)
+  assert.match(client, /Guardian 已验证，DSH 正在交接，页面会自动重新连接/)
+  assert.match(client, /GUARDIAN_HANDOFF_TIMEOUT/)
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
@@ -175,6 +179,8 @@ test('guardian health requires DSH HTTP identity and fails closed on an unowned 
   assert.match(service, /unhealthyThreshold:\s*3/)
   assert.match(service, /startupGraceMs:\s*10_000/)
   assert.match(service, /commandPath/)
+  assert.match(service, /GUARDIAN_BOOTSTRAP_UNVERIFIED/)
+  assert.match(service, /waitForFreshGuardianHeartbeat/)
   assert.ok((daemon.match(/env: commandEnvironment/g) || []).length >= 2, 'Guardian launch and offline restore must share the captured command PATH')
   assert.doesNotMatch(daemon, /adopting-existing-host/)
 })
@@ -199,7 +205,7 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
   ])
-  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#96590c863d9c074c8f31c4fed4173f4634354d08'"
+  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#8bb4b17836b593ebc29c77882503bc70f759bbc6'"
   const submissionUrl = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml'
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)

@@ -193,12 +193,21 @@ test('health endpoint audits installed catalog plugins and forwards permission c
       details: { permissions: { level: 'medium', files: 'read-only', network: 'none', commands: 'none', credentials: ['none'] } },
       risk: { installScripts: [] },
     }] }
-    const req = request({ permissionDecisions: { 'dsh-demo': { files: true } } })
-    const res = response()
-    await handleHealthRequest(req, res, {
+    const options = {
       dshHome: root, defaultProfile: 'web', catalogService: { load: async () => catalog },
       runner: { dumpConfig: async () => ({ ok: true }) },
+    }
+    const initialRes = response()
+    await handleHealthRequest(request({}), initialRes, options)
+    const initialPayload = JSON.parse(initialRes.body)
+    const revision = initialPayload.value.plugins[0].permissions.decisionRevision
+    const req = request({
+      permissionDecisions: {
+        'dsh-demo': { schemaVersion: 1, revision, decisions: { files: true } },
+      },
     })
+    const res = response()
+    await handleHealthRequest(req, res, options)
     const payload = JSON.parse(res.body)
     assert.equal(res.status, 200)
     assert.equal(payload.value.schemaVersion, 2)

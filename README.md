@@ -32,7 +32,7 @@ DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#96590c863d9c074c8f31c4fed4173f4634354d08'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#8bb4b17836b593ebc29c77882503bc70f759bbc6'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -43,7 +43,8 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 1. 运行 `dsh --profile web --dump-config`，确认配置可以成功合成；
 2. 在商城中用独立计划安装随包提供的 DSH Guardian；它由 macOS launchd 在 DSH 进程外运行，
-   不是另一个普通 DSH 插件；
+   不是另一个普通 DSH 插件。安装器会先验证新 Guardian 的独立心跳，再在 HTTP 响应返回后交接旧
+   Host；验证失败会恢复 Guardian 文件且不关闭当前 Host；
 3. 包操作完成后，商城会明确标记“待重启”。只有 Guardian 心跳正常时才允许生成一次性的
    `RESTART DSH <profile>` 计划；
 4. Guardian 是 DSH web Profile 的唯一启动所有者。启用后不要再手工运行 `pnpm dsh web` 或
@@ -62,9 +63,9 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.5.5` |
-| 收录条目 | 234 个 |
-| 可安装 | 229 个 |
+| 商城版本 | `0.5.6` |
+| 收录条目 | 253 个 |
+| 可安装 | 248 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因 |
 | 分类 | 22 个 |
 | 推荐 | 4 个：DSH-Store、DSH WeCom CLI、Build DSH Plugin、Agent Workflow |
@@ -121,7 +122,9 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 - Guardian 随商城发布，但复制到商城自己的持久状态目录并由 launchd 独立运行；DSH
   启动失败时不依赖 Host Plugin 或设置页存活；
-- 安装 Guardian 仍需一次性计划、精确确认和文件哈希预条件，并明确展示将替换的启动任务；
+- 安装 Guardian 仍需一次性计划、精确确认和文件哈希预条件，并明确展示将替换的启动任务；先验证
+  新 Guardian 的 launchd 注册、随包文件哈希和新鲜心跳，HTTP 响应成功后才延迟交接旧 Host；
+  验证失败会恢复原 Guardian 文件且不关闭当前 Host；
 - 使用固定参数数组启动 DSH，不使用 `bash -c`，记录心跳、启动状态、失败次数和熔断状态；
 - 将管理器验证过的命令 PATH 固化到 Guardian 配置；即使 launchd 与 Node 运行时 PATH 中没有
   Homebrew，启动与离线依赖恢复仍能从全局 DSH CLI 安装位置找到可执行的 `pnpm`；
@@ -185,7 +188,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 健康检查不会自动替用户批准权限。有待选项时，顶部操作会定位到逐插件权限列表；只有
 所有声明权限均明确选择“允许”或“拒绝”后，底部重新检查按钮才会启用，并显示检查中、
-完成时间或失败原因。
+完成时间或失败原因。审核选择只保存在当前浏览器，并绑定包名、已安装版本、固定来源、
+目录身份和权限声明；版本、固定 Commit 或权限声明变化后会自动失效并要求重新确认。
 
 刷新按钮会重新读取 GitHub `main` 分支上的在线目录。以本地开发链接安装的管理器或
 插件不会被普通“更新”静默覆盖；需要先生成并确认“迁移到商城版”计划。迁移只切换
@@ -215,6 +219,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | DSH 版本与升级提示 `0.5.3` | [`2655055`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/2655055671fa2dc23a178cc251402bc5748c7e2a) | 在商城标题右侧显示当前 DSH 版本并按需检查 npm 官方最新版；提供固定版本升级命令与官方 Release，同时折叠长说明并保持 DSH 源码不可修改。 |
 | 安装诊断与构建许可 `0.5.4` | [`74ca4d4`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/74ca4d4c07a21ae1ac1a5e8372e98097e75565b9) | 将源更新超时映射为稳定错误码，显示脱敏 pnpm 诊断，并仅为已审核且声明安装生命周期脚本的插件传入精确包名构建许可。 |
 | Guardian 探针留存 `0.5.5` | [`96590c8`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/96590c863d9c074c8f31c4fed4173f4634354d08) | 记录端口、首页、runtime 身份与耗时的脱敏探针；健康状态采样、故障逐次记录，24 小时/4 MiB 自动清理；部署 Guardian 与商城源码漂移时禁止安全重启，要求走新的确认升级流程。 |
+| Guardian 安全交接与健康审核持久化 `0.5.6` | [`8bb4b17`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/8bb4b17836b593ebc29c77882503bc70f759bbc6) | 新 Guardian 先验证独立心跳再交接旧 Host；浏览器本地健康审核按版本、固定 Commit 和权限声明失效；补齐 19 个商城展示名。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
@@ -288,8 +293,10 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 显示“未验证”。
 
 第三方插件的文件、网络、命令和凭据权限默认处于“待选择”。用户可逐项选择允许或拒绝，
-目录外插件则需决定是否接受未知权限边界。选择仅用于形成个人健康审核结论，不会修改
-Profile，也不会限制插件进程的真实能力；真正的权限隔离仍由 DSH 宿主和沙箱负责。
+目录外插件则需决定是否接受未知权限边界。选择只保存在当前浏览器，并绑定包名、版本、
+固定来源、目录身份和权限声明；清除浏览器站点数据，或这些事实变化后，必须重新选择。
+它仅用于形成个人健康审核结论，不会修改 Profile，也不会限制插件进程的真实能力；真正的
+权限隔离仍由 DSH 宿主和沙箱负责。
 
 ## 架构
 
