@@ -33,47 +33,108 @@
   "entries": [
     {
       "id": "dsh-safe-plugin-manager",
-      "name": "DSH Safe Plugin Manager",
+      "name": "安全插件商城（DSH-Store）",
       "packageName": "dsh-safe-plugin-manager",
       "description": "本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。",
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "9eeb4f1cab9df4a1afbfd7c7951db9c3781d06db",
-      "version": "0.4.7",
-      "categories": ["marketplace", "management"],
+      "commit": "8bb4b17836b593ebc29c77882503bc70f759bbc6",
+      "version": "0.5.6",
+      "categories": [
+        "marketplace",
+        "management"
+      ],
       "featured": true,
-      "entryIds": ["dsh-safe-plugin-manager"],
+      "entryIds": [
+        "dsh-safe-plugin-manager"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=22.13.0", "systems": ["macOS"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "UNLICENSED",
-        "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["GitHub Raw/API", "macOS launchd (optional bundled Guardian)"], "reviewStatus": "author-verified"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.7",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "owner-curated-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "GitHub Raw/API",
+          "macOS launchd (optional bundled Guardian)"
+        ],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      }
     },
     {
       "id": "dsh-token-monitor",
-      "name": "DSH Token Monitor",
+      "name": "用量统计（DSH Token Monitor）",
       "packageName": "dsh-token-monitor",
-      "description": "汇总当前 Profile 可见会话的 Provider 实际 Token 用量，并在浏览器本地估算费用、预算和每日趋势。",
+      "description": "按上海自然日和实际 Provider／模型汇总 DSH 持久会话中的真实 Token 用量，提供当日、7 日、30 日、总用量、每日明细与热力图。",
       "repositoryUrl": "https://github.com/AI-Scarlett/DSH_TokenMonitor",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "d4f9c5d5a8872f2f362dc0694b6102eef3cfc6d5",
-      "version": "1.2.0",
-      "categories": ["models", "visualization"],
+      "commit": "75b9b92ad1529b272cb2d4125a4da594e905c9d5",
+      "version": "1.3.0",
+      "categories": [
+        "models",
+        "visualization"
+      ],
       "featured": false,
-      "entryIds": ["dsh-token-monitor"],
+      "entryIds": [
+        "dsh-token-monitor"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "author-verified"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "owner-curated-projection-consumer-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-read-only-model-usage-projection-not-security-audited"
+      }
     },
     {
       "id": "dsh-chat-import",
@@ -85,17 +146,47 @@
       "manifestPath": "package.json",
       "commit": "65979dd9a7935ad5d9c48d28d327ed3307c2c013",
       "version": "0.3.1",
-      "categories": ["sessions", "import"],
+      "categories": [
+        "sessions",
+        "import"
+      ],
       "featured": true,
-      "entryIds": ["import-claude"],
+      "entryIds": [
+        "import-claude"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "author-verified"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "owner-curated-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      }
     },
     {
       "id": "dsh-cliapi",
@@ -108,17 +199,50 @@
       "installPath": "plugin",
       "commit": "ff4ca55ad202737525012491e8cea254a47526e2",
       "version": "0.4.1",
-      "categories": ["models", "routing"],
+      "categories": [
+        "models",
+        "routing"
+      ],
       "featured": true,
-      "entryIds": ["dsh-cliapi"],
+      "entryIds": [
+        "dsh-cliapi"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=20", "systems": ["macOS", "Linux"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "provider", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "restricted", "credentials": ["oauth", "api-key"] },
-        "externalDependencies": ["CLIProxyAPI", "第三方 API"], "reviewStatus": "author-verified"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.5",
+        "node": ">=20",
+        "systems": [
+          "macOS",
+          "Linux"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "owner-curated-not-security-audited" }
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "oauth",
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "CLIProxyAPI",
+          "第三方 API"
+        ],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      }
     },
     {
       "id": "dshllm-api",
@@ -131,17 +255,49 @@
       "installPath": "plugin",
       "commit": "36df722b2b1ea74ebb541e8672966c98c62367a2",
       "version": "0.2.0",
-      "categories": ["models", "routing"],
+      "categories": [
+        "models",
+        "routing"
+      ],
       "featured": true,
-      "entryIds": ["dshllm-api"],
+      "entryIds": [
+        "dshllm-api"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=20", "systems": ["macOS", "Linux"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "provider", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "none", "credentials": ["api-key"] },
-        "externalDependencies": ["DSH CLIAPI", "第三方 API"], "reviewStatus": "author-verified"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.5",
+        "node": ">=20",
+        "systems": [
+          "macOS",
+          "Linux"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "owner-curated-not-security-audited" }
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "DSH CLIAPI",
+          "第三方 API"
+        ],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      }
     },
     {
       "id": "dsh-agent-reach",
@@ -153,16 +309,54 @@
       "manifestPath": "package.json",
       "commit": "d37fb46edf783446b430d324c68ac911b84a14b0",
       "version": "0.1.0",
-      "categories": ["search", "tools", "workflow"],
-      "entryIds": ["dsh-agent-reach-skill-provider"],
+      "categories": [
+        "search",
+        "tools",
+        "workflow"
+      ],
+      "entryIds": [
+        "dsh-agent-reach-skill-provider"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "suite", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "shell", "credentials": ["api-key", "oauth", "unknown"] },
-        "externalDependencies": ["Python 3.10+", "Agent Reach CLI 1.5.0", "第三方 CLI/API（按渠道）"], "reviewStatus": "manual-review"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": [], "review": "owner-adapter-upstream-manual-review-not-security-audited" }
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key",
+            "oauth",
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "Python 3.10+",
+          "Agent Reach CLI 1.5.0",
+          "第三方 CLI/API（按渠道）"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-adapter-upstream-manual-review-not-security-audited"
+      }
     },
     {
       "id": "dsh-market",
@@ -174,16 +368,47 @@
       "manifestPath": "package.json",
       "commit": "beb8576cebc48c0982321d547d67c0d15522b07b",
       "version": "1.7.0",
-      "categories": ["marketplace", "management"],
-      "entryIds": ["dsh-market"],
+      "categories": [
+        "marketplace",
+        "management"
+      ],
+      "entryIds": [
+        "dsh-market"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["GitHub API", "awesome-dsh-plugin"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.5",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "GitHub API",
+          "awesome-dsh-plugin"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-webui-market-plugin",
@@ -195,16 +420,44 @@
       "manifestPath": "package.json",
       "commit": "0a09c21bae41318bc2fed51c274b2496b22988d5",
       "version": "0.5.2",
-      "categories": ["marketplace", "management"],
-      "entryIds": ["dsh-market-plugin"],
+      "categories": [
+        "marketplace",
+        "management"
+      ],
+      "entryIds": [
+        "dsh-market-plugin"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.19.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["awesome-dsh-plugin.com"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.19.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "awesome-dsh-plugin.com"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-better-sidebar",
@@ -216,16 +469,50 @@
       "manifestPath": "package.json",
       "commit": "ecebc978009362ae90c64d9f07d3c518d4651dd9",
       "version": "0.12.2",
-      "categories": ["ui", "tools"],
-      "entryIds": ["better-sidebar"],
+      "categories": [
+        "ui",
+        "tools"
+      ],
+      "entryIds": [
+        "better-sidebar"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "shell", "credentials": ["none"] },
-        "externalDependencies": ["Git"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "Git"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "deep-whale-day-night-theme",
@@ -237,16 +524,42 @@
       "manifestPath": "package.json",
       "commit": "f8aec465165264e76311b946cb9c7227170358d9",
       "version": "0.1.4",
-      "categories": ["themes", "ui"],
-      "entryIds": ["ui-skin-maid-atelier"],
+      "categories": [
+        "themes",
+        "ui"
+      ],
+      "entryIds": [
+        "ui-skin-maid-atelier"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "theme", "installSource": "github", "license": "CC-BY-NC-SA-4.0",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "theme",
+        "installSource": "github",
+        "license": "CC-BY-NC-SA-4.0",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-turn-rewind",
@@ -258,16 +571,44 @@
       "manifestPath": "package.json",
       "commit": "27ebefa76a2d39b0ecb8f6f92b33946b4a575500",
       "version": "0.1.0",
-      "categories": ["sessions"],
-      "entryIds": ["turn-rewind"],
+      "categories": [
+        "sessions"
+      ],
+      "entryIds": [
+        "turn-rewind"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "BSD-3-Clause",
-        "permissions": { "level": "high", "files": "write", "network": "none", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["Git"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "BSD-3-Clause",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "Git"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-mnemon",
@@ -279,16 +620,46 @@
       "manifestPath": "package.json",
       "commit": "ade5a7b395f2d0578ae1d8807b8df7d54ac03c3c",
       "version": "0.1.4",
-      "categories": ["memory"],
-      "entryIds": ["mnemon"],
+      "categories": [
+        "memory"
+      ],
+      "entryIds": [
+        "mnemon"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["Go"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "Go"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-vision-toolkit",
@@ -300,16 +671,45 @@
       "manifestPath": "package.json",
       "commit": "29850a83871d4b7a7cc13e251420c5a440e2f69e",
       "version": "0.1.7",
-      "categories": ["tools"],
-      "entryIds": ["vision-toolkit"],
+      "categories": [
+        "tools"
+      ],
+      "entryIds": [
+        "vision-toolkit"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "restricted", "credentials": ["api-key"] },
-        "externalDependencies": ["Python 3.11+", "第三方 API"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "Python 3.11+",
+          "第三方 API"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-agent-teams",
@@ -321,16 +721,41 @@
       "manifestPath": "package.json",
       "commit": "2b1141248f34ee28870d2e39462c0dbefaa5ffdb",
       "version": "0.1.5",
-      "categories": ["workflow"],
-      "entryIds": ["agent-teams"],
+      "categories": [
+        "workflow"
+      ],
+      "entryIds": [
+        "agent-teams"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.19.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "medium", "files": "write", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.19.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-notification",
@@ -342,16 +767,43 @@
       "manifestPath": "package.json",
       "commit": "3e33100f51f25f24cece20bfd3d50cfbde0cbca5",
       "version": "0.1.1",
-      "categories": ["notifications"],
-      "entryIds": ["dsh-notification"],
+      "categories": [
+        "notifications"
+      ],
+      "entryIds": [
+        "dsh-notification"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": ["浏览器通知 API"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "浏览器通知 API"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-commandcode-provider",
@@ -363,16 +815,50 @@
       "manifestPath": "package.json",
       "commit": "1394871cacb5d40df32c7816c04bab80c4feb51b",
       "version": "0.2.1",
-      "categories": ["models"],
-      "entryIds": ["llm-commandcode"],
+      "categories": [
+        "models"
+      ],
+      "entryIds": [
+        "llm-commandcode"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "provider", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "read-only", "network": "specified-services", "commands": "none", "credentials": ["api-key"] },
-        "externalDependencies": ["第三方 API"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "read-only",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方 API"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-ads",
@@ -384,16 +870,43 @@
       "manifestPath": "package.json",
       "commit": "fbd58579e4f3601b2c38ccbf3f7f854c9f3a9cd6",
       "version": "0.1.0",
-      "categories": ["fun"],
-      "entryIds": ["dsh-ads"],
+      "categories": [
+        "fun"
+      ],
+      "entryIds": [
+        "dsh-ads"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "BSD-3-Clause",
-        "permissions": { "level": "medium", "files": "read-only", "network": "specified-services", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": ["第三方 API"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "BSD-3-Clause",
+        "permissions": {
+          "level": "medium",
+          "files": "read-only",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "第三方 API"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-at-file",
@@ -405,16 +918,47 @@
       "manifestPath": "package.json",
       "commit": "9c71e52c483ae589c7979b6ffc8b3a2cd5d8efa4",
       "version": "0.6.0",
-      "categories": ["files", "ui", "tools"],
-      "entryIds": ["dsh-at-file"],
+      "categories": [
+        "files",
+        "ui",
+        "tools"
+      ],
+      "entryIds": [
+        "dsh-at-file"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "medium", "files": "read-only", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "read-only",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-genui",
@@ -426,16 +970,43 @@
       "manifestPath": "package.json",
       "commit": "fd87f36a897cc25e64a4eba1bb98b1210d005fc9",
       "version": "0.8.5",
-      "categories": ["visualization", "ui", "tools"],
-      "entryIds": ["genui"],
+      "categories": [
+        "visualization",
+        "ui",
+        "tools"
+      ],
+      "entryIds": [
+        "genui"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "^22.19.0 || >=24.0.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-visualize",
@@ -447,16 +1018,43 @@
       "manifestPath": "package.json",
       "commit": "dd41b388db67f146c928772c6242c0acdb5bbeae",
       "version": "0.1.2",
-      "categories": ["visualization", "ui", "tools"],
-      "entryIds": ["dsh-visualize"],
+      "categories": [
+        "visualization",
+        "ui",
+        "tools"
+      ],
+      "entryIds": [
+        "dsh-visualize"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "BSD-3-Clause",
-        "permissions": { "level": "medium", "files": "write", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "BSD-3-Clause",
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-openpencil",
@@ -468,16 +1066,47 @@
       "manifestPath": "package.json",
       "commit": "49b0417a6d6fe7a55056bb1a82d4c348a21a6ca6",
       "version": "0.1.0-rc.1",
-      "categories": ["design", "ui", "tools"],
-      "entryIds": ["dsh-openpencil"],
+      "categories": [
+        "design",
+        "ui",
+        "tools"
+      ],
+      "entryIds": [
+        "dsh-openpencil"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=24.11.0", "systems": ["macOS"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "none", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["OpenPencil 桌面客户端"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=24.11.0",
+        "systems": [
+          "macOS"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "OpenPencil 桌面客户端"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "anysearch-dsh",
@@ -489,16 +1118,47 @@
       "manifestPath": "package.json",
       "commit": "be7d8e8e6505e925a02416c48ce41ba6bca66225",
       "version": "0.1.1",
-      "categories": ["search", "tools"],
-      "entryIds": ["web-search-anysearch"],
+      "categories": [
+        "search",
+        "tools"
+      ],
+      "entryIds": [
+        "web-search-anysearch"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "^22.19.0 || >=24.0.0", "systems": [], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "provider", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "none", "network": "specified-services", "commands": "none", "credentials": ["api-key"] },
-        "externalDependencies": ["第三方 API"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "none",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方 API"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-gomoku",
@@ -510,16 +1170,42 @@
       "manifestPath": "package.json",
       "commit": "5b27af9808f5bd8f2d753dfdf6157d86a54a4947",
       "version": "0.0.1",
-      "categories": ["fun", "ui"],
-      "entryIds": ["gomoku"],
+      "categories": [
+        "fun",
+        "ui"
+      ],
+      "entryIds": [
+        "gomoku"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-web-ui-all",
@@ -532,17 +1218,59 @@
       "installPath": "packages/dsh-web-ui-all",
       "commit": "5f7da01c4241eddb17d9d3326235f4219eb5b4ab",
       "version": "0.1.17",
-      "categories": ["suites", "ui", "tools"],
+      "categories": [
+        "suites",
+        "ui",
+        "tools"
+      ],
       "featured": true,
-      "entryIds": ["ui-web-ui-compat", "ui-web-ui-settings", "ui-dsh-aionui-panel", "ui-task-board", "ui-git-graph", "pet", "remote-web-ui", "live-stats", "ssh", "describe-image", "liangshen", "ui-skin-center"],
+      "entryIds": [
+        "ui-web-ui-compat",
+        "ui-web-ui-settings",
+        "ui-dsh-aionui-panel",
+        "ui-task-board",
+        "ui-git-graph",
+        "pet",
+        "remote-web-ui",
+        "live-stats",
+        "ssh",
+        "describe-image",
+        "liangshen",
+        "ui-skin-center"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "suite", "installSource": "github", "license": "Apache-2.0",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "shell", "credentials": ["unknown"] },
-        "externalDependencies": ["第三方 API"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-suite-not-security-audited" }
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "第三方 API"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-suite-not-security-audited"
+      }
     },
     {
       "id": "dsh-shortcuts",
@@ -554,16 +1282,47 @@
       "manifestPath": "package.json",
       "commit": "0d12280cea78451d7d7e65bdb7e8b475f41c0a79",
       "version": "1.1.0",
-      "categories": ["ui", "tools", "experimental"],
-      "entryIds": ["shortcuts"],
+      "categories": [
+        "ui",
+        "tools",
+        "experimental"
+      ],
+      "entryIds": [
+        "shortcuts"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "medium", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-diagram",
@@ -575,16 +1334,43 @@
       "manifestPath": "package.json",
       "commit": "480d3b3e81a583648595ec60cdcf834a8b7593cc",
       "version": "0.1.1",
-      "categories": ["visualization", "design", "experimental"],
-      "entryIds": ["diagram"],
+      "categories": [
+        "visualization",
+        "design",
+        "experimental"
+      ],
+      "entryIds": [
+        "diagram"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "^22.19.0 || >=24.0.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-egress-guard",
@@ -596,16 +1382,46 @@
       "manifestPath": "package.json",
       "commit": "c34b9ca4b874b61c881d7e8172fffb9d294d2abe",
       "version": "0.1.0",
-      "categories": ["security", "tools", "experimental"],
-      "entryIds": ["egress-guard"],
+      "categories": [
+        "security",
+        "tools",
+        "experimental"
+      ],
+      "entryIds": [
+        "egress-guard"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=22", "systems": [], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.5",
+        "node": ">=22",
+        "systems": [],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-security-claim-not-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-security-claim-not-audited"
+      }
     },
     {
       "id": "dsh-achievements",
@@ -617,16 +1433,44 @@
       "manifestPath": "package.json",
       "commit": "ecd4b8f9607d1f42103b7342626d2fd4edd46915",
       "version": "0.1.0",
-      "categories": ["fun", "ui", "experimental"],
-      "entryIds": ["achievements", "ui-achievements"],
+      "categories": [
+        "fun",
+        "ui",
+        "experimental"
+      ],
+      "entryIds": [
+        "achievements",
+        "ui-achievements"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "medium", "files": "write", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-context",
@@ -638,16 +1482,45 @@
       "manifestPath": "package.json",
       "commit": "a4deb93e21104be439b8ca789c38445d37cabd4f",
       "version": "0.10.1",
-      "categories": ["sessions", "visualization", "ui"],
-      "entryIds": ["dsh-context"],
+      "categories": [
+        "sessions",
+        "visualization",
+        "ui"
+      ],
+      "entryIds": [
+        "dsh-context"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "Apache-2.0",
-        "permissions": { "level": "medium", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "medium",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-theme-plugin",
@@ -659,16 +1532,44 @@
       "manifestPath": "package.json",
       "commit": "b85a37bc252ad423b2d3aee45fa4e2a72e15ca94",
       "version": "0.3.3",
-      "categories": ["themes", "ui"],
-      "entryIds": ["theme-zhongguo"],
+      "categories": [
+        "themes",
+        "ui"
+      ],
+      "entryIds": [
+        "theme-zhongguo"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=20", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "theme", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=20",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "theme",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-blender",
@@ -680,16 +1581,51 @@
       "manifestPath": "package.json",
       "commit": "3d641dae1c84248f213095f322f6beace0631409",
       "version": "0.2.1",
-      "categories": ["design", "tools", "workflow"],
-      "entryIds": ["blender-modeling"],
+      "categories": [
+        "design",
+        "tools",
+        "workflow"
+      ],
+      "entryIds": [
+        "blender-modeling"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=20", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "suite", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "none", "commands": "shell", "credentials": ["none"] },
-        "externalDependencies": ["Blender", "Python（可选分析与辅助功能）"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=20",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-tool-execution-not-security-audited" }
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "shell",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "Blender",
+          "Python（可选分析与辅助功能）"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-tool-execution-not-security-audited"
+      }
     },
     {
       "id": "powercontext-dsh",
@@ -701,16 +1637,47 @@
       "manifestPath": "package.json",
       "commit": "482d082ded7d22663f131a1f004e2cf586f9fcc9",
       "version": "0.0.3",
-      "categories": ["memory", "workflow"],
-      "entryIds": ["powercontext-dsh"],
+      "categories": [
+        "memory",
+        "workflow"
+      ],
+      "entryIds": [
+        "powercontext-dsh"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=20", "systems": [], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "Apache-2.0",
-        "permissions": { "level": "high", "files": "none", "network": "specified-services", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": ["PowerContext Server"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=20",
+        "systems": [],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "community-context-egress-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "high",
+          "files": "none",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "PowerContext Server"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-context-egress-not-security-audited"
+      }
     },
     {
       "id": "dsh-lark",
@@ -722,16 +1689,45 @@
       "manifestPath": "package.json",
       "commit": "bef110c073e3ebc1d6a38b05e45302b83328b5cc",
       "version": "0.1.1",
-      "categories": ["notifications", "workflow"],
-      "entryIds": ["lark-channel"],
+      "categories": [
+        "notifications",
+        "workflow"
+      ],
+      "entryIds": [
+        "lark-channel"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "none", "network": "specified-services", "commands": "none", "credentials": ["api-key"] },
-        "externalDependencies": ["飞书/Lark Open Platform"], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-messaging-integration-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "none",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "飞书/Lark Open Platform"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-messaging-integration-not-security-audited"
+      }
     },
     {
       "id": "dsh-memory-evolve",
@@ -743,17 +1739,40 @@
       "manifestPath": "package.json",
       "commit": "ce7f0faa0e0240f117c29795e9224c0d9ed18183",
       "version": "0.1.0",
-      "categories": ["memory", "workflow", "tools"],
+      "categories": [
+        "memory",
+        "workflow",
+        "tools"
+      ],
       "entryIds": [],
       "status": "blocked",
       "statusReason": "该固定 Commit 的 manifest 未声明 dsh.bundle.patch，暂时不能通过标准 DSH Bundle 安装。",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": [] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "unknown", "files": "unknown", "network": "unknown", "commands": "unknown", "credentials": ["unknown"] },
-        "externalDependencies": [], "reviewStatus": "manual-review"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": []
       },
-      "risk": { "installScripts": [], "review": "blocked-missing-bundle-manifest" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "blocked-missing-bundle-manifest"
+      }
     },
     {
       "id": "dsh-tui",
@@ -765,17 +1784,47 @@
       "manifestPath": "package.json",
       "commit": "265671db7a3de7578464bf0b96c60d9b2bb0b273",
       "version": "0.6.1",
-      "categories": ["clients", "development"],
+      "categories": [
+        "clients",
+        "development"
+      ],
       "entryIds": [],
       "status": "blocked",
       "statusReason": "这是独立终端入口，Bundle Patch 会覆盖或停用多项基础 Profile 行；当前商城不把它注入 Web Profile。",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "^22.19 || >=24", "systems": ["macOS", "Linux", "Windows"], "profiles": ["dsh-tui"] },
-      "details": {
-        "pluginType": "client", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "shell", "credentials": ["unknown"] },
-        "externalDependencies": ["pnpm"], "reviewStatus": "manual-review"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": "^22.19 || >=24",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "dsh-tui"
+        ]
       },
-      "risk": { "installScripts": [], "review": "blocked-incompatible-profile-surface" }
+      "details": {
+        "pluginType": "client",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "pnpm"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "blocked-incompatible-profile-surface"
+      }
     },
     {
       "id": "dsh-explorer",
@@ -788,17 +1837,42 @@
       "installPath": "dsh-plugins/dsh-explorer",
       "commit": "81019c61da8b58cbeb8f49dd06141fef42c17eea",
       "version": "0.1.0",
-      "categories": ["files", "ui", "tools"],
+      "categories": [
+        "files",
+        "ui",
+        "tools"
+      ],
       "entryIds": [],
       "status": "blocked",
       "statusReason": "完整功能需要同时安装 Host 与浏览器两个独立 Bundle；当前目录尚不支持多包原子安装和统一回滚。",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "none", "commands": "unknown", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "manual-review"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "blocked-multi-package-atomicity" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "unknown",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "blocked-multi-package-atomicity"
+      }
     },
     {
       "id": "dsh-web-plugin-manager",
@@ -810,17 +1884,48 @@
       "manifestPath": "package.json",
       "commit": "1162fb2182e5ec61f90614c79dd4900465ffd097",
       "version": "0.4.0",
-      "categories": ["marketplace", "management"],
-      "entryIds": ["plugin-manager"],
+      "categories": [
+        "marketplace",
+        "management"
+      ],
+      "entryIds": [
+        "plugin-manager"
+      ],
       "status": "blocked",
       "statusReason": "Bundle Patch 会禁用官方 ui-settings-plugin-inventory，不符合本市场的永久保护规则。",
-      "compatibility": { "dsh": ">=0.1.0-rc.5", "node": ">=22.13.0", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["GitHub API", "npm Registry"], "reviewStatus": "manual-review"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.5",
+        "node": ">=22.13.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": ["prepare"], "review": "blocked-by-policy" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "GitHub API",
+          "npm Registry"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "blocked-by-policy"
+      }
     },
     {
       "id": "dsh-plugin-hub",
@@ -832,17 +1937,50 @@
       "manifestPath": "package.json",
       "commit": "f35258c59cc9dc0ea1ea4e530e0979dc655db13f",
       "version": "0.1.0-rc.6",
-      "categories": ["marketplace", "management"],
-      "entryIds": ["plugin-console"],
+      "categories": [
+        "marketplace",
+        "management"
+      ],
+      "entryIds": [
+        "plugin-console"
+      ],
       "status": "blocked",
       "statusReason": "第三方仓库声明 @deepseek-ai 官方命名空间，按官方组件保护策略禁止安装。",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "high", "files": "write", "network": "any", "commands": "restricted", "credentials": ["none"] },
-        "externalDependencies": ["GitHub API", "npm Registry"], "reviewStatus": "manual-review"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "blocked-by-policy" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "GitHub API",
+          "npm Registry"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "blocked-by-policy"
+      }
     },
     {
       "id": "dsh-plugin-outline",
@@ -854,16 +1992,43 @@
       "manifestPath": "package.json",
       "commit": "59dfc8019a0a202450b8d5fd8da0436a5fe0e0a2",
       "version": "0.2.2",
-      "categories": ["sessions", "ui", "visualization"],
-      "entryIds": ["outline"],
+      "categories": [
+        "sessions",
+        "ui",
+        "visualization"
+      ],
+      "entryIds": [
+        "outline"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": "unknown", "node": "unknown", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": "unknown",
+        "node": "unknown",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-index-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      }
     },
     {
       "id": "dsh-ipcalc",
@@ -875,16 +2040,43 @@
       "manifestPath": "package.json",
       "commit": "6a267cdfc139167ace09abaa33c4df2080f6d093",
       "version": "0.1.0",
-      "categories": ["tools", "development"],
-      "entryIds": ["ipcalc"],
+      "categories": [
+        "tools",
+        "development"
+      ],
+      "entryIds": [
+        "ipcalc"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": "unknown", "node": "unknown", "systems": [], "profiles": ["web", "headless"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": "unknown",
+        "node": "unknown",
+        "systems": [],
+        "profiles": [
+          "web",
+          "headless"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-pure-computation-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-pure-computation-not-security-audited"
+      }
     },
     {
       "id": "dsh-stats-board",
@@ -896,16 +2088,43 @@
       "manifestPath": "package.json",
       "commit": "69ba2127fc88891efed26890081a1ff741a35d2e",
       "version": "0.1.0",
-      "categories": ["sessions", "ui", "visualization"],
-      "entryIds": ["stats-board"],
+      "categories": [
+        "sessions",
+        "ui",
+        "visualization"
+      ],
+      "entryIds": [
+        "stats-board"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "unknown", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "medium", "files": "read-only", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": "unknown",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-session-metadata-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "read-only",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-session-metadata-not-security-audited"
+      }
     },
     {
       "id": "dsh-ventus-whale",
@@ -917,16 +2136,101 @@
       "manifestPath": "package.json",
       "commit": "63622ee836d341e8c418135d1b185b7cb1d51c4c",
       "version": "0.1.0",
-      "categories": ["ui", "themes"],
-      "entryIds": ["dsh-ventus-whale"],
+      "categories": [
+        "ui",
+        "themes"
+      ],
+      "entryIds": [
+        "dsh-ventus-whale"
+      ],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": "unknown", "systems": [], "profiles": ["web"] },
-      "details": {
-        "pluginType": "feature", "installSource": "github", "license": "MIT",
-        "permissions": { "level": "medium", "files": "write", "network": "none", "commands": "none", "credentials": ["none"] },
-        "externalDependencies": [], "reviewStatus": "automated-scan"
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "node": "unknown",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
       },
-      "risk": { "installScripts": [], "review": "community-plugin-state-write-not-security-audited" }
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-plugin-state-write-not-security-audited"
+      }
+    },
+    {
+      "id": "dsh-wecom-cli",
+      "name": "企业微信办公技能（DSH WeCom CLI）",
+      "packageName": "dsh-wecom-cli",
+      "description": "提供企业微信官方 CLI 的一键安装、扫码授权、连接测试，以及 14 个办公领域的受控只读查询；固定 argv、无 Shell，不向浏览器返回凭据或安装输出。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-wecom-cli",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "1c46db62e8cb42ff2bb7aaf1225e6a84e9f31d43",
+      "version": "0.3.0",
+      "categories": [
+        "tools",
+        "workflow",
+        "notifications"
+      ],
+      "featured": true,
+      "entryIds": [
+        "dsh-wecom-cli-host",
+        "dsh-wecom-cli-skill-provider"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.7",
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS"
+        ],
+        "profiles": [
+          "web",
+          "headless"
+        ]
+      },
+      "details": {
+        "pluginType": "suite",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "keychain",
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@wecom/cli 1.1.0（设置页显式确认后固定 argv 安装）",
+          "企业微信账号与授权（设置页显式扫码初始化）",
+          "企业微信官方服务"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "confirmed-pinned-cli-install-qr-onboarding-temp-and-credential-write-read-only-business-fixed-argv-redacted"
+      },
+      "statusReason": "暂时下架：外部维护窗口；请留意仓库公告后再恢复上架。"
     }
   ]
 }
