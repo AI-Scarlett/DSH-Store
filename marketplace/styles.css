@@ -611,6 +611,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .catalog-section { padding: 30px 0 140px; }
 .catalog-heading { margin-bottom: 38px; }
 .catalog-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 10px; }
+.catalog-toolbar .select-box[hidden] { display: none !important; }
 .search-box, .select-box { min-height: 62px; display: flex; align-items: center; border: 1px solid var(--line-strong); background: rgba(255, 255, 255, .9); }
 .search-box:focus-within, .select-box:focus-within { border-color: var(--green); box-shadow: 0 0 0 2px rgba(120, 255, 202, .08); }
 .search-box > span { margin-left: 18px; color: var(--green); font-size: 22px; }
