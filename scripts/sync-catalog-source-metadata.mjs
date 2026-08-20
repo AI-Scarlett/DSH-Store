@@ -54,22 +54,29 @@ async function mapLimit(items, limit, worker) {
   return results
 }
 
+const delay = milliseconds => new Promise(resolveDelay => setTimeout(resolveDelay, milliseconds))
+
 async function commitMetadata(entry, registryRepositoryUrl) {
   const { owner, repository } = githubParts(entry.repositoryUrl)
   const route = `repos/${owner}/${repository}/commits/${entry.commit}`
-  try {
-    const { stdout } = await run('gh', ['api', route, '--jq', '.commit.committer.date // .commit.author.date'], {
-      encoding: 'utf8', maxBuffer: 1024 * 1024,
-    })
-    return { updatedAt: iso(stdout.trim(), `${entry.id} commit date`), provenance: 'github-commit' }
-  } catch (error) {
-    if (!options.allowLocalSelf || entry.repositoryUrl !== registryRepositoryUrl) throw error
-    await run('git', ['cat-file', '-e', `${entry.commit}^{commit}`], { cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024 })
-    const { stdout } = await run('git', ['show', '-s', '--format=%cI', entry.commit], {
-      cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024,
-    })
-    return { updatedAt: iso(stdout.trim(), `${entry.id} local commit date`), provenance: 'unknown' }
+  let lastError = null
+  for (const retryDelay of [0, 500, 1_500]) {
+    if (retryDelay > 0) await delay(retryDelay)
+    try {
+      const { stdout } = await run('gh', ['api', route, '--cache', '1h', '--jq', '.commit.committer.date // .commit.author.date'], {
+        encoding: 'utf8', maxBuffer: 1024 * 1024, timeout: 12_000,
+      })
+      return { updatedAt: iso(stdout.trim(), `${entry.id} commit date`), provenance: 'github-commit' }
+    } catch (error) {
+      lastError = error
+    }
   }
+  if (!options.allowLocalSelf || entry.repositoryUrl !== registryRepositoryUrl) throw lastError
+  await run('git', ['cat-file', '-e', `${entry.commit}^{commit}`], { cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024 })
+  const { stdout } = await run('git', ['show', '-s', '--format=%cI', entry.commit], {
+    cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024,
+  })
+  return { updatedAt: iso(stdout.trim(), `${entry.id} local commit date`), provenance: 'unknown' }
 }
 
 const options = args(process.argv.slice(2))
