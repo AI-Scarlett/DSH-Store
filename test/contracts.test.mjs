@@ -214,7 +214,7 @@ test('client fails closed when the live health endpoint still uses the legacy sc
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const [html, app, pluginsHtml, buildHtml, faqHtml, aboutHtml, readme, previewServer, styles] = await Promise.all([
+  const [html, app, pluginsHtml, buildHtml, faqHtml, aboutHtml, readme, previewServer, styles, catalogDocument] = await Promise.all([
     readFile(new URL('marketplace/index.html', project), 'utf8'),
     readFile(new URL('marketplace/app.js', project), 'utf8'),
     readFile(new URL('marketplace/plugins/index.html', project), 'utf8'),
@@ -224,8 +224,10 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     readFile(new URL('README.md', project), 'utf8'),
     readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
+    readFile(new URL('registry/catalog.json', project), 'utf8').then(JSON.parse),
   ])
-  const installCommand = "dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#8bb4b17836b593ebc29c77882503bc70f759bbc6'"
+  const managerCommit = catalogDocument.entries.find(entry => entry.id === 'dsh-safe-plugin-manager').commit
+  const installCommand = `dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#${managerCommit}'`
   const submissionUrl = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml'
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)

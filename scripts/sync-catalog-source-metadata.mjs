@@ -5,17 +5,19 @@ import { createHash } from 'node:crypto'
 import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
 import { promisify } from 'node:util'
+import { fileURLToPath } from 'node:url'
 import { validateCatalog } from '../src/catalog.mjs'
 
 const run = promisify(execFile)
-const root = resolve(new URL('..', import.meta.url).pathname)
+const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
 
 function args(argv) {
-  const result = { write: false, expectedSha: null, observedAt: null, backup: null }
+  const result = { write: false, expectedSha: null, observedAt: null, backup: null, allowLocalSelf: false }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
     if (value === '--write') result.write = true
+    else if (value === '--allow-local-self') result.allowLocalSelf = true
     else if (value === '--expected-sha') result.expectedSha = argv[++index]
     else if (value === '--observed-at') result.observedAt = argv[++index]
     else if (value === '--backup') result.backup = argv[++index]
@@ -52,13 +54,22 @@ async function mapLimit(items, limit, worker) {
   return results
 }
 
-async function commitDate(entry) {
+async function commitMetadata(entry, registryRepositoryUrl) {
   const { owner, repository } = githubParts(entry.repositoryUrl)
   const route = `repos/${owner}/${repository}/commits/${entry.commit}`
-  const { stdout } = await run('gh', ['api', route, '--jq', '.commit.committer.date // .commit.author.date'], {
-    encoding: 'utf8', maxBuffer: 1024 * 1024,
-  })
-  return iso(stdout.trim(), `${entry.id} commit date`)
+  try {
+    const { stdout } = await run('gh', ['api', route, '--jq', '.commit.committer.date // .commit.author.date'], {
+      encoding: 'utf8', maxBuffer: 1024 * 1024,
+    })
+    return { updatedAt: iso(stdout.trim(), `${entry.id} commit date`), provenance: 'github-commit' }
+  } catch (error) {
+    if (!options.allowLocalSelf || entry.repositoryUrl !== registryRepositoryUrl) throw error
+    await run('git', ['cat-file', '-e', `${entry.commit}^{commit}`], { cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024 })
+    const { stdout } = await run('git', ['show', '-s', '--format=%cI', entry.commit], {
+      cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024,
+    })
+    return { updatedAt: iso(stdout.trim(), `${entry.id} local commit date`), provenance: 'unknown' }
+  }
 }
 
 const options = args(process.argv.slice(2))
@@ -75,9 +86,9 @@ if (!options.backup || !isAbsolute(options.backup) || backupRelative === '' || (
 }
 const observedAt = iso(options.observedAt, '--observed-at')
 const catalog = JSON.parse(original.toString('utf8'))
-const dates = await mapLimit(catalog.entries, 4, commitDate)
+const metadata = await mapLimit(catalog.entries, 4, entry => commitMetadata(entry, catalog.registry.repositoryUrl))
 for (let index = 0; index < catalog.entries.length; index += 1) {
-  catalog.entries[index].source = { updatedAt: dates[index], observedAt, provenance: 'github-commit' }
+  catalog.entries[index].source = { ...metadata[index], observedAt }
 }
 catalog.registry.updatedAt = observedAt
 validateCatalog(catalog)
