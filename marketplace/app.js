@@ -37,6 +37,7 @@ const translations = {
     'view.trusted': '可信安装库', 'view.candidates': '候选发现库', 'stats.candidates': '候选项目',
     'assurance.discovered': '已发现', 'assurance.installable': '可安装验证', 'assurance.runtime': '运行验证', 'assurance.security': '安全审查',
     'candidate.notice': '候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。通过固定 Commit 与安全契约审核后才能晋级可信安装库。',
+    'candidate.search': '搜索候选项目、Topic、来源或 GitHub 仓库', 'candidate.emptyTitle': '候选库当前为空', 'candidate.emptyBody': '尚未开始批量导入候选项目；可信安装库不受影响。',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
     'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
     'safety.title': '信任不是口号，是四个可检查的状态。', 'safety.lead': '收录从不等于安全审计。我们把来源、权限、变更与恢复分开显示，未知事实保持未知。',
@@ -96,6 +97,7 @@ const translations = {
     'view.trusted': 'Trusted install catalog', 'view.candidates': 'Candidate discovery', 'stats.candidates': 'candidates',
     'assurance.discovered': 'Discovered', 'assurance.installable': 'Installability', 'assurance.runtime': 'Runtime', 'assurance.security': 'Security review',
     'candidate.notice': 'Candidates are discovery-only: they have no install action and never enter a DSH operation plan. Promotion requires a pinned commit and the trusted catalog contract.',
+    'candidate.search': 'Search candidate projects, topics, sources, or GitHub repositories', 'candidate.emptyTitle': 'The candidate registry is empty', 'candidate.emptyBody': 'Bulk candidate import has not started; the trusted install catalog is unaffected.',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
     'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
     'safety.title': 'Trust is four inspectable states, not a slogan.', 'safety.lead': 'Listing is never a security audit. Source, permissions, change, and recovery stay separate, and unknown facts stay unknown.',
@@ -160,6 +162,9 @@ const els = {
   dialogBody: document.querySelector('#dialog-body'),
   toast: document.querySelector('#toast'),
   viewTabs: document.querySelector('#catalog-view-tabs'),
+  legend: document.querySelector('.result-row .legend'),
+  emptyTitle: document.querySelector('#empty-state h3'),
+  emptyBody: document.querySelector('#empty-state p'),
 }
 
 const labels = {
@@ -466,6 +471,12 @@ function renderCatalog() {
     : `${escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
   if (els.pagination) els.pagination.hidden = entries.length === 0 || entries.length >= matchingEntries.length
   if (els.categories?.parentElement) els.categories.parentElement.hidden = candidateView
+  if (els.sort?.parentElement) els.sort.parentElement.hidden = candidateView
+  if (els.legend) els.legend.hidden = candidateView
+  if (els.search) els.search.setAttribute('placeholder', t(candidateView ? 'candidate.search' : 'catalog.search'))
+  if (els.emptyTitle) els.emptyTitle.textContent = t(candidateView ? 'candidate.emptyTitle' : 'empty.title')
+  if (els.emptyBody) els.emptyBody.textContent = t(candidateView ? 'candidate.emptyBody' : 'empty.body')
+  if (els.emptyClear) els.emptyClear.hidden = candidateView ? !state.query : false
   if (!candidateView) renderCategories()
 }
 
