@@ -165,6 +165,24 @@
         "management"
       ],
       "featured": true,
+      "assurance": {
+        "discovery": {
+          "status": "unknown",
+          "summary": "本地 0.6.0 固定提交尚未发布，等待 GitHub 公开回读。"
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "固定提交已在本地一次性 rc.8 Profile 通过官方 CLI 安装、配置合成与卸载；尚无公开 HTTPS 证据。"
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "固定提交已在本地一次性 rc.8 Web Profile 通过启动、根页面与 Inventory API 冒烟；尚无公开 HTTPS 证据。"
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "已通过本地静态安全契约与负向测试，不等同于独立安全审查。"
+        }
+      },
       "entryIds": [
         "dsh-safe-plugin-manager"
       ],
@@ -176,6 +194,32 @@
           "rc.6": "incompatible",
           "rc.7": "incompatible",
           "rc.8": "compatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          }
         },
         "node": ">=22.13.0",
         "systems": [
