@@ -63,11 +63,11 @@
         },
         "installability": {
           "status": "unknown",
-          "summary": "当前版本尚未在一次性 rc.8 Profile 中执行官方 CLI 安装验收。"
+          "summary": "本地一次性 rc.8 Profile 已通过官方 CLI 安装、配置合成与卸载；尚无公开 HTTPS 证据。"
         },
         "runtime": {
           "status": "unknown",
-          "summary": "当前版本尚未形成可公开复核的 rc.8 启动与运行证据。"
+          "summary": "本地一次性 rc.8 Web Profile 已启动并通过 HTTP 200 冒烟；尚无公开 HTTPS 证据。"
         },
         "securityReview": {
           "status": "unknown",
@@ -106,9 +106,9 @@
             "rollback": "unknown"
           },
           "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
             "rollback": "unknown"
           }
         },
