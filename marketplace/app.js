@@ -1,4 +1,5 @@
 const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.json'
+const CANDIDATES_URL = document.body.dataset.candidatesUrl || '../registry/candidates.json'
 const IS_DIRECTORY = document.body.classList.contains('plugins-page')
 
 const translations = {
@@ -32,7 +33,10 @@ const translations = {
     'featured.title': '精选插件，扩展你的 DSH 工作流。', 'featured.lead': '从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。',
     'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索插件、能力或 GitHub 仓库', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
     'catalog.gatewayKicker': '探索更多能力', 'catalog.gatewayTitle': '查看全部 DSH 插件、权限与兼容性',
-    'sort.recommended': 'rc.8 兼容优先', 'sort.name': '名称 A–Z', 'sort.recent': '版本更新', 'sort.risk': '权限由低到高',
+    'sort.recommended': 'rc.8 兼容与更新优先', 'sort.name': '名称 A–Z', 'sort.recent': '最近更新', 'sort.risk': '权限由低到高',
+    'view.trusted': '可信安装库', 'view.candidates': '候选发现库', 'stats.candidates': '候选项目',
+    'assurance.discovered': '已发现', 'assurance.installable': '可安装验证', 'assurance.runtime': '运行验证', 'assurance.security': '安全审查',
+    'candidate.notice': '候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。通过固定 Commit 与安全契约审核后才能晋级可信安装库。',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
     'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
     'safety.title': '信任不是口号，是四个可检查的状态。', 'safety.lead': '收录从不等于安全审计。我们把来源、权限、变更与恢复分开显示，未知事实保持未知。',
@@ -88,7 +92,10 @@ const translations = {
     'featured.title': 'Featured plugins for better DSH workflows.', 'featured.lead': 'Discover practical plugins for automation, knowledge, and development with traceable sources and transparent details. Review capabilities and permissions before connecting.',
     'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
     'catalog.gatewayKicker': 'Explore more capabilities', 'catalog.gatewayTitle': 'View every DSH plugin, permission, and compatibility detail',
-    'sort.recommended': 'rc.8 compatible first', 'sort.name': 'Name A–Z', 'sort.recent': 'Latest version', 'sort.risk': 'Lowest permission first',
+    'sort.recommended': 'rc.8 and freshness first', 'sort.name': 'Name A–Z', 'sort.recent': 'Recently updated', 'sort.risk': 'Lowest permission first',
+    'view.trusted': 'Trusted install catalog', 'view.candidates': 'Candidate discovery', 'stats.candidates': 'candidates',
+    'assurance.discovered': 'Discovered', 'assurance.installable': 'Installability', 'assurance.runtime': 'Runtime', 'assurance.security': 'Security review',
+    'candidate.notice': 'Candidates are discovery-only: they have no install action and never enter a DSH operation plan. Promotion requires a pinned commit and the trusted catalog contract.',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
     'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
     'safety.title': 'Trust is four inspectable states, not a slogan.', 'safety.lead': 'Listing is never a security audit. Source, permissions, change, and recovery stay separate, and unknown facts stay unknown.',
@@ -122,6 +129,8 @@ const t = (key, values) => formatText(translations[state?.locale || 'zh']?.[key]
 const state = {
   catalog: null,
   entries: [],
+  candidates: [],
+  catalogView: 'trusted',
   query: '',
   category: '',
   sort: 'recommended',
@@ -150,6 +159,7 @@ const els = {
   dialogKicker: document.querySelector('#dialog-kicker'),
   dialogBody: document.querySelector('#dialog-body'),
   toast: document.querySelector('#toast'),
+  viewTabs: document.querySelector('#catalog-view-tabs'),
 }
 
 const labels = {
@@ -217,6 +227,26 @@ const compatibilityMatrix = entry => {
   const matrix = entry.compatibility.dshReleases || dshReleaseCompatibility(entry.compatibility.dsh)
   return `<div class="compatibility-matrix" aria-label="${escape(state.locale === 'en' ? 'DSH release compatibility' : 'DSH 版本兼容性')}">${DSH_RC_RELEASES.map(release => `<span class="compatibility-cell ${escape(matrix[release])}" title="${escape(`DSH ${release}: ${compatibilityStatusLabel(matrix[release])}`)}"><b>${escape(release)}</b><em>${escape(compatibilityStatusLabel(matrix[release]))}</em></span>`).join('')}</div>`
 }
+const evidenceStatusLabel = status => state.locale === 'en'
+  ? ({ verified: 'Verified', failed: 'Failed', unknown: 'Unknown', 'not-applicable': 'N/A' }[status] || 'Unknown')
+  : ({ verified: '已验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用' }[status] || '未知')
+const assuranceRail = entry => {
+  const items = [
+    ['discovery', t('assurance.discovered')], ['installability', t('assurance.installable')],
+    ['runtime', t('assurance.runtime')], ['securityReview', t('assurance.security')],
+  ]
+  return `<div class="assurance-rail" aria-label="${escape(state.locale === 'en' ? 'Trust evidence' : '可信证据')}">${items.map(([key, label]) => {
+    const record = entry.assurance?.[key] || { status: 'unknown' }
+    return `<span class="assurance-item assurance-${escape(record.status)}" title="${escape(record.summary || evidenceStatusLabel(record.status))}"><b>${escape(label)}</b><em>${escape(evidenceStatusLabel(record.status))}</em></span>`
+  }).join('')}</div>`
+}
+const operationEvidenceText = entry => DSH_RC_RELEASES.map(release => {
+  const record = entry.compatibility?.dshOperations?.[release] || {}
+  const label = value => state.locale === 'en'
+    ? ({ passed: 'Pass', failed: 'Fail', unknown: 'Unknown' }[value] || 'Unknown')
+    : ({ passed: '通过', failed: '失败', unknown: '未知' }[value] || '未知')
+  return `${release}: ${state.locale === 'en' ? 'install' : '安装'} ${label(record.install)} / ${state.locale === 'en' ? 'start' : '启动'} ${label(record.start)} / ${state.locale === 'en' ? 'uninstall' : '卸载'} ${label(record.uninstall)} / ${state.locale === 'en' ? 'rollback' : '回滚'} ${label(record.rollback)}`
+}).join(' · ')
 const licenseLabel = value => {
   if (!value || value === 'UNKNOWN') return t('value.unknown')
   if (value === 'UNLICENSED') return state.locale === 'en' ? 'License not published' : '未公开许可证'
@@ -228,6 +258,13 @@ function normalizeEntry(entry) {
   const details = entry?.details && typeof entry.details === 'object' ? entry.details : {}
   const permissions = details.permissions && typeof details.permissions === 'object' ? details.permissions : {}
   const compatibility = entry?.compatibility && typeof entry.compatibility === 'object' ? entry.compatibility : {}
+  const unknownOperations = () => ({ install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' })
+  const operations = compatibility.dshOperations && typeof compatibility.dshOperations === 'object' ? compatibility.dshOperations : {}
+  const assurance = entry?.assurance && typeof entry.assurance === 'object' ? entry.assurance : {}
+  const evidence = (record, fallback = 'unknown') => ({
+    status: record?.status || fallback, method: record?.method || null, checkedAt: record?.checkedAt || null,
+    evidenceUrl: record?.evidenceUrl || null, summary: record?.summary || null,
+  })
   return {
     ...entry,
     categories: Array.isArray(entry?.categories) ? entry.categories : [],
@@ -248,9 +285,19 @@ function normalizeEntry(entry) {
     compatibility: {
       dsh: compatibility.dsh || 'unknown',
       dshReleases: compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : dshReleaseCompatibility(compatibility.dsh),
+      dshOperations: Object.fromEntries(DSH_RC_RELEASES.map(release => [release, { ...unknownOperations(), ...(operations[release] || {}) }])),
       node: compatibility.node || 'unknown',
       systems: Array.isArray(compatibility.systems) ? compatibility.systems : [],
       profiles: Array.isArray(compatibility.profiles) ? compatibility.profiles : [],
+    },
+    source: {
+      updatedAt: entry?.source?.updatedAt || entry?.github?.pushedAt || entry?.github?.updatedAt || null,
+      observedAt: entry?.source?.observedAt || null,
+      provenance: entry?.source?.provenance || (entry?.github?.pushedAt ? 'github-repository' : 'unknown'),
+    },
+    assurance: {
+      discovery: evidence(assurance.discovery, 'verified'), installability: evidence(assurance.installability),
+      runtime: evidence(assurance.runtime), securityReview: evidence(assurance.securityReview),
     },
   }
 }
@@ -266,7 +313,18 @@ function searchValues(entry) {
     detailLabel('reviewStatus', entry.details.reviewStatus), ...entry.details.externalDependencies,
     ...entry.compatibility.systems, ...entry.compatibility.profiles, entry.compatibility.dsh,
     ...Object.entries(entry.compatibility.dshReleases || {}).flat(),
+    entry.source?.updatedAt, ...Object.values(entry.assurance || {}).flatMap(record => [record.status, record.method, record.summary]),
   ].map(value => String(value || '').toLowerCase())
+}
+
+function visibleCandidates() {
+  const query = state.query.trim().toLowerCase()
+  return state.candidates
+    .filter(entry => entry.status !== 'rejected')
+    .filter(entry => !query || [entry.id, entry.name, entry.description, entry.repositoryUrl, entry.route, ...(entry.discoverySources || []), ...(entry.topics || [])]
+      .some(value => String(value || '').toLowerCase().includes(query)))
+    .sort((a, b) => (Date.parse(b.sourceUpdatedAt || b.discoveredAt) || 0) - (Date.parse(a.sourceUpdatedAt || a.discoveredAt) || 0)
+      || String(a.name).localeCompare(String(b.name), state.locale === 'en' ? 'en' : 'zh-CN'))
 }
 
 function visibleEntries() {
@@ -279,10 +337,11 @@ function visibleEntries() {
   return entries.sort((a, b) => {
     const locale = state.locale === 'en' ? 'en' : 'zh-CN'
     const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility.dshReleases?.['rc.8'] || 'unknown'] ?? 1)
+    const freshness = entry => Date.parse(entry.source?.updatedAt || entry.github?.pushedAt || entry.github?.updatedAt || '') || 0
     if (state.sort === 'name') return a.name.localeCompare(b.name, locale)
     if (state.sort === 'risk') return (riskOrder[a.details.permissions.level] ?? 3) - (riskOrder[b.details.permissions.level] ?? 3) || a.name.localeCompare(b.name, locale)
-    if (state.sort === 'recent') return compatibilityRank(a) - compatibilityRank(b) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, locale)
-    return compatibilityRank(a) - compatibilityRank(b) || Number(b.featured === true) - Number(a.featured === true) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, locale)
+    if (state.sort === 'recent') return compatibilityRank(a) - compatibilityRank(b) || freshness(b) - freshness(a) || a.name.localeCompare(b.name, locale)
+    return compatibilityRank(a) - compatibilityRank(b) || freshness(b) - freshness(a) || Number(b.featured === true) - Number(a.featured === true) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, locale)
   })
 }
 
@@ -296,6 +355,7 @@ function renderStats() {
   setText('#stat-total', String(entries.length).padStart(2, '0'))
   setText('#stat-approved', String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
   setText('#stat-categories', String(categoryCount).padStart(2, '0'))
+  setText('#stat-candidates', String(state.candidates.length).padStart(2, '0'))
   setText('#float-count', String(entries.length))
   const updatedAt = state.catalog?.registry?.updatedAt
   setText('#catalog-date', updatedAt
@@ -372,6 +432,7 @@ function cardTemplate(entry) {
       <span class="plugin-badge risk-${escape(permissions.level)}">${escape(detailLabel('level', permissions.level))}${state.locale === 'en' ? ' permission' : '权限'}</span>
     </div>
     ${compatibilityMatrix(entry)}
+    ${assuranceRail(entry)}
     <footer class="plugin-card-footer">
       <button class="details-button" type="button" data-details-id="${escape(entry.id)}">${escape(t('action.details'))} →</button>
       <a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(entry.name)}" data-repo-id="${escape(entry.id)}">↗</a>
@@ -379,17 +440,33 @@ function cardTemplate(entry) {
   </article>`
 }
 
+function candidateCardTemplate(entry) {
+  const updated = entry.sourceUpdatedAt || entry.discoveredAt
+  const date = updated ? new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(updated)) : t('value.unknown')
+  return `<article class="plugin-card candidate-card" style="--plugin-color:${pluginColor(entry.id)}">
+    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(entry.name))}</span><span class="status-tag blocked">${escape(t('assurance.discovered'))}</span></div>
+    <h3>${escape(entry.name)}</h3><span class="package-line">${escape(entry.route)} · ${escape(date)}</span>
+    <p class="plugin-description">${escape(entry.description)}</p>
+    <div class="assurance-rail"><span class="assurance-item assurance-verified"><b>${escape(t('assurance.discovered'))}</b><em>${escape(evidenceStatusLabel('verified'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.installable'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.runtime'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.security'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span></div>
+    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(state.locale === 'en' ? 'No install action' : '无安装操作')}</span><a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" data-repo-id="${escape(entry.id)}">↗</a></footer>
+  </article>`
+}
+
 function renderCatalog() {
   if (!state.catalog || !els.grid || !els.meta || !els.empty) return
-  const matchingEntries = visibleEntries()
+  const candidateView = state.catalogView === 'candidates'
+  const matchingEntries = candidateView ? visibleCandidates() : visibleEntries()
   const entries = matchingEntries.slice(0, state.visibleLimit)
   const total = matchingEntries.length
-  els.grid.innerHTML = entries.map(cardTemplate).join('')
+  els.grid.innerHTML = entries.map(candidateView ? candidateCardTemplate : cardTemplate).join('')
   els.grid.hidden = entries.length === 0
   els.empty.hidden = entries.length !== 0
-  els.meta.innerHTML = `${escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
+  els.meta.innerHTML = candidateView
+    ? `<b>${entries.length}</b> / ${matchingEntries.length} · ${escape(t('candidate.notice'))}`
+    : `${escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
   if (els.pagination) els.pagination.hidden = entries.length === 0 || entries.length >= matchingEntries.length
-  renderCategories()
+  if (els.categories?.parentElement) els.categories.parentElement.hidden = candidateView
+  if (!candidateView) renderCategories()
 }
 
 function detailItem(name, value, code = false) {
@@ -428,6 +505,9 @@ function showDetails(entry) {
       ${detailItem(state.locale === 'en' ? 'Review status' : '审核状态', detailLabel('reviewStatus', entry.details.reviewStatus))}
       ${detailItem('DSH', compatibility.dsh === 'unknown' ? t('value.undeclared') : compatibility.dsh)}${detailItem('Node.js', compatibility.node === 'unknown' ? t('value.undeclared') : compatibility.node)}
       ${detailItem(state.locale === 'en' ? 'DSH rc.5–rc.8' : 'DSH rc.5–rc.8 兼容性', DSH_RC_RELEASES.map(release => `${release}: ${compatibilityStatusLabel(compatibility.dshReleases[release])}`).join(' · '))}
+      ${detailItem(state.locale === 'en' ? 'Lifecycle evidence' : '安装/启动/卸载/回滚证据', operationEvidenceText(entry))}
+      ${detailItem(t('assurance.installable'), evidenceStatusLabel(entry.assurance.installability.status))}${detailItem(t('assurance.runtime'), evidenceStatusLabel(entry.assurance.runtime.status))}
+      ${detailItem(t('assurance.security'), evidenceStatusLabel(entry.assurance.securityReview.status))}${detailItem(state.locale === 'en' ? 'Source updated' : '来源最近更新', entry.source.updatedAt ? new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(entry.source.updatedAt)) : t('value.unknown'))}
       ${detailItem(state.locale === 'en' ? 'Systems' : '系统', listLabel(compatibility.systems))}${detailItem('Profile', listLabel(compatibility.profiles))}
       ${detailItem(state.locale === 'en' ? 'External dependencies' : '外部依赖', listLabel(entry.details.externalDependencies, t('value.none')))}${detailItem(state.locale === 'en' ? 'Installs' : '累计安装', Number.isInteger(entry.installCount) ? String(entry.installCount) : t('value.noStats'))}
       ${Number.isInteger(github.stars) ? detailItem('GitHub Stars', String(github.stars)) : ''}${github.pushedAt ? detailItem(state.locale === 'en' ? 'Last GitHub push' : 'GitHub 最近更新', new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(github.pushedAt))) : ''}
@@ -565,6 +645,13 @@ function catalogCandidates() {
   ])]
 }
 
+function candidateRegistryUrls() {
+  return [...new Set([
+    new URL(CANDIDATES_URL, window.location.href).href,
+    new URL('/registry/candidates.json', window.location.origin).href,
+  ])]
+}
+
 function embeddedCatalog() {
   const element = document.querySelector('#catalog-snapshot')
   if (!element?.textContent?.trim()) return null
@@ -591,6 +678,23 @@ async function fetchCatalog() {
   throw new Error(failures.join(' | '))
 }
 
+async function fetchCandidateRegistry(catalog) {
+  if (catalog?.discovery && Array.isArray(catalog.discovery.entries)) return catalog.discovery
+  for (const url of candidateRegistryUrls()) {
+    try {
+      const response = await fetch(url, { cache: 'no-store' })
+      if (!response.ok) continue
+      const payload = await response.json()
+      if (payload?.registry?.trustBoundary?.installActionsDisabled !== true || !Array.isArray(payload.entries)) continue
+      return payload
+    } catch {}
+  }
+  return {
+    registry: { trustBoundary: { installActionsDisabled: true, catalogPromotionRequired: true, unknownIsNotVerified: true } },
+    entries: [],
+  }
+}
+
 async function loadCatalog() {
   if (els.meta) els.meta.textContent = t('catalog.loading')
   if (els.error) els.error.hidden = true
@@ -600,6 +704,8 @@ async function loadCatalog() {
   try {
     state.catalog = await fetchCatalog()
     state.entries = state.catalog.entries.map(normalizeEntry)
+    const candidateRegistry = await fetchCandidateRegistry(state.catalog)
+    state.candidates = candidateRegistry.entries.map(entry => ({ ...entry, installable: false, allowedActions: [] }))
     renderStats()
     renderManagerMetadata()
     renderHeroPreview()
@@ -645,6 +751,16 @@ els.sort?.addEventListener('change', event => {
   state.visibleLimit = 24
   renderCatalog()
   sendDshEvent('catalog_sort', { item: state.sort })
+})
+els.viewTabs?.addEventListener('click', event => {
+  const button = event.target.closest('[data-catalog-view]')
+  if (!button || !['trusted', 'candidates'].includes(button.dataset.catalogView)) return
+  state.catalogView = button.dataset.catalogView
+  state.category = ''
+  state.visibleLimit = 24
+  els.viewTabs.querySelectorAll('[data-catalog-view]').forEach(item => item.setAttribute('aria-pressed', String(item === button)))
+  renderCatalog()
+  sendDshEvent('catalog_view', { item: state.catalogView })
 })
 els.categories?.addEventListener('click', event => {
   const button = event.target.closest('[data-category]')

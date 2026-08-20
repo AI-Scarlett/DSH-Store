@@ -117,6 +117,23 @@ function manifestContract(manifest) {
   })
 }
 
+function addedNetworkHosts(patch) {
+  if (typeof patch !== 'string') return []
+  const hosts = new Set()
+  for (const line of patch.split('\n')) {
+    if (!line.startsWith('+') || line.startsWith('+++')) continue
+    for (const match of line.matchAll(/https?:\/\/[^\s'"`<>)]+/gi)) {
+      try { hosts.add(new URL(match[0]).hostname.toLowerCase()) } catch {}
+      if (hosts.size >= 30) return [...hosts]
+    }
+  }
+  return [...hosts]
+}
+
+function safeCount(value) {
+  return Number.isSafeInteger(value) && value >= 0 ? value : 0
+}
+
 export function createSourceUpdateService(options = {}) {
   const request = options.fetch ?? globalThis.fetch
   const sourceVerifier = options.sourceVerifier ?? verifyCatalogEntry
@@ -214,6 +231,9 @@ export function createSourceUpdateService(options = {}) {
       `https://api.github.com/repos/${owner}/${repo}/compare/${entry.commit}...${commit}`, request, timeoutMs,
     )
     const files = Array.isArray(comparison?.files) ? comparison.files : []
+    const networkHosts = new Set()
+    const fileChanges = []
+    const permissionSignals = { filesystem: false, network: false, commandExecution: false, credentials: false, protectedDsh: false }
     if (comparison?.status !== 'ahead') blockers.push('候选 Commit 不是商城已审 Commit 的直接后继')
     if (!Number.isInteger(comparison?.total_commits) || comparison.total_commits > 100) blockers.push('候选提交跨度超过本机审核上限')
     if (files.length === 0 || files.length > MAX_COMPARE_FILES) blockers.push('候选文件清单为空或超过本机审核上限')
@@ -224,9 +244,21 @@ export function createSourceUpdateService(options = {}) {
       const ignored = /(?:^|\/)(?:test|tests|docs?|examples?)\//i.test(name) || /(?:^|\/)README(?:\.|$)/i.test(name)
       if (sourceLike && !ignored && patch === null) blockers.push(`无法完整审核变更文件：${name}`)
       if (sourceLike && !ignored && patch && RISK_PATTERN.test(patch)) warnings.push(`变更出现新的权限行为信号：${name}`)
+      for (const host of addedNetworkHosts(patch)) networkHosts.add(host)
+      if (patch && /(?:node:)?(?:fs|fs\/promises)|\b(?:writeFile|appendFile|rename|unlink|rm)\s*\(/i.test(patch)) permissionSignals.filesystem = true
+      if (patch && /\b(?:fetch|WebSocket)\s*\(|https?:\/\//i.test(patch)) permissionSignals.network = true
+      if (patch && /(?:node:)?child_process|\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true/i.test(patch)) permissionSignals.commandExecution = true
+      if (patch && /process\.env|keychain|api[_-]?key|oauth|credential/i.test(patch)) permissionSignals.credentials = true
       if ((DSH_NATIVE_MUTATION_PATTERN.test(name) || (patch && DSH_NATIVE_MUTATION_PATTERN.test(patch)))) {
+        permissionSignals.protectedDsh = true
         externalOnly.push(`变更可能修改 DSH 原生代码或 @deepseek-ai 包：${name}`)
       }
+      fileChanges.push({
+        path: name.slice(0, 300),
+        status: ['added', 'removed', 'modified', 'renamed', 'copied', 'changed', 'unchanged'].includes(file?.status) ? file.status : 'unknown',
+        additions: safeCount(file?.additions), deletions: safeCount(file?.deletions), changes: safeCount(file?.changes),
+        patchComplete: patch !== null,
+      })
     }
 
     const uniqueWarnings = [...new Set(warnings)]
@@ -240,6 +272,13 @@ export function createSourceUpdateService(options = {}) {
       candidateVersion, candidate: publicCandidate(candidate),
       warnings: uniqueWarnings, blockers: uniqueBlockers, reasons: [...uniqueExternalOnly, ...uniqueBlockers, ...uniqueWarnings],
       checkedFiles: files.length, checkedCommits: comparison?.total_commits ?? null,
+      diff: {
+        files: fileChanges,
+        additions: fileChanges.reduce((total, file) => total + file.additions, 0),
+        deletions: fileChanges.reduce((total, file) => total + file.deletions, 0),
+        networkHosts: [...networkHosts].sort(),
+        permissionSignals,
+      },
       notice: '检查在用户本机按需完成；结果用于提示风险，不等于完整安全审计，也不替用户决定是否更新。',
     }
     cache.set(key, { cachedAt: now(), value })

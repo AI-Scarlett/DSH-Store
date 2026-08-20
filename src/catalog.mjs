@@ -10,6 +10,7 @@ const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
 const MAX_COUNTS_BYTES = 256 * 1024
 export const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
+export const DSH_OPERATIONS = ['install', 'start', 'uninstall', 'rollback']
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json'
@@ -44,6 +45,88 @@ function declaredDshReleaseCompatibility(value, label) {
     normalized[release] = status
   }
   return normalized
+}
+
+function declaredDshOperations(value, label) {
+  const normalized = {}
+  for (const release of DSH_RC_RELEASES) {
+    const record = value?.[release]
+    normalized[release] = {}
+    for (const operation of DSH_OPERATIONS) {
+      const status = record?.[operation] ?? 'unknown'
+      if (!['passed', 'failed', 'unknown'].includes(status)) {
+        throw new TypeError(`${label}.dshOperations.${release}.${operation} must be passed, failed, or unknown`)
+      }
+      normalized[release][operation] = status
+    }
+  }
+  return normalized
+}
+
+function isoDateOrNull(value, label) {
+  if (value === undefined || value === null) return null
+  const text = nonEmptyString(value, label, 80)
+  if (!/^\d{4}-\d{2}-\d{2}T/.test(text) || Number.isNaN(Date.parse(text))) throw new TypeError(`${label} must be an ISO date-time`)
+  return new Date(text).toISOString()
+}
+
+function httpsUrlOrNull(value, label) {
+  if (value === undefined || value === null) return null
+  const text = nonEmptyString(value, label, 400)
+  const url = new URL(text)
+  if (url.protocol !== 'https:') throw new TypeError(`${label} must use https`)
+  return url.href
+}
+
+function sourceMetadata(value, label) {
+  if (value === undefined || value === null) return { updatedAt: null, observedAt: null, provenance: 'unknown' }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${label}.source must be an object`)
+  return {
+    updatedAt: isoDateOrNull(value.updatedAt, `${label}.source.updatedAt`),
+    observedAt: isoDateOrNull(value.observedAt, `${label}.source.observedAt`),
+    provenance: enumValue(value.provenance, `${label}.source.provenance`, ['github-commit', 'github-repository', 'unknown']),
+  }
+}
+
+function evidenceRecord(value, label, fallback) {
+  if (value === undefined || value === null) return { ...fallback }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${label} must be an object`)
+  const status = enumValue(value.status, `${label}.status`, ['verified', 'failed', 'unknown', 'not-applicable'])
+  const record = {
+    status,
+    method: value.method === undefined || value.method === null ? null : nonEmptyString(value.method, `${label}.method`, 120),
+    checkedAt: isoDateOrNull(value.checkedAt, `${label}.checkedAt`),
+    evidenceUrl: httpsUrlOrNull(value.evidenceUrl, `${label}.evidenceUrl`),
+    dshRelease: value.dshRelease === undefined || value.dshRelease === null ? null : enumValue(value.dshRelease, `${label}.dshRelease`, DSH_RC_RELEASES),
+    systems: stringArray(value.systems ?? [], `${label}.systems`),
+    profiles: stringArray(value.profiles ?? [], `${label}.profiles`),
+    summary: value.summary === undefined || value.summary === null ? null : nonEmptyString(value.summary, `${label}.summary`, 600),
+  }
+  if (status === 'verified' && (!record.method || !record.checkedAt || !record.evidenceUrl)) {
+    throw new TypeError(`${label} verified evidence requires method, checkedAt, and evidenceUrl`)
+  }
+  return record
+}
+
+function assuranceEvidence(value, label, catalogUpdatedAt) {
+  if (value !== undefined && (value === null || typeof value !== 'object' || Array.isArray(value))) {
+    throw new TypeError(`${label}.assurance must be an object`)
+  }
+  return {
+    discovery: evidenceRecord(value?.discovery, `${label}.assurance.discovery`, {
+      status: 'verified', method: 'catalog-presence', checkedAt: catalogUpdatedAt, evidenceUrl: DEFAULT_CATALOG_URL,
+      dshRelease: null, systems: [], profiles: [], summary: 'Present in the trusted GitHub catalog.',
+    }),
+    installability: evidenceRecord(value?.installability, `${label}.assurance.installability`, {
+      status: 'unknown', method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary: null,
+    }),
+    runtime: evidenceRecord(value?.runtime, `${label}.assurance.runtime`, {
+      status: 'unknown', method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary: null,
+    }),
+    securityReview: evidenceRecord(value?.securityReview, `${label}.assurance.securityReview`, {
+      status: 'unknown', method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary: null,
+    }),
+  }
 }
 
 function nonEmptyString(value, label, max = 2_000) {
@@ -220,7 +303,7 @@ function enumArray(value, label, allowed, fallback = [], minimum = 0) {
   return items
 }
 
-function validateEntry(value, index) {
+function validateEntry(value, index, catalogUpdatedAt) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new TypeError(`entries[${index}] must be an object`)
   }
@@ -290,6 +373,8 @@ function validateEntry(value, index) {
     categories: stringArray(value.categories ?? [], `entries[${index}].categories`, { simple: true }),
     featured: value.featured === true,
     installCount: Number.isSafeInteger(value.installCount) && value.installCount >= 0 ? value.installCount : null,
+    source: sourceMetadata(value.source, `entries[${index}]`),
+    assurance: assuranceEvidence(value.assurance, `entries[${index}]`, catalogUpdatedAt),
     entryIds,
     status,
     statusReason: status === 'blocked' || status === 'unlisted'
@@ -298,6 +383,7 @@ function validateEntry(value, index) {
     compatibility: {
       dsh: typeof value.compatibility?.dsh === 'string' ? value.compatibility.dsh.slice(0, 120) : null,
       dshReleases: declaredDshReleaseCompatibility(value.compatibility?.dshReleases, value.compatibility?.dsh),
+      dshOperations: declaredDshOperations(value.compatibility?.dshOperations, `entries[${index}].compatibility`),
       node: typeof value.compatibility?.node === 'string' ? value.compatibility.node.slice(0, 120) : null,
       systems: stringArray(value.compatibility?.systems ?? [], `entries[${index}].compatibility.systems`),
       profiles: stringArray(value.compatibility?.profiles ?? [], `entries[${index}].compatibility.profiles`),
@@ -352,6 +438,11 @@ export function validateCatalog(document) {
     throw new TypeError('catalog registry metadata is required')
   }
   if (!Array.isArray(document.entries)) throw new TypeError('catalog entries must be an array')
+  const trustPolicy = document.registry.trustPolicy
+  if (trustPolicy?.candidateInstallDisabled !== true || trustPolicy?.unknownIsNotVerified !== true
+    || trustPolicy?.promotionIndependentOfVerification !== true) {
+    throw new TypeError('catalog registry trustPolicy must fail closed')
+  }
   const categories = document.registry.categories && typeof document.registry.categories === 'object'
     ? Object.fromEntries(Object.entries(document.registry.categories).map(([key, label]) => {
         const id = nonEmptyString(key, 'registry.categories key', 96)
@@ -359,7 +450,9 @@ export function validateCatalog(document) {
         return [id, nonEmptyString(label, `registry.categories.${key}`, 120)]
       }))
     : {}
-  const entries = document.entries.map(validateEntry)
+  const registryUpdatedAt = isoDateOrNull(document.registry.updatedAt, 'registry.updatedAt')
+  if (!registryUpdatedAt) throw new TypeError('registry.updatedAt must be an ISO date-time')
+  const entries = document.entries.map((entry, index) => validateEntry(entry, index, registryUpdatedAt))
   const ids = new Set()
   const packages = new Set()
   for (const entry of entries) {
@@ -383,10 +476,15 @@ export function validateCatalog(document) {
       installCountsUrl: typeof document.registry.installCountsUrl === 'string'
         ? new URL(document.registry.installCountsUrl).href
         : null,
-      updatedAt: nonEmptyString(document.registry.updatedAt, 'registry.updatedAt', 80),
+      updatedAt: registryUpdatedAt,
       sourceUpdates: {
         mode: document.registry.sourceUpdates?.mode === 'client-on-demand' ? 'client-on-demand' : 'client-on-demand',
         defaultPolicy: document.registry.sourceUpdates?.defaultPolicy === 'risk-derived' ? 'risk-derived' : 'risk-derived',
+      },
+      trustPolicy: {
+        candidateInstallDisabled: true,
+        unknownIsNotVerified: true,
+        promotionIndependentOfVerification: true,
       },
       categories,
     },
@@ -413,6 +511,19 @@ export function compareVersions(left, right) {
   return a.pre.localeCompare(b.pre, 'en', { numeric: true })
 }
 
+export function compareCatalogEntries(left, right) {
+  const statusRank = entry => ({ approved: 0, blocked: 1, unlisted: 2 }[entry.status] ?? 2)
+  const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility?.dshReleases?.['rc.8'] ?? 'unknown'] ?? 1)
+  const freshness = entry => Date.parse(entry.source?.updatedAt ?? entry.github?.pushedAt ?? entry.github?.updatedAt ?? '') || 0
+  return statusRank(left) - statusRank(right)
+    || compatibilityRank(left) - compatibilityRank(right)
+    || freshness(right) - freshness(left)
+    || Number(right.featured) - Number(left.featured)
+    || (right.installCount ?? -1) - (left.installCount ?? -1)
+    || (compareVersions(right.version, left.version) ?? 0)
+    || left.name.localeCompare(right.name, 'zh-CN')
+}
+
 export function searchCatalog(catalog, query = '', options = {}) {
   const needle = String(query).trim().toLowerCase()
   const category = String(options.category ?? '').trim().toLowerCase()
@@ -428,12 +539,7 @@ export function searchCatalog(catalog, query = '', options = {}) {
       entry.compatibility?.dsh ?? '', ...Object.entries(entry.compatibility?.dshReleases ?? {}).flat(),
       ...entry.categories,
     ].some(value => value.toLowerCase().includes(needle)))
-    .sort((left, right) => ({ compatible: 0, unknown: 1, incompatible: 2 }[left.compatibility?.dshReleases?.['rc.8'] ?? 'unknown'] ?? 1)
-      - ({ compatible: 0, unknown: 1, incompatible: 2 }[right.compatibility?.dshReleases?.['rc.8'] ?? 'unknown'] ?? 1)
-      || Number(right.featured) - Number(left.featured)
-      || (right.installCount ?? -1) - (left.installCount ?? -1)
-      || compareVersions(right.version, left.version)
-      || left.name.localeCompare(right.name, 'zh-CN'))
+    .sort(compareCatalogEntries)
 }
 
 export function buildMarketplaceSnapshot(catalog, inventory, query = '', options = {}) {
@@ -495,6 +601,10 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
     profile: inventory.profile,
     registry: catalog.registry,
     source: catalog.source,
+    trustPolicy: catalog.registry.trustPolicy,
+    candidateRegistry: options.candidateRegistry?.registry ?? null,
+    candidateSource: options.candidateRegistry?.source ?? null,
+    candidates: Array.isArray(options.candidateRegistry?.entries) ? options.candidateRegistry.entries : [],
     entries,
   }
 }

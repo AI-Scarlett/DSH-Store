@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { compareCatalogEntries } from '../src/catalog.mjs'
+import { validateCandidateRegistry } from '../src/candidates.mjs'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -23,6 +25,7 @@ const catalog = JSON.parse(await readFile(catalogPath, 'utf8'))
 if (catalog?.schemaVersion !== 1 || !Array.isArray(catalog.entries)) {
   throw new Error('registry/catalog.json is not a supported catalog')
 }
+const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(resolve(projectRoot, 'registry/candidates.json'), 'utf8')))
 
 const snapshot = structuredClone(catalog)
 const token = process.env.GITHUB_TOKEN || ''
@@ -131,6 +134,7 @@ snapshot.generated = {
   catalogAuthority: 'registry/catalog.json',
   githubEnriched: enrichGitHub,
 }
+snapshot.discovery = candidateRegistry
 
 const manager = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
 if (!manager || manager.status !== 'approved' || !/^[0-9a-f]{40}$/.test(manager.commit || '')) {
@@ -153,9 +157,18 @@ const riskLabels = { low: '低权限', medium: '中权限', high: '高权限', u
 
 const visibleEntries = snapshot.entries
   .filter(entry => entry.status !== 'unlisted')
-  .sort((a, b) => Number(b.featured === true) - Number(a.featured === true)
-    || (b.installCount ?? -1) - (a.installCount ?? -1)
-    || String(a.name).localeCompare(String(b.name), 'zh-CN'))
+  .sort(compareCatalogEntries)
+
+function assuranceMarkup(entry) {
+  const records = [
+    ['已发现', entry.assurance?.discovery?.status || 'verified'],
+    ['可安装验证', entry.assurance?.installability?.status || 'unknown'],
+    ['运行验证', entry.assurance?.runtime?.status || 'unknown'],
+    ['安全审查', entry.assurance?.securityReview?.status || 'unknown'],
+  ]
+  const label = status => ({ verified: '已验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用' }[status] || '未知')
+  return `<div class="assurance-rail">${records.map(([name, status]) => `<span class="assurance-item assurance-${htmlEscape(status)}"><b>${htmlEscape(name)}</b><em>${htmlEscape(label(status))}</em></span>`).join('')}</div>`
+}
 
 function pluginCard(entry) {
   const permissions = entry.details?.permissions || {}
@@ -172,6 +185,7 @@ function pluginCard(entry) {
       ${topCategories.map(id => `<span class="plugin-badge">${htmlEscape(categoryLabel(id))}</span>`).join('')}
       <span class="plugin-badge risk-${htmlEscape(permissions.level || 'unknown')}">${htmlEscape(riskLabels[permissions.level] || riskLabels.unknown)}</span>
     </div>
+    ${assuranceMarkup(entry)}
     <footer class="plugin-card-footer">
       <button class="details-button" type="button" data-details-id="${htmlEscape(entry.id)}">查看插件详情 →</button>
       <a class="repo-link" href="${htmlEscape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="打开 GitHub 仓库: ${htmlEscape(entry.name)}" data-repo-id="${htmlEscape(entry.id)}">↗</a>
@@ -230,6 +244,7 @@ home = replaceElementText(home, 'manager-commit-short', manager.commit.slice(0, 
 home = replaceElementText(home, 'stat-total', String(visibleEntries.length).padStart(2, '0'))
 home = replaceElementText(home, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 home = replaceElementText(home, 'stat-categories', String(categoryCount).padStart(2, '0'))
+home = replaceElementText(home, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
 home = replaceElementText(home, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
 await writeFile(resolve(outputRoot, 'marketplace/index.html'), home)
 
@@ -240,6 +255,7 @@ plugins = plugins.replace(/<!-- DSH_STATIC_PLUGIN_CARDS_BEGIN -->[\s\S]*?<!-- DS
 plugins = replaceElementText(plugins, 'stat-total', String(visibleEntries.length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-categories', String(categoryCount).padStart(2, '0'))
+plugins = replaceElementText(plugins, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
 plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(24, visibleEntries.length)} / ${visibleEntries.length}`)
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)

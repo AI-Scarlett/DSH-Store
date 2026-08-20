@@ -129,9 +129,12 @@ export function handleMarketRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, async body => {
     const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
     const inventory = await readProfileInventory({ dshHome: options.dshHome, profile })
-    const catalog = await options.catalogService.load({ force: body.refresh === true })
+    const [catalog, candidateRegistry] = await Promise.all([
+      options.catalogService.load({ force: body.refresh === true }),
+      options.candidateService?.load({ force: body.refresh === true }) ?? Promise.resolve(null),
+    ])
     const managedPackages = await readMarketplaceProvenance(options.dshHome, profile)
-    return buildMarketplaceSnapshot(catalog, inventory, body.query ?? '', { managedPackages })
+    return buildMarketplaceSnapshot(catalog, inventory, body.query ?? '', { managedPackages, candidateRegistry })
   })
 }
 

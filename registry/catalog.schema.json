@@ -5,11 +5,47 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "registry", "entries"],
+  "$defs": {
+    "releaseCompatibility": { "enum": ["compatible", "incompatible", "unknown"] },
+    "operationEvidence": { "enum": ["passed", "failed", "unknown"] },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["verified", "failed", "unknown", "not-applicable"] },
+        "method": { "type": "string", "minLength": 1 },
+        "checkedAt": { "type": "string", "format": "date-time" },
+        "evidenceUrl": { "type": "string", "pattern": "^https://" },
+        "dshRelease": { "enum": ["rc.5", "rc.6", "rc.7", "rc.8"] },
+        "systems": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "profiles": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "summary": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "verified" } } },
+          "then": { "required": ["method", "checkedAt", "evidenceUrl"] }
+        }
+      ]
+    },
+    "releaseOperations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["install", "start", "uninstall", "rollback"],
+      "properties": {
+        "install": { "$ref": "#/$defs/operationEvidence" },
+        "start": { "$ref": "#/$defs/operationEvidence" },
+        "uninstall": { "$ref": "#/$defs/operationEvidence" },
+        "rollback": { "$ref": "#/$defs/operationEvidence" }
+      }
+    }
+  },
   "properties": {
     "schemaVersion": { "const": 1 },
     "registry": {
       "type": "object",
-      "required": ["name", "repositoryUrl", "updatedAt", "sourceUpdates"],
+      "required": ["name", "repositoryUrl", "updatedAt", "sourceUpdates", "trustPolicy"],
       "properties": {
         "name": { "type": "string", "minLength": 1 },
         "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
@@ -23,6 +59,16 @@
           "properties": {
             "mode": { "const": "client-on-demand" },
             "defaultPolicy": { "const": "risk-derived" }
+          }
+        },
+        "trustPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["candidateInstallDisabled", "unknownIsNotVerified", "promotionIndependentOfVerification"],
+          "properties": {
+            "candidateInstallDisabled": { "const": true },
+            "unknownIsNotVerified": { "const": true },
+            "promotionIndependentOfVerification": { "const": true }
           }
         },
         "categories": {
@@ -51,6 +97,27 @@
           "categories": { "type": "array", "items": { "type": "string" } },
           "featured": { "type": "boolean" },
           "installCount": { "type": "integer", "minimum": 0 },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["updatedAt", "observedAt", "provenance"],
+            "properties": {
+              "updatedAt": { "type": "string", "format": "date-time" },
+              "observedAt": { "type": "string", "format": "date-time" },
+              "provenance": { "enum": ["github-commit", "github-repository", "unknown"] }
+            }
+          },
+          "assurance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["discovery", "installability", "runtime", "securityReview"],
+            "properties": {
+              "discovery": { "$ref": "#/$defs/evidenceRecord" },
+              "installability": { "$ref": "#/$defs/evidenceRecord" },
+              "runtime": { "$ref": "#/$defs/evidenceRecord" },
+              "securityReview": { "$ref": "#/$defs/evidenceRecord" }
+            }
+          },
           "entryIds": { "type": "array", "items": { "type": "string" } },
           "status": { "enum": ["approved", "blocked", "unlisted"] },
           "statusReason": { "type": "string" },
@@ -60,6 +127,28 @@
             "required": ["dsh", "node", "systems", "profiles"],
             "properties": {
               "dsh": { "type": ["string", "null"] },
+              "dshReleases": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["rc.5", "rc.6", "rc.7", "rc.8"],
+                "properties": {
+                  "rc.5": { "$ref": "#/$defs/releaseCompatibility" },
+                  "rc.6": { "$ref": "#/$defs/releaseCompatibility" },
+                  "rc.7": { "$ref": "#/$defs/releaseCompatibility" },
+                  "rc.8": { "$ref": "#/$defs/releaseCompatibility" }
+                }
+              },
+              "dshOperations": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["rc.5", "rc.6", "rc.7", "rc.8"],
+                "properties": {
+                  "rc.5": { "$ref": "#/$defs/releaseOperations" },
+                  "rc.6": { "$ref": "#/$defs/releaseOperations" },
+                  "rc.7": { "$ref": "#/$defs/releaseOperations" },
+                  "rc.8": { "$ref": "#/$defs/releaseOperations" }
+                }
+              },
               "node": { "type": ["string", "null"] },
               "systems": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
               "profiles": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }

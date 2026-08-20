@@ -193,6 +193,10 @@ window.__ModuleLoader__.load({
       compatibilityCell: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '7px', padding: '4px 3px', minWidth: 0 },
       compatibilityKey: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', fontWeight: 700 },
       compatibilityValue: { fontSize: '10px', lineHeight: '14px' },
+      assuranceGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '4px', marginTop: '2px' },
+      assuranceCell: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '7px', padding: '5px 3px', minWidth: 0 },
+      diffGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '5px' },
+      diffCell: { border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '7px', padding: '6px 8px', minWidth: 0 },
       detailFooter: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', width: '100%' },
       detailFooterLinks: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginLeft: 'auto' },
     }
@@ -243,7 +247,9 @@ window.__ModuleLoader__.load({
         detailLabel('reviewStatus', entry.details.reviewStatus), ...entry.details.externalDependencies,
         ...entry.compatibility.systems, ...entry.compatibility.profiles, entry.compatibility.dsh,
         ...Object.entries(entry.compatibility.dshReleases || {}).flat(), ...entry.categories,
-      ]
+        entry.source.updatedAt, entry.source.provenance,
+        ...ASSURANCE_LEVELS.flatMap(([key, label]) => [label, entry.assurance[key]?.status, entry.assurance[key]?.method, entry.assurance[key]?.summary]),
+      ].map(value => String(value || ''))
     }
 
     const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
@@ -279,6 +285,46 @@ window.__ModuleLoader__.load({
         }))
     }
 
+    const ASSURANCE_LEVELS = [
+      ['discovery', '已发现'], ['installability', '可安装'], ['runtime', '运行验证'], ['securityReview', '安全审查'],
+    ]
+    const assuranceStatusLabel = status => ({
+      verified: '有证据', failed: '未通过', unknown: '未知', 'not-applicable': '不适用',
+    }[status] || '未知')
+    const assuranceStatusColor = status => ({
+      verified: 'var(--dsw-alias-state-success-primary)',
+      failed: 'var(--dsw-alias-state-error-primary)',
+      unknown: 'var(--dsw-alias-label-tertiary)',
+      'not-applicable': 'var(--dsw-alias-label-tertiary)',
+    }[status] || 'var(--dsw-alias-label-tertiary)')
+    function AssuranceMatrix({ entry }) {
+      return React.createElement('div', { style: styles.assuranceGrid, role: 'list', 'aria-label': '插件可信证据等级' },
+        ASSURANCE_LEVELS.map(([key, label]) => {
+          const evidence = entry.assurance[key]
+          return React.createElement('div', {
+            key, role: 'listitem', title: evidence.summary || `${label}：${assuranceStatusLabel(evidence.status)}`,
+            style: { ...styles.assuranceCell, color: assuranceStatusColor(evidence.status) },
+          }, React.createElement('span', { style: styles.compatibilityKey }, label),
+          React.createElement('span', { style: styles.compatibilityValue }, assuranceStatusLabel(evidence.status)))
+        }))
+    }
+
+    const DSH_OPERATIONS = [['install', '安装'], ['start', '启动'], ['uninstall', '卸载'], ['rollback', '回滚']]
+    const operationStatusLabel = status => ({ passed: '通过', failed: '失败', unknown: '未知' }[status] || '未知')
+    function OperationEvidence({ entry }) {
+      return React.createElement('div', { style: styles.detailSection }, DSH_RC_RELEASES.map(release => {
+        const operations = entry.compatibility.dshOperations[release]
+        return React.createElement('div', { key: release, style: styles.diffCell },
+          React.createElement('div', { style: styles.name }, `DSH ${release}`),
+          React.createElement('div', { style: styles.muted }, DSH_OPERATIONS
+            .map(([key, label]) => `${label}：${operationStatusLabel(operations[key])}`).join(' · ')))
+      }))
+    }
+
+    function defaultEvidence(status = 'unknown', summary = null) {
+      return { status, method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary }
+    }
+
     function normalizeMarketEntry(entry) {
       const declaredDetails = entry?.details && typeof entry.details === 'object' ? entry.details : {}
       const declaredPermissions = declaredDetails.permissions && typeof declaredDetails.permissions === 'object'
@@ -286,6 +332,15 @@ window.__ModuleLoader__.load({
         : {}
       const compatibility = entry?.compatibility && typeof entry.compatibility === 'object' ? entry.compatibility : {}
       const risk = entry?.risk && typeof entry.risk === 'object' ? entry.risk : {}
+      const assurance = entry?.assurance && typeof entry.assurance === 'object' ? entry.assurance : {}
+      const source = entry?.source && typeof entry.source === 'object' ? entry.source : {}
+      const declaredOperations = compatibility.dshOperations && typeof compatibility.dshOperations === 'object'
+        ? compatibility.dshOperations : {}
+      const dshOperations = Object.fromEntries(DSH_RC_RELEASES.map(release => [release,
+        Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation,
+          ['passed', 'failed', 'unknown'].includes(declaredOperations[release]?.[operation])
+            ? declaredOperations[release][operation] : 'unknown'])),
+      ]))
       return {
         ...entry,
         catalogDetailsAvailable: Boolean(entry?.details && entry.details.permissions),
@@ -295,6 +350,7 @@ window.__ModuleLoader__.load({
           ...compatibility,
           dsh: typeof compatibility.dsh === 'string' ? compatibility.dsh : null,
           dshReleases: compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : dshReleaseCompatibility(compatibility.dsh),
+          dshOperations,
           node: typeof compatibility.node === 'string' ? compatibility.node : null,
           systems: Array.isArray(compatibility.systems) ? compatibility.systems : [],
           profiles: Array.isArray(compatibility.profiles) ? compatibility.profiles : [],
@@ -315,6 +371,13 @@ window.__ModuleLoader__.load({
           externalDependencies: Array.isArray(declaredDetails.externalDependencies) ? declaredDetails.externalDependencies : [],
           reviewStatus: declaredDetails.reviewStatus || 'unreviewed',
         },
+        source: {
+          updatedAt: typeof source.updatedAt === 'string' ? source.updatedAt : null,
+          observedAt: typeof source.observedAt === 'string' ? source.observedAt : null,
+          provenance: source.provenance || 'unknown',
+        },
+        assurance: Object.fromEntries(ASSURANCE_LEVELS.map(([key]) => [key,
+          assurance[key] && typeof assurance[key] === 'object' ? { ...defaultEvidence(), ...assurance[key] } : defaultEvidence()])),
         risk: { ...risk, installScripts: Array.isArray(risk.installScripts) ? risk.installScripts : [] },
       }
     }
@@ -390,6 +453,44 @@ window.__ModuleLoader__.load({
       return React.createElement('div', { style: styles.actions }, actions)
     }
 
+    function SourceDiffSummary({ update }) {
+      if (!update?.diff) return null
+      const signals = update.diff.permissionSignals || {}
+      const signalLabels = [
+        ['filesystem', '文件系统'], ['network', '网络'], ['commandExecution', '命令执行'], ['credentials', '凭据'], ['protectedDsh', 'DSH 核心'],
+      ].filter(([key]) => signals[key]).map(([, label]) => label)
+      return React.createElement('details', { style: styles.notice },
+        React.createElement('summary', { style: { cursor: 'pointer', fontWeight: 600 } },
+          `更新差异：${update.checkedCommits ?? '未知'} 个提交 · ${update.checkedFiles ?? update.diff.files?.length ?? 0} 个文件 · +${update.diff.additions || 0} / -${update.diff.deletions || 0}`),
+        React.createElement('div', { style: { ...styles.diffGrid, marginTop: '8px' } },
+          React.createElement('div', { style: styles.diffCell }, React.createElement('div', { style: styles.name }, '提交范围'),
+            React.createElement('div', { style: styles.code }, `${String(update.catalogCommit || '').slice(0, 12)} → ${String(update.candidateCommit || '').slice(0, 12)}`)),
+          React.createElement('div', { style: styles.diffCell }, React.createElement('div', { style: styles.name }, '新增网络主机'),
+            React.createElement('div', { style: styles.muted }, update.diff.networkHosts?.length ? update.diff.networkHosts.join(' / ') : '无')),
+          React.createElement('div', { style: styles.diffCell }, React.createElement('div', { style: styles.name }, '权限变化信号'),
+            React.createElement('div', { style: signalLabels.length ? styles.error : styles.muted }, signalLabels.length ? signalLabels.join(' / ') : '未发现'))),
+        update.diff.files?.length ? React.createElement('div', { style: { ...styles.detailSection, marginTop: '8px' } },
+          update.diff.files.map(file => React.createElement('div', { key: `${file.status}:${file.path}`, style: styles.muted },
+            `${file.status} · ${file.path} · +${file.additions} / -${file.deletions}${file.patchComplete ? '' : ' · diff 不完整'}`))) : null,
+        React.createElement('div', { style: { ...styles.muted, marginTop: '8px' } }, '只显示受限元数据，不返回或展示源码补丁；风险信号不等于完整安全审计。'))
+    }
+
+    function CandidateCard({ entry }) {
+      const titleId = `dsh-store-candidate-${String(entry.id).replaceAll(/[^A-Za-z0-9_-]/g, '-')}`
+      return React.createElement('article', { style: styles.card, role: 'listitem', 'aria-labelledby': titleId },
+        React.createElement('div', { style: styles.cardHeader },
+          React.createElement('div', { id: titleId, style: styles.name }, entry.name),
+          React.createElement(StatusPill, { label: '候选发现 · 不可安装' })),
+        React.createElement('div', { style: styles.cardDescription }, entry.description),
+        React.createElement('div', { style: styles.cardTags },
+          React.createElement('span', { style: styles.badge }, `发现来源 ${(entry.discoverySources || []).join(' / ') || '未知'}`),
+          React.createElement('span', { style: styles.badge }, `审核路径 ${entry.route || '未知'}`)),
+        React.createElement('div', { style: styles.notice }, '该项目尚未晋升到可信安装目录，不提供安装、更新、启停或卸载操作。'),
+        React.createElement('div', { style: styles.cardFooter },
+          React.createElement('span', { style: styles.muted }, entry.sourceUpdatedAt ? `源更新 ${new Date(entry.sourceUpdatedAt).toLocaleDateString()}` : `发现于 ${new Date(entry.discoveredAt).toLocaleDateString()}`),
+          React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub 证据')))
+    }
+
     function MarketCard({ entry, health, beginPlan, checkSource, openDetails, categoryLabels = {} }) {
       const state = entry.sourceUpdate?.status === 'update-ready' ? '源更新审核通过'
         : entry.sourceUpdate?.status === 'user-review-required' ? '发现高风险更新 · 用户决定'
@@ -415,11 +516,14 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
         React.createElement('div', { style: styles.cardDescription }, entry.description),
         React.createElement('div', { style: styles.muted }, `Commit ${entry.commit.slice(0, 12)} · ${entry.categories.map(id => categoryLabels[id] || id).join(' / ')}`),
+        entry.source.updatedAt ? React.createElement('div', { style: styles.muted },
+          `固定提交时间 ${new Date(entry.source.updatedAt).toLocaleDateString()} · ${entry.source.provenance}`) : null,
         React.createElement('div', { style: styles.cardTags },
           React.createElement('span', { style: styles.badge }, `GitHub 发布者 ${githubPublisher(entry.repositoryUrl)}`),
           origin ? React.createElement('span', { style: styles.badge }, origin) : null,
           ...entry.categories.map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id)),
           Number.isInteger(entry.installCount) ? React.createElement('span', { style: styles.badge }, `累计安装 ${entry.installCount}`) : null),
+        React.createElement(AssuranceMatrix, { entry }),
         React.createElement(CompatibilityMatrix, { entry }),
         entry.risk.installScripts.length > 0
           ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join(', ')}`)
@@ -431,6 +535,7 @@ window.__ModuleLoader__.load({
             : entry.sourceUpdate?.status === 'error'
               ? React.createElement('div', { style: styles.error }, `${entry.sourceUpdate.code}：${entry.sourceUpdate.message}`)
               : null,
+        React.createElement(SourceDiffSummary, { update: entry.sourceUpdate }),
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('div', { style: styles.actions },
             React.createElement(PluginActions, { entry, health, beginPlan, checkSource }),
@@ -494,6 +599,8 @@ window.__ModuleLoader__.load({
           React.createElement(DetailRow, { label: '版本', value: entry.version }),
           React.createElement(DetailRow, { label: 'GitHub 发布者', value: githubPublisher(entry.repositoryUrl) }),
           React.createElement(DetailRow, { label: 'Git Commit', value: entry.commit, code: true }),
+          React.createElement(DetailRow, { label: '固定提交时间', value: entry.source.updatedAt ? new Date(entry.source.updatedAt).toLocaleString() : '未知' }),
+          React.createElement(DetailRow, { label: '时间证据来源', value: entry.source.provenance }),
           React.createElement(DetailRow, { label: '分类', value: entry.categories.map(id => categoryLabels[id] || id).join(' / ') }),
           React.createElement(DetailRow, { label: '上架状态', value: status }),
           React.createElement(DetailRow, { label: '安装状态', value: installed }),
@@ -510,6 +617,20 @@ window.__ModuleLoader__.load({
           React.createElement(DetailRow, { label: '凭据访问', value: permissions.credentials.map(value => detailLabel('credentials', value)).join(' / ') }),
           React.createElement(DetailRow, { label: '外部依赖', value: entry.details.externalDependencies.length > 0 ? entry.details.externalDependencies.join(' / ') : '无' }),
           React.createElement(DetailRow, { label: '审核状态', value: detailLabel('reviewStatus', entry.details.reviewStatus) })),
+        React.createElement('h3', { style: styles.detailHeading }, '可信证据（互不替代）'),
+        React.createElement(AssuranceMatrix, { entry }),
+        React.createElement('div', { style: styles.detailSection }, ASSURANCE_LEVELS.map(([key, label]) => {
+          const evidence = entry.assurance[key]
+          return React.createElement('div', { key, style: styles.diffCell },
+            React.createElement('div', { style: styles.name }, `${label} · ${assuranceStatusLabel(evidence.status)}`),
+            React.createElement('div', { style: styles.muted }, [
+              evidence.method ? `方法 ${evidence.method}` : null,
+              evidence.checkedAt ? `时间 ${new Date(evidence.checkedAt).toLocaleString()}` : null,
+              evidence.dshRelease ? `DSH ${evidence.dshRelease}` : null,
+            ].filter(Boolean).join(' · ') || '尚无可验证证据'),
+            evidence.summary ? React.createElement('div', { style: styles.muted }, evidence.summary) : null,
+            evidence.evidenceUrl ? React.createElement('a', { href: evidence.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '打开证据') : null)
+        })),
         React.createElement('h3', { style: styles.detailHeading }, '兼容性'),
         React.createElement(CompatibilityMatrix, { entry }),
         React.createElement('dl', { style: styles.detailGrid },
@@ -517,6 +638,8 @@ window.__ModuleLoader__.load({
           React.createElement(DetailRow, { label: 'Node.js', value: entry.compatibility.node || '未声明' }),
           React.createElement(DetailRow, { label: '系统', value: entry.compatibility.systems.length > 0 ? entry.compatibility.systems.join(' / ') : '未声明' }),
           React.createElement(DetailRow, { label: 'Profile', value: entry.compatibility.profiles.length > 0 ? entry.compatibility.profiles.join(' / ') : '未声明' })),
+        React.createElement('h3', { style: styles.detailHeading }, 'rc.5–rc.8 操作证据'),
+        React.createElement(OperationEvidence, { entry }),
         !entry.catalogDetailsAvailable
           ? React.createElement('div', { style: styles.notice }, '当前 GitHub catalog.json 尚未提供完整详情字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
           : null,
@@ -858,6 +981,17 @@ window.__ModuleLoader__.load({
           .map(entry => ({ ...entry, sourceUpdate: sourceUpdates[entry.id] ?? null }))
       }, [sourceUpdates, state])
 
+      const candidateEntries = useMemo(() => {
+        if (state.status !== 'ready') return []
+        const needle = query.trim().toLowerCase()
+        return (state.market.candidates || [])
+          .filter(entry => entry.status !== 'rejected')
+          .filter(entry => !needle || [entry.id, entry.name, entry.description, entry.repositoryUrl, entry.route, ...(entry.discoverySources || []), ...(entry.topics || [])]
+            .some(value => String(value || '').toLowerCase().includes(needle)))
+          .sort((a, b) => (Date.parse(b.sourceUpdatedAt || b.discoveredAt) || 0) - (Date.parse(a.sourceUpdatedAt || a.discoveredAt) || 0)
+            || a.name.localeCompare(b.name, 'zh-CN'))
+      }, [query, state])
+
       const checkSource = useCallback(async entry => {
         setSourceUpdates(current => ({ ...current, [entry.id]: { status: 'checking' } }))
         try {
@@ -892,10 +1026,11 @@ window.__ModuleLoader__.load({
       const entries = useMemo(() => {
         const needle = query.trim().toLowerCase()
         const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility.dshReleases?.['rc.8'] || 'unknown'] ?? 1)
+        const sourceFreshness = entry => Date.parse(entry.source?.updatedAt || '') || 0
         return scopedEntries
           .filter(entry => !category || entry.categories.includes(category))
           .filter(entry => !needle || detailSearchValues(entry).some(value => value.toLowerCase().includes(needle)))
-          .sort((a, b) => compatibilityRank(a) - compatibilityRank(b) || Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, 'zh-CN'))
+          .sort((a, b) => compatibilityRank(a) - compatibilityRank(b) || sourceFreshness(b) - sourceFreshness(a) || Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, 'zh-CN'))
       }, [category, query, scopedEntries])
 
       const beginPlan = useCallback(async (action, entry) => {
@@ -1034,7 +1169,7 @@ window.__ModuleLoader__.load({
 
       const nav = React.createElement('div', { style: styles.nav },
         React.createElement('div', { style: styles.navTabs, role: 'tablist', 'aria-label': '插件商城视图' },
-          [['market', '插件市场'], ['installed', '已安装'], ['health', '健康检查']].map(([id, label]) =>
+          [['market', '可信安装'], ['candidates', '候选发现'], ['installed', '已安装'], ['health', '健康检查']].map(([id, label]) =>
             React.createElement(TabButton, { key: id, active: view === id, onClick: () => setView(id) }, label))),
         React.createElement(Button, { compact: true, onClick: () => refresh(true, permissionDecisions) }, '刷新 GitHub 目录'))
 
@@ -1101,6 +1236,18 @@ window.__ModuleLoader__.load({
       else if (view === 'health') content = React.createElement(HealthPanel, {
         health: state.health, permissionDecisions, setPermissionDecision, rerun: rerunHealth,
       })
+      else if (view === 'candidates') {
+        content = React.createElement(React.Fragment, null,
+          React.createElement('input', {
+            type: 'search', value: query, onChange: event => setQuery(event.target.value),
+            style: styles.input, placeholder: '搜索候选项目、Topic、来源或 GitHub 仓库',
+          }),
+          React.createElement('div', { style: styles.notice },
+            `${state.market.candidateSource?.kind === 'github' ? 'GitHub 候选发现源' : '内置候选源回退'} · ${candidateEntries.length} 个待审项目。候选记录与可信 catalog 物理分离；曝光、推荐或赞助不能改变验证等级，也不会获得安装操作。`,
+            state.market.candidateSource?.errorCode ? ` · ${state.market.candidateSource.errorCode}` : ''),
+          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '候选发现目录' },
+            candidateEntries.map(entry => React.createElement(CandidateCard, { key: entry.id, entry }))))
+      }
       else if (view === 'installed') {
         content = React.createElement(React.Fragment, null,
           filters,
@@ -1121,7 +1268,7 @@ window.__ModuleLoader__.load({
         content = React.createElement(React.Fragment, null,
           filters,
           React.createElement('div', { style: styles.notice },
-            `${state.market.source.kind === 'github' ? 'GitHub 在线目录' : '内置目录回退'} · ${entries.length} / ${scopedEntries.length} 个在架条目`,
+            `${state.market.source.kind === 'github' ? 'GitHub 可信安装目录' : '内置可信目录回退'} · ${entries.length} / ${scopedEntries.length} 个在架条目 · 未知不等于已验证`,
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry,

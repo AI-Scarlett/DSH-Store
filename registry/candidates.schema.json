@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager/registry/candidates.schema.json",
+  "title": "DSH STORE Candidate Discovery Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "registry", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "repositoryUrl", "updatedAt", "trustBoundary"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "trustBoundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["installActionsDisabled", "catalogPromotionRequired", "unknownIsNotVerified"],
+          "properties": {
+            "installActionsDisabled": { "const": true },
+            "catalogPromotionRequired": { "const": true },
+            "unknownIsNotVerified": { "const": true }
+          }
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "description", "repositoryUrl", "defaultBranch", "status", "route", "discoveredAt", "discoverySources"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$" },
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
+          "defaultBranch": { "type": "string", "minLength": 1 },
+          "latestCommit": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+          "sourceUpdatedAt": { "type": ["string", "null"], "format": "date-time" },
+          "discoveredAt": { "type": "string", "format": "date-time" },
+          "discoverySources": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "topics": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "status": { "enum": ["discovered", "reviewing", "rejected"] },
+          "route": { "enum": ["direct-review", "monorepo-review", "adapter-required", "blocked"] },
+          "statusReason": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

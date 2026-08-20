@@ -48,7 +48,7 @@
   </script>
   <!-- DSH_STATIC_CATALOG -->
 </head>
-<body class="plugins-page" data-catalog-url="../../registry/catalog.json">
+<body class="plugins-page" data-catalog-url="../../registry/catalog.json" data-candidates-url="../../registry/candidates.json">
   <a class="skip-link" href="#catalog" data-i18n="a11y.skipCatalog">跳到插件目录</a>
   <div class="tech-grid" aria-hidden="true"></div>
 
@@ -84,6 +84,7 @@
         <div><small>CATALOG</small><strong id="stat-total">—</strong><span data-i18n="stats.plugins">在架插件</span></div>
         <div><small>PLAN READY</small><strong id="stat-approved">—</strong><span data-i18n="stats.plannable">可生成计划</span></div>
         <div><small>CAPABILITY</small><strong id="stat-categories">—</strong><span data-i18n="stats.categories">能力分类</span></div>
+        <div><small>DISCOVERED</small><strong id="stat-candidates">—</strong><span data-i18n="stats.candidates">候选项目</span></div>
         <p><i class="pulse-node"></i><span><b data-i18n="stats.source">GitHub 权威目录</b><small id="catalog-date" data-i18n="stats.connecting">正在核对 catalog.json…</small></span></p>
       </div>
     </section>
@@ -94,13 +95,17 @@
         <label class="search-box" for="search"><span aria-hidden="true">⌕</span><input id="search" type="search" autocomplete="off" aria-label="Search plugins" data-i18n-placeholder="catalog.search" placeholder="搜索插件、能力或 GitHub 仓库"><kbd>⌘ K</kbd></label>
         <label class="select-box" for="sort"><span data-i18n="catalog.sort">排序</span><select id="sort"><option value="recommended" data-i18n="sort.recommended">推荐优先</option><option value="name" data-i18n="sort.name">名称 A–Z</option><option value="recent" data-i18n="sort.recent">版本更新</option><option value="risk" data-i18n="sort.risk">权限由低到高</option></select></label>
       </div>
+      <div id="catalog-view-tabs" class="catalog-view-tabs reveal" role="group" aria-label="Catalog trust layer">
+        <button type="button" data-catalog-view="trusted" aria-pressed="true" data-i18n="view.trusted">可信安装库</button>
+        <button type="button" data-catalog-view="candidates" aria-pressed="false" data-i18n="view.candidates">候选发现库</button>
+      </div>
       <div class="catalog-controls reveal"><div id="category-pills" class="category-pills" aria-label="Categories"></div><button id="clear-filter" class="text-button" type="button" hidden data-i18n="action.clear">清除筛选</button></div>
       <div class="result-row"><p id="catalog-meta" role="status" data-i18n="catalog.loading">正在读取目录…</p><span class="legend"><i class="legend-approved"></i><span data-i18n="status.available">可安装</span><i class="legend-blocked"></i><span data-i18n="status.viewOnly">仅展示</span></span></div>
       <div id="plugin-grid" class="plugin-grid" aria-live="polite"><!-- DSH_STATIC_PLUGIN_CARDS_BEGIN --><!-- DSH_STATIC_PLUGIN_CARDS_END --></div>
       <div id="catalog-pagination" class="catalog-pagination" hidden><button id="load-more" type="button"><span data-i18n="action.loadMore">加载更多插件</span><i aria-hidden="true">↓</i></button></div>
       <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h3 data-i18n="empty.title">没有找到匹配插件</h3><p data-i18n="empty.body">换个关键词，或清除当前分类筛选。</p><button id="empty-clear" class="button button-primary" type="button" data-i18n="action.viewAll">查看全部插件</button></div>
       <div id="load-error" class="load-error" hidden><span aria-hidden="true">!</span><div><h3 data-i18n="error.title">目录暂时没有加载成功</h3><p data-i18n="error.body">请稍后重试，或前往 GitHub 查看最新目录。</p><div class="load-error-actions"><button id="retry-catalog" class="button button-primary" type="button" data-i18n="action.retry">重新加载</button><a class="button button-secondary" href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/catalog.json" target="_blank" rel="noreferrer" data-i18n="action.githubCatalog">查看 GitHub 目录 ↗</a></div></div></div>
-      <div class="catalog-capacity reveal"><span>PRIVACY BY DEFAULT</span><b data-i18n="directory.capacity">搜索关键词留在你的浏览器里</b><small data-i18n="directory.capacityNote">筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。</small></div>
+      <div class="catalog-capacity reveal"><span>TRUST BOUNDARY / PRIVACY BY DEFAULT</span><b data-i18n="directory.capacity">搜索关键词留在你的浏览器里</b><small data-i18n="directory.capacityNote">筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。</small><small data-i18n="candidate.notice">候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。</small></div>
     </section>
   </main>
 

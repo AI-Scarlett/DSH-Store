@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
   buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
-  dshReleaseCompatibility, searchCatalog, validateCatalog, verifyCatalogEntry,
+  compareCatalogEntries, dshReleaseCompatibility, searchCatalog, validateCatalog, verifyCatalogEntry,
 } from '../src/catalog.mjs'
 
 const entry = {
@@ -26,6 +26,7 @@ function document(entries = [entry]) {
     registry: {
       name: 'Fixture', repositoryUrl: 'https://github.com/example/registry',
       homepageUrl: 'https://example.github.io/registry', updatedAt: '2026-08-16T00:00:00Z',
+      trustPolicy: { candidateInstallDisabled: true, unknownIsNotVerified: true, promotionIndependentOfVerification: true },
       categories: { tools: '工具' },
     },
     entries,
@@ -41,6 +42,11 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
   assert.equal(catalog.entries[0].featured, true)
   assert.equal(catalog.entries[0].details.permissions.files, 'read-only')
   assert.deepEqual(catalog.entries[0].compatibility.profiles, ['web'])
+  assert.equal(catalog.entries[0].assurance.discovery.status, 'verified')
+  assert.equal(catalog.entries[0].assurance.runtime.status, 'unknown')
+  assert.deepEqual(catalog.entries[0].compatibility.dshOperations['rc.8'], {
+    install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+  })
   assert.throws(() => validateCatalog(document([{ ...entry, repositoryUrl: 'https://example.test/repo' }])), /github\.com/)
   assert.throws(() => validateCatalog(document([entry, { ...entry, id: 'two' }])), /duplicate catalog package/)
   assert.throws(() => validateCatalog(document([{ ...entry, details: { ...entry.details, pluginType: 'daemon' } }])), /pluginType/)
@@ -72,6 +78,27 @@ test('catalog recommended ordering puts rc.8-compatible entries first', () => {
   assert.deepEqual(searchCatalog(validateCatalog(document([old, current]))).map(item => item.id), ['current', 'old'])
 })
 
+test('catalog ordering uses rc.8 compatibility before source freshness and never promotion as verification', () => {
+  const currentOld = {
+    ...entry, id: 'current-old', packageName: 'dsh-current-old', name: 'Current old',
+    compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' },
+    source: { updatedAt: '2026-08-01T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
+  }
+  const currentNew = {
+    ...entry, id: 'current-new', packageName: 'dsh-current-new', name: 'Current new', featured: false,
+    compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' },
+    source: { updatedAt: '2026-08-19T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
+  }
+  const unsupportedNew = {
+    ...entry, id: 'unsupported-new', packageName: 'dsh-unsupported-new', name: 'Unsupported new',
+    compatibility: { ...entry.compatibility, dsh: '0.1.0-rc.7' },
+    source: { updatedAt: '2026-08-20T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
+  }
+  const catalog = validateCatalog(document([currentOld, currentNew, unsupportedNew]))
+  assert.deepEqual([...catalog.entries].sort(compareCatalogEntries).map(item => item.id), ['current-new', 'current-old', 'unsupported-new'])
+  assert.equal(catalog.entries.find(item => item.id === 'current-old').assurance.securityReview.status, 'unknown')
+})
+
 test('bundled registry declares complete detail metadata for every entry', async () => {
   const source = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
   const catalog = validateCatalog(source)
@@ -85,7 +112,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.ok(item.details.permissions.credentials.length > 0, `${item.id} must declare credential access`)
   }
   assert.deepEqual(source.entries.filter(item => item.featured === true).map(item => item.id), [
-    'build-dsh-plugin', 'dsh-safe-plugin-manager', 'dsh-plugin-agent-workflow', 'dsh-wecom-cli',
+    'build-dsh-plugin', 'dsh-safe-plugin-manager', 'dsh-plugin-agent-workflow',
   ])
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')

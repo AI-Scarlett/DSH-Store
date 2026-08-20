@@ -90,6 +90,36 @@ test('market endpoint joins the GitHub catalog with installed state', async () =
   }
 })
 
+test('market endpoint keeps candidate discovery records outside install operations', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-candidate-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(profileDir, { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: {}, dsh: { profile: { bundles: [] } },
+    }))
+    const catalog = { schemaVersion: 1, registry: { name: 'Fixture' }, source: { kind: 'fixture' }, entries: [] }
+    const candidateRegistry = {
+      registry: { name: 'Candidates', trustBoundary: { installActionsDisabled: true } },
+      source: { kind: 'fixture' },
+      entries: [{ id: 'candidate', name: 'Candidate', installable: false, allowedActions: [] }],
+    }
+    const res = response()
+    await handleMarketRequest(request({}), res, {
+      dshHome: root,
+      catalogService: { load: async () => catalog },
+      candidateService: { load: async () => candidateRegistry },
+    })
+    const payload = JSON.parse(res.body)
+    assert.equal(res.status, 200)
+    assert.equal(payload.value.entries.length, 0)
+    assert.equal(payload.value.candidates[0].installable, false)
+    assert.deepEqual(payload.value.candidates[0].allowedActions, [])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('plan endpoint requires explicit operation intent header', async () => {
   let called = false
   const operationService = { createPlan: async () => { called = true; return { planId: 'one' } } }

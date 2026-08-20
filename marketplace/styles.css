@@ -654,6 +654,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .compatibility-cell.compatible { border-color: rgba(21, 148, 104, .35); background: rgba(21, 148, 104, .08); color: #087c59; }
 .compatibility-cell.incompatible { border-color: rgba(201, 77, 81, .28); background: rgba(201, 77, 81, .06); color: #b04048; }
 .compatibility-cell.unknown { border-color: rgba(123, 130, 147, .25); background: rgba(123, 130, 147, .05); color: var(--muted); }
+.assurance-rail { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 10px; }
+.assurance-item { display: flex; min-width: 0; flex-direction: column; gap: 2px; padding: 6px; border: 1px solid var(--line); background: rgba(255, 255, 255, .5); }
+.assurance-item b { overflow: hidden; font-size: 7px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.assurance-item em { color: var(--muted); font-size: 8px; font-style: normal; }
+.assurance-verified { border-color: rgba(21, 148, 104, .4); }
+.assurance-verified em { color: #087c59; }
+.assurance-failed { border-color: rgba(201, 77, 81, .42); }
+.assurance-failed em { color: #b04048; }
+.assurance-unknown { opacity: .72; }
+.catalog-view-tabs { display: inline-flex; gap: 4px; margin: 14px 0 4px; padding: 4px; border: 1px solid var(--line); background: rgba(255, 255, 255, .56); }
+.catalog-view-tabs button { min-height: 34px; padding: 0 13px; border: 0; color: var(--muted); background: transparent; cursor: pointer; font-size: 8px; font-weight: 800; }
+.catalog-view-tabs button[aria-pressed="true"] { color: #fff; background: var(--green); }
+.candidate-card { border-style: dashed; }
+.candidate-no-install { color: var(--muted); font: 750 7px ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
 .plugin-badge, .dialog-badge { padding: 5px 7px; border: 1px solid var(--line); color: var(--muted); font-size: 7px; font-weight: 750; }
 .plugin-badge.risk-low { color: var(--green); }
 .plugin-badge.risk-medium { color: var(--amber); }
@@ -952,6 +966,7 @@ dialog::backdrop { background: rgba(40, 72, 86, .38); backdrop-filter: blur(8px)
 }
 
 @media (max-width: 720px) {
+  .assurance-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   :root { --shell: calc(100% - 32px); }
   .site-header { min-height: auto; gap: 0 12px; padding-inline: 16px; }
   .site-nav { gap: 18px; }

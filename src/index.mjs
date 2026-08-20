@@ -1,4 +1,5 @@
 import { createCatalogService, DEFAULT_CATALOG_URL } from './catalog.mjs'
+import { createCandidateService, DEFAULT_CANDIDATES_URL } from './candidates.mjs'
 import { createDshRunner } from './dsh.mjs'
 import { resolveDshHome, validateProfileName } from './inventory.mjs'
 import { createOperationService } from './operations.mjs'
@@ -18,6 +19,7 @@ function normalizeConfig(config = {}) {
     defaultProfile: validateProfileName(config.defaultProfile ?? 'web'),
     dshHome: resolveDshHome(config.dshHome),
     catalogUrl: config.catalogUrl === null ? null : (config.catalogUrl ?? DEFAULT_CATALOG_URL),
+    candidateUrl: config.candidateUrl === null ? null : (config.candidateUrl ?? DEFAULT_CANDIDATES_URL),
     mutationsEnabled: config.mutationsEnabled === true,
     telemetryEnabled: config.telemetryEnabled === true,
     telemetryUrl: typeof config.telemetryUrl === 'string' ? config.telemetryUrl : null,
@@ -31,6 +33,7 @@ function normalizeConfig(config = {}) {
 export function apply(ctx, config = {}) {
   const options = normalizeConfig(config)
   const catalogService = createCatalogService({ catalogUrl: options.catalogUrl, installCountsUrl: options.installCountsUrl })
+  const candidateService = createCandidateService({ candidateUrl: options.candidateUrl })
   const runner = createDshRunner({ cliPath: options.dshCliPath })
   const launchSpec = runner.restartSpec(options.defaultProfile)
   const launchProfileArgs = options.defaultProfile === 'web' ? ['web'] : ['--profile', options.defaultProfile]
@@ -58,7 +61,7 @@ export function apply(ctx, config = {}) {
   })
   ctx.inject(['webServer'], (webCtx) => {
     const dispose = registerManagerRoutes(webCtx.webServer, {
-      ...options, catalogService, runner, operationService, sourceUpdateService, dshVersionService,
+      ...options, catalogService, candidateService, runner, operationService, sourceUpdateService, dshVersionService,
       runtimeStatus, restartService, guardianService,
     })
     if (typeof dispose === 'function' && typeof webCtx.effect === 'function') {

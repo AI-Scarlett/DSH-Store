@@ -37,6 +37,7 @@ function catalog(entries = []) {
       name: 'Fixture registry', repositoryUrl: 'https://github.com/example/registry',
       homepageUrl: 'https://example.test', updatedAt: '2026-08-18T00:00:00Z',
       categories: { experimental: '实验', tools: '工具' },
+      trustPolicy: { candidateInstallDisabled: true, unknownIsNotVerified: true, promotionIndependentOfVerification: true },
     },
     entries,
   }

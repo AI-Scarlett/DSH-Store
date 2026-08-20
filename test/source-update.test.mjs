@@ -31,7 +31,10 @@ function githubFetch({ patch = '+export const version = 2', commit = candidateCo
       return response(JSON.stringify({ name: 'dsh-demo', version, license: 'MIT', main: 'lib/index.js', dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {} }))
     }
     if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/cordis.patch.yml')) return response('- id: demo\n')
-    if (url.includes('/compare/')) return response({ status: 'ahead', total_commits: 1, files: [{ filename: 'lib/index.js', patch }] })
+    if (url.includes('/compare/')) return response({
+      status: 'ahead', total_commits: 1,
+      files: [{ filename: 'lib/index.js', status: 'modified', additions: 2, deletions: 1, changes: 3, patch }],
+    })
     throw new Error(`unexpected URL ${url}`)
   }
 }
@@ -45,6 +48,10 @@ test('low-risk source update resolves to a fixed candidate commit and is reusabl
   assert.equal(result.policy, 'source-verified')
   assert.equal(result.candidateCommit, candidateCommit)
   assert.equal(result.candidateVersion, '2.0.0')
+  assert.deepEqual(result.diff.files, [{ path: 'lib/index.js', status: 'modified', additions: 2, deletions: 1, changes: 3, patchComplete: true }])
+  assert.equal(result.diff.additions, 2)
+  assert.equal(result.diff.deletions, 1)
+  assert.deepEqual(result.diff.networkHosts, [])
   assert.equal(service.approvedCandidate(entry(), candidateCommit).commit, candidateCommit)
 })
 
@@ -68,7 +75,19 @@ test('higher-risk plugins and new permission signals require local user review',
   const drift = await driftService.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
   assert.equal(drift.status, 'user-review-required')
   assert.match(drift.reasons.join(' '), /权限/)
+  assert.equal(drift.diff.permissionSignals.commandExecution, true)
   assert.equal(driftService.approvedCandidate(entry(), candidateCommit, { userAcceptedRisk: true }).sourceReview.status, 'user-review-required')
+})
+
+test('source update exposes bounded network and file-change signals without returning source patches', async () => {
+  const service = createSourceUpdateService({
+    fetch: githubFetch({ patch: '+await fetch("https://api.example.test/v1")' }),
+    sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.deepEqual(result.diff.networkHosts, ['api.example.test'])
+  assert.equal(result.diff.permissionSignals.network, true)
+  assert.equal(Object.hasOwn(result.diff.files[0], 'patch'), false)
 })
 
 test('protected DSH mutations remain external-only and cannot produce a marketplace plan', async () => {
