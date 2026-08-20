@@ -189,6 +189,10 @@ window.__ModuleLoader__.load({
       detailLabel: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       detailValue: { margin: 0, color: 'var(--dsw-alias-label-primary)', fontSize: '12px', lineHeight: '18px', overflowWrap: 'anywhere' },
       detailBadges: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+      compatibilityMatrix: { display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '4px', marginTop: '2px' },
+      compatibilityCell: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '7px', padding: '4px 3px', minWidth: 0 },
+      compatibilityKey: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', fontWeight: 700 },
+      compatibilityValue: { fontSize: '10px', lineHeight: '14px' },
       detailFooter: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', width: '100%' },
       detailFooterLinks: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginLeft: 'auto' },
     }
@@ -237,8 +241,42 @@ window.__ModuleLoader__.load({
         detailLabel('network', permissions.network), detailLabel('commands', permissions.commands),
         ...permissions.credentials.map(value => detailLabel('credentials', value)),
         detailLabel('reviewStatus', entry.details.reviewStatus), ...entry.details.externalDependencies,
-        ...entry.compatibility.systems, ...entry.compatibility.profiles, ...entry.categories,
+        ...entry.compatibility.systems, ...entry.compatibility.profiles, entry.compatibility.dsh,
+        ...Object.entries(entry.compatibility.dshReleases || {}).flat(), ...entry.categories,
       ]
+    }
+
+    const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
+    function dshReleaseCompatibility(value) {
+      const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
+      if (typeof value !== 'string' || value.trim() === '' || value.trim().toLowerCase() === 'unknown') return result
+      const range = value.trim()
+      const exact = /^0\.1\.0-(rc\.\d+)$/.exec(range)
+      const lower = /(?:^|\s)(?:>=|\^|~)?0\.1\.0-(rc\.\d+)/.exec(range)
+      const upper = /<\s*0\.1\.0-(rc\.\d+)/.exec(range)
+      const lowerIndex = exact ? DSH_RC_RELEASES.indexOf(exact[1]) : lower ? DSH_RC_RELEASES.indexOf(lower[1]) : -1
+      if (lowerIndex < 0) return result
+      const upperIndex = upper ? DSH_RC_RELEASES.indexOf(upper[1]) : DSH_RC_RELEASES.length
+      for (let index = 0; index < DSH_RC_RELEASES.length; index += 1) {
+        result[DSH_RC_RELEASES[index]] = exact
+          ? index === lowerIndex ? 'compatible' : 'incompatible'
+          : index >= lowerIndex && (upperIndex < 0 || index < upperIndex) ? 'compatible' : 'incompatible'
+      }
+      return result
+    }
+
+    const compatibilityStatusLabel = status => ({ compatible: '兼容', incompatible: '不兼容', unknown: '未声明' }[status] || '未声明')
+    const compatibilityStatusColor = status => ({
+      compatible: 'var(--dsw-alias-state-success-primary)', incompatible: 'var(--dsw-alias-state-error-primary)', unknown: 'var(--dsw-alias-label-tertiary)',
+    }[status] || 'var(--dsw-alias-label-tertiary)')
+    function CompatibilityMatrix({ entry }) {
+      return React.createElement('div', { style: styles.compatibilityMatrix, role: 'list', 'aria-label': 'DSH rc.5 至 rc.8 兼容性' },
+        DSH_RC_RELEASES.map(release => {
+          const status = entry.compatibility.dshReleases[release]
+          return React.createElement('div', { key: release, role: 'listitem', style: { ...styles.compatibilityCell, color: compatibilityStatusColor(status) } },
+            React.createElement('span', { style: styles.compatibilityKey }, `DSH ${release}`),
+            React.createElement('span', { style: styles.compatibilityValue }, compatibilityStatusLabel(status)))
+        }))
     }
 
     function normalizeMarketEntry(entry) {
@@ -256,6 +294,7 @@ window.__ModuleLoader__.load({
         compatibility: {
           ...compatibility,
           dsh: typeof compatibility.dsh === 'string' ? compatibility.dsh : null,
+          dshReleases: compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : dshReleaseCompatibility(compatibility.dsh),
           node: typeof compatibility.node === 'string' ? compatibility.node : null,
           systems: Array.isArray(compatibility.systems) ? compatibility.systems : [],
           profiles: Array.isArray(compatibility.profiles) ? compatibility.profiles : [],
@@ -381,6 +420,7 @@ window.__ModuleLoader__.load({
           origin ? React.createElement('span', { style: styles.badge }, origin) : null,
           ...entry.categories.map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id)),
           Number.isInteger(entry.installCount) ? React.createElement('span', { style: styles.badge }, `累计安装 ${entry.installCount}`) : null),
+        React.createElement(CompatibilityMatrix, { entry }),
         entry.risk.installScripts.length > 0
           ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join(', ')}`)
           : null,
@@ -471,6 +511,7 @@ window.__ModuleLoader__.load({
           React.createElement(DetailRow, { label: '外部依赖', value: entry.details.externalDependencies.length > 0 ? entry.details.externalDependencies.join(' / ') : '无' }),
           React.createElement(DetailRow, { label: '审核状态', value: detailLabel('reviewStatus', entry.details.reviewStatus) })),
         React.createElement('h3', { style: styles.detailHeading }, '兼容性'),
+        React.createElement(CompatibilityMatrix, { entry }),
         React.createElement('dl', { style: styles.detailGrid },
           React.createElement(DetailRow, { label: 'DSH', value: entry.compatibility.dsh || '未声明' }),
           React.createElement(DetailRow, { label: 'Node.js', value: entry.compatibility.node || '未声明' }),
@@ -850,10 +891,11 @@ window.__ModuleLoader__.load({
 
       const entries = useMemo(() => {
         const needle = query.trim().toLowerCase()
+        const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility.dshReleases?.['rc.8'] || 'unknown'] ?? 1)
         return scopedEntries
           .filter(entry => !category || entry.categories.includes(category))
           .filter(entry => !needle || detailSearchValues(entry).some(value => value.toLowerCase().includes(needle)))
-          .sort((a, b) => Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || a.name.localeCompare(b.name, 'zh-CN'))
+          .sort((a, b) => compatibilityRank(a) - compatibilityRank(b) || Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, 'zh-CN'))
       }, [category, query, scopedEntries])
 
       const beginPlan = useCallback(async (action, entry) => {

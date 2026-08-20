@@ -13,7 +13,7 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.dsh.client.platform, 'web')
   assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
   for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
-    assert.equal(pkg.peerDependencies[dependency], '>=0.1.0-rc.7')
+    assert.equal(pkg.peerDependencies[dependency], '>=0.1.0-rc.8 <0.2.0')
   }
   assert.equal(pkg.private, true)
 })
@@ -74,6 +74,8 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
   assert.match(client, /GitHub-only/)
   assert.match(client, /DSH第三方插件商城/)
+  assert.match(client, /DSH_RC_RELEASES = \['rc\.5', 'rc\.6', 'rc\.7', 'rc\.8'\]/)
+  assert.match(client, /function CompatibilityMatrix/)
   assert.match(client, /const SUPPORT_URL = 'https:\/\/dsh\.store\/'/)
   assert.match(client, /技术支持：DSH-Store/)
   assert.match(client, /compactButton/)
@@ -163,6 +165,24 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /Guardian 已验证，DSH 正在交接，页面会自动重新连接/)
   assert.match(client, /GUARDIAN_HANDOFF_TIMEOUT/)
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
+})
+
+test('rc.8 client contract stays on official ModuleLoader and settings ordering', async () => {
+  const [pkg, client] = await Promise.all([
+    readFile(new URL('package.json', project), 'utf8'),
+    readFile(new URL('src/client.js', project), 'utf8'),
+  ])
+  const manifest = JSON.parse(pkg)
+  assert.deepEqual(manifest.dsh.client.inject, [
+    '@deepseek-ai/dsh-client-runtime',
+    '@deepseek-ai/dsh-client-ui-primitives',
+    '@deepseek-ai/dsh-client-ui-slots',
+    '@deepseek-ai/dsh-client-ui-settings',
+  ])
+  assert.match(client, /window\.__ModuleLoader__\.load/)
+  assert.match(client, /settings\.plugins\.tab/)
+  assert.match(client, /order:\s*-10/)
+  assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
 })
 
 test('guardian health requires DSH HTTP identity and fails closed on an unowned port', async () => {

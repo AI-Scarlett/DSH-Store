@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
   buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
-  searchCatalog, validateCatalog, verifyCatalogEntry,
+  dshReleaseCompatibility, searchCatalog, validateCatalog, verifyCatalogEntry,
 } from '../src/catalog.mjs'
 
 const entry = {
@@ -51,6 +51,27 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
   assert.throws(() => validateCatalog(document([{ ...entry, details: undefined }])), /details must be an object/)
 })
 
+test('catalog exposes an explicit rc.5 through rc.8 compatibility matrix', () => {
+  assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.8 <0.2.0'), {
+    'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'incompatible', 'rc.8': 'compatible',
+  })
+  assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.5'), {
+    'rc.5': 'compatible', 'rc.6': 'compatible', 'rc.7': 'compatible', 'rc.8': 'compatible',
+  })
+  assert.deepEqual(dshReleaseCompatibility('0.1.0-rc.7'), {
+    'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'compatible', 'rc.8': 'incompatible',
+  })
+  assert.deepEqual(dshReleaseCompatibility('unknown'), {
+    'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown',
+  })
+})
+
+test('catalog recommended ordering puts rc.8-compatible entries first', () => {
+  const old = { ...entry, id: 'old', packageName: 'dsh-old', name: 'Old', compatibility: { ...entry.compatibility, dsh: '0.1.0-rc.7' } }
+  const current = { ...entry, id: 'current', packageName: 'dsh-current', name: 'Current', version: '0.1.0', compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' } }
+  assert.deepEqual(searchCatalog(validateCatalog(document([old, current]))).map(item => item.id), ['current', 'old'])
+})
+
 test('bundled registry declares complete detail metadata for every entry', async () => {
   const source = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
   const catalog = validateCatalog(source)
@@ -82,6 +103,11 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
   assert.equal(agentReach.details.permissions.level, 'high')
   assert.ok(agentReach.details.externalDependencies.includes('Agent Reach CLI 1.5.0'))
+  for (const id of ['dsh-safe-plugin-manager', 'dsh-token-monitor', 'dsh-chat-import', 'dsh-agent-reach', 'dsh-wecom-cli']) {
+    const item = source.entries.find(entry => entry.id === id)
+    assert.ok(item, `${id} must be listed`)
+    assert.deepEqual(item.compatibility.dshReleases, dshReleaseCompatibility(item.compatibility.dsh), `${id} rc matrix must be explicit`)
+  }
 })
 
 test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {

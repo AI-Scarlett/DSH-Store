@@ -9,9 +9,42 @@ const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
 const MAX_COUNTS_BYTES = 256 * 1024
+export const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json'
+
+export function dshReleaseCompatibility(value) {
+  const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
+  if (typeof value !== 'string' || value.trim() === '' || value.trim().toLowerCase() === 'unknown') return result
+  const range = value.trim()
+  const exact = /^0\.1\.0-(rc\.\d+)$/.exec(range)
+  const lower = /(?:^|\s)(?:>=|\^|~)?0\.1\.0-(rc\.\d+)/.exec(range)
+  const upper = /<\s*0\.1\.0-(rc\.\d+)/.exec(range)
+  const lowerIndex = exact ? DSH_RC_RELEASES.indexOf(exact[1]) : lower ? DSH_RC_RELEASES.indexOf(lower[1]) : -1
+  if (lowerIndex < 0) return result
+  const upperIndex = upper ? DSH_RC_RELEASES.indexOf(upper[1]) : DSH_RC_RELEASES.length
+  for (let index = 0; index < DSH_RC_RELEASES.length; index += 1) {
+    result[DSH_RC_RELEASES[index]] = exact
+      ? index === lowerIndex ? 'compatible' : 'incompatible'
+      : index >= lowerIndex && (upperIndex < 0 || index < upperIndex) ? 'compatible' : 'incompatible'
+  }
+  return result
+}
+
+function declaredDshReleaseCompatibility(value, label) {
+  if (value === undefined) return dshReleaseCompatibility(label)
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${label}.dshReleases must be an object`)
+  const normalized = {}
+  for (const release of DSH_RC_RELEASES) {
+    const status = value[release]
+    if (!['compatible', 'incompatible', 'unknown'].includes(status)) {
+      throw new TypeError(`${label}.dshReleases.${release} must be compatible, incompatible, or unknown`)
+    }
+    normalized[release] = status
+  }
+  return normalized
+}
 
 function nonEmptyString(value, label, max = 2_000) {
   if (typeof value !== 'string' || value.trim() === '' || value.length > max) {
@@ -264,6 +297,7 @@ function validateEntry(value, index) {
       : null,
     compatibility: {
       dsh: typeof value.compatibility?.dsh === 'string' ? value.compatibility.dsh.slice(0, 120) : null,
+      dshReleases: declaredDshReleaseCompatibility(value.compatibility?.dshReleases, value.compatibility?.dsh),
       node: typeof value.compatibility?.node === 'string' ? value.compatibility.node.slice(0, 120) : null,
       systems: stringArray(value.compatibility?.systems ?? [], `entries[${index}].compatibility.systems`),
       profiles: stringArray(value.compatibility?.profiles ?? [], `entries[${index}].compatibility.profiles`),
@@ -391,10 +425,14 @@ export function searchCatalog(catalog, query = '', options = {}) {
       entry.details?.permissions?.level ?? '', entry.details?.permissions?.files ?? '', entry.details?.permissions?.network ?? '',
       entry.details?.permissions?.commands ?? '', ...(entry.details?.permissions?.credentials ?? []),
       ...(entry.details?.externalDependencies ?? []), ...(entry.compatibility?.systems ?? []), ...(entry.compatibility?.profiles ?? []),
+      entry.compatibility?.dsh ?? '', ...Object.entries(entry.compatibility?.dshReleases ?? {}).flat(),
       ...entry.categories,
     ].some(value => value.toLowerCase().includes(needle)))
-    .sort((left, right) => Number(right.featured) - Number(left.featured)
+    .sort((left, right) => ({ compatible: 0, unknown: 1, incompatible: 2 }[left.compatibility?.dshReleases?.['rc.8'] ?? 'unknown'] ?? 1)
+      - ({ compatible: 0, unknown: 1, incompatible: 2 }[right.compatibility?.dshReleases?.['rc.8'] ?? 'unknown'] ?? 1)
+      || Number(right.featured) - Number(left.featured)
       || (right.installCount ?? -1) - (left.installCount ?? -1)
+      || compareVersions(right.version, left.version)
       || left.name.localeCompare(right.name, 'zh-CN'))
 }
 

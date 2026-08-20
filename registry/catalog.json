@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-18T15:12:25.297Z",
+    "updatedAt": "2026-08-20T00:00:00.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -71,7 +71,7 @@
       "featured": true,
       "entryIds": ["dsh-safe-plugin-manager"],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.7", "node": ">=22.13.0", "systems": ["macOS"], "profiles": ["web"] },
+      "compatibility": { "dsh": ">=0.1.0-rc.8 <0.2.0", "dshReleases": { "rc.5": "incompatible", "rc.6": "incompatible", "rc.7": "incompatible", "rc.8": "compatible" }, "node": ">=22.13.0", "systems": ["macOS"], "profiles": ["web"] },
       "details": {
         "pluginType": "feature", "installSource": "github", "license": "MIT",
         "permissions": { "level": "high", "files": "write", "network": "specified-services", "commands": "restricted", "credentials": ["none"] },
@@ -93,7 +93,7 @@
       "featured": false,
       "entryIds": ["dsh-token-monitor"],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
+      "compatibility": { "dsh": ">=0.1.0-rc.8 <0.2.0", "dshReleases": { "rc.5": "incompatible", "rc.6": "incompatible", "rc.7": "incompatible", "rc.8": "compatible" }, "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
       "details": {
         "pluginType": "feature", "installSource": "github", "license": "MIT",
         "permissions": { "level": "low", "files": "none", "network": "none", "commands": "none", "credentials": ["none"] },
@@ -138,7 +138,7 @@
       "featured": false,
       "entryIds": ["import-claude"],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
+      "compatibility": { "dsh": ">=0.1.0-rc.8 <0.2.0", "dshReleases": { "rc.5": "incompatible", "rc.6": "incompatible", "rc.7": "incompatible", "rc.8": "compatible" }, "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web"] },
       "details": {
         "pluginType": "feature", "installSource": "github", "license": "MIT",
         "permissions": { "level": "high", "files": "write", "network": "none", "commands": "none", "credentials": ["none"] },
@@ -205,7 +205,7 @@
       "categories": ["search", "tools", "workflow"],
       "entryIds": ["dsh-agent-reach-skill-provider"],
       "status": "approved",
-      "compatibility": { "dsh": ">=0.1.0-rc.6", "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web", "headless"] },
+      "compatibility": { "dsh": ">=0.1.0-rc.8 <0.2.0", "dshReleases": { "rc.5": "incompatible", "rc.6": "incompatible", "rc.7": "incompatible", "rc.8": "compatible" }, "node": ">=22.13.0", "systems": ["macOS", "Linux", "Windows"], "profiles": ["web", "headless"] },
       "details": {
         "pluginType": "suite", "installSource": "github", "license": "MIT",
         "permissions": { "level": "high", "files": "write", "network": "any", "commands": "shell", "credentials": ["api-key", "oauth", "unknown"] },
@@ -1063,9 +1063,11 @@
         "dsh-wecom-cli-host",
         "dsh-wecom-cli-skill-provider"
       ],
-      "status": "approved",
+      "status": "unlisted",
+      "statusReason": "暂时下架：外部维护窗口；请留意仓库公告后再恢复上架。",
       "compatibility": {
-        "dsh": ">=0.1.0-rc.7",
+        "dsh": ">=0.1.0-rc.8 <0.2.0",
+        "dshReleases": { "rc.5": "incompatible", "rc.6": "incompatible", "rc.7": "incompatible", "rc.8": "compatible" },
         "node": ">=22.13.0",
         "systems": [
           "macOS"
