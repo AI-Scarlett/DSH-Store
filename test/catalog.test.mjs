@@ -216,8 +216,20 @@ test('bundled registry declares complete detail metadata for every entry', async
   for (const id of ['dsh-safe-plugin-manager', 'dsh-token-monitor', 'dsh-chat-import', 'dsh-agent-reach', 'dsh-wecom-cli']) {
     const item = source.entries.find(entry => entry.id === id)
     assert.ok(item, `${id} must be listed`)
-    assert.deepEqual(item.compatibility.dshReleases, dshReleaseCompatibility(item.compatibility.dsh), `${id} rc matrix must be explicit`)
+    const historical = dshReleaseCompatibility(item.compatibility.dsh)
+    assert.deepEqual(
+      Object.fromEntries(Object.keys(historical).map(release => [release, item.compatibility.dshReleases[release]])),
+      historical,
+      `${id} historical rc matrix must be explicit`,
+    )
+    for (const release of Object.keys(item.compatibility.dshReleases).filter(release => !Object.hasOwn(historical, release))) {
+      assert.match(release, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/, `${id} dynamic releases must use full SemVer`)
+    }
   }
+  assert.equal(manager.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
+  assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
+    install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
+  })
   const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
   assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
   assert.equal(requestedIm.name, '多平台 IM 机器人桥接（DSH IM）')

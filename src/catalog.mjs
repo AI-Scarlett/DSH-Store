@@ -718,7 +718,7 @@ function compatibilityRank(entry, releaseContext) {
 }
 
 export function compareCatalogEntries(left, right, options = {}) {
-  const releaseContext = options.releaseContext ?? createDshReleaseContext([left, right], options.dshVersion)
+  const releaseContext = options?.releaseContext ?? createDshReleaseContext([], options?.dshVersion)
   const statusRank = entry => ({ approved: 0, blocked: 1, unlisted: 2 }[entry.status] ?? 2)
   const freshness = entry => Date.parse(entry.source?.updatedAt ?? entry.github?.pushedAt ?? entry.github?.updatedAt ?? '') || 0
   return statusRank(left) - statusRank(right)
