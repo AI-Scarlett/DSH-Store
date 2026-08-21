@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-21T02:40:10.936Z",
+    "updatedAt": "2026-08-21T05:35:09.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -40,6 +40,117 @@
     }
   },
   "entries": [
+    {
+      "id": "dsh-safe-plugin-manager",
+      "name": "安全插件商城（DSH-Store）",
+      "packageName": "dsh-safe-plugin-manager",
+      "description": "本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "7cff780c00c923b1ca45ceff1d7e26c3e263c969",
+      "version": "0.7.0",
+      "categories": [
+        "marketplace",
+        "management"
+      ],
+      "featured": true,
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "github-fixed-commit-readback",
+          "checkedAt": "2026-08-21T05:35:09.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/7cff780c00c923b1ca45ceff1d7e26c3e263c969",
+          "summary": "公开 GitHub 固定提交、0.7.0 manifest、Bundle Patch、客户端注册 ID 与 rc.5–rc.8 peer 契约已回读。"
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "本地源码已在一次性 rc.5–rc.8 Profile 通过官方 CLI 安装与配置合成；rc.8 卸载沿用既有证据，其他卸载及全部回滚仍未知，且新固定提交尚待公开回读。"
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "本地源码已在一次性 rc.5–rc.8 Web Profile 通过启动、根页面、分页 API 与客户端入口冒烟；新固定提交尚待公开回读。"
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "已通过本地静态安全契约与负向测试，不等同于独立安全审查。"
+        }
+      },
+      "entryIds": [
+        "dsh-safe-plugin-manager"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0",
+        "dshReleases": {
+          "rc.5": "compatible",
+          "rc.6": "compatible",
+          "rc.7": "compatible",
+          "rc.8": "compatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS"
+        ],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "GitHub Raw/API",
+          "macOS launchd (optional bundled Guardian)"
+        ],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-21T05:33:24.000Z",
+        "provenance": "github-commit",
+        "observedAt": "2026-08-21T05:35:09.000Z"
+      }
+    },
     {
       "id": "dsh-cliapi",
       "name": "模型与授权（DSH CLIAPI）",
@@ -333,114 +444,6 @@
       },
       "source": {
         "updatedAt": "2026-08-20T15:47:27.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      }
-    },
-    {
-      "id": "dsh-safe-plugin-manager",
-      "name": "安全插件商城（DSH-Store）",
-      "packageName": "dsh-safe-plugin-manager",
-      "description": "本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "b7ca2ebcc3e441599f955cfaaa01b3f878540ffc",
-      "version": "0.7.0",
-      "categories": [
-        "marketplace",
-        "management"
-      ],
-      "featured": true,
-      "assurance": {
-        "discovery": {
-          "status": "unknown",
-          "summary": "0.7.0 固定源码提交将在发布提交后回读；当前不得继承旧版本验证结论。"
-        },
-        "installability": {
-          "status": "unknown",
-          "summary": "本地源码已在一次性 rc.5–rc.8 Profile 通过官方 CLI 安装与配置合成；rc.8 卸载沿用既有证据，其他卸载及全部回滚仍未知，且新固定提交尚待公开回读。"
-        },
-        "runtime": {
-          "status": "unknown",
-          "summary": "本地源码已在一次性 rc.5–rc.8 Web Profile 通过启动、根页面、分页 API 与客户端入口冒烟；新固定提交尚待公开回读。"
-        },
-        "securityReview": {
-          "status": "unknown",
-          "summary": "已通过本地静态安全契约与负向测试，不等同于独立安全审查。"
-        }
-      },
-      "entryIds": [
-        "dsh-safe-plugin-manager"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0",
-        "dshReleases": {
-          "rc.5": "compatible",
-          "rc.6": "compatible",
-          "rc.7": "compatible",
-          "rc.8": "compatible"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "passed",
-            "start": "passed",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "passed",
-            "start": "passed",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "passed",
-            "start": "passed",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "passed",
-            "start": "passed",
-            "uninstall": "passed",
-            "rollback": "unknown"
-          }
-        },
-        "node": ">=22.13.0",
-        "systems": [
-          "macOS"
-        ],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "specified-services",
-          "commands": "restricted",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [
-          "GitHub Raw/API",
-          "macOS launchd (optional bundled Guardian)"
-        ],
-        "reviewStatus": "author-verified"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "owner-curated-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-20T15:22:19.000Z",
         "provenance": "github-commit",
         "observedAt": "2026-08-21T00:27:59.000Z"
       }
