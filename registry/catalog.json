@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-21T11:28:44.000Z",
+    "updatedAt": "2026-08-21T11:42:59.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -177,8 +177,11 @@
       "featured": true,
       "assurance": {
         "discovery": {
-          "status": "unknown",
-          "summary": "0.8.0 已形成本地固定源码提交；待推送 GitHub 并回读公开固定提交后再升级发现证据。"
+          "status": "verified",
+          "method": "github-fixed-commit-release-readback",
+          "checkedAt": "2026-08-21T11:42:59.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/b9be979ff42deacff5e344e2e5d36c13638c95b9",
+          "summary": "公开固定提交的 manifest、Bundle Patch、许可证、v0.8.0 Release、合并后 Catalog 与 GitHub Pages 已回读。"
         },
         "installability": {
           "status": "unknown",
@@ -271,8 +274,8 @@
       },
       "source": {
         "updatedAt": "2026-08-21T10:21:36.000Z",
-        "observedAt": "2026-08-21T10:26:29.000Z",
-        "provenance": "unknown"
+        "observedAt": "2026-08-21T11:42:59.000Z",
+        "provenance": "github-commit"
       }
     },
     {

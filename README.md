@@ -239,7 +239,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | Guardian 探针留存 `0.5.5` | [`96590c8`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/96590c863d9c074c8f31c4fed4173f4634354d08) | 记录端口、首页、runtime 身份与耗时的脱敏探针；健康状态采样、故障逐次记录，24 小时/4 MiB 自动清理；部署 Guardian 与商城源码漂移时禁止安全重启，要求走新的确认升级流程。 |
 | Guardian 安全交接与健康审核持久化 `0.5.6` | [`8bb4b17`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/8bb4b17836b593ebc29c77882503bc70f759bbc6) | 新 Guardian 先验证独立心跳再交接旧 Host；浏览器本地健康审核按版本、固定 Commit 和权限声明失效；补齐 19 个商城展示名。 |
 | 分页和跨 RC 兼容 `0.7.0` | [`7cff780`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/7cff780c00c923b1ca45ceff1d7e26c3e263c969) | DSH Host 目录改为每页 24 条的有界响应，候选库按需读取；公共商城移除 HTML 内嵌完整目录，并将官方客户端契约兼容范围扩展到 rc.5–rc.8。 |
-| DSH 0.1.1-rc.1 兼容 `0.8.0` | `b9be979`（待推送） | 新增无歧义 `0.1.1-rc.1` 矩阵、最新版本排序、旧目录缺键降级和 400 条目录的保守兼容状态迁移。 |
+| DSH 0.1.1-rc.1 兼容 `0.8.0` | [`b9be979`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/b9be979ff42deacff5e344e2e5d36c13638c95b9) | 新增无歧义 `0.1.1-rc.1` 矩阵、最新版本排序、旧目录缺键降级和 400 条目录的保守兼容状态迁移。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
