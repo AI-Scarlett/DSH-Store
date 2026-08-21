@@ -214,6 +214,7 @@ const pluginColor = id => palette[[...String(id)].reduce((total, character) => t
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
 const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
+const DSH_CARD_RELEASES = DSH_RC_RELEASES.slice(-3)
 const LATEST_DSH_RELEASE = '0.1.1-rc.1'
 const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
 const DSH_RELEASE_LABELS = { '0.1.1-rc.1': '0.1.1 rc.1' }
@@ -261,9 +262,9 @@ function dshReleaseCompatibility(value) {
 const compatibilityStatusLabel = status => state.locale === 'en'
   ? ({ compatible: 'OK', incompatible: 'No', unknown: 'Unknown' }[status] || 'Unknown')
   : ({ compatible: '兼容', incompatible: '不兼容', unknown: '未声明' }[status] || '未声明')
-const compatibilityMatrix = entry => {
+const compatibilityMatrix = (entry, releases = DSH_CARD_RELEASES) => {
   const matrix = entry.compatibility.dshReleases || dshReleaseCompatibility(entry.compatibility.dsh)
-  return `<div class="compatibility-matrix" aria-label="${escape(state.locale === 'en' ? 'DSH release compatibility' : 'DSH 版本兼容性')}">${DSH_RC_RELEASES.map(release => `<span class="compatibility-cell ${escape(matrix[release])}" title="${escape(`DSH ${release}: ${compatibilityStatusLabel(matrix[release])}`)}"><b>${escape(DSH_RELEASE_LABELS[release] || release)}</b><em>${escape(compatibilityStatusLabel(matrix[release]))}</em></span>`).join('')}</div>`
+  return `<div class="compatibility-matrix" aria-label="${escape(state.locale === 'en' ? 'Latest DSH release compatibility' : '最新 DSH 版本兼容性')}">${releases.map(release => `<span class="compatibility-cell ${escape(matrix[release])}" title="${escape(`DSH ${release}: ${compatibilityStatusLabel(matrix[release])}`)}"><b>${escape(DSH_RELEASE_LABELS[release] || release)}</b><em>${escape(compatibilityStatusLabel(matrix[release]))}</em></span>`).join('')}</div>`
 }
 const evidenceStatusLabel = status => state.locale === 'en'
   ? ({ verified: 'Verified', failed: 'Failed', unknown: 'Unknown', 'not-applicable': 'N/A' }[status] || 'Unknown')
