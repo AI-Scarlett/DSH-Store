@@ -33,7 +33,7 @@ const translations = {
     'featured.title': '精选插件，扩展你的 DSH 工作流。', 'featured.lead': '从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。',
     'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索插件、能力或 GitHub 仓库', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
     'catalog.gatewayKicker': '探索更多能力', 'catalog.gatewayTitle': '查看全部 DSH 插件、权限与兼容性',
-    'sort.recommended': 'rc.8 兼容与更新优先', 'sort.name': '名称 A–Z', 'sort.recent': '最近更新', 'sort.risk': '权限由低到高',
+    'sort.recommended': '0.1.1-rc.1 兼容与更新优先', 'sort.name': '名称 A–Z', 'sort.recent': '最近更新', 'sort.risk': '权限由低到高',
     'view.trusted': '可信安装库', 'view.candidates': '候选发现库', 'stats.candidates': '候选项目',
     'assurance.discovered': '已发现', 'assurance.installable': '可安装验证', 'assurance.runtime': '运行验证', 'assurance.security': '安全审查',
     'candidate.notice': '候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。通过固定 Commit 与安全契约审核后才能晋级可信安装库。',
@@ -93,7 +93,7 @@ const translations = {
     'featured.title': 'Featured plugins for better DSH workflows.', 'featured.lead': 'Discover practical plugins for automation, knowledge, and development with traceable sources and transparent details. Review capabilities and permissions before connecting.',
     'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
     'catalog.gatewayKicker': 'Explore more capabilities', 'catalog.gatewayTitle': 'View every DSH plugin, permission, and compatibility detail',
-    'sort.recommended': 'rc.8 and freshness first', 'sort.name': 'Name A–Z', 'sort.recent': 'Recently updated', 'sort.risk': 'Lowest permission first',
+    'sort.recommended': '0.1.1-rc.1 and freshness first', 'sort.name': 'Name A–Z', 'sort.recent': 'Recently updated', 'sort.risk': 'Lowest permission first',
     'view.trusted': 'Trusted install catalog', 'view.candidates': 'Candidate discovery', 'stats.candidates': 'candidates',
     'assurance.discovered': 'Discovered', 'assurance.installable': 'Installability', 'assurance.runtime': 'Runtime', 'assurance.security': 'Security review',
     'candidate.notice': 'Candidates are discovery-only: they have no install action and never enter a DSH operation plan. Promotion requires a pinned commit and the trusted catalog contract.',
@@ -213,8 +213,10 @@ const initials = name => String(name || 'DSH').replace(/^DSH\s*/i, '').split(/[\
 const pluginColor = id => palette[[...String(id)].reduce((total, character) => total + character.charCodeAt(0), 0) % palette.length]
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
-const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
-const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8' }
+const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
+const LATEST_DSH_RELEASE = '0.1.1-rc.1'
+const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
+const DSH_RELEASE_LABELS = { '0.1.1-rc.1': '0.1.1 rc.1' }
 function compareDshVersions(left, right) {
   const parse = version => {
     const match = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/.exec(version)
@@ -261,7 +263,7 @@ const compatibilityStatusLabel = status => state.locale === 'en'
   : ({ compatible: '兼容', incompatible: '不兼容', unknown: '未声明' }[status] || '未声明')
 const compatibilityMatrix = entry => {
   const matrix = entry.compatibility.dshReleases || dshReleaseCompatibility(entry.compatibility.dsh)
-  return `<div class="compatibility-matrix" aria-label="${escape(state.locale === 'en' ? 'DSH release compatibility' : 'DSH 版本兼容性')}">${DSH_RC_RELEASES.map(release => `<span class="compatibility-cell ${escape(matrix[release])}" title="${escape(`DSH ${release}: ${compatibilityStatusLabel(matrix[release])}`)}"><b>${escape(release)}</b><em>${escape(compatibilityStatusLabel(matrix[release]))}</em></span>`).join('')}</div>`
+  return `<div class="compatibility-matrix" aria-label="${escape(state.locale === 'en' ? 'DSH release compatibility' : 'DSH 版本兼容性')}">${DSH_RC_RELEASES.map(release => `<span class="compatibility-cell ${escape(matrix[release])}" title="${escape(`DSH ${release}: ${compatibilityStatusLabel(matrix[release])}`)}"><b>${escape(DSH_RELEASE_LABELS[release] || release)}</b><em>${escape(compatibilityStatusLabel(matrix[release]))}</em></span>`).join('')}</div>`
 }
 const evidenceStatusLabel = status => state.locale === 'en'
   ? ({ verified: 'Verified', failed: 'Failed', unknown: 'Unknown', 'not-applicable': 'N/A' }[status] || 'Unknown')
@@ -296,6 +298,13 @@ function normalizeEntry(entry) {
   const compatibility = entry?.compatibility && typeof entry.compatibility === 'object' ? entry.compatibility : {}
   const unknownOperations = () => ({ install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' })
   const operations = compatibility.dshOperations && typeof compatibility.dshOperations === 'object' ? compatibility.dshOperations : {}
+  const declaredReleases = compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : null
+  const derivedReleases = dshReleaseCompatibility(compatibility.dsh)
+  const dshReleases = Object.fromEntries(DSH_RC_RELEASES.map(release => [release,
+    ['compatible', 'incompatible', 'unknown'].includes(declaredReleases?.[release])
+      ? declaredReleases[release]
+      : declaredReleases === null ? derivedReleases[release] : 'unknown',
+  ]))
   const assurance = entry?.assurance && typeof entry.assurance === 'object' ? entry.assurance : {}
   const evidence = (record, fallback = 'unknown') => ({
     status: record?.status || fallback, method: record?.method || null, checkedAt: record?.checkedAt || null,
@@ -320,7 +329,7 @@ function normalizeEntry(entry) {
     },
     compatibility: {
       dsh: compatibility.dsh || 'unknown',
-      dshReleases: compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : dshReleaseCompatibility(compatibility.dsh),
+      dshReleases,
       dshOperations: Object.fromEntries(DSH_RC_RELEASES.map(release => [release, { ...unknownOperations(), ...(operations[release] || {}) }])),
       node: compatibility.node || 'unknown',
       systems: Array.isArray(compatibility.systems) ? compatibility.systems : [],
@@ -372,7 +381,7 @@ function visibleEntries() {
 
   return entries.sort((a, b) => {
     const locale = state.locale === 'en' ? 'en' : 'zh-CN'
-    const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility.dshReleases?.['rc.8'] || 'unknown'] ?? 1)
+    const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility.dshReleases?.[LATEST_DSH_RELEASE] || 'unknown'] ?? 1)
     const freshness = entry => Date.parse(entry.source?.updatedAt || entry.github?.pushedAt || entry.github?.updatedAt || '') || 0
     if (state.sort === 'name') return a.name.localeCompare(b.name, locale)
     if (state.sort === 'risk') return (riskOrder[a.details.permissions.level] ?? 3) - (riskOrder[b.details.permissions.level] ?? 3) || a.name.localeCompare(b.name, locale)
@@ -574,7 +583,7 @@ function showDetails(entry) {
       ${detailItem(state.locale === 'en' ? 'Credential access' : '凭据访问', listLabel(permissions.credentials.map(value => detailLabel('credentials', value)), t('value.unknown')))}
       ${detailItem(state.locale === 'en' ? 'Review status' : '审核状态', detailLabel('reviewStatus', entry.details.reviewStatus))}
       ${detailItem('DSH', compatibility.dsh === 'unknown' ? t('value.undeclared') : compatibility.dsh)}${detailItem('Node.js', compatibility.node === 'unknown' ? t('value.undeclared') : compatibility.node)}
-      ${detailItem(state.locale === 'en' ? 'DSH rc.5–rc.8' : 'DSH rc.5–rc.8 兼容性', DSH_RC_RELEASES.map(release => `${release}: ${compatibilityStatusLabel(compatibility.dshReleases[release])}`).join(' · '))}
+      ${detailItem(state.locale === 'en' ? 'DSH rc.5–0.1.1-rc.1' : 'DSH rc.5–0.1.1-rc.1 兼容性', DSH_RC_RELEASES.map(release => `${DSH_RELEASE_LABELS[release] || release}: ${compatibilityStatusLabel(compatibility.dshReleases[release])}`).join(' · '))}
       ${detailItem(state.locale === 'en' ? 'Lifecycle evidence' : '安装/启动/卸载/回滚证据', operationEvidenceText(entry))}
       ${detailItem(t('assurance.installable'), evidenceStatusLabel(entry.assurance.installability.status))}${detailItem(t('assurance.runtime'), evidenceStatusLabel(entry.assurance.runtime.status))}
       ${detailItem(t('assurance.security'), evidenceStatusLabel(entry.assurance.securityReview.status))}${detailItem(state.locale === 'en' ? 'Source updated' : '来源最近更新', entry.source.updatedAt ? new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(entry.source.updatedAt)) : t('value.unknown'))}

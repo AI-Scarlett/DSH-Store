@@ -9,13 +9,15 @@ const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
 const MAX_COUNTS_BYTES = 256 * 1024
-export const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
+export const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
+export const LATEST_DSH_RELEASE = '0.1.1-rc.1'
 export const DSH_OPERATIONS = ['install', 'start', 'uninstall', 'rollback']
 export const DSH_RC_VERSIONS = {
   'rc.5': '0.0.1-rc.5',
   'rc.6': '0.1.0-rc.6',
   'rc.7': '0.1.0-rc.7',
   'rc.8': '0.1.0-rc.8',
+  '0.1.1-rc.1': '0.1.1-rc.1',
 }
 export const MARKET_PAGE_SIZE = 24
 export const MAX_MARKET_PAGE_SIZE = 48
@@ -574,7 +576,7 @@ export function compareVersions(left, right) {
 
 export function compareCatalogEntries(left, right) {
   const statusRank = entry => ({ approved: 0, blocked: 1, unlisted: 2 }[entry.status] ?? 2)
-  const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility?.dshReleases?.['rc.8'] ?? 'unknown'] ?? 1)
+  const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility?.dshReleases?.[LATEST_DSH_RELEASE] ?? 'unknown'] ?? 1)
   const freshness = entry => Date.parse(entry.source?.updatedAt ?? entry.github?.pushedAt ?? entry.github?.updatedAt ?? '') || 0
   return statusRank(left) - statusRank(right)
     || compatibilityRank(left) - compatibilityRank(right)

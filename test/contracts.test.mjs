@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.7.0')
+  assert.equal(pkg.version, '0.8.0')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -90,7 +90,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
   assert.match(client, /GitHub-only/)
   assert.match(client, /DSH第三方插件商城/)
-  assert.match(client, /DSH_RC_RELEASES = \['rc\.5', 'rc\.6', 'rc\.7', 'rc\.8'\]/)
+  assert.match(client, /DSH_RC_RELEASES = \['rc\.5', 'rc\.6', 'rc\.7', 'rc\.8', '0\.1\.1-rc\.1'\]/)
   assert.match(client, /function CompatibilityMatrix/)
   assert.match(client, /const SUPPORT_URL = 'https:\/\/dsh\.store\/'/)
   assert.match(client, /技术支持：DSH-Store/)
@@ -186,7 +186,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
-test('rc.5 through rc.8 client contract stays on official ModuleLoader and settings ordering', async () => {
+test('rc.5 through 0.1.1-rc.1 client contract stays on official ModuleLoader and settings ordering', async () => {
   const [pkg, client] = await Promise.all([
     readFile(new URL('package.json', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
