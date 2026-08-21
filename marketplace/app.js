@@ -16,7 +16,7 @@ const translations = {
     'install.note1': '确认正在操作目标设备', 'install.note2': '来源锁定到完整 Commit', 'install.note3': '在“设置 → 插件”中进入',
     'install.warning': '命令会修改 web Profile。请先备份；如执行失败，不要连续重试。',
     'action.copyCommand': '复制', 'action.fullGuide': '查看说明 ↗', 'action.explore': '查看全部插件', 'action.manager': '了解 DSH Store', 'action.build': '开发 DSH 插件', 'action.installSkill': '安装 build-dsh-plugin', 'action.trust': '了解安全机制', 'action.allFaq': '查看完整常见问题', 'action.home': '返回首页',
-    'action.source': '查看源码与说明', 'action.backCommand': '回到首屏复制命令 ↑', 'action.clear': '清除筛选', 'action.viewAll': '查看全部插件', 'action.loadMore': '加载更多插件', 'action.retry': '重新加载', 'action.githubCatalog': '查看 GitHub 目录 ↗', 'action.top': '回到顶部 ↑',
+    'action.source': '查看源码与说明', 'action.backCommand': '回到首屏复制命令 ↑', 'action.clear': '清除筛选', 'action.viewAll': '查看全部插件', 'action.previous': '上一页', 'action.next': '下一页', 'action.retry': '重新加载', 'action.githubCatalog': '查看 GitHub 目录 ↗', 'action.top': '回到顶部 ↑',
     'action.details': '查看插件详情', 'action.copyCommit': '复制 Commit', 'action.repo': '查看 GitHub 仓库', 'action.manual': '前往 GitHub 手动安装',
     'trust.commit': '固定 Git Commit', 'trust.permissions': '权限先于安装', 'trust.readonly': '浏览保持只读',
     'console.online': '目录在线', 'console.network': 'EXTENSION NETWORK', 'console.heading': '找到新能力',
@@ -76,7 +76,7 @@ const translations = {
     'install.note1': 'Confirm the target device', 'install.note2': 'Source pinned to a full commit', 'install.note3': 'Open Settings → Plugins',
     'install.warning': 'This command changes the web Profile. Back it up first; if it fails, do not retry repeatedly.',
     'action.copyCommand': 'Copy', 'action.fullGuide': 'View guide ↗', 'action.explore': 'View all plugins', 'action.manager': 'Meet DSH Store', 'action.build': 'Build a DSH plugin', 'action.installSkill': 'Install build-dsh-plugin', 'action.trust': 'See the trust protocol', 'action.allFaq': 'View the complete FAQ', 'action.home': 'Back home',
-    'action.source': 'View source and docs', 'action.backCommand': 'Back to the command ↑', 'action.clear': 'Clear filters', 'action.viewAll': 'View all plugins', 'action.loadMore': 'Load more plugins', 'action.retry': 'Retry', 'action.githubCatalog': 'View GitHub catalog ↗', 'action.top': 'Back to top ↑',
+    'action.source': 'View source and docs', 'action.backCommand': 'Back to the command ↑', 'action.clear': 'Clear filters', 'action.viewAll': 'View all plugins', 'action.previous': 'Previous', 'action.next': 'Next', 'action.retry': 'Retry', 'action.githubCatalog': 'View GitHub catalog ↗', 'action.top': 'Back to top ↑',
     'action.details': 'View plugin details', 'action.copyCommit': 'Copy commit', 'action.repo': 'View GitHub repository', 'action.manual': 'Install manually on GitHub',
     'trust.commit': 'Pinned Git commit', 'trust.permissions': 'Permissions before install', 'trust.readonly': 'Browsing stays read-only',
     'console.online': 'Catalog online', 'console.network': 'EXTENSION NETWORK', 'console.heading': 'Find a new capability',
@@ -136,7 +136,10 @@ const state = {
   query: '',
   category: '',
   sort: 'recommended',
-  visibleLimit: 24,
+  page: 1,
+  pageSize: 24,
+  candidatesLoaded: false,
+  candidatesLoading: false,
   locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
   selectedEntry: null,
 }
@@ -153,7 +156,10 @@ const els = {
   error: document.querySelector('#load-error'),
   retry: document.querySelector('#retry-catalog'),
   pagination: document.querySelector('#catalog-pagination'),
-  loadMore: document.querySelector('#load-more'),
+  previousPage: document.querySelector('#previous-page'),
+  nextPage: document.querySelector('#next-page'),
+  pageButtons: document.querySelector('#page-buttons'),
+  pageStatus: document.querySelector('#page-status'),
   featured: document.querySelector('#featured-grid'),
   preview: document.querySelector('#hero-preview'),
   dialog: document.querySelector('#plugin-dialog'),
@@ -208,20 +214,45 @@ const pluginColor = id => palette[[...String(id)].reduce((total, character) => t
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
 const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
+const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8' }
+function compareDshVersions(left, right) {
+  const parse = version => {
+    const match = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/.exec(version)
+    return match ? { numbers: match.slice(1, 4).map(Number), pre: match[4] || null } : null
+  }
+  const a = parse(left); const b = parse(right)
+  if (!a || !b) return null
+  for (let index = 0; index < 3; index += 1) if (a.numbers[index] !== b.numbers[index]) return a.numbers[index] < b.numbers[index] ? -1 : 1
+  if (a.pre === b.pre) return 0
+  if (a.pre === null) return 1
+  if (b.pre === null) return -1
+  return a.pre.localeCompare(b.pre, 'en', { numeric: true })
+}
 function dshReleaseCompatibility(value) {
   const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
   if (typeof value !== 'string' || value.trim() === '' || value.trim().toLowerCase() === 'unknown') return result
-  const range = value.trim()
-  const exact = /^0\.1\.0-(rc\.\d+)$/.exec(range)
-  const lower = /(?:^|\s)(?:>=|\^|~)?0\.1\.0-(rc\.\d+)/.exec(range)
-  const upper = /<\s*0\.1\.0-(rc\.\d+)/.exec(range)
-  const lowerIndex = exact ? DSH_RC_RELEASES.indexOf(exact[1]) : lower ? DSH_RC_RELEASES.indexOf(lower[1]) : -1
-  if (lowerIndex < 0) return result
-  const upperIndex = upper ? DSH_RC_RELEASES.indexOf(upper[1]) : DSH_RC_RELEASES.length
-  for (let index = 0; index < DSH_RC_RELEASES.length; index += 1) {
-    result[DSH_RC_RELEASES[index]] = exact
-      ? index === lowerIndex ? 'compatible' : 'incompatible'
-      : index >= lowerIndex && (upperIndex < 0 || index < upperIndex) ? 'compatible' : 'incompatible'
+  const clauses = value.trim().split('||').map(clause => clause.trim()).filter(Boolean)
+  const parsedClauses = clauses.map(clause => {
+    const tokens = [...clause.matchAll(/(?:^|\s)(>=|<=|>|<|\^|~|=)?\s*(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)/g)]
+      .map(match => ({ operator: match[1] || '=', version: match[2] }))
+    const residue = clause.replace(/(?:^|\s)(?:>=|<=|>|<|\^|~|=)?\s*\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/g, '').trim()
+    return residue === '' && tokens.length > 0 ? tokens : null
+  })
+  if (parsedClauses.length === 0 || parsedClauses.some(clause => clause === null)) return result
+  for (const release of DSH_RC_RELEASES) {
+    const version = DSH_RC_VERSIONS[release]
+    result[release] = parsedClauses.some(tokens => tokens.every(token => {
+      const comparison = compareDshVersions(version, token.version)
+      if (comparison === null) return false
+      if (token.operator === '^' || token.operator === '~') {
+        const target = token.version.match(/^(\d+)\.(\d+)\./)
+        const candidate = version.match(/^(\d+)\.(\d+)\./)
+        if (!target || !candidate || comparison < 0 || candidate[1] !== target[1]) return false
+        return token.operator === '^' && Number(target[1]) > 0 ? true : candidate[2] === target[2]
+      }
+      return token.operator === '>=' ? comparison >= 0 : token.operator === '<=' ? comparison <= 0
+        : token.operator === '>' ? comparison > 0 : token.operator === '<' ? comparison < 0 : comparison === 0
+    })) ? 'compatible' : 'incompatible'
   }
   return result
 }
@@ -360,7 +391,7 @@ function renderStats() {
   setText('#stat-total', String(entries.length).padStart(2, '0'))
   setText('#stat-approved', String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
   setText('#stat-categories', String(categoryCount).padStart(2, '0'))
-  setText('#stat-candidates', String(state.candidates.length).padStart(2, '0'))
+  if (state.candidatesLoaded) setText('#stat-candidates', String(state.candidates.length).padStart(2, '0'))
   setText('#float-count', String(entries.length))
   const updatedAt = state.catalog?.registry?.updatedAt
   setText('#catalog-date', updatedAt
@@ -460,16 +491,44 @@ function candidateCardTemplate(entry) {
 function renderCatalog() {
   if (!state.catalog || !els.grid || !els.meta || !els.empty) return
   const candidateView = state.catalogView === 'candidates'
+  if (candidateView && state.candidatesLoading) {
+    els.grid.hidden = true
+    els.empty.hidden = true
+    els.meta.textContent = t('catalog.loading')
+    if (els.pagination) els.pagination.hidden = true
+    return
+  }
   const matchingEntries = candidateView ? visibleCandidates() : visibleEntries()
-  const entries = matchingEntries.slice(0, state.visibleLimit)
   const total = matchingEntries.length
+  const pageCount = Math.max(1, Math.ceil(total / state.pageSize))
+  state.page = Math.min(state.page, pageCount)
+  const start = (state.page - 1) * state.pageSize
+  const entries = matchingEntries.slice(start, start + state.pageSize)
   els.grid.innerHTML = entries.map(candidateView ? candidateCardTemplate : cardTemplate).join('')
   els.grid.hidden = entries.length === 0
   els.empty.hidden = entries.length !== 0
   els.meta.innerHTML = candidateView
     ? `<b>${entries.length}</b> / ${matchingEntries.length} · ${escape(t('candidate.notice'))}`
     : `${escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
-  if (els.pagination) els.pagination.hidden = entries.length === 0 || entries.length >= matchingEntries.length
+  if (els.pagination) els.pagination.hidden = total <= state.pageSize
+  if (els.previousPage) {
+    els.previousPage.disabled = state.page <= 1
+    els.previousPage.querySelector('span').textContent = t('action.previous')
+  }
+  if (els.nextPage) {
+    els.nextPage.disabled = state.page >= pageCount
+    els.nextPage.querySelector('span').textContent = t('action.next')
+  }
+  if (els.pageStatus) els.pageStatus.textContent = state.locale === 'en'
+    ? `Page ${state.page} of ${pageCount}`
+    : `第 ${state.page} / ${pageCount} 页`
+  if (els.pageButtons) {
+    const first = Math.max(1, Math.min(state.page - 2, pageCount - 4))
+    const last = Math.min(pageCount, first + 4)
+    const pages = []
+    for (let page = first; page <= last; page += 1) pages.push(page)
+    els.pageButtons.innerHTML = pages.map(page => `<button type="button" data-page="${page}"${page === state.page ? ' class="active" aria-current="page"' : ''}>${page}</button>`).join('')
+  }
   if (els.categories?.parentElement) els.categories.parentElement.hidden = candidateView
   if (els.sort?.parentElement) els.sort.parentElement.hidden = candidateView
   if (els.legend) els.legend.hidden = candidateView
@@ -535,7 +594,7 @@ function showDetails(entry) {
 function clearFilters() {
   state.query = ''
   state.category = ''
-  state.visibleLimit = 24
+  state.page = 1
   if (els.search) els.search.value = ''
   renderCatalog()
 }
@@ -663,17 +722,7 @@ function candidateRegistryUrls() {
   ])]
 }
 
-function embeddedCatalog() {
-  const element = document.querySelector('#catalog-snapshot')
-  if (!element?.textContent?.trim()) return null
-  const payload = JSON.parse(element.textContent)
-  if (!payload || !Array.isArray(payload.entries)) throw new Error('Invalid embedded catalog payload')
-  return payload
-}
-
 async function fetchCatalog() {
-  const embedded = embeddedCatalog()
-  if (embedded) return embedded
   const failures = []
   for (const url of catalogCandidates()) {
     try {
@@ -715,25 +764,47 @@ async function loadCatalog() {
   try {
     state.catalog = await fetchCatalog()
     state.entries = state.catalog.entries.map(normalizeEntry)
-    const candidateRegistry = await fetchCandidateRegistry(state.catalog)
-    state.candidates = candidateRegistry.entries.map(entry => ({ ...entry, installable: false, allowedActions: [] }))
+    state.candidates = []
+    state.candidatesLoaded = false
+    state.page = 1
     renderStats()
     renderManagerMetadata()
     renderHeroPreview()
     renderFeatured()
     renderCatalog()
     loadInstallCounts()
+    if (state.catalogView === 'candidates') void loadCandidates()
   } catch (error) {
     if (els.meta) els.meta.textContent = t('catalog.failed')
-    if (els.grid) els.grid.hidden = true
+    const hasStaticCards = Boolean(els.grid?.querySelector('[data-static-plugin-id]'))
+    if (els.grid) els.grid.hidden = !hasStaticCards
     if (els.empty) els.empty.hidden = true
     if (els.pagination) els.pagination.hidden = true
-    if (els.error) els.error.hidden = false
+    if (els.error) els.error.hidden = hasStaticCards
     const catalogDate = document.querySelector('#catalog-date')
     if (catalogDate) catalogDate.textContent = t('catalog.offline')
     console.error('Failed to load marketplace catalog:', error)
   } finally {
     if (els.retry) els.retry.disabled = false
+  }
+}
+
+async function loadCandidates() {
+  if (state.candidatesLoaded || state.candidatesLoading || !state.catalog) return
+  state.candidatesLoading = true
+  renderCatalog()
+  try {
+    const candidateRegistry = await fetchCandidateRegistry(state.catalog)
+    state.candidates = candidateRegistry.entries.map(entry => ({ ...entry, installable: false, allowedActions: [] }))
+    state.candidatesLoaded = true
+    renderStats()
+  } catch (error) {
+    console.error('Failed to load marketplace candidates:', error)
+    state.candidates = []
+    state.candidatesLoaded = true
+  } finally {
+    state.candidatesLoading = false
+    renderCatalog()
   }
 }
 
@@ -745,7 +816,7 @@ async function init() {
 
 els.search?.addEventListener('input', event => {
   state.query = event.currentTarget.value
-  state.visibleLimit = 24
+  state.page = 1
   renderCatalog()
   clearTimeout(state.searchEventTimer)
   if (state.query.trim()) {
@@ -759,7 +830,7 @@ els.search?.addEventListener('input', event => {
 })
 els.sort?.addEventListener('change', event => {
   state.sort = event.currentTarget.value
-  state.visibleLimit = 24
+  state.page = 1
   renderCatalog()
   sendDshEvent('catalog_sort', { item: state.sort })
 })
@@ -768,26 +839,35 @@ els.viewTabs?.addEventListener('click', event => {
   if (!button || !['trusted', 'candidates'].includes(button.dataset.catalogView)) return
   state.catalogView = button.dataset.catalogView
   state.category = ''
-  state.visibleLimit = 24
+  state.page = 1
   els.viewTabs.querySelectorAll('[data-catalog-view]').forEach(item => item.setAttribute('aria-pressed', String(item === button)))
   renderCatalog()
+  if (state.catalogView === 'candidates') void loadCandidates()
   sendDshEvent('catalog_view', { item: state.catalogView })
 })
 els.categories?.addEventListener('click', event => {
   const button = event.target.closest('[data-category]')
   if (!button) return
   state.category = button.dataset.category
-  state.visibleLimit = 24
+  state.page = 1
   renderCatalog()
   sendDshEvent('catalog_category', { item: state.category || 'all' })
 })
 els.clear?.addEventListener('click', clearFilters)
 els.emptyClear?.addEventListener('click', clearFilters)
 els.retry?.addEventListener('click', loadCatalog)
-els.loadMore?.addEventListener('click', () => {
-  state.visibleLimit += 24
+function changePage(page) {
+  if (!Number.isInteger(page) || page < 1 || page === state.page) return
+  state.page = page
   renderCatalog()
-  sendDshEvent('catalog_load_more', { value: String(state.visibleLimit) })
+  els.grid?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  sendDshEvent('catalog_page', { value: String(state.page) })
+}
+els.previousPage?.addEventListener('click', () => changePage(state.page - 1))
+els.nextPage?.addEventListener('click', () => changePage(state.page + 1))
+els.pageButtons?.addEventListener('click', event => {
+  const button = event.target.closest('[data-page]')
+  if (button) changePage(Number(button.dataset.page))
 })
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-copy-target]')

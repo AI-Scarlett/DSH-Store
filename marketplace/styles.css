@@ -677,10 +677,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .details-button { padding: 0; border: 0; background: transparent; color: var(--green); cursor: pointer; font-size: 9px; font-weight: 850; }
 .repo-link { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line-strong); color: var(--green); transition: background .2s, color .2s; }
 .repo-link:hover { background: var(--green); color: #fff; }
-.catalog-pagination { padding: 24px 0 0; text-align: center; }
-.catalog-pagination button { min-height: 44px; display: inline-flex; align-items: center; gap: 24px; padding: 0 20px; border: 1px solid var(--line-strong); background: rgba(120, 255, 202, .04); color: var(--green); cursor: pointer; font-size: 9px; font-weight: 850; }
+.catalog-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 24px 0 0; text-align: center; }
+.catalog-pagination[hidden] { display: none; }
+.catalog-pagination button { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-width: 40px; padding: 0 14px; border: 1px solid var(--line-strong); background: rgba(120, 255, 202, .04); color: var(--green); cursor: pointer; font-size: 9px; font-weight: 850; }
 .catalog-pagination button:hover { border-color: var(--green); background: rgba(120, 255, 202, .09); }
+.catalog-pagination button.active { border-color: var(--green); background: var(--green); color: #07140f; }
+.catalog-pagination button:disabled { opacity: .42; cursor: not-allowed; }
 .catalog-pagination button i { font-style: normal; }
+.page-buttons { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.page-status { min-width: 92px; color: var(--muted); font-size: 9px; font-weight: 750; }
 .empty-state, .load-error { padding: 70px 24px; border: 1px dashed var(--line-strong); background: rgba(255, 255, 255, .88); text-align: center; }
 .empty-state > span { color: var(--green); font-size: 40px; }
 .empty-state h3 { margin: 10px 0 0; }

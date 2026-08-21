@@ -13,7 +13,7 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.dsh.client.platform, 'web')
   assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
   for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
-    assert.equal(pkg.peerDependencies[dependency], '>=0.1.0-rc.8 <0.2.0')
+    assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0')
   }
   assert.equal(pkg.private, true)
 })
@@ -92,6 +92,8 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /label: \(\) => '插件商城'/)
   assert.match(client, /迁移到商城版/)
   assert.match(client, /function CatalogFilters/)
+  assert.match(client, /function Pagination/)
+  assert.match(client, /pageSize: MARKET_PAGE_SIZE/)
   assert.match(client, /function InventoryOnlyCard/)
   assert.match(client, /require\('@deepseek-ai\/dsh-client-ui-primitives'\)/)
   assert.match(client, /PluginDetailsModal/)
@@ -118,7 +120,8 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(installedViewSource, /React\.createElement\(MarketCard/)
   assert.match(installedViewSource, /openDetails: setDetailEntry/)
   assert.match(installedViewSource, /React\.createElement\(InventoryOnlyCard/)
-  assert.match(client, /normalizedEntries\.filter\(entry => view === 'installed' \? entry\.installed/)
+  assert.match(client, /pagination\?\.view === view/)
+  assert.match(client, /catalogPackageNames/)
   assert.ok((client.match(/\bfilters,/g) || []).length >= 2, 'market and installed views must share catalog filters')
   assert.match(client, /plugin\.description \|\| '本地 manifest 未提供插件介绍'/)
   assert.match(client, /未进入 GitHub catalog\.json，无法提供目录详情或商城受保护操作/)
@@ -167,7 +170,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
-test('rc.8 client contract stays on official ModuleLoader and settings ordering', async () => {
+test('rc.5 through rc.8 client contract stays on official ModuleLoader and settings ordering', async () => {
   const [pkg, client] = await Promise.all([
     readFile(new URL('package.json', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
@@ -182,6 +185,7 @@ test('rc.8 client contract stays on official ModuleLoader and settings ordering'
   assert.match(client, /window\.__ModuleLoader__\.load/)
   assert.match(client, /settings\.plugins\.tab/)
   assert.match(client, /order:\s*-10/)
+  assert.match(client, /0\.0\.1-rc\.5/)
   assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
 })
 
@@ -259,7 +263,10 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(app, /showDetails/)
   assert.match(app, /dsh-marketplace-locale/)
   assert.match(app, /function setLocale/)
-  assert.match(app, /function embeddedCatalog/)
+  assert.doesNotMatch(app, /function embeddedCatalog/)
+  assert.match(app, /function changePage/)
+  assert.match(pluginsHtml, /id="previous-page"/)
+  assert.match(pluginsHtml, /id="next-page"/)
   assert.match(app, /function renderManagerMetadata/)
   assert.match(app, /github\.stars/)
   assert.match(app, /详情来自 GitHub catalog\.json/)

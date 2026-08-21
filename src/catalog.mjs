@@ -11,6 +11,14 @@ const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
 const MAX_COUNTS_BYTES = 256 * 1024
 export const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
 export const DSH_OPERATIONS = ['install', 'start', 'uninstall', 'rollback']
+export const DSH_RC_VERSIONS = {
+  'rc.5': '0.0.1-rc.5',
+  'rc.6': '0.1.0-rc.6',
+  'rc.7': '0.1.0-rc.7',
+  'rc.8': '0.1.0-rc.8',
+}
+export const MARKET_PAGE_SIZE = 24
+export const MAX_MARKET_PAGE_SIZE = 48
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json'
@@ -18,17 +26,44 @@ export const DEFAULT_CATALOG_URL =
 export function dshReleaseCompatibility(value) {
   const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
   if (typeof value !== 'string' || value.trim() === '' || value.trim().toLowerCase() === 'unknown') return result
-  const range = value.trim()
-  const exact = /^0\.1\.0-(rc\.\d+)$/.exec(range)
-  const lower = /(?:^|\s)(?:>=|\^|~)?0\.1\.0-(rc\.\d+)/.exec(range)
-  const upper = /<\s*0\.1\.0-(rc\.\d+)/.exec(range)
-  const lowerIndex = exact ? DSH_RC_RELEASES.indexOf(exact[1]) : lower ? DSH_RC_RELEASES.indexOf(lower[1]) : -1
-  if (lowerIndex < 0) return result
-  const upperIndex = upper ? DSH_RC_RELEASES.indexOf(upper[1]) : DSH_RC_RELEASES.length
-  for (let index = 0; index < DSH_RC_RELEASES.length; index += 1) {
-    result[DSH_RC_RELEASES[index]] = exact
-      ? index === lowerIndex ? 'compatible' : 'incompatible'
-      : index >= lowerIndex && (upperIndex < 0 || index < upperIndex) ? 'compatible' : 'incompatible'
+  const clauses = value.trim().split('||').map(clause => clause.trim()).filter(Boolean)
+  const parsedClauses = clauses.map(clause => {
+    const tokens = [...clause.matchAll(/(?:^|\s)(>=|<=|>|<|\^|~|=)?\s*(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)/g)]
+      .map(match => ({ operator: match[1] || '=', version: match[2] }))
+    const residue = clause.replace(/(?:^|\s)(?:>=|<=|>|<|\^|~|=)?\s*\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/g, '').trim()
+    return residue === '' && tokens.length > 0 ? tokens : null
+  })
+  if (parsedClauses.length === 0 || parsedClauses.some(clause => clause === null)) return result
+
+  const satisfiesToken = (version, token) => {
+    const comparison = compareVersions(version, token.version)
+    if (comparison === null) return false
+    if (token.operator === '>=') return comparison >= 0
+    if (token.operator === '<=') return comparison <= 0
+    if (token.operator === '>') return comparison > 0
+    if (token.operator === '<') return comparison < 0
+    if (token.operator === '^') {
+      const target = parseVersion(token.version)
+      const candidate = parseVersion(version)
+      if (!target || !candidate || comparison < 0) return false
+      return target.major === 0
+        ? candidate.major === 0 && candidate.minor === target.minor
+        : candidate.major === target.major
+    }
+    if (token.operator === '~') {
+      const target = parseVersion(token.version)
+      const candidate = parseVersion(version)
+      return Boolean(target && candidate && comparison >= 0
+        && candidate.major === target.major && candidate.minor === target.minor)
+    }
+    return comparison === 0
+  }
+
+  for (const release of DSH_RC_RELEASES) {
+    const version = DSH_RC_VERSIONS[release]
+    result[release] = parsedClauses.some(clause => clause.every(token => satisfiesToken(version, token)))
+      ? 'compatible'
+      : 'incompatible'
   }
   return result
 }
@@ -606,6 +641,82 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
     candidateSource: options.candidateRegistry?.source ?? null,
     candidates: Array.isArray(options.candidateRegistry?.entries) ? options.candidateRegistry.entries : [],
     entries,
+  }
+}
+
+function marketplaceSearchValues(entry) {
+  return [
+    entry.id, entry.name, entry.packageName, entry.description, entry.repositoryUrl,
+    entry.details?.pluginType, entry.details?.installSource, entry.details?.license,
+    entry.details?.permissions?.level, entry.details?.permissions?.files,
+    entry.details?.permissions?.network, entry.details?.permissions?.commands,
+    ...(entry.details?.permissions?.credentials ?? []), ...(entry.details?.externalDependencies ?? []),
+    ...(entry.compatibility?.systems ?? []), ...(entry.compatibility?.profiles ?? []),
+    entry.compatibility?.dsh, ...Object.entries(entry.compatibility?.dshReleases ?? {}).flat(),
+    ...(entry.categories ?? []),
+  ].map(item => String(item ?? '').toLowerCase())
+}
+
+function candidateSearchValues(entry) {
+  return [
+    entry.id, entry.name, entry.description, entry.repositoryUrl, entry.route,
+    ...(entry.discoverySources ?? []), ...(entry.topics ?? []),
+  ].map(item => String(item ?? '').toLowerCase())
+}
+
+function positiveInteger(value, fallback, maximum, label) {
+  if (value === undefined || value === null || value === '') return fallback
+  if (!Number.isInteger(value) || value < 1 || value > maximum) {
+    throw Object.assign(new TypeError(`${label} must be an integer between 1 and ${maximum}`), { code: 'INVALID_PAGINATION', status: 400 })
+  }
+  return value
+}
+
+export function paginateMarketplaceSnapshot(snapshot, options = {}) {
+  if (!snapshot || !Array.isArray(snapshot.entries) || !Array.isArray(snapshot.candidates)) {
+    throw new TypeError('marketplace snapshot is invalid')
+  }
+  const view = options.view ?? 'market'
+  if (!['market', 'installed', 'candidates'].includes(view)) {
+    throw Object.assign(new TypeError('view must be market, installed, or candidates'), { code: 'INVALID_MARKET_VIEW', status: 400 })
+  }
+  const query = String(options.query ?? '').trim().toLowerCase()
+  const category = String(options.category ?? '').trim().toLowerCase()
+  if (query.length > 200) throw Object.assign(new TypeError('query is too long'), { code: 'INVALID_MARKET_QUERY', status: 400 })
+  if (category.length > 96 || (category && !SIMPLE_ID.test(category))) {
+    throw Object.assign(new TypeError('category is invalid'), { code: 'INVALID_MARKET_CATEGORY', status: 400 })
+  }
+  const requestedPage = positiveInteger(options.page, 1, 10_000, 'page')
+  const pageSize = positiveInteger(options.pageSize, MARKET_PAGE_SIZE, MAX_MARKET_PAGE_SIZE, 'pageSize')
+  const scopedEntries = snapshot.entries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
+  const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories ?? []))].sort()
+  const matchingEntries = scopedEntries
+    .filter(entry => category === '' || entry.categories?.includes(category))
+    .filter(entry => query === '' || marketplaceSearchValues(entry).some(item => item.includes(query)))
+  const matchingCandidates = view === 'candidates'
+    ? snapshot.candidates
+      .filter(entry => entry.status !== 'rejected')
+      .filter(entry => query === '' || candidateSearchValues(entry).some(item => item.includes(query)))
+      .sort((left, right) => (Date.parse(right.sourceUpdatedAt || right.discoveredAt) || 0)
+        - (Date.parse(left.sourceUpdatedAt || left.discoveredAt) || 0)
+        || String(left.name).localeCompare(String(right.name), 'zh-CN'))
+    : []
+  const matching = view === 'candidates' ? matchingCandidates : matchingEntries
+  const total = matching.length
+  const pageCount = Math.max(1, Math.ceil(total / pageSize))
+  const page = Math.min(requestedPage, pageCount)
+  const pageItems = matching.slice((page - 1) * pageSize, page * pageSize)
+  return {
+    ...snapshot,
+    entries: view === 'candidates' ? [] : pageItems,
+    candidates: view === 'candidates' ? pageItems : [],
+    catalogPackageNames: snapshot.entries.map(entry => entry.packageName),
+    filters: { categoryIds },
+    pagination: {
+      view, query, category, page, pageSize, total, pageCount,
+      hasPrevious: page > 1,
+      hasNext: page < pageCount,
+    },
   }
 }
 

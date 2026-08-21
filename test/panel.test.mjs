@@ -85,6 +85,8 @@ test('market endpoint joins the GitHub catalog with installed state', async () =
     assert.equal(res.status, 200)
     assert.equal(payload.value.entries[0].installed, true)
     assert.equal(payload.value.entries[0].updateAvailable, true)
+    assert.equal(payload.value.pagination.pageSize, 24)
+    assert.equal(payload.value.pagination.total, 1)
   } finally {
     await rm(root, { recursive: true, force: true })
   }
@@ -105,7 +107,7 @@ test('market endpoint keeps candidate discovery records outside install operatio
       entries: [{ id: 'candidate', name: 'Candidate', installable: false, allowedActions: [] }],
     }
     const res = response()
-    await handleMarketRequest(request({}), res, {
+    await handleMarketRequest(request({ view: 'candidates', page: 1, pageSize: 24 }), res, {
       dshHome: root,
       catalogService: { load: async () => catalog },
       candidateService: { load: async () => candidateRegistry },
@@ -115,6 +117,68 @@ test('market endpoint keeps candidate discovery records outside install operatio
     assert.equal(payload.value.entries.length, 0)
     assert.equal(payload.value.candidates[0].installable, false)
     assert.deepEqual(payload.value.candidates[0].allowedActions, [])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('market endpoint does not load the candidate registry outside the candidate view', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-lazy-candidate-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(profileDir, { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: {}, dsh: { profile: { bundles: [] } },
+    }))
+    let candidateLoads = 0
+    const res = response()
+    await handleMarketRequest(request({ view: 'market' }), res, {
+      dshHome: root,
+      catalogService: { load: async () => ({ schemaVersion: 1, registry: { name: 'Fixture' }, source: { kind: 'fixture' }, entries: [] }) },
+      candidateService: { load: async () => { candidateLoads += 1; return { entries: [] } } },
+    })
+    assert.equal(res.status, 200)
+    assert.equal(candidateLoads, 0)
+    assert.deepEqual(JSON.parse(res.body).value.candidates, [])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('market endpoint keeps a 400-entry catalog response bounded to one page', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-bounded-market-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(profileDir, { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: {}, dsh: { profile: { bundles: [] } },
+    }))
+    const entries = Array.from({ length: 400 }, (_, index) => ({
+      id: `demo-${index}`, name: `Demo ${index}`, packageName: `dsh-demo-${index}`,
+      description: 'bounded response fixture', repositoryUrl: `https://github.com/example/demo-${index}`,
+      commit: 'a'.repeat(40), version: '1.0.0', categories: ['tools'], entryIds: [`demo-${index}`],
+      status: 'approved', statusReason: null,
+      compatibility: { dsh: '>=0.1.0-rc.8 <0.2.0', dshReleases: { 'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'incompatible', 'rc.8': 'compatible' } },
+      details: {
+        pluginType: 'feature', installSource: 'github', license: 'MIT',
+        permissions: { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] },
+        externalDependencies: [], reviewStatus: 'automated-scan',
+      },
+      risk: { installScripts: [], review: 'fixture' },
+    }))
+    const res = response()
+    await handleMarketRequest(request({ view: 'market', page: 7, pageSize: 24 }), res, {
+      dshHome: root,
+      catalogService: { load: async () => ({
+        schemaVersion: 1, registry: { name: 'Fixture', categories: { tools: '工具' } }, source: { kind: 'fixture' }, entries,
+      }) },
+    })
+    const payload = JSON.parse(res.body)
+    assert.equal(res.status, 200)
+    assert.equal(payload.value.entries.length, 24)
+    assert.equal(payload.value.pagination.total, 400)
+    assert.equal(payload.value.pagination.pageCount, 17)
+    assert.ok(Buffer.byteLength(res.body) < 200_000, `paged response is unexpectedly large: ${Buffer.byteLength(res.body)} bytes`)
   } finally {
     await rm(root, { recursive: true, force: true })
   }
