@@ -21,6 +21,13 @@ if (siteOriginUrl.protocol !== 'https:' || siteOriginUrl.pathname !== '/' || sit
 }
 const siteOrigin = siteOriginUrl.origin
 const siteHost = siteOriginUrl.host
+const alternateOriginInput = argValue('--alternate-origin') || process.env.ALTERNATE_ORIGIN || 'https://dsh-store.cn'
+const alternateOriginUrl = new URL(alternateOriginInput)
+if (alternateOriginUrl.protocol !== 'https:' || alternateOriginUrl.pathname !== '/' || alternateOriginUrl.search || alternateOriginUrl.hash) {
+  throw new Error('The alternate site origin must be an HTTPS origin without a path, query, or hash')
+}
+const alternateOrigin = alternateOriginUrl.origin
+if (alternateOrigin === siteOrigin) throw new Error('The alternate site origin must differ from the site origin')
 const icpNumber = argValue('--icp') || process.env.ICP_NUMBER || ''
 const outputRelative = relative(projectRoot, outputRoot)
 
@@ -253,6 +260,13 @@ await cp(resolve(projectRoot, 'marketplace'), resolve(outputRoot, 'marketplace')
 await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { recursive: true, filter: copyFilter })
 await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
 
+const alternateIsDomestic = alternateOriginUrl.host === 'dsh-store.cn'
+const alternateLabel = alternateIsDomestic ? '国内站' : '国际站'
+const alternateCode = alternateIsDomestic ? 'CN' : 'INTL'
+const alternateAriaLabel = alternateIsDomestic ? '切换到国内站 / Switch to China site' : '切换到国际站 / Switch to international site'
+const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international'
+const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
+
 const icpMarkup = icpNumber
   ? `<a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">${htmlEscape(icpNumber)}</a>`
   : ''
@@ -265,7 +279,8 @@ for (const pagePath of [
 ]) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
-  await writeFile(absolutePath, replaceRequired(page, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
+  const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
+  await writeFile(absolutePath, replaceRequired(withAlternate, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
 }
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
@@ -301,6 +316,7 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   generatedAt,
   sourceCommit: sourceSha,
   siteOrigin,
+  alternateOrigin,
   icp: icpNumber || null,
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,

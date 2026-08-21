@@ -43,6 +43,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(manifest.manager.license, manager.details.license)
     assert.equal(manifest.manager.status, manager.status)
     assert.equal(manifest.sourceCommit, 'test-source-sha')
+    assert.equal(manifest.alternateOrigin, 'https://dsh-store.cn')
     assert.equal(manifest.githubEnriched, false)
     assert.equal(release.sourceCommit, 'test-source-sha')
     assert.ok(release.files['marketplace/index.html'])
@@ -51,6 +52,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.ok(home.includes(`"softwareVersion": "${manager.version}"`))
     assert.match(home, new RegExp(manager.commit))
     assert.match(home, /name="dsh-catalog-delivery" content="external-json"/)
+    assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\/"/)
+    assert.doesNotMatch(home, /DSH_ALTERNATE_SITE/)
     assert.doesNotMatch(home, /id="catalog-snapshot"/)
     assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, Math.min(24, catalog.entries.filter(entry => entry.status !== 'unlisted').length))
     assert.match(plugins, /name="dsh-catalog-delivery" content="external-json"/)
@@ -72,6 +75,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       '--out', relative(rootPath, output),
       '--source-sha', 'domestic-test-sha',
       '--site-origin', 'https://dsh-store.cn',
+      '--alternate-origin', 'https://dsh.store',
       '--icp', icp,
     ], { cwd: rootPath })
 
@@ -86,7 +90,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       const page = await readFile(join(output, pagePath), 'utf8')
       assert.match(page, /https:\/\/dsh-store\.cn/)
       assert.match(page, new RegExp(icp))
-      assert.doesNotMatch(page, /https:\/\/dsh\.store/)
+      assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
     }
     const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')
     const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
@@ -95,6 +99,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.match(sitemap, /https:\/\/dsh-store\.cn\//)
     assert.doesNotMatch(sitemap, /https:\/\/dsh\.store/)
     assert.equal(manifest.siteOrigin, 'https://dsh-store.cn')
+    assert.equal(manifest.alternateOrigin, 'https://dsh.store')
     assert.equal(manifest.icp, icp)
   } finally {
     await rm(output, { recursive: true, force: true })
