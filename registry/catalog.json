@@ -41,6 +41,190 @@
   },
   "entries": [
     {
+      "id": "dsh-cliapi",
+      "name": "模型与授权（DSH CLIAPI）",
+      "packageName": "@local/dsh-cliapi",
+      "description": "统一管理 CLI/OAuth 授权、Auto 故障切换与多模态模型调度。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI",
+      "defaultBranch": "main",
+      "manifestPath": "plugin/package.json",
+      "installPath": "plugin",
+      "commit": "3a84150c145cd53f84998720e77f3ae3eb618504",
+      "version": "0.5.0",
+      "categories": [
+        "models",
+        "routing"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-cliapi"
+      ],
+      "status": "approved",
+      "updatePolicy": "user-reviewed",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.8 <0.2.0",
+        "node": ">=20",
+        "systems": [
+          "macOS",
+          "Linux"
+        ],
+        "profiles": [
+          "web"
+        ],
+        "dshReleases": {
+          "rc.5": "incompatible",
+          "rc.6": "incompatible",
+          "rc.7": "incompatible",
+          "rc.8": "compatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        }
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "oauth",
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "CLIProxyAPI",
+          "第三方 API"
+        ],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-21T04:26:49.000Z",
+        "provenance": "github-commit",
+        "observedAt": "2026-08-21T04:29:17.000Z"
+      }
+    },
+    {
+      "id": "dsh-chat-import",
+      "name": "会话导入（DSH Chat Import）",
+      "packageName": "dsh-chat-import",
+      "description": "将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-chat-import",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "c17d2f0b616e23d08bc761f47e79d33cdcd10e74",
+      "version": "0.3.3",
+      "categories": [
+        "sessions",
+        "import"
+      ],
+      "featured": false,
+      "entryIds": [
+        "import-claude"
+      ],
+      "status": "approved",
+      "updatePolicy": "user-reviewed",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.8 <0.2.0",
+        "dshReleases": {
+          "rc.5": "incompatible",
+          "rc.6": "incompatible",
+          "rc.7": "incompatible",
+          "rc.8": "compatible"
+        },
+        "node": ">=22.13.0",
+        "systems": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ],
+        "profiles": [
+          "web"
+        ],
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        }
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-21T04:26:41.000Z",
+        "provenance": "github-commit",
+        "observedAt": "2026-08-21T04:29:17.000Z"
+      }
+    },
+    {
       "id": "build-dsh-plugin",
       "name": "DSH 插件开发工作流（Build DSH Plugin）",
       "packageName": "dsh-build-plugin",
@@ -16344,99 +16528,6 @@
       }
     },
     {
-      "id": "dsh-cliapi",
-      "name": "授权与模型路由（DSH CLIAPI）",
-      "packageName": "@local/dsh-cliapi",
-      "description": "DSH 的授权中心与自动本地模型路由器。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI",
-      "defaultBranch": "main",
-      "manifestPath": "plugin/package.json",
-      "installPath": "plugin",
-      "commit": "ff4ca55ad202737525012491e8cea254a47526e2",
-      "version": "0.4.1",
-      "categories": [
-        "models",
-        "routing"
-      ],
-      "featured": false,
-      "entryIds": [
-        "dsh-cliapi"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.5",
-        "node": ">=20",
-        "systems": [
-          "macOS",
-          "Linux"
-        ],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.5": "compatible",
-          "rc.6": "compatible",
-          "rc.7": "compatible",
-          "rc.8": "compatible"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "provider",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "specified-services",
-          "commands": "restricted",
-          "credentials": [
-            "oauth",
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "CLIProxyAPI",
-          "第三方 API"
-        ],
-        "reviewStatus": "author-verified"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "owner-curated-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-16T02:05:22.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      }
-    },
-    {
       "id": "powercontext-dsh",
       "name": "上下文与记忆服务（PowerContext for DSH）",
       "packageName": "powercontext-dsh",
@@ -16698,98 +16789,6 @@
       },
       "source": {
         "updatedAt": "2026-08-16T01:30:03.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      }
-    },
-    {
-      "id": "dshllm-api",
-      "name": "多模态模型路由（DSHLLM API）",
-      "packageName": "@local/dshllm-api",
-      "description": "面向 DeepSeek Harness 的多模态感知模型路由器，需要 DSH CLIAPI。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/DSHLLM_API",
-      "defaultBranch": "main",
-      "manifestPath": "plugin/package.json",
-      "installPath": "plugin",
-      "commit": "36df722b2b1ea74ebb541e8672966c98c62367a2",
-      "version": "0.2.0",
-      "categories": [
-        "models",
-        "routing"
-      ],
-      "featured": false,
-      "entryIds": [
-        "dshllm-api"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.5",
-        "node": ">=20",
-        "systems": [
-          "macOS",
-          "Linux"
-        ],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.5": "compatible",
-          "rc.6": "compatible",
-          "rc.7": "compatible",
-          "rc.8": "compatible"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "provider",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "specified-services",
-          "commands": "none",
-          "credentials": [
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "DSH CLIAPI",
-          "第三方 API"
-        ],
-        "reviewStatus": "author-verified"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "owner-curated-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-16T00:38:08.000Z",
         "provenance": "github-commit",
         "observedAt": "2026-08-21T00:27:59.000Z"
       }
@@ -18472,95 +18471,6 @@
       },
       "source": {
         "updatedAt": "2026-08-15T15:05:00.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      }
-    },
-    {
-      "id": "dsh-chat-import",
-      "name": "会话导入（DSH Chat Import）",
-      "packageName": "dsh-chat-import",
-      "description": "将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-chat-import",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "65979dd9a7935ad5d9c48d28d327ed3307c2c013",
-      "version": "0.3.1",
-      "categories": [
-        "sessions",
-        "import"
-      ],
-      "featured": false,
-      "entryIds": [
-        "import-claude"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.8 <0.2.0",
-        "dshReleases": {
-          "rc.5": "incompatible",
-          "rc.6": "incompatible",
-          "rc.7": "incompatible",
-          "rc.8": "compatible"
-        },
-        "node": ">=22.13.0",
-        "systems": [
-          "macOS",
-          "Linux",
-          "Windows"
-        ],
-        "profiles": [
-          "web"
-        ],
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "none",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "author-verified"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "owner-curated-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-15T14:49:05.000Z",
         "provenance": "github-commit",
         "observedAt": "2026-08-21T00:27:59.000Z"
       }
@@ -38527,6 +38437,100 @@
         "updatedAt": "2026-08-14T13:54:42.000Z",
         "provenance": "github-commit",
         "observedAt": "2026-08-21T00:27:59.000Z"
+      }
+    },
+    {
+      "id": "dshllm-api",
+      "name": "多模态模型路由（DSHLLM API）",
+      "packageName": "@local/dshllm-api",
+      "description": "面向 DeepSeek Harness 的多模态感知模型路由器，需要 DSH CLIAPI。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/DSHLLM_API",
+      "defaultBranch": "main",
+      "manifestPath": "plugin/package.json",
+      "installPath": "plugin",
+      "commit": "e8cf8cb1951c8512d344a56b6da386896b48e0d7",
+      "version": "0.2.0",
+      "categories": [
+        "models",
+        "routing"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dshllm-api"
+      ],
+      "status": "unlisted",
+      "statusReason": "功能已合并到 dsh-cliapi >= 0.5.0；保留条目仅用于迁移，禁止新的独立安装。",
+      "updatePolicy": "user-reviewed",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.5",
+        "node": ">=20",
+        "systems": [
+          "macOS",
+          "Linux"
+        ],
+        "profiles": [
+          "web"
+        ],
+        "dshReleases": {
+          "rc.5": "compatible",
+          "rc.6": "compatible",
+          "rc.7": "compatible",
+          "rc.8": "compatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        }
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "DSH CLIAPI",
+          "第三方 API"
+        ],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-21T04:26:54.000Z",
+        "provenance": "github-commit",
+        "observedAt": "2026-08-21T04:29:17.000Z"
       }
     },
     {
