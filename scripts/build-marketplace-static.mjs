@@ -14,6 +14,14 @@ const argValue = name => {
 const enrichGitHub = args.includes('--enrich-github')
 const outputRoot = resolve(projectRoot, argValue('--out') || '_site')
 const sourceSha = argValue('--source-sha') || process.env.GITHUB_SHA || 'local-worktree'
+const siteOriginInput = argValue('--site-origin') || process.env.SITE_ORIGIN || 'https://dsh.store'
+const siteOriginUrl = new URL(siteOriginInput)
+if (siteOriginUrl.protocol !== 'https:' || siteOriginUrl.pathname !== '/' || siteOriginUrl.search || siteOriginUrl.hash) {
+  throw new Error('The static site origin must be an HTTPS origin without a path, query, or hash')
+}
+const siteOrigin = siteOriginUrl.origin
+const siteHost = siteOriginUrl.host
+const icpNumber = argValue('--icp') || process.env.ICP_NUMBER || ''
 const outputRelative = relative(projectRoot, outputRoot)
 
 if (!outputRelative || outputRelative.startsWith('..')) {
@@ -217,6 +225,22 @@ function replaceElementText(source, id, value) {
   return source.replace(expression, `$1${htmlEscape(value)}$3`)
 }
 
+const siteTextExtensions = new Set(['.html', '.js', '.json', '.txt', '.xml', '.webmanifest', '.css'])
+async function rewriteSiteReferences(directory) {
+  const entries = await readdir(directory, { withFileTypes: true })
+  for (const entry of entries) {
+    const absolutePath = resolve(directory, entry.name)
+    if (entry.isDirectory()) {
+      await rewriteSiteReferences(absolutePath)
+      continue
+    }
+    if (!entry.isFile() || !siteTextExtensions.has(entry.name.slice(entry.name.lastIndexOf('.')).toLowerCase())) continue
+    const source = await readFile(absolutePath, 'utf8')
+    const rewritten = source.replaceAll('https://dsh.store', siteOrigin).replaceAll('dsh.store', siteHost)
+    if (rewritten !== source) await writeFile(absolutePath, rewritten)
+  }
+}
+
 const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="external-json">'
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
@@ -227,6 +251,22 @@ await mkdir(outputRoot, { recursive: true })
 const copyFilter = source => !/(^|\/)\._|(^|\/)\.DS_Store$/.test(source)
 await cp(resolve(projectRoot, 'marketplace'), resolve(outputRoot, 'marketplace'), { recursive: true, filter: copyFilter })
 await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { recursive: true, filter: copyFilter })
+await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
+
+const icpMarkup = icpNumber
+  ? `<a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">${htmlEscape(icpNumber)}</a>`
+  : ''
+for (const pagePath of [
+  'marketplace/index.html',
+  'marketplace/plugins/index.html',
+  'marketplace/build/index.html',
+  'marketplace/faq/index.html',
+  'marketplace/about/index.html',
+]) {
+  const absolutePath = resolve(outputRoot, pagePath)
+  const page = await readFile(absolutePath, 'utf8')
+  await writeFile(absolutePath, replaceRequired(page, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
+}
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
 home = replaceRequired(home, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'home external catalog marker')
@@ -260,6 +300,8 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   schemaVersion: 1,
   generatedAt,
   sourceCommit: sourceSha,
+  siteOrigin,
+  icp: icpNumber || null,
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,
   manager: { version: manager.version, commit: manager.commit, license: manager.details?.license, status: manager.status },
@@ -297,4 +339,4 @@ await writeFile(resolve(outputRoot, 'release-manifest.json'), JSON.stringify({
   files: releaseFiles,
 }, null, 2) + '\n')
 
-console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} enriched=${enrichGitHub}`)
+console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} origin=${siteOrigin} enriched=${enrichGitHub}`)

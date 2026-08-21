@@ -62,3 +62,41 @@ test('static marketplace derives manager identity and catalog cards without muta
     await rm(output, { recursive: true, force: true })
   }
 })
+
+test('static marketplace accepts a domestic origin and renders the ICP record', async () => {
+  const output = await mkdtemp(new URL('.tmp-marketplace-domestic-', root))
+  const icp = '鄂ICP备2026010180号-2'
+  try {
+    await execFileAsync(process.execPath, [
+      new URL('scripts/build-marketplace-static.mjs', root).pathname,
+      '--out', relative(rootPath, output),
+      '--source-sha', 'domestic-test-sha',
+      '--site-origin', 'https://dsh-store.cn',
+      '--icp', icp,
+    ], { cwd: rootPath })
+
+    const pagePaths = [
+      'marketplace/index.html',
+      'marketplace/plugins/index.html',
+      'marketplace/build/index.html',
+      'marketplace/faq/index.html',
+      'marketplace/about/index.html',
+    ]
+    for (const pagePath of pagePaths) {
+      const page = await readFile(join(output, pagePath), 'utf8')
+      assert.match(page, /https:\/\/dsh-store\.cn/)
+      assert.match(page, new RegExp(icp))
+      assert.doesNotMatch(page, /https:\/\/dsh\.store/)
+    }
+    const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')
+    const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
+    const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
+    assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)
+    assert.match(sitemap, /https:\/\/dsh-store\.cn\//)
+    assert.doesNotMatch(sitemap, /https:\/\/dsh\.store/)
+    assert.equal(manifest.siteOrigin, 'https://dsh-store.cn')
+    assert.equal(manifest.icp, icp)
+  } finally {
+    await rm(output, { recursive: true, force: true })
+  }
+})
