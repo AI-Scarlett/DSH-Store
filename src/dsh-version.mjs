@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, realpath } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { compareVersions } from './catalog.mjs'
 
@@ -13,7 +13,13 @@ function versionError(code, message) {
 }
 
 async function findCliManifest(cliPath) {
-  let directory = dirname(resolve(cliPath))
+  let resolvedCliPath
+  try {
+    resolvedCliPath = await realpath(resolve(cliPath))
+  } catch {
+    throw versionError('DSH_VERSION_UNAVAILABLE', '无法解析当前 DSH CLI 路径。')
+  }
+  let directory = dirname(resolvedCliPath)
   for (let depth = 0; depth < 7; depth += 1) {
     try {
       const manifest = JSON.parse(await readFile(resolve(directory, 'package.json'), 'utf8'))
@@ -69,6 +75,7 @@ export function createDshVersionService(options = {}) {
     const value = {
       schemaVersion: 1, packageName: PACKAGE_NAME,
       currentVersion: current.version, latestVersion: latest,
+      latestSource: 'npm-official', registryUrl: REGISTRY_URL, cacheTtlMs,
       installationKind: current.installationKind,
       status: updateAvailable ? 'update-available' : comparison === 0 ? 'current' : 'ahead',
       updateAvailable, checkedAt: new Date(now()).toISOString(), releaseUrl: RELEASE_URL,
@@ -83,5 +90,9 @@ export function createDshVersionService(options = {}) {
     return { ...value, cacheStatus: 'fresh' }
   }
 
-  return { inspect }
+  function peek() {
+    return cache ? { ...cache.value, cacheStatus: 'peek' } : null
+  }
+
+  return { inspect, peek }
 }

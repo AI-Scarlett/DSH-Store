@@ -92,6 +92,46 @@ test('market endpoint joins the GitHub catalog with installed state', async () =
   }
 })
 
+test('market endpoint reads only the cached DSH version and never blocks on npm', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-market-version-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(profileDir, { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: {}, dsh: { profile: { bundles: [] } },
+    }))
+    let inspections = 0
+    const res = response()
+    await handleMarketRequest(request({ view: 'market' }), res, {
+      dshHome: root,
+      catalogService: { load: async () => ({
+        schemaVersion: 1, registry: { name: 'Fixture' }, source: { kind: 'fixture' }, entries: [{
+          id: 'demo', name: 'Demo', packageName: 'dsh-demo', description: 'demo', repositoryUrl: 'https://github.com/example/demo',
+          commit: 'a'.repeat(40), version: '1.0.0', categories: [], entryIds: ['demo'], status: 'approved', statusReason: null,
+          compatibility: { dsh: '>=0.1.1-rc.1 <0.2.0', dshReleases: { '0.1.1-rc.1': 'compatible' } },
+          risk: { installScripts: [], review: 'fixture' },
+        }],
+      }) },
+      dshVersionService: {
+        inspect: async () => { inspections += 1; throw new Error('must not run') },
+        peek: () => ({ latestVersion: '0.1.1-rc.2', checkedAt: '2026-08-21T13:00:00.000Z', registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest' }),
+      },
+    })
+    const payload = JSON.parse(res.body)
+    assert.equal(res.status, 200)
+    assert.equal(inspections, 0)
+    assert.equal(payload.value.dshReleaseContext.source, 'npm-official')
+    assert.equal(payload.value.dshReleaseContext.latestVersion, '0.1.1-rc.2')
+    const latest = payload.value.entries[0].compatibility.dshReleaseViews.find(view => view.latest)
+    assert.equal(latest.version, '0.1.1-rc.2')
+    assert.equal(latest.status, 'unknown')
+    assert.equal(latest.basis, 'range')
+    assert.equal(latest.rangeStatus, 'compatible')
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('market endpoint keeps candidate discovery records outside install operations', async () => {
   const root = await mkdtemp(join(tmpdir(), 'dsh-safe-candidate-panel-'))
   try {

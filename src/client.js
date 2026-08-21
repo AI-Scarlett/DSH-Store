@@ -597,66 +597,63 @@ window.__ModuleLoader__.load({
       } catch { return '未知' }
     }
 
-    const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
-    const DSH_CARD_RELEASES = DSH_RC_RELEASES.slice(-3)
-    const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
-    const DSH_RELEASE_LABELS = { '0.1.1-rc.1': '0.1.1 rc.1' }
-    function compareDshVersions(left, right) {
-      const parse = version => {
-        const match = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/.exec(version)
-        return match ? { numbers: match.slice(1, 4).map(Number), pre: match[4] || null } : null
-      }
-      const a = parse(left); const b = parse(right)
-      if (!a || !b) return null
-      for (let index = 0; index < 3; index += 1) if (a.numbers[index] !== b.numbers[index]) return a.numbers[index] < b.numbers[index] ? -1 : 1
-      if (a.pre === b.pre) return 0
-      if (a.pre === null) return 1
-      if (b.pre === null) return -1
-      return a.pre.localeCompare(b.pre, 'en', { numeric: true })
-    }
-    function dshReleaseCompatibility(value) {
-      const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
-      if (typeof value !== 'string' || value.trim() === '' || value.trim().toLowerCase() === 'unknown') return result
-      const clauses = value.trim().split('||').map(clause => clause.trim()).filter(Boolean)
-      const parsedClauses = clauses.map(clause => {
-        const tokens = [...clause.matchAll(/(?:^|\s)(>=|<=|>|<|\^|~|=)?\s*(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)/g)]
-          .map(match => ({ operator: match[1] || '=', version: match[2] }))
-        const residue = clause.replace(/(?:^|\s)(?:>=|<=|>|<|\^|~|=)?\s*\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/g, '').trim()
-        return residue === '' && tokens.length > 0 ? tokens : null
+    const LEGACY_DSH_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
+    const COMPATIBILITY_STATUSES = new Set(['compatible', 'incompatible', 'unknown'])
+    const OPERATION_STATUSES = new Set(['passed', 'failed', 'unknown'])
+    const unknownOperations = () => Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation, 'unknown']))
+    function fallbackReleaseViews(compatibility, releaseContext) {
+      const declaredReleases = compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : {}
+      const declaredOperations = compatibility.dshOperations && typeof compatibility.dshOperations === 'object' ? compatibility.dshOperations : {}
+      const contextReleases = Array.isArray(releaseContext?.releases) ? releaseContext.releases : []
+      const releases = contextReleases.length > 0 ? contextReleases : [...new Set([...Object.keys(LEGACY_DSH_VERSIONS), ...Object.keys(declaredReleases), ...Object.keys(declaredOperations)])]
+        .map(key => ({ key, version: LEGACY_DSH_VERSIONS[key] || key, aliases: [key], latest: false }))
+      return releases.map((release, index) => {
+        const keys = [...new Set([release.key, ...(Array.isArray(release.aliases) ? release.aliases : [])].filter(Boolean))]
+        const declaredKey = keys.find(key => Object.hasOwn(declaredReleases, key)) || null
+        const operationKey = keys.find(key => Object.hasOwn(declaredOperations, key)) || null
+        return {
+          key: release.key || release.version, version: release.version || release.key, label: release.label || release.version || release.key,
+          latest: release.latest === true || (releaseContext?.latestVersion == null && index === releases.length - 1),
+          status: COMPATIBILITY_STATUSES.has(declaredReleases[declaredKey]) ? declaredReleases[declaredKey] : 'unknown',
+          basis: declaredKey ? 'catalog' : 'unknown', rangeStatus: 'unknown', declaredKey,
+          operations: { ...unknownOperations(), ...(operationKey ? declaredOperations[operationKey] : {}) },
+        }
       })
-      if (parsedClauses.length === 0 || parsedClauses.some(clause => clause === null)) return result
-      for (const release of DSH_RC_RELEASES) {
-        const version = DSH_RC_VERSIONS[release]
-        result[release] = parsedClauses.some(tokens => tokens.every(token => {
-          const comparison = compareDshVersions(version, token.version)
-          if (comparison === null) return false
-          if (token.operator === '^' || token.operator === '~') {
-            const target = token.version.match(/^(\d+)\.(\d+)\./)
-            const candidate = version.match(/^(\d+)\.(\d+)\./)
-            if (!target || !candidate || comparison < 0 || candidate[1] !== target[1]) return false
-            return token.operator === '^' && Number(target[1]) > 0 ? true : candidate[2] === target[2]
-          }
-          return token.operator === '>=' ? comparison >= 0 : token.operator === '<=' ? comparison <= 0
-            : token.operator === '>' ? comparison > 0 : token.operator === '<' ? comparison < 0 : comparison === 0
-        })) ? 'compatible' : 'incompatible'
-      }
-      return result
     }
-
-    const compatibilityStatusLabel = status => ({ compatible: '兼容', incompatible: '不兼容', unknown: '未声明' }[status] || '未声明')
-    const compatibilityStatusColor = status => ({
+    function normalizeReleaseViews(compatibility, releaseContext) {
+      const views = Array.isArray(compatibility.dshReleaseViews) && compatibility.dshReleaseViews.length > 0
+        ? compatibility.dshReleaseViews : fallbackReleaseViews(compatibility, releaseContext)
+      return views.slice(-64).map(view => ({
+        key: String(view?.key || view?.version || 'unknown'), version: String(view?.version || view?.key || 'unknown'),
+        label: String(view?.label || view?.version || view?.key || 'unknown'), latest: view?.latest === true,
+        status: COMPATIBILITY_STATUSES.has(view?.status) ? view.status : 'unknown',
+        basis: ['catalog', 'range', 'unknown'].includes(view?.basis) ? view.basis : 'unknown',
+        rangeStatus: COMPATIBILITY_STATUSES.has(view?.rangeStatus) ? view.rangeStatus : 'unknown',
+        declaredKey: typeof view?.declaredKey === 'string' ? view.declaredKey : null,
+        operations: Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation,
+          OPERATION_STATUSES.has(view?.operations?.[operation]) ? view.operations[operation] : 'unknown'])),
+      }))
+    }
+    const compatibilityViewLabel = view => view.basis === 'range'
+      ? view.rangeStatus === 'compatible' ? '范围支持·待验证' : view.rangeStatus === 'incompatible' ? '范围不支持' : '未声明'
+      : ({ compatible: '兼容', incompatible: '不兼容', unknown: '未声明' }[view.status] || '未声明')
+    const compatibilityViewColor = view => ({
       compatible: 'var(--dsw-alias-state-success-primary)', incompatible: 'var(--dsw-alias-state-error-primary)', unknown: 'var(--dsw-alias-label-tertiary)',
-    }[status] || 'var(--dsw-alias-label-tertiary)')
-    function CompatibilityMatrix({ entry, releases = DSH_CARD_RELEASES }) {
-      const latestRelease = releases[releases.length - 1]
-      const releaseLabel = `${DSH_RELEASE_LABELS[releases[0]] || releases[0]} 至 ${DSH_RELEASE_LABELS[latestRelease] || latestRelease}`
-      return React.createElement('div', { style: { ...styles.compatibilityMatrix, gridTemplateColumns: `repeat(${releases.length}, minmax(0, 1fr))` }, role: 'list', 'aria-label': `DSH ${releaseLabel} 兼容性` },
-        releases.map(release => {
-          const status = entry.compatibility.dshReleases[release]
-          return React.createElement('div', { key: release, role: 'listitem', style: { ...styles.compatibilityCell, color: compatibilityStatusColor(status) } },
-            React.createElement('span', { style: styles.compatibilityKey }, `DSH ${DSH_RELEASE_LABELS[release] || release}`),
-            React.createElement('span', { style: styles.compatibilityValue }, compatibilityStatusLabel(status)))
-        }))
+    }[view.basis === 'range' ? (view.rangeStatus === 'incompatible' ? 'incompatible' : 'unknown') : view.status] || 'var(--dsw-alias-label-tertiary)')
+    function cardReleaseViews(views) {
+      const latestIndex = views.findIndex(view => view.latest)
+      const end = latestIndex < 0 ? views.length : latestIndex + 1
+      return views.slice(Math.max(0, end - 3), end)
+    }
+    function CompatibilityMatrix({ entry, all = false }) {
+      const available = entry.compatibility.dshReleaseViews || []
+      const releases = all ? available : cardReleaseViews(available)
+      if (releases.length === 0) return React.createElement('div', { style: styles.muted }, '尚无 DSH 版本兼容信息')
+      const releaseLabel = `${releases[0].version} 至 ${releases[releases.length - 1].version}`
+      return React.createElement('div', { style: { ...styles.compatibilityMatrix, gridTemplateColumns: `repeat(${Math.min(releases.length, 3)}, minmax(0, 1fr))` }, role: 'list', 'aria-label': `DSH ${releaseLabel} 兼容性` },
+        releases.map(view => React.createElement('div', { key: view.key, role: 'listitem', style: { ...styles.compatibilityCell, color: compatibilityViewColor(view) } },
+          React.createElement('span', { style: styles.compatibilityKey }, `DSH ${view.version}${view.latest ? ' · 最新' : ''}`),
+          React.createElement('span', { style: styles.compatibilityValue }, compatibilityViewLabel(view)))))
     }
 
     const ASSURANCE_LEVELS = [
@@ -686,12 +683,11 @@ window.__ModuleLoader__.load({
     const DSH_OPERATIONS = [['install', '安装'], ['start', '启动'], ['uninstall', '卸载'], ['rollback', '回滚']]
     const operationStatusLabel = status => ({ passed: '通过', failed: '失败', unknown: '未知' }[status] || '未知')
     function OperationEvidence({ entry }) {
-      return React.createElement('div', { style: styles.detailSection }, DSH_RC_RELEASES.map(release => {
-        const operations = entry.compatibility.dshOperations[release]
-        return React.createElement('div', { key: release, style: styles.diffCell },
-          React.createElement('div', { style: styles.name }, `DSH ${release}`),
+      return React.createElement('div', { style: styles.detailSection }, entry.compatibility.dshReleaseViews.map(view => {
+        return React.createElement('div', { key: view.key, style: styles.diffCell },
+          React.createElement('div', { style: styles.name }, `DSH ${view.version}${view.latest ? ' · 最新' : ''}`),
           React.createElement('div', { style: styles.muted }, DSH_OPERATIONS
-            .map(([key, label]) => `${label}：${operationStatusLabel(operations[key])}`).join(' · ')))
+            .map(([key, label]) => `${label}：${operationStatusLabel(view.operations[key])}`).join(' · ')))
       }))
     }
 
@@ -699,7 +695,7 @@ window.__ModuleLoader__.load({
       return { status, method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary }
     }
 
-    function normalizeMarketEntry(entry) {
+    function normalizeMarketEntry(entry, releaseContext) {
       const declaredDetails = entry?.details && typeof entry.details === 'object' ? entry.details : {}
       const declaredPermissions = declaredDetails.permissions && typeof declaredDetails.permissions === 'object'
         ? declaredDetails.permissions
@@ -708,21 +704,7 @@ window.__ModuleLoader__.load({
       const risk = entry?.risk && typeof entry.risk === 'object' ? entry.risk : {}
       const assurance = entry?.assurance && typeof entry.assurance === 'object' ? entry.assurance : {}
       const source = entry?.source && typeof entry.source === 'object' ? entry.source : {}
-      const declaredOperations = compatibility.dshOperations && typeof compatibility.dshOperations === 'object'
-        ? compatibility.dshOperations : {}
-      const declaredReleases = compatibility.dshReleases && typeof compatibility.dshReleases === 'object'
-        ? compatibility.dshReleases : null
-      const derivedReleases = dshReleaseCompatibility(compatibility.dsh)
-      const dshReleases = Object.fromEntries(DSH_RC_RELEASES.map(release => [release,
-        ['compatible', 'incompatible', 'unknown'].includes(declaredReleases?.[release])
-          ? declaredReleases[release]
-          : declaredReleases === null ? derivedReleases[release] : 'unknown',
-      ]))
-      const dshOperations = Object.fromEntries(DSH_RC_RELEASES.map(release => [release,
-        Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation,
-          ['passed', 'failed', 'unknown'].includes(declaredOperations[release]?.[operation])
-            ? declaredOperations[release][operation] : 'unknown'])),
-      ]))
+      const dshReleaseViews = normalizeReleaseViews(compatibility, releaseContext)
       return {
         ...entry,
         catalogDetailsAvailable: Boolean(entry?.details && entry.details.permissions),
@@ -731,8 +713,9 @@ window.__ModuleLoader__.load({
         compatibility: {
           ...compatibility,
           dsh: typeof compatibility.dsh === 'string' ? compatibility.dsh : null,
-          dshReleases,
-          dshOperations,
+          dshReleases: compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : {},
+          dshOperations: compatibility.dshOperations && typeof compatibility.dshOperations === 'object' ? compatibility.dshOperations : {},
+          dshReleaseViews,
           node: typeof compatibility.node === 'string' ? compatibility.node : null,
           systems: Array.isArray(compatibility.systems) ? compatibility.systems : [],
           profiles: Array.isArray(compatibility.profiles) ? compatibility.profiles : [],
@@ -1037,13 +1020,13 @@ window.__ModuleLoader__.load({
             evidence.evidenceUrl ? React.createElement('a', { href: evidence.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '打开证据') : null)
         })),
         React.createElement('h3', { style: styles.detailHeading }, '兼容性'),
-        React.createElement(CompatibilityMatrix, { entry, releases: DSH_RC_RELEASES }),
+        React.createElement(CompatibilityMatrix, { entry, all: true }),
         React.createElement('dl', { style: styles.detailGrid },
           React.createElement(DetailRow, { label: 'DSH', value: entry.compatibility.dsh || '未声明' }),
           React.createElement(DetailRow, { label: 'Node.js', value: entry.compatibility.node || '未声明' }),
           React.createElement(DetailRow, { label: '系统', value: entry.compatibility.systems.length > 0 ? entry.compatibility.systems.join(' / ') : '未声明' }),
           React.createElement(DetailRow, { label: 'Profile', value: entry.compatibility.profiles.length > 0 ? entry.compatibility.profiles.join(' / ') : '未声明' })),
-        React.createElement('h3', { style: styles.detailHeading }, 'rc.5–0.1.1-rc.1 操作证据'),
+        React.createElement('h3', { style: styles.detailHeading }, 'DSH 版本操作证据'),
         React.createElement(OperationEvidence, { entry }),
         !entry.catalogDetailsAvailable
           ? React.createElement('div', { style: styles.notice }, '当前 GitHub catalog.json 尚未提供完整详情字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
@@ -1325,15 +1308,16 @@ window.__ModuleLoader__.load({
         setState({ status: 'loading' })
         setMarketError('')
         try {
-          const [inventory, market, health, runtime, guardian, dshVersion] = await Promise.all([
-            post(ROUTES.inventory), post(ROUTES.market, {
-              refresh: force,
-              view: marketOptions.view ?? 'market',
-              page: marketOptions.page ?? 1,
-              pageSize: MARKET_PAGE_SIZE,
-              query: marketOptions.query ?? '',
-              category: marketOptions.category ?? '',
-            }),
+          const marketBody = {
+            refresh: force,
+            view: marketOptions.view ?? 'market',
+            page: marketOptions.page ?? 1,
+            pageSize: MARKET_PAGE_SIZE,
+            query: marketOptions.query ?? '',
+            category: marketOptions.category ?? '',
+          }
+          const [inventory, market, health, runtime, guardian] = await Promise.all([
+            post(ROUTES.inventory), post(ROUTES.market, marketBody),
             post(ROUTES.health, { refresh: force, permissionDecisions: decisions }),
             post(ROUTES.runtime).catch(error => ({
               supported: false, errorCode: error?.code || 'RUNTIME_STATUS_UNAVAILABLE', message: String(error?.message || error),
@@ -1341,12 +1325,23 @@ window.__ModuleLoader__.load({
             post(ROUTES.guardian).catch(error => ({
               supported: false, available: false, errorCode: error?.code || 'GUARDIAN_UNAVAILABLE', message: String(error?.message || error),
             })),
-            post(ROUTES.dshVersion, { refresh: force }).catch(error => ({
-              status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED',
-              message: String(error?.message || error),
-            })),
           ])
-          setState({ status: 'ready', inventory, market, health, runtime, guardian, dshVersion })
+          setState({ status: 'ready', inventory, market, health, runtime, guardian, dshVersion: { status: 'checking' } })
+          void post(ROUTES.dshVersion, { refresh: force }).then(async dshVersion => {
+            const updatedMarket = await post(ROUTES.market, { ...marketBody, refresh: false }).catch(() => market)
+            setState(current => {
+              if (current.status !== 'ready') return current
+              const pagination = current.market.pagination
+              const stillCurrent = pagination?.view === marketBody.view && pagination?.page === marketBody.page
+                && pagination?.query === marketBody.query && pagination?.category === marketBody.category
+              return { ...current, ...(stillCurrent ? { market: updatedMarket } : {}), dshVersion }
+            })
+          }).catch(error => {
+            setState(current => current.status === 'ready' ? {
+              ...current,
+              dshVersion: { status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED', message: String(error?.message || error) },
+            } : current)
+          })
         } catch (error) {
           setState({ status: 'error', message: String(error?.message || error) })
         }
@@ -1384,14 +1379,24 @@ window.__ModuleLoader__.load({
         setVersionChecking(true); setVersionFeedback('')
         try {
           const dshVersion = await post(ROUTES.dshVersion, { refresh: true })
-          setState(current => current.status === 'ready' ? { ...current, dshVersion } : current)
+          const market = await post(ROUTES.market, {
+            view, page, pageSize: MARKET_PAGE_SIZE, query: debouncedQuery, category: view === 'candidates' ? '' : category,
+          }).catch(() => null)
+          setState(current => {
+            if (current.status !== 'ready') return current
+            const pagination = current.market.pagination
+            const requestedCategory = view === 'candidates' ? '' : category
+            const stillCurrent = pagination?.view === view && pagination?.page === page
+              && pagination?.query === debouncedQuery && pagination?.category === requestedCategory
+            return { ...current, ...(market && stillCurrent ? { market } : {}), dshVersion }
+          })
         } catch (error) {
           setState(current => current.status === 'ready' ? {
             ...current,
             dshVersion: { status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED', message: String(error?.message || error) },
           } : current)
         } finally { setVersionChecking(false) }
-      }, [])
+      }, [category, debouncedQuery, page, view])
 
       const copyUpgradeCommand = useCallback(async () => {
         const command = state.status === 'ready' ? state.dshVersion?.upgrade?.commandText : ''
@@ -1426,7 +1431,7 @@ window.__ModuleLoader__.load({
       const normalizedEntries = useMemo(() => {
         if (state.status !== 'ready') return []
         return state.market.entries
-          .map(normalizeMarketEntry)
+          .map(entry => normalizeMarketEntry(entry, state.market.dshReleaseContext))
           .map(entry => ({ ...entry, sourceUpdate: sourceUpdates[entry.id] ?? null }))
       }, [sourceUpdates, state])
 

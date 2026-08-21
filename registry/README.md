@@ -63,10 +63,12 @@ Profile、不用低层测试冒充运行验收”的边界。
 - 外部运行依赖与审核状态；
 - `compatibility` 中的 DSH、Node.js、系统和 Profile 范围。
 
-版本矩阵保留历史键 `rc.5`、`rc.6`、`rc.7`、`rc.8`，并使用完整键
-`0.1.1-rc.1` 表示当前版本，避免与早期 `0.0.1-rc.1` 混淆。每个键都必须分别声明
-`dshReleases`，以及 `install`、`start`、`uninstall`、`rollback` 四项 `dshOperations`；
-仅凭版本范围不能把运行操作标记为通过。
+版本矩阵继续接受历史别名 `rc.5`、`rc.6`、`rc.7`、`rc.8`；新增版本必须使用完整
+SemVer 键，例如 `0.1.1-rc.2`，避免不同发布线的 `rc.1` 混淆。商城从官方 npm Registry
+读取 `@deepseek-ai/dsh` 最新版本；读取超时或失败时退回目录已有版本，不影响插件列表加载。
+目录中的精确 `dshReleases` 是兼容证据；新版本只有范围匹配而没有精确证据时显示
+“范围支持·待验证”，不会自动标为兼容。`install`、`start`、`uninstall`、`rollback`
+四项 `dshOperations` 也必须逐版本提供真实证据，缺少记录时保持 `unknown`。
 
 权限值依据固定 Commit 的 manifest、README 与运行时代码信号保守填写。无法确认时必须
 使用 `unknown` 或空兼容范围，不得把“未发现”写成“不访问”。`automated-scan` 和

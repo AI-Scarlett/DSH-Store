@@ -34,21 +34,23 @@ test('static storefront templates expose the cross-site navigation and analytics
   }
 })
 
-test('marketplace cards show the latest three DSH releases while details retain full history', async () => {
+test('marketplace cards derive the latest three DSH releases while details retain full history', async () => {
   const [storefront, styles, client] = await Promise.all([
     readFile(new URL('marketplace/app.js', project), 'utf8'),
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
   ])
-  assert.match(storefront, /const DSH_CARD_RELEASES = DSH_RC_RELEASES\.slice\(-3\)/)
-  assert.match(storefront, /compatibilityMatrix = \(entry, releases = DSH_CARD_RELEASES\)/)
+  assert.match(storefront, /DSH_VERSION_URL = 'https:\/\/registry\.npmjs\.org\/@deepseek-ai%2Fdsh\/latest'/)
+  assert.match(storefront, /function createDshReleaseContext/)
+  assert.match(storefront, /const cardReleaseViews = views =>/)
   assert.match(storefront, /\$\{compatibilityMatrix\(entry\)\}/)
-  assert.match(storefront, /DSH_RC_RELEASES\.map\(release => `\$\{DSH_RELEASE_LABELS/)
+  assert.match(storefront, /compatibility\.dshReleaseViews\.map\(view =>/)
   assert.match(styles, /\.compatibility-matrix \{[^\n]*grid-template-columns: repeat\(3,/)
-  assert.match(client, /const DSH_CARD_RELEASES = DSH_RC_RELEASES\.slice\(-3\)/)
-  assert.match(client, /function CompatibilityMatrix\(\{ entry, releases = DSH_CARD_RELEASES \}\)/)
+  assert.match(client, /function normalizeReleaseViews/)
+  assert.match(client, /function CompatibilityMatrix\(\{ entry, all = false \}\)/)
   assert.match(client, /React\.createElement\(AssuranceMatrix, \{ entry \}\),\s*React\.createElement\(CompatibilityMatrix, \{ entry \}\),/)
-  assert.match(client, /React\.createElement\(CompatibilityMatrix, \{ entry, releases: DSH_RC_RELEASES \}\)/)
+  assert.match(client, /React\.createElement\(CompatibilityMatrix, \{ entry, all: true \}\)/)
+  assert.match(client, /范围支持·待验证/)
 })
 
 test('guarded write path uses exact process arguments and permanent protection checks', async () => {
@@ -107,7 +109,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
   assert.match(client, /GitHub-only/)
   assert.match(client, /DSH第三方插件商城/)
-  assert.match(client, /DSH_RC_RELEASES = \['rc\.5', 'rc\.6', 'rc\.7', 'rc\.8', '0\.1\.1-rc\.1'\]/)
+  assert.match(client, /LEGACY_DSH_VERSIONS = \{ 'rc\.5': '0\.0\.1-rc\.5'/)
   assert.match(client, /function CompatibilityMatrix/)
   assert.match(client, /const SUPPORT_URL = 'https:\/\/dsh\.store\/'/)
   assert.match(client, /技术支持：DSH-Store/)

@@ -10,7 +10,6 @@ const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
 const MAX_COUNTS_BYTES = 256 * 1024
 export const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
-export const LATEST_DSH_RELEASE = '0.1.1-rc.1'
 export const DSH_OPERATIONS = ['install', 'start', 'uninstall', 'rollback']
 export const DSH_RC_VERSIONS = {
   'rc.5': '0.0.1-rc.5',
@@ -19,6 +18,7 @@ export const DSH_RC_VERSIONS = {
   'rc.8': '0.1.0-rc.8',
   '0.1.1-rc.1': '0.1.1-rc.1',
 }
+const MAX_DSH_RELEASE_KEYS = 64
 export const MARKET_PAGE_SIZE = 24
 export const MAX_MARKET_PAGE_SIZE = 48
 const MAX_DSH_RANGE_LENGTH = 512
@@ -53,16 +53,21 @@ function parseDshRangeClause(clause) {
   return tokens
 }
 
-export function dshReleaseCompatibility(value) {
-  const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
-  if (typeof value !== 'string' || value.length > MAX_DSH_RANGE_LENGTH) return result
+function parseDshRange(value) {
+  if (typeof value !== 'string' || value.length > MAX_DSH_RANGE_LENGTH) return null
   const normalized = value.trim()
-  if (normalized === '' || normalized.toLowerCase() === 'unknown') return result
+  if (normalized === '' || normalized.toLowerCase() === 'unknown') return null
   const clauses = normalized.split('||').map(clause => clause.trim()).filter(Boolean)
-  if (clauses.length > MAX_DSH_RANGE_CLAUSES) return result
+  if (clauses.length > MAX_DSH_RANGE_CLAUSES) return null
   const parsedClauses = clauses.map(parseDshRangeClause)
-  if (parsedClauses.length === 0 || parsedClauses.some(clause => clause === null)) return result
+  if (parsedClauses.length === 0 || parsedClauses.some(clause => clause === null)) return null
+  return parsedClauses
+}
 
+export function dshVersionCompatibility(value, version) {
+  if (!VERSION.test(version ?? '')) return 'unknown'
+  const parsedClauses = parseDshRange(value)
+  if (parsedClauses === null) return 'unknown'
   const satisfiesToken = (version, token) => {
     const comparison = compareVersions(version, token.version)
     if (comparison === null) return false
@@ -86,34 +91,63 @@ export function dshReleaseCompatibility(value) {
     }
     return comparison === 0
   }
+  return parsedClauses.some(clause => clause.every(token => satisfiesToken(version, token)))
+    ? 'compatible'
+    : 'incompatible'
+}
 
-  for (const release of DSH_RC_RELEASES) {
-    const version = DSH_RC_VERSIONS[release]
-    result[release] = parsedClauses.some(clause => clause.every(token => satisfiesToken(version, token)))
-      ? 'compatible'
-      : 'incompatible'
+export function dshReleaseVersion(release) {
+  if (Object.hasOwn(DSH_RC_VERSIONS, release)) return DSH_RC_VERSIONS[release]
+  return VERSION.test(release ?? '') ? release : null
+}
+
+export function dshReleaseCompatibility(value, releases = DSH_RC_RELEASES) {
+  const result = {}
+  for (const release of releases) {
+    const version = dshReleaseVersion(release)
+    result[release] = version === null ? 'unknown' : dshVersionCompatibility(value, version)
   }
   return result
 }
 
-function declaredDshReleaseCompatibility(value, label) {
-  if (value === undefined) return dshReleaseCompatibility(label)
+function declaredDshReleaseCompatibility(value, dshRange, label) {
+  if (value === undefined) return dshReleaseCompatibility(dshRange)
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${label}.dshReleases must be an object`)
+  const releases = Object.keys(value)
+  if (releases.length > MAX_DSH_RELEASE_KEYS) throw new TypeError(`${label}.dshReleases contains too many release keys`)
   const normalized = {}
-  for (const release of DSH_RC_RELEASES) {
+  const byVersion = new Map()
+  for (const release of releases) {
+    const version = dshReleaseVersion(release)
+    if (version === null) throw new TypeError(`${label}.dshReleases.${release} is not a supported DSH release key`)
     const status = value[release]
     if (!['compatible', 'incompatible', 'unknown'].includes(status)) {
       throw new TypeError(`${label}.dshReleases.${release} must be compatible, incompatible, or unknown`)
     }
+    if (byVersion.has(version) && byVersion.get(version) !== status) {
+      throw new TypeError(`${label}.dshReleases declares conflicting aliases for ${version}`)
+    }
+    byVersion.set(version, status)
     normalized[release] = status
   }
   return normalized
 }
 
 function declaredDshOperations(value, label) {
+  if (value !== undefined && (!value || typeof value !== 'object' || Array.isArray(value))) {
+    throw new TypeError(`${label}.dshOperations must be an object`)
+  }
+  const releases = [...new Set([...DSH_RC_RELEASES, ...Object.keys(value ?? {})])]
+  if (releases.length > MAX_DSH_RELEASE_KEYS) throw new TypeError(`${label}.dshOperations contains too many release keys`)
   const normalized = {}
-  for (const release of DSH_RC_RELEASES) {
+  const byVersion = new Map()
+  for (const release of releases) {
+    const version = dshReleaseVersion(release)
+    if (version === null) throw new TypeError(`${label}.dshOperations.${release} is not a supported DSH release key`)
     const record = value?.[release]
+    if (record !== undefined && (!record || typeof record !== 'object' || Array.isArray(record))) {
+      throw new TypeError(`${label}.dshOperations.${release} must be an object`)
+    }
     normalized[release] = {}
     for (const operation of DSH_OPERATIONS) {
       const status = record?.[operation] ?? 'unknown'
@@ -122,6 +156,11 @@ function declaredDshOperations(value, label) {
       }
       normalized[release][operation] = status
     }
+    const fingerprint = JSON.stringify(normalized[release])
+    if (byVersion.has(version) && byVersion.get(version) !== fingerprint) {
+      throw new TypeError(`${label}.dshOperations declares conflicting aliases for ${version}`)
+    }
+    byVersion.set(version, fingerprint)
   }
   return normalized
 }
@@ -160,7 +199,13 @@ function evidenceRecord(value, label, fallback) {
     method: value.method === undefined || value.method === null ? null : nonEmptyString(value.method, `${label}.method`, 120),
     checkedAt: isoDateOrNull(value.checkedAt, `${label}.checkedAt`),
     evidenceUrl: httpsUrlOrNull(value.evidenceUrl, `${label}.evidenceUrl`),
-    dshRelease: value.dshRelease === undefined || value.dshRelease === null ? null : enumValue(value.dshRelease, `${label}.dshRelease`, DSH_RC_RELEASES),
+    dshRelease: value.dshRelease === undefined || value.dshRelease === null
+      ? null
+      : (() => {
+          const release = nonEmptyString(value.dshRelease, `${label}.dshRelease`, 80)
+          if (dshReleaseVersion(release) === null) throw new TypeError(`${label}.dshRelease is not a supported DSH release key`)
+          return release
+        })(),
     systems: stringArray(value.systems ?? [], `${label}.systems`),
     profiles: stringArray(value.profiles ?? [], `${label}.profiles`),
     summary: value.summary === undefined || value.summary === null ? null : nonEmptyString(value.summary, `${label}.summary`, 600),
@@ -445,7 +490,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
       : null,
     compatibility: {
       dsh: typeof value.compatibility?.dsh === 'string' ? value.compatibility.dsh.slice(0, 120) : null,
-      dshReleases: declaredDshReleaseCompatibility(value.compatibility?.dshReleases, value.compatibility?.dsh),
+      dshReleases: declaredDshReleaseCompatibility(value.compatibility?.dshReleases, value.compatibility?.dsh, `entries[${index}].compatibility`),
       dshOperations: declaredDshOperations(value.compatibility?.dshOperations, `entries[${index}].compatibility`),
       node: typeof value.compatibility?.node === 'string' ? value.compatibility.node.slice(0, 120) : null,
       systems: stringArray(value.compatibility?.systems ?? [], `entries[${index}].compatibility.systems`),
@@ -574,12 +619,110 @@ export function compareVersions(left, right) {
   return a.pre.localeCompare(b.pre, 'en', { numeric: true })
 }
 
-export function compareCatalogEntries(left, right) {
+function unknownDshOperations() {
+  return Object.fromEntries(DSH_OPERATIONS.map(operation => [operation, 'unknown']))
+}
+
+function addReleaseRecord(byVersion, release) {
+  const version = dshReleaseVersion(release)
+  if (version === null) return
+  const current = byVersion.get(version)
+  if (current) {
+    current.aliases.add(release)
+    if (VERSION.test(release)) current.key = release
+    return
+  }
+  byVersion.set(version, { key: release, version, aliases: new Set([release]) })
+}
+
+export function createDshReleaseContext(entries = [], dshVersion = {}) {
+  const byVersion = new Map()
+  for (const release of DSH_RC_RELEASES) addReleaseRecord(byVersion, release)
+  for (const entry of entries) {
+    for (const release of Object.keys(entry?.compatibility?.dshReleases ?? {})) addReleaseRecord(byVersion, release)
+    for (const release of Object.keys(entry?.compatibility?.dshOperations ?? {})) addReleaseRecord(byVersion, release)
+  }
+  const npmLatest = VERSION.test(dshVersion?.latestVersion ?? '') ? dshVersion.latestVersion : null
+  if (npmLatest) addReleaseRecord(byVersion, npmLatest)
+  const allReleases = [...byVersion.values()]
+    .sort((left, right) => compareVersions(left.version, right.version) ?? left.version.localeCompare(right.version, 'en'))
+  const officialLatestIndex = npmLatest ? allReleases.findIndex(release => release.version === npmLatest) : -1
+  const boundedReleases = officialLatestIndex >= 0
+    ? allReleases.slice(Math.max(0, officialLatestIndex - MAX_DSH_RELEASE_KEYS + 1), officialLatestIndex + 1)
+    : allReleases.slice(-MAX_DSH_RELEASE_KEYS)
+  const fallbackLatest = boundedReleases.at(-1)?.version ?? null
+  const latestVersion = npmLatest ?? fallbackLatest
+  const releases = boundedReleases.map(release => ({
+    key: release.key,
+    version: release.version,
+    label: release.version,
+    aliases: [...release.aliases].sort(),
+    latest: release.version === latestVersion,
+  }))
+  const latestIndex = Math.max(0, releases.findIndex(release => release.latest))
+  return {
+    schemaVersion: 1,
+    source: npmLatest ? 'npm-official' : 'catalog-fallback',
+    latestVersion,
+    checkedAt: npmLatest && typeof dshVersion.checkedAt === 'string' ? dshVersion.checkedAt : null,
+    registryUrl: npmLatest && typeof dshVersion.registryUrl === 'string' ? dshVersion.registryUrl : null,
+    errorCode: npmLatest ? null : (dshVersion?.errorCode ?? null),
+    releases,
+    cardReleases: releases.slice(Math.max(0, latestIndex - 2), latestIndex + 1),
+  }
+}
+
+export function projectDshRelease(entry, release) {
+  const compatibility = entry?.compatibility ?? {}
+  const releaseKeys = [...new Set([release?.key, ...(release?.aliases ?? [])].filter(Boolean))]
+  const declaredKey = releaseKeys.find(key => Object.hasOwn(compatibility.dshReleases ?? {}, key)) ?? null
+  const declaredStatus = declaredKey === null ? null : compatibility.dshReleases[declaredKey]
+  const rangeStatus = dshVersionCompatibility(compatibility.dsh, release?.version)
+  const basis = declaredKey === null ? (rangeStatus === 'unknown' ? 'unknown' : 'range') : 'catalog'
+  const status = declaredKey === null
+    ? rangeStatus === 'incompatible' ? 'incompatible' : 'unknown'
+    : declaredStatus
+  const operationKey = releaseKeys.find(key => Object.hasOwn(compatibility.dshOperations ?? {}, key)) ?? null
+  return {
+    key: release?.key ?? null,
+    version: release?.version ?? null,
+    label: release?.label ?? release?.version ?? release?.key ?? 'unknown',
+    latest: release?.latest === true,
+    status: ['compatible', 'incompatible', 'unknown'].includes(status) ? status : 'unknown',
+    basis,
+    rangeStatus,
+    declaredKey,
+    operations: { ...unknownDshOperations(), ...(operationKey ? compatibility.dshOperations[operationKey] : {}) },
+  }
+}
+
+function withDshReleaseViews(entry, releaseContext) {
+  return {
+    ...entry,
+    compatibility: {
+      ...entry.compatibility,
+      dshReleaseViews: releaseContext.releases.map(release => projectDshRelease(entry, release)),
+    },
+  }
+}
+
+function compatibilityRank(entry, releaseContext) {
+  const latest = releaseContext.releases.find(release => release.latest) ?? releaseContext.releases.at(-1)
+  if (!latest) return 2
+  const view = entry.compatibility?.dshReleaseViews?.find(item => item.version === latest.version)
+    ?? projectDshRelease(entry, latest)
+  if (view.basis === 'catalog' && view.status === 'compatible') return 0
+  if (view.basis === 'range' && view.rangeStatus === 'compatible') return 1
+  if (view.status === 'unknown') return 2
+  return 3
+}
+
+export function compareCatalogEntries(left, right, options = {}) {
+  const releaseContext = options.releaseContext ?? createDshReleaseContext([left, right], options.dshVersion)
   const statusRank = entry => ({ approved: 0, blocked: 1, unlisted: 2 }[entry.status] ?? 2)
-  const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility?.dshReleases?.[LATEST_DSH_RELEASE] ?? 'unknown'] ?? 1)
   const freshness = entry => Date.parse(entry.source?.updatedAt ?? entry.github?.pushedAt ?? entry.github?.updatedAt ?? '') || 0
   return statusRank(left) - statusRank(right)
-    || compatibilityRank(left) - compatibilityRank(right)
+    || compatibilityRank(left, releaseContext) - compatibilityRank(right, releaseContext)
     || freshness(right) - freshness(left)
     || Number(right.featured) - Number(left.featured)
     || (right.installCount ?? -1) - (left.installCount ?? -1)
@@ -590,6 +733,7 @@ export function compareCatalogEntries(left, right) {
 export function searchCatalog(catalog, query = '', options = {}) {
   const needle = String(query).trim().toLowerCase()
   const category = String(options.category ?? '').trim().toLowerCase()
+  const releaseContext = options.releaseContext ?? createDshReleaseContext(catalog.entries, options.dshVersion)
   return catalog.entries
     .filter(entry => options.includeUnlisted === true || entry.status !== 'unlisted')
     .filter(entry => category === '' || entry.categories.includes(category))
@@ -602,13 +746,15 @@ export function searchCatalog(catalog, query = '', options = {}) {
       entry.compatibility?.dsh ?? '', ...Object.entries(entry.compatibility?.dshReleases ?? {}).flat(),
       ...entry.categories,
     ].some(value => value.toLowerCase().includes(needle)))
-    .sort(compareCatalogEntries)
+    .sort((left, right) => compareCatalogEntries(left, right, { releaseContext }))
 }
 
 export function buildMarketplaceSnapshot(catalog, inventory, query = '', options = {}) {
   const installedByName = new Map(inventory.plugins.map(plugin => [plugin.packageName, plugin]))
   const managedPackages = options.managedPackages instanceof Set ? options.managedPackages : new Set()
-  const entries = searchCatalog(catalog, query, { includeUnlisted: true }).map(entry => {
+  const releaseContext = createDshReleaseContext(catalog.entries, options.dshVersion)
+  const entries = searchCatalog(catalog, query, { includeUnlisted: true, releaseContext }).map(sourceEntry => {
+    const entry = withDshReleaseViews(sourceEntry, releaseContext)
     const installed = installedByName.get(entry.packageName) ?? null
     const versionComparison = installed?.version ? compareVersions(installed.version, entry.version) : null
     const localProtected = ['link', 'file', 'workspace'].includes(installed?.source)
@@ -667,6 +813,7 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
     trustPolicy: catalog.registry.trustPolicy,
     candidateRegistry: options.candidateRegistry?.registry ?? null,
     candidateSource: options.candidateRegistry?.source ?? null,
+    dshReleaseContext: releaseContext,
     candidates: Array.isArray(options.candidateRegistry?.entries) ? options.candidateRegistry.entries : [],
     entries,
   }

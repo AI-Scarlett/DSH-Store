@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
   buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
-  compareCatalogEntries, compareVersions, dshReleaseCompatibility, paginateMarketplaceSnapshot, searchCatalog, validateCatalog, verifyCatalogEntry,
+  compareCatalogEntries, compareVersions, createDshReleaseContext, dshReleaseCompatibility, dshVersionCompatibility,
+  paginateMarketplaceSnapshot, projectDshRelease, searchCatalog, validateCatalog, verifyCatalogEntry,
 } from '../src/catalog.mjs'
 
 const entry = {
@@ -79,6 +80,44 @@ test('catalog exposes an explicit rc.5 through 0.1.1-rc.1 compatibility matrix',
   assert.deepEqual(dshReleaseCompatibility(`${' '.repeat(200_000)}!`), {
     'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown',
   }, 'oversized uncontrolled ranges must fail closed before regular-expression parsing')
+})
+
+test('dynamic DSH releases keep range support pending until exact catalog evidence exists', () => {
+  const catalog = validateCatalog(document([{ ...entry, compatibility: {
+    ...entry.compatibility,
+    dsh: '>=0.1.0-rc.8 <0.2.0',
+    dshReleases: { '0.1.1-rc.1': 'compatible' },
+    dshOperations: { '0.1.1-rc.1': { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' } },
+  } }]))
+  const context = createDshReleaseContext(catalog.entries, {
+    latestVersion: '0.1.1-rc.2', checkedAt: '2026-08-21T13:00:00.000Z', registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest',
+  })
+  assert.equal(context.source, 'npm-official')
+  assert.equal(context.latestVersion, '0.1.1-rc.2')
+  assert.deepEqual(context.cardReleases.map(release => release.version), ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'])
+  const latest = projectDshRelease(catalog.entries[0], context.releases.find(release => release.latest))
+  assert.equal(latest.status, 'unknown')
+  assert.equal(latest.basis, 'range')
+  assert.equal(latest.rangeStatus, 'compatible')
+  assert.deepEqual(latest.operations, { install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' })
+  assert.equal(dshVersionCompatibility('>=0.1.0-rc.8 <0.2.0', '0.2.0'), 'incompatible')
+})
+
+test('catalog accepts dynamic full SemVer evidence and rejects conflicting aliases', () => {
+  const dynamic = validateCatalog(document([{ ...entry, compatibility: {
+    ...entry.compatibility,
+    dshReleases: { '0.1.1-rc.2': 'compatible' },
+    dshOperations: { '0.1.1-rc.2': { install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown' } },
+  } }])).entries[0]
+  assert.equal(dynamic.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
+  assert.equal(dynamic.compatibility.dshOperations['0.1.1-rc.2'].start, 'passed')
+  assert.throws(() => validateCatalog(document([{ ...entry, compatibility: {
+    ...entry.compatibility,
+    dshReleases: { 'rc.8': 'compatible', '0.1.0-rc.8': 'incompatible' },
+  } }])), /conflicting aliases/)
+  assert.throws(() => validateCatalog(document([{ ...entry, compatibility: {
+    ...entry.compatibility, dshReleases: { latest: 'compatible' },
+  } }])), /not a supported DSH release key/)
 })
 
 test('marketplace snapshot pagination returns one bounded page and lazy candidate data', () => {

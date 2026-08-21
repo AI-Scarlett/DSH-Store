@@ -135,7 +135,8 @@ export function handleMarketRequest(req, res, options = {}) {
       ? await (options.candidateService?.load({ force: body.refresh === true }) ?? Promise.resolve(null))
       : null
     const managedPackages = await readMarketplaceProvenance(options.dshHome, profile)
-    const snapshot = buildMarketplaceSnapshot(catalog, inventory, '', { managedPackages, candidateRegistry })
+    const dshVersion = options.dshVersionService?.peek?.() ?? null
+    const snapshot = buildMarketplaceSnapshot(catalog, inventory, '', { managedPackages, candidateRegistry, dshVersion })
     return paginateMarketplaceSnapshot(snapshot, {
       view,
       query: body.query,
