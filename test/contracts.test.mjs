@@ -34,6 +34,23 @@ test('static storefront templates expose the cross-site navigation and analytics
   }
 })
 
+test('marketplace cards show the latest three DSH releases while details retain full history', async () => {
+  const [storefront, styles, client] = await Promise.all([
+    readFile(new URL('marketplace/app.js', project), 'utf8'),
+    readFile(new URL('marketplace/styles.css', project), 'utf8'),
+    readFile(new URL('src/client.js', project), 'utf8'),
+  ])
+  assert.match(storefront, /const DSH_CARD_RELEASES = DSH_RC_RELEASES\.slice\(-3\)/)
+  assert.match(storefront, /compatibilityMatrix = \(entry, releases = DSH_CARD_RELEASES\)/)
+  assert.match(storefront, /\$\{compatibilityMatrix\(entry\)\}/)
+  assert.match(storefront, /DSH_RC_RELEASES\.map\(release => `\$\{DSH_RELEASE_LABELS/)
+  assert.match(styles, /\.compatibility-matrix \{[^\n]*grid-template-columns: repeat\(3,/)
+  assert.match(client, /const DSH_CARD_RELEASES = DSH_RC_RELEASES\.slice\(-3\)/)
+  assert.match(client, /function CompatibilityMatrix\(\{ entry, releases = DSH_CARD_RELEASES \}\)/)
+  assert.match(client, /React\.createElement\(AssuranceMatrix, \{ entry \}\),\s*React\.createElement\(CompatibilityMatrix, \{ entry \}\),/)
+  assert.match(client, /React\.createElement\(CompatibilityMatrix, \{ entry, releases: DSH_RC_RELEASES \}\)/)
+})
+
 test('guarded write path uses exact process arguments and permanent protection checks', async () => {
   const [runner, operations] = await Promise.all([
     readFile(new URL('src/dsh.mjs', project), 'utf8'),

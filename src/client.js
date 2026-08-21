@@ -190,7 +190,7 @@ window.__ModuleLoader__.load({
       detailLabel: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       detailValue: { margin: 0, color: 'var(--dsw-alias-label-primary)', fontSize: '12px', lineHeight: '18px', overflowWrap: 'anywhere' },
       detailBadges: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
-      compatibilityMatrix: { display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '4px', marginTop: '2px' },
+      compatibilityMatrix: { display: 'grid', gap: '4px', marginTop: '2px' },
       compatibilityCell: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '7px', padding: '4px 3px', minWidth: 0 },
       compatibilityKey: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', fontWeight: 700 },
       compatibilityValue: { fontSize: '10px', lineHeight: '14px' },
@@ -240,6 +240,7 @@ window.__ModuleLoader__.load({
     }
 
     const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
+    const DSH_CARD_RELEASES = DSH_RC_RELEASES.slice(-3)
     const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
     const DSH_RELEASE_LABELS = { '0.1.1-rc.1': '0.1.1 rc.1' }
     function compareDshVersions(left, right) {
@@ -288,9 +289,11 @@ window.__ModuleLoader__.load({
     const compatibilityStatusColor = status => ({
       compatible: 'var(--dsw-alias-state-success-primary)', incompatible: 'var(--dsw-alias-state-error-primary)', unknown: 'var(--dsw-alias-label-tertiary)',
     }[status] || 'var(--dsw-alias-label-tertiary)')
-    function CompatibilityMatrix({ entry }) {
-      return React.createElement('div', { style: styles.compatibilityMatrix, role: 'list', 'aria-label': 'DSH rc.5 至 0.1.1-rc.1 兼容性' },
-        DSH_RC_RELEASES.map(release => {
+    function CompatibilityMatrix({ entry, releases = DSH_CARD_RELEASES }) {
+      const latestRelease = releases[releases.length - 1]
+      const releaseLabel = `${DSH_RELEASE_LABELS[releases[0]] || releases[0]} 至 ${DSH_RELEASE_LABELS[latestRelease] || latestRelease}`
+      return React.createElement('div', { style: { ...styles.compatibilityMatrix, gridTemplateColumns: `repeat(${releases.length}, minmax(0, 1fr))` }, role: 'list', 'aria-label': `DSH ${releaseLabel} 兼容性` },
+        releases.map(release => {
           const status = entry.compatibility.dshReleases[release]
           return React.createElement('div', { key: release, role: 'listitem', style: { ...styles.compatibilityCell, color: compatibilityStatusColor(status) } },
             React.createElement('span', { style: styles.compatibilityKey }, `DSH ${DSH_RELEASE_LABELS[release] || release}`),
@@ -676,7 +679,7 @@ window.__ModuleLoader__.load({
             evidence.evidenceUrl ? React.createElement('a', { href: evidence.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '打开证据') : null)
         })),
         React.createElement('h3', { style: styles.detailHeading }, '兼容性'),
-        React.createElement(CompatibilityMatrix, { entry }),
+        React.createElement(CompatibilityMatrix, { entry, releases: DSH_RC_RELEASES }),
         React.createElement('dl', { style: styles.detailGrid },
           React.createElement(DetailRow, { label: 'DSH', value: entry.compatibility.dsh || '未声明' }),
           React.createElement(DetailRow, { label: 'Node.js', value: entry.compatibility.node || '未声明' }),
