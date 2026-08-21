@@ -41,6 +41,100 @@
   },
   "entries": [
     {
+      "id": "dsh-cliapi",
+      "name": "模型与授权（DSH CLIAPI）",
+      "packageName": "@local/dsh-cliapi",
+      "description": "统一管理 CLI/OAuth 授权、Auto 故障切换与多模态模型调度。",
+      "repositoryUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI",
+      "defaultBranch": "main",
+      "manifestPath": "plugin/package.json",
+      "installPath": "plugin",
+      "commit": "b32f446b00e6ea0d02473d5dd2078bb38f4cbe80",
+      "version": "0.5.1",
+      "categories": [
+        "models",
+        "routing"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-cliapi"
+      ],
+      "status": "approved",
+      "updatePolicy": "user-reviewed",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.8 <0.2.0",
+        "node": ">=20",
+        "systems": [
+          "macOS",
+          "Linux"
+        ],
+        "profiles": [
+          "web"
+        ],
+        "dshReleases": {
+          "rc.5": "incompatible",
+          "rc.6": "incompatible",
+          "rc.7": "incompatible",
+          "rc.8": "compatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        }
+      },
+      "details": {
+        "pluginType": "provider",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "oauth",
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "CLIProxyAPI",
+          "第三方 API"
+        ],
+        "reviewStatus": "author-verified"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "owner-curated-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-21T05:39:53.000Z",
+        "provenance": "github-commit",
+        "observedAt": "2026-08-21T05:42:28.000Z"
+      }
+    },
+    {
       "id": "dsh-safe-plugin-manager",
       "name": "安全插件商城（DSH-Store）",
       "packageName": "dsh-safe-plugin-manager",
@@ -149,100 +243,6 @@
         "updatedAt": "2026-08-21T05:38:37.000Z",
         "provenance": "github-commit",
         "observedAt": "2026-08-21T05:41:22.000Z"
-      }
-    },
-    {
-      "id": "dsh-cliapi",
-      "name": "模型与授权（DSH CLIAPI）",
-      "packageName": "@local/dsh-cliapi",
-      "description": "统一管理 CLI/OAuth 授权、Auto 故障切换与多模态模型调度。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI",
-      "defaultBranch": "main",
-      "manifestPath": "plugin/package.json",
-      "installPath": "plugin",
-      "commit": "b32f446b00e6ea0d02473d5dd2078bb38f4cbe80",
-      "version": "0.5.1",
-      "categories": [
-        "models",
-        "routing"
-      ],
-      "featured": false,
-      "entryIds": [
-        "dsh-cliapi"
-      ],
-      "status": "approved",
-      "updatePolicy": "user-reviewed",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.8 <0.2.0",
-        "node": ">=20",
-        "systems": [
-          "macOS",
-          "Linux"
-        ],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.5": "incompatible",
-          "rc.6": "incompatible",
-          "rc.7": "incompatible",
-          "rc.8": "compatible"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "provider",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "specified-services",
-          "commands": "restricted",
-          "credentials": [
-            "oauth",
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "CLIProxyAPI",
-          "第三方 API"
-        ],
-        "reviewStatus": "author-verified"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "owner-curated-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-21T05:39:53.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T05:42:28.000Z"
       }
     },
     {
