@@ -346,7 +346,7 @@
       "defaultBranch": "main",
       "manifestPath": "package.json",
       "commit": "b7ca2ebcc3e441599f955cfaaa01b3f878540ffc",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "categories": [
         "marketplace",
         "management"
@@ -354,19 +354,16 @@
       "featured": true,
       "assurance": {
         "discovery": {
-          "status": "verified",
-          "method": "github-fixed-commit-readback",
-          "checkedAt": "2026-08-21T00:27:59.000Z",
-          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/b7ca2ebcc3e441599f955cfaaa01b3f878540ffc",
-          "summary": "公开 GitHub 固定提交、manifest 与 Bundle Patch 已回读。"
+          "status": "unknown",
+          "summary": "0.7.0 固定源码提交将在发布提交后回读；当前不得继承旧版本验证结论。"
         },
         "installability": {
           "status": "unknown",
-          "summary": "固定提交已在本地一次性 rc.8 Profile 通过官方 CLI 安装、配置合成与卸载；尚无公开 HTTPS 证据。"
+          "summary": "本地源码已在一次性 rc.5–rc.8 Profile 通过官方 CLI 安装与配置合成；rc.8 卸载沿用既有证据，其他卸载及全部回滚仍未知，且新固定提交尚待公开回读。"
         },
         "runtime": {
           "status": "unknown",
-          "summary": "固定提交已在本地一次性 rc.8 Web Profile 通过启动、根页面与 Inventory API 冒烟；尚无公开 HTTPS 证据。"
+          "summary": "本地源码已在一次性 rc.5–rc.8 Web Profile 通过启动、根页面、分页 API 与客户端入口冒烟；新固定提交尚待公开回读。"
         },
         "securityReview": {
           "status": "unknown",
@@ -378,29 +375,29 @@
       ],
       "status": "approved",
       "compatibility": {
-        "dsh": ">=0.1.0-rc.8 <0.2.0",
+        "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0",
         "dshReleases": {
-          "rc.5": "incompatible",
-          "rc.6": "incompatible",
-          "rc.7": "incompatible",
+          "rc.5": "compatible",
+          "rc.6": "compatible",
+          "rc.7": "compatible",
           "rc.8": "compatible"
         },
         "dshOperations": {
           "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
+            "install": "passed",
+            "start": "passed",
             "uninstall": "unknown",
             "rollback": "unknown"
           },
           "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
+            "install": "passed",
+            "start": "passed",
             "uninstall": "unknown",
             "rollback": "unknown"
           },
           "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
+            "install": "passed",
+            "start": "passed",
             "uninstall": "unknown",
             "rollback": "unknown"
           },
