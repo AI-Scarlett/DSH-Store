@@ -1,4 +1,4 @@
-const host = 'dsh.store'
+const host = process.env.INDEXNOW_HOST || 'dsh.store'
 const key = 'f54dc5a289b1a7c4b8245b705b9988fb'
 const keyLocation = `https://${host}/${key}.txt`
 const defaultUrls = [
