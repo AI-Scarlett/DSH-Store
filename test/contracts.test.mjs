@@ -18,6 +18,22 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.private, true)
 })
 
+test('static storefront templates expose the cross-site navigation and analytics identity contract', async () => {
+  const pagePaths = [
+    'marketplace/index.html',
+    'marketplace/plugins/index.html',
+    'marketplace/build/index.html',
+    'marketplace/faq/index.html',
+    'marketplace/about/index.html',
+  ]
+  const pages = await Promise.all(pagePaths.map(path => readFile(new URL(path, project), 'utf8')))
+  for (const page of pages) assert.match(page, /DSH_ALTERNATE_SITE/)
+  for (const path of ['marketplace/app.js', 'marketplace/build/build.js', 'marketplace/faq/faq.js', 'marketplace/about/about.js']) {
+    const source = await readFile(new URL(path, project), 'utf8')
+    assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
+  }
+})
+
 test('guarded write path uses exact process arguments and permanent protection checks', async () => {
   const [runner, operations] = await Promise.all([
     readFile(new URL('src/dsh.mjs', project), 'utf8'),

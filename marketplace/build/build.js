@@ -344,6 +344,7 @@ function sendDshEvent(event, details = {}) {
   const url = new URL('/_events/dsh', location.origin)
   url.searchParams.set('event', eventName)
   url.searchParams.set('locale', state.locale)
+  url.searchParams.set('site', analyticsToken(location.host))
   for (const field of ['item', 'value']) {
     const token = analyticsToken(details[field])
     if (token) url.searchParams.set(field, token)
