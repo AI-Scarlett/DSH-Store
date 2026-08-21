@@ -29,4 +29,4 @@
 
 ## 证据边界
 
-本迁移证明 Catalog schema、解析、排序和静态显示能够表达 DSH `0.1.1-rc.1`，不证明 400 个插件都完成了真实运行验收。没有一次性 Profile 证据的操作矩阵保持 unknown。DSH-Store 0.8.0 与 Build DSH Plugin 0.3.0 已在一次性 Profile 中通过安装、启动和卸载验证，回滚仍为 unknown；真实 Profile、公开 GitHub 固定提交与公开商城回读仍是独立验收门。
+本迁移证明 Catalog schema、解析、排序和静态显示能够表达 DSH `0.1.1-rc.1`，不证明 400 个插件都完成了真实运行验收。没有一次性 Profile 证据的操作矩阵保持 unknown。DSH-Store 0.8.0 与 Build DSH Plugin 0.3.0 已在一次性 Profile 中通过安装、启动和卸载验证，回滚仍为 unknown。Build DSH Plugin 的公开固定提交与发行资产已回读；DSH-Store 的公开固定提交、商城页面和真实 Profile 仍是独立验收门。

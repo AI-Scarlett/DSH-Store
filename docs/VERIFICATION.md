@@ -181,8 +181,9 @@
 ### `0.8.0` DSH 0.1.1-rc.1 兼容与分页验收
 
 - 商城功能源码固定到本地提交 `b9be979ff42deacff5e344e2e5d36c13638c95b9`；
-  Build DSH Plugin 0.3.0 固定到本地提交 `336e9945da604b58b3d096c29a68b4468fe7f333`；
-  两个提交在推送和公开回读前不标记为公开来源已验证；
+  Build DSH Plugin 0.3.0 已发布到固定提交
+  `fc69bf9cf6547e9ef02d227fd5ec5c19995e3acf`，公开 manifest、插件自有 Patch、Host
+  入口、Release 与 ZIP SHA-256 已回读；商城提交在推送和公开回读前仍不标记为公开来源已验证；
 - 商城 `npm run check` 通过 103 项单元、契约、事务与分页测试；Build Plugin
   `npm run check` 通过 Bundle、Skill、审计器、候选隔离和分发一致性检查；
 - Catalog 保持 400 条，`0.1.1-rc.1` 矩阵为 274 compatible、117 unknown、
