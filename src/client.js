@@ -23,13 +23,27 @@ window.__ModuleLoader__.load({
     const SUPPORT_URL = 'https://dsh.store/'
     const MARKET_PAGE_SIZE = 24
     const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
+    const BOOT_RECOVERY_STORAGE_KEY = 'dsh-safe-plugin-manager:tab-boot:v1'
+    const BOOT_RECOVERY_NAVIGATED_KEY = 'dsh-safe-plugin-manager:last-recovered-boot:v1'
+    const BOOT_RECOVERY_CHANNEL = 'dsh-safe-plugin-manager:boot-recovery:v1'
+    const BOOT_RECOVERY_BANNER_ID = 'dsh-safe-plugin-manager-boot-recovery'
+    const BOOT_RECOVERY_TIMEOUT_MS = 90_000
+    const BOOT_RECOVERY_REQUEST_TIMEOUT_MS = 2_500
+    const BOOT_RECOVERY_RAPID_POLL_MS = 1_000
+    const BOOT_RECOVERY_IDLE_POLL_MS = 5_000
+    const BOOT_RECOVERY_STABLE_SAMPLES = 3
     const HEALTH_PERMISSION_STORAGE_KEY = 'dsh-safe-plugin-manager:health-permission-decisions:v1'
     const HEALTH_PERMISSION_FIELDS = ['files', 'network', 'commands', 'credentials', 'acceptUnknown']
+    let activeBootRecovery = null
 
-    async function post(route, body = {}, intent = null) {
+    async function post(route, body = {}, intent = null, options = {}) {
       const headers = { 'content-type': 'application/json' }
       if (intent) headers['x-dsh-safe-intent'] = intent
-      const response = await fetch(route, { method: 'POST', headers, body: JSON.stringify(body) })
+      const response = await fetch(route, {
+        method: 'POST', headers, body: JSON.stringify(body),
+        ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.cache ? { cache: options.cache } : {}),
+      })
       const payload = await response.json()
       if (!response.ok || !payload.ok) {
         const error = new Error(payload?.error?.message || `HTTP ${response.status}`)
@@ -113,7 +127,351 @@ window.__ModuleLoader__.load({
       return { status: 'failed', plugin, pluginHealth }
     }
 
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+    function validBootId(value) {
+      return typeof value === 'string' && value.length >= 8 && value.length <= 128
+        && /^[A-Za-z0-9._:-]+$/.test(value)
+    }
+
+    function readSessionValue(key) {
+      try { return window.sessionStorage.getItem(key) } catch { return null }
+    }
+
+    function writeSessionValue(key, value) {
+      try { window.sessionStorage.setItem(key, value) } catch {}
+    }
+
+    function bootIdFromLocation() {
+      try {
+        const value = new URL(window.location.href).searchParams.get('dshBoot')
+        return validBootId(value) ? value : null
+      } catch { return null }
+    }
+
+    function removeBootRecoveryBanner() {
+      if (typeof document === 'undefined') return
+      document.getElementById(BOOT_RECOVERY_BANNER_ID)?.remove()
+    }
+
+    function showBootRecoveryBanner(kind, retry) {
+      if (typeof document === 'undefined' || !document.body) return
+      let banner = document.getElementById(BOOT_RECOVERY_BANNER_ID)
+      if (!banner) {
+        banner = document.createElement('div')
+        banner.id = BOOT_RECOVERY_BANNER_ID
+        banner.setAttribute('role', kind === 'failed' ? 'alert' : 'status')
+        banner.style.cssText = 'position:fixed;left:50%;top:12px;z-index:2147483000;transform:translateX(-50%);display:flex;align-items:center;gap:10px;max-width:min(760px,calc(100vw - 24px));padding:10px 12px;border:1px solid var(--dsw-alias-border-l2);border-radius:10px;background:var(--dsw-alias-bg-layer-3);color:var(--dsw-alias-label-primary);box-shadow:0 8px 24px rgba(0,0,0,.28);font:12px/18px system-ui,sans-serif'
+        const message = document.createElement('span')
+        message.setAttribute('data-role', 'message')
+        message.style.flex = '1 1 auto'
+        banner.appendChild(message)
+        const retryButton = document.createElement('button')
+        retryButton.type = 'button'
+        retryButton.textContent = '重新检测'
+        retryButton.setAttribute('data-role', 'retry')
+        retryButton.style.cssText = 'display:none;border:1px solid currentColor;border-radius:7px;padding:4px 8px;background:transparent;color:inherit;cursor:pointer'
+        retryButton.addEventListener('click', () => retry?.())
+        banner.appendChild(retryButton)
+        const reloadButton = document.createElement('button')
+        reloadButton.type = 'button'
+        reloadButton.textContent = '手动刷新'
+        reloadButton.setAttribute('data-role', 'reload')
+        reloadButton.style.cssText = retryButton.style.cssText
+        reloadButton.addEventListener('click', () => {
+          const url = new URL(window.location.href)
+          url.searchParams.set('dshRecoveryManual', String(Date.now()))
+          window.location.replace(url.toString())
+        })
+        banner.appendChild(reloadButton)
+        document.body.appendChild(banner)
+      }
+      banner.setAttribute('role', kind === 'failed' ? 'alert' : 'status')
+      const message = banner.querySelector('[data-role="message"]')
+      if (message) message.textContent = kind === 'failed'
+        ? '新的 DSH Host 尚未通过 Guardian 稳定性验证。当前页面不会自动循环刷新。'
+        : kind === 'checking'
+          ? '检测到新的 DSH Host，正在等待 Guardian 稳定并校验页面资源…'
+          : 'DSH 正在安全重启；所有标签页会在新 Host 稳定后自动恢复。未保存的草稿可能丢失。'
+      const retryButton = banner.querySelector('[data-role="retry"]')
+      const reloadButton = banner.querySelector('[data-role="reload"]')
+      if (retryButton) retryButton.style.display = kind === 'failed' ? 'inline-flex' : 'none'
+      if (reloadButton) reloadButton.style.display = kind === 'failed' ? 'inline-flex' : 'none'
+    }
+
+    function createBootRecoveryController() {
+      let disposed = false
+      let running = false
+      let timer = null
+      let channel = null
+      let knownBootId = bootIdFromLocation() || readSessionValue(BOOT_RECOVERY_STORAGE_KEY)
+      if (!validBootId(knownBootId)) knownBootId = null
+      let expectedPreviousBootId = null
+      let candidateBootId = null
+      let stableSamples = 0
+      let rapidUntil = 0
+      let recoveryDeadline = 0
+      let navigationIssued = false
+      const waiters = new Set()
+      const handleOnline = () => schedule(0)
+
+      function publish(message) {
+        try { channel?.postMessage({ schemaVersion: 1, ...message }) } catch {}
+      }
+
+      function schedule(delayMs) {
+        if (disposed || navigationIssued) return
+        if (timer !== null) window.clearTimeout(timer)
+        timer = window.setTimeout(() => {
+          timer = null
+          return check()
+        }, Math.max(0, delayMs))
+      }
+
+      async function requestPost(route) {
+        const controller = typeof window.AbortController === 'function' ? new window.AbortController() : null
+        const timeout = controller
+          ? window.setTimeout(() => controller.abort(), BOOT_RECOVERY_REQUEST_TIMEOUT_MS)
+          : null
+        try {
+          return await post(route, {}, null, { signal: controller?.signal, cache: 'no-store' })
+        } finally {
+          if (timeout !== null) window.clearTimeout(timeout)
+        }
+      }
+
+      async function rootIsReady(bootId) {
+        const controller = typeof window.AbortController === 'function' ? new window.AbortController() : null
+        const timeout = controller
+          ? window.setTimeout(() => controller.abort(), BOOT_RECOVERY_REQUEST_TIMEOUT_MS)
+          : null
+        try {
+          const url = new URL('/', window.location.origin)
+          url.searchParams.set('dshBootProbe', bootId)
+          const response = await fetch(url.toString(), {
+            method: 'GET', cache: 'no-store', headers: { accept: 'text/html' },
+            ...(controller ? { signal: controller.signal } : {}),
+          })
+          if (!response.ok) return false
+          const contentType = response.headers?.get?.('content-type') || ''
+          const content = await response.text()
+          return contentType.toLowerCase().includes('text/html') && /<!doctype html|<html/i.test(content)
+        } finally {
+          if (timeout !== null) window.clearTimeout(timeout)
+        }
+      }
+
+      function guardianIsStable(guardian, runtime) {
+        return guardian?.schemaVersion === 1
+          && guardian.available === true
+          && guardian.state === 'healthy'
+          && guardian.owner === 'guardian'
+          && guardian.heartbeatFresh === true
+          && guardian.profile === runtime.profile
+          && guardian.health?.bootId === runtime.bootId
+      }
+
+      function settleWaiters(bootId) {
+        for (const waiter of [...waiters]) {
+          if (!waiter.previousBootId || waiter.previousBootId !== bootId) {
+            waiters.delete(waiter)
+            waiter.resolve(bootId)
+          }
+        }
+      }
+
+      function rejectExpiredWaiters(now) {
+        for (const waiter of [...waiters]) {
+          if (now < waiter.deadline) continue
+          waiters.delete(waiter)
+          const error = new Error('新的 DSH Host 未在限定时间内通过 Guardian 稳定性验证')
+          error.code = 'BOOT_RECOVERY_TIMEOUT'
+          waiter.reject(error)
+        }
+      }
+
+      function acceptBootWithoutNavigation(bootId) {
+        knownBootId = bootId
+        candidateBootId = null
+        stableSamples = 0
+        expectedPreviousBootId = null
+        recoveryDeadline = 0
+        writeSessionValue(BOOT_RECOVERY_STORAGE_KEY, bootId)
+        settleWaiters(bootId)
+        removeBootRecoveryBanner()
+      }
+
+      function navigateToBoot(bootId) {
+        const alreadyNavigated = readSessionValue(BOOT_RECOVERY_NAVIGATED_KEY)
+        if (alreadyNavigated === bootId || bootIdFromLocation() === bootId) {
+          acceptBootWithoutNavigation(bootId)
+          return
+        }
+        knownBootId = bootId
+        candidateBootId = null
+        stableSamples = 0
+        expectedPreviousBootId = null
+        recoveryDeadline = 0
+        writeSessionValue(BOOT_RECOVERY_STORAGE_KEY, bootId)
+        writeSessionValue(BOOT_RECOVERY_NAVIGATED_KEY, bootId)
+        settleWaiters(bootId)
+        publish({ type: 'boot-stable', bootId })
+        const url = new URL(window.location.href)
+        url.searchParams.set('dshBoot', bootId)
+        url.searchParams.set('recovered', '1')
+        navigationIssued = true
+        window.location.replace(url.toString())
+      }
+
+      function beginRecovery(previousBootId, broadcast = true) {
+        const previous = validBootId(previousBootId) ? previousBootId : knownBootId
+        if (validBootId(previous) && !knownBootId) knownBootId = previous
+        if (validBootId(previous)) expectedPreviousBootId = previous
+        rapidUntil = Date.now() + BOOT_RECOVERY_TIMEOUT_MS
+        recoveryDeadline = rapidUntil
+        showBootRecoveryBanner('pending', retry)
+        if (broadcast) publish({ type: 'restart-pending', previousBootId: previous || null })
+        schedule(0)
+      }
+
+      function retry() {
+        navigationIssued = false
+        rapidUntil = Date.now() + BOOT_RECOVERY_TIMEOUT_MS
+        recoveryDeadline = rapidUntil
+        stableSamples = 0
+        showBootRecoveryBanner('checking', retry)
+        schedule(0)
+      }
+
+      async function check() {
+        if (disposed || navigationIssued) return
+        if (running) {
+          schedule(250)
+          return
+        }
+        running = true
+        const now = Date.now()
+        try {
+          rejectExpiredWaiters(now)
+          const runtime = await requestPost(ROUTES.runtime)
+          if (!validBootId(runtime?.bootId)) throw new Error('invalid runtime boot identity')
+          if (!knownBootId) {
+            acceptBootWithoutNavigation(runtime.bootId)
+            return
+          }
+          if (runtime.bootId === knownBootId) {
+            candidateBootId = null
+            stableSamples = 0
+            writeSessionValue(BOOT_RECOVERY_STORAGE_KEY, runtime.bootId)
+            return
+          }
+          if (candidateBootId !== runtime.bootId) {
+            candidateBootId = runtime.bootId
+            stableSamples = 0
+            rapidUntil = Date.now() + BOOT_RECOVERY_TIMEOUT_MS
+            if (!recoveryDeadline) recoveryDeadline = rapidUntil
+            publish({ type: 'boot-observed', previousBootId: knownBootId, bootId: candidateBootId })
+          }
+          showBootRecoveryBanner('checking', retry)
+          const [guardian, rootReady] = await Promise.all([
+            requestPost(ROUTES.guardian), rootIsReady(runtime.bootId),
+          ])
+          if (!guardianIsStable(guardian, runtime) || !rootReady) {
+            stableSamples = 0
+            return
+          }
+          stableSamples += 1
+          if (stableSamples >= BOOT_RECOVERY_STABLE_SAMPLES) navigateToBoot(runtime.bootId)
+        } catch {
+          stableSamples = 0
+        } finally {
+          running = false
+          const finishedAt = Date.now()
+          rejectExpiredWaiters(finishedAt)
+          if (!navigationIssued) {
+            const timedOut = recoveryDeadline > 0 && finishedAt >= recoveryDeadline
+            if (timedOut) showBootRecoveryBanner('failed', retry)
+            schedule(!timedOut && (candidateBootId || expectedPreviousBootId || finishedAt < rapidUntil)
+              ? BOOT_RECOVERY_RAPID_POLL_MS
+              : BOOT_RECOVERY_IDLE_POLL_MS)
+          }
+        }
+      }
+
+      function waitForSuccessor(previousBootId, timeoutMs = BOOT_RECOVERY_TIMEOUT_MS) {
+        beginRecovery(previousBootId)
+        return new Promise((resolve, reject) => {
+          waiters.add({ previousBootId, deadline: Date.now() + timeoutMs, resolve, reject })
+        })
+      }
+
+      function onChannelMessage(event) {
+        const message = event?.data
+        if (!message || message.schemaVersion !== 1) return
+        if (message.type === 'restart-pending') beginRecovery(message.previousBootId, false)
+        else if ((message.type === 'boot-observed' || message.type === 'boot-stable') && validBootId(message.bootId)) {
+          if (message.bootId !== knownBootId) {
+            candidateBootId = message.bootId
+            stableSamples = 0
+            rapidUntil = Date.now() + BOOT_RECOVERY_TIMEOUT_MS
+            showBootRecoveryBanner('checking', retry)
+            schedule(0)
+          }
+        }
+      }
+
+      function start() {
+        if (disposed) return
+        if (typeof window.BroadcastChannel === 'function') {
+          try {
+            channel = new window.BroadcastChannel(BOOT_RECOVERY_CHANNEL)
+            channel.addEventListener('message', onChannelMessage)
+          } catch { channel = null }
+        }
+        window.addEventListener?.('online', handleOnline)
+        schedule(0)
+      }
+
+      function dispose() {
+        disposed = true
+        if (timer !== null) window.clearTimeout(timer)
+        timer = null
+        window.removeEventListener?.('online', handleOnline)
+        try { channel?.removeEventListener('message', onChannelMessage) } catch {}
+        try { channel?.close() } catch {}
+        channel = null
+        for (const waiter of waiters) {
+          const error = new Error('Boot recovery disposed')
+          error.code = 'BOOT_RECOVERY_DISPOSED'
+          waiter.reject(error)
+        }
+        waiters.clear()
+        removeBootRecoveryBanner()
+      }
+
+      return { start, dispose, waitForSuccessor, retry, wake: handleOnline }
+    }
+
+    function installBootRecovery(ctx) {
+      activeBootRecovery?.dispose()
+      const controller = createBootRecoveryController()
+      activeBootRecovery = controller
+      controller.start()
+      const stopReset = typeof ctx?.on === 'function'
+        ? ctx.on('connection/reset', controller.wake)
+        : null
+      return () => {
+        if (typeof stopReset === 'function') stopReset()
+        if (activeBootRecovery === controller) activeBootRecovery = null
+        controller.dispose()
+      }
+    }
+
+    function waitForStableSuccessorBoot(previousBootId) {
+      if (!activeBootRecovery) {
+        activeBootRecovery = createBootRecoveryController()
+        activeBootRecovery.start()
+      }
+      return activeBootRecovery.waitForSuccessor(previousBootId)
+    }
 
     const styles = {
       root: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '920px' },
@@ -1175,17 +1533,7 @@ window.__ModuleLoader__.load({
             return
           }
           setGuardianOperation({ status: 'handoff', value })
-          for (let attempt = 0; attempt < 60; attempt += 1) {
-            await delay(1000)
-            try {
-              const runtime = await post(ROUTES.runtime)
-              if (runtime.bootId !== previousBootId) {
-                window.location.reload()
-                return
-              }
-            } catch {}
-          }
-          setGuardianOperation({ status: 'error', code: 'GUARDIAN_HANDOFF_TIMEOUT', message: '60 秒内未检测到 Guardian 接管后的新 DSH Host' })
+          await waitForStableSuccessorBoot(previousBootId)
         } catch (error) { setGuardianOperation({ status: 'error', code: error?.code, message: String(error?.message || error) }) }
       }, [guardianConfirmation, guardianOperation, state])
       const beginRestart = useCallback(async () => {
@@ -1207,17 +1555,8 @@ window.__ModuleLoader__.load({
           const result = await post(ROUTES.restartExecute, {
             planId: plan.planId, confirmation: restartConfirmation,
           }, 'restart-execute')
-          for (let attempt = 0; attempt < 60; attempt += 1) {
-            await delay(1000)
-            try {
-              const runtime = await post(ROUTES.runtime)
-              if (runtime.bootId !== result.previousBootId) {
-                window.location.reload()
-                return
-              }
-            } catch {}
-          }
-          setRestartOperation({ status: 'error', code: 'RESTART_TIMEOUT', message: '60 秒内未检测到新的 DSH Host' })
+          setRestartOperation({ status: 'handoff', value: result })
+          await waitForStableSuccessorBoot(result.previousBootId)
         } catch (error) {
           setRestartOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
         }
@@ -1406,6 +1745,9 @@ window.__ModuleLoader__.load({
     const name = 'dsh-safe-plugin-manager'
     const inject = ['slots']
     function apply(ctx) {
+      if (typeof ctx.effect === 'function') {
+        ctx.effect(() => installBootRecovery(ctx), 'dsh-safe-plugin-manager: boot recovery')
+      } else installBootRecovery(ctx)
       ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
         name: 'settings.plugins.tab', id: 'safe-plugin-manager', order: -10,
         label: () => '插件商城', inject: () => ({}),
