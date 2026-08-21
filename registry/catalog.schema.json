@@ -17,7 +17,7 @@
         "method": { "type": "string", "minLength": 1 },
         "checkedAt": { "type": "string", "format": "date-time" },
         "evidenceUrl": { "type": "string", "pattern": "^https://" },
-        "dshRelease": { "enum": ["rc.5", "rc.6", "rc.7", "rc.8"] },
+        "dshRelease": { "enum": ["rc.5", "rc.6", "rc.7", "rc.8", "0.1.1-rc.1"] },
         "systems": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "profiles": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "summary": { "type": "string", "minLength": 1 }
@@ -130,23 +130,25 @@
               "dshReleases": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["rc.5", "rc.6", "rc.7", "rc.8"],
+                "required": ["rc.5", "rc.6", "rc.7", "rc.8", "0.1.1-rc.1"],
                 "properties": {
                   "rc.5": { "$ref": "#/$defs/releaseCompatibility" },
                   "rc.6": { "$ref": "#/$defs/releaseCompatibility" },
                   "rc.7": { "$ref": "#/$defs/releaseCompatibility" },
-                  "rc.8": { "$ref": "#/$defs/releaseCompatibility" }
+                  "rc.8": { "$ref": "#/$defs/releaseCompatibility" },
+                  "0.1.1-rc.1": { "$ref": "#/$defs/releaseCompatibility" }
                 }
               },
               "dshOperations": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["rc.5", "rc.6", "rc.7", "rc.8"],
+                "required": ["rc.5", "rc.6", "rc.7", "rc.8", "0.1.1-rc.1"],
                 "properties": {
                   "rc.5": { "$ref": "#/$defs/releaseOperations" },
                   "rc.6": { "$ref": "#/$defs/releaseOperations" },
                   "rc.7": { "$ref": "#/$defs/releaseOperations" },
-                  "rc.8": { "$ref": "#/$defs/releaseOperations" }
+                  "rc.8": { "$ref": "#/$defs/releaseOperations" },
+                  "0.1.1-rc.1": { "$ref": "#/$defs/releaseOperations" }
                 }
               },
               "node": { "type": ["string", "null"] },

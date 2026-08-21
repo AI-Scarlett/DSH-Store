@@ -1,5 +1,8 @@
 # Blue Whale DSH 候选固定源审核（2026-08-21）
 
+> 本文保留批量准入时的 rc.8 快照。当前 `0.1.1-rc.1` 兼容迁移与新排序见
+> [DSH 0.1.1-rc.1 兼容性迁移](dsh-0.1.1-rc.1-compatibility-2026-08-21.md)。
+
 ## 结论
 
 - 发现来源：`leenkcool/Blue-Whale-Harness` 固定提交 `ee0f3167f213144680f1b80be8cd30fe6353c8aa`。

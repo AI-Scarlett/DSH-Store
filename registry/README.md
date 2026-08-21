@@ -63,6 +63,11 @@ Profile、不用低层测试冒充运行验收”的边界。
 - 外部运行依赖与审核状态；
 - `compatibility` 中的 DSH、Node.js、系统和 Profile 范围。
 
+版本矩阵保留历史键 `rc.5`、`rc.6`、`rc.7`、`rc.8`，并使用完整键
+`0.1.1-rc.1` 表示当前版本，避免与早期 `0.0.1-rc.1` 混淆。每个键都必须分别声明
+`dshReleases`，以及 `install`、`start`、`uninstall`、`rollback` 四项 `dshOperations`；
+仅凭版本范围不能把运行操作标记为通过。
+
 权限值依据固定 Commit 的 manifest、README 与运行时代码信号保守填写。无法确认时必须
 使用 `unknown` 或空兼容范围，不得把“未发现”写成“不访问”。`automated-scan` 和
 `author-verified` 只描述来源核验层级，不代表完成安全审计。客户端优先显示 GitHub Raw

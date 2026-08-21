@@ -38,9 +38,9 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
   assert.deepEqual(
     Object.fromEntries(['compatible', 'unknown', 'incompatible'].map(status => [
       status,
-      catalog.entries.filter(entry => entry.compatibility.dshReleases['rc.8'] === status).length,
+      catalog.entries.filter(entry => entry.compatibility.dshReleases['0.1.1-rc.1'] === status).length,
     ])),
-    { compatible: 274, unknown: 119, incompatible: 7 },
+    { compatible: 274, unknown: 117, incompatible: 9 },
   )
 
   for (const repository of [

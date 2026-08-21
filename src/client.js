@@ -190,7 +190,7 @@ window.__ModuleLoader__.load({
       detailLabel: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       detailValue: { margin: 0, color: 'var(--dsw-alias-label-primary)', fontSize: '12px', lineHeight: '18px', overflowWrap: 'anywhere' },
       detailBadges: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
-      compatibilityMatrix: { display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '4px', marginTop: '2px' },
+      compatibilityMatrix: { display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '4px', marginTop: '2px' },
       compatibilityCell: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '7px', padding: '4px 3px', minWidth: 0 },
       compatibilityKey: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10px', fontWeight: 700 },
       compatibilityValue: { fontSize: '10px', lineHeight: '14px' },
@@ -239,8 +239,9 @@ window.__ModuleLoader__.load({
       } catch { return '未知' }
     }
 
-    const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
-    const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8' }
+    const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
+    const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
+    const DSH_RELEASE_LABELS = { '0.1.1-rc.1': '0.1.1 rc.1' }
     function compareDshVersions(left, right) {
       const parse = version => {
         const match = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/.exec(version)
@@ -288,11 +289,11 @@ window.__ModuleLoader__.load({
       compatible: 'var(--dsw-alias-state-success-primary)', incompatible: 'var(--dsw-alias-state-error-primary)', unknown: 'var(--dsw-alias-label-tertiary)',
     }[status] || 'var(--dsw-alias-label-tertiary)')
     function CompatibilityMatrix({ entry }) {
-      return React.createElement('div', { style: styles.compatibilityMatrix, role: 'list', 'aria-label': 'DSH rc.5 至 rc.8 兼容性' },
+      return React.createElement('div', { style: styles.compatibilityMatrix, role: 'list', 'aria-label': 'DSH rc.5 至 0.1.1-rc.1 兼容性' },
         DSH_RC_RELEASES.map(release => {
           const status = entry.compatibility.dshReleases[release]
           return React.createElement('div', { key: release, role: 'listitem', style: { ...styles.compatibilityCell, color: compatibilityStatusColor(status) } },
-            React.createElement('span', { style: styles.compatibilityKey }, `DSH ${release}`),
+            React.createElement('span', { style: styles.compatibilityKey }, `DSH ${DSH_RELEASE_LABELS[release] || release}`),
             React.createElement('span', { style: styles.compatibilityValue }, compatibilityStatusLabel(status)))
         }))
     }
@@ -348,6 +349,14 @@ window.__ModuleLoader__.load({
       const source = entry?.source && typeof entry.source === 'object' ? entry.source : {}
       const declaredOperations = compatibility.dshOperations && typeof compatibility.dshOperations === 'object'
         ? compatibility.dshOperations : {}
+      const declaredReleases = compatibility.dshReleases && typeof compatibility.dshReleases === 'object'
+        ? compatibility.dshReleases : null
+      const derivedReleases = dshReleaseCompatibility(compatibility.dsh)
+      const dshReleases = Object.fromEntries(DSH_RC_RELEASES.map(release => [release,
+        ['compatible', 'incompatible', 'unknown'].includes(declaredReleases?.[release])
+          ? declaredReleases[release]
+          : declaredReleases === null ? derivedReleases[release] : 'unknown',
+      ]))
       const dshOperations = Object.fromEntries(DSH_RC_RELEASES.map(release => [release,
         Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation,
           ['passed', 'failed', 'unknown'].includes(declaredOperations[release]?.[operation])
@@ -361,7 +370,7 @@ window.__ModuleLoader__.load({
         compatibility: {
           ...compatibility,
           dsh: typeof compatibility.dsh === 'string' ? compatibility.dsh : null,
-          dshReleases: compatibility.dshReleases && typeof compatibility.dshReleases === 'object' ? compatibility.dshReleases : dshReleaseCompatibility(compatibility.dsh),
+          dshReleases,
           dshOperations,
           node: typeof compatibility.node === 'string' ? compatibility.node : null,
           systems: Array.isArray(compatibility.systems) ? compatibility.systems : [],
@@ -673,7 +682,7 @@ window.__ModuleLoader__.load({
           React.createElement(DetailRow, { label: 'Node.js', value: entry.compatibility.node || '未声明' }),
           React.createElement(DetailRow, { label: '系统', value: entry.compatibility.systems.length > 0 ? entry.compatibility.systems.join(' / ') : '未声明' }),
           React.createElement(DetailRow, { label: 'Profile', value: entry.compatibility.profiles.length > 0 ? entry.compatibility.profiles.join(' / ') : '未声明' })),
-        React.createElement('h3', { style: styles.detailHeading }, 'rc.5–rc.8 操作证据'),
+        React.createElement('h3', { style: styles.detailHeading }, 'rc.5–0.1.1-rc.1 操作证据'),
         React.createElement(OperationEvidence, { entry }),
         !entry.catalogDetailsAvailable
           ? React.createElement('div', { style: styles.notice }, '当前 GitHub catalog.json 尚未提供完整详情字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
