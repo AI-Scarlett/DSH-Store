@@ -135,6 +135,23 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.ok(item, `${id} must be listed`)
     assert.deepEqual(item.compatibility.dshReleases, dshReleaseCompatibility(item.compatibility.dsh), `${id} rc matrix must be explicit`)
   }
+  const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
+  assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
+  assert.equal(requestedIm.name, '多平台 IM 机器人桥接（DSH IM）')
+  assert.equal(requestedIm.version, '0.14.0')
+  assert.equal(requestedIm.commit, '832bd539a2bca2518cbf575d9b61606f868290e4')
+  assert.equal(requestedIm.updatePolicy, 'user-reviewed')
+  assert.deepEqual(requestedIm.compatibility.dshReleases, {
+    'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown',
+  })
+  for (const release of ['rc.5', 'rc.6', 'rc.7', 'rc.8']) {
+    assert.deepEqual(requestedIm.compatibility.dshOperations[release], {
+      install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+    })
+  }
+  assert.equal(requestedIm.assurance.discovery.status, 'verified')
+  assert.equal(requestedIm.assurance.runtime.status, 'unknown')
+  assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
 })
 
 test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {

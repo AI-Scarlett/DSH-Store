@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-21T00:27:59.000Z",
+    "updatedAt": "2026-08-21T01:00:19.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -5344,14 +5344,14 @@
     },
     {
       "id": "xmanrui-dsh-im",
-      "name": "@xmanrui/dsh-im",
+      "name": "多平台 IM 机器人桥接（DSH IM）",
       "packageName": "@xmanrui/dsh-im",
-      "description": "通过二维码或机器人凭据将 IM 机器人接入 DeepSeek Harness（支持飞书、微信、钉钉、企业微信、QQ、Slack、Telegram、Discord 和 WhatsApp 共 9 种渠道）。",
+      "description": "通过二维码或机器人凭据将 IM 机器人接入 DeepSeek Harness，支持飞书、微信、钉钉、企业微信、QQ、Slack、Telegram、Discord 和 WhatsApp，并提供实验性的 AI Office 连接器。",
       "repositoryUrl": "https://github.com/xmanrui/dsh-im",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "7b369187f80bebbd1bc629dc286e69f98715e33d",
-      "version": "0.7.2",
+      "commit": "832bd539a2bca2518cbf575d9b61606f868290e4",
+      "version": "0.14.0",
       "categories": [
         "notifications"
       ],
@@ -5361,7 +5361,39 @@
       ],
       "status": "approved",
       "compatibility": {
-        "dsh": ">=0.1.0-rc.7",
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
         "node": ">=22.19",
         "systems": [
           "macOS",
@@ -5383,6 +5415,8 @@
           "commands": "shell",
           "network": "any",
           "credentials": [
+            "api-key",
+            "oauth",
             "keychain"
           ]
         },
@@ -5391,16 +5425,37 @@
           "主机命令与插件声明的外部 CLI",
           "用户配置的外部服务凭据"
         ],
-        "reviewStatus": "automated-scan"
+        "reviewStatus": "manual-review"
       },
       "risk": {
         "installScripts": [],
-        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+        "review": "requested-fixed-commit-manual-static-review-no-third-party-execution-runtime-or-independent-security-audit"
       },
       "source": {
-        "updatedAt": "2026-08-18T13:31:54.000Z",
+        "updatedAt": "2026-08-20T20:23:51.000Z",
         "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
+        "observedAt": "2026-08-21T01:00:19.000Z"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "fixed-github-commit-review",
+          "checkedAt": "2026-08-21T01:00:19.000Z",
+          "evidenceUrl": "https://github.com/xmanrui/dsh-im/commit/832bd539a2bca2518cbf575d9b61606f868290e4",
+          "summary": "Repository identity, manifest, patch, runtime artifacts and license were inspected at the pinned commit."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "The pinned source contains declared runtime artifacts, but no third-party installation was executed."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No disposable DSH rc.5 through rc.8 runtime matrix was executed."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Manual static review is recorded; this is not an independent security audit."
+        }
       }
     },
     {

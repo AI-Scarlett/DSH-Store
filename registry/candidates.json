@@ -3,12 +3,48 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-20T00:00:00.000Z",
+    "updatedAt": "2026-08-21T01:00:19.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
       "unknownIsNotVerified": true
     }
   },
-  "entries": []
+  "entries": [
+    {
+      "id": "zseven-w-dsh-ios",
+      "name": "iOS 设备桥接（DSH iOS）",
+      "description": "通过 Xcode、iOS Simulator 或 USB iPhone 为 DeepSeek Harness 提供设备发现、截图、输入与自动化能力。",
+      "repositoryUrl": "https://github.com/ZSeven-W/dsh-ios",
+      "defaultBranch": "main",
+      "latestCommit": "e8d94c39d348e2c38b10d0b4ae24bfe005515c97",
+      "sourceUpdatedAt": "2026-08-19T17:59:59.000Z",
+      "discoveredAt": "2026-08-21T01:00:19.000Z",
+      "discoverySources": [
+        "user-request-2026-08-21",
+        "github-fixed-commit-review"
+      ],
+      "topics": [
+        "accessibility",
+        "ai-agents",
+        "coding-agent",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "ios",
+        "ios-simulator",
+        "iphone",
+        "mcp",
+        "mobile-automation",
+        "plugin",
+        "typescript",
+        "ui-automation",
+        "webdriveragent",
+        "xcode"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "固定 GitHub Commit 缺少 package.json 声明的 lib/index.js 与 lib/client.js，且没有 prepare 生命周期脚本；npm 发布包存在运行产物不能替代固定 GitHub 源的可复现安装契约。"
+    }
+  ]
 }
