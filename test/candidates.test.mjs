@@ -40,7 +40,7 @@ test('candidate registry fails closed when its trust boundary is weakened', () =
 test('bundled candidate registry is valid and remote failure stays read-only', async () => {
   const bundled = JSON.parse(await readFile(new URL('../registry/candidates.json', import.meta.url), 'utf8'))
   const registry = validateCandidateRegistry(bundled)
-  assert.equal(registry.entries.length, 1)
+  assert.equal(registry.entries.length, 1256)
   const ios = registry.entries.find(entry => entry.id === 'zseven-w-dsh-ios')
   assert.ok(ios, 'the requested DSH iOS repository must have an auditable candidate decision')
   assert.equal(ios.status, 'rejected')

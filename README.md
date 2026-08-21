@@ -64,8 +64,8 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 | 项目 | 当前状态 |
 | --- | --- |
 | 商城版本 | `0.6.0` |
-| 收录条目 | 253 个 |
-| 可安装 | 247 个 |
+| 收录条目 | 400 个 |
+| 可安装 | 394 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因；另有 1 个 unlisted 条目不公开展示 |
 | 分类 | 22 个 |
 | 推荐 | 3 个：DSH-Store、Build DSH Plugin、Agent Workflow |
@@ -238,19 +238,21 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
 [产品需求](docs/PRODUCT_REQUIREMENTS.md) 和 [技术架构](docs/ARCHITECTURE.md)。
 
-## 已收录插件
+## 精选插件与目录说明
 
-`★` 表示推荐。当前仅推荐 DSH-Store、DSH WeCom CLI、Build DSH Plugin 和 Agent Workflow；
-推荐不会绕过固定 Commit、来源和风险校验。以下列表与当前
-`registry/catalog.json` 一致。
+`★` 表示当前推荐。推荐不会绕过固定 Commit、来源和风险校验。下表仅为重点条目与
+不可安装示例；完整目录、rc.8 兼容性和来源更新时间排序以
+`registry/catalog.json` 为准。
 
 | 插件 | 分类 | 状态 | 介绍 |
 | --- | --- | --- | --- |
 | ★ [DSH-Store](https://github.com/AI-Scarlett/dsh-safe-plugin-manager) | 插件市场、管理工具 | 可安装 | 本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。 |
-| ★ [DSH Codex Shell](https://github.com/Ephemeral-AI-Lab/dsh-plugins/tree/0ff29d7bb4c26e62c8bce9b867965fd2211fa670/codex-shell) | 工具能力、开发与运行时 | 可安装 | 为编码 Agent 提供 Codex 风格的持续终端工具；可执行任意 Shell，安装前必须确认高权限和精确 allowBuilds。 |
-| ★ [DSH Chat Import](https://github.com/AI-Scarlett/dsh-chat-import) | 会话与消息、导入迁移 | 可安装 | 将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。 |
-| ★ [DSH CLIAPI](https://github.com/AI-Scarlett/DSH_CLIAPI) | 模型与账号、模型路由 | 可安装 | DSH 的授权中心与自动本地模型路由器。 |
-| ★ [DSHLLM API](https://github.com/AI-Scarlett/DSHLLM_API) | 模型与账号、模型路由 | 可安装 | 面向 DSH 的多模态感知模型路由器，需要 DSH CLIAPI。 |
+| ★ [Build DSH Plugin](https://github.com/AI-Scarlett/build-dsh-plugin) | 开发与运行时、工作流、工具能力 | 可安装 | 把插件需求转化为标准 DSH Bundle、审计、发布和商城候选。 |
+| ★ [Agent Workflow](https://github.com/xuanyuanzhifeng/dsh-plugin-agent-workflow) | 工作流、会话、可视化 | 可安装 | 按轮次展示模型请求、工具调用、耗时与 Token 统计。 |
+| [DSH Codex Shell](https://github.com/Ephemeral-AI-Lab/dsh-plugins/tree/0ff29d7bb4c26e62c8bce9b867965fd2211fa670/codex-shell) | 工具能力、开发与运行时 | 可安装 | 为编码 Agent 提供 Codex 风格的持续终端工具；可执行任意 Shell，安装前必须确认高权限和精确 allowBuilds。 |
+| [DSH Chat Import](https://github.com/AI-Scarlett/dsh-chat-import) | 会话与消息、导入迁移 | 可安装 | 将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。 |
+| [DSH CLIAPI](https://github.com/AI-Scarlett/DSH_CLIAPI) | 模型与账号、模型路由 | 可安装 | DSH 的授权中心与自动本地模型路由器。 |
+| [DSHLLM API](https://github.com/AI-Scarlett/DSHLLM_API) | 模型与账号、模型路由 | 可安装 | 面向 DSH 的多模态感知模型路由器，需要 DSH CLIAPI。 |
 | [Agent Reach for DSH](https://github.com/AI-Scarlett/dsh-agent-reach) | 搜索与网络、工具能力、工作流与自动化 | 可安装 | 为 DSH 挂载 Agent Reach 联网路由 Skill；Python CLI 和渠道依赖需另行安装授权。 |
 | [DSH Market](https://github.com/dsh-market/dsh-market) | 插件市场、管理工具 | 可安装 | DSH 内的社区插件市场界面，支持浏览、搜索和插件管理。 |
 | [DSH WebUI Market Plugin](https://github.com/Sanqi-normal/dsh-webui-market-plugin) | 插件市场、管理工具 | 可安装 | 在 DSH Web 界面浏览 awesome-dsh-plugin.com 并管理社区插件。 |
@@ -269,8 +271,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | [DSH OpenPencil](https://github.com/ZSeven-W/dsh-openpencil) | 设计与原型、界面增强、工具能力 | 可安装 | 集成 OpenPencil 多画板预览、交互画布与托管编辑工作台。 |
 | [AnySearch for DSH](https://github.com/anysearch-team/anysearch-dsh) | 搜索与网络、工具能力 | 可安装 | 注册 AnySearch 网络搜索提供商与增强搜索工具，需要配置 API Key。 |
 | [DSH Gomoku](https://github.com/omdsh-dev/dsh-gomoku) | 娱乐、界面增强 | 可安装 | 在对话界面加入五子棋棋盘、AI 落子路由与模型目录。 |
-| ★ [DSH Web UI All](https://github.com/zhu1090093659/dsh-web-ui) | 综合套件、界面增强、工具能力 | 可安装 | 聚合任务板、Git 图、宠物、远程界面、实时统计、SSH、视觉工具与多款皮肤。 |
-| ★ [DSH WeCom CLI](https://github.com/AI-Scarlett/dsh-wecom-cli) | 工具能力、工作流与自动化、通知与集成 | 可安装 | 通过受控 Host Bridge 提供企业微信只读查询；固定 argv、无 Shell，外部 CLI 和账号授权由用户独立管理。 |
+| [DSH Web UI All](https://github.com/zhu1090093659/dsh-web-ui) | 综合套件、界面增强、工具能力 | 可安装 | 聚合任务板、Git 图、宠物、远程界面、实时统计、SSH、视觉工具与多款皮肤。 |
 | [DSH Shortcuts](https://github.com/Ricketts-Guo/dsh-shortcuts) | 界面增强、工具能力、新锐实验 | 可安装 | 提供可录制、可配置的键盘快捷键与权限切换反馈。 |
 | [DSH Diagram](https://github.com/hanzhangzzz/dsh-diagram) | 可视化、设计与原型、新锐实验 | 可安装 | 将文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。 |
 | [DSH Egress Guard](https://github.com/tancheng33/dsh-egress-guard) | 安全与隐私、工具能力、新锐实验 | 可安装 | 提供出站域名策略、工具结果密钥脱敏和追加式审计日志，默认监控模式。 |
