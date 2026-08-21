@@ -4,7 +4,7 @@ window.__ModuleLoader__.load({
     const module = { exports: {} }
     const React = require('react')
     const { Modal } = require('@deepseek-ai/dsh-client-ui-primitives')
-    const { useCallback, useEffect, useMemo, useState } = React
+    const { useCallback, useEffect, useMemo, useRef, useState } = React
     const ROUTES = {
       inventory: '/api2/dsh-safe-plugin-manager/inventory',
       market: '/api2/dsh-safe-plugin-manager/market',
@@ -21,6 +21,7 @@ window.__ModuleLoader__.load({
       guardianExecute: '/api2/dsh-safe-plugin-manager/guardian/execute',
     }
     const SUPPORT_URL = 'https://dsh.store/'
+    const MARKET_PAGE_SIZE = 24
     const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
     const HEALTH_PERMISSION_STORAGE_KEY = 'dsh-safe-plugin-manager:health-permission-decisions:v1'
     const HEALTH_PERMISSION_FIELDS = ['files', 'network', 'commands', 'credentials', 'acceptUnknown']
@@ -102,7 +103,7 @@ window.__ModuleLoader__.load({
 
     function restartOutcome(pending, state) {
       if (!pending || state.status !== 'ready') return null
-      if (!state.runtime || state.runtime.bootId === pending.runtimeInstanceId) return { status: 'pending' }
+      if (!state.runtime?.bootId || state.runtime.bootId === pending.runtimeInstanceId) return { status: 'pending' }
       const plugin = state.inventory.plugins.find(item => item.packageName === pending.packageName)
       const activated = pending.action === 'uninstall'
         ? !plugin
@@ -199,6 +200,8 @@ window.__ModuleLoader__.load({
       diffCell: { border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '7px', padding: '6px 8px', minWidth: 0 },
       detailFooter: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', width: '100%' },
       detailFooterLinks: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginLeft: 'auto' },
+      pagination: { display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '6px', marginTop: '2px' },
+      pageStatus: { minWidth: '108px', textAlign: 'center', color: 'var(--dsw-alias-label-tertiary)', fontSize: '11px' },
     }
 
     const DETAIL_MODAL_CSS = `
@@ -236,37 +239,46 @@ window.__ModuleLoader__.load({
       } catch { return '未知' }
     }
 
-    function detailSearchValues(entry) {
-      const permissions = entry.details.permissions
-      return [
-        entry.name, entry.packageName, entry.description, entry.repositoryUrl, githubPublisher(entry.repositoryUrl), entry.details.license,
-        detailLabel('pluginType', entry.details.pluginType), detailLabel('installSource', entry.details.installSource),
-        detailLabel('level', permissions.level), detailLabel('files', permissions.files),
-        detailLabel('network', permissions.network), detailLabel('commands', permissions.commands),
-        ...permissions.credentials.map(value => detailLabel('credentials', value)),
-        detailLabel('reviewStatus', entry.details.reviewStatus), ...entry.details.externalDependencies,
-        ...entry.compatibility.systems, ...entry.compatibility.profiles, entry.compatibility.dsh,
-        ...Object.entries(entry.compatibility.dshReleases || {}).flat(), ...entry.categories,
-        entry.source.updatedAt, entry.source.provenance,
-        ...ASSURANCE_LEVELS.flatMap(([key, label]) => [label, entry.assurance[key]?.status, entry.assurance[key]?.method, entry.assurance[key]?.summary]),
-      ].map(value => String(value || ''))
-    }
-
     const DSH_RC_RELEASES = ['rc.5', 'rc.6', 'rc.7', 'rc.8']
+    const DSH_RC_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8' }
+    function compareDshVersions(left, right) {
+      const parse = version => {
+        const match = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/.exec(version)
+        return match ? { numbers: match.slice(1, 4).map(Number), pre: match[4] || null } : null
+      }
+      const a = parse(left); const b = parse(right)
+      if (!a || !b) return null
+      for (let index = 0; index < 3; index += 1) if (a.numbers[index] !== b.numbers[index]) return a.numbers[index] < b.numbers[index] ? -1 : 1
+      if (a.pre === b.pre) return 0
+      if (a.pre === null) return 1
+      if (b.pre === null) return -1
+      return a.pre.localeCompare(b.pre, 'en', { numeric: true })
+    }
     function dshReleaseCompatibility(value) {
       const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
       if (typeof value !== 'string' || value.trim() === '' || value.trim().toLowerCase() === 'unknown') return result
-      const range = value.trim()
-      const exact = /^0\.1\.0-(rc\.\d+)$/.exec(range)
-      const lower = /(?:^|\s)(?:>=|\^|~)?0\.1\.0-(rc\.\d+)/.exec(range)
-      const upper = /<\s*0\.1\.0-(rc\.\d+)/.exec(range)
-      const lowerIndex = exact ? DSH_RC_RELEASES.indexOf(exact[1]) : lower ? DSH_RC_RELEASES.indexOf(lower[1]) : -1
-      if (lowerIndex < 0) return result
-      const upperIndex = upper ? DSH_RC_RELEASES.indexOf(upper[1]) : DSH_RC_RELEASES.length
-      for (let index = 0; index < DSH_RC_RELEASES.length; index += 1) {
-        result[DSH_RC_RELEASES[index]] = exact
-          ? index === lowerIndex ? 'compatible' : 'incompatible'
-          : index >= lowerIndex && (upperIndex < 0 || index < upperIndex) ? 'compatible' : 'incompatible'
+      const clauses = value.trim().split('||').map(clause => clause.trim()).filter(Boolean)
+      const parsedClauses = clauses.map(clause => {
+        const tokens = [...clause.matchAll(/(?:^|\s)(>=|<=|>|<|\^|~|=)?\s*(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)/g)]
+          .map(match => ({ operator: match[1] || '=', version: match[2] }))
+        const residue = clause.replace(/(?:^|\s)(?:>=|<=|>|<|\^|~|=)?\s*\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/g, '').trim()
+        return residue === '' && tokens.length > 0 ? tokens : null
+      })
+      if (parsedClauses.length === 0 || parsedClauses.some(clause => clause === null)) return result
+      for (const release of DSH_RC_RELEASES) {
+        const version = DSH_RC_VERSIONS[release]
+        result[release] = parsedClauses.some(tokens => tokens.every(token => {
+          const comparison = compareDshVersions(version, token.version)
+          if (comparison === null) return false
+          if (token.operator === '^' || token.operator === '~') {
+            const target = token.version.match(/^(\d+)\.(\d+)\./)
+            const candidate = version.match(/^(\d+)\.(\d+)\./)
+            if (!target || !candidate || comparison < 0 || candidate[1] !== target[1]) return false
+            return token.operator === '^' && Number(target[1]) > 0 ? true : candidate[2] === target[2]
+          }
+          return token.operator === '>=' ? comparison >= 0 : token.operator === '<=' ? comparison <= 0
+            : token.operator === '>' ? comparison > 0 : token.operator === '<' ? comparison < 0 : comparison === 0
+        })) ? 'compatible' : 'incompatible'
       }
       return result
     }
@@ -421,6 +433,29 @@ window.__ModuleLoader__.load({
         },
         React.createElement('option', { value: '' }, '全部分类'),
         categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))))
+    }
+
+    function Pagination({ pagination, loading, onPageChange }) {
+      if (!pagination || pagination.pageCount <= 1) return null
+      const pages = []
+      const start = Math.max(1, Math.min(pagination.page - 2, pagination.pageCount - 4))
+      const end = Math.min(pagination.pageCount, start + 4)
+      for (let page = start; page <= end; page += 1) pages.push(page)
+      return React.createElement('nav', { style: styles.pagination, 'aria-label': '插件目录分页' },
+        React.createElement(Button, {
+          compact: true, disabled: loading || !pagination.hasPrevious,
+          onClick: () => onPageChange(pagination.page - 1), ariaLabel: '上一页',
+        }, '上一页'),
+        pages.map(page => React.createElement(Button, {
+          key: page, compact: true, primary: page === pagination.page, disabled: loading || page === pagination.page,
+          onClick: () => onPageChange(page), ariaLabel: `第 ${page} 页`,
+        }, String(page))),
+        React.createElement('span', { style: styles.pageStatus, role: 'status' },
+          loading ? '正在读取…' : `${pagination.page} / ${pagination.pageCount} 页`),
+        React.createElement(Button, {
+          compact: true, disabled: loading || !pagination.hasNext,
+          onClick: () => onPageChange(pagination.page + 1), ariaLabel: '下一页',
+        }, '下一页'))
     }
 
     function PluginActions({ entry, health, beginPlan, checkSource }) {
@@ -895,12 +930,17 @@ window.__ModuleLoader__.load({
     function ManagerPanel() {
       const [view, setView] = useState('market')
       const [query, setQuery] = useState('')
+      const [debouncedQuery, setDebouncedQuery] = useState('')
       const [category, setCategory] = useState('')
+      const [page, setPage] = useState(1)
       const [state, setState] = useState({ status: 'loading' })
+      const [marketLoading, setMarketLoading] = useState(false)
+      const [marketError, setMarketError] = useState('')
+      const marketRequestId = useRef(0)
+      const sourceAutoScanned = useRef(new Set())
       const [confirmation, setConfirmation] = useState('')
       const [operation, setOperation] = useState({ status: 'idle' })
       const [sourceUpdates, setSourceUpdates] = useState({})
-      const [sourceAutoScanStarted, setSourceAutoScanStarted] = useState(false)
       const [detailEntry, setDetailEntry] = useState(null)
       const [permissionDecisions, setPermissionDecisions] = useState(() => readHealthPermissionDecisions())
       const [pendingRestart, setPendingRestart] = useState(() => readPendingRestart())
@@ -911,14 +951,26 @@ window.__ModuleLoader__.load({
       const [versionChecking, setVersionChecking] = useState(false)
       const [versionFeedback, setVersionFeedback] = useState('')
 
-      const refresh = useCallback(async (force = false, decisions = readHealthPermissionDecisions()) => {
+      const refresh = useCallback(async (force = false, decisions = readHealthPermissionDecisions(), marketOptions = {}) => {
         setState({ status: 'loading' })
+        setMarketError('')
         try {
           const [inventory, market, health, runtime, guardian, dshVersion] = await Promise.all([
-            post(ROUTES.inventory), post(ROUTES.market, { refresh: force }),
+            post(ROUTES.inventory), post(ROUTES.market, {
+              refresh: force,
+              view: marketOptions.view ?? 'market',
+              page: marketOptions.page ?? 1,
+              pageSize: MARKET_PAGE_SIZE,
+              query: marketOptions.query ?? '',
+              category: marketOptions.category ?? '',
+            }),
             post(ROUTES.health, { refresh: force, permissionDecisions: decisions }),
-            post(ROUTES.runtime),
-            post(ROUTES.guardian),
+            post(ROUTES.runtime).catch(error => ({
+              supported: false, errorCode: error?.code || 'RUNTIME_STATUS_UNAVAILABLE', message: String(error?.message || error),
+            })),
+            post(ROUTES.guardian).catch(error => ({
+              supported: false, available: false, errorCode: error?.code || 'GUARDIAN_UNAVAILABLE', message: String(error?.message || error),
+            })),
             post(ROUTES.dshVersion, { refresh: force }).catch(error => ({
               status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED',
               message: String(error?.message || error),
@@ -930,6 +982,33 @@ window.__ModuleLoader__.load({
         }
       }, [])
       useEffect(() => { void refresh(false) }, [refresh])
+      useEffect(() => {
+        const timer = window.setTimeout(() => setDebouncedQuery(query.trim()), 250)
+        return () => window.clearTimeout(timer)
+      }, [query])
+      useEffect(() => {
+        if (state.status !== 'ready' || view === 'health') return undefined
+        const requestedCategory = view === 'candidates' ? '' : category
+        const current = state.market.pagination
+        if (current?.view === view && current.page === page && current.pageSize === MARKET_PAGE_SIZE
+          && current.query === debouncedQuery && current.category === requestedCategory) return undefined
+        const requestId = ++marketRequestId.current
+        let cancelled = false
+        setMarketLoading(true)
+        setMarketError('')
+        void post(ROUTES.market, {
+          view, page, pageSize: MARKET_PAGE_SIZE, query: debouncedQuery, category: requestedCategory,
+        }).then(market => {
+          if (cancelled || requestId !== marketRequestId.current) return
+          setState(currentState => currentState.status === 'ready' ? { ...currentState, market } : currentState)
+          if (market.pagination?.page !== page) setPage(market.pagination.page)
+        }).catch(error => {
+          if (!cancelled && requestId === marketRequestId.current) setMarketError(String(error?.message || error))
+        }).finally(() => {
+          if (!cancelled && requestId === marketRequestId.current) setMarketLoading(false)
+        })
+        return () => { cancelled = true }
+      }, [category, debouncedQuery, page, state.status, view])
 
       const refreshDshVersion = useCallback(async () => {
         setVersionChecking(true); setVersionFeedback('')
@@ -982,15 +1061,9 @@ window.__ModuleLoader__.load({
       }, [sourceUpdates, state])
 
       const candidateEntries = useMemo(() => {
-        if (state.status !== 'ready') return []
-        const needle = query.trim().toLowerCase()
-        return (state.market.candidates || [])
-          .filter(entry => entry.status !== 'rejected')
-          .filter(entry => !needle || [entry.id, entry.name, entry.description, entry.repositoryUrl, entry.route, ...(entry.discoverySources || []), ...(entry.topics || [])]
-            .some(value => String(value || '').toLowerCase().includes(needle)))
-          .sort((a, b) => (Date.parse(b.sourceUpdatedAt || b.discoveredAt) || 0) - (Date.parse(a.sourceUpdatedAt || a.discoveredAt) || 0)
-            || a.name.localeCompare(b.name, 'zh-CN'))
-      }, [query, state])
+        if (state.status !== 'ready' || state.market.pagination?.view !== 'candidates') return []
+        return state.market.candidates || []
+      }, [state])
 
       const checkSource = useCallback(async entry => {
         setSourceUpdates(current => ({ ...current, [entry.id]: { status: 'checking' } }))
@@ -1005,9 +1078,10 @@ window.__ModuleLoader__.load({
       }, [])
 
       useEffect(() => {
-        if (view !== 'installed' || state.status !== 'ready' || sourceAutoScanStarted) return undefined
-        const queue = state.market.entries.filter(entry => entry.installed && entry.status === 'approved')
-        setSourceAutoScanStarted(true)
+        if (view !== 'installed' || state.status !== 'ready') return undefined
+        const queue = state.market.entries.filter(entry => entry.installed && entry.status === 'approved'
+          && !sourceAutoScanned.current.has(entry.id))
+        for (const entry of queue) sourceAutoScanned.current.add(entry.id)
         let cancelled = false
         const worker = async () => {
           while (!cancelled && queue.length > 0) {
@@ -1017,21 +1091,19 @@ window.__ModuleLoader__.load({
         }
         void Promise.all(Array.from({ length: Math.min(3, queue.length) }, () => worker()))
         return () => { cancelled = true }
-      }, [checkSource, sourceAutoScanStarted, state, view])
+      }, [checkSource, state, view])
 
-      const scopedEntries = useMemo(() => {
-        return normalizedEntries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
-      }, [normalizedEntries, view])
-
-      const entries = useMemo(() => {
-        const needle = query.trim().toLowerCase()
-        const compatibilityRank = entry => ({ compatible: 0, unknown: 1, incompatible: 2 }[entry.compatibility.dshReleases?.['rc.8'] || 'unknown'] ?? 1)
-        const sourceFreshness = entry => Date.parse(entry.source?.updatedAt || '') || 0
-        return scopedEntries
-          .filter(entry => !category || entry.categories.includes(category))
-          .filter(entry => !needle || detailSearchValues(entry).some(value => value.toLowerCase().includes(needle)))
-          .sort((a, b) => compatibilityRank(a) - compatibilityRank(b) || sourceFreshness(b) - sourceFreshness(a) || Number(b.featured) - Number(a.featured) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, 'zh-CN'))
-      }, [category, query, scopedEntries])
+      const pagination = state.status === 'ready' ? state.market.pagination : null
+      const expectedCategory = view === 'candidates' ? '' : category
+      const pageReady = pagination?.view === view && pagination.page === page
+        && pagination.query === debouncedQuery && pagination.category === expectedCategory
+      const entries = pageReady ? normalizedEntries : []
+      const marketOptions = useMemo(() => ({
+        view: view === 'health' ? 'market' : view,
+        page,
+        query: debouncedQuery,
+        category: view === 'candidates' ? '' : category,
+      }), [category, debouncedQuery, page, view])
 
       const beginPlan = useCallback(async (action, entry) => {
         setConfirmation('')
@@ -1066,11 +1138,11 @@ window.__ModuleLoader__.load({
             setPendingRestart(pending)
           }
           setOperation({ status: 'result', value })
-          await refresh(false, permissionDecisions)
+          await refresh(false, permissionDecisions, marketOptions)
         } catch (error) {
           setOperation({ status: 'error', code: error?.code, message: String(error?.message || error) })
         }
-      }, [confirmation, operation, permissionDecisions, refresh, state])
+      }, [confirmation, marketOptions, operation, permissionDecisions, refresh])
 
       const cancel = useCallback(() => { setConfirmation(''); setOperation({ status: 'idle' }) }, [])
       const cancelRestart = useCallback(() => { setRestartConfirmation(''); setRestartOperation({ status: 'idle' }) }, [])
@@ -1170,15 +1242,23 @@ window.__ModuleLoader__.load({
       const nav = React.createElement('div', { style: styles.nav },
         React.createElement('div', { style: styles.navTabs, role: 'tablist', 'aria-label': '插件商城视图' },
           [['market', '可信安装'], ['candidates', '候选发现'], ['installed', '已安装'], ['health', '健康检查']].map(([id, label]) =>
-            React.createElement(TabButton, { key: id, active: view === id, onClick: () => setView(id) }, label))),
-        React.createElement(Button, { compact: true, onClick: () => refresh(true, permissionDecisions) }, '刷新 GitHub 目录'))
+            React.createElement(TabButton, { key: id, active: view === id, onClick: () => {
+              setView(id); setPage(1)
+              if (id === 'candidates') setCategory('')
+            } }, label))),
+        React.createElement(Button, {
+          compact: true, disabled: marketLoading,
+          onClick: () => refresh(true, permissionDecisions, marketOptions),
+        }, marketLoading ? '正在刷新…' : '刷新 GitHub 目录'))
 
-      const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories))].sort()
+      const categoryIds = state.status === 'ready' ? state.market.filters?.categoryIds || [] : []
       const categoryLabels = state.status === 'ready' ? state.market.registry.categories || {} : {}
       const filters = React.createElement(CatalogFilters, {
-        query, category, categoryIds, categoryLabels, onQueryChange: setQuery, onCategoryChange: setCategory,
+        query, category, categoryIds, categoryLabels,
+        onQueryChange: value => { setQuery(value); setPage(1) },
+        onCategoryChange: value => { setCategory(value); setPage(1) },
       })
-      const catalogPackageNames = new Set(normalizedEntries.map(entry => entry.packageName))
+      const catalogPackageNames = new Set(state.status === 'ready' ? state.market.catalogPackageNames || [] : [])
       const uncataloguedInstalledAll = state.status === 'ready'
         ? state.inventory.plugins.filter(plugin => plugin.installed && !catalogPackageNames.has(plugin.packageName))
         : []
@@ -1202,7 +1282,7 @@ window.__ModuleLoader__.load({
           : 'Guardian 尚未成为唯一启动所有者，安全重启已禁用；不要手工启动第二个 DSH 实例。'),
         React.createElement('div', { style: styles.actions },
           React.createElement(Button, { primary: true, disabled: !state.guardian.available, onClick: beginRestart }, '一键安全重启'),
-          React.createElement(Button, { onClick: () => { void refresh(false, permissionDecisions) } }, '我已重启，重新检查'))) : null,
+          React.createElement(Button, { onClick: () => { void refresh(false, permissionDecisions, marketOptions) } }, '我已重启，重新检查'))) : null,
       restartState.status === 'failed' ? React.createElement('div', { style: styles.muted },
         `目标 ${pendingRestart.packageName}${pendingRestart.targetVersion ? ` ${pendingRestart.targetVersion}` : ''} 未在新实例中确认加载，请查看健康检查详情。`) : null,
       restartState.status !== 'pending' ? React.createElement(Button, { onClick: dismissRestart }, '完成') : null)
@@ -1210,26 +1290,34 @@ window.__ModuleLoader__.load({
       const guardianIsExternal = state.status === 'ready' && state.guardian.owner === 'external'
       const guardianHasPortConflict = state.status === 'ready' && state.guardian.errorCode === 'GUARDIAN_PORT_CONFLICT'
       const guardianNeedsUpgrade = state.status === 'ready' && state.guardian.upgradeRequired === true
+      const guardianUnsupported = state.status === 'ready' && state.guardian.supported === false
       const guardianBanner = state.status !== 'ready' ? null : React.createElement('div', {
-        style: state.guardian.available ? styles.notice : styles.error,
+        style: state.guardian.available || guardianUnsupported ? styles.notice : styles.error,
       }, React.createElement('div', { style: styles.name }, state.guardian.available
         ? `DSH Guardian：${state.guardian.state} · 唯一启动所有者`
-        : guardianNeedsUpgrade ? 'DSH Guardian 探针版本过旧：安全重启已禁用'
+        : guardianUnsupported ? '当前 DSH 不提供 Guardian 状态：商城已降级为只读诊断'
+          : guardianNeedsUpgrade ? 'DSH Guardian 探针版本过旧：安全重启已禁用'
           : guardianIsExternal ? '检测到外部 DSH 实例：Guardian 未接管'
           : guardianHasPortConflict ? '3080 端口被未知进程占用：Guardian 已拒绝接管'
             : 'DSH Guardian 未运行：一键重启已被安全禁用'),
       React.createElement('div', { style: styles.muted }, state.guardian.available
         ? `DSH 已由 Guardian 管理；请勿再运行 pnpm dsh web 或 dsh web。心跳 ${state.guardian.heartbeatAgeMs}ms · 失败次数 ${state.guardian.failureCount || 0} · 熔断 ${state.guardian.circuit || '未知'} · 探针日志保留 24 小时`
-        : guardianNeedsUpgrade
+        : guardianUnsupported
+          ? `${state.guardian.errorCode || 'GUARDIAN_UNAVAILABLE'}：${state.guardian.message || '此版本不支持安全重启能力'}。插件浏览、兼容性与固定来源信息仍可使用。`
+          : guardianNeedsUpgrade
           ? '当前守护文件与商城内置版本不一致。升级后会记录端口、首页、运行时身份、耗时和重启判断；不记录响应正文、Profile 内容或凭据，超过 24 小时自动清理。'
           : guardianIsExternal
           ? '当前 DSH 不是由 Guardian 启动。请先停止手工实例，再让 Guardian 启动；商城不会杀死或冒充接管该进程。'
           : guardianHasPortConflict
             ? '商城无法验证该进程属于 DSH，因此不会终止进程，也不会启动第二个实例。'
             : '安装商城自带的外部 Guardian 后，即使 DSH 冷启动失败也能继续诊断和恢复。'),
-      !state.guardian.available && !guardianIsExternal && !guardianHasPortConflict
+      !state.guardian.available && !guardianUnsupported && !guardianIsExternal && !guardianHasPortConflict
         ? React.createElement(Button, { primary: true, onClick: beginGuardianInstall }, guardianNeedsUpgrade ? '升级并重启 Guardian' : '安装并接管 DSH 守护') : null)
 
+      const pageControls = pageReady
+        ? React.createElement(Pagination, { pagination, loading: marketLoading, onPageChange: setPage })
+        : React.createElement('div', { style: styles.pageStatus, role: 'status' }, '正在读取当前视图…')
+      const pageError = marketError ? React.createElement('div', { style: styles.error, role: 'alert' }, `目录分页加载失败：${marketError}`) : null
       let content
       if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
       else if (state.status === 'error') content = React.createElement('p', { style: styles.error }, state.message)
@@ -1239,24 +1327,27 @@ window.__ModuleLoader__.load({
       else if (view === 'candidates') {
         content = React.createElement(React.Fragment, null,
           React.createElement('input', {
-            type: 'search', value: query, onChange: event => setQuery(event.target.value),
+            type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
             style: styles.input, placeholder: '搜索候选项目、Topic、来源或 GitHub 仓库',
           }),
           React.createElement('div', { style: styles.notice },
-            `${state.market.candidateSource?.kind === 'github' ? 'GitHub 候选发现源' : '内置候选源回退'} · ${candidateEntries.length} 个待审项目。候选记录与可信 catalog 物理分离；曝光、推荐或赞助不能改变验证等级，也不会获得安装操作。`,
+            `${state.market.candidateSource?.kind === 'github' ? 'GitHub 候选发现源' : '内置候选源回退'} · 当前页 ${candidateEntries.length} / ${pagination?.total || 0} 个待审项目。候选记录与可信 catalog 物理分离；曝光、推荐或赞助不能改变验证等级，也不会获得安装操作。`,
             state.market.candidateSource?.errorCode ? ` · ${state.market.candidateSource.errorCode}` : ''),
+          pageError,
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '候选发现目录' },
-            candidateEntries.map(entry => React.createElement(CandidateCard, { key: entry.id, entry }))))
+            candidateEntries.map(entry => React.createElement(CandidateCard, { key: entry.id, entry }))),
+          pageControls)
       }
       else if (view === 'installed') {
         content = React.createElement(React.Fragment, null,
           filters,
           React.createElement('div', { style: styles.notice },
-            `${entries.length} / ${scopedEntries.length} 个目录内已安装插件`,
+            `当前页 ${entries.length} / ${pagination?.total || 0} 个目录内已安装插件`,
             uncataloguedInstalledAll.length > 0 ? ` · 另有 ${uncataloguedInstalledAll.length} 个目录外只读项` : ''),
+          pageError,
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '已安装插件' }, entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry, categoryLabels,
-          }))),
+          }))), pageControls,
           uncataloguedInstalled.length > 0
             ? React.createElement(React.Fragment, null,
               React.createElement('h4', { style: styles.title }, '未进入商城目录'),
@@ -1268,12 +1359,13 @@ window.__ModuleLoader__.load({
         content = React.createElement(React.Fragment, null,
           filters,
           React.createElement('div', { style: styles.notice },
-            `${state.market.source.kind === 'github' ? 'GitHub 可信安装目录' : '内置可信目录回退'} · ${entries.length} / ${scopedEntries.length} 个在架条目 · 未知不等于已验证`,
+            `${state.market.source.kind === 'github' ? 'GitHub 可信安装目录' : '内置可信目录回退'} · 当前页 ${entries.length} / ${pagination?.total || 0} 个在架条目 · 未知不等于已验证`,
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
+          pageError,
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry,
             categoryLabels,
-          }))))
+          }))), pageControls)
       }
 
       return React.createElement('section', { style: styles.root, 'aria-label': 'DSH-Store 插件商城' },

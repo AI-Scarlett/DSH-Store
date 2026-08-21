@@ -134,7 +134,6 @@ snapshot.generated = {
   catalogAuthority: 'registry/catalog.json',
   githubEnriched: enrichGitHub,
 }
-snapshot.discovery = candidateRegistry
 
 const manager = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
 if (!manager || manager.status !== 'approved' || !/^[0-9a-f]{40}$/.test(manager.commit || '')) {
@@ -144,10 +143,6 @@ if (!manager || manager.status !== 'approved' || !/^[0-9a-f]{40}$/.test(manager.
 const htmlEscape = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[character])
-// Escaping `<` prevents a serialized value from ever forming `</script>` or
-// an HTML comment opener. The remaining replacements preserve JSON safety in
-// older JavaScript parsers without relying on partial HTML-comment filtering.
-const jsonForScript = value => JSON.stringify(value).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
 const palette = ['#6f83ff', '#ff6c4a', '#8c6ce8', '#00a991', '#e0568c', '#4385c6', '#a36c45', '#6a9f39']
 const pluginColor = id => palette[[...String(id)].reduce((total, character) => total + character.charCodeAt(0), 0) % palette.length]
 const initials = name => String(name || 'DSH').replace(/^DSH\s*/i, '').split(/[\s_-]+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase() || 'D'
@@ -222,7 +217,7 @@ function replaceElementText(source, id, value) {
   return source.replace(expression, `$1${htmlEscape(value)}$3`)
 }
 
-const embeddedScript = `<script id="catalog-snapshot" type="application/json">${jsonForScript(snapshot)}</script>`
+const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="external-json">'
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
@@ -234,7 +229,7 @@ await cp(resolve(projectRoot, 'marketplace'), resolve(outputRoot, 'marketplace')
 await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { recursive: true, filter: copyFilter })
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
-home = replaceRequired(home, '<!-- DSH_STATIC_CATALOG -->', embeddedScript, 'home catalog snapshot')
+home = replaceRequired(home, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'home external catalog marker')
 home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_FEATURED_BEGIN -->', '<!-- DSH_STATIC_FEATURED_END -->', featured.map(featuredCard).join(''), 'featured catalog')
 home = home.replace(/"softwareVersion"\s*:\s*"[^"]*"/, `"softwareVersion": "${htmlEscape(manager.version)}"`)
 home = replaceElementText(home, 'install-version', `v${manager.version} · SHA PINNED`)
@@ -249,7 +244,7 @@ home = replaceElementText(home, 'catalog-date', `catalog.json · ${snapshot.regi
 await writeFile(resolve(outputRoot, 'marketplace/index.html'), home)
 
 let plugins = await readFile(resolve(outputRoot, 'marketplace/plugins/index.html'), 'utf8')
-plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG -->', embeddedScript, 'plugins catalog snapshot')
+plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'plugins external catalog marker')
 const staticCards = visibleEntries.slice(0, 24).map(pluginCard).join('')
 plugins = plugins.replace(/<!-- DSH_STATIC_PLUGIN_CARDS_BEGIN -->[\s\S]*?<!-- DSH_STATIC_PLUGIN_CARDS_END -->/, `<!-- DSH_STATIC_PLUGIN_CARDS_BEGIN -->${staticCards}<!-- DSH_STATIC_PLUGIN_CARDS_END -->`)
 plugins = replaceElementText(plugins, 'stat-total', String(visibleEntries.length).padStart(2, '0'))

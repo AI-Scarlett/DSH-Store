@@ -1,4 +1,4 @@
-import { buildMarketplaceSnapshot } from './catalog.mjs'
+import { buildMarketplaceSnapshot, paginateMarketplaceSnapshot } from './catalog.mjs'
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, validateProfileName } from './inventory.mjs'
 import { readMarketplaceProvenance } from './provenance.mjs'
@@ -129,12 +129,20 @@ export function handleMarketRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, async body => {
     const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
     const inventory = await readProfileInventory({ dshHome: options.dshHome, profile })
-    const [catalog, candidateRegistry] = await Promise.all([
-      options.catalogService.load({ force: body.refresh === true }),
-      options.candidateService?.load({ force: body.refresh === true }) ?? Promise.resolve(null),
-    ])
+    const view = body.view ?? 'market'
+    const catalog = await options.catalogService.load({ force: body.refresh === true })
+    const candidateRegistry = view === 'candidates'
+      ? await (options.candidateService?.load({ force: body.refresh === true }) ?? Promise.resolve(null))
+      : null
     const managedPackages = await readMarketplaceProvenance(options.dshHome, profile)
-    return buildMarketplaceSnapshot(catalog, inventory, body.query ?? '', { managedPackages, candidateRegistry })
+    const snapshot = buildMarketplaceSnapshot(catalog, inventory, '', { managedPackages, candidateRegistry })
+    return paginateMarketplaceSnapshot(snapshot, {
+      view,
+      query: body.query,
+      category: body.category,
+      page: body.page,
+      pageSize: body.pageSize,
+    })
   })
 }
 

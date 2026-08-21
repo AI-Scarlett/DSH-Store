@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
   buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
-  compareCatalogEntries, dshReleaseCompatibility, searchCatalog, validateCatalog, verifyCatalogEntry,
+  compareCatalogEntries, dshReleaseCompatibility, paginateMarketplaceSnapshot, searchCatalog, validateCatalog, verifyCatalogEntry,
 } from '../src/catalog.mjs'
 
 const entry = {
@@ -61,15 +61,53 @@ test('catalog exposes an explicit rc.5 through rc.8 compatibility matrix', () =>
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.8 <0.2.0'), {
     'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'incompatible', 'rc.8': 'compatible',
   })
-  assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.5'), {
+  assert.deepEqual(dshReleaseCompatibility('0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0'), {
     'rc.5': 'compatible', 'rc.6': 'compatible', 'rc.7': 'compatible', 'rc.8': 'compatible',
   })
+  assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.5 <0.2.0'), {
+    'rc.5': 'incompatible', 'rc.6': 'compatible', 'rc.7': 'compatible', 'rc.8': 'compatible',
+  }, 'the nonexistent 0.1.0-rc.5 must not be confused with the published 0.0.1-rc.5')
   assert.deepEqual(dshReleaseCompatibility('0.1.0-rc.7'), {
     'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'compatible', 'rc.8': 'incompatible',
   })
   assert.deepEqual(dshReleaseCompatibility('unknown'), {
     'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown',
   })
+})
+
+test('marketplace snapshot pagination returns one bounded page and lazy candidate data', () => {
+  const entries = Array.from({ length: 61 }, (_, index) => ({
+    ...entry,
+    id: `demo-${String(index).padStart(2, '0')}`,
+    packageName: `dsh-demo-${String(index).padStart(2, '0')}`,
+    name: `Demo ${String(index).padStart(2, '0')}`,
+    featured: false,
+  }))
+  const catalog = validateCatalog(document(entries))
+  const snapshot = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] }, '', {
+    candidateRegistry: {
+      registry: { name: 'Candidates' }, source: { kind: 'fixture' },
+      entries: [
+        { id: 'candidate-new', name: 'Candidate New', status: 'pending', sourceUpdatedAt: '2026-08-21T00:00:00Z' },
+        { id: 'candidate-old', name: 'Candidate Old', status: 'pending', sourceUpdatedAt: '2026-08-20T00:00:00Z' },
+        { id: 'candidate-rejected', name: 'Candidate Rejected', status: 'rejected', sourceUpdatedAt: '2026-08-22T00:00:00Z' },
+      ],
+    },
+  })
+  const market = paginateMarketplaceSnapshot(snapshot, { view: 'market', page: 2, pageSize: 24 })
+  assert.equal(market.entries.length, 24)
+  assert.equal(market.candidates.length, 0)
+  assert.deepEqual(market.pagination, {
+    view: 'market', query: '', category: '', page: 2, pageSize: 24, total: 61, pageCount: 3,
+    hasPrevious: true, hasNext: true,
+  })
+  assert.equal(market.catalogPackageNames.length, 61)
+
+  const candidates = paginateMarketplaceSnapshot(snapshot, { view: 'candidates', page: 1, pageSize: 1 })
+  assert.equal(candidates.entries.length, 0)
+  assert.deepEqual(candidates.candidates.map(item => item.id), ['candidate-new'])
+  assert.equal(candidates.pagination.total, 2)
+  assert.throws(() => paginateMarketplaceSnapshot(snapshot, { pageSize: 49 }), /pageSize/)
 })
 
 test('catalog recommended ordering puts rc.8-compatible entries first', () => {
