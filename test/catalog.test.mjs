@@ -73,6 +73,12 @@ test('catalog exposes an explicit rc.5 through rc.8 compatibility matrix', () =>
   assert.deepEqual(dshReleaseCompatibility('unknown'), {
     'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown',
   })
+  assert.deepEqual(dshReleaseCompatibility('>= 0.1.0-rc.8 < 0.2.0'), {
+    'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'incompatible', 'rc.8': 'compatible',
+  })
+  assert.deepEqual(dshReleaseCompatibility(`${' '.repeat(200_000)}!`), {
+    'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown',
+  }, 'oversized uncontrolled ranges must fail closed before regular-expression parsing')
 })
 
 test('marketplace snapshot pagination returns one bounded page and lazy candidate data', () => {

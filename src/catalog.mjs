@@ -19,20 +19,46 @@ export const DSH_RC_VERSIONS = {
 }
 export const MARKET_PAGE_SIZE = 24
 export const MAX_MARKET_PAGE_SIZE = 48
+const MAX_DSH_RANGE_LENGTH = 512
+const MAX_DSH_RANGE_CLAUSES = 16
+const MAX_DSH_RANGE_TOKENS = 32
+const DSH_RANGE_OPERATORS = ['>=', '<=', '>', '<', '^', '~', '=']
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json'
 
+function parseDshRangeClause(clause) {
+  const fragments = clause.trim().split(/\s+/u).filter(Boolean)
+  if (fragments.length === 0 || fragments.length > MAX_DSH_RANGE_TOKENS * 2) return null
+  const tokens = []
+  for (let index = 0; index < fragments.length; index += 1) {
+    let fragment = fragments[index]
+    let operator = '='
+    if (DSH_RANGE_OPERATORS.includes(fragment)) {
+      operator = fragment
+      fragment = fragments[++index] ?? ''
+    } else {
+      const prefix = DSH_RANGE_OPERATORS.find(candidate => fragment.startsWith(candidate))
+      if (prefix) {
+        operator = prefix
+        fragment = fragment.slice(prefix.length)
+      }
+    }
+    if (!VERSION.test(fragment)) return null
+    tokens.push({ operator, version: fragment })
+    if (tokens.length > MAX_DSH_RANGE_TOKENS) return null
+  }
+  return tokens
+}
+
 export function dshReleaseCompatibility(value) {
   const result = Object.fromEntries(DSH_RC_RELEASES.map(release => [release, 'unknown']))
-  if (typeof value !== 'string' || value.trim() === '' || value.trim().toLowerCase() === 'unknown') return result
-  const clauses = value.trim().split('||').map(clause => clause.trim()).filter(Boolean)
-  const parsedClauses = clauses.map(clause => {
-    const tokens = [...clause.matchAll(/(?:^|\s)(>=|<=|>|<|\^|~|=)?\s*(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)/g)]
-      .map(match => ({ operator: match[1] || '=', version: match[2] }))
-    const residue = clause.replace(/(?:^|\s)(?:>=|<=|>|<|\^|~|=)?\s*\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/g, '').trim()
-    return residue === '' && tokens.length > 0 ? tokens : null
-  })
+  if (typeof value !== 'string' || value.length > MAX_DSH_RANGE_LENGTH) return result
+  const normalized = value.trim()
+  if (normalized === '' || normalized.toLowerCase() === 'unknown') return result
+  const clauses = normalized.split('||').map(clause => clause.trim()).filter(Boolean)
+  if (clauses.length > MAX_DSH_RANGE_CLAUSES) return result
+  const parsedClauses = clauses.map(parseDshRangeClause)
   if (parsedClauses.length === 0 || parsedClauses.some(clause => clause === null)) return result
 
   const satisfiesToken = (version, token) => {
