@@ -178,13 +178,32 @@
 - 本节是仓库发布证据，不代表真实 `web` Profile 已更新或当前进程已由新版 Guardian 接管；
   真实安装、重启、单进程与可见 UI 仍属于独立 E4 验收。
 
+### `0.8.0` DSH 0.1.1-rc.1 兼容与分页验收
+
+- 商城功能源码固定到本地提交 `b9be979ff42deacff5e344e2e5d36c13638c95b9`；
+  Build DSH Plugin 0.3.0 固定到本地提交 `336e9945da604b58b3d096c29a68b4468fe7f333`；
+  两个提交在推送和公开回读前不标记为公开来源已验证；
+- 商城 `npm run check` 通过 103 项单元、契约、事务与分页测试；Build Plugin
+  `npm run check` 通过 Bundle、Skill、审计器、候选隔离和分发一致性检查；
+- Catalog 保持 400 条，`0.1.1-rc.1` 矩阵为 274 compatible、117 unknown、
+  9 incompatible；每个条目都有独立 install/start/uninstall/rollback 记录，缺少 E3
+  证据时保持 unknown；
+- 两个插件分别在独立临时 `DSH_HOME` 中通过官方 DSH `0.1.1-rc.1` CLI 安装、
+  `--dump-config`、随机 loopback 端口 Web 启动、HTTP 200 和卸载；
+- 商城额外通过 Inventory、Runtime 和 Market API HTTP 200，Market 首屏返回 24 条、
+  公开总数 398 条，并在响应中携带 `0.1.1-rc.1` 兼容键；
+- 真实 `web` Profile 的 `package.json`、`cordis.patch.yml`、`pnpm-lock.yaml` 哈希分别保持
+  `4aa15cd22c7928cd81dc7e15b5fb1d53c1b40612ee6e5b9305527450f34fd48d`、
+  `fdcedd3c71bf66db83ba9da8391f91291c54023347a2e8e2d0026120f022f7e2`、
+  `1a5eb5138278d034fdd352854d0afc912f6d3b33868b4d5c889ff86c00e47e45`。
+
 ## 尚未验证
 
-- 尚未验证卸载并恢复到安装前状态；
+- 本轮没有注入失败事务验证回滚；其余 398 个 Catalog 条目也没有逐一执行 rc.1 E3；
 - 尚未在一次性 Profile 中覆盖 headless、损坏 manifest、缺失依赖和坏链接；
 - 运行态 Loader/Fiber 状态仍明确显示为“尚未核验”；
-- 尚未在真实 Profile 执行 `0.3.0` 的插件安装、更新、启停或卸载；当前写入证据仅
-  来自临时目录事务测试；
+- 尚未在真实 Profile 执行商城 `0.8.0` 或 Build Plugin `0.3.0` 的安装、更新、启停或卸载；
+  当前写入证据仅来自临时目录测试；
 
 因此当前结论是“安全写入代码和临时目录故障注入通过”；只有重新完成真实 UI
 只读验收，不能把它表述成“真实第三方插件生命周期闭环已通过”。
