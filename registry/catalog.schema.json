@@ -91,6 +91,12 @@
           "name": { "type": "string", "minLength": 1 },
           "packageName": { "type": "string", "minLength": 1 },
           "description": { "type": "string", "minLength": 1 },
+          "searchTerms": {
+            "type": "array",
+            "maxItems": 40,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1, "maxLength": 120 }
+          },
           "repositoryUrl": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$" },
           "defaultBranch": { "type": "string" },
           "manifestPath": { "type": "string" },

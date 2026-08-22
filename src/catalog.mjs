@@ -469,6 +469,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
     name: nonEmptyString(value.name, `entries[${index}].name`, 160),
     packageName,
     description: nonEmptyString(value.description, `entries[${index}].description`, 2_000),
+    searchTerms: stringArray(value.searchTerms ?? [], `entries[${index}].searchTerms`, { max: 120 }).slice(0, 40),
     repositoryUrl: canonicalGithubRepository(value.repositoryUrl),
     defaultBranch: nonEmptyString(value.defaultBranch ?? 'main', `entries[${index}].defaultBranch`, 120),
     manifestPath,
@@ -739,6 +740,7 @@ export function searchCatalog(catalog, query = '', options = {}) {
     .filter(entry => category === '' || entry.categories.includes(category))
     .filter(entry => needle === '' || [
       entry.id, entry.name, entry.packageName, entry.description,
+      ...(entry.searchTerms ?? []),
       entry.repositoryUrl, entry.details?.pluginType ?? '', entry.details?.installSource ?? '', entry.details?.license ?? '',
       entry.details?.permissions?.level ?? '', entry.details?.permissions?.files ?? '', entry.details?.permissions?.network ?? '',
       entry.details?.permissions?.commands ?? '', ...(entry.details?.permissions?.credentials ?? []),
@@ -822,6 +824,7 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
 function marketplaceSearchValues(entry) {
   return [
     entry.id, entry.name, entry.packageName, entry.description, entry.repositoryUrl,
+    ...(entry.searchTerms ?? []),
     entry.details?.pluginType, entry.details?.installSource, entry.details?.license,
     entry.details?.permissions?.level, entry.details?.permissions?.files,
     entry.details?.permissions?.network, entry.details?.permissions?.commands,

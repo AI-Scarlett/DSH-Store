@@ -5,6 +5,7 @@ import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkRepository } from './check-plugin-submission.mjs'
+import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-localization.mjs'
 import { canonicalGithubRepository, compareCatalogEntries, compareVersions, validateCatalog } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 
@@ -282,7 +283,7 @@ function automatedEntry(candidate, analysis, observedAt) {
   const permissions = approved
     ? { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] }
     : { level: 'unknown', files: 'unknown', network: 'unknown', commands: 'unknown', credentials: ['unknown'] }
-  return {
+  return localizeCatalogEntry({
     ...candidate,
     status: approved ? 'approved' : 'blocked',
     ...(approved ? {} : { statusReason: boundedText(`Automatic policy blocked installation: ${analysis.reasons.join('; ')}`, 'Automatic policy could not prove safe installation.') }),
@@ -313,7 +314,7 @@ function automatedEntry(candidate, analysis, observedAt) {
       observedAt,
       provenance: 'github-commit',
     },
-  }
+  })
 }
 
 function candidateRecord(repository, head, previous, observedAt, outcome) {
@@ -483,6 +484,7 @@ const candidatesSha = sha256(originalCandidates)
 const catalog = JSON.parse(originalCatalog.toString('utf8'))
 const candidates = JSON.parse(originalCandidates.toString('utf8'))
 validateCatalog(catalog)
+assertCatalogLocalization(catalog)
 validateCandidateRegistry(candidates)
 const report = {
   schemaVersion: 1,
@@ -498,6 +500,7 @@ const github = createGithubClient()
 await updateExistingEntries(catalog, policy, github, observedAt, report)
 await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report)
 catalog.entries.sort(compareCatalogEntries)
+assertCatalogLocalization(catalog)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
 const candidatesChanged = report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0

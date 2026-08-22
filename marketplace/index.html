@@ -112,7 +112,7 @@
   </script>
   <!-- DSH_STATIC_CATALOG -->
 </head>
-<body class="home-page" data-catalog-url="../registry/catalog.json" data-candidates-url="../registry/candidates.json">
+<body class="home-page" data-catalog-url="../registry/catalog.json" data-candidates-url="../registry/candidates.json" data-automation-status-url="https://ai-scarlett.github.io/dsh-safe-plugin-manager/automation-status.json">
   <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
   <div class="tech-grid" aria-hidden="true"></div>
 
@@ -176,6 +176,17 @@
       <article><small>CAPABILITY</small><strong id="stat-categories">—</strong><span data-i18n="stats.categories">能力分类</span></article>
       <article><small>DISCOVERED</small><strong id="stat-candidates">—</strong><span data-i18n="stats.candidates">候选项目</span></article>
       <article class="metric-source"><span class="pulse-node"></span><div><b data-i18n="stats.source">GitHub 权威目录</b><small id="catalog-date" data-i18n="stats.connecting">正在核对 catalog.json…</small></div></article>
+    </section>
+
+    <section class="automation-section section-shell reveal" id="automation-status" aria-labelledby="automation-title">
+      <div class="automation-heading"><div><span class="section-index">AUTOMATION / EVERY 3 HOURS</span><h2 id="automation-title" data-i18n="automation.title">自动更新有没有成功，一眼就能看到。</h2></div><p data-i18n="automation.lead">这里公开显示最近一次插件扫描、四端目录巡检和实际新增插件；“扫描成功”和“有新增”分别记录。</p></div>
+      <div class="automation-grid">
+        <article data-automation-card="overall"><small data-i18n="automation.overall">总体状态</small><strong data-automation-overall>读取中</strong><span data-automation-time>正在读取最近证据…</span></article>
+        <article><small data-i18n="automation.scanner">插件扫描</small><strong data-automation-scan>读取中</strong><span data-i18n="automation.scannerNote">每 3 小时扫描并更新 Catalog</span></article>
+        <article><small data-i18n="automation.watchdog">四端巡检</small><strong data-automation-watchdog>读取中</strong><span data-i18n="automation.watchdogNote">GitHub、Pages、国际站、国内站</span></article>
+        <article><small data-i18n="automation.latestChange">最近一次扫描变更</small><strong><span data-automation-added-count>—</span> / <span data-automation-updated-count>—</span></strong><span data-i18n="automation.changeUnit">新增 / 更新</span></article>
+      </div>
+      <div class="automation-additions"><div><small data-i18n="automation.recent">最近自动新增</small><h3 data-i18n="automation.recentTitle">新增了哪些插件</h3></div><ul data-automation-additions><li data-i18n="automation.loading">正在读取最近运行记录…</li></ul><a data-automation-run-link href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/actions/workflows/catalog-automation.yml" target="_blank" rel="noreferrer" data-i18n="automation.evidence">查看 GitHub 运行证据 ↗</a></div>
     </section>
 
     <section class="manager-section section-shell" id="manager" aria-labelledby="manager-title">
