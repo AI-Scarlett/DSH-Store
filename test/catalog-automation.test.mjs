@@ -27,6 +27,10 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   ])
   assert.match(workflow, /cron: "5 \*\/3 \* \* \*"/)
   assert.match(workflow, /pull-requests: write/)
+  assert.match(workflow, /ref: main/)
+  assert.match(workflow, /Pin the fresh main authority for this run/)
+  assert.match(workflow, /CATALOG_BASE_COMMIT: \$\{\{ steps\.base\.outputs\.sha \}\}/)
+  assert.doesNotMatch(workflow, /-f sha="\$GITHUB_SHA"|--arg head "\$GITHUB_SHA"/)
   assert.match(workflow, /gh workflow run registry\.yml --ref "\$branch"/)
   assert.match(workflow, /gh run watch "\$validation_run_id" --exit-status/)
   assert.match(workflow, /codeql_passed/)
@@ -52,6 +56,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /localizeCatalogEntry/)
   assert.match(source, /assertCatalogLocalization/)
   assert.match(source, /automation precondition hash mismatch/)
+  assert.match(source, /automation base Commit must be a full Git SHA/)
 })
 
 test('Pages publishes bounded public automation evidence and recent additions', async () => {

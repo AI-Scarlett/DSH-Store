@@ -483,13 +483,15 @@ const catalogSha = sha256(originalCatalog)
 const candidatesSha = sha256(originalCandidates)
 const catalog = JSON.parse(originalCatalog.toString('utf8'))
 const candidates = JSON.parse(originalCandidates.toString('utf8'))
+const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
+if (baseCommit !== null && !/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('automation base Commit must be a full Git SHA')
 validateCatalog(catalog)
 assertCatalogLocalization(catalog)
 validateCandidateRegistry(candidates)
 const report = {
   schemaVersion: 1,
-  planId: sha256(`${process.env.GITHUB_SHA ?? 'local'}:${catalogSha}:${candidatesSha}:${observedAt}`).slice(0, 24),
-  baseCommit: process.env.GITHUB_SHA ?? null,
+  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${candidatesSha}:${observedAt}`).slice(0, 24),
+  baseCommit,
   observedAt,
   preconditions: { catalogSha256: catalogSha, candidatesSha256: candidatesSha },
   policy: 'registry/automation-policy.json',
