@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T11:31:00.000Z",
+    "updatedAt": "2026-08-22T12:40:59.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1064,23 +1064,41 @@
     {
       "id": "devin-axis-ipollowork",
       "name": "Devin-AXIS/iPolloWork",
-      "description": "A next-generation, source-available AI workspace with a self-evolving agent runtime for editable code, design, presentations, websites, and video—a Codex alternative that integrates DeepSeek Harness for subagent delegation, combining iPolloWork’s complete AI workbench with DSH’s specialized agents and both plugin ecosystems in one workflow.",
+      "description": "Enterprise-grade, local-first Agent Workbench for people and agent teams. A unified multi-engine workspace for Codex Harness, DeepSeek Harness, and OpenCode, with unified plugins and Skills, multi-agent projects and tasks, and editable code, documents, presentations, design, and video.",
       "repositoryUrl": "https://github.com/Devin-AXIS/iPolloWork",
       "defaultBranch": "main",
-      "latestCommit": "0e3b463f229cd9af74299150a041952d4d801309",
-      "sourceUpdatedAt": "2026-08-20T18:02:46.000Z",
+      "latestCommit": "6c1062d28aadbb4e323af68b1f11b7541b21ef57",
+      "sourceUpdatedAt": "2026-08-22T12:40:20.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "utility"
+        "agent-collaboration",
+        "agent-skills",
+        "ai-agents",
+        "ai-work",
+        "claude-code",
+        "codex",
+        "codex-plugin",
+        "deepseek-harness",
+        "dsh-plugin",
+        "enterprise-agent-workspace",
+        "hermes-agent",
+        "ipollowork-plugin",
+        "ipollowork-skill",
+        "multi-agent-workspace",
+        "opencode",
+        "opencode-plugin",
+        "self-evolving-ai",
+        "visual-editor",
+        "automatic-radar"
       ],
       "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: external-plugins/deepseek-harness/design-studio, external-plugins/deepseek-harness/ppt-studio, external-plugins/deepseek-harness/video-studio"
     },
     {
       "id": "left0ver-dsh-file-review",
@@ -26609,6 +26627,153 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "sensedeal-cue-skills",
+      "name": "sensedeal/cue-skills",
+      "description": "Cue Skills for Agents",
+      "repositoryUrl": "https://github.com/sensedeal/cue-skills",
+      "defaultBranch": "main",
+      "latestCommit": "ba278f7c618479f50e5a98db773a8206f8c0559a",
+      "sourceUpdatedAt": "2026-08-22T12:41:05.000Z",
+      "discoveredAt": "2026-08-22T12:40:59.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: dsh/cue-omni-reader-guard, dsh/cue-omni-reader"
+    },
+    {
+      "id": "linny006-mcp-servers-live",
+      "name": "linny006/mcp-servers-live",
+      "description": "Auto-updated index of MCP servers shipping on GitHub, refreshed every 15 minutes",
+      "repositoryUrl": "https://github.com/linny006/mcp-servers-live",
+      "defaultBranch": "master",
+      "latestCommit": "57cca92e4016232776401b40c2fb82f65aae705d",
+      "sourceUpdatedAt": "2026-08-22T12:40:26.000Z",
+      "discoveredAt": "2026-08-22T12:40:59.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "ai-infrastructure",
+        "ai-protocol",
+        "ai-tools",
+        "anthropic-mcp",
+        "auto-updated",
+        "awesome-list",
+        "awesome-mcp",
+        "claude-integration",
+        "developer-tools",
+        "github-actions",
+        "live-data",
+        "llm-integration",
+        "llm-tools",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "moresyl-dsh-studio",
+      "name": "Moresyl/dsh-studio",
+      "description": "DeepSeek Harness 原生桌面端 · Linux / macOS / Windows · Rust + Tauri",
+      "repositoryUrl": "https://github.com/Moresyl/dsh-studio",
+      "defaultBranch": "main",
+      "latestCommit": "9317f0840f66466226a13cbdaf39b5a3218e9df4",
+      "sourceUpdatedAt": "2026-08-22T12:40:41.000Z",
+      "discoveredAt": "2026-08-22T12:40:59.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "cross-platform",
+        "deepseek",
+        "deepseek-harness",
+        "desktop-app",
+        "dsh",
+        "linux",
+        "macos",
+        "react",
+        "rust",
+        "tauri",
+        "windows",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "alessandrobonomo28-wiztree-mcp",
+      "name": "AlessandroBonomo28/wiztree-mcp",
+      "description": "Chat with your disk",
+      "repositoryUrl": "https://github.com/AlessandroBonomo28/wiztree-mcp",
+      "defaultBranch": "master",
+      "latestCommit": "0c1a92f59839178f3f99a7d7602cc22ab38e15b0",
+      "sourceUpdatedAt": "2026-08-22T12:39:55.000Z",
+      "discoveredAt": "2026-08-22T12:40:59.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "claude-code",
+        "cursor",
+        "disk-cleanup",
+        "disk-space",
+        "mcp",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "youridol-dsh-plugin",
+      "name": "youridol/dsh-plugin",
+      "description": "dsh-plugin - waiting for development",
+      "repositoryUrl": "https://github.com/youridol/dsh-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "f2499150a46681affc7104c1b2677098dd9b97e3",
+      "sourceUpdatedAt": "2026-08-22T12:40:20.000Z",
+      "discoveredAt": "2026-08-22T12:40:59.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "yshenaw-dsh-everything",
+      "name": "yshenaw/dsh-everything",
+      "description": "A coding-agent protocol and examples for evolving Agent Harnesses into Everything Is Plugin architectures.",
+      "repositoryUrl": "https://github.com/yshenaw/dsh-everything",
+      "defaultBranch": "main",
+      "latestCommit": "dade643bb09c49d290340ee01f3a00dd20bf37fb",
+      "sourceUpdatedAt": "2026-08-22T12:40:24.000Z",
+      "discoveredAt": "2026-08-22T12:40:59.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
