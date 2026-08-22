@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T12:56:08.000Z",
+    "updatedAt": "2026-08-22T13:28:29.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26864,6 +26864,159 @@
         "desktop-app",
         "electron",
         "windows",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "sharadvc-dsh-autopsy",
+      "name": "sharadvc/dsh-autopsy",
+      "description": "Every session dies. Know why. Post-mortem verdict cards for DeepSeek Harness: grade, cause of death, cost, killer timeline.",
+      "repositoryUrl": "https://github.com/sharadvc/dsh-autopsy",
+      "defaultBranch": "main",
+      "latestCommit": "a51f5098f6fb221f69e471bb2d2c551838fe7a94",
+      "sourceUpdatedAt": "2026-08-22T13:28:02.000Z",
+      "discoveredAt": "2026-08-22T13:28:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "post-mortem",
+        "session-analysis",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "quarkfan-quarkselfai",
+      "name": "Quarkfan/QuarkSelfAI",
+      "description": "个人AI助手",
+      "repositoryUrl": "https://github.com/Quarkfan/QuarkSelfAI",
+      "defaultBranch": "main",
+      "latestCommit": "3e51cab90ea00976975fb4da3ef4734dc45376f8",
+      "sourceUpdatedAt": "2026-08-22T13:27:40.000Z",
+      "discoveredAt": "2026-08-22T13:28:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "ottohere-mourn-teachreplay",
+      "name": "Ottohere-Mourn/TeachReplay",
+      "description": "Teach once, replay anywhere — harness-agnostic Teach-by-Demonstration engine (Record → Compile → Replay → Verify) with OpenMausBot and DeepSeek Harness integrations.",
+      "repositoryUrl": "https://github.com/Ottohere-Mourn/TeachReplay",
+      "defaultBranch": "main",
+      "latestCommit": "38f14e84ca1614f73632aa4cf2568ad8cfd87c13",
+      "sourceUpdatedAt": "2026-08-22T13:27:22.000Z",
+      "discoveredAt": "2026-08-22T13:28:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agentic-ai",
+        "ai-agents",
+        "computer-use",
+        "dsh-plugin",
+        "gui-agent",
+        "programming-by-demonstration",
+        "teach-by-demonstration",
+        "workflow-automation",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "tmy2623231-usb-harness",
+      "name": "tmy2623231/USB-Harness",
+      "description": "deepseek-harness 便携式变体 | 即插即用 U 盘 AI 助手：免安装 LLM Web UI、离线可用、适配中国网络，支持 OpenAI 兼容网关（Ollama / 阿里云百炼 / OpenRouter），Windows / Linux / macOS 三端即开即用",
+      "repositoryUrl": "https://github.com/tmy2623231/USB-Harness",
+      "defaultBranch": "main",
+      "latestCommit": "21963016d56adb12c4225ae4a443567ece6981a7",
+      "sourceUpdatedAt": "2026-08-22T13:29:07.000Z",
+      "discoveredAt": "2026-08-22T13:28:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-assistant",
+        "chatbot",
+        "deepseek",
+        "deepseek-harness",
+        "linux",
+        "llm",
+        "macos",
+        "no-install",
+        "nodejs",
+        "offline",
+        "offline-first",
+        "ollama",
+        "openai-compatible",
+        "portable",
+        "portable-app",
+        "usb-drive",
+        "web-ui",
+        "windows",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "piaohua-dsh-schedule-command",
+      "name": "piaohua/dsh-schedule-command",
+      "description": "DeepSeek Harness 的 /schedule 定时任务命令 —— 一句话创建会话内单次/周期任务，⏰ 标识自动识别定时会话。/schedule command for DeepSeek Harness — create session-local one-shot/recurring tasks in plain language; ⏰ marks schedule sessions at a glance.",
+      "repositoryUrl": "https://github.com/piaohua/dsh-schedule-command",
+      "defaultBranch": "main",
+      "latestCommit": "473fe1c793a891f791c49c8990981f7e089d9035",
+      "sourceUpdatedAt": "2026-08-22T13:19:49.000Z",
+      "discoveredAt": "2026-08-22T13:28:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "schedule",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "hellohupc-dsh-plugin-hub",
+      "name": "helloHupc/dsh-plugin-hub",
+      "description": "DSH 插件聚合站:全网 DeepSeek Harness 插件聚合检索,多源自动去重分类,每小时刷新 | https://dsh-plugin-hub.hupc.site",
+      "repositoryUrl": "https://github.com/helloHupc/dsh-plugin-hub",
+      "defaultBranch": "main",
+      "latestCommit": "f80ffb0dc4348a34fc4460ab11af44ea898ef639",
+      "sourceUpdatedAt": "2026-08-22T13:26:54.000Z",
+      "discoveredAt": "2026-08-22T13:28:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
         "automatic-radar"
       ],
       "status": "rejected",
