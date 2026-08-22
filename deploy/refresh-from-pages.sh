@@ -8,6 +8,8 @@ readonly deploy_root="${DSH_STORE_ROOT:-/opt/dsh-store}"
 readonly current_link="$deploy_root/current"
 readonly lock_file="${DSH_STORE_LOCK_FILE:-/run/lock/dsh-store-refresh.lock}"
 readonly store_domain="${DSH_STORE_DOMAIN:-dsh.store}"
+readonly health_scheme="${DSH_STORE_HEALTH_SCHEME:-https}"
+readonly site_prefix="${DSH_STORE_SITE_PREFIX:-}"
 
 case "$store_domain" in
   dsh.store|dsh-store.cn) ;;
@@ -21,6 +23,13 @@ case "$pages_base" in
   https://ai-scarlett.github.io/dsh-safe-plugin-manager) ;;
   *) printf 'Unsupported Pages authority: %s\n' "$pages_base" >&2; exit 2 ;;
 esac
+case "$store_domain:$health_scheme:$site_prefix" in
+  dsh.store:http:/marketplace) readonly health_port=80 ;;
+  dsh-store.cn:https:) readonly health_port=443 ;;
+  *) printf 'Unsupported DSH Store origin topology: %s %s %s\n' "$store_domain" "$health_scheme" "$site_prefix" >&2; exit 2 ;;
+esac
+readonly health_resolve="$store_domain:$health_port:127.0.0.1"
+readonly health_base="$health_scheme://$store_domain"
 
 exec 9>"$lock_file"
 if ! flock -n 9; then
@@ -43,15 +52,22 @@ cleanup_incoming() {
   esac
 }
 
+origin_health() {
+  curl -fsS --resolve "$health_resolve" --connect-timeout 5 --max-time 30 \
+    --retry 4 --retry-all-errors --retry-delay 1 "$@"
+}
+
 rollback_on_error() {
   rc=$?
   trap - ERR EXIT
   if test "$switched" -eq 1 && test -n "$old_target"; then
     ln -s "$old_target" "$current_link.rollback.$BASHPID"
     mv -Tf "$current_link.rollback.$BASHPID" "$current_link"
-    curl -fsS --resolve "$store_domain:443:127.0.0.1" --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null "https://$store_domain/"
-    curl -fsS --resolve "$store_domain:443:127.0.0.1" --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null "https://$store_domain/registry/catalog.json"
+    rollback_health=0
+    origin_health -o /dev/null "$health_base$site_prefix/" || rollback_health=1
+    origin_health -o /dev/null "$health_base/registry/catalog.json" || rollback_health=1
     printf 'DSH_STORE_REFRESH_ROLLBACK restored=%s failed_candidate=%s\n' "$old_target" "$candidate" >&2
+    test "$rollback_health" -eq 0 || printf 'DSH_STORE_REFRESH_ROLLBACK_HEALTH_FAILED domain=%s\n' "$store_domain" >&2
   fi
   if test "$published" -eq 0 && test -n "$candidate" && test -e "$candidate"; then
     case "$candidate" in
@@ -66,25 +82,22 @@ trap rollback_on_error ERR
 trap cleanup_incoming EXIT
 
 check_public() {
-  for spec in \
-    'home /' \
-    'plugins /plugins/' \
-    'build /build/' \
-    'faq /faq/' \
-    'about /about/' \
-    'catalog /registry/catalog.json'; do
-    set -- $spec
-    label=$1
-    path=$2
+  while read -r label path; do
     code='000'
     for attempt in 1 2 3 4 5; do
-      code=$(curl -sS --resolve "$store_domain:443:127.0.0.1" --connect-timeout 5 --max-time 30 \
-        -o "$incoming/health-$label" -w '%{http_code}' "https://$store_domain$path" || true)
+      code=$(origin_health -o "$incoming/health-$label" -w '%{http_code}' "$health_base$path" || true)
       test "$code" = 200 && break
       sleep 1
     done
     test "$code" = 200
-  done
+  done <<EOF
+home $site_prefix/
+plugins $site_prefix/plugins/
+build $site_prefix/build/
+faq $site_prefix/faq/
+about $site_prefix/about/
+catalog /registry/catalog.json
+EOF
 
   python3 - "$incoming/health-home" "$incoming/health-catalog" <<'PY'
 import json,sys
