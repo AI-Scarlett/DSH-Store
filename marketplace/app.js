@@ -138,6 +138,10 @@ const translations = {
 
 const formatText = (template, values = {}) => Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{${key}}`, value), template)
 const t = (key, values) => formatText(translations[state?.locale || 'zh']?.[key] || translations.zh[key] || key, values)
+const defaultLocale = document.body?.dataset.defaultLocale === 'en' ? 'en' : 'zh'
+const storedLocale = (() => {
+  try { return localStorage.getItem('dsh-marketplace-locale') } catch { return null }
+})()
 
 const state = {
   catalog: null,
@@ -154,7 +158,7 @@ const state = {
   candidatesLoaded: false,
   candidatesLoading: false,
   automationStatus: null,
-  locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
+  locale: storedLocale === 'en' || storedLocale === 'zh' ? storedLocale : defaultLocale,
   selectedEntry: null,
 }
 

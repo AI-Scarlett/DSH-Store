@@ -84,7 +84,8 @@ const translations = {
 const storedLocale = (() => {
   try { return localStorage.getItem('dsh-marketplace-locale') } catch { return null }
 })()
-const state = { locale: storedLocale === 'en' ? 'en' : 'zh' }
+const defaultLocale = document.body?.dataset.defaultLocale === 'en' ? 'en' : 'zh'
+const state = { locale: storedLocale === 'en' || storedLocale === 'zh' ? storedLocale : defaultLocale }
 const t = key => translations[state.locale]?.[key] || translations.zh[key] || key
 const analyticsToken = value => String(value ?? '').toLowerCase().replace(/[^a-z0-9._-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80)
 

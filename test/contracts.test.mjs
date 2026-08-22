@@ -27,10 +27,14 @@ test('static storefront templates expose the cross-site navigation and analytics
     'marketplace/about/index.html',
   ]
   const pages = await Promise.all(pagePaths.map(path => readFile(new URL(path, project), 'utf8')))
-  for (const page of pages) assert.match(page, /DSH_ALTERNATE_SITE/)
+  for (const page of pages) {
+    assert.match(page, /DSH_ALTERNATE_SITE/)
+    assert.match(page, /data-default-locale="zh"/)
+  }
   for (const path of ['marketplace/app.js', 'marketplace/build/build.js', 'marketplace/faq/faq.js', 'marketplace/about/about.js']) {
     const source = await readFile(new URL(path, project), 'utf8')
     assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
+    assert.match(source, /document\.body\?\.dataset\.defaultLocale/)
   }
 })
 
