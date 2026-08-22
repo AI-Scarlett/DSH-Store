@@ -23,6 +23,7 @@ const translations = {
     'console.online': '目录在线', 'console.network': 'EXTENSION NETWORK', 'console.heading': '找到新能力',
     'tab.featured': '推荐', 'tab.workflow': '工作流', 'tab.visual': '视觉', 'float.pinned': '来源已固定', 'float.commit': '40 位 Commit',
     'stats.plugins': '在架插件', 'stats.plannable': '可生成计划', 'stats.categories': '能力分类', 'stats.source': 'GitHub 权威目录', 'stats.connecting': '正在核对 catalog.json…',
+    'version.dshLabel': '当前 DSH 核心', 'version.storeLabel': 'DSH Store 插件', 'version.dshOfficial': 'npm 官方最新', 'version.dshFallback': 'npm 官方快照', 'version.storeSource': 'GitHub Catalog',
     'manager.title': '商城本身，也是一个受约束的 DSH 插件。', 'manager.lead': 'DSH Store 通过标准 Host Plugin 与 Client Bundle 接入，把发现、核对和受控操作放进 DSH，而不是改造 DSH。',
     'manager.body': '它不修改 DSH 核心，不遮蔽官方插件清单；任何生命周期变更都需要单次计划、精确确认、备份、检查和回滚。', 'manager.version': '当前版本', 'manager.risk': '生命周期风险', 'manager.identity': '位固定身份',
     'manager.fact1': '标准扩展面', 'manager.fact2': '浏览默认只读', 'manager.fact3': '失败关闭',
@@ -87,6 +88,7 @@ const translations = {
     'console.online': 'Catalog online', 'console.network': 'EXTENSION NETWORK', 'console.heading': 'Find a new capability',
     'tab.featured': 'Featured', 'tab.workflow': 'Workflow', 'tab.visual': 'Visual', 'float.pinned': 'Source pinned', 'float.commit': '40-char commit',
     'stats.plugins': 'active plugins', 'stats.plannable': 'plan-ready', 'stats.categories': 'capability groups', 'stats.source': 'GitHub authority', 'stats.connecting': 'Verifying catalog.json…',
+    'version.dshLabel': 'Current DSH core', 'version.storeLabel': 'DSH Store plugin', 'version.dshOfficial': 'Latest from official npm', 'version.dshFallback': 'Official npm snapshot', 'version.storeSource': 'GitHub Catalog',
     'manager.title': 'The store is itself a constrained DSH plugin.', 'manager.lead': 'DSH Store connects through a standard Host Plugin and Client Bundle, bringing discovery, inspection, and guarded operations into DSH without remaking DSH.',
     'manager.body': 'It never changes DSH core or hides the official inventory. Every lifecycle change needs a single-use plan, exact confirmation, backup, checks, and rollback.', 'manager.version': 'current version', 'manager.risk': 'lifecycle risk', 'manager.identity': 'char identity',
     'manager.fact1': 'Standard extension surface', 'manager.fact2': 'Read-only browsing', 'manager.fact3': 'Fail closed',
@@ -226,6 +228,7 @@ const pluginColor = id => palette[[...String(id)].reduce((total, character) => t
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
 const DSH_VERSION_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest'
+const DSH_VERSION_FALLBACK = '0.1.1-rc.2'
 const DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const LEGACY_DSH_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
 const OPERATION_KEYS = ['install', 'start', 'uninstall', 'rollback']
@@ -474,14 +477,22 @@ function renderStats() {
 
 function renderManagerMetadata() {
   const manager = state.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
-  if (!manager) return
-  const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+  const managerVersion = manager?.version || '0.8.1'
+  const installCommand = manager ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'` : null
+  const isOfficialDsh = state.dshReleaseContext?.source === 'npm-official' && DSH_VERSION.test(state.dshReleaseContext?.latestVersion || '')
+  const dshVersion = isOfficialDsh ? state.dshReleaseContext.latestVersion : DSH_VERSION_FALLBACK
   const values = {
+    '#dsh-version': dshVersion,
+    '#dsh-version-source': isOfficialDsh ? t('version.dshOfficial') : t('version.dshFallback'),
+    '#store-version': `v${managerVersion}`,
+    '#store-version-source': t('version.storeSource'),
+  }
+  if (manager) Object.assign(values, {
     '#install-version': `v${manager.version} · SHA PINNED`,
     '#install-command': installCommand,
     '#manager-protocol': `STANDARD BUNDLE / v${manager.version}`,
     '#manager-commit-short': manager.commit.slice(0, 7),
-  }
+  })
   Object.entries(values).forEach(([selector, value]) => {
     const element = document.querySelector(selector)
     if (element) element.textContent = value

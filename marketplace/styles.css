@@ -265,6 +265,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .trust-rail i { grid-row: span 2; color: var(--green); font: 8px ui-monospace, monospace; font-style: normal; }
 .trust-rail b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9px; }
 .trust-rail small { color: var(--faint); font: 7px ui-monospace, monospace; letter-spacing: .08em; }
+.version-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 18px; border: 1px solid var(--line); background: rgba(255, 255, 255, .52); }
+.version-item { min-width: 0; display: grid; gap: 7px; padding: 15px 16px; border-right: 1px solid var(--line); }
+.version-item:last-child { border-right: 0; }
+.version-item span { color: var(--muted); font-size: 9px; font-weight: 800; }
+.version-item strong { color: var(--cyan); font: 800 18px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.04em; }
+.version-item small { color: var(--faint); font: 7px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .06em; text-transform: uppercase; }
 
 .install-terminal {
   position: relative;
@@ -1035,6 +1041,9 @@ dialog::backdrop { background: rgba(40, 72, 86, .38); backdrop-filter: blur(8px)
   .trust-rail { grid-template-columns: 1fr; }
   .trust-rail > span, .trust-rail > span:first-child { padding: 13px 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .trust-rail > span:last-child { border-bottom: 0; }
+  .version-rail { grid-template-columns: 1fr; }
+  .version-item, .version-item:last-child { border-right: 0; border-bottom: 1px solid var(--line); }
+  .version-item:last-child { border-bottom: 0; }
   .terminal-head, .brief-console-head { grid-template-columns: 1fr auto; }
   .terminal-head > b, .brief-console-head > b { display: none; }
   .terminal-body { padding: 18px; }
