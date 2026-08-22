@@ -4,6 +4,7 @@ import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compareCatalogEntries } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
+import { buildAutomationStatus } from '../src/automation-status.mjs'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -14,6 +15,8 @@ const argValue = name => {
 const enrichGitHub = args.includes('--enrich-github')
 const outputRoot = resolve(projectRoot, argValue('--out') || '_site')
 const sourceSha = argValue('--source-sha') || process.env.GITHUB_SHA || 'local-worktree'
+const automationRunsPath = argValue('--automation-runs')
+const automationReportsPath = argValue('--automation-reports')
 const siteOriginInput = argValue('--site-origin') || process.env.SITE_ORIGIN || 'https://dsh.store'
 const siteOriginUrl = new URL(siteOriginInput)
 if (siteOriginUrl.protocol !== 'https:' || siteOriginUrl.pathname !== '/' || siteOriginUrl.search || siteOriginUrl.hash) {
@@ -41,6 +44,37 @@ if (catalog?.schemaVersion !== 1 || !Array.isArray(catalog.entries)) {
   throw new Error('registry/catalog.json is not a supported catalog')
 }
 const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(resolve(projectRoot, 'registry/candidates.json'), 'utf8')))
+
+async function readAutomationRuns(path) {
+  if (!path) return {}
+  const bytes = await readFile(resolve(path))
+  if (bytes.length > 1_000_000) throw new Error('automation run evidence exceeds the byte bound')
+  return JSON.parse(bytes.toString('utf8'))
+}
+
+async function readAutomationReports(directory) {
+  if (!directory) return []
+  const root = resolve(directory)
+  const reports = []
+  async function visit(current, depth = 0) {
+    if (depth > 4 || reports.length >= 32) return
+    for (const entry of await readdir(current, { withFileTypes: true })) {
+      const absolute = resolve(current, entry.name)
+      if (entry.isDirectory()) await visit(absolute, depth + 1)
+      else if (entry.isFile() && entry.name === 'catalog-automation-report.json') {
+        const bytes = await readFile(absolute)
+        if (bytes.length > 1_000_000) throw new Error('automation report exceeds the byte bound')
+        const firstSegment = relative(root, absolute).split('/')[0]
+        reports.push({ runId: /^\d+$/.test(firstSegment) ? Number(firstSegment) : null, report: JSON.parse(bytes.toString('utf8')) })
+      }
+    }
+  }
+  await visit(root)
+  return reports
+}
+
+const automationRuns = await readAutomationRuns(automationRunsPath)
+const automationReports = await readAutomationReports(automationReportsPath)
 
 const snapshot = structuredClone(catalog)
 const token = process.env.GITHUB_TOKEN || ''
@@ -311,6 +345,14 @@ plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
 
 await writeFile(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), JSON.stringify(snapshot, null, 2) + '\n')
+await writeFile(resolve(outputRoot, 'automation-status.json'), JSON.stringify(buildAutomationStatus({
+  catalog: snapshot,
+  candidates: candidateRegistry,
+  runs: automationRuns,
+  reports: automationReports,
+  generatedAt: new Date().toISOString(),
+  sourceCommit: sourceSha,
+}), null, 2) + '\n')
 await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   schemaVersion: 1,
   generatedAt,
@@ -333,7 +375,7 @@ async function artifactFiles(directory, prefix = '') {
     const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name
     const absolutePath = resolve(directory, entry.name)
     if (entry.isDirectory()) files.push(...await artifactFiles(absolutePath, relativePath))
-    else if (entry.isFile() && relativePath !== 'release-manifest.json') files.push({ relativePath, absolutePath })
+    else if (entry.isFile() && !['release-manifest.json', 'automation-status.json'].includes(relativePath)) files.push({ relativePath, absolutePath })
     else if (!entry.isFile()) throw new Error(`Unsupported artifact entry: ${relativePath}`)
   }
   return files

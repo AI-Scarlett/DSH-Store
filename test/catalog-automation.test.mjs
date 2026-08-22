@@ -45,7 +45,26 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /runtimeFiles\.slice\(index, index \+ 8\)/)
   assert.match(source, /Promise\.all\(batch\.map/)
   assert.match(source, /catalog\.entries\.sort\(compareCatalogEntries\)/)
+  assert.match(source, /localizeCatalogEntry/)
+  assert.match(source, /assertCatalogLocalization/)
   assert.match(source, /automation precondition hash mismatch/)
+})
+
+test('Pages publishes bounded public automation evidence and recent additions', async () => {
+  const [workflow, builder, client] = await Promise.all([
+    read('.github/workflows/pages.yml'),
+    read('scripts/build-marketplace-static.mjs'),
+    read('marketplace/app.js'),
+  ])
+  assert.match(workflow, /actions: read/)
+  assert.match(workflow, /gh run list --workflow catalog-automation\.yml --limit 8/)
+  assert.match(workflow, /gh run list --workflow marketplace-watchdog\.yml --limit 8/)
+  assert.match(workflow, /gh run download "\$run_id"/)
+  assert.match(workflow, /--automation-runs/)
+  assert.match(builder, /automation-status\.json/)
+  assert.match(builder, /\['release-manifest\.json', 'automation-status\.json'\]/)
+  assert.match(client, /data-automation-additions/)
+  assert.match(client, /entry\.searchTerms/)
 })
 
 test('watchdog checks the previous run and every public Catalog surface', async () => {

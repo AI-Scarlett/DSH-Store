@@ -1,5 +1,6 @@
 const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.json'
 const CANDIDATES_URL = document.body.dataset.candidatesUrl || '../registry/candidates.json'
+const AUTOMATION_STATUS_URL = document.body.dataset.automationStatusUrl || null
 const IS_DIRECTORY = document.body.classList.contains('plugins-page')
 
 const translations = {
@@ -31,7 +32,11 @@ const translations = {
     'builder.cardTitle': '三个答案，就是开发起点。', 'builder.input1': '现在遇到什么问题？', 'builder.input2': '希望达到什么结果？', 'builder.input3': '怎样观察到它成功？', 'builder.action': '打开开发插件工作台',
     'builder.outputTitle': '从 Brief 到可验证交付物', 'builder.output1': '宿主兼容性', 'builder.output2': '风险与权限', 'builder.output3': '标准源码工程', 'builder.output4': '验证证据等级', 'builder.note': '真实 Profile、重启与发布保持为独立确认步骤。',
     'featured.title': '精选插件，扩展你的 DSH 工作流。', 'featured.lead': '从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。',
-    'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索插件、能力或 GitHub 仓库', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
+    'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索中文名、用途、别名或英文包名', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
+    'automation.title': '自动更新有没有成功，一眼就能看到。', 'automation.lead': '这里公开显示最近一次插件扫描、四端目录巡检和实际新增插件；“扫描成功”和“有新增”分别记录。',
+    'automation.overall': '总体状态', 'automation.scanner': '插件扫描', 'automation.watchdog': '四端巡检', 'automation.latestChange': '最近一次扫描变更',
+    'automation.scannerNote': '每 3 小时扫描并更新 Catalog', 'automation.watchdogNote': 'GitHub、Pages、国际站、国内站', 'automation.changeUnit': '新增 / 更新',
+    'automation.recent': '最近自动新增', 'automation.recentTitle': '新增了哪些插件', 'automation.loading': '正在读取最近运行记录…', 'automation.evidence': '查看 GitHub 运行证据 ↗',
     'catalog.gatewayKicker': '探索更多能力', 'catalog.gatewayTitle': '查看全部 DSH 插件、权限与兼容性',
     'sort.recommended': '官方最新 DSH 兼容与更新优先', 'sort.name': '名称 A–Z', 'sort.recent': '最近更新', 'sort.risk': '权限由低到高',
     'view.trusted': '可信安装库', 'view.candidates': '候选发现库', 'stats.candidates': '候选项目',
@@ -92,6 +97,10 @@ const translations = {
     'builder.outputTitle': 'From brief to verifiable artifacts', 'builder.output1': 'Host compatibility', 'builder.output2': 'Risk and permissions', 'builder.output3': 'Standard source project', 'builder.output4': 'Evidence level', 'builder.note': 'Real Profile changes, restart, and release remain separately confirmed steps.',
     'featured.title': 'Featured plugins for better DSH workflows.', 'featured.lead': 'Discover practical plugins for automation, knowledge, and development with traceable sources and transparent details. Review capabilities and permissions before connecting.',
     'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
+    'automation.title': 'See whether automation succeeded at a glance.', 'automation.lead': 'This shows the latest plugin scan, four-surface watchdog, and actual additions. A successful scan and a catalog change are reported separately.',
+    'automation.overall': 'Overall status', 'automation.scanner': 'Plugin scanner', 'automation.watchdog': 'Four-surface watchdog', 'automation.latestChange': 'Latest scan changes',
+    'automation.scannerNote': 'Scans and updates the Catalog every 3 hours', 'automation.watchdogNote': 'GitHub, Pages, international, and China sites', 'automation.changeUnit': 'added / updated',
+    'automation.recent': 'Recent automatic additions', 'automation.recentTitle': 'What was added', 'automation.loading': 'Reading recent workflow evidence…', 'automation.evidence': 'View GitHub run evidence ↗',
     'catalog.gatewayKicker': 'Explore more capabilities', 'catalog.gatewayTitle': 'View every DSH plugin, permission, and compatibility detail',
     'sort.recommended': 'Latest official DSH compatibility and freshness', 'sort.name': 'Name A–Z', 'sort.recent': 'Recently updated', 'sort.risk': 'Lowest permission first',
     'view.trusted': 'Trusted install catalog', 'view.candidates': 'Candidate discovery', 'stats.candidates': 'candidates',
@@ -142,6 +151,7 @@ const state = {
   catalogRequestId: 0,
   candidatesLoaded: false,
   candidatesLoading: false,
+  automationStatus: null,
   locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
   selectedEntry: null,
 }
@@ -358,6 +368,7 @@ function normalizeEntry(entry, releaseContext) {
   })
   return {
     ...entry,
+    searchTerms: Array.isArray(entry?.searchTerms) ? entry.searchTerms : [],
     categories: Array.isArray(entry?.categories) ? entry.categories : [],
     details: {
       pluginType: details.pluginType || 'unknown',
@@ -397,7 +408,7 @@ function normalizeEntry(entry, releaseContext) {
 function searchValues(entry) {
   const permissions = entry.details.permissions
   return [
-    entry.name, entry.packageName, entry.description, entry.repositoryUrl, entry.version,
+    entry.name, entry.packageName, entry.description, entry.repositoryUrl, entry.version, ...entry.searchTerms,
     ...entry.categories.map(categoryLabel), detailLabel('pluginType', entry.details.pluginType),
     detailLabel('level', permissions.level), detailLabel('files', permissions.files),
     detailLabel('network', permissions.network), detailLabel('commands', permissions.commands),
@@ -685,6 +696,7 @@ function applyLocale() {
   els.search?.setAttribute('aria-label', t('catalog.search'))
   els.categories?.setAttribute('aria-label', state.locale === 'en' ? 'Filter by category' : '按分类筛选')
   document.querySelector('#dialog-close')?.setAttribute('aria-label', state.locale === 'en' ? 'Close plugin details' : '关闭插件详情')
+  if (document.querySelector('[data-automation-overall]')) renderAutomationStatus()
 
   if (state.catalog) {
     renderStats()
@@ -885,6 +897,58 @@ async function loadCatalog() {
   }
 }
 
+const automationRunLabel = run => {
+  if (!run) return state.locale === 'en' ? 'No evidence' : '暂无证据'
+  if (run.status !== 'completed') return state.locale === 'en' ? 'Running' : '执行中'
+  if (run.conclusion === 'success') return state.locale === 'en' ? 'Succeeded' : '执行成功'
+  return state.locale === 'en' ? 'Failed' : '执行失败'
+}
+
+function renderAutomationStatus() {
+  const status = state.automationStatus
+  const overall = status?.overall?.status ?? 'unknown'
+  const overallLabel = state.locale === 'en'
+    ? ({ passed: 'Healthy', failed: 'Attention needed', running: 'Running', unknown: 'No evidence' }[overall] || 'No evidence')
+    : ({ passed: '运行正常', failed: '执行异常', running: '正在执行', unknown: '暂无证据' }[overall] || '暂无证据')
+  document.querySelectorAll('[data-automation-overall]').forEach(node => { node.textContent = overallLabel })
+  document.querySelectorAll('[data-automation-card="overall"]').forEach(node => { node.dataset.state = overall })
+  document.querySelectorAll('[data-automation-scan]').forEach(node => { node.textContent = automationRunLabel(status?.scanner) })
+  document.querySelectorAll('[data-automation-watchdog]').forEach(node => { node.textContent = automationRunLabel(status?.watchdog) })
+  document.querySelectorAll('[data-automation-added-count]').forEach(node => { node.textContent = String(status?.latestChanges?.added?.length ?? '—') })
+  document.querySelectorAll('[data-automation-updated-count]').forEach(node => { node.textContent = String(status?.latestChanges?.updated?.length ?? '—') })
+  const timeValue = status?.scanner?.updatedAt || status?.scanner?.createdAt || status?.generatedAt
+  const timeLabel = timeValue
+    ? `${state.locale === 'en' ? 'Latest evidence' : '最近证据'} · ${new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(timeValue))}`
+    : (state.locale === 'en' ? 'Public evidence is temporarily unavailable' : '公开运行证据暂时不可用')
+  document.querySelectorAll('[data-automation-time]').forEach(node => { node.textContent = timeLabel })
+  const additions = Array.isArray(status?.recentAdditions) ? status.recentAdditions : []
+  document.querySelectorAll('[data-automation-additions]').forEach(list => {
+    list.innerHTML = additions.length
+      ? additions.slice(0, 12).map(entry => `<li><a href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${escape(entry.name)}</a><span> · v${escape(entry.version)} · ${escape(entry.packageName)}</span></li>`).join('')
+      : `<li>${escape(state.locale === 'en' ? 'No new qualifying plugins were added in the available recent runs.' : '最近可读取的运行中没有新增合格插件。')}</li>`
+  })
+  document.querySelectorAll('[data-automation-run-link]').forEach(link => {
+    if (status?.scanner?.url) link.href = status.scanner.url
+  })
+}
+
+async function loadAutomationStatus() {
+  if (!AUTOMATION_STATUS_URL || !document.querySelector('[data-automation-overall]')) return
+  try {
+    const response = await fetch(AUTOMATION_STATUS_URL, { cache: 'no-store', signal: AbortSignal.timeout(12_000) })
+    if (!response.ok) throw new Error(`Automation status returned HTTP ${response.status}`)
+    const source = await response.text()
+    if (source.length > 1_000_000) throw new Error('Automation status exceeds the byte bound')
+    const status = JSON.parse(source)
+    if (status?.schemaVersion !== 1 || !status.overall || !status.catalog) throw new Error('Unsupported automation status')
+    state.automationStatus = status
+  } catch (error) {
+    state.automationStatus = null
+    console.error('Failed to load automation status:', error)
+  }
+  renderAutomationStatus()
+}
+
 async function loadCandidates() {
   if (state.candidatesLoaded || state.candidatesLoading || !state.catalog) return
   state.candidatesLoading = true
@@ -907,7 +971,7 @@ async function loadCandidates() {
 async function init() {
   applyLocale()
   observeReveals()
-  await loadCatalog()
+  await Promise.all([loadCatalog(), loadAutomationStatus()])
 }
 
 els.search?.addEventListener('input', event => {
