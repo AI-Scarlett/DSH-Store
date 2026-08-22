@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T13:47:02.000Z",
+    "updatedAt": "2026-08-22T15:30:55.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26466,8 +26466,8 @@
       "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
       "repositoryUrl": "https://github.com/linny006/agent-eval-harness",
       "defaultBranch": "master",
-      "latestCommit": "feae7b84761a07fd13b577506161e8c76e02f2b8",
-      "sourceUpdatedAt": "2026-08-22T11:30:27.000Z",
+      "latestCommit": "6d804e7343a30a4694f3e1572d762f684ea1da2c",
+      "sourceUpdatedAt": "2026-08-22T15:33:29.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -26600,8 +26600,8 @@
       "description": "awesome game security [Welcome to PR]",
       "repositoryUrl": "https://github.com/gmh5225/awesome-game-security",
       "defaultBranch": "main",
-      "latestCommit": "1b03b60aa005f7da9742d678a2cf1b053b25df3e",
-      "sourceUpdatedAt": "2026-08-22T12:55:53.000Z",
+      "latestCommit": "a3c1256f57dcd081788fddf80206aac4226b001b",
+      "sourceUpdatedAt": "2026-08-22T15:33:34.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27188,6 +27188,128 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "liustack-modsearch",
+      "name": "liustack/modsearch",
+      "description": "🥇 The strongest free web search plugin for DeepSeek Harness, and the search bridge for every model without native web access. Free, no signup, no API key. Ask the web or X, get structured JSON evidence. | 🥇 全网最强的 DeepSeek Harness 免费联网搜索插件，免费免注册免 API key。为不能联网的模型补上搜索，问网页或 X，拿回结构化 JSON 证据（搜索、抓取、引用）。",
+      "repositoryUrl": "https://github.com/liustack/modsearch",
+      "defaultBranch": "main",
+      "latestCommit": "757132db1637e8a8e9438697ee426a45109ebceb",
+      "sourceUpdatedAt": "2026-08-22T15:26:33.000Z",
+      "discoveredAt": "2026-08-22T15:30:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-skills",
+        "agentic-workflow",
+        "claude-code",
+        "claude-skills",
+        "codex",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "glm",
+        "harness",
+        "harness-engineering",
+        "hermes-agent",
+        "openclaw",
+        "opencode",
+        "pi-agent",
+        "web-fetch",
+        "web-search",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID web is already owned by dsh-tavily"
+    },
+    {
+      "id": "ranxi2001-zero2agent",
+      "name": "ranxi2001/zero2Agent",
+      "description": "面向大厂Agent研发岗位求职的agent教程网站，涵盖技术路线与面试八股文",
+      "repositoryUrl": "https://github.com/ranxi2001/zero2Agent",
+      "defaultBranch": "main",
+      "latestCommit": "c6b6124db0337df3a744b3e393564fa86859d550",
+      "sourceUpdatedAt": "2026-08-22T15:32:18.000Z",
+      "discoveredAt": "2026-08-22T15:30:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "agent-framework",
+        "langraph",
+        "learning",
+        "llm",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "alibaba-anolisa",
+      "name": "alibaba/anolisa",
+      "description": "ANOLISA (Agentic Nexus Operating Layer & Interface System Architecture) | Agentic OS with runtime, security, observability, and Tokenless response compression for lower token usage and cost.",
+      "repositoryUrl": "https://github.com/alibaba/anolisa",
+      "defaultBranch": "main",
+      "latestCommit": "5a1c5800d675b8e5d64bfaf2758bd92b551bc536",
+      "sourceUpdatedAt": "2026-08-22T15:33:25.000Z",
+      "discoveredAt": "2026-08-22T15:30:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-infrastructure",
+        "agent-memory",
+        "agent-runtime",
+        "agent-security",
+        "agentic-ai",
+        "agentic-os",
+        "ai-agents",
+        "context-engineering",
+        "developer-tools",
+        "dsh-plugin",
+        "linux",
+        "observability",
+        "runtime-security",
+        "rust",
+        "sandbox",
+        "skill",
+        "token-optimization",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
+    },
+    {
+      "id": "kamanager2012-dsh-community",
+      "name": "kamanager2012/dsh-community",
+      "description": "基于官方 DeepSeek Harness 内核的社区发行：五个入口（WSL/Linux 终端、Windows 桌面、macOS 桌面、Linux AppImage、Android Labs），与官方 Web 共用 ~/.dsh。不是官方客户端。",
+      "repositoryUrl": "https://github.com/kamanager2012/dsh-community",
+      "defaultBranch": "main",
+      "latestCommit": "1db8c58f19aecd2a59508f9d25cbb2cf534985fd",
+      "sourceUpdatedAt": "2026-08-22T15:32:43.000Z",
+      "discoveredAt": "2026-08-22T15:30:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "community",
+        "deepseek",
+        "desktop",
+        "dsh",
+        "tui",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
     }
   ]
 }
