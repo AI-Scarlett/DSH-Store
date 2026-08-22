@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T15:44:43.000Z",
+    "updatedAt": "2026-08-22T18:43:54.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26620,8 +26620,8 @@
       "description": "awesome game security [Welcome to PR]",
       "repositoryUrl": "https://github.com/gmh5225/awesome-game-security",
       "defaultBranch": "main",
-      "latestCommit": "1b03b60aa005f7da9742d678a2cf1b053b25df3e",
-      "sourceUpdatedAt": "2026-08-22T12:55:53.000Z",
+      "latestCommit": "4a9dbebf17d3fe24565844a00bab82c5cd67b38c",
+      "sourceUpdatedAt": "2026-08-22T18:43:36.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27427,6 +27427,50 @@
       ],
       "topics": [
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "maxwell-feng-dsh-searxng-web",
+      "name": "maxwell-feng/dsh-searxng-web",
+      "description": "DeepSeek Harness plugin: back the native web_search / web_fetch tools with your self-hosted SearXNG instance — keyless, private, no third-party search vendor.",
+      "repositoryUrl": "https://github.com/maxwell-feng/dsh-searxng-web",
+      "defaultBranch": "master",
+      "latestCommit": "8e4247948029d0341e5d00f23ad8b1d572429f9d",
+      "sourceUpdatedAt": "2026-08-22T18:42:38.000Z",
+      "discoveredAt": "2026-08-22T18:43:54.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "searxng",
+        "self-hosted",
+        "web-search",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID web is already owned by dsh-tavily"
+    },
+    {
+      "id": "xinghen1020-my-dsh",
+      "name": "xinghen1020/my-dsh",
+      "description": "my-deepseek-harness",
+      "repositoryUrl": "https://github.com/xinghen1020/my-dsh",
+      "defaultBranch": "main",
+      "latestCommit": "40b6e77b0752b6d8adf0cc4ead40275bffe70bd5",
+      "sourceUpdatedAt": "2026-08-22T18:34:02.000Z",
+      "discoveredAt": "2026-08-22T18:43:54.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
         "automatic-radar"
       ],
       "status": "rejected",
