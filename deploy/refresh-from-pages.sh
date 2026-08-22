@@ -168,7 +168,7 @@ install -d -o root -g root -m 0755 "$candidate"
 
 while IFS= read -r path; do
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
-  curl -fsSL --connect-timeout 10 --max-time 90 --retry 4 --retry-all-errors --retry-delay 2 \
+  curl -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
     "$pages_base/$path" -o "$candidate/$path"
 done < "$incoming/files.list"
 install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
