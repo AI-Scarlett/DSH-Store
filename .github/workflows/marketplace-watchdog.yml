@@ -1,0 +1,60 @@
+name: Three-hour marketplace watchdog
+
+on:
+  schedule:
+    - cron: "55 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: marketplace-watchdog
+  cancel-in-progress: true
+
+jobs:
+  verify-and-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify the previous Catalog automation run
+        id: previous
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          last=$(gh run list --workflow catalog-automation.yml --limit 1 --json databaseId,status,conclusion,createdAt)
+          status=$(jq -r '.[0].status // "missing"' <<<"$last")
+          conclusion=$(jq -r '.[0].conclusion // "missing"' <<<"$last")
+          created=$(jq -r '.[0].createdAt // "1970-01-01T00:00:00Z"' <<<"$last")
+          age=$(( $(date -u +%s) - $(date -u -d "$created" +%s) ))
+          if test "$status" != completed || test "$conclusion" != success || test "$age" -gt 14400; then
+            echo "repair=true" >> "$GITHUB_OUTPUT"
+            gh workflow run catalog-automation.yml --ref main
+          else
+            echo "repair=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify GitHub, Pages, international, and domestic Catalogs
+        id: public
+        continue-on-error: true
+        run: node scripts/verify-marketplace-public.mjs --attempts 3 --report "$RUNNER_TEMP/marketplace-watchdog-report.json"
+      - name: Repair the public build when any surface is stale
+        if: steps.public.outcome != 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
+      - name: Preserve the public verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketplace-watchdog-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/marketplace-watchdog-report.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Keep unresolved repair visible to the next run
+        if: steps.previous.outputs.repair == 'true' || steps.public.outcome != 'success'
+        run: exit 1

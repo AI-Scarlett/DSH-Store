@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "scheduleHours": 3,
+  "search": {
+    "queries": [
+      "topic:dsh-plugin",
+      "topic:deepseek-harness",
+      "dsh-plugin in:name,description,readme",
+      "\"deepseek harness\" plugin in:name,description,readme"
+    ],
+    "resultsPerQuery": 20,
+    "maxNewRepositoriesPerRun": 8
+  },
+  "sourceBounds": {
+    "maxTreeEntries": 1200,
+    "maxRuntimeFiles": 240,
+    "maxFileBytes": 262144,
+    "maxTotalRuntimeBytes": 2097152
+  },
+  "automaticApproval": {
+    "requireManifestRepositoryMatch": true,
+    "requireRepositoryLicenseMatch": true,
+    "requireExplicitFiles": true,
+    "requireDshCompatibility": true,
+    "requireNodeCompatibility": true,
+    "allowLifecycleScripts": false,
+    "allowRuntimeDependencies": false,
+    "allowSymlinks": false,
+    "allowSubmodules": false,
+    "permissionSignals": {
+      "files": false,
+      "network": false,
+      "commands": false,
+      "credentials": false,
+      "protectedDsh": false,
+      "nativeOrExecutableArtifacts": false
+    }
+  },
+  "publication": {
+    "repository": "AI-Scarlett/dsh-safe-plugin-manager",
+    "catalogPath": "registry/catalog.json",
+    "candidatesPath": "registry/candidates.json",
+    "pullRequestBranchPrefix": "automation/catalog-",
+    "mergeMethod": "squash",
+    "publicCatalogUrls": [
+      "https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json",
+      "https://ai-scarlett.github.io/dsh-safe-plugin-manager/registry/catalog.json",
+      "https://dsh.store/registry/catalog.json",
+      "https://dsh-store.cn/registry/catalog.json"
+    ]
+  }
+}

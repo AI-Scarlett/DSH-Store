@@ -3,10 +3,24 @@ set -Eeuo pipefail
 
 umask 022
 
-readonly pages_base='https://ai-scarlett.github.io/dsh-safe-plugin-manager'
-readonly deploy_root='/opt/dsh-store'
+readonly pages_base="${DSH_STORE_PAGES_BASE:-https://ai-scarlett.github.io/dsh-safe-plugin-manager}"
+readonly deploy_root="${DSH_STORE_ROOT:-/opt/dsh-store}"
 readonly current_link="$deploy_root/current"
-readonly lock_file='/run/lock/dsh-store-refresh.lock'
+readonly lock_file="${DSH_STORE_LOCK_FILE:-/run/lock/dsh-store-refresh.lock}"
+readonly store_domain="${DSH_STORE_DOMAIN:-dsh.store}"
+
+case "$store_domain" in
+  dsh.store|dsh-store.cn) ;;
+  *) printf 'Unsupported DSH Store domain: %s\n' "$store_domain" >&2; exit 2 ;;
+esac
+case "$deploy_root" in
+  /opt/dsh-store|/opt/dsh-store-cn) ;;
+  *) printf 'Unsupported DSH Store root: %s\n' "$deploy_root" >&2; exit 2 ;;
+esac
+case "$pages_base" in
+  https://ai-scarlett.github.io/dsh-safe-plugin-manager) ;;
+  *) printf 'Unsupported Pages authority: %s\n' "$pages_base" >&2; exit 2 ;;
+esac
 
 exec 9>"$lock_file"
 if ! flock -n 9; then
@@ -34,8 +48,8 @@ rollback_on_error() {
   if test "$switched" -eq 1 && test -n "$old_target"; then
     ln -s "$old_target" "$current_link.rollback.$BASHPID"
     mv -Tf "$current_link.rollback.$BASHPID" "$current_link"
-    curl -fsS --resolve dsh.store:443:127.0.0.1 --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null https://dsh.store/
-    curl -fsS --resolve dsh.store:443:127.0.0.1 --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null https://dsh.store/registry/catalog.json
+    curl -fsS --resolve "$store_domain:443:127.0.0.1" --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null "https://$store_domain/"
+    curl -fsS --resolve "$store_domain:443:127.0.0.1" --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null "https://$store_domain/registry/catalog.json"
     printf 'DSH_STORE_REFRESH_ROLLBACK restored=%s failed_candidate=%s\n' "$old_target" "$candidate" >&2
   fi
   cleanup_incoming
@@ -43,6 +57,38 @@ rollback_on_error() {
 }
 trap rollback_on_error ERR
 trap cleanup_incoming EXIT
+
+check_public() {
+  for spec in \
+    'home /' \
+    'plugins /plugins/' \
+    'build /build/' \
+    'faq /faq/' \
+    'about /about/' \
+    'catalog /registry/catalog.json'; do
+    set -- $spec
+    label=$1
+    path=$2
+    code='000'
+    for attempt in 1 2 3 4 5; do
+      code=$(curl -sS --resolve "$store_domain:443:127.0.0.1" --connect-timeout 5 --max-time 30 \
+        -o "$incoming/health-$label" -w '%{http_code}' "https://$store_domain$path" || true)
+      test "$code" = 200 && break
+      sleep 1
+    done
+    test "$code" = 200
+  done
+
+  python3 - "$incoming/health-home" "$incoming/health-catalog" <<'PY'
+import json,sys
+home=open(sys.argv[1],encoding='utf-8').read()
+catalog=json.load(open(sys.argv[2],encoding='utf-8'))
+manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
+if manager['commit'] not in home:
+    raise SystemExit('public homepage install identity mismatch')
+print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'])
+PY
+}
 
 curl -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
   "$pages_base/release-manifest.json" -o "$incoming/release-manifest.json"
@@ -87,6 +133,7 @@ PY
 )
 
 if test -f "$current_link/release-manifest.json" && cmp -s "$incoming/release-manifest.json" "$current_link/release-manifest.json"; then
+  check_public
   printf 'DSH_STORE_REFRESH_SKIPPED reason=already-current source=%s\n' "$source_sha"
   exit 0
 fi
@@ -161,35 +208,7 @@ ln -s "$candidate" "$current_link.next.$BASHPID"
 mv -Tf "$current_link.next.$BASHPID" "$current_link"
 switched=1
 
-for spec in \
-  'home /' \
-  'plugins /plugins/' \
-  'build /build/' \
-  'faq /faq/' \
-  'about /about/' \
-  'catalog /registry/catalog.json'; do
-  set -- $spec
-  label=$1
-  path=$2
-  code='000'
-  for attempt in 1 2 3 4 5; do
-    code=$(curl -sS --resolve dsh.store:443:127.0.0.1 --connect-timeout 5 --max-time 30 \
-      -o "$incoming/health-$label" -w '%{http_code}' "https://dsh.store$path" || true)
-    test "$code" = 200 && break
-    sleep 1
-  done
-  test "$code" = 200
-done
-
-python3 - "$incoming/health-home" "$incoming/health-catalog" <<'PY'
-import json,sys
-home=open(sys.argv[1],encoding='utf-8').read()
-catalog=json.load(open(sys.argv[2],encoding='utf-8'))
-manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
-if manager['commit'] not in home:
-    raise SystemExit('public homepage install identity mismatch')
-print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'])
-PY
+check_public
 
 switched=0
 printf 'DSH_STORE_REFRESH_OK source=%s release=%s backup=%s\n' "$source_sha" "$candidate" "$backup"

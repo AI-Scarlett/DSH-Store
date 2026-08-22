@@ -1,10 +1,11 @@
 [Unit]
-Description=Refresh DSH STORE from the validated GitHub Pages artifact
+Description=Refresh the %i DSH STORE from the validated GitHub Pages artifact
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=oneshot
+EnvironmentFile=/etc/dsh-store/refresh-%i.env
 ExecStart=/opt/dsh-store/bin/refresh-from-pages.sh
 User=root
 Group=root
@@ -13,7 +14,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectHome=true
 ProtectSystem=strict
-ReadWritePaths=/opt/dsh-store /run/lock
+ReadWritePaths=/opt/dsh-store /opt/dsh-store-cn /run/lock
 RestrictSUIDSGID=true
 LockPersonality=true
 

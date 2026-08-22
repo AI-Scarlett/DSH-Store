@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
   SUBMISSION_REPORT_MARKER,
+  checkRepository,
   checkSubmission,
   parseIssueForm,
   parseRepositoryInput,
@@ -95,6 +96,16 @@ test('simple submission reads a fixed root package without executing it', async 
   assert.ok(report.startsWith(SUBMISSION_REPORT_MARKER))
   assert.match(report, /没有执行第三方代码/)
   assert.match(report, /不是安全审计、运行验证或自动上架/)
+})
+
+test('repository automation reuses the same fixed-source gate without an Issue form', async () => {
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(), fetch: sourceFetch(), retryDelaysMs: [],
+  })
+  assert.equal(result.status, 'passed')
+  assert.equal(result.candidate.commit, SHA)
+  assert.equal(result.candidate.packageName, 'dsh-demo')
+  assert.equal(result.candidate.details.permissions.level, 'unknown')
 })
 
 test('repository tree link supplies a monorepo plugin path automatically', async () => {

@@ -299,14 +299,13 @@ async function optionalReadme(repositoryUrl, commit, manifestPath, options) {
   return { path: null, text: '' }
 }
 
-export async function checkSubmission(body, options = {}) {
+export async function checkRepository(repositoryValue, pluginPath = '', options = {}) {
   const request = options.fetch ?? globalThis.fetch
   if (typeof request !== 'function') throw submissionError('SUBMISSION_FETCH_UNAVAILABLE', 'Public GitHub source verification is unavailable')
   const catalogDocument = options.catalogDocument ?? JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
   const catalog = validateCatalog(catalogDocument)
-  const fields = parseIssueForm(body)
-  const repositoryInput = parseRepositoryInput(requiredField(fields, LABELS.repository))
-  const submittedPath = cleanValue(fields.get(LABELS.pluginPath)) || cleanValue(fields.get(LABELS.legacyInstallPath))
+  const repositoryInput = parseRepositoryInput(repositoryValue)
+  const submittedPath = cleanValue(pluginPath)
   const requestedPath = safeRelativeDirectory(submittedPath) ?? repositoryInput.linkedPath
   const fetchOptions = { request, token: options.token ?? process.env.GITHUB_TOKEN, timeoutMs: options.timeoutMs }
   const snapshot = await repositorySnapshot(repositoryInput.repositoryUrl, fetchOptions)
@@ -362,6 +361,13 @@ export async function checkSubmission(body, options = {}) {
     status: 'passed', candidate, source,
     discovery: { publisher: githubParts(repositoryInput.repositoryUrl).owner, readmePath: readme.path, patchPath },
   }
+}
+
+export async function checkSubmission(body, options = {}) {
+  const fields = parseIssueForm(body)
+  const repositoryValue = requiredField(fields, LABELS.repository)
+  const pluginPath = cleanValue(fields.get(LABELS.pluginPath)) || cleanValue(fields.get(LABELS.legacyInstallPath))
+  return checkRepository(repositoryValue, pluginPath, options)
 }
 
 function safeCode(value) {
