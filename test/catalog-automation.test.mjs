@@ -103,6 +103,7 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(refresh, /data-static-featured-id=/)
   assert.doesNotMatch(refresh, /id="catalog-snapshot"/)
   assert.match(refresh, /Refusing to remove unexpected failed candidate/)
+  assert.match(refresh, /--max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at -/)
   assert.match(refresh, /dsh\.store:http:\/marketplace/)
   assert.match(refresh, /dsh\.store:https:/)
   assert.match(refresh, /dsh-store\.cn:https:/)
