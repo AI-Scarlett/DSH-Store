@@ -12,6 +12,11 @@ const root = new URL('../', import.meta.url)
 const rootPath = fileURLToPath(root)
 const sha256 = value => createHash('sha256').update(value).digest('hex')
 
+test('GitHub enrichment skips unlisted sources that are intentionally unavailable', async () => {
+  const builder = await readFile(new URL('scripts/build-marketplace-static.mjs', root), 'utf8')
+  assert.match(builder, /mapLimit\(snapshot\.entries\.filter\(entry => entry\.status !== 'unlisted'\), 5/)
+})
+
 test('static marketplace derives manager identity and catalog cards without mutating the authority file', async () => {
   const output = await mkdtemp(new URL('.tmp-marketplace-static-', root))
   const catalogPath = new URL('registry/catalog.json', root)

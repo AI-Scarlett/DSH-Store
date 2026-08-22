@@ -109,7 +109,7 @@ if (enrichGitHub) {
     return repositoryRequests.get(key)
   }
 
-  await mapLimit(snapshot.entries, 5, async entry => {
+  await mapLimit(snapshot.entries.filter(entry => entry.status !== 'unlisted'), 5, async entry => {
     const [repository, manifest] = await Promise.all([
       repositoryMetadata(entry),
       fetchJson(manifestUrl(entry)),
