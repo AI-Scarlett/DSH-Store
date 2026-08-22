@@ -128,7 +128,9 @@ function createGithubClient(options = {}) {
       const response = await request(url, {
         headers: githubHeaders(token, settings.accept), signal: controller.signal,
       })
-      if (!response.ok) throw Object.assign(new Error(`GitHub returned HTTP ${response.status}`), { code: 'CATALOG_AUTOMATION_GITHUB_HTTP' })
+      if (!response.ok) throw Object.assign(new Error(`GitHub returned HTTP ${response.status}`), {
+        code: 'CATALOG_AUTOMATION_GITHUB_HTTP', status: response.status,
+      })
       const value = await response.text()
       if (Buffer.byteLength(value) > (settings.maxBytes ?? 4 * 1024 * 1024)) {
         throw Object.assign(new Error('GitHub response exceeded the automation bound'), { code: 'CATALOG_AUTOMATION_SOURCE_TOO_LARGE' })
@@ -351,7 +353,13 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     const entry = catalog.entries[index]
     if (entry.status !== 'approved' || entry.updatePolicy !== 'source-verified') continue
     const { owner, repository } = repositoryParts(entry.repositoryUrl)
-    const head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(entry.defaultBranch || 'main')}`)
+    let head
+    try {
+      head = await retryInfrastructure(() => github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(entry.defaultBranch || 'main')}`))
+    } catch (error) {
+      report.transientFailures.push({ repository: entry.repositoryUrl, reason: boundedText(error?.message, 'temporary source update lookup failure') })
+      continue
+    }
     if (head?.sha === entry.commit) continue
     process.stdout.write(`CATALOG_AUTOMATION_UPDATE_CHECK id=${entry.id} candidate=${String(head?.sha ?? '').slice(0, 12)}\n`)
     try {
@@ -397,7 +405,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 }
 
 async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report) {
-  const repositories = await discoverRepositories(policy, github)
+  const repositories = await retryInfrastructure(() => discoverRepositories(policy, github))
   const catalogRepositories = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
   const candidateByRepository = new Map(candidates.entries.map(entry => [entry.repositoryUrl.toLowerCase(), entry]))
   let inspected = 0
@@ -407,8 +415,23 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
     if (catalogRepositories.has(repositoryKey)) continue
     const previous = candidateByRepository.get(repositoryKey)
     const { owner, repository: name } = repositoryParts(repository.html_url)
-    const head = await github.api(`repos/${owner}/${name}/commits/${encodeURIComponent(repository.default_branch || 'main')}`)
-    if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) throw new Error(`GitHub did not return a fixed Commit for ${repository.full_name}`)
+    let head
+    try {
+      head = await retryInfrastructure(() => github.api(`repos/${owner}/${name}/commits/${encodeURIComponent(repository.default_branch || 'main')}`))
+    } catch (error) {
+      inspected += 1
+      if (error?.status === 404 || error?.status === 409) {
+        report.skippedDiscoveries.push({ repository: repository.html_url, reason: `GitHub returned HTTP ${error.status} without a fixed Commit` })
+      } else {
+        report.transientFailures.push({ repository: repository.html_url, reason: boundedText(error?.message, 'temporary discovery lookup failure') })
+      }
+      continue
+    }
+    if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
+      inspected += 1
+      report.skippedDiscoveries.push({ repository: repository.html_url, reason: 'GitHub did not return a fixed Commit' })
+      continue
+    }
     if (previous?.latestCommit === head.sha && previous.status === 'rejected') continue
     inspected += 1
     process.stdout.write(`CATALOG_AUTOMATION_DISCOVERY_CHECK repository=${repository.full_name} candidate=${head.sha.slice(0, 12)}\n`)
@@ -468,7 +491,8 @@ const report = {
   observedAt,
   preconditions: { catalogSha256: catalogSha, candidatesSha256: candidatesSha },
   policy: 'registry/automation-policy.json',
-  updatedEntries: [], addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [], transientFailures: [],
+  updatedEntries: [], addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [],
+  skippedDiscoveries: [], transientFailures: [],
 }
 const github = createGithubClient()
 await updateExistingEntries(catalog, policy, github, observedAt, report)

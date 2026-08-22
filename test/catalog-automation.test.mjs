@@ -35,6 +35,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /allowLifecycleScripts/)
   assert.match(source, /permissionSignals/)
   assert.match(source, /transientFailures/)
+  assert.match(source, /skippedDiscoveries/)
+  assert.match(source, /error\?\.status === 404 \|\| error\?\.status === 409/)
   assert.match(source, /retryInfrastructure/)
   assert.match(source, /runtimeFiles\.slice\(index, index \+ 8\)/)
   assert.match(source, /Promise\.all\(batch\.map/)
