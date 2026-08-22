@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T15:13:32.000Z",
+    "updatedAt": "2026-08-22T15:44:43.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -861,20 +861,40 @@
       "description": "本地私有、开源的自进化跨平台 AI 内容发现 Agent：先理解你，再主动从 B站、小红书、抖音、YouTube、X、知乎、Reddit、微博等平台与开放 Web 寻找内容。（支持 deepseek harness 插件） | Local-first open-source cross-platform AI content discovery agent: understands you, then proactively finds content across Bilibili, Xiaohongshu, Douyin, YouTube, X, Zhihu, Reddit, Weibo and the open web.（support deepseek harness plugin）",
       "repositoryUrl": "https://github.com/whiteguo233/OpenBiliClaw",
       "defaultBranch": "main",
-      "latestCommit": "3aaa191cce9d891ba811a2562fef0d80c344493c",
-      "sourceUpdatedAt": "2026-08-20T19:11:54.000Z",
+      "latestCommit": "bfefe44ea446da8ed0dbaf836920d6fe9ad68b50",
+      "sourceUpdatedAt": "2026-08-22T15:43:41.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "tools"
+        "ai-agent",
+        "bilibili",
+        "chrome-extension",
+        "content-discovery",
+        "cross-platform",
+        "deepseek-harness",
+        "douyin",
+        "dsh",
+        "dsh-plugin",
+        "llm",
+        "local-first",
+        "personal-ai",
+        "privacy-first",
+        "python",
+        "recommendation-system",
+        "self-hosted",
+        "typescript",
+        "xiaohongshu",
+        "youtube",
+        "zhihu",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "whitelonng-dshcode",
@@ -26429,8 +26449,8 @@
       "description": "Live index of the newest agent frameworks shipping on GitHub, sorted by recency not stars",
       "repositoryUrl": "https://github.com/linny006/agent-framework-radar",
       "defaultBranch": "master",
-      "latestCommit": "a4017bf3f4c7e8611fc96f23af36d897218e7b83",
-      "sourceUpdatedAt": "2026-08-22T11:30:22.000Z",
+      "latestCommit": "c54091382a397150b313ddd64217215c77277eb0",
+      "sourceUpdatedAt": "2026-08-22T15:45:18.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -26466,8 +26486,8 @@
       "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
       "repositoryUrl": "https://github.com/linny006/agent-eval-harness",
       "defaultBranch": "master",
-      "latestCommit": "feae7b84761a07fd13b577506161e8c76e02f2b8",
-      "sourceUpdatedAt": "2026-08-22T11:30:27.000Z",
+      "latestCommit": "b5753c8ee4f96c07813bf0f4680d3a5478a47682",
+      "sourceUpdatedAt": "2026-08-22T15:45:27.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27282,6 +27302,131 @@
         "github-automatic-radar-v1"
       ],
       "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "xuboboo-dsh-gui",
+      "name": "xuboboo/dsh-gui",
+      "description": "DeepSeek Harness 桌面版客户端（GUI）：品牌启动动画 + DeepSeek 设计语言界面 + rc.5 启动崩溃修复。第三方非官方项目。",
+      "repositoryUrl": "https://github.com/xuboboo/dsh-gui",
+      "defaultBranch": "main",
+      "latestCommit": "c2f4dd42e6ddaa145996e2f0f77d3430f193b386",
+      "sourceUpdatedAt": "2026-08-22T15:45:07.000Z",
+      "discoveredAt": "2026-08-22T15:44:43.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "desktop",
+        "dsh",
+        "dsh-plugin",
+        "electron",
+        "gui",
+        "splash-screen",
+        "theme",
+        "windows",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "linny006-trending-claude-skills",
+      "name": "linny006/trending-claude-skills",
+      "description": "Auto-updated leaderboard of trending claude-skills and AI agent repos, refreshed every 15 minutes",
+      "repositoryUrl": "https://github.com/linny006/trending-claude-skills",
+      "defaultBranch": "master",
+      "latestCommit": "54d2cb3872d12f880a62f16e15cf8d074f88628d",
+      "sourceUpdatedAt": "2026-08-22T15:45:14.000Z",
+      "discoveredAt": "2026-08-22T15:44:43.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "ai-coding",
+        "ai-development",
+        "ai-tools",
+        "ai-workflow",
+        "anthropic",
+        "auto-updated",
+        "awesome",
+        "awesome-list",
+        "claude-code",
+        "claude-skills",
+        "codex",
+        "coding-agent",
+        "developer-tools",
+        "generative-ai",
+        "live-data",
+        "llm-ecosystem",
+        "llm-tools",
+        "machine-learning",
+        "mcp-server",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "linny006-llm-eval-tracker",
+      "name": "linny006/llm-eval-tracker",
+      "description": "Live index of LLM evaluation tools and benchmarks, refreshed every 15 minutes from GitHub",
+      "repositoryUrl": "https://github.com/linny006/llm-eval-tracker",
+      "defaultBranch": "master",
+      "latestCommit": "5a1891ad832f76df0aa36674f9df40c5e638ffb0",
+      "sourceUpdatedAt": "2026-08-22T15:45:19.000Z",
+      "discoveredAt": "2026-08-22T15:44:43.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-benchmarks",
+        "ai-development",
+        "ai-evaluation",
+        "ai-research",
+        "ai-tools",
+        "auto-updated",
+        "awesome-eval",
+        "awesome-list",
+        "evaluation-framework",
+        "github-actions",
+        "live-data",
+        "llm-benchmark",
+        "llm-evaluation",
+        "llm-testing",
+        "llm-tools",
+        "machine-learning",
+        "ml-evaluation",
+        "model-evaluation",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "fishlikewater-dsh-desktop",
+      "name": "fishlikewater/dsh-desktop",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/fishlikewater/dsh-desktop",
+      "defaultBranch": "main",
+      "latestCommit": "6417ff5019eb81684d2d90164e4067d77d689280",
+      "sourceUpdatedAt": "2026-08-22T15:44:13.000Z",
+      "discoveredAt": "2026-08-22T15:44:43.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "rejected",
