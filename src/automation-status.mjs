@@ -10,6 +10,11 @@ function iso(value) {
   return Number.isFinite(parsed) ? new Date(parsed).toISOString() : null
 }
 
+function count(value) {
+  const number = Number(value)
+  return Number.isSafeInteger(number) && number >= 0 ? number : 0
+}
+
 function normalizeRun(run) {
   if (!run || typeof run !== 'object') return null
   const databaseId = Number(run.databaseId)
@@ -47,6 +52,17 @@ function reportRecord(item) {
     rejectedCandidates: Array.isArray(report.rejectedCandidates) ? report.rejectedCandidates.length : 0,
     deferredUpdates: Array.isArray(report.deferredUpdates) ? report.deferredUpdates.length : 0,
     transientFailures: Array.isArray(report.transientFailures) ? report.transientFailures.length : 0,
+    sourceVersionChecks: {
+      authority: text(report.sourceVersionChecks?.authority, 120),
+      checkedEntries: count(report.sourceVersionChecks?.checkedEntries),
+      currentEntries: count(report.sourceVersionChecks?.currentEntries),
+      newerVersionCandidates: count(report.sourceVersionChecks?.newerVersionCandidates),
+      catalogUpdates: count(report.sourceVersionChecks?.catalogUpdates),
+      newerVersionsDeferred: count(report.sourceVersionChecks?.newerVersionsDeferred),
+      sourceChangedWithoutVersionBump: count(report.sourceVersionChecks?.sourceChangedWithoutVersionBump),
+      upstreamVersionBehind: count(report.sourceVersionChecks?.upstreamVersionBehind),
+      unresolvedEntries: count(report.sourceVersionChecks?.unresolvedEntries),
+    },
   }
 }
 
@@ -65,6 +81,21 @@ function publicEntry(entry, change, run) {
   }
 }
 
+function publicUpdate(entry, update, change, run) {
+  return {
+    id: entry.id,
+    name: entry.name,
+    packageName: entry.packageName,
+    fromVersion: text(update?.fromVersion, 80),
+    toVersion: text(update?.toVersion ?? update?.version, 80),
+    policy: ['source-verified', 'user-reviewed', 'external-only'].includes(update?.policy) ? update.policy : null,
+    repositoryUrl: entry.repositoryUrl,
+    observedAt: change.observedAt,
+    runId: change.runId,
+    runUrl: run?.url ?? null,
+  }
+}
+
 export function buildAutomationStatus({ catalog, candidates, runs = {}, reports = [], generatedAt, sourceCommit }) {
   if (!catalog || !Array.isArray(catalog.entries)) throw new TypeError('catalog entries are required')
   const scannerRuns = Array.isArray(runs.catalogAutomation) ? runs.catalogAutomation : []
@@ -76,7 +107,9 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     .sort((left, right) => (Date.parse(right.observedAt ?? '') || 0) - (Date.parse(left.observedAt ?? '') || 0))
   const entryById = new Map(catalog.entries.map(entry => [entry.id, entry]))
   const recentAdditions = []
+  const recentUpdates = []
   const seen = new Set()
+  const seenUpdates = new Set()
   for (const report of reportRecords) {
     for (const addition of report.addedEntries) {
       const id = text(addition?.id, 96)
@@ -87,6 +120,17 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
       if (recentAdditions.length >= 24) break
     }
     if (recentAdditions.length >= 24) break
+  }
+  for (const report of reportRecords) {
+    for (const update of report.updatedEntries) {
+      const id = text(update?.id, 96)
+      const entry = id ? entryById.get(id) : null
+      if (!entry || seenUpdates.has(id)) continue
+      seenUpdates.add(id)
+      recentUpdates.push(publicUpdate(entry, update, report, runById.get(report.runId)))
+      if (recentUpdates.length >= 24) break
+    }
+    if (recentUpdates.length >= 24) break
   }
   const latestReport = reportRecords[0] ?? null
   const latestAdded = latestReport?.addedEntries.map(item => text(item?.id, 96)).filter(Boolean) ?? []
@@ -114,8 +158,20 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
       rejectedCandidates: latestReport?.rejectedCandidates ?? 0,
       deferredUpdates: latestReport?.deferredUpdates ?? 0,
       transientFailures: latestReport?.transientFailures ?? 0,
+      sourceVersionChecks: latestReport?.sourceVersionChecks ?? {
+        authority: null,
+        checkedEntries: 0,
+        currentEntries: 0,
+        newerVersionCandidates: 0,
+        catalogUpdates: 0,
+        newerVersionsDeferred: 0,
+        sourceChangedWithoutVersionBump: 0,
+        upstreamVersionBehind: 0,
+        unresolvedEntries: 0,
+      },
     },
     recentAdditions,
+    recentUpdates,
     monitoredSurfaces: [
       'GitHub registry/catalog.json', 'GitHub Pages catalog', 'dsh.store catalog', 'dsh-store.cn catalog',
     ],

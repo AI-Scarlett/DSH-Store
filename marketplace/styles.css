@@ -371,7 +371,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .automation-heading { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .6fr); align-items: end; gap: 70px; margin-bottom: 30px; }
 .automation-heading h2 { max-width: 780px; margin: 0; font-size: clamp(34px, 4vw, 56px); line-height: 1.02; letter-spacing: -.055em; }
 .automation-heading p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.8; }
-.automation-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); background: rgba(255, 255, 255, .9); }
+.automation-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 1px solid var(--line); background: rgba(255, 255, 255, .9); }
 .automation-grid article { min-height: 132px; display: flex; flex-direction: column; justify-content: center; gap: 9px; padding: 22px; border-right: 1px solid var(--line); }
 .automation-grid article:last-child { border-right: 0; }
 .automation-grid small, .automation-additions small { color: var(--faint); font: 750 7px ui-monospace, monospace; letter-spacing: .12em; }
@@ -386,6 +386,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .automation-additions li a { color: var(--text); font-weight: 760; }
 .automation-additions li a:hover, .automation-additions > a { color: var(--green); }
 .automation-additions > a { padding-top: 3px; font-size: 8px; font-weight: 850; white-space: nowrap; }
+.automation-updates { grid-template-columns: 190px minmax(0, 1fr); background: rgba(67, 133, 198, .045); }
 
 .manager-section, .featured-section, .workflow-section, .faq-section { padding: 140px 0; }
 .section-heading, .catalog-heading {
@@ -988,9 +989,11 @@ dialog::backdrop { background: rgba(40, 72, 86, .38); backdrop-filter: blur(8px)
   .metric-source { grid-column: 1 / -1; min-height: 90px !important; }
   .automation-heading { grid-template-columns: 1fr; gap: 18px; }
   .automation-grid { grid-template-columns: repeat(2, 1fr); }
-  .automation-grid article:nth-child(2) { border-right: 0; }
-  .automation-grid article:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .automation-grid article { border-bottom: 1px solid var(--line); }
+  .automation-grid article:nth-child(2n) { border-right: 0; }
+  .automation-grid article:last-child { grid-column: 1 / -1; border-right: 0; border-bottom: 0; }
   .automation-additions { grid-template-columns: 170px 1fr; }
+  .automation-updates { grid-template-columns: 170px 1fr; }
   .automation-additions > a { grid-column: 2; }
   .manager-console { grid-template-columns: 1fr; }
   .architecture-map { min-height: 430px; border-right: 0; border-bottom: 1px solid var(--line); }
@@ -1053,7 +1056,7 @@ dialog::backdrop { background: rgba(40, 72, 86, .38); backdrop-filter: blur(8px)
   .automation-section { padding-top: 70px; }
   .automation-grid { grid-template-columns: 1fr; }
   .automation-grid article, .automation-grid article:nth-child(2) { min-height: 105px; border-right: 0; border-bottom: 1px solid var(--line); }
-  .automation-grid article:last-child { border-bottom: 0; }
+  .automation-grid article:last-child { grid-column: 1; border-bottom: 0; }
   .automation-additions { grid-template-columns: 1fr; gap: 16px; padding: 20px 18px; }
   .automation-additions > a { grid-column: 1; }
   .manager-section, .featured-section, .workflow-section, .faq-section, .safety-section { padding: 90px 0; }

@@ -55,7 +55,16 @@ Profile、不用低层测试冒充运行验收”的边界。
 
 ## 三小时自动化与自愈
 
-- `catalog-automation.yml` 在每个三小时窗口第 5 分钟扫描、复核并生成可审计 PR；
+- `catalog-automation.yml` 在每个三小时窗口第 5 分钟扫描新插件，并检查所有历史 Catalog
+  条目的原项目版本；版本权威源是 canonical GitHub 仓库当前默认分支的完整 Commit，以及该
+  Commit 下条目 `manifestPath` 指向的 `package.json`；
+- 只有原项目 SemVer 高于商城版本、候选 Commit 是旧 Commit 的有界直接后继，且包名、仓库、
+  manifest 路径、安装路径、Bundle 入口和许可证保持一致时，才进入固定源更新审查；
+- `source-verified` 更新必须继续满足完整低风险自动策略；`user-reviewed` 条目可以自动刷新
+  商城中的固定 Commit 和版本号，但真实安装仍逐次执行本机风险审查；`external-only`、blocked
+  和 unlisted 条目只刷新可追溯的项目元数据，不会因此获得安装资格；
+- 新版本写入后，旧版本的安装、运行、安全和精确兼容证据全部重置为 `unknown`，不把历史
+  验收沿用到新版本；源码变化但没有提升版本号时只记录异常，不移动 Catalog 固定 Commit；
 - `pages.yml` 在第 25 分钟重新构建 GitHub Pages；
 - 两台服务器的 systemd timer 在第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
 - `marketplace-watchdog.yml` 在第 55 分钟核验上一轮工作流以及 GitHub、Pages、国际站、国内站；
@@ -63,9 +72,10 @@ Profile、不用低层测试冒充运行验收”的边界。
 - 所有 Catalog 写入绑定 base Commit、文件 SHA-256、外部备份、机器计划 ID 和精确文件范围。
 
 公开商城首页和插件目录会读取 GitHub Pages 上的 `automation-status.json`，分别显示最近一次
-Catalog 扫描、四端巡检、扫描新增数、更新数和最近自动新增的插件名称，并链接到对应的
-GitHub Actions 运行记录。扫描成功但没有合格新增时会明确显示 0，不把“运行成功”和“发生变更”
-混为一谈。状态文件只承载公开运行证据，不进入 Catalog 权威文件，也不会触发服务器发布备份轮转。
+Catalog 扫描、四端巡检、扫描新增数、历史版本检查数、发现的高版本数，以及最近自动新增和
+版本更新的插件名称、旧版本、新版本与审查策略，并链接到对应的 GitHub Actions 运行记录。
+扫描成功但没有合格新增或版本更新时会明确显示 0，不把“运行成功”和“发生变更”混为一谈。
+状态文件只承载公开运行证据，不进入 Catalog 权威文件，也不会触发服务器发布备份轮转。
 
 ## 中文名称与搜索
 
