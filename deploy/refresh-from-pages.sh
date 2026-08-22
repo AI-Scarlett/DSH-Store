@@ -34,6 +34,7 @@ candidate=''
 backup=''
 old_target=''
 switched=0
+published=0
 
 cleanup_incoming() {
   case "$incoming" in
@@ -51,6 +52,12 @@ rollback_on_error() {
     curl -fsS --resolve "$store_domain:443:127.0.0.1" --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null "https://$store_domain/"
     curl -fsS --resolve "$store_domain:443:127.0.0.1" --retry 4 --retry-all-errors --retry-delay 1 -o /dev/null "https://$store_domain/registry/catalog.json"
     printf 'DSH_STORE_REFRESH_ROLLBACK restored=%s failed_candidate=%s\n' "$old_target" "$candidate" >&2
+  fi
+  if test "$published" -eq 0 && test -n "$candidate" && test -e "$candidate"; then
+    case "$candidate" in
+      "$deploy_root"/releases/*) rm -rf -- "$candidate" ;;
+      *) printf 'Refusing to remove unexpected failed candidate: %s\n' "$candidate" >&2 ;;
+    esac
   fi
   cleanup_incoming
   exit "$rc"
@@ -175,7 +182,7 @@ if actual != expected or build['sourceCommit'] != manifest['sourceCommit']:
 home = (root / 'marketplace/index.html').read_text(encoding='utf-8')
 plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
 styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')
-if manager['commit'] not in home or 'id="catalog-snapshot"' not in home or 'data-static-plugin-id=' not in plugins:
+if manager['commit'] not in home or 'data-static-featured-id=' not in home or 'data-static-plugin-id=' not in plugins:
     raise SystemExit('static marketplace content is incomplete')
 if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
     raise SystemExit('catalog error visibility guard is missing')
@@ -210,5 +217,6 @@ switched=1
 
 check_public
 
+published=1
 switched=0
 printf 'DSH_STORE_REFRESH_OK source=%s release=%s backup=%s\n' "$source_sha" "$candidate" "$backup"
