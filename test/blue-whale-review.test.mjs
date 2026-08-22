@@ -15,7 +15,7 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
   const admitted = catalog.entries.filter(entry => entry.assurance.discovery.method === REVIEW_METHOD)
   const rejected = candidates.entries.filter(entry => entry.discoverySources.includes(DISCOVERY))
 
-  assert.equal(catalog.entries.length, 400)
+  assert.equal(catalog.entries.length, 401)
   assert.equal(candidates.entries.length, 1256)
   assert.equal(admitted.length, 147)
   assert.equal(new Set(admitted.map(entry => entry.repositoryUrl.toLowerCase())).size, 139)
@@ -40,7 +40,7 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
       status,
       catalog.entries.filter(entry => entry.compatibility.dshReleases['0.1.1-rc.1'] === status).length,
     ])),
-    { compatible: 274, unknown: 117, incompatible: 9 },
+    { compatible: 275, unknown: 117, incompatible: 9 },
   )
 
   for (const repository of [
