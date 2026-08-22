@@ -25,6 +25,7 @@ case "$pages_base" in
 esac
 case "$store_domain:$health_scheme:$site_prefix" in
   dsh.store:http:/marketplace) readonly health_port=80 ;;
+  dsh.store:https:) readonly health_port=443 ;;
   dsh-store.cn:https:) readonly health_port=443 ;;
   *) printf 'Unsupported DSH Store origin topology: %s %s %s\n' "$store_domain" "$health_scheme" "$site_prefix" >&2; exit 2 ;;
 esac

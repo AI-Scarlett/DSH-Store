@@ -49,11 +49,12 @@ test('scheduled automation uses a policy PR and never executes third-party packa
 })
 
 test('watchdog checks the previous run and every public Catalog surface', async () => {
-  const [workflow, timer, service, international, domestic, refresh, governance] = await Promise.all([
+  const [workflow, timer, service, international, intlPublic, domestic, refresh, governance] = await Promise.all([
     read('.github/workflows/marketplace-watchdog.yml'),
     read('deploy/dsh-store-refresh@.timer'),
     read('deploy/dsh-store-refresh@.service'),
     read('deploy/refresh-international.env'),
+    read('deploy/refresh-intl-public.env'),
     read('deploy/refresh-domestic.env'),
     read('deploy/refresh-from-pages.sh'),
     read('AGENTS.md'),
@@ -67,6 +68,10 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(international, /DSH_STORE_DOMAIN=dsh\.store/)
   assert.match(international, /DSH_STORE_HEALTH_SCHEME=http/)
   assert.match(international, /DSH_STORE_SITE_PREFIX=\/marketplace/)
+  assert.match(intlPublic, /DSH_STORE_DOMAIN=dsh\.store/)
+  assert.match(intlPublic, /DSH_STORE_ROOT=\/opt\/dsh-store/)
+  assert.match(intlPublic, /DSH_STORE_HEALTH_SCHEME=https/)
+  assert.match(intlPublic, /DSH_STORE_SITE_PREFIX=$/m)
   assert.match(domestic, /DSH_STORE_DOMAIN=dsh-store\.cn/)
   assert.match(domestic, /DSH_STORE_HEALTH_SCHEME=https/)
   assert.match(domestic, /DSH_STORE_SITE_PREFIX=$/m)
@@ -76,6 +81,7 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.doesNotMatch(refresh, /id="catalog-snapshot"/)
   assert.match(refresh, /Refusing to remove unexpected failed candidate/)
   assert.match(refresh, /dsh\.store:http:\/marketplace/)
+  assert.match(refresh, /dsh\.store:https:/)
   assert.match(refresh, /dsh-store\.cn:https:/)
   assert.doesNotMatch(refresh, /curl[^\n]+ -k(?:\s|$)/)
   assert.match(governance, /does not require a human\s+confirmation for each scheduled run/)
