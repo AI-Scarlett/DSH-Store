@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-22T09:39:00.000Z",
+    "updatedAt": "2026-08-22T11:31:00.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -40771,6 +40771,122 @@
       }
     },
     {
+      "id": "dsh-readwrite-hub",
+      "name": "dsh-readwrite-hub",
+      "packageName": "dsh-readwrite-hub",
+      "description": "An independent novel-writing & reading workspace plugin for DeepSeek Harness: page-flip reading, character-accurate pagination, shared scroll/paged progress, bookshelf, and a writing mode with ruled lines and paper backgrounds. Integrates the workspace-explorer file tree and editor foundations (MIT).",
+      "repositoryUrl": "https://github.com/Nth-5620/dsh-readwrite-hub",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "4f3b3dd0c02e4d34bfe6cfa73b71d1221a61e3af",
+      "version": "0.2.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-22T11:30:31Z",
+        "observedAt": "2026-08-22T11:31:00.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-22T11:31:00.000Z",
+          "evidenceUrl": "https://github.com/Nth-5620/dsh-readwrite-hub/commit/4f3b3dd0c02e4d34bfe6cfa73b71d1221a61e3af",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "readwrite-hub"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6",
+        "dshReleases": {
+          "rc.5": "incompatible",
+          "rc.6": "compatible",
+          "rc.7": "compatible",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
       "id": "dsh-tui",
       "name": "终端客户端（DSH TUI）",
       "packageName": "@deepseek-harness-tui/dsh-tui",
@@ -41241,6 +41357,122 @@
         "updatedAt": "2026-08-14T13:54:42.000Z",
         "provenance": "github-commit",
         "observedAt": "2026-08-21T00:27:59.000Z"
+      }
+    },
+    {
+      "id": "dsh-tray",
+      "name": "dsh-tray",
+      "packageName": "dsh-tray",
+      "description": "Windows system-tray launcher for DeepSeek Harness Web: start/stop/restart/open UI/show logs from the tray icon.",
+      "repositoryUrl": "https://github.com/nxz1026/dsh-tray",
+      "defaultBranch": "master",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "a798d20c4ab34621064190abe9421a9e3dbe5525",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-22T11:30:50Z",
+        "observedAt": "2026-08-22T11:31:00.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-22T11:31:00.000Z",
+          "evidenceUrl": "https://github.com/nxz1026/dsh-tray/commit/a798d20c4ab34621064190abe9421a9e3dbe5525",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "dsh-tray"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the network permission signal; runtime source contains the commands permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=20",
+        "systems": [
+          "Windows"
+        ],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
       }
     },
     {
