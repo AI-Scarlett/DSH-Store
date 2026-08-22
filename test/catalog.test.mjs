@@ -187,15 +187,22 @@ test('bundled registry declares complete detail metadata for every entry', async
   const catalog = validateCatalog(source)
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8')
   const packageManifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const legacyCatalogReleases = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
   assert.equal(catalog.entries.length, source.entries.length)
   for (const item of source.entries) {
     assert.ok(item.details, `${item.id} must declare details in the GitHub catalog`)
     assert.ok(Array.isArray(item.compatibility.systems), `${item.id} must declare supported systems`)
     assert.ok(Array.isArray(item.compatibility.profiles), `${item.id} must declare supported profiles`)
     assert.ok(item.details.permissions.credentials.length > 0, `${item.id} must declare credential access`)
+    if (item.compatibility.dshReleases) {
+      for (const release of legacyCatalogReleases) {
+        assert.ok(['compatible', 'incompatible', 'unknown'].includes(item.compatibility.dshReleases[release]),
+          `${item.id} must preserve the ${release} compatibility key for DSH-Store 0.8.0 clients`)
+      }
+    }
   }
   assert.deepEqual(source.entries.filter(item => item.featured === true).map(item => item.id).sort(), [
-    'build-dsh-plugin', 'dsh-plugin-agent-workflow', 'dsh-safe-plugin-manager',
+    'build-dsh-plugin', 'dsh-plugin-agent-workflow', 'dsh-safe-plugin-manager', 'dsh-settings-hub',
   ])
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
