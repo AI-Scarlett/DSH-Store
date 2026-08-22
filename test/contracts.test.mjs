@@ -35,6 +35,7 @@ test('static storefront templates expose the cross-site navigation and analytics
     const source = await readFile(new URL(path, project), 'utf8')
     assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
     assert.match(source, /document\.body\?\.dataset\.defaultLocale/)
+    assert.match(source, /localeStorageKey/)
   }
 })
 
