@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T13:36:14.000Z",
+    "updatedAt": "2026-08-22T13:47:02.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -59,8 +59,8 @@
       "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
       "repositoryUrl": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
       "defaultBranch": "main",
-      "latestCommit": "d956e5426dd6980265b3784b626133c7f788f126",
-      "sourceUpdatedAt": "2026-08-22T13:25:16.000Z",
+      "latestCommit": "24c3ac2a703ba1aa33e5b7b33eae9eae269b90ed",
+      "sourceUpdatedAt": "2026-08-22T13:47:02.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -438,20 +438,23 @@
       "description": "A third-party TUI mode for DeepSeek Harness (dsh), built on a vendored fork of pi-tui",
       "repositoryUrl": "https://github.com/XMoon/dsh-pi-tui",
       "defaultBranch": "main",
-      "latestCommit": "8283ae55bdc63404384a649f1cee3f8bf7a4f520",
-      "sourceUpdatedAt": "2026-08-21T00:54:47.000Z",
+      "latestCommit": "e92952d46ad779f55cf5b73c4e9a625f5e9686b8",
+      "sourceUpdatedAt": "2026-08-22T13:38:33.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "utility"
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
       ],
       "status": "rejected",
-      "route": "monorepo-review",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing DSH entry; Bundle references a protected official package; Bundle entry ID collides with the rc.8 official inventory; Bundle insert name is not declared by the package or dependencies. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
     },
     {
       "id": "wink-run-dsh-plugin-store",
@@ -27090,6 +27093,92 @@
       "latestCommit": "4c0c67195b39624923846858b7cfe2000f40b849",
       "sourceUpdatedAt": "2026-08-22T13:35:00.000Z",
       "discoveredAt": "2026-08-22T13:36:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "whyihaveyou-dsh-suite",
+      "name": "whyihaveyou/dsh-suite",
+      "description": "The living DeepSeek Harness plugin directory — refreshed hourly, compat-tested daily, with an in-app plugin store and scaffolder. DSH 插件活目录：每小时刷新，每日兼容实测，内置插件商店与脚手架。",
+      "repositoryUrl": "https://github.com/whyihaveyou/dsh-suite",
+      "defaultBranch": "main",
+      "latestCommit": "b7f44e51d5807956a289ea6c8aea696bb025647d",
+      "sourceUpdatedAt": "2026-08-22T13:46:27.000Z",
+      "discoveredAt": "2026-08-22T13:47:02.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-framework",
+        "awesome-list",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "plugins",
+        "scaffold",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/all, packages/plugin-deus, packages/preset-center, packages/plugins/plugin-manager, packages/plugins/plugin-notify, packages/plugins/plugin-session-export, packages/plugins/plugin-team-board, packages/create-dsh-plugin/templates/events, packages/create-dsh-plugin/templates/tool, packages/create-dsh-plugin/templates/webui"
+    },
+    {
+      "id": "lcylym-dsh-attachments-guardian-fixture",
+      "name": "LCYLYM/dsh-attachments-guardian-fixture",
+      "description": "Public fixture for testing automated DSH plugin compatibility maintenance",
+      "repositoryUrl": "https://github.com/LCYLYM/dsh-attachments-guardian-fixture",
+      "defaultBranch": "main",
+      "latestCommit": "e122d80bd19bbf22a72417ee0015f0d41b4e6cd8",
+      "sourceUpdatedAt": "2026-08-22T13:46:23.000Z",
+      "discoveredAt": "2026-08-22T13:47:02.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
+    },
+    {
+      "id": "tanle-mtr-dsh-plogin-plugin-recommender",
+      "name": "tanle-mtr/dsh-plogin-plugin-recommender",
+      "description": "AI-powered curated list of DeepSeek Harness (DSH) plugins. Automatically discovered, analyzed and categorized by AI.",
+      "repositoryUrl": "https://github.com/tanle-mtr/dsh-plogin-plugin-recommender",
+      "defaultBranch": "main",
+      "latestCommit": "315fe012a80858c941ab0b28d84b21c0287479a6",
+      "sourceUpdatedAt": "2026-08-22T13:46:17.000Z",
+      "discoveredAt": "2026-08-22T13:47:02.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "yjrszcq-dsh-docker",
+      "name": "yjrszcq/dsh-docker",
+      "description": "DeepSeek Harness 的非官方 Docker 镜像。镜像安装官方 @deepseek-ai/dsh 包，并提供持久化更新、回滚、Gateway 访问控制和可选开发工具。",
+      "repositoryUrl": "https://github.com/yjrszcq/dsh-docker",
+      "defaultBranch": "main",
+      "latestCommit": "acb561718d6ee2ed480ab600927c1ffe6d8e8811",
+      "sourceUpdatedAt": "2026-08-22T13:18:02.000Z",
+      "discoveredAt": "2026-08-22T13:47:02.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
       ],
