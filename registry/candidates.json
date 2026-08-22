@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T13:26:06.000Z",
+    "updatedAt": "2026-08-22T13:36:14.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26949,6 +26949,156 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_ENTRY_MISSING: Bundle Patch does not declare a DSH entry ID"
+    },
+    {
+      "id": "10086ggqq-dsh_theme_terraria",
+      "name": "10086ggqq/dsh_theme_terraria",
+      "description": "把 DeepSeek Harness 的 AI 编码控制台变成泰拉瑞亚像素世界——向导陪你写代码，真实对话、工具审批、难度切换，单文件零依赖。",
+      "repositoryUrl": "https://github.com/10086ggqq/dsh_theme_terraria",
+      "defaultBranch": "main",
+      "latestCommit": "efbb19bc2ba8b622e9d1135cb921ac9d478151b6",
+      "sourceUpdatedAt": "2026-08-22T13:35:46.000Z",
+      "discoveredAt": "2026-08-22T13:36:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "raktim-mondol-dsh-tui-en",
+      "name": "raktim-mondol/dsh-tui-en",
+      "description": "English-only fork of dsh-TUI — Claude Code-style terminal UI for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/raktim-mondol/dsh-tui-en",
+      "defaultBranch": "main",
+      "latestCommit": "4a0c4b8d2871cb7eece80f4954531077fe6c9ff3",
+      "sourceUpdatedAt": "2026-08-22T03:56:45.000Z",
+      "discoveredAt": "2026-08-22T13:36:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "english",
+        "terminal",
+        "tui",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "darer5-gobuddy",
+      "name": "darer5/gobuddy",
+      "description": "GoBuddy - Electron desktop assistant app",
+      "repositoryUrl": "https://github.com/darer5/gobuddy",
+      "defaultBranch": "main",
+      "latestCommit": "ace390d5445290594c51fe9d07d6357912ed0c9e",
+      "sourceUpdatedAt": "2026-08-22T13:34:30.000Z",
+      "discoveredAt": "2026-08-22T13:36:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "ai-assistant",
+        "deepseek-harness",
+        "desktop-app",
+        "electron",
+        "knowledge-graph",
+        "local-first",
+        "react",
+        "screenshot",
+        "sqlite",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/dsh-web-canvas, plugins/gobuddy-ui"
+    },
+    {
+      "id": "kev0ps-deepseek-harness-docker",
+      "name": "kev0ps/deepseek-harness-docker",
+      "description": "DeepSeek Harness in a persistent Docker container",
+      "repositoryUrl": "https://github.com/kev0ps/deepseek-harness-docker",
+      "defaultBranch": "main",
+      "latestCommit": "cfb7d599cb59128d92eb53977c2af9a659e5eb73",
+      "sourceUpdatedAt": "2026-08-22T13:34:50.000Z",
+      "discoveredAt": "2026-08-22T13:36:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID lan-access is already owned by dsh-web-lan-access"
+    },
+    {
+      "id": "geniusdapeng-collab-workloom-im",
+      "name": "geniusdapeng-collab/workloom-im",
+      "description": "WorkLoom 织元 · DeepSeek Harness 企业级 Agent IM — Enterprise Agent IM powered by DeepSeek Harness: human-agent coexistence, WorkData data brain (event sourcing + org memory), skill marketplace, local-first data sovereignty",
+      "repositoryUrl": "https://github.com/geniusdapeng-collab/workloom-im",
+      "defaultBranch": "main",
+      "latestCommit": "35293bc618da4e5558135aaf7bdad84f9e7241cb",
+      "sourceUpdatedAt": "2026-08-22T13:35:02.000Z",
+      "discoveredAt": "2026-08-22T13:36:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-framework",
+        "agent-im",
+        "ai-agent",
+        "data-sovereignty",
+        "deepseek",
+        "deepseek-harness",
+        "enterprise-agent",
+        "enterprise-im",
+        "event-sourcing",
+        "hono",
+        "human-in-the-loop",
+        "local-first",
+        "multi-agent",
+        "organizational-memory",
+        "pgvector",
+        "postgresql",
+        "skill-marketplace",
+        "trpc",
+        "workdata",
+        "workloom",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "jonatannietoa-dsh-plugin-catalog-agent",
+      "name": "jonatannietoa/dsh-plugin-catalog-agent",
+      "description": "Catalog plugin for DeepSeek Harness: product file ingest, AI description and image, Shopify prices and stock",
+      "repositoryUrl": "https://github.com/jonatannietoa/dsh-plugin-catalog-agent",
+      "defaultBranch": "main",
+      "latestCommit": "4c0c67195b39624923846858b7cfe2000f40b849",
+      "sourceUpdatedAt": "2026-08-22T13:35:00.000Z",
+      "discoveredAt": "2026-08-22T13:36:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
