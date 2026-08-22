@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T12:56:08.000Z",
+    "updatedAt": "2026-08-22T13:26:06.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -59,20 +59,21 @@
       "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
       "repositoryUrl": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
       "defaultBranch": "main",
-      "latestCommit": "4c9f84700b08faa1b726eed0ca30c98c2cc16e22",
-      "sourceUpdatedAt": "2026-08-21T02:10:34.000Z",
+      "latestCommit": "d956e5426dd6980265b3784b626133c7f788f126",
+      "sourceUpdatedAt": "2026-08-22T13:25:16.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "tools"
+        "dsh-plugin",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID dsh-memory is already owned by dsh-memory-vault"
     },
     {
       "id": "imsai-sh-awesome-deepseek-harness-plugins",
@@ -26869,6 +26870,85 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "sgfifu-the-real-agent-teams-for-dsh",
+      "name": "SGFIfu/the-real-agent-teams-for-dsh",
+      "description": "The Real Agent Teams for DSH - native multi-agent coordination for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/SGFIfu/the-real-agent-teams-for-dsh",
+      "defaultBranch": "main",
+      "latestCommit": "3da22bcc318358e4a94a7aa88479af57782e70ce",
+      "sourceUpdatedAt": "2026-08-22T13:26:12.000Z",
+      "discoveredAt": "2026-08-22T13:26:06.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
+    },
+    {
+      "id": "chat2anyllm-awesome-claude-skills",
+      "name": "Chat2AnyLLM/awesome-claude-skills",
+      "description": "A curated list of awesome claude skills",
+      "repositoryUrl": "https://github.com/Chat2AnyLLM/awesome-claude-skills",
+      "defaultBranch": "main",
+      "latestCommit": "a519e4e654099c27ab9f50b91ce8454aeb47c10b",
+      "sourceUpdatedAt": "2026-08-22T13:25:22.000Z",
+      "discoveredAt": "2026-08-22T13:26:06.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "claude",
+        "claude-code",
+        "skills",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "floatinglifetl-floatinglifetl",
+      "name": "FloatingLifeTL/FloatingLifeTL",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/FloatingLifeTL/FloatingLifeTL",
+      "defaultBranch": "main",
+      "latestCommit": "6dabadc7a7aa8848828b9ccd70148c2c975b765d",
+      "sourceUpdatedAt": "2026-08-22T01:16:04.000Z",
+      "discoveredAt": "2026-08-22T13:26:06.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "xsgxxsc-cmd-agent-hub",
+      "name": "xsgxxsc-cmd/agent-hub",
+      "description": "DSH-centric private Paseo: unified multi-agent dispatch for Claude Code / Hermes / DeepSeek / OpenAI + Hermes @mention routing + Feishu/Telegram mobile channels",
+      "repositoryUrl": "https://github.com/xsgxxsc-cmd/agent-hub",
+      "defaultBranch": "main",
+      "latestCommit": "33ff4ca5a09877bea3f8c2c75ec19735ae317b00",
+      "sourceUpdatedAt": "2026-08-22T13:25:08.000Z",
+      "discoveredAt": "2026-08-22T13:26:06.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_MISSING: Bundle Patch does not declare a DSH entry ID"
     }
   ]
 }
