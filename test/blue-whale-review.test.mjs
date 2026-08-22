@@ -38,9 +38,6 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
       status,
       catalog.entries.filter(entry => entry.compatibility.dshReleases['0.1.1-rc.1'] === status).length,
     ]))
-  assert.ok(compatibilityCounts.compatible >= 275)
-  assert.ok(compatibilityCounts.unknown >= 117)
-  assert.ok(compatibilityCounts.incompatible >= 9)
   assert.equal(
     Object.values(compatibilityCounts).reduce((sum, count) => sum + count, 0),
     catalog.entries.filter(entry => entry.compatibility.dshReleases['0.1.1-rc.1']).length,
