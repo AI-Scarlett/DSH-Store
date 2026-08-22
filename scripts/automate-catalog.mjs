@@ -5,7 +5,7 @@ import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkRepository } from './check-plugin-submission.mjs'
-import { canonicalGithubRepository, compareVersions, validateCatalog } from '../src/catalog.mjs'
+import { canonicalGithubRepository, compareCatalogEntries, compareVersions, validateCatalog } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
@@ -473,6 +473,7 @@ const report = {
 const github = createGithubClient()
 await updateExistingEntries(catalog, policy, github, observedAt, report)
 await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report)
+catalog.entries.sort(compareCatalogEntries)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
 const candidatesChanged = report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0

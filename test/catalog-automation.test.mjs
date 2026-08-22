@@ -38,6 +38,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /retryInfrastructure/)
   assert.match(source, /runtimeFiles\.slice\(index, index \+ 8\)/)
   assert.match(source, /Promise\.all\(batch\.map/)
+  assert.match(source, /catalog\.entries\.sort\(compareCatalogEntries\)/)
   assert.match(source, /automation precondition hash mismatch/)
 })
 
