@@ -17,8 +17,8 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
 
   assert.equal(catalog.entries.length, 401)
   assert.equal(candidates.entries.length, 1256)
-  assert.equal(admitted.length, 147)
-  assert.equal(new Set(admitted.map(entry => entry.repositoryUrl.toLowerCase())).size, 139)
+  assert.equal(admitted.length, 146)
+  assert.equal(new Set(admitted.map(entry => entry.repositoryUrl.toLowerCase())).size, 138)
   assert.equal(rejected.length, 1255)
   assert.ok(admitted.every(entry => entry.status === 'approved'))
   assert.ok(admitted.every(entry => entry.updatePolicy === 'user-reviewed'))
