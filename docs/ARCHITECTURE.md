@@ -32,6 +32,16 @@ Bundle，Web 能力缺失时不阻断启动。
 GitHub Raw；不可用时回退到随包快照，但安装/更新前仍必须从固定 Commit 重新核对
 manifest 与 Bundle Patch。
 
+Catalog 控制面由三小时自动策略驱动：GitHub 搜索和 Issue 只提供候选；固定 Commit 的
+manifest、仓库许可证、Bundle Patch、入口、文件清单、依赖、生命周期和完整有界运行时
+源码共同决定 `approved`、`blocked` 或拒绝。策略只通过临时分支与 PR 修改
+`registry/catalog.json`/`registry/candidates.json`，通过仓库检查和 CodeQL 后由 GitHub
+自动 squash 合并。服务器不保存 GitHub 长期写令牌，只消费 Pages 的固定清单和哈希。
+
+发布窗口按三小时错峰：第 5 分钟 Catalog 策略、第 25 分钟 Pages、第 47 分钟生产站
+原子刷新、第 55 分钟公共看门狗。看门狗核验上一轮状态与四个 Catalog 表面，失败时自动
+重派 Catalog 或 Pages；服务器 timer 使用 `Persistent=true`，恢复上线后补跑。
+
 ### Host API
 
 `POST /api2/dsh-safe-plugin-manager/inventory`

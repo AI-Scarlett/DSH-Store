@@ -25,15 +25,15 @@
 机器人会列出候选目录；提交者只需补充可选的 `Plugin path`。
 
 预检通过时添加 `submission-passed`，失败时添加 `submission-failed`，并幂等更新一条带固定
-标记的机器人评论；修改 Issue 会重新检查并移除相反状态标签。只有通过预检的申请才进入
-每天北京时间 06:00 和 18:00 的“热门、有用、有趣”人工筛选。工作流权限只包含
-`contents: read` 与 `issues: write`，不会检出申请仓库，也不会运行第三方 install、prepare、
-build 或 test 脚本。
+标记的机器人评论；修改 Issue 会重新检查并移除相反状态标签。每三小时运行的 Catalog
+策略还会合并 GitHub 主动发现结果，固定默认分支当前 Commit，并以有界源码读取复用同一套
+结构门禁。工作流不会运行第三方 install、prepare、build、test 或运行时代码。
 
-该门禁是固定源静态一致性检查，不是安全审计或 DSH 运行验证。通过不会自动修改
-`catalog.json`、创建 Pull Request 或合并；正式上架仍需人工复核、一次性变更计划和明确确认。
-静态证据无法可靠判断的文件、网络、命令、凭据权限和外部依赖保持 `unknown`，不得为了通过
-门禁而推断成 `none`。
+该门禁是固定源策略检查，不是安全审计或 DSH 运行验证。只有 canonical GitHub、完整 Commit、
+manifest/repository/license 一致、明确文件清单、无生命周期脚本和运行依赖、Bundle/入口唯一，
+并且完整有界运行时源码没有文件、网络、命令、凭据、原生制品或受保护 DSH 行为信号时，才会
+自动生成 `source-verified` Catalog PR；现有检查与 CodeQL 通过后自动 squash 合并。其他项目自动
+拒绝、隔离或以 `blocked` 展示，不会进入受保护安装通道，也不会要求所有者机械点击确认。
 
 提交前建议使用 [`build-dsh-plugin`](https://github.com/AI-Scarlett/build-dsh-plugin) 制作标准
 Bundle、生成 Catalog 候选或执行只读上架预检。它同样遵循“不修改 DSH 核心、不写真实
@@ -50,9 +50,17 @@ Profile、不用低层测试冒充运行验收”的边界。
 - 高权限、原生构建或外部服务明确披露，并准备一次性 Profile 的安装与功能验收证据；
 - 插件在“热门、有用、有趣”至少一个维度具有收录价值。
 
-人工审核还会复核固定源码、权限、凭据、外部依赖、供应链、`allowBuilds`、Catalog 冲突，
-并在与声明兼容的 DSH 版本上使用一次性 Profile 做实际安装与可见性验证。预检、人工检查、
-作者认证和最终上架是四个不同证据层级。
+自动准入只证明固定源码策略门槛；一次性 Profile 安装、可见性、运行效果、独立安全审核和
+作者认证仍是不同证据层级。自动化不得把未执行的运行验收写成 `passed`。
+
+## 三小时自动化与自愈
+
+- `catalog-automation.yml` 在每个三小时窗口第 5 分钟扫描、复核并生成可审计 PR；
+- `pages.yml` 在第 25 分钟重新构建 GitHub Pages；
+- 两台服务器的 systemd timer 在第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
+- `marketplace-watchdog.yml` 在第 55 分钟核验上一轮工作流以及 GitHub、Pages、国际站、国内站；
+- 上一轮缺失、失败、超过四小时或公共目录不一致时，自动重跑 Catalog 或 Pages；
+- 所有 Catalog 写入绑定 base Commit、文件 SHA-256、外部备份、机器计划 ID 和精确文件范围。
 
 ## 详情元数据
 
