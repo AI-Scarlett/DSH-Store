@@ -184,8 +184,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - `approved`：正常上架并允许生成安装计划；
 - `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
-- `featured: true`：在全部视图和所属分类中优先显示，但不会提高任何可信证据；当前仅推荐 DSH-Store、
-  Build DSH Plugin 和 Agent Workflow；
+- `featured: true`：在全部视图和所属分类中优先显示，但不会提高任何可信证据；当前推荐 DSH-Store、
+  Build DSH Plugin、Agent Workflow 和 Settings Hub；
 - 可选安装回执只发送插件 ID 和版本，不发送设备、Profile 或用户标识；默认关闭；
 - GitHub Pages 不能直接写回 `catalog.json`，真实计数需要独立匿名聚合服务。
 - `0.4.7` 内置幂等安装回执与 Cloudflare Worker + D1 聚合器；只在商城安装、健康检查通过后提交插件 ID、版本和随机事务 ID，不提交账号、设备或 Profile。计数服务未部署或未配置时保持关闭，不显示虚假安装量。
