@@ -33,10 +33,12 @@ const translations = {
     'builder.outputTitle': '从 Brief 到可验证交付物', 'builder.output1': '宿主兼容性', 'builder.output2': '风险与权限', 'builder.output3': '标准源码工程', 'builder.output4': '验证证据等级', 'builder.note': '真实 Profile、重启与发布保持为独立确认步骤。',
     'featured.title': '精选插件，扩展你的 DSH 工作流。', 'featured.lead': '从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。',
     'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索中文名、用途、别名或英文包名', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
-    'automation.title': '自动更新有没有成功，一眼就能看到。', 'automation.lead': '这里公开显示最近一次插件扫描、四端目录巡检和实际新增插件；“扫描成功”和“有新增”分别记录。',
-    'automation.overall': '总体状态', 'automation.scanner': '插件扫描', 'automation.watchdog': '四端巡检', 'automation.latestChange': '最近一次扫描变更',
-    'automation.scannerNote': '每 3 小时扫描并更新 Catalog', 'automation.watchdogNote': 'GitHub、Pages、国际站、国内站', 'automation.changeUnit': '新增 / 更新',
-    'automation.recent': '最近自动新增', 'automation.recentTitle': '新增了哪些插件', 'automation.loading': '正在读取最近运行记录…', 'automation.evidence': '查看 GitHub 运行证据 ↗',
+    'automation.title': '自动更新有没有成功，一眼就能看到。', 'automation.lead': '这里公开显示新插件发现、历史插件原项目版本检查、四端目录巡检和实际变更；“扫描成功”和“有更新”分别记录。',
+    'automation.overall': '总体状态', 'automation.scanner': '插件与版本扫描', 'automation.watchdog': '四端巡检', 'automation.latestChange': '最近一次扫描变更',
+    'automation.scannerNote': '每 3 小时扫描新插件并检查全部历史版本', 'automation.watchdogNote': 'GitHub、Pages、国际站、国内站', 'automation.changeUnit': '新增 / 更新',
+    'automation.sourceCheck': '历史版本检查', 'automation.sourceCheckUnit': '已检查 / 发现高版本 / 已更新',
+    'automation.recent': '最近自动新增', 'automation.recentTitle': '新增了哪些插件', 'automation.recentUpdates': '最近原项目更新', 'automation.recentUpdatesTitle': '哪些插件版本更新了',
+    'automation.noUpdates': '最近可读取的运行中没有通过固定源审查的版本更新。', 'automation.loading': '正在读取最近运行记录…', 'automation.evidence': '查看 GitHub 运行证据 ↗',
     'catalog.gatewayKicker': '探索更多能力', 'catalog.gatewayTitle': '查看全部 DSH 插件、权限与兼容性',
     'sort.recommended': '官方最新 DSH 兼容与更新优先', 'sort.name': '名称 A–Z', 'sort.recent': '最近更新', 'sort.risk': '权限由低到高',
     'view.trusted': '可信安装库', 'view.candidates': '候选发现库', 'stats.candidates': '候选项目',
@@ -97,10 +99,12 @@ const translations = {
     'builder.outputTitle': 'From brief to verifiable artifacts', 'builder.output1': 'Host compatibility', 'builder.output2': 'Risk and permissions', 'builder.output3': 'Standard source project', 'builder.output4': 'Evidence level', 'builder.note': 'Real Profile changes, restart, and release remain separately confirmed steps.',
     'featured.title': 'Featured plugins for better DSH workflows.', 'featured.lead': 'Discover practical plugins for automation, knowledge, and development with traceable sources and transparent details. Review capabilities and permissions before connecting.',
     'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
-    'automation.title': 'See whether automation succeeded at a glance.', 'automation.lead': 'This shows the latest plugin scan, four-surface watchdog, and actual additions. A successful scan and a catalog change are reported separately.',
-    'automation.overall': 'Overall status', 'automation.scanner': 'Plugin scanner', 'automation.watchdog': 'Four-surface watchdog', 'automation.latestChange': 'Latest scan changes',
-    'automation.scannerNote': 'Scans and updates the Catalog every 3 hours', 'automation.watchdogNote': 'GitHub, Pages, international, and China sites', 'automation.changeUnit': 'added / updated',
-    'automation.recent': 'Recent automatic additions', 'automation.recentTitle': 'What was added', 'automation.loading': 'Reading recent workflow evidence…', 'automation.evidence': 'View GitHub run evidence ↗',
+    'automation.title': 'See whether automation succeeded at a glance.', 'automation.lead': 'This shows new-plugin discovery, upstream version checks for every historical listing, the four-surface watchdog, and actual changes.',
+    'automation.overall': 'Overall status', 'automation.scanner': 'Plugin and version scanner', 'automation.watchdog': 'Four-surface watchdog', 'automation.latestChange': 'Latest scan changes',
+    'automation.scannerNote': 'Discovers plugins and checks every listed upstream version every 3 hours', 'automation.watchdogNote': 'GitHub, Pages, international, and China sites', 'automation.changeUnit': 'added / updated',
+    'automation.sourceCheck': 'Historical version check', 'automation.sourceCheckUnit': 'checked / newer upstream / updated',
+    'automation.recent': 'Recent automatic additions', 'automation.recentTitle': 'What was added', 'automation.recentUpdates': 'Recent upstream updates', 'automation.recentUpdatesTitle': 'Which plugin versions changed',
+    'automation.noUpdates': 'No fixed-source version update passed review in the available recent runs.', 'automation.loading': 'Reading recent workflow evidence…', 'automation.evidence': 'View GitHub run evidence ↗',
     'catalog.gatewayKicker': 'Explore more capabilities', 'catalog.gatewayTitle': 'View every DSH plugin, permission, and compatibility detail',
     'sort.recommended': 'Latest official DSH compatibility and freshness', 'sort.name': 'Name A–Z', 'sort.recent': 'Recently updated', 'sort.risk': 'Lowest permission first',
     'view.trusted': 'Trusted install catalog', 'view.candidates': 'Candidate discovery', 'stats.candidates': 'candidates',
@@ -916,6 +920,9 @@ function renderAutomationStatus() {
   document.querySelectorAll('[data-automation-watchdog]').forEach(node => { node.textContent = automationRunLabel(status?.watchdog) })
   document.querySelectorAll('[data-automation-added-count]').forEach(node => { node.textContent = String(status?.latestChanges?.added?.length ?? '—') })
   document.querySelectorAll('[data-automation-updated-count]').forEach(node => { node.textContent = String(status?.latestChanges?.updated?.length ?? '—') })
+  document.querySelectorAll('[data-automation-source-checked]').forEach(node => { node.textContent = String(status?.latestChanges?.sourceVersionChecks?.checkedEntries ?? '—') })
+  document.querySelectorAll('[data-automation-source-newer]').forEach(node => { node.textContent = String(status?.latestChanges?.sourceVersionChecks?.newerVersionCandidates ?? '—') })
+  document.querySelectorAll('[data-automation-source-applied]').forEach(node => { node.textContent = String(status?.latestChanges?.sourceVersionChecks?.catalogUpdates ?? '—') })
   const timeValue = status?.scanner?.updatedAt || status?.scanner?.createdAt || status?.generatedAt
   const timeLabel = timeValue
     ? `${state.locale === 'en' ? 'Latest evidence' : '最近证据'} · ${new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(timeValue))}`
@@ -926,6 +933,15 @@ function renderAutomationStatus() {
     list.innerHTML = additions.length
       ? additions.slice(0, 12).map(entry => `<li><a href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${escape(entry.name)}</a><span> · v${escape(entry.version)} · ${escape(entry.packageName)}</span></li>`).join('')
       : `<li>${escape(state.locale === 'en' ? 'No new qualifying plugins were added in the available recent runs.' : '最近可读取的运行中没有新增合格插件。')}</li>`
+  })
+  const updates = Array.isArray(status?.recentUpdates) ? status.recentUpdates : []
+  const policyLabel = policy => state.locale === 'en'
+    ? ({ 'source-verified': 'automatic low-risk review', 'user-reviewed': 'local risk review required', 'external-only': 'external-only metadata' }[policy] || 'fixed-source review')
+    : ({ 'source-verified': '低风险自动审查', 'user-reviewed': '安装时仍需本机风险审查', 'external-only': '仅更新外部项目元数据' }[policy] || '固定源审查')
+  document.querySelectorAll('[data-automation-updates]').forEach(list => {
+    list.innerHTML = updates.length
+      ? updates.slice(0, 12).map(entry => `<li><a href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer">${escape(entry.name)}</a><span> · v${escape(entry.fromVersion || '—')} → v${escape(entry.toVersion || '—')} · ${escape(policyLabel(entry.policy))}</span></li>`).join('')
+      : `<li>${escape(t('automation.noUpdates'))}</li>`
   })
   document.querySelectorAll('[data-automation-run-link]').forEach(link => {
     if (status?.scanner?.url) link.href = status.scanner.url

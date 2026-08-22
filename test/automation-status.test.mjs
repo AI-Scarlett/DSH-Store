@@ -17,13 +17,37 @@ test('public status separates successful execution from actual Catalog changes',
       catalogAutomation: [{ databaseId: 42, status: 'completed', conclusion: 'success', createdAt: '2026-08-22T02:00:00Z', updatedAt: '2026-08-22T02:05:00Z', url: 'https://github.com/example/repo/actions/runs/42', headSha: 'b'.repeat(40) }],
       marketplaceWatchdog: [{ databaseId: 43, status: 'completed', conclusion: 'success', createdAt: '2026-08-22T02:50:00Z', updatedAt: '2026-08-22T02:55:00Z', url: 'https://github.com/example/repo/actions/runs/43', headSha: 'c'.repeat(40) }],
     },
-    reports: [{ runId: 42, report: { observedAt: '2026-08-22T02:01:00Z', addedEntries: [{ id: 'new-plugin' }], updatedEntries: [], rejectedCandidates: [], deferredUpdates: [], transientFailures: [] } }],
+    reports: [{ runId: 42, report: {
+      observedAt: '2026-08-22T02:01:00Z',
+      addedEntries: [{ id: 'new-plugin' }],
+      updatedEntries: [{ id: 'new-plugin', fromVersion: '0.9.0', toVersion: '1.0.0', policy: 'user-reviewed' }],
+      rejectedCandidates: [],
+      deferredUpdates: [],
+      transientFailures: [],
+      sourceVersionChecks: {
+        authority: 'canonical-github-default-branch-manifest-at-fixed-commit',
+        checkedEntries: 2,
+        currentEntries: 1,
+        newerVersionCandidates: 1,
+        catalogUpdates: 1,
+        newerVersionsDeferred: 0,
+        sourceChangedWithoutVersionBump: 0,
+        upstreamVersionBehind: 0,
+        unresolvedEntries: 0,
+      },
+    } }],
   })
   assert.equal(status.overall.status, 'passed')
   assert.deepEqual(status.latestChanges.added, ['new-plugin'])
-  assert.equal(status.latestChanges.updated.length, 0)
+  assert.deepEqual(status.latestChanges.updated, ['new-plugin'])
+  assert.equal(status.latestChanges.sourceVersionChecks.checkedEntries, 2)
+  assert.equal(status.latestChanges.sourceVersionChecks.catalogUpdates, 1)
+  assert.equal(status.latestChanges.sourceVersionChecks.unresolvedEntries, 0)
   assert.equal(status.recentAdditions[0].name, '通知助手（Notify Helper）')
   assert.equal(status.recentAdditions[0].runUrl, 'https://github.com/example/repo/actions/runs/42')
+  assert.equal(status.recentUpdates[0].fromVersion, '0.9.0')
+  assert.equal(status.recentUpdates[0].toVersion, '1.0.0')
+  assert.equal(status.recentUpdates[0].policy, 'user-reviewed')
   assert.deepEqual(status.catalog, { entries: 2, approved: 1, blocked: 1, candidates: 1, updatedAt: '2026-08-22T00:00:00.000Z' })
 })
 
@@ -32,4 +56,5 @@ test('missing workflow evidence remains explicitly unknown', () => {
   assert.equal(status.overall.status, 'unknown')
   assert.equal(status.scanner, null)
   assert.equal(status.recentAdditions.length, 0)
+  assert.equal(status.recentUpdates.length, 0)
 })
