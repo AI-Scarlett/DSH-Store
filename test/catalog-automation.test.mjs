@@ -64,7 +64,7 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)
   assert.match(timer, /00,03,06,09,12,15,18,21:47:00 UTC/)
   assert.match(service, /EnvironmentFile=\/etc\/dsh-store\/refresh-%i\.env/)
-  assert.match(service, /ReadWritePaths=\/opt\/dsh-store \/opt\/dsh-store-cn \/run\/lock/)
+  assert.match(service, /ReadWritePaths=\/opt\/dsh-store -\/opt\/dsh-store-cn \/run\/lock/)
   assert.match(international, /DSH_STORE_DOMAIN=dsh\.store/)
   assert.match(international, /DSH_STORE_HEALTH_SCHEME=http/)
   assert.match(international, /DSH_STORE_SITE_PREFIX=\/marketplace/)
