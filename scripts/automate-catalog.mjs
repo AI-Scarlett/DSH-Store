@@ -8,6 +8,7 @@ import { checkRepository } from './check-plugin-submission.mjs'
 import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-localization.mjs'
 import { canonicalGithubRepository, compareCatalogEntries, compareVersions, validateCatalog } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
+import { permissionSignals } from '../src/automation-source-policy.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
@@ -16,6 +17,7 @@ const policyPath = resolve(root, 'registry/automation-policy.json')
 const SOURCE_FILE = /\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
 const NATIVE_FILE = /\.(?:node|wasm|dll|dylib|so|exe|bin)$/i
 const EXCLUDED_DIRECTORY = /(?:^|\/)(?:node_modules|vendor|test|tests|docs?|examples?|fixtures?|benchmarks?|coverage|\.github)(?:\/|$)/i
+const EXCLUDED_METADATA_FILE = /(?:^|\/)(?:brief\.json|catalog-entry(?:\.draft)?\.json)$/i
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare']
 const INFRASTRUCTURE_CODES = new Set([
   'SUBMISSION_FETCH_UNAVAILABLE', 'SUBMISSION_GITHUB_HTTP', 'SUBMISSION_GITHUB_TIMEOUT',
@@ -167,16 +169,6 @@ function createGithubClient(options = {}) {
   }
 }
 
-function permissionSignals(source) {
-  return {
-    files: /(?:node:)?(?:fs|fs\/promises)|\b(?:readFile|writeFile|appendFile|rename|unlink|mkdir|rmdir|rm)\s*\(|\$DSH_HOME|\.dsh\/profiles/i.test(source),
-    network: /(?:node:)?(?:http|https|net|tls|dgram)|\b(?:fetch|WebSocket|EventSource)\s*\(|\b(?:axios|got|undici)\b/i.test(source),
-    commands: /(?:node:)?child_process|\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(source),
-    credentials: /process\.env|keychain|credential|oauth|api[_-]?key|access[_-]?token|client[_-]?secret|password/i.test(source),
-    protectedDsh: /(?:__ModuleLoader__[^\n]{0,120}(?:unload|remove)|\bFiber\b[^\n]{0,120}(?:remove|disable|replace)|@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true|tool\.call\.toolview)/i.test(source),
-  }
-}
-
 function mergeSignals(target, current) {
   for (const key of Object.keys(target)) target[key] = target[key] || Boolean(current[key])
 }
@@ -237,6 +229,7 @@ async function analyzeFixedSource(candidate, policy, github) {
     if (item.type !== 'blob') return false
     const relativePath = prefix ? item.path.slice(prefix.length) : item.path
     if (EXCLUDED_DIRECTORY.test(relativePath)) return false
+    if (EXCLUDED_METADATA_FILE.test(relativePath)) return false
     if (NATIVE_FILE.test(relativePath) || item.mode === '100755') signals.nativeOrExecutableArtifacts = true
     return SOURCE_FILE.test(relativePath)
   })
