@@ -1,8 +1,37 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
+import { permissionSignals } from '../src/automation-source-policy.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
+
+test('permission scan ignores inert Catalog metadata and ordinary identifiers', () => {
+  const source = `
+    const metadata = {
+      repository: 'https://github.com/AI-Scarlett/dsh-settings-hub',
+      network: 'none',
+      credentials: ['none'],
+    }
+    function renameCustomTab() {}
+    if (/network|browser|web|proxy/i.test(item.id)) return 'globe'
+  `
+  assert.deepEqual(permissionSignals(source), {
+    files: false,
+    network: false,
+    commands: false,
+    credentials: false,
+    protectedDsh: false,
+  })
+})
+
+test('permission scan still fails closed on executable capability signals', () => {
+  assert.equal(permissionSignals(`import { readFile } from 'node:fs/promises'`).files, true)
+  assert.equal(permissionSignals(`const transport = require('node:https')`).network, true)
+  assert.equal(permissionSignals(`await fetch(endpoint)`).network, true)
+  assert.equal(permissionSignals(`import { spawn } from 'node:child_process'`).commands, true)
+  assert.equal(permissionSignals(`process.env.API_KEY`).credentials, true)
+  assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
+})
 
 test('automatic policy runs every three hours and fails closed on permission or supply-chain signals', async () => {
   const policy = JSON.parse(await read('registry/automation-policy.json'))
