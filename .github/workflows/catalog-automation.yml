@@ -21,16 +21,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Pin the fresh main authority for this run
+        id: base
+        run: |
+          git fetch --no-tags origin main
+          base_sha=$(git rev-parse HEAD)
+          test "$base_sha" = "$(git rev-parse origin/main)"
+          echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
       - name: Validate the current authority before scanning
         run: npm run validate:registry
       - name: Inspect and apply the bounded automatic policy
         id: automate
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          CATALOG_BASE_COMMIT: ${{ steps.base.outputs.sha }}
         run: |
           catalog_sha=$(sha256sum registry/catalog.json | cut -d ' ' -f 1)
           candidates_sha=$(sha256sum registry/candidates.json | cut -d ' ' -f 1)
@@ -56,11 +65,12 @@ jobs:
         id: pull_request
         env:
           GH_TOKEN: ${{ github.token }}
+          CATALOG_BASE_COMMIT: ${{ steps.base.outputs.sha }}
         run: |
           branch="automation/catalog-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" \
             -f ref="refs/heads/$branch" \
-            -f sha="$GITHUB_SHA" >/dev/null
+            -f sha="$CATALOG_BASE_COMMIT" >/dev/null
           cleanup_branch() {
             gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$branch" >/dev/null 2>&1 || true
           }
@@ -70,7 +80,7 @@ jobs:
             --arg query "$mutation" \
             --arg repository "$GITHUB_REPOSITORY" \
             --arg branch "$branch" \
-            --arg head "$GITHUB_SHA" \
+            --arg head "$CATALOG_BASE_COMMIT" \
             --rawfile catalog registry/catalog.json \
             --rawfile candidates registry/candidates.json \
             '{
