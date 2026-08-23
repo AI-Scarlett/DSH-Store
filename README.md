@@ -32,7 +32,7 @@ DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#9ba80c2cd2456193f2805aacb08d8bb87716e92f'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#b63118fc20d315fb484f40a92e43c3ab59121904'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
