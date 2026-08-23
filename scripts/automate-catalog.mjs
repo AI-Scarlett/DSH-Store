@@ -33,6 +33,7 @@ const INFRASTRUCTURE_CODES = new Set([
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
 const SELF_MANAGER_PROTECTED_ENTRY_REASON = 'Bundle Patch uses a protected DSH entry ID'
 const SELF_MANAGER_MAX_RUNTIME_FILES = 512
+const SELF_MANAGER_MAX_FILE_BYTES = 2 * 1024 * 1024
 const SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES = 8 * 1024 * 1024
 
 function sha256(value) {
@@ -468,6 +469,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
           sourceBounds: {
             ...policy.sourceBounds,
             maxRuntimeFiles: Math.max(policy.sourceBounds.maxRuntimeFiles, SELF_MANAGER_MAX_RUNTIME_FILES),
+            maxFileBytes: Math.max(policy.sourceBounds.maxFileBytes, SELF_MANAGER_MAX_FILE_BYTES),
             maxTotalRuntimeBytes: Math.max(policy.sourceBounds.maxTotalRuntimeBytes, SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES),
           },
         }
