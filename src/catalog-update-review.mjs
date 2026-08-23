@@ -106,7 +106,14 @@ export function catalogUpdateIdentityMatches(entry, candidate) {
     && JSON.stringify(sorted(candidate?.entryIds)) === JSON.stringify(sorted(entry.entryIds))
 }
 
-export function buildCatalogVersionUpdate(entry, candidate, analysis, observedAt, policy = catalogUpdatePolicy(entry)) {
+export function buildCatalogVersionUpdate(
+  entry,
+  candidate,
+  analysis,
+  observedAt,
+  policy = catalogUpdatePolicy(entry),
+  options = {},
+) {
   const reason = policy === 'source-verified'
     ? 'The newer fixed Commit passed the complete automatic low-risk source policy.'
     : policy === 'user-reviewed'
@@ -117,7 +124,9 @@ export function buildCatalogVersionUpdate(entry, candidate, analysis, observedAt
     defaultBranch: candidate.defaultBranch,
     commit: candidate.commit,
     version: candidate.version,
-    compatibility: resetCompatibilityEvidence(entry, candidate),
+    compatibility: options.preserveCompatibility
+      ? entry.compatibility
+      : resetCompatibilityEvidence(entry, candidate),
     source: {
       updatedAt: analysis?.sourceUpdatedAt ?? observedAt,
       observedAt,

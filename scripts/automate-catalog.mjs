@@ -491,7 +491,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const updated = buildCatalogVersionUpdate(entry, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
-      }, observedAt, sourcePolicy)
+      }, observedAt, sourcePolicy, { preserveCompatibility: isSelfManagerEntry(entry) })
       return {
         index, entry, kind: 'updated', snapshot, versionAssessment, sourcePolicy, updated,
         warnings: analysis.reasons,
