@@ -105,3 +105,25 @@ test('a Catalog version refresh resets old runtime and compatibility evidence', 
   })
   assert.deepEqual(updated.risk.installScripts, ['prepare'])
 })
+
+test('self-manager version refresh preserves its explicit compatibility matrix', () => {
+  const original = entry({
+    id: 'dsh-safe-plugin-manager',
+    compatibility: {
+      dsh: '>=0.1.0-rc.5 <0.2.0',
+      dshReleases: { rc5: 'compatible', rc6: 'compatible', rc7: 'compatible', rc8: 'compatible' },
+      dshOperations: {
+        rc5: { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' },
+        rc6: { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' },
+        rc7: { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' },
+        rc8: { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' },
+      },
+      node: '>=22', systems: ['macOS'], profiles: ['web'],
+    },
+  })
+  const candidate = { ...original, commit: 'b'.repeat(40), version: '1.3.0' }
+  const updated = buildCatalogVersionUpdate(original, candidate, {}, '2026-08-22T06:00:00Z', 'user-reviewed', {
+    preserveCompatibility: true,
+  })
+  assert.deepEqual(updated.compatibility, original.compatibility)
+})
