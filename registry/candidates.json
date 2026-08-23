@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T03:56:55.000Z",
+    "updatedAt": "2026-08-23T06:56:22.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -59,8 +59,8 @@
       "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
       "repositoryUrl": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
       "defaultBranch": "main",
-      "latestCommit": "f3c78a3e43fe4e529772eb11e20301743625ca11",
-      "sourceUpdatedAt": "2026-08-23T01:42:21.000Z",
+      "latestCommit": "58898a4db625cac72d36ed88b4c4ce32df856e7c",
+      "sourceUpdatedAt": "2026-08-23T06:56:54.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -26600,8 +26600,8 @@
       "description": "awesome game security [Welcome to PR]",
       "repositoryUrl": "https://github.com/gmh5225/awesome-game-security",
       "defaultBranch": "main",
-      "latestCommit": "61d40660bf425e95d4319e6311b80b1602d419ea",
-      "sourceUpdatedAt": "2026-08-22T21:32:08.000Z",
+      "latestCommit": "acd211824054bb38940b4334f6fec1eb531a60a3",
+      "sourceUpdatedAt": "2026-08-23T06:58:14.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28224,6 +28224,60 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "huchundong-hamsterhq",
+      "name": "HuChundong/HamsterHQ",
+      "description": "Multi-tenant cloud deployment for DSH: an authenticating gateway, per-tenant sandboxes on CubeSandbox, and persistent volumes over S3.",
+      "repositoryUrl": "https://github.com/HuChundong/HamsterHQ",
+      "defaultBranch": "main",
+      "latestCommit": "d097f4efa5499d673b3531dd41bde05e9adeafe5",
+      "sourceUpdatedAt": "2026-08-23T06:57:33.000Z",
+      "discoveredAt": "2026-08-23T06:56:22.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "ikalus1988-misakanet",
+      "name": "Ikalus1988/MisakaNet",
+      "description": "📚 A zero-dependency, git-backed micro-lesson library for AI Agents to asynchronously share and search verified debugging experience. Python stdlib only. | https://misakanet.org",
+      "repositoryUrl": "https://github.com/Ikalus1988/MisakaNet",
+      "defaultBranch": "main",
+      "latestCommit": "58591bca20e9d93eccebdbce4529a719d8271d16",
+      "sourceUpdatedAt": "2026-08-23T06:57:27.000Z",
+      "discoveredAt": "2026-08-23T06:56:22.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "ai-infra",
+        "claude",
+        "deepseek-harness",
+        "devops",
+        "dsh-plugin",
+        "failure-analysis",
+        "failure-memory",
+        "git-based",
+        "knowledge-sharing",
+        "lesson-database",
+        "mcp",
+        "mcp-server",
+        "multi-agent",
+        "open-source",
+        "python",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_VERSION_INVALID: package.json must declare a semantic version"
     }
   ]
 }
