@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-23T00:33:24.000Z",
+    "updatedAt": "2026-08-23T01:24:36.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -26335,6 +26335,155 @@
       ]
     },
     {
+      "id": "deepseek-harness-wallet",
+      "name": "余额与额度监控（DeepSeek Harness Wallet）",
+      "packageName": "deepseek-harness-wallet",
+      "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Local-first account monitoring, usage accounting, official recharge, completion reminders, flexible layout, host-gated session controls, and multi-account management with hot account switching for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "updatePolicy": "user-reviewed",
+      "commit": "a5dae545b6f6180ac31c51b8c75da3fa923f5b54",
+      "version": "0.3.0",
+      "categories": [
+        "sessions"
+      ],
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-23T01:24:36.000Z",
+          "evidenceUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center/commit/a5dae545b6f6180ac31c51b8c75da3fa923f5b54",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "wallet"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "client",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "shell",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-23T01:15:49Z",
+        "observedAt": "2026-08-23T01:24:36.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "余额与额度监控",
+        "DeepSeek Harness Wallet",
+        "deepseek-harness-wallet",
+        "余额",
+        "额度",
+        "配额",
+        "钱包",
+        "会话与消息",
+        "会话",
+        "对话",
+        "历史消息",
+        "deepseek",
+        "harness",
+        "wallet"
+      ]
+    },
+    {
       "id": "dsh-focus-overlay",
       "name": "界面主题与美化（DSH Focus Overlay）",
       "packageName": "dsh-focus-overlay",
@@ -26485,155 +26634,6 @@
           "summary": "Automated fixed-source review is not an independent security audit."
         }
       }
-    },
-    {
-      "id": "deepseek-harness-wallet",
-      "name": "余额与额度监控（DeepSeek Harness Wallet）",
-      "packageName": "deepseek-harness-wallet",
-      "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Local-first account monitoring, usage accounting, official recharge, completion reminders, flexible layout, host-gated session controls, and multi-account management with hot account switching for DeepSeek Harness.",
-      "repositoryUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "updatePolicy": "user-reviewed",
-      "commit": "b0e0dfcf63af03255357d3b99a489f6131563651",
-      "version": "0.2.6",
-      "categories": [
-        "sessions"
-      ],
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-23T00:33:24.000Z",
-          "evidenceUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center/commit/b0e0dfcf63af03255357d3b99a489f6131563651",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "wallet"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": "^22.19.0 || >=24.0.0",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "client",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "specified-services",
-          "commands": "shell",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-23T00:31:58Z",
-        "observedAt": "2026-08-23T00:33:24.000Z",
-        "provenance": "github-commit"
-      },
-      "searchTerms": [
-        "余额与额度监控",
-        "DeepSeek Harness Wallet",
-        "deepseek-harness-wallet",
-        "余额",
-        "额度",
-        "配额",
-        "钱包",
-        "会话与消息",
-        "会话",
-        "对话",
-        "历史消息",
-        "deepseek",
-        "harness",
-        "wallet"
-      ]
     },
     {
       "id": "dsh-usage-dashboard",
@@ -50651,6 +50651,271 @@
       ]
     },
     {
+      "id": "dsh-code-finder",
+      "name": "OCR 文字识别（DSH Code Finder）",
+      "packageName": "@havocrao/dsh-code-finder",
+      "description": "为 DSH 提供OCR 文字识别能力。英文原始说明：Dev-only React component → source code locator: hold Opt+Shift to see which component rendered an element and jump to its source. Plug into any React app (vite/tsdown) or DSH plugin (cordis).",
+      "searchTerms": [
+        "OCR 文字识别",
+        "DSH Code Finder",
+        "dsh-code-finder",
+        "@havocrao/dsh-code-finder",
+        "OCR",
+        "文字识别",
+        "文档解析",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "code",
+        "finder"
+      ],
+      "repositoryUrl": "https://github.com/havoc-rao/DSH-code-finder",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "d6986036d569e240118a01c6d00b2c1cb51c4c4c",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T01:25:46Z",
+        "observedAt": "2026-08-23T01:24:36.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-23T01:24:36.000Z",
+          "evidenceUrl": "https://github.com/havoc-rao/DSH-code-finder/commit/d6986036d569e240118a01c6d00b2c1cb51c4c4c",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "dsh-code-finder"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; repository tree exceeds the automatic review bound; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=20",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@babel/core",
+          "@babel/preset-typescript",
+          "@locator/babel-jsx"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-bili-asr",
+      "name": "语音输入与朗读（DSH Bili ASR）",
+      "packageName": "dsh-bili-asr",
+      "description": "B站视频脚本提取插件：解析链接，优先取字幕轨，无字幕用本地 whisper (large-v3-turbo) 转写，导出 SRT/TXT/JSON。跨平台（Windows/macOS/Linux）。",
+      "searchTerms": [
+        "语音输入与朗读",
+        "DSH Bili ASR",
+        "dsh-bili-asr",
+        "语音",
+        "录音",
+        "转写",
+        "朗读",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "bili",
+        "asr"
+      ],
+      "repositoryUrl": "https://github.com/rudyz666/dsh-bili-asr",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "e898a08d85c868534c594da5e25161ed1505b0ed",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T01:16:04Z",
+        "observedAt": "2026-08-23T01:24:36.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-23T01:24:36.000Z",
+          "evidenceUrl": "https://github.com/rudyz666/dsh-bili-asr/commit/e898a08d85c868534c594da5e25161ed1505b0ed",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "dsh-bili-asr"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@deepseek-ai/dsh-tools",
+          "@deepseek-ai/schemastery"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
       "id": "dsh-long-plugins",
       "name": "余额与额度监控（DSH Long Plugins）",
       "packageName": "dsh-long-plugins",
@@ -53543,6 +53808,140 @@
         "dsh",
         "tray"
       ]
+    },
+    {
+      "id": "dsh-llm-fallbacks",
+      "name": "模型提供商接入（DSH LLM Fallbacks）",
+      "packageName": "dsh-llm-fallbacks",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Automatic provider/model fallback chains for DeepSeek Harness agents when LLM requests keep failing (retry exhausted, auth, quota, rate limit)",
+      "searchTerms": [
+        "模型提供商接入",
+        "DSH LLM Fallbacks",
+        "dsh-llm-fallbacks",
+        "模型",
+        "LLM",
+        "Provider",
+        "模型接入",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "llm",
+        "fallbacks"
+      ],
+      "repositoryUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "0de6c180d394ff5c891dc8ef9935a22a3a5909ff",
+      "version": "0.3.4",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T01:26:08Z",
+        "observedAt": "2026-08-23T01:24:36.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-23T01:24:36.000Z",
+          "evidenceUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks/commit/0de6c180d394ff5c891dc8ef9935a22a3a5909ff",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "llm-fallbacks"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": "^0.1.1-rc.2",
+        "dshReleases": {
+          "rc.5": "incompatible",
+          "rc.6": "incompatible",
+          "rc.7": "incompatible",
+          "rc.8": "incompatible",
+          "0.1.1-rc.1": "incompatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "UNKNOWN",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "use-sync-external-store"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "automatic-policy-blocked-not-installable"
+      }
     },
     {
       "id": "dsh-plugin-market",

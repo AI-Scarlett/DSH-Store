@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T00:44:09.000Z",
+    "updatedAt": "2026-08-23T01:24:36.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1999,27 +1999,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "omdsh-dev-dsh-llm-fallbacks",
-      "name": "omdsh-dev/dsh-llm-fallbacks",
-      "description": "An dsh plugin for role-based LLM retry&fallback strategy. 基于角色的模型重试备用策略插件",
-      "repositoryUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks",
-      "defaultBranch": "main",
-      "latestCommit": "b6c2bccd869999b0319d902c27a25680a3b384ab",
-      "sourceUpdatedAt": "2026-08-20T12:12:42.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "xjungit-omdp",
@@ -26578,8 +26557,8 @@
       "description": "Unofficial Electron desktop shell for DeepSeek Harness: bundled Node runtime, installers, auto-update.",
       "repositoryUrl": "https://github.com/citrusli2026/dsh-electron-shell",
       "defaultBranch": "main",
-      "latestCommit": "08b2d8b6f48f8acf2896f56673be62b14d1916f3",
-      "sourceUpdatedAt": "2026-08-22T11:30:33.000Z",
+      "latestCommit": "efbb5716b8cfbd27352767c6855251aef83719c3",
+      "sourceUpdatedAt": "2026-08-23T01:25:11.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27845,6 +27824,85 @@
         "test-vectors",
         "timezone",
         "token-costs",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "sifted-network-sifted-awesome-ai-agents",
+      "name": "sifted-network/sifted-awesome-ai-agents",
+      "description": "🔥 Auto-updated A curated list of the most starred AI agent-related repositories on GitHub.",
+      "repositoryUrl": "https://github.com/sifted-network/sifted-awesome-ai-agents",
+      "defaultBranch": "main",
+      "latestCommit": "765de59b15ba0c3db9cab772ce5eb47831e53881",
+      "sourceUpdatedAt": "2026-08-23T01:25:57.000Z",
+      "discoveredAt": "2026-08-23T01:24:36.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai",
+        "aiagents",
+        "llm",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "alishahryar1-free-claude-code",
+      "name": "Alishahryar1/free-claude-code",
+      "description": "Use Claude Code, Codex, Pi, and OpenCode for free (1.3B+ free tokens) from your terminal, app, IDE, or phone like OpenClaw (voice supported + ToS friendly)",
+      "repositoryUrl": "https://github.com/Alishahryar1/free-claude-code",
+      "defaultBranch": "main",
+      "latestCommit": "5b5209428ff8c9e222982d9df95807d574a84b60",
+      "sourceUpdatedAt": "2026-08-23T00:33:28.000Z",
+      "discoveredAt": "2026-08-23T01:24:36.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "zhangchenjia21-dot-workbench",
+      "name": "zhangchenjia21-dot/Workbench",
+      "description": "为个人工作流量身定制的工作台项目",
+      "repositoryUrl": "https://github.com/zhangchenjia21-dot/Workbench",
+      "defaultBranch": "main",
+      "latestCommit": "976e352b5a6b28a660be4cb5e9ab66422df7fc5f",
+      "sourceUpdatedAt": "2026-08-23T01:25:43.000Z",
+      "discoveredAt": "2026-08-23T01:24:36.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "jscott3201-yet-another-harness",
+      "name": "jscott3201/yet-another-harness",
+      "description": "YAH — a Rust-native, graph-backed, plugin-extensible agent harness.",
+      "repositoryUrl": "https://github.com/jscott3201/yet-another-harness",
+      "defaultBranch": "main",
+      "latestCommit": "afd3ff08efa2cb70836a47b398278e5f9c7f487b",
+      "sourceUpdatedAt": "2026-08-23T01:25:08.000Z",
+      "discoveredAt": "2026-08-23T01:24:36.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
         "automatic-radar"
       ],
       "status": "rejected",
