@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T01:50:28.000Z",
+    "updatedAt": "2026-08-23T02:34:56.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -19555,20 +19555,27 @@
       "description": "dsh-delegate: model-aware subagent delegation for DeepSeek Harness — per-call models, depends_on dependency gating, per-child personas, a durable run roster, audit events, and conversation-flow tool cards. | 给 DeepSeek Harness 的子代理委派加上：按次选模型、依赖门控、角色人设、任务花名册。",
       "repositoryUrl": "https://github.com/FEOH333/dsh-delegate",
       "defaultBranch": "main",
-      "latestCommit": "30597c014b1c2bba8bd2d4a340ebc18949039c63",
-      "sourceUpdatedAt": "2026-08-14T05:36:50.000Z",
+      "latestCommit": "51f60e209bf17e724342feb139e6185d05f3fa69",
+      "sourceUpdatedAt": "2026-08-23T02:40:26.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "orchestration"
+        "agent",
+        "ai-coding",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "multi-agent",
+        "subagent",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "wangyang10-image-vision",
@@ -27856,8 +27863,8 @@
       "description": "为个人工作流量身定制的工作台项目",
       "repositoryUrl": "https://github.com/zhangchenjia21-dot/Workbench",
       "defaultBranch": "main",
-      "latestCommit": "976e352b5a6b28a660be4cb5e9ab66422df7fc5f",
-      "sourceUpdatedAt": "2026-08-23T01:25:43.000Z",
+      "latestCommit": "b7e451f0857abdb32d8bfe51a2d39d8b7e886fa8",
+      "sourceUpdatedAt": "2026-08-23T02:41:21.000Z",
       "discoveredAt": "2026-08-23T01:24:36.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28016,8 +28023,8 @@
       "description": "真白 · 秋招 AI 桌宠：Live2D 桌宠 + 面经采集/模拟面试/学习清单/复习卡/本地语音/知识库",
       "repositoryUrl": "https://github.com/idontplaygenshinimpact/mashiro-desktop",
       "defaultBranch": "main",
-      "latestCommit": "6d0587d1f11bc242cb180d92c1bfcf2adbc4de55",
-      "sourceUpdatedAt": "2026-08-23T01:42:16.000Z",
+      "latestCommit": "4a5d7c5e1cee3f99d756a3218d0ecfdc4ea88e13",
+      "sourceUpdatedAt": "2026-08-23T02:40:38.000Z",
       "discoveredAt": "2026-08-23T01:40:55.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28108,6 +28115,35 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID session-query-sqlite is already owned by dsh-fabric"
+    },
+    {
+      "id": "pixelwave-max-ultrageek",
+      "name": "PixelWave-max/Ultrageek",
+      "description": "Fully local AI cockpit for a 27B Qwen on Apple Silicon: effort dial, loop watchdog with a muzzle, on-device Whisper dictation, 3D pet telemetry. Built on DeepSeek Harness, zero cloud.",
+      "repositoryUrl": "https://github.com/PixelWave-max/Ultrageek",
+      "defaultBranch": "main",
+      "latestCommit": "94fd06a9d31b7746a0a87adb976b412373b8eb71",
+      "sourceUpdatedAt": "2026-08-23T02:40:09.000Z",
+      "discoveredAt": "2026-08-23T02:34:56.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "apple-silicon",
+        "deepseek-harness",
+        "llm",
+        "lm-studio",
+        "local-ai",
+        "macos",
+        "qwen",
+        "speculative-decoding",
+        "whisper-cpp",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
