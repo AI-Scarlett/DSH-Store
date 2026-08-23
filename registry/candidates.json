@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-22T21:31:04.000Z",
+    "updatedAt": "2026-08-23T00:24:28.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -630,20 +630,25 @@
       "description": "Awesome DeepSeek Harness (DSH) Plugin",
       "repositoryUrl": "https://github.com/beancookie/awesome-dsh-plugin",
       "defaultBranch": "main",
-      "latestCommit": "562ded0d2d2bcf35f8cb2b94e9d5ade8ac557905",
-      "sourceUpdatedAt": "2026-08-20T23:38:35.000Z",
+      "latestCommit": "6949c7afba0205bff907b4024804376df06167e3",
+      "sourceUpdatedAt": "2026-08-23T00:24:03.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "utility"
+        "awesome",
+        "awesome-list",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
       ],
       "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "yelebai-dsh-plugin-marketplace",
@@ -27295,8 +27300,8 @@
       "description": "复刻 confirmo for DeepSeek Harness",
       "repositoryUrl": "https://github.com/purezhi/dsh-plugin-confirmo",
       "defaultBranch": "main",
-      "latestCommit": "ce0af2a09b51e3a345bda4f2c2d2a5308dcaf41f",
-      "sourceUpdatedAt": "2026-08-22T15:27:02.000Z",
+      "latestCommit": "ec546f5207a65aea832cb3924f5a21a5b9e76934",
+      "sourceUpdatedAt": "2026-08-23T00:22:00.000Z",
       "discoveredAt": "2026-08-22T15:13:32.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27509,6 +27514,78 @@
         "machine-learning",
         "open-source",
         "python",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "the911fund-skill-of-skills",
+      "name": "the911fund/skill-of-skills",
+      "description": "The autonomous discovery engine for AI coding tools. Indexes skills, plugins, MCP servers, agents, and integrations across Claude Code, Codex, Gemini CLI, and more.",
+      "repositoryUrl": "https://github.com/the911fund/skill-of-skills",
+      "defaultBranch": "main",
+      "latestCommit": "616ba6d6550bf1e99f043ed2f89b507f9a1f6beb",
+      "sourceUpdatedAt": "2026-08-23T00:25:03.000Z",
+      "discoveredAt": "2026-08-23T00:24:28.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-tools",
+        "automation",
+        "claude-code",
+        "discovery-engine",
+        "mcp-servers",
+        "n8n",
+        "open-source",
+        "plugins",
+        "skills",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "sdkwork-ai-sdkwork-birdcoder2",
+      "name": "sdkwork-ai/sdkwork-birdcoder2",
+      "description": "SDKWork BirdCoder2: derived fork of deepseek-harness-desktop (DeepSeek Harness: Everything is a Plugin), kept in sync with upstream via the upstream git remote",
+      "repositoryUrl": "https://github.com/sdkwork-ai/sdkwork-birdcoder2",
+      "defaultBranch": "main",
+      "latestCommit": "a397c6ef90d0dad78e1f374ef553ba7a97a8b30b",
+      "sourceUpdatedAt": "2026-08-23T00:23:21.000Z",
+      "discoveredAt": "2026-08-23T00:24:28.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "desktop",
+        "fork",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "lilycleheart-dsh-liuli-ui-enhance",
+      "name": "LilycleHeart/dsh-liuli-ui-enhance",
+      "description": "琉璃 UI 增强 —— DSH 主题插件:M3 动态取色、壁纸磨砂材质、声纹可视化、dock shell、嵌入式浏览器",
+      "repositoryUrl": "https://github.com/LilycleHeart/dsh-liuli-ui-enhance",
+      "defaultBranch": "master",
+      "latestCommit": "5345d4b5f44c306396d85d92ab507d4ba1291908",
+      "sourceUpdatedAt": "2026-08-23T00:23:48.000Z",
+      "discoveredAt": "2026-08-23T00:24:28.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "enhance",
+        "ui",
         "automatic-radar"
       ],
       "status": "rejected",
