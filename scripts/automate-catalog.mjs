@@ -32,6 +32,8 @@ const INFRASTRUCTURE_CODES = new Set([
 ])
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
 const SELF_MANAGER_PROTECTED_ENTRY_REASON = 'Bundle Patch uses a protected DSH entry ID'
+const SELF_MANAGER_MAX_RUNTIME_FILES = 512
+const SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES = 8 * 1024 * 1024
 
 function sha256(value) {
   return createHash('sha256').update(value).digest('hex')
@@ -92,15 +94,20 @@ function routeForFailure(code) {
 }
 
 function isSafeSelfManagerUpdate(entry, hardReasons) {
-  const repository = typeof entry?.repositoryUrl === 'string'
-    ? entry.repositoryUrl.trim().replace(/\.git\/?$/i, '').replace(/\/$/, '').toLowerCase()
-    : null
+  const repository = isSelfManagerEntry(entry) ? SELF_MANAGER_REPOSITORY.toLowerCase() : null
   const reason = hardReasons?.length === 1 ? String(hardReasons[0]).trim() : null
-  return String(entry?.id ?? '').trim().toLowerCase() === 'dsh-safe-plugin-manager'
-    && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
+  return repository === SELF_MANAGER_REPOSITORY.toLowerCase()
     && Array.isArray(hardReasons)
     && hardReasons.length === 1
     && reason.includes(SELF_MANAGER_PROTECTED_ENTRY_REASON)
+}
+
+function isSelfManagerEntry(entry) {
+  const repository = typeof entry?.repositoryUrl === 'string'
+    ? entry.repositoryUrl.trim().replace(/\.git\/?$/i, '').replace(/\/$/, '').toLowerCase()
+    : null
+  return String(entry?.id ?? '').trim().toLowerCase() === 'dsh-safe-plugin-manager'
+    && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
 }
 
 const delay = milliseconds => new Promise(resolveDelay => setTimeout(resolveDelay, milliseconds))
@@ -434,8 +441,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const withoutCurrent = { ...baselineCatalog, entries: baselineCatalog.entries.filter(item => item.id !== entry.id) }
       const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '', {
         catalogDocument: withoutCurrent,
-        allowProtectedManager: entry.id === 'dsh-safe-plugin-manager'
-          && entry.repositoryUrl.toLowerCase() === SELF_MANAGER_REPOSITORY.toLowerCase(),
+        allowProtectedManager: isSelfManagerEntry(entry),
         token: process.env.GITHUB_TOKEN, timeoutMs: 12_000,
       }))
       const candidate = result.candidate
@@ -456,7 +462,17 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (lineage?.status !== 'ahead' || !Number.isInteger(lineage?.total_commits) || lineage.total_commits > maxCommitSpan) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the candidate is not a bounded direct descendant of the Catalog Commit' }
       }
-      const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, policy, github))
+      const analysisPolicy = isSelfManagerEntry(entry)
+        ? {
+          ...policy,
+          sourceBounds: {
+            ...policy.sourceBounds,
+            maxRuntimeFiles: Math.max(policy.sourceBounds.maxRuntimeFiles, SELF_MANAGER_MAX_RUNTIME_FILES),
+            maxTotalRuntimeBytes: Math.max(policy.sourceBounds.maxTotalRuntimeBytes, SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES),
+          },
+        }
+        : policy
+      const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, analysisPolicy, github))
       const sourcePolicy = catalogUpdatePolicy(entry)
       const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
       const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
