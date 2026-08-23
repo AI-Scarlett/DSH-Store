@@ -100,7 +100,7 @@ function isSafeSelfManagerUpdate(entry, hardReasons) {
     && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
     && Array.isArray(hardReasons)
     && hardReasons.length === 1
-    && reason === SELF_MANAGER_PROTECTED_ENTRY_REASON
+    && reason.includes(SELF_MANAGER_PROTECTED_ENTRY_REASON)
 }
 
 const delay = milliseconds => new Promise(resolveDelay => setTimeout(resolveDelay, milliseconds))
@@ -457,6 +457,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const sourcePolicy = catalogUpdatePolicy(entry)
       const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
       const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
+      if (entry.id === 'dsh-safe-plugin-manager') {
+        process.stdout.write(`CATALOG_AUTOMATION_SELF_MANAGER_GATE safe=${safeSelfManagerUpdate} hard=${JSON.stringify(hardReasons)} repo=${JSON.stringify(entry.repositoryUrl)}\n`)
+      }
       if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: analysis.reasons.join('; ') }
       }
