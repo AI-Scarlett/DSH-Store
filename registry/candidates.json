@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T01:32:18.000Z",
+    "updatedAt": "2026-08-23T01:40:55.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -59,8 +59,8 @@
       "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
       "repositoryUrl": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
       "defaultBranch": "main",
-      "latestCommit": "de09d47629fd150ae4ecac9c2633c12ca4961417",
-      "sourceUpdatedAt": "2026-08-23T01:32:47.000Z",
+      "latestCommit": "f3c78a3e43fe4e529772eb11e20301743625ca11",
+      "sourceUpdatedAt": "2026-08-23T01:42:21.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -1005,27 +1005,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: declared runtime artifact is missing from the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "nexu-io-open-design",
-      "name": "nexu-io/open-design",
-      "description": "🎨 Best DeepSeek Harness Design Plugin. The open-source Claude Design alternative. 🖥️ Local-first desktop app. 🖼️ Your coding agent becomes the design engine: prototypes, landing pages, dashboards, slides, images & video — real files, HTML/PDF/PPTX/MP4 export. 🤖 Claude Code / Codex / Cursor / DeepSeek Harness / OpenCode & 20+ CLIs via BYOK.",
-      "repositoryUrl": "https://github.com/nexu-io/open-design",
-      "defaultBranch": "main",
-      "latestCommit": "e00d0bc56e2e2f14702f88c34adf49dd93f41594",
-      "sourceUpdatedAt": "2026-08-20T18:38:03.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "studyzy-dsh-suggest-prompt",
@@ -27986,6 +27965,106 @@
         "text-to-speech",
         "voice",
         "whisper",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "skyf0xx-hedgehog",
+      "name": "skyf0xx/hedgehog",
+      "description": "HEDGEHOG codes Cleaner, Faster and with Fewer Tokens. Hedgehog's AI-driven development builds a task dependency graph from your spec-driven, BMAD-METHOD plan, so Claude Code, Cursor & Gemini CLI stay locked to it. A CLI-enforced state machine for agentic coding. Now builds DeepSeek DSH Plugins. DeepSeek Harness、DSH 插件、AI 编程、BMAD 方法",
+      "repositoryUrl": "https://github.com/skyf0xx/hedgehog",
+      "defaultBranch": "master",
+      "latestCommit": "1f0988787b5c341d2a24bbb3360c949eaf5e54c4",
+      "sourceUpdatedAt": "2026-08-23T01:42:13.000Z",
+      "discoveredAt": "2026-08-23T01:40:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-skills",
+        "agentic-coding",
+        "ai-agents",
+        "ai-assisted-development",
+        "ai-coding",
+        "ai-engineering",
+        "ai-tools",
+        "bmad",
+        "bmad-alternative",
+        "bmad-method",
+        "claude-code",
+        "claude-code-skills",
+        "coding-agents",
+        "context-engineering",
+        "cursor",
+        "cursor-ai",
+        "developer-tools",
+        "dsh-plugin",
+        "gemini-cli",
+        "spec-driven-development",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "idontplaygenshinimpact-mashiro-desktop",
+      "name": "idontplaygenshinimpact/mashiro-desktop",
+      "description": "真白 · 秋招 AI 桌宠：Live2D 桌宠 + 面经采集/模拟面试/学习清单/复习卡/本地语音/知识库",
+      "repositoryUrl": "https://github.com/idontplaygenshinimpact/mashiro-desktop",
+      "defaultBranch": "main",
+      "latestCommit": "6d0587d1f11bc242cb180d92c1bfcf2adbc4de55",
+      "sourceUpdatedAt": "2026-08-23T01:42:16.000Z",
+      "discoveredAt": "2026-08-23T01:40:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "electron",
+        "interview-prep",
+        "job-hunting",
+        "live2d",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "esengine-deepseek-reasonix",
+      "name": "esengine/DeepSeek-Reasonix",
+      "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability — leave it running.",
+      "repositoryUrl": "https://github.com/esengine/DeepSeek-Reasonix",
+      "defaultBranch": "main-v2",
+      "latestCommit": "b9cf32f81f8090b25084471dd84539fe421bc88b",
+      "sourceUpdatedAt": "2026-08-22T05:17:36.000Z",
+      "discoveredAt": "2026-08-23T01:40:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "agent-framework",
+        "ai-agent",
+        "ai-coding",
+        "cli",
+        "coding-agent",
+        "deepseek",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "ink",
+        "llm",
+        "prompt-caching",
+        "r1",
+        "terminal",
+        "tool-use",
+        "tui",
+        "typescript",
         "automatic-radar"
       ],
       "status": "rejected",
