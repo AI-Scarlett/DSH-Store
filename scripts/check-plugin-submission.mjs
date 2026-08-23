@@ -161,7 +161,7 @@ function safePatchPath(manifestPath, declared) {
   return base ? posix.join(base, declared.replace(/^\.\//, '')) : declared.replace(/^\.\//, '')
 }
 
-function patchEntryIds(patch) {
+function patchEntryIds(patch, options = {}) {
   if (/\bname:\s*['"]?@deepseek-ai\//i.test(patch)) {
     throw submissionError('SUBMISSION_PATCH_PROTECTED', 'Bundle Patch impersonates the protected @deepseek-ai namespace')
   }
@@ -171,7 +171,11 @@ function patchEntryIds(patch) {
   const ids = [...new Set([...patch.matchAll(/(?:^|\n)\s*- id:\s*['"]?([A-Za-z0-9][A-Za-z0-9._-]{0,95})['"]?\s*(?:\n|$)/g)]
     .map(match => match[1]))]
   if (ids.length === 0) throw submissionError('SUBMISSION_ENTRY_MISSING', 'Bundle Patch does not declare a DSH entry ID')
-  if (ids.some(id => PROTECTED_ENTRY_IDS.has(id))) {
+  const protectedIds = ids.filter(id => PROTECTED_ENTRY_IDS.has(id))
+  const allowProtectedManager = options.allowProtectedManager === true
+    && ids.length === 1
+    && ids[0] === 'dsh-safe-plugin-manager'
+  if (protectedIds.length > 0 && !allowProtectedManager) {
     throw submissionError('SUBMISSION_ENTRY_PROTECTED', 'Bundle Patch uses a protected DSH entry ID')
   }
   return ids
@@ -322,7 +326,10 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
   }
   const patchPath = safePatchPath(discovered.manifestPath, manifest.dsh.bundle.patch)
   const patch = await readPinnedText(repositoryInput.repositoryUrl, snapshot.commit, patchPath, fetchOptions)
-  const entryIds = patchEntryIds(patch)
+  const allowProtectedManager = options.allowProtectedManager === true
+    && repositoryInput.repositoryUrl === 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
+    && manifest.name === 'dsh-safe-plugin-manager'
+  const entryIds = patchEntryIds(patch, { allowProtectedManager })
   const readme = await optionalReadme(repositoryInput.repositoryUrl, snapshot.commit, discovered.manifestPath, fetchOptions)
   const pluginType = ['feature', 'theme', 'suite', 'client', 'provider'].includes(manifest?.dsh?.pluginType)
     ? manifest.dsh.pluginType
