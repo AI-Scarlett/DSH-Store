@@ -102,12 +102,12 @@ test('market endpoint reads only the cached DSH version and never blocks on npm'
     }))
     let inspections = 0
     const res = response()
-    await handleMarketRequest(request({ view: 'market' }), res, {
+    await handleMarketRequest(request({ view: 'market', featuredOnly: true }), res, {
       dshHome: root,
       catalogService: { load: async () => ({
         schemaVersion: 1, registry: { name: 'Fixture' }, source: { kind: 'fixture' }, entries: [{
           id: 'demo', name: 'Demo', packageName: 'dsh-demo', description: 'demo', repositoryUrl: 'https://github.com/example/demo',
-          commit: 'a'.repeat(40), version: '1.0.0', categories: [], entryIds: ['demo'], status: 'approved', statusReason: null,
+          commit: 'a'.repeat(40), version: '1.0.0', categories: [], entryIds: ['demo'], status: 'approved', featured: true, statusReason: null,
           compatibility: { dsh: '>=0.1.1-rc.1 <0.2.0', dshReleases: { '0.1.1-rc.1': 'compatible' } },
           risk: { installScripts: [], review: 'fixture' },
         }],
@@ -122,6 +122,7 @@ test('market endpoint reads only the cached DSH version and never blocks on npm'
     assert.equal(inspections, 0)
     assert.equal(payload.value.dshReleaseContext.source, 'npm-official')
     assert.equal(payload.value.dshReleaseContext.latestVersion, '0.1.1-rc.2')
+    assert.equal(payload.value.pagination.featuredOnly, true)
     const latest = payload.value.entries[0].compatibility.dshReleaseViews.find(view => view.latest)
     assert.equal(latest.version, '0.1.1-rc.2')
     assert.equal(latest.status, 'unknown')

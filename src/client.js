@@ -754,9 +754,9 @@ window.__ModuleLoader__.load({
       return `${detailLabel('installSource', entry.details.installSource)}（目录声明）`
     }
 
-    function Button({ children, danger = false, primary = false, compact = false, disabled = false, onClick, ariaLabel, title }) {
+    function Button({ children, danger = false, primary = false, compact = false, disabled = false, onClick, ariaLabel, ariaPressed, title }) {
       return React.createElement('button', {
-        type: 'button', disabled, onClick, title, 'aria-label': ariaLabel,
+        type: 'button', disabled, onClick, title, 'aria-label': ariaLabel, 'aria-pressed': ariaPressed,
         style: { ...styles.button, ...(compact ? styles.compactButton : {}), ...(danger ? styles.dangerButton : {}), ...(primary ? styles.primaryButton : {}), ...(disabled ? styles.disabledButton : {}) },
       }, children)
     }
@@ -774,7 +774,7 @@ window.__ModuleLoader__.load({
       }, children)
     }
 
-    function CatalogFilters({ query, category, categoryIds, categoryLabels, onQueryChange, onCategoryChange }) {
+    function CatalogFilters({ query, category, categoryIds, categoryLabels, featuredOnly, showFeatured, onQueryChange, onCategoryChange, onFeaturedChange }) {
       return React.createElement('div', { style: styles.toolbar },
         React.createElement('input', {
           type: 'search', value: query, onChange: event => onQueryChange(event.target.value),
@@ -785,7 +785,11 @@ window.__ModuleLoader__.load({
           style: styles.select, 'aria-label': '按分类筛选',
         },
         React.createElement('option', { value: '' }, '全部分类'),
-        categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))))
+        categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))),
+        showFeatured ? React.createElement(Button, {
+          compact: true, primary: featuredOnly, ariaPressed: featuredOnly,
+          onClick: () => onFeaturedChange(!featuredOnly),
+        }, featuredOnly ? '显示全部' : '只看推荐') : null)
     }
 
     function Pagination({ pagination, loading, onPageChange }) {
@@ -919,7 +923,9 @@ window.__ModuleLoader__.load({
         ['user-review-required', 'external-only', 'update-blocked'].includes(entry.sourceUpdate?.status)
           ? React.createElement('div', { style: styles.error }, entry.sourceUpdate.reasons.join('；'))
           : entry.sourceUpdate?.status === 'current'
-            ? React.createElement('div', { style: styles.notice }, '已在本机按需检查 GitHub 源仓库，当前没有可用的新 Commit。')
+            ? React.createElement('div', { style: styles.notice }, entry.sourceUpdate.sameVersionSourceChange
+              ? '源仓库有同版本提交；当前安装版本无需更新，商城不会把目录或文档提交当作插件升级。'
+              : '已在本机按需检查 GitHub 源仓库，当前没有可用的新 Commit。')
             : entry.sourceUpdate?.status === 'error'
               ? React.createElement('div', { style: styles.error }, `${entry.sourceUpdate.code}：${entry.sourceUpdate.message}`)
               : null,
@@ -1285,6 +1291,7 @@ window.__ModuleLoader__.load({
       const [query, setQuery] = useState('')
       const [debouncedQuery, setDebouncedQuery] = useState('')
       const [category, setCategory] = useState('')
+      const [featuredOnly, setFeaturedOnly] = useState(false)
       const [page, setPage] = useState(1)
       const [state, setState] = useState({ status: 'loading' })
       const [marketLoading, setMarketLoading] = useState(false)
@@ -1315,6 +1322,7 @@ window.__ModuleLoader__.load({
             pageSize: MARKET_PAGE_SIZE,
             query: marketOptions.query ?? '',
             category: marketOptions.category ?? '',
+            featuredOnly: marketOptions.featuredOnly === true,
           }
           const [inventory, market, health, runtime, guardian] = await Promise.all([
             post(ROUTES.inventory), post(ROUTES.market, marketBody),
@@ -1334,6 +1342,7 @@ window.__ModuleLoader__.load({
               const pagination = current.market.pagination
               const stillCurrent = pagination?.view === marketBody.view && pagination?.page === marketBody.page
                 && pagination?.query === marketBody.query && pagination?.category === marketBody.category
+                && pagination?.featuredOnly === marketBody.featuredOnly
               return { ...current, ...(stillCurrent ? { market: updatedMarket } : {}), dshVersion }
             })
           }).catch(error => {
@@ -1356,13 +1365,15 @@ window.__ModuleLoader__.load({
         const requestedCategory = view === 'candidates' ? '' : category
         const current = state.market.pagination
         if (current?.view === view && current.page === page && current.pageSize === MARKET_PAGE_SIZE
-          && current.query === debouncedQuery && current.category === requestedCategory) return undefined
+          && current.query === debouncedQuery && current.category === requestedCategory
+          && current.featuredOnly === (view === 'market' && featuredOnly)) return undefined
         const requestId = ++marketRequestId.current
         let cancelled = false
         setMarketLoading(true)
         setMarketError('')
         void post(ROUTES.market, {
           view, page, pageSize: MARKET_PAGE_SIZE, query: debouncedQuery, category: requestedCategory,
+          featuredOnly: view === 'market' && featuredOnly,
         }).then(market => {
           if (cancelled || requestId !== marketRequestId.current) return
           setState(currentState => currentState.status === 'ready' ? { ...currentState, market } : currentState)
@@ -1373,7 +1384,7 @@ window.__ModuleLoader__.load({
           if (!cancelled && requestId === marketRequestId.current) setMarketLoading(false)
         })
         return () => { cancelled = true }
-      }, [category, debouncedQuery, page, state.status, view])
+      }, [category, debouncedQuery, featuredOnly, page, state.status, view])
 
       const refreshDshVersion = useCallback(async () => {
         setVersionChecking(true); setVersionFeedback('')
@@ -1381,6 +1392,7 @@ window.__ModuleLoader__.load({
           const dshVersion = await post(ROUTES.dshVersion, { refresh: true })
           const market = await post(ROUTES.market, {
             view, page, pageSize: MARKET_PAGE_SIZE, query: debouncedQuery, category: view === 'candidates' ? '' : category,
+            featuredOnly: view === 'market' && featuredOnly,
           }).catch(() => null)
           setState(current => {
             if (current.status !== 'ready') return current
@@ -1388,6 +1400,7 @@ window.__ModuleLoader__.load({
             const requestedCategory = view === 'candidates' ? '' : category
             const stillCurrent = pagination?.view === view && pagination?.page === page
               && pagination?.query === debouncedQuery && pagination?.category === requestedCategory
+              && pagination?.featuredOnly === (view === 'market' && featuredOnly)
             return { ...current, ...(market && stillCurrent ? { market } : {}), dshVersion }
           })
         } catch (error) {
@@ -1396,7 +1409,7 @@ window.__ModuleLoader__.load({
             dshVersion: { status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED', message: String(error?.message || error) },
           } : current)
         } finally { setVersionChecking(false) }
-      }, [category, debouncedQuery, page, view])
+      }, [category, debouncedQuery, featuredOnly, page, view])
 
       const copyUpgradeCommand = useCallback(async () => {
         const command = state.status === 'ready' ? state.dshVersion?.upgrade?.commandText : ''
@@ -1472,13 +1485,15 @@ window.__ModuleLoader__.load({
       const expectedCategory = view === 'candidates' ? '' : category
       const pageReady = pagination?.view === view && pagination.page === page
         && pagination.query === debouncedQuery && pagination.category === expectedCategory
+        && pagination.featuredOnly === (view === 'market' && featuredOnly)
       const entries = pageReady ? normalizedEntries : []
       const marketOptions = useMemo(() => ({
         view: view === 'health' ? 'market' : view,
         page,
         query: debouncedQuery,
         category: view === 'candidates' ? '' : category,
-      }), [category, debouncedQuery, page, view])
+        featuredOnly: view === 'market' && featuredOnly,
+      }), [category, debouncedQuery, featuredOnly, page, view])
 
       const beginPlan = useCallback(async (action, entry) => {
         setConfirmation('')
@@ -1601,6 +1616,7 @@ window.__ModuleLoader__.load({
             React.createElement(TabButton, { key: id, active: view === id, onClick: () => {
               setView(id); setPage(1)
               if (id === 'candidates') setCategory('')
+              if (id !== 'market') setFeaturedOnly(false)
             } }, label))),
         React.createElement(Button, {
           compact: true, disabled: marketLoading,
@@ -1610,9 +1626,10 @@ window.__ModuleLoader__.load({
       const categoryIds = state.status === 'ready' ? state.market.filters?.categoryIds || [] : []
       const categoryLabels = state.status === 'ready' ? state.market.registry.categories || {} : {}
       const filters = React.createElement(CatalogFilters, {
-        query, category, categoryIds, categoryLabels,
+        query, category, categoryIds, categoryLabels, featuredOnly, showFeatured: view === 'market',
         onQueryChange: value => { setQuery(value); setPage(1) },
         onCategoryChange: value => { setCategory(value); setPage(1) },
+        onFeaturedChange: value => { setFeaturedOnly(value); setPage(1) },
       })
       const catalogPackageNames = new Set(state.status === 'ready' ? state.market.catalogPackageNames || [] : [])
       const uncataloguedInstalledAll = state.status === 'ready'

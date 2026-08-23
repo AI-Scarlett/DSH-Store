@@ -454,7 +454,7 @@ function visibleEntries() {
     if (state.sort === 'name') return a.name.localeCompare(b.name, locale)
     if (state.sort === 'risk') return (riskOrder[a.details.permissions.level] ?? 3) - (riskOrder[b.details.permissions.level] ?? 3) || a.name.localeCompare(b.name, locale)
     if (state.sort === 'recent') return compatibilityRank(a) - compatibilityRank(b) || freshness(b) - freshness(a) || a.name.localeCompare(b.name, locale)
-    return compatibilityRank(a) - compatibilityRank(b) || freshness(b) - freshness(a) || Number(b.featured === true) - Number(a.featured === true) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, locale)
+    return Number(b.featured === true) - Number(a.featured === true) || compatibilityRank(a) - compatibilityRank(b) || freshness(b) - freshness(a) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, locale)
   })
 }
 

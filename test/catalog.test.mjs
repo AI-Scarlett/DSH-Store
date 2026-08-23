@@ -126,7 +126,7 @@ test('marketplace snapshot pagination returns one bounded page and lazy candidat
     id: `demo-${String(index).padStart(2, '0')}`,
     packageName: `dsh-demo-${String(index).padStart(2, '0')}`,
     name: `Demo ${String(index).padStart(2, '0')}`,
-    featured: false,
+    featured: index < 3,
   }))
   const catalog = validateCatalog(document(entries))
   const snapshot = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] }, '', {
@@ -143,10 +143,15 @@ test('marketplace snapshot pagination returns one bounded page and lazy candidat
   assert.equal(market.entries.length, 24)
   assert.equal(market.candidates.length, 0)
   assert.deepEqual(market.pagination, {
-    view: 'market', query: '', category: '', page: 2, pageSize: 24, total: 61, pageCount: 3,
+    view: 'market', query: '', category: '', featuredOnly: false, page: 2, pageSize: 24, total: 61, pageCount: 3,
     hasPrevious: true, hasNext: true,
   })
   assert.equal(market.catalogPackageNames.length, 61)
+
+  const featured = paginateMarketplaceSnapshot(snapshot, { view: 'market', featuredOnly: true, page: 1, pageSize: 24 })
+  assert.deepEqual(featured.entries.map(item => item.id), ['demo-00', 'demo-01', 'demo-02'])
+  assert.equal(featured.pagination.total, 3)
+  assert.equal(featured.pagination.featuredOnly, true)
 
   const candidates = paginateMarketplaceSnapshot(snapshot, { view: 'candidates', page: 1, pageSize: 1 })
   assert.equal(candidates.entries.length, 0)
@@ -161,7 +166,7 @@ test('catalog recommended ordering puts 0.1.1-rc.1-compatible entries first', ()
   assert.deepEqual(searchCatalog(validateCatalog(document([old, current]))).map(item => item.id), ['current', 'old'])
 })
 
-test('catalog ordering uses 0.1.1-rc.1 compatibility before source freshness and never promotion as verification', () => {
+test('catalog ordering pins featured entries before compatibility and source freshness', () => {
   const currentOld = {
     ...entry, id: 'current-old', packageName: 'dsh-current-old', name: 'Current old',
     compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' },
@@ -178,7 +183,7 @@ test('catalog ordering uses 0.1.1-rc.1 compatibility before source freshness and
     source: { updatedAt: '2026-08-20T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
   }
   const catalog = validateCatalog(document([currentOld, currentNew, unsupportedNew]))
-  assert.deepEqual([...catalog.entries].sort(compareCatalogEntries).map(item => item.id), ['current-new', 'current-old', 'unsupported-new'])
+  assert.deepEqual([...catalog.entries].sort(compareCatalogEntries).map(item => item.id), ['current-old', 'unsupported-new', 'current-new'])
   assert.equal(catalog.entries.find(item => item.id === 'current-old').assurance.securityReview.status, 'unknown')
 })
 

@@ -22,12 +22,12 @@ function response(body, status = 200) {
   return new Response(typeof body === 'string' ? body : JSON.stringify(body), { status })
 }
 
-function githubFetch({ patch = '+export const version = 2', commit = candidateCommit } = {}) {
+function githubFetch({ patch = '+export const version = 2', commit = candidateCommit, candidateVersion = '2.0.0' } = {}) {
   return async url => {
     const parsedUrl = new URL(url)
     if (url.includes('/commits/main')) return response({ sha: commit })
     if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/package.json')) {
-      const version = url.includes(`/${catalogCommit}/`) ? '1.0.0' : '2.0.0'
+      const version = url.includes(`/${catalogCommit}/`) ? '1.0.0' : candidateVersion
       return response(JSON.stringify({ name: 'dsh-demo', version, license: 'MIT', main: 'lib/index.js', dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {} }))
     }
     if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/cordis.patch.yml')) return response('- id: demo\n')
@@ -106,6 +106,19 @@ test('matching source commit is current without downloading or installing source
   const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
   assert.equal(result.status, 'current')
   assert.equal(result.candidate, null)
+})
+
+test('same-version source commits stay informational and do not show a blocked update', async () => {
+  const service = createSourceUpdateService({
+    fetch: githubFetch({ candidateVersion: '1.0.0' }),
+    sourceVerifier: async () => { throw new Error('same-version candidates must not enter full update audit') },
+  })
+  const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(result.status, 'current')
+  assert.equal(result.sameVersionSourceChange, true)
+  assert.equal(result.candidateVersion, '1.0.0')
+  assert.equal(result.diff, null)
+  assert.match(result.reasons[0], /同版本提交/)
 })
 
 test('numeric DOMException abort codes map to a stable source update timeout', async () => {
