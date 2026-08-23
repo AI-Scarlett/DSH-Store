@@ -32,6 +32,7 @@ const INFRASTRUCTURE_CODES = new Set([
 ])
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
 const SELF_MANAGER_PROTECTED_ENTRY_REASON = 'Bundle Patch uses a protected DSH entry ID'
+const SELF_MANAGER_PROTECTED_DSH_REASON = 'runtime source contains the protectedDsh permission signal'
 const SELF_MANAGER_MAX_RUNTIME_FILES = 512
 const SELF_MANAGER_MAX_FILE_BYTES = 2 * 1024 * 1024
 const SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES = 8 * 1024 * 1024
@@ -100,7 +101,8 @@ function isSafeSelfManagerUpdate(entry, hardReasons) {
   return repository === SELF_MANAGER_REPOSITORY.toLowerCase()
     && Array.isArray(hardReasons)
     && hardReasons.length === 1
-    && reason.includes(SELF_MANAGER_PROTECTED_ENTRY_REASON)
+    && (reason.includes(SELF_MANAGER_PROTECTED_ENTRY_REASON)
+      || reason === SELF_MANAGER_PROTECTED_DSH_REASON)
 }
 
 function isSelfManagerEntry(entry) {
