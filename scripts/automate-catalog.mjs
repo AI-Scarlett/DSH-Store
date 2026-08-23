@@ -91,13 +91,13 @@ function routeForFailure(code) {
   return 'blocked'
 }
 
-function isSafeSelfManagerUpdate(entry, analysis) {
+function isSafeSelfManagerUpdate(entry, hardReasons) {
   const repository = typeof entry?.repositoryUrl === 'string' ? canonicalGithubRepository(entry.repositoryUrl).toLowerCase() : null
-  const reason = analysis?.reasons?.length === 1 ? String(analysis.reasons[0]).trim() : null
+  const reason = hardReasons?.length === 1 ? String(hardReasons[0]).trim() : null
   return entry?.id === 'dsh-safe-plugin-manager'
     && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
-    && Array.isArray(analysis?.reasons)
-    && analysis.reasons.length === 1
+    && Array.isArray(hardReasons)
+    && hardReasons.length === 1
     && reason === SELF_MANAGER_PROTECTED_ENTRY_REASON
 }
 
@@ -453,12 +453,12 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       }
       const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, policy, github))
       const sourcePolicy = catalogUpdatePolicy(entry)
-      const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, analysis)
+      const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
+      const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
       if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: analysis.reasons.join('; ') }
       }
       if (sourcePolicy === 'user-reviewed') {
-        const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
         if (hardReasons.length > 0 && !safeSelfManagerUpdate) {
           return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: hardReasons.join('; ') }
         }
