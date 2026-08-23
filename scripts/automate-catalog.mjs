@@ -92,9 +92,11 @@ function routeForFailure(code) {
 }
 
 function isSafeSelfManagerUpdate(entry, hardReasons) {
-  const repository = typeof entry?.repositoryUrl === 'string' ? canonicalGithubRepository(entry.repositoryUrl).toLowerCase() : null
+  const repository = typeof entry?.repositoryUrl === 'string'
+    ? entry.repositoryUrl.trim().replace(/\.git\/?$/i, '').replace(/\/$/, '').toLowerCase()
+    : null
   const reason = hardReasons?.length === 1 ? String(hardReasons[0]).trim() : null
-  return entry?.id === 'dsh-safe-plugin-manager'
+  return String(entry?.id ?? '').trim().toLowerCase() === 'dsh-safe-plugin-manager'
     && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
     && Array.isArray(hardReasons)
     && hardReasons.length === 1
