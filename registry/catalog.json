@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-23T01:40:55.000Z",
+    "updatedAt": "2026-08-23T01:50:28.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -50781,6 +50781,391 @@
         "memory",
         "evolve"
       ]
+    },
+    {
+      "id": "dsh-plugin-message-timeline-navigation",
+      "name": "会话导航（DSH Plugin Message Timeline Navigation）",
+      "packageName": "dsh-plugin-message-timeline-navigation",
+      "description": "为 DSH 提供会话导航能力。英文原始说明：Codex-style message timeline navigation for DSH web clients: a vertical rail of ticks on the conversation edge — hover to preview, click to jump, and the current reading progress stays highlighted.",
+      "searchTerms": [
+        "会话导航",
+        "DSH Plugin Message Timeline Navigation",
+        "dsh-plugin-message-timeline-navigation",
+        "消息定位",
+        "时间线",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "plugin",
+        "message",
+        "timeline",
+        "navigation"
+      ],
+      "repositoryUrl": "https://github.com/cokiscarazo-rgb/dsh-plugin-message-timeline-navigation",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "2ef241a4f3aee88bdedd7c48a2c3e0ecde743c1f",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T01:51:58Z",
+        "observedAt": "2026-08-23T01:50:28.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-23T01:50:28.000Z",
+          "evidenceUrl": "https://github.com/cokiscarazo-rgb/dsh-plugin-message-timeline-navigation/commit/2ef241a4f3aee88bdedd7c48a2c3e0ecde743c1f",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "message-timeline-navigation"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=20",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "schemastery"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "math-research-dsh",
+      "name": "同步与备份工具（Math Research DSH）",
+      "packageName": "math-research-dsh",
+      "description": "为 DSH 提供同步与备份工具能力。英文原始说明：Rigorous open mathematics research suite for DeepSeek Harness: four agent skills (rigorous-open-math-research, manage-math-research-program, math-research-workflow, lean-verify) with CI-verified tests, mechanical upstream sync, and a DSH environment doctor.",
+      "searchTerms": [
+        "同步与备份工具",
+        "Math Research DSH",
+        "math-research-dsh",
+        "同步",
+        "备份",
+        "恢复",
+        "实验功能",
+        "新功能",
+        "math",
+        "research",
+        "dsh"
+      ],
+      "repositoryUrl": "https://github.com/xsoc1/math-research-dsh",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "d1ca3ee78ebb7a85f58b576905d373c899fa17c3",
+      "version": "1.5.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T01:51:21Z",
+        "observedAt": "2026-08-23T01:50:28.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-23T01:50:28.000Z",
+          "evidenceUrl": "https://github.com/xsoc1/math-research-dsh/commit/d1ca3ee78ebb7a85f58b576905d373c899fa17c3",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "math-research-dsh"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsvu",
+      "name": "图像视觉工具（Dsvu）",
+      "packageName": "@svenyu/dsvu",
+      "description": "dsvu（DeepSeek-Powered Video Understanding）低成本视频理解工具：B站链接/BV/本地视频 → 信息层（ASR+场景+对象轨迹+YOLO）→ 摘要+问答。基于 deepseek-v4-flash-vision-exp 同源即看即答 + grid 密集抽帧。问题驱动动态路由分层（L0/L1/L2）、语义层复用、预算上限。引擎自包含，无需外部依赖。",
+      "searchTerms": [
+        "图像视觉工具",
+        "Dsvu",
+        "dsvu",
+        "@svenyu/dsvu",
+        "视觉",
+        "识图",
+        "图片",
+        "多模态",
+        "实验功能",
+        "新功能"
+      ],
+      "repositoryUrl": "https://github.com/ilps2/dsvu-videounderstanding",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "964a84005ba79cf0cc53e6419081e4fc229e4c51",
+      "version": "0.6.5",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T01:50:01Z",
+        "observedAt": "2026-08-23T01:50:28.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-23T01:50:28.000Z",
+          "evidenceUrl": "https://github.com/ilps2/dsvu-videounderstanding/commit/964a84005ba79cf0cc53e6419081e4fc229e4c51",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "video-understand"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=18",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
     },
     {
       "id": "dsh-long-plugins",

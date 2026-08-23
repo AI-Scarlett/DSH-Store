@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T01:40:55.000Z",
+    "updatedAt": "2026-08-23T01:50:28.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26740,8 +26740,8 @@
       "description": "dsh-plugin - waiting for development",
       "repositoryUrl": "https://github.com/youridol/dsh-plugin",
       "defaultBranch": "main",
-      "latestCommit": "f2499150a46681affc7104c1b2677098dd9b97e3",
-      "sourceUpdatedAt": "2026-08-22T12:40:20.000Z",
+      "latestCommit": "a429210ce58a5863a75c1941cee08ed1ae8f5a52",
+      "sourceUpdatedAt": "2026-08-23T01:51:19.000Z",
       "discoveredAt": "2026-08-22T12:40:59.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -26750,8 +26750,8 @@
         "automatic-radar"
       ],
       "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: dsh-find-plugin, dsh-web-ui/packages/dsh-aionui-panel, dsh-web-ui/packages/dsh-chat-recovery, dsh-web-ui/packages/dsh-community-plugins, dsh-web-ui/packages/dsh-desktop-launcher, dsh-web-ui/packages/dsh-doctor, dsh-web-ui/packages/dsh-git-graph, dsh-web-ui/packages/dsh-liangshen, dsh-web-ui/packages/dsh-pet, dsh-web-ui/packages/dsh-plugin-manager, dsh-web-ui/packages/dsh-remote-web-ui, dsh-web-ui/packages/dsh-session-id, dsh-web-ui/packages/dsh-skill-explorer, dsh-web-ui/packages/dsh-ssh, dsh-web-ui/packa"
     },
     {
       "id": "yshenaw-dsh-everything",
@@ -27913,8 +27913,8 @@
       "description": "Obsidian中的插件 在右侧启动DSH",
       "repositoryUrl": "https://github.com/Elervi/obsidian-dsh-dock",
       "defaultBranch": "main",
-      "latestCommit": "3c49f4378c3ddc28888f4c46440935d5bb52b243",
-      "sourceUpdatedAt": "2026-08-23T01:32:41.000Z",
+      "latestCommit": "a9bf3c446c50bf0a9e750f69b419202c1f328fce",
+      "sourceUpdatedAt": "2026-08-23T01:50:16.000Z",
       "discoveredAt": "2026-08-23T01:32:18.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27977,8 +27977,8 @@
       "description": "HEDGEHOG codes Cleaner, Faster and with Fewer Tokens. Hedgehog's AI-driven development builds a task dependency graph from your spec-driven, BMAD-METHOD plan, so Claude Code, Cursor & Gemini CLI stay locked to it. A CLI-enforced state machine for agentic coding. Now builds DeepSeek DSH Plugins. DeepSeek Harness、DSH 插件、AI 编程、BMAD 方法",
       "repositoryUrl": "https://github.com/skyf0xx/hedgehog",
       "defaultBranch": "master",
-      "latestCommit": "1f0988787b5c341d2a24bbb3360c949eaf5e54c4",
-      "sourceUpdatedAt": "2026-08-23T01:42:13.000Z",
+      "latestCommit": "b64ca3d59d67c5ab1b5735c413359233f7532ecf",
+      "sourceUpdatedAt": "2026-08-23T01:49:55.000Z",
       "discoveredAt": "2026-08-23T01:40:55.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28070,6 +28070,44 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "haiyutian25-ddjasmine",
+      "name": "haiyutian25/ddjasmine",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/haiyutian25/ddjasmine",
+      "defaultBranch": "master",
+      "latestCommit": "abc3392976671239a2201ca409204f0e2e43d7c0",
+      "sourceUpdatedAt": "2026-08-23T01:51:36.000Z",
+      "discoveredAt": "2026-08-23T01:50:28.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "happy2git-dsh-web-cross-session",
+      "name": "Happy2Git/dsh-web-cross-session",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Happy2Git/dsh-web-cross-session",
+      "defaultBranch": "master",
+      "latestCommit": "2bd43b758b48535959c47b25d90d52d65cb145d0",
+      "sourceUpdatedAt": "2026-08-23T01:50:56.000Z",
+      "discoveredAt": "2026-08-23T01:50:28.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID session-query-sqlite is already owned by dsh-fabric"
     }
   ]
 }
