@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T12:57:17.000Z",
+    "updatedAt": "2026-08-23T15:32:29.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -123,20 +123,40 @@
       "description": "A universal, atomic library of mathematics and tools for agents to compose them.",
       "repositoryUrl": "https://github.com/morluto/jacobian",
       "defaultBranch": "main",
-      "latestCommit": "54126556ec6e6a3d9be4ee831f48ac9fb569dae1",
-      "sourceUpdatedAt": "2026-08-21T02:04:47.000Z",
+      "latestCommit": "2c2e91907b74af6bb1375728c43f05d01bc5e91e",
+      "sourceUpdatedAt": "2026-08-23T15:33:26.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "tools"
+        "ai-agents",
+        "automated-theorem-proving",
+        "computer-algebra",
+        "cordis",
+        "dsh",
+        "dsh-plugin",
+        "formal-methods",
+        "formal-verification",
+        "lean4",
+        "math",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "proof-assistant",
+        "python",
+        "smt-solver",
+        "symbolic-math",
+        "sympy",
+        "theorem-proving",
+        "z3",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "adamplatin123-awesome-dsh-plugins",
@@ -26466,8 +26486,8 @@
       "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
       "repositoryUrl": "https://github.com/linny006/agent-eval-harness",
       "defaultBranch": "master",
-      "latestCommit": "698c7c09f13c61b292f7e3cd9e0ff260db1e5dd9",
-      "sourceUpdatedAt": "2026-08-22T21:30:30.000Z",
+      "latestCommit": "c0d29f041d24df084a272fbd4ef0fa0869083467",
+      "sourceUpdatedAt": "2026-08-23T15:34:13.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28389,8 +28409,8 @@
       "description": "链上套利残酷共学知识库：DeFi清算/跨所价差/资金费率/DEX套利研究笔记 + 8个监控哨兵 + Python/Rust双实现",
       "repositoryUrl": "https://github.com/qiaopengjun5162/onchain-arbitrage-colearn",
       "defaultBranch": "main",
-      "latestCommit": "074cd0601ec9d25c0fdae36917b071e4e4d65e17",
-      "sourceUpdatedAt": "2026-08-23T12:59:11.000Z",
+      "latestCommit": "f81fb5e111aa84eb54a84896b36ee2806d8fd0a8",
+      "sourceUpdatedAt": "2026-08-23T15:34:28.000Z",
       "discoveredAt": "2026-08-23T12:57:17.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28419,6 +28439,49 @@
       "latestCommit": "09e164d005b7eb3ac9c66b2fc1bb0664a2668cca",
       "sourceUpdatedAt": "2026-08-23T12:57:54.000Z",
       "discoveredAt": "2026-08-23T12:57:17.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "awesome-dsh-plugin-awesome-dsh-plugin",
+      "name": "awesome-dsh-plugin/awesome-dsh-plugin",
+      "description": "A curated list of plugins for DeepSeek Harness (dsh) · DeepSeek Harness 插件精选列表",
+      "repositoryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "6a5c9dadc1bb8fefb10a109f435aa7214bb0f9a9",
+      "sourceUpdatedAt": "2026-08-23T15:34:42.000Z",
+      "discoveredAt": "2026-08-23T15:32:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "awesome",
+        "awesome-list",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "changyinliangbaikai-dsh-desktop",
+      "name": "changyinliangbaikai/dsh-desktop",
+      "description": "Deepseek Harness Desktop ，Designed for beginners ,Ready to use right out of the box",
+      "repositoryUrl": "https://github.com/changyinliangbaikai/dsh-desktop",
+      "defaultBranch": "main",
+      "latestCommit": "73d9be32066791dbab6ecb1c4b6599af3d5d58f9",
+      "sourceUpdatedAt": "2026-08-23T15:33:40.000Z",
+      "discoveredAt": "2026-08-23T15:32:29.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
       ],
