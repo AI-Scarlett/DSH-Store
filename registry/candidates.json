@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T00:33:24.000Z",
+    "updatedAt": "2026-08-23T00:44:09.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1054,20 +1054,30 @@
       "description": "Community GitHub Action for DeepSeek Harness — AI Code Review · CI Diagnosis · Auto Fix · Issue → PR",
       "repositoryUrl": "https://github.com/Lixiaoyiao/deepseek-harness-action",
       "defaultBranch": "main",
-      "latestCommit": "4d0a1a8d2f6c462d2518d1441d78615a1c7e2662",
-      "sourceUpdatedAt": "2026-08-20T18:15:13.000Z",
+      "latestCommit": "9c34626fc619a0634b0eff9a0bd7ea09bceb86ae",
+      "sourceUpdatedAt": "2026-08-23T00:45:10.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "tools"
+        "ai-agent",
+        "ci-cd",
+        "code-review",
+        "coding-agent",
+        "deepseek",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "github-actions",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "scotthuang-agent-knock-knock",
@@ -26454,8 +26464,8 @@
       "description": "Live index of the newest agent frameworks shipping on GitHub, sorted by recency not stars",
       "repositoryUrl": "https://github.com/linny006/agent-framework-radar",
       "defaultBranch": "master",
-      "latestCommit": "40cf4b3261b76a7c6252c1e5ea5104425ac034b0",
-      "sourceUpdatedAt": "2026-08-22T21:30:25.000Z",
+      "latestCommit": "cdd5d0f8368c2d96ea3425428947564c8f6c9625",
+      "sourceUpdatedAt": "2026-08-23T00:45:22.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27387,8 +27397,8 @@
       "description": "Live index of LLM evaluation tools and benchmarks, refreshed every 15 minutes from GitHub",
       "repositoryUrl": "https://github.com/linny006/llm-eval-tracker",
       "defaultBranch": "master",
-      "latestCommit": "483d7783f03562a088905cfda5bd6b940bf7fbb3",
-      "sourceUpdatedAt": "2026-08-22T21:30:23.000Z",
+      "latestCommit": "9e71f6cb712e3132b0abd2acaf3de34731a504a3",
+      "sourceUpdatedAt": "2026-08-23T00:45:25.000Z",
       "discoveredAt": "2026-08-22T15:44:43.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -27699,6 +27709,142 @@
       ],
       "topics": [
         "scratch-extension-editot-addon",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "christiandoxa-prodex",
+      "name": "christiandoxa/prodex",
+      "description": "Prodex is a multi-account, multi-provider Codex wrapper with auto-rotation, Super mode, Smart Context, and token saving for Codex CLI and Claude Code",
+      "repositoryUrl": "https://github.com/christiandoxa/prodex",
+      "defaultBranch": "main",
+      "latestCommit": "59aac02dc97e02e757180fe03a8feb4c6af300fe",
+      "sourceUpdatedAt": "2026-08-23T00:44:39.000Z",
+      "discoveredAt": "2026-08-23T00:44:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "ai",
+        "claude",
+        "codex",
+        "gateway",
+        "load-balancer",
+        "proxy",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "huanli0311-dsh-revolution",
+      "name": "HuanLi0311/dsh-revolution",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/HuanLi0311/dsh-revolution",
+      "defaultBranch": "master",
+      "latestCommit": "103c22454975c80334db27aef97b1334f5406abc",
+      "sourceUpdatedAt": "2026-08-23T00:43:03.000Z",
+      "discoveredAt": "2026-08-23T00:44:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "hongjr03-awesome-stars",
+      "name": "hongjr03/awesome-stars",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/hongjr03/awesome-stars",
+      "defaultBranch": "master",
+      "latestCommit": "fd7f7db927c076446a1a27adea106b34dbcd9c24",
+      "sourceUpdatedAt": "2026-08-23T00:45:15.000Z",
+      "discoveredAt": "2026-08-23T00:44:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "linny006-llm-agents-radar",
+      "name": "linny006/llm-agents-radar",
+      "description": "Live-updating index of LLM agent frameworks shipping on GitHub, refreshed every 15 minutes",
+      "repositoryUrl": "https://github.com/linny006/llm-agents-radar",
+      "defaultBranch": "master",
+      "latestCommit": "824b197ac55a1b91f2f78cd8b08942f8fdd97b4a",
+      "sourceUpdatedAt": "2026-08-23T00:45:21.000Z",
+      "discoveredAt": "2026-08-23T00:44:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-tooling",
+        "agentic",
+        "agentic-ai",
+        "ai-agent",
+        "ai-agents",
+        "ai-engineering",
+        "ai-tools",
+        "auto-updated",
+        "autonomous-agents",
+        "awesome-agents",
+        "awesome-list",
+        "crewai",
+        "developer-tools",
+        "generative-ai",
+        "langchain",
+        "live-data",
+        "llm-development",
+        "llm-stack",
+        "machine-learning",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "xyzs996-deepseek-peak-offpeak-vectors",
+      "name": "xyzs996/deepseek-peak-offpeak-vectors",
+      "description": "DeepSeek peak/off-peak billing: dated conformance vectors + a 30-line reference implementation. Weekend rule effective 2026-08-22T16:00:00Z. CC0.",
+      "repositoryUrl": "https://github.com/xyzs996/deepseek-peak-offpeak-vectors",
+      "defaultBranch": "main",
+      "latestCommit": "663e08e6408fcb21c3e7a545a47cf02511f720c8",
+      "sourceUpdatedAt": "2026-08-23T00:45:14.000Z",
+      "discoveredAt": "2026-08-23T00:44:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "api-pricing",
+        "beijing-time",
+        "billing",
+        "conformance-tests",
+        "cost-optimization",
+        "deepseek",
+        "deepseek-api",
+        "deepseek-v4",
+        "llm-pricing",
+        "off-peak",
+        "peak-off-peak",
+        "pricing-data",
+        "test-vectors",
+        "timezone",
+        "token-costs",
         "automatic-radar"
       ],
       "status": "rejected",
