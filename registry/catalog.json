@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-23T18:43:33.000Z",
+    "updatedAt": "2026-08-23T21:30:40.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -26123,6 +26123,161 @@
       ]
     },
     {
+      "id": "modlens",
+      "name": "模型提供商接入（Modlens）",
+      "packageName": "@liustack/modlens",
+      "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
+      "repositoryUrl": "https://github.com/liustack/modlens",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "043b7d2394e87ba33fb715fda032decb2155087c",
+      "version": "3.24.1",
+      "categories": [
+        "tools",
+        "visualization"
+      ],
+      "entryIds": [
+        "modlens"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22.19",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "specified-services",
+          "commands": "restricted",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "Gemini API",
+          "OpenAI-compatible API",
+          "Anthropic API",
+          "Antigravity CLI",
+          "Claude CLI"
+        ],
+        "reviewStatus": "manual-review"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-vision-bridge-external-process-and-credential-access-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-23T18:50:09Z",
+        "observedAt": "2026-08-23T21:30:40.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "模型提供商接入",
+        "Modlens",
+        "modlens",
+        "@liustack/modlens",
+        "模型",
+        "LLM",
+        "Provider",
+        "模型接入",
+        "工具能力",
+        "工具",
+        "能力",
+        "可视化",
+        "图表",
+        "看板"
+      ],
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-23T21:30:40.000Z",
+          "evidenceUrl": "https://github.com/liustack/modlens/commit/043b7d2394e87ba33fb715fda032decb2155087c",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
       "id": "dsh-turn-rewind",
       "name": "会话回退（DSH Turn Rewind）",
       "packageName": "@anionex/dsh-turn-rewind",
@@ -29736,161 +29891,6 @@
           "method": "automated-fixed-source-update-v2",
           "checkedAt": "2026-08-22T15:13:32.000Z",
           "evidenceUrl": "https://github.com/SiriLee/dsh-rewind/commit/a0aaba8be76f1fe13f52910a7f86420d94513e07",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      }
-    },
-    {
-      "id": "modlens",
-      "name": "模型提供商接入（Modlens）",
-      "packageName": "@liustack/modlens",
-      "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
-      "repositoryUrl": "https://github.com/liustack/modlens",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "99eb92f0340c12cfbee84d1d97dbb7c5cc403d9c",
-      "version": "3.24.0",
-      "categories": [
-        "tools",
-        "visualization"
-      ],
-      "entryIds": [
-        "modlens"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": ">=22.19",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "specified-services",
-          "commands": "restricted",
-          "credentials": [
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "Gemini API",
-          "OpenAI-compatible API",
-          "Anthropic API",
-          "Antigravity CLI",
-          "Claude CLI"
-        ],
-        "reviewStatus": "manual-review"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-vision-bridge-external-process-and-credential-access-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-22T08:13:25Z",
-        "observedAt": "2026-08-22T15:13:32.000Z",
-        "provenance": "github-commit"
-      },
-      "searchTerms": [
-        "模型提供商接入",
-        "Modlens",
-        "modlens",
-        "@liustack/modlens",
-        "模型",
-        "LLM",
-        "Provider",
-        "模型接入",
-        "工具能力",
-        "工具",
-        "能力",
-        "可视化",
-        "图表",
-        "看板"
-      ],
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-22T15:13:32.000Z",
-          "evidenceUrl": "https://github.com/liustack/modlens/commit/99eb92f0340c12cfbee84d1d97dbb7c5cc403d9c",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
@@ -49142,6 +49142,137 @@
       ]
     },
     {
+      "id": "dsh-config-manager",
+      "name": "配置导入迁移（DSH Config Manager）",
+      "packageName": "dsh-config-manager",
+      "description": "Backup, restore, export, import, migrate and sync your DeepSeek Harness (DSH) configuration: settings, plugins, MCP servers, skills, agent presets and workspaces. One-click migration to another machine. DSH 配置一键备份、恢复、导出、导入、迁移与同步插件。",
+      "searchTerms": [
+        "配置导入迁移",
+        "DSH Config Manager",
+        "dsh-config-manager",
+        "配置导入",
+        "配置迁移",
+        "搬家",
+        "导入",
+        "迁移",
+        "dsh",
+        "config",
+        "manager"
+      ],
+      "repositoryUrl": "https://github.com/xiajiajun516/dsh-config-manager",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "956482d6715ac4b9dc189af61c7ca786d9b49ff8",
+      "version": "0.1.48",
+      "categories": [
+        "import"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T21:32:00Z",
+        "observedAt": "2026-08-23T21:30:40.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-23T21:30:40.000Z",
+          "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/956482d6715ac4b9dc189af61c7ca786d9b49ff8",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "config-manager"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound",
+      "compatibility": {
+        "dsh": "^0.1.0-rc.6",
+        "dshReleases": {
+          "rc.5": "incompatible",
+          "rc.6": "compatible",
+          "rc.7": "compatible",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "js-yaml"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
       "id": "dsh-doc-toolkit",
       "name": "实验功能插件（DSH Doc Toolkit）",
       "packageName": "dsh-doc-toolkit",
@@ -51029,6 +51160,466 @@
         "memory",
         "evolve"
       ]
+    },
+    {
+      "id": "dsh-verifier-pro",
+      "name": "模型提供商接入（DSH Verifier Pro）",
+      "packageName": "@dsh-external/dsh-verifier-pro",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：LLM-as-a-Verifier brain for DSH agent teams: fine-grained verification (select/compare/track/progress) via official llm-verifier Python bridge, with team best-of-N selection and reviewer quality gates",
+      "searchTerms": [
+        "模型提供商接入",
+        "DSH Verifier Pro",
+        "dsh-verifier-pro",
+        "@dsh-external/dsh-verifier-pro",
+        "模型",
+        "LLM",
+        "Provider",
+        "模型接入",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "verifier",
+        "pro"
+      ],
+      "repositoryUrl": "https://github.com/Animal2404/dsh-verifier-Pro",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "aa340e8c138aca3776dc395fdf7b91cd2282ffcb",
+      "version": "0.6.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T21:32:13Z",
+        "observedAt": "2026-08-23T21:30:40.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-23T21:30:40.000Z",
+          "evidenceUrl": "https://github.com/Animal2404/dsh-verifier-Pro/commit/aa340e8c138aca3776dc395fdf7b91cd2282ffcb",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "verifier-brain"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=18",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "BSD-3-Clause",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "mirage-dsh",
+      "name": "模型提供商接入（Mirage DSH）",
+      "packageName": "@struktoai/mirage-dsh",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：DeepSeek Harness (dsh) providers backed by a mirage workspace: ctx.fs and ctx.shell over mounted resources",
+      "searchTerms": [
+        "模型提供商接入",
+        "Mirage DSH",
+        "mirage-dsh",
+        "@struktoai/mirage-dsh",
+        "模型",
+        "LLM",
+        "Provider",
+        "模型接入",
+        "实验功能",
+        "新功能",
+        "mirage",
+        "dsh"
+      ],
+      "repositoryUrl": "https://github.com/strukto-ai/mirage",
+      "defaultBranch": "main",
+      "manifestPath": "typescript/packages/dsh/package.json",
+      "installPath": "typescript/packages/dsh",
+      "updatePolicy": "external-only",
+      "commit": "5852bd3adb99470f7173a99ce1cee59a87e03925",
+      "version": "0.0.5",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T19:29:04Z",
+        "observedAt": "2026-08-23T21:30:40.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-23T21:30:40.000Z",
+          "evidenceUrl": "https://github.com/strukto-ai/mirage/commit/5852bd3adb99470f7173a99ce1cee59a87e03925",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "fs-sandbox",
+        "bash-sandbox",
+        "pwsh-sandbox",
+        "tool-pwsh",
+        "tool-fs-search",
+        "mirage",
+        "mirage-fs",
+        "mirage-shell"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; repository tree exceeds the automatic review bound; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": "0.1.1-rc.2",
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=20.10.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@struktoai/mirage-core",
+          "@struktoai/mirage-node"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-learning-bundle",
+      "name": "任务与工作流自动化（DSH Learning Bundle）",
+      "packageName": "dsh-learning-bundle",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：A governed, scoped, replayable learning loop for DeepSeek Harness.",
+      "searchTerms": [
+        "任务与工作流自动化",
+        "DSH Learning Bundle",
+        "dsh-learning-bundle",
+        "任务",
+        "工作流",
+        "自动化",
+        "定时",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "learning",
+        "bundle"
+      ],
+      "repositoryUrl": "https://github.com/B1lli/dsh-learning-bundle",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "9271370b333cbc9d124a8a9fd8283c37bf9a4b77",
+      "version": "0.3.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-23T18:50:06Z",
+        "observedAt": "2026-08-23T21:30:40.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-23T21:30:40.000Z",
+          "evidenceUrl": "https://github.com/B1lli/dsh-learning-bundle/commit/9271370b333cbc9d124a8a9fd8283c37bf9a4b77",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "dsh-learning"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
     },
     {
       "id": "dsh-prompt-enhance",
@@ -54710,137 +55301,6 @@
       }
     },
     {
-      "id": "dsh-verifier-pro",
-      "name": "模型提供商接入（DSH Verifier Pro）",
-      "packageName": "@dsh-external/dsh-verifier-pro",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：LLM-as-a-Verifier brain for DSH agent teams: fine-grained verification (select/compare/track/progress) via official llm-verifier Python bridge, with team best-of-N selection and reviewer quality gates",
-      "searchTerms": [
-        "模型提供商接入",
-        "DSH Verifier Pro",
-        "dsh-verifier-pro",
-        "@dsh-external/dsh-verifier-pro",
-        "模型",
-        "LLM",
-        "Provider",
-        "模型接入",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "verifier",
-        "pro"
-      ],
-      "repositoryUrl": "https://github.com/Animal2404/dsh-verifier-Pro",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "installPath": null,
-      "updatePolicy": "external-only",
-      "commit": "191a7cbc526709cdee29091dc3163c3c0378825e",
-      "version": "0.5.0",
-      "categories": [
-        "experimental"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-23T03:57:08Z",
-        "observedAt": "2026-08-23T03:56:55.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-policy-v1",
-          "checkedAt": "2026-08-23T03:56:55.000Z",
-          "evidenceUrl": "https://github.com/Animal2404/dsh-verifier-Pro/commit/191a7cbc526709cdee29091dc3163c3c0378825e",
-          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
-        },
-        "installability": {
-          "status": "unknown",
-          "summary": "No third-party installation or build code was executed by the automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "summary": "No DSH runtime acceptance was inferred from static automation."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "summary": "Automated source policy is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "verifier-brain"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": ">=18",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "BSD-3-Clause",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
       "id": "dsh-session-settings",
       "name": "会话管理（DSH Session Settings）",
       "packageName": "@local/dsh-session-settings",
@@ -56443,134 +56903,6 @@
           "@deepseek-ai/cordis",
           "hufu"
         ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
-      "id": "dsh-learning-bundle",
-      "name": "任务与工作流自动化（DSH Learning Bundle）",
-      "packageName": "dsh-learning-bundle",
-      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：A governed, scoped, replayable learning loop for DeepSeek Harness.",
-      "searchTerms": [
-        "任务与工作流自动化",
-        "DSH Learning Bundle",
-        "dsh-learning-bundle",
-        "任务",
-        "工作流",
-        "自动化",
-        "定时",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "learning",
-        "bundle"
-      ],
-      "repositoryUrl": "https://github.com/B1lli/dsh-learning-bundle",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "installPath": null,
-      "updatePolicy": "external-only",
-      "commit": "a26088eb8d89d80cc31d2c74d5bd520ed54c3f69",
-      "version": "0.2.0",
-      "categories": [
-        "experimental"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-22T18:44:17Z",
-        "observedAt": "2026-08-22T18:43:54.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-policy-v1",
-          "checkedAt": "2026-08-22T18:43:54.000Z",
-          "evidenceUrl": "https://github.com/B1lli/dsh-learning-bundle/commit/a26088eb8d89d80cc31d2c74d5bd520ed54c3f69",
-          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
-        },
-        "installability": {
-          "status": "unknown",
-          "summary": "No third-party installation or build code was executed by the automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "summary": "No DSH runtime acceptance was inferred from static automation."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "summary": "Automated source policy is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "dsh-learning"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": "^22.19.0 || >=24.0.0",
-        "systems": [],
-        "profiles": []
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [],
         "reviewStatus": "automated-scan"
       },
       "risk": {
@@ -58347,144 +58679,6 @@
           "@deepseek-ai/dsh-authorization",
           "@deepseek-ai/schemastery",
           "ws"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
-      "id": "mirage-dsh",
-      "name": "模型提供商接入（Mirage DSH）",
-      "packageName": "@struktoai/mirage-dsh",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：DeepSeek Harness (dsh) providers backed by a mirage workspace: ctx.fs and ctx.shell over mounted resources",
-      "searchTerms": [
-        "模型提供商接入",
-        "Mirage DSH",
-        "mirage-dsh",
-        "@struktoai/mirage-dsh",
-        "模型",
-        "LLM",
-        "Provider",
-        "模型接入",
-        "实验功能",
-        "新功能",
-        "mirage",
-        "dsh"
-      ],
-      "repositoryUrl": "https://github.com/strukto-ai/mirage",
-      "defaultBranch": "main",
-      "manifestPath": "typescript/packages/dsh/package.json",
-      "installPath": "typescript/packages/dsh",
-      "updatePolicy": "external-only",
-      "commit": "021144bbbf50e0abf649d2ae543b107628a1d2cb",
-      "version": "0.0.1",
-      "categories": [
-        "experimental"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-23T06:56:36Z",
-        "observedAt": "2026-08-23T06:56:22.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-policy-v1",
-          "checkedAt": "2026-08-23T06:56:22.000Z",
-          "evidenceUrl": "https://github.com/strukto-ai/mirage/commit/021144bbbf50e0abf649d2ae543b107628a1d2cb",
-          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
-        },
-        "installability": {
-          "status": "unknown",
-          "summary": "No third-party installation or build code was executed by the automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "summary": "No DSH runtime acceptance was inferred from static automation."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "summary": "Automated source policy is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "fs-sandbox",
-        "bash-sandbox",
-        "pwsh-sandbox",
-        "tool-pwsh",
-        "tool-fs-search",
-        "mirage",
-        "mirage-fs",
-        "mirage-shell"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; repository tree exceeds the automatic review bound; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
-      "compatibility": {
-        "dsh": "0.1.0-rc.6",
-        "dshReleases": {
-          "rc.5": "incompatible",
-          "rc.6": "compatible",
-          "rc.7": "incompatible",
-          "rc.8": "incompatible",
-          "0.1.1-rc.1": "incompatible"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": ">=20.10.0",
-        "systems": [],
-        "profiles": []
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "Apache-2.0",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [
-          "@struktoai/mirage-core",
-          "@struktoai/mirage-node"
         ],
         "reviewStatus": "automated-scan"
       },

@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T18:43:33.000Z",
+    "updatedAt": "2026-08-23T21:30:40.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26620,8 +26620,8 @@
       "description": "awesome game security [Welcome to PR]",
       "repositoryUrl": "https://github.com/gmh5225/awesome-game-security",
       "defaultBranch": "main",
-      "latestCommit": "24cf7be50ede3b27cf4291217951ec7a8b665eb1",
-      "sourceUpdatedAt": "2026-08-23T18:44:03.000Z",
+      "latestCommit": "d7c3cfcb4878eb7bb6fbc4395fca773eee9e2c8e",
+      "sourceUpdatedAt": "2026-08-23T21:32:45.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28614,6 +28614,152 @@
       "latestCommit": "d58512cf8b6c0ce19251ba943b000665da290fef",
       "sourceUpdatedAt": "2026-08-23T18:43:53.000Z",
       "discoveredAt": "2026-08-23T18:43:33.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "q00-ouroboros",
+      "name": "Q00/ouroboros",
+      "description": "Agent OS: the agent gets smarter on its own. We just hold the line: the grading command and expected result never make it into the success contract we hand it. Interview-gated, staged evaluation, budgeted evolution loop. MCP server, 13 runtimes: Claude Code, Codex CLI, Gemini CLI, OpenCode, Copilot, Kiro and more.",
+      "repositoryUrl": "https://github.com/Q00/ouroboros",
+      "defaultBranch": "main",
+      "latestCommit": "7560bc26c03428490bf6ca0f5545e159cdebc89a",
+      "sourceUpdatedAt": "2026-08-23T21:30:37.000Z",
+      "discoveredAt": "2026-08-23T21:30:40.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-os",
+        "agentic-ai",
+        "ai-agent",
+        "ai-coding-agent",
+        "claude-code",
+        "cli",
+        "codex",
+        "coding-agent",
+        "deepseek",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "github-copilot",
+        "llm-evaluation",
+        "llm-orchestration",
+        "loop-engineering",
+        "mcp",
+        "opencode",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "writecasually-deepseek-harness-plugins",
+      "name": "writeCasually/deepseek-harness-plugins",
+      "description": "deepseek harness plugins view",
+      "repositoryUrl": "https://github.com/writeCasually/deepseek-harness-plugins",
+      "defaultBranch": "main",
+      "latestCommit": "fa09a6f418ebab6d1b0c0065974b73dcc00df4a3",
+      "sourceUpdatedAt": "2026-08-23T21:32:03.000Z",
+      "discoveredAt": "2026-08-23T21:30:40.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "xjungit-resume-stream",
+      "name": "XJungit/resume-stream",
+      "description": "DSH plugin: auto-resume LLM streams that end without a finish_reason (all providers), with in-message-list UI notice + toast.",
+      "repositoryUrl": "https://github.com/XJungit/resume-stream",
+      "defaultBranch": "main",
+      "latestCommit": "10b6ecca68c0a6217dfc91596752b2e11c7ac8cc",
+      "sourceUpdatedAt": "2026-08-23T21:30:07.000Z",
+      "discoveredAt": "2026-08-23T21:30:40.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_MISSING: Bundle Patch does not declare a DSH entry ID"
+    },
+    {
+      "id": "bftz22-dsh-openai-bridge",
+      "name": "bftz22/dsh-openai-bridge",
+      "description": "OpenAI-compatible bridge that lets Chatbox (or any OpenAI-compatible client) drive a DeepSeek Harness (dsh) agent on your machine — streaming, tool-call traces, persistent sessions, one-click installers. 让 Chatbox 直接驱动 DeepSeek Harness 智能体的零依赖桥接服务",
+      "repositoryUrl": "https://github.com/bftz22/dsh-openai-bridge",
+      "defaultBranch": "main",
+      "latestCommit": "f6530b19db934992a57bbf84b4a0f5a0edfe0ea3",
+      "sourceUpdatedAt": "2026-08-17T18:37:21.000Z",
+      "discoveredAt": "2026-08-23T21:30:40.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "ai-agent",
+        "bridge",
+        "chatbox",
+        "deepseek",
+        "deepseek-harness",
+        "llm",
+        "macos",
+        "openai",
+        "powershell",
+        "sse",
+        "windows",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "katharsysdesign-opencode-dsh-extension",
+      "name": "katharsysdesign/opencode-dsh-extension",
+      "description": "Browser extension that auto-syncs OpenCode Go usage to DSH sidebar",
+      "repositoryUrl": "https://github.com/katharsysdesign/opencode-dsh-extension",
+      "defaultBranch": "main",
+      "latestCommit": "e25b74e08a93201a8a0a509ea7f3b9df36155cde",
+      "sourceUpdatedAt": "2026-08-23T21:31:47.000Z",
+      "discoveredAt": "2026-08-23T21:30:40.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "ddutchie-dsh-usage-tracker",
+      "name": "ddutchie/dsh-usage-tracker",
+      "description": "Durable LLM usage + cost tracking, aggregation, and a usage panel for DeepSeek Harness (DSH)",
+      "repositoryUrl": "https://github.com/ddutchie/dsh-usage-tracker",
+      "defaultBranch": "main",
+      "latestCommit": "6182f37b6aab9d29df9e973d2098d28bc9c189f7",
+      "sourceUpdatedAt": "2026-08-23T21:31:44.000Z",
+      "discoveredAt": "2026-08-23T21:30:40.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
       ],
