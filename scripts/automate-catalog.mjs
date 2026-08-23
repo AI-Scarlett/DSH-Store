@@ -433,7 +433,10 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
       const withoutCurrent = { ...baselineCatalog, entries: baselineCatalog.entries.filter(item => item.id !== entry.id) }
       const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '', {
-        catalogDocument: withoutCurrent, token: process.env.GITHUB_TOKEN, timeoutMs: 12_000,
+        catalogDocument: withoutCurrent,
+        allowProtectedManager: entry.id === 'dsh-safe-plugin-manager'
+          && entry.repositoryUrl.toLowerCase() === SELF_MANAGER_REPOSITORY.toLowerCase(),
+        token: process.env.GITHUB_TOKEN, timeoutMs: 12_000,
       }))
       const candidate = result.candidate
       if (candidate.commit !== snapshot.commit || candidate.defaultBranch !== snapshot.defaultBranch) {
@@ -457,9 +460,6 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const sourcePolicy = catalogUpdatePolicy(entry)
       const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
       const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
-      if (entry.id === 'dsh-safe-plugin-manager') {
-        process.stdout.write(`CATALOG_AUTOMATION_SELF_MANAGER_GATE safe=${safeSelfManagerUpdate} hard=${JSON.stringify(hardReasons)} repo=${JSON.stringify(entry.repositoryUrl)}\n`)
-      }
       if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: analysis.reasons.join('; ') }
       }
