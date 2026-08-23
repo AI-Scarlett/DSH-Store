@@ -30,6 +30,8 @@ const INFRASTRUCTURE_CODES = new Set([
   'SUBMISSION_GITHUB_NETWORK', 'SUBMISSION_REPOSITORY_HTTP', 'SUBMISSION_COMMIT_HTTP',
   'SUBMISSION_TREE_HTTP', 'SUBMISSION_SOURCE_HTTP',
 ])
+const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
+const SELF_MANAGER_PROTECTED_ENTRY_REASON = 'Bundle Patch uses a protected DSH entry ID'
 
 function sha256(value) {
   return createHash('sha256').update(value).digest('hex')
@@ -87,6 +89,14 @@ function routeForFailure(code) {
   if (code === 'SUBMISSION_PACKAGE_AMBIGUOUS') return 'monorepo-review'
   if (code === 'SUBMISSION_BUNDLE_MISSING') return 'adapter-required'
   return 'blocked'
+}
+
+function isSafeSelfManagerUpdate(entry, analysis) {
+  return entry?.id === 'dsh-safe-plugin-manager'
+    && canonicalGithubRepository(entry.repositoryUrl) === SELF_MANAGER_REPOSITORY
+    && Array.isArray(analysis?.reasons)
+    && analysis.reasons.length === 1
+    && analysis.reasons[0] === SELF_MANAGER_PROTECTED_ENTRY_REASON
 }
 
 const delay = milliseconds => new Promise(resolveDelay => setTimeout(resolveDelay, milliseconds))
@@ -441,12 +451,13 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       }
       const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, policy, github))
       const sourcePolicy = catalogUpdatePolicy(entry)
-      if (sourcePolicy === 'source-verified' && !analysis.approved) {
+      const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, analysis)
+      if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: analysis.reasons.join('; ') }
       }
       if (sourcePolicy === 'user-reviewed') {
         const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
-        if (hardReasons.length > 0) {
+        if (hardReasons.length > 0 && !safeSelfManagerUpdate) {
           return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: hardReasons.join('; ') }
         }
       }
