@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T06:56:22.000Z",
+    "updatedAt": "2026-08-23T09:37:16.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26600,8 +26600,8 @@
       "description": "awesome game security [Welcome to PR]",
       "repositoryUrl": "https://github.com/gmh5225/awesome-game-security",
       "defaultBranch": "main",
-      "latestCommit": "acd211824054bb38940b4334f6fec1eb531a60a3",
-      "sourceUpdatedAt": "2026-08-23T06:58:14.000Z",
+      "latestCommit": "37648df16930abbbeabcdec7dd22ec1efbc3d904",
+      "sourceUpdatedAt": "2026-08-23T09:38:21.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28250,8 +28250,8 @@
       "description": "📚 A zero-dependency, git-backed micro-lesson library for AI Agents to asynchronously share and search verified debugging experience. Python stdlib only. | https://misakanet.org",
       "repositoryUrl": "https://github.com/Ikalus1988/MisakaNet",
       "defaultBranch": "main",
-      "latestCommit": "58591bca20e9d93eccebdbce4529a719d8271d16",
-      "sourceUpdatedAt": "2026-08-23T06:57:27.000Z",
+      "latestCommit": "9e6439a61e54ee0d541384490c14c472df20e2d8",
+      "sourceUpdatedAt": "2026-08-23T09:36:30.000Z",
       "discoveredAt": "2026-08-23T06:56:22.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28278,6 +28278,91 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_VERSION_INVALID: package.json must declare a semantic version"
+    },
+    {
+      "id": "alego-hub-alego-tui",
+      "name": "Alego-hub/alego-tui",
+      "description": "Claude Code style TUI for Alego Harness",
+      "repositoryUrl": "https://github.com/Alego-hub/alego-tui",
+      "defaultBranch": "main",
+      "latestCommit": "8669b1243de627028c4d62ae7719349d04150568",
+      "sourceUpdatedAt": "2026-08-23T09:38:24.000Z",
+      "discoveredAt": "2026-08-23T09:37:16.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "saikel-orado-liu-dsh-cost-meter",
+      "name": "Saikel-Orado-Liu/dsh-cost-meter",
+      "description": "Cost tracking plugin for the DeepSeek Harness Web GUI — snapshot-anchored per-turn pricing, account balance, and live cost estimates.",
+      "repositoryUrl": "https://github.com/Saikel-Orado-Liu/dsh-cost-meter",
+      "defaultBranch": "main",
+      "latestCommit": "9b69be1354be92b8858a24a2cdaf35638d35709d",
+      "sourceUpdatedAt": "2026-08-23T09:17:14.000Z",
+      "discoveredAt": "2026-08-23T09:37:16.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "cordis",
+        "cost-tracking",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "pricing",
+        "react",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
+    },
+    {
+      "id": "sjlgg-dsh-free-web-search",
+      "name": "sjlgg/dsh-free-web-search",
+      "description": "a deepseek plugin for free web search",
+      "repositoryUrl": "https://github.com/sjlgg/dsh-free-web-search",
+      "defaultBranch": "main",
+      "latestCommit": "2e11109a7c4f3c088c5b751b8c901ee4be518a1b",
+      "sourceUpdatedAt": "2026-08-23T09:37:27.000Z",
+      "discoveredAt": "2026-08-23T09:37:16.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID web is already owned by dsh-tavily"
+    },
+    {
+      "id": "haroonsh-dev-deepseek-harness",
+      "name": "haroonsh-dev/deepseek-harness",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/haroonsh-dev/deepseek-harness",
+      "defaultBranch": "master",
+      "latestCommit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+      "sourceUpdatedAt": "2026-08-21T12:03:37.000Z",
+      "discoveredAt": "2026-08-23T09:37:16.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
     }
   ]
 }
