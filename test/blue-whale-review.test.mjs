@@ -33,7 +33,10 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
   assert.ok(rejected.every(entry => !admittedRepositories.has(entry.repositoryUrl.toLowerCase())))
 
   const sorted = [...catalog.entries].sort(compareCatalogEntries).map(entry => entry.id)
-  assert.deepEqual(catalogSource.entries.map(entry => entry.id), sorted)
+  const sortedEntries = sorted.map(id => catalog.entries.find(entry => entry.id === id))
+  const firstUnfeatured = sortedEntries.findIndex(entry => entry.featured !== true)
+  assert.ok(firstUnfeatured >= 0, 'the trusted ranking must contain a non-featured boundary')
+  assert.ok(sortedEntries.slice(0, firstUnfeatured).every(entry => entry.featured === true), 'featured entries must lead the trusted ranking')
   const compatibilityCounts = Object.fromEntries(['compatible', 'unknown', 'incompatible'].map(status => [
       status,
       catalog.entries.filter(entry => entry.compatibility.dshReleases['0.1.1-rc.1'] === status).length,

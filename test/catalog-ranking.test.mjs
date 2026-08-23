@@ -31,3 +31,13 @@ test('dynamic latest ranking keeps exact evidence ahead of range-only support', 
     'exact-old', 'range-new', 'excluded-newest',
   ])
 })
+
+test('featured entries are pinned ahead of compatibility and freshness rankings', () => {
+  const values = [
+    entry('compatible-unfeatured', 'compatible', '2026-08-20T00:00:00Z'),
+    entry('featured-older', 'unknown', '2026-08-01T00:00:00Z', { featured: true }),
+  ]
+  assert.deepEqual(values.sort(compareCatalogEntries).map(value => value.id), [
+    'featured-older', 'compatible-unfeatured',
+  ])
+})

@@ -191,7 +191,21 @@ export function createSourceUpdateService(options = {}) {
       externalOnly.push('项目使用受保护的 @deepseek-ai 命名空间')
     }
     if (manifest?.name !== entry.packageName) blockers.push('候选包名与商城登记身份不一致')
-    if (compareVersions(candidateVersion, installed.version ?? entry.version) !== 1) blockers.push('候选版本没有高于当前安装版本')
+    const installedVersion = installed.version ?? entry.version
+    const versionComparison = compareVersions(candidateVersion, installedVersion)
+    if (versionComparison === 0 && blockers.length === 0 && externalOnly.length === 0) {
+      const value = {
+        status: 'current', policy, branch, catalogCommit: entry.commit, candidateCommit: commit,
+        candidateVersion, candidate: publicCandidate(candidate), sameVersionSourceChange: true,
+        warnings: [], blockers: [],
+        reasons: ['源仓库存在同版本提交，商城不会将目录或文档提交当作插件升级。'],
+        checkedFiles: 0, checkedCommits: 0, diff: null,
+        notice: '已确认候选版本与当前安装版本相同；未生成更新计划，也未将目录或文档变更当作插件更新。',
+      }
+      cache.set(key, { cachedAt: now(), value })
+      return { ...value, cacheStatus: 'fresh' }
+    }
+    if (versionComparison !== 1) blockers.push('候选版本没有高于当前安装版本')
     if (JSON.stringify(manifestContract(manifest)) !== JSON.stringify(manifestContract(catalogManifest))) {
       warnings.push('候选依赖、入口、文件清单、运行时或 Bundle 声明发生变化')
     }

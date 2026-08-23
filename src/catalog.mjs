@@ -723,9 +723,9 @@ export function compareCatalogEntries(left, right, options = {}) {
   const statusRank = entry => ({ approved: 0, blocked: 1, unlisted: 2 }[entry.status] ?? 2)
   const freshness = entry => Date.parse(entry.source?.updatedAt ?? entry.github?.pushedAt ?? entry.github?.updatedAt ?? '') || 0
   return statusRank(left) - statusRank(right)
+    || Number(right.featured === true) - Number(left.featured === true)
     || compatibilityRank(left, releaseContext) - compatibilityRank(right, releaseContext)
     || freshness(right) - freshness(left)
-    || Number(right.featured) - Number(left.featured)
     || (right.installCount ?? -1) - (left.installCount ?? -1)
     || (compareVersions(right.version, left.version) ?? 0)
     || left.name.localeCompare(right.name, 'zh-CN')
@@ -868,7 +868,9 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
   const pageSize = positiveInteger(options.pageSize, MARKET_PAGE_SIZE, MAX_MARKET_PAGE_SIZE, 'pageSize')
   const scopedEntries = snapshot.entries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
   const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories ?? []))].sort()
+  const featuredOnly = options.featuredOnly === true
   const matchingEntries = scopedEntries
+    .filter(entry => !featuredOnly || entry.featured === true)
     .filter(entry => category === '' || entry.categories?.includes(category))
     .filter(entry => query === '' || marketplaceSearchValues(entry).some(item => item.includes(query)))
   const matchingCandidates = view === 'candidates'
@@ -889,9 +891,9 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
     entries: view === 'candidates' ? [] : pageItems,
     candidates: view === 'candidates' ? pageItems : [],
     catalogPackageNames: snapshot.entries.map(entry => entry.packageName),
-    filters: { categoryIds },
+    filters: { categoryIds, featuredOnly },
     pagination: {
-      view, query, category, page, pageSize, total, pageCount,
+      view, query, category, featuredOnly, page, pageSize, total, pageCount,
       hasPrevious: page > 1,
       hasNext: page < pageCount,
     },
