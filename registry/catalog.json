@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-24T04:01:32.000Z",
+    "updatedAt": "2026-08-24T07:14:52.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -25872,6 +25872,462 @@
       ]
     },
     {
+      "id": "dsh-rewind-plugin",
+      "name": "会话与文件回退（DSH Rewind Plugin）",
+      "packageName": "dsh-rewind-plugin",
+      "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
+      "repositoryUrl": "https://github.com/SiriLee/dsh-rewind",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "4fdf678da826308e6f88aff0a60a46020cd434f3",
+      "version": "0.3.3",
+      "categories": [
+        "sessions"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-rewind-plugin"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "updatePolicy": "user-reviewed",
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "commands": "none",
+          "network": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-24T07:09:05Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "会话与文件回退",
+        "DSH Rewind Plugin",
+        "dsh-rewind-plugin",
+        "回退",
+        "检查点",
+        "恢复",
+        "会话",
+        "会话与消息",
+        "对话",
+        "历史消息",
+        "dsh",
+        "rewind",
+        "plugin"
+      ],
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/SiriLee/dsh-rewind/commit/4fdf678da826308e6f88aff0a60a46020cd434f3",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
+      "id": "dsh-auto-vision",
+      "name": "图像视觉工具（DSH Auto Vision）",
+      "packageName": "dsh-auto-vision",
+      "description": "为纯文本 DeepSeek Harness 主模型搭视觉桥：自动从已配置模型中挑选多模态模型，通过 vision 工具把图片描述以纯文本返回。",
+      "repositoryUrl": "https://github.com/NormanFxxkingRockwell/dsh-auto-vision",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "55a2e1cba346a30780873a5755ea29e9aaf78a96",
+      "version": "0.3.0",
+      "categories": [
+        "visualization",
+        "tools"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-auto-vision"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "updatePolicy": "user-reviewed",
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "none",
+          "commands": "none",
+          "network": "none",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-24T07:07:31Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "图像视觉工具",
+        "DSH Auto Vision",
+        "dsh-auto-vision",
+        "视觉",
+        "识图",
+        "图片",
+        "多模态",
+        "可视化",
+        "图表",
+        "看板",
+        "工具能力",
+        "工具",
+        "能力",
+        "dsh",
+        "auto",
+        "vision"
+      ],
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/NormanFxxkingRockwell/dsh-auto-vision/commit/55a2e1cba346a30780873a5755ea29e9aaf78a96",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
+      "id": "dsh-taskboard",
+      "name": "任务与工作流自动化（DSH Taskboard）",
+      "packageName": "dsh-taskboard",
+      "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
+      "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "2eb7f185ecb67fd971da09dbe9a88d17496d3dd0",
+      "version": "0.5.1",
+      "categories": [
+        "workflow"
+      ],
+      "featured": false,
+      "entryIds": [
+        "dsh-taskboard"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "updatePolicy": "user-reviewed",
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "commands": "shell",
+          "network": "any",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（插件可访问任意网络端点）",
+          "主机命令与插件声明的外部 CLI",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-24T05:42:08Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "任务与工作流自动化",
+        "DSH Taskboard",
+        "dsh-taskboard",
+        "任务",
+        "工作流",
+        "自动化",
+        "定时",
+        "工作流与自动化",
+        "dsh",
+        "taskboard"
+      ],
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/2eb7f185ecb67fd971da09dbe9a88d17496d3dd0",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
       "id": "dsh-wsl-workspace",
       "name": "文件与工作区工具（DSH WSL Workspace）",
       "packageName": "dsh-wsl-workspace",
@@ -25879,8 +26335,8 @@
       "repositoryUrl": "https://github.com/6Mikao9/dsh-wsl-workspace",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "b3c3f22846da497be210c9737b253d89757ec44c",
-      "version": "0.3.0",
+      "commit": "db5234197d8bd697070be28b1c648b46b9f1ac01",
+      "version": "0.3.1",
       "categories": [
         "tools"
       ],
@@ -25962,8 +26418,8 @@
         "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
       },
       "source": {
-        "updatedAt": "2026-08-24T03:49:51Z",
-        "observedAt": "2026-08-24T04:01:32.000Z",
+        "updatedAt": "2026-08-24T04:39:40Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
         "provenance": "github-commit"
       },
       "searchTerms": [
@@ -25985,8 +26441,165 @@
         "discovery": {
           "status": "verified",
           "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-24T04:01:32.000Z",
-          "evidenceUrl": "https://github.com/6Mikao9/dsh-wsl-workspace/commit/b3c3f22846da497be210c9737b253d89757ec44c",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/6Mikao9/dsh-wsl-workspace/commit/db5234197d8bd697070be28b1c648b46b9f1ac01",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
+      "id": "dsh-deepseek-quota-bar",
+      "name": "余额与额度监控（DSH DeepSeek Quota Bar）",
+      "packageName": "dsh-deepseek-quota-bar",
+      "description": "可拖动透明余额卡片：余额/月初额度血条、今日/本月用量（配置平台 token 后为官方精确数据）、当前对话费用。",
+      "repositoryUrl": "https://github.com/jiangli07/dsh-deepseek-quota-bar",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "67556ca89abb5c1465244771801292e8469675d0",
+      "version": "0.6.2",
+      "categories": [
+        "visualization",
+        "tools"
+      ],
+      "featured": false,
+      "entryIds": [
+        "deepseek-quota-bar"
+      ],
+      "status": "approved",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "updatePolicy": "user-reviewed",
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "commands": "none",
+          "network": "any",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": [
+          "第三方网络服务（插件可访问任意网络端点）",
+          "用户配置的外部服务凭据"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-24T04:37:42Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "余额与额度监控",
+        "DSH DeepSeek Quota Bar",
+        "dsh-deepseek-quota-bar",
+        "余额",
+        "额度",
+        "配额",
+        "钱包",
+        "可视化",
+        "图表",
+        "看板",
+        "工具能力",
+        "工具",
+        "能力",
+        "dsh",
+        "deepseek",
+        "quota",
+        "bar"
+      ],
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/jiangli07/dsh-deepseek-quota-bar/commit/67556ca89abb5c1465244771801292e8469675d0",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
@@ -26902,156 +27515,6 @@
           "method": "automated-fixed-source-update-v2",
           "checkedAt": "2026-08-23T15:32:29.000Z",
           "evidenceUrl": "https://github.com/shaobeichen/dsh-pocket/commit/472524a45ef7b1ff6fbd9c3bf50787680a5497c3",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      }
-    },
-    {
-      "id": "dsh-taskboard",
-      "name": "任务与工作流自动化（DSH Taskboard）",
-      "packageName": "dsh-taskboard",
-      "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
-      "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "e336ab2abdaf96aa59b0f6cdc6f7baa092194ba6",
-      "version": "0.5.0",
-      "categories": [
-        "workflow"
-      ],
-      "featured": false,
-      "entryIds": [
-        "dsh-taskboard"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": null,
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "updatePolicy": "user-reviewed",
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "Apache-2.0",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "commands": "shell",
-          "network": "any",
-          "credentials": [
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "第三方网络服务（插件可访问任意网络端点）",
-          "主机命令与插件声明的外部 CLI",
-          "用户配置的外部服务凭据"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-23T12:41:44Z",
-        "observedAt": "2026-08-23T12:57:17.000Z",
-        "provenance": "github-commit"
-      },
-      "searchTerms": [
-        "任务与工作流自动化",
-        "DSH Taskboard",
-        "dsh-taskboard",
-        "任务",
-        "工作流",
-        "自动化",
-        "定时",
-        "工作流与自动化",
-        "dsh",
-        "taskboard"
-      ],
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-23T12:57:17.000Z",
-          "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/e336ab2abdaf96aa59b0f6cdc6f7baa092194ba6",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
@@ -29983,159 +30446,6 @@
       }
     },
     {
-      "id": "dsh-rewind-plugin",
-      "name": "会话与文件回退（DSH Rewind Plugin）",
-      "packageName": "dsh-rewind-plugin",
-      "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
-      "repositoryUrl": "https://github.com/SiriLee/dsh-rewind",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "a0aaba8be76f1fe13f52910a7f86420d94513e07",
-      "version": "0.3.2",
-      "categories": [
-        "sessions"
-      ],
-      "featured": false,
-      "entryIds": [
-        "dsh-rewind-plugin"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": "^22.19.0 || >=24.0.0",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "updatePolicy": "user-reviewed",
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "commands": "none",
-          "network": "none",
-          "credentials": [
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "用户配置的外部服务凭据"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [
-          "prepare"
-        ],
-        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-22T09:42:17Z",
-        "observedAt": "2026-08-22T15:13:32.000Z",
-        "provenance": "github-commit"
-      },
-      "searchTerms": [
-        "会话与文件回退",
-        "DSH Rewind Plugin",
-        "dsh-rewind-plugin",
-        "回退",
-        "检查点",
-        "恢复",
-        "会话",
-        "会话与消息",
-        "对话",
-        "历史消息",
-        "dsh",
-        "rewind",
-        "plugin"
-      ],
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-22T15:13:32.000Z",
-          "evidenceUrl": "https://github.com/SiriLee/dsh-rewind/commit/a0aaba8be76f1fe13f52910a7f86420d94513e07",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      }
-    },
-    {
       "id": "dsh-assistant-message-forge",
       "name": "配置导入迁移（DSH Assistant Message Forge）",
       "packageName": "dsh-assistant-message-forge",
@@ -30865,163 +31175,6 @@
           "method": "automated-fixed-source-update-v2",
           "checkedAt": "2026-08-22T15:13:32.000Z",
           "evidenceUrl": "https://github.com/AbcdefgXW/dsh-toolbox-web/commit/da6227a70ed7ab44070949073924abfd23a47a58",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      }
-    },
-    {
-      "id": "dsh-deepseek-quota-bar",
-      "name": "余额与额度监控（DSH DeepSeek Quota Bar）",
-      "packageName": "dsh-deepseek-quota-bar",
-      "description": "可拖动透明余额卡片：余额/月初额度血条、今日/本月用量（配置平台 token 后为官方精确数据）、当前对话费用。",
-      "repositoryUrl": "https://github.com/jiangli07/dsh-deepseek-quota-bar",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "d364d7f0e7c4d700e6e0627ea8088a2a662d1818",
-      "version": "0.6.0",
-      "categories": [
-        "visualization",
-        "tools"
-      ],
-      "featured": false,
-      "entryIds": [
-        "deepseek-quota-bar"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": null,
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "updatePolicy": "user-reviewed",
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "commands": "none",
-          "network": "any",
-          "credentials": [
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "第三方网络服务（插件可访问任意网络端点）",
-          "用户配置的外部服务凭据"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-21T11:18:19Z",
-        "observedAt": "2026-08-22T15:13:32.000Z",
-        "provenance": "github-commit"
-      },
-      "searchTerms": [
-        "余额与额度监控",
-        "DSH DeepSeek Quota Bar",
-        "dsh-deepseek-quota-bar",
-        "余额",
-        "额度",
-        "配额",
-        "钱包",
-        "可视化",
-        "图表",
-        "看板",
-        "工具能力",
-        "工具",
-        "能力",
-        "dsh",
-        "deepseek",
-        "quota",
-        "bar"
-      ],
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-22T15:13:32.000Z",
-          "evidenceUrl": "https://github.com/jiangli07/dsh-deepseek-quota-bar/commit/d364d7f0e7c4d700e6e0627ea8088a2a662d1818",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
@@ -36397,159 +36550,6 @@
           "method": "automated-fixed-source-update-v2",
           "checkedAt": "2026-08-22T15:13:32.000Z",
           "evidenceUrl": "https://github.com/y2zyyr/dsh-token-usage-sidebar/commit/bcebd95cc494a0fa6aa59a71ed6bc6f621557c82",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      }
-    },
-    {
-      "id": "dsh-auto-vision",
-      "name": "图像视觉工具（DSH Auto Vision）",
-      "packageName": "dsh-auto-vision",
-      "description": "为纯文本 DeepSeek Harness 主模型搭视觉桥：自动从已配置模型中挑选多模态模型，通过 vision 工具把图片描述以纯文本返回。",
-      "repositoryUrl": "https://github.com/NormanFxxkingRockwell/dsh-auto-vision",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "ee62b67f0926b332f1024edbc4eb438b6006451b",
-      "version": "0.2.3",
-      "categories": [
-        "visualization",
-        "tools"
-      ],
-      "featured": false,
-      "entryIds": [
-        "dsh-auto-vision"
-      ],
-      "status": "approved",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": null,
-        "systems": [],
-        "profiles": []
-      },
-      "updatePolicy": "user-reviewed",
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "medium",
-          "files": "none",
-          "commands": "none",
-          "network": "none",
-          "credentials": [
-            "api-key"
-          ]
-        },
-        "externalDependencies": [
-          "用户配置的外部服务凭据"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-19T03:52:16Z",
-        "observedAt": "2026-08-22T15:13:32.000Z",
-        "provenance": "github-commit"
-      },
-      "searchTerms": [
-        "图像视觉工具",
-        "DSH Auto Vision",
-        "dsh-auto-vision",
-        "视觉",
-        "识图",
-        "图片",
-        "多模态",
-        "可视化",
-        "图表",
-        "看板",
-        "工具能力",
-        "工具",
-        "能力",
-        "dsh",
-        "auto",
-        "vision"
-      ],
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-22T15:13:32.000Z",
-          "evidenceUrl": "https://github.com/NormanFxxkingRockwell/dsh-auto-vision/commit/ee62b67f0926b332f1024edbc4eb438b6006451b",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
@@ -50394,139 +50394,6 @@
       }
     },
     {
-      "id": "dsh-files",
-      "name": "文件与工作区工具（DSH Files）",
-      "packageName": "dsh-files",
-      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：DeepSeek Harness dual-face plugin: a composer file-upload button with session-isolated storage, TTL sweep and sha256 dedup, plus a read_document tool (text/PDF/DOCX/XLSX) with content sniffing, GB18030 fallback and byte-budgeted LRU caching.",
-      "searchTerms": [
-        "文件与工作区工具",
-        "DSH Files",
-        "dsh-files",
-        "文件",
-        "工作区",
-        "目录",
-        "附件",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "files"
-      ],
-      "repositoryUrl": "https://github.com/taxueseek/dsh-files",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "installPath": null,
-      "updatePolicy": "external-only",
-      "commit": "a5d8d3452b6b9f00396ba976ca416d6f07acf78c",
-      "version": "0.3.0",
-      "categories": [
-        "experimental"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-22T15:25:43Z",
-        "observedAt": "2026-08-22T15:13:32.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-policy-v1",
-          "checkedAt": "2026-08-22T15:13:32.000Z",
-          "evidenceUrl": "https://github.com/taxueseek/dsh-files/commit/a5d8d3452b6b9f00396ba976ca416d6f07acf78c",
-          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
-        },
-        "installability": {
-          "status": "unknown",
-          "summary": "No third-party installation or build code was executed by the automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "summary": "No DSH runtime acceptance was inferred from static automation."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "summary": "Automated source policy is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "files-toolkit"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
-      "compatibility": {
-        "dsh": "^0.1.0-rc.6",
-        "dshReleases": {
-          "rc.5": "incompatible",
-          "rc.6": "compatible",
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": null,
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [
-          "mammoth",
-          "pdfjs-dist",
-          "read-excel-file"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
       "id": "dsh-favorites",
       "name": "会话管理（DSH Favorites）",
       "packageName": "dsh-favorites",
@@ -51353,6 +51220,1027 @@
       ]
     },
     {
+      "id": "dsh-lark-bridge",
+      "name": "飞书连接器（DSH Lark Bridge）",
+      "packageName": "dsh-lark-bridge",
+      "description": "为 DSH 提供飞书连接器能力。英文原始说明：A DeepSeek Harness (dsh) plugin that bridges dsh agents to Feishu/Lark group chats — one group, one project directory.",
+      "searchTerms": [
+        "飞书连接器",
+        "DSH Lark Bridge",
+        "dsh-lark-bridge",
+        "飞书",
+        "Lark",
+        "消息连接器",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "lark",
+        "bridge"
+      ],
+      "repositoryUrl": "https://github.com/bihangchi9-creator/dsh-lark-bridge",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "834302d2b715612784dc3a0e86538414afb6cd22",
+      "version": "0.0.1",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T07:15:58Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/bihangchi9-creator/dsh-lark-bridge/commit/834302d2b715612784dc3a0e86538414afb6cd22",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "lark-bridge"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "compatibility": {
+        "dsh": "*",
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@larksuite/channel",
+          "qrcode-terminal"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-settings-manager",
+      "name": "文件与工作区工具（DSH Settings Manager）",
+      "packageName": "dsh-settings-manager",
+      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：DSH web plugin: manage how other plugins' sections appear in the global Settings dialog — show/hide, reorder, rename — without touching upstream. Every settings.section registration passes through the manager policy (registration-time + read-path interception).",
+      "searchTerms": [
+        "文件与工作区工具",
+        "DSH Settings Manager",
+        "dsh-settings-manager",
+        "文件",
+        "工作区",
+        "目录",
+        "附件",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "settings",
+        "manager"
+      ],
+      "repositoryUrl": "https://github.com/Yiklek/dsh-settings-manager",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "fb82f37550eddc326246dbdb11b00aa4f931f54e",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T07:15:14Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/Yiklek/dsh-settings-manager/commit/fb82f37550eddc326246dbdb11b00aa4f931f54e",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "settings-manager"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime source contains the files permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-desktop-companion",
+      "name": "桌面客户端（DSH Desktop Companion）",
+      "packageName": "dsh-desktop-companion",
+      "description": "DeepSeek Harness Desktop 的桌面伴生插件：外部链接接管系统浏览器等壳集成能力。Desktop shell companion for dotnet-deepseek-harness-desktop.",
+      "searchTerms": [
+        "桌面客户端",
+        "DSH Desktop Companion",
+        "dsh-desktop-companion",
+        "桌面",
+        "托盘",
+        "快捷启动",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "desktop",
+        "companion"
+      ],
+      "repositoryUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop",
+      "defaultBranch": "main",
+      "manifestPath": "plugins/dsh-desktop-companion/package.json",
+      "installPath": "plugins/dsh-desktop-companion",
+      "updatePolicy": "external-only",
+      "commit": "9f2fbef58cc52f83b0d4aa2c64473b7a1b1e1f1b",
+      "version": "0.0.7",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T06:57:11Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/9f2fbef58cc52f83b0d4aa2c64473b7a1b1e1f1b",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "dsh-desktop-companion"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-native-deepseek-balance",
+      "name": "余额与额度监控（DSH Native DeepSeek Balance）",
+      "packageName": "dsh-native-deepseek-balance",
+      "description": "为 DSH 提供余额与额度监控能力。英文原始说明：A compact, private DeepSeek API balance pill for DeepSeek Harness",
+      "searchTerms": [
+        "余额与额度监控",
+        "DSH Native DeepSeek Balance",
+        "dsh-native-deepseek-balance",
+        "余额",
+        "额度",
+        "配额",
+        "钱包",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "native",
+        "deepseek",
+        "balance"
+      ],
+      "repositoryUrl": "https://github.com/WSL043/dsh-native-deepseek-balance",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "f697d51feaca82b39a629f733ec3d0a79b3423f4",
+      "version": "0.1.2",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T06:33:47Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/WSL043/dsh-native-deepseek-balance/commit/f697d51feaca82b39a629f733ec3d0a79b3423f4",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "wsl043-native-deepseek-balance"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": "0.1.1-rc.2",
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-memory-eternal",
+      "name": "记忆与知识库（DSH Memory Eternal）",
+      "packageName": "dsh-memory-eternal",
+      "description": "记忆核心（Memory Eternal）：自研的 DeepSeek Harness 记忆插件，不移植任何既有记忆框架——对话结束后自动沉淀知识卡到本地 Markdown Vault（自研去重、自研 CJK 检索、可 git 管理），设置页提供图形化知识库（统计 / 搜索 / 知识图谱 + 侧边栏一键弹窗），Agent 通过 memory_recall 工具按需召回历史上下文。零人工干预。",
+      "searchTerms": [
+        "记忆与知识库",
+        "DSH Memory Eternal",
+        "dsh-memory-eternal",
+        "记忆",
+        "知识库",
+        "召回",
+        "长期记忆",
+        "dsh",
+        "memory",
+        "eternal"
+      ],
+      "repositoryUrl": "https://github.com/EternalNight996/dsh-memory-eternal",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "e5a77705c8177ef474d5adad610e6444a56ea039",
+      "version": "0.3.0",
+      "categories": [
+        "memory"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T05:43:52Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/EternalNight996/dsh-memory-eternal/commit/e5a77705c8177ef474d5adad610e6444a56ea039",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "memory-eternal"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.2 <0.2.0",
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@deepseek-ai/schemastery"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-files",
+      "name": "文件与工作区工具（DSH Files）",
+      "packageName": "dsh-files",
+      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：DeepSeek Harness dual-face plugin: a composer file-upload button with session-isolated storage, TTL sweep and sha256 dedup, plus a read_document tool (text/PDF/DOCX/XLSX) with content sniffing, GB18030 fallback and byte-budgeted LRU caching.",
+      "searchTerms": [
+        "文件与工作区工具",
+        "DSH Files",
+        "dsh-files",
+        "文件",
+        "工作区",
+        "目录",
+        "附件",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "files"
+      ],
+      "repositoryUrl": "https://github.com/taxueseek/dsh-files",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "d3cfa5ca903cfb82db7315dc8c74fdb0a5df407b",
+      "version": "0.4.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T05:34:54Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/taxueseek/dsh-files/commit/d3cfa5ca903cfb82db7315dc8c74fdb0a5df407b",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "files-toolkit"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
+      "compatibility": {
+        "dsh": "^0.1.0-rc.6",
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "mammoth",
+          "pdfjs-dist",
+          "read-excel-file"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-mcp-connector",
+      "name": "插件市场与管理（DSH MCP Connector）",
+      "packageName": "dsh-mcp-connector",
+      "description": "为 DSH 提供插件市场与管理能力。英文原始说明：General-purpose MCP connector, connection manager, plugin extension, and integration marketplace for DeepSeek Harness, initiated and maintained by Qichacha/QCC.",
+      "searchTerms": [
+        "插件市场与管理",
+        "DSH MCP Connector",
+        "dsh-mcp-connector",
+        "插件市场",
+        "商城",
+        "插件管理",
+        "插件发现",
+        "工具",
+        "能力",
+        "dsh",
+        "mcp",
+        "connector"
+      ],
+      "repositoryUrl": "https://github.com/duhu2000/dsh-mcp-connector",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "04b19efb3d65d33a131cd7b8b492b17206ad4fe2",
+      "version": "0.2.17",
+      "categories": [
+        "marketplace",
+        "tools"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T04:33:23Z",
+        "observedAt": "2026-08-24T07:14:52.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-24T07:14:52.000Z",
+          "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/04b19efb3d65d33a131cd7b8b492b17206ad4fe2",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "mcp-connector"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.5": "unknown",
+          "rc.6": "unknown",
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown"
+        },
+        "dshOperations": {
+          "rc.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=20",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
       "id": "dsh-enhance-tool",
       "name": "任务与工作流自动化（DSH Enhance Tool）",
       "packageName": "dsh-enhance-tool",
@@ -51756,308 +52644,6 @@
         "externalDependencies": [
           "js-yaml"
         ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
-      "id": "dsh-mcp-connector",
-      "name": "插件市场与管理（DSH MCP Connector）",
-      "packageName": "dsh-mcp-connector",
-      "description": "为 DSH 提供插件市场与管理能力。英文原始说明：General-purpose MCP connector, connection manager, plugin extension, and integration marketplace for DeepSeek Harness, initiated and maintained by Qichacha/QCC.",
-      "searchTerms": [
-        "插件市场与管理",
-        "DSH MCP Connector",
-        "dsh-mcp-connector",
-        "插件市场",
-        "商城",
-        "插件管理",
-        "插件发现",
-        "工具",
-        "能力",
-        "dsh",
-        "mcp",
-        "connector"
-      ],
-      "repositoryUrl": "https://github.com/duhu2000/dsh-mcp-connector",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "installPath": null,
-      "updatePolicy": "external-only",
-      "commit": "7a40ccdba9a867c00024a09b7fd17029734a5c3d",
-      "version": "0.2.16",
-      "categories": [
-        "marketplace",
-        "tools"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-24T03:10:02Z",
-        "observedAt": "2026-08-24T04:01:32.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-24T04:01:32.000Z",
-          "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/7a40ccdba9a867c00024a09b7fd17029734a5c3d",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "mcp-connector"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": ">=20",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
-      "id": "dsh-desktop-companion",
-      "name": "桌面客户端（DSH Desktop Companion）",
-      "packageName": "dsh-desktop-companion",
-      "description": "DeepSeek Harness Desktop 的桌面伴生插件：外部链接接管系统浏览器等壳集成能力。Desktop shell companion for dotnet-deepseek-harness-desktop.",
-      "searchTerms": [
-        "桌面客户端",
-        "DSH Desktop Companion",
-        "dsh-desktop-companion",
-        "桌面",
-        "托盘",
-        "快捷启动",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "desktop",
-        "companion"
-      ],
-      "repositoryUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop",
-      "defaultBranch": "main",
-      "manifestPath": "plugins/dsh-desktop-companion/package.json",
-      "installPath": "plugins/dsh-desktop-companion",
-      "updatePolicy": "external-only",
-      "commit": "5b43be8f467dd328c154b6d0e3c1d8f6303682fe",
-      "version": "0.0.6",
-      "categories": [
-        "experimental"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-24T02:57:40Z",
-        "observedAt": "2026-08-24T04:01:32.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-24T04:01:32.000Z",
-          "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/5b43be8f467dd328c154b6d0e3c1d8f6303682fe",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "dsh-desktop-companion"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
-      "compatibility": {
-        "dsh": null,
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": null,
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [],
         "reviewStatus": "automated-scan"
       },
       "risk": {
@@ -57942,157 +58528,6 @@
       }
     },
     {
-      "id": "dsh-memory-eternal",
-      "name": "记忆与知识库（DSH Memory Eternal）",
-      "packageName": "dsh-memory-eternal",
-      "description": "记忆核心（Memory Eternal）：自研的 DeepSeek Harness 记忆插件，不移植任何既有记忆框架——对话结束后自动沉淀知识卡到本地 Markdown Vault（自研去重、自研 CJK 检索、可 git 管理），设置页提供图形化知识库（统计 / 搜索 / 知识图谱 + 侧边栏一键弹窗），Agent 通过 memory_recall 工具按需召回历史上下文。零人工干预。",
-      "searchTerms": [
-        "记忆与知识库",
-        "DSH Memory Eternal",
-        "dsh-memory-eternal",
-        "记忆",
-        "知识库",
-        "召回",
-        "长期记忆",
-        "dsh",
-        "memory",
-        "eternal"
-      ],
-      "repositoryUrl": "https://github.com/EternalNight996/dsh-memory-eternal",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "installPath": null,
-      "updatePolicy": "external-only",
-      "commit": "1238826c4d5daa4c05d4e1fc66185b4d2813589d",
-      "version": "0.2.9",
-      "categories": [
-        "memory"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-22T22:37:40Z",
-        "observedAt": "2026-08-23T00:24:28.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-23T00:24:28.000Z",
-          "evidenceUrl": "https://github.com/EternalNight996/dsh-memory-eternal/commit/1238826c4d5daa4c05d4e1fc66185b4d2813589d",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "memory-eternal"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.2 <0.2.0",
-        "dshReleases": {
-          "rc.5": "unknown",
-          "rc.6": "unknown",
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": ">=22",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [
-          "@deepseek-ai/schemastery"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
       "id": "hufu-dsh",
       "name": "文件与工作区工具（Hufu DSH）",
       "packageName": "hufu-dsh",
@@ -59738,137 +60173,6 @@
         "dsh",
         "tray"
       ]
-    },
-    {
-      "id": "dsh-native-deepseek-balance",
-      "name": "余额与额度监控（DSH Native DeepSeek Balance）",
-      "packageName": "dsh-native-deepseek-balance",
-      "description": "为 DSH 提供余额与额度监控能力。英文原始说明：A compact, private DeepSeek API balance pill for DeepSeek Harness",
-      "searchTerms": [
-        "余额与额度监控",
-        "DSH Native DeepSeek Balance",
-        "dsh-native-deepseek-balance",
-        "余额",
-        "额度",
-        "配额",
-        "钱包",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "native",
-        "deepseek",
-        "balance"
-      ],
-      "repositoryUrl": "https://github.com/WSL043/dsh-native-deepseek-balance",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "installPath": null,
-      "updatePolicy": "external-only",
-      "commit": "6c5fc0bccfb754fb20b02e7b893e8cc732a648a6",
-      "version": "0.1.0",
-      "categories": [
-        "experimental"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-24T01:54:28Z",
-        "observedAt": "2026-08-24T01:53:17.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-policy-v1",
-          "checkedAt": "2026-08-24T01:53:17.000Z",
-          "evidenceUrl": "https://github.com/WSL043/dsh-native-deepseek-balance/commit/6c5fc0bccfb754fb20b02e7b893e8cc732a648a6",
-          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
-        },
-        "installability": {
-          "status": "unknown",
-          "summary": "No third-party installation or build code was executed by the automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "summary": "No DSH runtime acceptance was inferred from static automation."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "summary": "Automated source policy is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "wsl043-native-deepseek-balance"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: runtime source contains the credentials permission signal",
-      "compatibility": {
-        "dsh": "0.1.1-rc.2",
-        "dshReleases": {
-          "rc.5": "incompatible",
-          "rc.6": "incompatible",
-          "rc.7": "incompatible",
-          "rc.8": "incompatible",
-          "0.1.1-rc.1": "incompatible"
-        },
-        "dshOperations": {
-          "rc.5": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.6": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": "^22.19.0 || >=24.0.0",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
     },
     {
       "id": "dsh-oauth-adapter",
