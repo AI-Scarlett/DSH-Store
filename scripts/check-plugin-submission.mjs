@@ -222,6 +222,7 @@ function inferredCompatibility(manifest) {
   const platform = manifest?.dsh?.client?.platform
   return {
     dsh: typeof declared.dsh === 'string' ? declared.dsh : uniquePeerRanges.length === 1 ? uniquePeerRanges[0] : null,
+    dshReleases: Object.hasOwn(declared, 'dshReleases') ? declared.dshReleases : {},
     node: typeof manifest.engines?.node === 'string' ? manifest.engines.node : null,
     systems: [...new Set(systems)],
     profiles: [...new Set([...declaredProfiles, ...(platform === 'web' ? ['web'] : [])])],

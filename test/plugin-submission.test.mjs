@@ -91,6 +91,7 @@ test('simple submission reads a fixed root package without executing it', async 
   assert.equal(result.candidate.details.permissions.level, 'unknown')
   assert.equal(result.candidate.compatibility.node, '^22.19.0 || >=24.0.0')
   assert.deepEqual(result.candidate.compatibility.profiles, ['web'])
+  assert.deepEqual(result.candidate.compatibility.dshReleases, {})
   assert.equal(result.discovery.publisher, 'example')
   const report = renderSubmissionReport(result)
   assert.ok(report.startsWith(SUBMISSION_REPORT_MARKER))
@@ -106,6 +107,23 @@ test('repository automation reuses the same fixed-source gate without an Issue f
   assert.equal(result.candidate.commit, SHA)
   assert.equal(result.candidate.packageName, 'dsh-demo')
   assert.equal(result.candidate.details.permissions.level, 'unknown')
+})
+
+test('submission preserves only an explicitly declared per-release compatibility matrix', async () => {
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(),
+    fetch: sourceFetch({ manifest: {
+      dsh: {
+        bundle: { patch: './cordis.patch.yml' },
+        compatibility: {
+          dsh: '>=0.1.0-rc.8 <0.2.0',
+          dshReleases: { '0.1.1-rc.2': 'compatible' },
+        },
+      },
+    } }),
+    retryDelaysMs: [],
+  })
+  assert.deepEqual(result.candidate.compatibility.dshReleases, { '0.1.1-rc.2': 'compatible' })
 })
 
 test('repository tree link supplies a monorepo plugin path automatically', async () => {

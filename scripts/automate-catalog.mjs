@@ -11,10 +11,16 @@ import {
   buildCatalogVersionUpdate,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
+  sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
 import { canonicalGithubRepository, compareCatalogEntries, compareVersions, validateCatalog } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { permissionSignals } from '../src/automation-source-policy.mjs'
+import {
+  applyLatestDshCompatibilityPolicy,
+  DSH_REGISTRY_URL,
+  fetchOfficialDshReleaseWindow,
+} from '../src/catalog-compatibility-policy.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
@@ -308,6 +314,7 @@ function automatedEntry(candidate, analysis, observedAt) {
     : { level: 'unknown', files: 'unknown', network: 'unknown', commands: 'unknown', credentials: ['unknown'] }
   return localizeCatalogEntry({
     ...candidate,
+    compatibility: sourceDeclaredCompatibility({ compatibility: {} }, candidate),
     status: approved ? 'approved' : 'blocked',
     ...(approved ? {} : { statusReason: boundedText(`Automatic policy blocked installation: ${analysis.reasons.join('; ')}`, 'Automatic policy could not prove safe installation.') }),
     updatePolicy: approved ? 'source-verified' : 'external-only',
@@ -664,6 +671,15 @@ const options = parseArgs(process.argv.slice(2))
 const observedAt = iso(options.observedAt ?? new Date().toISOString(), '--observed-at')
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
 if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
+if (policy.compatibility?.authority !== 'official-npm-registry-published-versions-through-latest'
+  || policy.compatibility?.registryUrl !== DSH_REGISTRY_URL
+  || policy.compatibility?.latestReleaseCount !== 3
+  || policy.compatibility?.requiredCompatibleReleases !== 1
+  || policy.compatibility?.unsupportedCatalogStatus !== 'unlisted'
+  || policy.compatibility?.candidateStatus !== 'reviewing'
+  || policy.compatibility?.failClosedOnAuthorityError !== true) {
+  throw new Error('unsupported DSH compatibility policy')
+}
 const originalCatalog = await readFile(catalogPath)
 const originalCandidates = await readFile(candidatesPath)
 const catalogSha = sha256(originalCatalog)
@@ -675,12 +691,21 @@ if (baseCommit !== null && !/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('
 validateCatalog(catalog)
 assertCatalogLocalization(catalog)
 validateCandidateRegistry(candidates)
+const dshReleaseWindow = await fetchOfficialDshReleaseWindow({
+  registryUrl: policy.compatibility.registryUrl,
+  releaseCount: policy.compatibility.latestReleaseCount,
+})
+const dshReleaseWindowSha = sha256(JSON.stringify(dshReleaseWindow))
 const report = {
   schemaVersion: 2,
-  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${candidatesSha}:${observedAt}`).slice(0, 24),
+  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${candidatesSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   baseCommit,
   observedAt,
-  preconditions: { catalogSha256: catalogSha, candidatesSha256: candidatesSha },
+  preconditions: {
+    catalogSha256: catalogSha,
+    candidatesSha256: candidatesSha,
+    dshReleaseWindowSha256: dshReleaseWindowSha,
+  },
   policy: 'registry/automation-policy.json',
   sourceVersionChecks: {
     authority: 'canonical-github-default-branch-manifest-at-fixed-commit',
@@ -695,16 +720,25 @@ const report = {
   },
   updateReviews: [], updatedEntries: [], sourceChangesWithoutVersionBump: [], upstreamVersionBehind: [],
   addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [],
+  compatibilityUnlisted: [], compatibilityRestored: [], compatibilityRefreshed: [],
   skippedDiscoveries: [], transientFailures: [],
 }
 const github = createGithubClient()
 await updateExistingEntries(catalog, policy, github, observedAt, report)
 await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report)
+report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
+  catalog, candidates, dshReleaseWindow, observedAt,
+)
+report.compatibilityUnlisted = report.compatibilityPolicy.unlisted
+report.compatibilityRestored = report.compatibilityPolicy.restored
+report.compatibilityRefreshed = report.compatibilityPolicy.refreshed
 catalog.entries.sort(compareCatalogEntries)
 assertCatalogLocalization(catalog)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
+  || report.compatibilityPolicy.catalogChanged
 const candidatesChanged = report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0
+  || report.compatibilityPolicy.candidatesChanged
 if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
 const validatedCatalog = validateCatalog(catalog)

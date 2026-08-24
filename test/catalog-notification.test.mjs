@@ -7,6 +7,8 @@ test('Catalog notification separates additions, historical updates, and deferred
     entries: [
       { id: 'new-plugin', name: '通知助手（Notify Helper）', version: '1.0.0', status: 'blocked', repositoryUrl: 'https://github.com/example/new-plugin' },
       { id: 'old-plugin', name: '历史工具（History Tool）', version: '2.0.0', status: 'approved', repositoryUrl: 'https://github.com/example/old-plugin' },
+      { id: 'old-compat', name: '旧版兼容插件（Old Compatibility）', version: '1.2.0', status: 'unlisted', repositoryUrl: 'https://github.com/example/old-compat' },
+      { id: 'restored-compat', name: '恢复兼容插件（Restored Compatibility）', version: '1.3.0', status: 'approved', repositoryUrl: 'https://github.com/example/restored-compat' },
     ],
   }
   const report = {
@@ -22,6 +24,11 @@ test('Catalog notification separates additions, historical updates, and deferred
     },
     addedEntries: [{ id: 'new-plugin', reasons: ['runtime dependency requires review'] }],
     updatedEntries: [{ id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0' }],
+    compatibilityPolicy: {
+      latestReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'],
+    },
+    compatibilityUnlisted: [{ id: 'old-compat', version: '1.2.0', requiredDshReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'] }],
+    compatibilityRestored: [{ id: 'restored-compat', version: '1.3.0', requiredDshReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'] }],
     deferredUpdates: [{ id: 'new-plugin', catalogVersion: '1.0.0', upstreamVersion: '1.1.0', reason: '证据不足' }],
     transientFailures: [],
     postconditions: { catalogEntries: 481 },
@@ -51,6 +58,9 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /历史工具（History Tool）/)
   assert.match(output, /1\.0\.0 \| 2\.0\.0/)
   assert.match(output, /发现高版本但暂缓更新/)
+  assert.match(output, /兼容性下架 1，恢复 1/)
+  assert.match(output, /暂时下架并转入候选/)
+  assert.match(output, /恢复兼容插件（Restored Compatibility）/)
   assert.match(output, /状态边界/)
 })
 

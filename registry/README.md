@@ -55,16 +55,17 @@ Profile、不用低层测试冒充运行验收”的边界。
 
 ## 作者整改通知
 
-每次八小时 Catalog 扫描成功后，`author-notifications.yml` 会对三类确定性结果维护公开 GitHub
+每次八小时 Catalog 扫描成功后，`author-notifications.yml` 会对四类确定性结果维护公开 GitHub
 修复单：Catalog 中仍为 `blocked` 的仓库、发现更高上游版本但因源码契约暂缓更新的仓库，以及
-明确属于 DSH 且被固定 Commit 门禁拒绝的候选仓库。修复单逐项列出原因和建议，并 `@` canonical
+明确属于 DSH 且被固定 Commit 门禁拒绝的候选仓库，以及因不在最新三个 DSH 版本兼容窗口而
+暂时下架的仓库。修复单逐项列出原因和建议，并 `@` canonical
 仓库维护者；个人仓库使用所有者，组织仓库优先使用最近的人类提交者。同一仓库只保留一单，原因
 变化才再次提醒，阻断消失后自动关闭。
 
 主动搜索中的普通项目不会因为关键词误命中而收到通知；GitHub 403/404/429、限流、超时、连接
 失败和默认分支移动等基础设施状态也不会归责给作者。候选通知只覆盖用户提交、固定 Commit 复核
-来源或当轮新拒绝且具有清晰 DSH 意图的项目。每轮最多新建 3 单，以 `更新暂缓 → 候选未通过 →
-Catalog blocked` 轮转选取，防止对历史候选集中群发。该流程只读固定源码，不执行第三方代码，
+来源或当轮新拒绝且具有清晰 DSH 意图的项目。每轮最多新建 3 单，以 `更新暂缓 → 兼容性下架 →
+候选未通过 → Catalog blocked` 轮转选取，防止对历史候选集中群发。该流程只读固定源码，不执行第三方代码，
 也不把修复后的再次通过承诺为真实 Profile 安装或运行验收。
 
 ## 八小时 Catalog 自动化与三小时自愈
@@ -72,6 +73,15 @@ Catalog blocked` 轮转选取，防止对历史候选集中群发。该流程只
 - `catalog-automation.yml` 在 UTC 00:05、08:05、16:05 扫描新插件，并检查所有历史 Catalog
   条目的原项目版本；版本权威源是 canonical GitHub 仓库当前默认分支的完整 Commit，以及该
   Commit 下条目 `manifestPath` 指向的 `package.json`；
+- 每轮从官方 npm Registry 完整元数据读取 `@deepseek-ai/dsh` 的 `latest` 标签及其之前最近两个
+  未弃用发行版，组成最新三个版本窗口；权威源不可用、元数据异常或不足三个版本时整轮失败关闭，
+  不使用 Catalog 推测值执行上下架；
+- `approved` 条目在三个版本中至少需要一个精确 `dshReleases: compatible` 记录；三者均为
+  `incompatible`、`unknown` 或缺失时自动转为 `unlisted`，并在 Candidate Registry 新建
+  `reviewing` 记录。后续固定 Commit 补齐兼容记录后自动恢复 `approved` 并只删除本策略创建的候选；
+- 原项目通过 `package.json` 的 `dsh.compatibility.dshReleases` 提供逐版本声明，例如
+  `{"0.1.1-rc.2":"compatible"}`；插件提升自身 SemVer 后，扫描会从新固定 Commit 读取该矩阵。
+  未声明的版本写为 `unknown`，声明值只接受 `compatible`、`incompatible` 或 `unknown`；
 - 只有原项目 SemVer 高于商城版本、候选 Commit 是旧 Commit 的有界直接后继，且包名、仓库、
   manifest 路径、安装路径、Bundle 入口和许可证保持一致时，才进入固定源更新审查；
 - `source-verified` 更新必须继续满足完整低风险自动策略；`user-reviewed` 条目可以自动刷新
@@ -117,6 +127,9 @@ SemVer 键，例如 `0.1.1-rc.2`，避免不同发布线的 `rc.1` 混淆。商�
 目录中的精确 `dshReleases` 是兼容证据；新版本只有范围匹配而没有精确证据时显示
 “范围支持·待验证”，不会自动标为兼容，也不公开不存在发行物的 rc.5/rc.6。`install`、`start`、`uninstall`、`rollback`
 四项 `dshOperations` 也必须逐版本提供真实证据，缺少记录时保持 `unknown`。
+自动上下架使用官方 `latest` 向前最近三个未弃用发行版作为滚动窗口；范围声明不能替代精确记录。
+该规则只决定商城是否继续可安装；作者 manifest 的逐版本声明属于来源兼容声明，不把它解释为
+真实 Profile 或运行时验收，`dshOperations` 仍需独立证据。
 
 可信证据分为四种状态：`verified` 表示该道门已经有对应的完整证据，`partial` 表示只验证了明确边界内的一部分（例如一次性 Profile 安装、契约或固定源策略检查），`unknown` 表示尚未取得可引用证据，`failed` 表示检查未通过。`partial` 不得被解释为完整运行验收或独立安全审计；商城会把它单独显示为“部分验证”，避免把产品已有的可复核能力压成“未知”，也避免把局部证据夸大成完整结论。
 

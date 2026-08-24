@@ -145,3 +145,24 @@ test('organization repositories can mention a resolved human maintainer', () => 
   assert.match(action.body, /@HumanMaintainer/)
   assert.doesNotMatch(action.body, /@CandidateOwner/)
 })
+
+test('latest-three compatibility holds notify the author and remain reversible', () => {
+  const heldCatalog = structuredClone(fixture().catalog)
+  heldCatalog.entries.push({
+    id: 'compat-plugin', name: '兼容插件（Compatibility Plugin）', version: '1.0.0', status: 'unlisted',
+    statusReason: 'DSH_LATEST_THREE_COMPATIBILITY_HOLD: no compatible result for the latest three releases',
+    repositoryUrl: 'https://github.com/CompatOwner/dsh-compat-plugin',
+  })
+  const report = structuredClone(fixture().report)
+  report.compatibilityPolicy = { latestReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'] }
+  report.compatibilityUnlisted = [{
+    id: 'compat-plugin', requiredDshReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'],
+  }]
+  const plan = buildAuthorNoticePlan(fixture({ catalog: heldCatalog, report, maxCreate: 4 }))
+  const action = plan.actions.find(item => item.key === 'compatowner/dsh-compat-plugin')
+  assert.ok(action)
+  assert.ok(action.labels.includes('compatibility-outdated'))
+  assert.match(action.body, /兼容性暂时下架 \/ Compatibility unlisted/)
+  assert.match(action.body, /0\.1\.1-rc\.2/)
+  assert.match(action.body, /@CompatOwner/)
+})
