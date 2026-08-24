@@ -199,7 +199,7 @@ test('market endpoint keeps a 400-entry catalog response bounded to one page', a
       description: 'bounded response fixture', repositoryUrl: `https://github.com/example/demo-${index}`,
       commit: 'a'.repeat(40), version: '1.0.0', categories: ['tools'], entryIds: [`demo-${index}`],
       status: 'approved', statusReason: null,
-      compatibility: { dsh: '>=0.1.0-rc.8 <0.2.0', dshReleases: { 'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible' } },
+      compatibility: { dsh: '>=0.1.0-rc.8 <0.2.0', dshReleases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' } },
       details: {
         pluginType: 'feature', installSource: 'github', license: 'MIT',
         permissions: { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] },

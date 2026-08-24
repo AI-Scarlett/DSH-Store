@@ -109,7 +109,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
   assert.match(client, /GitHub-only/)
   assert.match(client, /DSH第三方插件商城/)
-  assert.match(client, /LEGACY_DSH_VERSIONS = \{ 'rc\.5': '0\.0\.1-rc\.5'/)
+  assert.match(client, /LEGACY_DSH_VERSIONS = \{ 'rc\.7': '0\.1\.0-rc\.7'/)
   assert.match(client, /function CompatibilityMatrix/)
   assert.match(client, /const SUPPORT_URL = 'https:\/\/dsh\.store\/'/)
   assert.match(client, /技术支持：DSH-Store/)
@@ -216,7 +216,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
-test('rc.5 through 0.1.1-rc.1 client contract stays on official ModuleLoader and settings ordering', async () => {
+test('public rc.7 through 0.1.1-rc.2 client contract stays on official ModuleLoader and settings ordering', async () => {
   const [pkg, client] = await Promise.all([
     readFile(new URL('package.json', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
@@ -231,7 +231,7 @@ test('rc.5 through 0.1.1-rc.1 client contract stays on official ModuleLoader and
   assert.match(client, /window\.__ModuleLoader__\.load/)
   assert.match(client, /settings\.plugins\.tab/)
   assert.match(client, /order:\s*-10/)
-  assert.match(client, /0\.0\.1-rc\.5/)
+  assert.match(client, /0\.1\.1-rc\.2/)
   assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
 })
 

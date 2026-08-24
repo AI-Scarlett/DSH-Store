@@ -231,7 +231,7 @@ const statusLabel = entry => entry.status === 'approved' ? t('status.available')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
 const DSH_VERSION_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest'
 const DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
-const LEGACY_DSH_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
+const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2' }
 const OPERATION_KEYS = ['install', 'start', 'uninstall', 'rollback']
 const unknownOperations = () => Object.fromEntries(OPERATION_KEYS.map(operation => [operation, 'unknown']))
 function compareDshVersions(left, right) {
@@ -650,8 +650,7 @@ function showDetails(entry) {
     <section class="dialog-section"><h3>${escape(t('dialog.review'))}</h3><dl class="dialog-grid">
       ${detailItem(state.locale === 'en' ? 'Credential access' : '凭据访问', listLabel(permissions.credentials.map(value => detailLabel('credentials', value)), t('value.unknown')))}
       ${detailItem(state.locale === 'en' ? 'Review status' : '审核状态', detailLabel('reviewStatus', entry.details.reviewStatus))}
-      ${detailItem('DSH', compatibility.dsh === 'unknown' ? t('value.undeclared') : compatibility.dsh)}${detailItem('Node.js', compatibility.node === 'unknown' ? t('value.undeclared') : compatibility.node)}
-      ${detailItem(state.locale === 'en' ? 'DSH version compatibility' : 'DSH 版本兼容性', compatibility.dshReleaseViews.map(view => `${view.version}${view.latest ? (state.locale === 'en' ? ' (latest)' : '（最新）') : ''}: ${compatibilityViewLabel(view)}`).join(' · '))}
+      ${detailItem(state.locale === 'en' ? 'DSH public version compatibility' : 'DSH 公开版本兼容性', compatibility.dshReleaseViews.map(view => `${view.version}${view.latest ? (state.locale === 'en' ? ' (latest)' : '（最新）') : ''}: ${compatibilityViewLabel(view)}`).join(' · '))}${detailItem('Node.js', compatibility.node === 'unknown' ? t('value.undeclared') : compatibility.node)}
       ${detailItem(state.locale === 'en' ? 'Lifecycle evidence' : '安装/启动/卸载/回滚证据', operationEvidenceText(entry))}
       ${detailItem(t('assurance.installable'), evidenceStatusLabel(entry.assurance.installability.status))}${detailItem(t('assurance.runtime'), evidenceStatusLabel(entry.assurance.runtime.status))}
       ${detailItem(t('assurance.security'), evidenceStatusLabel(entry.assurance.securityReview.status))}${detailItem(state.locale === 'en' ? 'Source updated' : '来源最近更新', entry.source.updatedAt ? new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(entry.source.updatedAt)) : t('value.unknown'))}

@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import test from 'node:test'
 import { createDshVersionService } from '../src/dsh-version.mjs'
 
-async function fixture(version = '0.1.0-rc.6') {
+async function fixture(version = '0.1.0-rc.7') {
   const root = await mkdtemp(join(tmpdir(), 'dsh-version-'))
   const cliRoot = join(root, 'apps', 'cli')
   const cliPath = join(cliRoot, 'src', 'bin.ts')
@@ -25,22 +25,22 @@ test('DSH version check reads the running CLI package and pins the latest npm ve
         requests += 1
         assert.equal(url, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest')
         assert.equal(options.headers.accept, 'application/json')
-        return new Response(JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.0-rc.7' }))
+        return new Response(JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.1-rc.2' }))
       },
     })
     assert.equal(service.peek(), null)
     const value = await service.inspect()
-    assert.equal(value.currentVersion, '0.1.0-rc.6')
-    assert.equal(value.latestVersion, '0.1.0-rc.7')
+    assert.equal(value.currentVersion, '0.1.0-rc.7')
+    assert.equal(value.latestVersion, '0.1.1-rc.2')
     assert.equal(value.status, 'update-available')
     assert.equal(value.installationKind, 'source-checkout')
     assert.equal(value.upgrade.executable, false)
-    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.0-rc.7'])
+    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.1-rc.2'])
     assert.match(value.upgrade.reason, /不会修改 DSH 源码/)
     assert.equal(value.latestSource, 'npm-official')
     assert.equal(value.registryUrl, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest')
     assert.equal(value.cacheTtlMs, 10 * 60_000)
-    assert.equal(service.peek().latestVersion, '0.1.0-rc.7')
+    assert.equal(service.peek().latestVersion, '0.1.1-rc.2')
     assert.equal(service.peek().cacheStatus, 'peek')
     assert.equal((await service.inspect()).cacheStatus, 'hit')
     assert.equal(requests, 1)
