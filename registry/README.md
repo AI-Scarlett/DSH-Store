@@ -25,7 +25,7 @@
 机器人会列出候选目录；提交者只需补充可选的 `Plugin path`。
 
 预检通过时添加 `submission-passed`，失败时添加 `submission-failed`，并幂等更新一条带固定
-标记的机器人评论；修改 Issue 会重新检查并移除相反状态标签。每三小时运行的 Catalog
+标记的机器人评论；修改 Issue 会重新检查并移除相反状态标签。每八小时运行的 Catalog
 策略还会合并 GitHub 主动发现结果，固定默认分支当前 Commit，并以有界源码读取复用同一套
 结构门禁。工作流不会运行第三方 install、prepare、build、test 或运行时代码。
 
@@ -55,7 +55,7 @@ Profile、不用低层测试冒充运行验收”的边界。
 
 ## 作者整改通知
 
-每次三小时 Catalog 扫描成功后，`author-notifications.yml` 会对三类确定性结果维护公开 GitHub
+每次八小时 Catalog 扫描成功后，`author-notifications.yml` 会对三类确定性结果维护公开 GitHub
 修复单：Catalog 中仍为 `blocked` 的仓库、发现更高上游版本但因源码契约暂缓更新的仓库，以及
 明确属于 DSH 且被固定 Commit 门禁拒绝的候选仓库。修复单逐项列出原因和建议，并 `@` canonical
 仓库维护者；个人仓库使用所有者，组织仓库优先使用最近的人类提交者。同一仓库只保留一单，原因
@@ -67,9 +67,9 @@ Profile、不用低层测试冒充运行验收”的边界。
 Catalog blocked` 轮转选取，防止对历史候选集中群发。该流程只读固定源码，不执行第三方代码，
 也不把修复后的再次通过承诺为真实 Profile 安装或运行验收。
 
-## 三小时自动化与自愈
+## 八小时 Catalog 自动化与三小时自愈
 
-- `catalog-automation.yml` 在每个三小时窗口第 5 分钟扫描新插件，并检查所有历史 Catalog
+- `catalog-automation.yml` 在 UTC 00:05、08:05、16:05 扫描新插件，并检查所有历史 Catalog
   条目的原项目版本；版本权威源是 canonical GitHub 仓库当前默认分支的完整 Commit，以及该
   Commit 下条目 `manifestPath` 指向的 `package.json`；
 - 只有原项目 SemVer 高于商城版本、候选 Commit 是旧 Commit 的有界直接后继，且包名、仓库、
@@ -79,10 +79,10 @@ Catalog blocked` 轮转选取，防止对历史候选集中群发。该流程只
   和 unlisted 条目只刷新可追溯的项目元数据，不会因此获得安装资格；
 - 新版本写入后，旧版本的安装、运行、安全和精确兼容证据全部重置为 `unknown`，不把历史
   验收沿用到新版本；源码变化但没有提升版本号时只记录异常，不移动 Catalog 固定 Commit；
-- `pages.yml` 在第 25 分钟重新构建 GitHub Pages；
-- 两台服务器的 systemd timer 在第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
-- `marketplace-watchdog.yml` 在第 55 分钟核验上一轮工作流以及 GitHub、Pages、国际站、国内站；
-- 上一轮缺失、失败、超过四小时或公共目录不一致时，自动重跑 Catalog 或 Pages；
+- `pages.yml` 仍按三小时窗口第 25 分钟重新构建 GitHub Pages；
+- 两台服务器的 systemd timer 仍按三小时窗口第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
+- `marketplace-watchdog.yml` 仍按三小时窗口第 55 分钟核验上一轮工作流以及 GitHub、Pages、国际站、国内站；
+- 上一轮缺失、失败、超过九小时或公共目录不一致时，自动重跑 Catalog 或 Pages；
 - 所有 Catalog 写入绑定 base Commit、文件 SHA-256、外部备份、机器计划 ID 和精确文件范围。
 
 公开商城首页和插件目录会读取 GitHub Pages 上的 `automation-status.json`，分别显示最近一次

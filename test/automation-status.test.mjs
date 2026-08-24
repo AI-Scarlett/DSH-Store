@@ -38,6 +38,7 @@ test('public status separates successful execution from actual Catalog changes',
     } }],
   })
   assert.equal(status.overall.status, 'passed')
+  assert.equal(status.scheduleHours, 8)
   assert.deepEqual(status.latestChanges.added, ['new-plugin'])
   assert.deepEqual(status.latestChanges.updated, ['new-plugin'])
   assert.equal(status.latestChanges.sourceVersionChecks.checkedEntries, 2)

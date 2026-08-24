@@ -140,9 +140,9 @@ function suggestionLines(reasons) {
   if (multiplePackages) add('这是包含多个 DSH 插件的 monorepo；请在[上架申请](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)中为每个插件分别提交明确的 `tree/<branch>/<package-path>` GitHub 地址，不需要删除其他包。 / This monorepo contains multiple DSH plugins; submit each explicit `tree/<branch>/<package-path>` URL separately through the linked submission form without removing the other packages.')
   if (suggestions.length === 0) add('按下方确定性原因修正固定 GitHub 源、manifest、Bundle、版本与安装契约；不要只修改 README 或标签。 / Fix the pinned source, manifest, Bundle, version, and install contract described below; README or topic changes alone are insufficient.')
   if (multiplePackages) {
-    add('提交明确子路径后会立即自动预检；源码修复也会在三小时扫描中复检，无需人工回复“确认”。 / An explicit package path is checked immediately; source fixes are rechecked in the three-hour scan without a manual approval reply.')
+    add('提交明确子路径后会立即自动预检；源码修复也会在八小时扫描中复检，无需人工回复“确认”。 / An explicit package path is checked immediately; source fixes are rechecked in the eight-hour scan without a manual approval reply.')
   } else {
-    add('修改并推送到默认分支即可；DSH STORE 每三小时自动复检，无需人工回复“确认”。 / Push the fix to the default branch; DSH STORE rechecks every three hours and needs no manual approval reply.')
+    add('修改并推送到默认分支即可；DSH STORE 每八小时自动复检，无需人工回复“确认”。 / Push the fix to the default branch; DSH STORE rechecks every eight hours and needs no manual approval reply.')
   }
   return suggestions
 }

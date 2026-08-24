@@ -663,7 +663,7 @@ async function atomicWrite(path, buffer) {
 const options = parseArgs(process.argv.slice(2))
 const observedAt = iso(options.observedAt ?? new Date().toISOString(), '--observed-at')
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
-if (policy.schemaVersion !== 1 || policy.scheduleHours !== 3) throw new Error('unsupported automation policy')
+if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
 const originalCatalog = await readFile(catalogPath)
 const originalCandidates = await readFile(candidatesPath)
 const catalogSha = sha256(originalCatalog)

@@ -140,7 +140,7 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     schemaVersion: 1,
     generatedAt: validGeneratedAt,
     sourceCommit: /^[0-9a-f]{40}$/i.test(sourceCommit ?? '') ? sourceCommit.toLowerCase() : text(sourceCommit, 80),
-    scheduleHours: 3,
+    scheduleHours: 8,
     overall: { status: statusOf(scanner, watchdog) },
     scanner,
     watchdog,
