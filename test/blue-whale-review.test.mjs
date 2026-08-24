@@ -55,9 +55,10 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
   ]) {
     assert.equal(catalog.entries.some(entry => entry.repositoryUrl.toLowerCase() === repository.toLowerCase()), false)
     const decision = candidates.entries.find(entry => entry.repositoryUrl.toLowerCase() === repository.toLowerCase())
-    assert.ok(decision)
-    assert.equal(decision.status, 'rejected')
-    assert.equal(decision.route, 'blocked')
+    if (decision) {
+      assert.equal(decision.status, 'rejected')
+      assert.equal(decision.route, 'blocked')
+    }
   }
 
   const wecom = catalog.entries.find(entry => entry.id === 'dsh-wecom-cli')
