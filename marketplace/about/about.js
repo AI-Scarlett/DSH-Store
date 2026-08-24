@@ -47,16 +47,18 @@ const translations = {
   },
 }
 
+const defaultLocale = document.body?.dataset.defaultLocale === 'en' ? 'en' : 'zh'
+const localeStorageKey = `dsh-marketplace-locale-${defaultLocale}`
 const storedLocale = (() => {
-  try { return localStorage.getItem('dsh-marketplace-locale') } catch { return null }
+  try { return localStorage.getItem(localeStorageKey) } catch { return null }
 })()
-const state = { locale: storedLocale === 'en' ? 'en' : 'zh' }
+const state = { locale: storedLocale === 'en' || storedLocale === 'zh' ? storedLocale : defaultLocale }
 const t = key => translations[state.locale]?.[key] || translations.zh[key] || key
 const analyticsToken = value => String(value ?? '').toLowerCase().replace(/[^a-z0-9._-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80)
 
 function setLocale(locale) {
   state.locale = locale === 'en' ? 'en' : 'zh'
-  try { localStorage.setItem('dsh-marketplace-locale', state.locale) } catch {}
+  try { localStorage.setItem(localeStorageKey, state.locale) } catch {}
   document.documentElement.lang = state.locale === 'en' ? 'en' : 'zh-CN'
   document.title = t('meta.title')
   document.querySelector('meta[name="description"]')?.setAttribute('content', t('meta.description'))

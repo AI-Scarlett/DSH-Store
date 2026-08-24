@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-storefront-default-locale-20260822",
+  "authorization": "user-requested international storefront default language update",
+  "base": {
+    "repository": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git",
+    "commit": "2198e390be632287922517743630a26ce07b8387"
+  },
+  "scope": {
+    "site": "https://dsh.store",
+    "defaultLocale": "en",
+    "preserveManualChoice": true,
+    "domesticSiteDefault": "zh",
+    "files": [
+      "marketplace/index.html",
+      "marketplace/plugins/index.html",
+      "marketplace/build/index.html",
+      "marketplace/faq/index.html",
+      "marketplace/about/index.html",
+      "marketplace/app.js",
+      "marketplace/build/build.js",
+      "marketplace/faq/faq.js",
+      "marketplace/about/about.js",
+      "scripts/build-marketplace-static.mjs",
+      "test/contracts.test.mjs",
+      "test/marketplace-static-build.test.mjs"
+    ]
+  },
+  "preconditionHashes": {
+    "marketplace/index.html": "69da15d95be202e9091d783c7f54b25f551f7ec540c6ee3b269f148d54fc7f97",
+    "marketplace/plugins/index.html": "3b727c65b057fc78d4e38e780b260232c56c49a606380f9e4b56830c210b5823",
+    "marketplace/build/index.html": "2c871295c7be6cc34caec6c32a4f6c26b07074f4a9bed7f86bd8fd3b9337a771",
+    "marketplace/faq/index.html": "95f4b695ef9b866dc83c40ba6b3e543ddc358d20f31c49c64fd846bc8aa0369f",
+    "marketplace/about/index.html": "7d525b5c10d60033cc393864e53eed94e07de09fb67e0a1572c0224ddc440fe0",
+    "marketplace/app.js": "2c92292be77ba1cf0aea33216bb8437b4e9b5e42ec720b512987d5a492db911f",
+    "marketplace/build/build.js": "5f661b7a4825e4dfaba4a68033fe534d7eec945f92cbf322905c49a0e9bf3c4b",
+    "marketplace/faq/faq.js": "9715ad963532293cbcab2f172d3526fca20c73804c1a6f9304963b73b7bd02ab",
+    "marketplace/about/about.js": "db6db8687a2a599274e9639b4363734104b43d49688c6d1ffeeb4d2b0e0010fe",
+    "scripts/build-marketplace-static.mjs": "93746ccacf4a9d4a5d6ab931b65b9821888f3d20a5e0c0bb6608013993b6af47",
+    "test/contracts.test.mjs": "7a03a91bf12ea5d42a4929dec77727285312cc7dfb28e6d2ffaaa22511055a6c",
+    "test/marketplace-static-build.test.mjs": "0ef6fe7a5136b6f4a608e0d1237060dedd58dedb610ea7c8e1266c11fd893330"
+  },
+  "deterministicGates": [
+    "npm run check",
+    "international static output marks every storefront page data-default-locale=en",
+    "domestic static output marks every storefront page data-default-locale=zh",
+    "manual locale selection remains persisted per site",
+    "public HTTP and browser-visible checks pass for dsh.store"
+  ],
+  "deployment": {
+    "strategy": "new release directory, backup current symlink and file hashes, atomic symlink switch",
+    "rollback": "restore the recorded current symlink if any health check fails",
+    "nginx": "no configuration change or reload"
+  }
+}

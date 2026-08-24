@@ -299,6 +299,7 @@ const alternateLabel = alternateIsDomestic ? '国内站' : '国际站'
 const alternateCode = alternateIsDomestic ? 'CN' : 'INTL'
 const alternateAriaLabel = alternateIsDomestic ? '切换到国内站 / Switch to China site' : '切换到国际站 / Switch to international site'
 const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international'
+const defaultLocale = siteHost === 'dsh.store' ? 'en' : 'zh'
 const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
 
 const icpMarkup = icpNumber
@@ -314,7 +315,8 @@ for (const pagePath of [
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
-  await writeFile(absolutePath, replaceRequired(withAlternate, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
+  const withLocale = replaceRequired(withAlternate, 'data-default-locale="zh"', `data-default-locale="${defaultLocale}"`, `${pagePath} default locale marker`)
+  await writeFile(absolutePath, replaceRequired(withLocale, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
 }
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')

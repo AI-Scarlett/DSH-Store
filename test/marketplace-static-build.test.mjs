@@ -58,6 +58,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(release.files['automation-status.json'], undefined, 'run-only status must not rotate production releases')
     assert.equal(automationStatus.overall.status, 'unknown')
     assert.equal(automationStatus.catalog.entries, catalog.entries.length)
+    assert.match(home, /data-default-locale="en"/)
+    assert.match(plugins, /data-default-locale="en"/)
     assert.ok(home.includes(`"softwareVersion": "${manager.version}"`))
     assert.match(home, new RegExp(manager.commit))
     assert.match(home, /name="dsh-catalog-delivery" content="external-json"/)
@@ -100,6 +102,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     for (const pagePath of pagePaths) {
       const page = await readFile(join(output, pagePath), 'utf8')
       assert.match(page, /https:\/\/dsh-store\.cn/)
+      assert.match(page, /data-default-locale="zh"/)
       assert.match(page, new RegExp(icp))
       assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
     }
