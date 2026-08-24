@@ -1,0 +1,131 @@
+name: Notify upstream plugin authors
+
+on:
+  workflow_run:
+    workflows: ["Automated plugin radar and Catalog update"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: author-notifications
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Bind the current main authority
+        id: base
+        run: |
+          git fetch --no-tags origin main
+          base_sha=$(git rev-parse HEAD)
+          test "$base_sha" = "$(git rev-parse origin/main)"
+          echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
+      - name: Download the matching Catalog decision record
+        id: report
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          if test "$GITHUB_EVENT_NAME" = workflow_run; then
+            run_id="$TRIGGER_RUN_ID"
+          else
+            run_id=$(gh run list --workflow catalog-automation.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')
+          fi
+          test "$run_id" != null
+          test -n "$run_id"
+          report_dir="$RUNNER_TEMP/catalog-report"
+          mkdir -p "$report_dir"
+          gh run download "$run_id" --pattern "catalog-automation-${run_id}-*" --dir "$report_dir"
+          report_path=$(find "$report_dir" -type f -name catalog-automation-report.json -print -quit)
+          test -n "$report_path"
+          echo "path=$report_path" >> "$GITHUB_OUTPUT"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - name: Validate repository and notification code
+        run: npm run check
+      - name: Snapshot existing managed remediation Issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method GET --paginate --slurp \
+            "repos/$GITHUB_REPOSITORY/issues?state=all&labels=author-action-required&per_page=100" \
+            | jq '[.[][] | select(has("pull_request") | not) | {number, title, state, body: (.body // ""), url: .html_url}] | sort_by(.number)' \
+            > "$RUNNER_TEMP/author-notice-issues.json"
+      - name: Select the bounded notification set
+        run: |
+          jq -n '{}' > "$RUNNER_TEMP/author-notice-targets-empty.json"
+          node scripts/plan-author-notices.mjs \
+            --catalog registry/catalog.json \
+            --candidates registry/candidates.json \
+            --report "${{ steps.report.outputs.path }}" \
+            --existing-issues "$RUNNER_TEMP/author-notice-issues.json" \
+            --notification-targets "$RUNNER_TEMP/author-notice-targets-empty.json" \
+            --base-commit "${{ steps.base.outputs.sha }}" \
+            --max-create 3 \
+            --output "$RUNNER_TEMP/author-notice-preliminary-plan.json"
+      - name: Resolve a human maintainer for organization repositories
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/resolve-author-notice-targets.mjs \
+            --plan "$RUNNER_TEMP/author-notice-preliminary-plan.json" \
+            --output "$RUNNER_TEMP/author-notice-targets.json"
+      - name: Create a hash-bound author notification plan
+        id: plan
+        run: |
+          node scripts/plan-author-notices.mjs \
+            --catalog registry/catalog.json \
+            --candidates registry/candidates.json \
+            --report "${{ steps.report.outputs.path }}" \
+            --existing-issues "$RUNNER_TEMP/author-notice-issues.json" \
+            --notification-targets "$RUNNER_TEMP/author-notice-targets.json" \
+            --base-commit "${{ steps.base.outputs.sha }}" \
+            --max-create 3 \
+            --output "$RUNNER_TEMP/author-notice-plan.json"
+          jq -r '"creates=\(.summary.creates)", "updates=\(.summary.updates)", "closes=\(.summary.closes)", "queued=\(.summary.queuedNewIssues)", "plan_id=\(.planId)"' \
+            "$RUNNER_TEMP/author-notice-plan.json" >> "$GITHUB_OUTPUT"
+      - name: Apply only the verified plan with the short-lived repository token
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/apply-author-notice-plan.mjs \
+            --plan "$RUNNER_TEMP/author-notice-plan.json" \
+            --catalog registry/catalog.json \
+            --candidates registry/candidates.json \
+            --report "${{ steps.report.outputs.path }}" \
+            --notification-targets "$RUNNER_TEMP/author-notice-targets.json"
+      - name: Publish the bounded run summary
+        if: always() && steps.plan.outcome == 'success'
+        run: |
+          {
+            echo "## 插件作者自动通知"
+            echo
+            echo "- 计划：\`${{ steps.plan.outputs.plan_id }}\`"
+            echo "- 新修复单：${{ steps.plan.outputs.creates }}"
+            echo "- 原因变化：${{ steps.plan.outputs.updates }}"
+            echo "- 自动关闭：${{ steps.plan.outputs.closes }}"
+            echo "- 待后续限速通知：${{ steps.plan.outputs.queued }}"
+            echo "- Catalog 决策运行：#${{ steps.report.outputs.run_id }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve the machine-readable notification plan
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: author-notification-plan-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/author-notice-plan.json
+          if-no-files-found: warn
+          retention-days: 30
