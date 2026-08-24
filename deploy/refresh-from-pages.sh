@@ -97,7 +97,9 @@ plugins $site_prefix/plugins/
 build $site_prefix/build/
 faq $site_prefix/faq/
 about $site_prefix/about/
+guide $site_prefix/dsh-plugins/
 catalog /registry/catalog.json
+sitemap $site_prefix/sitemap.xml
 EOF
 
   python3 - "$incoming/health-home" "$incoming/health-catalog" <<'PY'
@@ -133,6 +135,8 @@ required = {
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
     'marketplace/about/index.html',
+    'marketplace/dsh-plugins/index.html',
+    'marketplace/sitemap.xml',
     'registry/catalog.json',
 }
 if not required.issubset(files):

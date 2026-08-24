@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DSH 插件入门指南：了解 DeepSeek Harness 插件商城、权限与来源核对、固定提交安装、开发流程和安全接入步骤。">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="DSH STORE">
+  <meta name="application-name" content="DSH STORE">
+  <meta name="theme-color" content="#07113f">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="DSH 插件｜DeepSeek Harness 插件商城指南｜DSH STORE">
+  <meta property="og:description" content="从发现、判断到安装，了解 DSH 插件和 DeepSeek Harness 的安全接入路径。">
+  <meta property="og:url" content="https://dsh.store/dsh-plugins/">
+  <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
+  <meta property="og:image:alt" content="DSH STORE — Trusted DeepSeek Harness Plugins">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DSH 插件｜DeepSeek Harness 插件商城指南｜DSH STORE">
+  <meta name="twitter:description" content="DSH 插件的发现、权限核对、固定提交安装和开发者入口。">
+  <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
+  <title>DSH 插件｜DeepSeek Harness 插件商城与安全安装指南｜DSH STORE</title>
+  <link rel="canonical" href="https://dsh.store/dsh-plugins/">
+  <!-- DSH_HREFLANG -->
+  <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
+  <link rel="apple-touch-icon" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://dsh.store/dsh-plugins/#page",
+        "url": "https://dsh.store/dsh-plugins/",
+        "name": "DSH Plugins — DeepSeek Harness Plugin Marketplace Guide",
+        "description": "A practical guide to discovering, checking, installing, and building DeepSeek Harness plugins through DSH STORE.",
+        "inLanguage": ["zh-CN", "en"],
+        "isPartOf": {"@id": "https://dsh.store/#website"},
+        "about": ["DeepSeek Harness", "DSH plugins", "plugin permissions", "plugin installation"]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://dsh.store/dsh-plugins/#breadcrumb",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "DSH STORE", "item": "https://dsh.store/"},
+          {"@type": "ListItem", "position": 2, "name": "DSH Plugins Guide", "item": "https://dsh.store/dsh-plugins/"}
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://dsh.store/dsh-plugins/#faq",
+        "mainEntity": [
+          {"@type": "Question", "name": "什么是 DSH 插件？", "acceptedAnswer": {"@type": "Answer", "text": "DSH 插件是面向 DeepSeek Harness 的扩展能力。DSH STORE 以公开 GitHub 仓库和固定提交为目录来源，帮助用户先理解能力、权限和兼容性。"}},
+          {"@type": "Question", "name": "如何安全安装 DSH 插件？", "acceptedAnswer": {"@type": "Answer", "text": "先打开插件详情确认来源、固定提交、权限和状态，再在 DSH 中复制命令或生成计划；网页浏览本身不会修改 Profile。"}},
+          {"@type": "Question", "name": "How do I build a DSH plugin?", "acceptedAnswer": {"@type": "Answer", "text": "Use the open build-dsh-plugin skill to turn a problem, expected outcome, and acceptance criteria into a standard plugin project with explicit boundaries and evidence."}}
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="seo-guide-page">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <div class="tech-grid" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="../" aria-label="DSH STORE">
+      <span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="../">首页</a>
+      <a href="../plugins/">插件目录</a>
+      <a href="../build/">开发插件</a>
+      <a href="../faq/">常见问题</a>
+      <a href="../about/">关于我们</a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/README.md" target="_blank" rel="noreferrer">使用说明 <i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer">提交插件 <i class="nav-external" aria-hidden="true">↗</i></a>
+      <!-- DSH_ALTERNATE_SITE -->
+    </nav>
+    <div class="header-tools"><div class="locale-switch" role="group" aria-label="Language"><button type="button" data-locale="zh" aria-pressed="true">中文</button><button type="button" data-locale="en" aria-pressed="false">EN</button></div></div>
+  </header>
+
+  <main id="main">
+    <section class="seo-guide-hero">
+      <div>
+        <div class="system-status"><span></span><b>DSH PLUGINS / FIELD GUIDE</b><em>INDEXABLE</em></div>
+        <h1>DSH 插件，<br><em>先理解，再接入。</em></h1>
+        <p>DSH STORE 是面向 DeepSeek Harness（DSH）的第三方插件商城。这里把 DSH 插件的发现、来源核对、权限判断、固定提交安装与开发路径放在一页，方便用户和 AI Agent 快速找到可信的下一步。</p>
+        <p class="seo-guide-en">DSH plugins extend DeepSeek Harness with focused capabilities. DSH STORE helps you discover them, inspect their source and permissions, then connect them through a clear and recoverable path.</p>
+        <div class="seo-guide-actions"><a class="button button-primary" href="../plugins/">浏览完整插件目录 ↗</a><a class="button button-secondary" href="../build/">开发一个 DSH 插件 ↗</a></div>
+      </div>
+      <aside class="seo-guide-signal" aria-label="DSH plugin trust path"><span>TRUST PATH / 04 STEPS</span><strong>01 → 02 → 03 → 04</strong><p>Discover · Inspect · Pin · Connect</p><small>发现 · 核对 · 固定 · 接入</small></aside>
+    </section>
+
+    <section class="seo-guide-section section-shell" aria-labelledby="what-is-dsh-plugin">
+      <header><span>01 / WHAT IS A DSH PLUGIN?</span><h2 id="what-is-dsh-plugin">什么是 DSH 插件？<br><em>What is a DSH plugin?</em></h2></header>
+      <div class="seo-guide-copy"><p>DSH 插件是为 DeepSeek Harness 提供额外能力的标准扩展。它可以连接工作流、工具、模型、界面或外部服务，但不同插件的权限和维护状态可能不同。</p><p>因此，商城不把“有页面”当成“可信”，也不把“可安装”当成完整安全审计。每个目录条目都应尽量展示公开仓库、固定 commit、版本、权限、兼容性和验证状态。</p><p class="seo-guide-en">A plugin listing is a starting point, not a security guarantee. Check the pinned source, version, permissions, compatibility, maintenance and recovery path before you connect it to an agent.</p></div>
+    </section>
+
+    <section class="seo-guide-steps" aria-labelledby="safe-install-title">
+      <div class="section-shell"><header><span>02 / SAFE INSTALL</span><h2 id="safe-install-title">安装前的 4 个检查</h2><p>把“我想试试”变成一条可以复核的操作路径。</p></header>
+        <div class="seo-guide-step-grid">
+          <article><b>01</b><h3>确认用途<br><small>Capability</small></h3><p>先确认插件解决的问题、输入输出和 DSH 版本范围。</p></article>
+          <article><b>02</b><h3>核对来源<br><small>Source</small></h3><p>查看公开 GitHub 仓库、固定提交和 manifest，不使用模糊下载地址。</p></article>
+          <article><b>03</b><h3>看清权限<br><small>Permissions</small></h3><p>检查文件、网络、命令、凭据和生命周期能力；未知就保持未知。</p></article>
+          <article><b>04</b><h3>准备恢复<br><small>Rollback</small></h3><p>使用 DSH 的计划与确认路径，保留前置状态和可回滚证据。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-guide-section section-shell" aria-labelledby="how-to-find-title">
+      <header><span>03 / FIND THE RIGHT PLUGIN</span><h2 id="how-to-find-title">在 DSH STORE 找插件</h2></header>
+      <div class="seo-guide-link-grid"><a href="../plugins/"><b>完整插件目录 ↗</b><span>搜索名称、用途、类别、权限和英文包名。所有条目都在独立目录页承载。</span></a><a href="../faq/"><b>安全与安装 FAQ ↗</b><span>先读清楚收录、可安装、运行验证和安全审查之间的边界。</span></a><a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer"><b>提交你的插件 ↗</b><span>通过 GitHub 表单提交仓库、固定提交、清单、权限和兼容性信息。</span></a></div>
+    </section>
+
+    <section class="seo-guide-builder" aria-labelledby="build-dsh-plugin-title"><div class="section-shell"><header><span>04 / BUILD DSH PLUGINS</span><h2 id="build-dsh-plugin-title">开发者入口：<br>build-dsh-plugin</h2><p>使用开源 Skill，把问题、期望结果和成功标准转换为标准 DSH 插件工程、风险边界、测试和交付证据。</p></header><a class="button button-primary" href="https://github.com/AI-Scarlett/build-dsh-plugin/" target="_blank" rel="noreferrer">打开 GitHub Skill ↗</a></div></section>
+
+    <section class="seo-guide-faq section-shell" aria-labelledby="guide-faq-title"><header><span>FAQ / QUICK ANSWERS</span><h2 id="guide-faq-title">关于 DSH 插件的快速回答</h2></header><details open><summary>DSH STORE 是 DeepSeek 官方商城吗？ <i>＋</i></summary><p>不是。DSH STORE 是第三方产品，不代表 DeepSeek 或 DSH 官方，也不会替换官方插件清单。</p></details><details><summary>网页会直接安装插件或修改 Profile 吗？ <i>＋</i></summary><p>不会。网页用于发现、阅读和复制信息；真实安装、启停或 Profile 变更需要在 DSH 中由用户确认。</p></details><details><summary>Can I install a plugin from a search result alone? <i>＋</i></summary><p>No. Use the catalog as a discovery layer, then verify the repository, pinned commit, manifest, permissions, compatibility and rollback instructions.</p></details></section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p>面向 DeepSeek Harness 的可信第三方插件商城。</p><a class="footer-top" href="#top">回到顶部 ↑</a></div><div class="footer-bottom"><span>DSH.STORE · DEEPSEEK HARNESS PLUGINS</span><span>Source · Permissions · Compatibility · Recovery</span><!-- DSH_ICP --></div></footer>
+</body>
+</html>
