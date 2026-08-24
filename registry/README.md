@@ -118,6 +118,8 @@ SemVer 键，例如 `0.1.1-rc.2`，避免不同发布线的 `rc.1` 混淆。商�
 “范围支持·待验证”，不会自动标为兼容，也不公开不存在发行物的 rc.5/rc.6。`install`、`start`、`uninstall`、`rollback`
 四项 `dshOperations` 也必须逐版本提供真实证据，缺少记录时保持 `unknown`。
 
+可信证据分为四种状态：`verified` 表示该道门已经有对应的完整证据，`partial` 表示只验证了明确边界内的一部分（例如一次性 Profile 安装、契约或固定源策略检查），`unknown` 表示尚未取得可引用证据，`failed` 表示检查未通过。`partial` 不得被解释为完整运行验收或独立安全审计；商城会把它单独显示为“部分验证”，避免把产品已有的可复核能力压成“未知”，也避免把局部证据夸大成完整结论。
+
 权限值依据固定 Commit 的 manifest、README 与运行时代码信号保守填写。无法确认时必须
 使用 `unknown` 或空兼容范围，不得把“未发现”写成“不访问”。`automated-scan` 和
 `author-verified` 只描述来源核验层级，不代表完成安全审计。客户端优先显示 GitHub Raw

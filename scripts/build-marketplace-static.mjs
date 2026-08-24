@@ -210,7 +210,7 @@ function assuranceMarkup(entry) {
     ['运行验证', entry.assurance?.runtime?.status || 'unknown'],
     ['安全审查', entry.assurance?.securityReview?.status || 'unknown'],
   ]
-  const label = status => ({ verified: '已验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用' }[status] || '未知')
+  const label = status => ({ verified: '已验证', partial: '部分验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用' }[status] || '未知')
   return `<div class="assurance-rail">${records.map(([name, status]) => `<span class="assurance-item assurance-${htmlEscape(status)}"><b>${htmlEscape(name)}</b><em>${htmlEscape(label(status))}</em></span>`).join('')}</div>`
 }
 

@@ -58,6 +58,20 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
   assert.throws(() => validateCatalog(document([{ ...entry, details: undefined }])), /details must be an object/)
 })
 
+test('catalog keeps partial evidence distinct from verified and unknown', () => {
+  const partial = validateCatalog(document([{ ...entry, assurance: {
+    discovery: { status: 'verified', method: 'fixed-source', checkedAt: '2026-08-24T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
+    installability: { status: 'partial', method: 'disposable-profile-install', checkedAt: '2026-08-24T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/releases/tag/v1.2.0', summary: 'Local disposable Profile install passed; public runtime evidence is pending.' },
+    runtime: { status: 'unknown', summary: 'No runtime evidence yet.' },
+    securityReview: { status: 'partial', method: 'fixed-source-policy', checkedAt: '2026-08-24T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', summary: 'Bounded policy checks passed; this is not an independent audit.' },
+  } }])).entries[0]
+  assert.equal(partial.assurance.installability.status, 'partial')
+  assert.equal(partial.assurance.securityReview.status, 'partial')
+  assert.throws(() => validateCatalog(document([{ ...entry, assurance: {
+    installability: { status: 'partial', summary: 'missing evidence anchors' },
+  } }])), /partial evidence requires method, checkedAt, and evidenceUrl/)
+})
+
 test('catalog exposes an explicit public rc.7 through 0.1.1-rc.2 compatibility matrix', () => {
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.8 <0.2.0'), {
     'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
@@ -153,10 +167,11 @@ test('marketplace snapshot pagination returns one bounded page and lazy candidat
   assert.equal(featured.pagination.total, 3)
   assert.equal(featured.pagination.featuredOnly, true)
 
-  const candidates = paginateMarketplaceSnapshot(snapshot, { view: 'candidates', page: 1, pageSize: 1 })
+  const candidates = paginateMarketplaceSnapshot(snapshot, { view: 'candidates', includeRejected: true, page: 1, pageSize: 1 })
   assert.equal(candidates.entries.length, 0)
-  assert.deepEqual(candidates.candidates.map(item => item.id), ['candidate-new'])
-  assert.equal(candidates.pagination.total, 2)
+  assert.deepEqual(candidates.candidates.map(item => item.id), ['candidate-rejected'])
+  assert.equal(candidates.pagination.total, 3)
+  assert.deepEqual(candidates.candidateSummary, { total: 3, discovered: 0, reviewing: 0, rejected: 1, unknown: 2, reviewable: 0 })
   assert.throws(() => paginateMarketplaceSnapshot(snapshot, { pageSize: 49 }), /pageSize/)
 })
 
@@ -259,6 +274,10 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(requestedIm.assurance.discovery.status, 'verified')
   assert.equal(requestedIm.assurance.runtime.status, 'unknown')
   assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
+  const buildPlugin = source.entries.find(item => item.id === 'build-dsh-plugin')
+  assert.equal(buildPlugin.assurance.installability.status, 'partial')
+  assert.equal(buildPlugin.assurance.runtime.status, 'partial')
+  assert.equal(buildPlugin.assurance.securityReview.status, 'partial')
 })
 
 test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {
