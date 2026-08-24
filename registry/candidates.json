@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-24T10:24:33.000Z",
+    "updatedAt": "2026-08-24T13:07:51.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -29058,6 +29058,69 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_ENTRY_MISSING: Bundle Patch does not declare a DSH entry ID"
+    },
+    {
+      "id": "quarkfan-quarkselfai",
+      "name": "Quarkfan/QuarkSelfAI",
+      "description": "个人AI助手",
+      "repositoryUrl": "https://github.com/Quarkfan/QuarkSelfAI",
+      "defaultBranch": "main",
+      "latestCommit": "e2731dfab1f73348ed6df4cb4fd8ccec75da18ae",
+      "sourceUpdatedAt": "2026-08-24T13:06:39.000Z",
+      "discoveredAt": "2026-08-24T13:07:51.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "zhu1090093659-dsh-web",
+      "name": "zhu1090093659/dsh-web",
+      "description": "DeepSeek Harness（DSH）Web 插件聚合生态包 · 一切皆插件，创意工坊分发（dsh-market.com）",
+      "repositoryUrl": "https://github.com/zhu1090093659/dsh-web",
+      "defaultBranch": "dev",
+      "latestCommit": "1f33f8d277159225f74083b22355939c905ee226",
+      "sourceUpdatedAt": "2026-08-24T13:05:29.000Z",
+      "discoveredAt": "2026-08-24T13:07:51.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-web",
+        "dsh-web-ui",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/dsh-aionui-panel, packages/dsh-chat-recovery, packages/dsh-community-plugins, packages/dsh-desktop-launcher, packages/dsh-doctor, packages/dsh-git-graph, packages/dsh-liangshen, packages/dsh-market, packages/dsh-pet, packages/dsh-plugin-manager, packages/dsh-remote-web-ui, packages/dsh-session-id, packages/dsh-skill-explorer, packages/dsh-ssh, packages/dsh-task-board, packages/dsh-tool-describe-image, packages/dsh-web-all, packages/dsh-web-settings, scripts/plugin-template, packages/skins/skin-ce"
+    },
+    {
+      "id": "deepseek-harness-evoforge-dsh-evoforge",
+      "name": "deepseek-harness-evoforge/dsh-evoforge",
+      "description": "Evidence-driven, cache-stable extensions for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/deepseek-harness-evoforge/dsh-evoforge",
+      "defaultBranch": "main",
+      "latestCommit": "77ed778f0fe4dea7e4141b719c2931cc22162422",
+      "sourceUpdatedAt": "2026-08-24T13:05:50.000Z",
+      "discoveredAt": "2026-08-24T13:07:51.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/dsh-doctor, packages/dsh-evolve-attention, packages/dsh-evolve-web, packages/dsh-evolve, packages/dsh-feishu, packages/dsh-gateway, packages/dsh-github-review, packages/dsh-goal-continuity, packages/dsh-resident, packages/dsh-software-delivery, packages/dsh-telegram"
     }
   ]
 }
