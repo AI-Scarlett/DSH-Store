@@ -129,7 +129,7 @@ function suggestionLines(reasons) {
   const suggestions = []
   const multiplePackages = /Multiple DSH plugins|Plugin path|SUBMISSION_PACKAGE_AMBIGUOUS/i.test(text)
   const add = value => { if (!suggestions.includes(value)) suggestions.push(value) }
-  if (text.includes(COMPATIBILITY_HOLD_PREFIX)) add('提升插件 SemVer，并在新固定 Commit 的 `package.json` 中通过 `dsh.compatibility.dshReleases` 对列出的 DSH 完整版本逐项声明 `compatible`、`incompatible` 或 `unknown`；仅写宽泛范围不会恢复上架。 / Bump the plugin SemVer and declare each listed full DSH version as `compatible`, `incompatible`, or `unknown` under `dsh.compatibility.dshReleases` in the new fixed-Commit manifest; a range alone will not restore the listing.')
+  if (text.includes(COMPATIBILITY_HOLD_PREFIX) || /no exact compatible declaration for official DSH releases/i.test(text)) add('提升插件 SemVer，并在新固定 Commit 的 `package.json` 中通过 `dsh.compatibility.dshReleases` 对列出的 DSH 完整版本逐项声明 `compatible`、`incompatible` 或 `unknown`；仅写宽泛范围不会恢复上架或保留失败候选。 / Bump the plugin SemVer and declare each listed full DSH version as `compatible`, `incompatible`, or `unknown` under `dsh.compatibility.dshReleases` in the new fixed-Commit manifest; a range alone will not restore a listing or retain a failed candidate.')
   if (/bundle|dsh\.bundle\.patch|patch/i.test(text)) add('补齐并校验 `package.json` 中的 `dsh.bundle.patch`，确保 Patch 文件位于包内且只新增唯一 DSH entry ID。 / Add a package-local `dsh.bundle.patch` and an additive Patch with unique DSH entry IDs.')
   if (/runtime artifact|runtime source (?:is|was) (?:missing|unavailable)|files list|distributable files|source exceeds|file bytes/i.test(text)) add('把实际运行文件纳入固定 Commit 与 manifest `files`；若需要构建，请提交可分发产物或明确、可复现的 `prepare` 契约。 / Commit the bounded runtime files and declare them in `files`; ship build output or a reproducible `prepare` contract.')
   if (/lifecycle|prepare|install script|preinstall|postinstall/i.test(text)) add('准确声明生命周期脚本及其必要性；能移除安装期执行时优先移除，并保留可复现安装证据。 / Declare every lifecycle script exactly, remove install-time execution where possible, and retain reproducible install evidence.')
@@ -209,7 +209,7 @@ function renderNoticeBody(record, signature, notifiedSignature) {
     lines.push(`| 兼容性暂时下架 / Compatibility unlisted | ${markdownCell(item.name)} | ${markdownCell(item.version)} | ${markdownCell(item.requiredDshReleases.join(', '))} | ${markdownCell(item.reason)} |`)
   }
   for (const item of items.candidates) {
-    lines.push(`| 候选未通过 / Candidate rejected | ${markdownCell(item.name)} | ${markdownCell(item.commit?.slice(0, 12) ?? '未知')} | — | ${markdownCell(item.reason)} |`)
+    lines.push(`| ${item.pruned ? '候选未保留 / Candidate pruned' : '候选未通过 / Candidate rejected'} | ${markdownCell(item.name)} | ${markdownCell(item.commit?.slice(0, 12) ?? '未知')} | — | ${markdownCell(item.reason)} |`)
   }
   lines.push('', '### 修改建议 / Suggested remediation', '')
   for (const suggestion of suggestionLines(reasons)) lines.push(`- ${suggestion}`)
@@ -325,6 +325,20 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
   const recentRejected = new Set(array(report?.rejectedCandidates).map(item => {
     try { return githubRepository(item.repository).key } catch { return null }
   }).filter(Boolean))
+  for (const candidate of array(report?.prunedCandidates)) {
+    if (!candidate?.repositoryUrl || !candidateHasDshIntent(candidate) || INFRASTRUCTURE_REASON.test(String(candidate.reason ?? ''))) continue
+    const record = ensureRepository(repositories, candidate.repositoryUrl)
+    record.candidates.push({
+      id: candidate.id,
+      name: candidate.name,
+      commit: candidate.commit,
+      route: 'pruned',
+      pruned: true,
+      reason: compactReason(candidate.reason),
+    })
+    record.createCategories.add('candidate-rejected')
+    record.createPriority.add('candidate-rejected')
+  }
   for (const candidate of array(candidates?.entries)) {
     if (!candidateIsActionable(candidate)) continue
     const repository = githubRepository(candidate.repositoryUrl)

@@ -32,6 +32,17 @@
     "candidateStatus": "reviewing",
     "failClosedOnAuthorityError": true
   },
+  "candidateRetention": {
+    "authority": "candidate-fixed-commit-package-manifests",
+    "pruneRejectedWithoutLatestThreeCompatibility": true,
+    "exactReleaseEvidenceRequired": true,
+    "scanBuckets": 24,
+    "maxCandidatesPerRun": 96,
+    "maxTreeEntries": 1200,
+    "maxManifestCandidates": 48,
+    "maxManifestBytes": 262144,
+    "concurrency": 8
+  },
   "automaticApproval": {
     "requireManifestRepositoryMatch": true,
     "requireRepositoryLicenseMatch": true,

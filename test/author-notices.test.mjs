@@ -166,3 +166,23 @@ test('latest-three compatibility holds notify the author and remain reversible',
   assert.match(action.body, /0\.1\.1-rc\.2/)
   assert.match(action.body, /@CompatOwner/)
 })
+
+test('pruned incompatible candidates still receive one report-backed remediation notice', () => {
+  const report = structuredClone(fixture().report)
+  report.prunedCandidates = [{
+    id: 'pruned-plugin',
+    name: 'Pruned Plugin',
+    description: 'A DeepSeek Harness plugin',
+    repositoryUrl: 'https://github.com/PrunedOwner/dsh-pruned-plugin',
+    commit: 'c'.repeat(40),
+    discoverySources: ['github-fixed-commit-review'],
+    topics: ['dsh-plugin'],
+    reason: 'SUBMISSION_BUNDLE_MISSING: Bundle missing; no exact compatible declaration for official DSH releases 0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2',
+  }]
+  const plan = buildAuthorNoticePlan(fixture({ report, maxCreate: 4 }))
+  const action = plan.actions.find(item => item.key === 'prunedowner/dsh-pruned-plugin')
+  assert.ok(action)
+  assert.match(action.body, /候选未保留 \/ Candidate pruned/)
+  assert.match(action.body, /dsh\.compatibility\.dshReleases/)
+  assert.match(action.body, /@PrunedOwner/)
+})

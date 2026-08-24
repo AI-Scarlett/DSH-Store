@@ -49,6 +49,17 @@ test('automatic policy runs every eight hours and fails closed on permission or 
     candidateStatus: 'reviewing',
     failClosedOnAuthorityError: true,
   })
+  assert.deepEqual(policy.candidateRetention, {
+    authority: 'candidate-fixed-commit-package-manifests',
+    pruneRejectedWithoutLatestThreeCompatibility: true,
+    exactReleaseEvidenceRequired: true,
+    scanBuckets: 24,
+    maxCandidatesPerRun: 96,
+    maxTreeEntries: 1200,
+    maxManifestCandidates: 48,
+    maxManifestBytes: 262144,
+    concurrency: 8,
+  })
   assert.equal(policy.automaticApproval.allowLifecycleScripts, false)
   assert.equal(policy.automaticApproval.allowRuntimeDependencies, false)
   assert.equal(policy.automaticApproval.requireManifestRepositoryMatch, true)
@@ -103,6 +114,10 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /applyLatestDshCompatibilityPolicy/)
   assert.match(source, /compatibilityPolicy\.catalogChanged/)
   assert.match(source, /dshReleaseWindowSha256/)
+  assert.match(source, /pruneHistoricalRejectedCandidates/)
+  assert.match(source, /inspectRejectedCandidateCompatibility/)
+  assert.match(source, /candidateRetention\.registryRemovals/)
+  assert.match(source, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
   assert.match(source, /catalogUpdateIdentityMatches/)
   assert.match(source, /buildCatalogVersionUpdate/)
