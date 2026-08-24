@@ -33,9 +33,9 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
 })
 
-test('automatic policy runs every three hours and fails closed on permission or supply-chain signals', async () => {
+test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
   const policy = JSON.parse(await read('registry/automation-policy.json'))
-  assert.equal(policy.scheduleHours, 3)
+  assert.equal(policy.scheduleHours, 8)
   assert.equal(policy.updates.checkAllCatalogEntries, true)
   assert.equal(policy.updates.versionAuthority, 'canonical-github-default-branch-manifest-at-fixed-commit')
   assert.equal(policy.updates.concurrency, 8)
@@ -58,7 +58,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
     read('.github/workflows/catalog-automation.yml'),
     read('scripts/automate-catalog.mjs'),
   ])
-  assert.match(workflow, /cron: "5 \*\/3 \* \* \*"/)
+  assert.match(workflow, /cron: "5 \*\/8 \* \* \*"/)
   assert.match(workflow, /pull-requests: write/)
   assert.match(workflow, /ref: main/)
   assert.match(workflow, /Pin the fresh main authority for this run/)
@@ -169,6 +169,7 @@ test('watchdog checks the previous run and every public Catalog surface', async 
     read('AGENTS.md'),
   ])
   assert.match(workflow, /cron: "55 \*\/3 \* \* \*"/)
+  assert.match(workflow, /test "\$age" -gt 32400/)
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main/)
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)

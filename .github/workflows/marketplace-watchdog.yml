@@ -43,7 +43,7 @@ jobs:
           echo "report_run_conclusion=$(jq -r '.[0].conclusion // "missing"' <<<"$completed")" >> "$GITHUB_OUTPUT"
 
           age=$(( $(date -u +%s) - $(date -u -d "$created" +%s) ))
-          if test "$status" != completed || test "$conclusion" != success || test "$age" -gt 14400; then
+          if test "$status" != completed || test "$conclusion" != success || test "$age" -gt 32400; then
             echo "repair=true" >> "$GITHUB_OUTPUT"
             gh workflow run catalog-automation.yml --ref main
           else
