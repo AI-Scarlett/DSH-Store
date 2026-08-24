@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { compareCatalogEntries, validateCatalog } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
+import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const DISCOVERY = 'blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa'
 const REVIEW_METHOD = 'github-fixed-commit-static-contract-review'
@@ -19,7 +20,8 @@ test('Blue Whale review keeps fixed-source admissions separate from rejected can
   assert.equal(new Set(candidates.entries.map(entry => entry.id)).size, candidates.entries.length)
   assert.ok(admitted.length > 0)
   assert.ok(rejected.length > 0)
-  assert.ok(admitted.every(entry => entry.status === 'approved'))
+  assert.ok(admitted.every(entry => entry.status === 'approved'
+    || (entry.status === 'unlisted' && entry.statusReason.startsWith(COMPATIBILITY_HOLD_PREFIX))))
   assert.ok(admitted.every(entry => entry.updatePolicy === 'user-reviewed'))
   assert.ok(admitted.every(entry => entry.details.reviewStatus === 'automated-scan'))
   assert.ok(admitted.every(entry => entry.assurance.installability.status === 'unknown'))
