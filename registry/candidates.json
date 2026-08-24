@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-24T13:28:14.000Z",
+    "updatedAt": "2026-08-24T14:17:00.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -29203,6 +29203,3513 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "bittersmilezzz-dsh-ui-tweaks",
+      "name": "bitterSmilezzz/dsh-ui-tweaks",
+      "description": "DeepSeek Harness 的界面增强插件：模型选择器（推理强度滑块）、粘贴/拖拽上传、插件列表增强、请求重试设置、全局快捷键、桌面通知",
+      "repositoryUrl": "https://github.com/bitterSmilezzz/dsh-ui-tweaks",
+      "defaultBranch": "main",
+      "latestCommit": "3873a807fae9d45b1bd076acbf2cad4a033b7a0a",
+      "sourceUpdatedAt": "2026-08-24T14:12:29.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_PROTECTED: Bundle Patch uses a protected DSH entry ID"
+    },
+    {
+      "id": "junnanlys-dsh-layered-memory",
+      "name": "JunNanLYS/dsh-layered-memory",
+      "description": "让 DeepSeek Harness 拥有长期记忆：对话自动蒸馏为事实/场景/画像三层记忆，每步自动召回注入——让 AI 基于证据说话，零操作无感使用 | Long-term memory for DeepSeek Harness: conversations auto-distilled into facts, scenes & persona, recalled before every step — so the AI speaks from evidence, not guesses. Zero effort.",
+      "repositoryUrl": "https://github.com/JunNanLYS/dsh-layered-memory",
+      "defaultBranch": "main",
+      "latestCommit": "ef808f971748e2c576ddc8cce53652d8500d5311",
+      "sourceUpdatedAt": "2026-08-24T14:12:20.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-memory",
+        "ai-agent",
+        "context-engineering",
+        "cordis-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "embeddings",
+        "llm",
+        "long-term-memory",
+        "memory",
+        "rag",
+        "sqlite",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., bench/harness/dsh-bench-runner"
+    },
+    {
+      "id": "text2future-flowix",
+      "name": "text2future/flowix",
+      "description": "Notes for you, Memory for your agents. / 内置 Deepseek harness Agent / 适用 办公 & 写作 & Coding",
+      "repositoryUrl": "https://github.com/text2future/flowix",
+      "defaultBranch": "main",
+      "latestCommit": "36bfc79978ea3fd582ba9182d6c5bc9f867c887f",
+      "sourceUpdatedAt": "2026-08-24T14:10:25.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-memory",
+        "claude-code",
+        "codex-cli",
+        "desktop",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "hermes-agent",
+        "markdown-editor",
+        "memory-system",
+        "note-taking",
+        "open-code",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "getagentseal-codeburn",
+      "name": "getagentseal/codeburn",
+      "description": "Free, local tool to track AI coding token usage and cost across 37 tools and agents (Claude Code, Cursor, Codex, Gemini and more), by model, project, and task. npx codeburn",
+      "repositoryUrl": "https://github.com/getagentseal/codeburn",
+      "defaultBranch": "main",
+      "latestCommit": "fe89385af8f9db541ceadf8701c8b6db6346d91f",
+      "sourceUpdatedAt": "2026-08-24T14:16:06.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-coding",
+        "claude-code",
+        "cli",
+        "codex",
+        "cost-tracking",
+        "cursor-ide",
+        "developer-tools",
+        "menubar",
+        "observability",
+        "terminal-ui",
+        "token-usage",
+        "web-dashboard",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "xuanyuanzhifeng-dsh-plugin-agent-workflow",
+      "name": "Agent 工作流（Agent Workflow）",
+      "description": "在 DSH Web 中按用户轮次展示模型请求、响应、工具调用、耗时与 Token 缓存统计，并提供可折叠的真实请求 JSON 检查视图。",
+      "repositoryUrl": "https://github.com/xuanyuanzhifeng/dsh-plugin-agent-workflow",
+      "defaultBranch": "main",
+      "latestCommit": "f706b0de27c390a7fe4c8b09d2ffafc9bb1621e7",
+      "sourceUpdatedAt": "2026-08-18T03:06:28.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "sessions",
+        "visualization",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-agent-workflow."
+    },
+    {
+      "id": "scorp1o117-dsh-tdai-memory",
+      "name": "记忆与知识库（DSH Tdai Memory）",
+      "description": "DeepSeek Harness 的 TencentDB Agent Memory 移植：L0 对话捕获 → L1 结构化记忆提取 → L2 场景/L3 画像，自动召回注入 + 记忆/对话搜索工具；���用现有 ~/.memory-tencentdb/memory-tdai 数据；附 Web UI 设置栏。",
+      "repositoryUrl": "https://github.com/Scorp1o117/dsh-tdai-memory",
+      "defaultBranch": "main",
+      "latestCommit": "db8ae926ae0fc9fafdb47cac267e8c40c36b9c36",
+      "sourceUpdatedAt": "2026-08-24T12:09:23.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "memory",
+        "ui",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-tdai-memory."
+    },
+    {
+      "id": "scorp1o117-dsh-soul-md",
+      "name": "会话管理（DSH Soul Md）",
+      "description": "DeepSeek Harness 的 soul.md 风格人设 + 长期记忆插件：设置页输入人设卡名称和内容即可，文件由插件自动管理；可按工作区指定人设、聊天框可给会话单独切人设；AI 可自行演化人设与记忆（soul_read/soul_update/memory_*）。",
+      "repositoryUrl": "https://github.com/Scorp1o117/dsh-soul-md",
+      "defaultBranch": "main",
+      "latestCommit": "d5799cc970828bafefbd6990ba2eab52c6dbc60a",
+      "sourceUpdatedAt": "2026-08-24T12:07:27.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "memory",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-soul-md."
+    },
+    {
+      "id": "sirilee-dsh-rewind",
+      "name": "会话与文件回退（DSH Rewind Plugin）",
+      "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
+      "repositoryUrl": "https://github.com/SiriLee/dsh-rewind",
+      "defaultBranch": "main",
+      "latestCommit": "03d119d1a1f2c9b71987b02ae2b8b862d1e9d6cd",
+      "sourceUpdatedAt": "2026-08-24T11:35:20.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-rewind-plugin."
+    },
+    {
+      "id": "tkingxiao-dsh-any-background",
+      "name": "界面主题与美化（DSH Any Background）",
+      "description": "一个主题外观插件，让你完全自定义 Web 端的主题色、背景壁纸，以及主页分部位精细的透明度与模糊度控制，还可导出导入主题设置进行分享。",
+      "repositoryUrl": "https://github.com/Tkingxiao/dsh-any-background",
+      "defaultBranch": "main",
+      "latestCommit": "10f92a8e1e6eb3665010c027514bdb1fc88e63c8",
+      "sourceUpdatedAt": "2026-08-24T11:09:37.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "themes",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-any-background."
+    },
+    {
+      "id": "normanfxxkingrockwell-dsh-auto-vision",
+      "name": "图像视觉工具（DSH Auto Vision）",
+      "description": "为纯文本 DeepSeek Harness 主模型搭视觉桥：自动从已配置模型中挑选多模态模型，通过 vision 工具把图片描述以纯文本返回。",
+      "repositoryUrl": "https://github.com/NormanFxxkingRockwell/dsh-auto-vision",
+      "defaultBranch": "main",
+      "latestCommit": "78f7933a7ce9fc2ec8ab777af672e6d324a3481c",
+      "sourceUpdatedAt": "2026-08-24T08:41:58.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-auto-vision."
+    },
+    {
+      "id": "mombrane-dsh-subagent-monitor",
+      "name": "多代理协作（DSH UI Subagent Monitor）",
+      "description": "Web UI 子代理实时监视面板：侧边栏底部入口 + 右上角常驻卡片面板，实时展示当前会话每个子代理的运行状态（运行中/耗时/终态）、树形缩进，一键跳转子代理会话并支持返回主会话，刷新自恢复、移动端默认隐藏。",
+      "repositoryUrl": "https://github.com/Mombrane/dsh-subagent-monitor",
+      "defaultBranch": "master",
+      "latestCommit": "3fa30438d5e976b9c0796d15c3d41b211f52904d",
+      "sourceUpdatedAt": "2026-08-24T08:09:01.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: leetoners-dsh-ui-subagent-monitor."
+    },
+    {
+      "id": "cloader-dsh-taskboard",
+      "name": "任务与工作流自动化（DSH Taskboard）",
+      "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
+      "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
+      "defaultBranch": "main",
+      "latestCommit": "2eb7f185ecb67fd971da09dbe9a88d17496d3dd0",
+      "sourceUpdatedAt": "2026-08-24T05:42:08.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-taskboard."
+    },
+    {
+      "id": "6mikao9-dsh-wsl-workspace",
+      "name": "文件与工作区工具（DSH WSL Workspace）",
+      "description": "从 Web GUI 添加 WSL 工作区，无需在 WSL 之中再次安装 dsh 以及相关工具，bash 命令与文件读写运行在本机 WSL 发行版内，Windows 文件仍可访问。",
+      "repositoryUrl": "https://github.com/6Mikao9/dsh-wsl-workspace",
+      "defaultBranch": "main",
+      "latestCommit": "db5234197d8bd697070be28b1c648b46b9f1ac01",
+      "sourceUpdatedAt": "2026-08-24T04:39:40.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-wsl-workspace."
+    },
+    {
+      "id": "jiangli07-dsh-deepseek-quota-bar",
+      "name": "余额与额度监控（DSH DeepSeek Quota Bar）",
+      "description": "可拖动透明余额卡片：余额/月初额度血条、今日/本月用量（配置平台 token 后为官方精确数据）、当前对话费用。",
+      "repositoryUrl": "https://github.com/jiangli07/dsh-deepseek-quota-bar",
+      "defaultBranch": "main",
+      "latestCommit": "67556ca89abb5c1465244771801292e8469675d0",
+      "sourceUpdatedAt": "2026-08-24T04:37:42.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-deepseek-quota-bar."
+    },
+    {
+      "id": "boogoo619-dsh-focus-overlay",
+      "name": "界面主题与美化（DSH Focus Overlay）",
+      "description": "专注模式：全屏阅读视图，隐藏标题与输入区，把 AI 工具调用折叠成摘要。",
+      "repositoryUrl": "https://github.com/boogoo619/dsh-focus-overlay",
+      "defaultBranch": "master",
+      "latestCommit": "82d479c1e53190a8121c125a64492cb94cf4efee",
+      "sourceUpdatedAt": "2026-08-24T02:29:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-focus-overlay."
+    },
+    {
+      "id": "runzhliu-deepseek-harness-docker",
+      "name": "桌面客户端（DSH Browser Desktop）",
+      "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
+      "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
+      "defaultBranch": "main",
+      "latestCommit": "9fc397e47492840156a0703c67ffca2b4db96d6f",
+      "sourceUpdatedAt": "2026-08-24T02:20:25.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "search",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-browser-desktop."
+    },
+    {
+      "id": "tyeclipse-dsh-webfetch",
+      "name": "实用工具（DSH Webfetch）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Web page reader for DeepSeek Harness (dsh): fetch any URL and extract clean markdown or plain text plus a link inventory — zero runtime dependencies",
+      "repositoryUrl": "https://github.com/TYEclipse/dsh-webfetch",
+      "defaultBranch": "main",
+      "latestCommit": "1f57cd6c5310ce2d7ea894f9cf64065eb8509c95",
+      "sourceUpdatedAt": "2026-08-23T21:38:14.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "search",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-webfetch."
+    },
+    {
+      "id": "liustack-modlens",
+      "name": "模型提供商接入（Modlens）",
+      "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
+      "repositoryUrl": "https://github.com/liustack/modlens",
+      "defaultBranch": "main",
+      "latestCommit": "043b7d2394e87ba33fb715fda032decb2155087c",
+      "sourceUpdatedAt": "2026-08-23T18:50:09.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "visualization",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: modlens."
+    },
+    {
+      "id": "anionex-dsh-turn-rewind",
+      "name": "会话回退（DSH Turn Rewind）",
+      "description": "为 DSH 会话提供回合回退能力。",
+      "repositoryUrl": "https://github.com/Anionex/dsh-turn-rewind",
+      "defaultBranch": "main",
+      "latestCommit": "d3734cb183a5d2483600e8caec3ece04c28c8f45",
+      "sourceUpdatedAt": "2026-08-23T14:34:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-turn-rewind."
+    },
+    {
+      "id": "shaobeichen-dsh-pocket",
+      "name": "移动端与远程访问（DSH Pocket）",
+      "description": "手机远程访问 DSH Web 界面：扫码即用局域网或公网（cloudflared 隧道）访问，实时同屏、移动端适配布局，带设置页管理。",
+      "repositoryUrl": "https://github.com/shaobeichen/dsh-pocket",
+      "defaultBranch": "main",
+      "latestCommit": "472524a45ef7b1ff6fbd9c3bf50787680a5497c3",
+      "sourceUpdatedAt": "2026-08-23T13:28:28.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "notifications",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-pocket."
+    },
+    {
+      "id": "seven282-oss-prompt-optimizer",
+      "name": "提示词优化器（OSS Prompt Optimizer）",
+      "description": "将原始指令经 harness llm 服务优化为专业提示词——默认 Role / Task / Context / Format 四段，可配置为无标题纯文本（outputStyle: ''plain''，更省 token）；提供输入框 ✨ 一键优化与撤销、prompt_optimize 工具、自动优化钩子与可配置元提示词。",
+      "repositoryUrl": "https://github.com/seven282/oss-prompt-optimizer",
+      "defaultBranch": "main",
+      "latestCommit": "bb8351fa4bdf65e9bb04670f777b49b59c30d140",
+      "sourceUpdatedAt": "2026-08-23T12:25:22.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: oss-prompt-optimizer."
+    },
+    {
+      "id": "linkingoscar-dsh-billing-glass",
+      "name": "费用与账单（DSH Billing Glass）",
+      "description": "为 DSH 提供费用与账单能力。英文原始说明：Liquid-glass billing overlay for the DeepSeek Harness Web GUI: provider balances, session cost, daily spend and token buckets. DeepSeek-first with an extensible provider registry.",
+      "repositoryUrl": "https://github.com/linkingoscar/dsh-billing-glass",
+      "defaultBranch": "main",
+      "latestCommit": "d495f2ab9f6ece3fed7a9c8eaca9a75da723e3c1",
+      "sourceUpdatedAt": "2026-08-23T10:25:15.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-billing-glass."
+    },
+    {
+      "id": "saisenbox-dsh-prompt-manager",
+      "name": "提示词管理器（DSH Prompt Manager）",
+      "description": "浏览器本地提示词库：在输入框选择器中同时注入多条会话级系统提示词，支持分支继承、中英界面、收藏与 JSON 备份。",
+      "repositoryUrl": "https://github.com/SaiSenBox/dsh-prompt-manager",
+      "defaultBranch": "main",
+      "latestCommit": "76059cb4950b60b189aea118adee15690bad16e9",
+      "sourceUpdatedAt": "2026-08-23T09:31:14.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-prompt-manager."
+    },
+    {
+      "id": "max-null-dsh-plugin-center",
+      "name": "社区插件中心（Max Null Plugin Center）",
+      "description": "为 DSH 提供社区插件中心能力。英文原始说明：Plugin center for DeepSeek Harness — installed metadata, community market, update detection, and What's New",
+      "repositoryUrl": "https://github.com/Max-Null/dsh-plugin-center",
+      "defaultBranch": "main",
+      "latestCommit": "11b0ec752853dc04fee2f19942a7e211a587bd99",
+      "sourceUpdatedAt": "2026-08-23T09:22:42.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "marketplace",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: max-null-dsh-plugin-center."
+    },
+    {
+      "id": "yuer6327-noletme",
+      "name": "会话管理（DSH Noletme）",
+      "description": "实时追踪 DeepSeek Harness 网页对话中模型流式推理轨迹关键词统计的 UI 面板。",
+      "repositoryUrl": "https://github.com/Yuer6327/NoLetMe",
+      "defaultBranch": "main",
+      "latestCommit": "9066292e1112ade3f4328c3830d111ce3e10d562",
+      "sourceUpdatedAt": "2026-08-23T06:30:46.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-noletme."
+    },
+    {
+      "id": "perrylink-dsh-checkpoint-rewind",
+      "name": "会话与文件回退（DSH Checkpoint Rewind）",
+      "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
+      "defaultBranch": "main",
+      "latestCommit": "377174b99200ea2f004f03f679f39515505c38f3",
+      "sourceUpdatedAt": "2026-08-23T05:46:10.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-checkpoint-rewind."
+    },
+    {
+      "id": "limbo947-dsh-recall-plugin",
+      "name": "会话与文件回退（DSH Recall Plugin）",
+      "description": "消息撤回：在用户消息旁加「撤回」按钮，把对话历史（官方会话 fork）与项目文件（逐消息影子 git 快照）一并回退到该消息发送之前，带差异预览确认面板。",
+      "repositoryUrl": "https://github.com/limbo947/dsh-recall-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "5a85976072da3ebedcb91c822eedf91ea43dc9b1",
+      "sourceUpdatedAt": "2026-08-23T05:41:45.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-recall-plugin."
+    },
+    {
+      "id": "perrylink-dsh-memento",
+      "name": "跨会话记忆（DSH Memento）",
+      "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
+      "defaultBranch": "main",
+      "latestCommit": "ee198efd71dc60f5cd1cd2019e20c63028d2d182",
+      "sourceUpdatedAt": "2026-08-23T05:33:41.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "memory",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-memento."
+    },
+    {
+      "id": "jjxjjjjiik-bot-dsh-chat-timeline",
+      "name": "会话导航（DSH Chat Timeline）",
+      "description": "1:1 复刻 DeepSeek 官网右侧对话导航栏（ScrollNav）：悬停展开面板、阅读位置高亮、点击跳转。",
+      "repositoryUrl": "https://github.com/jjxjjjjiik-bot/dsh-chat-timeline",
+      "defaultBranch": "main",
+      "latestCommit": "290e6cd5bb8f4edd206b17632e83986d556181b2",
+      "sourceUpdatedAt": "2026-08-23T05:21:00.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-chat-timeline."
+    },
+    {
+      "id": "feibi-mochi-deepseek-harness-control-center",
+      "name": "余额与额度监控（DeepSeek Harness Wallet）",
+      "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Local-first account monitoring, usage accounting, official recharge, completion reminders, flexible layout, host-gated session controls, and multi-account management with hot account switching for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/feibi-mochi/deepseek-harness-control-center",
+      "defaultBranch": "main",
+      "latestCommit": "93dfabe5bc86cb5225acc21cea06cba8ffc109db",
+      "sourceUpdatedAt": "2026-08-23T03:46:39.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: deepseek-harness-wallet."
+    },
+    {
+      "id": "captain1275-dsh-ui-web",
+      "name": "兼容性复核：CAPTAIN1275/dsh-ui-web（7 个 Catalog 条目）",
+      "description": "该仓库中的 7 个 DSH STORE 条目因最新三个 DSH 版本兼容记录不足而暂时下架：dsh-client-ui-skin-aurora、dsh-client-ui-skin-miku、dsh-client-ui-skin-minecraft、dsh-client-ui-skin-ths、dsh-client-ui-skin-trading、dsh-client-ui-skin-xp、dsh-usage-dashboard。",
+      "repositoryUrl": "https://github.com/CAPTAIN1275/dsh-ui-web",
+      "defaultBranch": "main",
+      "latestCommit": null,
+      "sourceUpdatedAt": "2026-08-22T20:16:52.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "themes",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-client-ui-skin-aurora, dsh-client-ui-skin-miku, dsh-client-ui-skin-minecraft, dsh-client-ui-skin-ths, dsh-client-ui-skin-trading, dsh-client-ui-skin-xp, dsh-usage-dashboard."
+    },
+    {
+      "id": "nanmicoder-dsh-agent-teams",
+      "name": "多代理团队（DSH Agent Teams）",
+      "description": "自然语言驱动的多代理团队协作、依赖任务与消息通信。",
+      "repositoryUrl": "https://github.com/NanmiCoder/dsh-agent-teams",
+      "defaultBranch": "main",
+      "latestCommit": "912aae5225d3d85fa841a1b0c8a5c77021876c25",
+      "sourceUpdatedAt": "2026-08-22T19:00:57.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-agent-teams."
+    },
+    {
+      "id": "perrylink-dsh-test-drive",
+      "name": "插件测试工具（DSH Test Drive）",
+      "description": "在一次性隔离配置中为 DSH 插件执行安装与冒烟测试，返回结构化的通过/失败记录与批量矩阵，不触碰真实配置。",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-test-drive",
+      "defaultBranch": "main",
+      "latestCommit": "d1339b90e22c2241ecad36d0d87309676000e76b",
+      "sourceUpdatedAt": "2026-08-22T16:46:35.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "development",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-test-drive."
+    },
+    {
+      "id": "mars-sea-dsh-commandcode-provider",
+      "name": "Command Code 模型提供商（DSH Command Code Provider）",
+      "description": "为 DSH 注册 Command Code 模型提供商与模型目录。",
+      "repositoryUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
+      "defaultBranch": "main",
+      "latestCommit": "7eac763be33ddb5266b0966975916a11ae471664",
+      "sourceUpdatedAt": "2026-08-22T14:53:30.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "models",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-commandcode-provider."
+    },
+    {
+      "id": "hezhongtang-dsh-update-copilot",
+      "name": "浏览器与网页工具（DSH Update Copilot）",
+      "description": "DeepSeek Harness 的更新助手：一次扫描覆盖 dsh 本体、官方 bundle 和每个 profile 的插件，说清改了什么、风险多大，只更新你确认过的那些。",
+      "repositoryUrl": "https://github.com/hezhongtang/dsh-update-copilot",
+      "defaultBranch": "main",
+      "latestCommit": "eb91221073e416eaf212bb9d92a929b08e19fd15",
+      "sourceUpdatedAt": "2026-08-22T14:48:09.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "development",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-update-copilot."
+    },
+    {
+      "id": "kenz1117-dsh-ui-usage-billing",
+      "name": "费用与账单（DSH UI Usage Billing）",
+      "description": "侧边栏计费仪表盘：从会话日志聚合真实用量（按模型/按日统计调用、Token、缓存），按最新多厂商官方价格估算人民币费用，订阅套餐（coding/token/agent）通道豁免计费，并带各厂商健康状态圆点。",
+      "repositoryUrl": "https://github.com/kenz1117/dsh-ui-usage-billing",
+      "defaultBranch": "main",
+      "latestCommit": "3f320112d6323c3820da878b6726e0cf1c0030c0",
+      "sourceUpdatedAt": "2026-08-22T14:22:26.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: kenz1117-dsh-ui-usage-billing."
+    },
+    {
+      "id": "fly233338-dsh-overleaf",
+      "name": "GitHub 工程工具（DSH Overleaf）",
+      "description": "通过 OverleafMCP 将多个 Overleaf 项目接入 DSH，支持浏览、分析和通过 Git 写回 LaTeX 文件。",
+      "repositoryUrl": "https://github.com/fly233338/dsh-overleaf",
+      "defaultBranch": "main",
+      "latestCommit": "aca361f88bd23176b68169d625dae4452ab97983",
+      "sourceUpdatedAt": "2026-08-22T13:26:39.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "files",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-overleaf."
+    },
+    {
+      "id": "bowenliang123-dsh-context",
+      "name": "上下文分析（DSH Context）",
+      "description": "在 DSH 会话中展示上下文组成、历史变化与相关命令，帮助定位上下文占用和演化。",
+      "repositoryUrl": "https://github.com/bowenliang123/dsh-context",
+      "defaultBranch": "main",
+      "latestCommit": "61d3e16477947ba42d3fff54118ffb4fdec2a918",
+      "sourceUpdatedAt": "2026-08-22T11:57:21.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "visualization",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-context."
+    },
+    {
+      "id": "angeloszou-dsh-multi-folder",
+      "name": "会话管理（DSH Multi Folder）",
+      "description": "为 DSH 项目提供副工作目录：agent 保持主工作区为 cwd，同时对已配置的副目录获得同等读写/执行权限，可在会话头部与新会话页配置。",
+      "repositoryUrl": "https://github.com/AngelosZou/dsh-multi-folder",
+      "defaultBranch": "main",
+      "latestCommit": "1b9180714ab640b31421ba1f31066f96d2bf21db",
+      "sourceUpdatedAt": "2026-08-22T11:48:51.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-multi-folder."
+    },
+    {
+      "id": "anweat-dsh-assistant-message-forge",
+      "name": "配置导入迁移（DSH Assistant Message Forge）",
+      "description": "消息锻造台：创建/修改/注入测试用 assistant 消息，导入识别并安全修复 session.jsonl(.zstd) 会话日志为新会话。",
+      "repositoryUrl": "https://github.com/anweat/dsh-assistant-message-forge",
+      "defaultBranch": "master",
+      "latestCommit": "95888ecbc2c7fc2373c9369e88646b60625b3726",
+      "sourceUpdatedAt": "2026-08-22T05:26:30.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-assistant-message-forge."
+    },
+    {
+      "id": "anweat-dsh-restart",
+      "name": "插件更新与恢复（DSH Restart）",
+      "description": "DSH 重启插件：可配置的重启方式（Node 原生/旧 PowerShell 适配）、重启后自动继续的提示词、可选看门狗自动拉起。",
+      "repositoryUrl": "https://github.com/anweat/dsh-restart",
+      "defaultBranch": "main",
+      "latestCommit": "61d6cd10c7e2cd310e9e8b1a241074e52529d061",
+      "sourceUpdatedAt": "2026-08-22T03:36:05.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "development",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-restart."
+    },
+    {
+      "id": "jiezeng2004-design-dsh-chatgpt-bridge",
+      "name": "会话管理（DSH ChatGPT Bridge）",
+      "description": "通过 MCP 让 ChatGPT Web 创建、查看、继续和监督 DeepSeek Harness Agent 会话与 Goal，同时保留 DSH 原生的审批、沙箱与工作区安全模型。",
+      "repositoryUrl": "https://github.com/jiezeng2004-design/dsh-chatgpt-bridge",
+      "defaultBranch": "main",
+      "latestCommit": "8c47538e3961a9df5abbd5df55424f8e97f360af",
+      "sourceUpdatedAt": "2026-08-22T01:53:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "notifications",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-chatgpt-bridge."
+    },
+    {
+      "id": "zk-andy-dsh-continual-evolve",
+      "name": "会话管理（DSH Continual Evolve）",
+      "description": "持续自进化：从会话轨迹沉淀版本化、可审计、可回滚的 harness 状态（提示词/记忆/技能/子代理规格），带审查门禁与技能热加载。",
+      "repositoryUrl": "https://github.com/ZK-Andy/dsh-continual-evolve",
+      "defaultBranch": "main",
+      "latestCommit": "5fd463b8642f616e2daafaf0860720922b4a5cb3",
+      "sourceUpdatedAt": "2026-08-22T01:30:14.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "development",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-continual-evolve."
+    },
+    {
+      "id": "abcdefgxw-dsh-toolbox-web",
+      "name": "会话管理（DSH Toolbox Web）",
+      "description": "Web 界面工具箱：会话/回收站/子目录/搜索/预设/配置管理、标签分组、长消息折叠，以及支持 IM 渠道推送的定时心跳。",
+      "repositoryUrl": "https://github.com/AbcdefgXW/dsh-toolbox-web",
+      "defaultBranch": "main",
+      "latestCommit": "da6227a70ed7ab44070949073924abfd23a47a58",
+      "sourceUpdatedAt": "2026-08-21T19:58:52.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-toolbox-web."
+    },
+    {
+      "id": "0lidaxiang-dsh-plugin-greet",
+      "name": "任务与工作流自动化（DSH Plugin Greet）",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：A beginner-friendly configurable greet tool plugin for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/0lidaxiang/dsh-plugin-greet",
+      "defaultBranch": "master",
+      "latestCommit": "7452efb3dcf6e6c1fedbd0b9d81f5501997eb9b7",
+      "sourceUpdatedAt": "2026-08-21T10:18:24.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-greet."
+    },
+    {
+      "id": "jiyr0119-dsh-workspace-explorer",
+      "name": "文件与工作区工具（DSH Workspace Explorer）",
+      "description": "独立单功能的工作区文件树面板：会话头部图标打开当前工作区目录树的动画弹窗；点击或拖拽文件即可把引用插入输入框；自带搜索、行内预览、实时设置与中英双语；零配置，一条命令即装即用。",
+      "repositoryUrl": "https://github.com/Jiyr0119/dsh-workspace-explorer",
+      "defaultBranch": "main",
+      "latestCommit": "d40ef7f63cd8b652c053131e29cf33b8dd1c9c9a",
+      "sourceUpdatedAt": "2026-08-21T09:30:41.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: jiyr0119-dsh-workspace-explorer."
+    },
+    {
+      "id": "moguiyu-dsh-tavily",
+      "name": "联网搜索工具（DSH Tool Tavily Search）",
+      "description": "Tavily 多密钥搜索：支持密钥轮换/故障转移、用量仪表盘与设置卡片。",
+      "repositoryUrl": "https://github.com/moguiyu/dsh-tavily",
+      "defaultBranch": "main",
+      "latestCommit": "bc86dfac730c5b82f7c8e3435fb914d31a808e51",
+      "sourceUpdatedAt": "2026-08-21T09:13:48.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "search",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: moguiyu-dsh-tool-tavily-search."
+    },
+    {
+      "id": "amethystluna-logicprobe",
+      "name": "模型提供商接入（Logicprobe）",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Design document & plan claim verification — enumerate claims, verify against codebase facts, then escalate to logic-primitive verification (7 structural checks + 7 adversarial probes) for behavioral claims. Before/after model comparison for refactoring regression detection. Ships a native DeepSeek Harness (dsh) bundle that injects the claim-verification gate into the first model step.",
+      "repositoryUrl": "https://github.com/AmethystLuna/logicprobe",
+      "defaultBranch": "main",
+      "latestCommit": "56cfe83e1c7bd8770f05fbb84cd57c07ef3acf17",
+      "sourceUpdatedAt": "2026-08-21T07:31:56.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "design",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: logicprobe."
+    },
+    {
+      "id": "kaixinbaba-dsh-vision-recognizer",
+      "name": "图像视觉工具（DSH Vision Recognizer）",
+      "description": "视觉模型路由：把附加图片经可配置模型（15+ OpenAI 兼容与 Anthropic 供应商）转译为文字，对话仍由 DeepSeek 作答。",
+      "repositoryUrl": "https://github.com/kaixinbaba/dsh-vision-recognizer",
+      "defaultBranch": "main",
+      "latestCommit": "167ef3d7fa803854469e7f770ffc52e6bfec5845",
+      "sourceUpdatedAt": "2026-08-21T02:23:56.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision-recognizer."
+    },
+    {
+      "id": "dongsheng123132-dsh-narrative-ledger",
+      "name": "会话导航（DSH Narrative Ledger）",
+      "description": "为 DSH 提供会话导航能力。英文原始说明：Content-addressed timeline, canon and character-knowledge evidence for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-narrative-ledger",
+      "defaultBranch": "main",
+      "latestCommit": "21851f7f0b7fc33a3a34d4f08ef8034124117867",
+      "sourceUpdatedAt": "2026-08-21T01:09:11.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-narrative-ledger."
+    },
+    {
+      "id": "dongsheng123132-dsh-cad-review",
+      "name": "审查与验证助手（DSH Cad Review）",
+      "description": "为 DSH 提供审查与验证助手能力。英文原始说明：Evidence-first ASCII DXF inspection and rule-backed CAD review for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-cad-review",
+      "defaultBranch": "main",
+      "latestCommit": "b2ecef56a9c0d50d870134bbc4caacb598594b1f",
+      "sourceUpdatedAt": "2026-08-21T00:53:45.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-cad-review."
+    },
+    {
+      "id": "xmanrui-dsh-im",
+      "name": "多平台 IM 机器人桥接（DSH IM）",
+      "description": "通过二维码或机器人凭据将 IM 机器人接入 DeepSeek Harness，支持飞书、微信、钉钉、企业微信、QQ、Slack、Telegram、Discord 和 WhatsApp，并提供实验性的 AI Office 连接器。",
+      "repositoryUrl": "https://github.com/xmanrui/dsh-im",
+      "defaultBranch": "main",
+      "latestCommit": "832bd539a2bca2518cbf575d9b61606f868290e4",
+      "sourceUpdatedAt": "2026-08-20T20:23:51.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "notifications",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: xmanrui-dsh-im."
+    },
+    {
+      "id": "cyanseek-dsh-landscape",
+      "name": "任务与工作流自动化（DSH Landscape）",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Run a read-only capability preflight before changing or building for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/cyanseek/dsh-landscape",
+      "defaultBranch": "main",
+      "latestCommit": "e03414c9e934fd46754431f7f9affe2933c816fb",
+      "sourceUpdatedAt": "2026-08-20T19:03:12.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-landscape."
+    },
+    {
+      "id": "dongsheng123132-dsh-capability-receipt",
+      "name": "安全防护工具（DSH Capability Receipt）",
+      "description": "为 DSH 提供安全防护工具能力。英文原始说明：Content-addressed receipts for skills actually loaded by DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-capability-receipt",
+      "defaultBranch": "main",
+      "latestCommit": "53fe2a117909c17be7996c7eadfea330897398c2",
+      "sourceUpdatedAt": "2026-08-20T17:11:51.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-capability-receipt."
+    },
+    {
+      "id": "dongsheng123132-dsh-surface-contract-proof",
+      "name": "安全防护工具（DSH Surface Contract Proof）",
+      "description": "为 DSH 提供安全防护工具能力。英文原始说明：Content-addressed conformance proof across recorded DSH ToolRuntime, MCP JSON-RPC and CLI JSON surfaces",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-surface-contract-proof",
+      "defaultBranch": "main",
+      "latestCommit": "a959e3877062c9260c4093980e4f1c7bf05eeb41",
+      "sourceUpdatedAt": "2026-08-20T15:13:09.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-surface-contract-proof."
+    },
+    {
+      "id": "xcnxnxnx-dsh-portable-tavern",
+      "name": "会话管理（DSH Portable Tavern）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Portable Tavern for the DeepSeek Harness web GUI: an RPG-style SillyTavern V2/V3 character-card generator plus tavern roleplay chat, with world-book generation and JSON/PNG import-export.",
+      "repositoryUrl": "https://github.com/XCNXNXNX/dsh-portable-tavern",
+      "defaultBranch": "main",
+      "latestCommit": "113199e9b690dd5bde0d4c4424e945eb14270188",
+      "sourceUpdatedAt": "2026-08-20T14:49:56.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-portable-tavern."
+    },
+    {
+      "id": "yyh-001-dsh-meme",
+      "name": "实用工具（DSH Meme）",
+      "description": "DeepSeek Harness 表情包插件:内置官方-001 与大肥鱼两套图库,设置页扫描切换,send_meme 发图(Web/QQ)。",
+      "repositoryUrl": "https://github.com/yyh-001/dsh-meme",
+      "defaultBranch": "main",
+      "latestCommit": "cce3fdc5877aa63318aefe41c8287a23a5186965",
+      "sourceUpdatedAt": "2026-08-20T14:27:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-meme."
+    },
+    {
+      "id": "songoao25-dsh-chatgpt-subscription",
+      "name": "ChatGPT 订阅接入（DSH ChatGPT Subscription）",
+      "description": "DeepSeek Harness (DSH) 插件：用官方 OAuth 一键绑定 ChatGPT 订阅（Codex），在 DSH 内直接使用 ChatGPT 模型对话（消耗 ChatGPT Plus/Pro 订阅额度），并在设置侧边栏「订阅」页展示绑定状态与剩余额度。",
+      "repositoryUrl": "https://github.com/songoao25/dsh-chatgpt-subscription",
+      "defaultBranch": "main",
+      "latestCommit": "ae3c1be56b4ce0d233c3d5b084cb168b65f14d2a",
+      "sourceUpdatedAt": "2026-08-20T13:45:27.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "models",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-chatgpt-subscription."
+    },
+    {
+      "id": "dongsheng123132-dsh-policy-drift-proof",
+      "name": "安全防护工具（DSH Policy Drift Proof）",
+      "description": "为 DSH 提供安全防护工具能力。英文原始说明：Content-addressed, value-redacted policy drift evidence for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-policy-drift-proof",
+      "defaultBranch": "main",
+      "latestCommit": "3d9c66f23dd9cfb47855a9823eb5dd09a3afa7fc",
+      "sourceUpdatedAt": "2026-08-20T11:07:49.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-policy-drift-proof."
+    },
+    {
+      "id": "yeqingtang-dsh-session-flow",
+      "name": "会话管理（DSH Session Flow）",
+      "description": "跨会话档案柜：总览工作台、折叠时间线、子代理血缘、内容检索、规则+LLM 双模式摘要、ZIP 导出、实时跟踪。",
+      "repositoryUrl": "https://github.com/YeqingTang/dsh-session-flow",
+      "defaultBranch": "main",
+      "latestCommit": "dac670160afa150581c9838b34366a0233c8314a",
+      "sourceUpdatedAt": "2026-08-20T11:07:19.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-session-flow."
+    },
+    {
+      "id": "xin-zhang-iceman-dsh-vision-plugin",
+      "name": "图像视觉工具（DSH Vision Plugin）",
+      "description": "为 DSH 提供图像视觉工具能力。英文原始说明：dsh-vision-plugin: give DeepSeek Harness text-only models a pair of eyes — pasted images are transcribed by a vision model before they reach a text-only main model, plus the vision_analyze tool and a bilingual settings page.",
+      "repositoryUrl": "https://github.com/Xin-Zhang-IceMan/dsh-vision-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "18462b234669122b2dbc8c514708b34cf737bb83",
+      "sourceUpdatedAt": "2026-08-20T11:04:24.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision-plugin."
+    },
+    {
+      "id": "severuszh-dsh-notify-windows",
+      "name": "任务通知提醒（DSH Notify Windows）",
+      "description": "DeepSeek Harness (DSH) 插件：任务完成 / 等待审批 / 等待回答时发送 Windows 系统桌面通知",
+      "repositoryUrl": "https://github.com/SeverusZh/dsh-notify-windows",
+      "defaultBranch": "main",
+      "latestCommit": "b18733a70db4e56395c4ff97d6521f29a5026607",
+      "sourceUpdatedAt": "2026-08-20T09:29:51.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "notifications",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-notify-windows."
+    },
+    {
+      "id": "dongsheng123132-dsh-audit-bundle",
+      "name": "实用工具（DSH Audit Bundle）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Content-addressed audit indexes across independent DeepSeek Harness evidence producers",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-audit-bundle",
+      "defaultBranch": "main",
+      "latestCommit": "e69b94060bca8e0f756f92455a7a046f12dbf523",
+      "sourceUpdatedAt": "2026-08-20T09:11:56.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-audit-bundle."
+    },
+    {
+      "id": "iamfromchangsha-dsh-go-balance",
+      "name": "余额与额度监控（DSH Go Balance）",
+      "description": "输入框工具行右侧的 OpenCode Go 余额胶囊：滚动/每周/每月配额剩余百分比（数据直接来自 Zen 用量接口），悬停查看明细，低余额自动变黄/变红。",
+      "repositoryUrl": "https://github.com/iamfromchangsha/dsh-go-balance",
+      "defaultBranch": "main",
+      "latestCommit": "8d11fea5d123fb0935df1b18f5f8f6bf7d2190da",
+      "sourceUpdatedAt": "2026-08-20T07:57:44.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-go-balance."
+    },
+    {
+      "id": "dongsheng123132-dsh-action-parity",
+      "name": "实用工具（DSH Action Parity）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Evidence that CLI, MCP and GUI bindings reach the same DeepSeek Harness action core",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-action-parity",
+      "defaultBranch": "main",
+      "latestCommit": "33eb4e6cab585d2fbc3a6e53170df91144b5d5da",
+      "sourceUpdatedAt": "2026-08-20T07:16:30.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-action-parity."
+    },
+    {
+      "id": "tinqiao-oss-engramory",
+      "name": "记忆与知识库（DSH Engramory）",
+      "description": "把 Engramory 策展式记忆纪律做成可安装插件（[npm: dsh-engramory](https://www.npmjs.com/package/dsh-engramory)）：通过 `ctx.tools.guard()` 对 `MEMORY.md` 索引施加确定性的 200 行 / 25KB 上限（增长即拒、缩小的重写一律放行），并把协议注册为运行时 skill。记忆库是纯 markdown、一条事实一个文件，与 Claude Code、Codex、Kiro、OpenClaw 共用。",
+      "repositoryUrl": "https://github.com/tinqiao-oss/engramory",
+      "defaultBranch": "master",
+      "latestCommit": "39efc183a55cb3d2c56e11a42b2b5e059a193ce3",
+      "sourceUpdatedAt": "2026-08-20T07:14:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "memory",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-engramory."
+    },
+    {
+      "id": "131cda1-dsh-scrape-webpage",
+      "name": "图像视觉工具（DSH Scrape Webpage）",
+      "description": "网页抓取与分析插件：抓取网页正文并给出统计与关键词分析，支持内容图片下载与识图分析器扩展接口。",
+      "repositoryUrl": "https://github.com/131CDA1/dsh-scrape-webpage",
+      "defaultBranch": "main",
+      "latestCommit": "7485af10c063579323058583c7f13e69c4c8bd21",
+      "sourceUpdatedAt": "2026-08-20T06:25:59.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "search",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-scrape-webpage."
+    },
+    {
+      "id": "dongsheng123132-dsh-recovery-proof",
+      "name": "安全防护工具（DSH Recovery Proof）",
+      "description": "为 DSH 提供安全防护工具能力。英文原始说明：Read-only recovery drill evidence for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-recovery-proof",
+      "defaultBranch": "main",
+      "latestCommit": "7ecd2bc72663507b9f3d71bfd28378d0c9145d61",
+      "sourceUpdatedAt": "2026-08-20T05:10:29.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-recovery-proof."
+    },
+    {
+      "id": "314857493-dsh-vision",
+      "name": "兼容性复核：314857493/dsh-vision（2 个 Catalog 条目）",
+      "description": "该仓库中的 2 个 DSH STORE 条目因最新三个 DSH 版本兼容记录不足而暂时下架：dsh-vision-free-eyes、dsh-vision-proxy-route。",
+      "repositoryUrl": "https://github.com/314857493/dsh-vision",
+      "defaultBranch": "main",
+      "latestCommit": "7c23fc5eb22cdd9891dc41e26a49979ea70f1989",
+      "sourceUpdatedAt": "2026-08-19T18:27:58.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision-free-eyes, dsh-vision-proxy-route."
+    },
+    {
+      "id": "chongcyrus-vibe-mathematics",
+      "name": "记忆与知识库（DSH Vibe Math）",
+      "description": "多代理数学问题求解与验证框架：头脑风暴 → 求解迭代 → 多验证器辩论 → 可信知识库沉淀，支持断点续跑与人工/自动干预（同时提供 agent preset 与可安装 bundle）。",
+      "repositoryUrl": "https://github.com/ChongCyrus/Vibe-Mathematics",
+      "defaultBranch": "main",
+      "latestCommit": "50822814b21d93f2d739b041c21adda18413b5cb",
+      "sourceUpdatedAt": "2026-08-19T14:07:23.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vibe-math."
+    },
+    {
+      "id": "xiaozhe7772222-dsh-draw-router",
+      "name": "统一绘图路由（DSH Draw Router）",
+      "description": "Unified image generation router for DeepSeek Harness (DSH). Auto-discovers image models from any OpenAI-compatible endpoint. Supports SenseNova, StepFun, Agnes, Qwen, Tongyi Wanxiang, Jimeng/Seedream, Hunyuan, GPT Image, Flux, Stable Diffusion, Imagen, and more. | DeepSeek Harness 统一绘图路由器：自动识别任意 OpenAI 兼容端点的绘图模型，支持商汤、阶跃、Agnes、千问、通义万相、即梦、混元、GPT Image、Flux、Stable Diffusion、Imagen 等。",
+      "repositoryUrl": "https://github.com/xiaozhe7772222/dsh-draw-router",
+      "defaultBranch": "main",
+      "latestCommit": "c0ff2a0c55cd5a3bbf31fb1cc34b3c6a5908ace3",
+      "sourceUpdatedAt": "2026-08-19T13:36:39.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "models",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-draw-router."
+    },
+    {
+      "id": "qwq-nn-dsh-client-ui-trajectory-categories",
+      "name": "浏览器与网页工具（DSH Client UI Trajectory Categories）",
+      "description": "DSH Web 轨迹分类视图插件：「分类」标签页 = 左上角「合计」动作统计（写入/读取/删除/下载/命令/搜索/子代理/其他工具/消息/压缩）+ 思维导图画布（一次一个问题，问题画布标签切换，问题 → 方案 → 工具调用，节点可拖动、线条带惯性）。点击问题/方案收起展开子流程，点击工具查看「做了什么/输出日志/修改内容/参数/错误」。中文分类、中英文工具名匹配，保留原始「轨迹」流程列表。纯浏览器端聚合，零模型请求、零额外 token 消耗。",
+      "repositoryUrl": "https://github.com/QWQ-nn/dsh-client-ui-trajectory-categories",
+      "defaultBranch": "main",
+      "latestCommit": "652f159b6087197160e7e3238819db94e0a3de63",
+      "sourceUpdatedAt": "2026-08-19T09:21:23.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-client-ui-trajectory-categories."
+    },
+    {
+      "id": "hellodigua-dsh-share",
+      "name": "会话管理（DSH Share）",
+      "description": "一键分享你的对话。",
+      "repositoryUrl": "https://github.com/hellodigua/dsh-share",
+      "defaultBranch": "main",
+      "latestCommit": "c109330b755c793cbc701a4e6a972d620a6667da",
+      "sourceUpdatedAt": "2026-08-19T09:11:27.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-share."
+    },
+    {
+      "id": "spookysandwich-dsh-plugin-smooth-stream",
+      "name": "界面交互工具（DSH Plugin Smooth Stream）",
+      "description": "给 DeepSeek Harness 加入更好的流式文字动画。",
+      "repositoryUrl": "https://github.com/SpookySandwich/dsh-plugin-smooth-stream",
+      "defaultBranch": "main",
+      "latestCommit": "93b1e816c0336310b7c362bfc67d7b53da7a6861",
+      "sourceUpdatedAt": "2026-08-19T08:44:04.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-smooth-stream."
+    },
+    {
+      "id": "hellodigua-dsh-emoji",
+      "name": "趣味互动插件（DSH Emoji）",
+      "description": "为 AI 回复自动添加表情。",
+      "repositoryUrl": "https://github.com/hellodigua/dsh-emoji",
+      "defaultBranch": "main",
+      "latestCommit": "96b653a473c978a474dd7d42e86e5b2c79e6dc7c",
+      "sourceUpdatedAt": "2026-08-19T08:33:53.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "fun",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-emoji."
+    },
+    {
+      "id": "mlosun-dsh-docs-panel",
+      "name": "文件与工作区工具（DSH Docs Panel）",
+      "description": "DSH 侧边栏里的「全局文档」：全局 Markdown 笔记，任何工作区随时可读。（依赖 dsh-better-sidebar）",
+      "repositoryUrl": "https://github.com/mlosun/dsh-docs-panel",
+      "defaultBranch": "main",
+      "latestCommit": "a2ab2da5627ead05f6f5272933081a085f8e9cc4",
+      "sourceUpdatedAt": "2026-08-19T06:11:27.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-docs-panel."
+    },
+    {
+      "id": "awesome-dsh-plugin-dsh-find-plugin",
+      "name": "插件发现（DSH Find Plugin）",
+      "description": "为 DSH 提供插件发现能力。英文原始说明：Find DeepSeek Harness plugins inside the agent — live GitHub dsh-plugin topic search, ranked by stars.",
+      "repositoryUrl": "https://github.com/awesome-dsh-plugin/dsh-find-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "e7a27eb01606e6deccdaacccb8e0cfd992c0bcdc",
+      "sourceUpdatedAt": "2026-08-19T05:24:30.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "marketplace",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-find-plugin."
+    },
+    {
+      "id": "y2zyyr-dsh-token-usage-sidebar",
+      "name": "用量统计看板（DSH Token Usage Sidebar）",
+      "description": "为 DSH Web 持久保存 provider 上报的 Token 用量，提供侧边栏摘要，以及按范围、Token 类别、供应商和模型查看的设置页明细。",
+      "repositoryUrl": "https://github.com/y2zyyr/dsh-token-usage-sidebar",
+      "defaultBranch": "main",
+      "latestCommit": "bcebd95cc494a0fa6aa59a71ed6bc6f621557c82",
+      "sourceUpdatedAt": "2026-08-19T04:39:49.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: y2zyyr-dsh-token-usage-sidebar."
+    },
+    {
+      "id": "1841220388zzzcccxxx-star-dsh-git-graph",
+      "name": "GitHub 工程工具（DSH Git Graph）",
+      "description": "为 DSH 提供GitHub 工程工具能力。英文原始说明：DSH plugin: embedded git repository graph visualizer for the DeepSeek Harness web GUI - commit history graph, branch filtering, code diffs, VSCode-style uncommitted changes panel",
+      "repositoryUrl": "https://github.com/1841220388zzzcccxxx-star/dsh-git-graph",
+      "defaultBranch": "main",
+      "latestCommit": "2dc485e72e323a80f7b7915c2437a2c7a21cccc1",
+      "sourceUpdatedAt": "2026-08-19T03:26:33.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-git-graph."
+    },
+    {
+      "id": "a735624258-dsh-skill-picker",
+      "name": "技能管理工具（DSH Skill Picker）",
+      "description": "WorkBuddy 同款技能选择器：输入框旁 ⚡ 按钮弹出全部技能列表，支持搜索与最近/常用排序，点选即插入官方 `/技能名` 手势，随消息发出自动加载执行。",
+      "repositoryUrl": "https://github.com/a735624258/dsh-skill-picker",
+      "defaultBranch": "main",
+      "latestCommit": "aff4f33ea69f59588dec7fc5847c734452a27b2d",
+      "sourceUpdatedAt": "2026-08-19T00:22:53.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-skill-picker."
+    },
+    {
+      "id": "minerpi-dsh-trilium",
+      "name": "配置导入迁移（DSH Trilium）",
+      "description": "通过 ETAPI 把 Trilium 笔记库接入 agent，提供 20 个工具：记忆读写（remember/recall + 自动注入索引）、笔记管理（CRUD/克隆/属性/修订）、全文搜索、周报工作流、附件、日历笔记、备份导入，独立设置卡片，配置 0600 落盘。",
+      "repositoryUrl": "https://github.com/MineRPi/dsh-trilium",
+      "defaultBranch": "main",
+      "latestCommit": "186c8a90ec519e28caf758c2b4689d9a0749109b",
+      "sourceUpdatedAt": "2026-08-18T23:52:08.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "memory",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-trilium."
+    },
+    {
+      "id": "amethystluna-embedded-workbench",
+      "name": "模型提供商接入（Embedded Workbench）",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Embedded C/C++ firmware development toolbox — 4 agents, 7 skills covering FreeRTOS, ISR, NVM storage, Keil MDK, ARMCLANG, HardFault, state machines, architecture, and LVGL patterns. Ships a native DeepSeek Harness (dsh) bundle that injects the session-start gate into the first model step.",
+      "repositoryUrl": "https://github.com/AmethystLuna/embedded-workbench",
+      "defaultBranch": "master",
+      "latestCommit": "9728f9a5ca8352460a0ad51287ed0f4fb6c311d0",
+      "sourceUpdatedAt": "2026-08-18T16:51:02.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: embedded-workbench."
+    },
+    {
+      "id": "sutera-diffusus-dsh-whale-musume",
+      "name": "鲸娘主题（DSH Whale Musume）",
+      "description": "为 DSH 提供鲸娘主题能力。英文原始说明：A whale-girl Kanban Musume mascot for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume",
+      "defaultBranch": "main",
+      "latestCommit": "032ff113d75116d573a555bc32eca52f788dbdc9",
+      "sourceUpdatedAt": "2026-08-18T14:46:30.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "themes",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-whale-musume."
+    },
+    {
+      "id": "zoahdev-dsh-subscribe",
+      "name": "对话式插件市场（DSH Subscribe）",
+      "description": "为 DSH 提供对话式插件市场能力。英文原始说明：Agent-native plugin marketplace for DeepSeek Harness: search 500+ community plugins, market stats, and install commands — right from the chat.",
+      "repositoryUrl": "https://github.com/zoahdev/dsh-subscribe",
+      "defaultBranch": "main",
+      "latestCommit": "dadfb28660cbc46fa73b94d1ede5fcc3f90ffaae",
+      "sourceUpdatedAt": "2026-08-18T14:39:10.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "models",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-subscribe."
+    },
+    {
+      "id": "huahai0202-dsh-better-archive",
+      "name": "会话管理（DSH Better Archive）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Sidebar Archived entry + archived-session panel with unarchive and delete, for the DeepSeek Harness web GUI",
+      "repositoryUrl": "https://github.com/huahai0202/dsh-better-archive",
+      "defaultBranch": "main",
+      "latestCommit": "fa31fc486d35b1e270828fd068a240f1775fb992",
+      "sourceUpdatedAt": "2026-08-18T07:59:17.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-better-archive."
+    },
+    {
+      "id": "dddmuc-dsh-free-search",
+      "name": "自由联网搜索（DSH Free Search）",
+      "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
+      "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
+      "defaultBranch": "master",
+      "latestCommit": "7c093e6d59b8ffc43ee02f7021697aeddf75c837",
+      "sourceUpdatedAt": "2026-08-18T07:30:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "search",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-free-search."
+    },
+    {
+      "id": "noirbright-dsh-llm-codex",
+      "name": "ChatGPT Codex 模型接入（DSH LLM Codex）",
+      "description": "为 DSH 提供ChatGPT Codex 模型接入能力。英文原始说明：ChatGPT Codex login, sortable catalog, and Fast models for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/NOirBRight/dsh-llm-codex",
+      "defaultBranch": "main",
+      "latestCommit": "816e994e4bfac4944b4c825ea979e93195fbc2d4",
+      "sourceUpdatedAt": "2026-08-18T05:04:21.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "models",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-llm-codex."
+    },
+    {
+      "id": "noirbright-dsh-llm-grok",
+      "name": "Grok 模型接入（DSH LLM Grok）",
+      "description": "为 DSH 提供Grok 模型接入能力。英文原始说明：xAI Grok subscription login and chat for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/NOirBRight/dsh-llm-grok",
+      "defaultBranch": "main",
+      "latestCommit": "964d0871ce5170ca94fbe3695e0e8dbaceba9a69",
+      "sourceUpdatedAt": "2026-08-18T04:19:55.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "models",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-llm-grok."
+    },
+    {
+      "id": "sugarforever-dsh-lark",
+      "name": "飞书连接器（DSH Lark）",
+      "description": "将飞书或 Lark 消息接入 DSH 会话，支持私聊、群聊提及和模型回复。",
+      "repositoryUrl": "https://github.com/sugarforever/dsh-lark",
+      "defaultBranch": "main",
+      "latestCommit": "ee639df50fc7c004ac4e3ea90fa523a4d366729c",
+      "sourceUpdatedAt": "2026-08-17T23:37:17.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "notifications",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-lark."
+    },
+    {
+      "id": "tyeclipse-dsh-ipcalc",
+      "name": "实用工具（DSH IP Calculator）",
+      "description": "为 DSH 提供 IPv4 子网计算、CIDR 汇总以及 IPv4/IPv6 解析和规范化工具。",
+      "repositoryUrl": "https://github.com/TYEclipse/dsh-ipcalc",
+      "defaultBranch": "main",
+      "latestCommit": "6a267cdfc139167ace09abaa33c4df2080f6d093",
+      "sourceUpdatedAt": "2026-08-17T21:41:47.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "development",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-ipcalc."
+    },
+    {
+      "id": "baisama-cloud-dsh-omni-bridge",
+      "name": "多渠道消息桥接（DSH Omni Bridge）",
+      "description": "Multi-channel message bridge for DeepSeek Harness (DSH): route WeChat (ClawBot/iLink), QQ, and Feishu (Lark) chat messages to a DSH agent and relay its replies back. 多通道桥接：微信 ClawBot / QQ / 飞书消息接入 DSH agent 并回传回复。",
+      "repositoryUrl": "https://github.com/baisama-cloud/dsh-omni-bridge",
+      "defaultBranch": "main",
+      "latestCommit": "cdb51787173ba9b46e0e8ee4ebfc38b9ae0f2dcd",
+      "sourceUpdatedAt": "2026-08-17T15:02:19.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "notifications",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-omni-bridge."
+    },
+    {
+      "id": "w2112515-dsh-plugin-development",
+      "name": "任务与工作流自动化（DSH Plugin Development）",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Portable Agent Skill for developing and auditing DeepSeek Harness plugins, with an optional DSH bundle adapter.",
+      "repositoryUrl": "https://github.com/w2112515/dsh-plugin-development",
+      "defaultBranch": "main",
+      "latestCommit": "4dab80cbeb86f706aa6fa9cc8269049aa809ccc9",
+      "sourceUpdatedAt": "2026-08-17T12:58:01.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-development."
+    },
+    {
+      "id": "iluluyu-dsh-plugin-outline",
+      "name": "写作与润色助手（DSH Plugin Outline）",
+      "description": "为 DSH Web 提供右侧会话轮次大纲、当前位置高亮和点击跳转。",
+      "repositoryUrl": "https://github.com/iluluyu/dsh-plugin-outline",
+      "defaultBranch": "main",
+      "latestCommit": "59dfc8019a0a202450b8d5fd8da0436a5fe0e0a2",
+      "sourceUpdatedAt": "2026-08-17T10:00:54.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "ui",
+        "visualization",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-outline."
+    },
+    {
+      "id": "cokiscarazo-rgb-dsh-session-management",
+      "name": "会话管理（DSH Session Management）",
+      "description": "Session management for DSH Web: archive / unarchive / truly delete chats / export data (bilingual). 会话管理：归档 / 取消归档 / 真正删除聊天记录 / 导出数据（中英双语）。",
+      "repositoryUrl": "https://github.com/cokiscarazo-rgb/dsh-session-management",
+      "defaultBranch": "main",
+      "latestCommit": "c29f78f30b7e228218e7ad9bca5711038ec5e8bf",
+      "sourceUpdatedAt": "2026-08-17T01:54:09.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-session-management."
+    },
+    {
+      "id": "bandersnatch0x-design-playbook",
+      "name": "终端命令工具（Design Playbook）",
+      "description": "为 DSH 提供终端命令工具能力。英文原始说明：Design I/O for coding agents: controllable UI generation via declarations (spec/domain/craft/design/components/template) and contracts (skill/evaluator). Use for product UI—console, dashboard, agent-ops, CJK-first apps.",
+      "repositoryUrl": "https://github.com/Bandersnatch0x/design-playbook",
+      "defaultBranch": "main",
+      "latestCommit": "52edcb23380e3e215f387ba7b937601ceab3cbb7",
+      "sourceUpdatedAt": "2026-08-17T00:15:32.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "ui",
+        "design",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: design-playbook."
+    },
+    {
+      "id": "534119219-chicheng-cron",
+      "name": "定时任务（Chicheng Cron）",
+      "description": "dsh 定时任务插件：在左侧栏“新会话”下方提供“定时任务”入口，支持 cron 定时执行 shell / python / nodejs 脚本、skills 与自定义 agent 任务，可对接 chicheng-push 与 messaging-core 推送通知、成功后自动归档会话，移动端适配",
+      "repositoryUrl": "https://github.com/534119219/chicheng-cron",
+      "defaultBranch": "main",
+      "latestCommit": "31a8627ebf9af56d30c2e385f0f72ee22cc78a08",
+      "sourceUpdatedAt": "2026-08-16T17:11:37.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: chicheng-cron."
+    },
+    {
+      "id": "hyqhyq3-dsh-mcp-manager",
+      "name": "文件与工作区工具（DSH MCP Manager）",
+      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：MCP server manager for DeepSeek Harness: OAuth/stdio servers, workspace isolation, and an opt-in on-demand tool broker",
+      "repositoryUrl": "https://github.com/hyqhyq3/dsh-mcp-manager",
+      "defaultBranch": "main",
+      "latestCommit": "69d5cbc76e21606867f6dbef05025e2e2dfdbd04",
+      "sourceUpdatedAt": "2026-08-16T16:08:15.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mcp-manager."
+    },
+    {
+      "id": "miku196-dsh-tokensave",
+      "name": "用量统计看板（DSH Tokensaver）",
+      "description": "为 DSH 提供用量统计看板能力。英文原始说明：DSH port of pi-tokensaver: keeps the tokensave semantic graph fresh and teaches the agent to prefer its semantic tools",
+      "repositoryUrl": "https://github.com/Miku196/dsh-tokensave",
+      "defaultBranch": "main",
+      "latestCommit": "50a8973a3b8e44b9f90f385c86230ea4b395a9c1",
+      "sourceUpdatedAt": "2026-08-16T15:49:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-tokensaver."
+    },
+    {
+      "id": "ljninse-dsh-open-in-ide",
+      "name": "文件与工作区工具（DSH Open In Ide）",
+      "description": "顶部栏「IDE」按钮：自动检测本机已安装的 IDE（VS Code / JetBrains / Cursor / Windsurf / Zed / Trae / VSCodium / Android Studio / Sublime Text 等），设默认后单击直达、点 ▾ 或右键可选其它，一键用其打开当前工作区目录；自定义 IDE 与默认 IDE 会持久化，界面文案支持中英文。",
+      "repositoryUrl": "https://github.com/LJninse/dsh-open-in-ide",
+      "defaultBranch": "main",
+      "latestCommit": "e03f9dc62a6f78932a0a3755996852d23ac216b3",
+      "sourceUpdatedAt": "2026-08-16T14:18:42.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-open-in-ide."
+    },
+    {
+      "id": "linshule-dsh-balance",
+      "name": "余额与额度监控（DSH Balance）",
+      "description": "DeepSeek API 账户余额 + OpenCodeGo 余量实时显示：左下角悬浮徽章（可拖拽，双段显示）+ 两个设置页；Host 经 curl 调用官方余额/余量接口，API Key 持久化在 ~/.dsh/ds-balance.json，OpenCodeGo Key 自动读取 DSH 凭据。",
+      "repositoryUrl": "https://github.com/linshule/dsh-balance",
+      "defaultBranch": "main",
+      "latestCommit": "fab2ea528ee480b3510fa51566f5c59c89710774",
+      "sourceUpdatedAt": "2026-08-16T12:18:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-balance."
+    },
+    {
+      "id": "ruler4396-dsh-launcher-lifetime",
+      "name": "桌面客户端（DSH Launcher Lifetime）",
+      "description": "为 DSH 提供桌面客户端能力。英文原始说明：DeepSeek Harness (dsh) plugin: control how long the dsh service (node) stays alive when using the dsh-launcher shell. Writes %LOCALAPPDATA%\\dsh-launcher\\settings.json (serviceLifetime: 0 always-on, 1 tray-resident, 2 follow-window); the shell applies it on window close / tray exit. No runtime dependencies.",
+      "repositoryUrl": "https://github.com/Ruler4396/dsh-launcher-lifetime",
+      "defaultBranch": "master",
+      "latestCommit": "6bb13b55ef0d7f0b62e0389d5af647d4189207ca",
+      "sourceUpdatedAt": "2026-08-16T09:31:34.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-launcher-lifetime."
+    },
+    {
+      "id": "good-boy4069-dsh-mobile-remote",
+      "name": "微信远程控制（DSH Mobile Remote）",
+      "description": "为 DSH 提供微信远程控制能力。英文原始说明：DeepSeek Harness WeChat remote-control plugin: control your dsh agent from WeChat (iLink long-polling, fully outbound, works over any network)",
+      "repositoryUrl": "https://github.com/good-boy4069/dsh-mobile-remote",
+      "defaultBranch": "main",
+      "latestCommit": "f0ce76aeac09896835f3ca482d78d7854185ad82",
+      "sourceUpdatedAt": "2026-08-16T07:16:53.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "clients",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mobile-remote."
+    },
+    {
+      "id": "leemancheung-dsh-image-gen",
+      "name": "图像生成（DSH Image Gen）",
+      "description": "为 DSH 提供图像生成能力。英文原始说明：GPT Image 2 generation through Codex subscriptions or API keys, with progressive previews for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/LeemanCheung/dsh-image-gen",
+      "defaultBranch": "main",
+      "latestCommit": "88c74323a5a04048a863128a0de6aa5daa3b7981",
+      "sourceUpdatedAt": "2026-08-16T05:39:48.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-image-gen."
+    },
+    {
+      "id": "highjobop-dsh-gadgets",
+      "name": "会话管理（DSH Gadgets）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Lightweight DeepSeek Harness tweaks, one install: dsh-skin (custom appearance) + dsh-tidy (conversation folding, nav rail & total-token badge) + dsh-task-alerts (task-done / approval chime + popup).",
+      "repositoryUrl": "https://github.com/Highjobop/dsh-gadgets",
+      "defaultBranch": "main",
+      "latestCommit": "a307f3b993015464984f7e9af1673321d2038b1f",
+      "sourceUpdatedAt": "2026-08-16T05:32:08.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "themes",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-gadgets."
+    },
+    {
+      "id": "junelearn-dsh-image2-draw",
+      "name": "图像生成工具（DSH Image2 Draw）",
+      "description": "为 DSH 提供图像生成工具能力。英文原始说明：Image2 (gpt-image-2) generation plugin for DeepSeek Harness with simple relay settings and in-conversation image previews",
+      "repositoryUrl": "https://github.com/JuneLearn/dsh-image2-draw",
+      "defaultBranch": "main",
+      "latestCommit": "78972d05d604a73fed32323cd3ec3e5506e2fdfe",
+      "sourceUpdatedAt": "2026-08-16T04:49:08.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-image2-draw."
+    },
+    {
+      "id": "conradlu2740-pa-dsh",
+      "name": "会话管理（DSH）",
+      "description": "ProactiveAgent × DeepSeek Harness 插件组：主动记忆 + 主动建议接入 DSH（bundle 聚合包，dsh plugin add 一键安装）",
+      "repositoryUrl": "https://github.com/ConradLu2740/pa-dsh",
+      "defaultBranch": "main",
+      "latestCommit": "86c7e364924ff0a97296488cae79d66e6e7044a2",
+      "sourceUpdatedAt": "2026-08-16T02:36:36.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "memory",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh."
+    },
+    {
+      "id": "argonaut790-dsh-zh-hant-hk",
+      "name": "实用工具（DSH Zh Hant Hk）",
+      "description": "Hong Kong Traditional Chinese wording for DeepSeek Harness (會話 → 對話, 設置 → 設定, …)",
+      "repositoryUrl": "https://github.com/Argonaut790/dsh-zh-hant-hk",
+      "defaultBranch": "master",
+      "latestCommit": "e5d7948a108fa49271557c2ae65b356a6a05a17e",
+      "sourceUpdatedAt": "2026-08-15T21:18:57.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-zh-hant-hk."
+    },
+    {
+      "id": "zylzyqzz-dsh-mobile-pwa",
+      "name": "移动端 PWA（DSH Mobile PWA）",
+      "description": "Complete mobile PWA for DeepSeek Harness (DSH): secure LAN/Tailscale remote access gateway + install-to-homescreen (manifest), offline-capable service worker, touch-first gestures, agent-done notifications, and dark compact mobile UI. 移动端 PWA 完整方案 for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/zylzyqzz/dsh-mobile-pwa",
+      "defaultBranch": "main",
+      "latestCommit": "258607721a76cd54c8297c3fe74511c5cc7c485c",
+      "sourceUpdatedAt": "2026-08-15T18:41:36.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "clients",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mobile-pwa."
+    },
+    {
+      "id": "tyeclipse-dsh-netdoctor",
+      "name": "实用工具（DSH Netdoctor）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Network diagnostics toolbox for DeepSeek Harness (dsh): DNS lookup, ICMP ping, TCP port check, TLS certificate check, traceroute, and public IP info — zero runtime dependencies",
+      "repositoryUrl": "https://github.com/TYEclipse/dsh-netdoctor",
+      "defaultBranch": "main",
+      "latestCommit": "43de786b72688b7101783395d54f3b4629771b61",
+      "sourceUpdatedAt": "2026-08-15T17:57:03.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-netdoctor."
+    },
+    {
+      "id": "cyanseek-dsh-native-playbook",
+      "name": "任务与工作流自动化（DSH Native Playbook）",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Task-aware native capability manager for DeepSeek Harness — use, prepare, and verify built-in DSH tools before adding another plugin.",
+      "repositoryUrl": "https://github.com/cyanseek/dsh-native-playbook",
+      "defaultBranch": "main",
+      "latestCommit": "994465be9fff633a20ad582caeee2741fbba9ea3",
+      "sourceUpdatedAt": "2026-08-15T17:14:03.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-native-playbook."
+    },
+    {
+      "id": "leemancheung-dsh-task-dag",
+      "name": "任务 DAG 看板（DSH Task DAG）",
+      "description": "为 DSH 提供任务 DAG 看板能力。英文原始说明：Persistent live DAG visualization for DeepSeek Harness subagents and workflows",
+      "repositoryUrl": "https://github.com/LeemanCheung/dsh-task-dag",
+      "defaultBranch": "main",
+      "latestCommit": "256cfdab272e35b1e72dd11f948a74d2dcfc4ee0",
+      "sourceUpdatedAt": "2026-08-15T15:19:51.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-task-dag."
+    },
+    {
+      "id": "dawsondx-dsh-web-open",
+      "name": "浏览器与网页工具（DSH Web Open）",
+      "description": "为 DSH 提供浏览器与网页工具能力。英文原始说明：A DeepSeek Harness (dsh) bundle: when `dsh web` is ready, print the full GUI URL and open it in your default browser. Cross-platform, dependency-free, fail-safe.",
+      "repositoryUrl": "https://github.com/dawsondx/dsh-web-open",
+      "defaultBranch": "main",
+      "latestCommit": "89cf7af04ff8448de5dfd8b2fc362b798e70b6a7",
+      "sourceUpdatedAt": "2026-08-15T14:00:19.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "search",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-web-open."
+    },
+    {
+      "id": "chushixixin-dsh-harness-mcp-server",
+      "name": "任务与工作流自动化（DSH Harness MCP Server）",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Expose DeepSeek Harness agent capabilities as an MCP server, so an external MCP client (e.g. Hermes) can drive Harness to execute coding tasks. Hermes = brain, Harness = arms.",
+      "repositoryUrl": "https://github.com/chushixixin/dsh-harness-mcp-server",
+      "defaultBranch": "master",
+      "latestCommit": "d174cea870aaa9f6dd67f2e9c3f3e3fa0f0e041e",
+      "sourceUpdatedAt": "2026-08-15T13:44:45.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "ui",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-harness-mcp-server."
+    },
+    {
+      "id": "cindyguyuehu123-dsh-mobile",
+      "name": "移动端访问（DSH Mobile）",
+      "description": "为 DSH 提供移动端访问能力。英文原始说明：Use DeepSeek Harness from iPhone / iPad: LAN reverse proxy, iOS PWA (add-to-home-screen) chrome, and touch/mobile CSS for the web GUI.",
+      "repositoryUrl": "https://github.com/cindyguyuehu123/dsh-mobile",
+      "defaultBranch": "main",
+      "latestCommit": "33415c77045cbf47d85256b60f4d3fa8802cdd90",
+      "sourceUpdatedAt": "2026-08-15T12:14:22.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "clients",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mobile."
+    },
+    {
+      "id": "dongsheng123132-dsh-lineage",
+      "name": "实用工具（DSH Lineage）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Content-addressed data and action lineage evidence for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-lineage",
+      "defaultBranch": "main",
+      "latestCommit": "bb9932ef5c2533c00697a27825109f1590217453",
+      "sourceUpdatedAt": "2026-08-15T08:17:26.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-lineage."
+    },
+    {
+      "id": "fountunt-dsh-session-cleaner",
+      "name": "会话管理（DSH Session Cleaner）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Delete DeepSeek Harness sessions from the running web runtime: live store detach, workspace records, and on-disk artifacts.",
+      "repositoryUrl": "https://github.com/fountunt/dsh-session-cleaner",
+      "defaultBranch": "main",
+      "latestCommit": "f12ef7bad873638721b5b9891700d2c5e4df22f7",
+      "sourceUpdatedAt": "2026-08-15T08:10:05.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-session-cleaner."
+    },
+    {
+      "id": "whning0513-deepseek-protocol-doctor",
+      "name": "任务与工作流自动化（DSH DeepSeek Protocol Doctor）",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Offline DeepSeek request, tool-loop, reasoning_content, and SSE diagnostics for DSH",
+      "repositoryUrl": "https://github.com/Whning0513/deepseek-protocol-doctor",
+      "defaultBranch": "main",
+      "latestCommit": "43f6df8cbeb4073cd83535966a47c13fb40b0e6f",
+      "sourceUpdatedAt": "2026-08-15T07:44:22.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-deepseek-protocol-doctor."
+    },
+    {
+      "id": "dongsheng123132-dsh-benchmark",
+      "name": "实用工具（DSH Benchmark）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Reproducible deterministic benchmark evidence for DSH tools and plugins",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-benchmark",
+      "defaultBranch": "main",
+      "latestCommit": "3c2eedee2ee3cdb26975744bb826a7321288a4d1",
+      "sourceUpdatedAt": "2026-08-15T06:15:22.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-benchmark."
+    },
+    {
+      "id": "elviszhang007-dsh-moyan",
+      "name": "界面交互工具（DSH Moyan）",
+      "description": "DeepSeek Harness 插件「墨言」：在 WebUI 侧边栏「设置」上方完整显示一句名言、诗词或游戏台词，语料可用 txt 直接编辑",
+      "repositoryUrl": "https://github.com/elviszhang007/dsh-moyan",
+      "defaultBranch": "main",
+      "latestCommit": "da5389836a5bf843884230a65411a0d8605508f6",
+      "sourceUpdatedAt": "2026-08-15T04:32:36.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-moyan."
+    },
+    {
+      "id": "libinyam-dsh-vision-provider",
+      "name": "模型提供商接入（DSH Vision Provider）",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：DeepSeek Harness adapter that exposes each configured vision model as a selectable DeepSeek composite in Web UI.",
+      "repositoryUrl": "https://github.com/libinyam/dsh-vision-provider",
+      "defaultBranch": "main",
+      "latestCommit": "c4c76c2a2a69313b91728dcde2827e014aad7c72",
+      "sourceUpdatedAt": "2026-08-15T04:05:40.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision-provider."
+    },
+    {
+      "id": "weirdsky924-project-change-router-skill",
+      "name": "技能管理工具（Project Change Router Skill）",
+      "description": "为 DSH 提供技能管理工具能力。英文原始说明：Project-level direction, boundary, and reuse governance for AI coding agents.",
+      "repositoryUrl": "https://github.com/WeirdSky924/project-change-router-skill",
+      "defaultBranch": "main",
+      "latestCommit": "51d12a8c4dd95e0d5415e826692c2d4502923811",
+      "sourceUpdatedAt": "2026-08-15T01:19:16.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: project-change-router-skill."
+    },
+    {
+      "id": "cnzgray-dsh-plugins",
+      "name": "兼容性复核：cnzgray/dsh-plugins（3 个 Catalog 条目）",
+      "description": "该仓库中的 3 个 DSH STORE 条目因最新三个 DSH 版本兼容记录不足而暂时下架：dsh-claude-auto-memory、dsh-claude-marketplace-bridge、dsh-claude-rules-bridge。",
+      "repositoryUrl": "https://github.com/cnzgray/dsh-plugins",
+      "defaultBranch": "main",
+      "latestCommit": "6e58c156a694d06b5b8c3d9b8cfc59da7ba8f1cf",
+      "sourceUpdatedAt": "2026-08-15T01:17:02.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "memory",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-claude-auto-memory, dsh-claude-marketplace-bridge, dsh-claude-rules-bridge."
+    },
+    {
+      "id": "dongsheng123132-dsh-release-proof",
+      "name": "安全防护工具（DSH Release Proof）",
+      "description": "为 DSH 提供安全防护工具能力。英文原始说明：Reproducible multi-source release evidence for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-release-proof",
+      "defaultBranch": "main",
+      "latestCommit": "67b233ae720738f89a8933eeba2d620a188b784e",
+      "sourceUpdatedAt": "2026-08-14T20:07:15.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-release-proof."
+    },
+    {
+      "id": "dongsheng123132-dsh-2origin",
+      "name": "实用工具（DSH 2origin）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Evidence-first 2Origin state projection, diff and immutable freeze for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-2origin",
+      "defaultBranch": "main",
+      "latestCommit": "f2d0b362611bdc82463380471f001e4bcce59597",
+      "sourceUpdatedAt": "2026-08-14T18:09:34.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-2origin."
+    },
+    {
+      "id": "zhangzujian-dsh-subprocess-inherit-environment",
+      "name": "实用工具（DSH Subprocess Inherit Environment）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：DSH plugin that explicitly forwards the complete Harness environment through the subprocess service",
+      "repositoryUrl": "https://github.com/zhangzujian/dsh-subprocess-inherit-environment",
+      "defaultBranch": "main",
+      "latestCommit": "3f4884f3fb5f1de59fb639866368de3f7b4661bb",
+      "sourceUpdatedAt": "2026-08-14T17:25:24.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-subprocess-inherit-environment."
+    },
+    {
+      "id": "lcylym-dsh-attachments",
+      "name": "实用工具（DSH Multimedia Web UI Input）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Multimedia WebUI input support for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/LCYLYM/dsh-attachments",
+      "defaultBranch": "main",
+      "latestCommit": "028dc1f8dc9c7f963e714013b36adc4f48d88c2a",
+      "sourceUpdatedAt": "2026-08-14T15:25:33.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-multimedia-webui-input."
+    },
+    {
+      "id": "sharkymew-dsh-utility-tools",
+      "name": "会话管理（DSH Utility Tools）",
+      "description": "DSH 对话工具插件：拖拽任意文件附件（发送时暂存系统临时目录）+ 选中文本引用。支持静态挂载与动态加载。",
+      "repositoryUrl": "https://github.com/sharkymew/dsh-utility-tools",
+      "defaultBranch": "main",
+      "latestCommit": "d8ee3a77aed2c5446942073470faaa9de9ecd98a",
+      "sourceUpdatedAt": "2026-08-14T15:22:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-utility-tools."
+    },
+    {
+      "id": "math-lrz-dsh-theme-pack",
+      "name": "界面主题与美化（DSH Theme Pack）",
+      "description": "为 DSH 提供界面主题与美化能力。英文原始说明：16 third-party theme skins for the DeepSeek Harness (DSH) Web GUI — Catppuccin / Gruvbox / Everforest / Rosé Pine / Solarized / Kanagawa / Tokyo Night / Night Owl / Nord / Dracula / One Dark",
+      "repositoryUrl": "https://github.com/math-lrz/dsh-theme-pack",
+      "defaultBranch": "main",
+      "latestCommit": "5a4cdbe9e6acc68f467be4af5458d2ea2e2b1616",
+      "sourceUpdatedAt": "2026-08-14T15:18:59.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "themes",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-theme-pack."
+    },
+    {
+      "id": "zhangzujian-dsh-same-mode-sandbox-noop",
+      "name": "实验功能插件（DSH Same Mode Sandbox Noop）",
+      "description": "为 DSH 提供实验功能插件能力。英文原始说明：DSH compatibility plugin that treats redundant non-escalating sandbox permission fields as a no-op",
+      "repositoryUrl": "https://github.com/zhangzujian/dsh-same-mode-sandbox-noop",
+      "defaultBranch": "main",
+      "latestCommit": "d6f43662a5f8dbe3bbbc36a443fab29a4cbbb22a",
+      "sourceUpdatedAt": "2026-08-14T15:10:59.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-same-mode-sandbox-noop."
+    },
+    {
+      "id": "liangyin233-dsh-provider-model-configurator",
+      "name": "模型提供商接入（DSH Provider Model Configurator）",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Provider Model Configurator for DeepSeek Harness: view, create, edit, copy and delete model entries (context window, max output, modalities, reasoning efforts) across your configured providers, with quick-fill from the pi-ai preset catalog.",
+      "repositoryUrl": "https://github.com/LiangYin233/dsh-provider-model-configurator",
+      "defaultBranch": "main",
+      "latestCommit": "70f88112c7d92fadeb93e46f5dcb8b1f3ae6eba3",
+      "sourceUpdatedAt": "2026-08-14T14:31:35.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-provider-model-configurator."
+    },
+    {
+      "id": "terry12138qy-dsh-vision",
+      "name": "图像视觉工具（DSH Vision）",
+      "description": "DeepSeek Harness (DSH) 识图插件：为不具备原生识图能力的模型提供识图能力，把图片发送给阿里云百炼/智谱多模态模型并返回文字描述。由 claude-vision-skill 移植适配。",
+      "repositoryUrl": "https://github.com/Terry12138qy/dsh-vision",
+      "defaultBranch": "master",
+      "latestCommit": "a9bbce894547398fe65dc02448a3c3a22d395fbc",
+      "sourceUpdatedAt": "2026-08-14T14:11:31.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision."
+    },
+    {
+      "id": "dongsheng123132-dsh-cost",
+      "name": "费用与账单（DSH Cost）",
+      "description": "为 DSH 提供费用与账单能力。英文原始说明：Evidence-first token cost ledger and budget checks for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-cost",
+      "defaultBranch": "main",
+      "latestCommit": "849d81509b334b42ddd8032cd8f5377758fc34c3",
+      "sourceUpdatedAt": "2026-08-14T14:06:52.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-cost."
+    },
+    {
+      "id": "iyllyt-dsh-btw",
+      "name": "会话管理（DSH Btw）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Transient /btw side questions for DeepSeek Harness: immediate while the main agent is busy, context-sharing, tool-free, one-shot, cache-aware, and invisible to the main session catalog.",
+      "repositoryUrl": "https://github.com/iyllyt/dsh-btw",
+      "defaultBranch": "main",
+      "latestCommit": "0ca9db4bfd864ef510dfd469d13845d5d5b872fb",
+      "sourceUpdatedAt": "2026-08-14T13:30:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "workflow",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-btw."
+    },
+    {
+      "id": "fyy99-dsh-livis-connector",
+      "name": "实用工具（DSH Livis Connector）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Connect Livis to DeepSeek Harness with in-app authorization and relay management",
+      "repositoryUrl": "https://github.com/fyy99/dsh-livis-connector",
+      "defaultBranch": "main",
+      "latestCommit": "40df2eb3b7742d0905d93898baf20661e8c03f78",
+      "sourceUpdatedAt": "2026-08-14T13:16:00.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-livis-connector."
+    },
+    {
+      "id": "the-qian-dsh-commit-review",
+      "name": "审查与验证助手（DSH Commit Review）",
+      "description": "为 DSH 提供审查与验证助手能力。英文原始说明：DSH plugin: /commit and /review slash commands mirroring Claude Code's built-in git workflow commands.",
+      "repositoryUrl": "https://github.com/the-qian/dsh-commit-review",
+      "defaultBranch": "main",
+      "latestCommit": "40a21f0a160939d28822d77dd12d639731d7fc61",
+      "sourceUpdatedAt": "2026-08-14T13:08:30.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-commit-review."
+    },
+    {
+      "id": "030611-dsh-context-provenance",
+      "name": "实用工具（DSH Context Provenance）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Observe-only provenance ledger over public DeepSeek Harness runtime evidence",
+      "repositoryUrl": "https://github.com/030611/dsh-context-provenance",
+      "defaultBranch": "main",
+      "latestCommit": "e32793dbf07c6920a9e7d9777f89905eeba22b9b",
+      "sourceUpdatedAt": "2026-08-14T13:06:01.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-context-provenance."
+    },
+    {
+      "id": "seamas0825-lab-dsh-youmind-plugin",
+      "name": "技能管理工具（DSH Youmind Plugin）",
+      "description": "为 DSH 提供技能管理工具能力。英文原始说明：YouMind OpenAPI tools and skill bundle for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/seamas0825-lab/dsh-youmind-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "d70df4302679c595482011f23b739883fa2e5742",
+      "sourceUpdatedAt": "2026-08-14T12:15:08.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-youmind-plugin."
+    },
+    {
+      "id": "dongsheng123132-dsh-windows-readiness-proof",
+      "name": "安全防护工具（DSH Windows Readiness Proof）",
+      "description": "为 DSH 提供安全防护工具能力。英文原始说明：Content-addressed readiness proof for sanitized DeepSeek Harness observations on managed Windows hosts",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-windows-readiness-proof",
+      "defaultBranch": "main",
+      "latestCommit": "291151da48ac229143e1f4e39ee608b856ded3e2",
+      "sourceUpdatedAt": "2026-08-14T12:08:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-windows-readiness-proof."
+    },
+    {
+      "id": "tonydua-dsh-web-search-exa",
+      "name": "Exa 联网搜索（Tonydua Exa Search）",
+      "description": "为 DSH 提供Exa 联网搜索能力。英文原始说明：Zero-config Exa web search provider for DeepSeek Harness (dsh): keyless anonymous MCP fallback (mcp.exa.ai/mcp) plus keyed REST search — a drop-in WebSearchProvider for the ctx.web seam, no API key required.",
+      "repositoryUrl": "https://github.com/TonyDua/dsh-web-search-exa",
+      "defaultBranch": "main",
+      "latestCommit": "083706bae60af8e1f3776b02448f17c140c3f571",
+      "sourceUpdatedAt": "2026-08-14T11:27:53.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "search",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: tonydua-dsh-web-search-exa."
+    },
+    {
+      "id": "dongsheng123132-dsh-xiapan-media",
+      "name": "图像生成工具（DSH Xiapan Media）",
+      "description": "为 DSH 提供图像生成工具能力。英文原始说明：DeepSeek Harness native vision, gpt-image-2 image generation, and Seedance video generation via Xiapan Cloud.",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-xiapan-media",
+      "defaultBranch": "main",
+      "latestCommit": "ee2f51f4f50b0b4c8bf85b589c6e52dadd04b689",
+      "sourceUpdatedAt": "2026-08-14T11:25:23.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-xiapan-media."
+    },
+    {
+      "id": "ayaka157-dsh-conversation-cost",
+      "name": "费用与账单（DSH Conversation Cost）",
+      "description": "在 DSH 对话底部统计行实时显示 DeepSeek 用量费用（人民币/美元双币，含缓存命中与峰谷定价）",
+      "repositoryUrl": "https://github.com/Ayaka157/dsh-conversation-cost",
+      "defaultBranch": "main",
+      "latestCommit": "768428d227b66f8e97aabcadd8407079197d7aa2",
+      "sourceUpdatedAt": "2026-08-14T11:20:21.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-conversation-cost."
+    },
+    {
+      "id": "tablerogue-dsh-message-navigator",
+      "name": "会话导航（DSH Message Navigator）",
+      "description": "消息导航条 Message Navigator: DeepSeek Harness 网页聊天界面右侧的垂直消息索引(可安装的 dsh 组合包,Client-only 插件)",
+      "repositoryUrl": "https://github.com/TableRogue/dsh-message-navigator",
+      "defaultBranch": "main",
+      "latestCommit": "7233842936a6d727c07bd64d303779b375d2f787",
+      "sourceUpdatedAt": "2026-08-14T10:59:17.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-message-navigator."
+    },
+    {
+      "id": "dongsheng123132-dsh-switch",
+      "name": "模型提供商接入（DSH Switch）",
+      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Evidence-first model control plane for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-switch",
+      "defaultBranch": "main",
+      "latestCommit": "b37a63cae2654044942a5dd44b6f2bc8591f5ec6",
+      "sourceUpdatedAt": "2026-08-14T10:52:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-switch."
+    },
+    {
+      "id": "dongsheng123132-dsh-cache-stabilizer",
+      "name": "实用工具（DSH Cache Stabilizer）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Cache-prefix stabilization and evidence-based cache metrics for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/dongsheng123132/dsh-cache-stabilizer",
+      "defaultBranch": "main",
+      "latestCommit": "0ea2f599d0c3c5f92d8bd5ba3ae106d49892c0c9",
+      "sourceUpdatedAt": "2026-08-14T10:52:05.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-cache-stabilizer."
+    },
+    {
+      "id": "tjxj-dsh-wanghong-handwritten-ppt",
+      "name": "演示文稿制作（DSH Wanghong Handwritten PPT）",
+      "description": "为 DSH 提供演示文稿制作能力。英文原始说明：Wang Hong-inspired Notability academic handwritten PPT skill for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/tjxj/dsh-wanghong-handwritten-ppt",
+      "defaultBranch": "main",
+      "latestCommit": "3968e8b2e46ac5373c87a6191d0520022a0ed010",
+      "sourceUpdatedAt": "2026-08-14T10:42:01.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-wanghong-handwritten-ppt."
+    },
+    {
+      "id": "lj970926-dsh-plugin-mermaid",
+      "name": "图表与架构可视化（DSH Plugin Mermaid）",
+      "description": "为 DSH 提供图表与架构可视化能力。英文原始说明：DeepSeek Harness web client plugin that renders ```mermaid code blocks with a chart/source toggle.",
+      "repositoryUrl": "https://github.com/lj970926/dsh-plugin-mermaid",
+      "defaultBranch": "main",
+      "latestCommit": "73d08a87f1630c6301c45c0ab822f3a082bdcb23",
+      "sourceUpdatedAt": "2026-08-14T10:22:07.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-mermaid."
+    },
+    {
+      "id": "brittanistrehlowll-oss-dsh-quota-panel",
+      "name": "余额与额度监控（DSH Quota Panel）",
+      "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Provider quota/balance widget for the dsh web surface: collapsed glanceable capsule expanding into a Harness-native card, with server-side credential proxies for DeepSeek balance and OpenCode Zen Go usage windows.",
+      "repositoryUrl": "https://github.com/brittanistrehlowll-oss/dsh-quota-panel",
+      "defaultBranch": "master",
+      "latestCommit": "18cfc7f5b52bd1dfa2a6571376fa106b3973bacd",
+      "sourceUpdatedAt": "2026-08-14T09:05:54.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-quota-panel."
+    },
+    {
+      "id": "carpon39038-dsh-image-theme",
+      "name": "图像视觉工具（DSH Image Theme）",
+      "description": "为 DSH 提供图像视觉工具能力。英文原始说明：Warp-inspired image-to-theme plugin for the DeepSeek Harness web client.",
+      "repositoryUrl": "https://github.com/Carpon39038/dsh-image-theme",
+      "defaultBranch": "main",
+      "latestCommit": "d522281fcdf81fb08984650800294b0058b89301",
+      "sourceUpdatedAt": "2026-08-14T08:43:34.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "themes",
+        "ui",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-image-theme."
+    },
+    {
+      "id": "quan2005-dsh-plugin-jinji",
+      "name": "会话管理（DSH Plugin Jinji）",
+      "description": "把「记忆」带进 DeepSeek Harness：极简文本记忆系统，双轨记忆（流水日志 + 人物/产品实体画像），大模型为核心驱动。无需安装其他软件，无需编译，无第三方依赖。",
+      "repositoryUrl": "https://github.com/quan2005/dsh-plugin-jinji",
+      "defaultBranch": "main",
+      "latestCommit": "c3a6d0d9dee48616776737bae8f30c3c2b241090",
+      "sourceUpdatedAt": "2026-08-14T08:38:53.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "memory",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-jinji."
+    },
+    {
+      "id": "arcmosin-dsh-wordbox",
+      "name": "文件与工作区工具（DSH Wordbox）",
+      "description": "Common Word Box (常用词盒子) — DeepSeek Harness web client plugin: a persistent slide-up word/phrase panel next to the composer input, with global/current-project buckets and one-click insert. Works in every workspace.",
+      "repositoryUrl": "https://github.com/arcmosin/dsh-wordbox",
+      "defaultBranch": "main",
+      "latestCommit": "747a6ef921e37df2ec9d194276efcf0d615ecb04",
+      "sourceUpdatedAt": "2026-08-14T07:09:34.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-wordbox."
+    },
+    {
+      "id": "yummyxl-dsh-eyecare",
+      "name": "实用工具（DSH Eyecare）",
+      "description": "DeepSeek Harness (DSH) Web 护眼模式插件:在设置→常规→外观下方添加护眼模式开关,豆沙绿科学护眼配色,浅色/深色均适配。",
+      "repositoryUrl": "https://github.com/Yummyxl/dsh-eyecare",
+      "defaultBranch": "main",
+      "latestCommit": "efeb92e1bcfe54369f88b6e8a176ad87f87a17b0",
+      "sourceUpdatedAt": "2026-08-14T06:22:09.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-eyecare."
+    },
+    {
+      "id": "sunshine-lang-dsh-pdf",
+      "name": "文件与工作区工具（DSH Pdf）",
+      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：PDF toolbox for DeepSeek Harness: extract text, metadata, and page ranges from PDF files (local parsing, no API key).",
+      "repositoryUrl": "https://github.com/sunshine-lang/dsh-pdf",
+      "defaultBranch": "main",
+      "latestCommit": "bfb4231ab6ca748871d679bb2895631262a9685f",
+      "sourceUpdatedAt": "2026-08-14T06:05:17.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-pdf."
+    },
+    {
+      "id": "sunshine-lang-dsh-weather",
+      "name": "实用工具（DSH Weather）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：Weather tool for DeepSeek Harness: current conditions and multi-day forecasts via Open-Meteo (free, no API key).",
+      "repositoryUrl": "https://github.com/sunshine-lang/dsh-weather",
+      "defaultBranch": "main",
+      "latestCommit": "9f85d87ac58402d5864aa7bdbd8346c136589458",
+      "sourceUpdatedAt": "2026-08-14T06:05:12.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-weather."
+    },
+    {
+      "id": "realguan-dsh-mermaid-preview",
+      "name": "审查与验证助手（DSH Mermaid Preview）",
+      "description": "为 DSH 提供审查与验证助手能力。英文原始说明：Render Mermaid fenced code blocks as diagrams in DeepSeek Harness (dsh) web — chat, trajectory, plan review and every other Markdown surface.",
+      "repositoryUrl": "https://github.com/realguan/dsh-mermaid-preview",
+      "defaultBranch": "main",
+      "latestCommit": "a1bfa69c17d9ec6e55e785d2defac8141b7d5e8c",
+      "sourceUpdatedAt": "2026-08-14T05:13:11.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mermaid-preview."
+    },
+    {
+      "id": "nekogpt-dsh-ui-quote-selection",
+      "name": "会话管理（DSH UI Quote Selection）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：DSH web client plugin: select text in a chat message and quote it into the composer as an inline reference chip; the full text materializes on submit via the input-trigger reference codec.",
+      "repositoryUrl": "https://github.com/nekogpt/dsh-ui-quote-selection",
+      "defaultBranch": "main",
+      "latestCommit": "728d16234d59908007754901e8e1c6a32824caf5",
+      "sourceUpdatedAt": "2026-08-14T04:48:03.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "ui",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-ui-quote-selection."
+    },
+    {
+      "id": "he2way-dsh-task-console",
+      "name": "终端命令工具（DSH Task Console）",
+      "description": "为 DSH 提供终端命令工具能力。英文原始说明：DSH client plugin — flip to the back of the page for a floating glass task console: live background jobs, subagents, session overview and workspace of the current session, with mouse-draggable cards.",
+      "repositoryUrl": "https://github.com/He2way/dsh-task-console",
+      "defaultBranch": "main",
+      "latestCommit": "a3f130852db0b7d86a819a22586b3f37029ae360",
+      "sourceUpdatedAt": "2026-08-14T01:43:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-task-console."
+    },
+    {
+      "id": "userinner-dsh-academic-research",
+      "name": "任务与工作流自动化（DSH Academic Research）",
+      "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Evidence-grounded bilingual research tools and workflows for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/userInner/dsh-academic-research",
+      "defaultBranch": "main",
+      "latestCommit": "41650f0b52c593867dc352116204a0ad8f067498",
+      "sourceUpdatedAt": "2026-08-14T01:40:00.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "search",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-academic-research."
+    },
+    {
+      "id": "huashenglian-dsh-her-eyes",
+      "name": "模型故障切换（DSH Her Eyes）",
+      "description": "为 DSH 提供模型故障切换能力。英文原始说明：Application-level Vision-Language-Model (VLM) analyzer for DeepSeek Harness: analyze_image tool with primary/backup OpenAI-compatible endpoints, automatic failover, and an auto-saving web settings page.",
+      "repositoryUrl": "https://github.com/huashenglian/dsh-her-eyes",
+      "defaultBranch": "main",
+      "latestCommit": "73799bf935ac2dc878fd35a54b79453d417d817f",
+      "sourceUpdatedAt": "2026-08-13T23:53:22.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-her-eyes."
+    },
+    {
+      "id": "isekai-mfu-dsh-mimo-vision-hint",
+      "name": "图像视觉工具（DSH Mimo Vision Hint）",
+      "description": "为 DSH 提供图像视觉工具能力。英文原始说明：DSH plugin: prompt the agent to dispatch image recognition to an opencode-go mimo-v2.5 subagent",
+      "repositoryUrl": "https://github.com/Isekai-Mfu/dsh-mimo-vision-hint",
+      "defaultBranch": "main",
+      "latestCommit": "b851a236ae83851e773c38e24623b43303d3743a",
+      "sourceUpdatedAt": "2026-08-13T23:46:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mimo-vision-hint."
+    },
+    {
+      "id": "akira399-dsh-godot-skill",
+      "name": "技能管理工具（DSH Godot Skill）",
+      "description": "为 DSH 提供技能管理工具能力。英文原始说明：Godot Engine 4.x full-stack game development skill for DeepSeek Harness (DSH). A host plugin that registers the `godot-4-development` skill — covering renderers, 2D/3D graphics & physics, GDScript/C#, shaders, audio, input, navigation, networking, i18n, GUI, animation, file formats, mobile/XR and exporting — so any session can load it via the `skill` tool.",
+      "repositoryUrl": "https://github.com/akira399/dsh-godot-skill",
+      "defaultBranch": "main",
+      "latestCommit": "393cec166392d2d8aeee2452ef6b82a622e5202a",
+      "sourceUpdatedAt": "2026-08-13T21:19:14.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-godot-skill."
+    },
+    {
+      "id": "simon314620-dsh-turn-index",
+      "name": "会话管理（DSH Turn Index）",
+      "description": "对话轮次索引：Web GUI 右侧边栏列出每一轮用户提问，点击跳转到对应位置 (Turn index sidebar for the DeepSeek Harness web GUI: one entry per user turn, click to jump)",
+      "repositoryUrl": "https://github.com/Simon314620/dsh-turn-index",
+      "defaultBranch": "main",
+      "latestCommit": "a324ecde201a219448c23c1c8bbd872bdab512b4",
+      "sourceUpdatedAt": "2026-08-13T19:49:58.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "ui",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-turn-index."
+    },
+    {
+      "id": "nigelyao-dsh-view-modes",
+      "name": "会话管理（DSH View Modes）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：DshViewModes for DSH Web: Verbose / Normal / Summary conversation display with semantic process grouping.",
+      "repositoryUrl": "https://github.com/NigelYao/dsh-view-modes",
+      "defaultBranch": "main",
+      "latestCommit": "a57d237e03b6488875cb7cc2a90bf6a37512632d",
+      "sourceUpdatedAt": "2026-08-13T19:25:43.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-view-modes."
+    },
+    {
+      "id": "lhmd-dsh-promotion-toolkit",
+      "name": "实用工具（DSH Promotion Toolkit）",
+      "description": "为 DSH 提供实用工具能力。英文原始说明：DeepSeek Harness-native publicity toolkit: turn any long-form source into a source-grounded, platform-native promotion matrix.",
+      "repositoryUrl": "https://github.com/lhmd/dsh-promotion-toolkit",
+      "defaultBranch": "main",
+      "latestCommit": "c4e19742d4399e0282ab70829e412fb47bbb42a7",
+      "sourceUpdatedAt": "2026-08-13T19:17:17.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-promotion-toolkit."
+    },
+    {
+      "id": "jesse-njx-dsh-routines",
+      "name": "例行任务套件（DSH Routines）",
+      "description": "为 DSH 提供例行任务套件能力。英文原始说明：dsh-routines — scheduled agents for DSH: run a prompt on a cron, get the digest where you already are (file digests, chatnode delivery, unattended-safe)",
+      "repositoryUrl": "https://github.com/Jesse-njx/dsh-routines",
+      "defaultBranch": "main",
+      "latestCommit": "f59b4f03e7b36648b804fd07e57a53e276da5d81",
+      "sourceUpdatedAt": "2026-08-13T16:59:38.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-routines-bundle."
+    },
+    {
+      "id": "codeanqiang-ma-dsh-superpowers",
+      "name": "会话管理（DSH Superpowers）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Superpowers (obra/superpowers) for DeepSeek Harness: the software-development methodology skills plus their session bootstrap, as a dsh plugin",
+      "repositoryUrl": "https://github.com/codeAnqiang-ma/dsh-superpowers",
+      "defaultBranch": "master",
+      "latestCommit": "9511c7b961faafb35f31e6b0e297524bf377aeaf",
+      "sourceUpdatedAt": "2026-08-13T16:48:09.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-superpowers."
+    },
+    {
+      "id": "xilin3-dsh-prompt-persona",
+      "name": "实用工具（DSH Prompt Persona）",
+      "description": "DSH 插件：在设置页可视化编辑系统提示词（deployment persona），支持实时预览与保存。",
+      "repositoryUrl": "https://github.com/Xilin3/dsh-prompt-persona",
+      "defaultBranch": "main",
+      "latestCommit": "1946101995e86dacdd1fb6c2ee0d118ecace0a57",
+      "sourceUpdatedAt": "2026-08-13T15:42:31.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-prompt-persona."
+    },
+    {
+      "id": "drowned-fish1-deepseek-harness-skillx",
+      "name": "技能管理工具（DSH Skillx）",
+      "description": "为 DSH 提供技能管理工具能力。英文原始说明：A safe external-skill discovery and adoption bundle for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/drowned-fish1/deepseek-harness-skillx",
+      "defaultBranch": "main",
+      "latestCommit": "baf8d166e27b36805da4884a1b30db997cdf9708",
+      "sourceUpdatedAt": "2026-08-13T15:41:27.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-skillx."
+    },
+    {
+      "id": "siyue-zo-dsh-translator",
+      "name": "翻译助手（DSH Translator）",
+      "description": "为 DSH 提供翻译助手能力。英文原始说明：A native, streaming translation workspace for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/SiYue-ZO/dsh-translator",
+      "defaultBranch": "main",
+      "latestCommit": "7ab238541380bb194478df088607d5dc5c351b77",
+      "sourceUpdatedAt": "2026-08-13T15:38:31.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-translator."
+    },
+    {
+      "id": "xyz1024-alt-dsh-side-panel",
+      "name": "会话管理（DSH Side Panel）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Right-side developer panel for DeepSeek Harness: files, session history, and git version control",
+      "repositoryUrl": "https://github.com/XYZ1024-alt/dsh-side-panel",
+      "defaultBranch": "main",
+      "latestCommit": "4714c7bf0e049abdd551686a7bdaf5cdb383570b",
+      "sourceUpdatedAt": "2026-08-13T15:37:39.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-side-panel."
+    },
+    {
+      "id": "shujitech-dsh-plugin-wepre",
+      "name": "会话管理（DSH Plugin Wepre）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：DeepSeek Harness plugin: publish single-screen content cards to WePre Next straight from a dsh agent session",
+      "repositoryUrl": "https://github.com/shujiTech/dsh-plugin-wepre",
+      "defaultBranch": "main",
+      "latestCommit": "4b95dca5fa6ee9920026c10351de0aa5a2941609",
+      "sourceUpdatedAt": "2026-08-13T15:13:45.000Z",
+      "discoveredAt": "2026-08-24T14:17:00.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "sessions",
+        "workflow",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-wepre."
     }
   ]
 }
