@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "kind": "storefront-seo-change-plan",
+  "status": "prepared",
+  "purpose": "Improve Google discovery for DSH plugin marketplace category queries without keyword stuffing or doorway pages.",
+  "createdAt": "2026-08-24T00:00:00+08:00",
+  "base": {
+    "repository": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
+    "ref": "origin/main",
+    "commit": "871f82d345e6cca279b6c0cdd94d95a4f472ead5",
+    "worktree": "/tmp/dsh-store-google-seo-publish.XXXXXX"
+  },
+  "scope": [
+    "marketplace/index.html",
+    "marketplace/plugins/index.html",
+    "marketplace/build/index.html",
+    "marketplace/faq/index.html",
+    "marketplace/about/index.html",
+    "marketplace/dsh-plugins/index.html",
+    "marketplace/robots.txt",
+    "marketplace/sitemap.xml",
+    "marketplace/llms.txt",
+    "scripts/build-marketplace-static.mjs",
+    "scripts/submit-indexnow.mjs",
+    "deploy/SEO_GEO_INDEXING.md",
+    "deploy/refresh-from-pages.sh",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditionSha256": {
+    "marketplace/index.html": "80d3e2bef10a52b52bfcd99420e34c19db2fba0c12c6ed1819f1a653f2e36c4a",
+    "marketplace/plugins/index.html": "9ccc9dbd3eaf121de581effc31697dac3da4267194ed1d8490d42f946c11ebbe",
+    "marketplace/build/index.html": "f0d90112bd39ba05ad91cf461502250db62777837ea12d53557e2702dc306652",
+    "marketplace/faq/index.html": "73eba5002620f2bfc389674571b02865e0003dd9058192fdfee8cb4c4e8bca53",
+    "marketplace/about/index.html": "ed0fcd3c1e01738d0560728bb19386fd0b2d4d888331b8f66ecf7feb50e307a5",
+    "marketplace/robots.txt": "7c15a410aededf59d49d2879b80c73f894cdee9c30377cdeca5528b820927e57",
+    "marketplace/sitemap.xml": "b167c76127381da9ad8a25b5cfc89b1814277d3e6de54a6d5cbf8ea70aa342c5",
+    "marketplace/llms.txt": "a9e875a89651f9bcb40dc9a6de40d98dd089c42490c577836520dcf7bf598f26",
+    "scripts/build-marketplace-static.mjs": "d9396b401d734ef48d4e661a59b59e3b89e365e5104885432c0cf4367d813c9b",
+    "scripts/submit-indexnow.mjs": "f70b71b8223aff8f90bd7311cc31e60912d6ebef3bbb624fa7b7452f7a5b08a8",
+    "deploy/SEO_GEO_INDEXING.md": "0db5b789846e319e89605e9b2398f4522f270650f5d1405e3b040b11dcfc0e93",
+    "deploy/refresh-from-pages.sh": "7e12534f62f41d663b2cb3558cade5b5c5eaab2bf56a7c0b7dc84301dba78ae8",
+    "test/marketplace-static-build.test.mjs": "9625ab814c882d1d540d0d27fe24dcb81ef0adcbe96e200d27d2a0d5e0af113b"
+  },
+  "gates": [
+    "npm run check",
+    "build static output from the fixed commit with no catalog authority mutation",
+    "assert sitemap, canonical URLs, hreflang, JSON-LD and visible DSH plugin guide content",
+    "verify artifact excludes .git, credentials, environment files and private files",
+    "read-only public checks for homepage, plugin directory, guide, catalog, sitemap and IndexNow key",
+    "on deployment failure keep the existing release and use the documented atomic rollback"
+  ],
+  "rollback": {
+    "method": "retain existing production release/current symlink; never overwrite it during this change",
+    "trigger": "any failed build, deterministic gate, or public health check",
+    "evidence": "record old release path and hashes before any separately authorized deployment"
+  },
+  "nonGoals": [
+    "no Google Search Console API mutation",
+    "no Bing or IndexNow configuration removal",
+    "no DSH core/Profile/runtime changes",
+    "no catalog admission or catalog data edits",
+    "no deployment in this local SEO implementation step"
+  ]
+}

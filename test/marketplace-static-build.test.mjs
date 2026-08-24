@@ -39,6 +39,8 @@ test('static marketplace derives manager identity and catalog cards without muta
 
     const home = await readFile(join(output, 'marketplace/index.html'), 'utf8')
     const plugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
+    const guide = await readFile(join(output, 'marketplace/dsh-plugins/index.html'), 'utf8')
+    const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
     const styles = await readFile(join(output, 'marketplace/styles.css'), 'utf8')
     const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
@@ -62,7 +64,10 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, new RegExp(manager.commit))
     assert.match(home, /name="dsh-catalog-delivery" content="external-json"/)
     assert.match(home, /data-automation-overall/)
-    assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\/"/)
+    assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
+    assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
+    assert.match(home, /hreflang="en"[^>]*https:\/\/dsh\.store\//)
+    assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
     assert.doesNotMatch(home, /DSH_ALTERNATE_SITE/)
     assert.doesNotMatch(home, /id="catalog-snapshot"/)
     assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, Math.min(24, catalog.entries.filter(entry => entry.status !== 'unlisted').length))
@@ -71,6 +76,12 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.doesNotMatch(plugins, /id="catalog-snapshot"/)
     assert.ok(Buffer.byteLength(home) < 300_000, 'home HTML must not embed the complete catalog')
     assert.ok(Buffer.byteLength(plugins) < 500_000, 'directory HTML must contain only the first static page')
+    assert.match(guide, /DSH 插件/)
+    assert.match(guide, /DeepSeek Harness/)
+    assert.match(guide, /build-dsh-plugin/)
+    assert.match(guide, /hreflang="x-default"/)
+    assert.match(sitemap, /https:\/\/dsh\.store\/dsh-plugins\//)
+    assert.match(sitemap, /<lastmod>2026-08-24<\/lastmod>/)
     assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
   } finally {
     await rm(output, { recursive: true, force: true })
@@ -96,6 +107,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       'marketplace/build/index.html',
       'marketplace/faq/index.html',
       'marketplace/about/index.html',
+      'marketplace/dsh-plugins/index.html',
     ]
     for (const pagePath of pagePaths) {
       const page = await readFile(join(output, pagePath), 'utf8')
@@ -108,6 +120,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
     assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\//)
+    assert.match(sitemap, /https:\/\/dsh-store\.cn\/dsh-plugins\//)
     assert.doesNotMatch(sitemap, /https:\/\/dsh\.store/)
     assert.equal(manifest.siteOrigin, 'https://dsh-store.cn')
     assert.equal(manifest.alternateOrigin, 'https://dsh.store')

@@ -7,6 +7,7 @@ const defaultUrls = [
   `https://${host}/build/`,
   `https://${host}/faq/`,
   `https://${host}/about/`,
+  `https://${host}/dsh-plugins/`,
 ]
 
 const requestedUrls = process.argv.slice(2)

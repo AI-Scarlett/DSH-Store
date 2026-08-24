@@ -301,20 +301,46 @@ const alternateAriaLabel = alternateIsDomestic ? '切换到国内站 / Switch to
 const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international'
 const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
 
+const canonicalPages = [
+  { file: 'marketplace/index.html', route: '/' },
+  { file: 'marketplace/plugins/index.html', route: '/plugins/' },
+  { file: 'marketplace/build/index.html', route: '/build/' },
+  { file: 'marketplace/faq/index.html', route: '/faq/' },
+  { file: 'marketplace/about/index.html', route: '/about/' },
+  { file: 'marketplace/dsh-plugins/index.html', route: '/dsh-plugins/' },
+]
+const hreflangMarkup = route => {
+  const intl = siteOriginUrl.host === 'dsh.store' ? siteOrigin : alternateOrigin
+  const domestic = siteOriginUrl.host === 'dsh-store.cn' ? siteOrigin : alternateOrigin
+  return [
+    `<link rel="alternate" hreflang="en" href="${htmlEscape(`${intl}${route}`)}">`,
+    `<link rel="alternate" hreflang="zh-CN" href="${htmlEscape(`${domestic}${route}`)}">`,
+    `<link rel="alternate" hreflang="x-default" href="${htmlEscape(`${intl}${route}`)}">`,
+  ].join('\n  ')
+}
+
+const sitemapDate = (() => {
+  const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
+  return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
+})()
+const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/faq/': '0.8', '/about/': '0.7' }
+const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/faq/': 'monthly', '/about/': 'monthly' }
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${canonicalPages.map(({ route }) => `  <url><loc>${htmlEscape(`${siteOrigin}${route}`)}</loc><lastmod>${sitemapDate}</lastmod><changefreq>${sitemapChangefreq[route]}</changefreq><priority>${sitemapPriority[route]}</priority></url>`).join('\n')}
+</urlset>
+`
+await writeFile(resolve(outputRoot, 'marketplace/sitemap.xml'), sitemap)
+
 const icpMarkup = icpNumber
   ? `<a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">${htmlEscape(icpNumber)}</a>`
   : ''
-for (const pagePath of [
-  'marketplace/index.html',
-  'marketplace/plugins/index.html',
-  'marketplace/build/index.html',
-  'marketplace/faq/index.html',
-  'marketplace/about/index.html',
-]) {
+for (const { file: pagePath, route } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
-  await writeFile(absolutePath, replaceRequired(withAlternate, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
+  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route), `${pagePath} hreflang marker`)
+  await writeFile(absolutePath, replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
 }
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
