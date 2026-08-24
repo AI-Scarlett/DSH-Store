@@ -76,6 +76,7 @@ export function renderCatalogAutomationNotification({
   const compatibilityUnlisted = array(report?.compatibilityUnlisted)
   const compatibilityRestored = array(report?.compatibilityRestored)
   const compatibilityPolicy = report?.compatibilityPolicy ?? {}
+  const prunedCandidates = array(report?.prunedCandidates)
   const deferredUpdates = array(report?.deferredUpdates)
   const higherVersionDeferred = deferredUpdates.filter(item => typeof item?.upstreamVersion === 'string')
   const transientFailures = array(report?.transientFailures)
@@ -103,6 +104,7 @@ export function renderCatalogAutomationNotification({
     `- 历史版本自动更新：${updatedEntries.length} 个`,
     `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
     `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
+    `- 不兼容且已有其他失败的候选清理：${prunedCandidates.length} 个`,
     `- 发现上游高版本：${number(sourceChecks.newerVersionCandidates)} 个（自动更新 ${number(sourceChecks.catalogUpdates)}，暂缓 ${number(sourceChecks.newerVersionsDeferred)}）`,
     `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个`,
     `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
@@ -163,6 +165,21 @@ export function renderCatalogAutomationNotification({
     for (const item of compatibilityRestored) {
       const entry = byId.get(item.id)
       lines.push(`| 恢复上架 | ${markdownCell(entryName(entry, item.id))} | ${markdownCell(entry?.version ?? item.version)} | ${repositoryLink(entry)} | ${markdownCell(array(item.requiredDshReleases).join(', '))} |`)
+    }
+    lines.push('')
+  }
+
+  lines.push('### 已清理的不兼容失败候选', '')
+  if (prunedCandidates.length === 0) {
+    lines.push('无候选清理。', '')
+  } else {
+    lines.push('| 候选 | 固定 Commit | 原项目 | 清理原因 |', '|---|---|---|---|')
+    for (const item of prunedCandidates) {
+      const repositoryUrl = item.repositoryUrl
+      const repository = typeof repositoryUrl === 'string' && /^https:\/\/github\.com\//.test(repositoryUrl)
+        ? `[原项目](${repositoryUrl})`
+        : '未知'
+      lines.push(`| ${markdownCell(item.name ?? item.id)} | ${shortSha(item.commit)} | ${repository} | ${markdownCell(item.reason)} |`)
     }
     lines.push('')
   }

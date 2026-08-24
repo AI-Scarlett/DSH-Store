@@ -21,6 +21,11 @@ import {
   DSH_REGISTRY_URL,
   fetchOfficialDshReleaseWindow,
 } from '../src/catalog-compatibility-policy.mjs'
+import {
+  inspectRejectedCandidateCompatibility,
+  REJECTED_CANDIDATE_RETENTION_AUTHORITY,
+  selectRejectedCandidateRetentionBatch,
+} from '../src/candidate-retention-policy.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
@@ -272,7 +277,7 @@ async function analyzeFixedSource(candidate, policy, github) {
   const runtimeFileCountWithinBounds = runtimeFiles.length > 0
     && runtimeFiles.length <= policy.sourceBounds.maxRuntimeFiles
   if (!runtimeFileCountWithinBounds) {
-    reasons.push('runtime source file count is outside the automatic review bound')
+    reasons.push(`runtime source file count is outside the automatic review bound: ${runtimeFiles.length} files (maximum ${policy.sourceBounds.maxRuntimeFiles})`)
   }
   const runtimeSizes = runtimeFiles.map(item => Number.isSafeInteger(item.size)
     ? item.size
@@ -280,7 +285,9 @@ async function analyzeFixedSource(candidate, policy, github) {
   const totalBytes = runtimeSizes.reduce((sum, size) => sum + size, 0)
   const runtimeBytesWithinBounds = runtimeSizes.every(size => size <= policy.sourceBounds.maxFileBytes)
     && totalBytes <= policy.sourceBounds.maxTotalRuntimeBytes
-  if (!runtimeBytesWithinBounds) reasons.push('runtime source exceeds the automatic review byte bound')
+  if (!runtimeBytesWithinBounds) {
+    reasons.push(`runtime source exceeds the automatic review byte bound: ${totalBytes} total bytes (maximum ${policy.sourceBounds.maxTotalRuntimeBytes}); largest file ${Math.max(0, ...runtimeSizes)} bytes (maximum ${policy.sourceBounds.maxFileBytes})`)
+  }
   if (runtimeFileCountWithinBounds && runtimeBytesWithinBounds) {
     for (let index = 0; index < runtimeFiles.length; index += 8) {
       const batch = runtimeFiles.slice(index, index + 8)
@@ -599,7 +606,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
   }
 }
 
-async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report) {
+async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow) {
   const repositories = await retryInfrastructure(() => discoverRepositories(policy, github))
   const catalogRepositories = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
   const candidateByRepository = new Map(candidates.entries.map(entry => [entry.repositoryUrl.toLowerCase(), entry]))
@@ -653,12 +660,90 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
         status: 'rejected', route: routeForFailure(error?.code),
         reason: `${error?.code ?? 'AUTOMATIC_POLICY_REJECTED'}: ${boundedText(error?.message, 'automatic source review failed')}`,
       })
+      const retention = await inspectCandidateRetention(
+        record, 'new-discovery', policy, github, dshReleaseWindow, report,
+      )
+      if (retention.status === 'unsupported') {
+        if (previous) {
+          candidates.entries = candidates.entries.filter(item => item !== previous)
+          report.candidateRetention.registryRemovals += 1
+        }
+        candidateByRepository.delete(repositoryKey)
+        report.prunedCandidates.push(prunedCandidateRecord(record, retention, 'new-discovery'))
+        continue
+      }
       if (previous) Object.assign(previous, record)
       else candidates.entries.push(record)
       candidateByRepository.set(repositoryKey, record)
       report.rejectedCandidates.push({ repository: repository.html_url, commit: head.sha, reason: record.statusReason })
     }
   }
+}
+
+function prunedCandidateRecord(candidate, retention, source) {
+  return {
+    id: candidate.id,
+    name: candidate.name,
+    description: candidate.description,
+    repositoryUrl: candidate.repositoryUrl,
+    commit: candidate.latestCommit,
+    discoverySources: candidate.discoverySources,
+    topics: candidate.topics,
+    source,
+    previousFailure: candidate.statusReason,
+    compatibilityReason: retention.reason,
+    reason: boundedText(`${candidate.statusReason}; ${retention.reason}`, 'rejected candidate has no latest-three DSH compatibility evidence', 1_200),
+  }
+}
+
+async function inspectCandidateRetention(candidate, source, policy, github, window, report) {
+  try {
+    const result = await retryInfrastructure(() => inspectRejectedCandidateCompatibility(
+      candidate, window, policy.candidateRetention, github,
+    ))
+    report.candidateRetention.checkedCandidates += 1
+    if (source === 'historical-bucket') report.candidateRetention.historicalChecked += 1
+    else report.candidateRetention.newDiscoveriesChecked += 1
+    if (result.status === 'compatible') report.candidateRetention.retainedCompatible += 1
+    else if (result.status === 'unknown') report.candidateRetention.retainedUnknown += 1
+    else report.candidateRetention.prunedUnsupported += 1
+    return result
+  } catch (error) {
+    report.candidateRetention.checkedCandidates += 1
+    if (source === 'historical-bucket') report.candidateRetention.historicalChecked += 1
+    else report.candidateRetention.newDiscoveriesChecked += 1
+    report.candidateRetention.retainedUnknown += 1
+    const reason = boundedText(error?.message, 'candidate compatibility inspection was temporarily unavailable')
+    report.transientFailures.push({ repository: candidate.repositoryUrl, reason })
+    return { status: 'unknown', reason, manifestsChecked: 0 }
+  }
+}
+
+async function pruneHistoricalRejectedCandidates(candidates, policy, github, window, observedAt, report) {
+  const batch = selectRejectedCandidateRetentionBatch(
+    candidates, observedAt, policy.candidateRetention, policy.scheduleHours,
+  )
+  report.candidateRetention.bucket = batch.bucket
+  report.candidateRetention.bucketCount = batch.bucketCount
+  report.candidateRetention.selectedCandidates = batch.entries.length
+  const results = []
+  for (let index = 0; index < batch.entries.length; index += policy.candidateRetention.concurrency) {
+    const current = batch.entries.slice(index, index + policy.candidateRetention.concurrency)
+    results.push(...await Promise.all(current.map(async candidate => ({
+      candidate,
+      retention: await inspectCandidateRetention(
+        candidate, 'historical-bucket', policy, github, window, report,
+      ),
+    }))))
+  }
+  const removed = new Set()
+  for (const { candidate, retention } of results) {
+    if (retention.status !== 'unsupported') continue
+    removed.add(candidate)
+    report.prunedCandidates.push(prunedCandidateRecord(candidate, retention, 'historical-bucket'))
+  }
+  if (removed.size > 0) candidates.entries = candidates.entries.filter(candidate => !removed.has(candidate))
+  report.candidateRetention.registryRemovals += removed.size
 }
 
 async function atomicWrite(path, buffer) {
@@ -679,6 +764,17 @@ if (policy.compatibility?.authority !== 'official-npm-registry-published-version
   || policy.compatibility?.candidateStatus !== 'reviewing'
   || policy.compatibility?.failClosedOnAuthorityError !== true) {
   throw new Error('unsupported DSH compatibility policy')
+}
+if (policy.candidateRetention?.authority !== REJECTED_CANDIDATE_RETENTION_AUTHORITY
+  || policy.candidateRetention?.pruneRejectedWithoutLatestThreeCompatibility !== true
+  || policy.candidateRetention?.exactReleaseEvidenceRequired !== true
+  || policy.candidateRetention?.scanBuckets !== 24
+  || policy.candidateRetention?.maxCandidatesPerRun !== 96
+  || policy.candidateRetention?.maxTreeEntries !== policy.sourceBounds.maxTreeEntries
+  || policy.candidateRetention?.maxManifestCandidates !== 48
+  || policy.candidateRetention?.maxManifestBytes !== policy.sourceBounds.maxFileBytes
+  || policy.candidateRetention?.concurrency !== 8) {
+  throw new Error('unsupported rejected Candidate Registry retention policy')
 }
 const originalCatalog = await readFile(catalogPath)
 const originalCandidates = await readFile(candidatesPath)
@@ -721,11 +817,27 @@ const report = {
   updateReviews: [], updatedEntries: [], sourceChangesWithoutVersionBump: [], upstreamVersionBehind: [],
   addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [],
   compatibilityUnlisted: [], compatibilityRestored: [], compatibilityRefreshed: [],
+  prunedCandidates: [],
+  candidateRetention: {
+    authority: REJECTED_CANDIDATE_RETENTION_AUTHORITY,
+    latestReleases: [...dshReleaseWindow.releases],
+    bucket: null,
+    bucketCount: policy.candidateRetention.scanBuckets,
+    selectedCandidates: 0,
+    checkedCandidates: 0,
+    historicalChecked: 0,
+    newDiscoveriesChecked: 0,
+    retainedCompatible: 0,
+    retainedUnknown: 0,
+    prunedUnsupported: 0,
+    registryRemovals: 0,
+  },
   skippedDiscoveries: [], transientFailures: [],
 }
 const github = createGithubClient()
 await updateExistingEntries(catalog, policy, github, observedAt, report)
-await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report)
+await pruneHistoricalRejectedCandidates(candidates, policy, github, dshReleaseWindow, observedAt, report)
+await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow)
 report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
   catalog, candidates, dshReleaseWindow, observedAt,
 )
@@ -738,7 +850,7 @@ assertCatalogLocalization(catalog)
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
   || report.compatibilityPolicy.catalogChanged
 const candidatesChanged = report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0
-  || report.compatibilityPolicy.candidatesChanged
+  || report.candidateRetention.registryRemovals > 0 || report.compatibilityPolicy.candidatesChanged
 if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
 const validatedCatalog = validateCatalog(catalog)

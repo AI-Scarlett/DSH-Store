@@ -29,6 +29,10 @@ test('Catalog notification separates additions, historical updates, and deferred
     },
     compatibilityUnlisted: [{ id: 'old-compat', version: '1.2.0', requiredDshReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'] }],
     compatibilityRestored: [{ id: 'restored-compat', version: '1.3.0', requiredDshReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'] }],
+    prunedCandidates: [{
+      id: 'failed-candidate', name: '失败候选（Failed Candidate）', repositoryUrl: 'https://github.com/example/failed-candidate',
+      commit: 'c'.repeat(40), reason: 'other gate failed; no exact compatible declaration for official DSH releases',
+    }],
     deferredUpdates: [{ id: 'new-plugin', catalogVersion: '1.0.0', upstreamVersion: '1.1.0', reason: '证据不足' }],
     transientFailures: [],
     postconditions: { catalogEntries: 481 },
@@ -61,6 +65,8 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /兼容性下架 1，恢复 1/)
   assert.match(output, /暂时下架并转入候选/)
   assert.match(output, /恢复兼容插件（Restored Compatibility）/)
+  assert.match(output, /不兼容且已有其他失败的候选清理：1 个/)
+  assert.match(output, /失败候选（Failed Candidate）/)
   assert.match(output, /状态边界/)
 })
 
