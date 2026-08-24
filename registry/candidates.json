@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-23T21:30:40.000Z",
+    "updatedAt": "2026-08-24T01:53:17.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -185,20 +185,29 @@
       "description": "🐳 DeepSeek Harness 插件聚合社区 — 自动同步 dsh-plugin 生态 · 精选目录 · 每 4 小时自动维护 | Oh-My-DSH: a community-maintained catalog of DeepSeek Harness plugins, auto-synced from the dsh-plugin topic",
       "repositoryUrl": "https://github.com/like-study1/Oh-My-DSH",
       "defaultBranch": "main",
-      "latestCommit": "72ace9d47812d7f8d44db19588aa0e7d0dc05916",
-      "sourceUpdatedAt": "2026-08-21T01:59:51.000Z",
+      "latestCommit": "cbc0af8234135ae05ecf21a569790939fd36364a",
+      "sourceUpdatedAt": "2026-08-24T01:54:41.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "utility"
+        "awesome-deepseek-harness",
+        "awesome-dsh-plugin",
+        "awesome-list",
+        "deepseek-harness",
+        "dsh",
+        "dsh-ecosystem",
+        "dsh-plugin",
+        "plugin-marketplace",
+        "plugins",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "dsh-plugin-dsh-plugin-github-io",
@@ -28769,6 +28778,31 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "zsagi1368-deepseek-harness-zdsh",
+      "name": "zsagi1368/deepseek-harness-zDSH",
+      "description": "zDSH - deepseek-harness independent enhancement distro: plugin governance, omnivision vision pipeline, cross-session memory, mobile-ready web UI | 插件治理+视觉管线+跨会话记忆+移动适配",
+      "repositoryUrl": "https://github.com/zsagi1368/deepseek-harness-zDSH",
+      "defaultBranch": "our/v2",
+      "latestCommit": "960a92ab75594412558061ffacd3bb990b2fceb6",
+      "sourceUpdatedAt": "2026-08-24T01:54:06.000Z",
+      "discoveredAt": "2026-08-24T01:53:17.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "cli",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "plugin-governance",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
     }
   ]
 }
