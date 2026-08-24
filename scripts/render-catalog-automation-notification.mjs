@@ -73,6 +73,9 @@ export function renderCatalogAutomationNotification({
   const byId = new Map(catalogEntries.map(entry => [entry.id, entry]))
   const addedEntries = array(report?.addedEntries)
   const updatedEntries = array(report?.updatedEntries)
+  const compatibilityUnlisted = array(report?.compatibilityUnlisted)
+  const compatibilityRestored = array(report?.compatibilityRestored)
+  const compatibilityPolicy = report?.compatibilityPolicy ?? {}
   const deferredUpdates = array(report?.deferredUpdates)
   const higherVersionDeferred = deferredUpdates.filter(item => typeof item?.upstreamVersion === 'string')
   const transientFailures = array(report?.transientFailures)
@@ -88,7 +91,7 @@ export function renderCatalogAutomationNotification({
 
   const lines = [
     '<!-- dsh-catalog-automation-notification -->',
-    `## ${icon} DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}`,
+    `## ${icon} DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}，兼容性下架 ${compatibilityUnlisted.length}，恢复 ${compatibilityRestored.length}`,
     '',
   ]
   if (mention) lines.push(mention, '')
@@ -98,6 +101,8 @@ export function renderCatalogAutomationNotification({
     `- 历史 Catalog 检查：${number(sourceChecks.checkedEntries)} 个`,
     `- 新增收录：${addedEntries.length} 个（可安装 ${approvedAdded}，blocked/不可安装 ${blockedAdded}）`,
     `- 历史版本自动更新：${updatedEntries.length} 个`,
+    `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
+    `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
     `- 发现上游高版本：${number(sourceChecks.newerVersionCandidates)} 个（自动更新 ${number(sourceChecks.catalogUpdates)}，暂缓 ${number(sourceChecks.newerVersionsDeferred)}）`,
     `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个`,
     `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
@@ -142,6 +147,22 @@ export function renderCatalogAutomationNotification({
     for (const item of higherVersionDeferred) {
       const entry = byId.get(item.id)
       lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${markdownCell(item.catalogVersion)} | ${markdownCell(item.upstreamVersion)} | ${markdownCell(item.reason ?? '证据不足，自动失败关闭')} |`)
+    }
+    lines.push('')
+  }
+
+  lines.push('### 最新三个 DSH 版本兼容性变更', '')
+  if (compatibilityUnlisted.length === 0 && compatibilityRestored.length === 0) {
+    lines.push('无兼容性上下架变更。', '')
+  } else {
+    lines.push('| 变更 | 中文名（英文名） | 插件版本 | 原项目 | 要求窗口 |', '|---|---|---:|---|---|')
+    for (const item of compatibilityUnlisted) {
+      const entry = byId.get(item.id)
+      lines.push(`| 暂时下架并转入候选 | ${markdownCell(entryName(entry, item.id))} | ${markdownCell(entry?.version ?? item.version)} | ${repositoryLink(entry)} | ${markdownCell(array(item.requiredDshReleases).join(', '))} |`)
+    }
+    for (const item of compatibilityRestored) {
+      const entry = byId.get(item.id)
+      lines.push(`| 恢复上架 | ${markdownCell(entryName(entry, item.id))} | ${markdownCell(entry?.version ?? item.version)} | ${repositoryLink(entry)} | ${markdownCell(array(item.requiredDshReleases).join(', '))} |`)
     }
     lines.push('')
   }

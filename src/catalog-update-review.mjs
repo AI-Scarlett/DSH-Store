@@ -1,4 +1,4 @@
-import { compareVersions } from './catalog.mjs'
+import { compareVersions, DSH_RC_RELEASES } from './catalog.mjs'
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
@@ -24,15 +24,17 @@ function unknownEvidence(summary) {
   }
 }
 
-function resetCompatibilityEvidence(entry, candidate) {
+export function sourceDeclaredCompatibility(entry, candidate) {
   const releaseKeys = new Set([
+    ...DSH_RC_RELEASES,
     ...Object.keys(entry.compatibility?.dshReleases ?? {}),
     ...Object.keys(entry.compatibility?.dshOperations ?? {}),
+    ...Object.keys(candidate.compatibility?.dshReleases ?? {}),
   ])
   const dshReleases = {}
   const dshOperations = {}
   for (const release of releaseKeys) {
-    dshReleases[release] = 'unknown'
+    dshReleases[release] = candidate.compatibility?.dshReleases?.[release] ?? 'unknown'
     dshOperations[release] = {
       install: 'unknown',
       start: 'unknown',
@@ -126,7 +128,7 @@ export function buildCatalogVersionUpdate(
     version: candidate.version,
     compatibility: options.preserveCompatibility
       ? entry.compatibility
-      : resetCompatibilityEvidence(entry, candidate),
+      : sourceDeclaredCompatibility(entry, candidate),
     source: {
       updatedAt: analysis?.sourceUpdatedAt ?? observedAt,
       observedAt,

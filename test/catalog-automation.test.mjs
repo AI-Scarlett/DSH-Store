@@ -40,6 +40,15 @@ test('automatic policy runs every eight hours and fails closed on permission or 
   assert.equal(policy.updates.versionAuthority, 'canonical-github-default-branch-manifest-at-fixed-commit')
   assert.equal(policy.updates.concurrency, 8)
   assert.equal(policy.updates.maxCommitSpan, 200)
+  assert.deepEqual(policy.compatibility, {
+    authority: 'official-npm-registry-published-versions-through-latest',
+    registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh',
+    latestReleaseCount: 3,
+    requiredCompatibleReleases: 1,
+    unsupportedCatalogStatus: 'unlisted',
+    candidateStatus: 'reviewing',
+    failClosedOnAuthorityError: true,
+  })
   assert.equal(policy.automaticApproval.allowLifecycleScripts, false)
   assert.equal(policy.automaticApproval.allowRuntimeDependencies, false)
   assert.equal(policy.automaticApproval.requireManifestRepositoryMatch, true)
@@ -90,6 +99,10 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /sourceVersionChecks\.checkedEntries/)
   assert.match(source, /sourceVersionChecks\.newerVersionsDeferred/)
   assert.match(source, /sourceVersionChecks\.unresolvedEntries/)
+  assert.match(source, /fetchOfficialDshReleaseWindow/)
+  assert.match(source, /applyLatestDshCompatibilityPolicy/)
+  assert.match(source, /compatibilityPolicy\.catalogChanged/)
+  assert.match(source, /dshReleaseWindowSha256/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
   assert.match(source, /catalogUpdateIdentityMatches/)
   assert.match(source, /buildCatalogVersionUpdate/)

@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const MARKER_PATTERN = /<!-- dsh-author-notice:v1 key=([a-z0-9_.-]+\/[a-z0-9_.-]+) signature=([0-9a-f]{64}) notified=([0-9a-f]{64}) -->/i
 const INFRASTRUCTURE_REASON = /(?:HTTP (?:403|404|409|429|5\d\d)|rate.?limit|timed?\s*out|timeout|temporar(?:y|ily)|default branch moved|transport|connection|ECONN|ENOTFOUND)/i
@@ -14,6 +15,7 @@ export const AUTHOR_NOTICE_LABELS = [
   { name: 'author-action-required', color: 'D93F0B', description: 'Upstream author changes are required before DSH STORE can proceed' },
   { name: 'catalog-blocked', color: 'B60205', description: 'Catalog entry remains non-installable' },
   { name: 'update-deferred', color: 'FBCA04', description: 'A newer upstream version was found but could not be applied' },
+  { name: 'compatibility-outdated', color: 'E99695', description: 'Catalog entry is temporarily unlisted outside the latest-three DSH compatibility window' },
   { name: 'candidate-rejected', color: 'D4C5F9', description: 'DSH candidate needs upstream changes before another review' },
 ]
 
@@ -127,6 +129,7 @@ function suggestionLines(reasons) {
   const suggestions = []
   const multiplePackages = /Multiple DSH plugins|Plugin path|SUBMISSION_PACKAGE_AMBIGUOUS/i.test(text)
   const add = value => { if (!suggestions.includes(value)) suggestions.push(value) }
+  if (text.includes(COMPATIBILITY_HOLD_PREFIX)) add('提升插件 SemVer，并在新固定 Commit 的 `package.json` 中通过 `dsh.compatibility.dshReleases` 对列出的 DSH 完整版本逐项声明 `compatible`、`incompatible` 或 `unknown`；仅写宽泛范围不会恢复上架。 / Bump the plugin SemVer and declare each listed full DSH version as `compatible`, `incompatible`, or `unknown` under `dsh.compatibility.dshReleases` in the new fixed-Commit manifest; a range alone will not restore the listing.')
   if (/bundle|dsh\.bundle\.patch|patch/i.test(text)) add('补齐并校验 `package.json` 中的 `dsh.bundle.patch`，确保 Patch 文件位于包内且只新增唯一 DSH entry ID。 / Add a package-local `dsh.bundle.patch` and an additive Patch with unique DSH entry IDs.')
   if (/runtime artifact|runtime source (?:is|was) (?:missing|unavailable)|files list|distributable files|source exceeds|file bytes/i.test(text)) add('把实际运行文件纳入固定 Commit 与 manifest `files`；若需要构建，请提交可分发产物或明确、可复现的 `prepare` 契约。 / Commit the bounded runtime files and declare them in `files`; ship build output or a reproducible `prepare` contract.')
   if (/lifecycle|prepare|install script|preinstall|postinstall/i.test(text)) add('准确声明生命周期脚本及其必要性；能移除安装期执行时优先移除，并保留可复现安装证据。 / Declare every lifecycle script exactly, remove install-time execution where possible, and retain reproducible install evidence.')
@@ -155,6 +158,7 @@ function ensureRepository(map, url) {
       ...repository,
       catalogBlocked: [],
       deferredUpdates: [],
+      compatibilityHolds: [],
       candidates: [],
       createCategories: new Set(),
       createPriority: new Set(),
@@ -169,6 +173,7 @@ function stableItems(record) {
   return {
     catalogBlocked: [...record.catalogBlocked].sort(byId),
     deferredUpdates: [...record.deferredUpdates].sort(byId),
+    compatibilityHolds: [...record.compatibilityHolds].sort(byId),
     candidates: [...record.candidates].sort(byId),
   }
 }
@@ -178,6 +183,7 @@ function renderNoticeBody(record, signature, notifiedSignature) {
   const reasons = [
     ...items.catalogBlocked.map(item => item.reason),
     ...items.deferredUpdates.map(item => item.reason),
+    ...items.compatibilityHolds.map(item => item.reason),
     ...items.candidates.map(item => item.reason),
   ]
   const lines = [
@@ -198,6 +204,9 @@ function renderNoticeBody(record, signature, notifiedSignature) {
   }
   for (const item of items.deferredUpdates) {
     lines.push(`| 更新暂缓 / Update deferred | ${markdownCell(item.name)} | ${markdownCell(item.catalogVersion)} | ${markdownCell(item.upstreamVersion)} | ${markdownCell(item.reason)} |`)
+  }
+  for (const item of items.compatibilityHolds) {
+    lines.push(`| 兼容性暂时下架 / Compatibility unlisted | ${markdownCell(item.name)} | ${markdownCell(item.version)} | ${markdownCell(item.requiredDshReleases.join(', '))} | ${markdownCell(item.reason)} |`)
   }
   for (const item of items.candidates) {
     lines.push(`| 候选未通过 / Candidate rejected | ${markdownCell(item.name)} | ${markdownCell(item.commit?.slice(0, 12) ?? '未知')} | — | ${markdownCell(item.reason)} |`)
@@ -232,7 +241,7 @@ function closeComment(key, signature) {
 }
 
 function selectCreates(records, existingKeys, maximum) {
-  const categoryOrder = ['update-deferred', 'candidate-rejected', 'catalog-blocked']
+  const categoryOrder = ['update-deferred', 'compatibility-outdated', 'candidate-rejected', 'catalog-blocked']
   const pools = new Map(categoryOrder.map(category => [category, records
     .filter(record => !existingKeys.has(record.key) && record.createCategories.has(category))
     .sort((left, right) => Number(right.createPriority.has(category)) - Number(left.createPriority.has(category))
@@ -271,12 +280,31 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
   const repositories = new Map()
   const catalogById = new Map(array(catalog?.entries).map(entry => [entry.id, entry]))
   const addedIds = new Set(array(report?.addedEntries).map(entry => entry.id))
+  const newlyUnlistedIds = new Set(array(report?.compatibilityUnlisted).map(entry => entry.id))
   for (const entry of array(catalog?.entries)) {
     if (entry.status !== 'blocked' || !entry.statusReason) continue
     const record = ensureRepository(repositories, entry.repositoryUrl)
     record.catalogBlocked.push({ id: entry.id, name: entry.name, version: entry.version, reason: compactReason(entry.statusReason) })
     record.createCategories.add('catalog-blocked')
     if (addedIds.has(entry.id)) record.createPriority.add('catalog-blocked')
+  }
+
+  for (const entry of array(catalog?.entries)) {
+    if (entry.status !== 'unlisted' || !String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX)) continue
+    const record = ensureRepository(repositories, entry.repositoryUrl)
+    const reportItem = array(report?.compatibilityUnlisted).find(item => item.id === entry.id)
+      ?? array(report?.compatibilityRefreshed).find(item => item.id === entry.id)
+    record.compatibilityHolds.push({
+      id: entry.id,
+      name: entry.name,
+      version: entry.version,
+      requiredDshReleases: array(reportItem?.requiredDshReleases).length > 0
+        ? array(reportItem.requiredDshReleases)
+        : array(report?.compatibilityPolicy?.latestReleases),
+      reason: compactReason(entry.statusReason),
+    })
+    record.createCategories.add('compatibility-outdated')
+    if (newlyUnlistedIds.has(entry.id)) record.createPriority.add('compatibility-outdated')
   }
 
   for (const deferred of array(report?.deferredUpdates)) {
@@ -322,6 +350,7 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
     record.labels = ['author-action-required']
     if (items.catalogBlocked.length > 0) record.labels.push('catalog-blocked')
     if (items.deferredUpdates.length > 0) record.labels.push('update-deferred')
+    if (items.compatibilityHolds.length > 0) record.labels.push('compatibility-outdated')
     if (items.candidates.length > 0) record.labels.push('candidate-rejected')
     record.labels.sort()
     record.signature = sha256(JSON.stringify({ key: record.key, items, notificationTargets: record.notificationTargets }))

@@ -127,3 +127,20 @@ test('self-manager version refresh preserves its explicit compatibility matrix',
   })
   assert.deepEqual(updated.compatibility, original.compatibility)
 })
+
+test('version refresh imports an upstream per-release declaration while leaving operations unknown', () => {
+  const candidate = {
+    ...entry(),
+    commit: 'c'.repeat(40),
+    version: '1.4.0',
+    compatibility: {
+      dsh: '>=0.1.1-rc.1 <0.2.0',
+      dshReleases: { '0.1.1-rc.2': 'compatible' },
+      node: '>=24', systems: ['Linux'], profiles: ['web'],
+    },
+  }
+  const updated = buildCatalogVersionUpdate(entry(), candidate, {}, '2026-08-22T06:00:00Z', 'user-reviewed')
+  assert.equal(updated.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
+  assert.equal(updated.compatibility.dshReleases['0.1.1-rc.1'], 'unknown')
+  assert.equal(updated.compatibility.dshOperations['0.1.1-rc.2'].install, 'unknown')
+})
