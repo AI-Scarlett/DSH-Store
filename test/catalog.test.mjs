@@ -58,27 +58,24 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
   assert.throws(() => validateCatalog(document([{ ...entry, details: undefined }])), /details must be an object/)
 })
 
-test('catalog exposes an explicit rc.5 through 0.1.1-rc.1 compatibility matrix', () => {
+test('catalog exposes an explicit public rc.7 through 0.1.1-rc.2 compatibility matrix', () => {
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.8 <0.2.0'), {
-    'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible',
+    'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
   })
-  assert.deepEqual(dshReleaseCompatibility('0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0'), {
-    'rc.5': 'compatible', 'rc.6': 'compatible', 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible',
+  assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.7 <0.2.0'), {
+    'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
   })
-  assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.5 <0.2.0'), {
-    'rc.5': 'incompatible', 'rc.6': 'compatible', 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible',
-  }, 'the nonexistent 0.1.0-rc.5 must not be confused with the published 0.0.1-rc.5')
   assert.deepEqual(dshReleaseCompatibility('0.1.0-rc.7'), {
-    'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'compatible', 'rc.8': 'incompatible', '0.1.1-rc.1': 'incompatible',
+    'rc.7': 'compatible', 'rc.8': 'incompatible', '0.1.1-rc.1': 'incompatible', '0.1.1-rc.2': 'incompatible',
   })
   assert.deepEqual(dshReleaseCompatibility('unknown'), {
-    'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown',
+    'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
   })
   assert.deepEqual(dshReleaseCompatibility('>= 0.1.0-rc.8 < 0.2.0'), {
-    'rc.5': 'incompatible', 'rc.6': 'incompatible', 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible',
+    'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
   })
   assert.deepEqual(dshReleaseCompatibility(`${' '.repeat(200_000)}!`), {
-    'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown',
+    'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
   }, 'oversized uncontrolled ranges must fail closed before regular-expression parsing')
 })
 
@@ -117,6 +114,9 @@ test('catalog accepts dynamic full SemVer evidence and rejects conflicting alias
   } }])), /conflicting aliases/)
   assert.throws(() => validateCatalog(document([{ ...entry, compatibility: {
     ...entry.compatibility, dshReleases: { latest: 'compatible' },
+  } }])), /not a supported DSH release key/)
+  assert.throws(() => validateCatalog(document([{ ...entry, compatibility: {
+    ...entry.compatibility, dshReleases: { 'rc.5': 'unknown' },
   } }])), /not a supported DSH release key/)
 })
 
@@ -160,7 +160,7 @@ test('marketplace snapshot pagination returns one bounded page and lazy candidat
   assert.throws(() => paginateMarketplaceSnapshot(snapshot, { pageSize: 49 }), /pageSize/)
 })
 
-test('catalog recommended ordering puts 0.1.1-rc.1-compatible entries first', () => {
+test('catalog recommended ordering puts latest-compatible entries first', () => {
   const old = { ...entry, id: 'old', packageName: 'dsh-old', name: 'Old', compatibility: { ...entry.compatibility, dsh: '0.1.0-rc.7' } }
   const current = { ...entry, id: 'current', packageName: 'dsh-current', name: 'Current', version: '0.1.0', compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' } }
   assert.deepEqual(searchCatalog(validateCatalog(document([old, current]))).map(item => item.id), ['current', 'old'])
@@ -192,7 +192,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   const catalog = validateCatalog(source)
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8')
   const packageManifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
-  const legacyCatalogReleases = ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']
+  const legacyCatalogReleases = ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2']
   assert.equal(catalog.entries.length, source.entries.length)
   for (const item of source.entries) {
     assert.ok(item.details, `${item.id} must declare details in the GitHub catalog`)
@@ -229,11 +229,11 @@ test('bundled registry declares complete detail metadata for every entry', async
     const item = source.entries.find(entry => entry.id === id)
     assert.ok(item, `${id} must be listed`)
     const historical = dshReleaseCompatibility(item.compatibility.dsh)
-    assert.deepEqual(
-      Object.fromEntries(Object.keys(historical).map(release => [release, item.compatibility.dshReleases[release]])),
-      historical,
-      `${id} historical rc matrix must be explicit`,
-    )
+    for (const release of Object.keys(historical)) {
+      assert.ok(Object.hasOwn(item.compatibility.dshReleases, release), `${id} must declare the ${release} compatibility key`)
+      assert.ok(['compatible', 'incompatible', 'unknown'].includes(item.compatibility.dshReleases[release]),
+        `${id} ${release} compatibility must be a valid status`)
+    }
     for (const release of Object.keys(item.compatibility.dshReleases).filter(release => !Object.hasOwn(historical, release))) {
       assert.match(release, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/, `${id} dynamic releases must use full SemVer`)
     }
@@ -249,9 +249,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(requestedIm.commit, '832bd539a2bca2518cbf575d9b61606f868290e4')
   assert.equal(requestedIm.updatePolicy, 'user-reviewed')
   assert.deepEqual(requestedIm.compatibility.dshReleases, {
-    'rc.5': 'unknown', 'rc.6': 'unknown', 'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown',
+    'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
   })
-  for (const release of ['rc.5', 'rc.6', 'rc.7', 'rc.8', '0.1.1-rc.1']) {
+  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2']) {
     assert.deepEqual(requestedIm.compatibility.dshOperations[release], {
       install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
     })

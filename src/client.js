@@ -597,7 +597,7 @@ window.__ModuleLoader__.load({
       } catch { return '未知' }
     }
 
-    const LEGACY_DSH_VERSIONS = { 'rc.5': '0.0.1-rc.5', 'rc.6': '0.1.0-rc.6', 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1' }
+    const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2' }
     const COMPATIBILITY_STATUSES = new Set(['compatible', 'incompatible', 'unknown'])
     const OPERATION_STATUSES = new Set(['passed', 'failed', 'unknown'])
     const unknownOperations = () => Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation, 'unknown']))
@@ -1028,7 +1028,6 @@ window.__ModuleLoader__.load({
         React.createElement('h3', { style: styles.detailHeading }, '兼容性'),
         React.createElement(CompatibilityMatrix, { entry, all: true }),
         React.createElement('dl', { style: styles.detailGrid },
-          React.createElement(DetailRow, { label: 'DSH', value: entry.compatibility.dsh || '未声明' }),
           React.createElement(DetailRow, { label: 'Node.js', value: entry.compatibility.node || '未声明' }),
           React.createElement(DetailRow, { label: '系统', value: entry.compatibility.systems.length > 0 ? entry.compatibility.systems.join(' / ') : '未声明' }),
           React.createElement(DetailRow, { label: 'Profile', value: entry.compatibility.profiles.length > 0 ? entry.compatibility.profiles.join(' / ') : '未声明' })),

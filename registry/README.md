@@ -97,11 +97,11 @@ Catalog 扫描、四端巡检、扫描新增数、历史版本检查数、发现
 - 外部运行依赖与审核状态；
 - `compatibility` 中的 DSH、Node.js、系统和 Profile 范围。
 
-版本矩阵继续接受历史别名 `rc.5`、`rc.6`、`rc.7`、`rc.8`；新增版本必须使用完整
+版本矩阵只接受仍有公开发行物的历史别名 `rc.7`、`rc.8`；新增版本必须使用完整
 SemVer 键，例如 `0.1.1-rc.2`，避免不同发布线的 `rc.1` 混淆。商城从官方 npm Registry
 读取 `@deepseek-ai/dsh` 最新版本；读取超时或失败时退回目录已有版本，不影响插件列表加载。
 目录中的精确 `dshReleases` 是兼容证据；新版本只有范围匹配而没有精确证据时显示
-“范围支持·待验证”，不会自动标为兼容。`install`、`start`、`uninstall`、`rollback`
+“范围支持·待验证”，不会自动标为兼容，也不公开不存在发行物的 rc.5/rc.6。`install`、`start`、`uninstall`、`rollback`
 四项 `dshOperations` 也必须逐版本提供真实证据，缺少记录时保持 `unknown`。
 
 权限值依据固定 Commit 的 manifest、README 与运行时代码信号保守填写。无法确认时必须
