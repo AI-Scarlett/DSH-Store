@@ -106,6 +106,37 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /automation base Commit must be a full Git SHA/)
 })
 
+test('author remediation notifications are hash-bound, rate-limited, and use only the repository token', async () => {
+  const [workflow, planner, resolver, apply] = await Promise.all([
+    read('.github/workflows/author-notifications.yml'),
+    read('scripts/plan-author-notices.mjs'),
+    read('scripts/resolve-author-notice-targets.mjs'),
+    read('scripts/apply-author-notice-plan.mjs'),
+  ])
+  assert.match(workflow, /workflow_run:/)
+  assert.match(workflow, /workflows: \["Automated plugin radar and Catalog update"\]/)
+  assert.match(workflow, /issues: write/)
+  assert.match(workflow, /actions: read/)
+  assert.match(workflow, /group: author-notifications/)
+  assert.match(workflow, /--max-create 3/)
+  assert.match(workflow, /plan-author-notices\.mjs/)
+  assert.match(workflow, /apply-author-notice-plan\.mjs/)
+  assert.match(workflow, /resolve-author-notice-targets\.mjs/)
+  assert.match(workflow, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/)
+  assert.doesNotMatch(workflow, /PAT|SMTP|npm (?:install|ci)|pnpm|yarn/)
+  assert.match(planner, /ignoreInfrastructureFailures: true/)
+  assert.match(planner, /deduplicateByCanonicalRepository: true/)
+  assert.match(planner, /candidate-rejected/)
+  assert.match(planner, /queuedNewIssues/)
+  assert.doesNotMatch(planner, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
+  assert.match(resolver, /repository\.owner\.type === 'User'/)
+  assert.match(resolver, /commits\?per_page=20/)
+  assert.doesNotMatch(resolver, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
+  assert.match(apply, /remote main changed after the author notice plan was created/)
+  assert.match(apply, /managed GitHub Issues changed after the author notice plan was created/)
+  assert.doesNotMatch(apply, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
+})
+
 test('Pages publishes bounded public automation evidence and recent additions', async () => {
   const [workflow, builder, client] = await Promise.all([
     read('.github/workflows/pages.yml'),
