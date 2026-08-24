@@ -660,10 +660,11 @@ window.__ModuleLoader__.load({
       ['discovery', '已发现'], ['installability', '可安装'], ['runtime', '运行验证'], ['securityReview', '安全审查'],
     ]
     const assuranceStatusLabel = status => ({
-      verified: '有证据', failed: '未通过', unknown: '未知', 'not-applicable': '不适用',
+      verified: '已验证', partial: '部分验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用',
     }[status] || '未知')
     const assuranceStatusColor = status => ({
       verified: 'var(--dsw-alias-state-success-primary)',
+      partial: '#c78300',
       failed: 'var(--dsw-alias-state-error-primary)',
       unknown: 'var(--dsw-alias-label-tertiary)',
       'not-applicable': 'var(--dsw-alias-label-tertiary)',
@@ -869,15 +870,18 @@ window.__ModuleLoader__.load({
 
     function CandidateCard({ entry }) {
       const titleId = `dsh-store-candidate-${String(entry.id).replaceAll(/[^A-Za-z0-9_-]/g, '-')}`
+      const status = entry.status === 'rejected' ? '已拒绝 / 已隔离' : entry.status === 'reviewing' ? '审核中' : '已发现'
       return React.createElement('article', { style: styles.card, role: 'listitem', 'aria-labelledby': titleId },
         React.createElement('div', { style: styles.cardHeader },
           React.createElement('div', { id: titleId, style: styles.name }, entry.name),
-          React.createElement(StatusPill, { label: '候选发现 · 不可安装' })),
+          React.createElement(StatusPill, { label: `${status} · 不可安装`, tone: entry.status === 'rejected' ? 'var(--dsw-alias-state-error-primary)' : undefined })),
         React.createElement('div', { style: styles.cardDescription }, entry.description),
         React.createElement('div', { style: styles.cardTags },
           React.createElement('span', { style: styles.badge }, `发现来源 ${(entry.discoverySources || []).join(' / ') || '未知'}`),
           React.createElement('span', { style: styles.badge }, `审核路径 ${entry.route || '未知'}`)),
-        React.createElement('div', { style: styles.notice }, '该项目尚未晋升到可信安装目录，不提供安装、更新、启停或卸载操作。'),
+        React.createElement('div', { style: entry.status === 'rejected' ? styles.error : styles.notice }, entry.status === 'rejected'
+          ? `拒绝原因：${entry.statusReason || '未提供'}；项目仍不可安装，可在源变更后重新审核。`
+          : '该项目尚未晋升到可信安装目录，不提供安装、更新、启停或卸载操作。'),
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('span', { style: styles.muted }, entry.sourceUpdatedAt ? `源更新 ${new Date(entry.sourceUpdatedAt).toLocaleDateString()}` : `发现于 ${new Date(entry.discoveredAt).toLocaleDateString()}`),
           React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub 证据')))
@@ -1697,13 +1701,14 @@ window.__ModuleLoader__.load({
         health: state.health, permissionDecisions, setPermissionDecision, rerun: rerunHealth,
       })
       else if (view === 'candidates') {
+        const candidateSummary = state.market.candidateSummary || {}
         content = React.createElement(React.Fragment, null,
           React.createElement('input', {
             type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
             style: styles.input, placeholder: '搜索候选项目、Topic、来源或 GitHub 仓库',
           }),
           React.createElement('div', { style: styles.notice },
-            `${state.market.candidateSource?.kind === 'github' ? 'GitHub 候选发现源' : '内置候选源回退'} · 当前页 ${candidateEntries.length} / ${pagination?.total || 0} 个待审项目。候选记录与可信 catalog 物理分离；曝光、推荐或赞助不能改变验证等级，也不会获得安装操作。`,
+            `${state.market.candidateSource?.kind === 'github' ? 'GitHub 候选发现源' : '内置候选源回退'} · 当前页 ${candidateEntries.length} / ${pagination?.total || 0} 条候选记录 · ${candidateSummary.reviewable || 0} 条待审 · ${candidateSummary.rejected || 0} 条已拒绝/隔离。候选记录与可信 catalog 物理分离；曝光、推荐或赞助不能改变验证等级，也不会获得安装操作。`,
             state.market.candidateSource?.errorCode ? ` · ${state.market.candidateSource.errorCode}` : ''),
           pageError,
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '候选发现目录' },

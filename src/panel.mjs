@@ -142,6 +142,7 @@ export function handleMarketRequest(req, res, options = {}) {
       query: body.query,
       category: body.category,
       featuredOnly: body.featuredOnly === true,
+      includeRejected: view === 'candidates',
       page: body.page,
       pageSize: body.pageSize,
     })

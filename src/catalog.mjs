@@ -192,7 +192,7 @@ function sourceMetadata(value, label) {
 function evidenceRecord(value, label, fallback) {
   if (value === undefined || value === null) return { ...fallback }
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${label} must be an object`)
-  const status = enumValue(value.status, `${label}.status`, ['verified', 'failed', 'unknown', 'not-applicable'])
+  const status = enumValue(value.status, `${label}.status`, ['verified', 'partial', 'failed', 'unknown', 'not-applicable'])
   const record = {
     status,
     method: value.method === undefined || value.method === null ? null : nonEmptyString(value.method, `${label}.method`, 120),
@@ -209,8 +209,8 @@ function evidenceRecord(value, label, fallback) {
     profiles: stringArray(value.profiles ?? [], `${label}.profiles`),
     summary: value.summary === undefined || value.summary === null ? null : nonEmptyString(value.summary, `${label}.summary`, 600),
   }
-  if (status === 'verified' && (!record.method || !record.checkedAt || !record.evidenceUrl)) {
-    throw new TypeError(`${label} verified evidence requires method, checkedAt, and evidenceUrl`)
+  if (['verified', 'partial'].includes(status) && (!record.method || !record.checkedAt || !record.evidenceUrl)) {
+    throw new TypeError(`${label} ${status} evidence requires method, checkedAt, and evidenceUrl`)
   }
   return record
 }
@@ -805,6 +805,14 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       managementBlockedReason,
     }
   })
+  const candidateEntries = Array.isArray(options.candidateRegistry?.entries) ? options.candidateRegistry.entries : []
+  const candidateSummary = candidateEntries.reduce((summary, entry) => {
+    const status = ['discovered', 'reviewing', 'rejected'].includes(entry?.status) ? entry.status : 'unknown'
+    summary.total += 1
+    summary[status] += 1
+    return summary
+  }, { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0 })
+  candidateSummary.reviewable = candidateSummary.discovered + candidateSummary.reviewing
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
@@ -815,7 +823,8 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
     candidateRegistry: options.candidateRegistry?.registry ?? null,
     candidateSource: options.candidateRegistry?.source ?? null,
     dshReleaseContext: releaseContext,
-    candidates: Array.isArray(options.candidateRegistry?.entries) ? options.candidateRegistry.entries : [],
+    candidates: candidateEntries,
+    candidateSummary,
     entries,
   }
 }
@@ -865,6 +874,7 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
   }
   const requestedPage = positiveInteger(options.page, 1, 10_000, 'page')
   const pageSize = positiveInteger(options.pageSize, MARKET_PAGE_SIZE, MAX_MARKET_PAGE_SIZE, 'pageSize')
+  const includeRejectedCandidates = options.includeRejected === true
   const scopedEntries = snapshot.entries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
   const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories ?? []))].sort()
   const featuredOnly = options.featuredOnly === true
@@ -874,7 +884,7 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
     .filter(entry => query === '' || marketplaceSearchValues(entry).some(item => item.includes(query)))
   const matchingCandidates = view === 'candidates'
     ? snapshot.candidates
-      .filter(entry => entry.status !== 'rejected')
+      .filter(entry => includeRejectedCandidates || entry.status !== 'rejected')
       .filter(entry => query === '' || candidateSearchValues(entry).some(item => item.includes(query)))
       .sort((left, right) => (Date.parse(right.sourceUpdatedAt || right.discoveredAt) || 0)
         - (Date.parse(left.sourceUpdatedAt || left.discoveredAt) || 0)

@@ -44,7 +44,7 @@ const translations = {
     'view.trusted': '可信安装库', 'view.candidates': '候选发现库', 'stats.candidates': '候选项目',
     'assurance.discovered': '已发现', 'assurance.installable': '可安装验证', 'assurance.runtime': '运行验证', 'assurance.security': '安全审查',
     'candidate.notice': '候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。通过固定 Commit 与安全契约审核后才能晋级可信安装库。',
-    'candidate.search': '搜索候选项目、Topic、来源或 GitHub 仓库', 'candidate.emptyTitle': '候选库当前为空', 'candidate.emptyBody': '尚未开始批量导入候选项目；可信安装库不受影响。',
+    'candidate.search': '搜索候选项目、Topic、来源或 GitHub 仓库', 'candidate.emptyTitle': '没有匹配的候选项目', 'candidate.emptyBody': '候选注册表没有匹配当前关键词的记录；可信安装库不受影响。',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
     'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
     'safety.title': '信任不是口号，是四个可检查的状态。', 'safety.lead': '收录从不等于安全审计。我们把来源、权限、变更与恢复分开显示，未知事实保持未知。',
@@ -110,7 +110,7 @@ const translations = {
     'view.trusted': 'Trusted install catalog', 'view.candidates': 'Candidate discovery', 'stats.candidates': 'candidates',
     'assurance.discovered': 'Discovered', 'assurance.installable': 'Installability', 'assurance.runtime': 'Runtime', 'assurance.security': 'Security review',
     'candidate.notice': 'Candidates are discovery-only: they have no install action and never enter a DSH operation plan. Promotion requires a pinned commit and the trusted catalog contract.',
-    'candidate.search': 'Search candidate projects, topics, sources, or GitHub repositories', 'candidate.emptyTitle': 'The candidate registry is empty', 'candidate.emptyBody': 'Bulk candidate import has not started; the trusted install catalog is unaffected.',
+    'candidate.search': 'Search candidate projects, topics, sources, or GitHub repositories', 'candidate.emptyTitle': 'No matching candidate projects', 'candidate.emptyBody': 'The candidate registry has no record matching this query; the trusted install catalog is unaffected.',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
     'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
     'safety.title': 'Trust is four inspectable states, not a slogan.', 'safety.lead': 'Listing is never a security audit. Source, permissions, change, and recovery stay separate, and unknown facts stay unknown.',
@@ -146,6 +146,7 @@ const state = {
   dshReleaseContext: null,
   entries: [],
   candidates: [],
+  candidateSummary: { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 },
   catalogView: 'trusted',
   query: '',
   category: '',
@@ -332,8 +333,8 @@ const compatibilityMatrix = (entry, all = false) => {
   return `<div class="compatibility-matrix" aria-label="${escape(state.locale === 'en' ? 'Latest DSH release compatibility' : '最新 DSH 版本兼容性')}">${releases.map(view => `<span class="compatibility-cell ${escape(compatibilityViewClass(view))}" title="${escape(`DSH ${view.version}: ${compatibilityViewLabel(view)}`)}"><b>${escape(view.version)}${view.latest ? escape(state.locale === 'en' ? ' · latest' : ' · 最新') : ''}</b><em>${escape(compatibilityViewLabel(view))}</em></span>`).join('')}</div>`
 }
 const evidenceStatusLabel = status => state.locale === 'en'
-  ? ({ verified: 'Verified', failed: 'Failed', unknown: 'Unknown', 'not-applicable': 'N/A' }[status] || 'Unknown')
-  : ({ verified: '已验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用' }[status] || '未知')
+  ? ({ verified: 'Verified', partial: 'Partial', failed: 'Failed', unknown: 'Unknown', 'not-applicable': 'N/A' }[status] || 'Unknown')
+  : ({ verified: '已验证', partial: '部分验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用' }[status] || '未知')
 const assuranceRail = entry => {
   const items = [
     ['discovery', t('assurance.discovered')], ['installability', t('assurance.installable')],
@@ -427,11 +428,16 @@ function searchValues(entry) {
 function visibleCandidates() {
   const query = state.query.trim().toLowerCase()
   return state.candidates
-    .filter(entry => entry.status !== 'rejected')
     .filter(entry => !query || [entry.id, entry.name, entry.description, entry.repositoryUrl, entry.route, ...(entry.discoverySources || []), ...(entry.topics || [])]
       .some(value => String(value || '').toLowerCase().includes(query)))
     .sort((a, b) => (Date.parse(b.sourceUpdatedAt || b.discoveredAt) || 0) - (Date.parse(a.sourceUpdatedAt || a.discoveredAt) || 0)
       || String(a.name).localeCompare(String(b.name), state.locale === 'en' ? 'en' : 'zh-CN'))
+}
+
+function candidateSummaryText() {
+  const reviewable = state.candidateSummary.reviewable || 0
+  const rejected = state.candidateSummary.rejected || 0
+  return state.locale === 'en' ? `${reviewable} reviewable · ${rejected} rejected/quarantined` : `${reviewable} 待审 · ${rejected} 已拒绝/隔离`
 }
 
 function visibleEntries() {
@@ -468,7 +474,7 @@ function renderStats() {
   setText('#stat-total', String(entries.length).padStart(2, '0'))
   setText('#stat-approved', String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
   setText('#stat-categories', String(categoryCount).padStart(2, '0'))
-  if (state.candidatesLoaded) setText('#stat-candidates', String(state.candidates.length).padStart(2, '0'))
+  if (state.candidatesLoaded) setText('#stat-candidates', String(state.candidateSummary.total ?? state.candidates.length).padStart(2, '0'))
   setText('#float-count', String(entries.length))
   const updatedAt = state.catalog?.registry?.updatedAt
   setText('#catalog-date', updatedAt
@@ -556,10 +562,15 @@ function cardTemplate(entry) {
 function candidateCardTemplate(entry) {
   const updated = entry.sourceUpdatedAt || entry.discoveredAt
   const date = updated ? new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(updated)) : t('value.unknown')
+  const statusLabel = entry.status === 'rejected' ? (state.locale === 'en' ? 'Rejected / quarantined' : '已拒绝 / 已隔离')
+    : entry.status === 'reviewing' ? (state.locale === 'en' ? 'Under review' : '审核中')
+      : (state.locale === 'en' ? 'Discovered' : '已发现')
+  const statusClass = entry.status === 'rejected' ? 'blocked' : 'available'
   return `<article class="plugin-card candidate-card" style="--plugin-color:${pluginColor(entry.id)}">
-    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(entry.name))}</span><span class="status-tag blocked">${escape(t('assurance.discovered'))}</span></div>
+    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(entry.name))}</span><span class="status-tag ${statusClass}">${escape(statusLabel)}</span></div>
     <h3>${escape(entry.name)}</h3><span class="package-line">${escape(entry.route)} · ${escape(date)}</span>
     <p class="plugin-description">${escape(entry.description)}</p>
+    ${entry.statusReason ? `<p class="candidate-reason">${escape(entry.statusReason)}</p>` : ''}
     <div class="assurance-rail"><span class="assurance-item assurance-verified"><b>${escape(t('assurance.discovered'))}</b><em>${escape(evidenceStatusLabel('verified'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.installable'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.runtime'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.security'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span></div>
     <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(state.locale === 'en' ? 'No install action' : '无安装操作')}</span><a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" data-repo-id="${escape(entry.id)}">↗</a></footer>
   </article>`
@@ -585,7 +596,7 @@ function renderCatalog() {
   els.grid.hidden = entries.length === 0
   els.empty.hidden = entries.length !== 0
   els.meta.innerHTML = candidateView
-    ? `<b>${entries.length}</b> / ${matchingEntries.length} · ${escape(t('candidate.notice'))}`
+    ? `<b>${entries.length}</b> / ${matchingEntries.length} · ${escape(candidateSummaryText())} · ${escape(t('candidate.notice'))}`
     : `${escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
   if (els.pagination) els.pagination.hidden = total <= state.pageSize
   if (els.previousPage) {
@@ -611,7 +622,11 @@ function renderCatalog() {
   if (els.legend) els.legend.hidden = candidateView
   if (els.search) els.search.setAttribute('placeholder', t(candidateView ? 'candidate.search' : 'catalog.search'))
   if (els.emptyTitle) els.emptyTitle.textContent = t(candidateView ? 'candidate.emptyTitle' : 'empty.title')
-  if (els.emptyBody) els.emptyBody.textContent = t(candidateView ? 'candidate.emptyBody' : 'empty.body')
+  if (els.emptyBody) els.emptyBody.textContent = candidateView && state.candidateSummary.total > 0
+    ? state.locale === 'en'
+      ? `${state.candidateSummary.total} candidate records: ${state.candidateSummary.rejected} rejected/quarantined and ${state.candidateSummary.reviewable} reviewable; no record matches this query. The trusted install catalog is unaffected.`
+      : `候选注册表共 ${state.candidateSummary.total} 条，其中 ${state.candidateSummary.rejected} 条已拒绝/隔离、${state.candidateSummary.reviewable} 条待审；当前关键词没有匹配记录。可信安装库不受影响。`
+    : t(candidateView ? 'candidate.emptyBody' : 'empty.body')
   if (els.emptyClear) els.emptyClear.hidden = candidateView ? !state.query : false
   if (!candidateView) renderCategories()
 }
@@ -866,6 +881,7 @@ async function loadCatalog() {
     state.dshReleaseContext = createDshReleaseContext(state.catalog.entries, null)
     state.entries = state.catalog.entries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
     state.candidates = []
+    state.candidateSummary = { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 }
     state.candidatesLoaded = false
     state.page = 1
     renderStats()
@@ -971,11 +987,19 @@ async function loadCandidates() {
   try {
     const candidateRegistry = await fetchCandidateRegistry(state.catalog)
     state.candidates = candidateRegistry.entries.map(entry => ({ ...entry, installable: false, allowedActions: [] }))
+    state.candidateSummary = state.candidates.reduce((summary, entry) => {
+      const status = ['discovered', 'reviewing', 'rejected'].includes(entry.status) ? entry.status : 'unknown'
+      summary.total += 1
+      summary[status] += 1
+      return summary
+    }, { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0 })
+    state.candidateSummary.reviewable = state.candidateSummary.discovered + state.candidateSummary.reviewing
     state.candidatesLoaded = true
     renderStats()
   } catch (error) {
     console.error('Failed to load marketplace candidates:', error)
     state.candidates = []
+    state.candidateSummary = { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 }
     state.candidatesLoaded = true
   } finally {
     state.candidatesLoading = false

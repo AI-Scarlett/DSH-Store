@@ -17,7 +17,7 @@
       "additionalProperties": false,
       "required": ["status"],
       "properties": {
-        "status": { "enum": ["verified", "failed", "unknown", "not-applicable"] },
+        "status": { "enum": ["verified", "partial", "failed", "unknown", "not-applicable"] },
         "method": { "type": "string", "minLength": 1 },
         "checkedAt": { "type": "string", "format": "date-time" },
         "evidenceUrl": { "type": "string", "pattern": "^https://" },
@@ -28,7 +28,7 @@
       },
       "allOf": [
         {
-          "if": { "properties": { "status": { "const": "verified" } } },
+          "if": { "properties": { "status": { "enum": ["verified", "partial"] } } },
           "then": { "required": ["method", "checkedAt", "evidenceUrl"] }
         }
       ]
