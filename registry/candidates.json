@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-24T01:53:17.000Z",
+    "updatedAt": "2026-08-24T04:01:32.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -6606,20 +6606,21 @@
       "description": "My DSH plugins",
       "repositoryUrl": "https://github.com/Acidmoon/DIzzy-DSH",
       "defaultBranch": "master",
-      "latestCommit": "b831ff4321258fa31a0d7dadb4d98cf3b2605e00",
-      "sourceUpdatedAt": "2026-08-17T18:57:17.000Z",
+      "latestCommit": "db05ab4be6f4878d7d849525c8ecada2642d876b",
+      "sourceUpdatedAt": "2026-08-24T04:01:55.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "tools"
+        "dsh-plugin",
+        "automatic-radar"
       ],
       "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: DSH entry ID collides with the approved catalog; manifest repository does not match the canonical GitHub repository; license is missing or not assertable; license file is missing. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., third-party/DSH-better-sidebar, third-party/dsh-genui, third-party/dsh-gui-customization, third-party/dsh-notification, third-party/dsh-plugin-memory-tencentdb, third-party/dsh-subscription-auth, third-party/dsh-vision-toolkit"
     },
     {
       "id": "porphyrioon-ironlaw",
@@ -27644,8 +27645,8 @@
       "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
       "repositoryUrl": "https://github.com/liyown/liyown",
       "defaultBranch": "main",
-      "latestCommit": "7368bcee6741e0734a536ee61e468a0cc002e770",
-      "sourceUpdatedAt": "2026-08-23T03:57:52.000Z",
+      "latestCommit": "4d650dece243575976aed4333eafafde534b5822",
+      "sourceUpdatedAt": "2026-08-24T04:01:37.000Z",
       "discoveredAt": "2026-08-23T00:33:24.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28464,8 +28465,8 @@
       "description": "A curated list of plugins for DeepSeek Harness (dsh) · DeepSeek Harness 插件精选列表",
       "repositoryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
       "defaultBranch": "main",
-      "latestCommit": "6a5c9dadc1bb8fefb10a109f435aa7214bb0f9a9",
-      "sourceUpdatedAt": "2026-08-23T15:34:42.000Z",
+      "latestCommit": "498933c0e31fee6ea214ae839e8ae80fb9a2240f",
+      "sourceUpdatedAt": "2026-08-24T04:02:30.000Z",
       "discoveredAt": "2026-08-23T15:32:29.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -28803,6 +28804,64 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "kcnyu-clawock",
+      "name": "KCNyu/clawock",
+      "description": "AI argues. Code settles. The losses stay on the page. A real HK + US brokerage account run by agents that must debate every call, settled by code the model never touches. Install the same decision workflow into your own agent: OpenClaw, Claude Code, Codex, or DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/KCNyu/clawock",
+      "defaultBranch": "master",
+      "latestCommit": "bc8e8741ccaadec2fa8f90cbeca60a08bc8f9123",
+      "sourceUpdatedAt": "2026-08-24T04:02:05.000Z",
+      "discoveredAt": "2026-08-24T04:01:32.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-skills",
+        "agentic-ai",
+        "ai-agents",
+        "algorithmic-trading",
+        "audit-trail",
+        "decision-support",
+        "deepseek-harness",
+        "dsh-plugin",
+        "fintech",
+        "harness",
+        "investment",
+        "investment-research",
+        "openclaw",
+        "portfolio-management",
+        "quantitative-finance",
+        "risk-management",
+        "self-hosted",
+        "stock-market",
+        "trading",
+        "trading-bot",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "anweat-dsh-ecosystem-conflicts",
+      "name": "anweat/dsh-ecosystem-conflicts",
+      "description": "Static survey of the DeepSeek Harness plugin ecosystem: 9,873 real plugins, the conflicts they produce, and reproducible mechanism experiments",
+      "repositoryUrl": "https://github.com/anweat/dsh-ecosystem-conflicts",
+      "defaultBranch": "master",
+      "latestCommit": "ee6601631df1ac6a688db533dc4ef36ccbf1d0ea",
+      "sourceUpdatedAt": "2026-08-24T04:01:47.000Z",
+      "discoveredAt": "2026-08-24T04:01:32.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
