@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-24T13:07:51.000Z",
+    "updatedAt": "2026-08-24T13:28:14.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -46476,6 +46476,133 @@
       ]
     },
     {
+      "id": "dsh-modernize-code",
+      "name": "插件测试工具（DSH Modernize Code）",
+      "packageName": "dsh-modernize-code",
+      "description": "DSH 技能包：遗留代码现代化/简化工作流（preflight → assess → map → transform），含 Cordis 挂载插件、离线 Python 脚本与冒烟测试。",
+      "searchTerms": [
+        "插件测试工具",
+        "DSH Modernize Code",
+        "dsh-modernize-code",
+        "测试",
+        "冒烟测试",
+        "稳定性",
+        "隔离环境",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "modernize",
+        "code"
+      ],
+      "repositoryUrl": "https://github.com/988hj7tczd-oss/dsh-modernize-code",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "cb456723612d08ae37ac56528565a475fd77cb4b",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T13:24:37Z",
+        "observedAt": "2026-08-24T13:28:14.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-24T13:28:14.000Z",
+          "evidenceUrl": "https://github.com/988hj7tczd-oss/dsh-modernize-code/commit/cb456723612d08ae37ac56528565a475fd77cb4b",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "modernize-skill-mount",
+        "modernize-tools"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.0",
+        "dshReleases": {
+          "rc.7": "compatible",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible",
+          "0.1.1-rc.2": "compatible"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@deepseek-ai/cordis",
+          "@deepseek-ai/dsh-skill-filesystem",
+          "@deepseek-ai/dsh-subprocess",
+          "@deepseek-ai/dsh-tools"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
       "id": "dsh-token-heatmap",
       "name": "用量统计看板（DSH Token Heatmap）",
       "packageName": "dsh-token-heatmap",
@@ -46710,6 +46837,248 @@
           ]
         },
         "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh1024",
+      "name": "插件市场与管理（Dsh1024）",
+      "packageName": "dsh1024",
+      "description": "为 DSH 提供插件市场与管理能力。英文原始说明：The 1024 Store for DeepSeek Harness: in-app plugin market and tracked installer CLI.",
+      "searchTerms": [
+        "插件市场与管理",
+        "Dsh1024",
+        "dsh1024",
+        "插件市场",
+        "商城",
+        "插件管理",
+        "实验功能",
+        "新功能"
+      ],
+      "repositoryUrl": "https://github.com/imsai-sh/awesome-deepseek-harness-plugins",
+      "defaultBranch": "main",
+      "manifestPath": "packages/dsh1024/package.json",
+      "installPath": "packages/dsh1024",
+      "updatePolicy": "external-only",
+      "commit": "bc61d75a795c8065d7eac97571b6c34f005213c8",
+      "version": "0.5.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T13:26:11Z",
+        "observedAt": "2026-08-24T13:28:14.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-24T13:28:14.000Z",
+          "evidenceUrl": "https://github.com/imsai-sh/awesome-deepseek-harness-plugins/commit/bc61d75a795c8065d7eac97571b6c34f005213c8",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "dsh1024"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-desk-plugin",
+      "name": "实验功能插件（DSH Desk Plugin）",
+      "packageName": "dsh-desk-plugin",
+      "description": "为 DSH 提供实验功能插件能力。英文原始说明：DeepSeek Harness event bridge for DSH Desk.",
+      "searchTerms": [
+        "实验功能插件",
+        "DSH Desk Plugin",
+        "dsh-desk-plugin",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "desk",
+        "plugin"
+      ],
+      "repositoryUrl": "https://github.com/Renakoni/dsh-desk",
+      "defaultBranch": "main",
+      "manifestPath": "dsh-plugin/package.json",
+      "installPath": "dsh-plugin",
+      "updatePolicy": "external-only",
+      "commit": "1d9e2b7da7f7649dff8bfba5be34370b4b3b2b40",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-24T13:25:14Z",
+        "observedAt": "2026-08-24T13:28:14.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-24T13:28:14.000Z",
+          "evidenceUrl": "https://github.com/Renakoni/dsh-desk/commit/1d9e2b7da7f7649dff8bfba5be34370b4b3b2b40",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "dsh-desk",
+        "dsh-appearance-manager"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@deepseek-ai/schemastery",
+          "yaml"
+        ],
         "reviewStatus": "automated-scan"
       },
       "risk": {

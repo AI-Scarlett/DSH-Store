@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-24T13:07:51.000Z",
+    "updatedAt": "2026-08-24T13:28:14.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -74,27 +74,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID dsh-memory is already owned by dsh-memory-vault"
-    },
-    {
-      "id": "imsai-sh-awesome-deepseek-harness-plugins",
-      "name": "imsai-sh/awesome-deepseek-harness-plugins",
-      "description": "DeepSeek Harness plugin store, marketplace and hub — 3,100+ dsh plugins with search, rankings, install commands and a free public API. DeepSeek Harness 插件市场 / 插件商店：自动收集与格式校验，免费搜索 API。deepseek1024.com",
-      "repositoryUrl": "https://github.com/imsai-sh/awesome-deepseek-harness-plugins",
-      "defaultBranch": "main",
-      "latestCommit": "c5482e9d3e379b905744307337ad083223e57f28",
-      "sourceUpdatedAt": "2026-08-21T02:10:34.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "monorepo-review",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: declared runtime artifact is missing from the fixed commit; declared Bundle Patch is missing; fixed repository tree could not be verified; license file is missing. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "dominic789654-awesome-deepseek-harness",
@@ -1678,20 +1657,28 @@
       "description": "为 DeepSeek Harness (DSH) 插件生态打造的现代化桌面端解决方案。万物皆「插件」，桌面本身也是「插件」。",
       "repositoryUrl": "https://github.com/anywhere-labs/deepseek-harness-desktop",
       "defaultBranch": "master",
-      "latestCommit": "8eaefb31491cddf4838ca4862c6995b4fbb4d007",
-      "sourceUpdatedAt": "2026-08-20T14:46:45.000Z",
+      "latestCommit": "5c2fbc487f923e6545287bdcb0bb0c132736d5ea",
+      "sourceUpdatedAt": "2026-08-24T13:29:10.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "utility"
+        "cordis",
+        "cordis-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "desktop",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing DSH entry; declared runtime artifact is missing from the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
     },
     {
       "id": "vvlife-awesome-deepseek-harness-plugins",
@@ -29121,6 +29108,101 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/dsh-doctor, packages/dsh-evolve-attention, packages/dsh-evolve-web, packages/dsh-evolve, packages/dsh-feishu, packages/dsh-gateway, packages/dsh-github-review, packages/dsh-goal-continuity, packages/dsh-resident, packages/dsh-software-delivery, packages/dsh-telegram"
+    },
+    {
+      "id": "dat-lequoc-dsh-supervisor",
+      "name": "dat-lequoc/dsh-supervisor",
+      "description": "Always-on supervisor agent bundle for DeepSeek Harness: main-agent preset + schedule overlay, one dsh plugin add away",
+      "repositoryUrl": "https://github.com/dat-lequoc/dsh-supervisor",
+      "defaultBranch": "master",
+      "latestCommit": "84cc8eeee85e800242d30ee15f9b672aa2aea9b9",
+      "sourceUpdatedAt": "2026-08-24T13:26:10.000Z",
+      "discoveredAt": "2026-08-24T13:28:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "usertianziyang-dsh-plugin-hub",
+      "name": "usertianziyang/DSH-Plugin-Hub",
+      "description": "DSH Plugin Hub — 基于 GitHub REST Search API 构建的 dsh-plugin 主题仓库索引站。数据每 6 小时自动同步、完整性校验后发布为静态快照；前端基于 React + TypeScript (Vite)，支持中英双语、全文搜索、分类筛选与分页，浏览器零 API 调用、零追踪，即开即用。",
+      "repositoryUrl": "https://github.com/usertianziyang/DSH-Plugin-Hub",
+      "defaultBranch": "main",
+      "latestCommit": "c00325178a049d5f2abe7eace9bc368f8d1612fa",
+      "sourceUpdatedAt": "2026-08-24T13:26:05.000Z",
+      "discoveredAt": "2026-08-24T13:28:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "github-api",
+        "plugin-hub",
+        "react",
+        "search",
+        "static-site",
+        "typescript",
+        "vite",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "2757571500-dsh-voice",
+      "name": "2757571500/dsh-voice",
+      "description": "dsh-voice",
+      "repositoryUrl": "https://github.com/2757571500/dsh-voice",
+      "defaultBranch": "master",
+      "latestCommit": "f74ec4b5a688f536502d1e3912139afa34cbfd13",
+      "sourceUpdatedAt": "2026-08-24T13:24:33.000Z",
+      "discoveredAt": "2026-08-24T13:28:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
+    },
+    {
+      "id": "volcengine-openviking",
+      "name": "volcengine/OpenViking",
+      "description": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
+      "repositoryUrl": "https://github.com/volcengine/OpenViking",
+      "defaultBranch": "main",
+      "latestCommit": "234a2d9fe778a9512fd7ebe9807198e847c647ec",
+      "sourceUpdatedAt": "2026-08-24T13:28:10.000Z",
+      "discoveredAt": "2026-08-24T13:28:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-memory",
+        "agent-plugins",
+        "agentic-rag",
+        "context-database",
+        "dsh-plugin",
+        "self-evolving",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
