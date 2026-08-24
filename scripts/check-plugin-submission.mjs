@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { posix } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { canonicalGithubRepository, validateCatalog, verifyCatalogEntry } from '../src/catalog.mjs'
+import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
 
 export const SUBMISSION_REPORT_MARKER = '<!-- dsh-plugin-submission-check -->'
 
@@ -15,6 +16,10 @@ const PROTECTED_ENTRY_IDS = new Set(['ui-settings-plugin-inventory', 'dsh-safe-p
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare']
 const MAX_MANIFEST_CANDIDATES = 48
 const DEFAULT_TIMEOUT_MS = 10_000
+const SECURITY_SCAN_TREE_BYTES = 8 * 1024 * 1024
+const SECURITY_SCAN_SOURCE = /\.(?:[cm]?[jt]sx?|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|sh|bash|zsh|fish|ps1|psm1|cmd|bat|ya?ml|json)$/i
+const SECURITY_SCAN_EXCLUDED_DIRECTORY = /(?:^|\/)(?:node_modules|vendor|dist|build|coverage|target|\.git|\.next|\.nuxt|out)(?:\/|$)/i
+const SECURITY_SCAN_EXCLUDED_FILE = /(?:^|\/)(?:package-lock\.json|npm-shrinkwrap\.json|pnpm-lock\.ya?ml|yarn\.lock|bun\.lockb?|composer\.lock|Cargo\.lock|go\.sum|.*\.min\.js|.*\.map)$/i
 
 function submissionError(code, message) {
   return Object.assign(new Error(message), { code })
@@ -378,12 +383,94 @@ export async function checkSubmission(body, options = {}) {
   return checkRepository(repositoryValue, pluginPath, options)
 }
 
+function scanFilePriority(path) {
+  if (path === 'package.json' || /(?:^|\/)(?:cordis|plugin)(?:\.patch)?\.ya?ml$/i.test(path)) return 0
+  if (/(?:^|\/)(?:src|lib|runtime|server|client|plugin)(?:\/|$)/i.test(path)) return 1
+  if (/(?:^|\/)(?:bin|scripts?)(?:\/|$)/i.test(path)) return 2
+  if (/(?:^|\/)(?:docs?|examples?|fixtures?|tests?|__tests__)(?:\/|$)|\.(?:test|spec)\./i.test(path)) return 4
+  return 3
+}
+
+function repositoryPathWithinPackage(path, installPath) {
+  const prefix = installPath ? `${installPath.replace(/\/$/, '')}/` : ''
+  if (prefix && !path.startsWith(prefix)) return null
+  return prefix ? path.slice(prefix.length) : path
+}
+
+export async function scanSubmissionRepository(result, options = {}) {
+  if (result?.status !== 'passed' || !result.candidate) {
+    throw submissionError('SUBMISSION_SCAN_INPUT_INVALID', 'Security scan requires a passed fixed-source precheck')
+  }
+  const request = options.fetch ?? globalThis.fetch
+  if (typeof request !== 'function') throw submissionError('SUBMISSION_FETCH_UNAVAILABLE', 'Public GitHub source verification is unavailable')
+  const entry = result.candidate
+  const { owner, repository } = githubParts(entry.repositoryUrl)
+  const apiRoot = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repository)}`
+  const fetchOptions = { request, token: options.token ?? process.env.GITHUB_TOKEN, timeoutMs: options.timeoutMs }
+  const tree = await fetchJson(`${apiRoot}/git/trees/${entry.commit}?recursive=1`, {
+    ...fetchOptions, code: 'SUBMISSION_SCAN_TREE_HTTP', maxBytes: SECURITY_SCAN_TREE_BYTES,
+  })
+  const treeEntries = Array.isArray(tree?.tree) ? tree.tree : []
+  const packageEntries = treeEntries
+    .map(item => ({ item, relativePath: typeof item?.path === 'string'
+      ? repositoryPathWithinPackage(item.path, entry.installPath) : null }))
+    .filter(record => record.relativePath !== null)
+  const skippedUnsupported = packageEntries.filter(({ item, relativePath }) =>
+    (item?.mode === '120000' || item?.mode === '160000' || item?.type === 'commit')
+    && (SECURITY_SCAN_SOURCE.test(relativePath) || relativePath === 'package.json')).length
+  const eligible = packageEntries
+    .filter(({ item, relativePath }) => item?.type === 'blob'
+      && item?.mode !== '120000'
+      && !SECURITY_SCAN_EXCLUDED_DIRECTORY.test(relativePath)
+      && !SECURITY_SCAN_EXCLUDED_FILE.test(relativePath)
+      && (relativePath === 'package.json' || SECURITY_SCAN_SOURCE.test(relativePath)))
+    .sort((left, right) => scanFilePriority(left.relativePath) - scanFilePriority(right.relativePath)
+      || left.relativePath.localeCompare(right.relativePath, 'en'))
+  const oversized = eligible.filter(({ item }) => !Number.isSafeInteger(item?.size)
+    || item.size > SUBMISSION_SCAN_BOUNDS.maxFileBytes)
+  const selected = eligible.filter(({ item }) => Number.isSafeInteger(item?.size)
+      && item.size <= SUBMISSION_SCAN_BOUNDS.maxFileBytes)
+    .slice(0, SUBMISSION_SCAN_BOUNDS.maxFiles)
+  const sources = []
+  for (let index = 0; index < selected.length; index += 8) {
+    const batch = selected.slice(index, index + 8)
+    const texts = await Promise.all(batch.map(({ item }) => readPinnedText(
+      entry.repositoryUrl, entry.commit, item.path,
+      { ...fetchOptions, maxBytes: SUBMISSION_SCAN_BOUNDS.maxFileBytes },
+    )))
+    for (let offset = 0; offset < batch.length; offset += 1) {
+      sources.push({ path: batch[offset].relativePath, source: texts[offset] })
+    }
+  }
+  return scanSubmissionSources(sources, {
+    eligibleFiles: eligible.length,
+    skippedOversize: oversized.length,
+    skippedUnsupported,
+    capped: tree?.truncated === true || eligible.length === 0
+      || eligible.length - oversized.length > SUBMISSION_SCAN_BOUNDS.maxFiles,
+  })
+}
+
 function safeCode(value) {
   return String(value ?? '')
     .replace(/\\/g, '\\\\')
     .replace(/`/g, '\\`')
     .replace(/[\r\n]+/g, ' ')
     .slice(0, 1_000)
+}
+
+function renderSecurityScan(scan) {
+  if (!scan) return ''
+  const verdict = { pass: '通过', warn: '警告', fail: '阻断' }[scan.verdict] ?? '未知'
+  const boundary = scan.complete
+    ? '扫描面完整'
+    : `扫描面不完整；超限文件 ${scan.skippedOversize} 个，不支持项 ${scan.skippedUnsupported} 个${scan.capped ? '，并达到文件/目录树上限' : ''}`
+  const findings = scan.findings.slice(0, 12).map(finding =>
+    `  - \`${safeCode(finding.severity)}/${safeCode(finding.category)}/${safeCode(finding.rule)}\` ` +
+    `\`${safeCode(finding.file)}:${finding.line}\`：${safeCode(finding.message)}`)
+  return `- 安全启发式扫描：**${verdict}**；已扫 ${scan.filesScanned}/${scan.eligibleFiles} 个文件；` +
+    `Critical ${scan.counts.critical}、Warning ${scan.counts.warning}、Info ${scan.counts.info}；${boundary}\n` +
+    (findings.length > 0 ? `- 扫描发现：\n${findings.join('\n')}\n` : '')
 }
 
 export function renderSubmissionReport(result) {
@@ -395,13 +482,15 @@ export function renderSubmissionReport(result) {
       `- 自动识别：\`${safeCode(entry.packageName)}@${safeCode(entry.version)}\`，manifest 为 \`${safeCode(entry.manifestPath)}\`\n` +
       `- Bundle Patch：\`${safeCode(result.discovery.patchPath)}\`；入口：${entry.entryIds.map(id => `\`${safeCode(id)}\``).join('、')}\n` +
       `- 生命周期脚本：${entry.risk.installScripts.length > 0 ? entry.risk.installScripts.map(name => `\`${name}\``).join('、') : '无'}\n` +
-      `- README：${result.discovery.readmePath ? `\`${safeCode(result.discovery.readmePath)}\`` : '未找到，介绍需人工补充'}\n\n` +
-      '> 机器人没有执行第三方代码。权限、外部依赖、兼容性和实际运行效果仍需人工复核；此结果不是安全审计、运行验证或自动上架。'
+      `- README：${result.discovery.readmePath ? `\`${safeCode(result.discovery.readmePath)}\`` : '未找到，介绍需人工补充'}\n` +
+      renderSecurityScan(result.securityScan) + '\n' +
+      '> 机器人没有执行第三方代码。扫描是有边界的静态启发式检查；此结果不是安全审计、运行验证或自动上架，权限、外部依赖、兼容性和实际运行效果仍是独立证据层级。'
   }
   return `${SUBMISSION_REPORT_MARKER}\n### DSH 插件提交自动预检：需要补充或修复\n\n` +
     `- 错误代码：\`${safeCode(result.code ?? 'SUBMISSION_CHECK_FAILED')}\`\n` +
-    `- 原因：${safeCode(result.message ?? 'Unknown validation failure')}\n\n` +
-    '> 请直接编辑本 Issue。若检测到多个插件，只需补充 Plugin path；无需手填整份 Catalog。工作流不会执行第三方代码。'
+    `- 原因：${safeCode(result.message ?? 'Unknown validation failure')}\n` +
+    renderSecurityScan(result.securityScan) + '\n' +
+    '> 请直接编辑本 Issue。若检测到多个插件，只需补充 Plugin path；无需手填整份 Catalog。工作流不会执行第三方代码；静态扫描结论也不等于安全审计。'
 }
 
 function argumentsFrom(argv) {
@@ -415,7 +504,7 @@ function argumentsFrom(argv) {
   return args
 }
 
-export async function runCli(argv = process.argv.slice(2)) {
+export async function runCli(argv = process.argv.slice(2), options = {}) {
   const args = argumentsFrom(argv)
   const eventPath = args.get('--event')
   const reportPath = args.get('--report')
@@ -426,9 +515,19 @@ export async function runCli(argv = process.argv.slice(2)) {
   const event = JSON.parse(await readFile(eventPath, 'utf8'))
   let result
   try {
-    result = await checkSubmission(event?.issue?.body)
+    result = await checkSubmission(event?.issue?.body, options)
+    const scanRepository = options.scanRepository ?? scanSubmissionRepository
+    result.securityScan = await scanRepository(result, options)
+    if (result.securityScan.verdict === 'fail') {
+      result = {
+        ...result,
+        status: 'failed',
+        code: 'SUBMISSION_SECURITY_HIGH_RISK',
+        message: '固定 Commit 中发现硬编码密钥、数据外传、破坏性命令或挖矿等高危静态特征',
+      }
+    }
   } catch (error) {
-    result = {
+    result = { ...(result ?? {}),
       status: 'failed',
       code: typeof error?.code === 'string' ? error.code : 'SUBMISSION_CHECK_FAILED',
       message: error instanceof Error ? error.message : String(error),
@@ -438,6 +537,12 @@ export async function runCli(argv = process.argv.slice(2)) {
   await writeFile(resultPath, `${JSON.stringify({
     status: result.status,
     code: result.code ?? null,
+    securityScan: result.securityScan ?? null,
+    source: result.candidate ? {
+      repositoryUrl: result.candidate.repositoryUrl,
+      commit: result.candidate.commit,
+      manifestPath: result.candidate.manifestPath,
+    } : null,
     checkedAt: new Date().toISOString(),
   })}\n`, 'utf8')
   return result.status === 'passed' ? 0 : 1

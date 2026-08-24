@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check fixed source without executing third-party code
+      - name: Check fixed source and bounded security heuristics without executing third-party code
         id: check
         continue-on-error: true
         env:

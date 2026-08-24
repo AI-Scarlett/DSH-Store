@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
 import {
   SUBMISSION_REPORT_MARKER,
@@ -8,7 +10,10 @@ import {
   parseIssueForm,
   parseRepositoryInput,
   renderSubmissionReport,
+  runCli,
+  scanSubmissionRepository,
 } from '../scripts/check-plugin-submission.mjs'
+import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
 
 const SHA = 'a'.repeat(40)
 
@@ -50,6 +55,8 @@ function sourceFetch(options = {}) {
     const directory = path === 'package.json' ? '' : `${path.slice(0, -'package.json'.length)}`
     return [`${directory}cordis.patch.yml`, options.patch ?? '- insert:\n    - id: demo\n      name: dsh-demo\n']
   }))
+  const sources = options.sources ?? {}
+  const blobPaths = [...new Set([...Object.keys(packages), ...Object.keys(patches), ...Object.keys(sources)])]
   return async url => {
     const parsed = new URL(url)
     if (parsed.hostname === 'api.github.com' && parsed.pathname === '/repos/example/dsh-demo') {
@@ -63,7 +70,16 @@ function sourceFetch(options = {}) {
     if (parsed.hostname === 'api.github.com' && parsed.pathname.includes('/git/trees/')) {
       return new Response(JSON.stringify({
         truncated: options.truncated === true,
-        tree: Object.keys(packages).map(path => ({ type: 'blob', path })),
+        tree: blobPaths.map(path => {
+          const content = Object.hasOwn(packages, path) ? JSON.stringify(packages[path])
+            : Object.hasOwn(patches, path) ? patches[path] : sources[path]
+          return {
+            type: options.treeTypes?.[path] ?? 'blob',
+            mode: options.treeModes?.[path] ?? '100644',
+            path,
+            size: options.treeSizes?.[path] ?? Buffer.byteLength(content),
+          }
+        }),
       }))
     }
     if (parsed.hostname === 'raw.githubusercontent.com') {
@@ -71,6 +87,7 @@ function sourceFetch(options = {}) {
       const path = decodeURIComponent(parsed.pathname.slice(prefix.length))
       if (Object.hasOwn(packages, path)) return new Response(JSON.stringify(packages[path]))
       if (Object.hasOwn(patches, path)) return new Response(patches[path])
+      if (Object.hasOwn(sources, path)) return new Response(sources[path])
       if (path === 'README.md' || path.endsWith('/README.md')) {
         return new Response('# DSH Demo\n\nA fixture README description for the marketplace.\n')
       }
@@ -107,6 +124,77 @@ test('repository automation reuses the same fixed-source gate without an Issue f
   assert.equal(result.candidate.commit, SHA)
   assert.equal(result.candidate.packageName, 'dsh-demo')
   assert.equal(result.candidate.details.permissions.level, 'unknown')
+})
+
+test('GitHub submission scan reads bounded files from the same fixed commit', async () => {
+  const fetch = sourceFetch({ sources: { 'src/index.mjs': 'export function activate() { return true }\n' } })
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(), fetch, retryDelaysMs: [],
+  })
+  const scan = await scanSubmissionRepository(result, { fetch, retryDelaysMs: [] })
+  assert.equal(scan.verdict, 'pass')
+  assert.equal(scan.complete, true)
+  assert.equal(scan.filesScanned, 3)
+  assert.equal(scan.eligibleFiles, 3)
+  assert.equal(scan.engine, 'dsh-store-submission-static-v1')
+})
+
+test('security scan warns for common CLI process capability but blocks high-risk secrets', () => {
+  const warning = scanSubmissionSources([{ path: 'src/cli.mjs', source: "import { execFileSync } from 'node:child_process'\n" }])
+  assert.equal(warning.verdict, 'warn')
+  assert.equal(warning.counts.warning, 1)
+
+  const token = `ghp_${'a'.repeat(36)}`
+  const blocked = scanSubmissionSources([{ path: 'src/index.mjs', source: `const token = '${token}'\n` }])
+  assert.equal(blocked.verdict, 'fail')
+  assert.equal(blocked.counts.critical, 1)
+  assert.doesNotMatch(JSON.stringify(blocked), new RegExp(token))
+  assert.match(renderSubmissionReport({
+    status: 'failed', code: 'SUBMISSION_SECURITY_HIGH_RISK', message: 'high risk', securityScan: blocked,
+  }), /critical\/secrets\/github-token/)
+})
+
+test('oversize scan sources are reported as incomplete instead of silently treated as clean', async () => {
+  const path = 'src/generated.mjs'
+  const fetch = sourceFetch({
+    sources: { [path]: 'not fetched' },
+    treeSizes: { [path]: SUBMISSION_SCAN_BOUNDS.maxFileBytes + 1 },
+  })
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(), fetch, retryDelaysMs: [],
+  })
+  const scan = await scanSubmissionRepository(result, { fetch, retryDelaysMs: [] })
+  assert.equal(scan.verdict, 'warn')
+  assert.equal(scan.complete, false)
+  assert.equal(scan.skippedOversize, 1)
+  assert.equal(scan.filesScanned, 2)
+  assert.match(renderSubmissionReport({ ...result, securityScan: scan }), /扫描面不完整/)
+})
+
+test('CLI converts a high-risk scan into a failed Issue gate and persists the scan summary', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'dsh-submission-cli-'))
+  try {
+    const eventPath = join(directory, 'event.json')
+    const reportPath = join(directory, 'report.md')
+    const resultPath = join(directory, 'result.json')
+    await writeFile(eventPath, JSON.stringify({ issue: { body: issueBody() } }), 'utf8')
+    const code = await runCli([
+      '--event', eventPath, '--report', reportPath, '--result', resultPath,
+    ], {
+      catalogDocument: catalog(), fetch: sourceFetch(), retryDelaysMs: [],
+      scanRepository: async () => scanSubmissionSources([{
+        path: 'src/index.mjs', source: `const token = 'ghp_${'b'.repeat(36)}'`,
+      }]),
+    })
+    assert.equal(code, 1)
+    const persisted = JSON.parse(await readFile(resultPath, 'utf8'))
+    assert.equal(persisted.status, 'failed')
+    assert.equal(persisted.code, 'SUBMISSION_SECURITY_HIGH_RISK')
+    assert.equal(persisted.securityScan.verdict, 'fail')
+    assert.match(await readFile(reportPath, 'utf8'), /安全启发式扫描：\*\*阻断\*\*/)
+  } finally {
+    await rm(directory, { recursive: true, force: true })
+  }
 })
 
 test('submission preserves only an explicitly declared per-release compatibility matrix', async () => {
@@ -214,6 +302,7 @@ test('GitHub workflow gates a one-required-field form with an upserted bot repor
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/)
   assert.match(workflow, /continue-on-error: true/)
+  assert.match(workflow, /Check fixed source and bounded security heuristics without executing third-party code/)
   assert.match(workflow, /dsh-plugin-submission-check/)
   assert.match(workflow, /updateComment/)
   assert.match(workflow, /submission-passed/)
