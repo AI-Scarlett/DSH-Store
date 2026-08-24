@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   actions: write
+  issues: write
 
 concurrency:
   group: marketplace-watchdog
@@ -27,10 +28,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          last=$(gh run list --workflow catalog-automation.yml --limit 1 --json databaseId,status,conclusion,createdAt)
+          last=$(gh run list --workflow catalog-automation.yml --limit 1 --json databaseId,status,conclusion,createdAt,url)
           status=$(jq -r '.[0].status // "missing"' <<<"$last")
           conclusion=$(jq -r '.[0].conclusion // "missing"' <<<"$last")
           created=$(jq -r '.[0].createdAt // "1970-01-01T00:00:00Z"' <<<"$last")
+          echo "latest_run_id=$(jq -r '.[0].databaseId // empty' <<<"$last")" >> "$GITHUB_OUTPUT"
+          echo "latest_run_url=$(jq -r '.[0].url // empty' <<<"$last")" >> "$GITHUB_OUTPUT"
+          echo "latest_status=$status" >> "$GITHUB_OUTPUT"
+          echo "latest_conclusion=$conclusion" >> "$GITHUB_OUTPUT"
+
+          completed=$(gh run list --workflow catalog-automation.yml --status completed --limit 1 --json databaseId,conclusion,url)
+          echo "report_run_id=$(jq -r '.[0].databaseId // empty' <<<"$completed")" >> "$GITHUB_OUTPUT"
+          echo "report_run_url=$(jq -r '.[0].url // empty' <<<"$completed")" >> "$GITHUB_OUTPUT"
+          echo "report_run_conclusion=$(jq -r '.[0].conclusion // "missing"' <<<"$completed")" >> "$GITHUB_OUTPUT"
+
           age=$(( $(date -u +%s) - $(date -u -d "$created" +%s) ))
           if test "$status" != completed || test "$conclusion" != success || test "$age" -gt 14400; then
             echo "repair=true" >> "$GITHUB_OUTPUT"
@@ -47,6 +58,74 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref main
+      - name: Download the latest Catalog decision record
+        id: catalog_report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPORT_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
+        run: |
+          test -n "$REPORT_RUN_ID"
+          report_dir="$RUNNER_TEMP/catalog-automation-report"
+          mkdir -p "$report_dir"
+          gh run download "$REPORT_RUN_ID" \
+            --pattern "catalog-automation-${REPORT_RUN_ID}-*" \
+            --dir "$report_dir"
+          report_path=$(find "$report_dir" -type f -name catalog-automation-report.json -print -quit)
+          test -n "$report_path"
+          echo "path=$report_path" >> "$GITHUB_OUTPUT"
+      - name: Render the Chinese update and verification report
+        id: notification_report
+        if: always()
+        env:
+          CATALOG_REPORT_PATH: ${{ steps.catalog_report.outputs.path }}
+          CATALOG_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
+          CATALOG_RUN_URL: ${{ steps.previous.outputs.report_run_url }}
+          CATALOG_RUN_CONCLUSION: ${{ steps.previous.outputs.report_run_conclusion }}
+          REPAIR_TRIGGERED: ${{ steps.previous.outputs.repair }}
+        run: |
+          args=(
+            --catalog registry/catalog.json
+            --output "$RUNNER_TEMP/catalog-automation-notification.md"
+            --catalog-run-id "${CATALOG_RUN_ID:-unknown}"
+            --catalog-run-url "${CATALOG_RUN_URL:-https://github.com/$GITHUB_REPOSITORY/actions}"
+            --catalog-conclusion "${CATALOG_RUN_CONCLUSION:-unknown}"
+            --watchdog-run-id "$GITHUB_RUN_ID"
+            --watchdog-run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            --repair-triggered "${REPAIR_TRIGGERED:-false}"
+            --mention "@$GITHUB_REPOSITORY_OWNER"
+          )
+          if test -n "$CATALOG_REPORT_PATH" && test -f "$CATALOG_REPORT_PATH"; then
+            args+=(--report "$CATALOG_REPORT_PATH")
+          fi
+          if test -f "$RUNNER_TEMP/marketplace-watchdog-report.json"; then
+            args+=(--watchdog-report "$RUNNER_TEMP/marketplace-watchdog-report.json")
+          fi
+          node scripts/render-catalog-automation-notification.mjs "${args[@]}"
+          cat "$RUNNER_TEMP/catalog-automation-notification.md" >> "$GITHUB_STEP_SUMMARY"
+          echo "path=$RUNNER_TEMP/catalog-automation-notification.md" >> "$GITHUB_OUTPUT"
+      - name: Publish the report through GitHub notification email
+        if: always() && steps.notification_report.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPORT_PATH: ${{ steps.notification_report.outputs.path }}
+        run: |
+          title='DSH STORE 自动更新报告（每 3 小时）'
+          issue=$(gh issue list --state all --limit 10 \
+            --search '"DSH STORE 自动更新报告（每 3 小时）" in:title' \
+            --json number,title,state \
+            --jq '.[] | select(.title == "DSH STORE 自动更新报告（每 3 小时）") | [.number, .state] | @tsv' \
+            | head -n 1)
+          if test -z "$issue"; then
+            gh issue create --title "$title" --body-file "$REPORT_PATH"
+          else
+            issue_number=$(cut -f 1 <<<"$issue")
+            issue_state=$(cut -f 2 <<<"$issue")
+            if test "$issue_state" = CLOSED; then
+              gh issue reopen "$issue_number"
+            fi
+            gh issue comment "$issue_number" --body-file "$REPORT_PATH"
+          fi
       - name: Preserve the public verification report
         if: always()
         uses: actions/upload-artifact@v4

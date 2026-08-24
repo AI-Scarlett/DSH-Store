@@ -1,0 +1,69 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+import { renderCatalogAutomationNotification } from '../scripts/render-catalog-automation-notification.mjs'
+
+test('Catalog notification separates additions, historical updates, and deferred versions', () => {
+  const catalog = {
+    entries: [
+      { id: 'new-plugin', name: '通知助手（Notify Helper）', version: '1.0.0', status: 'blocked', repositoryUrl: 'https://github.com/example/new-plugin' },
+      { id: 'old-plugin', name: '历史工具（History Tool）', version: '2.0.0', status: 'approved', repositoryUrl: 'https://github.com/example/old-plugin' },
+    ],
+  }
+  const report = {
+    observedAt: '2026-08-24T10:24:33.000Z',
+    baseCommit: 'a'.repeat(40),
+    sourceVersionChecks: {
+      checkedEntries: 480,
+      newerVersionCandidates: 2,
+      catalogUpdates: 1,
+      newerVersionsDeferred: 1,
+      sourceChangedWithoutVersionBump: 3,
+      unresolvedEntries: 0,
+    },
+    addedEntries: [{ id: 'new-plugin', reasons: ['runtime dependency requires review'] }],
+    updatedEntries: [{ id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0' }],
+    deferredUpdates: [{ id: 'new-plugin', catalogVersion: '1.0.0', upstreamVersion: '1.1.0', reason: '证据不足' }],
+    transientFailures: [],
+    postconditions: { catalogEntries: 481 },
+  }
+  const watchdog = {
+    checkedAt: '2026-08-24T10:55:00.000Z',
+    status: 'passed',
+    surfaces: [
+      { url: 'https://dsh.store/registry/catalog.json', status: 'passed', entries: 481, sha256: 'b'.repeat(64) },
+    ],
+  }
+  const output = renderCatalogAutomationNotification({
+    catalog,
+    report,
+    watchdog,
+    catalogRunId: '123',
+    catalogRunUrl: 'https://github.com/example/repo/actions/runs/123',
+    catalogConclusion: 'success',
+    watchdogRunId: '456',
+    watchdogRunUrl: 'https://github.com/example/repo/actions/runs/456',
+    mention: '@AI-Scarlett',
+  })
+  assert.match(output, /综合结果：\*\*通过\*\*/)
+  assert.match(output, /新增收录：1 个（可安装 0，blocked\/不可安装 1）/)
+  assert.match(output, /历史版本自动更新：1 个/)
+  assert.match(output, /通知助手（Notify Helper）/)
+  assert.match(output, /历史工具（History Tool）/)
+  assert.match(output, /1\.0\.0 \| 2\.0\.0/)
+  assert.match(output, /发现高版本但暂缓更新/)
+  assert.match(output, /状态边界/)
+})
+
+test('Catalog notification remains useful when an automation artifact is missing', () => {
+  const output = renderCatalogAutomationNotification({
+    catalog: { entries: [] },
+    report: null,
+    watchdog: { status: 'failed', surfaces: [], checkedAt: '2026-08-24T10:55:00.000Z' },
+    catalogConclusion: 'failure',
+    repairTriggered: true,
+  })
+  assert.match(output, /需要关注/)
+  assert.match(output, /无新增收录/)
+  assert.match(output, /无历史插件版本更新/)
+  assert.match(output, /已自动触发修复任务/)
+})

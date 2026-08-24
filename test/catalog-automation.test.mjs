@@ -138,8 +138,12 @@ test('watchdog checks the previous run and every public Catalog surface', async 
     read('AGENTS.md'),
   ])
   assert.match(workflow, /cron: "55 \*\/3 \* \* \*"/)
+  assert.match(workflow, /issues: write/)
   assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main/)
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)
+  assert.match(workflow, /render-catalog-automation-notification\.mjs/)
+  assert.match(workflow, /DSH STORE 自动更新报告（每 3 小时）/)
+  assert.match(workflow, /gh issue comment/)
   assert.match(timer, /00,03,06,09,12,15,18,21:47:00 UTC/)
   assert.match(service, /EnvironmentFile=\/etc\/dsh-store\/refresh-%i\.env/)
   assert.match(service, /ReadWritePaths=\/opt\/dsh-store -\/opt\/dsh-store-cn \/run\/lock/)
