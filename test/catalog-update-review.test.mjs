@@ -5,6 +5,7 @@ import {
   buildCatalogVersionUpdate,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
+  sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
 
 const entry = (overrides = {}) => ({
@@ -143,4 +144,37 @@ test('version refresh imports an upstream per-release declaration while leaving 
   assert.equal(updated.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
   assert.equal(updated.compatibility.dshReleases['0.1.1-rc.1'], 'unknown')
   assert.equal(updated.compatibility.dshOperations['0.1.1-rc.2'].install, 'unknown')
+})
+
+test('source compatibility canonicalizes shorthand and full DSH release aliases before merging', () => {
+  const candidate = {
+    compatibility: {
+      dsh: '>=0.1.0-rc.8 <0.2.0',
+      dshReleases: {
+        '0.1.0-rc.8': 'incompatible',
+        '0.1.1-rc.1': 'incompatible',
+        '0.1.1-rc.2': 'compatible',
+      },
+      node: '>=22', systems: ['Linux'], profiles: ['web'],
+    },
+  }
+  const compatibility = sourceDeclaredCompatibility(entry({
+    compatibility: {
+      dsh: '>=0.1.0-rc.7',
+      dshReleases: { 'rc.8': 'incompatible' },
+      dshOperations: { 'rc.8': { install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' } },
+    },
+  }), candidate)
+  assert.equal(Object.hasOwn(compatibility.dshReleases, 'rc.8'), false)
+  assert.equal(compatibility.dshReleases['0.1.0-rc.8'], 'incompatible')
+  assert.equal(compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
+  assert.equal(compatibility.dshOperations['0.1.0-rc.8'].install, 'unknown')
+})
+
+test('source compatibility still fails closed on genuinely conflicting aliases', () => {
+  assert.throws(() => sourceDeclaredCompatibility(entry(), {
+    compatibility: {
+      dshReleases: { 'rc.8': 'unknown', '0.1.0-rc.8': 'incompatible' },
+    },
+  }), /conflicting aliases for 0\.1\.0-rc\.8/)
 })

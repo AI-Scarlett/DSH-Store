@@ -85,30 +85,57 @@ export function renderCatalogAutomationNotification({
   const passedSurfaces = surfaces.filter(surface => surface?.status === 'passed').length
   const approvedAdded = addedEntries.filter(item => byId.get(item.id)?.status === 'approved').length
   const blockedAdded = addedEntries.filter(item => byId.get(item.id)?.status !== 'approved').length
-  const overallPassed = catalogConclusion === 'success' && report !== null && watchdog?.status === 'passed' && repairTriggered !== true
+  const statisticsAvailable = report !== null
+    && report?.status !== 'failed'
+    && report?.completed !== false
+    && report?.statisticsAvailable !== false
+  const overallPassed = catalogConclusion === 'success' && statisticsAvailable
+    && watchdog?.status === 'passed' && repairTriggered !== true
   const icon = overallPassed ? '✅' : '⚠️'
   const observedAt = report?.observedAt ?? watchdog?.checkedAt ?? '未知'
   const postCatalogEntries = report?.postconditions?.catalogEntries ?? catalogEntries.length
+  const partialCheckedEntries = Number.isSafeInteger(sourceChecks.checkedEntries) && sourceChecks.checkedEntries > 0
+    ? sourceChecks.checkedEntries
+    : null
+  const title = statisticsAvailable
+    ? `DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}，兼容性下架 ${compatibilityUnlisted.length}，恢复 ${compatibilityRestored.length}`
+    : 'DSH STORE 自动更新报告：本轮扫描失败，统计不可用'
 
   const lines = [
     '<!-- dsh-catalog-automation-notification -->',
-    `## ${icon} DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}，兼容性下架 ${compatibilityUnlisted.length}，恢复 ${compatibilityRestored.length}`,
+    `## ${icon} ${title}`,
     '',
   ]
   if (mention) lines.push(mention, '')
   lines.push(
     `- 综合结果：**${overallPassed ? '通过' : '需要关注'}**`,
     `- 扫描时间：${markdownCell(observedAt)}`,
-    `- 历史 Catalog 检查：${number(sourceChecks.checkedEntries)} 个`,
-    `- 新增收录：${addedEntries.length} 个（可安装 ${approvedAdded}，blocked/不可安装 ${blockedAdded}）`,
-    `- 历史版本自动更新：${updatedEntries.length} 个`,
-    `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
-    `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
-    `- 不兼容且已有其他失败的候选清理：${prunedCandidates.length} 个`,
-    `- 发现上游高版本：${number(sourceChecks.newerVersionCandidates)} 个（自动更新 ${number(sourceChecks.catalogUpdates)}，暂缓 ${number(sourceChecks.newerVersionsDeferred)}）`,
-    `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个`,
-    `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
-    `- 当前 Catalog 条目：${number(postCatalogEntries)} 个`,
+  )
+  if (statisticsAvailable) {
+    lines.push(
+      `- 历史 Catalog 检查：${number(sourceChecks.checkedEntries)} 个`,
+      `- 新增收录：${addedEntries.length} 个（可安装 ${approvedAdded}，blocked/不可安装 ${blockedAdded}）`,
+      `- 历史版本自动更新：${updatedEntries.length} 个`,
+      `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
+      `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
+      `- 不兼容且已有其他失败的候选清理：${prunedCandidates.length} 个`,
+      `- 发现上游高版本：${number(sourceChecks.newerVersionCandidates)} 个（自动更新 ${number(sourceChecks.catalogUpdates)}，暂缓 ${number(sourceChecks.newerVersionsDeferred)}）`,
+      `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个`,
+      `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
+      `- 当前 Catalog 条目：${number(postCatalogEntries)} 个`,
+    )
+  } else {
+    lines.push('- 扫描统计：**不可用（本轮未完成，禁止按 0 解读）**')
+    if (partialCheckedEntries !== null) {
+      lines.push(`- 失败前已检查历史 Catalog：至少 ${partialCheckedEntries} 个（部分进度，不是最终统计）`)
+    }
+    lines.push(
+      `- 失败阶段：${markdownCell(report?.failure?.stage ?? '决策报告缺失或未完成')}`,
+      `- 失败原因：${markdownCell(report?.failure?.message ?? 'Catalog 自动化没有产生完整的机器决策报告')}`,
+      `- 当前 main Catalog 条目：${number(catalogEntries.length)} 个`,
+    )
+  }
+  lines.push(
     `- 四个公开面核验：${passedSurfaces}/${surfaces.length || 4} 通过`,
     `- Catalog 工作流：${zhConclusion(catalogConclusion)}${catalogRunUrl ? ` · [Run #${markdownCell(catalogRunId)}](${catalogRunUrl})` : ''}`,
     `- 看门狗工作流：${zhConclusion(watchdog?.status)}${watchdogRunUrl ? ` · [Run #${markdownCell(watchdogRunId)}](${watchdogRunUrl})` : ''}${repairTriggered ? ' · 已自动触发修复任务' : ''}`,
@@ -117,7 +144,9 @@ export function renderCatalogAutomationNotification({
   )
 
   lines.push('### 新增收录清单', '')
-  if (addedEntries.length === 0) {
+  if (!statisticsAvailable) {
+    lines.push('本轮扫描未完成，无法确认新增收录清单；请勿解读为 0。', '')
+  } else if (addedEntries.length === 0) {
     lines.push('无新增收录。', '')
   } else {
     lines.push('| 中文名（英文名） | 版本 | 商城状态 | 原项目 | 说明 |', '|---|---:|---|---|---|')
@@ -130,7 +159,9 @@ export function renderCatalogAutomationNotification({
   }
 
   lines.push('### 历史插件更新清单', '')
-  if (updatedEntries.length === 0) {
+  if (!statisticsAvailable) {
+    lines.push('本轮扫描未完成，无法确认历史插件更新清单；请勿解读为 0。', '')
+  } else if (updatedEntries.length === 0) {
     lines.push('无历史插件版本更新。', '')
   } else {
     lines.push('| 中文名（英文名） | 原版本 | 新版本 | 商城状态 | 原项目 |', '|---|---:|---:|---|---|')
@@ -142,7 +173,9 @@ export function renderCatalogAutomationNotification({
   }
 
   lines.push('### 发现高版本但暂缓更新', '')
-  if (higherVersionDeferred.length === 0) {
+  if (!statisticsAvailable) {
+    lines.push('本轮扫描未完成，暂缓更新统计不可用。', '')
+  } else if (higherVersionDeferred.length === 0) {
     lines.push('无暂缓更新项。', '')
   } else {
     lines.push('| 中文名（英文名） | Catalog 版本 | 上游版本 | 暂缓原因 |', '|---|---:|---:|---|')
@@ -154,7 +187,9 @@ export function renderCatalogAutomationNotification({
   }
 
   lines.push('### 最新三个 DSH 版本兼容性变更', '')
-  if (compatibilityUnlisted.length === 0 && compatibilityRestored.length === 0) {
+  if (!statisticsAvailable) {
+    lines.push('本轮扫描未完成，兼容性上下架统计不可用。', '')
+  } else if (compatibilityUnlisted.length === 0 && compatibilityRestored.length === 0) {
     lines.push('无兼容性上下架变更。', '')
   } else {
     lines.push('| 变更 | 中文名（英文名） | 插件版本 | 原项目 | 要求窗口 |', '|---|---|---:|---|---|')
@@ -170,7 +205,9 @@ export function renderCatalogAutomationNotification({
   }
 
   lines.push('### 已清理的不兼容失败候选', '')
-  if (prunedCandidates.length === 0) {
+  if (!statisticsAvailable) {
+    lines.push('本轮扫描未完成，候选清理统计不可用。', '')
+  } else if (prunedCandidates.length === 0) {
     lines.push('无候选清理。', '')
   } else {
     lines.push('| 候选 | 固定 Commit | 原项目 | 清理原因 |', '|---|---|---|---|')

@@ -753,7 +753,47 @@ async function atomicWrite(path, buffer) {
 }
 
 const options = parseArgs(process.argv.slice(2))
+const failureContext = {
+  options,
+  observedAt: null,
+  report: null,
+  stage: 'validate-input',
+}
+
+async function writeAutomationFailureReport(context, error) {
+  if (!context.options.report) return
+  const observedAt = context.observedAt ?? new Date().toISOString()
+  const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
+  const partial = context.report ?? {
+    schemaVersion: 2,
+    planId: null,
+    baseCommit: typeof baseCommit === 'string' && /^[0-9a-f]{40}$/.test(baseCommit) ? baseCommit : null,
+    observedAt,
+    preconditions: null,
+    policy: 'registry/automation-policy.json',
+  }
+  const failureReport = {
+    ...partial,
+    status: 'failed',
+    completed: false,
+    statisticsAvailable: false,
+    failure: {
+      stage: boundedText(context.stage, 'unknown automation stage', 120),
+      code: boundedText(error?.code, 'CATALOG_AUTOMATION_FAILED', 120),
+      message: boundedText(error?.message, 'Catalog automation failed'),
+    },
+  }
+  delete failureReport.postconditions
+  await atomicWrite(
+    resolve(context.options.report),
+    Buffer.from(`${JSON.stringify(failureReport, null, 2)}\n`),
+  )
+}
+
+try {
 const observedAt = iso(options.observedAt ?? new Date().toISOString(), '--observed-at')
+failureContext.observedAt = observedAt
+failureContext.stage = 'validate-policy'
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
 if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
 if (policy.compatibility?.authority !== 'official-npm-registry-published-versions-through-latest'
@@ -782,11 +822,13 @@ const catalogSha = sha256(originalCatalog)
 const candidatesSha = sha256(originalCandidates)
 const catalog = JSON.parse(originalCatalog.toString('utf8'))
 const candidates = JSON.parse(originalCandidates.toString('utf8'))
+failureContext.stage = 'validate-authority'
 const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
 if (baseCommit !== null && !/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('automation base Commit must be a full Git SHA')
 validateCatalog(catalog)
 assertCatalogLocalization(catalog)
 validateCandidateRegistry(candidates)
+failureContext.stage = 'fetch-official-dsh-release-window'
 const dshReleaseWindow = await fetchOfficialDshReleaseWindow({
   registryUrl: policy.compatibility.registryUrl,
   releaseCount: policy.compatibility.latestReleaseCount,
@@ -794,6 +836,9 @@ const dshReleaseWindow = await fetchOfficialDshReleaseWindow({
 const dshReleaseWindowSha = sha256(JSON.stringify(dshReleaseWindow))
 const report = {
   schemaVersion: 2,
+  status: 'running',
+  completed: false,
+  statisticsAvailable: false,
   planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${candidatesSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   baseCommit,
   observedAt,
@@ -834,10 +879,15 @@ const report = {
   },
   skippedDiscoveries: [], transientFailures: [],
 }
+failureContext.report = report
 const github = createGithubClient()
+failureContext.stage = 'inspect-historical-catalog-entries'
 await updateExistingEntries(catalog, policy, github, observedAt, report)
+failureContext.stage = 'prune-historical-candidates'
 await pruneHistoricalRejectedCandidates(candidates, policy, github, dshReleaseWindow, observedAt, report)
+failureContext.stage = 'inspect-new-discoveries'
 await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow)
+failureContext.stage = 'apply-latest-dsh-compatibility-policy'
 report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
   catalog, candidates, dshReleaseWindow, observedAt,
 )
@@ -853,6 +903,7 @@ const candidatesChanged = report.rejectedCandidates.length > 0 || report.promote
   || report.candidateRetention.registryRemovals > 0 || report.compatibilityPolicy.candidatesChanged
 if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
+failureContext.stage = 'validate-automation-output'
 const validatedCatalog = validateCatalog(catalog)
 const validatedCandidates = validateCandidateRegistry(candidates)
 const catalogBuffer = Buffer.from(`${JSON.stringify(catalog, null, 2)}\n`)
@@ -866,15 +917,21 @@ report.postconditions = {
   catalogSha256: sha256(catalogBuffer), candidatesSha256: sha256(candidatesBuffer),
   catalogEntries: validatedCatalog.entries.length, candidateEntries: validatedCandidates.entries.length,
 }
+report.status = 'passed'
+report.completed = true
+report.statisticsAvailable = true
 
+failureContext.stage = 'preserve-decision-record'
 if (options.report) await atomicWrite(resolve(options.report), Buffer.from(`${JSON.stringify(report, null, 2)}\n`))
 if (!options.write) {
   process.stdout.write(`CATALOG_AUTOMATION_DRY_RUN plan=${report.planId} catalogChanged=${catalogChanged} candidatesChanged=${candidatesChanged}\n`)
   process.exit(0)
 }
+failureContext.stage = 'validate-write-preconditions'
 if (options.expectedCatalogSha !== catalogSha || options.expectedCandidatesSha !== candidatesSha) {
   throw new Error('automation precondition hash mismatch')
 }
+failureContext.stage = 'apply-catalog-transaction'
 const catalogBackup = requireExternalBackup(options.catalogBackup, '--catalog-backup')
 const candidatesBackup = requireExternalBackup(options.candidatesBackup, '--candidates-backup')
 await copyFile(catalogPath, catalogBackup)
@@ -888,3 +945,11 @@ try {
   throw error
 }
 process.stdout.write(`CATALOG_AUTOMATION_OK plan=${report.planId} catalogChanged=${catalogChanged} candidatesChanged=${candidatesChanged} entries=${validatedCatalog.entries.length}\n`)
+} catch (error) {
+  try {
+    await writeAutomationFailureReport(failureContext, error)
+  } catch (reportError) {
+    throw new AggregateError([error, reportError], 'Catalog automation failed and its failure report could not be preserved')
+  }
+  throw error
+}
