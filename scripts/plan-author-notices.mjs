@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const MARKER_PATTERN = /<!-- dsh-author-notice:v1 key=([a-z0-9_.-]+\/[a-z0-9_.-]+) signature=([0-9a-f]{64}) notified=([0-9a-f]{64}) -->/i
+const SOURCE_MARKER_PATTERN = /<!-- dsh-author-source:v1 fingerprint=([0-9a-f]{64}) known=(true|false) -->/i
 const INFRASTRUCTURE_REASON = /(?:HTTP (?:403|404|409|429|5\d\d)|rate.?limit|timed?\s*out|timeout|temporar(?:y|ily)|default branch moved|transport|connection|ECONN|ENOTFOUND)/i
 const EXPLICIT_CANDIDATE_SOURCE = /(?:user-request|plugin-submission|fixed-commit-review)/i
 const STRONG_DSH_DESCRIPTION = /(?:DeepSeek Harness|\bDSH\s+(?:plugin|插件)|(?:plugin|插件)\s+(?:for\s+)?DSH)\b/i
@@ -101,7 +102,55 @@ function candidateIsActionable(candidate) {
 
 export function parseAuthorNoticeMarker(body) {
   const match = MARKER_PATTERN.exec(String(body ?? ''))
-  return match ? { key: match[1].toLowerCase(), signature: match[2], notifiedSignature: match[3] } : null
+  if (!match) return null
+  const source = SOURCE_MARKER_PATTERN.exec(String(body ?? ''))
+  return {
+    key: match[1].toLowerCase(),
+    signature: match[2],
+    notifiedSignature: match[3],
+    sourceFingerprint: source?.[1] ?? null,
+    sourceKnown: source?.[2] === 'true',
+  }
+}
+
+function sourceCommit(value) {
+  return /^[0-9a-f]{40}$/.test(String(value ?? '')) ? String(value) : null
+}
+
+function sourceEvidence(values) {
+  const commits = [...new Set(values.map(sourceCommit).filter(Boolean))].sort()
+  return {
+    commits,
+    known: commits.length > 0,
+    fingerprint: sha256(JSON.stringify(commits)),
+  }
+}
+
+function collectObservedSources(catalog, candidates, report) {
+  const commitsByRepository = new Map()
+  const add = (repositoryUrl, commit, priority = 1) => {
+    const source = sourceCommit(commit)
+    if (!source) return
+    let key
+    try { key = githubRepository(repositoryUrl).key } catch { return }
+    const current = commitsByRepository.get(key)
+    if (!current || priority > current.priority) {
+      commitsByRepository.set(key, { priority, commits: [source] })
+      return
+    }
+    if (priority === current.priority) current.commits.push(source)
+  }
+  const catalogById = new Map(array(catalog?.entries).map(entry => [entry.id, entry]))
+  for (const entry of array(catalog?.entries)) add(entry.repositoryUrl, entry.commit)
+  for (const candidate of array(candidates?.entries)) add(candidate.repositoryUrl, candidate.latestCommit)
+  for (const item of array(report?.addedEntries)) add(catalogById.get(item.id)?.repositoryUrl, item.commit, 2)
+  for (const item of array(report?.updatedEntries)) add(catalogById.get(item.id)?.repositoryUrl, item.to ?? item.commit, 2)
+  for (const item of array(report?.deferredUpdates)) add(catalogById.get(item.id)?.repositoryUrl, item.commit, 2)
+  for (const item of array(report?.sourceChangesWithoutVersionBump)) add(catalogById.get(item.id)?.repositoryUrl, item.candidateCommit, 2)
+  for (const item of array(report?.upstreamVersionBehind)) add(catalogById.get(item.id)?.repositoryUrl, item.candidateCommit, 2)
+  for (const item of array(report?.prunedCandidates)) add(item.repositoryUrl, item.commit, 2)
+  for (const item of array(report?.rejectedCandidates)) add(item.repository, item.commit, 2)
+  return new Map([...commitsByRepository].map(([key, value]) => [key, sourceEvidence(value.commits)]))
 }
 
 export function canonicalExistingIssues(issues) {
@@ -188,6 +237,7 @@ function renderNoticeBody(record, signature, notifiedSignature) {
   ]
   const lines = [
     `<!-- dsh-author-notice:v1 key=${record.key} signature=${signature} notified=${notifiedSignature} -->`,
+    `<!-- dsh-author-source:v1 fingerprint=${record.source.fingerprint} known=${record.source.known} -->`,
     `${record.notificationTargets.map(login => `@${login}`).join(' ')} 您好，DSH STORE 的固定 Commit 自动检查发现这个项目目前需要上游修改。`,
     '',
     `Hello ${record.notificationTargets.map(login => `@${login}`).join(' ')}. DSH STORE's fixed-Commit automation found upstream changes required for this repository.`,
@@ -214,6 +264,9 @@ function renderNoticeBody(record, signature, notifiedSignature) {
   lines.push('', '### 修改建议 / Suggested remediation', '')
   for (const suggestion of suggestionLines(reasons)) lines.push(`- ${suggestion}`)
   lines.push(
+    '- 建议使用 [build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) 对项目执行 DSH 插件契约检查并生成修改方案；修复后可在 [DSH STORE 官网](https://dsh.store/) 查看重新收录或更新状态。 / Use [build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) to check the DSH plugin contract and prepare fixes, then follow the result on the [DSH STORE website](https://dsh.store/).',
+  )
+  lines.push(
     '',
     '### 自动复检 / Automatic recheck',
     '',
@@ -223,7 +276,7 @@ function renderNoticeBody(record, signature, notifiedSignature) {
     '',
     '> 这不是安全漏洞指控，也不表示项目质量有问题；它只说明当前固定源码尚未满足 DSH STORE 的可安装或自动更新契约。Catalog 通过也不等于真实 DSH Profile 已安装或完成运行时验收。',
     '',
-    '[查看自动化运行](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/actions/workflows/catalog-automation.yml) · [查看上架契约](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/README.md)',
+    '[使用 build-dsh-plugin 检查和修改](https://github.com/AI-Scarlett/build-dsh-plugin) · [DSH STORE 官网](https://dsh.store/) · [查看自动化运行](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/actions/workflows/catalog-automation.yml) · [查看上架契约](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/README.md)',
     '',
   )
   const body = `${lines.join('\n')}\n`
@@ -236,8 +289,16 @@ function eventComment(record, signature) {
   return `<!-- dsh-author-notice-event:update:${record.key}:${signature} -->\n${mentions} 自动复检发现阻断条件发生变化，本修复单已更新。 / The automatic recheck found changed blockers and updated this remediation issue.\n`
 }
 
-function closeComment(key, signature) {
-  return `<!-- dsh-author-notice-event:close:${key}:${signature} -->\n自动复检已不再发现本修复单记录的阻断条件，因此自动关闭。该结论只针对 Catalog/候选契约，不代表真实 Profile 安装或运行时验收。 / The recorded Catalog or candidate blockers are no longer present, so this issue is closed automatically.\n`
+function sourceUpdateComment(record) {
+  const mentions = record.notificationTargets.map(login => `@${login}`).join(' ')
+  return `<!-- dsh-author-notice-event:source:${record.key}:${record.source.fingerprint} -->\n${mentions} 自动复检检测到上游固定 Commit 已变化，但当前阻断条件仍未清除。建议使用 https://github.com/AI-Scarlett/build-dsh-plugin 检查和修改；状态可在 https://dsh.store/ 查看。 / A new upstream fixed Commit was detected, but the blockers remain. Use build-dsh-plugin to check and fix the project, then follow its DSH STORE status.\n`
+}
+
+function closeComment(key, signature, sourceStatus) {
+  const sourceNote = sourceStatus === 'modified-and-resolved'
+    ? '检测到上游源码修改，并且当前阻断条件已清除。 / Upstream source changed and the blockers are now cleared.'
+    : '当前阻断条件已清除；是否由作者源码修改导致，现有证据无法确认。 / The blockers are cleared; current evidence cannot attribute that outcome to an upstream source change.'
+  return `<!-- dsh-author-notice-event:close:${key}:${signature} -->\n${sourceNote}\n\n自动复检已不再发现本修复单记录的阻断条件，因此自动关闭。该结论只针对 Catalog/候选契约，不代表真实 Profile 安装或运行时验收。 / The recorded Catalog or candidate blockers are no longer present, so this issue is closed automatically.\n`
 }
 
 function selectCreates(records, existingKeys, maximum) {
@@ -265,8 +326,14 @@ function selectCreates(records, existingKeys, maximum) {
   return selected
 }
 
-export function buildAuthorNoticePlan({ catalog, candidates, report, existingIssues, notificationTargets, baseCommit, inputHashes, maxCreate = 3 }) {
+export function buildAuthorNoticePlan({
+  catalog, candidates, report, existingIssues, notificationTargets, baseCommit, inputHashes,
+  maxCreate = 3, sourceCatalogRunId = null,
+}) {
   if (!/^[0-9a-f]{40}$/.test(String(baseCommit ?? ''))) throw new Error('base Commit must be a full Git SHA')
+  if (sourceCatalogRunId !== null && !/^\d+$/.test(String(sourceCatalogRunId))) {
+    throw new Error('source Catalog run ID must contain digits only')
+  }
   const targetsByRepository = canonicalNotificationTargets(notificationTargets)
   const existing = canonicalExistingIssues(existingIssues)
   const existingByKey = new Map()
@@ -278,6 +345,7 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
   }
 
   const repositories = new Map()
+  const observedSources = collectObservedSources(catalog, candidates, report)
   const catalogById = new Map(array(catalog?.entries).map(entry => [entry.id, entry]))
   const addedIds = new Set(array(report?.addedEntries).map(entry => entry.id))
   const newlyUnlistedIds = new Set(array(report?.compatibilityUnlisted).map(entry => entry.id))
@@ -360,6 +428,7 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
   const desired = [...repositories.values()].sort((left, right) => left.key.localeCompare(right.key, 'en'))
   for (const record of desired) {
     const items = stableItems(record)
+    record.source = observedSources.get(record.key) ?? sourceEvidence([])
     record.notificationTargets = targetsByRepository[record.key] ?? [record.owner]
     record.labels = ['author-action-required']
     if (items.catalogBlocked.length > 0) record.labels.push('catalog-blocked')
@@ -375,23 +444,42 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
   const createKeys = new Set(createRecords.map(record => record.key))
   const actions = []
   let unchanged = 0
+  const sourceStatuses = []
   for (const record of desired) {
     const current = existingByKey.get(record.key)
     if (!current) {
       if (!createKeys.has(record.key)) continue
+      const sourceStatus = record.source.known ? 'new-baseline' : 'unknown'
+      sourceStatuses.push({ key: record.key, status: sourceStatus })
       actions.push({
         type: 'create', key: record.key, title: record.title, labels: record.labels,
         signature: record.signature,
+        sourceFingerprint: record.source.fingerprint,
+        sourceStatus,
         body: renderNoticeBody(record, record.signature, record.signature),
       })
       continue
     }
     const needsBodyUpdate = current.marker.signature !== record.signature || current.state === 'closed'
     const needsNotification = current.marker.notifiedSignature !== record.signature
+    const canCompareSource = current.marker.sourceKnown && current.marker.sourceFingerprint && record.source.known
+    const sourceChanged = canCompareSource && current.marker.sourceFingerprint !== record.source.fingerprint
+    const needsSourceBaselineUpdate = !current.marker.sourceFingerprint
+      || (!current.marker.sourceKnown && record.source.known)
+    const sourceStatus = sourceChanged
+      ? 'modified-still-blocked'
+      : canCompareSource
+        ? 'not-modified'
+        : needsSourceBaselineUpdate
+          ? 'tracking-baseline'
+          : 'unknown'
+    sourceStatuses.push({ key: record.key, status: sourceStatus })
     if (needsBodyUpdate) {
       actions.push({
         type: 'update', key: record.key, issueNumber: current.number, title: record.title, labels: record.labels,
         signature: record.signature,
+        sourceFingerprint: record.source.fingerprint,
+        sourceStatus,
         pendingBody: renderNoticeBody(record, record.signature, current.marker.notifiedSignature),
         body: renderNoticeBody(record, record.signature, record.signature),
         comment: eventComment(record, record.signature),
@@ -400,9 +488,27 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
     } else if (needsNotification) {
       actions.push({
         type: 'notify', key: record.key, issueNumber: current.number, signature: record.signature,
+        sourceFingerprint: record.source.fingerprint,
+        sourceStatus,
         body: renderNoticeBody(record, record.signature, record.signature),
         comment: eventComment(record, record.signature),
         commentMarker: `dsh-author-notice-event:update:${record.key}:${record.signature}`,
+      })
+    } else if (sourceChanged) {
+      actions.push({
+        type: 'source-update', key: record.key, issueNumber: current.number, signature: record.signature,
+        sourceFingerprint: record.source.fingerprint,
+        sourceStatus,
+        body: renderNoticeBody(record, record.signature, record.signature),
+        comment: sourceUpdateComment(record),
+        commentMarker: `dsh-author-notice-event:source:${record.key}:${record.source.fingerprint}`,
+      })
+    } else if (needsSourceBaselineUpdate) {
+      actions.push({
+        type: 'baseline', key: record.key, issueNumber: current.number, signature: record.signature,
+        sourceFingerprint: record.source.fingerprint,
+        sourceStatus,
+        body: renderNoticeBody(record, record.signature, record.signature),
       })
     } else {
       unchanged += 1
@@ -412,26 +518,43 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
   const desiredKeys = new Set(desired.map(record => record.key))
   for (const [key, current] of existingByKey) {
     if (desiredKeys.has(key) || current.state === 'closed') continue
+    const source = observedSources.get(key)
+    const canCompareSource = current.marker.sourceKnown && current.marker.sourceFingerprint && source?.known
+    const sourceStatus = canCompareSource && current.marker.sourceFingerprint !== source.fingerprint
+      ? 'modified-and-resolved'
+      : canCompareSource
+        ? 'resolved-without-source-change'
+        : 'resolved-source-unknown'
+    sourceStatuses.push({ key, status: sourceStatus })
     actions.push({
       type: 'close', key, issueNumber: current.number, signature: current.marker.signature,
-      comment: closeComment(key, current.marker.signature),
+      sourceFingerprint: source?.fingerprint ?? sourceEvidence([]).fingerprint,
+      sourceStatus,
+      comment: closeComment(key, current.marker.signature, sourceStatus),
       commentMarker: `dsh-author-notice-event:close:${key}:${current.marker.signature}`,
     })
   }
 
-  const actionOrder = { close: 0, notify: 1, update: 2, create: 3 }
+  const actionOrder = { close: 0, baseline: 1, notify: 2, 'source-update': 3, update: 4, create: 5 }
   actions.sort((left, right) => actionOrder[left.type] - actionOrder[right.type] || left.key.localeCompare(right.key, 'en'))
   const eligibleCreates = desired.filter(record => !existingByKey.has(record.key) && record.createCategories.size > 0).length
+  const githubMessageTypes = new Set(['create', 'update', 'notify', 'source-update'])
+  const githubMessages = actions.filter(action => githubMessageTypes.has(action.type)).length
   const planIdentity = {
     baseCommit,
+    sourceCatalogRunId,
     inputHashes,
-    desired: desired.map(record => ({ key: record.key, signature: record.signature })),
-    actions: actions.map(action => ({ type: action.type, key: action.key, signature: action.signature })),
+    desired: desired.map(record => ({ key: record.key, signature: record.signature, sourceFingerprint: record.source.fingerprint })),
+    actions: actions.map(action => ({
+      type: action.type, key: action.key, signature: action.signature,
+      sourceFingerprint: action.sourceFingerprint, sourceStatus: action.sourceStatus,
+    })),
   }
   return {
     schemaVersion: 1,
     planId: sha256(JSON.stringify(planIdentity)).slice(0, 24),
     baseCommit,
+    sourceCatalogRunId: sourceCatalogRunId === null ? null : String(sourceCatalogRunId),
     observedAt: report.observedAt,
     preconditions: inputHashes,
     policy: {
@@ -449,8 +572,20 @@ export function buildAuthorNoticePlan({ catalog, candidates, report, existingIss
       queuedNewIssues: Math.max(0, eligibleCreates - createRecords.length),
       creates: actions.filter(action => action.type === 'create').length,
       updates: actions.filter(action => action.type === 'update' || action.type === 'notify').length,
+      sourceUpdates: actions.filter(action => action.type === 'source-update').length,
+      baselineUpdates: actions.filter(action => action.type === 'baseline').length,
       closes: actions.filter(action => action.type === 'close').length,
       unchanged,
+      githubMessages,
+      githubNotificationEmailTriggers: githubMessages,
+      githubNotificationEmailDeliveriesVerified: 0,
+      emailDeliveryStatus: 'unverified-recipient-github-settings',
+      upstreamModifiedStillBlocked: sourceStatuses.filter(item => item.status === 'modified-still-blocked').length,
+      upstreamModifiedResolved: sourceStatuses.filter(item => item.status === 'modified-and-resolved').length,
+      noUpstreamModificationDetected: sourceStatuses.filter(item => item.status === 'not-modified').length,
+      sourceTrackingBaselines: sourceStatuses.filter(item => item.status === 'new-baseline' || item.status === 'tracking-baseline').length,
+      sourceModificationUnknown: sourceStatuses.filter(item => item.status === 'unknown' || item.status === 'resolved-source-unknown').length,
+      resolvedWithoutDetectedSourceChange: sourceStatuses.filter(item => item.status === 'resolved-without-source-change').length,
     },
     actions,
   }
@@ -491,6 +626,7 @@ async function main() {
   const plan = buildAuthorNoticePlan({
     catalog, candidates, report, existingIssues, notificationTargets,
     baseCommit: options['base-commit'], inputHashes, maxCreate: options.maxCreate,
+    sourceCatalogRunId: options['catalog-run-id'] ?? null,
   })
   await writeFile(resolve(options.output), `${JSON.stringify(plan, null, 2)}\n`, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
   process.stdout.write(`AUTHOR_NOTICE_PLAN_OK plan=${plan.planId} creates=${plan.summary.creates} updates=${plan.summary.updates} closes=${plan.summary.closes} queued=${plan.summary.queuedNewIssues}\n`)

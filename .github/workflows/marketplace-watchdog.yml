@@ -75,6 +75,36 @@ jobs:
           report_path=$(find "$report_dir" -type f -name catalog-automation-report.json -print -quit)
           test -n "$report_path"
           echo "path=$report_path" >> "$GITHUB_OUTPUT"
+      - name: Download the matching author notification record
+        id: author_report
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPORT_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
+        run: |
+          test -n "$REPORT_RUN_ID"
+          runs=$(gh run list --workflow author-notifications.yml --status success --limit 8 --json databaseId,url)
+          while IFS=$'\t' read -r run_id run_url; do
+            test -n "$run_id" || continue
+            plan_dir="$RUNNER_TEMP/author-notice-plan-$run_id"
+            mkdir -p "$plan_dir"
+            if ! gh run download "$run_id" \
+              --pattern "author-notification-plan-${run_id}-*" \
+              --dir "$plan_dir"; then
+              continue
+            fi
+            plan_path=$(find "$plan_dir" -type f -name author-notice-plan.json -print -quit)
+            test -n "$plan_path" || continue
+            if jq -e --arg catalog_run_id "$REPORT_RUN_ID" \
+              '.sourceCatalogRunId == $catalog_run_id' "$plan_path" >/dev/null; then
+              echo "path=$plan_path" >> "$GITHUB_OUTPUT"
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "run_url=$run_url" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done < <(jq -r '.[] | [.databaseId, .url] | @tsv' <<<"$runs")
+          exit 1
       - name: Render the Chinese update and verification report
         id: notification_report
         if: always()
@@ -84,6 +114,7 @@ jobs:
           CATALOG_RUN_URL: ${{ steps.previous.outputs.report_run_url }}
           CATALOG_RUN_CONCLUSION: ${{ steps.previous.outputs.report_run_conclusion }}
           REPAIR_TRIGGERED: ${{ steps.previous.outputs.repair }}
+          AUTHOR_NOTICE_PLAN_PATH: ${{ steps.author_report.outputs.path }}
         run: |
           args=(
             --catalog registry/catalog.json
@@ -101,6 +132,9 @@ jobs:
           fi
           if test -f "$RUNNER_TEMP/marketplace-watchdog-report.json"; then
             args+=(--watchdog-report "$RUNNER_TEMP/marketplace-watchdog-report.json")
+          fi
+          if test -n "$AUTHOR_NOTICE_PLAN_PATH" && test -f "$AUTHOR_NOTICE_PLAN_PATH"; then
+            args+=(--author-notice-plan "$AUTHOR_NOTICE_PLAN_PATH")
           fi
           node scripts/render-catalog-automation-notification.mjs "${args[@]}"
           cat "$RUNNER_TEMP/catalog-automation-notification.md" >> "$GITHUB_STEP_SUMMARY"

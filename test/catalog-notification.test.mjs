@@ -54,6 +54,25 @@ test('Catalog notification separates additions, historical updates, and deferred
     watchdogRunId: '456',
     watchdogRunUrl: 'https://github.com/example/repo/actions/runs/456',
     mention: '@AI-Scarlett',
+    authorNotices: {
+      sourceCatalogRunId: '123',
+      summary: {
+        desiredRepositories: 8,
+        githubMessages: 3,
+        githubNotificationEmailTriggers: 3,
+        upstreamModifiedStillBlocked: 1,
+        upstreamModifiedResolved: 1,
+        noUpstreamModificationDetected: 4,
+        sourceTrackingBaselines: 1,
+        sourceModificationUnknown: 1,
+        resolvedWithoutDetectedSourceChange: 0,
+      },
+      actions: [
+        { type: 'source-update', key: 'example/new-plugin', sourceStatus: 'modified-still-blocked' },
+        { type: 'close', key: 'example/fixed-plugin', sourceStatus: 'modified-and-resolved' },
+        { type: 'baseline', key: 'example/legacy-plugin', sourceStatus: 'tracking-baseline' },
+      ],
+    },
   })
   assert.match(output, /综合结果：\*\*通过\*\*/)
   assert.match(output, /新增收录：1 个（可安装 0，blocked\/不可安装 1）/)
@@ -67,7 +86,30 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /恢复兼容插件（Restored Compatibility）/)
   assert.match(output, /不兼容且已有其他失败的候选清理：1 个/)
   assert.match(output, /失败候选（Failed Candidate）/)
+  assert.match(output, /发送 GitHub 整改消息：3 个项目/)
+  assert.match(output, /触发 GitHub 通知邮件：3 个项目；实际送达：\*\*无法验证\*\*/)
+  assert.match(output, /已修改但仍未通过/)
+  assert.match(output, /已修改且问题清除/)
+  assert.match(output, /example\/new-plugin/)
+  assert.doesNotMatch(output, /example\/legacy-plugin/)
   assert.match(output, /状态边界/)
+})
+
+test('Catalog notification never presents a missing author notification plan as zero', () => {
+  const output = renderCatalogAutomationNotification({
+    catalog: { entries: [] },
+    report: {
+      observedAt: '2026-08-24T10:24:33.000Z',
+      addedEntries: [], updatedEntries: [], compatibilityUnlisted: [], compatibilityRestored: [],
+      prunedCandidates: [], deferredUpdates: [], transientFailures: [], sourceVersionChecks: {},
+    },
+    watchdog: { status: 'passed', surfaces: [], checkedAt: '2026-08-24T10:55:00.000Z' },
+    catalogRunId: '123',
+    catalogConclusion: 'success',
+  })
+  assert.match(output, /作者整改通知统计：\*\*不可用/)
+  assert.match(output, /请勿解读为 0/)
+  assert.doesNotMatch(output, /发送 GitHub 整改消息：0 个项目/)
 })
 
 test('Catalog notification remains useful when an automation artifact is missing', () => {

@@ -75,6 +75,7 @@ jobs:
             --existing-issues "$RUNNER_TEMP/author-notice-issues.json" \
             --notification-targets "$RUNNER_TEMP/author-notice-targets-empty.json" \
             --base-commit "${{ steps.base.outputs.sha }}" \
+            --catalog-run-id "${{ steps.report.outputs.run_id }}" \
             --max-create 3 \
             --output "$RUNNER_TEMP/author-notice-preliminary-plan.json"
       - name: Resolve a human maintainer for organization repositories
@@ -94,9 +95,10 @@ jobs:
             --existing-issues "$RUNNER_TEMP/author-notice-issues.json" \
             --notification-targets "$RUNNER_TEMP/author-notice-targets.json" \
             --base-commit "${{ steps.base.outputs.sha }}" \
+            --catalog-run-id "${{ steps.report.outputs.run_id }}" \
             --max-create 3 \
             --output "$RUNNER_TEMP/author-notice-plan.json"
-          jq -r '"creates=\(.summary.creates)", "updates=\(.summary.updates)", "closes=\(.summary.closes)", "queued=\(.summary.queuedNewIssues)", "plan_id=\(.planId)"' \
+          jq -r '"creates=\(.summary.creates)", "updates=\(.summary.updates + .summary.sourceUpdates)", "baselines=\(.summary.baselineUpdates)", "closes=\(.summary.closes)", "queued=\(.summary.queuedNewIssues)", "github_messages=\(.summary.githubMessages)", "email_triggers=\(.summary.githubNotificationEmailTriggers)", "modified_blocked=\(.summary.upstreamModifiedStillBlocked)", "modified_resolved=\(.summary.upstreamModifiedResolved)", "not_modified=\(.summary.noUpstreamModificationDetected)", "source_baselines=\(.summary.sourceTrackingBaselines)", "source_unknown=\(.summary.sourceModificationUnknown)", "plan_id=\(.planId)"' \
             "$RUNNER_TEMP/author-notice-plan.json" >> "$GITHUB_OUTPUT"
       - name: Apply only the verified plan with the short-lived repository token
         env:
@@ -117,8 +119,15 @@ jobs:
             echo "- 计划：\`${{ steps.plan.outputs.plan_id }}\`"
             echo "- 新修复单：${{ steps.plan.outputs.creates }}"
             echo "- 原因变化：${{ steps.plan.outputs.updates }}"
+            echo "- 静默建立源码追踪基线：${{ steps.plan.outputs.baselines }}"
             echo "- 自动关闭：${{ steps.plan.outputs.closes }}"
             echo "- 待后续限速通知：${{ steps.plan.outputs.queued }}"
+            echo "- 向不符合条件项目发送 GitHub 整改消息：${{ steps.plan.outputs.github_messages }}"
+            echo "- 触发 GitHub 通知邮件：${{ steps.plan.outputs.email_triggers }}（实际送达取决于接收者 GitHub 设置，仓库无法验证）"
+            echo "- 检测到作者修改但仍未通过：${{ steps.plan.outputs.modified_blocked }}"
+            echo "- 检测到作者修改且阻断清除：${{ steps.plan.outputs.modified_resolved }}"
+            echo "- 未检测到新提交：${{ steps.plan.outputs.not_modified }}"
+            echo "- 首次建立基线／暂无法判断：${{ steps.plan.outputs.source_baselines }} / ${{ steps.plan.outputs.source_unknown }}"
             echo "- Catalog 决策运行：#${{ steps.report.outputs.run_id }}"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Preserve the machine-readable notification plan
