@@ -257,6 +257,18 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
     install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
   })
+  const settingsHub = source.entries.find(item => item.id === 'dsh-settings-hub')
+  assert.ok(settingsHub, 'Settings Hub must be listed')
+  assert.equal(settingsHub.compatibility.dsh, '^0.1.1-rc.1')
+  assert.deepEqual(settingsHub.compatibility.dshReleases, {
+    'rc.7': 'incompatible', 'rc.8': 'incompatible',
+    '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
+  })
+  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2']) {
+    assert.deepEqual(settingsHub.compatibility.dshOperations[release], {
+      install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+    })
+  }
   const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
   assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
   assert.equal(requestedIm.name, '多平台 IM 机器人桥接（DSH IM）')
