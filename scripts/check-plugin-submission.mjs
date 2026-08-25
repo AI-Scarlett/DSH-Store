@@ -333,7 +333,7 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
   const patchPath = safePatchPath(discovered.manifestPath, manifest.dsh.bundle.patch)
   const patch = await readPinnedText(repositoryInput.repositoryUrl, snapshot.commit, patchPath, fetchOptions)
   const allowProtectedManager = options.allowProtectedManager === true
-    && repositoryInput.repositoryUrl === 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
+    && repositoryInput.repositoryUrl === 'https://github.com/AI-Scarlett/DSH-Store'
     && manifest.name === 'dsh-safe-plugin-manager'
   const entryIds = patchEntryIds(patch, { allowProtectedManager })
   const readme = await optionalReadme(repositoryInput.repositoryUrl, snapshot.commit, discovered.manifestPath, fetchOptions)

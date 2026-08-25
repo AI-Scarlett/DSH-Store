@@ -50,7 +50,7 @@
   </script>
   <!-- DSH_STATIC_CATALOG -->
 </head>
-<body class="plugins-page" data-catalog-url="../../registry/catalog.json" data-candidates-url="../../registry/candidates.json" data-automation-status-url="https://ai-scarlett.github.io/dsh-safe-plugin-manager/automation-status.json">
+<body class="plugins-page" data-catalog-url="../../registry/catalog.json" data-candidates-url="../../registry/candidates.json" data-automation-status-url="https://ai-scarlett.github.io/DSH-Store/automation-status.json">
   <a class="skip-link" href="#catalog" data-i18n="a11y.skipCatalog">跳到插件目录</a>
   <div class="tech-grid" aria-hidden="true"></div>
 
@@ -64,8 +64,8 @@
       <a href="../build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="catalog_header">开发插件</a>
       <a href="../faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="catalog_header">常见问题</a>
       <a href="../about/" data-i18n="nav.about" data-analytics-event="about_open" data-analytics-item="catalog_header">关于我们</a>
-      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/README.md" target="_blank" rel="noreferrer" data-analytics-event="usage_guide_open" data-analytics-item="catalog_header"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
-      <a href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="catalog_header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/DSH-Store/blob/main/README.md" target="_blank" rel="noreferrer" data-analytics-event="usage_guide_open" data-analytics-item="catalog_header"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="catalog_header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
       <!-- DSH_ALTERNATE_SITE -->
     </nav>
     <div class="header-tools">
@@ -101,7 +101,7 @@
         <article><small data-i18n="automation.latestChange">最近一次扫描变更</small><strong><span data-automation-added-count>—</span> / <span data-automation-updated-count>—</span></strong><span data-i18n="automation.changeUnit">新增 / 更新</span></article>
         <article><small data-i18n="automation.sourceCheck">历史版本检查</small><strong><span data-automation-source-checked>—</span> / <span data-automation-source-newer>—</span> / <span data-automation-source-applied>—</span></strong><span data-i18n="automation.sourceCheckUnit">已检查 / 发现高版本 / 已更新</span></article>
       </div>
-      <div class="automation-additions"><div><small data-i18n="automation.recent">最近自动新增</small><h3 data-i18n="automation.recentTitle">新增了哪些插件</h3></div><ul data-automation-additions><li data-i18n="automation.loading">正在读取最近运行记录…</li></ul><a data-automation-run-link href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/actions/workflows/catalog-automation.yml" target="_blank" rel="noreferrer" data-i18n="automation.evidence">查看 GitHub 运行证据 ↗</a></div>
+      <div class="automation-additions"><div><small data-i18n="automation.recent">最近自动新增</small><h3 data-i18n="automation.recentTitle">新增了哪些插件</h3></div><ul data-automation-additions><li data-i18n="automation.loading">正在读取最近运行记录…</li></ul><a data-automation-run-link href="https://github.com/AI-Scarlett/DSH-Store/actions/workflows/catalog-automation.yml" target="_blank" rel="noreferrer" data-i18n="automation.evidence">查看 GitHub 运行证据 ↗</a></div>
       <div class="automation-additions automation-updates"><div><small data-i18n="automation.recentUpdates">最近原项目更新</small><h3 data-i18n="automation.recentUpdatesTitle">哪些插件版本更新了</h3></div><ul data-automation-updates><li data-i18n="automation.loading">正在读取最近运行记录…</li></ul></div>
     </section>
 
@@ -125,7 +125,7 @@
         <button id="next-page" type="button"><span data-i18n="action.next">下一页</span><i aria-hidden="true">→</i></button>
       </nav>
       <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h3 data-i18n="empty.title">没有找到匹配插件</h3><p data-i18n="empty.body">换个关键词，或清除当前分类筛选。</p><button id="empty-clear" class="button button-primary" type="button" data-i18n="action.viewAll">查看全部插件</button></div>
-      <div id="load-error" class="load-error" hidden><span aria-hidden="true">!</span><div><h3 data-i18n="error.title">目录暂时没有加载成功</h3><p data-i18n="error.body">请稍后重试，或前往 GitHub 查看最新目录。</p><div class="load-error-actions"><button id="retry-catalog" class="button button-primary" type="button" data-i18n="action.retry">重新加载</button><a class="button button-secondary" href="https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/catalog.json" target="_blank" rel="noreferrer" data-i18n="action.githubCatalog">查看 GitHub 目录 ↗</a></div></div></div>
+      <div id="load-error" class="load-error" hidden><span aria-hidden="true">!</span><div><h3 data-i18n="error.title">目录暂时没有加载成功</h3><p data-i18n="error.body">请稍后重试，或前往 GitHub 查看最新目录。</p><div class="load-error-actions"><button id="retry-catalog" class="button button-primary" type="button" data-i18n="action.retry">重新加载</button><a class="button button-secondary" href="https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/catalog.json" target="_blank" rel="noreferrer" data-i18n="action.githubCatalog">查看 GitHub 目录 ↗</a></div></div></div>
       <div class="catalog-capacity reveal"><span>TRUST BOUNDARY / PRIVACY BY DEFAULT</span><b data-i18n="directory.capacity">搜索关键词留在你的浏览器里</b><small data-i18n="directory.capacityNote">筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。</small><small data-i18n="candidate.notice">候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。</small></div>
     </section>
   </main>

@@ -279,8 +279,8 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     readFile(new URL('registry/catalog.json', project), 'utf8').then(JSON.parse),
   ])
   const managerCommit = catalogDocument.entries.find(entry => entry.id === 'dsh-safe-plugin-manager').commit
-  const installCommand = `dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#${managerCommit}'`
-  const submissionUrl = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml'
+  const installCommand = `dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#${managerCommit}'`
+  const submissionUrl = 'https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml'
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)
   assert.match(html, /data-locale="en"/)

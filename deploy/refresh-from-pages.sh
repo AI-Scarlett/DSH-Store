@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 umask 022
 
-readonly pages_base="${DSH_STORE_PAGES_BASE:-https://ai-scarlett.github.io/dsh-safe-plugin-manager}"
+readonly pages_base="${DSH_STORE_PAGES_BASE:-https://ai-scarlett.github.io/DSH-Store}"
 readonly deploy_root="${DSH_STORE_ROOT:-/opt/dsh-store}"
 readonly current_link="$deploy_root/current"
 readonly lock_file="${DSH_STORE_LOCK_FILE:-/run/lock/dsh-store-refresh.lock}"
@@ -22,7 +22,7 @@ case "$deploy_root" in
   *) printf 'Unsupported DSH Store root: %s\n' "$deploy_root" >&2; exit 2 ;;
 esac
 case "$pages_base" in
-  https://ai-scarlett.github.io/dsh-safe-plugin-manager) ;;
+  https://ai-scarlett.github.io/DSH-Store) ;;
   *) printf 'Unsupported Pages authority: %s\n' "$pages_base" >&2; exit 2 ;;
 esac
 case "$store_domain:$pages_subdir" in

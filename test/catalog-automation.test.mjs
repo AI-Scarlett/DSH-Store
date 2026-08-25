@@ -71,8 +71,8 @@ test('automatic policy runs every eight hours and fails closed on permission or 
   assert.equal(policy.automaticApproval.requireRepositoryLicenseMatch, true)
   assert.ok(Object.values(policy.automaticApproval.permissionSignals).every(value => value === false))
   assert.deepEqual(policy.publication.publicCatalogUrls, [
-    'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json',
-    'https://ai-scarlett.github.io/dsh-safe-plugin-manager/registry/catalog.json',
+    'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json',
+    'https://ai-scarlett.github.io/DSH-Store/registry/catalog.json',
     'https://dsh.store/registry/catalog.json',
     'https://dsh-store.cn/registry/catalog.json',
   ])

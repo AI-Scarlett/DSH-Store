@@ -41,7 +41,7 @@ const INFRASTRUCTURE_CODES = new Set([
   'SUBMISSION_GITHUB_NETWORK', 'SUBMISSION_REPOSITORY_HTTP', 'SUBMISSION_COMMIT_HTTP',
   'SUBMISSION_TREE_HTTP', 'SUBMISSION_SOURCE_HTTP',
 ])
-const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager'
+const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
 const SELF_MANAGER_PROTECTED_ENTRY_REASON = 'Bundle Patch uses a protected DSH entry ID'
 const SELF_MANAGER_PROTECTED_DSH_REASON = 'runtime source contains the protectedDsh permission signal'
 const SELF_MANAGER_MAX_RUNTIME_FILES = 512
@@ -379,7 +379,7 @@ async function discoverRepositories(policy, github) {
     for (const item of result?.items ?? []) {
       if (item?.private || item?.archived || item?.disabled || typeof item?.html_url !== 'string') continue
       const url = canonicalGithubRepository(item.html_url)
-      if (url === 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager') continue
+      if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
       found.set(url.toLowerCase(), { ...item, html_url: url })
     }
   }

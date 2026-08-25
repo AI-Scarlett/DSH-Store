@@ -7,10 +7,10 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 插件商城与安全生命周期管理器。它使用标准 DSH Bundle + Host Plugin + Client Bundle
 结构，不开发独立桌面端，不修改 DSH 源码，也不替换任何 `@deepseek-ai/*` 官方包。
 
-> **想把插件上架到 DSH-Store？** [提交一个公开 GitHub 项目地址](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) 即可。机器人会自动读取必要文件，不再要求手填整份 Catalog。开发或提交前，建议先用 [`build-dsh-plugin`](https://github.com/AI-Scarlett/build-dsh-plugin) 制作或执行只读商城预检。
+> **想把插件上架到 DSH-Store？** [提交一个公开 GitHub 项目地址](https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml) 即可。机器人会自动读取必要文件，不再要求手填整份 Catalog。开发或提交前，建议先用 [`build-dsh-plugin`](https://github.com/AI-Scarlett/build-dsh-plugin) 制作或执行只读商城预检。
 
 [打开在线插件商城](https://dsh.store/) ·
-[提交项目上架](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml) ·
+[提交项目上架](https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml) ·
 [使用 build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) ·
 [查看机器目录](registry/catalog.json) ·
 [目录准入规则](registry/README.md) ·
@@ -34,7 +34,7 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/dsh-safe-plugin-manager.git#b63118fc20d315fb484f40a92e43c3ab59121904'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#b63118fc20d315fb484f40a92e43c3ab59121904'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -55,7 +55,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
    30 秒才判定健康。连续探测失败才执行有界重启，5 分钟内最多失败 3 次；
 6. 页面检测到新的 Boot ID 后重新读取插件清单与健康报告，只有通过才显示“已重启并生效”；
 7. 如果安装、重启或页面显示异常，请在
-   [GitHub Issues](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues) 提交原始错误，
+   [GitHub Issues](https://github.com/AI-Scarlett/DSH-Store/issues) 提交原始错误，
    不要提交凭据、完整 Profile 文件或环境变量。
 
 安装完成后，从商城发起的安装、更新、迁移、停用、启用和卸载才会进入一次性计划、
@@ -221,30 +221,30 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 | 阶段 | 关键提交 | 完成内容 |
 | --- | --- | --- |
-| 只读原型 | [`5df2f80`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/5df2f80) | 建立标准 DSH Bundle、Profile 只读扫描、Host API 和设置页入口。 |
-| 客户端接入修复 | [`e579c18`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/e579c18) | 修复 Client ModuleLoader 初始化并完成真实 DSH 页面验收。 |
-| 受控生命周期 | [`ba168e3`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ba168e3) | 加入安装、更新、启停、卸载的计划/确认/备份/健康检查/回滚事务。 |
-| GitHub 目录发布 | [`60f97d8`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/60f97d8) | 建立 GitHub-only 注册表、固定 Commit 来源校验和 GitHub Pages 商城。 |
-| 分类商城 `0.3.0` | [`64949b8`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/64949b8) | 加入分类筛选、推荐排序、上下架、安装来源标记和自研四件套。 |
-| 推荐规则完善 | [`3c2b9f2`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3c2b9f2) | 将推荐严格限制为 `AI-Scarlett` 自研的四个插件。 |
-| 本地来源迁移 `0.3.1` | [`80fefec`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/80fefec) | 将本地开发安装从普通更新中隔离，新增显式“迁移到商城版”流程。 |
-| 热门插件扩充 | [`7aaba17`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/7aaba17) | 按推荐清单扩充到 31 个条目和 22 个分类，并为不兼容项目保留展示型阻止。 |
-| 插件详情与更新修复 `0.4.0` | [`f3a93c2`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/f3a93c2) | 补齐 31 个插件的权限、许可证、审核与兼容性详情；为商城不可安装项目提供 GitHub 手动入口，并修复 DSH 运行环境中的 pnpm PATH。 |
-| 内置 Guardian `0.4.4` | [`ca297cc`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ca297cc6f68cbe007b07b30815a9811d09f9ffcc) | 将重启切换为商城自带的进程外 launchd Guardian，加入冷启动入口冲突检查、有界重启、熔断和事务回滚隔离。 |
-| Guardian 心跳修复 `0.4.5` | [`3f0d117`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3f0d1177f024bf159532370fa2a3861dc1b4ba83) | 稳定期只执行一次；进入健康状态后持续刷新心跳与稳定时长，避免商城误报守护进程离线。 |
-| 健康权限交互修复 `0.4.6` | [`e645ede`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/e645edefe8ece8972d3fd723875b0f49ffeb272b) | 将权限定位与重新检查拆分，补充未选择数量、按钮禁用、检查中和完成/失败反馈。 |
-| Guardian 单一所有者 `0.4.8` | [`ed8722b`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d) | 以首页 HTTP 与 runtime Profile/Boot ID 共同判定健康；拒绝接管外部或未知端口进程，连续失败才有界重启，并移除会启动第二实例的 UI 命令。 |
-| DSH-Store 与目录扩充 `0.4.9` | [`8a76190`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/8a76190b516258e37ba0604891058c87d979295e) | 英文品牌统一为 DSH-Store，技术支持入口切换到 dsh.store，并将目录扩充到 42 个条目。 |
-| rc.7 卡片与提交门禁 `0.5.0` | [`3ca90bf`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/3ca90bf245fe54a097c787c216ad7353d7769ebb) | 修复 Guardian/全局 DSH CLI 的 pnpm PATH，升级响应式插件卡片与发布者展示，并将上架表单简化为 GitHub 地址驱动的自动静态预检。 |
-| 本机按需源更新 `0.5.1` | [`9a6e41f`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/9a6e41f7875726f7124d2cfde618df284342e5f3) | 用户本机按需读取插件源 GitHub，解析完整 Commit 并在安装前审核；低风险候选可固定 SHA 更新，高风险或契约漂移返回 Registry 复审。 |
-| 本机高风险自主决策 `0.5.2` | [`5e6c2b9`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/5e6c2b9cde9c3992d55a88aa7223da76a5746b78) | 进入已安装页后由用户本机有限并发检查源 GitHub；低风险生成固定 SHA 计划，高风险展示变化并逐次确认，触碰 DSH 原生代码或受保护组件则仅保留不受商城保护的外部入口。 |
-| DSH 版本与升级提示 `0.5.3` | [`2655055`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/2655055671fa2dc23a178cc251402bc5748c7e2a) | 在商城标题右侧显示当前 DSH 版本并按需检查 npm 官方最新版；提供固定版本升级命令与官方 Release，同时折叠长说明并保持 DSH 源码不可修改。 |
-| 安装诊断与构建许可 `0.5.4` | [`74ca4d4`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/74ca4d4c07a21ae1ac1a5e8372e98097e75565b9) | 将源更新超时映射为稳定错误码，显示脱敏 pnpm 诊断，并仅为已审核且声明安装生命周期脚本的插件传入精确包名构建许可。 |
-| Guardian 探针留存 `0.5.5` | [`96590c8`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/96590c863d9c074c8f31c4fed4173f4634354d08) | 记录端口、首页、runtime 身份与耗时的脱敏探针；健康状态采样、故障逐次记录，24 小时/4 MiB 自动清理；部署 Guardian 与商城源码漂移时禁止安全重启，要求走新的确认升级流程。 |
-| Guardian 安全交接与健康审核持久化 `0.5.6` | [`8bb4b17`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/8bb4b17836b593ebc29c77882503bc70f759bbc6) | 新 Guardian 先验证独立心跳再交接旧 Host；浏览器本地健康审核按版本、固定 Commit 和权限声明失效；补齐 19 个商城展示名。 |
-| 分页和跨 RC 兼容 `0.7.0` | [`7cff780`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/7cff780c00c923b1ca45ceff1d7e26c3e263c969) | DSH Host 目录改为每页 24 条的有界响应，候选库按需读取；公共商城移除 HTML 内嵌完整目录，并将官方客户端契约兼容范围扩展到 rc.5–rc.8。 |
-| DSH 0.1.1-rc.1 兼容 `0.8.0` | [`b9be979`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/b9be979ff42deacff5e344e2e5d36c13638c95b9) | 新增无歧义 `0.1.1-rc.1` 矩阵、最新版本排序、旧目录缺键降级和 400 条目录的保守兼容状态迁移。 |
-| 动态 DSH 兼容与启动恢复 `0.8.1` | [`9ba80c2`](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/9ba80c2cd2456193f2805aacb08d8bb87716e92f) | 从官方 npm Registry 获取最新 DSH 版本且不阻塞目录加载；范围匹配保持待验证，补齐 rc.2 临时 Profile 证据，并让所有标签页在 Guardian 稳定后只恢复一次。 |
+| 只读原型 | [`5df2f80`](https://github.com/AI-Scarlett/DSH-Store/commit/5df2f80) | 建立标准 DSH Bundle、Profile 只读扫描、Host API 和设置页入口。 |
+| 客户端接入修复 | [`e579c18`](https://github.com/AI-Scarlett/DSH-Store/commit/e579c18) | 修复 Client ModuleLoader 初始化并完成真实 DSH 页面验收。 |
+| 受控生命周期 | [`ba168e3`](https://github.com/AI-Scarlett/DSH-Store/commit/ba168e3) | 加入安装、更新、启停、卸载的计划/确认/备份/健康检查/回滚事务。 |
+| GitHub 目录发布 | [`60f97d8`](https://github.com/AI-Scarlett/DSH-Store/commit/60f97d8) | 建立 GitHub-only 注册表、固定 Commit 来源校验和 GitHub Pages 商城。 |
+| 分类商城 `0.3.0` | [`64949b8`](https://github.com/AI-Scarlett/DSH-Store/commit/64949b8) | 加入分类筛选、推荐排序、上下架、安装来源标记和自研四件套。 |
+| 推荐规则完善 | [`3c2b9f2`](https://github.com/AI-Scarlett/DSH-Store/commit/3c2b9f2) | 将推荐严格限制为 `AI-Scarlett` 自研的四个插件。 |
+| 本地来源迁移 `0.3.1` | [`80fefec`](https://github.com/AI-Scarlett/DSH-Store/commit/80fefec) | 将本地开发安装从普通更新中隔离，新增显式“迁移到商城版”流程。 |
+| 热门插件扩充 | [`7aaba17`](https://github.com/AI-Scarlett/DSH-Store/commit/7aaba17) | 按推荐清单扩充到 31 个条目和 22 个分类，并为不兼容项目保留展示型阻止。 |
+| 插件详情与更新修复 `0.4.0` | [`f3a93c2`](https://github.com/AI-Scarlett/DSH-Store/commit/f3a93c2) | 补齐 31 个插件的权限、许可证、审核与兼容性详情；为商城不可安装项目提供 GitHub 手动入口，并修复 DSH 运行环境中的 pnpm PATH。 |
+| 内置 Guardian `0.4.4` | [`ca297cc`](https://github.com/AI-Scarlett/DSH-Store/commit/ca297cc6f68cbe007b07b30815a9811d09f9ffcc) | 将重启切换为商城自带的进程外 launchd Guardian，加入冷启动入口冲突检查、有界重启、熔断和事务回滚隔离。 |
+| Guardian 心跳修复 `0.4.5` | [`3f0d117`](https://github.com/AI-Scarlett/DSH-Store/commit/3f0d1177f024bf159532370fa2a3861dc1b4ba83) | 稳定期只执行一次；进入健康状态后持续刷新心跳与稳定时长，避免商城误报守护进程离线。 |
+| 健康权限交互修复 `0.4.6` | [`e645ede`](https://github.com/AI-Scarlett/DSH-Store/commit/e645edefe8ece8972d3fd723875b0f49ffeb272b) | 将权限定位与重新检查拆分，补充未选择数量、按钮禁用、检查中和完成/失败反馈。 |
+| Guardian 单一所有者 `0.4.8` | [`ed8722b`](https://github.com/AI-Scarlett/DSH-Store/commit/ed8722b20073cb61c7041e3e8eab6e5e10ed6d6d) | 以首页 HTTP 与 runtime Profile/Boot ID 共同判定健康；拒绝接管外部或未知端口进程，连续失败才有界重启，并移除会启动第二实例的 UI 命令。 |
+| DSH-Store 与目录扩充 `0.4.9` | [`8a76190`](https://github.com/AI-Scarlett/DSH-Store/commit/8a76190b516258e37ba0604891058c87d979295e) | 英文品牌统一为 DSH-Store，技术支持入口切换到 dsh.store，并将目录扩充到 42 个条目。 |
+| rc.7 卡片与提交门禁 `0.5.0` | [`3ca90bf`](https://github.com/AI-Scarlett/DSH-Store/commit/3ca90bf245fe54a097c787c216ad7353d7769ebb) | 修复 Guardian/全局 DSH CLI 的 pnpm PATH，升级响应式插件卡片与发布者展示，并将上架表单简化为 GitHub 地址驱动的自动静态预检。 |
+| 本机按需源更新 `0.5.1` | [`9a6e41f`](https://github.com/AI-Scarlett/DSH-Store/commit/9a6e41f7875726f7124d2cfde618df284342e5f3) | 用户本机按需读取插件源 GitHub，解析完整 Commit 并在安装前审核；低风险候选可固定 SHA 更新，高风险或契约漂移返回 Registry 复审。 |
+| 本机高风险自主决策 `0.5.2` | [`5e6c2b9`](https://github.com/AI-Scarlett/DSH-Store/commit/5e6c2b9cde9c3992d55a88aa7223da76a5746b78) | 进入已安装页后由用户本机有限并发检查源 GitHub；低风险生成固定 SHA 计划，高风险展示变化并逐次确认，触碰 DSH 原生代码或受保护组件则仅保留不受商城保护的外部入口。 |
+| DSH 版本与升级提示 `0.5.3` | [`2655055`](https://github.com/AI-Scarlett/DSH-Store/commit/2655055671fa2dc23a178cc251402bc5748c7e2a) | 在商城标题右侧显示当前 DSH 版本并按需检查 npm 官方最新版；提供固定版本升级命令与官方 Release，同时折叠长说明并保持 DSH 源码不可修改。 |
+| 安装诊断与构建许可 `0.5.4` | [`74ca4d4`](https://github.com/AI-Scarlett/DSH-Store/commit/74ca4d4c07a21ae1ac1a5e8372e98097e75565b9) | 将源更新超时映射为稳定错误码，显示脱敏 pnpm 诊断，并仅为已审核且声明安装生命周期脚本的插件传入精确包名构建许可。 |
+| Guardian 探针留存 `0.5.5` | [`96590c8`](https://github.com/AI-Scarlett/DSH-Store/commit/96590c863d9c074c8f31c4fed4173f4634354d08) | 记录端口、首页、runtime 身份与耗时的脱敏探针；健康状态采样、故障逐次记录，24 小时/4 MiB 自动清理；部署 Guardian 与商城源码漂移时禁止安全重启，要求走新的确认升级流程。 |
+| Guardian 安全交接与健康审核持久化 `0.5.6` | [`8bb4b17`](https://github.com/AI-Scarlett/DSH-Store/commit/8bb4b17836b593ebc29c77882503bc70f759bbc6) | 新 Guardian 先验证独立心跳再交接旧 Host；浏览器本地健康审核按版本、固定 Commit 和权限声明失效；补齐 19 个商城展示名。 |
+| 分页和跨 RC 兼容 `0.7.0` | [`7cff780`](https://github.com/AI-Scarlett/DSH-Store/commit/7cff780c00c923b1ca45ceff1d7e26c3e263c969) | DSH Host 目录改为每页 24 条的有界响应，候选库按需读取；公共商城移除 HTML 内嵌完整目录，并将官方客户端契约兼容范围扩展到 rc.5–rc.8。 |
+| DSH 0.1.1-rc.1 兼容 `0.8.0` | [`b9be979`](https://github.com/AI-Scarlett/DSH-Store/commit/b9be979ff42deacff5e344e2e5d36c13638c95b9) | 新增无歧义 `0.1.1-rc.1` 矩阵、最新版本排序、旧目录缺键降级和 400 条目录的保守兼容状态迁移。 |
+| 动态 DSH 兼容与启动恢复 `0.8.1` | [`9ba80c2`](https://github.com/AI-Scarlett/DSH-Store/commit/9ba80c2cd2456193f2805aacb08d8bb87716e92f) | 从官方 npm Registry 获取最新 DSH 版本且不阻塞目录加载；范围匹配保持待验证，补齐 rc.2 临时 Profile 证据，并让所有标签页在 Guardian 稳定后只恢复一次。 |
 | 远端 Catalog 证据兼容 `0.8.3` | 待 Catalog 固定提交 | 接受受契约约束的 `partial` 证据状态，避免可验证的远端目录被旧客户端误判为无效后只能使用内置快照。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
@@ -259,7 +259,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 | 插件 | 分类 | 状态 | 介绍 |
 | --- | --- | --- | --- |
-| ★ [DSH-Store](https://github.com/AI-Scarlett/dsh-safe-plugin-manager) | 插件市场、管理工具 | 可安装 | 本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。 |
+| ★ [DSH-Store](https://github.com/AI-Scarlett/DSH-Store) | 插件市场、管理工具 | 可安装 | 本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。 |
 | ★ [Build DSH Plugin](https://github.com/AI-Scarlett/build-dsh-plugin) | 开发与运行时、工作流、工具能力 | 可安装 | 把插件需求转化为标准 DSH Bundle、审计、发布和商城候选。 |
 | ★ [Agent Workflow](https://github.com/xuanyuanzhifeng/dsh-plugin-agent-workflow) | 工作流、会话、可视化 | 可安装 | 按轮次展示模型请求、工具调用、耗时与 Token 统计。 |
 | [DSH Codex Shell](https://github.com/Ephemeral-AI-Lab/dsh-plugins/tree/0ff29d7bb4c26e62c8bce9b867965fd2211fa670/codex-shell) | 工具能力、开发与运行时 | 可安装 | 为编码 Agent 提供 Codex 风格的持续终端工具；可执行任意 Shell，安装前必须确认高权限和精确 allowBuilds。 |
@@ -354,7 +354,7 @@ Host 端使用 `ctx.inject(['webServer'], ...)` 等待可选 Web 服务。Client
 ### 提交插件上架申请
 
 如果你开发或发现了值得收录的 DSH 插件，只需打开
-[项目上架入口](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
+[项目上架入口](https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml)
 并填写公开 GitHub 地址。仓库只有一个 DSH 插件时无需填写其他技术字段；若机器人发现多个
 插件，会列出候选目录，此时编辑 Issue 补一个 `Plugin path` 即可。
 

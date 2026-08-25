@@ -49,7 +49,7 @@
 
 ### GitHub 发布验收
 
-- 公开仓库：`https://github.com/AI-Scarlett/dsh-safe-plugin-manager`；
+- 公开仓库：`https://github.com/AI-Scarlett/DSH-Store`；
 - GitHub Pages 工作流完成，市场页面与 Pages 目录 JSON 均返回有效内容；
 - GitHub Raw 默认目录返回 17 个目录条目，其中 15 个 approved、2 个 blocked；
 - 真实 DSH 强制刷新市场后返回 `source.kind=github`、`errorCode=null`，来源 URL
@@ -80,7 +80,7 @@
   执行仍经由官方 DSH CLI、事务备份、健康检查与失败回滚；
 - 一次性 `DSH_HOME` 实测先安装本地链接，再使用官方
   `dsh plugin --profile migration add <fixed-git-commit>` 切换来源；Profile 依赖
-  最终为 `github:AI-Scarlett/dsh-safe-plugin-manager#64949...`，安装包版本为
+  最终为 `github:AI-Scarlett/DSH-Store#64949...`，安装包版本为
   `0.3.0`，项目工作树没有出现 CLI 额外改动；
 - 上述测试为一次性环境的官方 CLI 来源切换证据，不等于真实 `web`
   Profile 已迁移；真实 Profile 仍留给用户在 UI 中生成计划并精确确认。
