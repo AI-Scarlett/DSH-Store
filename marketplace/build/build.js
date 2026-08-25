@@ -9,16 +9,16 @@ const translations = {
     'action.install': '安装 Skill', 'action.copyBrief': '复制开发 Brief', 'action.github': '查看开源 Skill', 'action.copy': '复制模板', 'action.copyInstall': '复制安装指令', 'action.download': '下载已验证 ZIP', 'action.downloadAgent': '下载当前 Agent Skill ZIP', 'action.source': '查看源码', 'action.top': '回到顶部 ↑',
     'console.problem': '现在的问题是什么？', 'console.outcome': '希望发生什么改变？', 'console.success': '怎么观察到它成功？',
     'principle.one': '标准 DSH Bundle', 'principle.two': '默认只读与最小权限', 'principle.three': '一次性 Profile 测试', 'principle.four': '发行与真实安装分离',
-    'install.title': '先把 Skill 装进你的 Agent。', 'install.lead': 'Codex 与通用 Agent 直接使用项目仓库地址；发行 ZIP 与未来的 DSH 安装命令继续通过最新 Release 和对应标签的 manifest.json 核验。',
-    'install.targetCodex': '复制给 Codex 的安装指令', 'install.targetDsh': '安装兼容版到 DSH Profile', 'install.targetAgent': '下载 ZIP 到兼容的 Skills 目录',
+    'install.title': '先把 Skill 装进你的 Agent。', 'install.lead': '任何支持 Skill 的编程 Agent 都可以使用项目仓库地址；兼容时，也可以直接通过 DSH STORE 安装到 DSH。发行 ZIP 与安装命令继续通过最新 Release 和对应标签的 manifest.json 核验。',
+    'install.targetCodingAgent': '复制给任何编程 Agent', 'install.targetDshStore': '通过 DSH STORE 安装到 DSH', 'install.targetZip': '下载 ZIP 到兼容的 Skills 目录',
     'install.loading': '正在核对固定发行…', 'install.ready': '固定发行已核验', 'install.unavailableStatus': '发行核验失败', 'install.loadingCommand': '正在读取并验证 GitHub Release…',
-    'install.codexTitle': '复制仓库地址，让 Codex 安装 Skill', 'install.codexBody': '指令直接使用项目仓库，并明确安装其中的 build-dsh-plugin/ 目录。',
-    'install.dshTitle': '通过 dsh plugin add 安装兼容版', 'install.dshBody': '只有发行清单声明标准 Bundle、固定 Git Commit 和明确安装规格后，复制按钮才会开放。',
-    'install.agentTitle': '安装到支持 SKILL.md 的其他 Agent', 'install.agentBody': '把仓库地址交给目标 Agent，并明确使用 build-dsh-plugin/ 目录；也可以下载已验证 ZIP。',
+    'install.codingAgentTitle': '复制仓库地址，交给任何编程 Agent', 'install.codingAgentBody': '指令直接使用固定版本的项目仓库；目标 Agent 只需要支持 SKILL.md 或等价的 Skill 加载方式。',
+    'install.dshStoreTitle': '通过 DSH STORE 安装到 DSH', 'install.dshStoreBody': '在 DSH 内打开 DSH STORE，搜索 build-dsh-plugin；商城会先核对固定来源与当前 DSH 兼容性，再决定是否允许安装。',
+    'install.zipTitle': '下载 ZIP，放入兼容的 Agent Skills 目录', 'install.zipBody': '把已验证发行 ZIP 解压到目标 Agent 的 Skills 目录，并保持 build-dsh-plugin/ 的内部结构不变。',
     'install.boundaryLabel': '安装边界：', 'install.boundary': '不同宿主使用各自经过验证的安装入口；网页只复制命令，不会直接修改本机。',
-    'install.codexBoundary': 'Codex 安装写入它自己的 Skills 目录，重新打开任务后生效。', 'install.dshBoundaryReady': '该命令会修改目标 DSH Profile；执行前确认 Profile 并备份，安装与运行验收仍是独立步骤。', 'install.dshBoundaryPending': '当前公开发行仍是 Agent Skill；DSH 兼容清单尚未通过验证，因此不会生成可执行的 plugin add 命令。', 'install.agentBoundary': '目标 Agent 必须支持 SKILL.md 或等价指令加载；Node.js 工具需要 18 或更高版本。',
+    'install.codingAgentBoundary': '目标 Agent 必须支持 SKILL.md 或等价指令加载；网页只复制固定来源，不会直接修改本机。', 'install.dshBoundaryReady': 'DSH STORE 会按当前兼容性开放安装；真实变更仍会修改目标 DSH Profile，执行前确认 Profile 并备份，安装与运行验收仍是独立步骤。', 'install.dshBoundaryPending': '当前发行的 DSH 兼容性尚未通过核验，因此 DSH STORE 会保持安装关闭，不会生成可执行的 plugin add 命令。', 'install.zipBoundary': '目标 Agent 必须支持 SKILL.md 或等价指令加载；Node.js 工具需要 18 或更高版本。',
     'install.proofTitle': '发行身份', 'install.version': '版本', 'install.files': '文件', 'install.license': '许可', 'install.checksum': '校验文件', 'install.releasePage': '发行页面 ↗', 'install.licensePage': 'MIT License ↗', 'install.unavailable': '当前无法完成发行核验，复制和下载已保持关闭；仍可前往 GitHub 查看源码。',
-    'install.dshReady': '已兼容', 'install.dshPending': '准备中', 'install.dshPendingCommand': 'DSH 兼容版准备中。最新已验证发行尚未声明可执行的 dsh plugin add 安装规格。',
+    'install.dshReady': '已兼容', 'install.dshPending': '准备中', 'install.dshPendingCommand': 'DSH STORE 正在等待兼容性核验。当前发行还没有声明可执行的 dsh plugin add 安装规格。',
     'start.title': '先把意图写清楚，技术结构交给 Skill。', 'start.lead': '下面的模板可以直接复制到支持 Skill 的 Agent。缺省字段会采用安全默认值，并作为假设明确展示。', 'start.note': '不要在 Brief 中放入 Token、密码、Cookie 或私有文件内容。',
     'process.title': '每一步都有输出，也有停止条件。', 'process.lead': '通过当前证据再进入下一阶段；无法证明时保持 Partial 或 Blocked。',
     'process.step0': '归一化目标', 'process.body0': '把问题、结果和成功标准整理为可测试 Brief。',
@@ -48,16 +48,16 @@ const translations = {
     'action.install': 'Install Skill', 'action.copyBrief': 'Copy starter brief', 'action.github': 'View open-source Skill', 'action.copy': 'Copy template', 'action.copyInstall': 'Copy install request', 'action.download': 'Download verified ZIP', 'action.downloadAgent': 'Download current Agent Skill ZIP', 'action.source': 'View source', 'action.top': 'Back to top ↑',
     'console.problem': 'What problem exists today?', 'console.outcome': 'What outcome should change?', 'console.success': 'How will success be observed?',
     'principle.one': 'Standard DSH Bundle', 'principle.two': 'Read-only and least privilege by default', 'principle.three': 'Disposable Profile testing', 'principle.four': 'Release and real install stay separate',
-    'install.title': 'Install the Skill in your Agent first.', 'install.lead': 'Codex and compatible Agents use the project repository directly. Release ZIP downloads and future DSH install commands remain verified against the latest Release and its tagged manifest.',
-    'install.targetCodex': 'Copy an install request for Codex', 'install.targetDsh': 'Install the compatible build in a DSH Profile', 'install.targetAgent': 'Download the ZIP to a compatible Skills directory',
+    'install.title': 'Install the Skill in your Agent first.', 'install.lead': 'Any coding Agent that supports Skills can use the project repository directly. When compatible, you can also install it into DSH through DSH STORE. Release ZIPs and install commands stay verified against the latest Release and its tagged manifest.',
+    'install.targetCodingAgent': 'Copy to any coding Agent', 'install.targetDshStore': 'Install into DSH through DSH STORE', 'install.targetZip': 'Download the ZIP to a compatible Skills directory',
     'install.loading': 'Verifying fixed release…', 'install.ready': 'Fixed release verified', 'install.unavailableStatus': 'Release verification failed', 'install.loadingCommand': 'Reading and validating the GitHub Release…',
-    'install.codexTitle': 'Copy the repository URL and let Codex install it', 'install.codexBody': 'The request uses the project repository directly and names the build-dsh-plugin/ directory explicitly.',
-    'install.dshTitle': 'Install the compatible build with dsh plugin add', 'install.dshBody': 'Copy is enabled only after the release manifest declares a standard Bundle, a pinned Git commit, and an explicit install specifier.',
-    'install.agentTitle': 'Install in another Agent that supports SKILL.md', 'install.agentBody': 'Give the repository URL to the target Agent and name the build-dsh-plugin/ directory, or download the verified ZIP.',
+    'install.codingAgentTitle': 'Copy the repository URL to any coding Agent', 'install.codingAgentBody': 'The request uses a fixed release of the project repository. The target only needs to support SKILL.md or an equivalent Skill-loading method.',
+    'install.dshStoreTitle': 'Install into DSH through DSH STORE', 'install.dshStoreBody': 'Open DSH STORE inside DSH and search for build-dsh-plugin. The store checks the pinned source and current DSH compatibility before enabling installation.',
+    'install.zipTitle': 'Download the ZIP to a compatible Agent Skills directory', 'install.zipBody': 'Extract the verified release ZIP into the target Agent Skills directory and preserve the build-dsh-plugin/ layout.',
     'install.boundaryLabel': 'Install boundary:', 'install.boundary': 'Each host uses its own verified path. This page only copies instructions and never changes your machine directly.',
-    'install.codexBoundary': 'Codex installs into its own Skills directory; reopen the task before using the Skill.', 'install.dshBoundaryReady': 'This command changes the target DSH Profile. Confirm the Profile and back it up first; installation and runtime acceptance remain separate.', 'install.dshBoundaryPending': 'The current public release is still an Agent Skill. Its DSH compatibility contract is not yet verified, so no executable plugin add command is generated.', 'install.agentBoundary': 'The target Agent must support SKILL.md or equivalent instruction loading. Node-based tools require Node.js 18 or newer.',
+    'install.codingAgentBoundary': 'The target Agent must support SKILL.md or equivalent instruction loading. This page only copies a pinned source and never changes your machine directly.', 'install.dshBoundaryReady': 'DSH STORE enables installation only after the current compatibility gate passes. A real install changes the target DSH Profile; confirm and back it up first, and keep installation and runtime acceptance separate.', 'install.dshBoundaryPending': 'The current release has not passed its DSH compatibility gate, so DSH STORE keeps installation disabled and generates no executable plugin add command.', 'install.zipBoundary': 'The target Agent must support SKILL.md or equivalent instruction loading. Node-based tools require Node.js 18 or newer.',
     'install.proofTitle': 'Release identity', 'install.version': 'Version', 'install.files': 'Files', 'install.license': 'License', 'install.checksum': 'Checksum file', 'install.releasePage': 'Release page ↗', 'install.licensePage': 'MIT License ↗', 'install.unavailable': 'Release verification is unavailable, so copy and download remain disabled. The GitHub source link is still available.',
-    'install.dshReady': 'Compatible', 'install.dshPending': 'In progress', 'install.dshPendingCommand': 'The DSH-compatible build is in progress. The latest verified release does not yet declare an executable dsh plugin add specifier.',
+    'install.dshReady': 'Compatible', 'install.dshPending': 'In progress', 'install.dshPendingCommand': 'DSH STORE is waiting for the compatibility gate. The current release does not yet declare an executable dsh plugin add specifier.',
     'start.title': 'Write the intent. Let the Skill derive the technical structure.', 'start.lead': 'Copy this template into an Agent that supports the Skill. Missing optional fields receive disclosed safe defaults.', 'start.note': 'Never place tokens, passwords, cookies, or private file contents in the brief.',
     'process.title': 'Every stage has an output and a stop condition.', 'process.lead': 'Advance on current evidence. When proof is missing, the state remains Partial or Blocked.',
     'process.step0': 'Normalize the outcome', 'process.body0': 'Turn the problem, outcome, and success criteria into a testable brief.',
@@ -107,7 +107,7 @@ const REPOSITORY_URL = 'https://github.com/AI-Scarlett/build-dsh-plugin/'
 const TAG_PATTERN = /^v\d{4}\.\d{2}\.\d{2}(?:\.\d+)?$/
 const state = {
   locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
-  installTarget: 'codex',
+  installTarget: 'agent',
   releaseStatus: 'loading',
   release: null,
   dsh: null,
@@ -205,30 +205,32 @@ function validateRelease(release, manifest, manifestUrl) {
 function installContent() {
   const manifest = state.release
   if (!manifest) return null
-  if (state.installTarget === 'codex') {
+  if (state.installTarget === 'agent') {
     return {
-      kicker: 'CODEX / SKILL INSTALLER',
-      title: t('install.codexTitle'),
-      body: t('install.codexBody'),
-      boundary: t('install.codexBoundary'),
+      kicker: 'ANY CODING AGENT / SKILL',
+      title: t('install.codingAgentTitle'),
+      body: t('install.codingAgentBody'),
+      boundary: t('install.codingAgentBoundary'),
       command: state.locale === 'en'
-        ? `Use $skill-installer to install the build-dsh-plugin/ Skill from this repository:\n${REPOSITORY_URL}\n\nAfter installation, tell me it will be available in the next task turn.`
-        : `使用 $skill-installer，从这个仓库安装 build-dsh-plugin/ 目录中的 Skill：\n${REPOSITORY_URL}\n\n安装完成后，请告诉我它会在下一轮任务中生效。`,
+        ? `Give any coding Agent this fixed-source request:\n${REPOSITORY_URL}\nEntry point: ${manifest.entrypoints.skill}\n\nInstall the Skill only after reviewing its source and permissions.`
+        : `把这个固定来源请求交给任何编程 Agent：\n${REPOSITORY_URL}\n入口：${manifest.entrypoints.skill}\n\n请先检查源码和权限，再安装这个 Skill。`,
       enabled: true,
     }
   }
   if (state.installTarget === 'dsh') {
     return state.dsh ? {
-      kicker: 'DSH / OFFICIAL CLI',
-      title: t('install.dshTitle'),
-      body: t('install.dshBody'),
+      kicker: 'DSH STORE / VERIFIED INSTALL',
+      title: t('install.dshStoreTitle'),
+      body: t('install.dshStoreBody'),
       boundary: t('install.dshBoundaryReady'),
-      command: `dsh plugin --profile ${state.dsh.profile} add '${state.dsh.installSpecifier}'`,
+      command: state.locale === 'en'
+        ? `Open DSH STORE inside DSH → Plugin catalog, find build-dsh-plugin, review the pinned source, and install it.\n\nCLI fallback:\ndsh plugin --profile ${state.dsh.profile} add '${state.dsh.installSpecifier}'`
+        : `在 DSH 中打开 DSH STORE → 插件目录，搜索 build-dsh-plugin，确认固定来源后安装。\n\n备用命令：\ndsh plugin --profile ${state.dsh.profile} add '${state.dsh.installSpecifier}'`,
       enabled: true,
     } : {
       kicker: 'DSH / COMPATIBILITY GATE',
-      title: t('install.dshTitle'),
-      body: t('install.dshBody'),
+      title: t('install.dshStoreTitle'),
+      body: t('install.dshStoreBody'),
       boundary: t('install.dshBoundaryPending'),
       command: t('install.dshPendingCommand'),
       enabled: false,
@@ -236,9 +238,9 @@ function installContent() {
   }
   return {
     kicker: 'AGENT SKILLS / PORTABLE ZIP',
-    title: t('install.agentTitle'),
-    body: t('install.agentBody'),
-    boundary: t('install.agentBoundary'),
+    title: t('install.zipTitle'),
+    body: t('install.zipBody'),
+    boundary: t('install.zipBoundary'),
     command: state.locale === 'en'
       ? `Install the build-dsh-plugin/ Skill from this repository and preserve its internal layout:\n${REPOSITORY_URL}\nEntry point: ${manifest.entrypoints.skill}\nVerified ZIP: ${manifest.artifact.downloadUrl}`
       : `从这个仓库安装 build-dsh-plugin/ 目录中的 Skill，并保持内部结构不变：\n${REPOSITORY_URL}\n入口：${manifest.entrypoints.skill}\n已验证 ZIP：${manifest.artifact.downloadUrl}`,

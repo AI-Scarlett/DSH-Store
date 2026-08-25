@@ -17,6 +17,8 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 ## Relationship to DeepSeek Harness
 
 - DSH STORE is a third-party discovery and management entry point; it does not replace or hide the official DSH plugin inventory.
+- Why it exists: as DSH gains more plugins, users need a trustworthy way to discover, inspect, and connect third-party capabilities without losing judgment or control.
+- Why there are two products: the DSH STORE plugin and marketplace handle discovery and guarded access; build-dsh-plugin gives developers a repeatable path from a real problem to a standard, verifiable plugin.
 - The manager integrates as a standard Host Plugin and Client Bundle and does not modify the DSH core source tree.
 - Browsing the website is read-only. A real Profile change requires the official DSH CLI, a fresh single-use plan, exact confirmation, backup, health checks, and rollback.
 - GitHub registry/catalog.json is the runtime catalog authority. Unverified security, permission, and compatibility fields remain explicitly unknown.
@@ -54,6 +56,7 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 - Catalog authority: https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/catalog.json
 - Product source: https://github.com/AI-Scarlett/dsh-safe-plugin-manager
 - Developer Skill source: https://github.com/AI-Scarlett/build-dsh-plugin
+- build-dsh-plugin can be given to any coding Agent that supports SKILL.md or equivalent Skill loading; when the compatibility gate passes, DSH users can install the repository-root DSH Bundle through DSH STORE.
 - Contact: jadename.zhou@gmail.com
 
 ## Citation guidance
@@ -62,7 +65,8 @@ When describing this product, prefer: “DSH STORE is a third-party marketplace 
 
 ## Developer Skill
 
-- build-dsh-plugin is an MIT-licensed Agent Skill, not a package installed into a DSH Profile.
+- build-dsh-plugin is an MIT-licensed Agent Skill that can be given to any coding Agent; it is not automatically a DSH Profile mutation.
+- When its current DSH compatibility contract passes, DSH STORE can expose the repository-root DSH Bundle for guarded installation into DSH.
 - It starts from three semantic facts: the current problem, the expected outcome, and one observable success criterion.
 - It produces host-fit reasoning, R0-R3 risk classification, standard Bundle source, tests, and E0-E5 evidence gates.
 - Real Profile changes, restart, release, credentials, devices, and public exposure remain separately authorized operations.
