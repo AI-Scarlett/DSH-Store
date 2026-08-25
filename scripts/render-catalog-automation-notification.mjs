@@ -68,6 +68,7 @@ export function renderCatalogAutomationNotification({
   watchdogRunUrl = null,
   repairTriggered = false,
   mention = null,
+  authorNotices = null,
 }) {
   const catalogEntries = array(catalog?.entries)
   const byId = new Map(catalogEntries.map(entry => [entry.id, entry]))
@@ -97,6 +98,11 @@ export function renderCatalogAutomationNotification({
   const partialCheckedEntries = Number.isSafeInteger(sourceChecks.checkedEntries) && sourceChecks.checkedEntries > 0
     ? sourceChecks.checkedEntries
     : null
+  const authorNoticeMatches = authorNotices !== null
+    && (String(authorNotices.sourceCatalogRunId ?? '') === String(catalogRunId ?? '')
+      || (authorNotices.sourceCatalogRunId == null && authorNotices.observedAt === report?.observedAt))
+  const authorSummary = authorNoticeMatches ? authorNotices.summary ?? null : null
+  const authorStatisticsAvailable = authorSummary !== null
   const title = statisticsAvailable
     ? `DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}，兼容性下架 ${compatibilityUnlisted.length}，恢复 ${compatibilityRestored.length}`
     : 'DSH STORE 自动更新报告：本轮扫描失败，统计不可用'
@@ -124,6 +130,15 @@ export function renderCatalogAutomationNotification({
       `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
       `- 当前 Catalog 条目：${number(postCatalogEntries)} 个`,
     )
+    if (authorStatisticsAvailable) {
+      lines.push(
+        `- 向不符合条件项目发送 GitHub 整改消息：${number(authorSummary.githubMessages)} 个项目`,
+        `- 触发 GitHub 通知邮件：${number(authorSummary.githubNotificationEmailTriggers)} 个项目；实际送达：**无法验证**`,
+        `- 作者源码修改：仍未通过 ${number(authorSummary.upstreamModifiedStillBlocked)}，问题清除 ${number(authorSummary.upstreamModifiedResolved)}，未检测到新提交 ${number(authorSummary.noUpstreamModificationDetected)}，基线/未知 ${number(authorSummary.sourceTrackingBaselines) + number(authorSummary.sourceModificationUnknown)}`,
+      )
+    } else {
+      lines.push('- 作者整改通知统计：**不可用（本轮没有匹配的作者通知计划，禁止按 0 解读）**')
+    }
   } else {
     lines.push('- 扫描统计：**不可用（本轮未完成，禁止按 0 解读）**')
     if (partialCheckedEntries !== null) {
@@ -221,6 +236,45 @@ export function renderCatalogAutomationNotification({
     lines.push('')
   }
 
+  lines.push('### 作者整改通知与修改跟踪', '')
+  if (!authorStatisticsAvailable) {
+    lines.push('本轮没有匹配的作者通知计划，GitHub 消息、GitHub 通知邮件触发和作者修改统计均不可用；请勿解读为 0。', '')
+  } else {
+    lines.push(
+      `- 需要整改的 canonical 项目：${number(authorSummary.desiredRepositories)} 个`,
+      `- 本轮已发送 GitHub 整改消息：${number(authorSummary.githubMessages)} 个项目`,
+      `- 本轮已触发 GitHub 通知邮件：${number(authorSummary.githubNotificationEmailTriggers)} 个项目`,
+      `- 邮件实际送达：**未验证**。是否进入收件箱取决于被提及维护者的 GitHub 通知和邮箱设置，仓库没有读取私人邮箱回执。`,
+      `- 检测到上游修改但仍未通过：${number(authorSummary.upstreamModifiedStillBlocked)} 个项目`,
+      `- 检测到上游修改且阻断清除：${number(authorSummary.upstreamModifiedResolved)} 个项目`,
+      `- 未检测到上游新提交：${number(authorSummary.noUpstreamModificationDetected)} 个项目`,
+      `- 首次建立源码追踪基线：${number(authorSummary.sourceTrackingBaselines)} 个项目；暂无法判断：${number(authorSummary.sourceModificationUnknown)} 个项目`,
+      `- 阻断清除但未检测到源码变化：${number(authorSummary.resolvedWithoutDetectedSourceChange)} 个项目`,
+      '',
+    )
+    const visibleActions = array(authorNotices.actions).filter(action => action.type !== 'baseline')
+    if (visibleActions.length > 0) {
+      const actionLabels = {
+        create: '新建修复单', update: '原因变化并提醒', notify: '补发提醒',
+        'source-update': '检测到新提交但仍未通过', close: '阻断清除并关闭',
+      }
+      const sourceLabels = {
+        'new-baseline': '新通知并建立基线', 'modified-still-blocked': '已修改但仍未通过',
+        'not-modified': '未检测到新提交', 'modified-and-resolved': '已修改且问题清除',
+        'resolved-without-source-change': '问题清除但未检测到源码变化',
+        'resolved-source-unknown': '问题清除，修改状态未知', 'tracking-baseline': '首次建立基线', unknown: '暂无法判断',
+      }
+      lines.push('| 项目 | 本轮动作 | 作者源码状态 |', '|---|---|---|')
+      for (const action of visibleActions) {
+        const url = `https://github.com/${action.key}`
+        lines.push(`| [${markdownCell(action.key)}](${url}) | ${markdownCell(actionLabels[action.type] ?? action.type)} | ${markdownCell(sourceLabels[action.sourceStatus] ?? action.sourceStatus)} |`)
+      }
+      lines.push('')
+    } else {
+      lines.push('本轮没有需要新发或更新的作者整改消息。', '')
+    }
+  }
+
   if (surfaces.length > 0) {
     lines.push('### 公开面核验', '', '| 地址 | 状态 | 条目数 | SHA-256 |', '|---|---|---:|---|')
     for (const surface of surfaces) {
@@ -250,10 +304,11 @@ async function readJson(path, optional = false) {
 async function main() {
   const options = parseArgs(process.argv.slice(2))
   if (!options.catalog || !options.output) throw new Error('--catalog and --output are required')
-  const [catalog, report, watchdog] = await Promise.all([
+  const [catalog, report, watchdog, authorNotices] = await Promise.all([
     readJson(options.catalog),
     readJson(options.report, true),
     readJson(options['watchdog-report'], true),
+    readJson(options['author-notice-plan'], true),
   ])
   const body = renderCatalogAutomationNotification({
     catalog,
@@ -266,6 +321,7 @@ async function main() {
     watchdogRunUrl: options['watchdog-run-url'] ?? null,
     repairTriggered: options['repair-triggered'] === 'true',
     mention: options.mention ?? null,
+    authorNotices,
   })
   await writeFile(resolve(options.output), body, { encoding: 'utf8', flag: 'wx', mode: 0o644 })
 }

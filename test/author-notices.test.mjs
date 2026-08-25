@@ -35,10 +35,12 @@ function fixture(overrides = {}) {
           id: 'blocked-plugin', name: '被阻断插件（Blocked Plugin）', version: '1.0.0', status: 'blocked',
           statusReason: 'Bundle Patch uses a protected official entry ID',
           repositoryUrl: 'https://github.com/BlockedOwner/dsh-blocked',
+          commit: 'c'.repeat(40),
         },
         {
           id: 'update-plugin', name: '更新插件（Update Plugin）', version: '1.0.0', status: 'approved',
           repositoryUrl: 'https://github.com/UpdateOwner/dsh-update',
+          commit: 'd'.repeat(40),
         },
       ],
     },
@@ -60,7 +62,7 @@ function fixture(overrides = {}) {
       addedEntries: [],
       deferredUpdates: [{
         id: 'update-plugin', catalogVersion: '1.0.0', upstreamVersion: '1.1.0',
-        reason: 'runtime dependencies require user review',
+        commit: 'e'.repeat(40), reason: 'runtime dependencies require user review',
       }],
       rejectedCandidates: [],
     },
@@ -87,8 +89,14 @@ test('author notice plan rate-limits and covers blocked, deferred, and explicit 
   assert.match(body, /@CandidateOwner/)
   assert.match(body, /候选未通过 \/ Candidate rejected/)
   assert.match(body, /修改并推送到默认分支即可/)
+  assert.match(body, /github\.com\/AI-Scarlett\/build-dsh-plugin/)
+  assert.match(body, /https:\/\/dsh\.store\//)
   assert.doesNotMatch(body, /ordinary-tool|HTTP 403/)
   assert.ok(plan.actions.every(action => parseAuthorNoticeMarker(action.body)?.notifiedSignature === action.signature))
+  assert.equal(plan.summary.githubMessages, 3)
+  assert.equal(plan.summary.githubNotificationEmailTriggers, 3)
+  assert.equal(plan.summary.githubNotificationEmailDeliveriesVerified, 0)
+  assert.equal(plan.summary.sourceTrackingBaselines, 3)
 })
 
 test('unchanged author findings do not repeatedly mention the owner', () => {
@@ -100,6 +108,41 @@ test('unchanged author findings do not repeatedly mention the owner', () => {
   }))
   assert.equal(second.actions.length, 0)
   assert.equal(second.summary.unchanged, 1)
+  assert.equal(second.summary.noUpstreamModificationDetected, 1)
+})
+
+test('a new upstream fixed Commit is reported even when the blocker text is unchanged', () => {
+  const first = buildAuthorNoticePlan(fixture())
+  const created = first.actions.find(action => action.key === 'blockedowner/dsh-blocked')
+  const changedCatalog = structuredClone(fixture().catalog)
+  changedCatalog.entries.find(entry => entry.id === 'blocked-plugin').commit = 'f'.repeat(40)
+  const second = buildAuthorNoticePlan(fixture({
+    catalog: changedCatalog,
+    existingIssues: [{ number: 94, title: created.title, state: 'open', body: created.body, url: 'https://github.com/example/issues/94' }],
+    maxCreate: 0,
+  }))
+  const action = second.actions.find(item => item.type === 'source-update')
+  assert.ok(action)
+  assert.equal(action.sourceStatus, 'modified-still-blocked')
+  assert.match(action.comment, /build-dsh-plugin/)
+  assert.match(action.comment, /https:\/\/dsh\.store\//)
+  assert.equal(second.summary.upstreamModifiedStillBlocked, 1)
+  assert.equal(second.summary.githubMessages, 1)
+})
+
+test('legacy remediation issues establish a source baseline without mentioning the author again', () => {
+  const first = buildAuthorNoticePlan(fixture())
+  const created = first.actions.find(action => action.key === 'blockedowner/dsh-blocked')
+  const legacyBody = created.body.replace(/<!-- dsh-author-source:[^\n]+ -->\n/, '')
+  const second = buildAuthorNoticePlan(fixture({
+    existingIssues: [{ number: 95, title: created.title, state: 'open', body: legacyBody, url: 'https://github.com/example/issues/95' }],
+    maxCreate: 0,
+  }))
+  const action = second.actions.find(item => item.type === 'baseline')
+  assert.ok(action)
+  assert.equal(action.comment, undefined)
+  assert.equal(second.summary.githubMessages, 0)
+  assert.equal(second.summary.sourceTrackingBaselines, 1)
 })
 
 test('changed blockers use a recoverable update then notification marker', () => {
@@ -134,6 +177,25 @@ test('managed remediation issue closes when the deterministic blocker clears', (
   assert.equal(cleared.actions.length, 1)
   assert.equal(cleared.actions[0].type, 'close')
   assert.ok(cleared.actions[0].comment.includes(`<!-- ${cleared.actions[0].commentMarker} -->`))
+})
+
+test('a cleared blocker records whether the upstream source changed', () => {
+  const first = buildAuthorNoticePlan(fixture())
+  const created = first.actions.find(action => action.key === 'blockedowner/dsh-blocked')
+  const approved = structuredClone(fixture().catalog.entries.find(entry => entry.id === 'blocked-plugin'))
+  approved.status = 'approved'
+  delete approved.statusReason
+  approved.commit = 'f'.repeat(40)
+  const cleared = buildAuthorNoticePlan(fixture({
+    catalog: { entries: [approved] },
+    candidates: { entries: [] },
+    report: { observedAt: '2026-08-24T15:00:00Z', addedEntries: [], deferredUpdates: [], rejectedCandidates: [] },
+    existingIssues: [{ number: 96, title: created.title, state: 'open', body: created.body, url: 'https://github.com/example/issues/96' }],
+    maxCreate: 0,
+  }))
+  assert.equal(cleared.actions[0].type, 'close')
+  assert.equal(cleared.actions[0].sourceStatus, 'modified-and-resolved')
+  assert.equal(cleared.summary.upstreamModifiedResolved, 1)
 })
 
 test('organization repositories can mention a resolved human maintainer', () => {

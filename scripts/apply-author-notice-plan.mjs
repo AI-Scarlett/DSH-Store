@@ -7,7 +7,11 @@ import { canonicalExistingIssues, sha256 } from './plan-author-notices.mjs'
 
 const API_ROOT = 'https://api.github.com'
 const MANAGED_LABEL = 'author-action-required'
-const ACTION_TYPES = new Set(['create', 'update', 'notify', 'close'])
+const ACTION_TYPES = new Set(['create', 'update', 'notify', 'source-update', 'baseline', 'close'])
+const SOURCE_STATUSES = new Set([
+  'new-baseline', 'tracking-baseline', 'modified-still-blocked', 'not-modified',
+  'modified-and-resolved', 'resolved-without-source-change', 'resolved-source-unknown', 'unknown',
+])
 
 function parseArgs(argv) {
   const options = {}
@@ -42,6 +46,9 @@ function validatePlan(plan) {
   if (plan?.schemaVersion !== 1) throw new Error('unsupported author notice plan schema')
   requiredString(plan.planId, 'planId', /^[0-9a-f]{24}$/)
   requiredString(plan.baseCommit, 'baseCommit', /^[0-9a-f]{40}$/)
+  if (plan.sourceCatalogRunId !== null && plan.sourceCatalogRunId !== undefined) {
+    requiredString(plan.sourceCatalogRunId, 'sourceCatalogRunId', /^\d+$/)
+  }
   for (const name of ['catalogSha256', 'candidatesSha256', 'reportSha256', 'existingIssuesSha256', 'notificationTargetsSha256']) {
     requiredString(plan?.preconditions?.[name], `preconditions.${name}`, /^[0-9a-f]{64}$/)
   }
@@ -53,6 +60,8 @@ function validatePlan(plan) {
     if (!ACTION_TYPES.has(action?.type)) throw new Error('plan action type is invalid')
     requiredString(action.key, 'action.key', /^[a-z0-9_.-]+\/[a-z0-9_.-]+$/)
     requiredString(action.signature, 'action.signature', /^[0-9a-f]{64}$/)
+    requiredString(action.sourceFingerprint, 'action.sourceFingerprint', /^[0-9a-f]{64}$/)
+    if (!SOURCE_STATUSES.has(action.sourceStatus)) throw new Error('plan source status is invalid')
     if (action.type === 'create' || action.type === 'update') {
       requiredString(action.title, 'action.title', null, 256)
       if (!Array.isArray(action.labels) || !action.labels.includes(MANAGED_LABEL) || action.labels.length > 4) {
@@ -60,7 +69,8 @@ function validatePlan(plan) {
       }
       for (const label of action.labels) requiredString(label, 'action.label', /^[a-z0-9-]{1,50}$/)
     }
-    if (action.type === 'create' || action.type === 'notify' || action.type === 'update') {
+    if (action.type === 'create' || action.type === 'notify' || action.type === 'source-update'
+      || action.type === 'baseline' || action.type === 'update') {
       requiredString(action.body, 'action.body')
     }
     if (action.type !== 'create') {
@@ -70,7 +80,7 @@ function validatePlan(plan) {
       issueNumbers.add(action.issueNumber)
     }
     if (action.type === 'update') requiredString(action.pendingBody, 'action.pendingBody')
-    if (action.type !== 'create') {
+    if (action.type !== 'create' && action.type !== 'baseline') {
       requiredString(action.comment, 'action.comment', null, 10_000)
       requiredString(action.commentMarker, 'action.commentMarker', /^[a-z0-9_.:/-]{1,240}$/)
       if (!action.comment.includes(`<!-- ${action.commentMarker} -->`)) throw new Error('comment marker mismatch')
@@ -227,8 +237,14 @@ async function main() {
       changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
       continue
     }
-    if (action.type === 'notify') {
+    if (action.type === 'notify' || action.type === 'source-update') {
       await ensureComment(github, repository, action.issueNumber, action.commentMarker, action.comment)
+      await github.request('PATCH', `/repos/${repository}/issues/${action.issueNumber}`, { body: action.body })
+      const url = await verifyIssue(github, repository, action.issueNumber, { body: action.body, state: 'open' })
+      changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
+      continue
+    }
+    if (action.type === 'baseline') {
       await github.request('PATCH', `/repos/${repository}/issues/${action.issueNumber}`, { body: action.body })
       const url = await verifyIssue(github, repository, action.issueNumber, { body: action.body, state: 'open' })
       changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
@@ -240,7 +256,7 @@ async function main() {
     changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
   }
 
-  process.stdout.write(`AUTHOR_NOTICES_APPLIED plan=${plan.planId} creates=${changed.filter(item => item.type === 'create').length} updates=${changed.filter(item => item.type === 'update' || item.type === 'notify').length} closes=${changed.filter(item => item.type === 'close').length}\n`)
+  process.stdout.write(`AUTHOR_NOTICES_APPLIED plan=${plan.planId} creates=${changed.filter(item => item.type === 'create').length} updates=${changed.filter(item => item.type === 'update' || item.type === 'notify' || item.type === 'source-update').length} baselines=${changed.filter(item => item.type === 'baseline').length} closes=${changed.filter(item => item.type === 'close').length}\n`)
   for (const item of changed) process.stdout.write(`${item.type.toUpperCase()} ${item.key} #${item.issueNumber} ${item.url}\n`)
 }
 

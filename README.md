@@ -422,7 +422,14 @@ Catalog 扫描成功后，独立的 `author-notifications.yml` 会为 `blocked` 
 关闭。搜索误命中、403/404/429、超时、默认分支移动等临时故障不通知；历史候选不会无边界群发，
 每轮最多新建 3 个，剩余项在后续八小时轮次中处理。每次写入都绑定当前 `main` Commit、Catalog、
 候选表、扫描报告和现有修复单哈希。这条链路只使用 GitHub Actions 的短期仓库令牌，不依赖 Codex、
-外部 PAT 或 SMTP 密码；邮件是否送达仍取决于被提及账号自己的 GitHub 通知设置。
+外部 PAT 或 SMTP 密码。每封修复单都会建议维护者使用
+[build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) 检查并修改项目，并提供
+[DSH STORE 官网](https://dsh.store/) 状态入口。
+
+每次三小时报告会列出本轮向多少个不符合条件项目发送了 GitHub 整改消息、触发了多少个项目的
+GitHub 通知邮件，以及上游源码处于“已修改但仍未通过、已修改且阻断清除、未检测到新提交、首次
+建立基线或暂无法判断”的数量。这里的“邮件触发”表示仓库已通过 `@维护者` 提交给 GitHub 通知
+系统；实际是否送达收件箱仍取决于接收者自己的 GitHub 通知和邮箱设置，仓库不会虚报为已送达。
 
 ## 本地验证
 
