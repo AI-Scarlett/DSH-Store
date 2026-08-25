@@ -236,7 +236,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(agentReach, 'Agent Reach adapter must be listed')
   assert.equal(agentReach.status, 'approved')
   assert.equal(agentReach.featured, undefined)
-  assert.equal(agentReach.commit, 'd37fb46edf783446b430d324c68ac911b84a14b0')
+  assert.equal(agentReach.commit, '85d9801a3e8884baf33f8166eb2e587a4482050f')
   assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
   assert.equal(agentReach.details.permissions.level, 'high')
   assert.ok(agentReach.details.externalDependencies.includes('Agent Reach CLI 1.5.0'))
@@ -268,6 +268,45 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.deepEqual(settingsHub.compatibility.dshOperations[release], {
       install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
     })
+  }
+  const updatedSelfHosted = [
+    {
+      id: 'dsh-cliapi',
+      version: '0.5.1',
+      commit: '2db132bb430c5304627e5eb5681febecfc2d81ab',
+      dsh: '>=0.1.0-rc.8 <0.2.0',
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+    },
+    {
+      id: 'dsh-chat-import',
+      version: '0.4.0',
+      commit: '81f1a9785fbae6acd04a6b49a576b237c4f70eae',
+      dsh: '>=0.1.0-rc.8 <0.2.0',
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+    },
+    {
+      id: 'dsh-token-monitor',
+      version: '1.3.0',
+      commit: 'd655a1627607968394fd823cee440e68f07e9f00',
+      dsh: '>=0.1.0-rc.6 <0.2.0',
+      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+    },
+    {
+      id: 'dsh-agent-reach',
+      version: '0.1.0',
+      commit: '85d9801a3e8884baf33f8166eb2e587a4482050f',
+      dsh: '>=0.1.0-rc.6 <0.2.0',
+      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+    },
+  ]
+  for (const expected of updatedSelfHosted) {
+    const plugin = source.entries.find(item => item.id === expected.id)
+    assert.equal(plugin.status, 'approved')
+    assert.equal(plugin.version, expected.version)
+    assert.equal(plugin.commit, expected.commit)
+    assert.equal(plugin.compatibility.dsh, expected.dsh)
+    assert.deepEqual(plugin.compatibility.dshReleases, expected.releases)
+    assert.equal(plugin.assurance.securityReview.status, 'partial')
   }
   const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
   assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
