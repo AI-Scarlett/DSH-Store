@@ -32,6 +32,12 @@ if (alternateOriginUrl.protocol !== 'https:' || alternateOriginUrl.pathname !== 
 const alternateOrigin = alternateOriginUrl.origin
 if (alternateOrigin === siteOrigin) throw new Error('The alternate site origin must differ from the site origin')
 const icpNumber = argValue('--icp') || process.env.ICP_NUMBER || ''
+const baiduVerificationCode = siteOriginUrl.host === 'dsh-store.cn'
+  ? (argValue('--baidu-verification') || process.env.BAIDU_SITE_VERIFICATION || '')
+  : ''
+if (baiduVerificationCode && !/^[A-Za-z0-9_-]{8,128}$/.test(baiduVerificationCode)) {
+  throw new Error('The Baidu verification code contains unsupported characters')
+}
 const defaultLocale = siteOriginUrl.host === 'dsh.store' ? 'en' : 'zh'
 const htmlLanguage = defaultLocale === 'en' ? 'en' : 'zh-CN'
 const outputRelative = relative(projectRoot, outputRoot)
@@ -337,14 +343,18 @@ await writeFile(resolve(outputRoot, 'marketplace/sitemap.xml'), sitemap)
 const icpMarkup = icpNumber
   ? `<a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">${htmlEscape(icpNumber)}</a>`
   : ''
+const baiduVerificationMarkup = baiduVerificationCode
+  ? `<meta name="baidu-site-verification" content="${htmlEscape(baiduVerificationCode)}">`
+  : ''
 for (const { file: pagePath, route } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
   const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
-  const localizedDocument = withIcp.replace('<html lang="zh-CN">', `<html lang="${htmlLanguage}" data-default-locale="${defaultLocale}">`)
-  if (localizedDocument === withIcp) throw new Error(`${pagePath} html language marker is missing`)
+  const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
+  const localizedDocument = withBaiduVerification.replace('<html lang="zh-CN">', `<html lang="${htmlLanguage}" data-default-locale="${defaultLocale}">`)
+  if (localizedDocument === withBaiduVerification) throw new Error(`${pagePath} html language marker is missing`)
   await writeFile(absolutePath, localizedDocument)
 }
 
@@ -391,6 +401,7 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   siteOrigin,
   alternateOrigin,
   icp: icpNumber || null,
+  baiduSiteVerification: baiduVerificationCode ? 'configured' : null,
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,
   manager: { version: manager.version, commit: manager.commit, license: manager.details?.license, status: manager.status },

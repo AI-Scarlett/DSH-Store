@@ -62,7 +62,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npm run build:marketplace -- --enrich-github --source-sha "$GITHUB_SHA" --site-origin https://dsh-store.cn --alternate-origin https://dsh.store --icp 鄂ICP备2026010180号-2 --out _site-domestic --automation-runs "$RUNNER_TEMP/automation-runs.json" --automation-reports "$RUNNER_TEMP/catalog-automation-reports"
+          npm run build:marketplace -- --enrich-github --source-sha "$GITHUB_SHA" --site-origin https://dsh-store.cn --alternate-origin https://dsh.store --icp 鄂ICP备2026010180号-2 --baidu-verification codeva-gZjUUScijx --out _site-domestic --automation-runs "$RUNNER_TEMP/automation-runs.json" --automation-reports "$RUNNER_TEMP/catalog-automation-reports"
           mkdir -p _site/domestic
           cp -a _site-domestic/. _site/domestic/
       - uses: actions/upload-pages-artifact@v3

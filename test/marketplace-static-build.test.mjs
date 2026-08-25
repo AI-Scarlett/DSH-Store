@@ -66,6 +66,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /data-automation-overall/)
     assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
     assert.match(home, /<html lang="en" data-default-locale="en">/)
+    assert.doesNotMatch(home, /baidu-site-verification/)
     assert.match(home, /DSH STORE \| DeepSeek Harness Plugin Marketplace/)
     assert.match(home, /name="applicable-device" content="pc,mobile"/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
@@ -104,6 +105,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       '--site-origin', 'https://dsh-store.cn',
       '--alternate-origin', 'https://dsh.store',
       '--icp', icp,
+      '--baidu-verification', 'codeva-gZjUUScijx',
     ], { cwd: rootPath })
 
     const pagePaths = [
@@ -118,6 +120,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       const page = await readFile(join(output, pagePath), 'utf8')
       assert.match(page, /https:\/\/dsh-store\.cn/)
       assert.match(page, new RegExp(icp))
+      assert.match(page, /<meta name="baidu-site-verification" content="codeva-gZjUUScijx">/)
       assert.match(page, /<html lang="zh-CN" data-default-locale="zh">/)
       assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
     }
@@ -131,6 +134,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.equal(manifest.siteOrigin, 'https://dsh-store.cn')
     assert.equal(manifest.alternateOrigin, 'https://dsh.store')
     assert.equal(manifest.icp, icp)
+    assert.equal(manifest.baiduSiteVerification, 'configured')
   } finally {
     await rm(output, { recursive: true, force: true })
   }

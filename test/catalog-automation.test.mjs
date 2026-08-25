@@ -224,6 +224,7 @@ test('Pages publishes bounded public automation evidence and recent additions', 
   assert.match(workflow, /--automation-runs/)
   assert.match(workflow, /Build domestic marketplace artifact/)
   assert.match(workflow, /--site-origin https:\/\/dsh-store\.cn/)
+  assert.match(workflow, /--baidu-verification codeva-gZjUUScijx/)
   assert.match(workflow, /cp -a _site-domestic\/. _site\/domestic\//)
   assert.match(builder, /automation-status\.json/)
   assert.match(builder, /\['release-manifest\.json', 'automation-status\.json'\]/)
