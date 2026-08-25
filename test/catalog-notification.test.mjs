@@ -43,6 +43,9 @@ test('Catalog notification separates additions, historical updates, and deferred
     surfaces: [
       { url: 'https://dsh.store/registry/catalog.json', status: 'passed', entries: 481, sha256: 'b'.repeat(64) },
     ],
+    candidateSurfaces: [
+      { url: 'https://dsh.store/registry/candidates.json', status: 'passed', entries: 1420, sha256: 'c'.repeat(64) },
+    ],
   }
   const output = renderCatalogAutomationNotification({
     catalog,
@@ -104,6 +107,10 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /触发 GitHub 通知邮件：3 个项目；实际送达：\*\*无法验证\*\*/)
   assert.match(output, /候选全量台账：1420 \/ 1420 条已归类，未覆盖 0 条/)
   assert.match(output, /Candidate Registry 全量覆盖：1420 \/ 1420 条，canonical 仓库 1420 个，未覆盖 0 条/)
+  assert.match(output, /Catalog 四个公开面核验：1\/1 通过/)
+  assert.match(output, /候选库四个公开面核验：1\/1 通过/)
+  assert.match(output, /Candidate Registry 公开面核验/)
+  assert.match(output, /dsh\.store\/registry\/candidates\.json/)
   assert.match(output, /符合一次性直接整改通知的候选：9 个/)
   assert.match(output, /仅在\[公开候选库\].*展示、不主动 @ 的候选：1411 个/)
   assert.match(output, /不发送纯推广内容/)

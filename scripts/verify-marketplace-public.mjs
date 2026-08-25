@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto'
 import { readFile, rename, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { validateCatalog } from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
@@ -61,6 +62,25 @@ function semanticCatalog(text) {
   }
 }
 
+function semanticCandidates(text) {
+  const document = validateCandidateRegistry(JSON.parse(text))
+  const statusCounts = Object.fromEntries(['discovered', 'reviewing', 'rejected']
+    .map(status => [status, document.entries.filter(entry => entry.status === status).length]))
+  return {
+    entries: document.entries.length,
+    registryUpdatedAt: document.registry.updatedAt,
+    fingerprint: sha256(JSON.stringify(document.entries)),
+    statusCounts,
+  }
+}
+
+function candidateUrl(catalogUrl) {
+  const url = new URL(catalogUrl)
+  if (!url.pathname.endsWith('/registry/catalog.json')) throw new Error(`unsupported public Catalog URL: ${catalogUrl}`)
+  url.pathname = `${url.pathname.slice(0, -'/registry/catalog.json'.length)}/registry/candidates.json`
+  return url.toString()
+}
+
 async function atomicReport(path, value) {
   const target = resolve(path)
   const temporary = `${target}.tmp-${process.pid}`
@@ -72,7 +92,18 @@ const options = parseArgs(process.argv.slice(2))
 const checkedAt = new Date().toISOString()
 const urls = policy.publication.publicCatalogUrls
 if (!Array.isArray(urls) || urls.length < 4) throw new Error('automation policy must declare all public Catalog surfaces')
-const report = { schemaVersion: 1, checkedAt, status: 'passed', authority: null, surfaces: [], pages: null, failures: [] }
+const candidateUrls = urls.map(candidateUrl)
+const report = {
+  schemaVersion: 2,
+  checkedAt,
+  status: 'passed',
+  authority: null,
+  candidateAuthority: null,
+  surfaces: [],
+  candidateSurfaces: [],
+  pages: null,
+  failures: [],
+}
 
 for (const url of urls) {
   try {
@@ -88,6 +119,23 @@ for (const url of urls) {
   } catch (error) {
     report.failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`)
     report.surfaces.push({ url, status: 'failed' })
+  }
+}
+
+for (const url of candidateUrls) {
+  try {
+    const text = await fetchText(url, 6 * 1024 * 1024)
+    const semantic = semanticCandidates(text)
+    const surface = { url, status: 'passed', bytes: Buffer.byteLength(text), sha256: sha256(text), ...semantic }
+    if (report.candidateAuthority === null) report.candidateAuthority = surface
+    else if (surface.fingerprint !== report.candidateAuthority.fingerprint || surface.entries !== report.candidateAuthority.entries) {
+      surface.status = 'failed'
+      report.failures.push(`${url} Candidate Registry does not match GitHub main authority`)
+    }
+    report.candidateSurfaces.push(surface)
+  } catch (error) {
+    report.failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`)
+    report.candidateSurfaces.push({ url, status: 'failed' })
   }
 }
 
@@ -109,5 +157,5 @@ try {
 
 if (report.failures.length > 0) report.status = 'failed'
 if (options.report) await atomicReport(options.report, report)
-process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} surfaces=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} failures=${report.failures.length}\n`)
+process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} catalogs=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} candidates=${report.candidateSurfaces.filter(item => item.status === 'passed').length}/${candidateUrls.length} failures=${report.failures.length}\n`)
 if (report.status !== 'passed') process.exitCode = 1

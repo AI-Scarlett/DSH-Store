@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "operation": "candidate-registry-public-surface-repair",
+  "createdAt": "2026-08-25T16:40:00+08:00",
+  "authorization": "user-requested-complete-candidate-coverage-and-public-discovery",
+  "repository": {
+    "name": "AI-Scarlett/DSH-Store",
+    "baseCommit": "03b33bd2f9ff885e31fa171e2288fba3f78b154c",
+    "branch": "codex/candidate-public-surface",
+    "preconditionSha256": {
+      "scripts/verify-marketplace-public.mjs": "eaeb5e040d19b1a5fdf443ec98b76a960a69241012a960b5356d0f895b1e7d40",
+      "deploy/refresh-from-pages.sh": "d978ec367381f625f70b06dc72099664f597c32d2a4a8382d0286193586f8b1a",
+      "scripts/render-catalog-automation-notification.mjs": "7bf0adb49abacfdbd0f508e7b7a967e9897c0540e0279cecd725e5c42406c874",
+      "test/catalog-automation.test.mjs": "6ddf0cd565bd613b8fdeb5f17b438443d02eb3828d1c2407e76c896460ba34f5",
+      "test/catalog-notification.test.mjs": "a698aebc1096d6d1c28284c096e79cc03cae9f41dad5ec810de93cd67b8011ae",
+      ".github/workflows/marketplace-watchdog.yml": "afbe90477c9d05fcdcc6a9e44a9c6f4a95c2e942498396f8d26e0039ad775b78",
+      "registry/catalog.json": "93e0fd64c0dbf7137a8f1424a01d064654693843e29477193dd8db70c461a3fd",
+      "registry/candidates.json": "a3509ff9f532611b4a0cbf7d8ae7f46880fb53ab1eb5ff613a719a516594d038"
+    },
+    "allowedFiles": [
+      "docs/ops/candidate-public-surface-plan-20260825.json",
+      "scripts/verify-marketplace-public.mjs",
+      "deploy/refresh-from-pages.sh",
+      "scripts/render-catalog-automation-notification.mjs",
+      "test/catalog-automation.test.mjs",
+      "test/catalog-notification.test.mjs",
+      ".github/workflows/marketplace-watchdog.yml"
+    ],
+    "gates": [
+      "base Commit and file hashes still match",
+      "candidate Registry is validated without executing third-party code",
+      "npm run check",
+      "CI-checked auditable pull request",
+      "post-merge Raw, Pages, international, and domestic readback"
+    ]
+  },
+  "servers": [
+    {
+      "id": "dsh-store-intl",
+      "target": "/etc/nginx/sites-available/dsh-store-pending.conf",
+      "preconditionSha256": "78eb035066394bcc3f6159d666f67bae4ba53c32096b332cac87c96616e54f68",
+      "enabledPath": "/etc/nginx/sites-enabled/dsh-store-pending.conf",
+      "refreshScript": "/opt/dsh-store/bin/refresh-from-pages.sh",
+      "refreshScriptPreconditionSha256": "d978ec367381f625f70b06dc72099664f597c32d2a4a8382d0286193586f8b1a",
+      "healthUrl": "https://dsh.store/registry/candidates.json"
+    },
+    {
+      "id": "dsh-store-cn-814823065",
+      "target": "/etc/nginx/sites-available/dsh-store.cn.conf",
+      "preconditionSha256": "3b54a39954a7c43cfea1896e512b0b33751c096d72c5c8ea81ef309d45ff49e8",
+      "enabledPath": "/etc/nginx/sites-enabled/dsh-store.cn.conf",
+      "refreshScript": "/opt/dsh-store/bin/refresh-from-pages.sh",
+      "refreshScriptPreconditionSha256": "d978ec367381f625f70b06dc72099664f597c32d2a4a8382d0286193586f8b1a",
+      "healthUrl": "https://dsh-store.cn/registry/candidates.json"
+    }
+  ],
+  "serverMutation": {
+    "exactScope": [
+      "/etc/nginx/sites-available/dsh-store-pending.conf",
+      "/etc/nginx/sites-available/dsh-store.cn.conf"
+    ],
+    "change": "add an exact no-store alias for /registry/candidates.json beside the existing Catalog alias",
+    "backup": "timestamped same-directory copy before replacement",
+    "atomicity": "write a sibling candidate file, validate full nginx configuration, then rename and reload",
+    "healthChecks": [
+      "nginx -t",
+      "origin-resolved candidate endpoint returns HTTP 200",
+      "Candidate Registry has schemaVersion 1 and 1421 entries",
+      "Candidate Registry SHA-256 equals a3509ff9f532611b4a0cbf7d8ae7f46880fb53ab1eb5ff613a719a516594d038"
+    ],
+    "rollback": "restore the timestamped configuration, rerun nginx -t, reload nginx, and recheck Catalog health"
+  },
+  "boundaries": {
+    "thirdPartyCodeExecution": false,
+    "externalRepositoryIssueCreation": false,
+    "profileOrPackageMutation": false,
+    "credentialLogging": false
+  }
+}
