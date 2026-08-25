@@ -227,6 +227,8 @@ test('bundled registry declares complete detail metadata for every entry', async
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
   assert.ok(compareVersions(manager.version, packageManifest.version) <= 0, 'catalog manager version cannot be newer than package.json during two-phase self-pinning')
+  assert.equal(manager.version, '0.8.3', 'the Catalog must expose the repair as an actual SemVer upgrade')
+  assert.equal(manager.commit, '60579b9d6b935ca3a207c58e8f3a107b56a3f931', 'the Catalog must pin the merged 0.8.3 source release')
   assert.ok(readme.includes(githubInstallSpecifier(manager)), 'README install command must match the catalog fixed commit')
   assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
   assert.match(readme, /dsh plugin --profile web add/)

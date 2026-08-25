@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-25T13:25:25.000Z",
+    "updatedAt": "2026-08-25T13:48:00.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -352,8 +352,8 @@
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "b63118fc20d315fb484f40a92e43c3ab59121904",
-      "version": "0.8.2",
+      "commit": "60579b9d6b935ca3a207c58e8f3a107b56a3f931",
+      "version": "0.8.3",
       "categories": [
         "marketplace",
         "management"
@@ -362,13 +362,13 @@
       "assurance": {
         "discovery": {
           "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-23T02:34:56.000Z",
-          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/b63118fc20d315fb484f40a92e43c3ab59121904",
+          "method": "github-merged-source-release-readback-v1",
+          "checkedAt": "2026-08-25T13:48:00.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager/commit/60579b9d6b935ca3a207c58e8f3a107b56a3f931",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+          "summary": "The merged fixed 0.8.3 source release was read back from GitHub with its package contract; installation, runtime, and independent security evidence were not inferred."
         },
         "installability": {
           "status": "unknown",
@@ -471,8 +471,8 @@
         "review": "owner-curated-not-security-audited"
       },
       "source": {
-        "updatedAt": "2026-08-23T02:34:26Z",
-        "observedAt": "2026-08-23T02:34:56.000Z",
+        "updatedAt": "2026-08-25T13:44:43Z",
+        "observedAt": "2026-08-25T13:48:00.000Z",
         "provenance": "github-commit"
       },
       "searchTerms": [
