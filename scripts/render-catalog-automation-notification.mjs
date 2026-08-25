@@ -103,6 +103,8 @@ export function renderCatalogAutomationNotification({
       || (authorNotices.sourceCatalogRunId == null && authorNotices.observedAt === report?.observedAt))
   const authorSummary = authorNoticeMatches ? authorNotices.summary ?? null : null
   const authorStatisticsAvailable = authorSummary !== null
+  const candidateCoverageAvailable = authorSummary?.candidateCoverageInvariantPassed === true
+    && number(authorSummary.candidateCoverageUnaccounted) === 0
   const title = statisticsAvailable
     ? `DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}，兼容性下架 ${compatibilityUnlisted.length}，恢复 ${compatibilityRestored.length}`
     : 'DSH STORE 自动更新报告：本轮扫描失败，统计不可用'
@@ -134,6 +136,9 @@ export function renderCatalogAutomationNotification({
       lines.push(
         `- 向不符合条件项目发送 GitHub 整改消息：${number(authorSummary.githubMessages)} 个项目`,
         `- 触发 GitHub 通知邮件：${number(authorSummary.githubNotificationEmailTriggers)} 个项目；实际送达：**无法验证**`,
+        candidateCoverageAvailable
+          ? `- 候选全量台账：${number(authorSummary.candidateCoverageAccounted)} / ${number(authorSummary.candidateRegistryRecords)} 条已归类，未覆盖 ${number(authorSummary.candidateCoverageUnaccounted)} 条`
+          : '- 候选全量台账：**校验不可用，禁止按已覆盖解读**',
         `- 作者源码修改：仍未通过 ${number(authorSummary.upstreamModifiedStillBlocked)}，问题清除 ${number(authorSummary.upstreamModifiedResolved)}，未检测到新提交 ${number(authorSummary.noUpstreamModificationDetected)}，基线/未知 ${number(authorSummary.sourceTrackingBaselines) + number(authorSummary.sourceModificationUnknown)}`,
       )
     } else {
@@ -245,6 +250,12 @@ export function renderCatalogAutomationNotification({
       `- 本轮已发送 GitHub 整改消息：${number(authorSummary.githubMessages)} 个项目`,
       `- 本轮已触发 GitHub 通知邮件：${number(authorSummary.githubNotificationEmailTriggers)} 个项目`,
       `- 邮件实际送达：**未验证**。是否进入收件箱取决于被提及维护者的 GitHub 通知和邮箱设置，仓库没有读取私人邮箱回执。`,
+      candidateCoverageAvailable
+        ? `- Candidate Registry 全量覆盖：${number(authorSummary.candidateCoverageAccounted)} / ${number(authorSummary.candidateRegistryRecords)} 条，canonical 仓库 ${number(authorSummary.candidateRegistryRepositories)} 个，未覆盖 ${number(authorSummary.candidateCoverageUnaccounted)} 条。`
+        : '- Candidate Registry 全量覆盖：**校验不可用，禁止按已覆盖解读**。',
+      `- 符合一次性直接整改通知的候选：${number(authorSummary.candidateDirectNotificationEligible)} 个（已有修复单 ${number(authorSummary.candidateDirectManagedIssues)}，本轮安排 ${number(authorSummary.candidateDirectScheduledThisRun)}，待限速发送 ${number(authorSummary.candidateDirectQueued)}）。`,
+      `- 仅在[公开候选库](https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/candidates.json)展示、不主动 @ 的候选：${number(authorSummary.candidatePublicRegistryOnly)} 个（待复检 ${number(authorSummary.candidatePublicReviewing)}，公开整改原因 ${number(authorSummary.candidatePublicRemediation)}，基础设施暂缓 ${number(authorSummary.candidatePublicDeferred)}，发现记录 ${number(authorSummary.candidatePublicDiscoveryOnly)}）。`,
+      '- 公开展示不等于向作者发送消息；直接通知只用于具体、确定性的上架整改，不发送纯推广内容，也不去第三方仓库批量开 Issue。',
       `- 检测到上游修改但仍未通过：${number(authorSummary.upstreamModifiedStillBlocked)} 个项目`,
       `- 检测到上游修改且阻断清除：${number(authorSummary.upstreamModifiedResolved)} 个项目`,
       `- 未检测到上游新提交：${number(authorSummary.noUpstreamModificationDetected)} 个项目`,

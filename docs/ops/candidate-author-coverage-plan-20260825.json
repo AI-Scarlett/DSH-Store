@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "planType": "repository-policy-change",
+  "planId": "candidate-author-coverage-20260825",
+  "createdAt": "2026-08-25T22:47:48+08:00",
+  "authorization": "User requested that every scanned candidate be accounted for and that candidate author outreach not be omitted.",
+  "objective": "Account for every canonical Candidate Registry repository in each author-notification plan while limiting direct GitHub notifications to deterministic remediation and avoiding unsolicited promotional bulk activity.",
+  "baseCommit": "d20c288e3bf7af6da80b0a77ff5a2cf6c7f83fc5",
+  "preconditions": {
+    "scripts/plan-author-notices.mjs": "18851698f664f120fa2c353f99f56eaf6b3c3be281f98fb781b3993133a46c51",
+    "scripts/apply-author-notice-plan.mjs": "5e98aee337b84bbe32e10e14307e9ebaaac87c1311b4042387013b664bc51bb9",
+    ".github/workflows/author-notifications.yml": "cb5ea67d79303815714c35bab9e22591a0f34ed654c3278f7756039a061cebdc",
+    "scripts/render-catalog-automation-notification.mjs": "89172f2a13569c7bcd6194939bf78e4940222b809f27dce9879267c4cf959a3a",
+    "test/author-notices.test.mjs": "729ce741c17f9a0146778e2a0ca6baa36d0e55a9adb8f7c66bbe295f08b4bd26",
+    "test/catalog-automation.test.mjs": "db96d6c0c6621cfaf72604d26ef65cfe91ddf1bdb525edfd2a740657168e1769",
+    "test/catalog-notification.test.mjs": "eae28647144425472575b247ee54e9b79597ac282af6bf996acf4a9e298456f5",
+    "registry/README.md": "057299da0f8bbdcbc4910bf39f8b85b3da2c06b82444b553a5d86d2f777ab9dd",
+    "docs/wiki/Author-Remediation.md": "45ba1ded5019e10ac3092f420fb1eea72c606851053ea12a7700cbfe47cab705"
+  },
+  "allowedFileScope": [
+    "docs/ops/candidate-author-coverage-plan-20260825.json",
+    "scripts/plan-author-notices.mjs",
+    "scripts/apply-author-notice-plan.mjs",
+    ".github/workflows/author-notifications.yml",
+    "scripts/render-catalog-automation-notification.mjs",
+    "test/author-notices.test.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/catalog-notification.test.mjs",
+    "registry/README.md",
+    "docs/wiki/Author-Remediation.md"
+  ],
+  "policy": {
+    "candidateCoverage": "all-canonical-candidate-repositories",
+    "deduplicateBy": "canonical-github-repository",
+    "directNotification": "one-managed-remediation-issue-for-deterministic-author-action",
+    "promotionOnlyNotifications": false,
+    "externalRepositoryIssueCreation": false,
+    "maximumNewIssuesPerRun": 3,
+    "neverExecuteThirdPartyCode": true
+  },
+  "gates": [
+    "Every Candidate Registry repository has exactly one coverage disposition.",
+    "The coverage summary sums to the unique canonical candidate repository count.",
+    "The apply step validates the coverage fingerprint and zero-unaccounted invariant.",
+    "npm run check passes.",
+    "Changes merge through an auditable pull request and remote main readback."
+  ],
+  "localVerification": {
+    "status": "passed",
+    "npmCheck": "REGISTRY_OK entries=507; 174 tests passed",
+    "candidateRegistryRecords": 1420,
+    "candidateRegistryRepositories": 1420,
+    "candidateCoverageAccounted": 1420,
+    "candidateCoverageUnaccounted": 0,
+    "coverageLedgerRows": 1420,
+    "authorNoticePlanBytes": 490897,
+    "note": "The real-data dry run used the current Registry and current managed Issue snapshot. The exact action set remains bound to the next successful Catalog decision record at workflow runtime."
+  },
+  "recovery": {
+    "history": "Git branch and pull request retain the complete diff.",
+    "rollback": "Revert the merge commit; no third-party repository is mutated by this change."
+  }
+}

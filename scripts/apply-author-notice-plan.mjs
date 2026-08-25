@@ -12,6 +12,10 @@ const SOURCE_STATUSES = new Set([
   'new-baseline', 'tracking-baseline', 'modified-still-blocked', 'not-modified',
   'modified-and-resolved', 'resolved-without-source-change', 'resolved-source-unknown', 'unknown',
 ])
+const CANDIDATE_COVERAGE_DISPOSITIONS = new Set([
+  'direct-remediation', 'public-reviewing', 'public-remediation', 'public-deferred', 'public-discovery-only',
+])
+const CANDIDATE_NOTIFICATION_STATES = new Set(['managed-issue', 'scheduled-this-run', 'queued', 'public-registry-only'])
 
 function parseArgs(argv) {
   const options = {}
@@ -53,6 +57,63 @@ function validatePlan(plan) {
     requiredString(plan?.preconditions?.[name], `preconditions.${name}`, /^[0-9a-f]{64}$/)
   }
   if (!Array.isArray(plan.requiredLabels) || !Array.isArray(plan.actions)) throw new Error('plan arrays are missing')
+  if (!Array.isArray(plan.candidateCoverage) || plan.candidateCoverage.length > 2_500) {
+    throw new Error('candidate coverage ledger is missing or exceeds its bound')
+  }
+  requiredString(plan.candidateCoverageFingerprint, 'candidateCoverageFingerprint', /^[0-9a-f]{64}$/)
+  if (sha256(JSON.stringify(plan.candidateCoverage)) !== plan.candidateCoverageFingerprint) {
+    throw new Error('candidate coverage fingerprint mismatch')
+  }
+  const candidateKeys = new Set()
+  let candidateRecords = 0
+  const candidateDispositionCounts = Object.fromEntries([...CANDIDATE_COVERAGE_DISPOSITIONS].map(value => [value, 0]))
+  const candidateNotificationCounts = Object.fromEntries([...CANDIDATE_NOTIFICATION_STATES].map(value => [value, 0]))
+  for (const record of plan.candidateCoverage) {
+    requiredString(record?.key, 'candidateCoverage.key', /^[a-z0-9_.-]+\/[a-z0-9_.-]+$/)
+    requiredString(record?.repositoryUrl, 'candidateCoverage.repositoryUrl', /^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/)
+    if (candidateKeys.has(record.key)) throw new Error(`duplicate candidate coverage repository ${record.key}`)
+    candidateKeys.add(record.key)
+    if (!Array.isArray(record.candidateIds) || record.candidateIds.length < 1 || record.candidateIds.length > 50) {
+      throw new Error(`candidate IDs for ${record.key} are invalid`)
+    }
+    for (const id of record.candidateIds) requiredString(id, 'candidateCoverage.candidateId', /^[a-z0-9][a-z0-9._-]{0,95}$/)
+    if (!Array.isArray(record.statuses) || record.statuses.length < 1 || record.statuses.length > 8) throw new Error(`candidate statuses for ${record.key} are invalid`)
+    if (!Array.isArray(record.routes) || record.routes.length < 1 || record.routes.length > 8) throw new Error(`candidate routes for ${record.key} are invalid`)
+    for (const status of record.statuses) requiredString(status, 'candidateCoverage.status', /^[a-z0-9-]{1,40}$/)
+    for (const route of record.routes) requiredString(route, 'candidateCoverage.route', /^[a-z0-9-]{1,40}$/)
+    if (!CANDIDATE_COVERAGE_DISPOSITIONS.has(record.disposition)) throw new Error(`candidate disposition for ${record.key} is invalid`)
+    if (!CANDIDATE_NOTIFICATION_STATES.has(record.notificationState)) throw new Error(`candidate notification state for ${record.key} is invalid`)
+    if ((record.disposition === 'direct-remediation') === (record.notificationState === 'public-registry-only')) {
+      throw new Error(`candidate notification lane for ${record.key} is inconsistent`)
+    }
+    if (record.managedIssueNumber !== null && (!Number.isInteger(record.managedIssueNumber) || record.managedIssueNumber < 1)) {
+      throw new Error(`candidate managed issue for ${record.key} is invalid`)
+    }
+    candidateRecords += record.candidateIds.length
+    candidateDispositionCounts[record.disposition] += 1
+    candidateNotificationCounts[record.notificationState] += 1
+  }
+  if (plan?.summary?.candidateRegistryRecords !== candidateRecords
+    || plan?.summary?.candidateRegistryRepositories !== plan.candidateCoverage.length
+    || plan?.summary?.candidateCoverageAccounted !== candidateRecords
+    || plan?.summary?.candidateCoverageUnaccounted !== 0
+    || plan?.summary?.candidateCoverageInvariantPassed !== true) {
+    throw new Error('candidate coverage summary invariant failed')
+  }
+  const expectedCandidateSummary = {
+    candidateDirectNotificationEligible: candidateDispositionCounts['direct-remediation'],
+    candidateDirectManagedIssues: candidateNotificationCounts['managed-issue'],
+    candidateDirectScheduledThisRun: candidateNotificationCounts['scheduled-this-run'],
+    candidateDirectQueued: candidateNotificationCounts.queued,
+    candidatePublicReviewing: candidateDispositionCounts['public-reviewing'],
+    candidatePublicRemediation: candidateDispositionCounts['public-remediation'],
+    candidatePublicDeferred: candidateDispositionCounts['public-deferred'],
+    candidatePublicDiscoveryOnly: candidateDispositionCounts['public-discovery-only'],
+    candidatePublicRegistryOnly: candidateNotificationCounts['public-registry-only'],
+  }
+  for (const [name, value] of Object.entries(expectedCandidateSummary)) {
+    if (plan.summary[name] !== value) throw new Error(`candidate coverage summary ${name} mismatch`)
+  }
   if (plan.actions.length > 100) throw new Error('author notice action bound exceeded')
   if (plan.actions.filter(action => action?.type === 'create').length > 12) throw new Error('author notice create bound exceeded')
   const issueNumbers = new Set()

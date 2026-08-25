@@ -11,6 +11,13 @@ const SOURCE_MARKER_PATTERN = /<!-- dsh-author-source:v1 fingerprint=([0-9a-f]{6
 const INFRASTRUCTURE_REASON = /(?:HTTP (?:403|404|409|429|5\d\d)|rate.?limit|timed?\s*out|timeout|temporar(?:y|ily)|default branch moved|transport|connection|ECONN|ENOTFOUND)/i
 const EXPLICIT_CANDIDATE_SOURCE = /(?:user-request|plugin-submission|fixed-commit-review)/i
 const STRONG_DSH_DESCRIPTION = /(?:DeepSeek Harness|\bDSH\s+(?:plugin|插件)|(?:plugin|插件)\s+(?:for\s+)?DSH)\b/i
+const CANDIDATE_COVERAGE_DISPOSITIONS = new Set([
+  'direct-remediation',
+  'public-reviewing',
+  'public-remediation',
+  'public-deferred',
+  'public-discovery-only',
+])
 
 export const AUTHOR_NOTICE_LABELS = [
   { name: 'author-action-required', color: 'D93F0B', description: 'Upstream author changes are required before DSH STORE can proceed' },
@@ -98,6 +105,61 @@ function candidateIsExplicit(candidate) {
 function candidateIsActionable(candidate) {
   const reason = compactReason(candidate.statusReason)
   return candidate.status === 'rejected' && reason !== '' && !INFRASTRUCTURE_REASON.test(reason) && candidateHasDshIntent(candidate)
+}
+
+function candidateCoverage(candidates, recentRejected, existingByKey) {
+  const records = new Map()
+  const dispositionPriority = {
+    'public-discovery-only': 0,
+    'public-deferred': 1,
+    'public-reviewing': 2,
+    'public-remediation': 3,
+    'direct-remediation': 4,
+  }
+  for (const candidate of array(candidates?.entries)) {
+    const repository = githubRepository(candidate.repositoryUrl)
+    const actionable = candidateIsActionable(candidate)
+    const explicit = candidateIsExplicit(candidate)
+    const recent = recentRejected.has(repository.key)
+    const managed = existingByKey.has(repository.key)
+    const disposition = actionable && (explicit || recent || managed)
+      ? 'direct-remediation'
+      : candidate.status === 'reviewing'
+        ? 'public-reviewing'
+        : actionable
+          ? 'public-remediation'
+          : INFRASTRUCTURE_REASON.test(String(candidate.statusReason ?? ''))
+            ? 'public-deferred'
+            : 'public-discovery-only'
+    if (!CANDIDATE_COVERAGE_DISPOSITIONS.has(disposition)) throw new Error(`candidate coverage disposition is invalid for ${repository.key}`)
+    let record = records.get(repository.key)
+    if (!record) {
+      record = {
+        key: repository.key,
+        repositoryUrl: repository.url,
+        candidateIds: new Set(),
+        statuses: new Set(),
+        routes: new Set(),
+        disposition,
+        managedIssueNumber: existingByKey.get(repository.key)?.number ?? null,
+      }
+      records.set(repository.key, record)
+    } else if (dispositionPriority[disposition] > dispositionPriority[record.disposition]) {
+      record.disposition = disposition
+    }
+    record.candidateIds.add(String(candidate.id))
+    record.statuses.add(String(candidate.status))
+    record.routes.add(String(candidate.route))
+  }
+  return [...records.values()].sort((left, right) => left.key.localeCompare(right.key, 'en')).map(record => ({
+    key: record.key,
+    repositoryUrl: record.repositoryUrl,
+    candidateIds: [...record.candidateIds].sort((left, right) => left.localeCompare(right, 'en')),
+    statuses: [...record.statuses].sort((left, right) => left.localeCompare(right, 'en')),
+    routes: [...record.routes].sort((left, right) => left.localeCompare(right, 'en')),
+    disposition: record.disposition,
+    managedIssueNumber: record.managedIssueNumber,
+  }))
 }
 
 export function parseAuthorNoticeMarker(body) {
@@ -425,6 +487,8 @@ export function buildAuthorNoticePlan({
     if (recent) record.createPriority.add('candidate-rejected')
   }
 
+  const candidateCoverageRecords = candidateCoverage(candidates, recentRejected, existingByKey)
+
   const desired = [...repositories.values()].sort((left, right) => left.key.localeCompare(right.key, 'en'))
   for (const record of desired) {
     const items = stableItems(record)
@@ -442,6 +506,17 @@ export function buildAuthorNoticePlan({
 
   const createRecords = selectCreates(desired, new Set(existingByKey.keys()), maxCreate)
   const createKeys = new Set(createRecords.map(record => record.key))
+  const finalCandidateCoverage = candidateCoverageRecords.map(record => ({
+    ...record,
+    notificationState: record.disposition !== 'direct-remediation'
+      ? 'public-registry-only'
+      : record.managedIssueNumber !== null
+        ? 'managed-issue'
+        : createKeys.has(record.key)
+          ? 'scheduled-this-run'
+          : 'queued',
+  }))
+  const candidateCoverageFingerprint = sha256(JSON.stringify(finalCandidateCoverage))
   const actions = []
   let unchanged = 0
   const sourceStatuses = []
@@ -540,11 +615,26 @@ export function buildAuthorNoticePlan({
   const eligibleCreates = desired.filter(record => !existingByKey.has(record.key) && record.createCategories.size > 0).length
   const githubMessageTypes = new Set(['create', 'update', 'notify', 'source-update'])
   const githubMessages = actions.filter(action => githubMessageTypes.has(action.type)).length
+  const candidateDispositionCount = disposition => finalCandidateCoverage.filter(record => record.disposition === disposition).length
+  const candidateRegistryRecords = array(candidates?.entries).length
+  const candidateRegistryRepositories = finalCandidateCoverage.length
+  const candidateCoverageAccounted = finalCandidateCoverage.reduce((total, record) => total + record.candidateIds.length, 0)
+  const candidateDirectNotificationEligible = candidateDispositionCount('direct-remediation')
+  const candidatePublicReviewing = candidateDispositionCount('public-reviewing')
+  const candidatePublicRemediation = candidateDispositionCount('public-remediation')
+  const candidatePublicDeferred = candidateDispositionCount('public-deferred')
+  const candidatePublicDiscoveryOnly = candidateDispositionCount('public-discovery-only')
+  const candidateDispositionTotal = candidateDirectNotificationEligible + candidatePublicReviewing
+    + candidatePublicRemediation + candidatePublicDeferred + candidatePublicDiscoveryOnly
+  if (candidateCoverageAccounted !== candidateRegistryRecords || candidateDispositionTotal !== candidateRegistryRepositories) {
+    throw new Error('Candidate Registry coverage invariant failed')
+  }
   const planIdentity = {
     baseCommit,
     sourceCatalogRunId,
     inputHashes,
     desired: desired.map(record => ({ key: record.key, signature: record.signature, sourceFingerprint: record.source.fingerprint })),
+    candidateCoverageFingerprint,
     actions: actions.map(action => ({
       type: action.type, key: action.key, signature: action.signature,
       sourceFingerprint: action.sourceFingerprint, sourceStatus: action.sourceStatus,
@@ -560,6 +650,10 @@ export function buildAuthorNoticePlan({
     policy: {
       maxNewIssuesPerRun: maxCreate,
       notifyOnlyDeterministicAuthorActions: true,
+      accountForEveryCandidateRepository: true,
+      publicRegistryForUnsolicitedCandidates: true,
+      neverSendPromotionOnlyMessages: true,
+      neverCreateIssuesInExternalRepositories: true,
       ignoreInfrastructureFailures: true,
       neverExecuteThirdPartyCode: true,
       deduplicateByCanonicalRepository: true,
@@ -586,7 +680,23 @@ export function buildAuthorNoticePlan({
       sourceTrackingBaselines: sourceStatuses.filter(item => item.status === 'new-baseline' || item.status === 'tracking-baseline').length,
       sourceModificationUnknown: sourceStatuses.filter(item => item.status === 'unknown' || item.status === 'resolved-source-unknown').length,
       resolvedWithoutDetectedSourceChange: sourceStatuses.filter(item => item.status === 'resolved-without-source-change').length,
+      candidateRegistryRecords,
+      candidateRegistryRepositories,
+      candidateCoverageAccounted,
+      candidateCoverageUnaccounted: candidateRegistryRecords - candidateCoverageAccounted,
+      candidateCoverageInvariantPassed: true,
+      candidateDirectNotificationEligible,
+      candidateDirectManagedIssues: finalCandidateCoverage.filter(record => record.notificationState === 'managed-issue').length,
+      candidateDirectScheduledThisRun: finalCandidateCoverage.filter(record => record.notificationState === 'scheduled-this-run').length,
+      candidateDirectQueued: finalCandidateCoverage.filter(record => record.notificationState === 'queued').length,
+      candidatePublicReviewing,
+      candidatePublicRemediation,
+      candidatePublicDeferred,
+      candidatePublicDiscoveryOnly,
+      candidatePublicRegistryOnly: candidatePublicReviewing + candidatePublicRemediation + candidatePublicDeferred + candidatePublicDiscoveryOnly,
     },
+    candidateCoverageFingerprint,
+    candidateCoverage: finalCandidateCoverage,
     actions,
   }
 }
