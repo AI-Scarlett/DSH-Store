@@ -226,6 +226,8 @@ test('bundled registry declares complete detail metadata for every entry', async
   ])
   const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
+  assert.equal(catalog.registry.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
+  assert.equal(manager.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
   assert.ok(compareVersions(manager.version, packageManifest.version) <= 0, 'catalog manager version cannot be newer than package.json during two-phase self-pinning')
   assert.equal(manager.version, '0.8.4', 'the Catalog must expose the canonical migration as an actual SemVer upgrade')
   assert.equal(manager.commit, 'b2b8e01f57cf0bbb3378e46905757e036eec10f6', 'the Catalog must pin the merged canonical 0.8.4 source release')

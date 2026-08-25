@@ -11,6 +11,7 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
+  assert.equal(pkg.repository.url, 'git+https://github.com/AI-Scarlett/DSH-Store.git')
   assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
   for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
     assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0')
@@ -314,6 +315,10 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.ok(html.includes(submissionUrl))
   assert.ok(pluginsHtml.includes(submissionUrl))
   assert.ok(buildHtml.includes(submissionUrl))
+  assert.match(html, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
+  for (const surface of [html, pluginsHtml, buildHtml, faqHtml, aboutHtml, readme]) {
+    assert.doesNotMatch(surface, /github\.com\/AI-Scarlett\/dsh-safe-plugin-manager|ai-scarlett\.github\.io\/dsh-safe-plugin-manager/)
+  }
   assert.match(html, /id="manager"/)
   assert.match(html, /id="featured-grid"/)
   assert.doesNotMatch(html, /id="plugin-grid"/)

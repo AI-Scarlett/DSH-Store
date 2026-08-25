@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "kind": "repository-canonical-url-migration-plan",
+  "status": "migration-and-catalog-merged-wiki-source-prepared",
+  "createdAt": "2026-08-25T22:00:00+08:00",
+  "authorization": {
+    "source": "explicit-owner-request",
+    "summary": "Migrate every current DSH STORE repository surface to AI-Scarlett/DSH-Store and publish a Chinese project Wiki.",
+    "humanConfirmationPerRun": false
+  },
+  "base": {
+    "repository": "https://github.com/AI-Scarlett/DSH-Store",
+    "ref": "main",
+    "commit": "04082cc718d8f53d29a31617be2ffaf8dbb8a452",
+    "tree": "b235cbdb96be8739b007981866f98061c0c30a89"
+  },
+  "pullRequest": {
+    "number": 192,
+    "branch": "codex/repo-migration",
+    "mergeMethod": "squash",
+    "state": "merged",
+    "mergedAt": "2026-08-25T13:57:52Z",
+    "mergeCommit": "d5f608482210a2ea3da2889f1ea4731eef4bda57"
+  },
+  "sourceReleasePullRequest": {
+    "number": 193,
+    "version": "0.8.4",
+    "state": "merged",
+    "mergedAt": "2026-08-25T14:06:05Z",
+    "mergeCommit": "b2b8e01f57cf0bbb3378e46905757e036eec10f6"
+  },
+  "catalogPinPullRequest": {
+    "number": 194,
+    "state": "merged",
+    "mergedAt": "2026-08-25T14:10:11Z",
+    "mergeCommit": "2c15b3e683dae9e6ae4e558c414f8d01592ce8c2",
+    "pinnedSourceCommit": "b2b8e01f57cf0bbb3378e46905757e036eec10f6"
+  },
+  "wikiSourcePullRequest": {
+    "branch": "codex/wiki-and-migration-verification",
+    "baseCommit": "2c15b3e683dae9e6ae4e558c414f8d01592ce8c2",
+    "baseTree": "d44a9f8641166bd61074beee221e8be0e258df17",
+    "preconditionSha256": {
+      "README.md": "84bea79927d1f0307e797253cd9a3c24de4b47eccf4cc11f373d99b8e0e5b520",
+      "test/catalog-automation.test.mjs": "4f712f1d621a6f6044346cc8c689b7a1f8732bf04d74089f13d5bd03cc75e87a",
+      "test/catalog.test.mjs": "5b3662de4139052c0391144c5ac177f95855bc5d76e7001264031312b817ca5c",
+      "test/contracts.test.mjs": "8f997edb8caf3852a1b1ebb3712c07f90b7a96cd5937050fb73761108dcadf01"
+    }
+  },
+  "scope": [
+    "README.md",
+    "cordis.patch.yml",
+    "deploy/refresh-from-pages.sh",
+    "docs/VERIFICATION.md",
+    "docs/ops/google-seo-20260824.json",
+    "install-counter/wrangler.jsonc",
+    "marketplace/about/index.html",
+    "marketplace/build/index.html",
+    "marketplace/dsh-plugins/index.html",
+    "marketplace/faq/index.html",
+    "marketplace/index.html",
+    "marketplace/llms.txt",
+    "marketplace/plugins/index.html",
+    "package.json",
+    "registry/README.md",
+    "registry/automation-policy.json",
+    "registry/candidates.json",
+    "registry/candidates.schema.json",
+    "registry/catalog.json",
+    "registry/catalog.schema.json",
+    "scripts/automate-catalog.mjs",
+    "scripts/build-marketplace-static.mjs",
+    "scripts/check-plugin-submission.mjs",
+    "scripts/plan-author-notices.mjs",
+    "scripts/verify-marketplace-public.mjs",
+    "src/candidates.mjs",
+    "src/catalog.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "docs/wiki/Home.md",
+    "docs/wiki/Installation-and-Usage.md",
+    "docs/wiki/Catalog-Automation.md",
+    "docs/wiki/Security-and-Trust.md",
+    "docs/wiki/Author-Remediation.md",
+    "docs/wiki/FAQ.md",
+    "docs/wiki/_Sidebar.md",
+    "docs/ops/repository-migration-20260825.json"
+  ],
+  "preconditionSha256": {
+    "README.md": "d3e8f4aaf8ae5c60c8340afb2058049f05e30ddca0b7595fda461e4e284d6fbe",
+    "cordis.patch.yml": "675b6a71e9c4256ebdceb8dde781e0238505756e1559ac0a989cf6adef1c049a",
+    "deploy/refresh-from-pages.sh": "3a2cac9e78e229594d542de36608ed034c06bc1a2cc59976153dcc1e3fab958a",
+    "docs/VERIFICATION.md": "fbd8a242b3df7f64ab2b0a60f158cf7a502ea9ed1d8c83e66e25dfa15197e593",
+    "docs/ops/google-seo-20260824.json": "548025d8ffe6cc27ab10b9b52ee5100a3b678788e652d2c150517dfaf114de0f",
+    "install-counter/wrangler.jsonc": "3b173193f7e2978e73488f7e0f2aec7522daaff5046027b9693faad766b89d61",
+    "marketplace/about/index.html": "aa62fced636898a963e28f128976abf5936f8f3dee9bfcb2150af2969cc27d88",
+    "marketplace/build/index.html": "16c50eefb9ad4034863f2251b5346c7c687c888b1c4449aad09b80172e78e701",
+    "marketplace/dsh-plugins/index.html": "1dac18e15f24f7ad495cbd9e6ea90759c46eb2c268f5551c8548ba7349ef1ba2",
+    "marketplace/faq/index.html": "0ec7a26d22e55711b02826f438de8136ff2c5cff7433d7826de12913337584b4",
+    "marketplace/index.html": "9f9f3aad82a4b208f6fe719c57c767c0b97ceb18c6d34f9ce6469835f7046c0f",
+    "marketplace/llms.txt": "95dae3517607a445878bd2f45af22319ebd40620c634270f9bf2041f833f2c63",
+    "marketplace/plugins/index.html": "c6d9b7fd2d99b583ef293882e04e04c0cc6e92876a568c918c9410475593b60a",
+    "package.json": "2f5fa2f5d10f19ad18a2953b26c78a4a6868e4f5466f42f5ac9f93bf21eac9dd",
+    "registry/README.md": "b39311ac2152148825f00eb3d5e8eb59784f70e218c3baf01ad6795f66441bb7",
+    "registry/automation-policy.json": "4ecec75ff1d9c0d5817675e1ac992fe3758f15a721dd1a1d1a5e5e9a2dc16180",
+    "registry/candidates.json": "c40059698752366456957b661b143137495a46c12d629ca4d7b73ac708114bb5",
+    "registry/candidates.schema.json": "3117e06855fe7d27b9772b5e88a313e2946530b7ab2b90dfa7221deb0b27dcd2",
+    "registry/catalog.json": "94302bee0604a7c67a6c8c53ca401f5ec79efe5b1f456cf87ff24e709fa5d591",
+    "registry/catalog.schema.json": "aa6ead2a7bf2463202474d416dc4bd8c646845df728044c1030a2e966147d420",
+    "scripts/automate-catalog.mjs": "5f737e45c1d5feefc8f5b3ec8ac443ab16272c8a53ff12bff0723393e6873368",
+    "scripts/build-marketplace-static.mjs": "3cc1ed83f38b415530395d3fec8d4daf7c4794b90aceadccfe6185033780ef6e",
+    "scripts/check-plugin-submission.mjs": "5306903a313037e0da4181fa291b4170c068eeb86027f6fd72911a1c22fd7e9b",
+    "scripts/plan-author-notices.mjs": "d79d0030398b7dc698b5242cc14a368ffb914fd6ee4964be67533cefe2db8382",
+    "scripts/verify-marketplace-public.mjs": "90d1ec7d2ff1ad368b5efa0462f815819c6139e3cf4d91508bee1be288f18eca",
+    "src/candidates.mjs": "e07560423a05a5be688e4bcf4ff6c73bfe2cb07110a22b8678a1752f71e9cc3f",
+    "src/catalog.mjs": "724fc66e17d8b066a68c325a5e280625890bf4f5cbdf2df28c191dd849e52d4c",
+    "test/catalog-automation.test.mjs": "ecc064fe50c75795ba687b633f2f65243a0af8361aefd537a9af34f56b9edba6",
+    "test/catalog.test.mjs": "8b1f24b01c7323832299fa880dc71f1369b12f63c8c97991cfcc7ad21c388921",
+    "test/contracts.test.mjs": "f0504d44fb24d63bd4a053a1c5180880e5774ab178ef7682b969a6d2018a9df5"
+  },
+  "newFiles": [
+    "docs/ops/repository-migration-20260825.json",
+    "docs/wiki/Home.md",
+    "docs/wiki/Installation-and-Usage.md",
+    "docs/wiki/Catalog-Automation.md",
+    "docs/wiki/Security-and-Trust.md",
+    "docs/wiki/Author-Remediation.md",
+    "docs/wiki/FAQ.md",
+    "docs/wiki/_Sidebar.md"
+  ],
+  "gates": [
+    "all current tracked canonical URLs use AI-Scarlett/DSH-Store",
+    "dsh-safe-plugin-manager remains the package, API, storage and protected-entry identity",
+    "npm run check",
+    "Registry validation and CodeQL pass on the pull request",
+    "squash merge through an auditable pull request",
+    "PR 194 pins the self Catalog entry to the merged 0.8.4 source Commit",
+    "read back GitHub Raw, GitHub Pages, dsh.store, dsh-store.cn and the GitHub Wiki independently"
+  ],
+  "rollback": {
+    "method": "revert the exact squash merge through a new pull request; restore Wiki pages from the committed docs/wiki sources",
+    "trigger": "any deterministic check failure, stale base, broken canonical URL or public readback mismatch"
+  },
+  "nonGoals": [
+    "do not rename the dsh-safe-plugin-manager package, API routes, state directories or protected entry IDs",
+    "do not modify DSH core or @deepseek-ai packages",
+    "do not install into or restart a real DSH Profile",
+    "do not deploy either custom production server as part of the repository migration"
+  ]
+}
