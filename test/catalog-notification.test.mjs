@@ -79,7 +79,36 @@ test('Catalog notification remains useful when an automation artifact is missing
     repairTriggered: true,
   })
   assert.match(output, /需要关注/)
-  assert.match(output, /无新增收录/)
-  assert.match(output, /无历史插件版本更新/)
+  assert.match(output, /本轮扫描失败，统计不可用/)
+  assert.match(output, /禁止按 0 解读/)
+  assert.match(output, /无法确认新增收录清单；请勿解读为 0/)
+  assert.match(output, /无法确认历史插件更新清单；请勿解读为 0/)
+  assert.doesNotMatch(output, /新增 0，历史更新 0/)
+  assert.doesNotMatch(output, /无新增收录/)
+  assert.doesNotMatch(output, /无历史插件版本更新/)
   assert.match(output, /已自动触发修复任务/)
+})
+
+test('Catalog notification exposes a preserved partial failure without presenting partial counts as final', () => {
+  const output = renderCatalogAutomationNotification({
+    catalog: { entries: [{ id: 'existing' }] },
+    report: {
+      schemaVersion: 2,
+      status: 'failed',
+      completed: false,
+      statisticsAvailable: false,
+      observedAt: '2026-08-25T10:00:00.000Z',
+      sourceVersionChecks: { checkedEntries: 85, newerVersionCandidates: 12 },
+      failure: {
+        stage: 'apply-latest-dsh-compatibility-policy',
+        message: 'conflicting compatibility aliases for 0.1.0-rc.8',
+      },
+    },
+    watchdog: { status: 'failed', surfaces: [], checkedAt: '2026-08-25T10:55:00.000Z' },
+    catalogConclusion: 'failure',
+  })
+  assert.match(output, /至少 85 个（部分进度，不是最终统计）/)
+  assert.match(output, /apply-latest-dsh-compatibility-policy/)
+  assert.match(output, /conflicting compatibility aliases/)
+  assert.doesNotMatch(output, /发现上游高版本：12 个/)
 })

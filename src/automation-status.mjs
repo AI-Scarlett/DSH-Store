@@ -44,9 +44,28 @@ function statusOf(scanner, watchdog) {
 function reportRecord(item) {
   const report = item?.report
   if (!report || typeof report !== 'object') return null
-  return {
+  const statisticsAvailable = report.status !== 'failed'
+    && report.completed !== false
+    && report.statisticsAvailable !== false
+  const identity = {
     runId: Number.isSafeInteger(Number(item.runId)) ? Number(item.runId) : null,
     observedAt: iso(report.observedAt),
+    statisticsAvailable,
+    failure: statisticsAvailable ? null : {
+      stage: text(report.failure?.stage, 120),
+      message: text(report.failure?.message, 600),
+    },
+  }
+  if (!statisticsAvailable) {
+    return {
+      ...identity,
+      addedEntries: [], updatedEntries: [], compatibilityUnlisted: [], compatibilityRestored: [], prunedCandidates: [],
+      compatibilityPolicy: null, candidateRetention: null,
+      rejectedCandidates: null, deferredUpdates: null, transientFailures: null, sourceVersionChecks: null,
+    }
+  }
+  return {
+    ...identity,
     addedEntries: Array.isArray(report.addedEntries) ? report.addedEntries : [],
     updatedEntries: Array.isArray(report.updatedEntries) ? report.updatedEntries : [],
     compatibilityUnlisted: Array.isArray(report.compatibilityUnlisted) ? report.compatibilityUnlisted : [],
@@ -130,12 +149,13 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
   const runById = new Map(scannerRuns.map(normalizeRun).filter(Boolean).map(run => [run.runId, run]))
   const reportRecords = reports.map(reportRecord).filter(Boolean)
     .sort((left, right) => (Date.parse(right.observedAt ?? '') || 0) - (Date.parse(left.observedAt ?? '') || 0))
+  const completedReportRecords = reportRecords.filter(report => report.statisticsAvailable)
   const entryById = new Map(catalog.entries.map(entry => [entry.id, entry]))
   const recentAdditions = []
   const recentUpdates = []
   const seen = new Set()
   const seenUpdates = new Set()
-  for (const report of reportRecords) {
+  for (const report of completedReportRecords) {
     for (const addition of report.addedEntries) {
       const id = text(addition?.id, 96)
       const entry = id ? entryById.get(id) : null
@@ -146,7 +166,7 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     }
     if (recentAdditions.length >= 24) break
   }
-  for (const report of reportRecords) {
+  for (const report of completedReportRecords) {
     for (const update of report.updatedEntries) {
       const id = text(update?.id, 96)
       const entry = id ? entryById.get(id) : null
@@ -158,8 +178,13 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     if (recentUpdates.length >= 24) break
   }
   const latestReport = reportRecords[0] ?? null
-  const latestAdded = latestReport?.addedEntries.map(item => text(item?.id, 96)).filter(Boolean) ?? []
-  const latestUpdated = latestReport?.updatedEntries.map(item => text(item?.id, 96)).filter(Boolean) ?? []
+  const latestStatisticsAvailable = latestReport?.statisticsAvailable === true
+  const latestAdded = latestStatisticsAvailable
+    ? latestReport.addedEntries.map(item => text(item?.id, 96)).filter(Boolean)
+    : null
+  const latestUpdated = latestStatisticsAvailable
+    ? latestReport.updatedEntries.map(item => text(item?.id, 96)).filter(Boolean)
+    : null
   const validGeneratedAt = iso(generatedAt) ?? new Date(0).toISOString()
   return {
     schemaVersion: 1,
@@ -179,45 +204,25 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     },
     latestChanges: {
       observedAt: latestReport?.observedAt ?? null,
+      statisticsAvailable: latestStatisticsAvailable,
+      failure: latestReport?.failure ?? null,
       added: latestAdded,
       updated: latestUpdated,
-      compatibilityUnlisted: latestReport?.compatibilityUnlisted.map(item => text(item?.id, 96)).filter(Boolean) ?? [],
-      compatibilityRestored: latestReport?.compatibilityRestored.map(item => text(item?.id, 96)).filter(Boolean) ?? [],
-      prunedCandidates: latestReport?.prunedCandidates.map(item => text(item?.id, 96)).filter(Boolean) ?? [],
-      compatibilityPolicy: latestReport?.compatibilityPolicy ?? {
-        authority: null,
-        latestVersion: null,
-        latestReleases: [],
-        checkedApprovedEntries: 0,
-        managedHeldEntries: 0,
-        managedCandidatesCreated: 0,
-        managedCandidatesRefreshed: 0,
-        managedCandidatesRemoved: 0,
-      },
-      candidateRetention: latestReport?.candidateRetention ?? {
-        authority: null,
-        bucket: 0,
-        bucketCount: 0,
-        checkedCandidates: 0,
-        retainedCompatible: 0,
-        retainedUnknown: 0,
-        prunedUnsupported: 0,
-        registryRemovals: 0,
-      },
-      rejectedCandidates: latestReport?.rejectedCandidates ?? 0,
-      deferredUpdates: latestReport?.deferredUpdates ?? 0,
-      transientFailures: latestReport?.transientFailures ?? 0,
-      sourceVersionChecks: latestReport?.sourceVersionChecks ?? {
-        authority: null,
-        checkedEntries: 0,
-        currentEntries: 0,
-        newerVersionCandidates: 0,
-        catalogUpdates: 0,
-        newerVersionsDeferred: 0,
-        sourceChangedWithoutVersionBump: 0,
-        upstreamVersionBehind: 0,
-        unresolvedEntries: 0,
-      },
+      compatibilityUnlisted: latestStatisticsAvailable
+        ? latestReport.compatibilityUnlisted.map(item => text(item?.id, 96)).filter(Boolean)
+        : null,
+      compatibilityRestored: latestStatisticsAvailable
+        ? latestReport.compatibilityRestored.map(item => text(item?.id, 96)).filter(Boolean)
+        : null,
+      prunedCandidates: latestStatisticsAvailable
+        ? latestReport.prunedCandidates.map(item => text(item?.id, 96)).filter(Boolean)
+        : null,
+      compatibilityPolicy: latestStatisticsAvailable ? latestReport.compatibilityPolicy : null,
+      candidateRetention: latestStatisticsAvailable ? latestReport.candidateRetention : null,
+      rejectedCandidates: latestStatisticsAvailable ? latestReport.rejectedCandidates : null,
+      deferredUpdates: latestStatisticsAvailable ? latestReport.deferredUpdates : null,
+      transientFailures: latestStatisticsAvailable ? latestReport.transientFailures : null,
+      sourceVersionChecks: latestStatisticsAvailable ? latestReport.sourceVersionChecks : null,
     },
     recentAdditions,
     recentUpdates,

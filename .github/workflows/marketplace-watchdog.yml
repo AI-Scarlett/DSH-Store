@@ -61,6 +61,7 @@ jobs:
       - name: Download the latest Catalog decision record
         id: catalog_report
         if: always()
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           REPORT_RUN_ID: ${{ steps.previous.outputs.report_run_id }}

@@ -1,4 +1,4 @@
-import { compareVersions, DSH_RC_RELEASES } from './catalog.mjs'
+import { compareVersions, DSH_RC_RELEASES, dshReleaseVersion } from './catalog.mjs'
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
@@ -24,18 +24,42 @@ function unknownEvidence(summary) {
   }
 }
 
+function normalizedDshReleaseStatuses(value, label) {
+  const statuses = new Map()
+  for (const [release, status] of Object.entries(value ?? {})) {
+    const version = dshReleaseVersion(release)
+    if (version === null) throw new Error(`${label}.${release} is not a supported DSH release key`)
+    if (!['compatible', 'incompatible', 'unknown'].includes(status)) {
+      throw new Error(`${label}.${release} has an invalid compatibility status`)
+    }
+    if (statuses.has(version) && statuses.get(version) !== status) {
+      throw new Error(`${label} declares conflicting aliases for ${version}`)
+    }
+    statuses.set(version, status)
+  }
+  return statuses
+}
+
 export function sourceDeclaredCompatibility(entry, candidate) {
-  const releaseKeys = new Set([
+  const releaseVersions = new Set([
     ...DSH_RC_RELEASES,
     ...Object.keys(entry.compatibility?.dshReleases ?? {}),
     ...Object.keys(entry.compatibility?.dshOperations ?? {}),
     ...Object.keys(candidate.compatibility?.dshReleases ?? {}),
-  ])
+  ].map(release => {
+    const version = dshReleaseVersion(release)
+    if (version === null) throw new Error(`compatibility release ${release} is not a supported DSH release key`)
+    return version
+  }))
+  const candidateStatuses = normalizedDshReleaseStatuses(
+    candidate.compatibility?.dshReleases,
+    'candidate compatibility.dshReleases',
+  )
   const dshReleases = {}
   const dshOperations = {}
-  for (const release of releaseKeys) {
-    dshReleases[release] = candidate.compatibility?.dshReleases?.[release] ?? 'unknown'
-    dshOperations[release] = {
+  for (const version of releaseVersions) {
+    dshReleases[version] = candidateStatuses.get(version) ?? 'unknown'
+    dshOperations[version] = {
       install: 'unknown',
       start: 'unknown',
       uninstall: 'unknown',

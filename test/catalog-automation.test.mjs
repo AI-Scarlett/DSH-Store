@@ -1,9 +1,14 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { execFile } from 'node:child_process'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
+import { promisify } from 'node:util'
 import { permissionSignals } from '../src/automation-source-policy.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
+const execFileAsync = promisify(execFile)
 
 test('permission scan ignores inert Catalog metadata and ordinary identifiers', () => {
   const source = `
@@ -132,6 +137,29 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /assertCatalogLocalization/)
   assert.match(source, /automation precondition hash mismatch/)
   assert.match(source, /automation base Commit must be a full Git SHA/)
+  assert.match(source, /writeAutomationFailureReport/)
+  assert.match(source, /statisticsAvailable: false/)
+})
+
+test('failed Catalog automation preserves a machine-readable failure report before any network scan', async t => {
+  const directory = await mkdtemp(join(tmpdir(), 'dsh-catalog-automation-failure-'))
+  t.after(() => rm(directory, { recursive: true, force: true }))
+  const reportPath = join(directory, 'catalog-automation-report.json')
+  await assert.rejects(execFileAsync(process.execPath, [
+    new URL('../scripts/automate-catalog.mjs', import.meta.url).pathname,
+    '--observed-at', '2026-08-25T10:00:00Z',
+    '--report', reportPath,
+  ], {
+    cwd: new URL('..', import.meta.url).pathname,
+    env: { ...process.env, CATALOG_BASE_COMMIT: 'not-a-full-commit' },
+  }))
+  const report = JSON.parse(await readFile(reportPath, 'utf8'))
+  assert.equal(report.status, 'failed')
+  assert.equal(report.completed, false)
+  assert.equal(report.statisticsAvailable, false)
+  assert.equal(report.failure.stage, 'validate-authority')
+  assert.match(report.failure.message, /full Git SHA/)
+  assert.equal(Object.hasOwn(report, 'postconditions'), false)
 })
 
 test('author remediation notifications are hash-bound, rate-limited, and use only the repository token', async () => {
@@ -202,6 +230,7 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main/)
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)
   assert.match(workflow, /render-catalog-automation-notification\.mjs/)
+  assert.match(workflow, /id: catalog_report[\s\S]{0,160}continue-on-error: true/)
   assert.match(workflow, /DSH STORE 自动更新报告（每 3 小时）/)
   assert.match(workflow, /gh issue comment/)
   assert.match(timer, /00,03,06,09,12,15,18,21:47:00 UTC/)
