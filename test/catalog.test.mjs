@@ -368,6 +368,24 @@ test('catalog service retries a transient GitHub transport failure before using 
   assert.equal(calls, 2)
 })
 
+test('catalog service accepts partial assurance evidence from the remote Catalog', async () => {
+  const remote = document([{ ...entry, assurance: {
+    discovery: { status: 'verified', method: 'fixed-source', checkedAt: '2026-08-25T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
+    installability: { status: 'partial', method: 'disposable-profile-install', checkedAt: '2026-08-25T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/releases/tag/v1.2.0', summary: 'Installation evidence is bounded and public runtime evidence is pending.' },
+    runtime: { status: 'unknown', summary: 'No runtime evidence yet.' },
+    securityReview: { status: 'partial', method: 'fixed-source-policy', checkedAt: '2026-08-25T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', summary: 'Bounded policy checks passed; this is not an independent audit.' },
+  } }])
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => new Response(JSON.stringify(remote)),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(catalog.source.kind, 'github')
+  assert.equal(catalog.entries[0].assurance.installability.status, 'partial')
+  assert.equal(catalog.entries[0].assurance.securityReview.status, 'partial')
+})
+
 test('catalog overlays live marketplace install counts without changing catalog authority', async () => {
   const service = createCatalogService({
     catalogUrl: 'https://catalog.test/catalog.json', installCountsUrl: 'https://counts.test/v1/counts', retryDelaysMs: [],

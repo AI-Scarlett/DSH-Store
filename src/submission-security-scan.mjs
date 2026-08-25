@@ -70,7 +70,7 @@ const RULES = Object.freeze([
   {
     id: 'shell-mode', category: 'shell', severity: 'warning',
     pattern: /\bspawn(?:Sync)?\s*\([^\r\n]{0,300}\bshell\s*:\s*true/i,
-    message: '发现 shell:true，可能扩大命令注入面。',
+    message: '发现显式 Shell 模式，可能扩大命令注入面。',
   },
   {
     id: 'download-and-execute', category: 'shell', severity: 'warning',
