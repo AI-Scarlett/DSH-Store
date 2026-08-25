@@ -26,7 +26,7 @@ const MAX_DSH_RANGE_TOKENS = 32
 const DSH_RANGE_OPERATORS = ['>=', '<=', '>', '<', '^', '~', '=']
 
 export const DEFAULT_CATALOG_URL =
-  'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/catalog.json'
+  'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
 
 function parseDshRangeClause(clause) {
   const fragments = clause.trim().split(/\s+/u).filter(Boolean)

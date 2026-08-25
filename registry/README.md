@@ -17,7 +17,7 @@
 
 ## GitHub 上架申请预检
 
-[上架申请表](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)
+[上架申请表](https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml)
 只要求一个公开 GitHub 项目地址。Issue 创建、编辑或重新打开后，
 `.github/workflows/plugin-submission.yml` 会调用 `scripts/check-plugin-submission.mjs`，自动固定默认
 分支当前 Commit，读取仓库树、`package.json`、README 和 Bundle Patch，并提取包名、版本、

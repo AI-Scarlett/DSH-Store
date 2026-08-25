@@ -95,7 +95,7 @@ try {
   const repository = policy.publication.repository
   const [commitText, manifestText] = await Promise.all([
     fetchText(`https://api.github.com/repos/${repository}/commits/main`),
-    fetchText('https://ai-scarlett.github.io/dsh-safe-plugin-manager/release-manifest.json'),
+    fetchText('https://ai-scarlett.github.io/DSH-Store/release-manifest.json'),
   ])
   const commit = JSON.parse(commitText)?.sha
   const manifest = JSON.parse(manifestText)

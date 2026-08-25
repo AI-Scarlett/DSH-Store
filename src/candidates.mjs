@@ -6,7 +6,7 @@ const MAX_CANDIDATE_BYTES = 5 * 1024 * 1024
 const FORBIDDEN_INSTALL_FIELDS = ['packageName', 'manifestPath', 'installPath', 'entryIds', 'compatibility', 'details', 'risk', 'updatePolicy']
 
 export const DEFAULT_CANDIDATES_URL =
-  'https://raw.githubusercontent.com/AI-Scarlett/dsh-safe-plugin-manager/main/registry/candidates.json'
+  'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/candidates.json'
 
 function nonEmptyString(value, label, max = 2_000) {
   if (typeof value !== 'string' || value.trim() === '' || value.length > max) {

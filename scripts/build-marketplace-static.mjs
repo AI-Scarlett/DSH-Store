@@ -180,7 +180,7 @@ const generatedAt = typeof snapshot.registry?.updatedAt === 'string' && snapshot
       : new Date(0).toISOString())
 snapshot.generated = {
   generatedAt,
-  sourceRepository: 'https://github.com/AI-Scarlett/dsh-safe-plugin-manager',
+  sourceRepository: 'https://github.com/AI-Scarlett/DSH-Store',
   sourceCommit: sourceSha,
   catalogAuthority: 'registry/catalog.json',
   githubEnriched: enrichGitHub,

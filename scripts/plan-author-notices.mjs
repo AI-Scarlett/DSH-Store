@@ -189,7 +189,7 @@ function suggestionLines(reasons) {
   if (/collision|already owned|duplicate/i.test(text)) add('为 Catalog、包名和 Bundle entry 选择新的全局唯一 ID，并同步所有引用。 / Choose globally unique Catalog, package, and Bundle entry IDs and update every reference.')
   if (/dependenc|permission|files permission|network permission|commands permission|credentials permission/i.test(text)) add('明确依赖、权限、外部服务和失败边界；高权限项目可能仍需保持 `user-reviewed`/`blocked`，声明本身不保证自动批准。 / Document dependencies, permissions, external services, and failure bounds; elevated capability may still require a guarded status.')
   if (/symbolic link|symlink|submodule/i.test(text)) add('用固定 Commit 内的普通文件替代符号链接或 Git submodule，保证安装源完整且可复现。 / Replace symlinks or Git submodules with bounded regular files in the pinned source.')
-  if (multiplePackages) add('这是包含多个 DSH 插件的 monorepo；请在[上架申请](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/issues/new?template=plugin-submission.yml)中为每个插件分别提交明确的 `tree/<branch>/<package-path>` GitHub 地址，不需要删除其他包。 / This monorepo contains multiple DSH plugins; submit each explicit `tree/<branch>/<package-path>` URL separately through the linked submission form without removing the other packages.')
+  if (multiplePackages) add('这是包含多个 DSH 插件的 monorepo；请在[上架申请](https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml)中为每个插件分别提交明确的 `tree/<branch>/<package-path>` GitHub 地址，不需要删除其他包。 / This monorepo contains multiple DSH plugins; submit each explicit `tree/<branch>/<package-path>` URL separately through the linked submission form without removing the other packages.')
   if (suggestions.length === 0) add('按下方确定性原因修正固定 GitHub 源、manifest、Bundle、版本与安装契约；不要只修改 README 或标签。 / Fix the pinned source, manifest, Bundle, version, and install contract described below; README or topic changes alone are insufficient.')
   if (multiplePackages) {
     add('提交明确子路径后会立即自动预检；源码修复也会在八小时扫描中复检，无需人工回复“确认”。 / An explicit package path is checked immediately; source fixes are rechecked in the eight-hour scan without a manual approval reply.')
@@ -276,7 +276,7 @@ function renderNoticeBody(record, signature, notifiedSignature) {
     '',
     '> 这不是安全漏洞指控，也不表示项目质量有问题；它只说明当前固定源码尚未满足 DSH STORE 的可安装或自动更新契约。Catalog 通过也不等于真实 DSH Profile 已安装或完成运行时验收。',
     '',
-    '[使用 build-dsh-plugin 检查和修改](https://github.com/AI-Scarlett/build-dsh-plugin) · [DSH STORE 官网](https://dsh.store/) · [查看自动化运行](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/actions/workflows/catalog-automation.yml) · [查看上架契约](https://github.com/AI-Scarlett/dsh-safe-plugin-manager/blob/main/registry/README.md)',
+    '[使用 build-dsh-plugin 检查和修改](https://github.com/AI-Scarlett/build-dsh-plugin) · [DSH STORE 官网](https://dsh.store/) · [查看自动化运行](https://github.com/AI-Scarlett/DSH-Store/actions/workflows/catalog-automation.yml) · [查看上架契约](https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/README.md)',
     '',
   )
   const body = `${lines.join('\n')}\n`
