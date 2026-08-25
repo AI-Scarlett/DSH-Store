@@ -1,7 +1,9 @@
-# DSH-Store｜DSH 第三方插件商城
+# DSH STORE | DeepSeek Harness Plugin Marketplace
 <img width="900" height="383" alt="cover_dsh_plugin_market_900x383" src="https://github.com/user-attachments/assets/2b03ff48-a39b-427d-87c1-62190560a496" />
 
-DSH-Store 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
+DSH STORE is a third-party DeepSeek Harness (DSH) plugin marketplace and guarded lifecycle manager. It is the canonical project behind [dsh.store](https://dsh.store/), where users discover plugins, inspect pinned sources and permissions, and follow a recoverable access path.
+
+DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 插件商城与安全生命周期管理器。它使用标准 DSH Bundle + Host Plugin + Client Bundle
 结构，不开发独立桌面端，不修改 DSH 源码，也不替换任何 `@deepseek-ai/*` 官方包。
 

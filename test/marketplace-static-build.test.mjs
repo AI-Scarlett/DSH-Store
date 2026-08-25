@@ -65,6 +65,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /name="dsh-catalog-delivery" content="external-json"/)
     assert.match(home, /data-automation-overall/)
     assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
+    assert.match(home, /<html lang="en" data-default-locale="en">/)
+    assert.match(home, /DSH STORE \| DeepSeek Harness Plugin Marketplace/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
     assert.match(home, /hreflang="en"[^>]*https:\/\/dsh\.store\//)
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
@@ -113,6 +115,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       const page = await readFile(join(output, pagePath), 'utf8')
       assert.match(page, /https:\/\/dsh-store\.cn/)
       assert.match(page, new RegExp(icp))
+      assert.match(page, /<html lang="zh-CN" data-default-locale="zh">/)
       assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
     }
     const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')

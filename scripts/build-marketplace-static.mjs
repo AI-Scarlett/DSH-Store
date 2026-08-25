@@ -32,6 +32,8 @@ if (alternateOriginUrl.protocol !== 'https:' || alternateOriginUrl.pathname !== 
 const alternateOrigin = alternateOriginUrl.origin
 if (alternateOrigin === siteOrigin) throw new Error('The alternate site origin must differ from the site origin')
 const icpNumber = argValue('--icp') || process.env.ICP_NUMBER || ''
+const defaultLocale = siteOriginUrl.host === 'dsh.store' ? 'en' : 'zh'
+const htmlLanguage = defaultLocale === 'en' ? 'en' : 'zh-CN'
 const outputRelative = relative(projectRoot, outputRoot)
 
 if (!outputRelative || outputRelative.startsWith('..')) {
@@ -340,7 +342,10 @@ for (const { file: pagePath, route } of canonicalPages) {
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
   const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route), `${pagePath} hreflang marker`)
-  await writeFile(absolutePath, replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
+  const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
+  const localizedDocument = withIcp.replace('<html lang="zh-CN">', `<html lang="${htmlLanguage}" data-default-locale="${defaultLocale}">`)
+  if (localizedDocument === withIcp) throw new Error(`${pagePath} html language marker is missing`)
+  await writeFile(absolutePath, localizedDocument)
 }
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
