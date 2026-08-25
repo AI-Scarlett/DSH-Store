@@ -2,6 +2,9 @@ import { compareVersions, DSH_RC_RELEASES, dshReleaseVersion } from './catalog.m
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
+const PREFERRED_DSH_RELEASE_KEYS = new Map(
+  DSH_RC_RELEASES.map(release => [dshReleaseVersion(release), release]),
+)
 
 function normalizedPath(value) {
   return value === undefined || value === null || value === '' ? null : String(value)
@@ -58,8 +61,9 @@ export function sourceDeclaredCompatibility(entry, candidate) {
   const dshReleases = {}
   const dshOperations = {}
   for (const version of releaseVersions) {
-    dshReleases[version] = candidateStatuses.get(version) ?? 'unknown'
-    dshOperations[version] = {
+    const release = PREFERRED_DSH_RELEASE_KEYS.get(version) ?? version
+    dshReleases[release] = candidateStatuses.get(version) ?? 'unknown'
+    dshOperations[release] = {
       install: 'unknown',
       start: 'unknown',
       uninstall: 'unknown',

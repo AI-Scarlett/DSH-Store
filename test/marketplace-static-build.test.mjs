@@ -81,7 +81,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(guide, /build-dsh-plugin/)
     assert.match(guide, /hreflang="x-default"/)
     assert.match(sitemap, /https:\/\/dsh\.store\/dsh-plugins\//)
-    assert.match(sitemap, /<lastmod>2026-08-24<\/lastmod>/)
+    assert.match(sitemap, new RegExp(`<lastmod>${catalog.registry.updatedAt.slice(0, 10)}</lastmod>`))
     assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
   } finally {
     await rm(output, { recursive: true, force: true })
