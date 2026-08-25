@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
-    "updatedAt": "2026-08-25T12:13:40.000Z",
+    "updatedAt": "2026-08-25T13:25:25.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -30224,27 +30224,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-msg-hub."
-    },
-    {
-      "id": "ai-scarlett-dsh-chat-import",
-      "name": "会话导入（DSH Chat Import）",
-      "description": "将 Claude Code、Codex、ChatGPT、Cursor 等会话导入 DeepSeek Harness。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/dsh-chat-import",
-      "defaultBranch": "main",
-      "latestCommit": "67fc9d5b727fef95a6a9e3ee4aaf5d14b45482bf",
-      "sourceUpdatedAt": "2026-08-25T11:49:48.000Z",
-      "discoveredAt": "2026-08-25T12:13:40.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "sessions",
-        "import",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-chat-import."
     },
     {
       "id": "x2802490130-prog-dsh-tool-writing",
