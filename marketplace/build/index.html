@@ -49,7 +49,7 @@
         "@type": "HowTo",
         "name": "How to start a DSH plugin with build-dsh-plugin",
         "step": [
-          {"@type": "HowToStep", "name": "Install the build-dsh-plugin Agent Skill"},
+          {"@type": "HowToStep", "name": "Give the build-dsh-plugin repository to any compatible coding Agent, or install it through DSH STORE"},
           {"@type": "HowToStep", "name": "Describe the current problem"},
           {"@type": "HowToStep", "name": "Define the expected outcome"},
           {"@type": "HowToStep", "name": "Write an observable success criterion"},
@@ -120,15 +120,15 @@
       <div class="section-heading reveal"><div><span class="section-index">01 / INSTALL SKILL</span><h2 id="install-title" data-i18n="install.title">先把 Skill 装进你的 Agent。</h2></div><p data-i18n="install.lead">选择目标环境，复制固定版本的安装指令。发行信息会从最新 GitHub Release 与对应标签的 manifest.json 实时核对。</p></div>
       <div class="skill-install-workbench reveal">
         <div class="install-targets" role="tablist" aria-label="Skill installation target">
-          <button type="button" role="tab" aria-selected="true" data-install-target="codex"><span>01</span><b>Codex</b><small data-i18n="install.targetCodex">复制给 Codex 的安装指令</small></button>
-          <button type="button" role="tab" aria-selected="false" data-install-target="dsh"><span>02</span><b>DSH PLUGIN ADD</b><small data-i18n="install.targetDsh">安装兼容版到 DSH Profile</small></button>
-          <button type="button" role="tab" aria-selected="false" data-install-target="agent"><span>03</span><b>OTHER AGENTS</b><small data-i18n="install.targetAgent">下载 ZIP 到兼容的 Skills 目录</small></button>
+          <button type="button" role="tab" aria-selected="true" data-install-target="agent"><span>01</span><b>ANY CODING AGENT</b><small data-i18n="install.targetCodingAgent">复制给任何编程 Agent</small></button>
+          <button type="button" role="tab" aria-selected="false" data-install-target="dsh"><span>02</span><b>DSH STORE → DSH</b><small data-i18n="install.targetDshStore">通过 DSH STORE 安装到 DSH</small></button>
+          <button type="button" role="tab" aria-selected="false" data-install-target="zip"><span>03</span><b>PORTABLE ZIP</b><small data-i18n="install.targetZip">下载 ZIP 到兼容的 Skills 目录</small></button>
         </div>
         <div class="install-instruction">
-          <div class="install-instruction-head"><span id="install-kicker">CODEX / SKILL INSTALLER</span><small id="release-status" data-status="loading" data-i18n="install.loading">正在核对固定发行…</small></div>
-          <h3 id="install-mode-title" data-i18n="install.codexTitle">复制到 Codex，交给 Skill Installer 安装</h3>
-          <p id="install-mode-body" data-i18n="install.codexBody">指令会锁定到最新已验证发行标签，不使用浮动的 main。</p>
-          <div class="install-command-box"><pre><code id="install-command" aria-live="polite" data-i18n="install.loadingCommand">正在读取并验证 GitHub Release…</code></pre><button id="copy-install" type="button" data-copy-target="install-command" data-copy-kind="install" data-analytics-event="skill_install_copy" data-analytics-item="codex" disabled><span data-i18n="action.copyInstall">复制安装指令</span><i aria-hidden="true">⧉</i></button></div>
+          <div class="install-instruction-head"><span id="install-kicker">ANY CODING AGENT / SKILL</span><small id="release-status" data-status="loading" data-i18n="install.loading">正在核对固定发行…</small></div>
+          <h3 id="install-mode-title" data-i18n="install.codingAgentTitle">复制仓库地址，交给任何编程 Agent</h3>
+          <p id="install-mode-body" data-i18n="install.codingAgentBody">指令会锁定到最新已验证发行标签，不使用浮动的 main。</p>
+          <div class="install-command-box"><pre><code id="install-command" aria-live="polite" data-i18n="install.loadingCommand">正在读取并验证 GitHub Release…</code></pre><button id="copy-install" type="button" data-copy-target="install-command" data-copy-kind="install" data-analytics-event="skill_install_copy" data-analytics-item="agent" disabled><span data-i18n="action.copyInstall">复制安装指令</span><i aria-hidden="true">⧉</i></button></div>
           <div class="install-actions">
             <a id="skill-download" class="button button-primary disabled" aria-disabled="true" data-analytics-event="skill_zip_download" data-analytics-item="build_dsh_plugin"><span id="download-label" data-i18n="action.download">下载已验证 ZIP</span><i aria-hidden="true">↓</i></a>
             <a class="button button-secondary" href="https://github.com/AI-Scarlett/build-dsh-plugin/" target="_blank" rel="noreferrer" data-analytics-event="skill_github_open" data-analytics-item="install"><span data-i18n="action.source">查看源码</span><i aria-hidden="true">↗</i></a>

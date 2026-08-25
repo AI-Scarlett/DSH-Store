@@ -883,6 +883,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .about-brand-facts span { min-width: 0; padding: 16px 13px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .about-brand-facts small { display: block; color: var(--faint); font: 700 6px ui-monospace, monospace; }
 .about-brand-facts b { display: block; margin-top: 7px; overflow-wrap: anywhere; color: var(--green-strong); font: 800 8px ui-monospace, monospace; }
+.about-story { padding: 40px 0 135px; }
+.about-story-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.about-story-card { position: relative; min-height: 360px; padding: 27px 25px 25px; overflow: hidden; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, .72); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.about-story-card:hover { z-index: 1; border-color: var(--line-strong); box-shadow: 0 22px 55px rgba(22, 72, 92, .1); transform: translateY(-3px); }
+.about-story-card > span { position: absolute; top: 13px; right: 18px; color: rgba(10, 164, 119, .1); font: 850 56px ui-monospace, monospace; }
+.about-story-card > small { position: relative; z-index: 1; color: var(--green); font: 800 8px ui-monospace, monospace; letter-spacing: .08em; line-height: 1.5; }
+.about-story-card h3 { position: relative; z-index: 1; max-width: 240px; margin: 105px 0 16px; font-size: 21px; line-height: 1.2; letter-spacing: -.035em; }
+.about-story-card p { position: relative; z-index: 1; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.8; }
+.about-story-bridge { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 22px; padding: 20px 24px; border: 1px solid var(--line-strong); background: linear-gradient(90deg, rgba(10, 164, 119, .06), rgba(50, 128, 245, .06)); color: var(--green-strong); font: 800 9px ui-monospace, monospace; letter-spacing: .05em; text-align: center; }
+.about-story-bridge i { color: var(--faint); font-size: 16px; font-style: normal; }
 .about-product { padding: 135px 0; }
 .about-product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .about-product-card { position: relative; min-height: 380px; padding: 30px; overflow: hidden; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, .88); transition: transform .2s, border-color .2s, box-shadow .2s; }
@@ -1065,6 +1075,7 @@ dialog::backdrop { background: rgba(40, 72, 86, .38); backdrop-filter: blur(8px)
   .release-proof dl { grid-template-columns: repeat(4, 1fr); }
   .boundary-layout { grid-template-columns: 1fr; gap: 50px; }
   .build-cta { grid-template-columns: 1fr; gap: 34px; }
+  .about-story-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .about-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .about-product-card:last-child { grid-column: 1 / -1; }
   .about-brand-layout, .about-contact-grid { grid-template-columns: 1fr; }
@@ -1195,8 +1206,12 @@ dialog::backdrop { background: rgba(40, 72, 86, .38); backdrop-filter: blur(8px)
   .about-icon { width: 82px; height: 82px; border-radius: 18px; }
   .about-brand-card > p { margin-top: 38px; }
   .about-brand-facts { grid-template-columns: 1fr; }
-  .about-product, .about-brand-section, .about-contact { padding: 90px 0; }
-  .about-product-grid, .about-principles { grid-template-columns: 1fr; }
+  .about-story, .about-product, .about-brand-section, .about-contact { padding: 90px 0; }
+  .about-story-grid, .about-product-grid, .about-principles { grid-template-columns: 1fr; }
+  .about-story-card { min-height: 300px; }
+  .about-story-card h3 { margin-top: 82px; }
+  .about-story-bridge { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .about-story-bridge i { transform: rotate(90deg); }
   .about-product-card, .about-product-card:last-child { grid-column: auto; min-height: 310px; }
   .about-product-card h3 { margin-top: 105px; }
   .about-brand-layout { gap: 44px; }
