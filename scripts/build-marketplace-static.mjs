@@ -32,6 +32,8 @@ if (alternateOriginUrl.protocol !== 'https:' || alternateOriginUrl.pathname !== 
 const alternateOrigin = alternateOriginUrl.origin
 if (alternateOrigin === siteOrigin) throw new Error('The alternate site origin must differ from the site origin')
 const icpNumber = argValue('--icp') || process.env.ICP_NUMBER || ''
+const defaultLocale = siteOriginUrl.host === 'dsh.store' ? 'en' : 'zh'
+const htmlLanguage = defaultLocale === 'en' ? 'en' : 'zh-CN'
 const outputRelative = relative(projectRoot, outputRoot)
 
 if (!outputRelative || outputRelative.startsWith('..')) {
@@ -326,8 +328,8 @@ const sitemapDate = (() => {
 const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/faq/': '0.8', '/about/': '0.7' }
 const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/faq/': 'monthly', '/about/': 'monthly' }
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${canonicalPages.map(({ route }) => `  <url><loc>${htmlEscape(`${siteOrigin}${route}`)}</loc><lastmod>${sitemapDate}</lastmod><changefreq>${sitemapChangefreq[route]}</changefreq><priority>${sitemapPriority[route]}</priority></url>`).join('\n')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:mobile="http://www.baidu.com/schemas/sitemap-mobile/1/">
+${canonicalPages.map(({ route }) => `  <url><loc>${htmlEscape(`${siteOrigin}${route}`)}</loc><lastmod>${sitemapDate}</lastmod><changefreq>${sitemapChangefreq[route]}</changefreq><priority>${sitemapPriority[route]}</priority><mobile:mobile type="pc,mobile" /></url>`).join('\n')}
 </urlset>
 `
 await writeFile(resolve(outputRoot, 'marketplace/sitemap.xml'), sitemap)
@@ -340,7 +342,10 @@ for (const { file: pagePath, route } of canonicalPages) {
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
   const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route), `${pagePath} hreflang marker`)
-  await writeFile(absolutePath, replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`))
+  const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
+  const localizedDocument = withIcp.replace('<html lang="zh-CN">', `<html lang="${htmlLanguage}" data-default-locale="${defaultLocale}">`)
+  if (localizedDocument === withIcp) throw new Error(`${pagePath} html language marker is missing`)
+  await writeFile(absolutePath, localizedDocument)
 }
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')

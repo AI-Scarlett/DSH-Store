@@ -157,7 +157,11 @@ const state = {
   candidatesLoaded: false,
   candidatesLoading: false,
   automationStatus: null,
-  locale: localStorage.getItem('dsh-marketplace-locale') === 'en' ? 'en' : 'zh',
+  locale: (() => {
+    const stored = localStorage.getItem('dsh-marketplace-locale')
+    if (stored === 'en' || stored === 'zh') return stored
+    return document.documentElement.dataset.defaultLocale === 'en' ? 'en' : 'zh'
+  })(),
   selectedEntry: null,
 }
 
