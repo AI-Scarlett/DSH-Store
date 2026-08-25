@@ -66,6 +66,20 @@ test('Catalog notification separates additions, historical updates, and deferred
         sourceTrackingBaselines: 1,
         sourceModificationUnknown: 1,
         resolvedWithoutDetectedSourceChange: 0,
+        candidateRegistryRecords: 1420,
+        candidateRegistryRepositories: 1420,
+        candidateCoverageAccounted: 1420,
+        candidateCoverageUnaccounted: 0,
+        candidateCoverageInvariantPassed: true,
+        candidateDirectNotificationEligible: 9,
+        candidateDirectManagedIssues: 4,
+        candidateDirectScheduledThisRun: 3,
+        candidateDirectQueued: 2,
+        candidatePublicRegistryOnly: 1411,
+        candidatePublicReviewing: 168,
+        candidatePublicRemediation: 1021,
+        candidatePublicDeferred: 0,
+        candidatePublicDiscoveryOnly: 222,
       },
       actions: [
         { type: 'source-update', key: 'example/new-plugin', sourceStatus: 'modified-still-blocked' },
@@ -88,6 +102,11 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /失败候选（Failed Candidate）/)
   assert.match(output, /发送 GitHub 整改消息：3 个项目/)
   assert.match(output, /触发 GitHub 通知邮件：3 个项目；实际送达：\*\*无法验证\*\*/)
+  assert.match(output, /候选全量台账：1420 \/ 1420 条已归类，未覆盖 0 条/)
+  assert.match(output, /Candidate Registry 全量覆盖：1420 \/ 1420 条，canonical 仓库 1420 个，未覆盖 0 条/)
+  assert.match(output, /符合一次性直接整改通知的候选：9 个/)
+  assert.match(output, /仅在\[公开候选库\].*展示、不主动 @ 的候选：1411 个/)
+  assert.match(output, /不发送纯推广内容/)
   assert.match(output, /已修改但仍未通过/)
   assert.match(output, /已修改且问题清除/)
   assert.match(output, /example\/new-plugin/)

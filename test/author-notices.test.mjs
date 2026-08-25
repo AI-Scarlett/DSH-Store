@@ -97,6 +97,54 @@ test('author notice plan rate-limits and covers blocked, deferred, and explicit 
   assert.equal(plan.summary.githubNotificationEmailTriggers, 3)
   assert.equal(plan.summary.githubNotificationEmailDeliveriesVerified, 0)
   assert.equal(plan.summary.sourceTrackingBaselines, 3)
+  assert.equal(plan.summary.candidateRegistryRecords, 3)
+  assert.equal(plan.summary.candidateRegistryRepositories, 3)
+  assert.equal(plan.summary.candidateCoverageAccounted, 3)
+  assert.equal(plan.summary.candidateCoverageUnaccounted, 0)
+  assert.equal(plan.summary.candidateCoverageInvariantPassed, true)
+  assert.equal(plan.summary.candidateDirectNotificationEligible, 1)
+  assert.equal(plan.summary.candidateDirectScheduledThisRun, 1)
+  assert.equal(plan.summary.candidatePublicRegistryOnly, 2)
+  assert.equal(plan.summary.candidatePublicDeferred, 1)
+  assert.equal(plan.summary.candidatePublicDiscoveryOnly, 1)
+  assert.equal(plan.candidateCoverage.length, 3)
+  assert.match(plan.candidateCoverageFingerprint, /^[0-9a-f]{64}$/)
+  assert.deepEqual(Object.fromEntries(plan.candidateCoverage.map(record => [record.key, record.disposition])), {
+    'candidateowner/dsh-candidate': 'direct-remediation',
+    'infraowner/dsh-infra': 'public-deferred',
+    'otherowner/ordinary-tool': 'public-discovery-only',
+  })
+  assert.equal(plan.policy.neverSendPromotionOnlyMessages, true)
+  assert.equal(plan.policy.neverCreateIssuesInExternalRepositories, true)
+})
+
+test('all candidate repositories receive exactly one public or direct coverage disposition', () => {
+  const plan = buildAuthorNoticePlan(fixture({
+    candidates: {
+      entries: [
+        candidate(),
+        candidate({
+          id: 'reviewing-candidate', repositoryUrl: 'https://github.com/ReviewOwner/dsh-reviewing',
+          status: 'reviewing', route: 'direct-review', statusReason: 'waiting for bounded fixed-Commit review',
+        }),
+        candidate({
+          id: 'radar-candidate', repositoryUrl: 'https://github.com/RadarOwner/dsh-radar',
+          discoverySources: ['github-automatic-radar-v1'],
+        }),
+      ],
+    },
+  }))
+  assert.deepEqual(plan.candidateCoverage.map(record => [record.key, record.disposition]), [
+    ['candidateowner/dsh-candidate', 'direct-remediation'],
+    ['radarowner/dsh-radar', 'public-remediation'],
+    ['reviewowner/dsh-reviewing', 'public-reviewing'],
+  ])
+  assert.equal(plan.summary.candidateRegistryRecords, 3)
+  assert.equal(plan.summary.candidateCoverageAccounted, 3)
+  assert.equal(plan.summary.candidateCoverageUnaccounted, 0)
+  assert.equal(plan.summary.candidateDirectNotificationEligible, 1)
+  assert.equal(plan.summary.candidatePublicRemediation, 1)
+  assert.equal(plan.summary.candidatePublicReviewing, 1)
 })
 
 test('unchanged author findings do not repeatedly mention the owner', () => {
