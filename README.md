@@ -34,7 +34,7 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#b63118fc20d315fb484f40a92e43c3ab59121904'
+dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#b2b8e01f57cf0bbb3378e46905757e036eec10f6'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -248,7 +248,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | DSH 0.1.1-rc.1 兼容 `0.8.0` | [`b9be979`](https://github.com/AI-Scarlett/DSH-Store/commit/b9be979ff42deacff5e344e2e5d36c13638c95b9) | 新增无歧义 `0.1.1-rc.1` 矩阵、最新版本排序、旧目录缺键降级和 400 条目录的保守兼容状态迁移。 |
 | 动态 DSH 兼容与启动恢复 `0.8.1` | [`9ba80c2`](https://github.com/AI-Scarlett/DSH-Store/commit/9ba80c2cd2456193f2805aacb08d8bb87716e92f) | 从官方 npm Registry 获取最新 DSH 版本且不阻塞目录加载；范围匹配保持待验证，补齐 rc.2 临时 Profile 证据，并让所有标签页在 Guardian 稳定后只恢复一次。 |
 | 远端 Catalog 证据兼容 `0.8.3` | [`60579b9`](https://github.com/AI-Scarlett/DSH-Store/commit/60579b9d6b935ca3a207c58e8f3a107b56a3f931) | 接受受契约约束的 `partial` 证据状态，避免可验证的远端目录被旧客户端误判为无效后只能使用内置快照。 |
-| Canonical DSH-Store 仓库迁移 `0.8.4` | 待 Catalog 固定提交 | 运行时、Catalog、Pages、文档和自动化已统一使用 `AI-Scarlett/DSH-Store`，包名和 Bundle 入口保持兼容。 |
+| Canonical DSH-Store 仓库迁移 `0.8.4` | [`b2b8e01`](https://github.com/AI-Scarlett/DSH-Store/commit/b2b8e01f57cf0bbb3378e46905757e036eec10f6) | 运行时、Catalog、Pages、文档和自动化已统一使用 `AI-Scarlett/DSH-Store`，包名和 Bundle 入口保持兼容。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见
