@@ -65,13 +65,15 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.8.3` |
+| 商城版本 | `0.8.4` |
 | 收录条目 | 400 个 |
 | 可安装 | 393 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因；另有 2 个 unlisted 条目不公开展示 |
 | 分类 | 22 个 |
 | 推荐 | 3 个：DSH-Store、Build DSH Plugin、Agent Workflow |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
+
+`0.8.4` 是 `AI-Scarlett/DSH-Store` 的规范仓库迁移版本：运行时 Catalog、候选库、Bundle 默认配置、静态商城、提交入口、自动化策略、部署脚本和 Pages 监测均使用新地址。npm 包名和 DSH Bundle 入口仍为 `dsh-safe-plugin-manager`，让已安装的 0.8.2/0.8.3 正常识别这次迁移为 SemVer 更新。
 
 `0.8.3` 修复远端 Catalog 使用“部分验证”（`partial`）证据时被旧枚举误判为 `CATALOG_INVALID`、进而回退内置快照的问题。运行时仍然先验证 GitHub Raw Catalog；未知或畸形内容仍会失败关闭并清楚标记为内置快照。此兼容修复以新的 SemVer 发布，避免同版本源提交无法被商城更新流程识别。
 
@@ -245,7 +247,8 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | 分页和跨 RC 兼容 `0.7.0` | [`7cff780`](https://github.com/AI-Scarlett/DSH-Store/commit/7cff780c00c923b1ca45ceff1d7e26c3e263c969) | DSH Host 目录改为每页 24 条的有界响应，候选库按需读取；公共商城移除 HTML 内嵌完整目录，并将官方客户端契约兼容范围扩展到 rc.5–rc.8。 |
 | DSH 0.1.1-rc.1 兼容 `0.8.0` | [`b9be979`](https://github.com/AI-Scarlett/DSH-Store/commit/b9be979ff42deacff5e344e2e5d36c13638c95b9) | 新增无歧义 `0.1.1-rc.1` 矩阵、最新版本排序、旧目录缺键降级和 400 条目录的保守兼容状态迁移。 |
 | 动态 DSH 兼容与启动恢复 `0.8.1` | [`9ba80c2`](https://github.com/AI-Scarlett/DSH-Store/commit/9ba80c2cd2456193f2805aacb08d8bb87716e92f) | 从官方 npm Registry 获取最新 DSH 版本且不阻塞目录加载；范围匹配保持待验证，补齐 rc.2 临时 Profile 证据，并让所有标签页在 Guardian 稳定后只恢复一次。 |
-| 远端 Catalog 证据兼容 `0.8.3` | 待 Catalog 固定提交 | 接受受契约约束的 `partial` 证据状态，避免可验证的远端目录被旧客户端误判为无效后只能使用内置快照。 |
+| 远端 Catalog 证据兼容 `0.8.3` | [`60579b9`](https://github.com/AI-Scarlett/DSH-Store/commit/60579b9d6b935ca3a207c58e8f3a107b56a3f931) | 接受受契约约束的 `partial` 证据状态，避免可验证的远端目录被旧客户端误判为无效后只能使用内置快照。 |
+| Canonical DSH-Store 仓库迁移 `0.8.4` | 待 Catalog 固定提交 | 运行时、Catalog、Pages、文档和自动化已统一使用 `AI-Scarlett/DSH-Store`，包名和 Bundle 入口保持兼容。 |
 | Agent Reach 适配接入 | [`d37fb46`](https://github.com/AI-Scarlett/dsh-agent-reach/commit/d37fb46edf783446b430d324c68ac911b84a14b0) | 将原生 Python/MCP/Skill 项目封装为无安装脚本的 DSH Skill 适配插件，并明确外部运行时与高权限边界。 |
 
 完整的验证边界与发布证据见 [验证记录](docs/VERIFICATION.md)，产品与架构决策见

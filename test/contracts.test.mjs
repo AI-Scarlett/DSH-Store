@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.3')
+  assert.equal(pkg.version, '0.8.4')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -16,6 +16,25 @@ test('package exposes a standard DSH bundle and client', async () => {
     assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0')
   }
   assert.equal(pkg.private, true)
+})
+
+test('canonical DSH-Store repository and Pages URLs replace legacy aliases', async () => {
+  const paths = [
+    'README.md', 'cordis.patch.yml', 'deploy/refresh-from-pages.sh', 'docs/VERIFICATION.md',
+    'docs/ops/google-seo-20260824.json', 'install-counter/wrangler.jsonc', 'marketplace/about/index.html',
+    'marketplace/build/index.html', 'marketplace/dsh-plugins/index.html', 'marketplace/faq/index.html',
+    'marketplace/index.html', 'marketplace/llms.txt', 'marketplace/plugins/index.html', 'package.json',
+    'registry/README.md', 'registry/automation-policy.json', 'registry/candidates.json',
+    'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json',
+    'scripts/automate-catalog.mjs', 'scripts/build-marketplace-static.mjs', 'scripts/check-plugin-submission.mjs',
+    'scripts/plan-author-notices.mjs', 'scripts/verify-marketplace-public.mjs', 'src/candidates.mjs', 'src/catalog.mjs',
+  ]
+  const contents = (await Promise.all(paths.map(path => readFile(new URL(path, project), 'utf8')))).join('\n')
+  assert.doesNotMatch(contents, /AI-Scarlett\/dsh-safe-plugin-manager/i)
+  assert.doesNotMatch(contents, /ai-scarlett\.github\.io\/dsh-safe-plugin-manager/i)
+  assert.match(contents, /https:\/\/github\.com\/AI-Scarlett\/DSH-Store/)
+  assert.match(contents, /https:\/\/raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/main\/registry\/catalog\.json/)
+  assert.match(contents, /https:\/\/ai-scarlett\.github\.io\/DSH-Store/)
 })
 
 test('static storefront templates expose the cross-site navigation and analytics identity contract', async () => {
