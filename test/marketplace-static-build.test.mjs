@@ -67,6 +67,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
     assert.match(home, /<html lang="en" data-default-locale="en">/)
     assert.match(home, /DSH STORE \| DeepSeek Harness Plugin Marketplace/)
+    assert.match(home, /name="applicable-device" content="pc,mobile"/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
     assert.match(home, /hreflang="en"[^>]*https:\/\/dsh\.store\//)
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
@@ -83,6 +84,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(guide, /build-dsh-plugin/)
     assert.match(guide, /hreflang="x-default"/)
     assert.match(sitemap, /https:\/\/dsh\.store\/dsh-plugins\//)
+    assert.match(sitemap, /xmlns:mobile="http:\/\/www\.baidu\.com\/schemas\/sitemap-mobile\/1\//)
+    assert.match(sitemap, /<mobile:mobile type="pc,mobile" \/>/)
     assert.match(sitemap, new RegExp(`<lastmod>${catalog.registry.updatedAt.slice(0, 10)}</lastmod>`))
     assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
   } finally {

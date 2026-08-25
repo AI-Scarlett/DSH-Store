@@ -23,10 +23,10 @@ Canonical property: `https://dsh.store/`
 
 ## Baidu Search Resource Platform
 
-1. Add and verify `https://dsh.store/` in Baidu Search Resource Platform.
-2. Submit `https://dsh.store/sitemap.xml` through 普通收录.
-3. If the verified property exposes an API token, store it outside source control and submit only canonical URLs.
-4. Treat successful submission as faster discovery only; it does not guarantee inclusion or display.
+1. Add and verify `https://dsh.store/` in [Baidu Search Resource Platform](https://ziyuan.baidu.com/site/index).
+2. Submit `https://dsh.store/sitemap.xml` through 资源提交 → 普通收录 → Sitemap. The sitemap is a URL-list sitemap for this property only and marks the responsive pages as `pc,mobile`.
+3. Use 资源提交 → 普通收录 → API提交 or 手动提交 for the homepage, `/plugins/`, `/dsh-plugins/`, `/build/`, `/faq/`, and `/about/`. Keep any Baidu token outside source control and send only canonical URLs.
+4. Inspect 抓取诊断, Robots, 索引量, and 流量与关键词 after submission. A successful submission accelerates discovery but does not guarantee crawling, inclusion, or ranking.
 
 ## Monitoring
 
