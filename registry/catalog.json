@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/dsh-safe-plugin-manager",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-25T12:13:40.000Z",
+    "updatedAt": "2026-08-25T12:50:32.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -641,7 +641,7 @@
       "defaultBranch": "main",
       "manifestPath": "plugin/package.json",
       "installPath": "plugin",
-      "commit": "b32f446b00e6ea0d02473d5dd2078bb38f4cbe80",
+      "commit": "2db132bb430c5304627e5eb5681febecfc2d81ab",
       "version": "0.5.1",
       "categories": [
         "models",
@@ -667,7 +667,7 @@
           "rc.7": "incompatible",
           "rc.8": "compatible",
           "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
+          "0.1.1-rc.2": "compatible"
         },
         "dshOperations": {
           "rc.7": {
@@ -720,10 +720,34 @@
         "installScripts": [],
         "review": "owner-curated-not-security-audited"
       },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "github-fixed-commit-manifest-and-bundle-review-v1",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/2db132bb430c5304627e5eb5681febecfc2d81ab",
+          "summary": "Merged fixed Commit declares the DSH Bundle and explicit release compatibility matrix."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No Catalog automation install was executed; local source tests do not prove DSH installation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No disposable DSH Profile runtime acceptance was executed."
+        },
+        "securityReview": {
+          "status": "partial",
+          "method": "fixed-source-static-security-scan-v1",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/2db132bb430c5304627e5eb5681febecfc2d81ab",
+          "summary": "Deterministic scan found no critical secret, exfiltration, destructive, SSH, or mining findings; capability warnings and an incomplete binary-file scan remain. This is not an independent security audit."
+        }
+      },
       "source": {
-        "updatedAt": "2026-08-21T05:39:53.000Z",
+        "updatedAt": "2026-08-25T12:49:19.000Z",
         "provenance": "github-commit",
-        "observedAt": "2026-08-21T05:42:28.000Z"
+        "observedAt": "2026-08-25T12:50:32.000Z"
       },
       "searchTerms": [
         "模型与授权",
@@ -7888,7 +7912,7 @@
       "repositoryUrl": "https://github.com/AI-Scarlett/DSH_TokenMonitor",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "75b9b92ad1529b272cb2d4125a4da594e905c9d5",
+      "commit": "d655a1627607968394fd823cee440e68f07e9f00",
       "version": "1.3.0",
       "categories": [
         "models",
@@ -7900,12 +7924,12 @@
       ],
       "status": "approved",
       "compatibility": {
-        "dsh": ">=0.1.0-rc.8 <0.2.0",
+        "dsh": ">=0.1.0-rc.6 <0.2.0",
         "dshReleases": {
-          "rc.7": "incompatible",
+          "rc.7": "compatible",
           "rc.8": "compatible",
           "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
+          "0.1.1-rc.2": "compatible"
         },
         "node": ">=22.13.0",
         "systems": [
@@ -7963,10 +7987,34 @@
         "installScripts": [],
         "review": "owner-curated-read-only-model-usage-projection-not-security-audited"
       },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "github-fixed-commit-manifest-and-bundle-review-v1",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/DSH_TokenMonitor/commit/d655a1627607968394fd823cee440e68f07e9f00",
+          "summary": "Merged fixed Commit declares the DSH Bundle and explicit release compatibility matrix."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No Catalog automation install was executed; local source tests do not prove DSH installation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No disposable DSH Profile runtime acceptance was executed."
+        },
+        "securityReview": {
+          "status": "partial",
+          "method": "fixed-source-static-security-scan-v1",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/DSH_TokenMonitor/commit/d655a1627607968394fd823cee440e68f07e9f00",
+          "summary": "Deterministic scan found no findings; the scan remains bounded by binary assets and is not an independent security audit."
+        }
+      },
       "source": {
-        "updatedAt": "2026-08-17T10:57:20.000Z",
+        "updatedAt": "2026-08-25T12:49:28.000Z",
         "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
+        "observedAt": "2026-08-25T12:50:32.000Z"
       },
       "searchTerms": [
         "用量统计",
@@ -13036,7 +13084,7 @@
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-agent-reach",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "d37fb46edf783446b430d324c68ac911b84a14b0",
+      "commit": "85d9801a3e8884baf33f8166eb2e587a4482050f",
       "version": "0.1.0",
       "categories": [
         "search",
@@ -13048,12 +13096,12 @@
       ],
       "status": "approved",
       "compatibility": {
-        "dsh": ">=0.1.0-rc.8 <0.2.0",
+        "dsh": ">=0.1.0-rc.6 <0.2.0",
         "dshReleases": {
-          "rc.7": "incompatible",
+          "rc.7": "compatible",
           "rc.8": "compatible",
           "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
+          "0.1.1-rc.2": "compatible"
         },
         "node": ">=22.13.0",
         "systems": [
@@ -13118,10 +13166,34 @@
         "installScripts": [],
         "review": "owner-adapter-upstream-manual-review-not-security-audited"
       },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "github-fixed-commit-manifest-and-bundle-review-v1",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-agent-reach/commit/85d9801a3e8884baf33f8166eb2e587a4482050f",
+          "summary": "Merged fixed Commit declares the DSH Bundle and explicit release compatibility matrix."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No Catalog automation install was executed; local source tests do not prove DSH installation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No disposable DSH Profile runtime acceptance was executed."
+        },
+        "securityReview": {
+          "status": "partial",
+          "method": "fixed-source-static-security-scan-v1",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-agent-reach/commit/85d9801a3e8884baf33f8166eb2e587a4482050f",
+          "summary": "Deterministic scan found no findings; the scan remains bounded by binary assets and is not an independent security audit."
+        }
+      },
       "source": {
-        "updatedAt": "2026-08-16T07:31:38.000Z",
+        "updatedAt": "2026-08-25T12:49:28.000Z",
         "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
+        "observedAt": "2026-08-25T12:50:32.000Z"
       },
       "searchTerms": [
         "联网能力",
@@ -38034,7 +38106,7 @@
       "repositoryUrl": "https://github.com/AI-Scarlett/dsh-chat-import",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "67fc9d5b727fef95a6a9e3ee4aaf5d14b45482bf",
+      "commit": "81f1a9785fbae6acd04a6b49a576b237c4f70eae",
       "version": "0.4.0",
       "categories": [
         "sessions",
@@ -38044,15 +38116,15 @@
       "entryIds": [
         "import-claude"
       ],
-      "status": "unlisted",
+      "status": "approved",
       "updatePolicy": "user-reviewed",
       "compatibility": {
         "dsh": ">=0.1.0-rc.8 <0.2.0",
         "dshReleases": {
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown",
-          "0.1.1-rc.2": "unknown"
+          "rc.7": "incompatible",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible",
+          "0.1.1-rc.2": "compatible"
         },
         "dshOperations": {
           "rc.7": {
@@ -38107,8 +38179,8 @@
         "review": "owner-curated-not-security-audited"
       },
       "source": {
-        "updatedAt": "2026-08-25T11:49:48Z",
-        "observedAt": "2026-08-25T12:13:40.000Z",
+        "updatedAt": "2026-08-25T12:49:28.000Z",
+        "observedAt": "2026-08-25T12:50:32.000Z",
         "provenance": "github-commit"
       },
       "searchTerms": [
@@ -38133,8 +38205,8 @@
         "discovery": {
           "status": "verified",
           "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-25T12:13:40.000Z",
-          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-chat-import/commit/67fc9d5b727fef95a6a9e3ee4aaf5d14b45482bf",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-chat-import/commit/81f1a9785fbae6acd04a6b49a576b237c4f70eae",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
@@ -38161,17 +38233,16 @@
           "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
         },
         "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
+          "status": "partial",
+          "method": "fixed-source-static-security-scan-v1",
+          "checkedAt": "2026-08-25T12:50:32.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/dsh-chat-import/commit/81f1a9785fbae6acd04a6b49a576b237c4f70eae",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
+          "summary": "Deterministic scan found no critical findings; child-process capability warnings and an incomplete binary-file scan remain. This is not an independent security audit."
         }
-      },
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
+      }
     },
     {
       "id": "dsh-recall-plugin",
