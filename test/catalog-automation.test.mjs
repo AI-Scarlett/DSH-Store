@@ -236,7 +236,7 @@ test('Pages publishes bounded public automation evidence and recent additions', 
 })
 
 test('watchdog checks the previous run and every public Catalog surface', async () => {
-  const [workflow, timer, service, international, intlPublic, domestic, refresh, governance] = await Promise.all([
+  const [workflow, timer, service, international, intlPublic, domestic, refresh, verifier, governance] = await Promise.all([
     read('.github/workflows/marketplace-watchdog.yml'),
     read('deploy/dsh-store-refresh@.timer'),
     read('deploy/dsh-store-refresh@.service'),
@@ -244,6 +244,7 @@ test('watchdog checks the previous run and every public Catalog surface', async 
     read('deploy/refresh-intl-public.env'),
     read('deploy/refresh-domestic.env'),
     read('deploy/refresh-from-pages.sh'),
+    read('scripts/verify-marketplace-public.mjs'),
     read('AGENTS.md'),
   ])
   assert.match(workflow, /cron: "55 \*\/3 \* \* \*"/)
@@ -252,6 +253,7 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main/)
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)
   assert.match(workflow, /render-catalog-automation-notification\.mjs/)
+  assert.match(workflow, /Catalog and Candidate Registries/)
   assert.match(workflow, /Download the matching author notification record/)
   assert.match(workflow, /author-notification-plan-\$\{run_id\}-\*/)
   assert.match(workflow, /--author-notice-plan/)
@@ -278,6 +280,9 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(refresh, /pages_subdir/)
   assert.match(refresh, /pages_path_prefix/)
   assert.match(refresh, /data-static-featured-id=/)
+  assert.match(refresh, /candidates \/registry\/candidates\.json/)
+  assert.match(refresh, /'registry\/candidates\.json'/)
+  assert.match(refresh, /Candidate Registry artifact trust boundary is invalid/)
   assert.doesNotMatch(refresh, /id="catalog-snapshot"/)
   assert.match(refresh, /Refusing to remove unexpected failed candidate/)
   assert.match(refresh, /--max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at -/)
@@ -286,6 +291,9 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(refresh, /dsh-store\.cn:https:/)
   assert.match(refresh, /dsh-store\.cn:domestic/)
   assert.doesNotMatch(refresh, /curl[^\n]+ -k(?:\s|$)/)
+  assert.match(verifier, /validateCandidateRegistry/)
+  assert.match(verifier, /candidateSurfaces/)
+  assert.match(verifier, /Candidate Registry does not match GitHub main authority/)
   assert.match(governance, /does not require a human\s+confirmation for each scheduled run/)
   assert.match(governance, /Real DSH Profile\/package\/restart/)
 })

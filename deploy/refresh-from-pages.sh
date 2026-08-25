@@ -73,6 +73,7 @@ rollback_on_error() {
     rollback_health=0
     origin_health -o /dev/null "$health_base$site_prefix/" || rollback_health=1
     origin_health -o /dev/null "$health_base/registry/catalog.json" || rollback_health=1
+    origin_health -o /dev/null "$health_base/registry/candidates.json" || rollback_health=1
     printf 'DSH_STORE_REFRESH_ROLLBACK restored=%s failed_candidate=%s\n' "$old_target" "$candidate" >&2
     test "$rollback_health" -eq 0 || printf 'DSH_STORE_REFRESH_ROLLBACK_HEALTH_FAILED domain=%s\n' "$store_domain" >&2
   fi
@@ -105,17 +106,24 @@ faq $site_prefix/faq/
 about $site_prefix/about/
 guide $site_prefix/dsh-plugins/
 catalog /registry/catalog.json
+candidates /registry/candidates.json
 sitemap $site_prefix/sitemap.xml
 EOF
 
-  python3 - "$incoming/health-home" "$incoming/health-catalog" <<'PY'
+  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" <<'PY'
 import json,sys
 home=open(sys.argv[1],encoding='utf-8').read()
 catalog=json.load(open(sys.argv[2],encoding='utf-8'))
+candidates=json.load(open(sys.argv[3],encoding='utf-8'))
 manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
 if manager['commit'] not in home:
     raise SystemExit('public homepage install identity mismatch')
-print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'])
+boundary=candidates.get('registry', {}).get('trustBoundary', {})
+if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entries'), list) or not candidates['entries']:
+    raise SystemExit('public Candidate Registry is invalid or empty')
+if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True, 'unknownIsNotVerified': True}:
+    raise SystemExit('public Candidate Registry trust boundary is invalid')
+print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'], 'candidates', len(candidates['entries']))
 PY
 }
 
@@ -144,6 +152,7 @@ required = {
     'marketplace/dsh-plugins/index.html',
     'marketplace/sitemap.xml',
     'registry/catalog.json',
+    'registry/candidates.json',
 }
 if not required.issubset(files):
     raise SystemExit('release manifest is incomplete')
@@ -197,12 +206,18 @@ for path, metadata in manifest['files'].items():
         raise SystemExit(f'artifact mismatch: {path}')
 
 catalog = json.loads((root / 'registry/catalog.json').read_text(encoding='utf-8'))
+candidates = json.loads((root / 'registry/candidates.json').read_text(encoding='utf-8'))
 build = json.loads((root / 'build-manifest.json').read_text(encoding='utf-8'))
 manager = next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
 actual = (manager['version'], manager['commit'], manager['status'], manager['details']['license'])
 expected = (build['manager']['version'], build['manager']['commit'], build['manager']['status'], build['manager']['license'])
 if actual != expected or build['sourceCommit'] != manifest['sourceCommit']:
     raise SystemExit('catalog and static build identities do not match')
+boundary = candidates.get('registry', {}).get('trustBoundary', {})
+if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entries'), list) or not candidates['entries']:
+    raise SystemExit('Candidate Registry artifact is invalid or empty')
+if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True, 'unknownIsNotVerified': True}:
+    raise SystemExit('Candidate Registry artifact trust boundary is invalid')
 home = (root / 'marketplace/index.html').read_text(encoding='utf-8')
 plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
 styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')

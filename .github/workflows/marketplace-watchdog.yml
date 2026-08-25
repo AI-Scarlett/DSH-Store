@@ -49,7 +49,7 @@ jobs:
           else
             echo "repair=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Verify GitHub, Pages, international, and domestic Catalogs
+      - name: Verify GitHub, Pages, international, and domestic Catalog and Candidate Registries
         id: public
         continue-on-error: true
         run: node scripts/verify-marketplace-public.mjs --attempts 3 --report "$RUNNER_TEMP/marketplace-watchdog-report.json"

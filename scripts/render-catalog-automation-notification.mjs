@@ -84,6 +84,8 @@ export function renderCatalogAutomationNotification({
   const sourceChecks = report?.sourceVersionChecks ?? {}
   const surfaces = array(watchdog?.surfaces)
   const passedSurfaces = surfaces.filter(surface => surface?.status === 'passed').length
+  const candidateSurfaces = array(watchdog?.candidateSurfaces)
+  const passedCandidateSurfaces = candidateSurfaces.filter(surface => surface?.status === 'passed').length
   const approvedAdded = addedEntries.filter(item => byId.get(item.id)?.status === 'approved').length
   const blockedAdded = addedEntries.filter(item => byId.get(item.id)?.status !== 'approved').length
   const statisticsAvailable = report !== null
@@ -156,7 +158,8 @@ export function renderCatalogAutomationNotification({
     )
   }
   lines.push(
-    `- 四个公开面核验：${passedSurfaces}/${surfaces.length || 4} 通过`,
+    `- Catalog 四个公开面核验：${passedSurfaces}/${surfaces.length || 4} 通过`,
+    `- 候选库四个公开面核验：${passedCandidateSurfaces}/${candidateSurfaces.length || 4} 通过`,
     `- Catalog 工作流：${zhConclusion(catalogConclusion)}${catalogRunUrl ? ` · [Run #${markdownCell(catalogRunId)}](${catalogRunUrl})` : ''}`,
     `- 看门狗工作流：${zhConclusion(watchdog?.status)}${watchdogRunUrl ? ` · [Run #${markdownCell(watchdogRunId)}](${watchdogRunUrl})` : ''}${repairTriggered ? ' · 已自动触发修复任务' : ''}`,
     `- 基准 Commit：${shortSha(report?.baseCommit)}`,
@@ -287,8 +290,17 @@ export function renderCatalogAutomationNotification({
   }
 
   if (surfaces.length > 0) {
-    lines.push('### 公开面核验', '', '| 地址 | 状态 | 条目数 | SHA-256 |', '|---|---|---:|---|')
+    lines.push('### Catalog 公开面核验', '', '| 地址 | 状态 | 条目数 | SHA-256 |', '|---|---|---:|---|')
     for (const surface of surfaces) {
+      const url = typeof surface?.url === 'string' ? surface.url : '#'
+      lines.push(`| [${markdownCell(url)}](${url}) | ${markdownCell(zhConclusion(surface?.status))} | ${number(surface?.entries)} | ${shortSha(surface?.sha256)} |`)
+    }
+    lines.push('')
+  }
+
+  if (candidateSurfaces.length > 0) {
+    lines.push('### Candidate Registry 公开面核验', '', '| 地址 | 状态 | 候选数 | SHA-256 |', '|---|---|---:|---|')
+    for (const surface of candidateSurfaces) {
       const url = typeof surface?.url === 'string' ? surface.url : '#'
       lines.push(`| [${markdownCell(url)}](${url}) | ${markdownCell(zhConclusion(surface?.status))} | ${number(surface?.entries)} | ${shortSha(surface?.sha256)} |`)
     }
