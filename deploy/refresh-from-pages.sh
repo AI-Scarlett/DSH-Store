@@ -8,6 +8,8 @@ readonly deploy_root="${DSH_STORE_ROOT:-/opt/dsh-store}"
 readonly current_link="$deploy_root/current"
 readonly lock_file="${DSH_STORE_LOCK_FILE:-/run/lock/dsh-store-refresh.lock}"
 readonly store_domain="${DSH_STORE_DOMAIN:-dsh.store}"
+readonly pages_subdir="${DSH_STORE_PAGES_SUBDIR:-}"
+readonly pages_path_prefix="${pages_subdir:+$pages_subdir/}"
 readonly health_scheme="${DSH_STORE_HEALTH_SCHEME:-https}"
 readonly site_prefix="${DSH_STORE_SITE_PREFIX:-}"
 
@@ -22,6 +24,10 @@ esac
 case "$pages_base" in
   https://ai-scarlett.github.io/dsh-safe-plugin-manager) ;;
   *) printf 'Unsupported Pages authority: %s\n' "$pages_base" >&2; exit 2 ;;
+esac
+case "$store_domain:$pages_subdir" in
+  dsh.store:|dsh-store.cn:domestic) ;;
+  *) printf 'Unsupported Pages artifact path: %s %s\n' "$store_domain" "$pages_subdir" >&2; exit 2 ;;
 esac
 case "$store_domain:$health_scheme:$site_prefix" in
   dsh.store:http:/marketplace) readonly health_port=80 ;;
@@ -114,7 +120,7 @@ PY
 }
 
 curl -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
-  "$pages_base/release-manifest.json" -o "$incoming/release-manifest.json"
+  "$pages_base/${pages_path_prefix}release-manifest.json" -o "$incoming/release-manifest.json"
 
 python3 - "$incoming/release-manifest.json" > "$incoming/files.list" <<'PY'
 import json, pathlib, re, sys
@@ -173,7 +179,7 @@ install -d -o root -g root -m 0755 "$candidate"
 while IFS= read -r path; do
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
   curl -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
-    "$pages_base/$path" -o "$candidate/$path"
+    "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"
 done < "$incoming/files.list"
 install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
 
