@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-08-25T13:25:25.000Z",
+    "updatedAt": "2026-08-25T14:53:02.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -27151,8 +27151,8 @@
       "description": "手机远程访问 DSH Web 界面：扫码即用局域网或公网（cloudflared 隧道）访问，实时同屏、移动端适配布局，带设置页管理。",
       "repositoryUrl": "https://github.com/shaobeichen/dsh-pocket",
       "defaultBranch": "main",
-      "latestCommit": "472524a45ef7b1ff6fbd9c3bf50787680a5497c3",
-      "sourceUpdatedAt": "2026-08-23T13:28:28.000Z",
+      "latestCommit": "4c2c3585857e238f0c1dbbe14a4daf68263744fd",
+      "sourceUpdatedAt": "2026-08-25T14:08:18.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -30264,6 +30264,27 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-commandcode-go-provider."
+    },
+    {
+      "id": "v-dev-388-dsh-usage-meter",
+      "name": "用量统计看板（DSH Usage Meter）",
+      "description": "设置页用量仪表盘：按服务商/模型汇总全部会话 token 用量，含今日/近 7 天/近 30 天趋势柱状图与缓存命中率。",
+      "repositoryUrl": "https://github.com/V-dev-388/dsh-usage-meter",
+      "defaultBranch": "main",
+      "latestCommit": "1a0a4f25495f5d40430b5d9809cf66e5f458432e",
+      "sourceUpdatedAt": "2026-08-25T14:16:31.000Z",
+      "discoveredAt": "2026-08-25T14:53:02.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "visualization",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-usage-meter."
     }
   ]
 }
