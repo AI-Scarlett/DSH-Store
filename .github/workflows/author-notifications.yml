@@ -76,7 +76,7 @@ jobs:
             --notification-targets "$RUNNER_TEMP/author-notice-targets-empty.json" \
             --base-commit "${{ steps.base.outputs.sha }}" \
             --catalog-run-id "${{ steps.report.outputs.run_id }}" \
-            --max-create 3 \
+            --max-create 10 \
             --output "$RUNNER_TEMP/author-notice-preliminary-plan.json"
       - name: Resolve a human maintainer for organization repositories
         env:
@@ -96,7 +96,7 @@ jobs:
             --notification-targets "$RUNNER_TEMP/author-notice-targets.json" \
             --base-commit "${{ steps.base.outputs.sha }}" \
             --catalog-run-id "${{ steps.report.outputs.run_id }}" \
-            --max-create 3 \
+            --max-create 10 \
             --output "$RUNNER_TEMP/author-notice-plan.json"
           jq -r '"creates=\(.summary.creates)", "updates=\(.summary.updates + .summary.sourceUpdates)", "baselines=\(.summary.baselineUpdates)", "closes=\(.summary.closes)", "queued=\(.summary.queuedNewIssues)", "github_messages=\(.summary.githubMessages)", "email_triggers=\(.summary.githubNotificationEmailTriggers)", "modified_blocked=\(.summary.upstreamModifiedStillBlocked)", "modified_resolved=\(.summary.upstreamModifiedResolved)", "not_modified=\(.summary.noUpstreamModificationDetected)", "source_baselines=\(.summary.sourceTrackingBaselines)", "source_unknown=\(.summary.sourceModificationUnknown)", "candidate_records=\(.summary.candidateRegistryRecords)", "candidate_repositories=\(.summary.candidateRegistryRepositories)", "candidate_accounted=\(.summary.candidateCoverageAccounted)", "candidate_unaccounted=\(.summary.candidateCoverageUnaccounted)", "candidate_direct=\(.summary.candidateDirectNotificationEligible)", "candidate_direct_managed=\(.summary.candidateDirectManagedIssues)", "candidate_direct_scheduled=\(.summary.candidateDirectScheduledThisRun)", "candidate_direct_queued=\(.summary.candidateDirectQueued)", "candidate_public=\(.summary.candidatePublicRegistryOnly)", "candidate_public_remediation=\(.summary.candidatePublicRemediation)", "candidate_public_reviewing=\(.summary.candidatePublicReviewing)", "candidate_public_deferred=\(.summary.candidatePublicDeferred)", "candidate_public_discovery=\(.summary.candidatePublicDiscoveryOnly)", "plan_id=\(.planId)"' \
             "$RUNNER_TEMP/author-notice-plan.json" >> "$GITHUB_OUTPUT"
@@ -126,7 +126,7 @@ jobs:
             echo "- 触发 GitHub 通知邮件：${{ steps.plan.outputs.email_triggers }}（实际送达取决于接收者 GitHub 设置，仓库无法验证）"
             echo "- Candidate Registry 全量覆盖：${{ steps.plan.outputs.candidate_accounted }} / ${{ steps.plan.outputs.candidate_records }} 条；未覆盖：${{ steps.plan.outputs.candidate_unaccounted }}"
             echo "- canonical 候选仓库：${{ steps.plan.outputs.candidate_repositories }}；符合一次性直接整改通知：${{ steps.plan.outputs.candidate_direct }}（已建单 ${{ steps.plan.outputs.candidate_direct_managed }}，本轮 ${{ steps.plan.outputs.candidate_direct_scheduled }}，排队 ${{ steps.plan.outputs.candidate_direct_queued }}）"
-            echo "- 仅在公开候选库展示、不主动 @：${{ steps.plan.outputs.candidate_public }}（待复检 ${{ steps.plan.outputs.candidate_public_reviewing }}，有公开整改原因 ${{ steps.plan.outputs.candidate_public_remediation }}，基础设施暂缓 ${{ steps.plan.outputs.candidate_public_deferred }}，发现记录 ${{ steps.plan.outputs.candidate_public_discovery }}）"
+            echo "- 仅在公开候选库展示、不主动 @：${{ steps.plan.outputs.candidate_public }}（待复检 ${{ steps.plan.outputs.candidate_public_reviewing }}，异常的未入队整改项 ${{ steps.plan.outputs.candidate_public_remediation }}，基础设施暂缓 ${{ steps.plan.outputs.candidate_public_deferred }}，发现记录 ${{ steps.plan.outputs.candidate_public_discovery }}）"
             echo "- 完整候选清单：https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/candidates.json"
             echo "- 检测到作者修改但仍未通过：${{ steps.plan.outputs.modified_blocked }}"
             echo "- 检测到作者修改且阻断清除：${{ steps.plan.outputs.modified_resolved }}"

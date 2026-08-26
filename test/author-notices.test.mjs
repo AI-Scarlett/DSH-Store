@@ -116,6 +116,7 @@ test('author notice plan rate-limits and covers blocked, deferred, and explicit 
   })
   assert.equal(plan.policy.neverSendPromotionOnlyMessages, true)
   assert.equal(plan.policy.neverCreateIssuesInExternalRepositories, true)
+  assert.equal(plan.policy.queueAllDeterministicCandidateRemediation, true)
 })
 
 test('all candidate repositories receive exactly one public or direct coverage disposition', () => {
@@ -136,15 +137,47 @@ test('all candidate repositories receive exactly one public or direct coverage d
   }))
   assert.deepEqual(plan.candidateCoverage.map(record => [record.key, record.disposition]), [
     ['candidateowner/dsh-candidate', 'direct-remediation'],
-    ['radarowner/dsh-radar', 'public-remediation'],
+    ['radarowner/dsh-radar', 'direct-remediation'],
     ['reviewowner/dsh-reviewing', 'public-reviewing'],
   ])
   assert.equal(plan.summary.candidateRegistryRecords, 3)
   assert.equal(plan.summary.candidateCoverageAccounted, 3)
   assert.equal(plan.summary.candidateCoverageUnaccounted, 0)
-  assert.equal(plan.summary.candidateDirectNotificationEligible, 1)
-  assert.equal(plan.summary.candidatePublicRemediation, 1)
+  assert.equal(plan.summary.candidateDirectNotificationEligible, 2)
+  assert.equal(plan.summary.candidateDirectScheduledThisRun, 1)
+  assert.equal(plan.summary.candidateDirectQueued, 1)
+  assert.equal(plan.summary.candidatePublicRemediation, 0)
   assert.equal(plan.summary.candidatePublicReviewing, 1)
+})
+
+test('all deterministic radar rejections enter the deduplicated one-time queue', () => {
+  const plan = buildAuthorNoticePlan(fixture({
+    catalog: { entries: [] },
+    candidates: {
+      entries: [
+        candidate({ discoverySources: ['github-automatic-radar-v1'] }),
+        candidate({
+          id: 'candidate-plugin-alias',
+          discoverySources: ['independent-directory-radar-v1'],
+          statusReason: 'license file is missing from the fixed Commit',
+        }),
+        candidate({
+          id: 'second-radar', repositoryUrl: 'https://github.com/SecondOwner/dsh-second-radar',
+          discoverySources: ['github-automatic-radar-v1'],
+        }),
+      ],
+    },
+    report: { observedAt: '2026-08-24T12:00:00Z', addedEntries: [], deferredUpdates: [], rejectedCandidates: [] },
+    maxCreate: 1,
+  }))
+  const direct = plan.candidateCoverage.filter(record => record.disposition === 'direct-remediation')
+  assert.equal(direct.length, 2, 'canonical repository aliases must share one notification lane')
+  assert.equal(plan.summary.candidateDirectNotificationEligible, 2)
+  assert.equal(plan.summary.candidateDirectScheduledThisRun, 1)
+  assert.equal(plan.summary.candidateDirectQueued, 1)
+  assert.equal(plan.summary.candidatePublicRemediation, 0)
+  assert.equal(plan.summary.candidateCoverageUnaccounted, 0)
+  assert.equal(plan.actions.filter(action => action.type === 'create').length, 1)
 })
 
 test('unchanged author findings do not repeatedly mention the owner', () => {
