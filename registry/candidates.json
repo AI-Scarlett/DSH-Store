@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-08-25T16:46:19.000Z",
+    "updatedAt": "2026-08-26T01:48:00.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -52,28 +52,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository; license is missing or not assertable; package manifest is private. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "furongjun-1999-commontrustprotocol",
-      "name": "FuRongJun-1999/CommonTrustProtocol",
-      "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
-      "repositoryUrl": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
-      "defaultBranch": "main",
-      "latestCommit": "58898a4db625cac72d36ed88b4c4ce32df856e7c",
-      "sourceUpdatedAt": "2026-08-23T06:56:54.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21",
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "dsh-plugin",
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID dsh-memory is already owned by dsh-memory-vault"
     },
     {
       "id": "dominic789654-awesome-deepseek-harness",
@@ -1421,27 +1399,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing entry instead of inserting an isolated plugin. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "crafter-station-petdex",
-      "name": "crafter-station/petdex",
-      "description": "A public gallery of animated pets for Codex, Claude Code, DeepSeek Harness, Hermes, OpenCode, Gemini CLI, and more.",
-      "repositoryUrl": "https://github.com/crafter-station/petdex",
-      "defaultBranch": "main",
-      "latestCommit": "310004f0fa30fcf034d6665f43e52e07f8dc209f",
-      "sourceUpdatedAt": "2026-08-20T15:10:06.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository; package manifest is private. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "hacksing-dsh-plugins",
       "name": "HackSing/dsh-plugins",
       "description": "A bilingual, continuously maintained directory of plugins for DeepSeek Harness (DSH).",
@@ -1870,27 +1827,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing entry instead of inserting an isolated plugin; DSH entry ID collides with the approved catalog; Bundle Patch contract is invalid; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "unlinearity-dsh-code",
-      "name": "UNLINEARITY/dsh-code",
-      "description": "Claude-Code-style TUI bundle for DeepSeek Harness. 充分结合 DSH 的核���机制和高级特性与Codex CLI 、Claude Code 等主流交互机制，打造的 DSH-Code. （注：支持DSH 特殊模式，插件系统，模型管理，子代理管理，切换模型特殊动画）",
-      "repositoryUrl": "https://github.com/UNLINEARITY/dsh-code",
-      "defaultBranch": "main",
-      "latestCommit": "e8d9c298434edde2f0774283fee1496a4aa1e71d",
-      "sourceUpdatedAt": "2026-08-20T11:49:58.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing entry instead of inserting an isolated plugin; source or patch references a protected official component; install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "feiyang-dev-dsh-usage-plugin",
       "name": "feiyang-dev/dsh-usage-plugin",
       "description": "DeepSeek Harness 用量与消耗插件（dsh-usage-plugin）—— 每次调用的 token 用量/缓存命中统计、峰谷计费、余额查询、CSV/JSON/PNG 导出，可经桌面端一键安装或命令行 dsh plugin add 安装。",
@@ -2225,27 +2161,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "mouliangyu-dsh-plugins",
-      "name": "mouliangyu/dsh-plugins",
-      "description": "Community plugins for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/mouliangyu/dsh-plugins",
-      "defaultBranch": "main",
-      "latestCommit": "63c6f754b8872123420e36464c36311fa436d7c8",
-      "sourceUpdatedAt": "2026-08-20T08:31:58.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "revive-dsh-git-credentials",
@@ -2626,27 +2541,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "v1ki-dsh-plugin-subscriptions",
-      "name": "V1ki/dsh-plugin-subscriptions",
-      "description": "Use ChatGPT (Codex), Claude, and Grok (X Premium) subscriptions as DeepSeek Harness LLM providers — OAuth login in the web UI, no API keys",
-      "repositoryUrl": "https://github.com/V1ki/dsh-plugin-subscriptions",
-      "defaultBranch": "main",
-      "latestCommit": "0f9c3307e5b509cf7cd866e6e802dffda115644d",
-      "sourceUpdatedAt": "2026-08-20T06:24:53.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "exoharness-exo",
       "name": "exoharness/exo",
       "description": "Exo is an agent + harness architecture that is fully recursive, able to safely edit all aspects of itself at runtime to get better at your tasks.",
@@ -2834,27 +2728,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "cnskycn-deepseek-harness-desktop",
-      "name": "cnskycn/deepseek-harness-desktop",
-      "description": "Desktop app wrapper for DeepSeek Harness (dsh) Web UI - one-click Windows installer",
-      "repositoryUrl": "https://github.com/cnskycn/deepseek-harness-desktop",
-      "defaultBranch": "master",
-      "latestCommit": "2debede7e067b8bcabfaded7e293b16175f72831",
-      "sourceUpdatedAt": "2026-08-20T04:55:13.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "kelai141-dsh-host-web-compat",
@@ -3088,27 +2961,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "yuntaihua-illusion-agent",
-      "name": "YunTaiHua/illusion-agent",
-      "description": "Illusion-Agent: Where fantasy meets functionality — an AI agent platform for terminal, browser, any model, any OS.",
-      "repositoryUrl": "https://github.com/YunTaiHua/illusion-agent",
-      "defaultBranch": "main",
-      "latestCommit": "343249f350941b849fb514eda5c41cf8a3e87ec4",
-      "sourceUpdatedAt": "2026-08-20T02:29:20.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "orchestration"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "omdsh-dev-dsh-plugin-dev",
       "name": "omdsh-dev/dsh-plugin-dev",
       "description": "DSH 插件开发踩坑与做法档案（skill + 文档）：cordis 双副本、tsconfig 三件套、Windows junction、多帧 zstd 等实测记录",
@@ -3170,27 +3022,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "scorp1o117-dsh-tool-vision",
-      "name": "Scorp1o117/dsh-tool-vision",
-      "description": "Vision model for DeepSeek Harness | DeepSeek Harness 外置视觉模型插件",
-      "repositoryUrl": "https://github.com/Scorp1o117/dsh-tool-vision",
-      "defaultBranch": "main",
-      "latestCommit": "44f69b241c67e9abdb5d9c9240c5c6108f46ca35",
-      "sourceUpdatedAt": "2026-08-20T02:01:11.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: native or unpinned install dependency requires disposable runtime evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "qcytsn-dsh-dafeiyu",
@@ -3583,27 +3414,6 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: source tree exceeds the bounded static-review limit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "the-beating-light-of-the-nail-dsh-meme-hub",
-      "name": "the-beating-light-of-the-nail/dsh-meme-hub",
-      "description": "🐋 The meme side of DeepSeek Harness — 贪玩蓝鲸/QQ2006/whale girls/mini-games · A curated tour of the wildest dsh plugins",
-      "repositoryUrl": "https://github.com/the-beating-light-of-the-nail/dsh-meme-hub",
-      "defaultBranch": "main",
-      "latestCommit": "b4f72f42e685e34962f1817f1a6a150f145a88d4",
-      "sourceUpdatedAt": "2026-08-19T16:54:50.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "ui"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "spike-faye-lei-spike-faye-lei-dsh-skills",
@@ -4318,27 +4128,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "qwert702-dsh-token-viewer",
-      "name": "qwert702/dsh-token-viewer",
-      "description": "Developer tool: live token usage & cost monitoring for DeepSeek Harness - consumed tokens for the current session and across all sessions, read from token-meter projections. No model calls.",
-      "repositoryUrl": "https://github.com/qwert702/dsh-token-viewer",
-      "defaultBranch": "main",
-      "latestCommit": "9c24e8e237baa603a02827f41fea8a3eacaf8789",
-      "sourceUpdatedAt": "2026-08-19T06:59:50.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "ui"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "cheshireez-dsh-skill-hub",
@@ -5095,27 +4884,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "tttrz-dsh-wecom",
-      "name": "TtTRz/dsh-wecom",
-      "description": "WeCom AI Bot channel for DeepSeek Harness — every chat runs a persistent, preset-backed agent with real tools.",
-      "repositoryUrl": "https://github.com/TtTRz/dsh-wecom",
-      "defaultBranch": "main",
-      "latestCommit": "46270e3e666cb576e3f3c16be9da3374742643c3",
-      "sourceUpdatedAt": "2026-08-18T07:19:11.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "orchestration"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "lglglglgy-dsh-whale-pet",
@@ -6106,27 +5874,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: license is missing or not assertable; license file is missing. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "octo-o-o-o-deepseek-harness-applicants",
-      "name": "Octo-o-o-o/deepseek-harness-applicants",
-      "description": "DSH ecosystem candidate repository octo-o-o-o/deepseek-harness-applicants",
-      "repositoryUrl": "https://github.com/Octo-o-o-o/deepseek-harness-applicants",
-      "defaultBranch": "main",
-      "latestCommit": "aecb3e7d59f25ddcd5173a857bc3bc182b9a3c4e",
-      "sourceUpdatedAt": "2026-08-17T13:43:06.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "chenw2759-wq-dsh-ide",
       "name": "chenw2759-wq/dsh-IDE",
       "description": "dsh-IDE 把 DeepSeek Harness（DSH）网页版升级成一站式 IDE：JupyterLab 式文件树、带语法高亮的代码编辑、多格式预览、Trae 风格红绿 diff 和内置终端，再加上「本地大脑、远程手脚」的 SSH 远程工作区，让 AI 直接在本机操控远程服务器，全程零配置文件改动。",
@@ -6379,27 +6126,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "kazecreator-dsh-plugins",
-      "name": "kazecreator/dsh-plugins",
-      "description": "Monorepo of DeepSeek Harness (dsh) plugins — including dsh-im (Telegram & WeChat IM bridge)",
-      "repositoryUrl": "https://github.com/kazecreator/dsh-plugins",
-      "defaultBranch": "main",
-      "latestCommit": "6617ae10e260d94eeff222b94f3012e95b9e2d21",
-      "sourceUpdatedAt": "2026-08-17T10:10:55.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; package manifest is private. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "pandarayc-dsh-release-guard",
       "name": "pandarayc/dsh-release-guard",
       "description": "DSH 插件发布安全网：preset 健康检查、Canary 灰度决策、自动回滚。",
@@ -6650,27 +6376,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "bernardleex526-oh_my_deepseek_harness",
-      "name": "bernardleex526/oh_my_deepseek_harness",
-      "description": "DeepSeek Harness 多智能体编排模式 — 灵感来自 oh-my-opencode-slim",
-      "repositoryUrl": "https://github.com/bernardleex526/oh_my_deepseek_harness",
-      "defaultBranch": "main",
-      "latestCommit": "1de0cc9aae665195e4cb73692a8621da2ccecbaa",
-      "sourceUpdatedAt": "2026-08-17T07:11:07.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "orchestration"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "nanmicoder-dsh-auto-mode",
@@ -7765,27 +7470,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository; package is already represented by the catalog. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "spirit4471-multimodal-bridge",
-      "name": "Spirit4471/multimodal-bridge",
-      "description": "Multimodal bridge for any LLM: qwen_vision (Qwen-VL) + qwen_generate (Qwen-Image) — an MCP server for Kimi Code & Claude Code, and a DeepSeek Harness plugin (dsh-multimodal-bridge). 给任何 LLM 补上 Qwen 视觉与出图能力：MCP server（Kimi Code / Claude Code）+ DeepSeek Harness 插件双形态。",
-      "repositoryUrl": "https://github.com/Spirit4471/multimodal-bridge",
-      "defaultBranch": "master",
-      "latestCommit": "4b7cd81414d089148409fbb783da9ce0fcee2f22",
-      "sourceUpdatedAt": "2026-08-16T14:54:42.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "uynajgi-dsh-ssh",
       "name": "UynajGI/dsh-ssh",
       "description": "SSH remote-execution plugin for DeepSeek Harness: ProxyJump chain, SFTP filesystem, subprocess and PTY over ssh2",
@@ -8771,27 +8455,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing entry instead of inserting an isolated plugin; DSH entry ID collides with the approved catalog; package is already represented by the catalog. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "argonaut790-dsh-deepseek-vision",
-      "name": "Argonaut790/dsh-deepseek-vision",
-      "description": "Image understanding, OCR, and persistent visual evidence for text-only DeepSeek Harness models",
-      "repositoryUrl": "https://github.com/Argonaut790/dsh-deepseek-vision",
-      "defaultBranch": "main",
-      "latestCommit": "dded52b276055faa602e8c235fe75246a5ac5840",
-      "sourceUpdatedAt": "2026-08-15T22:24:55.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "ykennen-dsh-zh-output",
@@ -9865,27 +9528,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: DSH entry ID collides with the approved catalog. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "xiaoxianyu-office-dsh-image-tools",
-      "name": "xiaoxianyu-office/dsh-image-tools",
-      "description": "DSH bundle plugin: chat-image bridge + read_image deny + conversational image_recognize for text-only main models | 纯文本主模型识图桥接与识图工具",
-      "repositoryUrl": "https://github.com/xiaoxianyu-office/dsh-image-tools",
-      "defaultBranch": "main",
-      "latestCommit": "c665b955bba10bc623e62b324d2327917c534883",
-      "sourceUpdatedAt": "2026-08-15T11:15:30.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository; package manifest is private. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "xiaoyuxiaoyuqwq-dsh-desktop",
       "name": "xiaoyuxiaoyuqwq/dsh-desktop",
       "description": "DeepSeek Harness 简易桌面端，可供一键式启动",
@@ -10094,27 +9736,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: source or patch references a protected official component; install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "fromlan-dsh-godot-tool",
-      "name": "Fromlan/dsh-godot-tool",
-      "description": "Drive the Godot 4.x editor from an AI agent: Godot agent_rpc addon + DeepSeek Harness dsh-tool-godot plugin (loopback TCP JSON-lines bridge, 27 godot_* tools)",
-      "repositoryUrl": "https://github.com/Fromlan/dsh-godot-tool",
-      "defaultBranch": "master",
-      "latestCommit": "8e559223b95eda5542d5f2586ac7bcd5dea01823",
-      "sourceUpdatedAt": "2026-08-15T08:16:42.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "orchestration"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "guzhengsvt-dsh-wecom-notify",
@@ -11062,27 +10683,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "alex-yanggg-awesome-dsh-plugin",
-      "name": "Alex-Yanggg/awesome-DSH-plugin",
-      "description": "A meticulously curated list of useful plugins, extensions, tools and development resources built for DSH, covering productivity enhancement, functional expansion, debugging utilities and custom development modules.",
-      "repositoryUrl": "https://github.com/Alex-Yanggg/awesome-DSH-plugin",
-      "defaultBranch": "main",
-      "latestCommit": "3b44fe8ffddbf19ccebd459829e5a8ae2cbb0fa6",
-      "sourceUpdatedAt": "2026-08-15T03:22:05.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "anweat-dsh-plugin-dev-guide",
       "name": "anweat/dsh-plugin-dev-guide",
       "description": "DSH (DeepSeek Harness) plugin development & publishing guide: from first plugin to auto-publish to the community",
@@ -11144,27 +10744,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "francis-xavier-code-dsh-balance-plugin",
-      "name": "Francis-Xavier-code/dsh-balance-plugin",
-      "description": "deepSeek 余额监控与用量统计（DSH 动态 Cordis 插件）：余额监控 · 官方充值入口 · 用量统计 · 三方插件管理",
-      "repositoryUrl": "https://github.com/Francis-Xavier-code/dsh-balance-plugin",
-      "defaultBranch": "main",
-      "latestCommit": "9de5114a03123f5a9f4208a3c8f90f93baaa7c0e",
-      "sourceUpdatedAt": "2026-08-15T03:07:52.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: package is already represented by the catalog. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "hnmrxz-dsh-plugin-deepseek-balance",
@@ -11774,27 +11353,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "yha9806-dsh-subagent-admission",
-      "name": "yha9806/dsh-subagent-admission",
-      "description": "Shared lifecycle admission protocol and reference policy kernel for DeepSeek Harness subagents.",
-      "repositoryUrl": "https://github.com/yha9806/dsh-subagent-admission",
-      "defaultBranch": "main",
-      "latestCommit": "2e2e921e7154d9e11d23f97800723d712bcda2c3",
-      "sourceUpdatedAt": "2026-08-14T19:28:48.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "session"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: declared runtime artifact is missing from the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "tensorlakeai-dsh-tensorlake-sandbox",
@@ -12413,27 +11971,6 @@
       "defaultBranch": "main",
       "latestCommit": "46384a9b8adb50fe9346052c54f04a33072f697f",
       "sourceUpdatedAt": "2026-08-14T16:01:57.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "fenxin-fx-dsh-default-workspace-plugin",
-      "name": "fenxin-fx/dsh-default-workspace-plugin",
-      "description": "DSH ecosystem candidate repository fenxin-fx/dsh-default-workspace-plugin",
-      "repositoryUrl": "https://github.com/fenxin-fx/dsh-default-workspace-plugin",
-      "defaultBranch": "main",
-      "latestCommit": "a5fcdd6714a243c40e88611b12131c36d051871c",
-      "sourceUpdatedAt": "2026-08-14T15:59:37.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -13624,27 +13161,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "frankq007-dsh-plugin-devecocli",
-      "name": "frankq007/dsh-plugin-devecocli",
-      "description": "HarmonyOS development tools for DeepSeek Harness: device/emulator management, UI automation, build & deploy, logs, lint, signing and offline docs via devecocli (13 harmony_* tools)",
-      "repositoryUrl": "https://github.com/frankq007/dsh-plugin-devecocli",
-      "defaultBranch": "master",
-      "latestCommit": "aa18d09cae0b28e7fa6a216f9c4bd447c1cbf159",
-      "sourceUpdatedAt": "2026-08-14T11:17:59.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "ui"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "hexbee-dsh-skill-panel",
       "name": "hexbee/dsh-skill-panel",
       "description": "DSH plugin: manage agent skills in settings | DSH 插件：设置页技能管理面板",
@@ -13981,27 +13497,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "ethanweave-glm4v-vision-mcp",
-      "name": "ethanweave/glm4v-vision-mcp",
-      "description": "GLM-4.6V 图像理解 MCP：识图/OCR/图表解析，原生接入 DeepSeek Harness（dsh-mcp-client），也兼容 Codex/Cline 等",
-      "repositoryUrl": "https://github.com/ethanweave/glm4v-vision-mcp",
-      "defaultBranch": "main",
-      "latestCommit": "d3067965a18bc05376c64c22523731c2df496522",
-      "sourceUpdatedAt": "2026-08-14T10:38:08.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "lvyuchuiyi-dsh-funpack",
       "name": "lvyuchuiyi/dsh-funpack",
       "description": "DeepSeek Harness的一些有趣插件",
@@ -14021,27 +13516,6 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: fixed-source scan could not cover the declared runtime. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "maimorylab-dib",
-      "name": "MaimoryLab/dib",
-      "description": "DSH-in-Box: A DSH runtime and plugin packager",
-      "repositoryUrl": "https://github.com/MaimoryLab/dib",
-      "defaultBranch": "main",
-      "latestCommit": "de2144fb3b00b43447bcd0435c2313bf0954c677",
-      "sourceUpdatedAt": "2026-08-14T10:29:57.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "pandacolour-dsh-cmd-starter",
@@ -14861,27 +14335,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "sakurarain1213-deepseek-harness-lite",
-      "name": "sakurarain1213/deepseek-harness-lite",
-      "description": "A lightweight, local-first distribution and verified plugin kit for DeepSeek Harness.",
-      "repositoryUrl": "https://github.com/sakurarain1213/deepseek-harness-lite",
-      "defaultBranch": "main",
-      "latestCommit": "5ff5dcbd30a6fba9c10b75827231799d28923423",
-      "sourceUpdatedAt": "2026-08-14T09:05:55.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "ljcscp-dsh-session-cost",
@@ -15808,27 +15261,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "lq-1123-paste-to-workspace",
-      "name": "LQ-1123/paste-to-workspace",
-      "description": "DSH 插件：把粘贴/拖入聊天框的图片与任意文件保存为会话工作区文件。官方 bundle 插件，安装：dsh plugin --profile web add github:LQ-1123/paste-to-workspace",
-      "repositoryUrl": "https://github.com/LQ-1123/paste-to-workspace",
-      "defaultBranch": "main",
-      "latestCommit": "6633a5847edf00e3d476fb38ddbf927d9e31fdee",
-      "sourceUpdatedAt": "2026-08-14T07:38:46.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository; package manifest is private. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "beex-labs-dsh-desktop-plugin",
       "name": "beex-labs/dsh-desktop-plugin",
       "description": "dsh-desktop-plugin",
@@ -15848,27 +15280,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "1514100951-dsh-notify-plugins",
-      "name": "1514100951/dsh-notify-plugins",
-      "description": "DeepSeek Harness desktop notification plugins: browser + native Windows toasts on task finish/error, blocking waits (approval/question/plan-review), and background job settlement",
-      "repositoryUrl": "https://github.com/1514100951/dsh-notify-plugins",
-      "defaultBranch": "main",
-      "latestCommit": "280f3cef6ad1308c237bcca276a6fdf8d5475bfd",
-      "sourceUpdatedAt": "2026-08-14T07:32:42.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; manifest repository does not match the canonical GitHub repository; package manifest is missing; package name is missing. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "yingjunnan-dsh-deepseek-quota",
@@ -16961,27 +16372,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: DSH entry ID collides with the approved catalog; package is already represented by the catalog. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "clizo1209-dsh-playwright-browser",
-      "name": "Clizo1209/dsh-playwright-browser",
-      "description": "Playwright browser automation for DeepSeek Harness｜面向 DeepSeek Harness 的 Playwright 浏览器自动化插件",
-      "repositoryUrl": "https://github.com/Clizo1209/dsh-playwright-browser",
-      "defaultBranch": "main",
-      "latestCommit": "e6131c5de3a45f4f48dc81f76895abfcafb4cf02",
-      "sourceUpdatedAt": "2026-08-14T05:50:20.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "windlx-paper_plane_x",
@@ -18433,27 +17823,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "levi-qiao-dsh-plugin-longgraph",
-      "name": "levi-qiao/dsh-plugin-longgraph",
-      "description": "DeepSeek Harness community plugin: longgraph / loop-graph / loop-converge authoring skills on ctx.skills",
-      "repositoryUrl": "https://github.com/levi-qiao/dsh-plugin-longgraph",
-      "defaultBranch": "main",
-      "latestCommit": "a0164b62b44ececf07a39c090fa96ef314e04f41",
-      "sourceUpdatedAt": "2026-08-14T02:45:41.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "skills"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "sublatesublate-design-dsh-doctor-windows",
       "name": "sublatesublate-design/dsh-doctor-windows",
       "description": "Windows environment diagnostics for DeepSeek Harness",
@@ -18494,27 +17863,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing entry instead of inserting an isolated plugin; source or patch references a protected official component; DSH entry ID collides with the approved catalog; install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "jleon-account-dsh-client-usage",
-      "name": "jLeon-account/dsh-client-usage",
-      "description": "DeepSeek Harness（DSH）网页客户端插件：实时展示会话级 API token 用量与估算费用，支持缓存命中/未命中分桶、上下文占用，自动适配 DeepSeek 峰谷计价与调价｜DSH web plugin: real-time token usage & cost estimate",
-      "repositoryUrl": "https://github.com/jLeon-account/dsh-client-usage",
-      "defaultBranch": "main",
-      "latestCommit": "148be56958385572586debe73d120000742ce17f",
-      "sourceUpdatedAt": "2026-08-14T02:27:58.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "jinsong-zhou-dsh-html-canvas",
@@ -18622,27 +17970,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "chi-hong22-dsh-mdbox",
-      "name": "Chi-hong22/dsh-mdbox",
-      "description": "DeepSeek Harness (DSH) Web 输入框的 Markdown 编辑辅助插件。",
-      "repositoryUrl": "https://github.com/Chi-hong22/dsh-mdbox",
-      "defaultBranch": "main",
-      "latestCommit": "4723fd2f42617056017a97d761dfa3159b8e19d5",
-      "sourceUpdatedAt": "2026-08-14T02:11:59.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "tanf1ng-dsh-tool-hackernews",
       "name": "tanf1ng/dsh-tool-hackernews",
       "description": "Hacker News tool suite (hn_top_stories, hn_search, hn_item) for DeepSeek Harness agents",
@@ -18683,27 +18010,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: DSH entry ID collides with the approved catalog; install lifecycle script lacks disposable-install evidence; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "senmuuuuw-dsh-group-photo",
-      "name": "SenmuuuuW/dsh-group-photo",
-      "description": "DSH 内测收官合影墙：GitHub OAuth 零权限登录 + 冻结白名单校验的拍立得合影站（含 DSH Skill 包装）",
-      "repositoryUrl": "https://github.com/SenmuuuuW/dsh-group-photo",
-      "defaultBranch": "main",
-      "latestCommit": "9093b96be3390719c427b0fabb598a506c956124",
-      "sourceUpdatedAt": "2026-08-14T01:54:27.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "utility"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "amengclass-dsh-memory",
@@ -18998,27 +18304,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle mutates an existing entry instead of inserting an isolated plugin; source or patch references a protected official component. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "jinsong-zhou-safe-find-dsh-plugins",
-      "name": "Jinsong-Zhou/safe-find-dsh-plugins",
-      "description": "Discover and install the best DeepSeek Harness plugins for a user's task",
-      "repositoryUrl": "https://github.com/Jinsong-Zhou/safe-find-dsh-plugins",
-      "defaultBranch": "main",
-      "latestCommit": "24561809826dd90a37cc889968c649b20fe2fbee",
-      "sourceUpdatedAt": "2026-08-13T23:36:20.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "csiroqa-dsh-archive-viewer",
@@ -20510,27 +19795,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: DSH entry ID collides with the approved catalog; install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "ben7am1n-dsh-deepseek-usage",
-      "name": "ben7am1n/dsh-deepseek-usage",
-      "description": "DeepSeek balance and token usage tools for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/ben7am1n/dsh-deepseek-usage",
-      "defaultBranch": "main",
-      "latestCommit": "244fb45d424cf313bb8f3fcd433039cea359674f",
-      "sourceUpdatedAt": "2026-08-13T16:28:29.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "acp"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: install lifecycle script lacks disposable-install evidence. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "shawnsiao-dsh-agent-eval",
@@ -22654,27 +21918,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "chensheg-knowledge-from-literature-and-bilibili",
-      "name": "ChenSheg/knowledge-from-literature-and-bilibili",
-      "description": "A tool box for literature search and analysis",
-      "repositoryUrl": "https://github.com/ChenSheg/knowledge-from-literature-and-bilibili",
-      "defaultBranch": "master",
-      "latestCommit": "b9d3a2e8d4ba0dcae4e0da33f9543a557a3a08ab",
-      "sourceUpdatedAt": "2026-07-14T04:01:28.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "t1yos-t1y-skills",
       "name": "t1yOS/t1y-skills",
       "description": "expert skill package for AI coding assistants working with the t1yOS Serverless platform.",
@@ -23032,27 +22275,6 @@
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
-      "id": "xiangpc-wemeet-openapi",
-      "name": "xiangpc/wemeet-openapi",
-      "description": "DSH ecosystem candidate repository xiangpc/wemeet-openapi",
-      "repositoryUrl": "https://github.com/xiangpc/wemeet-openapi",
-      "defaultBranch": "master",
-      "latestCommit": "709778e276d63b20dbcda137bd37545a4ad2aae0",
-      "sourceUpdatedAt": "2024-03-31T14:06:03.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "tools"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
       "id": "linny006-agent-framework-radar",
       "name": "linny006/agent-framework-radar",
       "description": "Live index of the newest agent frameworks shipping on GitHub, sorted by recency not stars",
@@ -23186,51 +22408,13 @@
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
-      "id": "linny006-prompt-tools-live",
-      "name": "linny006/prompt-tools-live",
-      "description": "Live-updating tracker of prompt engineering tools, libraries, and techniques — refreshed every 15 mi",
-      "repositoryUrl": "https://github.com/linny006/prompt-tools-live",
-      "defaultBranch": "master",
-      "latestCommit": "55b8a67e857a9b0256ec495e56805076f8d46132",
-      "sourceUpdatedAt": "2026-08-24T07:16:21.000Z",
-      "discoveredAt": "2026-08-22T11:31:00.000Z",
-      "discoverySources": [
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "ai-development",
-        "ai-prompts",
-        "ai-tools",
-        "auto-updated",
-        "awesome-list",
-        "awesome-prompts",
-        "few-shot-learning",
-        "generative-ai",
-        "live-data",
-        "llm-engineering",
-        "llm-prompts",
-        "llm-tools",
-        "machine-learning",
-        "prompt-design",
-        "prompt-engineering",
-        "prompt-library",
-        "prompt-management",
-        "prompt-optimization",
-        "prompt-templates",
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
-    },
-    {
       "id": "gmh5225-awesome-game-security",
       "name": "gmh5225/awesome-game-security",
       "description": "awesome game security [Welcome to PR]",
       "repositoryUrl": "https://github.com/gmh5225/awesome-game-security",
       "defaultBranch": "main",
-      "latestCommit": "d7c3cfcb4878eb7bb6fbc4395fca773eee9e2c8e",
-      "sourceUpdatedAt": "2026-08-23T21:32:45.000Z",
+      "latestCommit": "cd412d125407e34551728b4494d8d4a28b0fc271",
+      "sourceUpdatedAt": "2026-08-26T01:49:44.000Z",
       "discoveredAt": "2026-08-22T11:31:00.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -23346,8 +22530,8 @@
       "description": "dsh-plugin - waiting for development",
       "repositoryUrl": "https://github.com/youridol/dsh-plugin",
       "defaultBranch": "main",
-      "latestCommit": "a429210ce58a5863a75c1941cee08ed1ae8f5a52",
-      "sourceUpdatedAt": "2026-08-23T01:51:19.000Z",
+      "latestCommit": "7ad63193bb0357ef1958b37d42a1b5d212c9853e",
+      "sourceUpdatedAt": "2026-08-26T01:48:46.000Z",
       "discoveredAt": "2026-08-22T12:40:59.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -23443,30 +22627,6 @@
         "dsh",
         "dsh-plugin",
         "openai",
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
-    },
-    {
-      "id": "zassyj-deepseek-harness-desktop",
-      "name": "zasSYJ/deepseek-harness-desktop",
-      "description": "Unofficial Windows desktop wrapper for DeepSeek Harness (dsh)",
-      "repositoryUrl": "https://github.com/zasSYJ/deepseek-harness-desktop",
-      "defaultBranch": "main",
-      "latestCommit": "9ac51254cad7ea6b90d55362a7f0d5a4f004c621",
-      "sourceUpdatedAt": "2026-08-22T12:55:54.000Z",
-      "discoveredAt": "2026-08-22T12:56:08.000Z",
-      "discoverySources": [
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "ai-agent",
-        "deepseek-harness",
-        "desktop-app",
-        "electron",
-        "windows",
         "automatic-radar"
       ],
       "status": "rejected",
@@ -23843,35 +23003,6 @@
         "github-automatic-radar-v1"
       ],
       "topics": [
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
-    },
-    {
-      "id": "xuboboo-dsh-gui",
-      "name": "xuboboo/dsh-gui",
-      "description": "DeepSeek Harness 桌面版客户端（GUI）：品牌启动动画 + DeepSeek 设计语言界面 + rc.5 启动崩溃修复。第三方非官方项目。",
-      "repositoryUrl": "https://github.com/xuboboo/dsh-gui",
-      "defaultBranch": "main",
-      "latestCommit": "c2f4dd42e6ddaa145996e2f0f77d3430f193b386",
-      "sourceUpdatedAt": "2026-08-22T15:45:07.000Z",
-      "discoveredAt": "2026-08-22T15:44:43.000Z",
-      "discoverySources": [
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "deepseek",
-        "deepseek-harness",
-        "desktop",
-        "dsh",
-        "dsh-plugin",
-        "electron",
-        "gui",
-        "splash-screen",
-        "theme",
-        "windows",
         "automatic-radar"
       ],
       "status": "rejected",
@@ -25094,37 +24225,6 @@
       "statusReason": "SUBMISSION_ENTRY_MISSING: Bundle Patch does not declare a DSH entry ID"
     },
     {
-      "id": "bftz22-dsh-openai-bridge",
-      "name": "bftz22/dsh-openai-bridge",
-      "description": "OpenAI-compatible bridge that lets Chatbox (or any OpenAI-compatible client) drive a DeepSeek Harness (dsh) agent on your machine — streaming, tool-call traces, persistent sessions, one-click installers. 让 Chatbox 直接驱动 DeepSeek Harness 智能体的零依赖桥接服务",
-      "repositoryUrl": "https://github.com/bftz22/dsh-openai-bridge",
-      "defaultBranch": "main",
-      "latestCommit": "f6530b19db934992a57bbf84b4a0f5a0edfe0ea3",
-      "sourceUpdatedAt": "2026-08-17T18:37:21.000Z",
-      "discoveredAt": "2026-08-23T21:30:40.000Z",
-      "discoverySources": [
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "agent",
-        "ai-agent",
-        "bridge",
-        "chatbox",
-        "deepseek",
-        "deepseek-harness",
-        "llm",
-        "macos",
-        "openai",
-        "powershell",
-        "sse",
-        "windows",
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
-    },
-    {
       "id": "katharsysdesign-opencode-dsh-extension",
       "name": "katharsysdesign/opencode-dsh-extension",
       "description": "Browser extension that auto-syncs OpenCode Go usage to DSH sidebar",
@@ -26263,8 +25363,8 @@
       "description": "在 DSH 会话中展示上下文组成、历史变化与相关命令，帮助定位上下文占用和演化。",
       "repositoryUrl": "https://github.com/bowenliang123/dsh-context",
       "defaultBranch": "main",
-      "latestCommit": "8531298303ff0014bd732802d69a98a1397ebea7",
-      "sourceUpdatedAt": "2026-08-25T07:20:46.000Z",
+      "latestCommit": "6c56230f08168881e5bf547f917f32664be41e14",
+      "sourceUpdatedAt": "2026-08-26T00:38:10.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -27712,8 +26812,8 @@
       "description": "为 DSH 提供实用工具能力。英文原始说明：Network diagnostics toolbox for DeepSeek Harness (dsh): DNS lookup, ICMP ping, TCP port check, TLS certificate check, traceroute, and public IP info — zero runtime dependencies",
       "repositoryUrl": "https://github.com/TYEclipse/dsh-netdoctor",
       "defaultBranch": "main",
-      "latestCommit": "43de786b72688b7101783395d54f3b4629771b61",
-      "sourceUpdatedAt": "2026-08-15T17:57:03.000Z",
+      "latestCommit": "289f3df178a07fa48b2578ae4072cb656232461b",
+      "sourceUpdatedAt": "2026-08-25T21:47:00.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
