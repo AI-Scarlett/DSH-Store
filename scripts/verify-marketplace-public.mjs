@@ -5,7 +5,7 @@ import { readFile, rename, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { validateCatalog } from '../src/catalog.mjs'
+import { assertLegacyCatalogCompatibility, validateCatalog } from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const policy = JSON.parse(await readFile(resolve(root, 'registry/automation-policy.json'), 'utf8'))
@@ -53,6 +53,7 @@ function sha256(value) {
 
 function semanticCatalog(text) {
   const document = JSON.parse(text)
+  assertLegacyCatalogCompatibility(document)
   const catalog = validateCatalog(document)
   return {
     entries: catalog.entries.length,

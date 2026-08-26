@@ -243,6 +243,30 @@ function assuranceEvidence(value, label, catalogUpdatedAt) {
   }
 }
 
+export function assertLegacyCatalogCompatibility(document) {
+  if (!document || typeof document !== 'object' || !Array.isArray(document.entries)) {
+    throw new TypeError('legacy Catalog compatibility requires a Catalog document')
+  }
+  for (const [entryIndex, entry] of document.entries.entries()) {
+    const assurance = entry?.assurance
+    if (assurance === undefined || assurance === null) continue
+    if (typeof assurance !== 'object' || Array.isArray(assurance)) {
+      throw new TypeError(`entries[${entryIndex}].assurance must be an object`)
+    }
+    for (const [gate, record] of Object.entries(assurance)) {
+      if (!record || typeof record !== 'object' || Array.isArray(record)) continue
+      if (record.status === 'partial') {
+        throw new TypeError(`entries[${entryIndex}].assurance.${gate} uses a wire status unsupported by 0.8.2`)
+      }
+      if (record.evidenceStatus !== undefined
+        && (record.evidenceStatus !== 'partial' || record.status !== 'unknown')) {
+        throw new TypeError(`entries[${entryIndex}].assurance.${gate} has an invalid legacy evidence bridge`)
+      }
+    }
+  }
+  return true
+}
+
 function nonEmptyString(value, label, max = 2_000) {
   if (typeof value !== 'string' || value.trim() === '' || value.length > max) {
     throw new TypeError(`${label} must be a non-empty string no longer than ${max} characters`)

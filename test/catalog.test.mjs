@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
-  buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
+  assertLegacyCatalogCompatibility, buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
   compareCatalogEntries, compareVersions, createDshReleaseContext, dshReleaseCompatibility, dshVersionCompatibility,
   paginateMarketplaceSnapshot, projectDshRelease, searchCatalog, validateCatalog, verifyCatalogEntry,
 } from '../src/catalog.mjs'
@@ -81,6 +81,10 @@ test('catalog projects a legacy-compatible partial bridge without weakening curr
   const catalog = validateCatalog(document([{ ...entry, assurance: { installability: bridgedRecord } }]))
   assert.equal(catalog.entries[0].assurance.installability.status, 'partial')
   assert.equal(bridgedRecord.status, 'unknown', '0.8.2 reads the conservative legacy status')
+  assert.equal(assertLegacyCatalogCompatibility(document([{ ...entry, assurance: { installability: bridgedRecord } }])), true)
+  assert.throws(() => assertLegacyCatalogCompatibility(document([{ ...entry, assurance: {
+    installability: { ...bridgedRecord, status: 'partial', evidenceStatus: undefined },
+  } }])), /wire status unsupported by 0\.8\.2/)
   assert.throws(() => validateCatalog(document([{ ...entry, assurance: {
     installability: { ...bridgedRecord, status: 'verified' },
   } }])), /evidenceStatus requires the legacy wire status unknown/)
@@ -221,6 +225,7 @@ test('catalog ordering pins featured entries before compatibility and source fre
 
 test('bundled registry declares complete detail metadata for every entry', async () => {
   const source = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
+  assert.equal(assertLegacyCatalogCompatibility(source), true)
   const catalog = validateCatalog(source)
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8')
   const packageManifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
@@ -246,8 +251,8 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(catalog.registry.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
   assert.equal(manager.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
   assert.ok(compareVersions(manager.version, packageManifest.version) <= 0, 'catalog manager version cannot be newer than package.json during two-phase self-pinning')
-  assert.equal(manager.version, '0.8.4', 'the Catalog must expose the canonical migration as an actual SemVer upgrade')
-  assert.equal(manager.commit, 'b2b8e01f57cf0bbb3378e46905757e036eec10f6', 'the Catalog must pin the merged canonical 0.8.4 source release')
+  assert.equal(manager.version, '0.8.5', 'the Catalog must expose the legacy self-update bridge as an actual SemVer upgrade')
+  assert.equal(manager.commit, '0bc733064bfc8ff16f6e8144188a7ac563092e12', 'the Catalog must pin the merged 0.8.5 bridge source release')
   assert.ok(readme.includes(githubInstallSpecifier(manager)), 'README install command must match the catalog fixed commit')
   assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
   assert.match(readme, /dsh plugin --profile web add/)
@@ -327,7 +332,10 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.equal(plugin.commit, expected.commit)
     assert.equal(plugin.compatibility.dsh, expected.dsh)
     assert.deepEqual(plugin.compatibility.dshReleases, expected.releases)
-    assert.equal(plugin.assurance.securityReview.status, 'partial')
+    assert.equal(plugin.assurance.securityReview.status, 'unknown')
+    assert.equal(plugin.assurance.securityReview.evidenceStatus, 'partial')
+    const projectedPlugin = catalog.entries.find(item => item.id === expected.id)
+    assert.equal(projectedPlugin.assurance.securityReview.status, 'partial')
   }
   const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
   assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
@@ -347,9 +355,11 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(requestedIm.assurance.runtime.status, 'unknown')
   assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
   const buildPlugin = source.entries.find(item => item.id === 'build-dsh-plugin')
-  assert.equal(buildPlugin.assurance.installability.status, 'partial')
-  assert.equal(buildPlugin.assurance.runtime.status, 'partial')
-  assert.equal(buildPlugin.assurance.securityReview.status, 'partial')
+  for (const gate of ['installability', 'runtime', 'securityReview']) {
+    assert.equal(buildPlugin.assurance[gate].status, 'unknown')
+    assert.equal(buildPlugin.assurance[gate].evidenceStatus, 'partial')
+    assert.equal(catalog.entries.find(item => item.id === 'build-dsh-plugin').assurance[gate].status, 'partial')
+  }
 })
 
 test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {

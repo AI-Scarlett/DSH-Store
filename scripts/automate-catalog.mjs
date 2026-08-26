@@ -13,7 +13,13 @@ import {
   catalogUpdatePolicy,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
-import { canonicalGithubRepository, compareCatalogEntries, compareVersions, validateCatalog } from '../src/catalog.mjs'
+import {
+  assertLegacyCatalogCompatibility,
+  canonicalGithubRepository,
+  compareCatalogEntries,
+  compareVersions,
+  validateCatalog,
+} from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { permissionSignals } from '../src/automation-source-policy.mjs'
 import {
@@ -826,6 +832,7 @@ failureContext.stage = 'validate-authority'
 const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
 if (baseCommit !== null && !/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('automation base Commit must be a full Git SHA')
 validateCatalog(catalog)
+assertLegacyCatalogCompatibility(catalog)
 assertCatalogLocalization(catalog)
 validateCandidateRegistry(candidates)
 failureContext.stage = 'fetch-official-dsh-release-window'
@@ -905,6 +912,7 @@ if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
 failureContext.stage = 'validate-automation-output'
 const validatedCatalog = validateCatalog(catalog)
+assertLegacyCatalogCompatibility(catalog)
 const validatedCandidates = validateCandidateRegistry(candidates)
 const catalogBuffer = Buffer.from(`${JSON.stringify(catalog, null, 2)}\n`)
 const candidatesBuffer = Buffer.from(`${JSON.stringify({
