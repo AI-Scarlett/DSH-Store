@@ -136,6 +136,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.doesNotMatch(source, /entry\.status !== 'approved' \|\| entry\.updatePolicy !== 'source-verified'/)
   assert.match(source, /localizeCatalogEntry/)
   assert.match(source, /assertCatalogLocalization/)
+  assert.match(source, /assertLegacyCatalogCompatibility/)
   assert.match(source, /automation precondition hash mismatch/)
   assert.match(source, /automation base Commit must be a full Git SHA/)
   assert.match(source, /writeAutomationFailureReport/)

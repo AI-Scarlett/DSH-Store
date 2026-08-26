@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-26T08:53:19.000Z",
+    "updatedAt": "2026-08-26T09:20:00.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -48,8 +48,8 @@
       "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "b2b8e01f57cf0bbb3378e46905757e036eec10f6",
-      "version": "0.8.4",
+      "commit": "0bc733064bfc8ff16f6e8144188a7ac563092e12",
+      "version": "0.8.5",
       "categories": [
         "marketplace",
         "management"
@@ -58,13 +58,13 @@
       "assurance": {
         "discovery": {
           "status": "verified",
-          "method": "github-merged-source-release-readback-v1",
-          "checkedAt": "2026-08-25T14:06:32.000Z",
-          "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/b2b8e01f57cf0bbb3378e46905757e036eec10f6",
+          "method": "github-merged-self-update-bootstrap-readback-v1",
+          "checkedAt": "2026-08-26T09:20:00.000Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/0bc733064bfc8ff16f6e8144188a7ac563092e12",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
-          "summary": "The merged fixed 0.8.4 source release was read back from GitHub with its canonical repository contract; installation, runtime, and independent security evidence were not inferred."
+          "summary": "The merged fixed 0.8.5 self-update bootstrap source was read back from GitHub with its canonical repository contract; installation, runtime, and independent security evidence were not inferred."
         },
         "installability": {
           "status": "unknown",
@@ -167,8 +167,8 @@
         "review": "owner-curated-not-security-audited"
       },
       "source": {
-        "updatedAt": "2026-08-25T14:06:04Z",
-        "observedAt": "2026-08-25T14:06:32.000Z",
+        "updatedAt": "2026-08-26T09:11:45Z",
+        "observedAt": "2026-08-26T09:20:00.000Z",
         "provenance": "github-commit"
       },
       "searchTerms": [
@@ -216,7 +216,8 @@
           "summary": "公开固定提交的 0.3.2 manifest、插件自有 Bundle Patch、Host 入口、许可证与发行资产已回读。"
         },
         "installability": {
-          "status": "partial",
+          "status": "unknown",
+          "evidenceStatus": "partial",
           "method": "disposable-dsh-profile-cli-install-v1",
           "checkedAt": "2026-08-24T12:28:10.000Z",
           "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/releases/tag/v2026.08.24.2",
@@ -230,7 +231,8 @@
           "summary": "部分验证：0.3.2 已在一次性 DSH 0.1.1-rc.2 Web Profile 通过官方 CLI 安装与 dump-config；尚无公开 HTTPS 安装记录。"
         },
         "runtime": {
-          "status": "partial",
+          "status": "unknown",
+          "evidenceStatus": "partial",
           "method": "dsh-rc2-skill-registration-contract-v1",
           "checkedAt": "2026-08-24T12:28:10.000Z",
           "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/4af5b262aa2d65a49d02cf6f1b0b87bfce21a9a0",
@@ -244,7 +246,8 @@
           "summary": "部分验证：已验证 DSH 0.1.1-rc.2 公开 SkillRegistration 契约与分发测试；尚无公开 HTTPS 冷启动或 UI 证据。"
         },
         "securityReview": {
-          "status": "partial",
+          "status": "unknown",
+          "evidenceStatus": "partial",
           "method": "fixed-source-policy-and-distribution-check-v1",
           "checkedAt": "2026-08-24T12:28:10.000Z",
           "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/4af5b262aa2d65a49d02cf6f1b0b87bfce21a9a0",
@@ -595,7 +598,8 @@
           "summary": "No disposable DSH Profile runtime acceptance was executed."
         },
         "securityReview": {
-          "status": "partial",
+          "status": "unknown",
+          "evidenceStatus": "partial",
           "method": "fixed-source-static-security-scan-v1",
           "checkedAt": "2026-08-25T12:50:32.000Z",
           "evidenceUrl": "https://github.com/AI-Scarlett/DSH_TokenMonitor/commit/d655a1627607968394fd823cee440e68f07e9f00",
@@ -760,7 +764,8 @@
           "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
         },
         "securityReview": {
-          "status": "partial",
+          "status": "unknown",
+          "evidenceStatus": "partial",
           "method": "fixed-source-static-security-scan-v1",
           "checkedAt": "2026-08-25T12:50:32.000Z",
           "evidenceUrl": "https://github.com/AI-Scarlett/dsh-chat-import/commit/81f1a9785fbae6acd04a6b49a576b237c4f70eae",
@@ -878,7 +883,8 @@
           "summary": "No disposable DSH Profile runtime acceptance was executed."
         },
         "securityReview": {
-          "status": "partial",
+          "status": "unknown",
+          "evidenceStatus": "partial",
           "method": "fixed-source-static-security-scan-v1",
           "checkedAt": "2026-08-25T12:50:32.000Z",
           "evidenceUrl": "https://github.com/AI-Scarlett/dsh-agent-reach/commit/85d9801a3e8884baf33f8166eb2e587a4482050f",
@@ -1019,7 +1025,8 @@
           "summary": "No disposable DSH Profile runtime acceptance was executed."
         },
         "securityReview": {
-          "status": "partial",
+          "status": "unknown",
+          "evidenceStatus": "partial",
           "method": "fixed-source-static-security-scan-v1",
           "checkedAt": "2026-08-25T12:50:32.000Z",
           "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/2db132bb430c5304627e5eb5681febecfc2d81ab",

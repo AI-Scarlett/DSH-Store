@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "operation": "legacy-self-update-catalog-bridge-publication",
+  "createdAt": "2026-08-26T17:20:00+08:00",
+  "revisedAt": "2026-08-26T17:27:00+08:00",
+  "revisionReason": "The deterministic README install-command gate requires the public fixed install specifier to move with the Catalog pin.",
+  "authorization": "user-required-in-marketplace-upgrade-path-without-manual-cli",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "0bc733064bfc8ff16f6e8144188a7ac563092e12",
+  "sourceRelease": {
+    "version": "0.8.5",
+    "commit": "0bc733064bfc8ff16f6e8144188a7ac563092e12",
+    "commitVerified": true,
+    "committedAt": "2026-08-26T09:11:45Z",
+    "manifest": "package.json",
+    "bundlePatch": "cordis.patch.yml"
+  },
+  "branch": "codex/legacy-self-update-catalog",
+  "preconditionSha256": {
+    "registry/catalog.json": "8301f032088318f1708ef6d37d723bee51ba686b937b3866728cd8dbd6ca8569",
+    "registry/catalog.schema.json": "08c3192604e52535d16017ff240091f69cce05f5168c84ed5c81834e5349aaf4",
+    "README.md": "4b5e51c865dfb0011185dc09b2e99ff2aa5b68e09e35baa09dcc979313186571",
+    "src/catalog.mjs": "35bdfe38c4ca85cc9a64a27256d941874fea8a2d61a56f4e131f5e3fa5412d9c",
+    "scripts/validate-registry.mjs": "1bfd3003aad1f8fc3576f2ee8a3912298c941ed8163a2a8b2c974d548739f92c",
+    "scripts/automate-catalog.mjs": "4816e78e42fa778f9444e04296ad875ce3fc6b95c4612d274b4e88bede9c5632",
+    "scripts/verify-marketplace-public.mjs": "8fc683a30ce64a871f7c7016ce5238c61f258589c8a6777226692b7edefb5faa",
+    "test/catalog.test.mjs": "58f5f507c3a43fc45030ad1ec21c51aa06edb85c3f88362eff33ba78ddfeca9a",
+    "test/catalog-automation.test.mjs": "12e059256b44bdab0ab69c30579f783576213189b87a26b571a559fa5258b6f6"
+  },
+  "allowedFiles": [
+    "docs/ops/legacy-self-update-catalog-plan-20260826.json",
+    "README.md",
+    "registry/catalog.json",
+    "registry/catalog.schema.json",
+    "src/catalog.mjs",
+    "scripts/validate-registry.mjs",
+    "scripts/automate-catalog.mjs",
+    "scripts/verify-marketplace-public.mjs",
+    "test/catalog.test.mjs",
+    "test/catalog-automation.test.mjs"
+  ],
+  "catalogMutation": {
+    "managerFrom": { "version": "0.8.4", "commit": "b2b8e01f57cf0bbb3378e46905757e036eec10f6" },
+    "managerTo": { "version": "0.8.5", "commit": "0bc733064bfc8ff16f6e8144188a7ac563092e12" },
+    "partialRecords": 7,
+    "wireProjection": { "status": "unknown", "evidenceStatus": "partial" },
+    "effectiveProjection": "partial",
+    "legacyProjection": "unknown"
+  },
+  "gates": [
+    "remote main and precondition hashes still match",
+    "all schemaVersion 1 evidence wire statuses are accepted by 0.8.2",
+    "current validation retains all seven partial evidence states",
+    "0.8.2 fixed validator accepts the complete production Catalog",
+    "0.8.2 marketplace snapshot reports installed 0.8.2 -> Catalog 0.8.5 updateAvailable=true",
+    "0.8.2 source verifier accepts the pinned 0.8.5 manifest and Bundle Patch",
+    "npm run check and Registry source verification",
+    "CI-checked pull request, merge, Raw/Pages/dual-storefront readback"
+  ],
+  "boundaries": {
+    "realProfileMutation": false,
+    "automaticRestart": false,
+    "userConfirmationForLocalUpdate": true,
+    "officialCliFixedArgv": true,
+    "thirdPartyCodeExecution": false
+  },
+  "rollback": "revert the Catalog bridge PR; the prior 0.8.4 fixed entry and literal partial records remain recoverable in Git history"
+}
