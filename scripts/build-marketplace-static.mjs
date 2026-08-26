@@ -211,6 +211,8 @@ const visibleEntries = snapshot.entries
   .filter(entry => entry.status !== 'unlisted')
   .sort(compareCatalogEntries)
 
+const anchorId = value => String(value || 'plugin').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'plugin'
+
 function assuranceMarkup(entry) {
   const records = [
     ['已发现', entry.assurance?.discovery?.evidenceStatus || entry.assurance?.discovery?.status || 'verified'],
@@ -225,7 +227,7 @@ function assuranceMarkup(entry) {
 function pluginCard(entry) {
   const permissions = entry.details?.permissions || {}
   const topCategories = Array.isArray(entry.categories) ? entry.categories.slice(0, 2) : []
-  return `<article class="plugin-card" style="--plugin-color:${pluginColor(entry.id)}" data-static-plugin-id="${htmlEscape(entry.id)}">
+  return `<article id="plugin-${htmlEscape(anchorId(entry.id))}" class="plugin-card" style="--plugin-color:${pluginColor(entry.id)}" data-static-plugin-id="${htmlEscape(entry.id)}">
     <div class="plugin-card-top">
       <span class="plugin-card-icon" aria-hidden="true">${htmlEscape(initials(entry.name))}</span>
       <span class="status-tag${entry.status === 'approved' ? '' : ' blocked'}">${entry.status === 'approved' ? '可安装' : '仅展示'}</span>
@@ -294,6 +296,32 @@ const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="extern
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+const approvedCount = visibleEntries.filter(entry => entry.status === 'approved').length
+const staticCatalogEntries = visibleEntries.slice(0, 24)
+const catalogItemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': `${siteOrigin}/plugins/#catalog-items`,
+  name: 'DSH STORE plugin catalog',
+  description: 'A machine-readable first page of the DSH STORE third-party DeepSeek Harness plugin catalog.',
+  numberOfItems: staticCatalogEntries.length,
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
+  itemListElement: staticCatalogEntries.map((entry, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    url: `${siteOrigin}/plugins/#plugin-${anchorId(entry.id)}`,
+    item: {
+      '@type': 'SoftwareApplication',
+      name: entry.name,
+      description: entry.description,
+      url: `${siteOrigin}/plugins/#plugin-${anchorId(entry.id)}`,
+      applicationCategory: (Array.isArray(entry.categories) && entry.categories[0]) ? categoryLabel(entry.categories[0]) : 'DeepSeek Harness plugin',
+      softwareVersion: entry.version,
+      codeRepository: entry.repositoryUrl,
+      isAccessibleForFree: true,
+    },
+  })),
+}
 
 await rm(outputRoot, { recursive: true, force: true })
 await mkdir(outputRoot, { recursive: true })
@@ -375,8 +403,9 @@ await writeFile(resolve(outputRoot, 'marketplace/index.html'), home)
 
 let plugins = await readFile(resolve(outputRoot, 'marketplace/plugins/index.html'), 'utf8')
 plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'plugins external catalog marker')
-const staticCards = visibleEntries.slice(0, 24).map(pluginCard).join('')
+const staticCards = staticCatalogEntries.map(pluginCard).join('')
 plugins = plugins.replace(/<!-- DSH_STATIC_PLUGIN_CARDS_BEGIN -->[\s\S]*?<!-- DSH_STATIC_PLUGIN_CARDS_END -->/, `<!-- DSH_STATIC_PLUGIN_CARDS_BEGIN -->${staticCards}<!-- DSH_STATIC_PLUGIN_CARDS_END -->`)
+plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG_ITEMLIST -->', `<script type="application/ld+json">${JSON.stringify(catalogItemList, null, 2)}</script>`, 'plugins catalog ItemList marker')
 plugins = replaceElementText(plugins, 'stat-total', String(visibleEntries.length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-categories', String(categoryCount).padStart(2, '0'))
@@ -384,6 +413,24 @@ plugins = replaceElementText(plugins, 'stat-candidates', String(candidateRegistr
 plugins = replaceElementText(plugins, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
 plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(24, visibleEntries.length)} / ${visibleEntries.length}`)
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
+
+const catalogUpdatedAt = typeof snapshot.registry?.updatedAt === 'string' && snapshot.registry.updatedAt
+  ? snapshot.registry.updatedAt
+  : generatedAt
+const llmsFacts = [
+  `Last updated: ${catalogUpdatedAt.slice(0, 10)}`,
+  '',
+  '## Current catalog snapshot',
+  '',
+  `- Listed plugins: ${visibleEntries.length}`,
+  `- Approved for guarded access: ${approvedCount}`,
+  `- Capability groups: ${categoryCount}`,
+  `- Catalog snapshot updatedAt: ${catalogUpdatedAt}`,
+  `- Website build source commit: ${sourceSha}`,
+].join('\n')
+let llms = await readFile(resolve(outputRoot, 'marketplace/llms.txt'), 'utf8')
+llms = replaceRequired(llms, '<!-- DSH_DYNAMIC_CATALOG_FACTS -->', llmsFacts, 'dynamic llms catalog facts')
+await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 
 await writeFile(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), JSON.stringify(snapshot, null, 2) + '\n')
 await writeFile(resolve(outputRoot, 'automation-status.json'), JSON.stringify(buildAutomationStatus({

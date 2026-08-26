@@ -23,6 +23,7 @@
   <link rel="canonical" href="https://dsh.store/plugins/">
   <!-- DSH_HREFLANG -->
   <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="alternate" type="application/json" href="https://dsh.store/registry/catalog.json" title="DSH STORE machine-readable catalog">
   <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
   <link rel="apple-touch-icon" href="../dsh-store-icon.png">
   <link rel="stylesheet" href="../styles.css">
@@ -37,7 +38,36 @@
         "name": "DSH STORE Plugin Catalog",
         "description": "A searchable catalog of third-party DeepSeek Harness plugins with pinned source, permissions, compatibility, and review status.",
         "isPartOf": {"@type": "WebSite", "@id": "https://dsh.store/#website", "name": "DSH STORE"},
-        "about": ["DeepSeek Harness plugins", "plugin permissions", "plugin source verification"]
+        "about": ["DeepSeek Harness plugins", "plugin permissions", "plugin source verification"],
+        "mainEntity": {"@id": "https://dsh.store/plugins/#catalog-items"},
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://dsh.store/plugins/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Dataset",
+        "@id": "https://dsh.store/plugins/#catalog-dataset",
+        "name": "DSH STORE plugin catalog data",
+        "description": "Machine-readable catalog of third-party DeepSeek Harness plugins with pinned GitHub sources, versions, permissions, compatibility, and review states.",
+        "url": "https://dsh.store/registry/catalog.json",
+        "contentUrl": "https://dsh.store/registry/catalog.json",
+        "sameAs": "https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/catalog.json",
+        "isAccessibleForFree": true,
+        "creator": {
+          "@type": "Organization",
+          "name": "DSH STORE",
+          "url": "https://dsh.store/"
+        },
+        "distribution": {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://dsh.store/registry/catalog.json"
+        }
       },
       {
         "@type": "BreadcrumbList",
@@ -50,6 +80,7 @@
   }
   </script>
   <!-- DSH_STATIC_CATALOG -->
+  <!-- DSH_STATIC_CATALOG_ITEMLIST -->
 </head>
 <body class="plugins-page" data-catalog-url="../../registry/catalog.json" data-candidates-url="../../registry/candidates.json" data-automation-status-url="https://ai-scarlett.github.io/DSH-Store/automation-status.json">
   <a class="skip-link" href="#catalog" data-i18n="a11y.skipCatalog">跳到插件目录</a>
