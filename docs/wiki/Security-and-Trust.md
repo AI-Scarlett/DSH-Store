@@ -27,4 +27,6 @@ Catalog 自动化只读取 GitHub 元数据和固定 Commit 的有界源码。�
 - `blocked` 可保留发现与 GitHub 外链，但商城不提供受保护安装。
 - `unlisted` 不在公共商城展示，已安装用户仍可本地管理。
 
+为了让 0.8.2 等旧商城能够读取新目录并在界面内自举升级，目录可以把 `partial` 以 `status: unknown`、`evidenceStatus: partial` 发布。旧版只看到更保守的“未知”，新版仍显示“部分验证”；这不会把局部证据提升成完整验证，也不会授权静默安装或重启。
+
 发现安全问题时请按 [SECURITY.md](https://github.com/AI-Scarlett/DSH-Store/blob/main/SECURITY.md) 的方式报告，不要在公开 Issue 中粘贴秘密或完整私人数据。

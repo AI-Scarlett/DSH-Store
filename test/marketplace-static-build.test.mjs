@@ -15,6 +15,7 @@ const sha256 = value => createHash('sha256').update(value).digest('hex')
 test('GitHub enrichment skips non-approved sources that are intentionally unavailable', async () => {
   const builder = await readFile(new URL('scripts/build-marketplace-static.mjs', root), 'utf8')
   assert.match(builder, /mapLimit\(snapshot\.entries\.filter\(entry => entry\.status === 'approved'\), 5/)
+  assert.match(builder, /evidenceStatus \|\| entry\.assurance\?\.installability\?\.status/)
 })
 
 test('static marketplace derives manager identity and catalog cards without mutating the authority file', async () => {

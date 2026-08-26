@@ -192,7 +192,14 @@ function sourceMetadata(value, label) {
 function evidenceRecord(value, label, fallback) {
   if (value === undefined || value === null) return { ...fallback }
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${label} must be an object`)
-  const status = enumValue(value.status, `${label}.status`, ['verified', 'partial', 'failed', 'unknown', 'not-applicable'])
+  const wireStatus = enumValue(value.status, `${label}.status`, ['verified', 'partial', 'failed', 'unknown', 'not-applicable'])
+  const evidenceStatus = value.evidenceStatus === undefined || value.evidenceStatus === null
+    ? null
+    : enumValue(value.evidenceStatus, `${label}.evidenceStatus`, ['partial'])
+  if (evidenceStatus !== null && wireStatus !== 'unknown') {
+    throw new TypeError(`${label}.evidenceStatus requires the legacy wire status unknown`)
+  }
+  const status = evidenceStatus ?? wireStatus
   const record = {
     status,
     method: value.method === undefined || value.method === null ? null : nonEmptyString(value.method, `${label}.method`, 120),
