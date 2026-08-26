@@ -3,6 +3,15 @@ const CANDIDATES_URL = document.body.dataset.candidatesUrl || '../registry/candi
 const AUTOMATION_STATUS_URL = document.body.dataset.automationStatusUrl || null
 const IS_DIRECTORY = document.body.classList.contains('plugins-page')
 
+const initialSearchQuery = (() => {
+  try {
+    const value = new URLSearchParams(window.location.search).get('q') || ''
+    return value.trim().slice(0, 80)
+  } catch {
+    return ''
+  }
+})()
+
 const translations = {
   zh: {
     'meta.title': 'DSH STORE｜DeepSeek Harness（DSH）插件商城',
@@ -148,7 +157,7 @@ const state = {
   candidates: [],
   candidateSummary: { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 },
   catalogView: 'trusted',
-  query: '',
+  query: initialSearchQuery,
   category: '',
   sort: 'recommended',
   page: 1,
@@ -539,10 +548,15 @@ function renderCategories() {
   if (els.clear) els.clear.hidden = !state.category && !state.query
 }
 
+function anchorId(value) {
+  const slug = String(value || 'plugin').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  return slug || 'plugin'
+}
+
 function cardTemplate(entry) {
   const permissions = entry.details.permissions
   const topCategories = entry.categories.slice(0, 2)
-  return `<article class="plugin-card" style="--plugin-color:${pluginColor(entry.id)}">
+  return `<article id="plugin-${anchorId(entry.id)}" class="plugin-card" style="--plugin-color:${pluginColor(entry.id)}">
     <div class="plugin-card-top">
       <span class="plugin-card-icon" aria-hidden="true">${escape(initials(entry.name))}</span>
       <span class="status-tag${entry.status === 'approved' ? '' : ' blocked'}">${statusLabel(entry)}</span>
@@ -712,6 +726,7 @@ function applyLocale() {
   document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
     element.setAttribute('placeholder', t(element.dataset.i18nPlaceholder))
   })
+  if (els.search && els.search.value !== state.query) els.search.value = state.query
   document.querySelectorAll('[data-locale]').forEach(button => {
     button.setAttribute('aria-pressed', String(button.dataset.locale === state.locale))
   })
