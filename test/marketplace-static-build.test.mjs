@@ -70,6 +70,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /DSH STORE \| DeepSeek Harness Plugin Marketplace/)
     assert.match(home, /name="applicable-device" content="pc,mobile"/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
+    assert.match(home, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
     assert.match(home, /hreflang="en"[^>]*https:\/\/dsh\.store\//)
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
     assert.doesNotMatch(home, /DSH_ALTERNATE_SITE/)
@@ -89,6 +90,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(sitemap, /<mobile:mobile type="pc,mobile" \/>/)
     assert.match(sitemap, new RegExp(`<lastmod>${catalog.registry.updatedAt.slice(0, 10)}</lastmod>`))
     assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
+    assert.match(styles, /\.site-nav a \{[\s\S]*font-size: 12px;/)
+    assert.match(styles, /\.footer-bottom \{[\s\S]*font-size: 11px;/)
   } finally {
     await rm(output, { recursive: true, force: true })
   }
