@@ -315,6 +315,9 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.ok(html.includes(submissionUrl))
   assert.ok(pluginsHtml.includes(submissionUrl))
   assert.ok(buildHtml.includes(submissionUrl))
+  for (const page of [html, pluginsHtml, buildHtml, faqHtml, aboutHtml]) {
+    assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
+  }
   assert.match(html, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
   for (const surface of [html, pluginsHtml, buildHtml, faqHtml, aboutHtml, readme]) {
     assert.doesNotMatch(surface, /github\.com\/AI-Scarlett\/dsh-safe-plugin-manager|ai-scarlett\.github\.io\/dsh-safe-plugin-manager/)
