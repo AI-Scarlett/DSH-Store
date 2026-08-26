@@ -9,7 +9,6 @@ import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.m
 const MARKER_PATTERN = /<!-- dsh-author-notice:v1 key=([a-z0-9_.-]+\/[a-z0-9_.-]+) signature=([0-9a-f]{64}) notified=([0-9a-f]{64}) -->/i
 const SOURCE_MARKER_PATTERN = /<!-- dsh-author-source:v1 fingerprint=([0-9a-f]{64}) known=(true|false) -->/i
 const INFRASTRUCTURE_REASON = /(?:HTTP (?:403|404|409|429|5\d\d)|rate.?limit|timed?\s*out|timeout|temporar(?:y|ily)|default branch moved|transport|connection|ECONN|ENOTFOUND)/i
-const EXPLICIT_CANDIDATE_SOURCE = /(?:user-request|plugin-submission|fixed-commit-review)/i
 const STRONG_DSH_DESCRIPTION = /(?:DeepSeek Harness|\bDSH\s+(?:plugin|插件)|(?:plugin|插件)\s+(?:for\s+)?DSH)\b/i
 const CANDIDATE_COVERAGE_DISPOSITIONS = new Set([
   'direct-remediation',
@@ -28,7 +27,7 @@ export const AUTHOR_NOTICE_LABELS = [
 ]
 
 function parseArgs(argv) {
-  const options = { maxCreate: 3 }
+  const options = { maxCreate: 10 }
   for (let index = 0; index < argv.length; index += 1) {
     const name = argv[index]
     if (!name.startsWith('--')) throw new Error(`unexpected argument: ${name}`)
@@ -98,16 +97,12 @@ function candidateHasDshIntent(candidate) {
     || /(?:^|[-_.])dsh(?:$|[-_.])/i.test(repositoryName)
 }
 
-function candidateIsExplicit(candidate) {
-  return array(candidate.discoverySources).some(source => EXPLICIT_CANDIDATE_SOURCE.test(String(source)))
-}
-
 function candidateIsActionable(candidate) {
   const reason = compactReason(candidate.statusReason)
   return candidate.status === 'rejected' && reason !== '' && !INFRASTRUCTURE_REASON.test(reason) && candidateHasDshIntent(candidate)
 }
 
-function candidateCoverage(candidates, recentRejected, existingByKey) {
+function candidateCoverage(candidates, existingByKey) {
   const records = new Map()
   const dispositionPriority = {
     'public-discovery-only': 0,
@@ -119,10 +114,7 @@ function candidateCoverage(candidates, recentRejected, existingByKey) {
   for (const candidate of array(candidates?.entries)) {
     const repository = githubRepository(candidate.repositoryUrl)
     const actionable = candidateIsActionable(candidate)
-    const explicit = candidateIsExplicit(candidate)
-    const recent = recentRejected.has(repository.key)
-    const managed = existingByKey.has(repository.key)
-    const disposition = actionable && (explicit || recent || managed)
+    const disposition = actionable
       ? 'direct-remediation'
       : candidate.status === 'reviewing'
         ? 'public-reviewing'
@@ -390,7 +382,7 @@ function selectCreates(records, existingKeys, maximum) {
 
 export function buildAuthorNoticePlan({
   catalog, candidates, report, existingIssues, notificationTargets, baseCommit, inputHashes,
-  maxCreate = 3, sourceCatalogRunId = null,
+  maxCreate = 10, sourceCatalogRunId = null,
 }) {
   if (!/^[0-9a-f]{40}$/.test(String(baseCommit ?? ''))) throw new Error('base Commit must be a full Git SHA')
   if (sourceCatalogRunId !== null && !/^\d+$/.test(String(sourceCatalogRunId))) {
@@ -472,9 +464,7 @@ export function buildAuthorNoticePlan({
   for (const candidate of array(candidates?.entries)) {
     if (!candidateIsActionable(candidate)) continue
     const repository = githubRepository(candidate.repositoryUrl)
-    const explicit = candidateIsExplicit(candidate)
     const recent = recentRejected.has(repository.key)
-    if (!explicit && !recent && !existingByKey.has(repository.key)) continue
     const record = ensureRepository(repositories, candidate.repositoryUrl)
     record.candidates.push({
       id: candidate.id,
@@ -483,11 +473,11 @@ export function buildAuthorNoticePlan({
       route: candidate.route,
       reason: compactReason(candidate.statusReason),
     })
-    if (explicit || recent) record.createCategories.add('candidate-rejected')
+    record.createCategories.add('candidate-rejected')
     if (recent) record.createPriority.add('candidate-rejected')
   }
 
-  const candidateCoverageRecords = candidateCoverage(candidates, recentRejected, existingByKey)
+  const candidateCoverageRecords = candidateCoverage(candidates, existingByKey)
 
   const desired = [...repositories.values()].sort((left, right) => left.key.localeCompare(right.key, 'en'))
   for (const record of desired) {
@@ -652,6 +642,7 @@ export function buildAuthorNoticePlan({
       notifyOnlyDeterministicAuthorActions: true,
       accountForEveryCandidateRepository: true,
       publicRegistryForUnsolicitedCandidates: true,
+      queueAllDeterministicCandidateRemediation: true,
       neverSendPromotionOnlyMessages: true,
       neverCreateIssuesInExternalRepositories: true,
       ignoreInfrastructureFailures: true,

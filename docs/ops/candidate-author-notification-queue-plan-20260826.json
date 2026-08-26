@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "operation": "expand-deterministic-candidate-author-notification-queue",
+  "createdAt": "2026-08-26T17:55:00+08:00",
+  "authorization": "user-explicitly-requested-all-908-deterministic-remediation-candidates-be-queued",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "33423fb4bec6906c21b3c9fedabd5ae8078a8010",
+  "branch": "codex/candidate-author-notification-queue",
+  "preconditionSha256": {
+    "scripts/plan-author-notices.mjs": "bce2aaab423772dff95c2fe7ad83eaa6be3ea5468fba346e80d10d427587c728",
+    "test/author-notices.test.mjs": "fb3f1506ce717643d16f7c096e289c874b629fe18a9bdf3c0fced121f86c0cfb",
+    ".github/workflows/author-notifications.yml": "a3e286f3ba311923c986ca0c4728fc1c326a852116b1a0be4fba4971f2648148",
+    "test/catalog-automation.test.mjs": "7be41136c3e4fae70191ee7bb2bf7de7476f84256fae2dd8890a5583b8fa16b0",
+    "registry/README.md": "9a0465413e7b8fad0ab86a15f1af6fe76d2616f067f0d50021af6edf36f3545a"
+  },
+  "allowedFiles": [
+    "docs/ops/candidate-author-notification-queue-plan-20260826.json",
+    "scripts/plan-author-notices.mjs",
+    "test/author-notices.test.mjs",
+    ".github/workflows/author-notifications.yml",
+    "test/catalog-automation.test.mjs",
+    "registry/README.md"
+  ],
+  "currentEvidence": {
+    "authorNotificationRunId": "32950449200",
+    "candidateRegistryRecords": 1286,
+    "candidateRegistryRepositories": 1286,
+    "candidateDirectNotificationEligible": 2,
+    "candidatePublicRemediationWithDeterministicReasons": 908,
+    "candidatePublicReviewing": 183,
+    "candidatePublicDiscoveryOnly": 193,
+    "candidateCoverageUnaccounted": 0
+  },
+  "targetPolicy": {
+    "directQueueRule": "every rejected candidate with a non-infrastructure deterministic reason and explicit DSH intent",
+    "expectedDirectNotificationEligible": 910,
+    "expectedPublicRemediation": 0,
+    "maxNewIssuesPerEightHourRun": 10,
+    "oneIssuePerCanonicalRepository": true,
+    "notifyOnlyOncePerUnchangedSignature": true,
+    "trackFixedCommitChanges": true,
+    "closeWhenBlockersClear": true
+  },
+  "boundaries": {
+    "thirdPartyRepositoryWrites": false,
+    "dshStoreManagedIssuesOnly": true,
+    "thirdPartyCodeExecution": false,
+    "promotionOnlyMessages": false,
+    "infrastructureFailuresAttributedToAuthors": false,
+    "reviewingOrDiscoveryOnlyCandidatesNotified": false,
+    "githubEmailDeliveryClaimed": false
+  },
+  "gates": [
+    "remote main and every precondition hash still match",
+    "all 908 deterministic public-remediation repositories move to the direct queue",
+    "reviewing, discovery-only, and infrastructure-failure candidates remain non-notified",
+    "canonical repository deduplication and unchanged-signature suppression remain exact",
+    "new Issue creation remains bounded to ten per eight-hour run",
+    "npm run check passes",
+    "a current-data dry run accounts for every Candidate Registry record with zero uncovered",
+    "CI-checked pull request and verified merge",
+    "first workflow run creates no more than ten new managed Issues and preserves a machine-readable report"
+  ],
+  "rollback": "revert the pull request; existing managed Issues remain auditable and no third-party repository has been modified"
+}
