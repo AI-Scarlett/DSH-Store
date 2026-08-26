@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "kind": "wiki-content-maintenance-plan",
+  "status": "planned",
+  "createdAt": "2026-08-26T00:10:03Z",
+  "authorization": {
+    "source": "explicit-owner-request",
+    "summary": "Continue adding and maintaining the DSH Store knowledge-base content."
+  },
+  "base": {
+    "repository": "https://github.com/AI-Scarlett/DSH-Store",
+    "ref": "main",
+    "commit": "f9a53ec88097cffddbf376c83bbebecdccce798e",
+    "tree": "323a20a505cceafcda87d631018a4ce616b151ec"
+  },
+  "scope": [
+    "docs/wiki/Home.md",
+    "docs/wiki/_Sidebar.md",
+    "docs/wiki/FAQ.md",
+    "docs/wiki/Incident-Response.md",
+    "test/wiki-content.test.mjs",
+    "docs/ops/wiki-maintenance-plan-20260826.json"
+  ],
+  "preconditionSha256": {
+    "docs/wiki/Home.md": "5dcc2caff2e851042090eff40041bab2ca933de54083d19df67418fc12aec1c3",
+    "docs/wiki/_Sidebar.md": "3bc1a976638e15d8216e3f059164af1d5a83d3ac40b34655447fe566a6ae2b5e",
+    "docs/wiki/FAQ.md": "1858f6f6dd1b45bab8226c19ac7c245edc0be98dd720073888f0784c40d1be01"
+  },
+  "contentPolicy": {
+    "sources": [
+      "current repository source and verification documentation",
+      "merged GitHub Catalog and public-surface readback when an incident is published"
+    ],
+    "prohibitedClaims": [
+      "static checks prove a real Profile install or runtime",
+      "unknown evidence is safe or compatible",
+      "users should edit Profile files or bypass the official DSH CLI"
+    ],
+    "privacy": "Never publish credentials, complete Profiles, environment variables, private paths, or user content."
+  },
+  "gates": [
+    "wiki navigation and the incident page are covered by a deterministic source test",
+    "npm run check passes",
+    "pull-request checks pass before merge",
+    "GitHub Wiki contains the committed source pages after the main branch merge"
+  ],
+  "rollback": {
+    "repository": "revert the exact squash merge through a new pull request",
+    "wiki": "restore the affected Markdown page from the merged docs/wiki source and commit it to the Wiki repository"
+  },
+  "nonGoals": [
+    "do not modify Catalog entries, candidate records, DSH core, or @deepseek-ai packages",
+    "do not install, update, restart, or edit a real DSH Profile",
+    "do not claim real runtime or independent security-audit evidence without it"
+  ]
+}
