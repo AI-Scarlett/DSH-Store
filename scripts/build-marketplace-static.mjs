@@ -213,10 +213,10 @@ const visibleEntries = snapshot.entries
 
 function assuranceMarkup(entry) {
   const records = [
-    ['已发现', entry.assurance?.discovery?.status || 'verified'],
-    ['可安装验证', entry.assurance?.installability?.status || 'unknown'],
-    ['运行验证', entry.assurance?.runtime?.status || 'unknown'],
-    ['安全审查', entry.assurance?.securityReview?.status || 'unknown'],
+    ['已发现', entry.assurance?.discovery?.evidenceStatus || entry.assurance?.discovery?.status || 'verified'],
+    ['可安装验证', entry.assurance?.installability?.evidenceStatus || entry.assurance?.installability?.status || 'unknown'],
+    ['运行验证', entry.assurance?.runtime?.evidenceStatus || entry.assurance?.runtime?.status || 'unknown'],
+    ['安全审查', entry.assurance?.securityReview?.evidenceStatus || entry.assurance?.securityReview?.status || 'unknown'],
   ]
   const label = status => ({ verified: '已验证', partial: '部分验证', failed: '未通过', unknown: '未知', 'not-applicable': '不适用' }[status] || '未知')
   return `<div class="assurance-rail">${records.map(([name, status]) => `<span class="assurance-item assurance-${htmlEscape(status)}"><b>${htmlEscape(name)}</b><em>${htmlEscape(label(status))}</em></span>`).join('')}</div>`

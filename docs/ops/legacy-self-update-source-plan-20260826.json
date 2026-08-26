@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "operation": "legacy-self-update-bootstrap-source-release",
+  "createdAt": "2026-08-26T17:15:00+08:00",
+  "authorization": "user-required-in-marketplace-upgrade-path-without-manual-cli",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "85dd7600654631995540e8220d666351ec0fffd1",
+  "branch": "codex/legacy-self-update-source",
+  "targetVersion": "0.8.5",
+  "preconditionSha256": {
+    "package.json": "bf19b7290e4a63b06eb089267cceee60721c95e44c557b967c2f4f98aab8cd6d",
+    "README.md": "87f0fbc3626d6deb39b17ca3c9b06140acc4368235ebff4ee0873b9750ef28fa",
+    "src/catalog.mjs": "ded35ca33808adab448912cf4fb86f7b2849aa4ba291d602fbdcbfa6e60a11e5",
+    "registry/catalog.schema.json": "8e8a84d93750ed240c29d164e94777b58a7161917d992b33002ad9ef4966dda7",
+    "marketplace/app.js": "8e1025fafd445292fdb2c04e29a640a08805af01a59bcd2fe5b27ff13f45d3fa",
+    "scripts/build-marketplace-static.mjs": "922721643e661dd318072e9e38bb9c6f9e611a488b55fbea7532b799712b84f4",
+    "registry/README.md": "79ce61eb11da0f45992cc82c06bb43faa9c201a5f5ef5c4cee6a08c3789a3261",
+    "docs/wiki/FAQ.md": "5c845c39769da85beae1588c0658d734aa0f99731ca719c4d6331cc0ed78d729",
+    "docs/wiki/Security-and-Trust.md": "f3ab26de88e93ebc892d752ada6f64843666e9ddca9940c4ad6404476b7de115",
+    "test/catalog.test.mjs": "32efdab5bccc4ea3491c3b67fbe4a45409e705ff07a9dea9f9c3ac03c9a25f8c",
+    "test/contracts.test.mjs": "1c9ce06da49f8c62859cec2047c76fef68cb3035753e25b6e6d8d2b7eade861c",
+    "test/marketplace-static-build.test.mjs": "b56764b82aad619ecc179edabf1f31d1ee8a3931fdc7e77fa7a0b177bdb08faf",
+    "registry/catalog.json": "8301f032088318f1708ef6d37d723bee51ba686b937b3866728cd8dbd6ca8569"
+  },
+  "allowedFiles": [
+    "docs/ops/legacy-self-update-source-plan-20260826.json",
+    "package.json",
+    "README.md",
+    "src/catalog.mjs",
+    "registry/catalog.schema.json",
+    "marketplace/app.js",
+    "scripts/build-marketplace-static.mjs",
+    "registry/README.md",
+    "docs/wiki/FAQ.md",
+    "docs/wiki/Security-and-Trust.md",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "architecture": {
+    "wireCompatibility": "schemaVersion 1 retains the legacy status enum; bounded partial evidence may also declare evidenceStatus=partial while wire status remains unknown",
+    "currentClientProjection": "new validators and storefronts project evidenceStatus as the effective partial state",
+    "legacyClientProjection": "0.8.2 ignores the additive field and conservatively renders unknown instead of rejecting the complete Catalog",
+    "selfUpdate": "the existing guarded update action resolves the Catalog entry to a full Commit and uses official DSH CLI fixed argv",
+    "restart": "remains a separate Guardian transaction after the user confirms the in-marketplace update"
+  },
+  "gates": [
+    "existing literal partial records remain valid during the two-phase transition",
+    "synthetic legacy bridge records validate as partial in current code and unknown in the 0.8.2 contract",
+    "static and DSH storefronts render the effective partial state",
+    "npm run check",
+    "CI-checked pull request and immutable merged source Commit"
+  ],
+  "nonGoals": [
+    "no real Profile/package mutation",
+    "no automatic restart",
+    "no DSH source or @deepseek-ai package change",
+    "no evidence downgrade from partial to unknown for current clients",
+    "no floating main installation"
+  ],
+  "rollback": "revert the source pull request; the existing 0.8.4 Catalog remains authoritative until the separately planned bridge migration"
+}

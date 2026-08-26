@@ -72,6 +72,23 @@ test('catalog keeps partial evidence distinct from verified and unknown', () => 
   } }])), /partial evidence requires method, checkedAt, and evidenceUrl/)
 })
 
+test('catalog projects a legacy-compatible partial bridge without weakening current evidence', () => {
+  const bridgedRecord = {
+    status: 'unknown', evidenceStatus: 'partial', method: 'disposable-profile-install',
+    checkedAt: '2026-08-26T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/releases/tag/v1.2.0',
+    summary: 'Bounded install evidence exists; real Profile acceptance remains pending.',
+  }
+  const catalog = validateCatalog(document([{ ...entry, assurance: { installability: bridgedRecord } }]))
+  assert.equal(catalog.entries[0].assurance.installability.status, 'partial')
+  assert.equal(bridgedRecord.status, 'unknown', '0.8.2 reads the conservative legacy status')
+  assert.throws(() => validateCatalog(document([{ ...entry, assurance: {
+    installability: { ...bridgedRecord, status: 'verified' },
+  } }])), /evidenceStatus requires the legacy wire status unknown/)
+  assert.throws(() => validateCatalog(document([{ ...entry, assurance: {
+    installability: { status: 'unknown', evidenceStatus: 'partial' },
+  } }])), /partial evidence requires method, checkedAt, and evidenceUrl/)
+})
+
 test('catalog exposes an explicit public rc.7 through 0.1.1-rc.2 compatibility matrix', () => {
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.8 <0.2.0'), {
     'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',

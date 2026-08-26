@@ -372,7 +372,7 @@ function normalizeEntry(entry, releaseContext) {
   const dshReleaseViews = releaseContext.releases.map(release => projectDshRelease({ compatibility: { ...compatibility, dshReleases, dshOperations } }, release))
   const assurance = entry?.assurance && typeof entry.assurance === 'object' ? entry.assurance : {}
   const evidence = (record, fallback = 'unknown') => ({
-    status: record?.status || fallback, method: record?.method || null, checkedAt: record?.checkedAt || null,
+    status: record?.evidenceStatus || record?.status || fallback, method: record?.method || null, checkedAt: record?.checkedAt || null,
     evidenceUrl: record?.evidenceUrl || null, summary: record?.summary || null,
   })
   return {

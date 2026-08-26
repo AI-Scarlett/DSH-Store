@@ -35,3 +35,5 @@ Catalog 扫描、历史版本检查、PR、Pages 构建、看门狗和作者通�
 ## 商城版本、Catalog 或兼容性信息异常时从哪里开始？
 
 先阅读[故障应急百科](https://github.com/AI-Scarlett/DSH-Store/wiki/Incident-Response)。它区分 GitHub Raw Catalog、GitHub Pages、独立商城站点与真实 Profile，并说明何时应更新管理器、何时应提交故障报告。不要手工编辑 Profile、锁文件或 Catalog 来绕过错误；`unknown` 和 `partial` 也不能替代真实安装、运行或安全审查证据。
+
+已经安装商城的用户不需要手动运行 CLI。旧版通过兼容 Catalog 发现管理器的新 SemVer 与固定 Commit，在商城中点击更新后仍会看到一次性计划和确认；商城使用官方 DSH CLI、备份和健康检查完成包更新，再由 Guardian 引导重启。仅刷新或仅重启旧包不会替代更新。
