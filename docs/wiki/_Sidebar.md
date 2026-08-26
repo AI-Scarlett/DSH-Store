@@ -4,6 +4,7 @@
 - [安装与使用](Installation-and-Usage)
 - [自动收录与更新](Catalog-Automation)
 - [安全与信任边界](Security-and-Trust)
+- [故障应急百科](Incident-Response)
 - [作者整改通知](Author-Remediation)
 - [常见问题](FAQ)
 

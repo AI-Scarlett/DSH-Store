@@ -31,3 +31,7 @@ Catalog 扫描、历史版本检查、PR、Pages 构建、看门狗和作者通�
 ## 如何知道自动化是否成功？
 
 打开 [GitHub Actions](https://github.com/AI-Scarlett/DSH-Store/actions)，查看 “Automated plugin radar and Catalog update” 与 “Three-hour marketplace watchdog”。商城首页也会展示最近自动新增清单和运行证据；固定报告 Issue 会列出新增、历史更新、作者通知和公共表面状态。
+
+## 商城版本、Catalog 或兼容性信息异常时从哪里开始？
+
+先阅读[故障应急百科](https://github.com/AI-Scarlett/DSH-Store/wiki/Incident-Response)。它区分 GitHub Raw Catalog、GitHub Pages、独立商城站点与真实 Profile，并说明何时应更新管理器、何时应提交故障报告。不要手工编辑 Profile、锁文件或 Catalog 来绕过错误；`unknown` 和 `partial` 也不能替代真实安装、运行或安全审查证据。

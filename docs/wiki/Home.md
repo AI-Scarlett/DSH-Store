@@ -28,4 +28,8 @@ DSH STORE 是 DeepSeek Harness（DSH）的第三方插件商城与安全生命�
 - 作者整改通知在成功扫描后运行，记录发送量、GitHub 通知邮件触发量，以及作者是否提交了新 Commit。
 - 所有目录写入都通过绑定基准 Commit 和文件哈希的机器计划、确定性门禁与可审计 PR 完成。
 
-继续阅读：[安装与使用](https://github.com/AI-Scarlett/DSH-Store/wiki/Installation-and-Usage) · [自动收录与更新](https://github.com/AI-Scarlett/DSH-Store/wiki/Catalog-Automation) · [安全与信任边界](https://github.com/AI-Scarlett/DSH-Store/wiki/Security-and-Trust) · [作者整改通知](https://github.com/AI-Scarlett/DSH-Store/wiki/Author-Remediation) · [常见问题](https://github.com/AI-Scarlett/DSH-Store/wiki/FAQ)
+## 知识与故障应急
+
+[故障应急百科](https://github.com/AI-Scarlett/DSH-Store/wiki/Incident-Response)持续维护 Catalog 陈旧、模块加载、兼容性证据、权限变化与安全升级的判断方法。它先区分源码、Catalog、页面、独立站点和真实 Profile，再给出可恢复的处理边界，不会把静态检查或单一页面读数写成运行成功。
+
+继续阅读：[安装与使用](https://github.com/AI-Scarlett/DSH-Store/wiki/Installation-and-Usage) · [自动收录与更新](https://github.com/AI-Scarlett/DSH-Store/wiki/Catalog-Automation) · [安全与信任边界](https://github.com/AI-Scarlett/DSH-Store/wiki/Security-and-Trust) · [故障应急百科](https://github.com/AI-Scarlett/DSH-Store/wiki/Incident-Response) · [作者整改通知](https://github.com/AI-Scarlett/DSH-Store/wiki/Author-Remediation) · [常见问题](https://github.com/AI-Scarlett/DSH-Store/wiki/FAQ)
