@@ -47,6 +47,7 @@ test('static storefront templates expose the cross-site navigation and analytics
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
     'marketplace/about/index.html',
+    'marketplace/about/deepseek-harness-guide/index.html',
   ]
   const pages = await Promise.all(pagePaths.map(path => readFile(new URL(path, project), 'utf8')))
   for (const page of pages) assert.match(page, /DSH_ALTERNATE_SITE/)
@@ -54,6 +55,26 @@ test('static storefront templates expose the cross-site navigation and analytics
     const source = await readFile(new URL(path, project), 'utf8')
     assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
   }
+})
+
+test('featured DeepSeek Harness article preserves source attribution and long-form structure', async () => {
+  const [article, about] = await Promise.all([
+    readFile(new URL('marketplace/about/deepseek-harness-guide/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/about/index.html', project), 'utf8'),
+  ])
+  assert.match(article, /<meta name="author" content="@Russell3402">/)
+  assert.match(article, /"isBasedOn": "https:\/\/x\.com\/Russell3402\/status\/2092535898034630816"/)
+  assert.match(article, /作者：<a href="https:\/\/x\.com\/Russell3402"/)
+  assert.match(article, /DSH STORE 仅负责网页编排，不将本文标注为 DSH STORE 原创/)
+  assert.equal((article.match(/<h2 id=/g) || []).length, 14)
+  assert.equal((article.match(/class="article-figure"/g) || []).length, 24)
+  assert.match(article, /一、先把 Harness 讲透：模型并不会直接使用电脑/)
+  assert.match(article, /十二、它到底能做出什么：从临时造工具到外部自动化/)
+  assert.match(article, /以后讨论 Agent 能力，除了问“用了哪个模型”/)
+  assert.doesNotMatch(article, /ARTICLE_(?:TOC|BODY)/)
+  assert.match(about, /DSH_INTL_ARTICLE_PROMO_BEGIN/)
+  assert.match(about, /href="\.\/deepseek-harness-guide\/"/)
+  assert.match(about, /作者：@Russell3402/)
 })
 
 test('public listing standards mirror the current bounded automation policy', async () => {

@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "kind": "storefront-content-publication-plan",
+  "status": "prepared",
+  "purpose": "Publish the attributed long-form article 万字长文：Deepseek Harness 一文全看懂！！ as a dedicated, polished page linked from About on the international DSH STORE only.",
+  "createdAt": "2026-08-27T13:23:46+08:00",
+  "authorization": {
+    "source": "explicit-user-instruction",
+    "instruction": "先只放国际站我看看效果",
+    "scope": "repository pull request, protected-main merge after required checks, GitHub Pages, and refresh of the international dsh.store storefront only",
+    "excludes": [
+      "domestic dsh-store.cn publication or refresh",
+      "DSH Profile, package, restart, or runtime mutation",
+      "Catalog or Candidate Registry mutation",
+      "execution of third-party install, prepare, build, test, or runtime code"
+    ]
+  },
+  "source": {
+    "title": "万字长文：Deepseek Harness 一文全看懂！！",
+    "author": "@Russell3402",
+    "originalUrl": "https://x.com/Russell3402/status/2092535898034630816",
+    "sourceSha256": "9f5174837aa7e051f504abb5b5af64a9bc5c927de5913d5ba5944f6ed67ce932",
+    "published": "2026-08-26",
+    "editorialClaim": "DSH STORE provides page layout and does not label the article as DSH STORE original"
+  },
+  "base": {
+    "repository": "https://github.com/AI-Scarlett/DSH-Store",
+    "ref": "origin/main",
+    "commit": "6280b24eb463674f79178ed862250bfdb4cbbd8d",
+    "remoteMainVerifiedCommit": "6280b24eb463674f79178ed862250bfdb4cbbd8d",
+    "branch": "codex/about-deepseek-harness-article"
+  },
+  "authorityPreconditions": {
+    "registry/catalog.json": "1fd83323f4c0993679efd962cdfd2c1166f4682d7797e476b487cd6e4762532f",
+    "registry/candidates.json": "9e101a5b8ed2aae341be91379f2d11d5f15c322857540e48af201ee8fae4ac33"
+  },
+  "scope": [
+    "deploy/SEO_GEO_INDEXING.md",
+    "deploy/refresh-from-pages.sh",
+    "docs/ops/international-featured-article-publication-plan-20260827.json",
+    "marketplace/about/about.js",
+    "marketplace/about/deepseek-harness-guide/index.html",
+    "marketplace/about/index.html",
+    "marketplace/styles.css",
+    "scripts/build-marketplace-static.mjs",
+    "scripts/submit-indexnow.mjs",
+    "test/contracts.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditionSha256": {
+    "deploy/SEO_GEO_INDEXING.md": "e6a7357b53336de8c32d54bd315dc045e19a165bb5a8d7eedfc9fea7da773f4a",
+    "deploy/refresh-from-pages.sh": "1f8400ee14fcc1960067226c26be2329781736b9313d59c97ca95910c573fb90",
+    "docs/ops/international-featured-article-publication-plan-20260827.json": null,
+    "marketplace/about/about.js": "7c852e3c3a38e5b10fc2050b6e7267a66ebc0951fbbbab3233e8ac033f893987",
+    "marketplace/about/deepseek-harness-guide/index.html": null,
+    "marketplace/about/index.html": "9f460b14ab6e946b6485d2c6793ddac1bd51e14fded4cac7dd8404954607c4b1",
+    "marketplace/styles.css": "58ce028f43cb6db3f2bf0a43943d4983d330dc411746160f03db16b9a511a2bc",
+    "scripts/build-marketplace-static.mjs": "8dd70aa84656b429cbea3e2a36ff2e04d32bdbeba92ff5932e227764bef501fe",
+    "scripts/submit-indexnow.mjs": "5aee7a1c34d2753afbf2464d440f139609207802a187d99ab25dc40c0f7a567c",
+    "test/contracts.test.mjs": "f909aa5d0114235d517410a1c5147bd710910a6f5c2cdbb22502464966c648ab",
+    "test/marketplace-static-build.test.mjs": "7681663774088fc2e75ab70629a8ea3a65b8057171b61c2137210a4d36feae95"
+  },
+  "expectedSha256": {
+    "deploy/SEO_GEO_INDEXING.md": "5dd82b39dc09fab8db622cce36a6c1522696bfff4e6d121fb06d2d3a259f0738",
+    "deploy/refresh-from-pages.sh": "d8fe2f6ffa6e1cf97940fa5f36c4b0a140bdb63fc7b253cdd523a9a253011ab0",
+    "marketplace/about/about.js": "df84e5f5e50c2eb39a176cb511ba88a4af48b1a6be9627bc60ea2831d45f2b23",
+    "marketplace/about/deepseek-harness-guide/index.html": "90aa6330e7ff19348651e3ab617e202e41cb5d28fec55142419f4c068b1fa7b9",
+    "marketplace/about/index.html": "1aae7514b63766038aefb74261973b7523967e92ddd1a6cc661bef019ac9307b",
+    "marketplace/styles.css": "7747515ca1e30e2988d689dcc29d453cfb00079e357873c499fde1559c06bb26",
+    "scripts/build-marketplace-static.mjs": "5e92523a409600c001f77b838e01043c92cc03916dc9c19ffb17b40249ac3143",
+    "scripts/submit-indexnow.mjs": "c412ce403c3ff97799349fdd461b8d445be3e877e506918ce0ae00374a16d3d2",
+    "test/contracts.test.mjs": "9aca8900d7989241bc6ba4fa2ffa37656d1547d30d12c3d0b3c776ec942048a4",
+    "test/marketplace-static-build.test.mjs": "49fa5b9ae78d772d909273812a87e39294ffa4395fae4f4639c3a961fe305294"
+  },
+  "gates": [
+    "origin/main must still equal the bound base Commit before push",
+    "every scoped precondition and expected SHA-256 must match",
+    "git diff --check",
+    "npm run check",
+    "article source attribution, original URL, 14 sections, and complete terminal paragraph must pass contract tests",
+    "all 26 referenced original images must respond as images before publication",
+    "international build must include the article in About, Sitemap, and release manifest",
+    "domestic build must omit the article page, About entry, Sitemap URL, and release-manifest file",
+    "required pull-request checks must pass before protected-main merge",
+    "GitHub Pages release manifest must report the merged main Commit",
+    "international public page and About link must pass visual and source readback",
+    "domestic article route must remain absent and domestic About must not link to it"
+  ],
+  "publication": {
+    "repository": {
+      "path": "auditable pull request",
+      "merge": "only after required checks pass"
+    },
+    "pages": {
+      "route": "https://ai-scarlett.github.io/DSH-Store/marketplace/about/deepseek-harness-guide/",
+      "acceptance": "release manifest sourceCommit equals the merged main Commit and the international article is readable while the domestic artifact omits it"
+    },
+    "servers": [
+      {
+        "order": 1,
+        "recordId": "dsh-store-intl",
+        "service": "dsh-store-refresh@intl-public.service",
+        "route": "https://dsh.store/about/deepseek-harness-guide/"
+      }
+    ]
+  },
+  "rollback": {
+    "repository": "revert the merged pull request through a new auditable pull request",
+    "pages": "retain the last successful Pages artifact until a verified replacement is available",
+    "servers": "the international refresh service must preserve the existing release/current symlink on failure and use its atomic rollback path",
+    "trigger": "any failed deterministic gate, manifest mismatch, international refresh, public readback, or unexpected domestic publication"
+  }
+}

@@ -90,7 +90,12 @@ trap rollback_on_error ERR
 trap cleanup_incoming EXIT
 
 check_public() {
+  article_health_row=''
+  if test "$store_domain" = 'dsh.store'; then
+    article_health_row="article $site_prefix/about/deepseek-harness-guide/"
+  fi
   while read -r label path; do
+    test -n "$label" || continue
     code='000'
     for attempt in 1 2 3 4 5; do
       code=$(origin_health -o "$incoming/health-$label" -w '%{http_code}' "$health_base$path" || true)
@@ -105,6 +110,7 @@ standards $site_prefix/standards/
 build $site_prefix/build/
 faq $site_prefix/faq/
 about $site_prefix/about/
+$article_health_row
 guide $site_prefix/dsh-plugins/
 catalog /registry/catalog.json
 candidates /registry/candidates.json
@@ -131,10 +137,11 @@ PY
 curl -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
   "$pages_base/${pages_path_prefix}release-manifest.json" -o "$incoming/release-manifest.json"
 
-python3 - "$incoming/release-manifest.json" > "$incoming/files.list" <<'PY'
+python3 - "$incoming/release-manifest.json" "$store_domain" > "$incoming/files.list" <<'PY'
 import json, pathlib, re, sys
 
 manifest = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
+domain = sys.argv[2]
 if manifest.get('schemaVersion') != 1:
     raise SystemExit('unsupported release manifest')
 source = manifest.get('sourceCommit', '')
@@ -156,6 +163,8 @@ required = {
     'registry/catalog.json',
     'registry/candidates.json',
 }
+if domain == 'dsh.store':
+    required.add('marketplace/about/deepseek-harness-guide/index.html')
 if not required.issubset(files):
     raise SystemExit('release manifest is incomplete')
 for path, metadata in sorted(files.items()):
