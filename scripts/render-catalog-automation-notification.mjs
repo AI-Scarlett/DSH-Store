@@ -161,7 +161,7 @@ export function renderCatalogAutomationNotification({
     `- Catalog 四个公开面核验：${passedSurfaces}/${surfaces.length || 4} 通过`,
     `- 候选库四个公开面核验：${passedCandidateSurfaces}/${candidateSurfaces.length || 4} 通过`,
     `- Catalog 工作流：${zhConclusion(catalogConclusion)}${catalogRunUrl ? ` · [Run #${markdownCell(catalogRunId)}](${catalogRunUrl})` : ''}`,
-    `- 看门狗工作流：${zhConclusion(watchdog?.status)}${watchdogRunUrl ? ` · [Run #${markdownCell(watchdogRunId)}](${watchdogRunUrl})` : ''}${repairTriggered ? ' · 已自动触发修复任务' : ''}`,
+    `- 公开面核验工作流：${zhConclusion(watchdog?.status)}${watchdogRunUrl ? ` · [Run #${markdownCell(watchdogRunId)}](${watchdogRunUrl})` : ''}${repairTriggered ? ' · 已自动触发修复任务' : ''}`,
     `- 基准 Commit：${shortSha(report?.baseCommit)}`,
     '',
   )

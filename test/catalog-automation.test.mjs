@@ -213,6 +213,36 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.doesNotMatch(apply, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
 })
 
+test('every completed Catalog run creates one deduplicated owner report notification', async () => {
+  const [workflow, delivery] = await Promise.all([
+    read('.github/workflows/catalog-run-report.yml'),
+    read('scripts/catalog-report-delivery.mjs'),
+  ])
+  assert.match(workflow, /workflow_run:/)
+  assert.match(workflow, /workflows: \["Automated plugin radar and Catalog update"\]/)
+  assert.match(workflow, /types: \[completed\]/)
+  assert.match(workflow, /workflow_dispatch:/)
+  assert.match(workflow, /issues: write/)
+  assert.match(workflow, /actions: read/)
+  assert.match(workflow, /--status completed/)
+  assert.match(workflow, /\.sourceCatalogRunId == \$catalog_run_id/)
+  assert.match(workflow, /seq 1 30/)
+  assert.match(workflow, /CATALOG_RUN_ID: \$\{\{ steps\.catalog\.outputs\.run_id \}\}/)
+  assert.match(workflow, /--delivery-key "catalog-\$CATALOG_RUN_ID"/)
+  assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
+  assert.match(workflow, /catalog-report-delivery\.mjs plan/)
+  assert.match(workflow, /catalog-report-delivery\.mjs apply/)
+  assert.match(workflow, /--mention "@\$GITHUB_REPOSITORY_OWNER"/)
+  assert.doesNotMatch(workflow, /SMTP|RESEND|\bPAT\b|npm (?:install|ci)|pnpm|yarn/)
+  assert.match(delivery, /reportBodySha256/)
+  assert.match(delivery, /reportStateSha256/)
+  assert.match(delivery, /remote main changed after the Catalog report delivery plan was created/)
+  assert.match(delivery, /managed Catalog report Issue changed after the delivery plan was created/)
+  assert.match(delivery, /dsh-catalog-report:v1:/)
+  assert.match(delivery, /githubNotificationEmailDeliveryVerified: false/)
+  assert.doesNotMatch(delivery, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
+})
+
 test('Pages publishes bounded public automation evidence and recent additions', async () => {
   const [workflow, builder, client] = await Promise.all([
     read('.github/workflows/pages.yml'),
@@ -260,8 +290,11 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(workflow, /author-notification-plan-\$\{run_id\}-\*/)
   assert.match(workflow, /--author-notice-plan/)
   assert.match(workflow, /id: catalog_report[\s\S]{0,160}continue-on-error: true/)
-  assert.match(workflow, /DSH STORE 自动更新报告（每 3 小时）/)
-  assert.match(workflow, /gh issue comment/)
+  assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
+  assert.match(workflow, /catalog-report-delivery\.mjs plan/)
+  assert.match(workflow, /catalog-report-delivery\.mjs apply/)
+  assert.match(workflow, /watchdog-alert/)
+  assert.doesNotMatch(workflow, /gh issue comment/)
   assert.match(timer, /00,03,06,09,12,15,18,21:47:00 UTC/)
   assert.match(service, /EnvironmentFile=\/etc\/dsh-store\/refresh-%i\.env/)
   assert.match(service, /ReadWritePaths=\/opt\/dsh-store -\/opt\/dsh-store-cn \/run\/lock/)

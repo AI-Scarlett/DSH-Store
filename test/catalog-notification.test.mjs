@@ -109,6 +109,7 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /Candidate Registry 全量覆盖：1420 \/ 1420 条，canonical 仓库 1420 个，未覆盖 0 条/)
   assert.match(output, /Catalog 四个公开面核验：1\/1 通过/)
   assert.match(output, /候选库四个公开面核验：1\/1 通过/)
+  assert.match(output, /公开面核验工作流：通过/)
   assert.match(output, /Candidate Registry 公开面核验/)
   assert.match(output, /dsh\.store\/registry\/candidates\.json/)
   assert.match(output, /符合一次性直接整改通知的候选：9 个/)
