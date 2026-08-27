@@ -24,7 +24,8 @@ test('canonical DSH-Store repository and Pages URLs replace legacy aliases', asy
     'README.md', 'cordis.patch.yml', 'deploy/refresh-from-pages.sh', 'docs/VERIFICATION.md',
     'docs/ops/google-seo-20260824.json', 'install-counter/wrangler.jsonc', 'marketplace/about/index.html',
     'marketplace/build/index.html', 'marketplace/dsh-plugins/index.html', 'marketplace/faq/index.html',
-    'marketplace/index.html', 'marketplace/llms.txt', 'marketplace/plugins/index.html', 'package.json',
+    'marketplace/index.html', 'marketplace/llms.txt', 'marketplace/plugins/index.html',
+    'marketplace/standards/index.html', 'package.json',
     'registry/README.md', 'registry/automation-policy.json', 'registry/candidates.json',
     'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json',
     'scripts/automate-catalog.mjs', 'scripts/build-marketplace-static.mjs', 'scripts/check-plugin-submission.mjs',
@@ -42,16 +43,31 @@ test('static storefront templates expose the cross-site navigation and analytics
   const pagePaths = [
     'marketplace/index.html',
     'marketplace/plugins/index.html',
+    'marketplace/standards/index.html',
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
     'marketplace/about/index.html',
   ]
   const pages = await Promise.all(pagePaths.map(path => readFile(new URL(path, project), 'utf8')))
   for (const page of pages) assert.match(page, /DSH_ALTERNATE_SITE/)
-  for (const path of ['marketplace/app.js', 'marketplace/build/build.js', 'marketplace/faq/faq.js', 'marketplace/about/about.js']) {
+  for (const path of ['marketplace/app.js', 'marketplace/build/build.js', 'marketplace/faq/faq.js', 'marketplace/about/about.js', 'marketplace/standards/standards.js']) {
     const source = await readFile(new URL(path, project), 'utf8')
     assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
   }
+})
+
+test('public listing standards mirror the current bounded automation policy', async () => {
+  const [standards, policy] = await Promise.all([
+    readFile(new URL('marketplace/standards/index.html', project), 'utf8'),
+    readFile(new URL('registry/automation-policy.json', project), 'utf8').then(JSON.parse),
+  ])
+  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxTreeEntries.toLocaleString('en-US')}<`))
+  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxRuntimeFiles}<`))
+  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxFileBytes / 1024} KiB<`))
+  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxTotalRuntimeBytes / 1024 / 1024} MiB<`))
+  assert.match(standards, /installActionsDisabled = true/)
+  assert.match(standards, /不会运行第三方 install、prepare、build、test 或运行时代码/)
+  assert.match(standards, /收录不是完整安全审计，也不是运行成功证明/)
 })
 
 test('marketplace cards derive the latest three DSH releases while details retain full history', async () => {
@@ -287,10 +303,11 @@ test('client fails closed when the live health endpoint still uses the legacy sc
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const [html, app, pluginsHtml, buildHtml, faqHtml, aboutHtml, readme, previewServer, styles, catalogDocument] = await Promise.all([
+  const [html, app, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, readme, previewServer, styles, catalogDocument] = await Promise.all([
     readFile(new URL('marketplace/index.html', project), 'utf8'),
     readFile(new URL('marketplace/app.js', project), 'utf8'),
     readFile(new URL('marketplace/plugins/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/standards/index.html', project), 'utf8'),
     readFile(new URL('marketplace/build/index.html', project), 'utf8'),
     readFile(new URL('marketplace/faq/index.html', project), 'utf8'),
     readFile(new URL('marketplace/about/index.html', project), 'utf8'),
@@ -314,17 +331,18 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(html, /class="brand-wordmark-frame"/)
   assert.match(html, /src="\.\/dsh-store-wordmark\.png"/)
   assert.match(html, /href="\.\/plugins\/"/)
+  assert.match(html, /href="\.\/standards\/"/)
   assert.match(html, /href="\.\/build\/"/)
   assert.match(html, /href="\.\/faq\/"/)
   assert.match(html, /href="\.\/about\/"/)
   assert.ok(html.includes(submissionUrl))
   assert.ok(pluginsHtml.includes(submissionUrl))
   assert.ok(buildHtml.includes(submissionUrl))
-  for (const page of [html, pluginsHtml, buildHtml, faqHtml, aboutHtml]) {
+  for (const page of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml]) {
     assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
   }
   assert.match(html, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
-  for (const surface of [html, pluginsHtml, buildHtml, faqHtml, aboutHtml, readme]) {
+  for (const surface of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, readme]) {
     assert.doesNotMatch(surface, /github\.com\/AI-Scarlett\/dsh-safe-plugin-manager|ai-scarlett\.github\.io\/dsh-safe-plugin-manager/)
   }
   assert.match(html, /id="manager"/)

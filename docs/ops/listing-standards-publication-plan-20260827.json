@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "kind": "storefront-content-publication-plan",
+  "status": "prepared",
+  "purpose": "Publish a bilingual listing-standards tab that explains DSH STORE admission principles, candidate states, bounded checks, blockers, and evidence limits.",
+  "createdAt": "2026-08-27T12:41:12+08:00",
+  "authorization": {
+    "source": "explicit-user-instruction",
+    "instruction": "上线",
+    "scope": "repository pull request, protected-main merge after required checks, GitHub Pages, and serial refresh of the international and domestic storefronts",
+    "excludes": [
+      "DSH Profile, package, restart, or runtime mutation",
+      "Catalog or Candidate Registry mutation",
+      "execution of third-party install, prepare, build, test, or runtime code"
+    ]
+  },
+  "base": {
+    "repository": "https://github.com/AI-Scarlett/DSH-Store",
+    "ref": "origin/main",
+    "commit": "4e0606ec403baea9f9d2872130ed5b40e16a2a3f",
+    "remoteMainVerifiedCommit": "4e0606ec403baea9f9d2872130ed5b40e16a2a3f",
+    "branch": "codex/listing-standards"
+  },
+  "authorityPreconditions": {
+    "registry/catalog.json": "1fd83323f4c0993679efd962cdfd2c1166f4682d7797e476b487cd6e4762532f",
+    "registry/candidates.json": "9e101a5b8ed2aae341be91379f2d11d5f15c322857540e48af201ee8fae4ac33"
+  },
+  "scope": [
+    "deploy/SEO_GEO_INDEXING.md",
+    "deploy/refresh-from-pages.sh",
+    "docs/ops/listing-standards-publication-plan-20260827.json",
+    "marketplace/about/about.js",
+    "marketplace/about/index.html",
+    "marketplace/app.js",
+    "marketplace/build/build.js",
+    "marketplace/build/index.html",
+    "marketplace/dsh-plugins/index.html",
+    "marketplace/faq/faq.js",
+    "marketplace/faq/index.html",
+    "marketplace/index.html",
+    "marketplace/llms.txt",
+    "marketplace/plugins/index.html",
+    "marketplace/sitemap.xml",
+    "marketplace/standards/index.html",
+    "marketplace/standards/standards.js",
+    "marketplace/styles.css",
+    "package.json",
+    "scripts/build-marketplace-static.mjs",
+    "scripts/submit-indexnow.mjs",
+    "test/contracts.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditionSha256": {
+    "deploy/SEO_GEO_INDEXING.md": "0c9f07965783dcf72a264d02d55b4cc8bea9d395841f3571920f29bc727516d1",
+    "deploy/refresh-from-pages.sh": "ea0409992b225d9510e782edc3b9c28e9e8112be5dfeda96f58770be16410ca9",
+    "marketplace/about/about.js": "19219b140de1b9c7194a13930412c21abc648f88e5e96cda7d526f486a3ea315",
+    "marketplace/about/index.html": "83d805ac3c6f8b82bc79b014ddc881d744f037c35e51f3292c3c98f838d51e07",
+    "marketplace/app.js": "5d6e404bb3394beb512f0181320b275aae9df3ffa8e8f54598950f8ac55fa2dc",
+    "marketplace/build/build.js": "ac8bae4e442f0e127ccb2710a89cff50dc5aec593367644f7cf4721167496ec0",
+    "marketplace/build/index.html": "89db1afbadc58aed67ba5c5da1fcdade761dde31eb67757fe4ac66872897ab98",
+    "marketplace/dsh-plugins/index.html": "960888d341a8ef4c447a3f4b0b345f7167a4e505e7ede3561b2a2d8d019a1ee0",
+    "marketplace/faq/faq.js": "c667a1b75babcf1b3a9d261bbb804e019e90372b56e3541f876fd8c1d548bdfe",
+    "marketplace/faq/index.html": "025e29b277e831350fb6a1a31dcfc3df9755f34c8470a45edefd71d690b16195",
+    "marketplace/index.html": "088f1b7807ec85a6512b9161867a089babc205f37707feb84ca407d227e207dd",
+    "marketplace/llms.txt": "bd6d6e1b6ea8988952e844aee748005157b7adf47f952d9438f4b564998866f4",
+    "marketplace/plugins/index.html": "127bfeb2e7c3731793f0018f72de0dc7dbd29c90c4cf4196cc803a0f8e11c4b9",
+    "marketplace/sitemap.xml": "ac3571e8478f72d2823aa01b67d5916238017f7c53c0c095f6e15f9177aa92ff",
+    "marketplace/standards/index.html": null,
+    "marketplace/standards/standards.js": null,
+    "marketplace/styles.css": "979c2b67daebb0e3edbe0c799ca8626d3e8f0ae42f1c71d19119d2c0bcaf1f88",
+    "package.json": "e5d9c1f7d903fd04ed230ffb455205fa08fdf9d10e74d63aff0a62938bb6fa85",
+    "scripts/build-marketplace-static.mjs": "8cc689a5feca8c85f49b28e38a1837677f9247983a579b2e53b417064dc9109f",
+    "scripts/submit-indexnow.mjs": "fde00fab278c9d6fe0a7c053836866553984bfcc3e8559e8f266e7900c80455f",
+    "test/contracts.test.mjs": "44500385170b108d5c57cd1952e593ef39d3f7664d3e9b9c316f44585e7f289c",
+    "test/marketplace-static-build.test.mjs": "86734b28e59820621d7958290c2cf27e915d222490e2af9611a83733706050d5"
+  },
+  "expectedSha256": {
+    "deploy/SEO_GEO_INDEXING.md": "e6a7357b53336de8c32d54bd315dc045e19a165bb5a8d7eedfc9fea7da773f4a",
+    "deploy/refresh-from-pages.sh": "1f8400ee14fcc1960067226c26be2329781736b9313d59c97ca95910c573fb90",
+    "marketplace/about/about.js": "7c852e3c3a38e5b10fc2050b6e7267a66ebc0951fbbbab3233e8ac033f893987",
+    "marketplace/about/index.html": "9f460b14ab6e946b6485d2c6793ddac1bd51e14fded4cac7dd8404954607c4b1",
+    "marketplace/app.js": "9c82e3093d27ba1bae186cb6428f0b236710ab151812c1adb4585434ec0bb9ee",
+    "marketplace/build/build.js": "3ca9453f91655afcf099635261b1dd285830958a6025be8a1ea7a15ec8f70ef4",
+    "marketplace/build/index.html": "99f20a916d39a7324ab02d151c7e16542ef4a4cec8b367d5d4b7e13e7ccfed6d",
+    "marketplace/dsh-plugins/index.html": "0080d579ab2e61d54bde1a04eae515c6cee633afbff3b236231f7b80a4446aee",
+    "marketplace/faq/faq.js": "37e6c8246289efd5a758e4c4d40632a4db69375420ce44760f13ac865a6fc6e4",
+    "marketplace/faq/index.html": "ab952cb5ea83fdd8a941b5a9402c063236b2307f0a18c7b44407c895b77f0c55",
+    "marketplace/index.html": "b1b1346424e5763a6e8e5f259cf49eb0c7b83c2247cf40b6ff5ff4949dd50d19",
+    "marketplace/llms.txt": "7ce9ba6b968efa1456ebc5ba6a9505cc0132728e8b1765d9e56bd7d43ea8bea5",
+    "marketplace/plugins/index.html": "96cd480775e4dbb68f4fa1f869a78d8b9b8b569ac6b7b0ddbfb40249c7549f7d",
+    "marketplace/sitemap.xml": "47ab8c8b17980449ede33b97c96347845119c6562aa61f3b9b839f7b7d52c9cf",
+    "marketplace/standards/index.html": "79262fc8141e2eddd788f12cdbc9277cb39e39409f130aec38d100b71cf9a62a",
+    "marketplace/standards/standards.js": "552cc40794813bedd07e7060b79df08ba66ff97fadce245935fbae3b529f3d15",
+    "marketplace/styles.css": "58ce028f43cb6db3f2bf0a43943d4983d330dc411746160f03db16b9a511a2bc",
+    "package.json": "152e21108c0192586425ef3ca2ba4b786f72f64ba624dbf52d40fa30be63cbe2",
+    "scripts/build-marketplace-static.mjs": "8dd70aa84656b429cbea3e2a36ff2e04d32bdbeba92ff5932e227764bef501fe",
+    "scripts/submit-indexnow.mjs": "5aee7a1c34d2753afbf2464d440f139609207802a187d99ab25dc40c0f7a567c",
+    "test/contracts.test.mjs": "f909aa5d0114235d517410a1c5147bd710910a6f5c2cdbb22502464966c648ab",
+    "test/marketplace-static-build.test.mjs": "7681663774088fc2e75ab70629a8ea3a65b8057171b61c2137210a4d36feae95"
+  },
+  "gates": [
+    "origin/main must still equal the bound base Commit before push",
+    "every scoped precondition and expected SHA-256 must match",
+    "git diff --check",
+    "npm run check",
+    "required pull-request checks must pass before protected-main merge",
+    "GitHub Pages build manifest must report the merged main Commit",
+    "international storefront refresh and health checks must complete before domestic refresh starts",
+    "all three public standards routes plus the Pages route must return the new listing-standard markers"
+  ],
+  "publication": {
+    "repository": {
+      "path": "auditable pull request",
+      "merge": "only after required checks pass"
+    },
+    "pages": {
+      "route": "https://ai-scarlett.github.io/DSH-Store/standards/",
+      "acceptance": "release manifest sourceCommit equals the merged main Commit and the standards page is readable"
+    },
+    "servers": [
+      {
+        "order": 1,
+        "recordId": "dsh-store-intl",
+        "service": "dsh-store-refresh@intl-public.service",
+        "route": "https://dsh.store/standards/"
+      },
+      {
+        "order": 2,
+        "recordId": "dsh-store-cn-814823065",
+        "service": "dsh-store-refresh@domestic.service",
+        "route": "https://dsh-store.cn/standards/"
+      }
+    ]
+  },
+  "rollback": {
+    "repository": "revert the merged pull request through a new auditable pull request",
+    "pages": "retain the last successful Pages artifact until a verified replacement is available",
+    "servers": "the refresh service must preserve the existing release/current symlink on failure and use its atomic rollback path",
+    "trigger": "any failed deterministic gate, manifest mismatch, server refresh, or public readback"
+  }
+}
