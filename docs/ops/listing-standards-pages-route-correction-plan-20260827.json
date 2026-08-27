@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "kind": "storefront-publication-plan-correction",
+  "status": "prepared",
+  "purpose": "Correct the GitHub Pages acceptance route in the listing-standards publication plan to the repository artifact path used by the existing Pages deployment.",
+  "createdAt": "2026-08-27T12:46:31+08:00",
+  "authorization": {
+    "source": "explicit-user-instruction",
+    "instruction": "上线",
+    "scope": "repair a deterministic publication-gate path discovered during the authorized release",
+    "excludes": [
+      "Catalog or Candidate Registry mutation",
+      "production-server refresh before the corrected gate passes",
+      "DSH Profile, package, restart, or runtime mutation"
+    ]
+  },
+  "base": {
+    "repository": "https://github.com/AI-Scarlett/DSH-Store",
+    "ref": "origin/main",
+    "commit": "ef1e5e06d7717c4b5f28f30701b2c75f58ba8f10",
+    "remoteMainVerifiedCommit": "ef1e5e06d7717c4b5f28f30701b2c75f58ba8f10",
+    "branch": "codex/listing-standards-pages-route"
+  },
+  "authorityPreconditions": {
+    "registry/catalog.json": "1fd83323f4c0993679efd962cdfd2c1166f4682d7797e476b487cd6e4762532f",
+    "registry/candidates.json": "9e101a5b8ed2aae341be91379f2d11d5f15c322857540e48af201ee8fae4ac33"
+  },
+  "scope": [
+    "docs/ops/listing-standards-pages-route-correction-plan-20260827.json",
+    "docs/ops/listing-standards-publication-plan-20260827.json"
+  ],
+  "preconditionSha256": {
+    "docs/ops/listing-standards-publication-plan-20260827.json": "45b3f465349d13db1b1438cfb18cd8c44ce4f15413ac02e3a38c9b803b991eb6"
+  },
+  "expectedSha256": {
+    "docs/ops/listing-standards-publication-plan-20260827.json": "de23b67a3d2d07c6711ccb8337ca6a4257d59f38a323ef3c80bddc346316cfba"
+  },
+  "evidence": {
+    "releaseManifestSourceCommit": "ef1e5e06d7717c4b5f28f30701b2c75f58ba8f10",
+    "rejectedRoute": {
+      "url": "https://ai-scarlett.github.io/DSH-Store/standards/",
+      "httpStatus": 404
+    },
+    "acceptedRoute": {
+      "url": "https://ai-scarlett.github.io/DSH-Store/marketplace/standards/",
+      "httpStatus": 200,
+      "reason": "GitHub Pages preserves marketplace subpaths while production nginx serves marketplace as the site root"
+    }
+  },
+  "gates": [
+    "origin/main must still equal the bound base Commit before push",
+    "the two public HTTP statuses must be re-read before commit",
+    "the expected SHA-256 must match the corrected plan",
+    "git diff --check",
+    "npm run check",
+    "required pull-request checks must pass before merge",
+    "manually dispatch the Pages workflow after merge because this correction changes only docs/ops",
+    "the new Pages release manifest must match the correction merge Commit before any production refresh"
+  ],
+  "rollback": {
+    "repository": "revert the correction pull request through an auditable pull request",
+    "pages": "retain the last successful artifact if the manual workflow fails",
+    "production": "no production server is mutated by this correction plan"
+  }
+}
