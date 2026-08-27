@@ -122,13 +122,16 @@ jobs:
         env:
           CATALOG_REPORT_PATH: ${{ steps.catalog_report.outputs.path }}
           AUTHOR_NOTICE_PLAN_PATH: ${{ steps.author_report.outputs.path }}
+          CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
+          CATALOG_RUN_URL: ${{ steps.catalog.outputs.run_url }}
+          CATALOG_RUN_CONCLUSION: ${{ steps.catalog.outputs.conclusion }}
         run: |
           args=(
             --catalog registry/catalog.json
             --output "$RUNNER_TEMP/catalog-run-report.md"
-            --catalog-run-id "${{ steps.catalog.outputs.run_id }}"
-            --catalog-run-url "${{ steps.catalog.outputs.run_url }}"
-            --catalog-conclusion "${{ steps.catalog.outputs.conclusion }}"
+            --catalog-run-id "$CATALOG_RUN_ID"
+            --catalog-run-url "$CATALOG_RUN_URL"
+            --catalog-conclusion "$CATALOG_RUN_CONCLUSION"
             --watchdog-run-id "$GITHUB_RUN_ID"
             --watchdog-run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             --repair-triggered false
@@ -154,13 +157,17 @@ jobs:
       - name: Create a hash-bound report delivery plan
         id: delivery_plan
         if: steps.render.outcome == 'success'
+        env:
+          BASE_COMMIT: ${{ steps.base.outputs.sha }}
+          CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
+          REPORT_PATH: ${{ steps.render.outputs.path }}
         run: |
           node scripts/catalog-report-delivery.mjs plan \
-            --report "${{ steps.render.outputs.path }}" \
+            --report "$REPORT_PATH" \
             --state "$RUNNER_TEMP/catalog-report-state.json" \
-            --base-commit "${{ steps.base.outputs.sha }}" \
-            --catalog-run-id "${{ steps.catalog.outputs.run_id }}" \
-            --delivery-key "catalog-${{ steps.catalog.outputs.run_id }}" \
+            --base-commit "$BASE_COMMIT" \
+            --catalog-run-id "$CATALOG_RUN_ID" \
+            --delivery-key "catalog-$CATALOG_RUN_ID" \
             --output "$RUNNER_TEMP/catalog-report-delivery-plan.json"
           jq -r '"plan_id=\(.planId)", "action=\(.action.type)"' \
             "$RUNNER_TEMP/catalog-report-delivery-plan.json" >> "$GITHUB_OUTPUT"
@@ -168,10 +175,11 @@ jobs:
         if: steps.delivery_plan.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          REPORT_PATH: ${{ steps.render.outputs.path }}
         run: |
           node scripts/catalog-report-delivery.mjs apply \
             --plan "$RUNNER_TEMP/catalog-report-delivery-plan.json" \
-            --report "${{ steps.render.outputs.path }}"
+            --report "$REPORT_PATH"
       - name: Preserve the report and delivery decision
         if: always()
         uses: actions/upload-artifact@v4
