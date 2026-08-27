@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "operation": "deliver-github-email-notification-after-every-catalog-run",
+  "createdAt": "2026-08-27T22:48:12+08:00",
+  "authorization": "user-explicitly-requested-fixing-the-missing-github-email-notification-after-each-catalog-run",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "20076ff08b0ae48afcba943fff94034f61f6a09f",
+  "branch": "codex/catalog-run-email-notification",
+  "preconditionSha256": {
+    ".github/workflows/marketplace-watchdog.yml": "fa7cebcc14d86f8de4947f5979a66bf76b507f5e360c4c83ef9723011b029564",
+    "scripts/render-catalog-automation-notification.mjs": "b0e74fcc0c344b147aa73f0028c7becb13014de69759aa6c824e90ad1cff33ea",
+    "test/catalog-automation.test.mjs": "af99f1fdab15967406df18ad746fab440d74a5295f069c6d4fd64ad21c7a8b70",
+    "test/catalog-notification.test.mjs": "cf0f5abe3a7bcd3dd4c8f78b63c18919079b7a2c5582a293f4661384bdfed83c",
+    "docs/wiki/Catalog-Automation.md": "bc186baae5aa811918fbcd49c877c124bf5f258682401eb8bbdc632b229cd183",
+    "registry/README.md": "7a4002476b73ae1d0e320d145a968dd44dac77395fdb40354736a061cb2ce2bb",
+    "package.json": "152e21108c0192586425ef3ca2ba4b786f72f64ba624dbf52d40fa30be63cbe2"
+  },
+  "expectedAbsentFiles": [
+    ".github/workflows/catalog-run-report.yml",
+    "scripts/catalog-report-delivery.mjs",
+    "test/catalog-report-delivery.test.mjs"
+  ],
+  "allowedFiles": [
+    "docs/ops/catalog-run-email-notification-plan-20260827.json",
+    ".github/workflows/catalog-run-report.yml",
+    ".github/workflows/marketplace-watchdog.yml",
+    "scripts/catalog-report-delivery.mjs",
+    "scripts/render-catalog-automation-notification.mjs",
+    "test/catalog-report-delivery.test.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/catalog-notification.test.mjs",
+    "docs/wiki/Catalog-Automation.md",
+    "registry/README.md",
+    "package.json"
+  ],
+  "observedFailure": {
+    "latestCatalogRunId": "33056046272",
+    "latestCatalogRunCompletedAt": "2026-08-27T08:58:30Z",
+    "latestReportIssueCommentAt": "2026-08-27T02:16:42Z",
+    "reportIssue": 148,
+    "cause": "owner report publication is scheduled only by marketplace-watchdog and is not triggered by Catalog completion"
+  },
+  "targetPolicy": {
+    "triggerAfterEveryCompletedCatalogRun": true,
+    "reportSuccessfulAndFailedRuns": true,
+    "waitBoundedlyForMatchingAuthorNotificationPlan": true,
+    "mention": "@AI-Scarlett",
+    "deduplicateByCatalogRunId": true,
+    "watchdogRemainsFallbackAndAlertPath": true,
+    "githubEmailDeliveryClaimed": false
+  },
+  "boundaries": {
+    "issueRepository": "AI-Scarlett/DSH-Store",
+    "issueTitle": "DSH STORE 自动更新报告（每 3 小时）",
+    "thirdPartyRepositoryWrites": false,
+    "thirdPartyCodeExecution": false,
+    "profileMutation": false,
+    "dshRestart": false,
+    "credentialLogging": false
+  },
+  "gates": [
+    "remote main and every precondition hash still match",
+    "Catalog workflow_run completion triggers the owner report independently of the watchdog schedule",
+    "the report is delivered for success and failure conclusions",
+    "a matching author-notification artifact is included when available without an unbounded wait",
+    "report delivery is hash-bound to the report body, current main, and managed Issue state",
+    "the same Catalog Run ID does not create a duplicate normal report comment",
+    "watchdog routine delivery falls back only when the immediate report is absent and retains a distinct alert lane",
+    "npm run check passes",
+    "CI-checked pull request and verified merge",
+    "a live workflow run creates a new @AI-Scarlett notification record for the selected Catalog run"
+  ],
+  "rollback": "revert the pull request; Issue comments remain auditable and no DSH Profile or third-party repository is changed"
+}

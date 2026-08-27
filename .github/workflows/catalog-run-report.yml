@@ -1,0 +1,185 @@
+name: Notify owner after every Catalog scan
+
+on:
+  workflow_run:
+    workflows: ["Automated plugin radar and Catalog update"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      catalog_run_id:
+        description: Optional completed Catalog run ID; defaults to the latest completed run
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: catalog-run-report-${{ github.event.workflow_run.id || inputs.catalog_run_id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Resolve the exact completed Catalog run
+        id: catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
+          REQUESTED_RUN_ID: ${{ inputs.catalog_run_id }}
+        run: |
+          if test "$GITHUB_EVENT_NAME" = workflow_run; then
+            run_id="$TRIGGER_RUN_ID"
+          elif test -n "$REQUESTED_RUN_ID"; then
+            run_id="$REQUESTED_RUN_ID"
+          else
+            run_id=$(gh run list --workflow catalog-automation.yml --status completed --limit 1 \
+              --json databaseId --jq '.[0].databaseId')
+          fi
+          test -n "$run_id"
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id")
+          test "$(jq -r .name <<<"$run")" = 'Automated plugin radar and Catalog update'
+          test "$(jq -r .status <<<"$run")" = completed
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run_url=$(jq -r .html_url <<<"$run")" >> "$GITHUB_OUTPUT"
+          echo "conclusion=$(jq -r '.conclusion // "unknown"' <<<"$run")" >> "$GITHUB_OUTPUT"
+      - name: Download the matching Catalog decision record
+        id: catalog_report
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
+        run: |
+          report_dir="$RUNNER_TEMP/catalog-report"
+          mkdir -p "$report_dir"
+          gh run download "$CATALOG_RUN_ID" \
+            --pattern "catalog-automation-${CATALOG_RUN_ID}-*" \
+            --dir "$report_dir"
+          report_path=$(find "$report_dir" -type f -name catalog-automation-report.json -print -quit)
+          test -n "$report_path"
+          echo "path=$report_path" >> "$GITHUB_OUTPUT"
+      - name: Wait boundedly for the matching author notification record
+        id: author_report
+        if: steps.catalog.outputs.conclusion == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
+        run: |
+          for attempt in $(seq 1 30); do
+            runs=$(gh run list --workflow author-notifications.yml --status success --limit 12 \
+              --json databaseId,url)
+            while IFS=$'\t' read -r run_id run_url; do
+              test -n "$run_id" || continue
+              plan_dir="$RUNNER_TEMP/author-notice-plan-$run_id"
+              if test ! -d "$plan_dir"; then
+                mkdir -p "$plan_dir"
+                if ! gh run download "$run_id" \
+                  --pattern "author-notification-plan-${run_id}-*" \
+                  --dir "$plan_dir"; then
+                  rm -r "$plan_dir"
+                  continue
+                fi
+              fi
+              plan_path=$(find "$plan_dir" -type f -name author-notice-plan.json -print -quit)
+              test -n "$plan_path" || continue
+              if jq -e --arg catalog_run_id "$CATALOG_RUN_ID" \
+                '.sourceCatalogRunId == $catalog_run_id' "$plan_path" >/dev/null; then
+                echo "path=$plan_path" >> "$GITHUB_OUTPUT"
+                echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+                echo "run_url=$run_url" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            done < <(jq -r '.[] | [.databaseId, .url] | @tsv' <<<"$runs")
+            sleep 10
+          done
+          echo 'No matching author notification record became available within five minutes.'
+      - name: Verify current public Catalog and Candidate surfaces
+        id: public
+        continue-on-error: true
+        run: node scripts/verify-marketplace-public.mjs --attempts 3 --report "$RUNNER_TEMP/catalog-run-public-report.json"
+      - name: Bind the current main authority for report delivery
+        id: base
+        run: |
+          git fetch --no-tags origin main
+          base_sha=$(git rev-parse HEAD)
+          test "$base_sha" = "$(git rev-parse origin/main)"
+          echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
+      - name: Render the scan report for the repository owner
+        id: render
+        if: always() && steps.catalog.outcome == 'success' && steps.base.outcome == 'success'
+        env:
+          CATALOG_REPORT_PATH: ${{ steps.catalog_report.outputs.path }}
+          AUTHOR_NOTICE_PLAN_PATH: ${{ steps.author_report.outputs.path }}
+        run: |
+          args=(
+            --catalog registry/catalog.json
+            --output "$RUNNER_TEMP/catalog-run-report.md"
+            --catalog-run-id "${{ steps.catalog.outputs.run_id }}"
+            --catalog-run-url "${{ steps.catalog.outputs.run_url }}"
+            --catalog-conclusion "${{ steps.catalog.outputs.conclusion }}"
+            --watchdog-run-id "$GITHUB_RUN_ID"
+            --watchdog-run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            --repair-triggered false
+            --mention "@$GITHUB_REPOSITORY_OWNER"
+          )
+          if test -n "$CATALOG_REPORT_PATH" && test -f "$CATALOG_REPORT_PATH"; then
+            args+=(--report "$CATALOG_REPORT_PATH")
+          fi
+          if test -f "$RUNNER_TEMP/catalog-run-public-report.json"; then
+            args+=(--watchdog-report "$RUNNER_TEMP/catalog-run-public-report.json")
+          fi
+          if test -n "$AUTHOR_NOTICE_PLAN_PATH" && test -f "$AUTHOR_NOTICE_PLAN_PATH"; then
+            args+=(--author-notice-plan "$AUTHOR_NOTICE_PLAN_PATH")
+          fi
+          node scripts/render-catalog-automation-notification.mjs "${args[@]}"
+          cat "$RUNNER_TEMP/catalog-run-report.md" >> "$GITHUB_STEP_SUMMARY"
+          echo "path=$RUNNER_TEMP/catalog-run-report.md" >> "$GITHUB_OUTPUT"
+      - name: Snapshot the managed report Issue
+        if: steps.render.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/catalog-report-delivery.mjs snapshot --output "$RUNNER_TEMP/catalog-report-state.json"
+      - name: Create a hash-bound report delivery plan
+        id: delivery_plan
+        if: steps.render.outcome == 'success'
+        run: |
+          node scripts/catalog-report-delivery.mjs plan \
+            --report "${{ steps.render.outputs.path }}" \
+            --state "$RUNNER_TEMP/catalog-report-state.json" \
+            --base-commit "${{ steps.base.outputs.sha }}" \
+            --catalog-run-id "${{ steps.catalog.outputs.run_id }}" \
+            --delivery-key "catalog-${{ steps.catalog.outputs.run_id }}" \
+            --output "$RUNNER_TEMP/catalog-report-delivery-plan.json"
+          jq -r '"plan_id=\(.planId)", "action=\(.action.type)"' \
+            "$RUNNER_TEMP/catalog-report-delivery-plan.json" >> "$GITHUB_OUTPUT"
+      - name: Publish one owner report for this Catalog run
+        if: steps.delivery_plan.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/catalog-report-delivery.mjs apply \
+            --plan "$RUNNER_TEMP/catalog-report-delivery-plan.json" \
+            --report "${{ steps.render.outputs.path }}"
+      - name: Preserve the report and delivery decision
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-run-report-${{ steps.catalog.outputs.run_id || github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/catalog-run-report.md
+            ${{ runner.temp }}/catalog-report-delivery-plan.json
+            ${{ runner.temp }}/catalog-run-public-report.json
+          if-no-files-found: warn
+          retention-days: 30

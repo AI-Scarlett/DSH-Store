@@ -23,6 +23,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Bind the current main authority for this watchdog run
+        id: base
+        run: |
+          git fetch --no-tags origin main
+          base_sha=$(git rev-parse HEAD)
+          test "$base_sha" = "$(git rev-parse origin/main)"
+          echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
       - name: Verify the previous Catalog automation run
         id: previous
         env:
@@ -139,34 +146,47 @@ jobs:
           node scripts/render-catalog-automation-notification.mjs "${args[@]}"
           cat "$RUNNER_TEMP/catalog-automation-notification.md" >> "$GITHUB_STEP_SUMMARY"
           echo "path=$RUNNER_TEMP/catalog-automation-notification.md" >> "$GITHUB_OUTPUT"
-      - name: Publish the report through GitHub notification email
+      - name: Snapshot the managed report Issue
         if: always() && steps.notification_report.outcome == 'success'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/catalog-report-delivery.mjs snapshot --output "$RUNNER_TEMP/catalog-report-state.json"
+      - name: Create a hash-bound watchdog report delivery plan
+        id: delivery_plan
+        if: always() && steps.notification_report.outcome == 'success' && steps.base.outcome == 'success'
+        env:
+          REPORT_PATH: ${{ steps.notification_report.outputs.path }}
+          REPORT_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
+          REPAIR_TRIGGERED: ${{ steps.previous.outputs.repair }}
+        run: |
+          delivery_key="catalog-$REPORT_RUN_ID"
+          if test "$REPAIR_TRIGGERED" = true || test "${{ steps.public.outcome }}" != success; then
+            delivery_key="${delivery_key}-watchdog-alert"
+          fi
+          node scripts/catalog-report-delivery.mjs plan \
+            --report "$REPORT_PATH" \
+            --state "$RUNNER_TEMP/catalog-report-state.json" \
+            --base-commit "${{ steps.base.outputs.sha }}" \
+            --catalog-run-id "$REPORT_RUN_ID" \
+            --delivery-key "$delivery_key" \
+            --output "$RUNNER_TEMP/catalog-report-delivery-plan.json"
+      - name: Publish the report through GitHub notification email
+        if: always() && steps.delivery_plan.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
           REPORT_PATH: ${{ steps.notification_report.outputs.path }}
         run: |
-          title='DSH STORE 自动更新报告（每 3 小时）'
-          issue=$(gh issue list --state all --limit 10 \
-            --search '"DSH STORE 自动更新报告（每 3 小时）" in:title' \
-            --json number,title,state \
-            --jq '.[] | select(.title == "DSH STORE 自动更新报告（每 3 小时）") | [.number, .state] | @tsv' \
-            | head -n 1)
-          if test -z "$issue"; then
-            gh issue create --title "$title" --body-file "$REPORT_PATH"
-          else
-            issue_number=$(cut -f 1 <<<"$issue")
-            issue_state=$(cut -f 2 <<<"$issue")
-            if test "$issue_state" = CLOSED; then
-              gh issue reopen "$issue_number"
-            fi
-            gh issue comment "$issue_number" --body-file "$REPORT_PATH"
-          fi
+          node scripts/catalog-report-delivery.mjs apply \
+            --plan "$RUNNER_TEMP/catalog-report-delivery-plan.json" \
+            --report "$REPORT_PATH"
       - name: Preserve the public verification report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: marketplace-watchdog-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/marketplace-watchdog-report.json
+          path: |
+            ${{ runner.temp }}/marketplace-watchdog-report.json
+            ${{ runner.temp }}/catalog-report-delivery-plan.json
           if-no-files-found: warn
           retention-days: 30
       - name: Keep unresolved repair visible to the next run
