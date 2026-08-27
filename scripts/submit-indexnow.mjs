@@ -4,6 +4,7 @@ const keyLocation = `https://${host}/${key}.txt`
 const defaultUrls = [
   `https://${host}/`,
   `https://${host}/plugins/`,
+  `https://${host}/standards/`,
   `https://${host}/build/`,
   `https://${host}/faq/`,
   `https://${host}/about/`,

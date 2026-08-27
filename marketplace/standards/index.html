@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="applicable-device" content="pc,mobile">
+  <!-- DSH_BAIDU_VERIFICATION -->
+  <meta name="description" content="DSH STORE 收录标准：公开插件候选门槛、固定 Commit 检查项、自动准入边界、拒绝条件和持续复查流程。">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+  <meta name="author" content="DSH STORE">
+  <meta name="application-name" content="DSH STORE">
+  <meta name="theme-color" content="#07113f">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="插件收录标准｜DSH STORE">
+  <meta property="og:description" content="了解 DSH STORE 如何发现候选、检查固定源码、判定准入并持续复查。">
+  <meta property="og:url" content="https://dsh.store/standards/">
+  <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
+  <meta property="og:image:alt" content="DSH STORE">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="插件收录标准｜DSH STORE">
+  <meta name="twitter:description" content="候选门槛、检查清单、拒绝条件与证据边界。">
+  <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
+  <title>插件收录标准｜DSH STORE</title>
+  <link rel="canonical" href="https://dsh.store/standards/">
+  <!-- DSH_HREFLANG -->
+  <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
+  <link rel="apple-touch-icon" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": "https://dsh.store/standards/#page",
+    "url": "https://dsh.store/standards/",
+    "headline": "DSH STORE Plugin Listing Standards",
+    "description": "Candidate criteria, pinned-source checks, admission boundaries, rejection conditions, and continuous review for DSH STORE plugins.",
+    "inLanguage": ["zh-CN", "en"],
+    "isPartOf": {"@id": "https://dsh.store/#website"},
+    "about": ["DeepSeek Harness", "DSH plugins", "plugin marketplace", "software supply chain"]
+  }
+  </script>
+</head>
+<body class="standards-page">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
+  <div class="tech-grid" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="../" aria-label="DSH STORE">
+      <span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="../" data-i18n="nav.home">首页</a>
+      <a href="../plugins/" data-i18n="nav.store">插件目录</a>
+      <a href="./" aria-current="page" data-i18n="nav.standards">收录标准</a>
+      <a href="../build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="standards_header">开发插件</a>
+      <a href="../faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="standards_header">常见问题</a>
+      <a href="../about/" data-i18n="nav.about" data-analytics-event="about_open" data-analytics-item="standards_header">关于我们</a>
+      <a href="https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/README.md" target="_blank" rel="noreferrer" data-analytics-event="registry_policy_open" data-analytics-item="standards_header"><span data-i18n="nav.policy">政策原文</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="standards_header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <!-- DSH_ALTERNATE_SITE -->
+    </nav>
+    <div class="header-tools">
+      <div class="locale-switch" role="group" aria-label="Language">
+        <button type="button" data-locale="zh" aria-pressed="true">中文</button>
+        <button type="button" data-locale="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="standards-hero">
+      <div class="standards-hero-copy reveal">
+        <div class="system-status"><span></span><b>LISTING POLICY / PUBLIC CONTRACT</b><em>FAIL CLOSED</em></div>
+        <h1><span data-i18n="hero.title1">收录前，</span><br><em data-i18n="hero.title2">先把标准公开。</em></h1>
+        <p data-i18n="hero.lead">DSH STORE 从公开 GitHub 项目中发现候选，但“被发现”不等于“已收录”。只有固定来源、结构、权限、兼容性与证据门槛逐项成立，插件才可能进入受保护的 Catalog。</p>
+        <div class="standards-hero-actions"><a class="button button-primary" href="#checks" data-i18n="action.checks">查看检查清单</a><a class="button button-secondary" href="#candidate" data-i18n="action.candidate">了解候选标准</a></div>
+      </div>
+      <aside class="standards-hero-signal reveal" aria-label="Candidate and Catalog trust boundary">
+        <span>DISCOVERY ≠ LISTING</span>
+        <div class="standards-signal-route"><b>Candidate Registry</b><i aria-hidden="true">→</i><b>Fixed Commit</b><i aria-hidden="true">→</i><strong>Catalog</strong></div>
+        <p data-i18n="hero.signal">候选库没有安装动作；未晋级 Catalog 前，任何条目都不能进入商城受保护安装通道。</p>
+        <small>installActionsDisabled = true</small>
+      </aside>
+    </section>
+
+    <section class="standards-principles section-shell" aria-labelledby="principles-title">
+      <div class="section-heading reveal"><div><span class="section-index">01 / PRINCIPLES</span><h2 id="principles-title" data-i18n="principles.title">我们按证据收录，不按热度背书。</h2></div><p data-i18n="principles.lead">Star、截图、README 宣称和提交标签只能帮助发现项目，不能替代固定源码、权限与安装契约检查。</p></div>
+      <div class="standards-principle-grid">
+        <article class="reveal"><b>01</b><h3 data-i18n="principle.one.title">来源可追溯</h3><p data-i18n="principle.one.body">只接受公开 canonical GitHub 仓库，并把每次审核固定到完整 40 位 Commit。</p></article>
+        <article class="reveal"><b>02</b><h3 data-i18n="principle.two.title">结构可复现</h3><p data-i18n="principle.two.body">manifest、Bundle Patch、入口 ID、运行文件和生命周期脚本必须组成一致的安装契约。</p></article>
+        <article class="reveal"><b>03</b><h3 data-i18n="principle.three.title">权限最小且透明</h3><p data-i18n="principle.three.body">文件、网络、命令、凭据、Profile 与外部依赖逐项披露；无法确认就保持 unknown。</p></article>
+        <article class="reveal"><b>04</b><h3 data-i18n="principle.four.title">未知即停止晋级</h3><p data-i18n="principle.four.body">歧义、截断、漂移或证据不足都会暂缓或阻止收录，不通过降低门槛获得“通过”。</p></article>
+      </div>
+    </section>
+
+    <section class="standards-candidate" id="candidate" aria-labelledby="candidate-title">
+      <div class="section-shell">
+        <div class="section-heading reveal"><div><span class="section-index">02 / CANDIDATE STANDARD</span><h2 id="candidate-title" data-i18n="candidate.title">候选可以被看见，但不能被误认为可安装。</h2></div><p data-i18n="candidate.lead">候选库负责保留发现与复查线索；Catalog 才是商城身份与策略权威。两者使用不同门槛和动作权限。</p></div>
+        <div class="candidate-boundary-grid">
+          <article class="candidate-boundary-card candidate-card-discovery reveal"><span>DISCOVERY LAYER</span><h3 data-i18n="candidate.discovery.title">进入候选库</h3><ul><li data-i18n="candidate.discovery.one">公开 GitHub 仓库，项目与 DSH 插件具有可复核关联</li><li data-i18n="candidate.discovery.two">按 canonical 仓库去重，记录发现来源与当前状态</li><li data-i18n="candidate.discovery.three">可标记 discovered、reviewing 或 rejected</li></ul><p data-i18n="candidate.discovery.note">候选记录不含安装字段，也不提供安装、构建或运行按钮。</p></article>
+          <article class="candidate-boundary-card candidate-card-catalog reveal"><span>TRUSTED CATALOG</span><h3 data-i18n="candidate.catalog.title">晋级 Catalog</h3><ul><li data-i18n="candidate.catalog.one">完整 Commit 上的标准 DSH Bundle 与许可证成立</li><li data-i18n="candidate.catalog.two">源码检查面完整，身份、入口、权限与兼容性无歧义</li><li data-i18n="candidate.catalog.three">机器计划绑定 base Commit 和输入哈希，经 PR、CI 与合并验证</li></ul><p data-i18n="candidate.catalog.note">只有合并后的远端 Catalog 与公开页面读回，才能证明实际收录。</p></article>
+        </div>
+        <div class="standards-route-grid" aria-label="Candidate routes">
+          <article class="reveal"><b>DIRECT</b><h3 data-i18n="route.direct.title">标准直连</h3><p data-i18n="route.direct.body">仓库根目录已经包含完整标准 Bundle，可进入固定源码审核。</p></article>
+          <article class="reveal"><b>MONOREPO</b><h3 data-i18n="route.monorepo.title">单仓多包</h3><p data-i18n="route.monorepo.body">插件位于明确子目录，manifestPath 与 installPath 必须唯一且不可越界。</p></article>
+          <article class="reveal"><b>ADAPTER</b><h3 data-i18n="route.adapter.title">需要适配器</h3><p data-i18n="route.adapter.body">上游不是 DSH Bundle，但存在受支持的窄接口；需另建标准适配器，不能冒充直装。</p></article>
+          <article class="reveal"><b>BLOCKED</b><h3 data-i18n="route.blocked.title">阻止收录</h3><p data-i18n="route.blocked.body">来源、许可、宿主边界或安全契约无法成立；保留原因，但不开放受保护安装。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="standards-check-section section-shell" id="checks" aria-labelledby="checks-title">
+      <div class="section-heading reveal"><div><span class="section-index">03 / WHAT WE CHECK</span><h2 id="checks-title" data-i18n="checks.title">我们会检查哪些内容？</h2></div><p data-i18n="checks.lead">每项都从同一个固定 Commit 取证。检查结果描述对应范围，不会从静态证据推断真实运行结果。</p></div>
+      <div class="standards-table-wrap reveal">
+        <table class="standards-table">
+          <thead><tr><th data-i18n="checks.head.surface">检查面</th><th data-i18n="checks.head.content">核对内容</th><th data-i18n="checks.head.gate">不满足时</th></tr></thead>
+          <tbody>
+            <tr><th data-i18n="check.source.title">仓库与固定身份</th><td data-i18n="check.source.body">canonical HTTPS GitHub 地址、完整 Commit、默认分支来源、包路径与重复身份</td><td data-i18n="check.source.gate">拒绝或暂缓</td></tr>
+            <tr><th data-i18n="check.manifest.title">Manifest 一致性</th><td data-i18n="check.manifest.body">包名、语义化版本、repository、license、files、Node.js 与 DSH 声明</td><td data-i18n="check.manifest.gate">身份不一致即阻止</td></tr>
+            <tr><th data-i18n="check.bundle.title">Bundle 与入口</th><td data-i18n="check.bundle.body">dsh.bundle.patch 路径、Patch 内容、唯一 entryIds，以及是否触碰受保护组件</td><td data-i18n="check.bundle.gate">非标准或冲突即阻止</td></tr>
+            <tr><th data-i18n="check.build.title">构建与安装契约</th><td data-i18n="check.build.body">运行文件是否存在；preinstall、install、postinstall、prepare 是否精确披露；依赖是否自包含</td><td data-i18n="check.build.gate">隐藏脚本或缺产物即阻止</td></tr>
+            <tr><th data-i18n="check.permission.title">权限与数据边界</th><td data-i18n="check.permission.body">文件、网络、命令、凭据、Profile、会话、原生制品与外部服务信号</td><td data-i18n="check.permission.gate">保守标级；自动准入失败</td></tr>
+            <tr><th data-i18n="check.security.title">安全与失败行为</th><td data-i18n="check.security.body">硬编码密钥、临时外传端点、破坏性命令、挖矿、敏感日志、动态执行与越界路径</td><td data-i18n="check.security.gate">硬信号阻止；风险信号警告</td></tr>
+            <tr><th data-i18n="check.compatibility.title">兼容性与证据</th><td data-i18n="check.compatibility.body">精确 DSH 版本、Node.js、系统、Profile 范围，以及安装、运行、安全证据状态</td><td data-i18n="check.compatibility.gate">未知保持 unknown</td></tr>
+            <tr><th data-i18n="check.catalog.title">Catalog 合约</th><td data-i18n="check.catalog.body">分类、中文名、用途、搜索词、状态、更新策略、当前目录重复项与 schema</td><td data-i18n="check.catalog.gate">Registry 校验失败关闭</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="standards-bounds" aria-labelledby="bounds-title">
+      <div class="section-shell standards-bounds-layout">
+        <div class="standards-bounds-copy reveal"><span>04 / BOUNDED STATIC AUDIT</span><h2 id="bounds-title" data-i18n="bounds.title">自动化只读固定源码，并且检查面有硬上限。</h2><p data-i18n="bounds.lead">上限用于保证“读全”和确定性，不是大插件不安全的结论。超限、截断或暂时无法读取时，结果是检查不完整并失败关闭。</p></div>
+        <div class="standards-bounds-grid reveal">
+          <article><strong>1,200</strong><span data-i18n="bounds.tree">最多仓库树条目</span></article>
+          <article><strong>240</strong><span data-i18n="bounds.files">最多运行时文件</span></article>
+          <article><strong>256 KiB</strong><span data-i18n="bounds.single">单文件上限</span></article>
+          <article><strong>2 MiB</strong><span data-i18n="bounds.total">运行时源码总上限</span></article>
+        </div>
+      </div>
+      <div class="section-shell standards-no-exec reveal"><b>NO THIRD-PARTY EXECUTION</b><p data-i18n="bounds.noexec">自动化不会运行第三方 install、prepare、build、test 或运行时代码，也不会下载依赖来补足结论。</p></div>
+    </section>
+
+    <section class="standards-blockers section-shell" aria-labelledby="blockers-title">
+      <div class="section-heading reveal"><div><span class="section-index">05 / HARD BLOCKERS</span><h2 id="blockers-title" data-i18n="blockers.title">这些情况不会进入受保护安装通道。</h2></div><p data-i18n="blockers.lead">硬性边界优先于评分、热度、作者声明或历史版本表现。</p></div>
+      <div class="standards-blocker-grid">
+        <article class="reveal"><span>MKT001</span><h3 data-i18n="blocker.source.title">来源不可固定</h3><p data-i18n="blocker.source.body">非 GitHub、浮动分支/标签、仓库归属不明、路径歧义或许可证权威不可验证。</p></article>
+        <article class="reveal"><span>MKT002–006</span><h3 data-i18n="blocker.contract.title">安装契约不完整</h3><p data-i18n="blocker.contract.body">缺 manifest、Bundle Patch、唯一入口、运行产物，或生命周期脚本与实际源码不一致。</p></article>
+        <article class="reveal"><span>MKT007</span><h3 data-i18n="blocker.official.title">越过 DSH 边界</h3><p data-i18n="blocker.official.body">修改 DSH 核心或 @deepseek-ai/*，停用、替换、遮蔽官方清单或受保护组件。</p></article>
+        <article class="reveal"><span>FAIL CLOSED</span><h3 data-i18n="blocker.unknown.title">证据未知或检查不完整</h3><p data-i18n="blocker.unknown.body">源码漂移、接口失败、超限、截断、敏感泄露或破坏性行为信号存在时停止晋级。</p></article>
+      </div>
+    </section>
+
+    <section class="standards-flow" aria-labelledby="flow-title">
+      <div class="section-shell">
+        <div class="section-heading reveal"><div><span class="section-index">06 / ADMISSION FLOW</span><h2 id="flow-title" data-i18n="flow.title">从发现到公开收录，每一道门都有证据。</h2></div><p data-i18n="flow.lead">自动扫描每 8 小时运行；Catalog、Pages、国际站和国内站每 3 小时独立核对。没有合格变更时明确记录为 0。</p></div>
+        <ol class="standards-flow-list">
+          <li class="reveal"><b>01</b><div><h3 data-i18n="flow.one.title">发现与去重</h3><p data-i18n="flow.one.body">从提交表单、GitHub 主题和检索中发现，按 canonical 仓库去重。</p></div></li>
+          <li class="reveal"><b>02</b><div><h3 data-i18n="flow.two.title">固定完整 Commit</h3><p data-i18n="flow.two.body">把候选身份、manifest、Patch 与运行面固定在同一份不可变源码上。</p></div></li>
+          <li class="reveal"><b>03</b><div><h3 data-i18n="flow.three.title">有界静态检查</h3><p data-i18n="flow.three.body">完成结构、安全、权限、依赖、兼容性与 Catalog 合约核对。</p></div></li>
+          <li class="reveal"><b>04</b><div><h3 data-i18n="flow.four.title">策略判定</h3><p data-i18n="flow.four.body">符合自动低风险门槛才可 source-verified；其他结果进入复核、整改、blocked 或 rejected。</p></div></li>
+          <li class="reveal"><b>05</b><div><h3 data-i18n="flow.five.title">哈希绑定 PR 与 CI</h3><p data-i18n="flow.five.body">计划绑定 base Commit 和输入哈希，经 Registry 检查、测试与 CodeQL 后才可合并。</p></div></li>
+          <li class="reveal"><b>06</b><div><h3 data-i18n="flow.six.title">远端与公开面读回</h3><p data-i18n="flow.six.body">分别确认 GitHub Catalog、Pages、国际站和国内站；真实 Profile 安装与运行仍是独立验收。</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="standards-evidence section-shell reveal" aria-labelledby="evidence-title">
+      <div><span>IMPORTANT / EVIDENCE BOUNDARY</span><h2 id="evidence-title" data-i18n="evidence.title">收录不是完整安全审计，也不是运行成功证明。</h2><p data-i18n="evidence.body">静态检查只证明对应固定源码在明确边界内满足当前政策。真实安装、冷启动、可见 UI、功能效果、故障恢复和独立安全审核必须分别提供证据；unknown 不是失败，也绝不是通过。</p></div>
+      <div class="standards-evidence-actions"><a class="button button-primary" href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-i18n="action.submit">提交插件 ↗</a><a class="button button-secondary" href="../build/" data-i18n="action.build">按标准开发插件</a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">标准公开，证据分层，未知保持未知。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>DSH.STORE · LISTING POLICY</span><span data-i18n="footer.note">候选不等于收录 · 收录不等于安全审计</span><span class="footer-links">Friendly link / 友情链接 · <a href="https://tracefence.com/" target="_blank" rel="noreferrer">TraceFence ↗</a></span><!-- DSH_ICP --></div></footer>
+  <script defer src="./standards.js"></script>
+</body>
+</html>

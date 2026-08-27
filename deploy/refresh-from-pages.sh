@@ -101,6 +101,7 @@ check_public() {
   done <<EOF
 home $site_prefix/
 plugins $site_prefix/plugins/
+standards $site_prefix/standards/
 build $site_prefix/build/
 faq $site_prefix/faq/
 about $site_prefix/about/
@@ -146,6 +147,7 @@ required = {
     'build-manifest.json',
     'marketplace/index.html',
     'marketplace/plugins/index.html',
+    'marketplace/standards/index.html',
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
     'marketplace/about/index.html',

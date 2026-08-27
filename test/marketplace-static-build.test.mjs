@@ -40,6 +40,7 @@ test('static marketplace derives manager identity and catalog cards without muta
 
     const home = await readFile(join(output, 'marketplace/index.html'), 'utf8')
     const plugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
+    const standards = await readFile(join(output, 'marketplace/standards/index.html'), 'utf8')
     const guide = await readFile(join(output, 'marketplace/dsh-plugins/index.html'), 'utf8')
     const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
     const styles = await readFile(join(output, 'marketplace/styles.css'), 'utf8')
@@ -57,6 +58,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(release.sourceCommit, 'test-source-sha')
     assert.ok(release.files['marketplace/index.html'])
     assert.ok(release.files['marketplace/plugins/index.html'])
+    assert.ok(release.files['marketplace/standards/index.html'])
     assert.ok(release.files['registry/catalog.json'])
     assert.equal(release.files['automation-status.json'], undefined, 'run-only status must not rotate production releases')
     assert.equal(automationStatus.overall.status, 'unknown')
@@ -91,11 +93,17 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(guide, /DeepSeek Harness/)
     assert.match(guide, /build-dsh-plugin/)
     assert.match(guide, /hreflang="x-default"/)
+    assert.match(standards, /Candidate Registry/)
+    assert.match(standards, /installActionsDisabled = true/)
+    assert.match(standards, /不会运行第三方 install、prepare、build、test 或运行时代码/)
+    assert.match(standards, /href="\.\/" aria-current="page" data-i18n="nav\.standards"/)
+    assert.match(standards, /hreflang="x-default"[^>]*https:\/\/dsh\.store\/standards\//)
     const llms = await readFile(join(output, 'marketplace/llms.txt'), 'utf8')
     assert.match(llms, /## Current catalog snapshot/)
     assert.match(llms, new RegExp(`- Listed plugins: ${catalog.entries.filter(entry => entry.status !== 'unlisted').length}`))
     assert.match(llms, /- Website build source commit: test-source-sha/)
     assert.match(sitemap, /https:\/\/dsh\.store\/dsh-plugins\//)
+    assert.match(sitemap, /https:\/\/dsh\.store\/standards\//)
     assert.match(sitemap, /xmlns:mobile="http:\/\/www\.baidu\.com\/schemas\/sitemap-mobile\/1\//)
     assert.match(sitemap, /<mobile:mobile type="pc,mobile" \/>/)
     assert.match(sitemap, new RegExp(`<lastmod>${catalog.registry.updatedAt.slice(0, 10)}</lastmod>`))
@@ -124,6 +132,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const pagePaths = [
       'marketplace/index.html',
       'marketplace/plugins/index.html',
+      'marketplace/standards/index.html',
       'marketplace/build/index.html',
       'marketplace/faq/index.html',
       'marketplace/about/index.html',
@@ -143,6 +152,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\//)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\/dsh-plugins\//)
+    assert.match(sitemap, /https:\/\/dsh-store\.cn\/standards\//)
     assert.doesNotMatch(sitemap, /https:\/\/dsh\.store/)
     assert.equal(manifest.siteOrigin, 'https://dsh-store.cn')
     assert.equal(manifest.alternateOrigin, 'https://dsh.store')
