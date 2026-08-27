@@ -269,6 +269,13 @@ function replaceBetweenMarkers(source, begin, end, content, label) {
   return source.slice(0, start) + begin + content + end + source.slice(finish + end.length)
 }
 
+function removeMarkedBlock(source, begin, end, label) {
+  const start = source.indexOf(begin)
+  const finish = source.indexOf(end, start + begin.length)
+  if (start < 0 || finish < 0) throw new Error(`Static template markers are missing: ${label}`)
+  return source.slice(0, start) + source.slice(finish + end.length)
+}
+
 function replaceElementText(source, id, value) {
   const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const expression = new RegExp(`(<([a-z0-9]+)[^>]*\\bid="${escapedId}"[^>]*>)[\\s\\S]*?(<\\/\\2>)`, 'i')
@@ -330,6 +337,20 @@ await cp(resolve(projectRoot, 'marketplace'), resolve(outputRoot, 'marketplace')
 await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { recursive: true, filter: copyFilter })
 await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
 
+const publishesInternationalEditorial = siteHost === 'dsh.store'
+const articlePromoBegin = '<!-- DSH_INTL_ARTICLE_PROMO_BEGIN -->'
+const articlePromoEnd = '<!-- DSH_INTL_ARTICLE_PROMO_END -->'
+const aboutPagePath = resolve(outputRoot, 'marketplace/about/index.html')
+let aboutPage = await readFile(aboutPagePath, 'utf8')
+if (publishesInternationalEditorial) {
+  aboutPage = replaceRequired(aboutPage, articlePromoBegin, '', 'international article promo begin')
+  aboutPage = replaceRequired(aboutPage, articlePromoEnd, '', 'international article promo end')
+} else {
+  aboutPage = removeMarkedBlock(aboutPage, articlePromoBegin, articlePromoEnd, 'international article promo')
+  await rm(resolve(outputRoot, 'marketplace/about/deepseek-harness-guide'), { recursive: true, force: true })
+}
+await writeFile(aboutPagePath, aboutPage)
+
 const alternateIsDomestic = alternateOriginUrl.host === 'dsh-store.cn'
 const alternateLabel = alternateIsDomestic ? '国内站' : '国际站'
 const alternateCode = alternateIsDomestic ? 'CN' : 'INTL'
@@ -346,6 +367,14 @@ const canonicalPages = [
   { file: 'marketplace/about/index.html', route: '/about/' },
   { file: 'marketplace/dsh-plugins/index.html', route: '/dsh-plugins/' },
 ]
+if (publishesInternationalEditorial) {
+  canonicalPages.push({
+    file: 'marketplace/about/deepseek-harness-guide/index.html',
+    route: '/about/deepseek-harness-guide/',
+    fixedLocale: 'zh-CN',
+    internationalOnly: true,
+  })
+}
 const hreflangMarkup = route => {
   const intl = siteOriginUrl.host === 'dsh.store' ? siteOrigin : alternateOrigin
   const domestic = siteOriginUrl.host === 'dsh-store.cn' ? siteOrigin : alternateOrigin
@@ -355,13 +384,17 @@ const hreflangMarkup = route => {
     `<link rel="alternate" hreflang="x-default" href="${htmlEscape(`${intl}${route}`)}">`,
   ].join('\n  ')
 }
+const internationalHreflangMarkup = route => [
+  `<link rel="alternate" hreflang="zh-CN" href="${htmlEscape(`${siteOrigin}${route}`)}">`,
+  `<link rel="alternate" hreflang="x-default" href="${htmlEscape(`${siteOrigin}${route}`)}">`,
+].join('\n  ')
 
 const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/faq/': '0.8', '/about/': '0.7' }
-const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/faq/': 'monthly', '/about/': 'monthly' }
+const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
+const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:mobile="http://www.baidu.com/schemas/sitemap-mobile/1/">
 ${canonicalPages.map(({ route }) => `  <url><loc>${htmlEscape(`${siteOrigin}${route}`)}</loc><lastmod>${sitemapDate}</lastmod><changefreq>${sitemapChangefreq[route]}</changefreq><priority>${sitemapPriority[route]}</priority><mobile:mobile type="pc,mobile" /></url>`).join('\n')}
@@ -375,14 +408,17 @@ const icpMarkup = icpNumber
 const baiduVerificationMarkup = baiduVerificationCode
   ? `<meta name="baidu-site-verification" content="${htmlEscape(baiduVerificationCode)}">`
   : ''
-for (const { file: pagePath, route } of canonicalPages) {
+for (const { file: pagePath, route, fixedLocale, internationalOnly } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
-  const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
-  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route), `${pagePath} hreflang marker`)
+  const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', internationalOnly ? '' : alternateMarkup, `${pagePath} alternate site marker`)
+  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', internationalOnly ? internationalHreflangMarkup(route) : hreflangMarkup(route), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
   const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
-  const localizedDocument = withBaiduVerification.replace('<html lang="zh-CN">', `<html lang="${htmlLanguage}" data-default-locale="${defaultLocale}">`)
+  const pageLanguage = fixedLocale || htmlLanguage
+  const pageDefaultLocale = fixedLocale === 'zh-CN' ? 'zh' : defaultLocale
+  const fixedLocaleAttribute = fixedLocale ? ` data-fixed-locale="${fixedLocale}"` : ''
+  const localizedDocument = withBaiduVerification.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
   if (localizedDocument === withBaiduVerification) throw new Error(`${pagePath} html language marker is missing`)
   await writeFile(absolutePath, localizedDocument)
 }

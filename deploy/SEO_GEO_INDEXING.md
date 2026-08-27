@@ -26,7 +26,8 @@ Canonical properties: `https://dsh.store/` (international) and `https://dsh-stor
 1. Add and verify each property separately in [Baidu Search Resource Platform](https://ziyuan.baidu.com/site/index): `https://dsh.store/` and `https://dsh-store.cn/`.
 2. Submit the matching Sitemap for each property through 资源提交 → 普通收录 → Sitemap: `https://dsh.store/sitemap.xml` for the international site, and `https://dsh-store.cn/sitemap.xml` for the domestic site. Each Sitemap contains only its own canonical URLs and marks responsive pages as `pc,mobile`.
 3. Use 资源提交 → 普通收录 → API提交 or 手动提交 for the homepage, `/plugins/`, `/standards/`, `/dsh-plugins/`, `/build/`, `/faq/`, and `/about/` on each verified property. Keep any Baidu token outside source control and send only canonical URLs.
-4. Inspect 抓取诊断, Robots, 索引量, and 流量与关键词 after submission. A successful submission accelerates discovery but does not guarantee crawling, inclusion, or ranking.
+4. Submit `/about/deepseek-harness-guide/` only for the international `dsh.store` property. The domestic build intentionally omits this editorial page and its About-page entry.
+5. Inspect 抓取诊断, Robots, 索引量, and 流量与关键词 after submission. A successful submission accelerates discovery but does not guarantee crawling, inclusion, or ranking.
 
 ## Monitoring
 

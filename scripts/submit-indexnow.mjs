@@ -8,6 +8,7 @@ const defaultUrls = [
   `https://${host}/build/`,
   `https://${host}/faq/`,
   `https://${host}/about/`,
+  ...(host === 'dsh.store' ? [`https://${host}/about/deepseek-harness-guide/`] : []),
   `https://${host}/dsh-plugins/`,
 ]
 
