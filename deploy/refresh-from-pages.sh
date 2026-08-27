@@ -90,12 +90,7 @@ trap rollback_on_error ERR
 trap cleanup_incoming EXIT
 
 check_public() {
-  article_health_row=''
-  if test "$store_domain" = 'dsh.store'; then
-    article_health_row="article $site_prefix/about/deepseek-harness-guide/"
-  fi
   while read -r label path; do
-    test -n "$label" || continue
     code='000'
     for attempt in 1 2 3 4 5; do
       code=$(origin_health -o "$incoming/health-$label" -w '%{http_code}' "$health_base$path" || true)
@@ -110,7 +105,7 @@ standards $site_prefix/standards/
 build $site_prefix/build/
 faq $site_prefix/faq/
 about $site_prefix/about/
-$article_health_row
+article $site_prefix/about/deepseek-harness-guide/
 guide $site_prefix/dsh-plugins/
 catalog /registry/catalog.json
 candidates /registry/candidates.json
@@ -163,8 +158,7 @@ required = {
     'registry/catalog.json',
     'registry/candidates.json',
 }
-if domain == 'dsh.store':
-    required.add('marketplace/about/deepseek-harness-guide/index.html')
+required.add('marketplace/about/deepseek-harness-guide/index.html')
 if not required.issubset(files):
     raise SystemExit('release manifest is incomplete')
 for path, metadata in sorted(files.items()):
