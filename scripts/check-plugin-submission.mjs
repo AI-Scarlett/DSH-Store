@@ -56,7 +56,8 @@ function requiredField(fields, label) {
 
 function safeRelativeDirectory(value) {
   const cleaned = cleanValue(value)
-  if (cleaned === '' || cleaned === '.' || cleaned === '/' || cleaned.toLowerCase() === 'root') return null
+  if (cleaned === '') return null
+  if (cleaned === '.' || cleaned === '/' || cleaned.toLowerCase() === 'root') return ''
   const normalized = cleaned.replace(/^\.\//, '').replace(/\/$/, '').replace(/\/package\.json$/, '')
   if (normalized === '' || normalized.startsWith('/') || normalized.includes('..') || normalized.includes('\\') || normalized.includes('\0')) {
     throw submissionError('SUBMISSION_PATH_INVALID', 'Plugin path must stay inside the repository')
@@ -266,12 +267,12 @@ async function repositorySnapshot(repositoryUrl, options) {
 
 async function discoverManifest(repositoryUrl, snapshot, requestedPath, options) {
   if (requestedPath !== null) {
-    const manifestPath = `${requestedPath}/package.json`
+    const manifestPath = requestedPath === '' ? 'package.json' : `${requestedPath}/package.json`
     const manifest = await readPinnedJson(repositoryUrl, snapshot.commit, manifestPath, options)
     if (!manifest?.dsh?.bundle?.patch) {
       throw submissionError('SUBMISSION_BUNDLE_MISSING', `${manifestPath} does not declare dsh.bundle.patch`)
     }
-    return { manifestPath, manifest, candidates: [requestedPath] }
+    return { manifestPath, manifest, candidates: [requestedPath || '.'] }
   }
   const tree = await fetchJson(`${snapshot.apiRoot}/git/trees/${snapshot.commit}?recursive=1`, {
     ...options, code: 'SUBMISSION_TREE_HTTP', maxBytes: 4 * 1024 * 1024,

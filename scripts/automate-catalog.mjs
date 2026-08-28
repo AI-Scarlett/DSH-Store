@@ -462,7 +462,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 
       process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
       const withoutCurrent = { ...baselineCatalog, entries: baselineCatalog.entries.filter(item => item.id !== entry.id) }
-      const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '', {
+      const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '.', {
         catalogDocument: withoutCurrent,
         allowProtectedManager: isSelfManagerEntry(entry),
         token: process.env.GITHUB_TOKEN, timeoutMs: 12_000,

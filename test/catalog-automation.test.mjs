@@ -125,6 +125,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /candidateRetention\.registryRemovals/)
   assert.match(source, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
+  assert.match(source, /entry\.installPath \?\? ['"]\.['"]/)
   assert.match(source, /catalogUpdateIdentityMatches/)
   assert.match(source, /buildCatalogVersionUpdate/)
   assert.match(source, /isSafeSelfManagerUpdate/)

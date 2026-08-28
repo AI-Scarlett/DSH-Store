@@ -239,6 +239,19 @@ test('multiple DSH packages ask only for an optional plugin path and then resolv
   assert.equal(selected.candidate.packageName, 'dsh-two')
 })
 
+test('an explicit root path selects the root package in a multi-plugin repository', async () => {
+  const packages = {
+    'package.json': manifest({ name: 'dsh-root' }),
+    'plugins/nested/package.json': manifest({ name: 'dsh-nested' }),
+  }
+  const result = await checkRepository('https://github.com/example/dsh-demo', '.', {
+    catalogDocument: catalog(), fetch: sourceFetch({ packages }), retryDelaysMs: [],
+  })
+  assert.equal(result.candidate.packageName, 'dsh-root')
+  assert.equal(result.candidate.manifestPath, 'package.json')
+  assert.equal(result.candidate.installPath, null)
+})
+
 test('submission input rejects non-GitHub and escaping paths', async () => {
   assert.equal(parseRepositoryInput('https://github.com/example/dsh-demo').repositoryUrl, 'https://github.com/example/dsh-demo')
   assert.throws(() => parseRepositoryInput('https://example.test/dsh-demo'), error => error.code === 'SUBMISSION_REPOSITORY_INVALID')
