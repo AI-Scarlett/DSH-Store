@@ -5,6 +5,10 @@ const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const PREFERRED_DSH_RELEASE_KEYS = new Map(
   DSH_RC_RELEASES.map(release => [dshReleaseVersion(release), release]),
 )
+const AUTOMATED_BLOCK_DISCOVERY_METHODS = new Set([
+  'automated-fixed-source-policy-v1',
+  'automated-fixed-source-update-v2',
+])
 
 function normalizedPath(value) {
   return value === undefined || value === null || value === '' ? null : String(value)
@@ -96,6 +100,15 @@ export function catalogUpdatePolicy(entry) {
   return lowRisk ? 'source-verified' : entry.status === 'approved' ? 'user-reviewed' : 'external-only'
 }
 
+export function isAutomatedPolicyBlocked(entry) {
+  return entry?.status === 'blocked'
+    && entry?.updatePolicy === 'external-only'
+    && entry?.risk?.review === 'automatic-policy-blocked-not-installable'
+    && entry?.details?.reviewStatus === 'automated-scan'
+    && AUTOMATED_BLOCK_DISCOVERY_METHODS.has(entry?.assurance?.discovery?.method)
+    && String(entry?.statusReason ?? '').startsWith('Automatic policy blocked installation:')
+}
+
 export function assessUpstreamVersion(entry, source) {
   const commit = String(source?.commit ?? '').toLowerCase()
   if (!COMMIT_SHA.test(commit)) {
@@ -144,16 +157,28 @@ export function buildCatalogVersionUpdate(
   policy = catalogUpdatePolicy(entry),
   options = {},
 ) {
+  const promoteAutomatedBlock = options.promoteAutomatedBlock === true
+  if (promoteAutomatedBlock && (
+    !isAutomatedPolicyBlocked(entry)
+    || policy !== 'source-verified'
+    || analysis?.approved !== true
+  )) {
+    throw new Error('automated blocked promotion requires the original automatic block and a passing source policy')
+  }
   const reason = policy === 'source-verified'
     ? 'The newer fixed Commit passed the complete automatic low-risk source policy.'
     : policy === 'user-reviewed'
       ? 'The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review.'
       : 'The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred.'
-  return {
+  const updated = {
     ...entry,
     defaultBranch: candidate.defaultBranch,
     commit: candidate.commit,
     version: candidate.version,
+    ...(promoteAutomatedBlock ? {
+      status: 'approved',
+      updatePolicy: 'source-verified',
+    } : {}),
     compatibility: options.preserveCompatibility
       ? entry.compatibility
       : sourceDeclaredCompatibility(entry, candidate),
@@ -180,6 +205,24 @@ export function buildCatalogVersionUpdate(
     risk: {
       ...entry.risk,
       installScripts: sorted(candidate.risk?.installScripts),
+      ...(promoteAutomatedBlock ? { review: 'automated-fixed-source-policy-v1' } : {}),
     },
+    ...(promoteAutomatedBlock ? {
+      details: {
+        ...entry.details,
+        license: candidate.details.license,
+        permissions: {
+          level: 'low',
+          files: 'none',
+          network: 'none',
+          commands: 'none',
+          credentials: ['none'],
+        },
+        externalDependencies: [],
+        reviewStatus: 'automated-scan',
+      },
+    } : {}),
   }
+  if (promoteAutomatedBlock) delete updated.statusReason
+  return updated
 }

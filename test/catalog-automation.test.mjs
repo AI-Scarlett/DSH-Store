@@ -127,6 +127,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
   assert.match(source, /catalogUpdateIdentityMatches/)
   assert.match(source, /buildCatalogVersionUpdate/)
+  assert.match(source, /isAutomatedPolicyBlocked/)
+  assert.match(source, /promoteAutomatedBlock/)
   assert.match(source, /isSafeSelfManagerUpdate/)
   assert.match(source, /SELF_MANAGER_PROTECTED_ENTRY_REASON/)
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)

@@ -5,6 +5,7 @@ import {
   buildCatalogVersionUpdate,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
+  isAutomatedPolicyBlocked,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
 
@@ -68,6 +69,116 @@ test('Catalog update policy preserves low-risk automation and higher-risk local 
     updatePolicy: null,
     details: { license: 'MIT', permissions: { files: 'none', network: 'none', commands: 'none', credentials: ['none'] } },
   })), 'source-verified')
+})
+
+test('only the exact automation-created blocked shape is promotion-eligible', () => {
+  const automated = entry({
+    status: 'blocked',
+    updatePolicy: 'external-only',
+    statusReason: 'Automatic policy blocked installation: runtime source exceeded the bound',
+    assurance: {
+      ...entry().assurance,
+      discovery: { status: 'verified', method: 'automated-fixed-source-policy-v1' },
+    },
+    details: { ...entry().details, reviewStatus: 'automated-scan' },
+    risk: { installScripts: [], review: 'automatic-policy-blocked-not-installable' },
+  })
+  assert.equal(isAutomatedPolicyBlocked(automated), true)
+  assert.equal(isAutomatedPolicyBlocked({
+    ...automated,
+    assurance: { discovery: { method: 'automated-fixed-source-update-v2' } },
+  }), true)
+  assert.equal(isAutomatedPolicyBlocked({ ...automated, risk: { ...automated.risk, review: 'manual-review' } }), false)
+  assert.equal(isAutomatedPolicyBlocked({ ...automated, statusReason: 'Maintainer blocked this entry' }), false)
+  assert.equal(isAutomatedPolicyBlocked({ ...automated, assurance: { discovery: { method: 'manual-review' } } }), false)
+})
+
+test('a failed external-only refresh preserves later automatic repair eligibility', () => {
+  const automated = entry({
+    status: 'blocked',
+    updatePolicy: 'external-only',
+    statusReason: 'Automatic policy blocked installation: runtime source exceeded the bound',
+    assurance: { discovery: { method: 'automated-fixed-source-policy-v1' } },
+    details: { ...entry().details, reviewStatus: 'automated-scan' },
+    risk: { installScripts: [], review: 'automatic-policy-blocked-not-installable' },
+  })
+  const refreshed = buildCatalogVersionUpdate(
+    automated,
+    { ...automated, commit: 'b'.repeat(40), version: '1.3.0' },
+    { approved: false },
+    '2026-08-29T01:00:00Z',
+    'external-only',
+  )
+  assert.equal(refreshed.assurance.discovery.method, 'automated-fixed-source-update-v2')
+  assert.equal(isAutomatedPolicyBlocked(refreshed), true)
+})
+
+test('a newer fully approved source promotes only an automation-created block', () => {
+  const automated = entry({
+    status: 'blocked',
+    updatePolicy: 'external-only',
+    statusReason: 'Automatic policy blocked installation: license mismatch',
+    assurance: {
+      ...entry().assurance,
+      discovery: { status: 'verified', method: 'automated-fixed-source-policy-v1' },
+    },
+    details: {
+      ...entry().details,
+      license: 'SEE LICENSE IN LICENSE',
+      permissions: { level: 'unknown', files: 'unknown', network: 'unknown', commands: 'unknown', credentials: ['unknown'] },
+      externalDependencies: ['legacy-runtime'],
+      reviewStatus: 'automated-scan',
+    },
+    risk: { installScripts: [], review: 'automatic-policy-blocked-not-installable' },
+  })
+  const candidate = {
+    ...automated,
+    defaultBranch: 'main',
+    commit: 'b'.repeat(40),
+    version: '2.0.0',
+    compatibility: {
+      dsh: '^0.1.1-rc.2',
+      dshReleases: { '0.1.1-rc.2': 'compatible' },
+      node: '>=24', systems: [], profiles: ['web'],
+    },
+    details: { ...automated.details, license: 'MIT' },
+    risk: { installScripts: [] },
+  }
+  const updated = buildCatalogVersionUpdate(
+    automated,
+    candidate,
+    { approved: true, sourceUpdatedAt: '2026-08-29T00:00:00Z' },
+    '2026-08-29T01:00:00Z',
+    'source-verified',
+    { promoteAutomatedBlock: true },
+  )
+  assert.equal(updated.status, 'approved')
+  assert.equal(updated.updatePolicy, 'source-verified')
+  assert.equal(Object.hasOwn(updated, 'statusReason'), false)
+  assert.equal(updated.details.license, 'MIT')
+  assert.deepEqual(updated.details.permissions, {
+    level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'],
+  })
+  assert.deepEqual(updated.details.externalDependencies, [])
+  assert.equal(updated.risk.review, 'automated-fixed-source-policy-v1')
+  assert.equal(updated.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
+
+  assert.throws(() => buildCatalogVersionUpdate(
+    { ...automated, risk: { ...automated.risk, review: 'manual-review' } },
+    candidate,
+    { approved: true },
+    '2026-08-29T01:00:00Z',
+    'source-verified',
+    { promoteAutomatedBlock: true },
+  ), /requires the original automatic block/)
+  assert.throws(() => buildCatalogVersionUpdate(
+    automated,
+    candidate,
+    { approved: false },
+    '2026-08-29T01:00:00Z',
+    'source-verified',
+    { promoteAutomatedBlock: true },
+  ), /requires the original automatic block/)
 })
 
 test('Catalog update identity includes package, repository, manifest, install path, and Bundle entries', () => {

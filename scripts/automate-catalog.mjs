@@ -11,6 +11,7 @@ import {
   buildCatalogVersionUpdate,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
+  isAutomatedPolicyBlocked,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
 import {
@@ -474,9 +475,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (!catalogUpdateIdentityMatches(entry, candidate) || compareVersions(candidate.version, entry.version) !== 1) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the package, path, Bundle entry identity, or version contract changed' }
       }
-      if (normalizedLicense(candidate.details?.license) !== normalizedLicense(entry.details?.license)) {
-        return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the manifest license changed from the Catalog declaration' }
-      }
+      const licenseChanged = normalizedLicense(candidate.details?.license) !== normalizedLicense(entry.details?.license)
       const { owner, repository } = repositoryParts(entry.repositoryUrl)
       const lineage = await retryInfrastructure(() => github.api(
         `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
@@ -497,7 +496,11 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         }
         : policy
       const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, analysisPolicy, github))
-      const sourcePolicy = catalogUpdatePolicy(entry)
+      const promoteAutomatedBlock = isAutomatedPolicyBlocked(entry) && analysis.approved
+      if (licenseChanged && !promoteAutomatedBlock) {
+        return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the manifest license changed from the Catalog declaration' }
+      }
+      const sourcePolicy = promoteAutomatedBlock ? 'source-verified' : catalogUpdatePolicy(entry)
       const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
       const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
       if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
@@ -511,7 +514,10 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const updated = buildCatalogVersionUpdate(entry, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
-      }, observedAt, sourcePolicy, { preserveCompatibility: isSelfManagerEntry(entry) })
+      }, observedAt, sourcePolicy, {
+        preserveCompatibility: isSelfManagerEntry(entry),
+        promoteAutomatedBlock,
+      })
       return {
         index, entry, kind: 'updated', snapshot, versionAssessment, sourcePolicy, updated,
         warnings: analysis.reasons,
