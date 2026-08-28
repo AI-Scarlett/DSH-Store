@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "operation": "compact-authoritative-catalog",
+  "reason": "The GitHub Raw Catalog exceeds the installed DSH Store 2 MiB response limit, causing a safe fallback to a stale bundled snapshot and a visible version mismatch.",
+  "baseCommit": "36cc9393ca387e5afb33f15f587ca8744c10081a",
+  "scope": [
+    "docs/ops/catalog-json-compaction-plan-20260828.json",
+    "registry/catalog.json"
+  ],
+  "preconditions": {
+    "catalogSha256": "dd02af8718098a389c5265a7fc25624fc33a2555712379c921be3cfbc39668e4",
+    "catalogBytes": 2165840,
+    "entries": 539
+  },
+  "postconditions": {
+    "catalogSha256": "031be0565462bba5362e092d85d237e862044969708a50537eb8d5e214546423",
+    "catalogBytes": 1477013,
+    "maxRuntimeCatalogBytes": 2097152,
+    "semanticJsonEquality": true
+  },
+  "procedure": {
+    "transform": "Parse the current catalog and serialize the identical value without whitespace.",
+    "verification": [
+      "Assert the base commit and file hash before writing.",
+      "Assert parsed JSON semantic equality and the exact postcondition hash after writing.",
+      "Run npm run check.",
+      "Create a CI-checked pull request and verify Raw GitHub readback before refreshing the running DSH host."
+    ],
+    "rollback": "Revert the single Catalog commit through GitHub if validation, CI, Raw readback, or runtime refresh fails."
+  },
+  "authorization": "User-reported visible catalog version mismatch on 2026-08-28."
+}
