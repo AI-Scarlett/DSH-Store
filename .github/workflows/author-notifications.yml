@@ -28,7 +28,7 @@ on:
         default: "1"
         type: string
 
-run-name: Author notifications for Catalog #${{ inputs.catalog_run_id }}
+run-name: Author notifications for Catalog run ${{ inputs.catalog_run_id }}
 
 permissions:
   contents: read

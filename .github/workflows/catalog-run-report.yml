@@ -37,7 +37,7 @@ on:
         default: manual
         type: string
 
-run-name: Owner report for Catalog #${{ inputs.catalog_run_id }} (${{ inputs.request_id }})
+run-name: Owner report for Catalog run ${{ inputs.catalog_run_id }} (${{ inputs.request_id }})
 
 permissions:
   contents: read

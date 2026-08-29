@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "operation": "repair-exact-owner-report-run-title-correlation",
+  "createdAt": "2026-08-29T09:50:00+08:00",
+  "authorization": "continuation-of-user-requested-exact-watchdog-repair-run-reporting-after-live-verification-found-yaml-comment-truncation",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "2759781dace5aec2ef1949f89052ade55f45374b",
+  "branch": "codex/catalog-run-correlation-hotfix",
+  "preconditionSha256": {
+    ".github/workflows/author-notifications.yml": "9f5c40fbb0ee76b87f37f4e5495c7f16ee31e559d3ef06a07d04086c79fac38f",
+    ".github/workflows/catalog-run-report.yml": "5329d4ccb0bb22cca3f8d18ad9c1f073201c521f0c4587a25ea83289e07b6884",
+    ".github/workflows/marketplace-watchdog.yml": "78bbca03246c88d821ed9685a88662dd92e627e3d9d2e90bcbccfc43e0d5f6ec",
+    "test/catalog-automation.test.mjs": "9161b383f4451dd05c40bc9777620b22ecde168c939ab35d496727edebefc969"
+  },
+  "allowedFiles": [
+    "docs/ops/catalog-run-correlation-hotfix-plan-20260829.json",
+    ".github/workflows/author-notifications.yml",
+    ".github/workflows/catalog-run-report.yml",
+    ".github/workflows/marketplace-watchdog.yml",
+    "test/catalog-automation.test.mjs"
+  ],
+  "liveEvidence": {
+    "catalogRunId": "33206973798",
+    "manualReportRunId": "33227368760",
+    "manualReportConclusion": "success",
+    "expectedDisplayTitle": "Owner report for Catalog #33206973798 (post-merge-exact-33206973798)",
+    "actualDisplayTitle": "Owner report for Catalog",
+    "cause": "an unquoted YAML plain scalar treats the hash character as the start of a comment"
+  },
+  "targetPolicy": {
+    "runTitleContainsExactCatalogRunId": true,
+    "runTitleContainsExactRequestId": true,
+    "watchdogExpectedTitleIsByteExact": true,
+    "workflowRunDependency": false
+  },
+  "boundaries": {
+    "dshProfileMutation": false,
+    "thirdPartyRepositoryWrites": false,
+    "thirdPartyCodeExecution": false,
+    "newAuthorNotificationRun": false
+  },
+  "gates": [
+    "remote main and every precondition hash still match",
+    "workflow run-name avoids YAML comment syntax",
+    "watchdog expected title exactly matches the workflow run-name template",
+    "YAML parses and focused tests pass",
+    "npm run check passes",
+    "CI-checked pull request and verified merge",
+    "a live manual owner report run exposes the exact Catalog Run ID and request ID in displayTitle"
+  ],
+  "rollback": "revert the pull request; no DSH Profile, package, or third-party repository is changed"
+}
