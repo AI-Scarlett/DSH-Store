@@ -62,7 +62,8 @@ Profile、不用低层测试冒充运行验收”的边界。
 
 ## 作者整改通知
 
-每次八小时 Catalog 扫描成功后，`author-notifications.yml` 会对四类确定性结果维护公开 GitHub
+每次八小时 Catalog 扫描策略 Job 成功后，Catalog 工作流会直接调用 `author-notifications.yml`，
+对四类确定性结果维护公开 GitHub
 修复单：Catalog 中仍为 `blocked` 的仓库、发现更高上游版本但因源码契约暂缓更新的仓库，以及
 明确属于 DSH 且被固定 Commit 门禁拒绝的候选仓库，以及因不在最新三个 DSH 版本兼容窗口而
 暂时下架的仓库。修复单逐项列出原因和建议，并 `@` canonical
@@ -74,10 +75,12 @@ Profile、不用低层测试冒充运行验收”的边界。
 Commit 的有界指纹；后续复检会区分“已修改但仍未通过、已修改且阻断清除、未检测到新提交、首次
 建立基线或暂无法判断”。该状态只表示上游源码是否变化及确定性阻断是否消失，不等同于运行时验收。
 
-`catalog-run-report.yml` 会在每一次 Catalog 工作流完成后立即生成所有者报告；成功扫描会有界等待
-最多五分钟，以纳入与同一 Catalog Run ID 绑定的作者通知计划，失败扫描也会报告失败阶段而不是
-静默跳过。报告通过固定 Issue 评论 `@AI-Scarlett`，按 Catalog Run ID 只发送一次普通报告；三小时
-看门狗仅在即时报告缺失时补发，或为修复/公开面失败使用独立告警标记。报告列出 GitHub 整改消息
+作者通知完成后，Catalog 工作流会直接调用 `catalog-run-report.yml` 生成所有者报告。两个可复用
+工作流都接收当前 Catalog Run ID 和 Run Attempt，并只读取同一次 Catalog Run 中的精确 Artifact，
+不依赖 `workflow_run`。失败扫描也会报告失败阶段而不是静默跳过。报告通过固定 Issue 评论
+`@AI-Scarlett`，按 Catalog Run ID 只发送一次普通报告；三小时看门狗补跑 Catalog 时，会先等待与
+本轮唯一请求 ID 对应的新 Run 完成，再用该新 Run ID 直接补调用报告工作流，不能回退到上一次扫描。
+若内联报告已经成功，补调用会按相同幂等标记跳过。报告列出 GitHub 整改消息
 涉及的项目数和 GitHub 通知邮件触发项目数。GitHub 是否实际投递邮件取决于被提及维护者的个人
 通知设置，仓库无法读取私人邮箱回执，因此必须显示“送达未验证”，不能把触发数量表述成实际送达数量。
 
@@ -130,8 +133,9 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
   验收沿用到新版本；源码变化但没有提升版本号时只记录异常，不移动 Catalog 固定 Commit；
 - `pages.yml` 仍按三小时窗口第 25 分钟重新构建 GitHub Pages；
 - 两台服务器的 systemd timer 仍按三小时窗口第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
-- `catalog-run-report.yml` 监听每一次 Catalog 完成事件，立即发布一次按 Run ID 去重的所有者 `@mention` 报告；
-- `marketplace-watchdog.yml` 仍按三小时窗口第 55 分钟核验上一轮工作流以及 GitHub、Pages、国际站、国内站；
+- `catalog-automation.yml` 直接调用作者通知与所有者报告可复用工作流，所有输入和 Artifact 均绑定当前 Run ID 与 Attempt；
+- `catalog-run-report.yml` 立即发布一次按 Catalog Run ID 去重的所有者 `@mention` 报告，不依赖 `workflow_run`；
+- `marketplace-watchdog.yml` 仍按三小时窗口第 55 分钟核验 Catalog 以及 GitHub、Pages、国际站、国内站；补跑时等待精确的新 Run 完成并直接补调用其报告；
 - 上一轮缺失、失败、超过九小时或公共目录不一致时，自动重跑 Catalog 或 Pages；
 - 所有 Catalog 写入绑定 base Commit、文件 SHA-256、外部备份、机器计划 ID 和精确文件范围。
 

@@ -17,9 +17,12 @@ concurrency:
 jobs:
   verify-and-repair:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 110
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -30,32 +33,113 @@ jobs:
           base_sha=$(git rev-parse HEAD)
           test "$base_sha" = "$(git rev-parse origin/main)"
           echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
-      - name: Verify the previous Catalog automation run
-        id: previous
+      - name: Resolve and wait for the exact Catalog run
+        id: catalog
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          last=$(gh run list --workflow catalog-automation.yml --limit 1 --json databaseId,status,conclusion,createdAt,url)
-          status=$(jq -r '.[0].status // "missing"' <<<"$last")
-          conclusion=$(jq -r '.[0].conclusion // "missing"' <<<"$last")
-          created=$(jq -r '.[0].createdAt // "1970-01-01T00:00:00Z"' <<<"$last")
-          echo "latest_run_id=$(jq -r '.[0].databaseId // empty' <<<"$last")" >> "$GITHUB_OUTPUT"
-          echo "latest_run_url=$(jq -r '.[0].url // empty' <<<"$last")" >> "$GITHUB_OUTPUT"
-          echo "latest_status=$status" >> "$GITHUB_OUTPUT"
-          echo "latest_conclusion=$conclusion" >> "$GITHUB_OUTPUT"
+          request_id="watchdog-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          latest_id=$(gh run list --workflow catalog-automation.yml --limit 1 \
+            --json databaseId --jq '.[0].databaseId // empty')
+          repair=false
 
-          completed=$(gh run list --workflow catalog-automation.yml --status completed --limit 1 --json databaseId,conclusion,url)
-          echo "report_run_id=$(jq -r '.[0].databaseId // empty' <<<"$completed")" >> "$GITHUB_OUTPUT"
-          echo "report_run_url=$(jq -r '.[0].url // empty' <<<"$completed")" >> "$GITHUB_OUTPUT"
-          echo "report_run_conclusion=$(jq -r '.[0].conclusion // "missing"' <<<"$completed")" >> "$GITHUB_OUTPUT"
+          if test -n "$latest_id"; then
+            latest=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$latest_id")
+            status=$(jq -r .status <<<"$latest")
+            conclusion=$(jq -r '.conclusion // "unknown"' <<<"$latest")
+            created=$(jq -r .created_at <<<"$latest")
+            age=$(( $(date -u +%s) - $(date -u -d "$created" +%s) ))
 
-          age=$(( $(date -u +%s) - $(date -u -d "$created" +%s) ))
-          if test "$status" != completed || test "$conclusion" != success || test "$age" -gt 32400; then
-            echo "repair=true" >> "$GITHUB_OUTPUT"
-            gh workflow run catalog-automation.yml --ref main
+            if test "$status" != completed && test "$age" -le 32400; then
+              for attempt in $(seq 1 120); do
+                latest=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$latest_id")
+                status=$(jq -r .status <<<"$latest")
+                test "$status" = completed && break
+                sleep 15
+              done
+              conclusion=$(jq -r '.conclusion // "unknown"' <<<"$latest")
+            fi
+
+            if test "$status" = completed && test "$conclusion" = success && test "$age" -le 32400; then
+              target_id="$latest_id"
+            elif test "$status" != completed && test "$age" -le 32400; then
+              target_id="$latest_id"
+            else
+              repair=true
+            fi
           else
-            echo "repair=false" >> "$GITHUB_OUTPUT"
+            repair=true
           fi
+
+          if test "$repair" = true; then
+            gh workflow run catalog-automation.yml --ref main -f request_id="$request_id"
+            expected_title="Catalog automation ($request_id)"
+            target_id=''
+            for attempt in $(seq 1 60); do
+              runs=$(gh run list --workflow catalog-automation.yml --event workflow_dispatch --limit 20 \
+                --json databaseId,displayTitle)
+              target_id=$(jq -r --arg expected "$expected_title" \
+                '.[] | select(.displayTitle == $expected) | .databaseId' <<<"$runs" | head -n 1)
+              test -n "$target_id" && break
+              sleep 5
+            done
+            test -n "$target_id"
+
+            for attempt in $(seq 1 360); do
+              target=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$target_id")
+              status=$(jq -r .status <<<"$target")
+              test "$status" = completed && break
+              sleep 15
+            done
+          else
+            target=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$target_id")
+          fi
+
+          status=$(jq -r .status <<<"$target")
+          conclusion=$(jq -r '.conclusion // "unknown"' <<<"$target")
+          run_attempt=$(jq -r .run_attempt <<<"$target")
+          test -n "$run_attempt"
+          echo "repair=$repair" >> "$GITHUB_OUTPUT"
+          echo "request_id=$request_id" >> "$GITHUB_OUTPUT"
+          echo "report_run_id=$target_id" >> "$GITHUB_OUTPUT"
+          echo "report_run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
+          echo "report_run_url=$(jq -r .html_url <<<"$target")" >> "$GITHUB_OUTPUT"
+          echo "report_run_status=$status" >> "$GITHUB_OUTPUT"
+          echo "report_run_conclusion=$conclusion" >> "$GITHUB_OUTPUT"
+      - name: Directly invoke the owner report for the repaired Catalog run
+        id: owner_report
+        if: steps.catalog.outputs.repair == 'true' && steps.catalog.outputs.report_run_status == 'completed'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CATALOG_RUN_ID: ${{ steps.catalog.outputs.report_run_id }}
+          CATALOG_RUN_ATTEMPT: ${{ steps.catalog.outputs.report_run_attempt }}
+          REQUEST_ID: ${{ steps.catalog.outputs.request_id }}-owner-report
+        run: |
+          gh workflow run catalog-run-report.yml --ref main \
+            -f catalog_run_id="$CATALOG_RUN_ID" \
+            -f catalog_run_attempt="$CATALOG_RUN_ATTEMPT" \
+            -f request_id="$REQUEST_ID"
+          expected_title="Owner report for Catalog #${CATALOG_RUN_ID} (${REQUEST_ID})"
+          report_run_id=''
+          for attempt in $(seq 1 60); do
+            runs=$(gh run list --workflow catalog-run-report.yml --event workflow_dispatch --limit 20 \
+              --json databaseId,displayTitle)
+            report_run_id=$(jq -r --arg expected "$expected_title" \
+              '.[] | select(.displayTitle == $expected) | .databaseId' <<<"$runs" | head -n 1)
+            test -n "$report_run_id" && break
+            sleep 5
+          done
+          test -n "$report_run_id"
+          for attempt in $(seq 1 80); do
+            report_run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$report_run_id")
+            status=$(jq -r .status <<<"$report_run")
+            test "$status" = completed && break
+            sleep 15
+          done
+          test "$(jq -r .status <<<"$report_run")" = completed
+          echo "run_id=$report_run_id" >> "$GITHUB_OUTPUT"
+          echo "run_url=$(jq -r .html_url <<<"$report_run")" >> "$GITHUB_OUTPUT"
+          echo "conclusion=$(jq -r '.conclusion // "unknown"' <<<"$report_run")" >> "$GITHUB_OUTPUT"
       - name: Verify GitHub, Pages, international, and domestic Catalog and Candidate Registries
         id: public
         continue-on-error: true
@@ -65,62 +149,55 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref main
-      - name: Download the latest Catalog decision record
+      - name: Download the exact Catalog decision record
         id: catalog_report
         if: always()
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          REPORT_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
+          REPORT_RUN_ID: ${{ steps.catalog.outputs.report_run_id }}
+          REPORT_RUN_ATTEMPT: ${{ steps.catalog.outputs.report_run_attempt }}
         run: |
           test -n "$REPORT_RUN_ID"
+          test -n "$REPORT_RUN_ATTEMPT"
           report_dir="$RUNNER_TEMP/catalog-automation-report"
           mkdir -p "$report_dir"
           gh run download "$REPORT_RUN_ID" \
-            --pattern "catalog-automation-${REPORT_RUN_ID}-*" \
+            --name "catalog-automation-${REPORT_RUN_ID}-${REPORT_RUN_ATTEMPT}" \
             --dir "$report_dir"
           report_path=$(find "$report_dir" -type f -name catalog-automation-report.json -print -quit)
           test -n "$report_path"
           echo "path=$report_path" >> "$GITHUB_OUTPUT"
-      - name: Download the matching author notification record
+      - name: Download the exact author notification record
         id: author_report
-        if: always()
+        if: always() && steps.catalog.outputs.report_run_conclusion == 'success'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          REPORT_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
+          REPORT_RUN_ID: ${{ steps.catalog.outputs.report_run_id }}
+          REPORT_RUN_ATTEMPT: ${{ steps.catalog.outputs.report_run_attempt }}
         run: |
           test -n "$REPORT_RUN_ID"
-          runs=$(gh run list --workflow author-notifications.yml --status success --limit 8 --json databaseId,url)
-          while IFS=$'\t' read -r run_id run_url; do
-            test -n "$run_id" || continue
-            plan_dir="$RUNNER_TEMP/author-notice-plan-$run_id"
-            mkdir -p "$plan_dir"
-            if ! gh run download "$run_id" \
-              --pattern "author-notification-plan-${run_id}-*" \
-              --dir "$plan_dir"; then
-              continue
-            fi
-            plan_path=$(find "$plan_dir" -type f -name author-notice-plan.json -print -quit)
-            test -n "$plan_path" || continue
-            if jq -e --arg catalog_run_id "$REPORT_RUN_ID" \
-              '.sourceCatalogRunId == $catalog_run_id' "$plan_path" >/dev/null; then
-              echo "path=$plan_path" >> "$GITHUB_OUTPUT"
-              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-              echo "run_url=$run_url" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-          done < <(jq -r '.[] | [.databaseId, .url] | @tsv' <<<"$runs")
-          exit 1
+          test -n "$REPORT_RUN_ATTEMPT"
+          plan_dir="$RUNNER_TEMP/author-notice-plan"
+          mkdir -p "$plan_dir"
+          gh run download "$REPORT_RUN_ID" \
+            --name "author-notification-plan-${REPORT_RUN_ID}-${REPORT_RUN_ATTEMPT}" \
+            --dir "$plan_dir"
+          plan_path=$(find "$plan_dir" -type f -name author-notice-plan.json -print -quit)
+          test -n "$plan_path"
+          jq -e --arg catalog_run_id "$REPORT_RUN_ID" \
+            '.sourceCatalogRunId == $catalog_run_id' "$plan_path" >/dev/null
+          echo "path=$plan_path" >> "$GITHUB_OUTPUT"
       - name: Render the Chinese update and verification report
         id: notification_report
         if: always()
         env:
           CATALOG_REPORT_PATH: ${{ steps.catalog_report.outputs.path }}
-          CATALOG_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
-          CATALOG_RUN_URL: ${{ steps.previous.outputs.report_run_url }}
-          CATALOG_RUN_CONCLUSION: ${{ steps.previous.outputs.report_run_conclusion }}
-          REPAIR_TRIGGERED: ${{ steps.previous.outputs.repair }}
+          CATALOG_RUN_ID: ${{ steps.catalog.outputs.report_run_id }}
+          CATALOG_RUN_URL: ${{ steps.catalog.outputs.report_run_url }}
+          CATALOG_RUN_CONCLUSION: ${{ steps.catalog.outputs.report_run_conclusion }}
+          REPAIR_TRIGGERED: ${{ steps.catalog.outputs.repair }}
           AUTHOR_NOTICE_PLAN_PATH: ${{ steps.author_report.outputs.path }}
         run: |
           args=(
@@ -155,18 +232,24 @@ jobs:
         id: delivery_plan
         if: always() && steps.notification_report.outcome == 'success' && steps.base.outcome == 'success'
         env:
+          BASE_COMMIT: ${{ steps.base.outputs.sha }}
           REPORT_PATH: ${{ steps.notification_report.outputs.path }}
-          REPORT_RUN_ID: ${{ steps.previous.outputs.report_run_id }}
-          REPAIR_TRIGGERED: ${{ steps.previous.outputs.repair }}
+          REPORT_RUN_ID: ${{ steps.catalog.outputs.report_run_id }}
+          REPORT_RUN_CONCLUSION: ${{ steps.catalog.outputs.report_run_conclusion }}
+          PUBLIC_OUTCOME: ${{ steps.public.outcome }}
+          OWNER_REPORT_CONCLUSION: ${{ steps.owner_report.outputs.conclusion }}
+          REPAIR_TRIGGERED: ${{ steps.catalog.outputs.repair }}
         run: |
           delivery_key="catalog-$REPORT_RUN_ID"
-          if test "$REPAIR_TRIGGERED" = true || test "${{ steps.public.outcome }}" != success; then
+          if test "$REPORT_RUN_CONCLUSION" != success || test "$PUBLIC_OUTCOME" != success; then
+            delivery_key="${delivery_key}-watchdog-alert"
+          elif test "$REPAIR_TRIGGERED" = true && test "$OWNER_REPORT_CONCLUSION" != success; then
             delivery_key="${delivery_key}-watchdog-alert"
           fi
           node scripts/catalog-report-delivery.mjs plan \
             --report "$REPORT_PATH" \
             --state "$RUNNER_TEMP/catalog-report-state.json" \
-            --base-commit "${{ steps.base.outputs.sha }}" \
+            --base-commit "$BASE_COMMIT" \
             --catalog-run-id "$REPORT_RUN_ID" \
             --delivery-key "$delivery_key" \
             --output "$RUNNER_TEMP/catalog-report-delivery-plan.json"
@@ -190,5 +273,9 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
       - name: Keep unresolved repair visible to the next run
-        if: steps.previous.outputs.repair == 'true' || steps.public.outcome != 'success'
+        if: >-
+          steps.catalog.outputs.report_run_status != 'completed' ||
+          steps.catalog.outputs.report_run_conclusion != 'success' ||
+          steps.public.outcome != 'success' ||
+          (steps.catalog.outputs.repair == 'true' && steps.owner_report.outputs.conclusion != 'success')
         run: exit 1

@@ -4,11 +4,17 @@ on:
   schedule:
     - cron: "5 */8 * * *"
   workflow_dispatch:
+    inputs:
+      request_id:
+        description: Optional caller correlation identifier
+        required: false
+        default: manual
+        type: string
+
+run-name: Catalog automation (${{ inputs.request_id || github.event_name }})
 
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write
+  contents: read
 
 concurrency:
   group: catalog-automation
@@ -18,6 +24,10 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -144,3 +154,32 @@ jobs:
           path: ${{ runner.temp }}/catalog-automation-report.json
           if-no-files-found: warn
           retention-days: 30
+
+  author-notifications:
+    needs: update
+    if: needs.update.result == 'success'
+    uses: ./.github/workflows/author-notifications.yml
+    with:
+      catalog_run_id: ${{ github.run_id }}
+      catalog_run_attempt: ${{ github.run_attempt }}
+      catalog_conclusion: ${{ needs.update.result }}
+      inline_catalog_run: true
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+
+  owner-report:
+    needs: [update, author-notifications]
+    if: always()
+    uses: ./.github/workflows/catalog-run-report.yml
+    with:
+      catalog_run_id: ${{ github.run_id }}
+      catalog_run_attempt: ${{ github.run_attempt }}
+      catalog_conclusion: ${{ needs.update.result }}
+      inline_catalog_run: true
+      request_id: catalog-inline
+    permissions:
+      contents: read
+      actions: read
+      issues: write

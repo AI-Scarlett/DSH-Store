@@ -34,10 +34,11 @@ Catalog 的远端 GitHub `main` 是权威；本地副本或页面缓存只可用
 
 扫描先绑定当前 `main` Commit、Catalog 哈希和候选库哈希，生成机器可读计划。只有计划未漂移、`npm run check`、Registry 校验和 CodeQL 全部通过时，GitHub Actions 才会通过短期令牌创建 PR、等待门禁并 squash 合并。
 
-每一次 Catalog 工作流完成（成功、失败或取消）后，`catalog-run-report.yml` 都会直接生成报告并在
-固定报告 Issue 中 `@AI-Scarlett`，从而触发 GitHub 站内通知及用户配置允许时的邮件转发。成功扫描
-会有界等待最多五分钟来读取同一 Catalog Run ID 的作者通知计划；等待超时不会把未知统计写成 0。
-普通报告以 Catalog Run ID 幂等去重，不依赖三小时定时器。
+Catalog 工作流在扫描 Job 结束后，直接以可复用 Job 调用 `author-notifications.yml`，再调用
+`catalog-run-report.yml`；两者都绑定当前 Catalog Run ID、Run Attempt 和同一次运行中的精确 Artifact，
+不再依赖 `workflow_run` 事件串联。所有者报告在固定报告 Issue 中 `@AI-Scarlett`，从而触发 GitHub
+站内通知及用户配置允许时的邮件转发。普通报告以 Catalog Run ID 幂等去重，不依赖三小时定时器；
+失败扫描也会报告失败阶段，作者通知只在扫描策略 Job 成功后执行。
 
 合并后，GitHub Pages 构建公开商城。看门狗每 3 小时分别核对：
 
@@ -46,6 +47,8 @@ Catalog 的远端 GitHub `main` 是权威；本地副本或页面缓存只可用
 - `dsh.store` 国际站 Catalog；
 - `dsh-store.cn` 国内站 Catalog。
 
-看门狗发现上一次 8 小时扫描超过 9 小时未成功时会重跑扫描；发现公开页面陈旧时会重跑 Pages 构建。
-若同一 Run ID 的即时报告缺失，看门狗使用相同幂等标记补发；发生修复或公开面失败时则使用独立、
-每轮一次的告警标记。每次报告列出新增数量、历史插件更新数量、清单、作者通知量和公共表面状态。
+看门狗发现上一次 8 小时扫描超过 9 小时未成功时，会用本轮唯一请求 ID 补跑 Catalog、定位与该请求
+严格匹配的新 Run ID，并等待它完成；随后再把该 Run ID 和 Run Attempt 直接传给报告工作流，绝不读取
+补跑前的旧扫描。报告工作流按 Catalog Run ID 幂等，Catalog 内联报告已成功时补调用会安全跳过；内联
+报告失败时则完成恢复。发现公开页面陈旧时仍会重跑 Pages 构建。只有补跑最终失败、报告恢复失败或
+公开面仍失败时看门狗才标红。每次报告列出新增数量、历史插件更新数量、清单、作者通知量和公共表面状态。
