@@ -1,15 +1,43 @@
 name: Notify owner after every Catalog scan
 
 on:
-  workflow_run:
-    workflows: ["Automated plugin radar and Catalog update"]
-    types: [completed]
+  workflow_call:
+    inputs:
+      catalog_run_id:
+        required: true
+        type: string
+      catalog_run_attempt:
+        required: true
+        type: string
+      catalog_conclusion:
+        required: true
+        type: string
+      inline_catalog_run:
+        required: false
+        default: false
+        type: boolean
+      request_id:
+        required: false
+        default: catalog-inline
+        type: string
   workflow_dispatch:
     inputs:
       catalog_run_id:
-        description: Optional completed Catalog run ID; defaults to the latest completed run
-        required: false
+        description: Exact completed Catalog run ID to report
+        required: true
         type: string
+      catalog_run_attempt:
+        description: Exact Catalog run attempt containing the decision artifacts
+        required: true
+        default: "1"
+        type: string
+      request_id:
+        description: Unique caller correlation identifier
+        required: false
+        default: manual
+        type: string
+
+run-name: Owner report for Catalog #${{ inputs.catalog_run_id }} (${{ inputs.request_id }})
 
 permissions:
   contents: read
@@ -17,7 +45,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: catalog-run-report-${{ github.event.workflow_run.id || inputs.catalog_run_id || github.run_id }}
+  group: catalog-run-report-${{ inputs.catalog_run_id }}-${{ inputs.catalog_run_attempt }}
   cancel-in-progress: false
 
 jobs:
@@ -32,79 +60,70 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Resolve the exact completed Catalog run
+      - name: Resolve the exact Catalog run
         id: catalog
         env:
           GH_TOKEN: ${{ github.token }}
-          TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
-          REQUESTED_RUN_ID: ${{ inputs.catalog_run_id }}
+          CATALOG_RUN_ID: ${{ inputs.catalog_run_id }}
+          CATALOG_RUN_ATTEMPT: ${{ inputs.catalog_run_attempt }}
+          CATALOG_CONCLUSION: ${{ inputs.catalog_conclusion }}
+          INLINE_CATALOG_RUN: ${{ inputs.inline_catalog_run }}
         run: |
-          if test "$GITHUB_EVENT_NAME" = workflow_run; then
-            run_id="$TRIGGER_RUN_ID"
-          elif test -n "$REQUESTED_RUN_ID"; then
-            run_id="$REQUESTED_RUN_ID"
-          else
-            run_id=$(gh run list --workflow catalog-automation.yml --status completed --limit 1 \
-              --json databaseId --jq '.[0].databaseId')
-          fi
-          test -n "$run_id"
-          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id")
+          test "$CATALOG_RUN_ID" != null
+          test -n "$CATALOG_RUN_ID"
+          test "$CATALOG_RUN_ATTEMPT" != null
+          test -n "$CATALOG_RUN_ATTEMPT"
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CATALOG_RUN_ID")
           test "$(jq -r .name <<<"$run")" = 'Automated plugin radar and Catalog update'
-          test "$(jq -r .status <<<"$run")" = completed
-          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          test "$(jq -r .run_attempt <<<"$run")" = "$CATALOG_RUN_ATTEMPT"
+          if test "$INLINE_CATALOG_RUN" = true; then
+            test "$CATALOG_RUN_ID" = "$GITHUB_RUN_ID"
+            test "$CATALOG_RUN_ATTEMPT" = "$GITHUB_RUN_ATTEMPT"
+            conclusion="$CATALOG_CONCLUSION"
+            test -n "$conclusion"
+          else
+            test "$(jq -r .status <<<"$run")" = completed
+            conclusion=$(jq -r '.conclusion // "unknown"' <<<"$run")
+          fi
+          echo "run_id=$CATALOG_RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "run_attempt=$CATALOG_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
           echo "run_url=$(jq -r .html_url <<<"$run")" >> "$GITHUB_OUTPUT"
-          echo "conclusion=$(jq -r '.conclusion // "unknown"' <<<"$run")" >> "$GITHUB_OUTPUT"
+          echo "conclusion=$conclusion" >> "$GITHUB_OUTPUT"
       - name: Download the matching Catalog decision record
         id: catalog_report
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
+          CATALOG_RUN_ATTEMPT: ${{ steps.catalog.outputs.run_attempt }}
         run: |
           report_dir="$RUNNER_TEMP/catalog-report"
           mkdir -p "$report_dir"
           gh run download "$CATALOG_RUN_ID" \
-            --pattern "catalog-automation-${CATALOG_RUN_ID}-*" \
+            --name "catalog-automation-${CATALOG_RUN_ID}-${CATALOG_RUN_ATTEMPT}" \
             --dir "$report_dir"
           report_path=$(find "$report_dir" -type f -name catalog-automation-report.json -print -quit)
           test -n "$report_path"
           echo "path=$report_path" >> "$GITHUB_OUTPUT"
-      - name: Wait boundedly for the matching author notification record
+      - name: Download the matching author notification record
         id: author_report
         if: steps.catalog.outputs.conclusion == 'success'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
+          CATALOG_RUN_ATTEMPT: ${{ steps.catalog.outputs.run_attempt }}
         run: |
-          for attempt in $(seq 1 30); do
-            runs=$(gh run list --workflow author-notifications.yml --status success --limit 12 \
-              --json databaseId,url)
-            while IFS=$'\t' read -r run_id run_url; do
-              test -n "$run_id" || continue
-              plan_dir="$RUNNER_TEMP/author-notice-plan-$run_id"
-              if test ! -d "$plan_dir"; then
-                mkdir -p "$plan_dir"
-                if ! gh run download "$run_id" \
-                  --pattern "author-notification-plan-${run_id}-*" \
-                  --dir "$plan_dir"; then
-                  rm -r "$plan_dir"
-                  continue
-                fi
-              fi
-              plan_path=$(find "$plan_dir" -type f -name author-notice-plan.json -print -quit)
-              test -n "$plan_path" || continue
-              if jq -e --arg catalog_run_id "$CATALOG_RUN_ID" \
-                '.sourceCatalogRunId == $catalog_run_id' "$plan_path" >/dev/null; then
-                echo "path=$plan_path" >> "$GITHUB_OUTPUT"
-                echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-                echo "run_url=$run_url" >> "$GITHUB_OUTPUT"
-                exit 0
-              fi
-            done < <(jq -r '.[] | [.databaseId, .url] | @tsv' <<<"$runs")
-            sleep 10
-          done
-          echo 'No matching author notification record became available within five minutes.'
+          plan_dir="$RUNNER_TEMP/author-notice-plan"
+          mkdir -p "$plan_dir"
+          gh run download "$CATALOG_RUN_ID" \
+            --name "author-notification-plan-${CATALOG_RUN_ID}-${CATALOG_RUN_ATTEMPT}" \
+            --dir "$plan_dir"
+          plan_path=$(find "$plan_dir" -type f -name author-notice-plan.json -print -quit)
+          test -n "$plan_path"
+          jq -e --arg catalog_run_id "$CATALOG_RUN_ID" \
+            '.sourceCatalogRunId == $catalog_run_id' "$plan_path" >/dev/null
+          echo "path=$plan_path" >> "$GITHUB_OUTPUT"
       - name: Verify current public Catalog and Candidate surfaces
         id: public
         continue-on-error: true
@@ -184,7 +203,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: catalog-run-report-${{ steps.catalog.outputs.run_id || github.run_id }}-${{ github.run_attempt }}
+          name: catalog-run-report-${{ steps.catalog.outputs.run_id || github.run_id }}-${{ steps.catalog.outputs.run_attempt || github.run_attempt }}
           path: |
             ${{ runner.temp }}/catalog-run-report.md
             ${{ runner.temp }}/catalog-report-delivery-plan.json

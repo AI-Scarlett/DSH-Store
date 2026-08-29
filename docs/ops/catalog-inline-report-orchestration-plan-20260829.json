@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "operation": "inline-owner-report-and-author-notifications-with-exact-watchdog-repair-correlation",
+  "createdAt": "2026-08-29T09:45:05+08:00",
+  "authorization": "user-explicitly-requested-owner-report-and-author-notifications-inside-catalog-and-exact-watchdog-repair-reporting",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "c7dbe515d526029ac7ce5c8d114f40da11436e2d",
+  "branch": "codex/catalog-inline-report-orchestration",
+  "preconditionSha256": {
+    ".github/workflows/catalog-automation.yml": "7cbdb25346e4bb02cec30b2d6c8e79877bd23a0e0d54a191667721b7c27f63b9",
+    ".github/workflows/author-notifications.yml": "c0396bd7a2b144c1feb3d484fb0063d408479d94dd5d14cf4508c2eefe347b53",
+    ".github/workflows/catalog-run-report.yml": "4019a8db5cbd0f37bf4b5b4e9ade5cb34f242321dfc77f6f481b3b9778c2d14b",
+    ".github/workflows/marketplace-watchdog.yml": "889bddfe3d6bcfbc00fe92f89eade47cd7d28079fe820c2482bbdb14bafc4996",
+    "test/catalog-automation.test.mjs": "cc71ca4cb914fb9fc4e9b1bc996c7a2d1c278599e1612223b09f7e0e6ce09481",
+    "docs/wiki/Catalog-Automation.md": "8a97f3e04b478c95fad391888d4d0107a9cef07da993ac5ee87271239fc3d60f",
+    "registry/README.md": "fffc196ff565a36548fa87d3a2103e9f6d2523ccfaff5ede135b0d3218cde00c"
+  },
+  "allowedFiles": [
+    "docs/ops/catalog-inline-report-orchestration-plan-20260829.json",
+    ".github/workflows/catalog-automation.yml",
+    ".github/workflows/author-notifications.yml",
+    ".github/workflows/catalog-run-report.yml",
+    ".github/workflows/marketplace-watchdog.yml",
+    "test/catalog-automation.test.mjs",
+    "docs/wiki/Catalog-Automation.md",
+    "registry/README.md"
+  ],
+  "observedFailure": {
+    "watchdogRunId": "33170499860",
+    "repairCatalogRunId": "33170512204",
+    "repairCatalogConclusion": "success",
+    "authorNotificationRunObserved": false,
+    "ownerReportRunObserved": false,
+    "cause": "the watchdog dispatched Catalog with GITHUB_TOKEN, so the completed run did not create the workflow_run-dependent author and owner workflows; the watchdog also rendered the previous completed Catalog run before the repair completed"
+  },
+  "targetPolicy": {
+    "catalogCallsAuthorNotificationsDirectly": true,
+    "catalogCallsOwnerReportDirectly": true,
+    "workflowRunDependency": false,
+    "manualRecoveryRequiresExactCatalogRunId": true,
+    "watchdogCorrelatesRepairByUniqueRequestId": true,
+    "watchdogWaitsForExactRepairCompletion": true,
+    "watchdogDispatchesExactOwnerReportAfterRepair": true,
+    "duplicateOwnerReportSuppressedByCatalogRunId": true,
+    "authorIssueCreationLimitPerCatalogRun": 10
+  },
+  "boundaries": {
+    "dshProfileMutation": false,
+    "dshRestart": false,
+    "thirdPartyRepositoryWrites": false,
+    "thirdPartyCodeExecution": false,
+    "personalAccessToken": false,
+    "smtpDeliveryClaimed": false,
+    "githubNotificationEmailDeliveryClaimed": false
+  },
+  "gates": [
+    "remote main and every precondition hash still match",
+    "Catalog directly invokes both reusable workflows without workflow_run",
+    "author and owner workflows consume the exact Catalog run and attempt artifacts",
+    "watchdog repair records a unique request identifier and waits for only the matching Catalog run",
+    "watchdog invokes the owner report with the repaired Catalog run ID before rendering any fallback report",
+    "a successful repair does not remain a red watchdog run merely because repair was required",
+    "owner report delivery remains idempotent for the same Catalog Run ID",
+    "npm run check passes",
+    "workflow YAML parses and CodeQL workflow analysis passes",
+    "CI-checked pull request and verified merge",
+    "live exact-run report recovery verifies delivery or deterministic duplicate skip"
+  ],
+  "rollback": "revert the pull request; existing Catalog artifacts and managed Issue comments remain auditable, and no DSH Profile or third-party repository is changed"
+}

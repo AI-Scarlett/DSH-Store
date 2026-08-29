@@ -1,10 +1,34 @@
 name: Notify upstream plugin authors
 
 on:
-  workflow_run:
-    workflows: ["Automated plugin radar and Catalog update"]
-    types: [completed]
+  workflow_call:
+    inputs:
+      catalog_run_id:
+        required: true
+        type: string
+      catalog_run_attempt:
+        required: true
+        type: string
+      catalog_conclusion:
+        required: true
+        type: string
+      inline_catalog_run:
+        required: false
+        default: false
+        type: boolean
   workflow_dispatch:
+    inputs:
+      catalog_run_id:
+        description: Exact completed Catalog run ID to recover
+        required: true
+        type: string
+      catalog_run_attempt:
+        description: Exact Catalog run attempt containing the decision artifact
+        required: true
+        default: "1"
+        type: string
+
+run-name: Author notifications for Catalog #${{ inputs.catalog_run_id }}
 
 permissions:
   contents: read
@@ -12,12 +36,11 @@ permissions:
   issues: write
 
 concurrency:
-  group: author-notifications
+  group: author-notifications-${{ inputs.catalog_run_id }}-${{ inputs.catalog_run_attempt }}
   cancel-in-progress: false
 
 jobs:
   notify:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -35,26 +58,40 @@ jobs:
           base_sha=$(git rev-parse HEAD)
           test "$base_sha" = "$(git rev-parse origin/main)"
           echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
-      - name: Download the matching Catalog decision record
+      - name: Resolve the exact Catalog authority and decision record
         id: report
         env:
           GH_TOKEN: ${{ github.token }}
-          TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
+          CATALOG_RUN_ID: ${{ inputs.catalog_run_id }}
+          CATALOG_RUN_ATTEMPT: ${{ inputs.catalog_run_attempt }}
+          CATALOG_CONCLUSION: ${{ inputs.catalog_conclusion }}
+          INLINE_CATALOG_RUN: ${{ inputs.inline_catalog_run }}
         run: |
-          if test "$GITHUB_EVENT_NAME" = workflow_run; then
-            run_id="$TRIGGER_RUN_ID"
+          test "$CATALOG_RUN_ID" != null
+          test -n "$CATALOG_RUN_ID"
+          test "$CATALOG_RUN_ATTEMPT" != null
+          test -n "$CATALOG_RUN_ATTEMPT"
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CATALOG_RUN_ID")
+          test "$(jq -r .name <<<"$run")" = 'Automated plugin radar and Catalog update'
+          test "$(jq -r .run_attempt <<<"$run")" = "$CATALOG_RUN_ATTEMPT"
+          if test "$INLINE_CATALOG_RUN" = true; then
+            test "$CATALOG_RUN_ID" = "$GITHUB_RUN_ID"
+            test "$CATALOG_RUN_ATTEMPT" = "$GITHUB_RUN_ATTEMPT"
+            test "$CATALOG_CONCLUSION" = success
           else
-            run_id=$(gh run list --workflow catalog-automation.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')
+            test "$(jq -r .status <<<"$run")" = completed
+            test "$(jq -r .conclusion <<<"$run")" = success
           fi
-          test "$run_id" != null
-          test -n "$run_id"
           report_dir="$RUNNER_TEMP/catalog-report"
           mkdir -p "$report_dir"
-          gh run download "$run_id" --pattern "catalog-automation-${run_id}-*" --dir "$report_dir"
+          gh run download "$CATALOG_RUN_ID" \
+            --name "catalog-automation-${CATALOG_RUN_ID}-${CATALOG_RUN_ATTEMPT}" \
+            --dir "$report_dir"
           report_path=$(find "$report_dir" -type f -name catalog-automation-report.json -print -quit)
           test -n "$report_path"
           echo "path=$report_path" >> "$GITHUB_OUTPUT"
-          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run_id=$CATALOG_RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "run_attempt=$CATALOG_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
       - name: Validate repository and notification code
         run: npm run check
       - name: Snapshot existing managed remediation Issues
@@ -138,7 +175,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: author-notification-plan-${{ github.run_id }}-${{ github.run_attempt }}
+          name: author-notification-plan-${{ inputs.catalog_run_id }}-${{ inputs.catalog_run_attempt }}
           path: ${{ runner.temp }}/author-notice-plan.json
           if-no-files-found: warn
           retention-days: 30

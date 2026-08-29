@@ -99,6 +99,12 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(workflow, /registry\/catalog\.json.+@base64/s)
   assert.match(workflow, /registry\/candidates\.json.+@base64/s)
   assert.match(workflow, /commit\.verification\.verified/)
+  assert.match(workflow, /uses: \.\/\.github\/workflows\/author-notifications\.yml/)
+  assert.match(workflow, /uses: \.\/\.github\/workflows\/catalog-run-report\.yml/)
+  assert.match(workflow, /catalog_run_id: \$\{\{ github\.run_id \}\}/)
+  assert.match(workflow, /catalog_run_attempt: \$\{\{ github\.run_attempt \}\}/)
+  assert.match(workflow, /inline_catalog_run: true/)
+  assert.match(workflow, /owner-report:[\s\S]+needs: \[update, author-notifications\][\s\S]+if: always\(\)/)
   assert.doesNotMatch(workflow, /git commit|git push/)
   assert.doesNotMatch(workflow, /npm (?:install|ci)|pnpm|yarn/)
   assert.doesNotMatch(source, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
@@ -171,11 +177,15 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
     read('scripts/resolve-author-notice-targets.mjs'),
     read('scripts/apply-author-notice-plan.mjs'),
   ])
-  assert.match(workflow, /workflow_run:/)
-  assert.match(workflow, /workflows: \["Automated plugin radar and Catalog update"\]/)
+  assert.match(workflow, /workflow_call:/)
+  assert.match(workflow, /workflow_dispatch:/)
+  assert.doesNotMatch(workflow, /workflow_run:/)
+  assert.match(workflow, /Exact completed Catalog run ID to recover/)
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /actions: read/)
   assert.match(workflow, /group: author-notifications/)
+  assert.match(workflow, /catalog-automation-\$\{CATALOG_RUN_ID\}-\$\{CATALOG_RUN_ATTEMPT\}/)
+  assert.match(workflow, /author-notification-plan-\$\{\{ inputs\.catalog_run_id \}\}-\$\{\{ inputs\.catalog_run_attempt \}\}/)
   assert.match(workflow, /--max-create 10/)
   assert.match(workflow, /Candidate Registry 全量覆盖/)
   assert.match(workflow, /candidate_unaccounted/)
@@ -213,20 +223,21 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.doesNotMatch(apply, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
 })
 
-test('every completed Catalog run creates one deduplicated owner report notification', async () => {
+test('Catalog directly creates one exact and deduplicated owner report notification', async () => {
   const [workflow, delivery] = await Promise.all([
     read('.github/workflows/catalog-run-report.yml'),
     read('scripts/catalog-report-delivery.mjs'),
   ])
-  assert.match(workflow, /workflow_run:/)
-  assert.match(workflow, /workflows: \["Automated plugin radar and Catalog update"\]/)
-  assert.match(workflow, /types: \[completed\]/)
+  assert.match(workflow, /workflow_call:/)
   assert.match(workflow, /workflow_dispatch:/)
+  assert.doesNotMatch(workflow, /workflow_run:/)
+  assert.match(workflow, /Exact completed Catalog run ID to report/)
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /actions: read/)
-  assert.match(workflow, /--status completed/)
   assert.match(workflow, /\.sourceCatalogRunId == \$catalog_run_id/)
-  assert.match(workflow, /seq 1 30/)
+  assert.doesNotMatch(workflow, /gh run list --workflow author-notifications\.yml/)
+  assert.match(workflow, /author-notification-plan-\$\{CATALOG_RUN_ID\}-\$\{CATALOG_RUN_ATTEMPT\}/)
+  assert.match(workflow, /catalog-automation-\$\{CATALOG_RUN_ID\}-\$\{CATALOG_RUN_ATTEMPT\}/)
   assert.match(workflow, /CATALOG_RUN_ID: \$\{\{ steps\.catalog\.outputs\.run_id \}\}/)
   assert.match(workflow, /--delivery-key "catalog-\$CATALOG_RUN_ID"/)
   assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
@@ -267,7 +278,7 @@ test('Pages publishes bounded public automation evidence and recent additions', 
   assert.match(client, /entry\.searchTerms/)
 })
 
-test('watchdog checks the previous run and every public Catalog surface', async () => {
+test('watchdog waits for its exact repair run, invokes its report, and checks every public surface', async () => {
   const [workflow, timer, service, international, intlPublic, domestic, refresh, verifier, governance] = await Promise.all([
     read('.github/workflows/marketplace-watchdog.yml'),
     read('deploy/dsh-store-refresh@.timer'),
@@ -280,14 +291,22 @@ test('watchdog checks the previous run and every public Catalog surface', async 
     read('AGENTS.md'),
   ])
   assert.match(workflow, /cron: "55 \*\/3 \* \* \*"/)
-  assert.match(workflow, /test "\$age" -gt 32400/)
+  assert.match(workflow, /32400/)
   assert.match(workflow, /issues: write/)
-  assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main/)
+  assert.match(workflow, /request_id="watchdog-\$\{GITHUB_RUN_ID\}-\$\{GITHUB_RUN_ATTEMPT\}"/)
+  assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main -f request_id="\$request_id"/)
+  assert.match(workflow, /select\(\.displayTitle == \$expected\)/)
+  assert.match(workflow, /repos\/\$GITHUB_REPOSITORY\/actions\/runs\/\$target_id/)
+  assert.match(workflow, /Directly invoke the owner report for the repaired Catalog run/)
+  assert.match(workflow, /gh workflow run catalog-run-report\.yml --ref main/)
+  assert.match(workflow, /-f catalog_run_id="\$CATALOG_RUN_ID"/)
+  assert.match(workflow, /-f catalog_run_attempt="\$CATALOG_RUN_ATTEMPT"/)
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)
   assert.match(workflow, /render-catalog-automation-notification\.mjs/)
   assert.match(workflow, /Catalog and Candidate Registries/)
-  assert.match(workflow, /Download the matching author notification record/)
-  assert.match(workflow, /author-notification-plan-\$\{run_id\}-\*/)
+  assert.match(workflow, /Download the exact author notification record/)
+  assert.match(workflow, /author-notification-plan-\$\{REPORT_RUN_ID\}-\$\{REPORT_RUN_ATTEMPT\}/)
+  assert.doesNotMatch(workflow, /gh run list --workflow author-notifications\.yml/)
   assert.match(workflow, /--author-notice-plan/)
   assert.match(workflow, /id: catalog_report[\s\S]{0,160}continue-on-error: true/)
   assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
