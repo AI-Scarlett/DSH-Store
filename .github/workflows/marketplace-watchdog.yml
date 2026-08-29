@@ -119,7 +119,7 @@ jobs:
             -f catalog_run_id="$CATALOG_RUN_ID" \
             -f catalog_run_attempt="$CATALOG_RUN_ATTEMPT" \
             -f request_id="$REQUEST_ID"
-          expected_title="Owner report for Catalog #${CATALOG_RUN_ID} (${REQUEST_ID})"
+          expected_title="Owner report for Catalog run ${CATALOG_RUN_ID} (${REQUEST_ID})"
           report_run_id=''
           for attempt in $(seq 1 60); do
             runs=$(gh run list --workflow catalog-run-report.yml --event workflow_dispatch --limit 20 \
