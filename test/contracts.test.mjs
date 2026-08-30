@@ -57,6 +57,29 @@ test('static storefront templates expose the cross-site navigation and analytics
   }
 })
 
+test('storefront uses the bright glass and responsive Bento design contract', async () => {
+  const pagePaths = [
+    'marketplace/index.html',
+    'marketplace/plugins/index.html',
+    'marketplace/standards/index.html',
+    'marketplace/build/index.html',
+    'marketplace/faq/index.html',
+    'marketplace/about/index.html',
+    'marketplace/about/deepseek-harness-guide/index.html',
+    'marketplace/dsh-plugins/index.html',
+  ]
+  const [styles, ...pages] = await Promise.all([
+    readFile(new URL('marketplace/styles.css', project), 'utf8'),
+    ...pagePaths.map(path => readFile(new URL(path, project), 'utf8')),
+  ])
+  for (const page of pages) assert.match(page, /<meta name="theme-color" content="#f6f9ff">/)
+  assert.match(styles, /--glass: rgba\(255, 255, 255, \.72\)/)
+  assert.match(styles, /--radius-xl: 32px/)
+  assert.match(styles, /\.automation-grid article:first-child \{\s*grid-column: span 2;/)
+  assert.match(styles, /\.featured-grid > :first-child \{ grid-row: span 2; \}/)
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/)
+})
+
 test('featured DeepSeek Harness article preserves source attribution and long-form structure', async () => {
   const [article, about] = await Promise.all([
     readFile(new URL('marketplace/about/deepseek-harness-guide/index.html', project), 'utf8'),
