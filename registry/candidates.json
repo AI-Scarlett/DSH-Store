@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-08-30T05:04:57.000Z",
+    "updatedAt": "2026-08-30T05:57:17.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -874,20 +874,35 @@
       "description": "DeepSeek Harness 独立社区插件商店：发现、安装并提交经过验证的插件、工具与扩展。 | Independent community plugin directory.",
       "repositoryUrl": "https://github.com/Ericwong5021/deepseek-plugin-store",
       "defaultBranch": "main",
-      "latestCommit": "c44f5e8c19bc989a2aa14b54ba4ffa38fc1703f2",
-      "sourceUpdatedAt": "2026-08-20T14:23:26.000Z",
+      "latestCommit": "b42c2fac535b51e2954a414fb3b21d1cad23ce7f",
+      "sourceUpdatedAt": "2026-08-30T05:58:37.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "tools"
+        "agent-tools",
+        "ai-agents",
+        "awesome-list",
+        "community",
+        "curated-list",
+        "deepseek",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "open-source",
+        "plugin-directory",
+        "plugin-ecosystem",
+        "plugin-marketplace",
+        "plugins",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: declared runtime artifact is missing from the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
     },
     {
       "id": "hyhmrright-brooks-lint",
@@ -12824,8 +12839,8 @@
       "description": "手机远程访问 DSH Web 界面：扫码即用局域网或公网（cloudflared 隧道）访问，实时同屏、移动端适配布局，带设置页管理。",
       "repositoryUrl": "https://github.com/shaobeichen/dsh-pocket",
       "defaultBranch": "main",
-      "latestCommit": "e108b817dfde9d815af9fee45dc594afa8cc0674",
-      "sourceUpdatedAt": "2026-08-29T14:39:58.000Z",
+      "latestCommit": "fb2282e1987d830392b55cebf95df7d392352e7b",
+      "sourceUpdatedAt": "2026-08-30T05:27:16.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16525,8 +16540,8 @@
       "description": "侧边栏计费仪表盘：从会话日志聚合真实用量（按模型/按日统计调用、Token、缓存），按最新多厂商官方价格估算人民币费用，订阅套餐（coding/token/agent）通道豁免计费，并带各厂商健康状态圆点。",
       "repositoryUrl": "https://github.com/kenz1117/dsh-ui-usage-billing",
       "defaultBranch": "main",
-      "latestCommit": "585d5c6b4ee855f2d4952a3e4f164d08f67fcfcd",
-      "sourceUpdatedAt": "2026-08-30T04:56:39.000Z",
+      "latestCommit": "995f8dbe3780a1ef0d5226605368ba835c122059",
+      "sourceUpdatedAt": "2026-08-30T05:11:43.000Z",
       "discoveredAt": "2026-08-30T05:04:57.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16539,6 +16554,44 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: kenz1117-dsh-ui-usage-billing."
+    },
+    {
+      "id": "wangzhishou-onebox",
+      "name": "wangzhishou/OneBox",
+      "description": "A free AI-agent toolbox for Android, 一站式安卓AI Agent工具箱",
+      "repositoryUrl": "https://github.com/wangzhishou/OneBox",
+      "defaultBranch": "main",
+      "latestCommit": "662d74f5aa0072fd58531260c88bc916f958a0db",
+      "sourceUpdatedAt": "2026-08-30T05:57:54.000Z",
+      "discoveredAt": "2026-08-30T05:57:17.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "ai-assistants",
+        "ai-tools",
+        "android",
+        "android-app",
+        "android-application",
+        "android-apps",
+        "chatbot",
+        "chatgpt",
+        "chatgpt-api",
+        "decompose",
+        "hilt-android",
+        "image-tools",
+        "jetpack-compose",
+        "kotlin",
+        "material3",
+        "toolbox",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
