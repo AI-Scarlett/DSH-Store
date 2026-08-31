@@ -243,9 +243,11 @@ const initials = name => String(name || 'DSH').replace(/^DSH\s*/i, '').split(/[\
 const pluginColor = id => palette[[...String(id)].reduce((total, character) => total + character.charCodeAt(0), 0) % palette.length]
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
-const DSH_VERSION_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest'
+const DSH_VERSION_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh'
 const DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
-const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2' }
+const DSH_RELEASE_TAGS = ['latest', 'next', 'alpha', 'beta', 'rc']
+const MAX_DSH_VERSION_RESPONSE_BYTES = 128 * 1024
+const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2' }
 const OPERATION_KEYS = ['install', 'start', 'uninstall', 'rollback']
 const unknownOperations = () => Object.fromEntries(OPERATION_KEYS.map(operation => [operation, 'unknown']))
 function compareDshVersions(left, right) {
@@ -857,12 +859,23 @@ async function fetchLatestDshVersion() {
   const timer = window.setTimeout(() => controller.abort(), 2_500)
   try {
     const response = await fetch(DSH_VERSION_URL, {
-      cache: 'no-store', credentials: 'omit', headers: { accept: 'application/json' }, signal: controller.signal,
+      cache: 'no-store', credentials: 'omit', headers: { accept: 'application/vnd.npm.install-v1+json' }, signal: controller.signal,
     })
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const payload = await response.json()
-    if (payload?.name !== '@deepseek-ai/dsh' || !DSH_VERSION.test(payload?.version || '')) throw new Error('Invalid official DSH package metadata')
-    return { version: payload.version, checkedAt: new Date().toISOString(), errorCode: null }
+    const contentLength = Number(response.headers.get('content-length'))
+    if (Number.isFinite(contentLength) && contentLength > MAX_DSH_VERSION_RESPONSE_BYTES) throw new Error('Official DSH package metadata is too large')
+    const text = await response.text()
+    if (new TextEncoder().encode(text).byteLength > MAX_DSH_VERSION_RESPONSE_BYTES) throw new Error('Official DSH package metadata is too large')
+    const payload = JSON.parse(text)
+    if (payload?.name !== '@deepseek-ai/dsh' || !payload['dist-tags'] || !payload.versions) throw new Error('Invalid official DSH package metadata')
+    const releases = DSH_RELEASE_TAGS.flatMap(tag => {
+      const version = payload['dist-tags'][tag]
+      return DSH_VERSION.test(version || '') && payload.versions[version] ? [{ tag, version }] : []
+    })
+    const stable = releases.find(release => release.tag === 'latest')
+    if (!stable) throw new Error('Missing official DSH stable tag')
+    const target = releases.reduce((current, release) => compareDshVersions(release.version, current.version) > 0 ? release : current, stable)
+    return { version: target.version, stableVersion: stable.version, releaseTag: target.tag, checkedAt: new Date().toISOString(), errorCode: null }
   } catch (error) {
     return { version: null, checkedAt: null, errorCode: error?.name === 'AbortError' ? 'DSH_VERSION_TIMEOUT' : 'DSH_VERSION_UNAVAILABLE' }
   } finally {
