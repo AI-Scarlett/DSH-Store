@@ -66,7 +66,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.8.5` |
+| 商城版本 | `0.8.6` |
 | 收录条目 | 400 个 |
 | 可安装 | 393 个 |
 | 商城不可安装 | 5 个，保留 GitHub 手动安装入口和风险原因；另有 2 个 unlisted 条目不公开展示 |
@@ -74,7 +74,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 | 推荐 | 3 个：DSH-Store、Build DSH Plugin、Agent Workflow |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
-`0.8.5` 增加旧版商城自举更新桥：Catalog 仍保留 `partial` 的真实语义，但可以用 `status: unknown` 加 `evidenceStatus: partial` 的 schemaVersion 1 兼容编码发布。0.8.2 会保守地把这些记录显示为“未知”，不会再因为不认识 `partial` 而拒绝整个目录；当前版本则继续显示“部分验证”。这样已安装用户可以直接在商城里看到固定 Commit 的管理器更新，经过一次性计划、确认、备份和健康检查后更新，再由 Guardian 引导重启，不需要手动运行 CLI。
+`0.8.6` 修复 DSH 升级检测只读取 npm `latest` 的盲点：现在同时核对稳定版与官方预发布标签，选择可安装的最高固定版本，并把预发布明确标识为预发布；公开目录的“最新 DSH”兼容性标识使用同一规则。`0.8.5` 增加旧版商城自举更新桥：Catalog 仍保留 `partial` 的真实语义，但可以用 `status: unknown` 加 `evidenceStatus: partial` 的 schemaVersion 1 兼容编码发布。0.8.2 会保守地把这些记录显示为“未知”，不会再因为不认识 `partial` 而拒绝整个目录；当前版本则继续显示“部分验证”。这样已安装用户可以直接在商城里看到固定 Commit 的管理器更新，经过一次性计划、确认、备份和健康检查后更新，再由 Guardian 引导重启，不需要手动运行 CLI。
 
 `0.8.4` 是 `AI-Scarlett/DSH-Store` 的规范仓库迁移版本：运行时 Catalog、候选库、Bundle 默认配置、静态商城、提交入口、自动化策略、部署脚本和 Pages 监测均使用新地址。npm 包名和 DSH Bundle 入口仍为 `dsh-safe-plugin-manager`。
 

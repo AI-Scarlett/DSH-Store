@@ -15,7 +15,7 @@ async function fixture(version = '0.1.0-rc.7') {
   return { root, cliPath }
 }
 
-test('DSH version check reads the running CLI package and pins the latest npm version command', async () => {
+test('DSH version check detects a newer official preview tag and keeps the stable channel explicit', async () => {
   const { root, cliPath } = await fixture()
   let requests = 0
   try {
@@ -23,24 +23,31 @@ test('DSH version check reads the running CLI package and pins the latest npm ve
       cliPath, now: () => Date.parse('2026-08-18T09:00:00Z'),
       fetch: async (url, options) => {
         requests += 1
-        assert.equal(url, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest')
-        assert.equal(options.headers.accept, 'application/json')
-        return new Response(JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.1-rc.2' }))
+        assert.equal(url, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh')
+        assert.equal(options.headers.accept, 'application/vnd.npm.install-v1+json')
+        return new Response(JSON.stringify({
+          name: '@deepseek-ai/dsh',
+          'dist-tags': { latest: '0.1.1-rc.2', alpha: '0.1.2-alpha.2' },
+          versions: { '0.1.1-rc.2': {}, '0.1.2-alpha.2': {} },
+        }))
       },
     })
     assert.equal(service.peek(), null)
     const value = await service.inspect()
     assert.equal(value.currentVersion, '0.1.0-rc.7')
-    assert.equal(value.latestVersion, '0.1.1-rc.2')
+    assert.equal(value.latestVersion, '0.1.2-alpha.2')
+    assert.equal(value.stableVersion, '0.1.1-rc.2')
+    assert.equal(value.releaseChannel, 'preview')
+    assert.equal(value.releaseTag, 'alpha')
     assert.equal(value.status, 'update-available')
     assert.equal(value.installationKind, 'source-checkout')
     assert.equal(value.upgrade.executable, false)
-    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.1-rc.2'])
+    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.2-alpha.2'])
     assert.match(value.upgrade.reason, /不会修改 DSH 源码/)
-    assert.equal(value.latestSource, 'npm-official')
-    assert.equal(value.registryUrl, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest')
+    assert.equal(value.latestSource, 'npm-official:alpha')
+    assert.equal(value.registryUrl, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh')
     assert.equal(value.cacheTtlMs, 10 * 60_000)
-    assert.equal(service.peek().latestVersion, '0.1.1-rc.2')
+    assert.equal(service.peek().latestVersion, '0.1.2-alpha.2')
     assert.equal(service.peek().cacheStatus, 'peek')
     assert.equal((await service.inspect()).cacheStatus, 'hit')
     assert.equal(requests, 1)
@@ -53,7 +60,7 @@ test('DSH version check fails closed on an untrusted registry identity', async (
   const { root, cliPath } = await fixture('0.1.0-rc.7')
   try {
     const service = createDshVersionService({
-      cliPath, fetch: async () => new Response(JSON.stringify({ name: 'other-package', version: '9.9.9' })),
+      cliPath, fetch: async () => new Response(JSON.stringify({ name: 'other-package', 'dist-tags': {}, versions: {} })),
     })
     await assert.rejects(service.inspect(), error => error.code === 'DSH_VERSION_REGISTRY_INVALID')
   } finally {
@@ -70,7 +77,11 @@ test('DSH version check resolves a global launcher symlink before locating the p
     await symlink(cliPath, launcherPath)
     const service = createDshVersionService({
       cliPath: launcherPath,
-      fetch: async () => new Response(JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.1.1-rc.2' })),
+      fetch: async () => new Response(JSON.stringify({
+        name: '@deepseek-ai/dsh',
+        'dist-tags': { latest: '0.1.1-rc.2' },
+        versions: { '0.1.1-rc.2': {} },
+      })),
     })
     const value = await service.inspect()
     assert.equal(value.currentVersion, '0.1.1-rc.2')

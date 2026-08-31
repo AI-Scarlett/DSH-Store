@@ -597,7 +597,7 @@ window.__ModuleLoader__.load({
       } catch { return '未知' }
     }
 
-    const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2' }
+    const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2' }
     const COMPATIBILITY_STATUSES = new Set(['compatible', 'incompatible', 'unknown'])
     const OPERATION_STATUSES = new Set(['passed', 'failed', 'unknown'])
     const unknownOperations = () => Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation, 'unknown']))
@@ -1587,7 +1587,7 @@ window.__ModuleLoader__.load({
       const closeDetails = useCallback(() => setDetailEntry(null), [])
       const dshVersion = state.status === 'ready' ? state.dshVersion : null
       const versionLabel = dshVersion?.currentVersion
-        ? `DSH ${dshVersion.currentVersion}${dshVersion.updateAvailable ? ` → ${dshVersion.latestVersion}` : dshVersion.status === 'current' ? ' · 已是最新' : ''}`
+        ? `DSH ${dshVersion.currentVersion}${dshVersion.updateAvailable ? ` → ${dshVersion.latestVersion}${dshVersion.releaseChannel === 'preview' ? '（预发布）' : ''}` : dshVersion.status === 'current' ? dshVersion.releaseChannel === 'preview' ? ' · 已是当前预发布' : ' · 稳定版已是最新' : ''}`
         : 'DSH 版本待检测'
       const heading = React.createElement('div', { style: styles.toolbar },
         React.createElement('div', { style: styles.headingCopy },
@@ -1600,7 +1600,7 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.versionBox, 'aria-label': 'DSH 版本与升级' },
           React.createElement('span', {
             style: styles.versionPill,
-            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH 与 npm 官方最新版本',
+            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH 与 npm 官方稳定版和预发布通道',
           }, versionLabel),
           React.createElement(Button, { compact: true, disabled: versionChecking, onClick: refreshDshVersion },
             versionChecking ? '检测中…' : '检测升级'),

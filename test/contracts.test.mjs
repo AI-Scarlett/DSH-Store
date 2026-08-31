@@ -7,12 +7,13 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.5')
+  assert.equal(pkg.version, '0.8.6')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
   assert.equal(pkg.repository.url, 'git+https://github.com/AI-Scarlett/DSH-Store.git')
   assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.2'], 'compatible')
   for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
     assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0')
   }
@@ -121,7 +122,7 @@ test('marketplace cards derive the latest three DSH releases while details retai
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
   ])
-  assert.match(storefront, /DSH_VERSION_URL = 'https:\/\/registry\.npmjs\.org\/@deepseek-ai%2Fdsh\/latest'/)
+  assert.match(storefront, /DSH_VERSION_URL = 'https:\/\/registry\.npmjs\.org\/@deepseek-ai%2Fdsh'/)
   assert.match(storefront, /function createDshReleaseContext/)
   assert.match(storefront, /const cardReleaseViews = views =>/)
   assert.match(storefront, /\$\{compatibilityMatrix\(entry\)\}/)
@@ -286,6 +287,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /DSH 版本与升级/)
   assert.match(client, /检测升级/)
   assert.match(client, /复制升级命令/)
+  assert.match(client, /预发布/)
   assert.match(client, /插件源更新规则/)
   assert.match(client, /Guardian 已验证，DSH 正在交接，页面会自动重新连接/)
   assert.match(client, /BOOT_RECOVERY_TIMEOUT/)
