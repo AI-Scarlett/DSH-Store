@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-31T05:12:48.000Z",
+    "updatedAt": "2026-08-31T06:18:28.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -23054,6 +23054,261 @@
       }
     },
     {
+      "id": "dsh-loom",
+      "name": "文件与工作区工具（DSH Loom）",
+      "packageName": "dsh-loom",
+      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：Ask questions over a fixed Knowledge Catalog Workspace and browse its read-only knowledge files in DSH.",
+      "searchTerms": [
+        "文件与工作区工具",
+        "DSH Loom",
+        "dsh-loom",
+        "文件",
+        "工作区",
+        "目录",
+        "附件",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "loom"
+      ],
+      "repositoryUrl": "https://github.com/AlexKaiqi/knowledge-catalog",
+      "defaultBranch": "main",
+      "manifestPath": "dsh-plugin/package.json",
+      "installPath": "dsh-plugin",
+      "updatePolicy": "external-only",
+      "commit": "1c6308f4cae53cba64fb72a51ad4b0d7105680d0",
+      "version": "0.3.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-31T06:19:47Z",
+        "observedAt": "2026-08-31T06:18:28.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-31T06:18:28.000Z",
+          "evidenceUrl": "https://github.com/AlexKaiqi/knowledge-catalog/commit/1c6308f4cae53cba64fb72a51ad4b0d7105680d0",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "loom-bundle",
+        "loom-knowledge-catalog-skill",
+        "loom-web-runtime"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "compatibility": {
+        "dsh": "^0.1.0-rc.7",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=24 <25",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "prismjs",
+          "rc-tree"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-font-settings",
+      "name": "界面主题与美化（DSH Font Settings）",
+      "packageName": "dsh-font-settings",
+      "description": "为 DSH 提供界面主题与美化能力。英文原始说明：WebUI plugin: per-user font preferences (UI font + code font) as a Settings → General row",
+      "searchTerms": [
+        "界面主题与美化",
+        "DSH Font Settings",
+        "dsh-font-settings",
+        "主题",
+        "皮肤",
+        "背景",
+        "界面美化",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "font",
+        "settings"
+      ],
+      "repositoryUrl": "https://github.com/fuzz1og/dsh-font-settings",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "f3503fcd659203f173f425020626c505ceedd785",
+      "version": "0.1.1",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-31T06:18:49Z",
+        "observedAt": "2026-08-31T06:18:28.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-31T06:18:28.000Z",
+          "evidenceUrl": "https://github.com/fuzz1og/dsh-font-settings/commit/f3503fcd659203f173f425020626c505ceedd785",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "font-settings"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@deepseek-ai/dsh-settings",
+          "@deepseek-ai/schemastery"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
       "id": "dsh-wx-reader",
       "name": "会话管理（DSH Wx Reader）",
       "packageName": "@wjx-ai/dsh-wx-reader",
@@ -23078,37 +23333,58 @@
       "manifestPath": "package.json",
       "installPath": null,
       "updatePolicy": "external-only",
-      "commit": "d2b076e2e33c9597626027039ed38523e76965c5",
-      "version": "1.0.1",
+      "commit": "1244dbdfe009915fa21f14f669660e04a493b9b0",
+      "version": "1.0.2",
       "categories": [
         "experimental"
       ],
       "featured": false,
       "installCount": null,
       "source": {
-        "updatedAt": "2026-08-31T05:15:45Z",
-        "observedAt": "2026-08-31T05:12:48.000Z",
+        "updatedAt": "2026-08-31T06:13:19Z",
+        "observedAt": "2026-08-31T06:18:28.000Z",
         "provenance": "github-commit"
       },
       "assurance": {
         "discovery": {
           "status": "verified",
-          "method": "automated-fixed-source-policy-v1",
-          "checkedAt": "2026-08-31T05:12:48.000Z",
-          "evidenceUrl": "https://github.com/wjx-ai/dsh-wx-reader/commit/d2b076e2e33c9597626027039ed38523e76965c5",
-          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-31T06:18:28.000Z",
+          "evidenceUrl": "https://github.com/wjx-ai/dsh-wx-reader/commit/1244dbdfe009915fa21f14f669660e04a493b9b0",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
         },
         "installability": {
           "status": "unknown",
-          "summary": "No third-party installation or build code was executed by the automation."
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
         },
         "runtime": {
           "status": "unknown",
-          "summary": "No DSH runtime acceptance was inferred from static automation."
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
         },
         "securityReview": {
           "status": "unknown",
-          "summary": "Automated source policy is not an independent security audit."
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
         }
       },
       "entryIds": [
@@ -23168,6 +23444,149 @@
           ]
         },
         "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-prompt-library",
+      "name": "实验功能插件（DSH Prompt Library）",
+      "packageName": "@sunjuntao/dsh-prompt-library",
+      "description": "优化",
+      "searchTerms": [
+        "实验功能插件",
+        "DSH Prompt Library",
+        "dsh-prompt-library",
+        "@sunjuntao/dsh-prompt-library",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "prompt",
+        "library"
+      ],
+      "repositoryUrl": "https://github.com/master1Sun/dsh-prompt-library",
+      "defaultBranch": "master",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "7916eee52fcc0581243fd93dffee5050e1cbe03d",
+      "version": "0.9.9",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-31T06:00:03Z",
+        "observedAt": "2026-08-31T06:18:28.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-31T06:18:28.000Z",
+          "evidenceUrl": "https://github.com/master1Sun/dsh-prompt-library/commit/7916eee52fcc0581243fd93dffee5050e1cbe03d",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "prompt-library"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": "^0.1.0-rc.6",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22.19",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "js-yaml"
+        ],
         "reviewStatus": "automated-scan"
       },
       "risk": {
@@ -25424,149 +25843,6 @@
         },
         "externalDependencies": [
           "three"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "automatic-policy-blocked-not-installable"
-      }
-    },
-    {
-      "id": "dsh-prompt-library",
-      "name": "实验功能插件（DSH Prompt Library）",
-      "packageName": "@sunjuntao/dsh-prompt-library",
-      "description": "优化",
-      "searchTerms": [
-        "实验功能插件",
-        "DSH Prompt Library",
-        "dsh-prompt-library",
-        "@sunjuntao/dsh-prompt-library",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "prompt",
-        "library"
-      ],
-      "repositoryUrl": "https://github.com/master1Sun/dsh-prompt-library",
-      "defaultBranch": "master",
-      "manifestPath": "package.json",
-      "installPath": null,
-      "updatePolicy": "external-only",
-      "commit": "2b9983b0a2a53eb1af995eebf4b1325a573c995a",
-      "version": "0.9.8",
-      "categories": [
-        "experimental"
-      ],
-      "featured": false,
-      "installCount": null,
-      "source": {
-        "updatedAt": "2026-08-30T16:48:05Z",
-        "observedAt": "2026-08-30T17:00:11.000Z",
-        "provenance": "github-commit"
-      },
-      "assurance": {
-        "discovery": {
-          "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-30T17:00:11.000Z",
-          "evidenceUrl": "https://github.com/master1Sun/dsh-prompt-library/commit/2b9983b0a2a53eb1af995eebf4b1325a573c995a",
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
-        },
-        "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
-        },
-        "runtime": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
-        },
-        "securityReview": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
-        }
-      },
-      "entryIds": [
-        "prompt-library"
-      ],
-      "status": "blocked",
-      "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
-      "compatibility": {
-        "dsh": "^0.1.0-rc.6",
-        "dshReleases": {
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        },
-        "node": ">=22.19",
-        "systems": [],
-        "profiles": [
-          "web"
-        ]
-      },
-      "details": {
-        "pluginType": "unknown",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "unknown",
-          "files": "unknown",
-          "network": "unknown",
-          "commands": "unknown",
-          "credentials": [
-            "unknown"
-          ]
-        },
-        "externalDependencies": [
-          "js-yaml"
         ],
         "reviewStatus": "automated-scan"
       },
@@ -45892,8 +46168,8 @@
       "repositoryUrl": "https://github.com/NanmiCoder/dsh-agent-teams",
       "defaultBranch": "main",
       "manifestPath": "package.json",
-      "commit": "0865d887f4b04c8f55c29107c3a8dfaa42cd70b5",
-      "version": "0.1.15-alpha.1",
+      "commit": "da2e2e49242c6ecd7e801a74dba0c8268a0a2f81",
+      "version": "0.1.15",
       "categories": [
         "workflow"
       ],
@@ -45962,8 +46238,8 @@
         "review": "community-index-not-security-audited"
       },
       "source": {
-        "updatedAt": "2026-08-31T04:49:29Z",
-        "observedAt": "2026-08-31T05:12:48.000Z",
+        "updatedAt": "2026-08-31T05:22:19Z",
+        "observedAt": "2026-08-31T06:18:28.000Z",
         "provenance": "github-commit"
       },
       "searchTerms": [
@@ -45987,8 +46263,8 @@
         "discovery": {
           "status": "verified",
           "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-08-31T05:12:48.000Z",
-          "evidenceUrl": "https://github.com/NanmiCoder/dsh-agent-teams/commit/0865d887f4b04c8f55c29107c3a8dfaa42cd70b5",
+          "checkedAt": "2026-08-31T06:18:28.000Z",
+          "evidenceUrl": "https://github.com/NanmiCoder/dsh-agent-teams/commit/da2e2e49242c6ecd7e801a74dba0c8268a0a2f81",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
