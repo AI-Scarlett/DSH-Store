@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-08-30T19:15:27.000Z",
+    "updatedAt": "2026-08-30T23:57:05.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -23157,6 +23157,126 @@
       }
     },
     {
+      "id": "dsh-local-vector-memory",
+      "name": "记忆与知识库（DSH Local Vector Memory）",
+      "packageName": "dsh-local-vector-memory",
+      "description": "DSH 本地向量记忆插件:本地 embedding 向量化 + SQLite 存储 + RRF 混合检索自动召回;DeepSeek 云端 deepseek-v4-pro 会话结束自动提取;支持取代链、置顶记忆、软删除回收站与定时备份。",
+      "searchTerms": [
+        "记忆与知识库",
+        "DSH Local Vector Memory",
+        "dsh-local-vector-memory",
+        "记忆",
+        "知识库",
+        "召回",
+        "长期记忆",
+        "dsh",
+        "local",
+        "vector",
+        "memory"
+      ],
+      "repositoryUrl": "https://github.com/liangxiaobing520/dsh-local-vector-memory",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "88468e1f74330bb1d747b20d4e2e2dda152c7eb7",
+      "version": "0.2.1",
+      "categories": [
+        "memory"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-08-30T23:57:24Z",
+        "observedAt": "2026-08-30T23:57:05.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-08-30T23:57:05.000Z",
+          "evidenceUrl": "https://github.com/liangxiaobing520/dsh-local-vector-memory/commit/88468e1f74330bb1d747b20d4e2e2dda152c7eb7",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "local-vector-memory"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.6 <0.2.0",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22.5.0",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
       "id": "dsh-plugin-adaptive-orchestrator",
       "name": "多代理协作（DSH Plugin Adaptive Orchestrator）",
       "packageName": "dsh-plugin-adaptive-orchestrator",
@@ -45704,6 +45824,145 @@
       }
     },
     {
+      "id": "dsh-ipcalc",
+      "name": "实用工具（DSH IP Calculator）",
+      "packageName": "dsh-ipcalc",
+      "description": "为 DSH 提供 IPv4 子网计算、CIDR 汇总以及 IPv4/IPv6 解析和规范化工具。",
+      "repositoryUrl": "https://github.com/TYEclipse/dsh-ipcalc",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "7170f615583c42106101ca0dd811f176329773f9",
+      "version": "0.2.0",
+      "categories": [
+        "tools",
+        "development"
+      ],
+      "entryIds": [
+        "ipcalc"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=20",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-pure-computation-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-30T21:57:00Z",
+        "observedAt": "2026-08-30T23:57:05.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "实用工具",
+        "DSH IP Calculator",
+        "dsh-ipcalc",
+        "工具",
+        "能力",
+        "工具能力",
+        "开发与运行时",
+        "开发",
+        "调试",
+        "运行时",
+        "dsh",
+        "ipcalc"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-08-30T23:57:05.000Z",
+          "evidenceUrl": "https://github.com/TYEclipse/dsh-ipcalc/commit/7170f615583c42106101ca0dd811f176329773f9",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
       "id": "dsh-recall-plugin",
       "name": "会话与文件回退（DSH Recall Plugin）",
       "packageName": "dsh-recall-plugin",
@@ -60475,106 +60734,6 @@
           "summary": "Automated fixed-source review is not an independent security audit."
         }
       },
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
-      "id": "dsh-ipcalc",
-      "name": "实用工具（DSH IP Calculator）",
-      "packageName": "dsh-ipcalc",
-      "description": "为 DSH 提供 IPv4 子网计算、CIDR 汇总以及 IPv4/IPv6 解析和规范化工具。",
-      "repositoryUrl": "https://github.com/TYEclipse/dsh-ipcalc",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "6a267cdfc139167ace09abaa33c4df2080f6d093",
-      "version": "0.1.0",
-      "categories": [
-        "tools",
-        "development"
-      ],
-      "entryIds": [
-        "ipcalc"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": "unknown",
-        "node": "unknown",
-        "systems": [],
-        "profiles": [
-          "web",
-          "headless"
-        ],
-        "dshReleases": {
-          "rc.7": "unknown",
-          "rc.8": "unknown",
-          "0.1.1-rc.1": "unknown",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "low",
-          "files": "none",
-          "network": "none",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-pure-computation-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-17T21:41:47.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "实用工具",
-        "DSH IP Calculator",
-        "dsh-ipcalc",
-        "工具",
-        "能力",
-        "工具能力",
-        "开发与运行时",
-        "开发",
-        "调试",
-        "运行时",
-        "dsh",
-        "ipcalc"
-      ],
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
