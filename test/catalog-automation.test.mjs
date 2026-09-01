@@ -139,7 +139,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /isSafeSelfManagerUpdate/)
   assert.match(source, /SELF_MANAGER_PROTECTED_ENTRY_REASON/)
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
-  assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES/)
+  assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES = 4 \* 1024 \* 1024/)
   assert.match(source, /SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
   assert.match(source, /allowProtectedManager/)
   assert.doesNotMatch(source, /entry\.status !== 'approved' \|\| entry\.updatePolicy !== 'source-verified'/)
