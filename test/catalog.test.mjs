@@ -256,17 +256,23 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
   assert.equal(catalog.registry.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
   assert.equal(manager.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
+  assert.equal(manager.status, 'approved', 'the self manager must remain available after its two-phase Catalog update')
   assert.ok(compareVersions(manager.version, packageManifest.version) <= 0, 'catalog manager version cannot be newer than package.json during two-phase self-pinning')
-  assert.equal(manager.version, '0.8.5', 'the Catalog must expose the legacy self-update bridge as an actual SemVer upgrade')
-  assert.equal(manager.commit, '0bc733064bfc8ff16f6e8144188a7ac563092e12', 'the Catalog must pin the merged 0.8.5 bridge source release')
-  assert.ok(readme.includes(githubInstallSpecifier(manager)), 'README install command must match the catalog fixed commit')
+  const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
+  const managerIsBootstrap = manager.version === '0.8.5' && manager.commit === bootstrapCommit
+  const managerIsCurrent = manager.version === packageManifest.version && manager.commit !== bootstrapCommit
+  assert.ok(managerIsBootstrap || managerIsCurrent,
+    'the Catalog manager must be either the fixed 0.8.5 bootstrap or the current package release')
+  assert.match(manager.commit, /^[0-9a-f]{40}$/)
+  assert.ok(readme.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`),
+    'README must retain the fixed bootstrap install command even after the Catalog self-pin advances')
   assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
   assert.match(readme, /dsh plugin --profile web add/)
   assert.match(readme, /设置 → 插件 → 插件商城/)
   assert.doesNotMatch(readme, /dsh-safe-plugin-manager\.git#main/)
   const agentReach = source.entries.find(item => item.id === 'dsh-agent-reach')
   assert.ok(agentReach, 'Agent Reach adapter must be listed')
-  assert.equal(agentReach.status, 'approved')
+  assert.ok(['approved', 'unlisted'].includes(agentReach.status), 'latest-three policy may reversibly unlist an older compatibility record')
   assert.equal(agentReach.featured, undefined)
   assert.equal(agentReach.commit, '85d9801a3e8884baf33f8166eb2e587a4482050f')
   assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
@@ -285,9 +291,18 @@ test('bundled registry declares complete detail metadata for every entry', async
     }
   }
   assert.equal(manager.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
-  assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
-    install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
-  })
+  if (managerIsBootstrap) {
+    assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
+      install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
+    })
+  } else {
+    for (const release of ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']) {
+      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
+      assert.deepEqual(manager.compatibility.dshOperations[release], {
+        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+      })
+    }
+  }
   const settingsHub = source.entries.find(item => item.id === 'dsh-settings-hub')
   assert.ok(settingsHub, 'Settings Hub must be listed')
   assert.equal(settingsHub.compatibility.dsh, '^0.1.1-rc.1')
@@ -332,7 +347,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   ]
   for (const expected of updatedSelfHosted) {
     const plugin = source.entries.find(item => item.id === expected.id)
-    assert.equal(plugin.status, 'approved')
+    assert.ok(['approved', 'unlisted'].includes(plugin.status), `${expected.id} must remain represented during compatibility review`)
     assert.equal(plugin.version, expected.version)
     assert.equal(plugin.commit, expected.commit)
     assert.equal(plugin.compatibility.dsh, expected.dsh)
@@ -360,6 +375,12 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(requestedIm.assurance.runtime.status, 'unknown')
   assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
   const buildPlugin = source.entries.find(item => item.id === 'build-dsh-plugin')
+  assert.equal(buildPlugin.status, 'approved')
+  assert.equal(buildPlugin.version, '0.4.0')
+  assert.equal(buildPlugin.commit, '99f054a42e60e3e91f8ca54eb8e8c6b22c21e870')
+  for (const release of ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']) {
+    assert.equal(buildPlugin.compatibility.dshReleases[release], 'compatible')
+  }
   for (const gate of ['installability', 'runtime', 'securityReview']) {
     assert.equal(buildPlugin.assurance[gate].status, 'unknown')
     assert.equal(buildPlugin.assurance[gate].evidenceStatus, 'partial')
