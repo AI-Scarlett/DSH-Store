@@ -3,12 +3,15 @@ import { execFile } from 'node:child_process'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
 import { permissionSignals } from '../src/automation-source-policy.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
+const rootPath = fileURLToPath(new URL('..', import.meta.url))
+const catalogAutomationPath = fileURLToPath(new URL('../scripts/automate-catalog.mjs', import.meta.url))
 
 test('permission scan ignores inert Catalog metadata and ordinary identifiers', () => {
   const source = `
@@ -154,11 +157,11 @@ test('failed Catalog automation preserves a machine-readable failure report befo
   t.after(() => rm(directory, { recursive: true, force: true }))
   const reportPath = join(directory, 'catalog-automation-report.json')
   await assert.rejects(execFileAsync(process.execPath, [
-    new URL('../scripts/automate-catalog.mjs', import.meta.url).pathname,
+    catalogAutomationPath,
     '--observed-at', '2026-08-25T10:00:00Z',
     '--report', reportPath,
   ], {
-    cwd: new URL('..', import.meta.url).pathname,
+    cwd: rootPath,
     env: { ...process.env, CATALOG_BASE_COMMIT: 'not-a-full-commit' },
   }))
   const report = JSON.parse(await readFile(reportPath, 'utf8'))

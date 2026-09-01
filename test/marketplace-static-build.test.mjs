@@ -10,6 +10,7 @@ import test from 'node:test'
 const execFileAsync = promisify(execFile)
 const root = new URL('../', import.meta.url)
 const rootPath = fileURLToPath(root)
+const staticBuilderPath = fileURLToPath(new URL('scripts/build-marketplace-static.mjs', root))
 const sha256 = value => createHash('sha256').update(value).digest('hex')
 
 test('GitHub enrichment skips non-approved sources that are intentionally unavailable', async () => {
@@ -29,7 +30,7 @@ test('static marketplace derives manager identity and catalog cards without muta
   try {
     const outputArgument = relative(rootPath, output)
     const { stdout } = await execFileAsync(process.execPath, [
-      new URL('scripts/build-marketplace-static.mjs', root).pathname,
+      staticBuilderPath,
       '--out', outputArgument,
       '--source-sha', 'test-source-sha',
     ], { cwd: rootPath })
@@ -44,6 +45,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     const article = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
     const about = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const guide = await readFile(join(output, 'marketplace/dsh-plugins/index.html'), 'utf8')
+    const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')
+    const markdown = await readFile(join(output, 'marketplace/index.md'), 'utf8')
     const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
     const styles = await readFile(join(output, 'marketplace/styles.css'), 'utf8')
     const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
@@ -59,6 +62,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(manifest.githubEnriched, false)
     assert.equal(release.sourceCommit, 'test-source-sha')
     assert.ok(release.files['marketplace/index.html'])
+    assert.ok(release.files['marketplace/index.md'])
+    assert.ok(release.files['marketplace/robots.txt'])
     assert.ok(release.files['marketplace/plugins/index.html'])
     assert.ok(release.files['marketplace/standards/index.html'])
     assert.ok(release.files['marketplace/about/deepseek-harness-guide/index.html'])
@@ -110,6 +115,13 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(article, /https:\/\/mp\.weixin\.qq\.com\/s\/oKppevLlwQOg8TfPG74rVw/)
     assert.match(about, /href="\.\/deepseek-harness-guide\/"/)
     assert.doesNotMatch(about, /DSH_ARTICLE_PROMO/)
+    for (const bot of ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended']) {
+      assert.match(robots, new RegExp(`User-agent: ${bot}\\nAllow: /`))
+    }
+    assert.ok(markdown.length > 200, 'clean homepage Markdown must exceed 200 characters')
+    assert.match(markdown, /第三方插件商城/)
+    assert.match(markdown, /固定的完整 Git Commit/)
+    assert.match(markdown, /收录或“可安装”状态不等于完整安全审计/)
     const llms = await readFile(join(output, 'marketplace/llms.txt'), 'utf8')
     assert.match(llms, /## Current catalog snapshot/)
     assert.match(llms, new RegExp(`- Listed plugins: ${catalog.entries.filter(entry => entry.status !== 'unlisted').length}`))
@@ -133,7 +145,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
   const icp = '鄂ICP备2026010180号-2'
   try {
     await execFileAsync(process.execPath, [
-      new URL('scripts/build-marketplace-static.mjs', root).pathname,
+      staticBuilderPath,
       '--out', relative(rootPath, output),
       '--source-sha', 'domestic-test-sha',
       '--site-origin', 'https://dsh-store.cn',
@@ -160,12 +172,18 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
     }
     const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')
+    const markdown = await readFile(join(output, 'marketplace/index.md'), 'utf8')
     const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
     const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
     const domesticAbout = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const domesticArticle = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
     assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)
+    for (const bot of ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended']) {
+      assert.match(robots, new RegExp(`User-agent: ${bot}\\nAllow: /`))
+    }
+    assert.ok(markdown.length > 200, 'domestic clean homepage Markdown must exceed 200 characters')
+    assert.match(markdown, /第三方插件商城/)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\//)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\/dsh-plugins\//)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\/standards\//)

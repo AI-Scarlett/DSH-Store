@@ -110,13 +110,17 @@ guide $site_prefix/dsh-plugins/
 catalog /registry/catalog.json
 candidates /registry/candidates.json
 sitemap $site_prefix/sitemap.xml
+robots $site_prefix/robots.txt
+markdown $site_prefix/index.md
 EOF
 
-  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" <<'PY'
+  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" "$incoming/health-robots" "$incoming/health-markdown" <<'PY'
 import json,sys
 home=open(sys.argv[1],encoding='utf-8').read()
 catalog=json.load(open(sys.argv[2],encoding='utf-8'))
 candidates=json.load(open(sys.argv[3],encoding='utf-8'))
+robots=open(sys.argv[4],encoding='utf-8').read()
+markdown=open(sys.argv[5],encoding='utf-8').read()
 manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
 if manager['commit'] not in home:
     raise SystemExit('public homepage install identity mismatch')
@@ -125,6 +129,11 @@ if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entrie
     raise SystemExit('public Candidate Registry is invalid or empty')
 if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True, 'unknownIsNotVerified': True}:
     raise SystemExit('public Candidate Registry trust boundary is invalid')
+for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
+    if f'User-agent: {bot}\\nAllow: /' not in robots:
+        raise SystemExit(f'public robots policy is missing an explicit Allow rule for {bot}')
+if len(markdown) <= 200 or '第三方插件商城' not in markdown:
+    raise SystemExit('public homepage Markdown is missing or incomplete')
 print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'], 'candidates', len(candidates['entries']))
 PY
 }
@@ -154,6 +163,8 @@ required = {
     'marketplace/faq/index.html',
     'marketplace/about/index.html',
     'marketplace/dsh-plugins/index.html',
+    'marketplace/robots.txt',
+    'marketplace/index.md',
     'marketplace/sitemap.xml',
     'registry/catalog.json',
     'registry/candidates.json',
@@ -226,10 +237,17 @@ if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True
 home = (root / 'marketplace/index.html').read_text(encoding='utf-8')
 plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
 styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')
+robots = (root / 'marketplace/robots.txt').read_text(encoding='utf-8')
+markdown = (root / 'marketplace/index.md').read_text(encoding='utf-8')
 if manager['commit'] not in home or 'data-static-featured-id=' not in home or 'data-static-plugin-id=' not in plugins:
     raise SystemExit('static marketplace content is incomplete')
 if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
     raise SystemExit('catalog error visibility guard is missing')
+for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
+    if f'User-agent: {bot}\\nAllow: /' not in robots:
+        raise SystemExit(f'AI bot policy is missing an explicit Allow rule for {bot}')
+if len(markdown) <= 200 or '第三方插件商城' not in markdown:
+    raise SystemExit('homepage Markdown artifact is missing or incomplete')
 for path in root.rglob('*'):
     if path.is_symlink() or path.name == '.git' or path.name.startswith('.env') or path.name.startswith('._'):
         raise SystemExit(f'forbidden artifact entry: {path.relative_to(root)}')
