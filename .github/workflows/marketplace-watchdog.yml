@@ -245,6 +245,10 @@ jobs:
             delivery_key="${delivery_key}-watchdog-alert"
           elif test "$REPAIR_TRIGGERED" = true && test "$OWNER_REPORT_CONCLUSION" != success; then
             delivery_key="${delivery_key}-watchdog-alert"
+          elif jq -e --arg marker "<!-- dsh-catalog-report:v1:${delivery_key}-watchdog-alert -->" \
+            '.issue.comments[]?.body | contains($marker)' \
+            "$RUNNER_TEMP/catalog-report-state.json" >/dev/null; then
+            delivery_key="${delivery_key}-watchdog-alert"
           fi
           node scripts/catalog-report-delivery.mjs plan \
             --report "$REPORT_PATH" \

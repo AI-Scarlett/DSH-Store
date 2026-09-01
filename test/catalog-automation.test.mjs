@@ -325,6 +325,8 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
   assert.match(workflow, /catalog-report-delivery\.mjs plan/)
   assert.match(workflow, /catalog-report-delivery\.mjs apply/)
   assert.match(workflow, /watchdog-alert/)
+  assert.match(workflow, /catalog-report-state\.json/)
+  assert.match(workflow, /\.issue\.comments\[\]\?\.body \| contains\(\$marker\)/)
   assert.doesNotMatch(workflow, /gh issue comment/)
   assert.match(timer, /00,03,06,09,12,15,18,21:47:00 UTC/)
   assert.match(service, /EnvironmentFile=\/etc\/dsh-store\/refresh-%i\.env/)
