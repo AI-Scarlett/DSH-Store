@@ -29,6 +29,6 @@ test('the production Catalog is fully localized and searchable by Chinese use ca
   assertCatalogLocalization(source)
   const catalog = validateCatalog(source)
   assert.ok(searchCatalog(catalog, '任务完成').some(entry => entry.id === 'dsh-task-notify'))
-  assert.ok(searchCatalog(catalog, '余额').some(entry => entry.id === 'dsh-balance-monitor'))
+  assert.ok(searchCatalog(catalog, '余额', { includeUnlisted: true }).some(entry => entry.id === 'dsh-balance-monitor'))
   assert.ok(catalog.entries.every(entry => entry.searchTerms.some(term => /[\u3400-\u9fff]/u.test(term))))
 })

@@ -83,10 +83,16 @@ export function candidateRetentionBucketAt(observedAt, scheduleHours, bucketCoun
   return Math.floor(timestamp / (scheduleHours * 60 * 60 * 1000)) % bucketCount
 }
 
+export function isDurableRejectedCandidateDecision(candidate) {
+  return Array.isArray(candidate?.discoverySources)
+    && candidate.discoverySources.some(source => typeof source === 'string' && source.startsWith('user-request-'))
+}
+
 export function selectRejectedCandidateRetentionBatch(candidates, observedAt, policy, scheduleHours) {
   const bucketCount = policy?.scanBuckets
   const bucket = candidateRetentionBucketAt(observedAt, scheduleHours, bucketCount)
   const entries = candidates.entries.filter(candidate => candidate.status === 'rejected'
+    && !isDurableRejectedCandidateDecision(candidate)
     && candidateRetentionBucket(candidate, bucketCount) === bucket)
   if (entries.length > policy.maxCandidatesPerRun) {
     throw new Error(`candidate retention bucket ${bucket} exceeds the per-run bound`)

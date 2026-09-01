@@ -74,7 +74,7 @@ jobs:
           test "$CATALOG_RUN_ATTEMPT" != null
           test -n "$CATALOG_RUN_ATTEMPT"
           run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CATALOG_RUN_ID")
-          test "$(jq -r .name <<<"$run")" = 'Automated plugin radar and Catalog update'
+          test "$(jq -r .path <<<"$run")" = '.github/workflows/catalog-automation.yml'
           test "$(jq -r .run_attempt <<<"$run")" = "$CATALOG_RUN_ATTEMPT"
           if test "$INLINE_CATALOG_RUN" = true; then
             test "$CATALOG_RUN_ID" = "$GITHUB_RUN_ID"

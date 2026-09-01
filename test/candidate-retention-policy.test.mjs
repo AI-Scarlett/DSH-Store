@@ -5,6 +5,7 @@ import {
   candidateRetentionBucketAt,
   evaluateCandidateManifests,
   inspectRejectedCandidateCompatibility,
+  isDurableRejectedCandidateDecision,
   selectRejectedCandidateRetentionBatch,
 } from '../src/candidate-retention-policy.mjs'
 
@@ -86,4 +87,18 @@ test('hash buckets cover only rejected candidates without storing a cursor', () 
   const batch = selectRejectedCandidateRetentionBatch({ entries: [selected, other, reviewing] }, observedAt, policy, 8)
   assert.equal(batch.bucket, activeBucket)
   assert.deepEqual(batch.entries, [selected])
+})
+
+test('explicit user-request rejection decisions remain durable audit records', () => {
+  const observedAt = '2026-08-24T16:00:00.000Z'
+  const activeBucket = candidateRetentionBucketAt(observedAt, 8, 24)
+  const requested = candidate({ discoverySources: ['user-request-2026-08-21', 'github-fixed-commit-review'] })
+  let suffix = 0
+  while (candidateRetentionBucket(requested, 24) !== activeBucket) {
+    suffix += 1
+    requested.repositoryUrl = `https://github.com/example/requested-${suffix}`
+  }
+  assert.equal(isDurableRejectedCandidateDecision(requested), true)
+  const batch = selectRejectedCandidateRetentionBatch({ entries: [requested] }, observedAt, policy, 8)
+  assert.deepEqual(batch.entries, [])
 })
