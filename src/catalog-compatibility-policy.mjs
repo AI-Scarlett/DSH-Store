@@ -1,15 +1,23 @@
 import { createHash } from 'node:crypto'
-import { compareVersions, dshReleaseVersion } from './catalog.mjs'
+import { dshReleaseVersion } from './catalog.mjs'
+import {
+  DSH_PACKAGE_NAME,
+  DSH_REGISTRY_URL,
+  DSH_RELEASE_WINDOW_AUTHORITY,
+  fetchOfficialDshReleaseWindow,
+  officialDshReleaseWindow,
+} from './dsh-release-policy.mjs'
 
-export const DSH_PACKAGE_NAME = '@deepseek-ai/dsh'
-export const DSH_REGISTRY_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh'
+export {
+  DSH_PACKAGE_NAME,
+  DSH_REGISTRY_URL,
+  DSH_RELEASE_WINDOW_AUTHORITY,
+  fetchOfficialDshReleaseWindow,
+  officialDshReleaseWindow,
+}
 export const COMPATIBILITY_CANDIDATE_SOURCE = 'catalog-latest-three-compatibility-v1'
 export const COMPATIBILITY_HOLD_PREFIX = 'DSH_LATEST_THREE_COMPATIBILITY_HOLD:'
 
-const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
-const DEFAULT_RELEASE_COUNT = 3
-const DEFAULT_TIMEOUT_MS = 12_000
-const DEFAULT_MAX_BYTES = 1024 * 1024
 
 function boundedText(value, maximum = 600) {
   return String(value ?? '').replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, maximum)
@@ -35,70 +43,6 @@ function uniqueCandidateId(entry, candidates) {
     throw new Error(`compatibility candidate ID collision for ${entry.repositoryUrl}`)
   }
   return fallback
-}
-
-function releaseCount(value) {
-  if (value === undefined) return DEFAULT_RELEASE_COUNT
-  if (!Number.isInteger(value) || value < 1 || value > 12) throw new Error('official DSH release window count is invalid')
-  return value
-}
-
-export function officialDshReleaseWindow(metadata, requestedCount = DEFAULT_RELEASE_COUNT) {
-  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
-    throw new Error('official DSH package metadata must be an object')
-  }
-  if (metadata.name !== DSH_PACKAGE_NAME) throw new Error('official DSH package metadata has an unexpected package name')
-  const latestVersion = metadata['dist-tags']?.latest
-  if (typeof latestVersion !== 'string' || !SEMVER.test(latestVersion)) {
-    throw new Error('official DSH package metadata does not declare a valid latest dist-tag')
-  }
-  if (!metadata.versions?.[latestVersion]) throw new Error('official DSH latest dist-tag has no published version record')
-  const count = releaseCount(requestedCount)
-  const versions = Object.entries(metadata.versions ?? {})
-    .filter(([version, record]) => SEMVER.test(version)
-      && record && typeof record === 'object' && !Array.isArray(record)
-      && typeof record.deprecated !== 'string'
-      && (compareVersions(version, latestVersion) ?? 1) <= 0)
-    .map(([version]) => version)
-    .sort((left, right) => compareVersions(left, right) ?? left.localeCompare(right, 'en'))
-  if (!versions.includes(latestVersion)) throw new Error('official DSH latest release is deprecated or unavailable')
-  if (versions.length < count) throw new Error(`official DSH registry exposes fewer than ${count} active releases through latest`)
-  return {
-    packageName: DSH_PACKAGE_NAME,
-    registryUrl: DSH_REGISTRY_URL,
-    latestVersion,
-    releases: versions.slice(-count),
-    releaseCount: count,
-    authority: 'official-npm-registry-published-versions-through-latest',
-  }
-}
-
-export async function fetchOfficialDshReleaseWindow(options = {}) {
-  const request = options.fetch ?? globalThis.fetch
-  if (typeof request !== 'function') throw new Error('official DSH registry fetch is unavailable')
-  const registryUrl = options.registryUrl ?? DSH_REGISTRY_URL
-  if (registryUrl !== DSH_REGISTRY_URL) throw new Error('official DSH registry URL does not match the policy authority')
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), options.timeoutMs ?? DEFAULT_TIMEOUT_MS)
-  try {
-    const response = await request(registryUrl, {
-      headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager-catalog-automation' },
-      signal: controller.signal,
-    })
-    if (!response.ok) throw new Error(`official DSH registry returned HTTP ${response.status}`)
-    const text = await response.text()
-    if (Buffer.byteLength(text) > (options.maxBytes ?? DEFAULT_MAX_BYTES)) {
-      throw new Error('official DSH registry response exceeded the automation bound')
-    }
-    let metadata
-    try { metadata = JSON.parse(text) } catch { throw new Error('official DSH registry returned invalid JSON') }
-    return officialDshReleaseWindow(metadata, options.releaseCount)
-  } catch (error) {
-    if (error?.name === 'AbortError') throw new Error('official DSH registry request timed out')
-    throw error
-  } finally {
-    clearTimeout(timer)
-  }
 }
 
 export function catalogReleaseStatus(entry, version) {

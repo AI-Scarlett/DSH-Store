@@ -7,13 +7,15 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.6')
+  assert.equal(pkg.version, '0.8.7')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
   assert.equal(pkg.repository.url, 'git+https://github.com/AI-Scarlett/DSH-Store.git')
   assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.2'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.3'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.4'], 'compatible')
   for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
     assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0')
   }
@@ -124,6 +126,8 @@ test('marketplace cards derive the latest three DSH releases while details retai
   ])
   assert.match(storefront, /DSH_VERSION_URL = 'https:\/\/registry\.npmjs\.org\/@deepseek-ai%2Fdsh'/)
   assert.match(storefront, /function createDshReleaseContext/)
+  assert.match(storefront, /const DSH_RELEASE_TAGS = \['latest', 'alpha', 'beta', 'rc'\]/)
+  assert.match(storefront, /typeof record\.deprecated === 'string'/)
   assert.match(storefront, /const cardReleaseViews = views =>/)
   assert.match(storefront, /\$\{compatibilityMatrix\(entry\)\}/)
   assert.match(storefront, /compatibility\.dshReleaseViews\.map\(view =>/)
@@ -302,7 +306,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
-test('public rc.7 through 0.1.1-rc.2 client contract stays on official ModuleLoader and settings ordering', async () => {
+test('public rc.7 through 0.1.2-alpha.4 client contract stays on official ModuleLoader and settings ordering', async () => {
   const [pkg, client] = await Promise.all([
     readFile(new URL('package.json', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
@@ -317,7 +321,7 @@ test('public rc.7 through 0.1.1-rc.2 client contract stays on official ModuleLoa
   assert.match(client, /window\.__ModuleLoader__\.load/)
   assert.match(client, /settings\.plugins\.tab/)
   assert.match(client, /order:\s*-10/)
-  assert.match(client, /0\.1\.1-rc\.2/)
+  assert.match(client, /0\.1\.2-alpha\.4/)
   assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
 })
 

@@ -142,7 +142,6 @@ export function buildCatalogVersionUpdate(
   analysis,
   observedAt,
   policy = catalogUpdatePolicy(entry),
-  options = {},
 ) {
   const reason = policy === 'source-verified'
     ? 'The newer fixed Commit passed the complete automatic low-risk source policy.'
@@ -154,9 +153,7 @@ export function buildCatalogVersionUpdate(
     defaultBranch: candidate.defaultBranch,
     commit: candidate.commit,
     version: candidate.version,
-    compatibility: options.preserveCompatibility
-      ? entry.compatibility
-      : sourceDeclaredCompatibility(entry, candidate),
+    compatibility: sourceDeclaredCompatibility(entry, candidate),
     source: {
       updatedAt: analysis?.sourceUpdatedAt ?? observedAt,
       observedAt,

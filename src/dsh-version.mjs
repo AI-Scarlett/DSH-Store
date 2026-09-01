@@ -1,19 +1,13 @@
 import { readFile, realpath } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { compareVersions } from './catalog.mjs'
+import { officialDshChannels } from './dsh-release-policy.mjs'
 
 const PACKAGE_NAME = '@deepseek-ai/dsh'
 const REGISTRY_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh'
 const RELEASE_URL = 'https://github.com/deepseek-ai/deepseek-harness/releases'
 const MAX_RESPONSE_BYTES = 128 * 1024
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
-const CHANNELS = [
-  { tag: 'latest', kind: 'stable' },
-  { tag: 'next', kind: 'preview' },
-  { tag: 'alpha', kind: 'preview' },
-  { tag: 'beta', kind: 'preview' },
-  { tag: 'rc', kind: 'preview' },
-]
 
 function versionError(code, message) {
   return Object.assign(new Error(message), { code })
@@ -48,32 +42,6 @@ async function findCliManifest(cliPath) {
   throw versionError('DSH_VERSION_UNAVAILABLE', '无法从当前 DSH CLI 定位 @deepseek-ai/dsh 版本。')
 }
 
-function officialChannels(payload) {
-  if (payload?.name !== PACKAGE_NAME || !payload['dist-tags'] || typeof payload['dist-tags'] !== 'object') {
-    throw versionError('DSH_VERSION_REGISTRY_INVALID', 'npm Registry 未返回可信的 DSH 包元数据。')
-  }
-  const versions = payload.versions
-  if (!versions || typeof versions !== 'object' || Array.isArray(versions)) {
-    throw versionError('DSH_VERSION_REGISTRY_INVALID', 'npm Registry 未返回可核对的 DSH 发行记录。')
-  }
-  const channels = []
-  for (const channel of CHANNELS) {
-    const version = payload['dist-tags'][channel.tag]
-    if (version === undefined) continue
-    if (!VERSION.test(version) || !versions[version] || typeof versions[version] !== 'object') {
-      throw versionError('DSH_VERSION_REGISTRY_INVALID', `npm Registry 的 ${channel.tag} 标签不是可信 DSH 发行版本。`)
-    }
-    channels.push({ ...channel, version })
-  }
-  const stable = channels.find(channel => channel.tag === 'latest')
-  if (!stable) throw versionError('DSH_VERSION_REGISTRY_INVALID', 'npm Registry 未返回可信的 DSH 稳定版标签。')
-  const target = channels.reduce((current, channel) => {
-    const comparison = compareVersions(channel.version, current.version)
-    return comparison !== null && comparison > 0 ? channel : current
-  }, stable)
-  return { stable, target, channels }
-}
-
 async function latestVersion(request, timeoutMs) {
   const response = await request(REGISTRY_URL, {
     headers: { accept: 'application/vnd.npm.install-v1+json', 'user-agent': 'dsh-safe-plugin-manager' },
@@ -84,7 +52,11 @@ async function latestVersion(request, timeoutMs) {
   if (Buffer.byteLength(text) > MAX_RESPONSE_BYTES) throw versionError('DSH_VERSION_REGISTRY_TOO_LARGE', 'npm Registry 版本响应超过本机检查上限。')
   let payload
   try { payload = JSON.parse(text) } catch { throw versionError('DSH_VERSION_REGISTRY_INVALID', 'npm Registry 版本响应不是有效 JSON。') }
-  return officialChannels(payload)
+  try {
+    return officialDshChannels(payload)
+  } catch (error) {
+    throw versionError('DSH_VERSION_REGISTRY_INVALID', `npm Registry 未返回可信的 DSH 发行记录：${error.message}`)
+  }
 }
 
 export function createDshVersionService(options = {}) {

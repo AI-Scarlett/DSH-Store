@@ -24,6 +24,7 @@ import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { permissionSignals } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
+  DSH_RELEASE_WINDOW_AUTHORITY,
   DSH_REGISTRY_URL,
   fetchOfficialDshReleaseWindow,
 } from '../src/catalog-compatibility-policy.mjs'
@@ -511,7 +512,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const updated = buildCatalogVersionUpdate(entry, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
-      }, observedAt, sourcePolicy, { preserveCompatibility: isSelfManagerEntry(entry) })
+      }, observedAt, sourcePolicy)
       return {
         index, entry, kind: 'updated', snapshot, versionAssessment, sourcePolicy, updated,
         warnings: analysis.reasons,
@@ -802,7 +803,7 @@ failureContext.observedAt = observedAt
 failureContext.stage = 'validate-policy'
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
 if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
-if (policy.compatibility?.authority !== 'official-npm-registry-published-versions-through-latest'
+if (policy.compatibility?.authority !== DSH_RELEASE_WINDOW_AUTHORITY
   || policy.compatibility?.registryUrl !== DSH_REGISTRY_URL
   || policy.compatibility?.latestReleaseCount !== 3
   || policy.compatibility?.requiredCompatibleReleases !== 1

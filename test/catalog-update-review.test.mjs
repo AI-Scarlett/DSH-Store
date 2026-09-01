@@ -7,6 +7,7 @@ import {
   catalogUpdatePolicy,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
+import { supportsDshReleaseWindow } from '../src/catalog-compatibility-policy.mjs'
 
 const entry = (overrides = {}) => ({
   id: 'demo',
@@ -107,7 +108,7 @@ test('a Catalog version refresh resets old runtime and compatibility evidence', 
   assert.deepEqual(updated.risk.installScripts, ['prepare'])
 })
 
-test('self-manager version refresh preserves its explicit compatibility matrix', () => {
+test('self-manager version refresh imports its new explicit compatibility matrix', () => {
   const original = entry({
     id: 'dsh-safe-plugin-manager',
     compatibility: {
@@ -122,11 +123,31 @@ test('self-manager version refresh preserves its explicit compatibility matrix',
       node: '>=22', systems: ['macOS'], profiles: ['web'],
     },
   })
-  const candidate = { ...original, commit: 'b'.repeat(40), version: '1.3.0' }
-  const updated = buildCatalogVersionUpdate(original, candidate, {}, '2026-08-22T06:00:00Z', 'user-reviewed', {
-    preserveCompatibility: true,
+  const candidate = {
+    ...original,
+    commit: 'b'.repeat(40),
+    version: '1.3.0',
+    compatibility: {
+      ...original.compatibility,
+      dshReleases: {
+        ...original.compatibility.dshReleases,
+        '0.1.2-alpha.2': 'compatible',
+        '0.1.2-alpha.3': 'compatible',
+        '0.1.2-alpha.4': 'compatible',
+      },
+    },
+  }
+  const updated = buildCatalogVersionUpdate(original, candidate, {}, '2026-08-22T06:00:00Z', 'user-reviewed')
+  assert.equal(updated.compatibility.dshReleases['0.1.2-alpha.4'], 'compatible')
+  assert.deepEqual(updated.compatibility.dshOperations['0.1.2-alpha.4'], {
+    install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
   })
-  assert.deepEqual(updated.compatibility, original.compatibility)
+  assert.deepEqual(updated.compatibility.dshOperations['0.1.1-rc.2'], {
+    install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+  })
+  assert.equal(supportsDshReleaseWindow(updated, [
+    '0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4',
+  ]), true)
 })
 
 test('version refresh imports an upstream per-release declaration while leaving operations unknown', () => {
