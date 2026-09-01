@@ -145,6 +145,9 @@ jobs:
           test "$codeql_ready" = true
           gh pr merge --squash --delete-branch "$pr_url"
           test "$(gh pr view "$pr_url" --json state --jq .state)" = MERGED
+          merge_sha=$(gh pr view "$pr_url" --json mergeCommit --jq '.mergeCommit.oid')
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/$merge_sha" --jq '.commit.verification.verified')" = true
+          echo "merge_sha=$merge_sha" >> "$GITHUB_OUTPUT"
           trap - ERR
       - name: Preserve the machine plan and decision record
         if: always()
@@ -154,6 +157,30 @@ jobs:
           path: ${{ runner.temp }}/catalog-automation-report.json
           if-no-files-found: warn
           retention-days: 30
+      - name: Publish the merged Catalog immediately
+        if: steps.automate.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_MAIN_SHA: ${{ steps.pull_request.outputs.merge_sha }}
+        run: |
+          test "$EXPECTED_MAIN_SHA" = "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          dispatched_at=$(date -u +%s)
+          gh workflow run pages.yml --ref main
+          pages_run_id=''
+          for attempt in $(seq 1 30); do
+            runs=$(gh run list --workflow pages.yml --event workflow_dispatch --limit 20 \
+              --json databaseId,headSha,createdAt)
+            pages_run_id=$(jq -r \
+              --arg sha "$EXPECTED_MAIN_SHA" \
+              --argjson dispatched_at "$dispatched_at" \
+              '.[] | select(.headSha == $sha and (.createdAt | fromdateiso8601) >= $dispatched_at) | .databaseId' \
+              <<<"$runs" | head -n 1)
+            test -n "$pages_run_id" && break
+            sleep 2
+          done
+          test -n "$pages_run_id"
+          test "$(gh run view "$pages_run_id" --json headSha --jq .headSha)" = "$EXPECTED_MAIN_SHA"
+          gh run watch "$pages_run_id" --exit-status --interval 10
 
   author-notifications:
     needs: update

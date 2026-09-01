@@ -131,7 +131,8 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
   和 unlisted 条目只刷新可追溯的项目元数据，不会因此获得安装资格；
 - 新版本写入后，旧版本的安装、运行、安全和精确兼容证据全部重置为 `unknown`，不把历史
   验收沿用到新版本；源码变化但没有提升版本号时只记录异常，不移动 Catalog 固定 Commit；
-- `pages.yml` 仍按三小时窗口第 25 分钟重新构建 GitHub Pages；
+- Catalog 自动 PR 合并后，`catalog-automation.yml` 会绑定已验证的 merge Commit，立即调度并等待
+  对应 `pages.yml` Run 成功；无 Catalog 变更时，Pages 仍按三小时窗口第 25 分钟兜底重建；
 - 两台服务器的 systemd timer 仍按三小时窗口第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
 - `catalog-automation.yml` 直接调用作者通知与所有者报告可复用工作流，所有输入和 Artifact 均绑定当前 Run ID 与 Attempt；
 - `catalog-run-report.yml` 立即发布一次按 Catalog Run ID 去重的所有者 `@mention` 报告，不依赖 `workflow_run`；

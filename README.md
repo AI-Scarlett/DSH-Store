@@ -420,7 +420,8 @@ Issue 创建、编辑或重新打开后，GitHub Actions 会自动取得默认�
 和固定 Commit。满足 `registry/automation-policy.json` 的项目自动生成 PR，通过仓库检查与
 CodeQL 后自动 squash 合并；其余结果失败关闭，不再用机械人工确认代替证据。
 
-Catalog 在 UTC 00:05、08:05、16:05 扫描；Pages、国际站、国内站和看门狗仍按三小时错峰运行。
+Catalog 在 UTC 00:05、08:05、16:05 扫描；发生 Catalog 变更并合并后会立即触发且等待绑定该
+merge Commit 的 Pages 发布，国际站、国内站和看门狗仍按三小时错峰运行并负责兜底恢复。
 看门狗会核验上一轮工作流、GitHub Raw、Pages 和两个生产域名；Catalog 超过九小时或公开面失败
 时自动重派任务，未恢复状态留作下一轮继续处理。
 看门狗还会把每轮的新增收录数、历史版本更新数、中文名（英文名）清单、暂缓原因和四个公开面
