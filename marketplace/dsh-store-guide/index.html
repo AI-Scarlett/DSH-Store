@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="applicable-device" content="pc,mobile">
+  <!-- DSH_BAIDU_VERIFICATION -->
+  <meta name="description" content="DSH STORE 国内站使用与问题分层指南：说明 DeepSeek Harness 插件发现、兼容性、版本、安装信息，以及商城、CLI、Profile、依赖和 Catalog 的不同边界。">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+  <meta name="author" content="DSH STORE">
+  <meta name="application-name" content="DSH STORE">
+  <meta name="theme-color" content="#f6f9ff">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="DSH STORE 如何发现插件与区分问题层级｜国内站指南">
+  <meta property="og:description" content="从插件发现、兼容性和版本信息开始，区分商城页面、Catalog、DSH CLI、Profile、依赖与运行时问题。">
+  <meta property="og:url" content="https://dsh.store/dsh-store-guide/">
+  <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
+  <meta property="og:image:alt" content="DSH STORE">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DSH STORE 使用与问题分层指南">
+  <meta name="twitter:description" content="先区分商城、Catalog、CLI、Profile、依赖和运行时，再决定下一步。">
+  <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
+  <title>DSH STORE 使用与问题分层指南｜DeepSeek Harness 插件</title>
+  <link rel="canonical" href="https://dsh.store/dsh-store-guide/">
+  <!-- DSH_HREFLANG -->
+  <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
+  <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
+  <link rel="apple-touch-icon" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": "https://dsh.store/dsh-store-guide/#article",
+    "url": "https://dsh.store/dsh-store-guide/",
+    "headline": "DSH STORE 如何用于发现与获取 DeepSeek Harness 插件？",
+    "description": "说明 DSH STORE 的插件发现、兼容性、版本与安装信息边界，并区分商城、CLI、Profile、依赖和 Catalog 问题。",
+    "inLanguage": "zh-CN",
+    "publisher": {"@type": "Organization", "name": "DSH STORE", "url": "https://dsh.store/"},
+    "isPartOf": {"@id": "https://dsh.store/#website"}
+  }
+  </script>
+</head>
+<body class="seo-guide-page domestic-usage-guide-page">
+  <a class="skip-link" href="#guide-body">跳到正文</a>
+  <div class="tech-grid" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a>
+    <nav class="site-nav" aria-label="主要导航">
+      <a href="../">首页</a><a href="../plugins/">插件目录</a><a href="../standards/">收录标准</a><a href="../faq/">常见问题</a><a href="./" aria-current="page">使用与排查</a>
+      <!-- DSH_ALTERNATE_SITE -->
+    </nav>
+    <div class="header-tools"><span class="article-language-badge">中国站资料 · ZH-CN</span></div>
+  </header>
+
+  <main id="guide-body">
+    <header class="seo-guide-hero">
+      <div>
+        <div class="system-status"><span></span><b>CHINA SITE / VERIFIED GUIDE</b><em>READ FIRST</em></div>
+        <h1>先分清<br><em>问题在哪一层。</em></h1>
+        <p>DSH STORE 用于发现 DeepSeek Harness（DSH）插件、查看公开目录中的来源、版本、权限与兼容性信息，并了解受约束的接入路径。它是第三方商城，不替代 DSH 本体，也不能从网页判断本地 Profile、依赖或运行时一定正常。</p>
+        <div class="seo-guide-actions"><a class="button button-primary" href="#layers">查看问题分层 <i aria-hidden="true">↓</i></a><a class="button button-secondary" href="../plugins/">浏览插件目录 <i aria-hidden="true">↗</i></a></div>
+      </div>
+      <aside class="seo-guide-signal" aria-label="适用边界"><span>USE THE RIGHT SURFACE</span><strong>STORE ≠ RUNTIME</strong><p>商城 · Catalog · CLI · Profile · 依赖</p><small>每层都有不同的可核验入口与处理责任。</small></aside>
+    </header>
+
+    <section class="seo-guide-section section-shell" aria-labelledby="what-title">
+      <header><div><span>01 / WHAT DSH STORE CAN SHOW</span><h2 id="what-title">从发现开始，<em>不替代本地诊断。</em></h2></div><div class="seo-guide-copy"><p>在 <a href="../plugins/">插件目录</a> 中可以发现公开展示的插件，并进入详情查看名称、用途、版本、固定来源、权限说明和兼容性信息。目录只是发现与核对入口：条目是否可见、可安装或仅展示，必须以公开 <a href="https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json" target="_blank" rel="noreferrer">Catalog</a> 与页面显示为准。</p><p>版本、固定 Commit、来源与权限的含义，以及“可安装”不等于完整安全审计的边界，见 <a href="../standards/">收录标准</a>。没有证据支持的安全、兼容性或运行结论会保持 unknown，不应补成承诺。</p></div></header>
+    </section>
+
+    <section class="seo-guide-steps" id="layers" aria-labelledby="layers-title"><div class="section-shell"><header><span>02 / ISSUE LAYERS</span><h2 id="layers-title">访问、可见、安装与运行，<br>不是同一类问题。</h2><p>先定位发生在哪一层，再打开相应的公开证据或本地工具。下面是首次排查方向，不会直接修改 DSH、Profile 或插件。</p></header><div class="seo-guide-step-grid">
+      <article><b>01 / STORE</b><h3>商城页面</h3><p>首页、目录或本指南打不开时，先确认目标网页与网络访问。网页可访问不等于本地 DSH 已启动或插件已安装。</p></article>
+      <article><b>02 / CATALOG</b><h3>目录与可见度</h3><p>插件不显示时，检查目录筛选、条目状态与公开 Catalog。候选、blocked、unlisted 与可安装条目不是同一状态。</p></article>
+      <article><b>03 / CLI</b><h3>本地 DSH CLI</h3><p>安装命令、CLI 版本和终端输出发生在本机 DSH 环境。请在目标设备确认实际 CLI 与命令帮助，而不是只看商城页面。</p></article>
+      <article><b>04 / PROFILE</b><h3>当前 Profile</h3><p>浏览网站默认只读。真实安装、启停或 Profile 变更应由用户在 DSH 中确认，并保留计划、备份、健康检查与回滚路径。</p></article>
+      <article><b>05 / DEPENDENCY</b><h3>插件依赖</h3><p>插件自身的依赖、生命周期脚本和运行文件属于插件发布物与本地环境问题。目录收录不能替代其真实安装或运行验收。</p></article>
+      <article><b>06 / RUNTIME</b><h3>运行时异常</h3><p>插件安装后不可用、功能异常或 DSH 未启动，应回到本地 DSH、目标 Profile、插件文档与运行日志核对；不要把它们归因为商城故障。</p></article>
+    </div></div></section>
+
+    <section class="seo-guide-section section-shell" aria-labelledby="evidence-title">
+      <header><div><span>03 / PUBLIC EVIDENCE</span><h2 id="evidence-title">每一个判断，<em>都回到可复核入口。</em></h2></div><div class="seo-guide-copy"><p>商城页面负责展示；公开 Catalog 负责目录事实；固定来源和边界由收录标准解释；本地 CLI、Profile、依赖和运行时则必须在实际设备上单独核验。它们可以关联，但不能互相替代。</p></div></header>
+      <div class="seo-guide-link-grid">
+        <a href="../plugins/"><b>插件发现与详情 ↗</b><span>查看公开目录、插件用途、版本、来源、权限与兼容性信息。</span></a>
+        <a href="../standards/"><b>收录标准与证据边界 ↗</b><span>了解固定 Commit、来源、权限和“收录不等于安全审计”的含义。</span></a>
+        <a href="https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json" target="_blank" rel="noreferrer"><b>公开 Catalog ↗</b><span>核对目录条目与状态的机器可读权威来源。</span></a>
+        <a href="../faq/"><b>常见问题 ↗</b><span>确认网页、安装、权限、目录、开发和支持的基础边界。</span></a>
+        <a href="https://github.com/AI-Scarlett/DSH-Store" target="_blank" rel="noreferrer"><b>源码与文档 ↗</b><span>查看公开项目、发布记录和使用说明；不要把页面状态当作本地运行状态。</span></a>
+        <a href="https://github.com/AI-Scarlett/DSH-Store/issues" target="_blank" rel="noreferrer"><b>反馈与问题入口 ↗</b><span>提交可复现的商城或目录问题；本地运行问题请附上经过脱敏的环境与步骤。</span></a>
+      </div>
+    </section>
+
+    <section class="seo-guide-faq section-shell" aria-labelledby="faq-title"><header><span>04 / QUICK CHECKS</span><h2 id="faq-title">常见混淆，先在这里拆开。</h2></header>
+      <details open><summary>“插件不显示”是否等于插件不存在？<i>＋</i></summary><p>不等于。先检查目录筛选和公开 Catalog 中的条目状态。候选库、blocked、unlisted 或尚未收录的来源，不会被包装成可安装插件。</p></details>
+      <details><summary>“商城能打开”是否等于 DSH CLI 或 Profile 正常？<i>＋</i></summary><p>不等于。商城页面与本地 DSH CLI、当前 Profile、依赖和运行时是不同层面。网页只证明该网页可访问；本地状态必须在目标设备单独核验。</p></details>
+      <details><summary>“可安装”是否等于插件已经通过完整安全审计或运行验收？<i>＋</i></summary><p>不等于。它表示条目满足当前目录的来源、结构和策略检查。完整安全审计、真实安装、冷启动、功能效果和故障恢复需要分别提供证据。</p></details>
+      <details><summary>遇到安装失败时，第一步该做什么？<i>＋</i></summary><p>先保留失败时的命令、目标设备、DSH CLI 版本、当前 Profile 和经过脱敏的错误信息；然后按本页的层级判断是商城、Catalog、CLI、Profile、依赖还是运行时问题。不要连续重试或把不确定的操作写入 Profile。</p></details>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p>先看清问题层级、来源与边界，再决定下一步。</p><a class="footer-top" href="#top">回到顶部 ↑</a></div><div class="footer-bottom"><span>DSH.STORE · CHINA SITE GUIDE</span><span>商城、CLI、Profile、依赖与 Catalog 分层核验</span><!-- DSH_ICP --></div></footer>
+</body>
+</html>

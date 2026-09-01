@@ -330,6 +330,9 @@ await cp(resolve(projectRoot, 'marketplace'), resolve(outputRoot, 'marketplace')
 await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { recursive: true, filter: copyFilter })
 await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
 
+const isDomestic = siteOriginUrl.host === 'dsh-store.cn'
+if (!isDomestic) await rm(resolve(outputRoot, 'marketplace/dsh-store-guide'), { recursive: true, force: true })
+
 const articlePromoBegin = '<!-- DSH_ARTICLE_PROMO_BEGIN -->'
 const articlePromoEnd = '<!-- DSH_ARTICLE_PROMO_END -->'
 const aboutPagePath = resolve(outputRoot, 'marketplace/about/index.html')
@@ -337,6 +340,16 @@ let aboutPage = await readFile(aboutPagePath, 'utf8')
 aboutPage = replaceRequired(aboutPage, articlePromoBegin, '', 'article promo begin')
 aboutPage = replaceRequired(aboutPage, articlePromoEnd, '', 'article promo end')
 await writeFile(aboutPagePath, aboutPage)
+
+const domesticGuideMarker = '<!-- DSH_DOMESTIC_GUIDE -->'
+const faqPagePath = resolve(outputRoot, 'marketplace/faq/index.html')
+let faqPage = await readFile(faqPagePath, 'utf8')
+const domesticGuideMarkup = `<section class="faq-cta section-shell reveal domestic-guide-cta" aria-labelledby="domestic-guide-title">
+      <div><span>CHINA SITE / USE &amp; TROUBLESHOOTING</span><h2 id="domestic-guide-title">先分清问题在哪一层，再决定下一步。</h2><p>国内站指南将商城页面、Catalog、DSH CLI、Profile、插件依赖和运行时问题分开说明，并链接可复核的公开入口。</p></div>
+      <div><a class="button button-primary" href="../dsh-store-guide/" data-analytics-event="domestic_guide_open" data-analytics-item="faq"><span>查看使用与排查指南</span><i>↗</i></a></div>
+    </section>`
+faqPage = replaceRequired(faqPage, domesticGuideMarker, isDomestic ? domesticGuideMarkup : '', 'domestic guide marker')
+await writeFile(faqPagePath, faqPage)
 
 const alternateIsDomestic = alternateOriginUrl.host === 'dsh-store.cn'
 const alternateLabel = alternateIsDomestic ? '国内站' : '国际站'
@@ -358,8 +371,15 @@ const canonicalPages = [
     fixedLocale: 'zh-CN',
   },
   { file: 'marketplace/dsh-plugins/index.html', route: '/dsh-plugins/' },
+  ...(isDomestic ? [{
+    file: 'marketplace/dsh-store-guide/index.html',
+    route: '/dsh-store-guide/',
+    fixedLocale: 'zh-CN',
+    domesticOnly: true,
+  }] : []),
 ]
-const hreflangMarkup = route => {
+const hreflangMarkup = (route, domesticOnly = false) => {
+  if (domesticOnly) return `<link rel="alternate" hreflang="zh-CN" href="${htmlEscape(`${siteOrigin}${route}`)}">`
   const intl = siteOriginUrl.host === 'dsh.store' ? siteOrigin : alternateOrigin
   const domestic = siteOriginUrl.host === 'dsh-store.cn' ? siteOrigin : alternateOrigin
   return [
@@ -374,6 +394,10 @@ const sitemapDate = (() => {
 })()
 const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
 const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+if (isDomestic) {
+  sitemapPriority['/dsh-store-guide/'] = '0.8'
+  sitemapChangefreq['/dsh-store-guide/'] = 'monthly'
+}
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:mobile="http://www.baidu.com/schemas/sitemap-mobile/1/">
 ${canonicalPages.map(({ route }) => `  <url><loc>${htmlEscape(`${siteOrigin}${route}`)}</loc><lastmod>${sitemapDate}</lastmod><changefreq>${sitemapChangefreq[route]}</changefreq><priority>${sitemapPriority[route]}</priority><mobile:mobile type="pc,mobile" /></url>`).join('\n')}
@@ -387,11 +411,11 @@ const icpMarkup = icpNumber
 const baiduVerificationMarkup = baiduVerificationCode
   ? `<meta name="baidu-site-verification" content="${htmlEscape(baiduVerificationCode)}">`
   : ''
-for (const { file: pagePath, route, fixedLocale } of canonicalPages) {
+for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
-  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route), `${pagePath} hreflang marker`)
+  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
   const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
   const pageLanguage = fixedLocale || htmlLanguage
@@ -446,6 +470,9 @@ const llmsFacts = [
 ].join('\n')
 let llms = await readFile(resolve(outputRoot, 'marketplace/llms.txt'), 'utf8')
 llms = replaceRequired(llms, '<!-- DSH_DYNAMIC_CATALOG_FACTS -->', llmsFacts, 'dynamic llms catalog facts')
+llms = replaceRequired(llms, domesticGuideMarker, isDomestic
+  ? `Domestic product use and issue-boundary guide: ${siteOrigin}/dsh-store-guide/`
+  : '', 'domestic llms guide marker')
 await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 
 await writeFile(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), JSON.stringify(snapshot, null, 2) + '\n')
