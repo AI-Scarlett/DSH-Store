@@ -245,9 +245,9 @@ const statusLabel = entry => entry.status === 'approved' ? t('status.available')
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
 const DSH_VERSION_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh'
 const DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
-const DSH_RELEASE_TAGS = ['latest', 'next', 'alpha', 'beta', 'rc']
+const DSH_RELEASE_TAGS = ['latest', 'alpha', 'beta', 'rc']
 const MAX_DSH_VERSION_RESPONSE_BYTES = 128 * 1024
-const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2' }
+const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2', '0.1.2-alpha.3': '0.1.2-alpha.3', '0.1.2-alpha.4': '0.1.2-alpha.4' }
 const OPERATION_KEYS = ['install', 'start', 'uninstall', 'rollback']
 const unknownOperations = () => Object.fromEntries(OPERATION_KEYS.map(operation => [operation, 'unknown']))
 function compareDshVersions(left, right) {
@@ -867,10 +867,19 @@ async function fetchLatestDshVersion() {
     const text = await response.text()
     if (new TextEncoder().encode(text).byteLength > MAX_DSH_VERSION_RESPONSE_BYTES) throw new Error('Official DSH package metadata is too large')
     const payload = JSON.parse(text)
-    if (payload?.name !== '@deepseek-ai/dsh' || !payload['dist-tags'] || !payload.versions) throw new Error('Invalid official DSH package metadata')
+    if (payload?.name !== '@deepseek-ai/dsh' || !payload['dist-tags'] || typeof payload['dist-tags'] !== 'object'
+      || !payload.versions || typeof payload.versions !== 'object' || Array.isArray(payload.versions)) {
+      throw new Error('Invalid official DSH package metadata')
+    }
     const releases = DSH_RELEASE_TAGS.flatMap(tag => {
       const version = payload['dist-tags'][tag]
-      return DSH_VERSION.test(version || '') && payload.versions[version] ? [{ tag, version }] : []
+      if (version === undefined) return []
+      const record = payload.versions[version]
+      if (!DSH_VERSION.test(version) || !record || typeof record !== 'object' || Array.isArray(record)
+        || typeof record.deprecated === 'string') {
+        throw new Error(`Invalid or deprecated official DSH ${tag} release`)
+      }
+      return [{ tag, version }]
     })
     const stable = releases.find(release => release.tag === 'latest')
     if (!stable) throw new Error('Missing official DSH stable tag')

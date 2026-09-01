@@ -93,24 +93,30 @@ test('catalog projects a legacy-compatible partial bridge without weakening curr
   } }])), /partial evidence requires method, checkedAt, and evidenceUrl/)
 })
 
-test('catalog exposes an explicit public rc.7 through 0.1.1-rc.2 compatibility matrix', () => {
+test('catalog exposes the historical and current DSH compatibility matrix', () => {
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.8 <0.2.0'), {
     'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
+    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible',
   })
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.7 <0.2.0'), {
     'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
+    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible',
   })
   assert.deepEqual(dshReleaseCompatibility('0.1.0-rc.7'), {
     'rc.7': 'compatible', 'rc.8': 'incompatible', '0.1.1-rc.1': 'incompatible', '0.1.1-rc.2': 'incompatible',
+    '0.1.2-alpha.2': 'incompatible', '0.1.2-alpha.3': 'incompatible', '0.1.2-alpha.4': 'incompatible',
   })
   assert.deepEqual(dshReleaseCompatibility('unknown'), {
     'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
+    '0.1.2-alpha.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown',
   })
   assert.deepEqual(dshReleaseCompatibility('>= 0.1.0-rc.8 < 0.2.0'), {
     'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
+    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible',
   })
   assert.deepEqual(dshReleaseCompatibility(`${' '.repeat(200_000)}!`), {
     'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
+    '0.1.2-alpha.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown',
   }, 'oversized uncontrolled ranges must fail closed before regular-expression parsing')
 })
 
@@ -269,13 +275,12 @@ test('bundled registry declares complete detail metadata for every entry', async
   for (const id of ['dsh-safe-plugin-manager', 'dsh-token-monitor', 'dsh-chat-import', 'dsh-agent-reach', 'dsh-wecom-cli']) {
     const item = source.entries.find(entry => entry.id === id)
     assert.ok(item, `${id} must be listed`)
-    const historical = dshReleaseCompatibility(item.compatibility.dsh)
-    for (const release of Object.keys(historical)) {
+    for (const release of legacyCatalogReleases) {
       assert.ok(Object.hasOwn(item.compatibility.dshReleases, release), `${id} must declare the ${release} compatibility key`)
       assert.ok(['compatible', 'incompatible', 'unknown'].includes(item.compatibility.dshReleases[release]),
         `${id} ${release} compatibility must be a valid status`)
     }
-    for (const release of Object.keys(item.compatibility.dshReleases).filter(release => !Object.hasOwn(historical, release))) {
+    for (const release of Object.keys(item.compatibility.dshReleases).filter(release => !legacyCatalogReleases.includes(release))) {
       assert.match(release, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/, `${id} dynamic releases must use full SemVer`)
     }
   }
