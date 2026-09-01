@@ -90,7 +90,12 @@ trap rollback_on_error ERR
 trap cleanup_incoming EXIT
 
 check_public() {
+  local domestic_public_check=''
+  if test "$store_domain" = dsh-store.cn; then
+    domestic_public_check="usage-guide $site_prefix/dsh-store-guide/"
+  fi
   while read -r label path; do
+    test -n "$label" || continue
     code='000'
     for attempt in 1 2 3 4 5; do
       code=$(origin_health -o "$incoming/health-$label" -w '%{http_code}' "$health_base$path" || true)
@@ -112,6 +117,7 @@ candidates /registry/candidates.json
 sitemap $site_prefix/sitemap.xml
 robots $site_prefix/robots.txt
 markdown $site_prefix/index.md
+$domestic_public_check
 EOF
 
   python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" "$incoming/health-robots" "$incoming/health-markdown" <<'PY'
@@ -170,6 +176,8 @@ required = {
     'registry/candidates.json',
 }
 required.add('marketplace/about/deepseek-harness-guide/index.html')
+if domain == 'dsh-store.cn':
+    required.add('marketplace/dsh-store-guide/index.html')
 if not required.issubset(files):
     raise SystemExit('release manifest is incomplete')
 for path, metadata in sorted(files.items()):
@@ -239,6 +247,7 @@ plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
 styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')
 robots = (root / 'marketplace/robots.txt').read_text(encoding='utf-8')
 markdown = (root / 'marketplace/index.md').read_text(encoding='utf-8')
+usage_guide = root / 'marketplace/dsh-store-guide/index.html'
 if manager['commit'] not in home or 'data-static-featured-id=' not in home or 'data-static-plugin-id=' not in plugins:
     raise SystemExit('static marketplace content is incomplete')
 if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
@@ -248,6 +257,11 @@ for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
         raise SystemExit(f'AI bot policy is missing an explicit Allow rule for {bot}')
 if len(markdown) <= 200 or '第三方插件商城' not in markdown:
     raise SystemExit('homepage Markdown artifact is missing or incomplete')
+if build.get('siteOrigin') == 'https://dsh-store.cn':
+    if not usage_guide.is_file() or '商城、CLI、Profile、依赖与 Catalog' not in usage_guide.read_text(encoding='utf-8'):
+        raise SystemExit('domestic use and troubleshooting guide is missing or incomplete')
+elif usage_guide.exists():
+    raise SystemExit('domestic-only use and troubleshooting guide leaked into the international artifact')
 for path in root.rglob('*'):
     if path.is_symlink() or path.name == '.git' or path.name.startswith('.env') or path.name.startswith('._'):
         raise SystemExit(f'forbidden artifact entry: {path.relative_to(root)}')
