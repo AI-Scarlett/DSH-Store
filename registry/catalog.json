@@ -4,7 +4,7 @@
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
     "homepageUrl": "https://dsh.store/",
-    "updatedAt": "2026-09-01T18:01:39.000Z",
+    "updatedAt": "2026-09-01T19:20:14.000Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -9811,6 +9811,293 @@
         "memory",
         "evolve"
       ]
+    },
+    {
+      "id": "cymose-code",
+      "name": "会话管理（Cymose Code）",
+      "packageName": "cymose-code",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Cymose session graph as plugins for coding harnesses. See what you already tried — not another linear chat.",
+      "searchTerms": [
+        "会话管理",
+        "Cymose Code",
+        "cymose-code",
+        "会话",
+        "对话",
+        "历史",
+        "消息",
+        "实验功能",
+        "新功能",
+        "cymose",
+        "code"
+      ],
+      "repositoryUrl": "https://github.com/cymosehq/cymose-code",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "71f8364d291493c7b9eb2706c20309f7a85b4821",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-09-01T19:20:43Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/cymosehq/cymose-code/commit/71f8364d291493c7b9eb2706c20309f7a85b4821",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "cymose"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
+      "compatibility": {
+        "dsh": "^0.1.0-rc.6",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [
+          "@deepseek-ai/schemastery"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "automatic-policy-blocked-not-installable"
+      }
+    },
+    {
+      "id": "dsh-token-optimizer",
+      "name": "用量统计看板（DSH Token Optimizer）",
+      "packageName": "dsh-token-optimizer",
+      "description": "分层 token 优化管道:长文本转图、重复读文件增量 diff、结构感知压缩、结果缓存、重复去重、采样摘要、上下文修剪、工具 schema 按会话裁剪。基于 DeepSeek Harness 真实插件 API。",
+      "searchTerms": [
+        "用量统计看板",
+        "DSH Token Optimizer",
+        "dsh-token-optimizer",
+        "用量",
+        "Token",
+        "统计",
+        "看板",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "token",
+        "optimizer"
+      ],
+      "repositoryUrl": "https://github.com/Liora2050348900/dsh-token-optimizer",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "3267755b43d4f814bd1a631e12431fd8ad40613d",
+      "version": "0.1.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-09-01T19:18:16Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/Liora2050348900/dsh-token-optimizer/commit/3267755b43d4f814bd1a631e12431fd8ad40613d",
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "entryIds": [
+        "token-optimizer"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      }
     },
     {
       "id": "dsh-draft-polish",
@@ -35332,108 +35619,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
-      "id": "dsh-loop",
-      "name": "任务与工作流自动化（DSH Loop）",
-      "packageName": "dsh-loop",
-      "description": "为 DSH 会话提供可持久化的周期提醒、自提示循环、管理工具和 Web 状态面板。",
-      "repositoryUrl": "https://github.com/Ephemeral-AI-Lab/dsh-plugins",
-      "defaultBranch": "main",
-      "manifestPath": "loop/package.json",
-      "installPath": "loop",
-      "commit": "0d478b812a2ed6047b99fb09297323b8b83949d2",
-      "version": "0.1.3",
-      "categories": [
-        "workflow",
-        "sessions"
-      ],
-      "entryIds": [
-        "loop"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.5",
-        "node": "unknown",
-        "systems": [],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "medium",
-          "files": "none",
-          "network": "none",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-session-loop-automation-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-18T05:45:59.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "任务与工作流自动化",
-        "DSH Loop",
-        "dsh-loop",
-        "任务",
-        "工作流",
-        "自动化",
-        "定时",
-        "工作流与自动化",
-        "会话与消息",
-        "会话",
-        "对话",
-        "历史消息",
-        "dsh",
-        "loop"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
       "id": "michengai-dsh-automation",
       "name": "任务与工作流自动化（DSH Automation）",
       "packageName": "@michengai/dsh-automation",
@@ -43865,113 +44050,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
-      "id": "dsh-shortcuts",
-      "name": "快捷键（DSH Shortcuts）",
-      "packageName": "dsh-shortcuts",
-      "description": "为 DSH WebUI 提供可录制、可配置的键盘快捷键与权限切换反馈。",
-      "repositoryUrl": "https://github.com/Ricketts-Guo/dsh-shortcuts",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "0d12280cea78451d7d7e65bdb7e8b475f41c0a79",
-      "version": "1.1.0",
-      "categories": [
-        "ui",
-        "tools",
-        "experimental"
-      ],
-      "entryIds": [
-        "shortcuts"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.6",
-        "node": ">=22.13.0",
-        "systems": [
-          "macOS",
-          "Linux",
-          "Windows"
-        ],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "medium",
-          "files": "none",
-          "network": "none",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-index-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-16T02:28:39.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "快捷键",
-        "DSH Shortcuts",
-        "dsh-shortcuts",
-        "界面",
-        "交互",
-        "侧栏",
-        "界面增强",
-        "工具能力",
-        "工具",
-        "能力",
-        "新锐实验",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "shortcuts"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
       "id": "dsh-usage-vendor-stats",
       "name": "用量统计看板（DSH Usage Vendor Stats）",
       "packageName": "dsh-usage-vendor-stats",
@@ -44079,111 +44157,6 @@
         "usage",
         "vendor",
         "stats"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
-      "id": "powercontext-dsh",
-      "name": "上下文与记忆服务（PowerContext for DSH）",
-      "packageName": "powercontext-dsh",
-      "description": "连接本地 PowerContext 服务，为 DSH 提供召回、记忆、交接、经验和技能能力。",
-      "repositoryUrl": "https://github.com/knqiufan/powercontext-dsh",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "482d082ded7d22663f131a1f004e2cf586f9fcc9",
-      "version": "0.0.3",
-      "categories": [
-        "memory",
-        "workflow"
-      ],
-      "entryIds": [
-        "powercontext-dsh"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.6",
-        "node": ">=20",
-        "systems": [],
-        "profiles": [
-          "web",
-          "headless"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "Apache-2.0",
-        "permissions": {
-          "level": "high",
-          "files": "none",
-          "network": "specified-services",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [
-          "PowerContext Server"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [
-          "prepare"
-        ],
-        "review": "community-context-egress-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-16T01:54:41.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "上下文与记忆服务",
-        "PowerContext for DSH",
-        "powercontext-dsh",
-        "记忆",
-        "知识库",
-        "召回",
-        "长期记忆",
-        "工作流与自动化",
-        "工作流",
-        "自动化",
-        "任务",
-        "powercontext",
-        "dsh"
       ],
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
@@ -44710,109 +44683,6 @@
         "dsh",
         "honcho",
         "sync"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
-      "id": "dsh-webui-market-plugin",
-      "name": "Web 插件市场（DSH WebUI Market Plugin）",
-      "packageName": "@sanqi-normal/dsh-webui-market-plugin",
-      "description": "在 DSH Web 界面浏览 awesome-dsh-plugin.com 并管理社区插件。",
-      "repositoryUrl": "https://github.com/Sanqi-normal/dsh-webui-market-plugin",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "0a09c21bae41318bc2fed51c274b2496b22988d5",
-      "version": "0.5.2",
-      "categories": [
-        "marketplace",
-        "management"
-      ],
-      "entryIds": [
-        "dsh-market-plugin"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.6",
-        "node": ">=22.19.0",
-        "systems": [],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "any",
-          "commands": "restricted",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [
-          "awesome-dsh-plugin.com"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-index-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-15T17:59:18.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "Web 插件市场",
-        "DSH WebUI Market Plugin",
-        "dsh-webui-market-plugin",
-        "@sanqi-normal/dsh-webui-market-plugin",
-        "插件市场",
-        "商城",
-        "插件管理",
-        "插件发现",
-        "管理工具",
-        "管理",
-        "dsh",
-        "webui",
-        "market",
-        "plugin"
       ],
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
@@ -47697,111 +47567,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
-      "id": "dsh-diagram",
-      "name": "文章图解（DSH Diagram）",
-      "packageName": "dsh-diagram",
-      "description": "将 DSH 中的文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。",
-      "repositoryUrl": "https://github.com/hanzhangzzz/dsh-diagram",
-      "defaultBranch": "master",
-      "manifestPath": "package.json",
-      "commit": "480d3b3e81a583648595ec60cdcf834a8b7593cc",
-      "version": "0.1.1",
-      "categories": [
-        "visualization",
-        "design",
-        "experimental"
-      ],
-      "entryIds": [
-        "diagram"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.6",
-        "node": "^22.19.0 || >=24.0.0",
-        "systems": [],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "low",
-          "files": "none",
-          "network": "none",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-index-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-15T08:12:39.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "文章图解",
-        "DSH Diagram",
-        "dsh-diagram",
-        "图表",
-        "架构图",
-        "流程图",
-        "可视化",
-        "看板",
-        "设计与原型",
-        "设计",
-        "画布",
-        "原型",
-        "新锐实验",
-        "实验功能",
-        "新功能",
-        "dsh",
-        "diagram"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
       "id": "dsh-deepseek-protocol-doctor",
       "name": "任务与工作流自动化（DSH DeepSeek Protocol Doctor）",
       "packageName": "dsh-deepseek-protocol-doctor",
@@ -49112,116 +48877,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
-      "id": "dsh-at-file",
-      "name": "文件引用（DSH At File）",
-      "packageName": "dsh-at-file",
-      "description": "在 DSH Web 输入框中提供 Codex 风格的 @path 工作区文件引用与搜索。",
-      "repositoryUrl": "https://github.com/omdsh-dev/dsh-at-file",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "9c71e52c483ae589c7979b6ffc8b3a2cd5d8efa4",
-      "version": "0.6.0",
-      "categories": [
-        "files",
-        "ui",
-        "tools"
-      ],
-      "entryIds": [
-        "dsh-at-file"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.6",
-        "node": ">=22.13.0",
-        "systems": [
-          "macOS",
-          "Linux",
-          "Windows"
-        ],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "medium",
-          "files": "read-only",
-          "network": "none",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-index-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-14T16:15:03.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "文件引用",
-        "DSH At File",
-        "dsh-at-file",
-        "文件",
-        "工作区",
-        "目录",
-        "附件",
-        "文件与输入",
-        "界面增强",
-        "界面",
-        "交互",
-        "侧栏",
-        "工具能力",
-        "工具",
-        "能力",
-        "dsh",
-        "at",
-        "file"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
       "id": "dsh-background",
       "name": "界面主题与美化（DSH Background）",
       "packageName": "dsh-background",
@@ -49821,116 +49476,6 @@
         "dsh",
         "oai",
         "oauth"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
-      "id": "dsh-openpencil",
-      "name": "画板工作台（DSH OpenPencil）",
-      "packageName": "@zseven-w/dsh-openpencil",
-      "description": "把 OpenPencil 多画板预览、交互画布与托管编辑工作台集成到 DSH。",
-      "repositoryUrl": "https://github.com/ZSeven-W/dsh-openpencil",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "49b0417a6d6fe7a55056bb1a82d4c348a21a6ca6",
-      "version": "0.1.0-rc.1",
-      "categories": [
-        "design",
-        "ui",
-        "tools"
-      ],
-      "entryIds": [
-        "dsh-openpencil"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.6",
-        "node": ">=24.11.0",
-        "systems": [
-          "macOS"
-        ],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "high",
-          "files": "write",
-          "network": "none",
-          "commands": "restricted",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [
-          "OpenPencil 桌面客户端"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-index-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-14T14:36:15.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "画板工作台",
-        "DSH OpenPencil",
-        "dsh-openpencil",
-        "@zseven-w/dsh-openpencil",
-        "画板",
-        "画布",
-        "设计",
-        "原型",
-        "设计与原型",
-        "界面增强",
-        "界面",
-        "交互",
-        "侧栏",
-        "工具能力",
-        "工具",
-        "能力",
-        "dsh",
-        "openpencil"
       ],
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
@@ -52814,105 +52359,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
-      "id": "dsh-notification",
-      "name": "完成通知（DSH Notification）",
-      "packageName": "dsh-notification",
-      "description": "DSH 回合完成后发送可配置的浏览器桌面通知。",
-      "repositoryUrl": "https://github.com/omdsh-dev/dsh-notification",
-      "defaultBranch": "main",
-      "manifestPath": "package.json",
-      "commit": "3e33100f51f25f24cece20bfd3d50cfbde0cbca5",
-      "version": "0.1.1",
-      "categories": [
-        "notifications"
-      ],
-      "entryIds": [
-        "dsh-notification"
-      ],
-      "status": "unlisted",
-      "compatibility": {
-        "dsh": ">=0.1.0-rc.6",
-        "node": ">=22.13.0",
-        "systems": [],
-        "profiles": [
-          "web"
-        ],
-        "dshReleases": {
-          "rc.7": "compatible",
-          "rc.8": "compatible",
-          "0.1.1-rc.1": "compatible",
-          "0.1.1-rc.2": "unknown"
-        },
-        "dshOperations": {
-          "rc.7": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "rc.8": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.1": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          },
-          "0.1.1-rc.2": {
-            "install": "unknown",
-            "start": "unknown",
-            "uninstall": "unknown",
-            "rollback": "unknown"
-          }
-        }
-      },
-      "details": {
-        "pluginType": "feature",
-        "installSource": "github",
-        "license": "MIT",
-        "permissions": {
-          "level": "low",
-          "files": "none",
-          "network": "none",
-          "commands": "none",
-          "credentials": [
-            "none"
-          ]
-        },
-        "externalDependencies": [
-          "浏览器通知 API"
-        ],
-        "reviewStatus": "automated-scan"
-      },
-      "risk": {
-        "installScripts": [],
-        "review": "community-index-not-security-audited"
-      },
-      "source": {
-        "updatedAt": "2026-08-13T15:28:32.000Z",
-        "provenance": "github-commit",
-        "observedAt": "2026-08-21T00:27:59.000Z"
-      },
-      "searchTerms": [
-        "完成通知",
-        "DSH Notification",
-        "dsh-notification",
-        "任务完成",
-        "通知",
-        "提醒",
-        "消息推送",
-        "通知与集成",
-        "消息",
-        "dsh",
-        "notification"
-      ],
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
-    },
-    {
       "id": "dsh-openapi",
       "name": "实用工具（DSH Openapi）",
       "packageName": "dsh-openapi",
@@ -55759,6 +55205,512 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
+      "id": "dsh-diagram",
+      "name": "文章图解（DSH Diagram）",
+      "packageName": "dsh-diagram",
+      "description": "将 DSH 中的文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。",
+      "repositoryUrl": "https://github.com/hanzhangzzz/dsh-diagram",
+      "defaultBranch": "master",
+      "manifestPath": "package.json",
+      "commit": "6d7534b20ccaac268bbd4949cbfebfea5ae63c67",
+      "version": "0.4.0",
+      "categories": [
+        "visualization",
+        "design",
+        "experimental"
+      ],
+      "entryIds": [
+        "diagram"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": "0.1.0-rc.6 || 0.1.0-rc.8 || 0.1.1-rc.1 || 0.1.1-rc.2",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible",
+          "0.1.1-rc.2": "compatible",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown",
+          "0.1.0-rc.6": "compatible"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.0-rc.6": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-09-01T02:57:52Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "文章图解",
+        "DSH Diagram",
+        "dsh-diagram",
+        "图表",
+        "架构图",
+        "流程图",
+        "可视化",
+        "看板",
+        "设计与原型",
+        "设计",
+        "画布",
+        "原型",
+        "新锐实验",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "diagram"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/hanzhangzzz/dsh-diagram/commit/6d7534b20ccaac268bbd4949cbfebfea5ae63c67",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
+      "id": "dsh-at-file",
+      "name": "文件引用（DSH At File）",
+      "packageName": "dsh-at-file",
+      "description": "在 DSH Web 输入框中提供 Codex 风格的 @path 工作区文件引用与搜索。",
+      "repositoryUrl": "https://github.com/omdsh-dev/dsh-at-file",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "da602d1a8f1b417b8a1d8d4059e0f4cb1c353524",
+      "version": "0.7.0",
+      "categories": [
+        "files",
+        "ui",
+        "tools"
+      ],
+      "entryIds": [
+        "dsh-at-file"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": "*",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "read-only",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-09-01T01:00:23Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "文件引用",
+        "DSH At File",
+        "dsh-at-file",
+        "文件",
+        "工作区",
+        "目录",
+        "附件",
+        "文件与输入",
+        "界面增强",
+        "界面",
+        "交互",
+        "侧栏",
+        "工具能力",
+        "工具",
+        "能力",
+        "dsh",
+        "at",
+        "file"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/omdsh-dev/dsh-at-file/commit/da602d1a8f1b417b8a1d8d4059e0f4cb1c353524",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
+      "id": "dsh-notification",
+      "name": "完成通知（DSH Notification）",
+      "packageName": "dsh-notification",
+      "description": "DSH 回合完成后发送可配置的浏览器桌面通知。",
+      "repositoryUrl": "https://github.com/omdsh-dev/dsh-notification",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "675aab9b43d5011738feb6185281596c0365ccba",
+      "version": "0.1.4",
+      "categories": [
+        "notifications"
+      ],
+      "entryIds": [
+        "dsh-notification"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": "*",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "low",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "浏览器通知 API"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-09-01T01:00:23Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "完成通知",
+        "DSH Notification",
+        "dsh-notification",
+        "任务完成",
+        "通知",
+        "提醒",
+        "消息推送",
+        "通知与集成",
+        "消息",
+        "dsh",
+        "notification"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/omdsh-dev/dsh-notification/commit/675aab9b43d5011738feb6185281596c0365ccba",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
       "id": "dsh-any-background",
       "name": "界面主题与美化（DSH Any Background）",
       "packageName": "dsh-any-background",
@@ -56768,6 +56720,177 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
     },
     {
+      "id": "dsh-openpencil",
+      "name": "画板工作台（DSH OpenPencil）",
+      "packageName": "@zseven-w/dsh-openpencil",
+      "description": "把 OpenPencil 多画板预览、交互画布与托管编辑工作台集成到 DSH。",
+      "repositoryUrl": "https://github.com/ZSeven-W/dsh-openpencil",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "99e05cdbae5e26c920cc20e0793c66446685b0cd",
+      "version": "0.1.0-rc.9",
+      "categories": [
+        "design",
+        "ui",
+        "tools"
+      ],
+      "entryIds": [
+        "dsh-openpencil"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": "^0.1.0-rc.6",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=24.11.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "OpenPencil 桌面客户端"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-29T07:48:50Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "画板工作台",
+        "DSH OpenPencil",
+        "dsh-openpencil",
+        "@zseven-w/dsh-openpencil",
+        "画板",
+        "画布",
+        "设计",
+        "原型",
+        "设计与原型",
+        "界面增强",
+        "界面",
+        "交互",
+        "侧栏",
+        "工具能力",
+        "工具",
+        "能力",
+        "dsh",
+        "openpencil"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/ZSeven-W/dsh-openpencil/commit/99e05cdbae5e26c920cc20e0793c66446685b0cd",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
       "id": "dsh-whale-musume",
       "name": "鲸娘主题（DSH Whale Musume）",
       "packageName": "dsh-whale-musume",
@@ -57636,6 +57759,171 @@
         }
       },
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
+    },
+    {
+      "id": "powercontext-dsh",
+      "name": "上下文与记忆服务（PowerContext for DSH）",
+      "packageName": "powercontext-dsh",
+      "description": "连接本地 PowerContext 服务，为 DSH 提供召回、记忆、交接、经验和技能能力。",
+      "repositoryUrl": "https://github.com/knqiufan/powercontext-dsh",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "36301aa0963cc471e204443df7aa604a0993b8b3",
+      "version": "0.0.5",
+      "categories": [
+        "memory",
+        "workflow"
+      ],
+      "entryIds": [
+        "powercontext-dsh"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": "*",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=20",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "Apache-2.0",
+        "permissions": {
+          "level": "high",
+          "files": "none",
+          "network": "specified-services",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "PowerContext Server"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [
+          "prepare"
+        ],
+        "review": "community-context-egress-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-26T12:14:30Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "上下文与记忆服务",
+        "PowerContext for DSH",
+        "powercontext-dsh",
+        "记忆",
+        "知识库",
+        "召回",
+        "长期记忆",
+        "工作流与自动化",
+        "工作流",
+        "自动化",
+        "任务",
+        "powercontext",
+        "dsh"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/knqiufan/powercontext-dsh/commit/36301aa0963cc471e204443df7aa604a0993b8b3",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
     },
     {
       "id": "dsh-sql",
@@ -59967,6 +60255,337 @@
         "wallet"
       ],
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
+    },
+    {
+      "id": "dsh-loop",
+      "name": "任务与工作流自动化（DSH Loop）",
+      "packageName": "dsh-loop",
+      "description": "为 DSH 会话提供可持久化的周期提醒、自提示循环、管理工具和 Web 状态面板。",
+      "repositoryUrl": "https://github.com/Ephemeral-AI-Lab/dsh-plugins",
+      "defaultBranch": "main",
+      "manifestPath": "loop/package.json",
+      "installPath": "loop",
+      "commit": "05c50f3a54fff7bed7ee6325dc322a9b5ea20460",
+      "version": "0.1.4",
+      "categories": [
+        "workflow",
+        "sessions"
+      ],
+      "entryIds": [
+        "loop"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": ">=0.1.0-rc.5",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-session-loop-automation-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-22T08:24:53Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "任务与工作流自动化",
+        "DSH Loop",
+        "dsh-loop",
+        "任务",
+        "工作流",
+        "自动化",
+        "定时",
+        "工作流与自动化",
+        "会话与消息",
+        "会话",
+        "对话",
+        "历史消息",
+        "dsh",
+        "loop"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/Ephemeral-AI-Lab/dsh-plugins/commit/05c50f3a54fff7bed7ee6325dc322a9b5ea20460",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
+    },
+    {
+      "id": "dsh-webui-market-plugin",
+      "name": "Web 插件市场（DSH WebUI Market Plugin）",
+      "packageName": "@sanqi-normal/dsh-webui-market-plugin",
+      "description": "在 DSH Web 界面浏览 awesome-dsh-plugin.com 并管理社区插件。",
+      "repositoryUrl": "https://github.com/Sanqi-normal/dsh-webui-market-plugin",
+      "defaultBranch": "master",
+      "manifestPath": "package.json",
+      "commit": "f0cfc501a9e66b3c77da37e346d311d092cb1e41",
+      "version": "0.5.5",
+      "categories": [
+        "marketplace",
+        "management"
+      ],
+      "entryIds": [
+        "dsh-market-plugin"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": ">=0.0.1-rc.2 <0.2.0-0 || >=0.1.0-rc.2 <0.2.0-0",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": "^22.19.0 || >=24.0.0",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "restricted",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [
+          "awesome-dsh-plugin.com"
+        ],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-22T05:36:20Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "Web 插件市场",
+        "DSH WebUI Market Plugin",
+        "dsh-webui-market-plugin",
+        "@sanqi-normal/dsh-webui-market-plugin",
+        "插件市场",
+        "商城",
+        "插件管理",
+        "插件发现",
+        "管理工具",
+        "管理",
+        "dsh",
+        "webui",
+        "market",
+        "plugin"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/Sanqi-normal/dsh-webui-market-plugin/commit/f0cfc501a9e66b3c77da37e346d311d092cb1e41",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
     },
     {
       "id": "logicprobe",
@@ -63511,6 +64130,172 @@
         "outline"
       ],
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence."
+    },
+    {
+      "id": "dsh-shortcuts",
+      "name": "快捷键（DSH Shortcuts）",
+      "packageName": "dsh-shortcuts",
+      "description": "为 DSH WebUI 提供可录制、可配置的键盘快捷键与权限切换反馈。",
+      "repositoryUrl": "https://github.com/Ricketts-Guo/dsh-shortcuts",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "commit": "bf392410868c9686ed3292d2c2272469da3a3293",
+      "version": "1.1.4",
+      "categories": [
+        "ui",
+        "tools",
+        "experimental"
+      ],
+      "entryIds": [
+        "shortcuts"
+      ],
+      "status": "unlisted",
+      "compatibility": {
+        "dsh": "^0.1.0-rc.6",
+        "dshReleases": {
+          "rc.7": "unknown",
+          "rc.8": "unknown",
+          "0.1.1-rc.1": "unknown",
+          "0.1.1-rc.2": "unknown",
+          "0.1.2-alpha.2": "unknown",
+          "0.1.2-alpha.3": "unknown",
+          "0.1.2-alpha.4": "unknown"
+        },
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": null,
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "feature",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "medium",
+          "files": "none",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "community-index-not-security-audited"
+      },
+      "source": {
+        "updatedAt": "2026-08-17T08:47:26Z",
+        "observedAt": "2026-09-01T19:20:14.000Z",
+        "provenance": "github-commit"
+      },
+      "searchTerms": [
+        "快捷键",
+        "DSH Shortcuts",
+        "dsh-shortcuts",
+        "界面",
+        "交互",
+        "侧栏",
+        "界面增强",
+        "工具能力",
+        "工具",
+        "能力",
+        "新锐实验",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "shortcuts"
+      ],
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-update-v2",
+          "checkedAt": "2026-09-01T19:20:14.000Z",
+          "evidenceUrl": "https://github.com/Ricketts-Guo/dsh-shortcuts/commit/bf392410868c9686ed3292d2c2272469da3a3293",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "The updated release was not installed or built by Catalog automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated fixed-source review is not an independent security audit."
+        }
+      }
     },
     {
       "id": "dsh-session-management",
