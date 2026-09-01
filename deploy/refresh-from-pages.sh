@@ -130,7 +130,7 @@ if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entrie
 if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True, 'unknownIsNotVerified': True}:
     raise SystemExit('public Candidate Registry trust boundary is invalid')
 for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
-    if f'User-agent: {bot}\\nAllow: /' not in robots:
+    if f'User-agent: {bot}\nAllow: /' not in robots:
         raise SystemExit(f'public robots policy is missing an explicit Allow rule for {bot}')
 if len(markdown) <= 200 or '第三方插件商城' not in markdown:
     raise SystemExit('public homepage Markdown is missing or incomplete')
@@ -244,7 +244,7 @@ if manager['commit'] not in home or 'data-static-featured-id=' not in home or 'd
 if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
     raise SystemExit('catalog error visibility guard is missing')
 for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
-    if f'User-agent: {bot}\\nAllow: /' not in robots:
+    if f'User-agent: {bot}\nAllow: /' not in robots:
         raise SystemExit(f'AI bot policy is missing an explicit Allow rule for {bot}')
 if len(markdown) <= 200 or '第三方插件商城' not in markdown:
     raise SystemExit('homepage Markdown artifact is missing or incomplete')
