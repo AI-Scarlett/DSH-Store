@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-08-31T06:18:28.000Z",
+    "updatedAt": "2026-09-01T12:56:30.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1243,27 +1243,6 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: Bundle Patch contract is invalid; declared Bundle Patch is missing; Bundle insert entry ID is missing; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "lhh010-dsh-paste-input",
-      "name": "lhh010/dsh-paste-input",
-      "description": "DSH WebUI 文件输入增强：Ctrl+V 粘贴（带首次告知弹窗）+ 拖拽 + 选择文件，发送时复制进会话工作区临时目录",
-      "repositoryUrl": "https://github.com/lhh010/dsh-paste-input",
-      "defaultBranch": "main",
-      "latestCommit": "2fa32218af5032970cc82cb649b62a304c07f57f",
-      "sourceUpdatedAt": "2026-08-20T02:18:54.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "ui"
-      ],
-      "status": "rejected",
-      "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "qcytsn-dsh-dafeiyu",
@@ -9386,8 +9365,8 @@
       "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
       "repositoryUrl": "https://github.com/SiriLee/dsh-rewind",
       "defaultBranch": "main",
-      "latestCommit": "64738545cdf9b8c4f432fec9dd6c1540b432e4a2",
-      "sourceUpdatedAt": "2026-08-30T04:28:05.000Z",
+      "latestCommit": "cc902ca6803c297c8066fe2f83764f57e92cc78a",
+      "sourceUpdatedAt": "2026-09-01T09:21:59.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9406,8 +9385,8 @@
       "description": "一个主题外观插件，让你完全自定义 Web 端的主题色、背景壁纸，以及主页分部位精细的透明度与模糊度控制，还可导出导入主题设置进行分享。",
       "repositoryUrl": "https://github.com/Tkingxiao/dsh-any-background",
       "defaultBranch": "main",
-      "latestCommit": "e68455ab004cf15c803a0a3b826ddbc7e9c2cc97",
-      "sourceUpdatedAt": "2026-08-24T21:52:57.000Z",
+      "latestCommit": "d70e55fea26597d9bbf4c555f2c9824e1bfd3f12",
+      "sourceUpdatedAt": "2026-08-31T10:11:37.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9528,8 +9507,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "9fc397e47492840156a0703c67ffca2b4db96d6f",
-      "sourceUpdatedAt": "2026-08-24T02:20:25.000Z",
+      "latestCommit": "0579b45ccda795702e1aa1f7e601153d237b4488",
+      "sourceUpdatedAt": "2026-09-01T05:58:22.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9571,8 +9550,8 @@
       "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
       "repositoryUrl": "https://github.com/liustack/modlens",
       "defaultBranch": "main",
-      "latestCommit": "4f724704eed025c77ad2c6d40fabe17cb3a8d714",
-      "sourceUpdatedAt": "2026-08-30T09:55:41.000Z",
+      "latestCommit": "926a6beea81ca6ea1fecc267bc1b02d880572669",
+      "sourceUpdatedAt": "2026-09-01T06:47:49.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9733,8 +9712,8 @@
       "description": "消息撤回：在用户消息旁加「撤回」按钮，把对话历史（官方会话 fork）与项目文件（逐消息影子 git 快照）一并回退到该消息发送之前，带差异预览确认面板。",
       "repositoryUrl": "https://github.com/limbo947/dsh-recall-plugin",
       "defaultBranch": "main",
-      "latestCommit": "e5af64b5bae27bd8f30442318b87faadc6a1b079",
-      "sourceUpdatedAt": "2026-08-30T18:35:00.000Z",
+      "latestCommit": "10f5e6118f28e87d6da026ac18689d69b4c6f383",
+      "sourceUpdatedAt": "2026-09-01T11:08:36.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9875,8 +9854,8 @@
       "description": "为 DSH 注册 Command Code 模型提供商与模型目录。",
       "repositoryUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
       "defaultBranch": "main",
-      "latestCommit": "a77b54f34cf69ee5ef88a808dbdeb170ce76121d",
-      "sourceUpdatedAt": "2026-08-31T04:02:43.000Z",
+      "latestCommit": "9a1c790152cc80f6e74ec5128e896f6fe955e63c",
+      "sourceUpdatedAt": "2026-09-01T06:59:14.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9895,8 +9874,8 @@
       "description": "DeepSeek Harness 的更新助手：一次扫描覆盖 dsh 本体、官方 bundle 和每个 profile 的插件，说清改了什么、风险多大，只更新你确认过的那些。",
       "repositoryUrl": "https://github.com/hezhongtang/dsh-update-copilot",
       "defaultBranch": "main",
-      "latestCommit": "47b4649ee548531fb38aaea186f0ac9efa597455",
-      "sourceUpdatedAt": "2026-08-30T07:07:59.000Z",
+      "latestCommit": "07827e2359bbc7f9f66f777a329d960ae539bd3a",
+      "sourceUpdatedAt": "2026-09-01T08:08:49.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9936,8 +9915,8 @@
       "description": "在 DSH 会话中展示上下文组成、历史变化与相关命令，帮助定位上下文占用和演化。",
       "repositoryUrl": "https://github.com/bowenliang123/dsh-context",
       "defaultBranch": "main",
-      "latestCommit": "115e183de0c264c75fb6dd0e184a99d1caeffbac",
-      "sourceUpdatedAt": "2026-08-30T17:18:43.000Z",
+      "latestCommit": "34179e286002b3d637c51ceb8230cac5060b7564",
+      "sourceUpdatedAt": "2026-09-01T09:31:46.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9958,8 +9937,8 @@
       "description": "为 DSH 项目提供副工作目录：agent 保持主工作区为 cwd，同时对已配置的副目录获得同等读写/执行权限，可在会话头部与新会话页配置。",
       "repositoryUrl": "https://github.com/AngelosZou/dsh-multi-folder",
       "defaultBranch": "main",
-      "latestCommit": "dbbedef254a7e1ba6bfcc3a82a3541286a77d1dc",
-      "sourceUpdatedAt": "2026-08-28T09:09:02.000Z",
+      "latestCommit": "2a72c25c769c51e3ccf78483b295f0296a91dc9e",
+      "sourceUpdatedAt": "2026-09-01T04:10:06.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10486,8 +10465,8 @@
       "description": "把 Engramory 策展式记忆纪律做成可安装插件（[npm: dsh-engramory](https://www.npmjs.com/package/dsh-engramory)）：通过 `ctx.tools.guard()` 对 `MEMORY.md` 索引施加确定性的 200 行 / 25KB 上限（增长即拒、缩小的重写一律放行），并把协议注册为运行时 skill。记忆库是纯 markdown、一条事实一个文件，与 Claude Code、Codex、Kiro、OpenClaw 共用。",
       "repositoryUrl": "https://github.com/tinqiao-oss/engramory",
       "defaultBranch": "master",
-      "latestCommit": "39efc183a55cb3d2c56e11a42b2b5e059a193ce3",
-      "sourceUpdatedAt": "2026-08-20T07:14:43.000Z",
+      "latestCommit": "1bc98e32aa33ba4acd6984b4845f8668be8bcdd5",
+      "sourceUpdatedAt": "2026-08-31T11:30:32.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10609,8 +10588,8 @@
       "description": "一键分享你的对话。",
       "repositoryUrl": "https://github.com/hellodigua/dsh-share",
       "defaultBranch": "main",
-      "latestCommit": "c109330b755c793cbc701a4e6a972d620a6667da",
-      "sourceUpdatedAt": "2026-08-19T09:11:27.000Z",
+      "latestCommit": "4cca10110cc3cde7b58febfd2c1ffdbdc66c630d",
+      "sourceUpdatedAt": "2026-09-01T09:15:58.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10649,8 +10628,8 @@
       "description": "为 AI 回复自动添加表情。",
       "repositoryUrl": "https://github.com/hellodigua/dsh-emoji",
       "defaultBranch": "main",
-      "latestCommit": "96b653a473c978a474dd7d42e86e5b2c79e6dc7c",
-      "sourceUpdatedAt": "2026-08-19T08:33:53.000Z",
+      "latestCommit": "84a1106632e6e8ded61f946432c609c4d13f92e9",
+      "sourceUpdatedAt": "2026-09-01T10:02:49.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12733,8 +12712,8 @@
       "description": "语音双件套：edge-tts 免费微软神经语音合成 + OpenAI 兼容 ASR 转写。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-voice",
       "defaultBranch": "master",
-      "latestCommit": "e8a90d4917cd28897727df6bea33cc0568a95f38",
-      "sourceUpdatedAt": "2026-08-26T07:31:57.000Z",
+      "latestCommit": "d02a4445842bdd68ab55081ef87829297cec92bd",
+      "sourceUpdatedAt": "2026-09-01T04:29:47.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12813,8 +12792,8 @@
       "description": "视频处理七工具（探测/剪辑/拼接/转码/字幕烧录/抽帧/GIF），官方 subprocess 服务、argv 无 shell 注入、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ffmpeg",
       "defaultBranch": "master",
-      "latestCommit": "2370802ad88d5977d77ec4b54e0f2d90ae62682a",
-      "sourceUpdatedAt": "2026-08-26T07:31:38.000Z",
+      "latestCommit": "4ef9488cc90cefc98baa8d006be3735647a99575",
+      "sourceUpdatedAt": "2026-09-01T12:39:39.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12893,8 +12872,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "3c679a514633244d75a3660ef88f80b356febf82",
-      "sourceUpdatedAt": "2026-08-26T07:31:35.000Z",
+      "latestCommit": "9d51b11b5c4f76c9c55da6824de6a69dcbc9f232",
+      "sourceUpdatedAt": "2026-09-01T10:43:49.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13293,8 +13272,8 @@
       "description": "侧边栏计费仪表盘：从会话日志聚合真实用量（按模型/按日统计调用、Token、缓存），按最新多厂商官方价格估算人民币费用，订阅套餐（coding/token/agent）通道豁免计费，并带各厂商健康状态圆点。",
       "repositoryUrl": "https://github.com/kenz1117/dsh-ui-usage-billing",
       "defaultBranch": "main",
-      "latestCommit": "8ae6531fd39adfb5af12863f30c401ab3cde6d7f",
-      "sourceUpdatedAt": "2026-08-30T10:16:25.000Z",
+      "latestCommit": "84fb501430e87cd322bad914f4a61c833f9167e0",
+      "sourceUpdatedAt": "2026-09-01T03:46:03.000Z",
       "discoveredAt": "2026-08-30T05:04:57.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13404,6 +13383,67 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-agent-message."
+    },
+    {
+      "id": "rainronin-dsh-balance-monitor",
+      "name": "余额与额度监控（DSH Balance Monitor）",
+      "description": "DeepSeek Harness 插件：DeepSeek API 余额实时监测（官方 /user/balance 快照 + ds_balance 工具 + 峰谷计价状态 + 单会话费用估算 + Matrix/原生双风格侧边栏徽章）",
+      "repositoryUrl": "https://github.com/Rainronin/dsh-balance-monitor",
+      "defaultBranch": "master",
+      "latestCommit": "cde6fed4693411d78217fbd890ae6251abb1e9e0",
+      "sourceUpdatedAt": "2026-08-31T15:31:16.000Z",
+      "discoveredAt": "2026-09-01T12:56:30.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-balance-monitor."
+    },
+    {
+      "id": "stardustlc666-dsh-ppt",
+      "name": "演示文稿制作（DSH PPT）",
+      "description": "演示文稿技能与工具：一句话或一篇文档生成 HTML 放映与可编辑 PPTX，内置 5 套主题，可配置默认主题/语言，中英双语。",
+      "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ppt",
+      "defaultBranch": "master",
+      "latestCommit": "c71d241f9c30115ed20f5425666d5ff211034b64",
+      "sourceUpdatedAt": "2026-09-01T12:23:52.000Z",
+      "discoveredAt": "2026-09-01T12:56:30.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "files",
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-ppt."
+    },
+    {
+      "id": "anionex-dsh-computer-use",
+      "name": "安全防护工具（DSH Computer Use）",
+      "description": "macOS 电脑控制：Accessibility 观测、过期状态拒绝、作用域权限与安全输入。",
+      "repositoryUrl": "https://github.com/Anionex/dsh-computer-use",
+      "defaultBranch": "main",
+      "latestCommit": "6380ea32c0731ef8da9e3f67b1bf5c8b561e2d6c",
+      "sourceUpdatedAt": "2026-09-01T12:08:33.000Z",
+      "discoveredAt": "2026-09-01T12:56:30.000Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "tools",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.0-rc.8, 0.1.1-rc.1, 0.1.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: anionex-dsh-computer-use."
     }
   ]
 }
