@@ -4,7 +4,7 @@ import test from 'node:test'
 import {
   assertLegacyCatalogCompatibility, buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
   compareCatalogEntries, compareVersions, createDshReleaseContext, dshReleaseCompatibility, dshVersionCompatibility,
-  paginateMarketplaceSnapshot, projectDshRelease, searchCatalog, validateCatalog, verifyCatalogEntry,
+  MAX_CATALOG_RESPONSE_BYTES, paginateMarketplaceSnapshot, projectDshRelease, searchCatalog, validateCatalog, verifyCatalogEntry,
 } from '../src/catalog.mjs'
 
 const entry = {
@@ -261,8 +261,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
   const managerIsBootstrap = manager.version === '0.8.5' && manager.commit === bootstrapCommit
   const managerIsCurrent = manager.version === packageManifest.version && manager.commit !== bootstrapCommit
-  assert.ok(managerIsBootstrap || managerIsCurrent,
-    'the Catalog manager must be either the fixed 0.8.5 bootstrap or the current package release')
+  const managerIsPreviousReleaseBeforeCatalogPin = packageManifest.version === '0.8.8' && manager.version === '0.8.7'
+  assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
+    'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
   assert.match(manager.commit, /^[0-9a-f]{40}$/)
   assert.ok(readme.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`),
     'README must retain the fixed bootstrap install command even after the Catalog self-pin advances')
@@ -423,6 +424,58 @@ test('catalog service retries a transient GitHub transport failure before using 
   assert.equal(catalog.source.kind, 'github')
   assert.equal(catalog.source.errorCode, null)
   assert.equal(calls, 2)
+})
+
+test('catalog service accepts a valid remote response between the legacy and current bounds', async () => {
+  const raw = JSON.stringify({ ...document(), padding: 'x'.repeat(2 * 1024 * 1024) })
+  const bytes = Buffer.byteLength(raw)
+  assert.ok(bytes > 2 * 1024 * 1024, 'the fixture must reproduce the retired 2 MiB limit')
+  assert.ok(bytes < MAX_CATALOG_RESPONSE_BYTES, 'the fixture must remain below the bounded 4 MiB limit')
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => ({
+      ok: true,
+      headers: new Headers({ 'content-length': String(bytes) }),
+      text: async () => raw,
+    }),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(catalog.source.kind, 'github')
+  assert.equal(catalog.source.errorCode, null)
+  assert.equal(catalog.entries.length, 1)
+})
+
+test('catalog service fails closed when the declared remote response exceeds the bound', async () => {
+  let bodyRead = false
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => ({
+      ok: true,
+      headers: new Headers({ 'content-length': String(MAX_CATALOG_RESPONSE_BYTES + 1) }),
+      text: async () => {
+        bodyRead = true
+        return JSON.stringify(document())
+      },
+    }),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(bodyRead, false, 'a declared oversized response must be rejected before reading the body')
+  assert.equal(catalog.source.kind, 'bundled')
+  assert.equal(catalog.source.errorCode, 'CATALOG_UNAVAILABLE')
+})
+
+test('catalog service fails closed when the remote body exceeds the bound without a length header', async () => {
+  const raw = `${JSON.stringify(document())}${' '.repeat(MAX_CATALOG_RESPONSE_BYTES)}`
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => ({ ok: true, headers: new Headers(), text: async () => raw }),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(catalog.source.kind, 'bundled')
+  assert.equal(catalog.source.errorCode, 'CATALOG_UNAVAILABLE')
 })
 
 test('catalog service accepts partial assurance evidence from the remote Catalog', async () => {

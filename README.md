@@ -66,13 +66,15 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.8.7` |
+| 商城版本 | `0.8.8` |
 | 收录条目 | 以 GitHub `registry/catalog.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
 | 分类 | 22 个 |
 | 推荐 | 以实时 Catalog 中同时满足 `featured: true` 与 `status: approved` 的条目为准 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
+
+`0.8.8` 修复远程 Catalog 增长到 2 MiB 以上后被旧商城拒绝、退回过期内置快照而导致插件列表为空或版本陈旧的问题。远程 Catalog 响应上限提高到有界 4 MiB；超过上限、网络失败或内容无效时仍失败关闭，并明确标记 `CATALOG_UNAVAILABLE` / `CATALOG_INVALID`，不会伪装成在线目录。这个响应上限只针对 Catalog 传输，不放宽插件源码自动审查的 2 MiB 完整检查上限。
 
 `0.8.7` 把自动更新、商城兼容展示和 Catalog 门禁统一到官方 npm `latest`/`alpha`/`beta`/`rc` 最高有效通道，排除 `next` 独占和 deprecated 版本，并动态要求最新三个 DSH 版本的精确兼容证据；旧版本独占或全为 unknown 的已上架插件会被可逆地下架并进入不可安装复核候选。商城自身的自动审查允许单个运行文件最多 4 MiB、总运行文件最多 8 MiB，其他插件继续使用更严格的通用上限；Owner Report 的各明细表最多展开 20 条，完整记录保留在 Run Artifact。`0.8.6` 增加稳定版与官方预发布标签的联合检查。`0.8.5` 增加旧版商城自举更新桥：Catalog 仍保留 `partial` 的真实语义，但可以用 `status: unknown` 加 `evidenceStatus: partial` 的 schemaVersion 1 兼容编码发布。0.8.2 会保守地把这些记录显示为“未知”，不会再因为不认识 `partial` 而拒绝整个目录；当前版本则继续显示“部分验证”。这样已安装用户可以直接在商城里看到固定 Commit 的管理器更新，经过一次性计划、确认、备份和健康检查后更新，再由 Guardian 引导重启，不需要手动运行 CLI。
 
@@ -95,6 +97,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 - 将 `registry/candidates.json` 候选发现库与 `registry/catalog.json` 可信安装库物理隔离；候选条目没有包名、安装路径、入口 ID、权限或安装动作，必须经过固定 Commit 审核后才能晋级；
 - 从 GitHub 在线目录读取插件，网络失败时只回退到随包发布的已知快照；
+- 远程 Catalog 响应保持 4 MiB 有界上限；超限、网络失败或内容无效时失败关闭并标记回退原因，不把过期快照伪装成在线目录；
 - 按名称、包名、分类或 GitHub 仓库搜索；
 - DSH 内嵌商城由 Host 每次最多返回 24 个条目，搜索、分类和翻页都使用有界响应；候选发现库只在打开候选视图后读取；
 - 公共商城使用 24 条一页的上一页、页码、下一页导航；完整目录不再内嵌到 HTML，避免首屏解析兆字节级脚本数据；
