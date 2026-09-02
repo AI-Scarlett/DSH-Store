@@ -793,8 +793,12 @@ function registryWithoutSplitMetadata(registry) {
 
 export function splitCatalogDocument(document, options = {}) {
   const catalog = validateLegacyCatalog(document)
-  const detailsPath = String(options.detailsPath ?? DEFAULT_CATALOG_DETAILS_PATH).replace(/^\/+|\/+$/g, '')
-  if (!detailsPath || detailsPath.includes('..') || detailsPath.includes('\\')) throw new TypeError('detailsPath is invalid')
+  const rawDetailsPath = String(options.detailsPath ?? DEFAULT_CATALOG_DETAILS_PATH)
+  let detailsStart = 0
+  let detailsEnd = rawDetailsPath.length
+  while (detailsStart < detailsEnd && rawDetailsPath.charCodeAt(detailsStart) === 47) detailsStart += 1
+  while (detailsEnd > detailsStart && rawDetailsPath.charCodeAt(detailsEnd - 1) === 47) detailsEnd -= 1
+  const detailsPath = catalogRelativePath(rawDetailsPath.slice(detailsStart, detailsEnd), 'detailsPath')
   const indexPath = catalogRelativePath(options.indexPath ?? DEFAULT_CATALOG_INDEX_PATH, 'indexPath')
   const bridgeId = options.bridgeId ?? (catalog.entries.some(entry => entry.id === CATALOG_BRIDGE_ID)
     ? CATALOG_BRIDGE_ID

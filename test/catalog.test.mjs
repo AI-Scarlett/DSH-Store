@@ -224,6 +224,8 @@ test('catalog v2 keeps the index bounded and maps every plugin id to one detail 
   assert.ok(index.entries.every(item => item.detailPath === `${index.registry.detailsPath}/${item.id}.json`))
   assert.ok(index.entries.every(item => !Object.hasOwn(item, 'description') && !Object.hasOwn(item, 'compatibility')))
   assert.equal(new Set(index.entries.map(item => item.id)).size, index.entries.length)
+  const trimmed = splitCatalogDocument(document(), { detailsPath: '///catalog/details///' })
+  assert.equal(trimmed.index.registry.detailsPath, 'catalog/details')
 })
 
 test('Catalog bridge fails closed when its index is missing or does not match the pinned digest', async () => {
