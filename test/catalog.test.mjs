@@ -487,7 +487,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
       assert.equal(manager.compatibility.dshReleases[release], 'compatible')
       assert.deepEqual(manager.compatibility.dshOperations[release], {
-        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+        install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
       })
     }
   } else {
@@ -504,8 +504,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.deepEqual(settingsHub.compatibility.dshReleases, {
     'rc.7': 'incompatible', 'rc.8': 'incompatible',
     '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
+    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
   })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2']) {
+  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
     assert.deepEqual(settingsHub.compatibility.dshOperations[release], {
       install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
     })
@@ -516,28 +517,28 @@ test('bundled registry declares complete detail metadata for every entry', async
       version: '0.5.1',
       commit: '2db132bb430c5304627e5eb5681febecfc2d81ab',
       dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
     },
     {
       id: 'dsh-chat-import',
       version: '0.4.0',
       commit: '81f1a9785fbae6acd04a6b49a576b237c4f70eae',
       dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
     },
     {
       id: 'dsh-token-monitor',
       version: '1.3.0',
       commit: 'd655a1627607968394fd823cee440e68f07e9f00',
       dsh: '>=0.1.0-rc.6 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
     },
     {
       id: 'dsh-agent-reach',
       version: '0.1.0',
       commit: '85d9801a3e8884baf33f8166eb2e587a4482050f',
       dsh: '>=0.1.0-rc.6 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible' },
+      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
     },
   ]
   for (const expected of updatedSelfHosted) {
@@ -560,8 +561,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(requestedIm.updatePolicy, 'user-reviewed')
   assert.deepEqual(requestedIm.compatibility.dshReleases, {
     'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
+    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
   })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2']) {
+  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
     assert.deepEqual(requestedIm.compatibility.dshOperations[release], {
       install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
     })
@@ -581,6 +583,11 @@ test('bundled registry declares complete detail metadata for every entry', async
     : ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']
   for (const release of buildPluginWindow) {
     assert.equal(buildPlugin.compatibility.dshReleases[release], 'compatible')
+    if (buildPluginIsCurrent) {
+      assert.deepEqual(buildPlugin.compatibility.dshOperations[release], {
+        install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
+      })
+    }
   }
   for (const gate of ['installability', 'runtime', 'securityReview']) {
     assert.equal(buildPlugin.assurance[gate].status, 'partial')

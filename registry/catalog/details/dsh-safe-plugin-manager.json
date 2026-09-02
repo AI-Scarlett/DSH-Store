@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 插件商城与安全生命周期管理器。旧版更新若出现 ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED，请前往 https://dsh.store/repair/；不要放开 prepare 权限或手改 Profile。",
+  "description": "DSH STORE 插件商城与安全生命周期管理器。0.8.12 适配 DSH alpha.5，修复无生命周期脚本插件更新和已有 Guardian 的安全升级交接；历史用户可通过 https://dsh-store.cn/repair/ 或 GitHub Pages 查看官方修复/升级方案。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "944a76b00ba64418ea87b39cd6c81052749e2597",
-  "version": "0.8.11",
+  "commit": "7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+  "version": "0.8.12",
   "categories": [
     "marketplace",
     "management"
@@ -39,50 +39,58 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T12:30:31.000Z",
-    "observedAt": "2026-09-02T12:32:30.000Z",
+    "updatedAt": "2026-09-02T17:22:58.000Z",
+    "observedAt": "2026-09-02T17:28:18.800Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "maintainer-fixed-source-release-v2",
-      "checkedAt": "2026-09-02T12:32:30.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/944a76b00ba64418ea87b39cd6c81052749e2597",
+      "checkedAt": "2026-09-02T17:28:18.800Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The fixed source Commit passed repository checks, legacy-client regression tests, source-contract review, and protected DSH boundary checks before the Catalog pin."
+      "summary": "固定合并 Commit 的 0.8.12 manifest、Bundle Patch、更新事务、Guardian 独立交接器与双修复入口已完成源码、CI 和公开提交回读。"
     },
     "installability": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
-      "dshRelease": null,
-      "systems": [],
-      "profiles": [],
-      "summary": "No disposable Profile installation has been completed for the new 0.8.11 Commit."
+      "status": "partial",
+      "method": "disposable-dsh-latest-three-profile-cli-install-v2",
+      "checkedAt": "2026-09-02T17:28:18.800Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "dshRelease": "0.1.2-alpha.5",
+      "systems": [
+        "macOS"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "部分验证：0.8.12 在 DSH alpha.3、alpha.4、alpha.5 一次性 Profile 中通过官方 CLI 安装、dump-config、卸载与复装；不代表历史用户真实 Profile 已更新。"
     },
     "runtime": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
-      "dshRelease": null,
-      "systems": [],
-      "profiles": [],
-      "summary": "No post-restart runtime acceptance has been completed for the new 0.8.11 Commit."
+      "status": "partial",
+      "method": "disposable-dsh-latest-three-web-runtime-v2",
+      "checkedAt": "2026-09-02T17:28:18.800Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "dshRelease": "0.1.2-alpha.5",
+      "systems": [
+        "macOS"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "部分验证：alpha.3、alpha.4、alpha.5 均完成隔离冷启动和运行时身份/清单读取；alpha.5 另验证 20 条按页商城响应。真实 Profile 与 Guardian launchd 交接仍为独立 E4。"
     },
     "securityReview": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
+      "status": "partial",
+      "method": "fixed-source-policy-transaction-and-codeql-v2",
+      "checkedAt": "2026-09-02T17:28:18.800Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Repository checks and legacy-client regression tests are not an independent security audit."
+      "summary": "部分验证：固定参数、ignore-scripts、身份漂移失败关闭、Guardian 回滚测试及 CodeQL 通过；不等同于独立安全审计或真实 Profile 故障注入。"
     }
   },
   "entryIds": [
@@ -99,7 +107,8 @@
       "0.1.1-rc.2": "compatible",
       "0.1.2-alpha.2": "compatible",
       "0.1.2-alpha.3": "compatible",
-      "0.1.2-alpha.4": "compatible"
+      "0.1.2-alpha.4": "compatible",
+      "0.1.2-alpha.5": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -133,16 +142,22 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.1.2-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.2-alpha.5": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       }
     },
     "node": ">=22.13.0",
