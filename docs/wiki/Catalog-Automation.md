@@ -3,8 +3,8 @@
 ## 两个库承担不同职责
 
 - `registry/candidates.json` 是候选发现库：没有安装动作，条目必须晋级后才能进入商城可信安装路径。
-- `registry/catalog.json` 是历史兼容桥：只保留商城自身完整条目，并用摘要固定
-  `registry/catalog-index.json`；主索引记录插件编号、双语名称、版本、推荐标记、顺序、GitHub
+- `registry/catalog.json` 是历史客户端的完整兼容目录：为每个插件保留旧版验证、搜索、权限展示和
+  固定来源操作所需的有界字段，并用摘要固定 `registry/catalog-index.json`；主索引记录插件编号、双语名称、版本、推荐标记、顺序、GitHub
   地址和有界分页辅助字段；`registry/catalog/details/<插件编号>.json` 在同一提交中记录固定
   Commit、包路径、入口、权限、兼容性和证据状态。
 

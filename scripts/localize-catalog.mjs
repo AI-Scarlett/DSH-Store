@@ -5,7 +5,7 @@ import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'n
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-localization.mjs'
-import { compareCatalogEntries, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
+import { catalogBridgeBuffer, compareCatalogEntries, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
@@ -32,7 +32,7 @@ const document = await loadCatalogFromFiles({ indexUrl: new URL('../registry/cat
 document.entries = document.entries.map(entry => localizeCatalogEntry(entry, document.registry.categories)).sort(compareCatalogEntries)
 assertCatalogLocalization(document)
 const split = splitCatalogDocument(document, { detailsPath: document.registry.detailsPath })
-const output = Buffer.from(`${JSON.stringify(split.bridge, null, 2)}\n`)
+const output = catalogBridgeBuffer(split.bridge)
 const indexOutput = Buffer.from(`${JSON.stringify(split.index, null, 2)}\n`)
 
 if (!write) {
