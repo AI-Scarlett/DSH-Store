@@ -16,4 +16,56 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
+# Domestic AI and search crawlers. Public pages are allowed; operational
+# analytics endpoints remain excluded for every named crawler.
+User-agent: Bytespider
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: KimiBot
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: Kimi-User
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: Kimi-SearchBot
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: DeepSeekBot
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: YuanBaoBot
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: ChatGLM-Spider
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: MiniMaxBot
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: PetalBot
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /_analytics/
+Disallow: /_events/
+
 Sitemap: https://dsh.store/sitemap.xml
