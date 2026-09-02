@@ -1,0 +1,165 @@
+{
+  "id": "dsh-docs-panel",
+  "name": "文件与工作区工具（DSH Docs Panel）",
+  "packageName": "dsh-docs-panel",
+  "description": "DSH 侧边栏里的「全局文档」：全局 Markdown 笔记，任何工作区随时可读。（依赖 dsh-better-sidebar）",
+  "searchTerms": [
+    "文件与工作区工具",
+    "DSH Docs Panel",
+    "dsh-docs-panel",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
+    "工具能力",
+    "工具",
+    "能力",
+    "dsh",
+    "docs",
+    "panel"
+  ],
+  "repositoryUrl": "https://github.com/mlosun/dsh-docs-panel",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "a2ab2da5627ead05f6f5272933081a085f8e9cc4",
+  "version": "0.1.0",
+  "categories": [
+    "tools"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-19T06:11:27.000Z",
+    "observedAt": "2026-08-21T02:40:10.936Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-static-contract-review",
+      "checkedAt": "2026-08-21T02:40:10.936Z",
+      "evidenceUrl": "https://github.com/mlosun/dsh-docs-panel/commit/a2ab2da5627ead05f6f5272933081a085f8e9cc4",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Public GitHub manifest, Bundle Patch, declared runtime artifacts, license, and fixed commit were read back."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not installed in a disposable DSH profile during this bulk review."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not started against a disposable rc.8 runtime during this bulk review."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Static source signals and contract boundaries were reviewed; this is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "docs-panel"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "medium",
+      "files": "read-only",
+      "network": "specified-services",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "dsh-better-sidebar"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+  }
+}

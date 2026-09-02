@@ -85,8 +85,75 @@ test('market endpoint joins the GitHub catalog with installed state', async () =
     assert.equal(res.status, 200)
     assert.equal(payload.value.entries[0].installed, true)
     assert.equal(payload.value.entries[0].updateAvailable, true)
-    assert.equal(payload.value.pagination.pageSize, 24)
+    assert.equal(payload.value.pagination.pageSize, 20)
     assert.equal(payload.value.pagination.total, 1)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('market endpoint loads only the requested twenty v2 detail records', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-safe-v2-market-panel-'))
+  try {
+    const profileDir = join(root, 'profiles', 'web')
+    await mkdir(profileDir, { recursive: true })
+    await writeFile(join(profileDir, 'package.json'), JSON.stringify({
+      name: 'fixture', dependencies: {}, dsh: { profile: { bundles: [] } },
+    }))
+    const registry = {
+      name: 'Fixture', repositoryUrl: 'https://github.com/example/registry',
+      updatedAt: '2026-09-02T00:00:00Z', sourceUpdates: { mode: 'client-on-demand', defaultPolicy: 'risk-derived' },
+      trustPolicy: { candidateInstallDisabled: true, unknownIsNotVerified: true, promotionIndependentOfVerification: true },
+      categories: { tools: '工具' }, detailsPath: 'catalog/details',
+    }
+    const entries = Array.from({ length: 45 }, (_, index) => {
+      const id = `demo-${String(index).padStart(2, '0')}`
+      return {
+        id, nameZh: `演示插件 ${index}`, nameEn: `Demo Plugin ${index}`, packageName: `dsh-demo-${index}`,
+        version: '1.0.0', featured: index < 2, order: index,
+        repositoryUrl: `https://github.com/example/demo-${index}`,
+        detailPath: `catalog/details/${id}.json`, status: 'approved', categories: ['tools'], searchTerms: [id],
+      }
+    })
+    const requested = []
+    const detail = index => ({
+      id: entries[index].id, name: `${entries[index].nameZh}（${entries[index].nameEn}）`, packageName: entries[index].packageName,
+      description: 'bounded response fixture', repositoryUrl: entries[index].repositoryUrl, defaultBranch: 'main',
+      manifestPath: 'package.json', installPath: null, updatePolicy: null, commit: 'a'.repeat(40), version: '1.0.0',
+      categories: ['tools'], featured: entries[index].featured, installCount: null,
+      source: { updatedAt: '2026-09-01T00:00:00Z', observedAt: '2026-09-02T00:00:00Z', provenance: 'github-commit' },
+      assurance: {
+        discovery: { status: 'verified', method: 'fixture', checkedAt: '2026-09-02T00:00:00Z', evidenceUrl: 'https://example.com/evidence' },
+        installability: { status: 'unknown', method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary: null },
+        runtime: { status: 'unknown', method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary: null },
+        securityReview: { status: 'unknown', method: null, checkedAt: null, evidenceUrl: null, dshRelease: null, systems: [], profiles: [], summary: null },
+      },
+      entryIds: [entries[index].id], status: 'approved', statusReason: null,
+      compatibility: { dsh: '>=0.1.0-rc.8 <0.2.0', dshReleases: {}, dshOperations: {}, node: '>=22', systems: ['macOS'], profiles: ['web'] },
+      details: {
+        pluginType: 'feature', installSource: 'github', license: 'MIT',
+        permissions: { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] },
+        externalDependencies: [], reviewStatus: 'automated-scan',
+      },
+      risk: { installScripts: [], review: 'fixture' },
+    })
+    const res = response()
+    await handleMarketRequest(request({ view: 'market', page: 2, pageSize: 20 }), res, {
+      dshHome: root,
+      catalogService: {
+        loadIndex: async () => ({ schemaVersion: 2, catalogType: 'index', registry, entries }),
+        loadDetails: async ids => {
+          requested.push([...ids])
+          return ids.map(id => detail(entries.findIndex(entry => entry.id === id)))
+        },
+      },
+    })
+    const payload = JSON.parse(res.body)
+    assert.equal(res.status, 200)
+    assert.equal(payload.value.entries.length, 20)
+    assert.equal(payload.value.pagination.total, 45)
+    assert.equal(payload.value.pagination.pageCount, 3)
+    assert.deepEqual(requested, [entries.slice(20, 40).map(entry => entry.id)])
   } finally {
     await rm(root, { recursive: true, force: true })
   }
@@ -208,7 +275,7 @@ test('market endpoint keeps a 400-entry catalog response bounded to one page', a
       risk: { installScripts: [], review: 'fixture' },
     }))
     const res = response()
-    await handleMarketRequest(request({ view: 'market', page: 7, pageSize: 24 }), res, {
+    await handleMarketRequest(request({ view: 'market', page: 7, pageSize: 20 }), res, {
       dshHome: root,
       catalogService: { load: async () => ({
         schemaVersion: 1, registry: { name: 'Fixture', categories: { tools: '工具' } }, source: { kind: 'fixture' }, entries,
@@ -216,9 +283,9 @@ test('market endpoint keeps a 400-entry catalog response bounded to one page', a
     })
     const payload = JSON.parse(res.body)
     assert.equal(res.status, 200)
-    assert.equal(payload.value.entries.length, 24)
+    assert.equal(payload.value.entries.length, 20)
     assert.equal(payload.value.pagination.total, 400)
-    assert.equal(payload.value.pagination.pageCount, 17)
+    assert.equal(payload.value.pagination.pageCount, 20)
     assert.ok(Buffer.byteLength(res.body) < 200_000, `paged response is unexpectedly large: ${Buffer.byteLength(res.body)} bytes`)
   } finally {
     await rm(root, { recursive: true, force: true })

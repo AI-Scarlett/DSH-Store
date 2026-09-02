@@ -1,0 +1,171 @@
+{
+  "id": "modlens",
+  "name": "模型提供商接入（Modlens）",
+  "packageName": "@liustack/modlens",
+  "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
+  "searchTerms": [
+    "模型提供商接入",
+    "Modlens",
+    "modlens",
+    "@liustack/modlens",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
+    "工具能力",
+    "工具",
+    "能力",
+    "可视化",
+    "图表",
+    "看板"
+  ],
+  "repositoryUrl": "https://github.com/liustack/modlens",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "926a6beea81ca6ea1fecc267bc1b02d880572669",
+  "version": "3.25.4",
+  "categories": [
+    "tools",
+    "visualization"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-01T06:47:49.000Z",
+    "observedAt": "2026-09-01T12:56:30.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-09-01T12:56:30.000Z",
+      "evidenceUrl": "https://github.com/liustack/modlens/commit/926a6beea81ca6ea1fecc267bc1b02d880572669",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "modlens"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.19",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "restricted",
+      "credentials": [
+        "api-key"
+      ]
+    },
+    "externalDependencies": [
+      "Gemini API",
+      "OpenAI-compatible API",
+      "Anthropic API",
+      "Antigravity CLI",
+      "Claude CLI"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "community-vision-bridge-external-process-and-credential-access-not-security-audited"
+  }
+}

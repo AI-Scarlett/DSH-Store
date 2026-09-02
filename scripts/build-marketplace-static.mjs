@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { compareCatalogEntries } from '../src/catalog.mjs'
+import { compareCatalogEntries, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { buildAutomationStatus } from '../src/automation-status.mjs'
 
@@ -46,11 +46,7 @@ if (!outputRelative || outputRelative.startsWith('..')) {
   throw new Error('The static output directory must be a child of the repository root')
 }
 
-const catalogPath = resolve(projectRoot, 'registry/catalog.json')
-const catalog = JSON.parse(await readFile(catalogPath, 'utf8'))
-if (catalog?.schemaVersion !== 1 || !Array.isArray(catalog.entries)) {
-  throw new Error('registry/catalog.json is not a supported catalog')
-}
+const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
 const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(resolve(projectRoot, 'registry/candidates.json'), 'utf8')))
 
 async function readAutomationRuns(path) {
@@ -189,6 +185,7 @@ snapshot.generated = {
   sourceRepository: 'https://github.com/AI-Scarlett/DSH-Store',
   sourceCommit: sourceSha,
   catalogAuthority: 'registry/catalog.json',
+  catalogIndexAuthority: 'registry/catalog-index.json',
   githubEnriched: enrichGitHub,
 }
 
@@ -297,7 +294,7 @@ const featured = visibleEntries.filter(entry => entry.featured === true && entry
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
 const approvedCount = visibleEntries.filter(entry => entry.status === 'approved').length
-const staticCatalogEntries = visibleEntries.slice(0, 24)
+const staticCatalogEntries = visibleEntries.slice(0, MARKET_PAGE_SIZE)
 const catalogItemList = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -438,7 +435,7 @@ home = replaceElementText(home, 'stat-total', String(visibleEntries.length).padS
 home = replaceElementText(home, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 home = replaceElementText(home, 'stat-categories', String(categoryCount).padStart(2, '0'))
 home = replaceElementText(home, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
-home = replaceElementText(home, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
+home = replaceElementText(home, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
 await writeFile(resolve(outputRoot, 'marketplace/index.html'), home)
 
 let plugins = await readFile(resolve(outputRoot, 'marketplace/plugins/index.html'), 'utf8')
@@ -450,8 +447,8 @@ plugins = replaceElementText(plugins, 'stat-total', String(visibleEntries.length
 plugins = replaceElementText(plugins, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-categories', String(categoryCount).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
-plugins = replaceElementText(plugins, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
-plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(24, visibleEntries.length)} / ${visibleEntries.length}`)
+plugins = replaceElementText(plugins, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
+plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(MARKET_PAGE_SIZE, visibleEntries.length)} / ${visibleEntries.length}`)
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
 
 const catalogUpdatedAt = typeof snapshot.registry?.updatedAt === 'string' && snapshot.registry.updatedAt
@@ -475,7 +472,9 @@ llms = replaceRequired(llms, domesticGuideMarker, isDomestic
   : '', 'domestic llms guide marker')
 await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 
-await writeFile(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), JSON.stringify(snapshot, null, 2) + '\n')
+// Do not publish a second monolithic catalog snapshot. The copied registry
+// contains the legacy bridge, small index, and independently cacheable detail records.
+await rm(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), { force: true })
 await writeFile(resolve(outputRoot, 'automation-status.json'), JSON.stringify(buildAutomationStatus({
   catalog: snapshot,
   candidates: candidateRegistry,

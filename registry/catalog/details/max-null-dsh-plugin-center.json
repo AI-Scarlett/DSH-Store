@@ -1,0 +1,165 @@
+{
+  "id": "max-null-dsh-plugin-center",
+  "name": "社区插件中心（Max Null Plugin Center）",
+  "packageName": "@max-null/dsh-plugin-center",
+  "description": "为 DSH 提供社区插件中心能力。英文原始说明：Plugin center for DeepSeek Harness — installed metadata, community market, update detection, and What's New",
+  "searchTerms": [
+    "社区插件中心",
+    "Max Null Plugin Center",
+    "max-null-dsh-plugin-center",
+    "@max-null/dsh-plugin-center",
+    "插件市场",
+    "商城",
+    "插件管理",
+    "插件发现",
+    "dsh",
+    "plugin",
+    "center"
+  ],
+  "repositoryUrl": "https://github.com/Max-Null/dsh-plugin-center",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "52e5214a7c0f78b43aa20ecab007c5017c270ed7",
+  "version": "0.2.14",
+  "categories": [
+    "marketplace"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-27T15:13:53.000Z",
+    "observedAt": "2026-08-28T00:49:40.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-08-28T00:49:40.000Z",
+      "evidenceUrl": "https://github.com/Max-Null/dsh-plugin-center/commit/52e5214a7c0f78b43aa20ecab007c5017c270ed7",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "plugin-center"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": "^0.1.1-rc.1",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "suite",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "shell",
+      "credentials": [
+        "api-key"
+      ]
+    },
+    "externalDependencies": [
+      "第三方网络服务（按插件运行配置）",
+      "主机 Shell 或外部 CLI",
+      "用户配置的外部服务凭据"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-static-review-high-risk-user-reviewed-not-runtime-security-audited"
+  }
+}

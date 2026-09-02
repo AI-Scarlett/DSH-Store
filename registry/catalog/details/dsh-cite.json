@@ -1,0 +1,158 @@
+{
+  "id": "dsh-cite",
+  "name": "实用工具（DSH Cite）",
+  "packageName": "dsh-cite",
+  "description": "参考文献工具：DOI 精确查询与 Crossref 题录检索，GB/T 7714 / APA / MLA / Chicago 格式化，BibTeX 生成与有界并发 DOI 校验。",
+  "searchTerms": [
+    "实用工具",
+    "DSH Cite",
+    "dsh-cite",
+    "工具",
+    "能力",
+    "工具能力",
+    "dsh",
+    "cite"
+  ],
+  "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-cite",
+  "defaultBranch": "master",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "a12cd1d4160301928a56b3f41794268e22931948",
+  "version": "0.3.1",
+  "categories": [
+    "tools"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-01T13:12:34.000Z",
+    "observedAt": "2026-09-01T13:25:22.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-09-01T13:25:22.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-cite/commit/a12cd1d4160301928a56b3f41794268e22931948",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "cite"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22",
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "medium",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
+      "credentials": [
+        "oauth"
+      ]
+    },
+    "externalDependencies": [
+      "用户配置的外部服务凭据"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+  }
+}

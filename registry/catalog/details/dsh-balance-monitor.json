@@ -1,0 +1,166 @@
+{
+  "id": "dsh-balance-monitor",
+  "name": "余额与额度监控（DSH Balance Monitor）",
+  "packageName": "@rainronin/dsh-balance-monitor",
+  "description": "DeepSeek Harness 插件：DeepSeek API 余额实时监测（官方 /user/balance 快照 + ds_balance 工具 + 峰谷计价状态 + 单会话费用估算 + Matrix/原生双风格侧边栏徽章）",
+  "searchTerms": [
+    "余额与额度监控",
+    "DSH Balance Monitor",
+    "dsh-balance-monitor",
+    "@rainronin/dsh-balance-monitor",
+    "余额",
+    "额度",
+    "配额",
+    "钱包",
+    "新锐实验",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "balance",
+    "monitor"
+  ],
+  "repositoryUrl": "https://github.com/Rainronin/dsh-balance-monitor",
+  "defaultBranch": "master",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "cde6fed4693411d78217fbd890ae6251abb1e9e0",
+  "version": "0.3.0",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-31T15:31:16.000Z",
+    "observedAt": "2026-09-01T12:56:30.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-09-01T12:56:30.000Z",
+      "evidenceUrl": "https://github.com/Rainronin/dsh-balance-monitor/commit/cde6fed4693411d78217fbd890ae6251abb1e9e0",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "balance-monitor"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": "^0.1.2-alpha.1",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "zod"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+  }
+}

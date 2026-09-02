@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from 'node:crypto'
-import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
+import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkRepository } from './check-plugin-submission.mjs'
@@ -18,6 +18,8 @@ import {
   canonicalGithubRepository,
   compareCatalogEntries,
   compareVersions,
+  loadCatalogFromFiles,
+  splitCatalogDocument,
   validateCatalog,
 } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
@@ -36,6 +38,7 @@ import {
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
+const catalogIndexPath = resolve(root, 'registry/catalog-index.json')
 const candidatesPath = resolve(root, 'registry/candidates.json')
 const policyPath = resolve(root, 'registry/automation-policy.json')
 const SOURCE_FILE = /\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
@@ -61,15 +64,19 @@ function sha256(value) {
 
 function parseArgs(argv) {
   const options = {
-    write: false, expectedCatalogSha: null, expectedCandidatesSha: null,
-    catalogBackup: null, candidatesBackup: null, observedAt: null, report: null,
+    write: false, expectedCatalogSha: null, expectedCatalogIndexSha: null, expectedCandidatesSha: null,
+    catalogBackup: null, catalogIndexBackup: null, catalogDetailsBackup: null,
+    candidatesBackup: null, observedAt: null, report: null,
   }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
     if (value === '--write') options.write = true
     else if (value === '--expected-catalog-sha') options.expectedCatalogSha = argv[++index]
+    else if (value === '--expected-catalog-index-sha') options.expectedCatalogIndexSha = argv[++index]
     else if (value === '--expected-candidates-sha') options.expectedCandidatesSha = argv[++index]
     else if (value === '--catalog-backup') options.catalogBackup = argv[++index]
+    else if (value === '--catalog-index-backup') options.catalogIndexBackup = argv[++index]
+    else if (value === '--catalog-details-backup') options.catalogDetailsBackup = argv[++index]
     else if (value === '--candidates-backup') options.candidatesBackup = argv[++index]
     else if (value === '--observed-at') options.observedAt = argv[++index]
     else if (value === '--report') options.report = argv[++index]
@@ -759,6 +766,40 @@ async function atomicWrite(path, buffer) {
   await rename(temporary, path)
 }
 
+const catalogDetailsPath = resolve(root, 'registry/catalog/details')
+
+async function backupCatalogDetails(path) {
+  await rm(path, { recursive: true, force: true })
+  await cp(catalogDetailsPath, path, { recursive: true, force: true })
+}
+
+async function restoreCatalogDetails(path) {
+  await rm(catalogDetailsPath, { recursive: true, force: true })
+  await mkdir(resolve(catalogDetailsPath, '..'), { recursive: true })
+  await cp(path, catalogDetailsPath, { recursive: true, force: true })
+}
+
+async function writeCatalogFiles(bridgeBuffer, indexBuffer, details) {
+  await mkdir(catalogDetailsPath, { recursive: true })
+  const expected = new Set()
+  for (const detail of details) {
+    const target = resolve(root, 'registry', detail.path)
+    const scoped = relative(root, target)
+    if (!scoped || scoped.startsWith('..') || isAbsolute(scoped)) throw new Error(`catalog detail path escapes the repository: ${detail.path}`)
+    expected.add(target)
+    await atomicWrite(target, Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`))
+  }
+  for (const name of await readdir(catalogDetailsPath)) {
+    const target = resolve(catalogDetailsPath, name)
+    if (!expected.has(target)) await rm(target, { recursive: true, force: true })
+  }
+  await atomicWrite(catalogIndexPath, indexBuffer)
+  // Publish the compatibility bridge last: readers either observe the old
+  // complete generation or a bridge whose integrity metadata matches the new
+  // index and details generation.
+  await atomicWrite(catalogPath, bridgeBuffer)
+}
+
 const options = parseArgs(process.argv.slice(2))
 const failureContext = {
   options,
@@ -824,10 +865,12 @@ if (policy.candidateRetention?.authority !== REJECTED_CANDIDATE_RETENTION_AUTHOR
   throw new Error('unsupported rejected Candidate Registry retention policy')
 }
 const originalCatalog = await readFile(catalogPath)
+const originalCatalogIndex = await readFile(catalogIndexPath)
 const originalCandidates = await readFile(candidatesPath)
 const catalogSha = sha256(originalCatalog)
+const catalogIndexSha = sha256(originalCatalogIndex)
 const candidatesSha = sha256(originalCandidates)
-const catalog = JSON.parse(originalCatalog.toString('utf8'))
+const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
 const candidates = JSON.parse(originalCandidates.toString('utf8'))
 failureContext.stage = 'validate-authority'
 const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
@@ -847,11 +890,12 @@ const report = {
   status: 'running',
   completed: false,
   statisticsAvailable: false,
-  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${candidatesSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
+  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   baseCommit,
   observedAt,
   preconditions: {
     catalogSha256: catalogSha,
+    catalogIndexSha256: catalogIndexSha,
     candidatesSha256: candidatesSha,
     dshReleaseWindowSha256: dshReleaseWindowSha,
   },
@@ -915,7 +959,9 @@ failureContext.stage = 'validate-automation-output'
 const validatedCatalog = validateCatalog(catalog)
 assertLegacyCatalogCompatibility(catalog)
 const validatedCandidates = validateCandidateRegistry(candidates)
-const catalogBuffer = Buffer.from(`${JSON.stringify(catalog, null, 2)}\n`)
+const split = splitCatalogDocument(catalog, { detailsPath: catalog.registry.detailsPath })
+const catalogBuffer = Buffer.from(`${JSON.stringify(split.bridge, null, 2)}\n`)
+const catalogIndexBuffer = Buffer.from(`${JSON.stringify(split.index, null, 2)}\n`)
 const candidatesBuffer = Buffer.from(`${JSON.stringify({
   schemaVersion: validatedCandidates.schemaVersion,
   registry: validatedCandidates.registry,
@@ -923,8 +969,10 @@ const candidatesBuffer = Buffer.from(`${JSON.stringify({
 }, null, 2)}\n`)
 report.postconditions = {
   catalogChanged, candidatesChanged,
-  catalogSha256: sha256(catalogBuffer), candidatesSha256: sha256(candidatesBuffer),
+  catalogSha256: sha256(catalogBuffer), catalogIndexSha256: sha256(catalogIndexBuffer),
+  candidatesSha256: sha256(candidatesBuffer),
   catalogEntries: validatedCatalog.entries.length, candidateEntries: validatedCandidates.entries.length,
+  catalogDetails: split.details.length,
 }
 report.status = 'passed'
 report.completed = true
@@ -937,19 +985,28 @@ if (!options.write) {
   process.exit(0)
 }
 failureContext.stage = 'validate-write-preconditions'
-if (options.expectedCatalogSha !== catalogSha || options.expectedCandidatesSha !== candidatesSha) {
+if (options.expectedCatalogSha !== catalogSha || options.expectedCatalogIndexSha !== catalogIndexSha
+  || options.expectedCandidatesSha !== candidatesSha) {
   throw new Error('automation precondition hash mismatch')
 }
 failureContext.stage = 'apply-catalog-transaction'
 const catalogBackup = requireExternalBackup(options.catalogBackup, '--catalog-backup')
+const catalogIndexBackup = requireExternalBackup(options.catalogIndexBackup, '--catalog-index-backup')
+const catalogDetailsBackup = requireExternalBackup(options.catalogDetailsBackup, '--catalog-details-backup')
 const candidatesBackup = requireExternalBackup(options.candidatesBackup, '--candidates-backup')
 await copyFile(catalogPath, catalogBackup)
+await copyFile(catalogIndexPath, catalogIndexBackup)
+await backupCatalogDetails(catalogDetailsBackup)
 await copyFile(candidatesPath, candidatesBackup)
 try {
-  if (catalogChanged) await atomicWrite(catalogPath, catalogBuffer)
+  if (catalogChanged) await writeCatalogFiles(catalogBuffer, catalogIndexBuffer, split.details)
   if (candidatesChanged) await atomicWrite(candidatesPath, candidatesBuffer)
 } catch (error) {
-  if (catalogChanged) await atomicWrite(catalogPath, originalCatalog)
+  if (catalogChanged) {
+    await atomicWrite(catalogPath, originalCatalog)
+    await atomicWrite(catalogIndexPath, originalCatalogIndex)
+    await restoreCatalogDetails(catalogDetailsBackup)
+  }
   if (candidatesChanged) await atomicWrite(candidatesPath, originalCandidates)
   throw error
 }

@@ -1,0 +1,170 @@
+{
+  "id": "dsh-client-ui-trajectory-categories",
+  "name": "浏览器与网页工具（DSH Client UI Trajectory Categories）",
+  "packageName": "dsh-client-ui-trajectory-categories",
+  "description": "DSH Web 轨迹分类视图插件：「分类」标签页 = 左上角「合计」动作统计（写入/读取/删除/下载/命令/搜索/子代理/其他工具/消息/压缩）+ 思维导图画布（一次一个问题，问题画布标签切换，问题 → 方案 → 工具调用，节点可拖动、线条带惯性）。点击问题/方案收起展开子流程，点击工具查看「做了什么/输出日志/修改内容/参数/错误」。中文分类、中英文工具名匹配，保留原始「轨迹」流程列表。纯浏览器端聚合，零模型请求、零额外 token 消耗。",
+  "searchTerms": [
+    "浏览器与网页工具",
+    "DSH Client UI Trajectory Categories",
+    "dsh-client-ui-trajectory-categories",
+    "浏览器",
+    "网页",
+    "页面操作",
+    "截图",
+    "工具能力",
+    "工具",
+    "能力",
+    "界面增强",
+    "界面",
+    "交互",
+    "侧栏",
+    "dsh",
+    "client",
+    "ui",
+    "trajectory",
+    "categories"
+  ],
+  "repositoryUrl": "https://github.com/QWQ-nn/dsh-client-ui-trajectory-categories",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "652f159b6087197160e7e3238819db94e0a3de63",
+  "version": "0.2.1",
+  "categories": [
+    "tools",
+    "ui"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-19T09:21:23.000Z",
+    "observedAt": "2026-08-21T02:40:10.936Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-static-contract-review",
+      "checkedAt": "2026-08-21T02:40:10.936Z",
+      "evidenceUrl": "https://github.com/qwq-nn/dsh-client-ui-trajectory-categories/commit/652f159b6087197160e7e3238819db94e0a3de63",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Public GitHub manifest, Bundle Patch, declared runtime artifacts, license, and fixed commit were read back."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not installed in a disposable DSH profile during this bulk review."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not started against a disposable rc.8 runtime during this bulk review."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Static source signals and contract boundaries were reviewed; this is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "ui-trajectory-categories"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "medium",
+      "files": "read-only",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+  }
+}

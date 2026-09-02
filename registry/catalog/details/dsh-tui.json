@@ -1,0 +1,173 @@
+{
+  "id": "dsh-tui",
+  "name": "终端客户端（DSH TUI）",
+  "packageName": "@deepseek-harness-tui/dsh-tui",
+  "description": "Claude Code 风格的 DSH 终端客户端，可读取共享会话，但不是当前 Web Profile 的普通界面插件。",
+  "searchTerms": [
+    "终端客户端",
+    "DSH TUI",
+    "dsh-tui",
+    "@deepseek-harness-tui/dsh-tui",
+    "终端",
+    "Shell",
+    "命令行",
+    "PTY",
+    "客户端与生态",
+    "客户端",
+    "移动端",
+    "远程访问",
+    "开发与运行时",
+    "开发",
+    "调试",
+    "运行时",
+    "dsh",
+    "tui"
+  ],
+  "repositoryUrl": "https://github.com/ccch1mneyyy/dsh-TUI",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "265671db7a3de7578464bf0b96c60d9b2bb0b273",
+  "version": "0.6.1",
+  "categories": [
+    "clients",
+    "development"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-16T04:54:02.000Z",
+    "observedAt": "2026-08-21T00:27:59.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "catalog-presence",
+      "checkedAt": "2026-09-02T04:09:32.000Z",
+      "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Present in the trusted GitHub catalog."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [],
+  "status": "blocked",
+  "statusReason": "这是独立终端入口，Bundle Patch 会覆盖或停用多项基础 Profile 行；当前商城不把它注入 Web Profile。",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.6",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": "^22.19 || >=24",
+    "systems": [
+      "macOS",
+      "Linux",
+      "Windows"
+    ],
+    "profiles": [
+      "dsh-tui"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "shell",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "pnpm"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "blocked-incompatible-profile-surface"
+  }
+}

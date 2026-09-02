@@ -1,0 +1,169 @@
+{
+  "id": "dsh-movein-permissions",
+  "name": "配置导入迁移（DSH Movein Permissions）",
+  "packageName": "dsh-movein-permissions",
+  "description": "为 DSH 补上按工具粒度的权限规则：在 tools/pre-execute 强制执行 deny/ask 清单，规则语法与 Claude Code 相同，不迁移也能单独用。",
+  "searchTerms": [
+    "配置导入迁移",
+    "DSH Movein Permissions",
+    "dsh-movein-permissions",
+    "配置导入",
+    "配置迁移",
+    "搬家",
+    "安全与隐私",
+    "安全",
+    "审计",
+    "防护",
+    "dsh",
+    "movein",
+    "permissions"
+  ],
+  "repositoryUrl": "https://github.com/sjh9714/dsh-movein",
+  "defaultBranch": "main",
+  "manifestPath": "plugin/package.json",
+  "installPath": "plugin",
+  "updatePolicy": "user-reviewed",
+  "commit": "6ef32c78540f47a3b88a0c345553d66087052bd7",
+  "version": "0.2.6",
+  "categories": [
+    "security"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-27T14:02:19.000Z",
+    "observedAt": "2026-08-28T00:49:40.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-08-28T00:49:40.000Z",
+      "evidenceUrl": "https://github.com/sjh9714/dsh-movein/commit/6ef32c78540f47a3b88a0c345553d66087052bd7",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "dsh-movein-permissions"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [
+      "Linux",
+      "Windows",
+      "macOS"
+    ],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "none",
+      "network": "none",
+      "commands": "shell",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [
+      "主机命令与插件声明的外部 CLI"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+  }
+}

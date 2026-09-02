@@ -1,0 +1,168 @@
+{
+  "id": "dsh-settings-hub",
+  "name": "DSH 设置导航中心（DSH Settings Hub）",
+  "packageName": "dsh-settings-hub",
+  "description": "安全地搜索、分组和打开 DSH 设置页面，并为设置与插件页面配置内置线性图标。",
+  "searchTerms": [
+    "DSH 设置导航中心",
+    "DSH Settings Hub",
+    "dsh-settings-hub",
+    "安全",
+    "审计",
+    "验证",
+    "防护",
+    "界面增强",
+    "界面",
+    "交互",
+    "侧栏",
+    "管理工具",
+    "插件管理",
+    "管理",
+    "dsh",
+    "settings",
+    "hub"
+  ],
+  "repositoryUrl": "https://github.com/AI-Scarlett/dsh-settings-hub",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "source-verified",
+  "commit": "1234f49b14fd9a86268ea711d1c1c50828f27b3d",
+  "version": "0.3.2",
+  "categories": [
+    "ui",
+    "management"
+  ],
+  "featured": true,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-23T09:59:05.000Z",
+    "observedAt": "2026-08-23T00:00:00.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-08-23T00:00:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/dsh-settings-hub/commit/1234f49b14fd9a86268ea711d1c1c50828f27b3d",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The newer fixed Commit passed the complete automatic low-risk source policy."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "dsh-settings-hub"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": "^0.1.1-rc.1",
+    "dshReleases": {
+      "rc.7": "incompatible",
+      "rc.8": "incompatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "author-verified"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "owner-curated-not-security-audited"
+  }
+}

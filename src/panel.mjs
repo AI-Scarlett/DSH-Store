@@ -1,4 +1,4 @@
-import { buildMarketplaceSnapshot, paginateMarketplaceSnapshot } from './catalog.mjs'
+import { buildMarketplaceSnapshot, paginateMarketplaceSnapshot, selectMarketplaceIndexEntries } from './catalog.mjs'
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, validateProfileName } from './inventory.mjs'
 import { readMarketplaceProvenance } from './provenance.mjs'
@@ -130,12 +130,56 @@ export function handleMarketRequest(req, res, options = {}) {
     const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
     const inventory = await readProfileInventory({ dshHome: options.dshHome, profile })
     const view = body.view ?? 'market'
-    const catalog = await options.catalogService.load({ force: body.refresh === true })
+    // Load the small index first. With the split Catalog format only the
+    // requested page's detail files are hydrated; v1 services remain fully
+    // compatible for older fixtures and during a staged rollout.
+    const catalogIndex = typeof options.catalogService.loadIndex === 'function'
+      ? await options.catalogService.loadIndex({ force: body.refresh === true })
+      : await options.catalogService.load({ force: body.refresh === true })
     const candidateRegistry = view === 'candidates'
       ? await (options.candidateService?.load({ force: body.refresh === true }) ?? Promise.resolve(null))
       : null
     const managedPackages = await readMarketplaceProvenance(options.dshHome, profile)
     const dshVersion = options.dshVersionService?.peek?.() ?? null
+    if (catalogIndex.schemaVersion === 2 && view !== 'candidates') {
+      const selection = selectMarketplaceIndexEntries(catalogIndex, {
+        view, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
+        page: body.page, pageSize: body.pageSize, inventory,
+      })
+      try {
+        const details = await options.catalogService.loadDetails(selection.entries.map(entry => entry.id), { index: catalogIndex })
+        const snapshot = buildMarketplaceSnapshot({ ...catalogIndex, schemaVersion: 1, entries: details }, inventory, '', {
+          managedPackages, candidateRegistry, dshVersion, catalogPackageNames: catalogIndex.entries.map(entry => entry.packageName),
+        })
+        const byId = new Map(snapshot.entries.map(entry => [entry.id, entry]))
+        return {
+          ...snapshot,
+          entries: selection.entries.map(entry => byId.get(entry.id)).filter(Boolean),
+          candidates: [],
+          catalogPackageNames: catalogIndex.entries.map(entry => entry.packageName),
+          filters: { categoryIds: selection.categoryIds, featuredOnly: selection.pagination.featuredOnly },
+          pagination: selection.pagination,
+        }
+      } catch (error) {
+        // A page must never combine a remote index with bundled detail files.
+        // Ask the service for one complete atomic generation; it may return the
+        // bundled bridge/index/details set after the remote detail failure.
+        if (typeof options.catalogService.load !== 'function') throw error
+        const fallback = await options.catalogService.load()
+        if (fallback.source?.kind !== 'bundled') throw error
+        const snapshot = buildMarketplaceSnapshot(fallback, inventory, '', {
+          managedPackages, candidateRegistry, dshVersion,
+        })
+        return paginateMarketplaceSnapshot(snapshot, {
+          view, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
+          page: body.page, pageSize: body.pageSize,
+          catalogPackageNames: fallback.entries.map(entry => entry.packageName),
+        })
+      }
+    }
+    const catalog = catalogIndex.schemaVersion === 2
+      ? { ...catalogIndex, schemaVersion: 1, entries: [] }
+      : catalogIndex
     const snapshot = buildMarketplaceSnapshot(catalog, inventory, '', { managedPackages, candidateRegistry, dshVersion })
     return paginateMarketplaceSnapshot(snapshot, {
       view,
@@ -145,6 +189,7 @@ export function handleMarketRequest(req, res, options = {}) {
       includeRejected: view === 'candidates',
       page: body.page,
       pageSize: body.pageSize,
+      catalogPackageNames: catalogIndex.entries?.map(entry => entry.packageName),
     })
   })
 }

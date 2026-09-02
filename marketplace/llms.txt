@@ -8,7 +8,8 @@ Canonical website: https://dsh.store/
 Human-facing plugin catalog: https://dsh.store/plugins/
 Plugin listing standards: https://dsh.store/standards/
 DSH plugin guide: https://dsh.store/dsh-plugins/
-Machine-readable catalog authority: https://dsh.store/registry/catalog.json
+Legacy-compatible catalog bridge: https://dsh.store/registry/catalog.json
+Machine-readable catalog index authority: https://dsh.store/registry/catalog-index.json
 Source and documentation: https://github.com/AI-Scarlett/DSH-Store
 Plugin development lab: https://dsh.store/build/
 Frequently asked questions: https://dsh.store/faq/
@@ -23,7 +24,7 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 - Why there are two products: the DSH STORE plugin and marketplace handle discovery and guarded access; build-dsh-plugin gives developers a repeatable path from a real problem to a standard, verifiable plugin.
 - The manager integrates as a standard Host Plugin and Client Bundle and does not modify the DSH core source tree.
 - Browsing the website is read-only. A real Profile change requires the official DSH CLI, a fresh single-use plan, exact confirmation, backup, health checks, and rollback.
-- GitHub registry/catalog.json is the runtime catalog authority. Unverified security, permission, and compatibility fields remain explicitly unknown.
+- GitHub registry/catalog.json is the legacy-compatible bootstrap bridge and cryptographically pins registry/catalog-index.json, the lightweight runtime index authority. Each plugin's full permission, compatibility, evidence, and install record is in registry/catalog/details/<plugin-id>.json; the storefront loads only the current page or requested detail. Unverified fields remain explicitly unknown.
 - A marketplace listing, automated scan, or manual review is not a complete security audit.
 
 ## Main sections

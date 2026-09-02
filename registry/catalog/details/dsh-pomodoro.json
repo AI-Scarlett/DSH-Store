@@ -1,0 +1,167 @@
+{
+  "id": "dsh-pomodoro",
+  "name": "专注计时器（DSH Pomodoro）",
+  "packageName": "dsh-pomodoro",
+  "description": "DSH Web 番茄钟：提供可配置专注/休息循环、可拖动迷你面板，以及站内提醒、提示音和浏览器通知。",
+  "searchTerms": [
+    "专注计时器",
+    "DSH Pomodoro",
+    "dsh-pomodoro",
+    "番茄钟",
+    "专注",
+    "计时",
+    "提醒",
+    "界面增强",
+    "界面",
+    "交互",
+    "侧栏",
+    "dsh",
+    "pomodoro"
+  ],
+  "repositoryUrl": "https://github.com/causebefore/dsh-pomodoro",
+  "defaultBranch": "dev",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "source-verified",
+  "commit": "6a38b70b0997b8562babcd1581447c04562e6d25",
+  "version": "0.4.0",
+  "categories": [
+    "ui"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-18T08:08:48.000Z",
+    "observedAt": "2026-08-21T00:27:59.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "catalog-presence",
+      "checkedAt": "2026-09-02T04:09:32.000Z",
+      "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Present in the trusted GitHub catalog."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [
+    "ui-pomodoro"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.7",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": "^22.19.0 || >=24.0.0",
+    "systems": [
+      "macOS",
+      "Linux",
+      "Windows"
+    ],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+  }
+}

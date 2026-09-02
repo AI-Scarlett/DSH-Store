@@ -1,0 +1,173 @@
+{
+  "id": "michengai-dsh-archive-manager",
+  "name": "会话归档管理（DSH Archive Manager）",
+  "packageName": "@michengai/dsh-archive-manager",
+  "description": "在设置里增加已归档会话页，可按工作区搜索、恢复和删除已归档会话。",
+  "searchTerms": [
+    "会话归档管理",
+    "DSH Archive Manager",
+    "michengai-dsh-archive-manager",
+    "@michengai/dsh-archive-manager",
+    "会话",
+    "归档",
+    "恢复",
+    "删除",
+    "会话与消息",
+    "对话",
+    "历史消息",
+    "dsh",
+    "archive",
+    "manager"
+  ],
+  "repositoryUrl": "https://github.com/MichengAI/dsh-archive-manager",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "source-verified",
+  "commit": "6347619bb2c7be86f08f5feb24470dc3b6e22a3a",
+  "version": "0.1.12",
+  "categories": [
+    "sessions"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-17T17:13:20.000Z",
+    "observedAt": "2026-08-21T00:27:59.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "catalog-presence",
+      "checkedAt": "2026-09-02T04:09:32.000Z",
+      "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Present in the trusted GitHub catalog."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [
+    "workspace",
+    "session-projection-cache",
+    "ui-workspace",
+    "workspace-archive-manager",
+    "session-projection-cache-archive-manager",
+    "ui-workspace-archive-manager"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.7",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": "^22.19.0 || >=24.0.0",
+    "systems": [
+      "macOS",
+      "Linux",
+      "Windows"
+    ],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "Apache-2.0",
+    "permissions": {
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "id": "dsh-web-plugin-manager",
+  "name": "第三方插件管理器（DSH Web Plugin Manager）",
+  "packageName": "dsh-web-plugin-manager",
+  "description": "第三方综合插件管理器；当前版本会遮蔽 DSH 官方插件清单，因此仅展示、不允许安装。",
+  "searchTerms": [
+    "第三方插件管理器",
+    "DSH Web Plugin Manager",
+    "dsh-web-plugin-manager",
+    "插件市场",
+    "商城",
+    "插件管理",
+    "插件发现",
+    "管理工具",
+    "管理",
+    "dsh",
+    "web",
+    "plugin",
+    "manager"
+  ],
+  "repositoryUrl": "https://github.com/LX2000WASD/dsh-web-plugin-manager",
+  "defaultBranch": "master",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "1162fb2182e5ec61f90614c79dd4900465ffd097",
+  "version": "0.4.0",
+  "categories": [
+    "marketplace",
+    "management"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-15T18:52:42.000Z",
+    "observedAt": "2026-08-21T00:27:59.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "catalog-presence",
+      "checkedAt": "2026-09-02T04:09:32.000Z",
+      "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Present in the trusted GitHub catalog."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [
+    "plugin-manager"
+  ],
+  "status": "blocked",
+  "statusReason": "Bundle Patch 会禁用官方 ui-settings-plugin-inventory，不符合本市场的永久保护规则。",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.5",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "restricted",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [
+      "GitHub API",
+      "npm Registry"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [
+      "prepare"
+    ],
+    "review": "blocked-by-policy"
+  }
+}

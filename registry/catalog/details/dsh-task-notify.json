@@ -1,0 +1,174 @@
+{
+  "id": "dsh-task-notify",
+  "name": "任务通知提醒（DSH Task Notify）",
+  "packageName": "@ltao0829/dsh-task-notify",
+  "description": "为 DSH 提供任务通知提醒能力。英文原始说明：Task-completion reminder for DeepSeek Harness: in-page toast, OS notification, and sound when an agent turn or background job finishes",
+  "searchTerms": [
+    "任务通知提醒",
+    "DSH Task Notify",
+    "dsh-task-notify",
+    "@ltao0829/dsh-task-notify",
+    "任务完成",
+    "通知",
+    "提醒",
+    "消息推送",
+    "工具能力",
+    "工具",
+    "能力",
+    "通知与集成",
+    "消息",
+    "工作流与自动化",
+    "工作流",
+    "自动化",
+    "任务",
+    "dsh",
+    "task",
+    "notify"
+  ],
+  "repositoryUrl": "https://github.com/ltao0829/dsh-task-notify",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "8771ac7c56ec14377eb943ebd51d83a2f12ab578",
+  "version": "0.1.0",
+  "categories": [
+    "tools",
+    "notifications",
+    "workflow"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-20T11:07:22.000Z",
+    "observedAt": "2026-08-21T02:40:10.936Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-static-contract-review",
+      "checkedAt": "2026-08-21T02:40:10.936Z",
+      "evidenceUrl": "https://github.com/ltao0829/dsh-task-notify/commit/8771ac7c56ec14377eb943ebd51d83a2f12ab578",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Public GitHub manifest, Bundle Patch, declared runtime artifacts, license, and fixed commit were read back."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not installed in a disposable DSH profile during this bulk review."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not started against a disposable rc.8 runtime during this bulk review."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Static source signals and contract boundaries were reviewed; this is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "task-notify"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": "^0.1.0-rc.6",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "BSD-3-Clause",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "schemastery"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+  }
+}

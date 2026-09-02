@@ -1,0 +1,162 @@
+{
+  "id": "dsh-launcher-lifetime",
+  "name": "桌面客户端（DSH Launcher Lifetime）",
+  "packageName": "dsh-launcher-lifetime",
+  "description": "为 DSH 提供桌面客户端能力。英文原始说明：DeepSeek Harness (dsh) plugin: control how long the dsh service (node) stays alive when using the dsh-launcher shell. Writes %LOCALAPPDATA%\\dsh-launcher\\settings.json (serviceLifetime: 0 always-on, 1 tray-resident, 2 follow-window); the shell applies it on window close / tray exit. No runtime dependencies.",
+  "searchTerms": [
+    "桌面客户端",
+    "DSH Launcher Lifetime",
+    "dsh-launcher-lifetime",
+    "桌面",
+    "托盘",
+    "快捷启动",
+    "工具能力",
+    "工具",
+    "能力",
+    "dsh",
+    "launcher",
+    "lifetime"
+  ],
+  "repositoryUrl": "https://github.com/Ruler4396/dsh-launcher-lifetime",
+  "defaultBranch": "master",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "6bb13b55ef0d7f0b62e0389d5af647d4189207ca",
+  "version": "0.2.1",
+  "categories": [
+    "tools"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-16T09:31:34.000Z",
+    "observedAt": "2026-08-21T02:40:10.936Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-static-contract-review",
+      "checkedAt": "2026-08-21T02:40:10.936Z",
+      "evidenceUrl": "https://github.com/ruler4396/dsh-launcher-lifetime/commit/6bb13b55ef0d7f0b62e0389d5af647d4189207ca",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Public GitHub manifest, Bundle Patch, declared runtime artifacts, license, and fixed commit were read back."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not installed in a disposable DSH profile during this bulk review."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not started against a disposable rc.8 runtime during this bulk review."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Static source signals and contract boundaries were reviewed; this is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "dsh-launcher-lifetime"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": "*",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "client",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+  }
+}

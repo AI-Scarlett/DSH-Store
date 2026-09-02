@@ -1,0 +1,172 @@
+{
+  "id": "bundle",
+  "name": "会话与文件回退（Bundle）",
+  "packageName": "@dsh-gsd/bundle",
+  "description": "为 DSH 提供会话与文件回退能力。英文原始说明：A DeepSeek Harness plugin bundle that reimplements opengsd-core (Git Ship Done) as a host-plane plugin set, replacing the default agent-loop behavior with the GSD phase loop (Discuss -> UI design -> Plan -> Execute -> Verify -> Ship). Includes checkpoint-resume, a window ledger, a conversational UAT loop, capability gates, and a real background-job runtime.",
+  "searchTerms": [
+    "会话与文件回退",
+    "Bundle",
+    "bundle",
+    "@dsh-gsd/bundle",
+    "回退",
+    "检查点",
+    "恢复",
+    "会话",
+    "新锐实验",
+    "实验功能",
+    "新功能"
+  ],
+  "repositoryUrl": "https://github.com/jaaty/dsh-gsd-bundle",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "617dd1494be5639a0a0e5836ccab256f618e7de5",
+  "version": "2.2.0",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-29T19:10:59.000Z",
+    "observedAt": "2026-08-29T19:21:18.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-08-29T19:21:18.000Z",
+      "evidenceUrl": "https://github.com/jaaty/dsh-gsd-bundle/commit/617dd1494be5639a0a0e5836ccab256f618e7de5",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "agent-loop",
+    "gsd",
+    "gsd-persona",
+    "gsd-state",
+    "gsd-core-tools",
+    "gsd-discuss",
+    "gsd-plan",
+    "gsd-execute",
+    "gsd-verify",
+    "gsd-ship",
+    "gsd-ui",
+    "gsd-quick",
+    "gsd-map-codebase",
+    "gsd-commands"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "compatibility": {
+    "dsh": "0.1.1-rc.2",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=20",
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

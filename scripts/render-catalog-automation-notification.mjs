@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { loadCatalogFromFiles } from '../src/catalog.mjs'
 
 const statusLabels = {
   approved: '可安装',
@@ -356,12 +357,15 @@ async function readJson(path, optional = false) {
 async function main() {
   const options = parseArgs(process.argv.slice(2))
   if (!options.catalog || !options.output) throw new Error('--catalog and --output are required')
-  const [catalog, report, watchdog, authorNotices] = await Promise.all([
+  const [catalogRoot, report, watchdog, authorNotices] = await Promise.all([
     readJson(options.catalog),
     readJson(options.report, true),
     readJson(options['watchdog-report'], true),
     readJson(options['author-notice-plan'], true),
   ])
+  const catalog = catalogRoot?.registry?.indexPath
+    ? await loadCatalogFromFiles({ indexUrl: pathToFileURL(resolve(options.catalog)) })
+    : catalogRoot
   const body = renderCatalogAutomationNotification({
     catalog,
     report,

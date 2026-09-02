@@ -21,7 +21,7 @@ window.__ModuleLoader__.load({
       guardianExecute: '/api2/dsh-safe-plugin-manager/guardian/execute',
     }
     const SUPPORT_URL = 'https://dsh.store/'
-    const MARKET_PAGE_SIZE = 24
+    const MARKET_PAGE_SIZE = 20
     const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
     const BOOT_RECOVERY_STORAGE_KEY = 'dsh-safe-plugin-manager:tab-boot:v1'
     const BOOT_RECOVERY_NAVIGATED_KEY = 'dsh-safe-plugin-manager:last-recovered-boot:v1'
@@ -1038,14 +1038,14 @@ window.__ModuleLoader__.load({
         React.createElement('h3', { style: styles.detailHeading }, 'DSH 版本操作证据'),
         React.createElement(OperationEvidence, { entry }),
         !entry.catalogDetailsAvailable
-          ? React.createElement('div', { style: styles.notice }, '当前 GitHub catalog.json 尚未提供完整详情字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
+          ? React.createElement('div', { style: styles.notice }, '当前 GitHub Catalog 详情文件尚未提供完整字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
           : null,
         entry.statusReason ? React.createElement('div', { style: styles.error }, `策略说明：${entry.statusReason}`) : null,
         entry.status === 'blocked'
           ? React.createElement('div', { style: styles.notice }, '可前往 GitHub 阅读项目说明并自行决定是否手动安装；手动安装不受本商城的计划、备份、健康检查和失败回滚保护。')
           : null,
         entry.risk.installScripts.length > 0 ? React.createElement('div', { style: styles.error }, `安装生命周期脚本：${entry.risk.installScripts.join(', ')}`) : null,
-        React.createElement('div', { style: styles.notice }, '详情来自 GitHub catalog.json 的固定 Commit 核验与声明；自动扫描或作者认证均不等于完成安全审计。')))
+        React.createElement('div', { style: styles.notice }, '详情来自 GitHub catalog.json 主索引、对应插件详情文件的固定 Commit 核验与声明；自动扫描或作者认证均不等于完成安全审计。')))
     }
 
     function HealthPanel({ health, permissionDecisions, setPermissionDecision, rerun }) {

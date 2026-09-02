@@ -116,6 +116,15 @@ test('simple submission reads a fixed root package without executing it', async 
   assert.match(report, /不是安全审计、运行验证或自动上架/)
 })
 
+test('submission precheck hydrates the v2 Catalog before validating a candidate entry', async () => {
+  const v2Catalog = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: v2Catalog, fetch: sourceFetch(), retryDelaysMs: [],
+  })
+  assert.equal(result.status, 'passed')
+  assert.equal(result.candidate.id, 'dsh-demo')
+})
+
 test('repository automation reuses the same fixed-source gate without an Issue form', async () => {
   const result = await checkRepository('https://github.com/example/dsh-demo', '', {
     catalogDocument: catalog(), fetch: sourceFetch(), retryDelaysMs: [],

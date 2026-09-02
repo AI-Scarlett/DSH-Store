@@ -10,7 +10,7 @@ const port = Number.isInteger(requestedPort) && requestedPort > 0 && requestedPo
 const host = '127.0.0.1'
 const marketplaceRoot = resolve(root, 'marketplace')
 const marketplaceIndex = resolve(marketplaceRoot, 'index.html')
-const catalog = resolve(root, 'registry/catalog.json')
+const registryRoot = resolve(root, 'registry')
 const mimeTypes = new Map([
   ['.css', 'text/css; charset=utf-8'],
   ['.html', 'text/html; charset=utf-8'],
@@ -31,7 +31,12 @@ function safePath(urlPath) {
   let pathname
   try { pathname = new URL(urlPath, 'http://127.0.0.1').pathname } catch { return null }
   if (pathname === '/' || pathname === '/marketplace' || pathname === '/marketplace/') return marketplaceIndex
-  if (pathname === '/registry/catalog.json') return catalog
+  if (pathname.startsWith('/registry/')) {
+    const target = resolve(registryRoot, pathname.slice('/registry/'.length))
+    const scoped = relative(registryRoot, target)
+    if (!scoped || scoped.startsWith('..') || isAbsolute(scoped)) return null
+    return target
+  }
   if (!pathname.startsWith('/marketplace/')) return null
   const requested = pathname.endsWith('/') ? `${pathname}index.html` : pathname
   const target = resolve(marketplaceRoot, requested.slice('/marketplace/'.length))

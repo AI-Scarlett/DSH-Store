@@ -1,0 +1,173 @@
+{
+  "id": "dsh-autotest",
+  "name": "模型提供商接入（DSH Autotest）",
+  "packageName": "dsh-autotest",
+  "description": "鸿蒙三方库 AutoTest 平台 — DeepSeek Harness 服务端插件（用例库/任务/执行计划/设备，复用 ctx.llm 与 ctx.webServer）",
+  "searchTerms": [
+    "模型提供商接入",
+    "DSH Autotest",
+    "dsh-autotest",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
+    "新锐实验",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "autotest"
+  ],
+  "repositoryUrl": "https://github.com/summer-hub/AutoTestAgent",
+  "defaultBranch": "main",
+  "manifestPath": "autotest/dsh-autotest/package.json",
+  "installPath": "autotest/dsh-autotest",
+  "updatePolicy": "external-only",
+  "commit": "48ecdb19eac70757948497ed714e79c679dbd995",
+  "version": "0.1.56",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-01T12:57:51.000Z",
+    "observedAt": "2026-09-01T12:56:30.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-09-01T12:56:30.000Z",
+      "evidenceUrl": "https://github.com/summer-hub/AutoTestAgent/commit/48ecdb19eac70757948497ed714e79c679dbd995",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "dsh-autotest"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1027759 total bytes (maximum 2097152); largest file 291968 bytes (maximum 262144)",
+  "compatibility": {
+    "dsh": "^0.1.0-rc.7",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "UNKNOWN",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@types/better-sqlite3",
+      "@types/node",
+      "@types/node-cron",
+      "better-sqlite3",
+      "ioredis",
+      "mysql2",
+      "node-cron",
+      "tsx",
+      "typescript",
+      "xlsx"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

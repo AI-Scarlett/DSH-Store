@@ -6,6 +6,7 @@ import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
+import { loadCatalogFromFiles } from '../src/catalog.mjs'
 
 const execFileAsync = promisify(execFile)
 const root = new URL('../', import.meta.url)
@@ -22,8 +23,10 @@ test('GitHub enrichment skips non-approved sources that are intentionally unavai
 test('static marketplace derives manager identity and catalog cards without mutating the authority file', async () => {
   const output = await mkdtemp(new URL('.tmp-marketplace-static-', root))
   const catalogPath = new URL('registry/catalog.json', root)
+  const catalogIndexPath = new URL('registry/catalog-index.json', root)
   const catalogBefore = await readFile(catalogPath)
-  const catalog = JSON.parse(catalogBefore)
+  const catalogIndexBefore = await readFile(catalogIndexPath)
+  const catalog = await loadCatalogFromFiles()
   const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
   assert.ok(manager)
 
@@ -37,7 +40,9 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(stdout, /STATIC_MARKETPLACE_OK/)
 
     const catalogAfter = await readFile(catalogPath)
+    const catalogIndexAfter = await readFile(catalogIndexPath)
     assert.equal(sha256(catalogAfter), sha256(catalogBefore))
+    assert.equal(sha256(catalogIndexAfter), sha256(catalogIndexBefore))
 
     const home = await readFile(join(output, 'marketplace/index.html'), 'utf8')
     const plugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
@@ -69,6 +74,9 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.ok(release.files['marketplace/standards/index.html'])
     assert.ok(release.files['marketplace/about/deepseek-harness-guide/index.html'])
     assert.ok(release.files['registry/catalog.json'])
+    assert.ok(release.files['registry/catalog-index.json'])
+    assert.ok(release.files['registry/catalog/details/dsh-safe-plugin-manager.json'])
+    assert.equal(release.files['marketplace/catalog.snapshot.json'], undefined)
     assert.equal(release.files['automation-status.json'], undefined, 'run-only status must not rotate production releases')
     assert.equal(automationStatus.overall.status, 'unknown')
     assert.equal(automationStatus.catalog.entries, catalog.entries.length)
@@ -87,7 +95,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
     assert.doesNotMatch(home, /DSH_ALTERNATE_SITE/)
     assert.doesNotMatch(home, /id="catalog-snapshot"/)
-    assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, Math.min(24, catalog.entries.filter(entry => entry.status !== 'unlisted').length))
+    assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, Math.min(20, catalog.entries.filter(entry => entry.status !== 'unlisted').length))
     assert.match(plugins, /name="dsh-catalog-delivery" content="external-json"/)
     assert.match(plugins, /type="application\/json" href="https:\/\/dsh\.store\/registry\/catalog\.json"/)
     assert.match(plugins, /"@type": "SearchAction"/)

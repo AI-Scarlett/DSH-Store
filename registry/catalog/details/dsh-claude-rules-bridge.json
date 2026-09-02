@@ -1,0 +1,165 @@
+{
+  "id": "dsh-claude-rules-bridge",
+  "name": "会话管理（DSH Claude Rules Bridge）",
+  "packageName": "@cnzgray/dsh-claude-rules-bridge",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Bridge Claude Code's .claude/rules/*.md (and *.mdc) path-scoped rules plus the cwd→home CLAUDE.md hierarchy into DeepSeek Harness: always-apply rules at session start, path-scoped rules injected on read/edit/write, plus a /claude-rules command and claude_rules tool.",
+  "searchTerms": [
+    "会话管理",
+    "DSH Claude Rules Bridge",
+    "dsh-claude-rules-bridge",
+    "@cnzgray/dsh-claude-rules-bridge",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "工具能力",
+    "工具",
+    "能力",
+    "dsh",
+    "claude",
+    "rules",
+    "bridge"
+  ],
+  "repositoryUrl": "https://github.com/cnzgray/dsh-plugins",
+  "defaultBranch": "main",
+  "manifestPath": "packages/claude-rules-bridge/package.json",
+  "installPath": "packages/claude-rules-bridge",
+  "updatePolicy": "user-reviewed",
+  "commit": "6e58c156a694d06b5b8c3d9b8cfc59da7ba8f1cf",
+  "version": "0.1.0",
+  "categories": [
+    "tools"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-15T01:17:02.000Z",
+    "observedAt": "2026-08-21T02:40:10.936Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-static-contract-review",
+      "checkedAt": "2026-08-21T02:40:10.936Z",
+      "evidenceUrl": "https://github.com/cnzgray/dsh-plugins/commit/6e58c156a694d06b5b8c3d9b8cfc59da7ba8f1cf",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Public GitHub manifest, Bundle Patch, declared runtime artifacts, license, and fixed commit were read back."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not installed in a disposable DSH profile during this bulk review."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Not started against a disposable rc.8 runtime during this bulk review."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Static source signals and contract boundaries were reviewed; this is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "claude-rules-bridge"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "unknown",
+      "commands": "shell",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "picomatch"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+  }
+}

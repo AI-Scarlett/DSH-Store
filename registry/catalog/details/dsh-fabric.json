@@ -1,0 +1,181 @@
+{
+  "id": "dsh-fabric",
+  "name": "实验功能插件（DSH Fabric）",
+  "packageName": "dsh-fabric",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Fabric-style deterministic compaction, activity, topology, code runtime, mesh, and actor capabilities for DeepSeek Harness",
+  "searchTerms": [
+    "实验功能插件",
+    "DSH Fabric",
+    "dsh-fabric",
+    "实验功能",
+    "新功能",
+    "新锐实验",
+    "dsh",
+    "fabric"
+  ],
+  "repositoryUrl": "https://github.com/monotykamary/dsh-fabric",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "ec63fe041fb9e25a2ff8e30842536fff577086f1",
+  "version": "0.1.11",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-26T12:52:49.000Z",
+    "observedAt": "2026-08-26T13:50:22.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-08-26T13:50:22.000Z",
+      "evidenceUrl": "https://github.com/monotykamary/dsh-fabric/commit/ec63fe041fb9e25a2ff8e30842536fff577086f1",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "code-runtime",
+    "compaction-basic",
+    "tool-result-pruner",
+    "agent-presets",
+    "command-goal",
+    "goal-round-driver",
+    "ui-goal",
+    "tools",
+    "session-query-sqlite",
+    "dsh-fabric-code-runtime",
+    "dsh-fabric-compaction",
+    "dsh-fabric-preset-root",
+    "dsh-fabric-agent-presets",
+    "dsh-fabric-host",
+    "dsh-fabric-mesh",
+    "dsh-fabric-ui"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": "^22.19.0 || >=24.0.0",
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@monotykamary/dsh-agent-presets",
+      "dsh-fabric-client-ui",
+      "dsh-fabric-code-runtime-quickjs",
+      "dsh-fabric-compaction",
+      "dsh-fabric-host",
+      "dsh-fabric-mesh",
+      "dsh-fabric-protocol",
+      "dsh-fabric-schema",
+      "dsh-fabric-system-prompt"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

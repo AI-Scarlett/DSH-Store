@@ -66,7 +66,7 @@ const translations = {
     'workflow.step2.title': '复制固定来源命令', 'workflow.step2.body': '首屏直接给出命令和执行顺序，不需要翻找文档。', 'workflow.step3.title': '重启后进入 DSH Store', 'workflow.step3.body': '在 DSH 内查看并管理，真实结果与测试状态明确区分。',
     'relation.title': 'DSH STORE 与 DeepSeek Harness 如何连接？', 'relation.lead': '这是面向 DeepSeek Harness 的第三方插件发现与管理入口，不是官方插件清单的替代品。',
     'relation.card1.title': '标准 DSH 接入', 'relation.card1.body': '管理器以 Host Plugin 与 Client Bundle 接入 DSH，不修改 DSH 核心，也不遮蔽官方插件清单。',
-    'relation.card2.title': '目录有明确权威源', 'relation.card2.body': '商城运行时信息来自 GitHub registry/catalog.json；安全、权限或兼容性未核实时明确显示未知。',
+    'relation.card2.title': '目录有明确权威源', 'relation.card2.body': '商城先读取 GitHub registry/catalog.json 轻量索引，再按当前页读取 catalog/details/<插件编号>.json；安全、权限或兼容性未核实时明确显示未知。',
     'relation.card3.title': '浏览与变更分离', 'relation.card3.body': '在官网浏览不会改写 Profile。真实安装必须使用 DSH 官方 CLI，并经过计划、确认、备份、检查与回滚。',
     'faq.title': '安装之前，先把边界说清楚。', 'faq.q1': '官网会直接安装插件吗？', 'faq.a1': '不会。官网只负责发现与详情展示；生命周期操作需要在 DSH 内生成计划并确认。',
     'faq.q2': '“可安装”等于完成安全审计吗？', 'faq.a2': '不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。', 'faq.q3': '如何选择适合自己的插件？', 'faq.a3': '先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。',
@@ -77,7 +77,7 @@ const translations = {
     'catalog.failed': '目录加载失败', 'catalog.offline': '本地目录未连接', 'catalog.meta': '显示 {shown} / {total} 个插件',
     'toast.commandCopied': '安装命令已复制', 'toast.copyDenied': '浏览器未允许复制，请手动选择命令', 'toast.commitCopied': 'Commit 已复制',
     'dialog.basic': '基本信息', 'dialog.permissions': '权限画像', 'dialog.review': '审核与兼容性', 'dialog.policy': '商城策略说明：',
-    'dialog.note': '详情来自 GitHub catalog.json 的目录声明与固定 Commit 核验。收录、扫描或审核均不等于完成安全审计；官网不会直接修改你的 DSH Profile。',
+    'dialog.note': '详情来自 GitHub catalog.json 主索引与 catalog/details/<插件编号>.json 的目录声明和固定 Commit 核验。收录、扫描或审核均不等于完成安全审计；官网不会直接修改你的 DSH Profile。',
   },
   en: {
     'meta.title': 'DSH STORE | DeepSeek Harness Plugin Marketplace',
@@ -132,7 +132,7 @@ const translations = {
     'workflow.step2.title': 'Copy the pinned command', 'workflow.step2.body': 'The first screen shows the command and execution order without making you hunt through docs.', 'workflow.step3.title': 'Restart and open DSH Store', 'workflow.step3.body': 'Inspect and manage inside DSH, with runtime results kept distinct from test status.',
     'relation.title': 'How does DSH STORE connect to DeepSeek Harness?', 'relation.lead': 'It is a third-party discovery and management entry point for DeepSeek Harness, not a replacement for the official plugin inventory.',
     'relation.card1.title': 'Standard DSH integration', 'relation.card1.body': 'The manager connects as a Host Plugin and Client Bundle without changing DSH core or hiding the official inventory.',
-    'relation.card2.title': 'One authoritative catalog', 'relation.card2.body': 'Runtime marketplace facts come from GitHub registry/catalog.json. Unverified security, permission, or compatibility facts stay visibly unknown.',
+    'relation.card2.title': 'One authoritative catalog', 'relation.card2.body': 'The storefront reads the lightweight GitHub registry/catalog.json index first, then loads catalog/details/<plugin-id>.json for the current page. Unverified security, permission, or compatibility facts stay visibly unknown.',
     'relation.card3.title': 'Browsing is separate from change', 'relation.card3.body': 'Browsing the site never writes to a Profile. Real installation uses the official DSH CLI with a plan, confirmation, backup, checks, and rollback.',
     'faq.title': 'Make the boundary clear before installing.', 'faq.q1': 'Does the website install plugins directly?', 'faq.a1': 'No. The site is for discovery and details only. Lifecycle actions require a confirmed plan inside DSH.',
     'faq.q2': 'Does “Available” mean security-audited?', 'faq.a2': 'No. It means the entry passes the current fixed-source, standard-bundle, and policy checks.', 'faq.q3': 'How should I choose a plugin?', 'faq.a3': 'Confirm the capability first, then review source, permissions, compatibility, and maintenance. Treat unknown information with caution.',
@@ -143,7 +143,7 @@ const translations = {
     'catalog.failed': 'Catalog load failed', 'catalog.offline': 'Local catalog unavailable', 'catalog.meta': 'Showing {shown} / {total} plugins',
     'toast.commandCopied': 'Install command copied', 'toast.copyDenied': 'Clipboard access was denied. Select the command manually.', 'toast.commitCopied': 'Commit copied',
     'dialog.basic': 'Basic information', 'dialog.permissions': 'Permission profile', 'dialog.review': 'Review and compatibility', 'dialog.policy': 'Marketplace policy: ',
-    'dialog.note': 'Details come from GitHub catalog.json declarations and pinned-commit verification. Listing, scanning, or review is not a complete security audit, and this website never changes your DSH Profile.',
+    'dialog.note': 'Details come from the GitHub catalog.json index, the catalog/details/<plugin-id>.json record, and pinned-commit verification. Listing, scanning, or review is not a complete security audit, and this website never changes your DSH Profile.',
   },
 }
 
@@ -153,7 +153,15 @@ const t = (key, values) => formatText(translations[state?.locale || 'zh']?.[key]
 const state = {
   catalog: null,
   dshReleaseContext: null,
+  indexEntries: [],
   entries: [],
+  pageEntries: [],
+  pageIndexIds: [],
+  pageLoading: false,
+  detailCache: new Map(),
+  detailPromises: new Map(),
+  catalogUrl: null,
+  detailRequestId: 0,
   candidates: [],
   candidateSummary: { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 },
   catalogView: 'trusted',
@@ -161,7 +169,7 @@ const state = {
   category: '',
   sort: 'recommended',
   page: 1,
-  pageSize: 24,
+  pageSize: 20,
   catalogRequestId: 0,
   candidatesLoaded: false,
   candidatesLoading: false,
@@ -455,32 +463,42 @@ function candidateSummaryText() {
   return state.locale === 'en' ? `${reviewable} reviewable · ${rejected} rejected/quarantined` : `${reviewable} 待审 · ${rejected} 已拒绝/隔离`
 }
 
-function visibleEntries() {
+function indexName(entry) {
+  if (entry?.nameZh || entry?.nameEn) return `${entry.nameZh || entry.nameEn}（${entry.nameEn || entry.nameZh}）`
+  return entry?.name || entry?.packageName || entry?.id || 'DSH Plugin'
+}
+
+function indexSearchValues(entry) {
+  return [entry.id, entry.nameZh, entry.nameEn, entry.packageName, entry.version, entry.repositoryUrl,
+    ...(entry.searchTerms || []), ...(entry.categories || [])].map(value => String(value || '').toLowerCase())
+}
+
+function catalogIndexEntries() {
+  return state.indexEntries.length ? state.indexEntries : state.entries
+}
+
+function visibleIndexEntries() {
   const query = state.query.trim().toLowerCase()
-  const entries = state.entries
+  const entries = catalogIndexEntries()
     .filter(entry => entry.status !== 'unlisted')
     .filter(entry => !state.category || entry.categories.includes(state.category))
-    .filter(entry => !query || searchValues(entry).some(value => value.includes(query)))
+    .filter(entry => !query || indexSearchValues(entry).some(value => value.includes(query)))
 
   return entries.sort((a, b) => {
     const locale = state.locale === 'en' ? 'en' : 'zh-CN'
-    const compatibilityRank = entry => {
-      const view = entry.compatibility.dshReleaseViews.find(item => item.latest) || entry.compatibility.dshReleaseViews.at(-1)
-      if (view?.basis === 'catalog' && view.status === 'compatible') return 0
-      if (view?.basis === 'range' && view.rangeStatus === 'compatible') return 1
-      if (!view || view.status === 'unknown') return 2
-      return 3
-    }
-    const freshness = entry => Date.parse(entry.source?.updatedAt || entry.github?.pushedAt || entry.github?.updatedAt || '') || 0
-    if (state.sort === 'name') return a.name.localeCompare(b.name, locale)
-    if (state.sort === 'risk') return (riskOrder[a.details.permissions.level] ?? 3) - (riskOrder[b.details.permissions.level] ?? 3) || a.name.localeCompare(b.name, locale)
-    if (state.sort === 'recent') return compatibilityRank(a) - compatibilityRank(b) || freshness(b) - freshness(a) || a.name.localeCompare(b.name, locale)
-    return Number(b.featured === true) - Number(a.featured === true) || compatibilityRank(a) - compatibilityRank(b) || freshness(b) - freshness(a) || (b.installCount ?? -1) - (a.installCount ?? -1) || String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.name.localeCompare(b.name, locale)
+    if (state.sort === 'name') return String(a.nameZh || a.nameEn).localeCompare(String(b.nameZh || b.nameEn), locale)
+    if (state.sort === 'recent') return String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.order - b.order
+    if (state.sort === 'risk') return a.order - b.order
+    return a.order - b.order || String(a.nameZh || a.nameEn).localeCompare(String(b.nameZh || b.nameEn), locale)
   })
 }
 
+function visibleEntries() {
+  return state.pageEntries.length ? state.pageEntries : state.entries
+}
+
 function renderStats() {
-  const entries = state.entries.filter(entry => entry.status !== 'unlisted')
+  const entries = catalogIndexEntries().filter(entry => entry.status !== 'unlisted')
   const categoryCount = new Set(entries.flatMap(entry => entry.categories)).size
   const setText = (selector, value) => {
     const element = document.querySelector(selector)
@@ -498,14 +516,16 @@ function renderStats() {
 }
 
 function renderManagerMetadata() {
-  const manager = state.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
+  const manager = state.detailCache.get('dsh-safe-plugin-manager') || catalogIndexEntries().find(entry => entry.id === 'dsh-safe-plugin-manager')
   if (!manager) return
-  const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+  const installCommand = manager.commit
+    ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+    : '正在读取管理器详情…'
   const values = {
     '#install-version': `v${manager.version} · SHA PINNED`,
     '#install-command': installCommand,
     '#manager-protocol': `STANDARD BUNDLE / v${manager.version}`,
-    '#manager-commit-short': manager.commit.slice(0, 7),
+    '#manager-commit-short': manager.commit ? manager.commit.slice(0, 7) : 'DETAIL',
   }
   Object.entries(values).forEach(([selector, value]) => {
     const element = document.querySelector(selector)
@@ -515,36 +535,44 @@ function renderManagerMetadata() {
 
 function renderHeroPreview() {
   if (!els.preview) return
-  const featured = state.entries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 3)
-  els.preview.innerHTML = featured.map((entry, index) => `
+  const featured = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 3)
+  els.preview.innerHTML = featured.map((entry, index) => {
+    const name = state.detailCache.get(entry.id)?.name || indexName(entry)
+    return `
     <article class="preview-plugin" style="--plugin-color:${pluginColor(entry.id)}">
-      <span class="preview-icon">${escape(initials(entry.name))}</span>
-      <span><b>${escape(entry.name)}</b><small>${escape(categoryLabel(entry.categories[0] || 'tools'))} · v${escape(entry.version)}</small></span>
+      <span class="preview-icon">${escape(initials(name))}</span>
+      <span><b>${escape(name)}</b><small>${escape(categoryLabel(entry.categories[0] || 'tools'))} · v${escape(entry.version)}</small></span>
       <em>${index === 0 ? 'FEATURED' : 'FIXED'}</em>
-    </article>`).join('')
+    </article>`
+  }).join('')
 }
 
 function renderFeatured() {
   if (!els.featured) return
-  const featured = state.entries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
-  els.featured.innerHTML = featured.map((entry, index) => `
+  const featured = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
+  els.featured.innerHTML = featured.map((entry, index) => {
+    const detail = state.detailCache.get(entry.id)
+    const name = detail?.name || indexName(entry)
+    const description = detail?.description || (state.locale === 'en' ? 'Open details to inspect this plugin.' : '打开详情查看插件信息。')
+    return `
     <article class="featured-card reveal" style="--plugin-color:${pluginColor(entry.id)}">
       <div class="featured-top"><span class="feature-number">PICK / 0${index + 1}</span><span class="dialog-badge">${escape(categoryLabel(entry.categories[0] || 'tools'))}</span></div>
-      <span class="featured-icon" aria-hidden="true"><span>${escape(initials(entry.name))}</span></span>
-      <h3>${escape(entry.name)}</h3>
-      <p>${escape(entry.description)}</p>
+      <span class="featured-icon" aria-hidden="true"><span>${escape(initials(name))}</span></span>
+      <h3>${escape(name)}</h3>
+      <p>${escape(description)}</p>
       <button class="featured-link details-button" type="button" data-details-id="${escape(entry.id)}"><span>${escape(t('action.details'))}</span><i aria-hidden="true">↗</i></button>
-    </article>`).join('')
+    </article>`
+  }).join('')
   observeReveals()
 }
 
 function renderCategories() {
   if (!els.categories) return
   const counts = new Map()
-  state.entries.filter(entry => entry.status !== 'unlisted').forEach(entry => entry.categories.forEach(id => counts.set(id, (counts.get(id) || 0) + 1)))
+  catalogIndexEntries().filter(entry => entry.status !== 'unlisted').forEach(entry => entry.categories.forEach(id => counts.set(id, (counts.get(id) || 0) + 1)))
   const ids = [...counts].sort((a, b) => b[1] - a[1]).map(([id]) => id)
   els.categories.innerHTML = [
-    `<button class="category-pill${state.category ? '' : ' active'}" type="button" data-category="" aria-pressed="${state.category ? 'false' : 'true'}">${escape(t('filter.all'))} <span>${state.entries.filter(entry => entry.status !== 'unlisted').length}</span></button>`,
+    `<button class="category-pill${state.category ? '' : ' active'}" type="button" data-category="" aria-pressed="${state.category ? 'false' : 'true'}">${escape(t('filter.all'))} <span>${catalogIndexEntries().filter(entry => entry.status !== 'unlisted').length}</span></button>`,
     ...ids.map(id => `<button class="category-pill${state.category === id ? ' active' : ''}" type="button" data-category="${escape(id)}" aria-pressed="${state.category === id ? 'true' : 'false'}">${escape(categoryLabel(id))} <span>${counts.get(id)}</span></button>`),
   ].join('')
   if (els.clear) els.clear.hidden = !state.category && !state.query
@@ -606,18 +634,27 @@ function renderCatalog() {
     if (els.pagination) els.pagination.hidden = true
     return
   }
-  const matchingEntries = candidateView ? visibleCandidates() : visibleEntries()
+  if (!candidateView && state.pageLoading) {
+    els.grid.hidden = true
+    els.empty.hidden = true
+    els.meta.textContent = t('catalog.loading')
+    if (els.pagination) els.pagination.hidden = true
+    return
+  }
+  const matchingEntries = candidateView ? visibleCandidates() : visibleIndexEntries()
   const total = matchingEntries.length
   const pageCount = Math.max(1, Math.ceil(total / state.pageSize))
   state.page = Math.min(state.page, pageCount)
   const start = (state.page - 1) * state.pageSize
-  const entries = matchingEntries.slice(start, start + state.pageSize)
+  const entries = candidateView
+    ? matchingEntries.slice(start, start + state.pageSize)
+    : state.pageEntries
   els.grid.innerHTML = entries.map(candidateView ? candidateCardTemplate : cardTemplate).join('')
   els.grid.hidden = entries.length === 0
   els.empty.hidden = entries.length !== 0
   els.meta.innerHTML = candidateView
     ? `<b>${entries.length}</b> / ${matchingEntries.length} · ${escape(candidateSummaryText())} · ${escape(t('candidate.notice'))}`
-    : `${escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
+    : `${state.pageLoading ? escape(t('catalog.loading')) : escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
   if (els.pagination) els.pagination.hidden = total <= state.pageSize
   if (els.previousPage) {
     els.previousPage.disabled = state.page <= 1
@@ -707,7 +744,7 @@ function clearFilters() {
   state.category = ''
   state.page = 1
   if (els.search) els.search.value = ''
-  renderCatalog()
+  refreshTrustedPage()
 }
 
 let toastTimer
@@ -817,7 +854,15 @@ async function loadInstallCounts() {
     if (text.length > 64 * 1024) throw new Error('Official DSH package metadata is too large')
     const payload = JSON.parse(text)
     if (!response.ok || payload.schemaVersion !== 1 || !payload.counts) return
-    state.entries.forEach(entry => {
+    const entries = [
+      ...state.entries,
+      ...state.pageEntries,
+      ...state.detailCache.values(),
+    ]
+    const seen = new Set()
+    entries.forEach(entry => {
+      if (!entry || seen.has(entry.id)) return
+      seen.add(entry.id)
       if (Number.isInteger(payload.counts[entry.id])) entry.installCount = payload.counts[entry.id]
     })
     renderCatalog()
@@ -842,16 +887,203 @@ async function fetchCatalog() {
   const failures = []
   for (const url of catalogCandidates()) {
     try {
-      const response = await fetch(url, { cache: 'no-store' })
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const payload = await response.json()
-      if (!payload || !Array.isArray(payload.entries)) throw new Error('Invalid catalog payload')
-      return payload
+      const readDocument = async (target, maximum) => {
+        const response = await fetch(target, { cache: 'no-store' })
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const declared = Number(response.headers.get('content-length'))
+        if (Number.isFinite(declared) && declared > maximum) throw new Error('catalog response is too large')
+        const text = await response.text()
+        const bytes = new TextEncoder().encode(text)
+        if (bytes.byteLength > maximum) throw new Error('catalog response is too large')
+        return { payload: JSON.parse(text), bytes }
+      }
+      const validateIndex = payload => {
+        if (payload.catalogType !== 'index' || typeof payload.registry.detailsPath !== 'string') {
+          throw new Error('Invalid catalog index payload')
+        }
+        payload.entries.forEach(entry => {
+          for (const field of ['id', 'nameZh', 'nameEn', 'packageName', 'version', 'repositoryUrl', 'detailPath', 'status']) {
+            if (typeof entry?.[field] !== 'string' || entry[field].trim() === '') throw new Error(`Invalid catalog index field: ${field}`)
+          }
+          if (!Number.isInteger(entry.order) || typeof entry.featured !== 'boolean') throw new Error('Invalid catalog index ordering')
+        })
+      }
+      const root = await readDocument(url, 4 * 1024 * 1024)
+      let payload = root.payload
+      if (!payload || !Array.isArray(payload.entries) || !payload.registry) throw new Error('Invalid catalog payload')
+      if (payload.schemaVersion === 2) {
+        if (root.bytes.byteLength > 2 * 1024 * 1024) throw new Error('catalog index is too large')
+        validateIndex(payload)
+      } else if (payload.schemaVersion !== 1) {
+        throw new Error('Unsupported catalog version')
+      }
+      if (payload.schemaVersion === 1 && payload.registry.indexPath) {
+        const metadata = payload.registry
+        if (!/^[A-Za-z0-9._/-]+$/.test(metadata.indexPath) || metadata.indexPath.startsWith('/')
+          || metadata.indexPath.includes('..') || metadata.indexPath.includes('\\')) {
+          throw new Error('Invalid Catalog bridge index path')
+        }
+        if (!/^[0-9a-f]{64}$/.test(metadata.indexSha256 ?? '')
+          || !Number.isInteger(metadata.indexBytes) || metadata.indexBytes < 1 || metadata.indexBytes > 2 * 1024 * 1024
+          || !Number.isInteger(metadata.indexEntryCount) || metadata.indexEntryCount < 1) {
+          throw new Error('Invalid Catalog bridge integrity metadata')
+        }
+        const indexUrl = new URL(metadata.indexPath, url).href
+        const indexDocument = await readDocument(indexUrl, 2 * 1024 * 1024)
+        if (indexDocument.bytes.byteLength !== metadata.indexBytes) throw new Error('Catalog bridge index byte length does not match')
+        if (!globalThis.crypto?.subtle) throw new Error('Catalog bridge integrity verification is unavailable')
+        const digest = [...new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', indexDocument.bytes))]
+          .map(value => value.toString(16).padStart(2, '0')).join('')
+        if (digest !== metadata.indexSha256) throw new Error('Catalog bridge index SHA-256 does not match')
+        payload = indexDocument.payload
+        if (!payload || payload.schemaVersion !== 2 || !Array.isArray(payload.entries) || !payload.registry) {
+          throw new Error('Invalid Catalog bridge index payload')
+        }
+        validateIndex(payload)
+        if (payload.entries.length !== metadata.indexEntryCount
+          || payload.registry.updatedAt !== metadata.updatedAt
+          || payload.registry.repositoryUrl !== metadata.repositoryUrl) {
+          throw new Error('Catalog bridge metadata does not match the index')
+        }
+        const bootstrap = root.payload.entries[0]
+        const indexed = payload.entries.find(entry => entry.id === bootstrap?.id)
+        for (const field of ['id', 'packageName', 'version', 'repositoryUrl', 'status']) {
+          if (!indexed || indexed[field] !== bootstrap[field]) throw new Error(`Catalog bridge ${field} does not match the index`)
+        }
+        if (indexed.featured !== bootstrap.featured) throw new Error('Catalog bridge featured flag does not match the index')
+        return { payload, url: indexUrl, bridgeUrl: url }
+      }
+      return { payload, url, bridgeUrl: null }
     } catch (error) {
       failures.push(`${url}: ${error.message}`)
     }
   }
   throw new Error(failures.join(' | '))
+}
+
+function catalogDetailUrls(indexEntry) {
+  if (!state.catalogUrl || !indexEntry?.detailPath) return []
+  return [...new Set([
+    new URL(indexEntry.detailPath, state.catalogUrl).href,
+    new URL(`/registry/${indexEntry.detailPath}`, window.location.origin).href,
+  ])]
+}
+
+async function fetchCatalogDetail(indexEntry) {
+  if (state.detailCache.has(indexEntry.id)) return state.detailCache.get(indexEntry.id)
+  if (state.detailPromises.has(indexEntry.id)) return state.detailPromises.get(indexEntry.id)
+  const promise = (async () => {
+  // A legacy v1 response is already hydrated. This branch lets an older
+  // mirror remain readable while the v2 index rolls out across both sites.
+  if (indexEntry.details && indexEntry.compatibility) {
+    state.detailCache.set(indexEntry.id, indexEntry)
+    return indexEntry
+  }
+  const failures = []
+  for (const url of catalogDetailUrls(indexEntry)) {
+    try {
+      const response = await fetch(url, { cache: 'no-store' })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const length = Number(response.headers.get('content-length'))
+      if (Number.isFinite(length) && length > 512 * 1024) throw new Error('catalog detail is too large')
+      const text = await response.text()
+      if (new TextEncoder().encode(text).byteLength > 512 * 1024) throw new Error('catalog detail is too large')
+      const detail = await Promise.resolve(JSON.parse(text))
+      for (const field of ['id', 'version', 'repositoryUrl']) {
+        if (detail?.[field] !== indexEntry[field]) throw new Error(`detail ${field} does not match the index`)
+      }
+      if (detail?.packageName !== indexEntry.packageName || detail?.status !== indexEntry.status) throw new Error('detail identity does not match the index')
+      if (detail?.featured !== indexEntry.featured) throw new Error('detail recommendation flag does not match the index')
+      state.detailCache.set(indexEntry.id, detail)
+      return detail
+    } catch (error) {
+      failures.push(`${url}: ${error.message}`)
+    }
+  }
+  throw new Error(failures.join(' | '))
+  })()
+  state.detailPromises.set(indexEntry.id, promise)
+  try {
+    return await promise
+  } finally {
+    if (state.detailPromises.get(indexEntry.id) === promise) state.detailPromises.delete(indexEntry.id)
+  }
+}
+
+async function mapDetails(entries) {
+  const results = new Array(entries.length)
+  let next = 0
+  const worker = async () => {
+    while (next < entries.length) {
+      const index = next++
+      results[index] = await fetchCatalogDetail(entries[index])
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(6, entries.length) }, worker))
+  return results
+}
+
+async function loadCurrentPageDetails() {
+  if (!state.catalog || state.catalogView === 'candidates') return
+  const matching = visibleIndexEntries()
+  const pageCount = Math.max(1, Math.ceil(matching.length / state.pageSize))
+  state.page = Math.min(state.page, pageCount)
+  const pageEntries = matching.slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
+  state.pageIndexIds = pageEntries.map(entry => entry.id)
+  state.pageLoading = true
+  state.pageEntries = []
+  renderCatalog()
+  const requestId = ++state.detailRequestId
+  try {
+    const details = await mapDetails(pageEntries)
+    if (requestId !== state.detailRequestId) return
+    state.pageEntries = details.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+  } catch (error) {
+    if (requestId === state.detailRequestId) {
+      console.error('Failed to load marketplace detail records:', error)
+      if (els.meta) els.meta.textContent = t('catalog.failed')
+    }
+  } finally {
+    if (requestId === state.detailRequestId) {
+      state.pageLoading = false
+      renderCatalog()
+      renderManagerMetadata()
+      renderHeroPreview()
+      renderFeatured()
+    }
+  }
+}
+
+function rehydrateLoadedDetails() {
+  if (!state.dshReleaseContext) return
+  if (state.indexEntries.length > 0) {
+    state.pageEntries = state.pageIndexIds
+      .map(id => state.detailCache.get(id))
+      .filter(Boolean)
+      .map(entry => normalizeEntry(entry, state.dshReleaseContext))
+    return
+  }
+  state.entries = state.entries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+  state.pageEntries = state.pageIndexIds.length
+    ? state.pageIndexIds.map(id => state.entries.find(entry => entry.id === id)).filter(Boolean)
+    : state.pageEntries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+}
+
+function refreshTrustedPage() {
+  renderCatalog()
+  if (state.catalogView === 'trusted' && state.catalog) void loadCurrentPageDetails()
+}
+
+async function loadFeaturedDetails() {
+  const entries = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
+  try {
+    await mapDetails(entries)
+    renderManagerMetadata()
+    renderHeroPreview()
+    renderFeatured()
+  } catch (error) {
+    console.warn('Some featured catalog details are unavailable:', error)
+  }
 }
 
 async function fetchLatestDshVersion() {
@@ -918,9 +1150,19 @@ async function loadCatalog() {
   const requestId = ++state.catalogRequestId
   const latestPromise = fetchLatestDshVersion()
   try {
-    state.catalog = await fetchCatalog()
-    state.dshReleaseContext = createDshReleaseContext(state.catalog.entries, null)
-    state.entries = state.catalog.entries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+    const result = await fetchCatalog()
+    state.catalog = result.payload
+    state.catalogUrl = result.url
+    state.detailCache.clear()
+    state.detailPromises.clear()
+    state.indexEntries = state.catalog.schemaVersion === 2 ? state.catalog.entries : []
+    state.dshReleaseContext = createDshReleaseContext(state.indexEntries, null)
+    state.entries = state.indexEntries.length
+      ? []
+      : state.catalog.entries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+    state.pageEntries = []
+    state.pageIndexIds = []
+    state.pageLoading = state.indexEntries.length > 0
     state.candidates = []
     state.candidateSummary = { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 }
     state.candidatesLoaded = false
@@ -931,11 +1173,18 @@ async function loadCatalog() {
     renderFeatured()
     renderCatalog()
     loadInstallCounts()
+    if (state.indexEntries.length > 0) {
+      void loadCurrentPageDetails()
+      void loadFeaturedDetails()
+    } else {
+      refreshTrustedPage()
+    }
     if (state.catalogView === 'candidates') void loadCandidates()
     void latestPromise.then(latestResult => {
       if (!state.catalog || requestId !== state.catalogRequestId) return
-      state.dshReleaseContext = createDshReleaseContext(state.catalog.entries, latestResult)
-      state.entries = state.catalog.entries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+      state.dshReleaseContext = createDshReleaseContext(state.indexEntries.length ? state.indexEntries : state.catalog.entries, latestResult)
+      if (state.indexEntries.length === 0) state.entries = state.catalog.entries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+      else rehydrateLoadedDetails()
       renderStats()
       renderHeroPreview()
       renderFeatured()
@@ -1057,7 +1306,7 @@ async function init() {
 els.search?.addEventListener('input', event => {
   state.query = event.currentTarget.value
   state.page = 1
-  renderCatalog()
+  refreshTrustedPage()
   clearTimeout(state.searchEventTimer)
   if (state.query.trim()) {
     state.searchEventTimer = setTimeout(() => {
@@ -1071,7 +1320,7 @@ els.search?.addEventListener('input', event => {
 els.sort?.addEventListener('change', event => {
   state.sort = event.currentTarget.value
   state.page = 1
-  renderCatalog()
+  refreshTrustedPage()
   sendDshEvent('catalog_sort', { item: state.sort })
 })
 els.viewTabs?.addEventListener('click', event => {
@@ -1081,7 +1330,7 @@ els.viewTabs?.addEventListener('click', event => {
   state.category = ''
   state.page = 1
   els.viewTabs.querySelectorAll('[data-catalog-view]').forEach(item => item.setAttribute('aria-pressed', String(item === button)))
-  renderCatalog()
+  refreshTrustedPage()
   if (state.catalogView === 'candidates') void loadCandidates()
   sendDshEvent('catalog_view', { item: state.catalogView })
 })
@@ -1090,7 +1339,7 @@ els.categories?.addEventListener('click', event => {
   if (!button) return
   state.category = button.dataset.category
   state.page = 1
-  renderCatalog()
+  refreshTrustedPage()
   sendDshEvent('catalog_category', { item: state.category || 'all' })
 })
 els.clear?.addEventListener('click', clearFilters)
@@ -1099,7 +1348,7 @@ els.retry?.addEventListener('click', loadCatalog)
 function changePage(page) {
   if (!Number.isInteger(page) || page < 1 || page === state.page) return
   state.page = page
-  renderCatalog()
+  refreshTrustedPage()
   els.grid?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   sendDshEvent('catalog_page', { value: String(state.page) })
 }
@@ -1131,11 +1380,26 @@ document.addEventListener('click', async event => {
 document.addEventListener('click', event => {
   const detailsButton = event.target.closest('[data-details-id]')
   if (!detailsButton) return
-  const entry = state.entries.find(item => item.id === detailsButton.dataset.detailsId)
-  if (entry) {
-    showDetails(entry)
-    sendDshEvent('plugin_detail', { item: entry.id })
+  const id = detailsButton.dataset.detailsId
+  const indexEntry = catalogIndexEntries().find(item => item.id === id)
+  const loaded = state.pageEntries.find(item => item.id === id)
+    || state.entries.find(item => item.id === id)
+    || state.detailCache.get(id)
+  if (loaded) {
+    showDetails(loaded.details ? loaded : normalizeEntry(loaded, state.dshReleaseContext))
+    sendDshEvent('plugin_detail', { item: id })
+    return
   }
+  if (!indexEntry) return
+  detailsButton.disabled = true
+  void fetchCatalogDetail(indexEntry)
+    .then(detail => showDetails(normalizeEntry(detail, state.dshReleaseContext)))
+    .then(() => sendDshEvent('plugin_detail', { item: id }))
+    .catch(error => {
+      console.error('Failed to load marketplace detail record:', error)
+      showToast(t('catalog.failed'))
+    })
+    .finally(() => { detailsButton.disabled = false })
 })
 document.querySelector('.locale-switch')?.addEventListener('click', event => {
   const button = event.target.closest('[data-locale]')

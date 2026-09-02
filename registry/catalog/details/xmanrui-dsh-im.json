@@ -1,0 +1,172 @@
+{
+  "id": "xmanrui-dsh-im",
+  "name": "多平台 IM 机器人桥接（DSH IM）",
+  "packageName": "@xmanrui/dsh-im",
+  "description": "通过二维码或机器人凭据将 IM 机器人接入 DeepSeek Harness，支持飞书、微信、钉钉、企业微信、QQ、Slack、Telegram、Discord 和 WhatsApp，并提供实验性的 AI Office 连接器。",
+  "searchTerms": [
+    "多平台 IM 机器人桥接",
+    "DSH IM",
+    "xmanrui-dsh-im",
+    "@xmanrui/dsh-im",
+    "任务完成",
+    "通知",
+    "提醒",
+    "消息推送",
+    "通知与集成",
+    "消息",
+    "dsh",
+    "im"
+  ],
+  "repositoryUrl": "https://github.com/xmanrui/dsh-im",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "832bd539a2bca2518cbf575d9b61606f868290e4",
+  "version": "0.14.0",
+  "categories": [
+    "notifications"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-20T20:23:51.000Z",
+    "observedAt": "2026-08-21T01:00:19.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "fixed-github-commit-review",
+      "checkedAt": "2026-08-21T01:00:19.000Z",
+      "evidenceUrl": "https://github.com/xmanrui/dsh-im/commit/832bd539a2bca2518cbf575d9b61606f868290e4",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Repository identity, manifest, patch, runtime artifacts and license were inspected at the pinned commit."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The pinned source contains declared runtime artifacts, but no third-party installation was executed."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No disposable DSH rc.5 through rc.8 runtime matrix was executed."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Manual static review is recorded; this is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "xmanrui-dsh-im"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.19",
+    "systems": [
+      "macOS",
+      "Linux",
+      "Windows"
+    ],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "shell",
+      "credentials": [
+        "api-key",
+        "oauth",
+        "keychain"
+      ]
+    },
+    "externalDependencies": [
+      "第三方网络服务（插件可访问任意网络端点）",
+      "主机命令与插件声明的外部 CLI",
+      "用户配置的外部服务凭据"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "requested-fixed-commit-manual-static-review-no-third-party-execution-runtime-or-independent-security-audit"
+  }
+}
