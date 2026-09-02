@@ -120,6 +120,12 @@ test('static marketplace derives manager identity and catalog cards without muta
     for (const bot of ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended']) {
       assert.match(robots, new RegExp(`User-agent: ${bot}\\nAllow: /`))
     }
+    for (const bot of [
+      'Bytespider', 'KimiBot', 'Kimi-User', 'Kimi-SearchBot', 'DeepSeekBot',
+      'YuanBaoBot', 'ChatGLM-Spider', 'MiniMaxBot', 'PetalBot', 'Baiduspider',
+    ]) {
+      assert.match(robots, new RegExp(`User-agent: ${bot}\\nAllow: /\\nDisallow: /_analytics/\\nDisallow: /_events/`))
+    }
     assert.ok(markdown.length > 200, 'clean homepage Markdown must exceed 200 characters')
     assert.match(markdown, /第三方插件商城/)
     assert.match(markdown, /固定的完整 Git Commit/)
@@ -188,6 +194,12 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)
     for (const bot of ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended']) {
       assert.match(robots, new RegExp(`User-agent: ${bot}\\nAllow: /`))
+    }
+    for (const bot of [
+      'Bytespider', 'KimiBot', 'Kimi-User', 'Kimi-SearchBot', 'DeepSeekBot',
+      'YuanBaoBot', 'ChatGLM-Spider', 'MiniMaxBot', 'PetalBot', 'Baiduspider',
+    ]) {
+      assert.match(robots, new RegExp(`User-agent: ${bot}\\nAllow: /\\nDisallow: /_analytics/\\nDisallow: /_events/`))
     }
     assert.ok(markdown.length > 200, 'domestic clean homepage Markdown must exceed 200 characters')
     assert.match(markdown, /第三方插件商城/)

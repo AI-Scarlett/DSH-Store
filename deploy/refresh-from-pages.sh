@@ -135,7 +135,11 @@ if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entrie
     raise SystemExit('public Candidate Registry is invalid or empty')
 if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True, 'unknownIsNotVerified': True}:
     raise SystemExit('public Candidate Registry trust boundary is invalid')
-for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
+for bot in (
+    'GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended',
+    'Bytespider', 'KimiBot', 'Kimi-User', 'Kimi-SearchBot', 'DeepSeekBot',
+    'YuanBaoBot', 'ChatGLM-Spider', 'MiniMaxBot', 'PetalBot', 'Baiduspider',
+):
     if f'User-agent: {bot}\nAllow: /' not in robots:
         raise SystemExit(f'public robots policy is missing an explicit Allow rule for {bot}')
 if len(markdown) <= 200 or '第三方插件商城' not in markdown:
