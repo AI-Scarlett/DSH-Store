@@ -18,6 +18,7 @@ test('GitHub enrichment skips non-approved sources that are intentionally unavai
   const builder = await readFile(new URL('scripts/build-marketplace-static.mjs', root), 'utf8')
   assert.match(builder, /mapLimit\(snapshot\.entries\.filter\(entry => entry\.status === 'approved'\), 5/)
   assert.match(builder, /evidenceStatus \|\| entry\.assurance\?\.installability\?\.status/)
+  assert.match(builder, /pnpm --config\.ignore-scripts=true dlx/)
 })
 
 test('static marketplace derives manager identity and catalog cards without mutating the authority file', async () => {
@@ -51,6 +52,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     const about = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const guide = await readFile(join(output, 'marketplace/dsh-plugins/index.html'), 'utf8')
     const faq = await readFile(join(output, 'marketplace/faq/index.html'), 'utf8')
+    const repair = await readFile(join(output, 'marketplace/repair/index.html'), 'utf8')
+    const repairManifest = JSON.parse(await readFile(join(output, 'marketplace/repair/repair-manifest.json'), 'utf8'))
     const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')
     const markdown = await readFile(join(output, 'marketplace/index.md'), 'utf8')
     const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
@@ -73,6 +76,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.ok(release.files['marketplace/plugins/index.html'])
     assert.ok(release.files['marketplace/standards/index.html'])
     assert.ok(release.files['marketplace/about/deepseek-harness-guide/index.html'])
+    assert.ok(release.files['marketplace/repair/index.html'])
+    assert.ok(release.files['marketplace/repair/repair-manifest.json'])
     assert.ok(release.files['registry/catalog.json'])
     assert.ok(release.files['registry/catalog-index.json'])
     assert.ok(release.files['registry/catalog/details/dsh-safe-plugin-manager.json'])
@@ -146,6 +151,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(sitemap, /https:\/\/dsh\.store\/dsh-plugins\//)
     assert.match(sitemap, /https:\/\/dsh\.store\/standards\//)
     assert.match(sitemap, /https:\/\/dsh\.store\/about\/deepseek-harness-guide\//)
+    assert.match(sitemap, /https:\/\/dsh\.store\/repair\//)
     assert.doesNotMatch(sitemap, /dsh-store-guide/)
     assert.match(sitemap, /xmlns:mobile="http:\/\/www\.baidu\.com\/schemas\/sitemap-mobile\/1\//)
     assert.match(sitemap, /<mobile:mobile type="pc,mobile" \/>/)
@@ -153,6 +159,13 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
     assert.match(styles, /\.site-nav a \{[\s\S]*font-size: 12px;/)
     assert.match(styles, /\.footer-bottom \{[\s\S]*font-size: 11px;/)
+    assert.match(repair, /data-repair-state="catalog-pending"/)
+    assert.match(repair, /ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED/)
+    assert.doesNotMatch(repair, /pnpm dlx 'git\+https:\/\/github\.com\/AI-Scarlett\/DSH-Store\.git#/)
+    assert.equal(repairManifest.status, 'catalog-pending')
+    assert.equal(repairManifest.repairTool, null)
+    assert.equal(repairManifest.target.version, manager.version)
+    assert.equal(repairManifest.target.commit, manager.commit)
   } finally {
     await rm(output, { recursive: true, force: true })
   }
@@ -179,6 +192,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       'marketplace/build/index.html',
       'marketplace/faq/index.html',
       'marketplace/about/index.html',
+      'marketplace/repair/index.html',
       'marketplace/dsh-plugins/index.html',
     ]
     for (const pagePath of pagePaths) {
@@ -215,6 +229,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.match(sitemap, /https:\/\/dsh-store\.cn\/dsh-plugins\//)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\/standards\//)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\/about\/deepseek-harness-guide\//)
+    assert.match(sitemap, /https:\/\/dsh-store\.cn\/repair\//)
     assert.match(sitemap, /https:\/\/dsh-store\.cn\/dsh-store-guide\//)
     assert.doesNotMatch(sitemap, /https:\/\/dsh\.store/)
     assert.match(domesticAbout, /href="\.\/deepseek-harness-guide\/"/)

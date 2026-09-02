@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import {
   assertLegacyCatalogCompatibility, validateCatalog, validateCatalogBridgeIndex,
-  validateCatalogDetail, validateCatalogIndex,
+  compareVersions, validateCatalogDetail, validateCatalogIndex,
 } from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
@@ -141,6 +141,7 @@ const report = {
   candidateAuthority: null,
   surfaces: [],
   candidateSurfaces: [],
+  repairSurfaces: [],
   pages: null,
   failures: [],
 }
@@ -179,6 +180,44 @@ for (const url of candidateUrls) {
   }
 }
 
+const repairUrls = policy.publication.publicRepairUrls
+if (!Array.isArray(repairUrls) || repairUrls.length < 3) {
+  report.failures.push('automation policy must declare Pages and both production repair surfaces')
+} else {
+  const manager = report.authority?.manager
+  const expectedActive = manager && compareVersions(manager.version, '0.8.10') >= 0
+  for (const url of repairUrls) {
+    try {
+      const [html, manifestText] = await Promise.all([
+        fetchText(url, 512 * 1024),
+        fetchText(new URL('./repair-manifest.json', url).href, 128 * 1024),
+      ])
+      const manifest = JSON.parse(manifestText)
+      const expectedState = expectedActive ? 'active' : 'catalog-pending'
+      const stateMatches = html.includes(`data-repair-state="${expectedState}"`) && manifest?.status === expectedState
+      const identityMatches = !expectedActive || (
+        manifest?.target?.version === manager.version
+        && manifest?.target?.commit === manager.commit
+        && manifest?.lifecyclePolicy === 'ignore-all-scripts'
+        && manifest?.requiresInteractiveConfirmation === true
+        && String(manifest?.repairTool?.command ?? '').includes(manager.commit)
+        && String(manifest?.repairTool?.command ?? '').includes('--target-version')
+        && html.includes(manager.commit)
+      )
+      const surface = {
+        url, status: stateMatches && identityMatches ? 'passed' : 'failed',
+        repairState: manifest?.status ?? null, targetVersion: manifest?.target?.version ?? null,
+        targetCommit: manifest?.target?.commit ?? null,
+      }
+      if (surface.status !== 'passed') report.failures.push(`${url} repair surface does not match the Catalog manager identity`)
+      report.repairSurfaces.push(surface)
+    } catch (error) {
+      report.failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`)
+      report.repairSurfaces.push({ url, status: 'failed' })
+    }
+  }
+}
+
 try {
   const repository = policy.publication.repository
   const [commitText, manifestText] = await Promise.all([
@@ -197,5 +236,5 @@ try {
 
 if (report.failures.length > 0) report.status = 'failed'
 if (options.report) await atomicReport(options.report, report)
-process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} catalogs=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} candidates=${report.candidateSurfaces.filter(item => item.status === 'passed').length}/${candidateUrls.length} failures=${report.failures.length}\n`)
+process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} catalogs=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} candidates=${report.candidateSurfaces.filter(item => item.status === 'passed').length}/${candidateUrls.length} repairs=${report.repairSurfaces.filter(item => item.status === 'passed').length}/${repairUrls?.length ?? 0} failures=${report.failures.length}\n`)
 if (report.status !== 'passed') process.exitCode = 1

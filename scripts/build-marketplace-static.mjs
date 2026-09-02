@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { compareCatalogEntries, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
+import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { buildAutomationStatus } from '../src/automation-status.mjs'
 
@@ -293,6 +293,10 @@ const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="extern
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+const repairVersionComparison = compareVersions(manager.version, '0.8.10')
+const repairAvailable = repairVersionComparison !== null && repairVersionComparison >= 0
+const repairPackageSpecifier = `git+${manager.repositoryUrl}.git#${manager.commit}`
+const repairCommand = `pnpm --config.ignore-scripts=true dlx '${repairPackageSpecifier}' --profile web --target-version ${manager.version} --target-commit ${manager.commit}`
 const approvedCount = visibleEntries.filter(entry => entry.status === 'approved').length
 const staticCatalogEntries = visibleEntries.slice(0, MARKET_PAGE_SIZE)
 const catalogItemList = {
@@ -362,6 +366,7 @@ const canonicalPages = [
   { file: 'marketplace/build/index.html', route: '/build/' },
   { file: 'marketplace/faq/index.html', route: '/faq/' },
   { file: 'marketplace/about/index.html', route: '/about/' },
+  { file: 'marketplace/repair/index.html', route: '/repair/' },
   {
     file: 'marketplace/about/deepseek-harness-guide/index.html',
     route: '/about/deepseek-harness-guide/',
@@ -389,8 +394,8 @@ const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
-const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
+const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
 if (isDomestic) {
   sitemapPriority['/dsh-store-guide/'] = '0.8'
   sitemapChangefreq['/dsh-store-guide/'] = 'monthly'
@@ -425,6 +430,9 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
 home = replaceRequired(home, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'home external catalog marker')
+home = replaceRequired(home, '<!-- DSH_LEGACY_REPAIR_BANNER -->', repairAvailable
+  ? `<aside class="legacy-repair-banner" aria-label="旧版商城安全修复"><strong>旧版商城更新被 pnpm 拦截？</strong><span>不要放开 prepare 权限，也不要手改 Profile。</span><a href="./repair/">打开官方安全修复入口 →</a></aside>`
+  : '', 'home legacy repair banner')
 home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_FEATURED_BEGIN -->', '<!-- DSH_STATIC_FEATURED_END -->', featured.map(featuredCard).join(''), 'featured catalog')
 home = home.replace(/"softwareVersion"\s*:\s*"[^"]*"/, `"softwareVersion": "${htmlEscape(manager.version)}"`)
 home = replaceElementText(home, 'install-version', `v${manager.version} · SHA PINNED`)
@@ -437,6 +445,24 @@ home = replaceElementText(home, 'stat-categories', String(categoryCount).padStar
 home = replaceElementText(home, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
 home = replaceElementText(home, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
 await writeFile(resolve(outputRoot, 'marketplace/index.html'), home)
+
+const repairPagePath = resolve(outputRoot, 'marketplace/repair/index.html')
+let repairPage = await readFile(repairPagePath, 'utf8')
+repairPage = repairPage.replace('data-repair-state="catalog-pending"', `data-repair-state="${repairAvailable ? 'active' : 'catalog-pending'}"`)
+repairPage = replaceRequired(repairPage, 'DSH_REPAIR_COMMAND', htmlEscape(repairAvailable ? repairCommand : 'Catalog pin pending'), 'repair command')
+await writeFile(repairPagePath, repairPage)
+await writeFile(resolve(outputRoot, 'marketplace/repair/repair-manifest.json'), JSON.stringify({
+  schemaVersion: 1,
+  status: repairAvailable ? 'active' : 'catalog-pending',
+  errorCode: 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED',
+  affected: { minimumVersion: '0.8.5', versionsBelow: manager.version },
+  target: { packageName: manager.packageName, version: manager.version, repositoryUrl: manager.repositoryUrl, commit: manager.commit },
+  repairTool: repairAvailable ? { packageSpecifier: repairPackageSpecifier, command: repairCommand } : null,
+  lifecyclePolicy: 'ignore-all-scripts',
+  requiresInteractiveConfirmation: true,
+  profileMutation: 'official-dsh-cli-only',
+  generatedAt,
+}, null, 2) + '\n')
 
 let plugins = await readFile(resolve(outputRoot, 'marketplace/plugins/index.html'), 'utf8')
 plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'plugins external catalog marker')

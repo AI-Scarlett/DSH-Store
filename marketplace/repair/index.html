@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="applicable-device" content="pc,mobile">
+  <!-- DSH_BAIDU_VERIFICATION -->
+  <meta name="description" content="DSH STORE official recovery entry for historical marketplace users blocked by ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED. DSH 插件商城历史版本安全修复入口。">
+  <meta name="robots" content="index,follow,max-snippet:-1">
+  <meta name="theme-color" content="#f6f9ff">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="DSH STORE Official Safe Repair | 官方安全修复">
+  <meta property="og:description" content="A fixed-Commit, no-lifecycle-script recovery path for historical DSH STORE users.">
+  <meta property="og:url" content="https://dsh.store/repair/">
+  <title>DSH STORE Official Safe Repair | 官方安全修复</title>
+  <link rel="canonical" href="https://dsh.store/repair/">
+  <!-- DSH_HREFLANG -->
+  <link rel="icon" type="image/png" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="./repair.js"></script>
+</head>
+<body class="info-page repair-page" data-repair-state="catalog-pending">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <div class="tech-grid" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="DSH STORE 首页">
+      <span class="brand-wordmark-frame"><img src="../dsh-store-wordmark.png" alt="DSH STORE"></span>
+    </a>
+    <nav class="site-nav" aria-label="主要导航">
+      <a href="../plugins/">插件目录</a>
+      <a href="../standards/">收录标准</a>
+      <a href="../build/">开发插件</a>
+      <a href="./" aria-current="page">安全修复</a>
+      <!-- DSH_ALTERNATE_SITE -->
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="info-hero section-shell">
+      <span class="eyebrow">OFFICIAL LEGACY RECOVERY / 官方历史版本修复</span>
+      <h1>旧商城更新失败时，<br>不要放开第三方构建权限。</h1>
+      <p class="hero-copy">本入口只处理 <code>ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED</code>。修复器固定到 Catalog 审核过的完整 Commit，先展示计划并备份，再通过官方 DSH CLI 禁止全部生命周期脚本更新；失败时恢复 Profile。</p>
+      <p class="hero-copy seo-guide-en">This recovery path is only for historical DSH STORE installations blocked by pnpm's Git prepare policy. It never enables third-party lifecycle scripts or edits DeepSeek Harness itself.</p>
+    </section>
+
+    <section class="section-shell repair-status-panel" aria-labelledby="repair-status-title">
+      <div class="section-heading">
+        <span>CATALOG-BOUND STATUS</span>
+        <h2 id="repair-status-title">修复入口状态</h2>
+      </div>
+      <div id="repair-active" class="repair-state-card" hidden>
+        <span class="status-tag">可用 · 固定来源</span>
+        <h3>复制官方命令，在终端中执行</h3>
+        <p>命令中的修复器与目标商城使用同一个完整 Git Commit。不要把 Commit 改成 <code>main</code>，也不要添加 <code>--allow-build</code>。</p>
+        <pre class="repair-command-shell"><code id="repair-command">DSH_REPAIR_COMMAND</code></pre>
+        <div class="hero-actions">
+          <button id="copy-repair-command" class="button button-primary" type="button">复制官方安全修复命令</button>
+          <a class="button button-secondary" href="./repair-manifest.json">查看机器可读修复清单</a>
+        </div>
+        <p id="copy-status" class="muted" role="status" aria-live="polite"></p>
+      </div>
+      <div id="repair-pending" class="repair-state-card">
+        <span class="status-tag blocked">尚未启用</span>
+        <h3>Catalog 尚未固定到包含修复器的商城版本</h3>
+        <p>当前页面不会生成浮动或未经 Catalog 固定的命令。请等待页面显示“可用 · 固定来源”；不要执行聊天、帖子或 Issue 中未经核验的替代命令。</p>
+      </div>
+    </section>
+
+    <section class="section-shell info-grid" aria-label="修复流程">
+      <article class="info-card"><span>01 / DISCOVER</span><h2>用户如何知道</h2><p>旧版商城继续读取轻量兼容 Catalog。置顶商城卡片会直接显示错误码和本页面地址；官网、GitHub README 与自动更新状态使用同一固定入口。</p></article>
+      <article class="info-card"><span>02 / PLAN</span><h2>先预览再确认</h2><p>修复器读取商城版本、固定来源、Profile 前置哈希和 Guardian 状态，只显示包名、版本、脚本名与修改范围，不回传 Profile 内容或环境变量。</p></article>
+      <article class="info-card"><span>03 / APPLY</span><h2>不执行生命周期脚本</h2><p>只有输入终端里生成的完整确认语后，才会备份并调用官方 <code>dsh plugin</code>。更新参数固定包含 <code>--ignore-scripts</code>。</p></article>
+      <article class="info-card"><span>04 / VERIFY</span><h2>验收或回滚</h2><p>先运行配置合成检查。Guardian 可用时再请求重启并等待新的 Boot ID 稳定；命令、配置或冷启动失败都会保留事务记录并进入回滚。</p></article>
+    </section>
+
+    <section class="section-shell repair-warning" aria-labelledby="repair-boundary-title">
+      <h2 id="repair-boundary-title">安全边界</h2>
+      <ul>
+        <li>不会修改 DSH 源码或任何 <code>@deepseek-ai/*</code> 官方包。</li>
+        <li>不会让用户手改 <code>package.json</code>、锁文件或逐个迁移插件。</li>
+        <li>不会执行 <code>preinstall</code>、<code>install</code>、<code>postinstall</code> 或 <code>prepare</code>。</li>
+        <li>非交互终端、浮动 Commit、来源不一致、Profile 并发变化或缺少官方 CLI 时均拒绝执行。</li>
+        <li>没有 Guardian 时只完成包与配置检查，并明确标记“等待用户安全重启”，不会冒充运行验收成功。</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom"><span>DSH STORE · Official recovery surface · <a href="https://tracefence.com/" target="_blank" rel="noreferrer">TraceFence</a></span><span><!-- DSH_ICP --></span></div>
+  </footer>
+</body>
+</html>
