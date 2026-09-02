@@ -146,18 +146,35 @@ export function handleMarketRequest(req, res, options = {}) {
         view, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
         page: body.page, pageSize: body.pageSize, inventory,
       })
-      const details = await options.catalogService.loadDetails(selection.entries.map(entry => entry.id), { index: catalogIndex })
-      const snapshot = buildMarketplaceSnapshot({ ...catalogIndex, schemaVersion: 1, entries: details }, inventory, '', {
-        managedPackages, candidateRegistry, dshVersion, catalogPackageNames: catalogIndex.entries.map(entry => entry.packageName),
-      })
-      const byId = new Map(snapshot.entries.map(entry => [entry.id, entry]))
-      return {
-        ...snapshot,
-        entries: selection.entries.map(entry => byId.get(entry.id)).filter(Boolean),
-        candidates: [],
-        catalogPackageNames: catalogIndex.entries.map(entry => entry.packageName),
-        filters: { categoryIds: selection.categoryIds, featuredOnly: selection.pagination.featuredOnly },
-        pagination: selection.pagination,
+      try {
+        const details = await options.catalogService.loadDetails(selection.entries.map(entry => entry.id), { index: catalogIndex })
+        const snapshot = buildMarketplaceSnapshot({ ...catalogIndex, schemaVersion: 1, entries: details }, inventory, '', {
+          managedPackages, candidateRegistry, dshVersion, catalogPackageNames: catalogIndex.entries.map(entry => entry.packageName),
+        })
+        const byId = new Map(snapshot.entries.map(entry => [entry.id, entry]))
+        return {
+          ...snapshot,
+          entries: selection.entries.map(entry => byId.get(entry.id)).filter(Boolean),
+          candidates: [],
+          catalogPackageNames: catalogIndex.entries.map(entry => entry.packageName),
+          filters: { categoryIds: selection.categoryIds, featuredOnly: selection.pagination.featuredOnly },
+          pagination: selection.pagination,
+        }
+      } catch (error) {
+        // A page must never combine a remote index with bundled detail files.
+        // Ask the service for one complete atomic generation; it may return the
+        // bundled bridge/index/details set after the remote detail failure.
+        if (typeof options.catalogService.load !== 'function') throw error
+        const fallback = await options.catalogService.load()
+        if (fallback.source?.kind !== 'bundled') throw error
+        const snapshot = buildMarketplaceSnapshot(fallback, inventory, '', {
+          managedPackages, candidateRegistry, dshVersion,
+        })
+        return paginateMarketplaceSnapshot(snapshot, {
+          view, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
+          page: body.page, pageSize: body.pageSize,
+          catalogPackageNames: fallback.entries.map(entry => entry.packageName),
+        })
       }
     }
     const catalog = catalogIndex.schemaVersion === 2

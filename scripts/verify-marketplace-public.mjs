@@ -5,7 +5,10 @@ import { readFile, rename, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { assertLegacyCatalogCompatibility, validateCatalog, validateCatalogDetail, validateCatalogIndex } from '../src/catalog.mjs'
+import {
+  assertLegacyCatalogCompatibility, validateCatalog, validateCatalogBridgeIndex,
+  validateCatalogDetail, validateCatalogIndex,
+} from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const policy = JSON.parse(await readFile(resolve(root, 'registry/automation-policy.json'), 'utf8'))
@@ -67,15 +70,32 @@ async function verifyDetails(index, catalogUrl) {
 
 async function semanticCatalog(text, catalogUrl) {
   const document = JSON.parse(text)
-  const catalog = document?.schemaVersion === 2
-    ? validateCatalogIndex(document)
-    : validateCatalog(document)
-  const details = document?.schemaVersion === 2
-    ? await verifyDetails(catalog, catalogUrl)
-    : (() => { assertLegacyCatalogCompatibility(document); return catalog.entries.length })()
+  let catalog
+  let index = null
+  let detailBaseUrl = catalogUrl
+  if (document?.schemaVersion === 2) {
+    catalog = validateCatalogIndex(document)
+    index = { url: catalogUrl, bytes: Buffer.byteLength(text), sha256: sha256(text) }
+  } else {
+    const bridge = validateCatalog(document)
+    if (bridge.registry.indexPath) {
+      const indexUrl = new URL(bridge.registry.indexPath, catalogUrl).href
+      const indexText = await fetchText(indexUrl, 2 * 1024 * 1024)
+      catalog = validateCatalogBridgeIndex(document, JSON.parse(indexText), Buffer.from(indexText))
+      index = { url: indexUrl, bytes: Buffer.byteLength(indexText), sha256: sha256(indexText) }
+      detailBaseUrl = indexUrl
+    } else {
+      assertLegacyCatalogCompatibility(document)
+      catalog = bridge
+    }
+  }
+  const details = catalog.schemaVersion === 2
+    ? await verifyDetails(catalog, detailBaseUrl)
+    : catalog.entries.length
   return {
     entries: catalog.entries.length,
     details,
+    index,
     registryUpdatedAt: catalog.registry.updatedAt,
     fingerprint: sha256(JSON.stringify(catalog.entries)),
     manager: catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager') ?? null,

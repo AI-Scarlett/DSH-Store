@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 
 const PACKAGE_NAME = /^(?:@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/
@@ -34,7 +35,25 @@ const DSH_RANGE_OPERATORS = ['>=', '<=', '>', '<', '^', '~', '=']
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
+export const DEFAULT_CATALOG_INDEX_PATH = 'catalog-index.json'
 export const DEFAULT_CATALOG_DETAILS_PATH = 'catalog/details'
+export const CATALOG_BRIDGE_ID = 'dsh-safe-plugin-manager'
+
+function catalogRelativePath(value, label) {
+  const path = nonEmptyString(value, label, 240)
+  if (path.startsWith('/') || path.includes('..') || path.includes('\\') || !/^[A-Za-z0-9._/-]+$/.test(path)) {
+    throw new TypeError(`${label} must be a safe relative Catalog path`)
+  }
+  return path
+}
+
+function catalogDocumentBuffer(document) {
+  return Buffer.from(`${JSON.stringify(document, null, 2)}\n`)
+}
+
+function sha256(value) {
+  return createHash('sha256').update(value).digest('hex')
+}
 
 function parseDshRangeClause(clause) {
   const fragments = clause.trim().split(/\s+/u).filter(Boolean)
@@ -580,7 +599,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
   }
 }
 
-function validateCatalogRegistry(registry, { index = false } = {}) {
+function validateCatalogRegistry(registry, { index = false, bridge = false } = {}) {
   if (!registry || typeof registry !== 'object' || Array.isArray(registry)) {
     throw new TypeError('catalog registry metadata is required')
   }
@@ -601,8 +620,6 @@ function validateCatalogRegistry(registry, { index = false } = {}) {
   const normalized = {
     name: nonEmptyString(registry.name, 'registry.name', 160),
     repositoryUrl: canonicalGithubRepository(registry.repositoryUrl),
-    homepageUrl: typeof registry.homepageUrl === 'string' ? registry.homepageUrl.slice(0, 400) : null,
-    installCountsUrl: typeof registry.installCountsUrl === 'string' ? new URL(registry.installCountsUrl).href : null,
     updatedAt: registryUpdatedAt,
     sourceUpdates: {
       mode: registry.sourceUpdates?.mode === 'client-on-demand' ? 'client-on-demand' : 'client-on-demand',
@@ -615,11 +632,32 @@ function validateCatalogRegistry(registry, { index = false } = {}) {
     },
     categories,
   }
+  if (typeof registry.homepageUrl === 'string') normalized.homepageUrl = registry.homepageUrl.slice(0, 400)
+  if (typeof registry.installCountsUrl === 'string') normalized.installCountsUrl = new URL(registry.installCountsUrl).href
   if (index) {
-    const detailsPath = nonEmptyString(registry.detailsPath ?? DEFAULT_CATALOG_DETAILS_PATH, 'registry.detailsPath', 160)
-      .replace(/^\/+|\/+$/g, '')
-    if (detailsPath.includes('..') || detailsPath.includes('\\')) throw new TypeError('registry.detailsPath must stay inside the registry')
-    normalized.detailsPath = detailsPath
+    normalized.detailsPath = catalogRelativePath(
+      registry.detailsPath ?? DEFAULT_CATALOG_DETAILS_PATH,
+      'registry.detailsPath',
+    ).replace(/^\/+|\/+$/g, '')
+  }
+  const hasIndexPath = Object.hasOwn(registry, 'indexPath')
+  if (bridge || hasIndexPath) {
+    if (!hasIndexPath) throw new TypeError('Catalog bridge registry.indexPath is required')
+    normalized.indexPath = catalogRelativePath(registry.indexPath, 'registry.indexPath')
+    if (!/^[0-9a-f]{64}$/.test(registry.indexSha256 ?? '')) {
+      throw new TypeError('Catalog bridge registry.indexSha256 must be a SHA-256 digest')
+    }
+    if (!Number.isInteger(registry.indexBytes) || registry.indexBytes < 1
+      || registry.indexBytes > MAX_CATALOG_INDEX_RESPONSE_BYTES) {
+      throw new TypeError('Catalog bridge registry.indexBytes is invalid')
+    }
+    if (!Number.isInteger(registry.indexEntryCount) || registry.indexEntryCount < 1
+      || registry.indexEntryCount > 1_000_000) {
+      throw new TypeError('Catalog bridge registry.indexEntryCount is invalid')
+    }
+    normalized.indexSha256 = registry.indexSha256
+    normalized.indexBytes = registry.indexBytes
+    normalized.indexEntryCount = registry.indexEntryCount
   }
   return normalized
 }
@@ -630,8 +668,10 @@ function validateLegacyCatalog(document) {
   }
   if (document.schemaVersion !== 1) throw new TypeError('catalog schemaVersion must be 1')
   if (!Array.isArray(document.entries)) throw new TypeError('catalog entries must be an array')
-  const registry = validateCatalogRegistry(document.registry)
+  const bridge = Boolean(document.registry && Object.hasOwn(document.registry, 'indexPath'))
+  const registry = validateCatalogRegistry(document.registry, { bridge })
   const entries = document.entries.map((entry, index) => validateEntry(entry, index, registry.updatedAt))
+  if (bridge && entries.length !== 1) throw new TypeError('Catalog bridge must contain exactly one legacy bootstrap entry')
   const ids = new Set()
   const packages = new Set()
   for (const entry of entries) {
@@ -646,6 +686,7 @@ function validateLegacyCatalog(document) {
   }
   return {
     schemaVersion: 1,
+    ...(bridge ? { catalogType: 'legacy-bridge' } : {}),
     registry,
     entries,
   }
@@ -728,14 +769,43 @@ export function validateCatalogDetail(document, indexEntry, registry) {
   return detail
 }
 
+function legacyWireEntry(entry) {
+  const wire = structuredClone(entry)
+  for (const record of Object.values(wire.assurance ?? {})) {
+    if (record?.status !== 'partial') continue
+    record.status = 'unknown'
+    record.evidenceStatus = 'partial'
+  }
+  return wire
+}
+
+function registryWithoutSplitMetadata(registry) {
+  const {
+    detailsPath: _detailsPath,
+    indexPath: _indexPath,
+    indexSha256: _indexSha256,
+    indexBytes: _indexBytes,
+    indexEntryCount: _indexEntryCount,
+    ...base
+  } = registry
+  return base
+}
+
 export function splitCatalogDocument(document, options = {}) {
   const catalog = validateLegacyCatalog(document)
   const detailsPath = String(options.detailsPath ?? DEFAULT_CATALOG_DETAILS_PATH).replace(/^\/+|\/+$/g, '')
   if (!detailsPath || detailsPath.includes('..') || detailsPath.includes('\\')) throw new TypeError('detailsPath is invalid')
+  const indexPath = catalogRelativePath(options.indexPath ?? DEFAULT_CATALOG_INDEX_PATH, 'indexPath')
+  const bridgeId = options.bridgeId ?? (catalog.entries.some(entry => entry.id === CATALOG_BRIDGE_ID)
+    ? CATALOG_BRIDGE_ID
+    : catalog.entries[0]?.id)
+  const bridgeEntry = catalog.entries.find(entry => entry.id === bridgeId)
+  if (!bridgeEntry) throw new TypeError(`Catalog bridge entry is missing: ${bridgeId}`)
+  const baseRegistry = registryWithoutSplitMetadata(catalog.registry)
   const index = {
     schemaVersion: 2,
     catalogType: 'index',
-    registry: { ...catalog.registry, detailsPath },
+    registry: { ...baseRegistry, detailsPath },
     entries: catalog.entries.map((entry, order) => {
       const names = bilingualNameParts(entry.name, entry.packageName)
       return {
@@ -747,7 +817,22 @@ export function splitCatalogDocument(document, options = {}) {
     }),
   }
   const validatedIndex = validateCatalogIndex(index)
+  const indexBuffer = catalogDocumentBuffer(validatedIndex)
+  const bridge = {
+    schemaVersion: 1,
+    registry: {
+      ...baseRegistry,
+      indexPath,
+      indexSha256: sha256(indexBuffer),
+      indexBytes: indexBuffer.length,
+      indexEntryCount: validatedIndex.entries.length,
+    },
+    entries: [legacyWireEntry(bridgeEntry)],
+  }
+  validateLegacyCatalog(bridge)
+  assertLegacyCatalogCompatibility(bridge)
   return {
+    bridge,
     index: validatedIndex,
     details: validatedIndex.entries.map(indexEntry => ({
       path: indexEntry.detailPath,
@@ -773,13 +858,74 @@ export function hydrateCatalog(indexDocument, detailDocuments) {
   return { schemaVersion: 1, sourceFormat: 'split-v2', registry: index.registry, entries }
 }
 
+export function validateCatalogBridgeIndex(bridgeDocument, indexDocument, indexBytes) {
+  const bridge = validateLegacyCatalog(bridgeDocument)
+  if (!bridge.registry.indexPath) throw new TypeError('Catalog document is not a legacy bridge')
+  const index = validateCatalogIndex(indexDocument)
+  const bytes = Buffer.isBuffer(indexBytes) ? indexBytes : Buffer.from(indexBytes)
+  if (bytes.length !== bridge.registry.indexBytes) throw new TypeError('Catalog bridge index byte length does not match')
+  if (sha256(bytes) !== bridge.registry.indexSha256) throw new TypeError('Catalog bridge index SHA-256 does not match')
+  if (index.entries.length !== bridge.registry.indexEntryCount) throw new TypeError('Catalog bridge index entry count does not match')
+  for (const field of ['name', 'repositoryUrl', 'updatedAt']) {
+    if (index.registry[field] !== bridge.registry[field]) throw new TypeError(`Catalog bridge registry.${field} does not match the index`)
+  }
+  for (const field of ['sourceUpdates', 'trustPolicy', 'categories']) {
+    if (JSON.stringify(index.registry[field]) !== JSON.stringify(bridge.registry[field])) {
+      throw new TypeError(`Catalog bridge registry.${field} does not match the index`)
+    }
+  }
+  const bootstrap = bridge.entries[0]
+  const indexed = index.entries.find(entry => entry.id === bootstrap.id)
+  if (!indexed) throw new TypeError(`Catalog bridge entry is not present in the index: ${bootstrap.id}`)
+  for (const field of ['id', 'packageName', 'version', 'repositoryUrl', 'status']) {
+    if (indexed[field] !== bootstrap[field]) throw new TypeError(`Catalog bridge ${field} does not match the index entry`)
+  }
+  if (indexed.featured !== bootstrap.featured) throw new TypeError('Catalog bridge featured flag does not match the index entry')
+  return index
+}
+
+async function loadCatalogIndexFromFiles(indexUrl) {
+  const rootBytes = await readFile(indexUrl)
+  let rootDocument
+  try {
+    rootDocument = JSON.parse(rootBytes.toString('utf8'))
+  } catch (error) {
+    throw Object.assign(new Error('Catalog bridge is invalid'), { code: 'CATALOG_INVALID', cause: error })
+  }
+  if (rootDocument?.schemaVersion === 2) {
+    return { document: validateCatalogIndex(rootDocument), indexUrl, bridge: null }
+  }
+  const legacy = validateLegacyCatalog(rootDocument)
+  if (!legacy.registry.indexPath) return { document: legacy, indexUrl, bridge: null }
+  const resolvedIndexUrl = new URL(legacy.registry.indexPath, indexUrl)
+  let bytes
+  try {
+    bytes = await readFile(resolvedIndexUrl)
+  } catch (error) {
+    throw Object.assign(new Error('Catalog index is missing'), { code: 'CATALOG_INDEX_MISSING', cause: error })
+  }
+  try {
+    const indexDocument = JSON.parse(bytes.toString('utf8'))
+    return {
+      document: validateCatalogBridgeIndex(rootDocument, indexDocument, bytes),
+      indexUrl: resolvedIndexUrl,
+      bridge: legacy,
+    }
+  } catch (error) {
+    if (error?.code === 'CATALOG_INDEX_MISSING') throw error
+    throw Object.assign(new Error(`Catalog index is invalid: ${error.message}`), {
+      code: 'CATALOG_INDEX_INVALID', cause: error,
+    })
+  }
+}
+
 export async function loadCatalogFromFiles(options = {}) {
   const indexUrl = options.indexUrl ?? new URL('../registry/catalog.json', import.meta.url)
-  const indexDocument = JSON.parse(await readFile(indexUrl, 'utf8'))
-  if (indexDocument?.schemaVersion !== 2) return validateLegacyCatalog(indexDocument)
-  const index = validateCatalogIndex(indexDocument)
+  const loaded = await loadCatalogIndexFromFiles(indexUrl)
+  if (loaded.document.schemaVersion !== 2) return loaded.document
+  const index = loaded.document
   const details = await Promise.all(index.entries.map(async entry => {
-    const detailUrl = new URL(entry.detailPath, indexUrl)
+    const detailUrl = new URL(entry.detailPath, loaded.indexUrl)
     let source
     try {
       source = await readFile(detailUrl, 'utf8')
@@ -1156,7 +1302,7 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
   }
 }
 
-async function readResponseJson(response, maximum = MAX_CATALOG_RESPONSE_BYTES) {
+async function readResponseDocument(response, maximum = MAX_CATALOG_RESPONSE_BYTES) {
   if (!response.ok) {
     const error = new Error(`catalog returned HTTP ${response.status}`)
     error.status = response.status
@@ -1168,11 +1314,15 @@ async function readResponseJson(response, maximum = MAX_CATALOG_RESPONSE_BYTES) 
   const text = await response.text()
   if (Buffer.byteLength(text) > maximum) throw new Error('catalog response is too large')
   try {
-    return JSON.parse(text)
+    return { document: JSON.parse(text), bytes: Buffer.from(text) }
   } catch (error) {
     error.catalogInvalid = true
     throw error
   }
+}
+
+async function readResponseJson(response, maximum = MAX_CATALOG_RESPONSE_BYTES) {
+  return (await readResponseDocument(response, maximum)).document
 }
 
 export function createCatalogService(options = {}) {
@@ -1191,10 +1341,13 @@ export function createCatalogService(options = {}) {
   const detailPromises = new Map()
 
   async function bundledIndex(errorCode = null) {
-    const document = validateCatalog(JSON.parse(await readFile(bundledUrl, 'utf8')))
+    const loaded = await loadCatalogIndexFromFiles(bundledUrl)
     return {
-      ...document,
-      source: { kind: 'bundled', url: catalogUrl, fetchedAt: new Date().toISOString(), errorCode },
+      ...loaded.document,
+      source: {
+        kind: 'bundled', url: catalogUrl, indexUrl: loaded.indexUrl.href,
+        fetchedAt: new Date().toISOString(), errorCode,
+      },
     }
   }
 
@@ -1217,13 +1370,31 @@ export function createCatalogService(options = {}) {
           // Keep the v1 compatibility reader bounded at its old 4 MiB limit;
           // newly published v2 indexes are checked against the stricter 2 MiB
           // budget immediately after parsing.
-          const rawDocument = await readResponseJson(response, MAX_CATALOG_RESPONSE_BYTES)
+          const root = await readResponseDocument(response, MAX_CATALOG_RESPONSE_BYTES)
+          const rawDocument = root.document
           if (rawDocument?.schemaVersion === 2
-            && Buffer.byteLength(JSON.stringify(rawDocument)) > MAX_CATALOG_INDEX_RESPONSE_BYTES) {
+            && root.bytes.length > MAX_CATALOG_INDEX_RESPONSE_BYTES) {
             throw new Error('catalog index response is too large')
           }
           try {
             document = validateCatalog(rawDocument)
+            let indexUrl = catalogUrl
+            if (document.schemaVersion === 1 && document.registry.indexPath) {
+              indexUrl = new URL(document.registry.indexPath, catalogUrl).href
+              const indexResponse = await request(indexUrl, {
+                headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
+                signal: controller.signal,
+              })
+              const indexPayload = await readResponseDocument(indexResponse, MAX_CATALOG_INDEX_RESPONSE_BYTES)
+              document = validateCatalogBridgeIndex(rawDocument, indexPayload.document, indexPayload.bytes)
+            }
+            document = {
+              ...document,
+              source: {
+                kind: 'github', url: catalogUrl, indexUrl,
+                fetchedAt: new Date().toISOString(), errorCode: null,
+              },
+            }
           } catch (error) {
             error.catalogInvalid = true
             throw error
@@ -1239,10 +1410,7 @@ export function createCatalogService(options = {}) {
         }
       }
       if (lastError) throw lastError
-      return {
-        ...document,
-        source: { kind: 'github', url: catalogUrl, fetchedAt: new Date().toISOString(), errorCode: null },
-      }
+      return document
     } catch (error) {
       const code = error?.name === 'AbortError' ? 'CATALOG_TIMEOUT'
         : Number.isInteger(error?.status) ? 'CATALOG_HTTP_ERROR'
@@ -1276,15 +1444,17 @@ export function createCatalogService(options = {}) {
     const missing = requestedIds.filter(id => !entriesById.has(id))
     if (missing.length > 0) throw Object.assign(new Error(`catalog detail is not indexed: ${missing.join(', ')}`), { code: 'CATALOG_DETAIL_NOT_INDEXED' })
     const values = await Promise.all(requestedIds.map(async id => {
-      if (!force && detailCache.has(id)) return detailCache.get(id)
-      if (!force && detailPromises.has(id)) return detailPromises.get(id)
       const indexEntry = entriesById.get(id)
+      const sourceIdentity = `${catalog.source?.kind ?? 'unknown'}:${catalog.source?.indexUrl ?? catalog.source?.url ?? 'unknown'}:${catalog.registry.updatedAt}`
+      const cacheKey = `${sourceIdentity}:${id}`
+      if (!force && detailCache.has(cacheKey)) return detailCache.get(cacheKey)
+      if (!force && detailPromises.has(cacheKey)) return detailPromises.get(cacheKey)
       const promise = (async () => {
         let raw
         if (catalog.source?.kind === 'bundled' || catalogUrl === null) {
-          raw = JSON.parse(await readFile(new URL(indexEntry.detailPath, bundledUrl), 'utf8'))
+          raw = JSON.parse(await readFile(new URL(indexEntry.detailPath, catalog.source?.indexUrl ?? bundledUrl), 'utf8'))
         } else {
-          const detailUrl = new URL(indexEntry.detailPath, catalog.source.url).href
+          const detailUrl = new URL(indexEntry.detailPath, catalog.source.indexUrl ?? catalog.source.url).href
           const response = await request(detailUrl, {
             headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
             signal: AbortSignal.timeout(timeoutMs),
@@ -1292,14 +1462,14 @@ export function createCatalogService(options = {}) {
           raw = await readResponseJson(response, MAX_CATALOG_DETAIL_RESPONSE_BYTES)
         }
         const value = validateCatalogDetail(raw, indexEntry, catalog.registry)
-        detailCache.set(id, value)
+        detailCache.set(cacheKey, value)
         return value
       })()
-      if (!force) detailPromises.set(id, promise)
+      if (!force) detailPromises.set(cacheKey, promise)
       try {
         return await promise
       } finally {
-        if (detailPromises.get(id) === promise) detailPromises.delete(id)
+        if (detailPromises.get(cacheKey) === promise) detailPromises.delete(cacheKey)
       }
     }))
     return values

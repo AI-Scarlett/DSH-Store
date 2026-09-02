@@ -11,17 +11,23 @@ import { loadCatalogFromFiles, splitCatalogDocument, validateCatalog } from '../
 const run = promisify(execFile)
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
+const catalogIndexPath = resolve(root, 'registry/catalog-index.json')
 const catalogDetailsPath = resolve(root, 'registry/catalog/details')
 
 function args(argv) {
-  const result = { write: false, expectedSha: null, observedAt: null, backup: null, detailsBackup: null, allowLocalSelf: false }
+  const result = {
+    write: false, expectedSha: null, expectedIndexSha: null, observedAt: null,
+    backup: null, indexBackup: null, detailsBackup: null, allowLocalSelf: false,
+  }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
     if (value === '--write') result.write = true
     else if (value === '--allow-local-self') result.allowLocalSelf = true
     else if (value === '--expected-sha') result.expectedSha = argv[++index]
+    else if (value === '--expected-index-sha') result.expectedIndexSha = argv[++index]
     else if (value === '--observed-at') result.observedAt = argv[++index]
     else if (value === '--backup') result.backup = argv[++index]
+    else if (value === '--index-backup') result.indexBackup = argv[++index]
     else if (value === '--details-backup') result.detailsBackup = argv[++index]
     else throw new Error(`unknown argument: ${value}`)
   }
@@ -83,15 +89,24 @@ async function commitMetadata(entry, registryRepositoryUrl) {
 
 const options = args(process.argv.slice(2))
 const original = await readFile(catalogPath)
+const originalIndex = await readFile(catalogIndexPath)
 const originalSha = sha256(original)
+const originalIndexSha = sha256(originalIndex)
 if (!options.write) throw new Error('refusing to change the catalog without --write')
-if (!/^[a-f0-9]{64}$/.test(options.expectedSha ?? '') || options.expectedSha !== originalSha) {
+if (!/^[a-f0-9]{64}$/.test(options.expectedSha ?? '') || options.expectedSha !== originalSha
+  || !/^[a-f0-9]{64}$/.test(options.expectedIndexSha ?? '') || options.expectedIndexSha !== originalIndexSha) {
   throw new Error(`catalog precondition hash mismatch: ${originalSha}`)
 }
 const backupPath = options.backup ? resolve(options.backup) : null
+const indexBackupPath = options.indexBackup ? resolve(options.indexBackup) : null
 const backupRelative = backupPath ? relative(root, backupPath) : ''
 if (!options.backup || !isAbsolute(options.backup) || backupRelative === '' || (!backupRelative.startsWith('..') && !isAbsolute(backupRelative))) {
   throw new Error('--backup must be an explicit absolute file outside the repository')
+}
+const indexBackupRelative = indexBackupPath ? relative(root, indexBackupPath) : ''
+if (!options.indexBackup || !isAbsolute(options.indexBackup) || indexBackupRelative === ''
+  || (!indexBackupRelative.startsWith('..') && !isAbsolute(indexBackupRelative))) {
+  throw new Error('--index-backup must be an explicit absolute file outside the repository')
 }
 const observedAt = iso(options.observedAt, '--observed-at')
 const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
@@ -102,9 +117,10 @@ for (let index = 0; index < catalog.entries.length; index += 1) {
 catalog.registry.updatedAt = observedAt
 validateCatalog(catalog)
 const split = splitCatalogDocument(catalog, { detailsPath: catalog.registry.detailsPath })
-const serialized = `${JSON.stringify(split.index, null, 2)}\n`
-const temporary = `${catalogPath}.tmp-${process.pid}`
+const serialized = `${JSON.stringify(split.bridge, null, 2)}\n`
+const serializedIndex = `${JSON.stringify(split.index, null, 2)}\n`
 await copyFile(catalogPath, backupPath)
+await copyFile(catalogIndexPath, indexBackupPath)
 if (!options.detailsBackup || !isAbsolute(options.detailsBackup) || !relative(root, resolve(options.detailsBackup)).startsWith('..')) {
   throw new Error('--details-backup must be an explicit absolute directory outside the repository')
 }
@@ -124,13 +140,18 @@ try {
     const target = resolve(catalogDetailsPath, name)
     if (!expected.has(target)) await rm(target, { recursive: true, force: true })
   }
-  await writeFile(temporary, serialized, { flag: 'wx', mode: 0o644 })
-  await rename(temporary, catalogPath)
+  const indexTemporary = `${catalogIndexPath}.tmp-${process.pid}`
+  await writeFile(indexTemporary, serializedIndex, { flag: 'wx', mode: 0o644 })
+  await rename(indexTemporary, catalogIndexPath)
+  const bridgeTemporary = `${catalogPath}.tmp-${process.pid}`
+  await writeFile(bridgeTemporary, serialized, { flag: 'wx', mode: 0o644 })
+  await rename(bridgeTemporary, catalogPath)
 } catch (error) {
   await writeFile(catalogPath, original)
+  await writeFile(catalogIndexPath, originalIndex)
   await rm(catalogDetailsPath, { recursive: true, force: true })
   await mkdir(resolve(catalogDetailsPath, '..'), { recursive: true })
   await cp(options.detailsBackup, catalogDetailsPath, { recursive: true, force: true })
   throw error
 }
-console.log(`CATALOG_SOURCE_METADATA_OK entries=${catalog.entries.length} details=${split.details.length} before=${originalSha} after=${sha256(Buffer.from(serialized))}`)
+console.log(`CATALOG_SOURCE_METADATA_OK entries=${catalog.entries.length} details=${split.details.length} bridgeBefore=${originalSha} bridgeAfter=${sha256(Buffer.from(serialized))} indexBefore=${originalIndexSha} indexAfter=${sha256(Buffer.from(serializedIndex))}`)

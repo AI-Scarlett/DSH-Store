@@ -185,6 +185,7 @@ snapshot.generated = {
   sourceRepository: 'https://github.com/AI-Scarlett/DSH-Store',
   sourceCommit: sourceSha,
   catalogAuthority: 'registry/catalog.json',
+  catalogIndexAuthority: 'registry/catalog-index.json',
   githubEnriched: enrichGitHub,
 }
 
@@ -434,7 +435,7 @@ home = replaceElementText(home, 'stat-total', String(visibleEntries.length).padS
 home = replaceElementText(home, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 home = replaceElementText(home, 'stat-categories', String(categoryCount).padStart(2, '0'))
 home = replaceElementText(home, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
-home = replaceElementText(home, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
+home = replaceElementText(home, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
 await writeFile(resolve(outputRoot, 'marketplace/index.html'), home)
 
 let plugins = await readFile(resolve(outputRoot, 'marketplace/plugins/index.html'), 'utf8')
@@ -446,7 +447,7 @@ plugins = replaceElementText(plugins, 'stat-total', String(visibleEntries.length
 plugins = replaceElementText(plugins, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-categories', String(categoryCount).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
-plugins = replaceElementText(plugins, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
+plugins = replaceElementText(plugins, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
 plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(MARKET_PAGE_SIZE, visibleEntries.length)} / ${visibleEntries.length}`)
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
 
@@ -472,7 +473,7 @@ llms = replaceRequired(llms, domesticGuideMarker, isDomestic
 await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 
 // Do not publish a second monolithic catalog snapshot. The copied registry
-// contains the small index plus independently cacheable detail records.
+// contains the legacy bridge, small index, and independently cacheable detail records.
 await rm(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), { force: true })
 await writeFile(resolve(outputRoot, 'automation-status.json'), JSON.stringify(buildAutomationStatus({
   catalog: snapshot,

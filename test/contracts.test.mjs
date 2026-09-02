@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.8')
+  assert.equal(pkg.version, '0.8.9')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -30,7 +30,8 @@ test('canonical DSH-Store repository and Pages URLs replace legacy aliases', asy
     'marketplace/index.html', 'marketplace/llms.txt', 'marketplace/plugins/index.html',
     'marketplace/standards/index.html', 'package.json',
     'registry/README.md', 'registry/automation-policy.json', 'registry/candidates.json',
-    'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json', 'registry/catalog-detail.schema.json',
+    'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json',
+    'registry/catalog-index.json', 'registry/catalog-index.schema.json', 'registry/catalog-detail.schema.json',
     'scripts/automate-catalog.mjs', 'scripts/build-marketplace-static.mjs', 'scripts/check-plugin-submission.mjs',
     'scripts/plan-author-notices.mjs', 'scripts/verify-marketplace-public.mjs', 'src/candidates.mjs', 'src/catalog.mjs',
   ]
@@ -58,6 +59,15 @@ test('static storefront templates expose the cross-site navigation and analytics
     const source = await readFile(new URL(path, project), 'utf8')
     assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
   }
+})
+
+test('public storefront verifies the legacy bridge before loading the split Catalog index', async () => {
+  const source = await readFile(new URL('marketplace/app.js', project), 'utf8')
+  assert.match(source, /payload\.registry\.indexPath/)
+  assert.match(source, /crypto\.subtle\.digest\('SHA-256'/)
+  assert.match(source, /Catalog bridge index SHA-256 does not match/)
+  assert.match(source, /state\.detailPromises/)
+  assert.match(source, /Math\.min\(6, entries\.length\)/)
 })
 
 test('storefront uses the bright glass and responsive Bento design contract', async () => {

@@ -887,24 +887,73 @@ async function fetchCatalog() {
   const failures = []
   for (const url of catalogCandidates()) {
     try {
-      const response = await fetch(url, { cache: 'no-store' })
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const payload = await response.json()
-      if (!payload || !Array.isArray(payload.entries) || !payload.registry) throw new Error('Invalid catalog payload')
-      if (payload.schemaVersion === 2) {
+      const readDocument = async (target, maximum) => {
+        const response = await fetch(target, { cache: 'no-store' })
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const declared = Number(response.headers.get('content-length'))
+        if (Number.isFinite(declared) && declared > maximum) throw new Error('catalog response is too large')
+        const text = await response.text()
+        const bytes = new TextEncoder().encode(text)
+        if (bytes.byteLength > maximum) throw new Error('catalog response is too large')
+        return { payload: JSON.parse(text), bytes }
+      }
+      const validateIndex = payload => {
         if (payload.catalogType !== 'index' || typeof payload.registry.detailsPath !== 'string') {
           throw new Error('Invalid catalog index payload')
         }
         payload.entries.forEach(entry => {
-          for (const field of ['id', 'nameZh', 'nameEn', 'version', 'repositoryUrl', 'detailPath']) {
+          for (const field of ['id', 'nameZh', 'nameEn', 'packageName', 'version', 'repositoryUrl', 'detailPath', 'status']) {
             if (typeof entry?.[field] !== 'string' || entry[field].trim() === '') throw new Error(`Invalid catalog index field: ${field}`)
           }
           if (!Number.isInteger(entry.order) || typeof entry.featured !== 'boolean') throw new Error('Invalid catalog index ordering')
         })
+      }
+      const root = await readDocument(url, 4 * 1024 * 1024)
+      let payload = root.payload
+      if (!payload || !Array.isArray(payload.entries) || !payload.registry) throw new Error('Invalid catalog payload')
+      if (payload.schemaVersion === 2) {
+        if (root.bytes.byteLength > 2 * 1024 * 1024) throw new Error('catalog index is too large')
+        validateIndex(payload)
       } else if (payload.schemaVersion !== 1) {
         throw new Error('Unsupported catalog version')
       }
-      return { payload, url }
+      if (payload.schemaVersion === 1 && payload.registry.indexPath) {
+        const metadata = payload.registry
+        if (!/^[A-Za-z0-9._/-]+$/.test(metadata.indexPath) || metadata.indexPath.startsWith('/')
+          || metadata.indexPath.includes('..') || metadata.indexPath.includes('\\')) {
+          throw new Error('Invalid Catalog bridge index path')
+        }
+        if (!/^[0-9a-f]{64}$/.test(metadata.indexSha256 ?? '')
+          || !Number.isInteger(metadata.indexBytes) || metadata.indexBytes < 1 || metadata.indexBytes > 2 * 1024 * 1024
+          || !Number.isInteger(metadata.indexEntryCount) || metadata.indexEntryCount < 1) {
+          throw new Error('Invalid Catalog bridge integrity metadata')
+        }
+        const indexUrl = new URL(metadata.indexPath, url).href
+        const indexDocument = await readDocument(indexUrl, 2 * 1024 * 1024)
+        if (indexDocument.bytes.byteLength !== metadata.indexBytes) throw new Error('Catalog bridge index byte length does not match')
+        if (!globalThis.crypto?.subtle) throw new Error('Catalog bridge integrity verification is unavailable')
+        const digest = [...new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', indexDocument.bytes))]
+          .map(value => value.toString(16).padStart(2, '0')).join('')
+        if (digest !== metadata.indexSha256) throw new Error('Catalog bridge index SHA-256 does not match')
+        payload = indexDocument.payload
+        if (!payload || payload.schemaVersion !== 2 || !Array.isArray(payload.entries) || !payload.registry) {
+          throw new Error('Invalid Catalog bridge index payload')
+        }
+        validateIndex(payload)
+        if (payload.entries.length !== metadata.indexEntryCount
+          || payload.registry.updatedAt !== metadata.updatedAt
+          || payload.registry.repositoryUrl !== metadata.repositoryUrl) {
+          throw new Error('Catalog bridge metadata does not match the index')
+        }
+        const bootstrap = root.payload.entries[0]
+        const indexed = payload.entries.find(entry => entry.id === bootstrap?.id)
+        for (const field of ['id', 'packageName', 'version', 'repositoryUrl', 'status']) {
+          if (!indexed || indexed[field] !== bootstrap[field]) throw new Error(`Catalog bridge ${field} does not match the index`)
+        }
+        if (indexed.featured !== bootstrap.featured) throw new Error('Catalog bridge featured flag does not match the index')
+        return { payload, url: indexUrl, bridgeUrl: url }
+      }
+      return { payload, url, bridgeUrl: null }
     } catch (error) {
       failures.push(`${url}: ${error.message}`)
     }

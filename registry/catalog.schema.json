@@ -1,12 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/AI-Scarlett/DSH-Store/registry/catalog.schema.json",
-  "title": "DSH STORE lightweight plugin Catalog index",
+  "title": "DSH STORE legacy-compatible bootstrap Catalog bridge",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schemaVersion",
-    "catalogType",
     "registry",
     "entries"
   ],
@@ -148,21 +147,20 @@
   },
   "properties": {
     "schemaVersion": {
-      "const": 2
-    },
-    "catalogType": {
-      "const": "index"
+      "const": 1
     },
     "registry": {
       "type": "object",
-      "additionalProperties": false,
       "required": [
         "name",
         "repositoryUrl",
         "updatedAt",
         "sourceUpdates",
         "trustPolicy",
-        "detailsPath"
+        "indexPath",
+        "indexSha256",
+        "indexBytes",
+        "indexEntryCount"
       ],
       "properties": {
         "name": {
@@ -181,8 +179,7 @@
           "pattern": "^https://"
         },
         "updatedAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "sourceUpdates": {
           "type": "object",
@@ -227,9 +224,22 @@
             "minLength": 1
           }
         },
-        "detailsPath": {
+        "indexPath": {
+          "const": "catalog-index.json"
+        },
+        "indexSha256": {
           "type": "string",
-          "pattern": "^[A-Za-z0-9._/-]+$"
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "indexBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2097152
+        },
+        "indexEntryCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
         }
       }
     },
@@ -237,31 +247,26 @@
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": false,
         "required": [
           "id",
-          "nameZh",
-          "nameEn",
+          "name",
           "packageName",
-          "version",
-          "featured",
-          "order",
+          "description",
           "repositoryUrl",
-          "detailPath",
+          "commit",
+          "version",
+          "entryIds",
           "status",
-          "categories",
-          "searchTerms"
+          "compatibility",
+          "details",
+          "risk"
         ],
         "properties": {
           "id": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$"
           },
-          "nameZh": {
-            "type": "string",
-            "minLength": 1
-          },
-          "nameEn": {
+          "name": {
             "type": "string",
             "minLength": 1
           },
@@ -269,39 +274,9 @@
             "type": "string",
             "minLength": 1
           },
-          "version": {
+          "description": {
             "type": "string",
-            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"
-          },
-          "featured": {
-            "type": "boolean"
-          },
-          "order": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "repositoryUrl": {
-            "type": "string",
-            "pattern": "^https://github\\.com/[^/]+/[^/]+$"
-          },
-          "detailPath": {
-            "type": "string",
-            "pattern": "^catalog/details/[A-Za-z0-9][A-Za-z0-9._-]{0,95}\\.json$"
-          },
-          "status": {
-            "enum": [
-              "approved",
-              "blocked",
-              "unlisted"
-            ]
-          },
-          "categories": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
+            "minLength": 1
           },
           "searchTerms": {
             "type": "array",
@@ -312,9 +287,312 @@
               "minLength": 1,
               "maxLength": 120
             }
+          },
+          "repositoryUrl": {
+            "type": "string",
+            "pattern": "^https://github\\.com/[^/]+/[^/]+$"
+          },
+          "defaultBranch": {
+            "type": "string"
+          },
+          "manifestPath": {
+            "type": "string"
+          },
+          "installPath": {
+            "type": "string"
+          },
+          "updatePolicy": {
+            "enum": [
+              "source-verified",
+              "user-reviewed",
+              "external-only"
+            ]
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "installCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "updatedAt",
+              "observedAt",
+              "provenance"
+            ],
+            "properties": {
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "observedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "provenance": {
+                "enum": [
+                  "github-commit",
+                  "github-repository",
+                  "unknown"
+                ]
+              }
+            }
+          },
+          "assurance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "discovery",
+              "installability",
+              "runtime",
+              "securityReview"
+            ],
+            "properties": {
+              "discovery": {
+                "$ref": "#/$defs/evidenceRecord"
+              },
+              "installability": {
+                "$ref": "#/$defs/evidenceRecord"
+              },
+              "runtime": {
+                "$ref": "#/$defs/evidenceRecord"
+              },
+              "securityReview": {
+                "$ref": "#/$defs/evidenceRecord"
+              }
+            }
+          },
+          "entryIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "enum": [
+              "approved",
+              "blocked",
+              "unlisted"
+            ]
+          },
+          "statusReason": {
+            "type": "string"
+          },
+          "compatibility": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "dsh",
+              "node",
+              "systems",
+              "profiles"
+            ],
+            "properties": {
+              "dsh": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "dshReleases": {
+                "type": "object",
+                "maxProperties": 64,
+                "propertyNames": {
+                  "$ref": "#/$defs/dshReleaseKey"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/releaseCompatibility"
+                }
+              },
+              "dshOperations": {
+                "type": "object",
+                "maxProperties": 64,
+                "propertyNames": {
+                  "$ref": "#/$defs/dshReleaseKey"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/releaseOperations"
+                }
+              },
+              "node": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "systems": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "profiles": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              }
+            }
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "pluginType",
+              "installSource",
+              "license",
+              "permissions",
+              "externalDependencies",
+              "reviewStatus"
+            ],
+            "properties": {
+              "pluginType": {
+                "enum": [
+                  "feature",
+                  "theme",
+                  "suite",
+                  "client",
+                  "provider",
+                  "unknown"
+                ]
+              },
+              "installSource": {
+                "enum": [
+                  "npm",
+                  "github",
+                  "local-bundle",
+                  "unknown"
+                ]
+              },
+              "license": {
+                "type": "string",
+                "minLength": 1
+              },
+              "permissions": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "level",
+                  "files",
+                  "network",
+                  "commands",
+                  "credentials"
+                ],
+                "properties": {
+                  "level": {
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "unknown"
+                    ]
+                  },
+                  "files": {
+                    "enum": [
+                      "none",
+                      "read-only",
+                      "write",
+                      "unknown"
+                    ]
+                  },
+                  "network": {
+                    "enum": [
+                      "none",
+                      "specified-services",
+                      "any",
+                      "unknown"
+                    ]
+                  },
+                  "commands": {
+                    "enum": [
+                      "none",
+                      "restricted",
+                      "shell",
+                      "unknown"
+                    ]
+                  },
+                  "credentials": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "none",
+                        "api-key",
+                        "oauth",
+                        "keychain",
+                        "unknown"
+                      ]
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                }
+              },
+              "externalDependencies": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "reviewStatus": {
+                "enum": [
+                  "unreviewed",
+                  "automated-scan",
+                  "manual-review",
+                  "author-verified"
+                ]
+              }
+            }
+          },
+          "risk": {
+            "type": "object",
+            "required": [
+              "installScripts",
+              "review"
+            ],
+            "properties": {
+              "installScripts": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "preinstall",
+                    "install",
+                    "postinstall",
+                    "prepare"
+                  ]
+                }
+              },
+              "review": {
+                "type": "string"
+              }
+            }
           }
         }
-      }
+      },
+      "minItems": 1,
+      "maxItems": 1
     }
   }
 }

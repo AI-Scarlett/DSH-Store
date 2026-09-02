@@ -3,7 +3,13 @@
 ## 两个库承担不同职责
 
 - `registry/candidates.json` 是候选发现库：没有安装动作，条目必须晋级后才能进入商城可信安装路径。
-- `registry/catalog.json` 是 Catalog 轻量主索引：记录插件编号、双语名称、版本、推荐标记、顺序、GitHub 地址和有界分页辅助字段；`registry/catalog/details/<插件编号>.json` 在同一提交中记录固定 Commit、包路径、入口、权限、兼容性和证据状态。
+- `registry/catalog.json` 是历史兼容桥：只保留商城自身完整条目，并用摘要固定
+  `registry/catalog-index.json`；主索引记录插件编号、双语名称、版本、推荐标记、顺序、GitHub
+  地址和有界分页辅助字段；`registry/catalog/details/<插件编号>.json` 在同一提交中记录固定
+  Commit、包路径、入口、权限、兼容性和证据状态。
+
+自动化写入时同时校验兼容桥、主索引和候选库的前置 SHA，分别备份桥、索引和详情目录；先写
+详情，再写索引，最后发布桥。任一步失败都会恢复三层文件，PR 提交也必须把三层文件作为同一代提交。
 
 Catalog 的远端 GitHub `main` 是权威；本地副本或页面缓存只可用于诊断，不能替代合并后的远端目录。
 

@@ -313,7 +313,9 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
   const request = options.fetch ?? globalThis.fetch
   if (typeof request !== 'function') throw submissionError('SUBMISSION_FETCH_UNAVAILABLE', 'Public GitHub source verification is unavailable')
   const catalogDocument = options.catalogDocument ?? await loadCatalogFromFiles()
-  const catalog = catalogDocument?.schemaVersion === 2 ? await loadCatalogFromFiles() : validateCatalog(catalogDocument)
+  const catalog = catalogDocument?.schemaVersion === 2 || catalogDocument?.registry?.indexPath
+    ? await loadCatalogFromFiles()
+    : validateCatalog(catalogDocument)
   const repositoryInput = parseRepositoryInput(repositoryValue)
   const submittedPath = cleanValue(pluginPath)
   const requestedPath = safeRelativeDirectory(submittedPath) ?? repositoryInput.linkedPath

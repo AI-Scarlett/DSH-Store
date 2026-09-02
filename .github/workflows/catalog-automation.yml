@@ -52,18 +52,21 @@ jobs:
           CATALOG_BASE_COMMIT: ${{ steps.base.outputs.sha }}
         run: |
           catalog_sha=$(sha256sum registry/catalog.json | cut -d ' ' -f 1)
+          catalog_index_sha=$(sha256sum registry/catalog-index.json | cut -d ' ' -f 1)
           candidates_sha=$(sha256sum registry/candidates.json | cut -d ' ' -f 1)
           observed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           node scripts/automate-catalog.mjs \
             --write \
             --expected-catalog-sha "$catalog_sha" \
+            --expected-catalog-index-sha "$catalog_index_sha" \
             --expected-candidates-sha "$candidates_sha" \
             --catalog-backup "$RUNNER_TEMP/catalog.before.json" \
+            --catalog-index-backup "$RUNNER_TEMP/catalog-index.before.json" \
             --catalog-details-backup "$RUNNER_TEMP/catalog-details.before" \
             --candidates-backup "$RUNNER_TEMP/candidates.before.json" \
             --observed-at "$observed_at" \
             --report "$RUNNER_TEMP/catalog-automation-report.json"
-          if git diff --quiet -- registry/catalog.json registry/catalog/details registry/candidates.json; then
+          if git diff --quiet -- registry/catalog.json registry/catalog-index.json registry/catalog/details registry/candidates.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -87,13 +90,13 @@ jobs:
           }
           trap cleanup_branch ERR
           mutation='mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }'
-          # registry/catalog.json @base64 and every catalog/details/*.json @base64 are committed together.
+          # The legacy bridge, v2 index, every detail, and candidates are committed together.
           CATALOG_BRANCH="$branch" python3 - "$RUNNER_TEMP/create-catalog-commit.json" <<'PY'
           import base64, json, os, pathlib, sys
 
           root = pathlib.Path.cwd()
           additions = []
-          for path in [root / "registry/catalog.json", root / "registry/candidates.json", *sorted((root / "registry/catalog/details").glob("*.json"))]:
+          for path in [root / "registry/catalog.json", root / "registry/catalog-index.json", root / "registry/candidates.json", *sorted((root / "registry/catalog/details").glob("*.json"))]:
               additions.append({
                   "path": path.relative_to(root).as_posix(),
                   "contents": base64.b64encode(path.read_bytes()).decode("ascii"),

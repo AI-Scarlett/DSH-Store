@@ -4,7 +4,8 @@
 
 ## 决策
 
-插件市场读取同一提交中的轻量 `registry/catalog.json` 主索引与
+插件市场先读取同一提交中的 `registry/catalog.json` 历史兼容桥，验证其固定的
+`registry/catalog-index.json` 路径、SHA-256、字节数和条目数，再读取轻量主索引与
 `registry/catalog/details/<插件编号>.json` 详情文件。索引通过插件编号和固定详情路径定位
 详情；条目必须对应 GitHub 仓库并固定到 40 位 Commit；安装与更新前重新读取该 Commit 的
 manifest 和 Bundle Patch。

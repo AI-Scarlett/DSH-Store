@@ -29,7 +29,8 @@
 
 ### V0.2 GitHub 市场与安全管理
 
-- 同一 GitHub 提交中的轻量 `registry/catalog.json` 主索引、独立插件详情文件、搜索、分类和 GitHub Pages 目录页；
+- 同一 GitHub 提交中的 `registry/catalog.json` 历史兼容桥、轻量 `registry/catalog-index.json`
+  主索引、独立插件详情文件、搜索、分类和 GitHub Pages 目录页；
 - 卡片可打开与官方设置视觉一致的详情弹窗；列表先读取主索引，详情由对应的
   `registry/catalog/details/<插件编号>.json` 提供，展示
   插件类型、安装来源、许可证、文件/网络/命令/凭据权限、外部依赖、审核状态和
