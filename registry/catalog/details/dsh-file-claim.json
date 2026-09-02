@@ -24,28 +24,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "50f60f3b02485af99c5425574b5fd94b370b793f",
-  "version": "0.1.7",
+  "commit": "42f07e2171d3781edd932732d243646635f4c1a0",
+  "version": "0.2.0",
   "categories": [
     "sessions"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-16T11:10:09.000Z",
-    "observedAt": "2026-08-21T00:27:59.000Z",
+    "updatedAt": "2026-09-02T07:27:34.000Z",
+    "observedAt": "2026-09-02T12:42:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "catalog-presence",
-      "checkedAt": "2026-09-02T04:09:32.000Z",
-      "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-09-02T12:42:45.000Z",
+      "evidenceUrl": "https://github.com/Nwflower/dsh-file-claim/commit/42f07e2171d3781edd932732d243646635f4c1a0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Present in the trusted GitHub catalog."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": null
+      "summary": "The updated release was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": null
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,21 +75,24 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": null
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-file-claim"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.7",
+    "dsh": null,
     "dshReleases": {
-      "rc.7": "compatible",
-      "rc.8": "compatible",
-      "0.1.1-rc.1": "compatible",
-      "0.1.1-rc.2": "unknown"
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -136,14 +139,8 @@
       }
     },
     "node": ">=18",
-    "systems": [
-      "macOS",
-      "Linux",
-      "Windows"
-    ],
-    "profiles": [
-      "web"
-    ]
+    "systems": [],
+    "profiles": []
   },
   "details": {
     "pluginType": "feature",
