@@ -15,6 +15,7 @@ import {
 } from '../src/catalog-update-review.mjs'
 import {
   assertLegacyCatalogCompatibility,
+  catalogBridgeBuffer,
   canonicalGithubRepository,
   compareCatalogEntries,
   compareVersions,
@@ -960,7 +961,7 @@ const validatedCatalog = validateCatalog(catalog)
 assertLegacyCatalogCompatibility(catalog)
 const validatedCandidates = validateCandidateRegistry(candidates)
 const split = splitCatalogDocument(catalog, { detailsPath: catalog.registry.detailsPath })
-const catalogBuffer = Buffer.from(`${JSON.stringify(split.bridge, null, 2)}\n`)
+const catalogBuffer = catalogBridgeBuffer(split.bridge)
 const catalogIndexBuffer = Buffer.from(`${JSON.stringify(split.index, null, 2)}\n`)
 const candidatesBuffer = Buffer.from(`${JSON.stringify({
   schemaVersion: validatedCandidates.schemaVersion,

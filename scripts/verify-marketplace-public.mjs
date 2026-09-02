@@ -57,15 +57,17 @@ function sha256(value) {
 async function verifyDetails(index, catalogUrl) {
   const entries = index.entries
   let next = 0
+  let manager = null
   const worker = async () => {
     while (next < entries.length) {
       const entry = entries[next++]
       const text = await fetchText(new URL(entry.detailPath, catalogUrl).href, 512 * 1024)
-      validateCatalogDetail(JSON.parse(text), entry, index.registry)
+      const detail = validateCatalogDetail(JSON.parse(text), entry, index.registry)
+      if (detail.id === 'dsh-safe-plugin-manager') manager = detail
     }
   }
   await Promise.all(Array.from({ length: Math.min(12, entries.length) }, worker))
-  return entries.length
+  return { count: entries.length, manager }
 }
 
 async function semanticCatalog(text, catalogUrl) {
@@ -89,16 +91,20 @@ async function semanticCatalog(text, catalogUrl) {
       catalog = bridge
     }
   }
-  const details = catalog.schemaVersion === 2
-    ? await verifyDetails(catalog, detailBaseUrl)
-    : catalog.entries.length
+  let manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager') ?? null
+  let details = catalog.entries.length
+  if (catalog.schemaVersion === 2) {
+    const verified = await verifyDetails(catalog, detailBaseUrl)
+    details = verified.count
+    manager = verified.manager ?? manager
+  }
   return {
     entries: catalog.entries.length,
     details,
     index,
     registryUpdatedAt: catalog.registry.updatedAt,
     fingerprint: sha256(JSON.stringify(catalog.entries)),
-    manager: catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager') ?? null,
+    manager,
   }
 }
 

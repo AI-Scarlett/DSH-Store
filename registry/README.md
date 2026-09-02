@@ -1,10 +1,11 @@
 # DSH-Store GitHub Plugin Registry
 
-`catalog.json` 是旧版 DSH-Store 可读取的 schemaVersion 1 兼容桥：只保留商城自身完整条目，并用
-`indexPath`、`indexSha256`、`indexBytes` 和 `indexEntryCount` 固定 `catalog-index.json`。
+`catalog.json` 是旧版 DSH-Store 可读取的 schemaVersion 1 完整兼容目录：它为每个插件保留旧版
+验证器、搜索、权限展示和固定来源操作所需的有界字段，并用 `indexPath`、`indexSha256`、
+`indexBytes` 和 `indexEntryCount` 固定 `catalog-index.json`。
 `catalog-index.json` 是 DSH-Store 与 GitHub Pages 市场页共同读取的轻量主索引；每个插件的完整记录
 位于 `catalog/details/<插件编号>.json`。主索引通过插件编号把名称、版本、推荐状态、顺序和 GitHub
-地址映射到对应详情，商城验证桥后加载索引，再按当前 20 条页面或详情请求懒加载详情。兼容桥和
+地址映射到对应详情，新商城验证兼容目录后加载索引，再按当前 20 条页面或详情请求懒加载详情。兼容目录和
 主索引都保持在 2 MiB 内，单个详情文件保持在 512 KiB 内。
 目录只接受 GitHub 仓库，不接受 npm-only、任意下载 URL、本地路径或浮动安装目标。
 

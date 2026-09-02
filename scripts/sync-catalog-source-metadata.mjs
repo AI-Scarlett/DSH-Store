@@ -6,7 +6,7 @@ import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'n
 import { isAbsolute, relative, resolve } from 'node:path'
 import { promisify } from 'node:util'
 import { fileURLToPath } from 'node:url'
-import { loadCatalogFromFiles, splitCatalogDocument, validateCatalog } from '../src/catalog.mjs'
+import { catalogBridgeBuffer, loadCatalogFromFiles, splitCatalogDocument, validateCatalog } from '../src/catalog.mjs'
 
 const run = promisify(execFile)
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
@@ -117,7 +117,7 @@ for (let index = 0; index < catalog.entries.length; index += 1) {
 catalog.registry.updatedAt = observedAt
 validateCatalog(catalog)
 const split = splitCatalogDocument(catalog, { detailsPath: catalog.registry.detailsPath })
-const serialized = `${JSON.stringify(split.bridge, null, 2)}\n`
+const serialized = catalogBridgeBuffer(split.bridge)
 const serializedIndex = `${JSON.stringify(split.index, null, 2)}\n`
 await copyFile(catalogPath, backupPath)
 await copyFile(catalogIndexPath, indexBackupPath)

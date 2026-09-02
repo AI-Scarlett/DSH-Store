@@ -28,13 +28,14 @@ Bundle，Web 能力缺失时不阻断启动。
 
 ### GitHub registry
 
-`registry/catalog.json` 是供历史商城读取的 schemaVersion 1 兼容桥，只保留商城自身条目并固定
-`registry/catalog-index.json` 的路径、SHA-256、字节数和条目数；`registry/catalog-index.json` 是
+`registry/catalog.json` 是供历史商城读取的 schemaVersion 1 完整兼容目录，为每个插件保留旧版
+验证、搜索、权限展示和固定来源操作所需的有界字段，并固定 `registry/catalog-index.json` 的路径、
+SHA-256、字节数和条目数；`registry/catalog-index.json` 是
 GitHub Pages 与 DSH 市场的轻量事实源索引；`registry/catalog/details/<插件编号>.json` 是对应的
 完整详情记录，三者必须来自同一提交。
 索引只承载插件编号、中英文名称、版本、推荐标记、顺序、GitHub 地址和有界分页辅助字段，
 详情承载权限、兼容性、证据和安装信息。运行时先读取索引，再只读取当前页面或用户打开的
-详情；兼容桥与索引上限均为 2 MiB，单详情上限为 512 KiB。桥接摘要或详情身份不匹配时
+详情；兼容目录与索引上限均为 2 MiB，单详情上限为 512 KiB。目录摘要或详情身份不匹配时
 失败关闭；远端不可用时只原子回退到随包的完整索引与详情集合，
 但安装/更新前仍必须从固定 Commit 重新核对 manifest 与 Bundle Patch。
 

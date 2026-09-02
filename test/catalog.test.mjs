@@ -5,9 +5,10 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import test from 'node:test'
 import {
-  assertLegacyCatalogCompatibility, buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
+  assertLegacyCatalogCompatibility, buildMarketplaceSnapshot, catalogBridgeBuffer, createCatalogService, githubInstallSpecifier,
   compareCatalogEntries, compareVersions, createDshReleaseContext, dshReleaseCompatibility, dshVersionCompatibility,
-  MAX_CATALOG_INDEX_RESPONSE_BYTES, MAX_CATALOG_RESPONSE_BYTES, loadCatalogFromFiles, paginateMarketplaceSnapshot, projectDshRelease,
+  MAX_CATALOG_BRIDGE_RESPONSE_BYTES, MAX_CATALOG_INDEX_RESPONSE_BYTES, MAX_CATALOG_RESPONSE_BYTES,
+  loadCatalogFromFiles, paginateMarketplaceSnapshot, projectDshRelease,
   searchCatalog, splitCatalogDocument, validateCatalog, validateCatalogBridgeIndex, validateCatalogDetail,
   validateCatalogIndex, verifyCatalogEntry,
 } from '../src/catalog.mjs'
@@ -194,14 +195,20 @@ for (const historical of [
     version: '0.8.7', commit: '79f2158be8f59d92d5227cad5474121081c0e32b',
     validate: validateCatalog087, snapshot: buildMarketplaceSnapshot087, compare: compareVersions087,
   },
-]) test(`legacy ${historical.version} accepts the bounded bridge and discovers the marketplace update`, async () => {
+]) test(`legacy ${historical.version} accepts the complete bounded bridge and discovers the marketplace update`, async () => {
   const bridgeText = await readFile(new URL('../registry/catalog.json', import.meta.url))
   const bridge = JSON.parse(bridgeText)
+  const index = JSON.parse(await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8'))
   const legacy = historical.validate(bridge)
-  assert.ok(bridgeText.length < 2 * 1024 * 1024)
-  assert.equal(legacy.entries.length, 1)
-  assert.equal(legacy.entries[0].id, 'dsh-safe-plugin-manager')
-  assert.equal(historical.compare(legacy.entries[0].version, historical.version), 1)
+  assert.ok(bridgeText.length < MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
+  assert.deepEqual(bridgeText, catalogBridgeBuffer(bridge), 'the compatibility bridge must use its bounded canonical encoding')
+  assert.equal(legacy.entries.length, bridge.registry.indexEntryCount)
+  assert.equal(legacy.entries.length, index.entries.length)
+  assert.ok(legacy.entries.length > 1, 'historical clients must receive the complete compatibility directory')
+  assert.deepEqual(legacy.entries.map(entry => entry.id), index.entries.map(entry => entry.id))
+  const manager = legacy.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
+  assert.ok(manager)
+  assert.equal(historical.compare(manager.version, historical.version), 1)
   assert.equal(legacy.registry.indexPath, undefined, `${historical.version} safely ignores the new bridge pointer`)
   const snapshot = historical.snapshot({ ...legacy, source: { kind: 'github' } }, {
     profile: 'web', plugins: [{
@@ -209,8 +216,10 @@ for (const historical of [
       declaredSpecifier: `git+https://github.com/AI-Scarlett/DSH-Store.git#${historical.commit}`,
     }],
   })
-  assert.equal(snapshot.entries[0].updateAvailable, true)
-  assert.deepEqual(snapshot.entries[0].allowedActions, ['update'])
+  const managerSnapshot = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
+  assert.ok(managerSnapshot)
+  assert.equal(managerSnapshot.updateAvailable, true)
+  assert.deepEqual(managerSnapshot.allowedActions, ['update'])
 })
 
 test('catalog v2 keeps the index bounded and maps every plugin id to one detail record', async () => {
@@ -437,6 +446,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   const managerIsPreviousReleaseBeforeCatalogPin = (
     (packageManifest.version === '0.8.9' && manager.version === '0.8.8')
     || (packageManifest.version === '0.8.10' && manager.version === '0.8.9')
+    || (packageManifest.version === '0.8.11' && manager.version === '0.8.10')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')

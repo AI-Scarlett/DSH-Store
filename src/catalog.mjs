@@ -9,6 +9,7 @@ const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 // Detail records have their own bound because they are fetched independently.
 export const MAX_CATALOG_INDEX_RESPONSE_BYTES = 2 * 1024 * 1024
 export const MAX_CATALOG_DETAIL_RESPONSE_BYTES = 512 * 1024
+export const MAX_CATALOG_BRIDGE_RESPONSE_BYTES = 2 * 1024 * 1024
 export const MAX_CATALOG_RESPONSE_BYTES = 4 * 1024 * 1024
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
@@ -49,6 +50,10 @@ function catalogRelativePath(value, label) {
 
 function catalogDocumentBuffer(document) {
   return Buffer.from(`${JSON.stringify(document, null, 2)}\n`)
+}
+
+export function catalogBridgeBuffer(document) {
+  return Buffer.from(`${JSON.stringify(document)}\n`)
 }
 
 function sha256(value) {
@@ -671,7 +676,9 @@ function validateLegacyCatalog(document) {
   const bridge = Boolean(document.registry && Object.hasOwn(document.registry, 'indexPath'))
   const registry = validateCatalogRegistry(document.registry, { bridge })
   const entries = document.entries.map((entry, index) => validateEntry(entry, index, registry.updatedAt))
-  if (bridge && entries.length !== 1) throw new TypeError('Catalog bridge must contain exactly one legacy bootstrap entry')
+  if (bridge && entries.length !== 1 && entries.length !== registry.indexEntryCount) {
+    throw new TypeError('Catalog bridge must contain either the transitional bootstrap entry or the complete compatibility directory')
+  }
   const ids = new Set()
   const packages = new Set()
   for (const entry of entries) {
@@ -769,14 +776,59 @@ export function validateCatalogDetail(document, indexEntry, registry) {
   return detail
 }
 
+function legacyAssurance(assurance) {
+  return Object.fromEntries(Object.entries(assurance ?? {}).map(([gate, record]) => {
+    const value = { status: record?.status === 'partial' ? 'unknown' : record?.status ?? 'unknown' }
+    if (record?.status === 'partial') value.evidenceStatus = 'partial'
+    for (const field of ['method', 'checkedAt', 'evidenceUrl', 'dshRelease']) {
+      if (record?.[field] != null) value[field] = record[field]
+    }
+    return [gate, value]
+  }))
+}
+
 function legacyWireEntry(entry) {
-  const wire = structuredClone(entry)
-  for (const record of Object.values(wire.assurance ?? {})) {
-    if (record?.status !== 'partial') continue
-    record.status = 'unknown'
-    record.evidenceStatus = 'partial'
+  return {
+    id: entry.id,
+    name: entry.name,
+    packageName: entry.packageName,
+    description: entry.description,
+    searchTerms: entry.searchTerms,
+    repositoryUrl: entry.repositoryUrl,
+    defaultBranch: entry.defaultBranch,
+    manifestPath: entry.manifestPath,
+    installPath: entry.installPath,
+    updatePolicy: entry.updatePolicy,
+    commit: entry.commit,
+    version: entry.version,
+    categories: entry.categories,
+    featured: entry.featured,
+    installCount: entry.installCount,
+    source: entry.source,
+    assurance: legacyAssurance(entry.assurance),
+    entryIds: entry.entryIds,
+    status: entry.status,
+    ...(entry.statusReason ? { statusReason: entry.statusReason } : {}),
+    compatibility: {
+      dsh: entry.compatibility.dsh,
+      dshReleases: entry.compatibility.dshReleases,
+      node: entry.compatibility.node,
+      systems: entry.compatibility.systems,
+      profiles: entry.compatibility.profiles,
+    },
+    details: {
+      pluginType: entry.details.pluginType,
+      installSource: entry.details.installSource,
+      license: entry.details.license,
+      permissions: entry.details.permissions,
+      externalDependencies: entry.details.externalDependencies,
+      reviewStatus: entry.details.reviewStatus,
+    },
+    risk: {
+      installScripts: entry.risk.installScripts,
+      review: entry.risk.review,
+    },
   }
-  return wire
 }
 
 function registryWithoutSplitMetadata(registry) {
@@ -831,10 +883,13 @@ export function splitCatalogDocument(document, options = {}) {
       indexBytes: indexBuffer.length,
       indexEntryCount: validatedIndex.entries.length,
     },
-    entries: [legacyWireEntry(bridgeEntry)],
+    entries: catalog.entries.map(legacyWireEntry),
   }
   validateLegacyCatalog(bridge)
   assertLegacyCatalogCompatibility(bridge)
+  if (catalogBridgeBuffer(bridge).length > MAX_CATALOG_BRIDGE_RESPONSE_BYTES) {
+    throw new TypeError('Catalog compatibility bridge exceeds the historical 2 MiB response ceiling')
+  }
   return {
     bridge,
     index: validatedIndex,
