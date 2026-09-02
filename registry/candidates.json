@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-02T12:42:45.000Z",
+    "updatedAt": "2026-09-02T18:24:02.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -7072,8 +7072,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "dcfabc325227ffe0d849bc36d7d9c4d8ea665b0a",
-      "sourceUpdatedAt": "2026-09-01T15:28:23.000Z",
+      "latestCommit": "f81256b2a3c6ec9d2c71dfcfc24b8c461e148f01",
+      "sourceUpdatedAt": "2026-09-02T14:53:47.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7112,8 +7112,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "291bd6cb1c70511ccbffbf078de80620d9c9922a",
-      "sourceUpdatedAt": "2026-09-02T12:21:27.000Z",
+      "latestCommit": "5c7f1526eb1132711abc38a343758abf296c4e15",
+      "sourceUpdatedAt": "2026-09-02T18:15:10.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7214,8 +7214,8 @@
       "description": "在一次性隔离配置中为 DSH 插件执行安装与冒烟测试，返回结构化的通过/失败记录与批量矩阵，不触碰真实配置。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-test-drive",
       "defaultBranch": "main",
-      "latestCommit": "bc7c8ad3dfc21bb4dad77bf0e5e535005a406f35",
-      "sourceUpdatedAt": "2026-09-01T15:30:57.000Z",
+      "latestCommit": "86044b1767d0c41622827b680cfc6f1915b96bba",
+      "sourceUpdatedAt": "2026-09-02T14:55:38.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7458,8 +7458,8 @@
       "description": "Tavily 多密钥搜索：支持密钥轮换/故障转移、用量仪表盘与设置卡片。",
       "repositoryUrl": "https://github.com/moguiyu/dsh-tavily",
       "defaultBranch": "main",
-      "latestCommit": "44a53e06eb7b3e37c6e3648e8382b7e6ebc6988c",
-      "sourceUpdatedAt": "2026-08-28T10:06:12.000Z",
+      "latestCommit": "8f2784af3d89754acdd9baf58bdd21353ae9c00e",
+      "sourceUpdatedAt": "2026-09-02T15:43:08.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10790,8 +10790,8 @@
       "description": "macOS 电脑控制：Accessibility 观测、过期状态拒绝、作用域权限与安全输入。",
       "repositoryUrl": "https://github.com/Anionex/dsh-computer-use",
       "defaultBranch": "main",
-      "latestCommit": "28296dffe1981216f9be1a9444558b1c5fc5f313",
-      "sourceUpdatedAt": "2026-09-02T12:40:37.000Z",
+      "latestCommit": "b04d2b5e39c671259b1c8c601c76d9c77b2c9d52",
+      "sourceUpdatedAt": "2026-09-02T13:03:31.000Z",
       "discoveredAt": "2026-09-01T12:56:30.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10851,8 +10851,8 @@
       "description": "共享真实浏览器：用户可观看并随时接管的原生 Electron 窗口，agent 通过 CDP 驱动，内置 20 个 browser_* 工具（打开/快照/执行/填表/截图/下载/登录态）；任务级会话隔离、登录态持久化、人机验证识别，纯 `dsh web` 无需桌面外壳即可自托管。",
       "repositoryUrl": "https://github.com/wqty123/dsh-browser",
       "defaultBranch": "master",
-      "latestCommit": "5ca96a708056e2e2d7475e43fc90f324514150b3",
-      "sourceUpdatedAt": "2026-08-27T20:43:16.000Z",
+      "latestCommit": "b26bab0f732ab6300447345a17e6cc42739fa9cc",
+      "sourceUpdatedAt": "2026-09-02T14:10:55.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10868,24 +10868,23 @@
     },
     {
       "id": "sjh9714-dsh-movein",
-      "name": "兼容性复核：sjh9714/dsh-movein（2 个 Catalog 条目）",
-      "description": "该仓库中的 2 个 DSH STORE 条目因最新三个 DSH 版本兼容记录不足而暂时下架：dsh-movein、dsh-movein-permissions。",
+      "name": "配置导入迁移（DSH Movein）",
+      "description": "一键迁移导入整套 Claude Code 或 Codex 配置到 DSH：技能、斜杠命令、MCP、hooks、子代理、权限规则，默认先出搬家清单预演，输出迁移差异报告，搬完可用 doctor 体检；作为插件提供 movein_from_claude_code 工具，直接让 agent 帮你搬。",
       "repositoryUrl": "https://github.com/sjh9714/dsh-movein",
       "defaultBranch": "main",
-      "latestCommit": null,
-      "sourceUpdatedAt": "2026-08-27T14:02:19.000Z",
+      "latestCommit": "d305b89a08b8ed0901aac398bb1abfdc374055c3",
+      "sourceUpdatedAt": "2026-08-18T02:00:10.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
       ],
       "topics": [
-        "security",
         "development",
         "dsh-compatibility-review"
       ],
       "status": "reviewing",
       "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-movein, dsh-movein-permissions."
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-movein."
     },
     {
       "id": "future007s-dsh-peak-indicator",
@@ -11616,10 +11615,10 @@
         "catalog-latest-three-compatibility-v1"
       ],
       "topics": [
-        "tools",
-        "development",
         "workflow",
         "sessions",
+        "tools",
+        "development",
         "dsh-compatibility-review"
       ],
       "status": "reviewing",
@@ -13747,48 +13746,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: deepseek-prism-dsh."
-    },
-    {
-      "id": "aidenwu0209-dsh-unlimited-ocr-skill",
-      "name": "OCR 文字识别（DSH Unlimited OCR Skill）",
-      "description": "为 DSH 提供OCR 文字识别能力。英文原始说明：Unlimited-OCR long-document parsing with a native DeepSeek Harness tool and GUI configuration.",
-      "repositoryUrl": "https://github.com/Aidenwu0209/dsh-Unlimited-OCR-Skill",
-      "defaultBranch": "main",
-      "latestCommit": "cb2bbddd0b7255281d547fa6575c8c0189960a31",
-      "sourceUpdatedAt": "2026-08-15T10:07:24.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "ui",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-unlimited-ocr-skill."
-    },
-    {
-      "id": "aidenwu0209-dsh-paddleocr-skills",
-      "name": "OCR 文字识别（DSH Paddleocr Skills）",
-      "description": "为 DSH 提供OCR 文字识别能力。英文原始说明：PaddleOCR text-recognition and document-parsing skills with native DeepSeek Harness tools and GUI configuration.",
-      "repositoryUrl": "https://github.com/Aidenwu0209/dsh-PaddleOCR-Skills",
-      "defaultBranch": "main",
-      "latestCommit": "15c692ae2ecf0ac9ff09de3ce7bb9820791dd57d",
-      "sourceUpdatedAt": "2026-08-15T10:07:24.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "ui",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-paddleocr-skills."
     },
     {
       "id": "zachary7456-dsh-voice-mic",
