@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "a54acfc8dee29a7c98127c9e66f07f3ad6e9bae9",
-  "version": "0.8.10",
+  "commit": "944a76b00ba64418ea87b39cd6c81052749e2597",
+  "version": "0.8.11",
   "categories": [
     "marketplace",
     "management"
@@ -39,34 +39,30 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T08:56:32.000Z",
-    "observedAt": "2026-09-02T10:00:51.555Z",
+    "updatedAt": "2026-09-02T12:30:31.000Z",
+    "observedAt": "2026-09-02T12:32:30.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "maintainer-fixed-source-release-v2",
-      "checkedAt": "2026-09-02T10:00:51.555Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/a54acfc8dee29a7c98127c9e66f07f3ad6e9bae9",
+      "checkedAt": "2026-09-02T12:32:30.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/944a76b00ba64418ea87b39cd6c81052749e2597",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The fixed source Commit passed repository checks, source-contract review, and protected DSH boundary checks before the Catalog pin."
+      "summary": "The fixed source Commit passed repository checks, legacy-client regression tests, source-contract review, and protected DSH boundary checks before the Catalog pin."
     },
     "installability": {
-      "status": "verified",
-      "method": "disposable-official-dsh-cli-safe-repair",
-      "checkedAt": "2026-09-02T10:00:51.555Z",
-      "evidenceUrl": "https://dsh.store/repair/",
-      "dshRelease": "0.1.2-alpha.4",
-      "systems": [
-        "macOS-arm64"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "An isolated official DSH 0.1.2-alpha.4 Profile updated the historical STORE from 0.8.5 to this exact Commit with all lifecycle scripts disabled and composed the Profile successfully."
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No disposable Profile installation has been completed for the new 0.8.11 Commit."
     },
     "runtime": {
       "status": "unknown",
@@ -76,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The disposable repair stopped at the explicit restart-required gate; no post-restart real Profile runtime acceptance is claimed."
+      "summary": "No post-restart runtime acceptance has been completed for the new 0.8.11 Commit."
     },
     "securityReview": {
       "status": "unknown",
@@ -86,7 +82,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Repository checks and bounded recovery tests are not an independent security audit."
+      "summary": "Repository checks and legacy-client regression tests are not an independent security audit."
     }
   },
   "entryIds": [
