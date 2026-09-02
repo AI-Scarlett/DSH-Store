@@ -4,7 +4,7 @@ const PACKAGE_NAME = /^(?:@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/
 const SIMPLE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
-const MAX_CATALOG_BYTES = 2 * 1024 * 1024
+export const MAX_CATALOG_RESPONSE_BYTES = 4 * 1024 * 1024
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
@@ -951,9 +951,9 @@ async function readResponseJson(response) {
     throw error
   }
   const declared = Number(response.headers.get('content-length'))
-  if (Number.isFinite(declared) && declared > MAX_CATALOG_BYTES) throw new Error('catalog response is too large')
+  if (Number.isFinite(declared) && declared > MAX_CATALOG_RESPONSE_BYTES) throw new Error('catalog response is too large')
   const text = await response.text()
-  if (Buffer.byteLength(text) > MAX_CATALOG_BYTES) throw new Error('catalog response is too large')
+  if (Buffer.byteLength(text) > MAX_CATALOG_RESPONSE_BYTES) throw new Error('catalog response is too large')
   try {
     return JSON.parse(text)
   } catch (error) {

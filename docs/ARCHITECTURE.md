@@ -30,7 +30,8 @@ Bundle，Web 能力缺失时不阻断启动。
 
 `registry/catalog.json` 是 GitHub Pages 与 DSH 市场的单一事实源。运行时优先读取
 GitHub Raw；不可用时回退到随包快照，但安装/更新前仍必须从固定 Commit 重新核对
-manifest 与 Bundle Patch。
+manifest 与 Bundle Patch。远程 Catalog 响应限制为有界 4 MiB；超限、网络失败或内容
+无效时只能进入明确标记的离线回退，不能把快照当作在线目录。
 
 Catalog 控制面由八小时自动策略驱动：GitHub 搜索和 Issue 只提供候选；固定 Commit 的
 manifest、仓库许可证、Bundle Patch、入口、文件清单、依赖、生命周期和完整有界运行时
