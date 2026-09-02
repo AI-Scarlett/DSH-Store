@@ -1,0 +1,181 @@
+{
+  "id": "dsh-wecom-cli",
+  "name": "企业微信办公技能（DSH WeCom CLI）",
+  "packageName": "dsh-wecom-cli",
+  "description": "提供企业微信官方 CLI 的一键安装、扫码授权、连接测试，以及 14 个办公领域的受控只读查询；固定 argv、无 Shell，不向浏览器返回凭据或安装输出。",
+  "searchTerms": [
+    "企业微信办公技能",
+    "DSH WeCom CLI",
+    "dsh-wecom-cli",
+    "企业微信",
+    "WeCom",
+    "消息连接器",
+    "工具能力",
+    "工具",
+    "能力",
+    "工作流与自动化",
+    "工作流",
+    "自动化",
+    "任务",
+    "通知与集成",
+    "通知",
+    "提醒",
+    "消息",
+    "dsh",
+    "wecom",
+    "cli"
+  ],
+  "repositoryUrl": "https://github.com/AI-Scarlett/dsh-wecom-cli",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "1c46db62e8cb42ff2bb7aaf1225e6a84e9f31d43",
+  "version": "0.3.0",
+  "categories": [
+    "tools",
+    "workflow",
+    "notifications"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-18T13:44:12.000Z",
+    "observedAt": "2026-08-21T00:27:59.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "catalog-presence",
+      "checkedAt": "2026-09-01T19:20:14.000Z",
+      "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Present in the trusted GitHub catalog."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [
+    "dsh-wecom-cli-host",
+    "dsh-wecom-cli-skill-provider"
+  ],
+  "status": "unlisted",
+  "statusReason": "暂时下架：外部维护窗口；请留意仓库公告后再恢复上架。",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dshReleases": {
+      "rc.7": "incompatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [
+      "macOS"
+    ],
+    "profiles": [
+      "web",
+      "headless"
+    ]
+  },
+  "details": {
+    "pluginType": "suite",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "restricted",
+      "credentials": [
+        "keychain",
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@wecom/cli 1.1.0（设置页显式确认后固定 argv 安装）",
+      "企业微信账号与授权（设置页显式扫码初始化）",
+      "企业微信官方服务"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "confirmed-pinned-cli-install-qr-onboarding-temp-and-credential-write-read-only-business-fixed-argv-redacted"
+  }
+}

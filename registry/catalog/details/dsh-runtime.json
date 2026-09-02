@@ -1,0 +1,166 @@
+{
+  "id": "dsh-runtime",
+  "name": "文件与工作区工具（DSH Runtime）",
+  "packageName": "@open-design/dsh-runtime",
+  "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：DeepSeek Harness profile runtime for OpenDesign",
+  "searchTerms": [
+    "文件与工作区工具",
+    "DSH Runtime",
+    "dsh-runtime",
+    "@open-design/dsh-runtime",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "runtime"
+  ],
+  "repositoryUrl": "https://github.com/nexu-io/open-design",
+  "defaultBranch": "main",
+  "manifestPath": "packages/dsh-runtime/package.json",
+  "installPath": "packages/dsh-runtime",
+  "updatePolicy": "external-only",
+  "commit": "05f5b33ef59f078df10ac1125986e00e4a796cf3",
+  "version": "0.1.0",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-23T01:32:44.000Z",
+    "observedAt": "2026-08-23T01:40:55.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-08-23T01:40:55.000Z",
+      "evidenceUrl": "https://github.com/nexu-io/open-design/commit/05f5b33ef59f078df10ac1125986e00e4a796cf3",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "system-prompt",
+    "hmr",
+    "open-design-startup",
+    "open-design-runtime"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime or optional dependencies require a separate supply-chain review; repository tree exceeds the automatic review bound; runtime source contains the files permission signal",
+  "compatibility": {
+    "dsh": "0.1.0-rc.6",
+    "dshReleases": {
+      "rc.7": "incompatible",
+      "rc.8": "incompatible",
+      "0.1.1-rc.1": "incompatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=24",
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "Apache-2.0",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@deepseek-ai/dsh-cmdline",
+      "commander"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

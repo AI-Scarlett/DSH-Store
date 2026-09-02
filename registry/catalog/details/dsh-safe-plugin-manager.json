@@ -1,0 +1,174 @@
+{
+  "id": "dsh-safe-plugin-manager",
+  "name": "安全插件商城（DSH-Store）",
+  "packageName": "dsh-safe-plugin-manager",
+  "description": "本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。",
+  "searchTerms": [
+    "安全插件商城",
+    "DSH-Store",
+    "dsh-safe-plugin-manager",
+    "安全",
+    "审计",
+    "验证",
+    "防护",
+    "插件市场",
+    "商城",
+    "插件发现",
+    "管理工具",
+    "插件管理",
+    "管理",
+    "dsh",
+    "safe",
+    "plugin",
+    "manager"
+  ],
+  "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "d9770feb3d2e708de1c65f6d56f6a01617bc9ec9",
+  "version": "0.8.7",
+  "categories": [
+    "marketplace",
+    "management"
+  ],
+  "featured": true,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-01T17:53:51.000Z",
+    "observedAt": "2026-09-01T18:01:39.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-09-01T18:01:39.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/d9770feb3d2e708de1c65f6d56f6a01617bc9ec9",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated release was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "dsh-safe-plugin-manager"
+  ],
+  "status": "approved",
+  "statusReason": null,
+  "compatibility": {
+    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible",
+      "0.1.2-alpha.2": "compatible",
+      "0.1.2-alpha.3": "compatible",
+      "0.1.2-alpha.4": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "restricted",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [
+      "GitHub Raw/API",
+      "macOS launchd (optional bundled Guardian)"
+    ],
+    "reviewStatus": "author-verified"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "owner-curated-not-security-audited"
+  }
+}

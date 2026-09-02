@@ -1,0 +1,170 @@
+{
+  "id": "dsh-explorer",
+  "name": "文件浏览器（DSH Explorer）",
+  "packageName": "dsh-explorer",
+  "description": "由 Host 与浏览器两个 Bundle 组成的实时文件树侧栏，支持 Git 标记、媒体预览与拖拽引用。",
+  "searchTerms": [
+    "文件浏览器",
+    "DSH Explorer",
+    "dsh-explorer",
+    "浏览器",
+    "网页",
+    "页面操作",
+    "截图",
+    "文件与输入",
+    "文件",
+    "工作区",
+    "附件",
+    "界面增强",
+    "界面",
+    "交互",
+    "侧栏",
+    "工具能力",
+    "工具",
+    "能力",
+    "dsh",
+    "explorer"
+  ],
+  "repositoryUrl": "https://github.com/No-PRM/dsh-explorer",
+  "defaultBranch": "main",
+  "manifestPath": "dsh-plugins/dsh-explorer/package.json",
+  "installPath": "dsh-plugins/dsh-explorer",
+  "updatePolicy": null,
+  "commit": "81019c61da8b58cbeb8f49dd06141fef42c17eea",
+  "version": "0.1.0",
+  "categories": [
+    "files",
+    "ui",
+    "tools"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-16T04:23:16.000Z",
+    "observedAt": "2026-08-21T00:27:59.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "catalog-presence",
+      "checkedAt": "2026-09-01T19:20:14.000Z",
+      "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Present in the trusted GitHub catalog."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [],
+  "status": "blocked",
+  "statusReason": "完整功能需要同时安装 Host 与浏览器两个独立 Bundle；当前目录尚不支持多包原子安装和统一回滚。",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.6",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "none",
+      "commands": "unknown",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "blocked-multi-package-atomicity"
+  }
+}

@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { posix } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { canonicalGithubRepository, validateCatalog, verifyCatalogEntry } from '../src/catalog.mjs'
+import { canonicalGithubRepository, loadCatalogFromFiles, validateCatalog, verifyCatalogEntry } from '../src/catalog.mjs'
 import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
 
 export const SUBMISSION_REPORT_MARKER = '<!-- dsh-plugin-submission-check -->'
@@ -312,8 +312,8 @@ async function optionalReadme(repositoryUrl, commit, manifestPath, options) {
 export async function checkRepository(repositoryValue, pluginPath = '', options = {}) {
   const request = options.fetch ?? globalThis.fetch
   if (typeof request !== 'function') throw submissionError('SUBMISSION_FETCH_UNAVAILABLE', 'Public GitHub source verification is unavailable')
-  const catalogDocument = options.catalogDocument ?? JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
-  const catalog = validateCatalog(catalogDocument)
+  const catalogDocument = options.catalogDocument ?? await loadCatalogFromFiles()
+  const catalog = catalogDocument?.schemaVersion === 2 ? await loadCatalogFromFiles() : validateCatalog(catalogDocument)
   const repositoryInput = parseRepositoryInput(repositoryValue)
   const submittedPath = cleanValue(pluginPath)
   const requestedPath = safeRelativeDirectory(submittedPath) ?? repositoryInput.linkedPath
@@ -341,7 +341,10 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
     ? manifest.dsh.pluginType
     : 'unknown'
   const installPath = discovered.manifestPath === 'package.json' ? null : posix.dirname(discovered.manifestPath)
-  const candidate = validateCatalog({ ...catalogDocument, entries: [{
+  // Candidate validation is still the legacy full-entry contract. When the
+  // repository Catalog is v2, validate against the already hydrated view so
+  // the candidate does not accidentally inherit the lightweight index shape.
+  const candidate = validateCatalog({ ...catalog, entries: [{
     id: catalogId(manifest.name),
     name: cleanValue(manifest.displayName ?? manifest?.dsh?.displayName) || manifest.name,
     packageName: manifest.name,

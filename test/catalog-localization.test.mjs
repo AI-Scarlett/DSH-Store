@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-localization.mjs'
-import { searchCatalog, validateCatalog } from '../src/catalog.mjs'
+import { loadCatalogFromFiles, searchCatalog } from '../src/catalog.mjs'
 
 test('localization creates durable Chinese names, descriptions, and search aliases', () => {
   const localized = localizeCatalogEntry({
@@ -25,9 +25,8 @@ test('localization preserves a curated Chinese-English display name', () => {
 })
 
 test('the production Catalog is fully localized and searchable by Chinese use cases', async () => {
-  const source = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
-  assertCatalogLocalization(source)
-  const catalog = validateCatalog(source)
+  const catalog = await loadCatalogFromFiles()
+  assertCatalogLocalization(catalog)
   assert.ok(searchCatalog(catalog, '任务完成', { includeUnlisted: true }).some(entry => entry.id === 'dsh-task-notify'))
   assert.ok(searchCatalog(catalog, '余额', { includeUnlisted: true }).some(entry => entry.id === 'dsh-balance-monitor'))
   assert.ok(catalog.entries.every(entry => entry.searchTerms.some(term => /[\u3400-\u9fff]/u.test(term))))

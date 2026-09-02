@@ -1,0 +1,188 @@
+{
+  "id": "build-dsh-plugin",
+  "name": "DSH 插件开发工作流（Build DSH Plugin）",
+  "packageName": "dsh-build-plugin",
+  "description": "把插件需求转化为标准 DSH Bundle、卡片契约、审计、发布和商城候选；候选发现与可信安装严格分层，并强制执行非破坏性边界与分级验收。",
+  "searchTerms": [
+    "DSH 插件开发工作流",
+    "Build DSH Plugin",
+    "build-dsh-plugin",
+    "dsh-build-plugin",
+    "任务",
+    "工作流",
+    "自动化",
+    "定时",
+    "开发与运行时",
+    "开发",
+    "调试",
+    "运行时",
+    "工作流与自动化",
+    "工具能力",
+    "工具",
+    "能力",
+    "dsh",
+    "build",
+    "plugin"
+  ],
+  "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "99f054a42e60e3e91f8ca54eb8e8c6b22c21e870",
+  "version": "0.4.0",
+  "categories": [
+    "development",
+    "workflow",
+    "tools"
+  ],
+  "featured": true,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-01T16:50:49.000Z",
+    "observedAt": "2026-09-01T16:52:00.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-release-readback",
+      "checkedAt": "2026-09-01T16:52:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/99f054a42e60e3e91f8ca54eb8e8c6b22c21e870",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "公开固定提交的 0.4.0 manifest、插件自有 Bundle Patch、Host 入口、许可证与 v2026.09.02.1 发行资产已回读。"
+    },
+    "installability": {
+      "status": "partial",
+      "method": "disposable-dsh-latest-three-profile-cli-install-v1",
+      "checkedAt": "2026-09-01T16:52:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/releases/tag/v2026.09.02.1",
+      "dshRelease": "0.1.2-alpha.4",
+      "systems": [
+        "macOS"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "部分验证：0.4.0 已在一次性 DSH alpha.3 与 alpha.4 Profile 通过官方 CLI 安装、dump-config 与冷启动；alpha.2 安装失败于官方发行包缺失依赖，尚无公开 HTTPS 运行日志。"
+    },
+    "runtime": {
+      "status": "partial",
+      "method": "dsh-alpha4-skill-registration-contract-v1",
+      "checkedAt": "2026-09-01T16:52:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/99f054a42e60e3e91f8ca54eb8e8c6b22c21e870",
+      "dshRelease": "0.1.2-alpha.4",
+      "systems": [
+        "macOS"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "部分验证：alpha.2、alpha.3 与 alpha.4 的公开 SkillRegistration 契约一致，alpha.3/alpha.4 隔离冷启动通过；尚无真实 Profile 或 UI 证据。"
+    },
+    "securityReview": {
+      "status": "partial",
+      "method": "fixed-source-policy-and-distribution-check-v1",
+      "checkedAt": "2026-09-01T16:52:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/99f054a42e60e3e91f8ca54eb8e8c6b22c21e870",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "部分验证：固定源策略、权限审计器、契约与分发一致性测试通过；不等同于独立安全审计或第三方渗透测试。"
+    }
+  },
+  "entryIds": [
+    "dsh-build-plugin-skill-provider"
+  ],
+  "status": "approved",
+  "statusReason": null,
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dshReleases": {
+      "rc.7": "incompatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible",
+      "0.1.2-alpha.2": "compatible",
+      "0.1.2-alpha.3": "compatible",
+      "0.1.2-alpha.4": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "passed",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "failed",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [
+      "macOS"
+    ],
+    "profiles": [
+      "web",
+      "headless"
+    ]
+  },
+  "details": {
+    "pluginType": "suite",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "shell",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "Git（发布与固定源验证时）",
+      "GitHub（发布与 DSH STORE 上架时）"
+    ],
+    "reviewStatus": "author-verified"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "owner-skill-development-workflow-can-direct-high-privilege-agent-actions-not-security-audited"
+  }
+}

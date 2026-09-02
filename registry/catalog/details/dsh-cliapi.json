@@ -1,0 +1,173 @@
+{
+  "id": "dsh-cliapi",
+  "name": "模型与授权（DSH CLIAPI）",
+  "packageName": "@local/dsh-cliapi",
+  "description": "统一管理 CLI/OAuth 授权、Auto 故障切换与多模态模型调度。",
+  "searchTerms": [
+    "模型与授权",
+    "DSH CLIAPI",
+    "dsh-cliapi",
+    "@local/dsh-cliapi",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
+    "模型与账号",
+    "模型提供商",
+    "模型路由",
+    "路由",
+    "故障切换",
+    "dsh",
+    "cliapi"
+  ],
+  "repositoryUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI",
+  "defaultBranch": "main",
+  "manifestPath": "plugin/package.json",
+  "installPath": "plugin",
+  "updatePolicy": "user-reviewed",
+  "commit": "2db132bb430c5304627e5eb5681febecfc2d81ab",
+  "version": "0.5.1",
+  "categories": [
+    "models",
+    "routing"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-25T12:49:19.000Z",
+    "observedAt": "2026-08-25T12:50:32.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-manifest-and-bundle-review-v1",
+      "checkedAt": "2026-08-25T12:50:32.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/2db132bb430c5304627e5eb5681febecfc2d81ab",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Merged fixed Commit declares the DSH Bundle and explicit release compatibility matrix."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No Catalog automation install was executed; local source tests do not prove DSH installation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No disposable DSH Profile runtime acceptance was executed."
+    },
+    "securityReview": {
+      "status": "partial",
+      "method": "fixed-source-static-security-scan-v1",
+      "checkedAt": "2026-08-25T12:50:32.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/2db132bb430c5304627e5eb5681febecfc2d81ab",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Deterministic scan found no critical secret, exfiltration, destructive, SSH, or mining findings; capability warnings and an incomplete binary-file scan remain. This is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "dsh-cliapi"
+  ],
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.2, 0.1.2-alpha.3, 0.1.2-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dshReleases": {
+      "rc.7": "incompatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=20",
+    "systems": [
+      "macOS",
+      "Linux"
+    ],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "provider",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "restricted",
+      "credentials": [
+        "oauth",
+        "api-key"
+      ]
+    },
+    "externalDependencies": [
+      "CLIProxyAPI",
+      "第三方 API"
+    ],
+    "reviewStatus": "author-verified"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "owner-curated-not-security-audited"
+  }
+}

@@ -4,6 +4,10 @@ const PACKAGE_NAME = /^(?:@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/
 const SIMPLE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
+// The index is intentionally kept below the historical 2 MiB response ceiling.
+// Detail records have their own bound because they are fetched independently.
+export const MAX_CATALOG_INDEX_RESPONSE_BYTES = 2 * 1024 * 1024
+export const MAX_CATALOG_DETAIL_RESPONSE_BYTES = 512 * 1024
 export const MAX_CATALOG_RESPONSE_BYTES = 4 * 1024 * 1024
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
@@ -21,8 +25,8 @@ export const DSH_RC_VERSIONS = {
   '0.1.2-alpha.4': '0.1.2-alpha.4',
 }
 const MAX_DSH_RELEASE_KEYS = 64
-export const MARKET_PAGE_SIZE = 24
-export const MAX_MARKET_PAGE_SIZE = 48
+export const MARKET_PAGE_SIZE = 20
+export const MAX_MARKET_PAGE_SIZE = 40
 const MAX_DSH_RANGE_LENGTH = 512
 const MAX_DSH_RANGE_CLAUSES = 16
 const MAX_DSH_RANGE_TOKENS = 32
@@ -30,6 +34,7 @@ const DSH_RANGE_OPERATORS = ['>=', '<=', '>', '<', '^', '~', '=']
 
 export const DEFAULT_CATALOG_URL =
   'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
+export const DEFAULT_CATALOG_DETAILS_PATH = 'catalog/details'
 
 function parseDshRangeClause(clause) {
   const fragments = clause.trim().split(/\s+/u).filter(Boolean)
@@ -250,6 +255,10 @@ export function assertLegacyCatalogCompatibility(document) {
   if (!document || typeof document !== 'object' || !Array.isArray(document.entries)) {
     throw new TypeError('legacy Catalog compatibility requires a Catalog document')
   }
+  // A split v2 Catalog is validated detail-by-detail under the current wire
+  // contract. Its hydrated view intentionally keeps current partial evidence;
+  // it is not an old monolithic payload that must use the 0.8.2 bridge.
+  if (document.sourceFormat === 'split-v2') return true
   for (const [entryIndex, entry] of document.entries.entries()) {
     const assurance = entry?.assurance
     if (assurance === undefined || assurance === null) continue
@@ -571,30 +580,58 @@ function validateEntry(value, index, catalogUpdatedAt) {
   }
 }
 
-export function validateCatalog(document) {
-  if (!document || typeof document !== 'object' || Array.isArray(document)) {
-    throw new TypeError('catalog must be an object')
-  }
-  if (document.schemaVersion !== 1) throw new TypeError('catalog schemaVersion must be 1')
-  if (!document.registry || typeof document.registry !== 'object' || Array.isArray(document.registry)) {
+function validateCatalogRegistry(registry, { index = false } = {}) {
+  if (!registry || typeof registry !== 'object' || Array.isArray(registry)) {
     throw new TypeError('catalog registry metadata is required')
   }
-  if (!Array.isArray(document.entries)) throw new TypeError('catalog entries must be an array')
-  const trustPolicy = document.registry.trustPolicy
+  const trustPolicy = registry.trustPolicy
   if (trustPolicy?.candidateInstallDisabled !== true || trustPolicy?.unknownIsNotVerified !== true
     || trustPolicy?.promotionIndependentOfVerification !== true) {
     throw new TypeError('catalog registry trustPolicy must fail closed')
   }
-  const categories = document.registry.categories && typeof document.registry.categories === 'object'
-    ? Object.fromEntries(Object.entries(document.registry.categories).map(([key, label]) => {
+  const categories = registry.categories && typeof registry.categories === 'object'
+    ? Object.fromEntries(Object.entries(registry.categories).map(([key, label]) => {
         const id = nonEmptyString(key, 'registry.categories key', 96)
         if (!SIMPLE_ID.test(id)) throw new TypeError(`registry category id ${id} is invalid`)
         return [id, nonEmptyString(label, `registry.categories.${key}`, 120)]
       }))
     : {}
-  const registryUpdatedAt = isoDateOrNull(document.registry.updatedAt, 'registry.updatedAt')
+  const registryUpdatedAt = isoDateOrNull(registry.updatedAt, 'registry.updatedAt')
   if (!registryUpdatedAt) throw new TypeError('registry.updatedAt must be an ISO date-time')
-  const entries = document.entries.map((entry, index) => validateEntry(entry, index, registryUpdatedAt))
+  const normalized = {
+    name: nonEmptyString(registry.name, 'registry.name', 160),
+    repositoryUrl: canonicalGithubRepository(registry.repositoryUrl),
+    homepageUrl: typeof registry.homepageUrl === 'string' ? registry.homepageUrl.slice(0, 400) : null,
+    installCountsUrl: typeof registry.installCountsUrl === 'string' ? new URL(registry.installCountsUrl).href : null,
+    updatedAt: registryUpdatedAt,
+    sourceUpdates: {
+      mode: registry.sourceUpdates?.mode === 'client-on-demand' ? 'client-on-demand' : 'client-on-demand',
+      defaultPolicy: registry.sourceUpdates?.defaultPolicy === 'risk-derived' ? 'risk-derived' : 'risk-derived',
+    },
+    trustPolicy: {
+      candidateInstallDisabled: true,
+      unknownIsNotVerified: true,
+      promotionIndependentOfVerification: true,
+    },
+    categories,
+  }
+  if (index) {
+    const detailsPath = nonEmptyString(registry.detailsPath ?? DEFAULT_CATALOG_DETAILS_PATH, 'registry.detailsPath', 160)
+      .replace(/^\/+|\/+$/g, '')
+    if (detailsPath.includes('..') || detailsPath.includes('\\')) throw new TypeError('registry.detailsPath must stay inside the registry')
+    normalized.detailsPath = detailsPath
+  }
+  return normalized
+}
+
+function validateLegacyCatalog(document) {
+  if (!document || typeof document !== 'object' || Array.isArray(document)) {
+    throw new TypeError('catalog must be an object')
+  }
+  if (document.schemaVersion !== 1) throw new TypeError('catalog schemaVersion must be 1')
+  if (!Array.isArray(document.entries)) throw new TypeError('catalog entries must be an array')
+  const registry = validateCatalogRegistry(document.registry)
+  const entries = document.entries.map((entry, index) => validateEntry(entry, index, registry.updatedAt))
   const ids = new Set()
   const packages = new Set()
   for (const entry of entries) {
@@ -602,36 +639,164 @@ export function validateCatalog(document) {
     if (packages.has(entry.packageName)) throw new TypeError(`duplicate catalog package ${entry.packageName}`)
     if (entry.categories.length === 0) throw new TypeError(`catalog entry ${entry.id} must declare at least one category`)
     for (const category of entry.categories) {
-      if (!Object.hasOwn(categories, category)) throw new TypeError(`catalog entry ${entry.id} uses unknown category ${category}`)
+      if (!Object.hasOwn(registry.categories, category)) throw new TypeError(`catalog entry ${entry.id} uses unknown category ${category}`)
     }
     ids.add(entry.id)
     packages.add(entry.packageName)
   }
   return {
     schemaVersion: 1,
-    registry: {
-      name: nonEmptyString(document.registry.name, 'registry.name', 160),
-      repositoryUrl: canonicalGithubRepository(document.registry.repositoryUrl),
-      homepageUrl: typeof document.registry.homepageUrl === 'string'
-        ? document.registry.homepageUrl.slice(0, 400)
-        : null,
-      installCountsUrl: typeof document.registry.installCountsUrl === 'string'
-        ? new URL(document.registry.installCountsUrl).href
-        : null,
-      updatedAt: registryUpdatedAt,
-      sourceUpdates: {
-        mode: document.registry.sourceUpdates?.mode === 'client-on-demand' ? 'client-on-demand' : 'client-on-demand',
-        defaultPolicy: document.registry.sourceUpdates?.defaultPolicy === 'risk-derived' ? 'risk-derived' : 'risk-derived',
-      },
-      trustPolicy: {
-        candidateInstallDisabled: true,
-        unknownIsNotVerified: true,
-        promotionIndependentOfVerification: true,
-      },
-      categories,
-    },
+    registry,
     entries,
   }
+}
+
+function bilingualNameParts(value, fallback) {
+  const current = nonEmptyString(value, 'catalog entry name', 160)
+  const formatted = /^(?<zh>.+[\u3400-\u9fff].*)（(?<en>[^（）]*[A-Za-z0-9@][^（）]*)）$/u.exec(current)
+  if (formatted) return { nameZh: formatted.groups.zh.trim(), nameEn: formatted.groups.en.trim() }
+  if (/[\u3400-\u9fff]/u.test(current)) return { nameZh: current, nameEn: fallback }
+  return { nameZh: current, nameEn: fallback }
+}
+
+function validateCatalogIndexEntry(value, index, registry) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`index.entries[${index}] must be an object`)
+  const id = nonEmptyString(value.id, `index.entries[${index}].id`, 96)
+  if (!SIMPLE_ID.test(id)) throw new TypeError(`index.entries[${index}].id is invalid`)
+  const packageName = nonEmptyString(value.packageName, `index.entries[${index}].packageName`, 214)
+  if (!PACKAGE_NAME.test(packageName) || packageName.includes('..')) throw new TypeError(`index.entries[${index}].packageName is invalid`)
+  const version = nonEmptyString(value.version, `index.entries[${index}].version`, 80)
+  if (!VERSION.test(version)) throw new TypeError(`index.entries[${index}].version is invalid`)
+  const detailPath = nonEmptyString(value.detailPath, `index.entries[${index}].detailPath`, 240)
+  if (detailPath.startsWith('/') || detailPath.includes('..') || detailPath.includes('\\')) throw new TypeError(`index.entries[${index}].detailPath is invalid`)
+  const prefix = `${registry.detailsPath}/`
+  if (!detailPath.startsWith(prefix)) throw new TypeError(`index.entries[${index}].detailPath must be inside ${registry.detailsPath}`)
+  if (detailPath !== `${prefix}${id}.json`) throw new TypeError(`index.entries[${index}].detailPath must resolve from the plugin id`)
+  const order = value.order
+  if (!Number.isInteger(order) || order < 0 || order > 1_000_000) throw new TypeError(`index.entries[${index}].order must be a non-negative integer`)
+  const names = {
+    nameZh: nonEmptyString(value.nameZh, `index.entries[${index}].nameZh`, 160),
+    nameEn: nonEmptyString(value.nameEn, `index.entries[${index}].nameEn`, 160),
+  }
+  return {
+    id,
+    ...names,
+    packageName,
+    version,
+    featured: value.featured === true,
+    order,
+    repositoryUrl: canonicalGithubRepository(value.repositoryUrl),
+    detailPath,
+    status: enumValue(value.status, `index.entries[${index}].status`, ['approved', 'blocked', 'unlisted']),
+    categories: stringArray(value.categories ?? [], `index.entries[${index}].categories`, { simple: true }),
+    searchTerms: stringArray(value.searchTerms ?? [], `index.entries[${index}].searchTerms`, { max: 120 }).slice(0, 40),
+  }
+}
+
+export function validateCatalogIndex(document) {
+  if (!document || typeof document !== 'object' || Array.isArray(document)) throw new TypeError('catalog index must be an object')
+  if (document.schemaVersion !== 2 || document.catalogType !== 'index') throw new TypeError('catalog index schemaVersion must be 2')
+  if (!Array.isArray(document.entries)) throw new TypeError('catalog index entries must be an array')
+  const registry = validateCatalogRegistry(document.registry, { index: true })
+  const entries = document.entries.map((entry, index) => validateCatalogIndexEntry(entry, index, registry))
+  const ids = new Set()
+  const packages = new Set()
+  const details = new Set()
+  for (const entry of entries) {
+    if (ids.has(entry.id)) throw new TypeError(`duplicate catalog index id ${entry.id}`)
+    if (packages.has(entry.packageName)) throw new TypeError(`duplicate catalog index package ${entry.packageName}`)
+    if (details.has(entry.detailPath)) throw new TypeError(`duplicate catalog index detail path ${entry.detailPath}`)
+    for (const category of entry.categories) if (!Object.hasOwn(registry.categories, category)) throw new TypeError(`catalog index entry ${entry.id} uses unknown category ${category}`)
+    ids.add(entry.id); packages.add(entry.packageName); details.add(entry.detailPath)
+  }
+  return { schemaVersion: 2, catalogType: 'index', registry, entries }
+}
+
+export function validateCatalog(document) {
+  if (document?.schemaVersion === 2 || document?.catalogType === 'index') return validateCatalogIndex(document)
+  return validateLegacyCatalog(document)
+}
+
+export function validateCatalogDetail(document, indexEntry, registry) {
+  const detail = validateLegacyCatalog({ schemaVersion: 1, registry, entries: [document] }).entries[0]
+  if (indexEntry) {
+    for (const field of ['id', 'packageName', 'version', 'repositoryUrl', 'status']) {
+      if (detail[field] !== indexEntry[field]) throw new TypeError(`catalog detail ${field} does not match index entry ${indexEntry.id}`)
+    }
+    if (detail.featured !== indexEntry.featured) throw new TypeError(`catalog detail featured does not match index entry ${indexEntry.id}`)
+  }
+  return detail
+}
+
+export function splitCatalogDocument(document, options = {}) {
+  const catalog = validateLegacyCatalog(document)
+  const detailsPath = String(options.detailsPath ?? DEFAULT_CATALOG_DETAILS_PATH).replace(/^\/+|\/+$/g, '')
+  if (!detailsPath || detailsPath.includes('..') || detailsPath.includes('\\')) throw new TypeError('detailsPath is invalid')
+  const index = {
+    schemaVersion: 2,
+    catalogType: 'index',
+    registry: { ...catalog.registry, detailsPath },
+    entries: catalog.entries.map((entry, order) => {
+      const names = bilingualNameParts(entry.name, entry.packageName)
+      return {
+        id: entry.id, ...names, packageName: entry.packageName, version: entry.version,
+        featured: entry.featured === true, order, repositoryUrl: entry.repositoryUrl,
+        detailPath: `${detailsPath}/${entry.id}.json`, status: entry.status,
+        categories: entry.categories, searchTerms: entry.searchTerms,
+      }
+    }),
+  }
+  const validatedIndex = validateCatalogIndex(index)
+  return {
+    index: validatedIndex,
+    details: validatedIndex.entries.map(indexEntry => ({
+      path: indexEntry.detailPath,
+      entry: catalog.entries.find(entry => entry.id === indexEntry.id),
+    })),
+  }
+}
+
+export function hydrateCatalog(indexDocument, detailDocuments) {
+  const index = validateCatalogIndex(indexDocument)
+  // File/network loaders preserve index order. Pairing array records by that
+  // order makes a detail file with a wrong id fail as an identity mismatch
+  // instead of being mistaken for a missing file. Map callers may still use
+  // ids explicitly.
+  const detailFor = detailDocuments instanceof Map
+    ? indexEntry => detailDocuments.get(indexEntry.id)
+    : (() => {
+        const details = Array.isArray(detailDocuments) ? detailDocuments : []
+        let position = 0
+        return () => details[position++]
+      })()
+  const entries = index.entries.map(indexEntry => validateCatalogDetail(detailFor(indexEntry), indexEntry, index.registry))
+  return { schemaVersion: 1, sourceFormat: 'split-v2', registry: index.registry, entries }
+}
+
+export async function loadCatalogFromFiles(options = {}) {
+  const indexUrl = options.indexUrl ?? new URL('../registry/catalog.json', import.meta.url)
+  const indexDocument = JSON.parse(await readFile(indexUrl, 'utf8'))
+  if (indexDocument?.schemaVersion !== 2) return validateLegacyCatalog(indexDocument)
+  const index = validateCatalogIndex(indexDocument)
+  const details = await Promise.all(index.entries.map(async entry => {
+    const detailUrl = new URL(entry.detailPath, indexUrl)
+    let source
+    try {
+      source = await readFile(detailUrl, 'utf8')
+    } catch (error) {
+      throw Object.assign(new Error(`catalog detail is missing for ${entry.id}`), {
+        code: 'CATALOG_DETAIL_MISSING', cause: error,
+      })
+    }
+    try {
+      return JSON.parse(source)
+    } catch (error) {
+      throw Object.assign(new Error(`catalog detail is invalid for ${entry.id}`), {
+        code: 'CATALOG_DETAIL_INVALID', cause: error,
+      })
+    }
+  }))
+  return hydrateCatalog(index, details)
 }
 
 function parseVersion(value) {
@@ -784,6 +949,54 @@ export function searchCatalog(catalog, query = '', options = {}) {
     .sort((left, right) => compareCatalogEntries(left, right, { releaseContext }))
 }
 
+function catalogIndexSearchValues(entry) {
+  return [
+    entry.id, entry.nameZh, entry.nameEn, entry.packageName, entry.version,
+    entry.repositoryUrl, ...(entry.searchTerms ?? []), ...(entry.categories ?? []),
+  ].map(value => String(value ?? '').toLowerCase())
+}
+
+/**
+ * Selects one page from the small index without hydrating any detail records.
+ * The explicit order is the source of truth for the default marketplace order;
+ * this keeps page boundaries stable while detail files are loaded lazily.
+ */
+export function selectMarketplaceIndexEntries(index, options = {}) {
+  const catalog = validateCatalogIndex(index)
+  const view = options.view ?? 'market'
+  if (!['market', 'installed'].includes(view)) {
+    throw Object.assign(new TypeError('index view must be market or installed'), { code: 'INVALID_MARKET_VIEW', status: 400 })
+  }
+  const query = String(options.query ?? '').trim().toLowerCase()
+  const category = String(options.category ?? '').trim().toLowerCase()
+  if (query.length > 200) throw Object.assign(new TypeError('query is too long'), { code: 'INVALID_MARKET_QUERY', status: 400 })
+  if (category.length > 96 || (category && !SIMPLE_ID.test(category))) {
+    throw Object.assign(new TypeError('category is invalid'), { code: 'INVALID_MARKET_CATEGORY', status: 400 })
+  }
+  const requestedPage = positiveInteger(options.page, 1, 10_000, 'page')
+  const pageSize = positiveInteger(options.pageSize, MARKET_PAGE_SIZE, MAX_MARKET_PAGE_SIZE, 'pageSize')
+  const installedPackages = new Set((options.inventory?.plugins ?? []).filter(plugin => plugin.installed !== false).map(plugin => plugin.packageName))
+  const featuredOnly = options.featuredOnly === true
+  const scoped = catalog.entries
+    .filter(entry => view === 'installed' ? installedPackages.has(entry.packageName) : entry.status !== 'unlisted')
+    .filter(entry => !featuredOnly || entry.featured === true)
+    .filter(entry => category === '' || entry.categories.includes(category))
+    .filter(entry => query === '' || catalogIndexSearchValues(entry).some(value => value.includes(query)))
+    .sort((left, right) => left.order - right.order || left.nameZh.localeCompare(right.nameZh, 'zh-CN') || left.id.localeCompare(right.id))
+  const total = scoped.length
+  const pageCount = Math.max(1, Math.ceil(total / pageSize))
+  const page = Math.min(requestedPage, pageCount)
+  return {
+    index: catalog,
+    entries: scoped.slice((page - 1) * pageSize, page * pageSize),
+    categoryIds: [...new Set(scoped.flatMap(entry => entry.categories))].sort(),
+    pagination: {
+      view, query, category, featuredOnly, page, pageSize, total, pageCount,
+      hasPrevious: page > 1, hasNext: page < pageCount,
+    },
+  }
+}
+
 export function buildMarketplaceSnapshot(catalog, inventory, query = '', options = {}) {
   const installedByName = new Map(inventory.plugins.map(plugin => [plugin.packageName, plugin]))
   const managedPackages = options.managedPackages instanceof Set ? options.managedPackages : new Set()
@@ -933,7 +1146,7 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
     ...snapshot,
     entries: view === 'candidates' ? [] : pageItems,
     candidates: view === 'candidates' ? pageItems : [],
-    catalogPackageNames: snapshot.entries.map(entry => entry.packageName),
+    catalogPackageNames: options.catalogPackageNames ?? snapshot.entries.map(entry => entry.packageName),
     filters: { categoryIds, featuredOnly },
     pagination: {
       view, query, category, featuredOnly, page, pageSize, total, pageCount,
@@ -943,7 +1156,7 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
   }
 }
 
-async function readResponseJson(response) {
+async function readResponseJson(response, maximum = MAX_CATALOG_RESPONSE_BYTES) {
   if (!response.ok) {
     const error = new Error(`catalog returned HTTP ${response.status}`)
     error.status = response.status
@@ -951,9 +1164,9 @@ async function readResponseJson(response) {
     throw error
   }
   const declared = Number(response.headers.get('content-length'))
-  if (Number.isFinite(declared) && declared > MAX_CATALOG_RESPONSE_BYTES) throw new Error('catalog response is too large')
+  if (Number.isFinite(declared) && declared > maximum) throw new Error('catalog response is too large')
   const text = await response.text()
-  if (Buffer.byteLength(text) > MAX_CATALOG_RESPONSE_BYTES) throw new Error('catalog response is too large')
+  if (Buffer.byteLength(text) > maximum) throw new Error('catalog response is too large')
   try {
     return JSON.parse(text)
   } catch (error) {
@@ -972,8 +1185,12 @@ export function createCatalogService(options = {}) {
   const cacheTtlMs = options.cacheTtlMs ?? DEFAULT_CACHE_TTL_MS
   let cached = null
   let cachedAt = 0
+  let indexCached = null
+  let indexCachedAt = 0
+  const detailCache = new Map()
+  const detailPromises = new Map()
 
-  async function bundled(errorCode = null) {
+  async function bundledIndex(errorCode = null) {
     const document = validateCatalog(JSON.parse(await readFile(bundledUrl, 'utf8')))
     return {
       ...document,
@@ -981,54 +1198,114 @@ export function createCatalogService(options = {}) {
     }
   }
 
-  async function load({ force = false } = {}) {
-    if (!force && cached && Date.now() - cachedAt < cacheTtlMs) return cached
-    let value
+  async function fetchIndex() {
     if (catalogUrl === null || typeof request !== 'function') {
-      value = await bundled(catalogUrl === null ? null : 'FETCH_UNAVAILABLE')
-    } else {
-      try {
-        let document
-        let lastError
-        const delays = Array.isArray(retryDelaysMs) ? retryDelaysMs : DEFAULT_RETRY_DELAYS_MS
-        for (let attempt = 0; attempt <= delays.length; attempt += 1) {
-          const controller = new AbortController()
-          const timer = setTimeout(() => controller.abort(), timeoutMs)
-          try {
-            const response = await request(catalogUrl, {
-              headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
-              signal: controller.signal,
-            })
-            const rawDocument = await readResponseJson(response)
-            try {
-              document = validateCatalog(rawDocument)
-            } catch (error) {
-              error.catalogInvalid = true
-              throw error
-            }
-            lastError = null
-            break
-          } catch (error) {
-            lastError = error
-            if (!retryableTransportError(error) || attempt === delays.length) break
-            await wait(delays[attempt])
-          } finally {
-            clearTimeout(timer)
-          }
-        }
-        if (lastError) throw lastError
-        value = {
-          ...document,
-          source: { kind: 'github', url: catalogUrl, fetchedAt: new Date().toISOString(), errorCode: null },
-        }
-      } catch (error) {
-        const code = error?.name === 'AbortError' ? 'CATALOG_TIMEOUT'
-          : Number.isInteger(error?.status) ? 'CATALOG_HTTP_ERROR'
-            : error?.catalogInvalid === true ? 'CATALOG_INVALID'
-              : 'CATALOG_UNAVAILABLE'
-        value = await bundled(code)
-      }
+      return bundledIndex(catalogUrl === null ? null : 'FETCH_UNAVAILABLE')
     }
+    try {
+      let document
+      let lastError
+      const delays = Array.isArray(retryDelaysMs) ? retryDelaysMs : DEFAULT_RETRY_DELAYS_MS
+      for (let attempt = 0; attempt <= delays.length; attempt += 1) {
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), timeoutMs)
+        try {
+          const response = await request(catalogUrl, {
+            headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
+            signal: controller.signal,
+          })
+          // Keep the v1 compatibility reader bounded at its old 4 MiB limit;
+          // newly published v2 indexes are checked against the stricter 2 MiB
+          // budget immediately after parsing.
+          const rawDocument = await readResponseJson(response, MAX_CATALOG_RESPONSE_BYTES)
+          if (rawDocument?.schemaVersion === 2
+            && Buffer.byteLength(JSON.stringify(rawDocument)) > MAX_CATALOG_INDEX_RESPONSE_BYTES) {
+            throw new Error('catalog index response is too large')
+          }
+          try {
+            document = validateCatalog(rawDocument)
+          } catch (error) {
+            error.catalogInvalid = true
+            throw error
+          }
+          lastError = null
+          break
+        } catch (error) {
+          lastError = error
+          if (!retryableTransportError(error) || attempt === delays.length) break
+          await wait(delays[attempt])
+        } finally {
+          clearTimeout(timer)
+        }
+      }
+      if (lastError) throw lastError
+      return {
+        ...document,
+        source: { kind: 'github', url: catalogUrl, fetchedAt: new Date().toISOString(), errorCode: null },
+      }
+    } catch (error) {
+      const code = error?.name === 'AbortError' ? 'CATALOG_TIMEOUT'
+        : Number.isInteger(error?.status) ? 'CATALOG_HTTP_ERROR'
+          : error?.catalogInvalid === true ? 'CATALOG_INVALID'
+            : 'CATALOG_UNAVAILABLE'
+      return bundledIndex(code)
+    }
+  }
+
+  async function loadIndex({ force = false } = {}) {
+    if (!force && indexCached && Date.now() - indexCachedAt < cacheTtlMs) return indexCached
+    if (force) {
+      cached = null
+      cachedAt = 0
+      detailCache.clear()
+      detailPromises.clear()
+    }
+    indexCached = await fetchIndex()
+    indexCachedAt = Date.now()
+    return indexCached
+  }
+
+  async function loadDetails(ids, { index = null, force = false } = {}) {
+    const catalog = index ?? await loadIndex({ force })
+    if (catalog.schemaVersion === 1) {
+      const requested = new Set(ids ?? catalog.entries.map(entry => entry.id))
+      return catalog.entries.filter(entry => requested.has(entry.id))
+    }
+    const requestedIds = [...new Set(ids ?? catalog.entries.map(entry => entry.id))]
+    const entriesById = new Map(catalog.entries.map(entry => [entry.id, entry]))
+    const missing = requestedIds.filter(id => !entriesById.has(id))
+    if (missing.length > 0) throw Object.assign(new Error(`catalog detail is not indexed: ${missing.join(', ')}`), { code: 'CATALOG_DETAIL_NOT_INDEXED' })
+    const values = await Promise.all(requestedIds.map(async id => {
+      if (!force && detailCache.has(id)) return detailCache.get(id)
+      if (!force && detailPromises.has(id)) return detailPromises.get(id)
+      const indexEntry = entriesById.get(id)
+      const promise = (async () => {
+        let raw
+        if (catalog.source?.kind === 'bundled' || catalogUrl === null) {
+          raw = JSON.parse(await readFile(new URL(indexEntry.detailPath, bundledUrl), 'utf8'))
+        } else {
+          const detailUrl = new URL(indexEntry.detailPath, catalog.source.url).href
+          const response = await request(detailUrl, {
+            headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
+            signal: AbortSignal.timeout(timeoutMs),
+          })
+          raw = await readResponseJson(response, MAX_CATALOG_DETAIL_RESPONSE_BYTES)
+        }
+        const value = validateCatalogDetail(raw, indexEntry, catalog.registry)
+        detailCache.set(id, value)
+        return value
+      })()
+      if (!force) detailPromises.set(id, promise)
+      try {
+        return await promise
+      } finally {
+        if (detailPromises.get(id) === promise) detailPromises.delete(id)
+      }
+    }))
+    return values
+  }
+
+  async function overlayInstallCounts(value, entries = value.entries) {
     let installCounts = { status: installCountsUrl === null ? 'disabled' : 'unavailable', url: installCountsUrl, updatedAt: null }
     if (installCountsUrl !== null && typeof request === 'function') {
       const controller = new AbortController()
@@ -1040,16 +1317,43 @@ export function createCatalogService(options = {}) {
         if (Buffer.byteLength(text) > MAX_COUNTS_BYTES) throw new Error('counts response is too large')
         const payload = JSON.parse(text)
         if (payload?.schemaVersion !== 1 || !payload.counts || typeof payload.counts !== 'object') throw new Error('counts response is invalid')
-        value = { ...value, entries: value.entries.map(entry => ({ ...entry, installCount: Number.isSafeInteger(payload.counts[entry.id]) && payload.counts[entry.id] >= 0 ? payload.counts[entry.id] : entry.installCount })) }
+        const counts = new Map(entries.map(entry => [entry.id, Number.isSafeInteger(payload.counts[entry.id]) && payload.counts[entry.id] >= 0 ? payload.counts[entry.id] : entry.installCount]))
+        entries.forEach(entry => { entry.installCount = counts.get(entry.id) })
         installCounts = { status: 'live', url: installCountsUrl, updatedAt: typeof payload.updatedAt === 'string' ? payload.updatedAt : null }
       } catch {}
       finally { clearTimeout(timer) }
     }
-    value = { ...value, installCounts }
+    return { ...value, entries, installCounts }
+  }
+
+  async function load({ force = false } = {}) {
+    if (!force && cached && Date.now() - cachedAt < cacheTtlMs) return cached
+    const index = await loadIndex({ force })
+    let value
+    if (index.schemaVersion === 1) {
+      value = index
+    } else {
+      try {
+        const details = await loadDetails(index.entries.map(entry => entry.id), { index })
+        value = hydrateCatalog(index, details)
+        value.source = index.source
+      } catch {
+        // Never mix a remote index with local detail files. Use the complete
+        // bundled snapshot as one atomic fallback instead.
+        const fallback = await bundledIndex('CATALOG_DETAILS_UNAVAILABLE')
+        if (fallback.schemaVersion === 1) value = fallback
+        else {
+          const details = await loadDetails(fallback.entries.map(entry => entry.id), { index: fallback })
+          value = hydrateCatalog(fallback, details)
+          value.source = fallback.source
+        }
+      }
+    }
+    value = await overlayInstallCounts(value)
     cached = value
     cachedAt = Date.now()
     return value
   }
 
-  return { load }
+  return { load, loadIndex, loadDetails }
 }

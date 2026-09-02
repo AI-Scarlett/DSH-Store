@@ -30,7 +30,7 @@ test('canonical DSH-Store repository and Pages URLs replace legacy aliases', asy
     'marketplace/index.html', 'marketplace/llms.txt', 'marketplace/plugins/index.html',
     'marketplace/standards/index.html', 'package.json',
     'registry/README.md', 'registry/automation-policy.json', 'registry/candidates.json',
-    'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json',
+    'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json', 'registry/catalog-detail.schema.json',
     'scripts/automate-catalog.mjs', 'scripts/build-marketplace-static.mjs', 'scripts/check-plugin-submission.mjs',
     'scripts/plan-author-notices.mjs', 'scripts/verify-marketplace-public.mjs', 'src/candidates.mjs', 'src/catalog.mjs',
   ]

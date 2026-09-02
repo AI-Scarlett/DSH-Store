@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import test from 'node:test'
 import {
   assertLegacyCatalogCompatibility, buildMarketplaceSnapshot, createCatalogService, githubInstallSpecifier,
   compareCatalogEntries, compareVersions, createDshReleaseContext, dshReleaseCompatibility, dshVersionCompatibility,
-  MAX_CATALOG_RESPONSE_BYTES, paginateMarketplaceSnapshot, projectDshRelease, searchCatalog, validateCatalog, verifyCatalogEntry,
+  MAX_CATALOG_INDEX_RESPONSE_BYTES, MAX_CATALOG_RESPONSE_BYTES, loadCatalogFromFiles, paginateMarketplaceSnapshot, projectDshRelease,
+  searchCatalog, validateCatalog, validateCatalogDetail, validateCatalogIndex, verifyCatalogEntry,
 } from '../src/catalog.mjs'
 
 const entry = {
@@ -161,6 +165,70 @@ test('catalog accepts dynamic full SemVer evidence and rejects conflicting alias
   } }])), /not a supported DSH release key/)
 })
 
+test('catalog v2 keeps the index bounded and maps every plugin id to one detail record', async () => {
+  const indexText = await readFile(new URL('../registry/catalog.json', import.meta.url))
+  const index = validateCatalogIndex(JSON.parse(indexText))
+  assert.ok(Buffer.byteLength(indexText) < MAX_CATALOG_INDEX_RESPONSE_BYTES)
+  assert.equal(index.entries.length, 579)
+  assert.ok(index.entries.every(item => item.detailPath === `${index.registry.detailsPath}/${item.id}.json`))
+  assert.ok(index.entries.every(item => !Object.hasOwn(item, 'description') && !Object.hasOwn(item, 'compatibility')))
+  assert.equal(new Set(index.entries.map(item => item.id)).size, index.entries.length)
+})
+
+test('catalog v2 fails closed when a detail record is missing or does not match its index', async () => {
+  const sourceIndex = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
+  const sourceDetail = JSON.parse(await readFile(new URL('../registry/catalog/details/dsh-safe-plugin-manager.json', import.meta.url), 'utf8'))
+  const root = await mkdtemp(join(tmpdir(), 'dsh-catalog-v2-'))
+  try {
+    const index = { ...sourceIndex, entries: [sourceIndex.entries[0]] }
+    const indexUrl = pathToFileURL(join(root, 'catalog.json'))
+    await writeFile(indexUrl, `${JSON.stringify(index)}\n`)
+    await assert.rejects(
+      () => loadCatalogFromFiles({ indexUrl }),
+      error => error.code === 'CATALOG_DETAIL_MISSING' && /dsh-safe-plugin-manager/.test(error.message),
+    )
+
+    await mkdir(join(root, 'catalog', 'details'), { recursive: true })
+    for (const field of ['id', 'version', 'repositoryUrl']) {
+      const detail = { ...sourceDetail, [field]: field === 'id' ? 'other-plugin' : field === 'version' ? '9.9.9' : 'https://github.com/example/other-plugin' }
+      await writeFile(join(root, 'catalog', 'details', 'dsh-safe-plugin-manager.json'), `${JSON.stringify(detail)}\n`)
+      await assert.rejects(
+        () => loadCatalogFromFiles({ indexUrl }),
+        new RegExp(`catalog detail ${field} does not match index entry dsh-safe-plugin-manager`),
+      )
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('catalog service loads only the requested page details and caches them without duplicate requests', async () => {
+  const indexText = await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8')
+  const remoteCatalogUrl = 'https://catalog.example.test/registry/catalog.json'
+  const localRegistryRoot = new URL('../registry/', import.meta.url)
+  let detailCalls = 0
+  const service = createCatalogService({
+    catalogUrl: remoteCatalogUrl,
+    retryDelaysMs: [],
+    fetch: async url => {
+      const requested = new URL(url)
+      if (requested.pathname === '/registry/catalog.json') return new Response(indexText)
+      if (!requested.pathname.startsWith('/registry/catalog/details/')) return new Response('missing', { status: 404 })
+      detailCalls += 1
+      const relativePath = requested.pathname.slice('/registry/'.length)
+      const detailText = await readFile(new URL(relativePath, localRegistryRoot), 'utf8')
+      return new Response(detailText)
+    },
+  })
+  const index = await service.loadIndex()
+  const pageIds = index.entries.slice(20, 40).map(item => item.id)
+  const details = await service.loadDetails(pageIds, { index })
+  assert.equal(details.length, 20)
+  assert.equal(detailCalls, 20)
+  await service.loadDetails(pageIds, { index })
+  assert.equal(detailCalls, 20)
+})
+
 test('marketplace snapshot pagination returns one bounded page and lazy candidate data', () => {
   const entries = Array.from({ length: 61 }, (_, index) => ({
     ...entry,
@@ -180,16 +248,16 @@ test('marketplace snapshot pagination returns one bounded page and lazy candidat
       ],
     },
   })
-  const market = paginateMarketplaceSnapshot(snapshot, { view: 'market', page: 2, pageSize: 24 })
-  assert.equal(market.entries.length, 24)
+  const market = paginateMarketplaceSnapshot(snapshot, { view: 'market', page: 2, pageSize: 20 })
+  assert.equal(market.entries.length, 20)
   assert.equal(market.candidates.length, 0)
   assert.deepEqual(market.pagination, {
-    view: 'market', query: '', category: '', featuredOnly: false, page: 2, pageSize: 24, total: 61, pageCount: 3,
+    view: 'market', query: '', category: '', featuredOnly: false, page: 2, pageSize: 20, total: 61, pageCount: 4,
     hasPrevious: true, hasNext: true,
   })
   assert.equal(market.catalogPackageNames.length, 61)
 
-  const featured = paginateMarketplaceSnapshot(snapshot, { view: 'market', featuredOnly: true, page: 1, pageSize: 24 })
+  const featured = paginateMarketplaceSnapshot(snapshot, { view: 'market', featuredOnly: true, page: 1, pageSize: 20 })
   assert.deepEqual(featured.entries.map(item => item.id), ['demo-00', 'demo-01', 'demo-02'])
   assert.equal(featured.pagination.total, 3)
   assert.equal(featured.pagination.featuredOnly, true)
@@ -230,9 +298,9 @@ test('catalog ordering pins featured entries before compatibility and source fre
 })
 
 test('bundled registry declares complete detail metadata for every entry', async () => {
-  const source = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
+  const source = await loadCatalogFromFiles()
   assert.equal(assertLegacyCatalogCompatibility(source), true)
-  const catalog = validateCatalog(source)
+  const catalog = source
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8')
   const packageManifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
   const legacyCatalogReleases = ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2']
@@ -274,7 +342,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   const agentReach = source.entries.find(item => item.id === 'dsh-agent-reach')
   assert.ok(agentReach, 'Agent Reach adapter must be listed')
   assert.ok(['approved', 'unlisted'].includes(agentReach.status), 'latest-three policy may reversibly unlist an older compatibility record')
-  assert.equal(agentReach.featured, undefined)
+  assert.equal(agentReach.featured, false)
   assert.equal(agentReach.commit, '85d9801a3e8884baf33f8166eb2e587a4482050f')
   assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
   assert.equal(agentReach.details.permissions.level, 'high')
@@ -353,8 +421,8 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.equal(plugin.commit, expected.commit)
     assert.equal(plugin.compatibility.dsh, expected.dsh)
     assert.deepEqual(plugin.compatibility.dshReleases, expected.releases)
-    assert.equal(plugin.assurance.securityReview.status, 'unknown')
-    assert.equal(plugin.assurance.securityReview.evidenceStatus, 'partial')
+    assert.equal(plugin.assurance.securityReview.status, 'partial')
+    assert.equal(Object.hasOwn(plugin.assurance.securityReview, 'evidenceStatus'), false)
     const projectedPlugin = catalog.entries.find(item => item.id === expected.id)
     assert.equal(projectedPlugin.assurance.securityReview.status, 'partial')
   }
@@ -383,8 +451,8 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.equal(buildPlugin.compatibility.dshReleases[release], 'compatible')
   }
   for (const gate of ['installability', 'runtime', 'securityReview']) {
-    assert.equal(buildPlugin.assurance[gate].status, 'unknown')
-    assert.equal(buildPlugin.assurance[gate].evidenceStatus, 'partial')
+    assert.equal(buildPlugin.assurance[gate].status, 'partial')
+    assert.equal(Object.hasOwn(buildPlugin.assurance[gate], 'evidenceStatus'), false)
     assert.equal(catalog.entries.find(item => item.id === 'build-dsh-plugin').assurance[gate].status, 'partial')
   }
 })

@@ -1,6 +1,9 @@
 # DSH-Store GitHub Plugin Registry
 
-`catalog.json` 是 DSH-Store 与 GitHub Pages 市场页共同读取的唯一目录。
+`catalog.json` 是 DSH-Store 与 GitHub Pages 市场页共同读取的轻量主索引；每个插件的完整记录位于
+`catalog/details/<插件编号>.json`。主索引通过插件编号把名称、版本、推荐状态、顺序和 GitHub
+地址映射到对应详情，商城先加载索引，再按当前 20 条页面或详情请求懒加载详情。主索引保持在
+2 MiB 内，单个详情文件保持在 512 KiB 内。
 目录只接受 GitHub 仓库，不接受 npm-only、任意下载 URL、本地路径或浮动安装目标。
 
 新增或更新插件必须通过 Pull Request 修改一个条目，并同时满足：
@@ -159,7 +162,9 @@ Catalog 扫描、四端巡检、扫描新增数、历史版本检查数、发现
 
 ## 详情元数据
 
-商城详情由 GitHub 上的同一份 `catalog.json` 提供。每个条目必须显式声明：
+商城详情由 GitHub 上与主索引同一提交的独立详情文件提供。主索引条目至少包含 `id`、
+`nameZh`、`nameEn`、`version`、`featured`、`order`、`repositoryUrl` 和由编号确定的
+`detailPath`；详情文件必须显式声明：
 
 - `details.pluginType`、`installSource`、`license`；
 - 文件、网络、命令与凭据访问，以及汇总后的权限等级；

@@ -5,7 +5,7 @@ import { readFile, rename, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { assertLegacyCatalogCompatibility, validateCatalog } from '../src/catalog.mjs'
+import { assertLegacyCatalogCompatibility, validateCatalog, validateCatalogDetail, validateCatalogIndex } from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const policy = JSON.parse(await readFile(resolve(root, 'registry/automation-policy.json'), 'utf8'))
@@ -51,12 +51,31 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex')
 }
 
-function semanticCatalog(text) {
+async function verifyDetails(index, catalogUrl) {
+  const entries = index.entries
+  let next = 0
+  const worker = async () => {
+    while (next < entries.length) {
+      const entry = entries[next++]
+      const text = await fetchText(new URL(entry.detailPath, catalogUrl).href, 512 * 1024)
+      validateCatalogDetail(JSON.parse(text), entry, index.registry)
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(12, entries.length) }, worker))
+  return entries.length
+}
+
+async function semanticCatalog(text, catalogUrl) {
   const document = JSON.parse(text)
-  assertLegacyCatalogCompatibility(document)
-  const catalog = validateCatalog(document)
+  const catalog = document?.schemaVersion === 2
+    ? validateCatalogIndex(document)
+    : validateCatalog(document)
+  const details = document?.schemaVersion === 2
+    ? await verifyDetails(catalog, catalogUrl)
+    : (() => { assertLegacyCatalogCompatibility(document); return catalog.entries.length })()
   return {
     entries: catalog.entries.length,
+    details,
     registryUpdatedAt: catalog.registry.updatedAt,
     fingerprint: sha256(JSON.stringify(catalog.entries)),
     manager: catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager') ?? null,
@@ -109,7 +128,7 @@ const report = {
 for (const url of urls) {
   try {
     const text = await fetchText(url)
-    const semantic = semanticCatalog(text)
+    const semantic = await semanticCatalog(text, url)
     const surface = { url, status: 'passed', bytes: Buffer.byteLength(text), sha256: sha256(text), ...semantic }
     if (report.authority === null) report.authority = surface
     else if (surface.fingerprint !== report.authority.fingerprint || surface.entries !== report.authority.entries) {

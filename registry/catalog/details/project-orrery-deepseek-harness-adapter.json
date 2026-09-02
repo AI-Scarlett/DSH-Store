@@ -1,0 +1,161 @@
+{
+  "id": "project-orrery-deepseek-harness-adapter",
+  "name": "技能管理工具（Project Orrery DeepSeek Harness Adapter）",
+  "packageName": "project-orrery-deepseek-harness-adapter",
+  "description": "为 DSH 提供技能管理工具能力。英文原始说明：Thin DeepSeek Harness packaged Skill adapter for Orrery",
+  "searchTerms": [
+    "技能管理工具",
+    "Project Orrery DeepSeek Harness Adapter",
+    "project-orrery-deepseek-harness-adapter",
+    "技能",
+    "Skill",
+    "扩展能力",
+    "实验功能",
+    "新功能",
+    "project",
+    "orrery",
+    "deepseek",
+    "harness",
+    "adapter"
+  ],
+  "repositoryUrl": "https://github.com/ItIsMixian/Orrery",
+  "defaultBranch": "main",
+  "manifestPath": "adapters/deepseek-harness/package.json",
+  "installPath": "adapters/deepseek-harness",
+  "updatePolicy": "external-only",
+  "commit": "1e67d4ac7f18e11459417ff4e04eef0ce065b28b",
+  "version": "0.1.1",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-08-28T20:05:45.000Z",
+    "observedAt": "2026-08-28T20:09:04.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-08-28T20:09:04.000Z",
+      "evidenceUrl": "https://github.com/ItIsMixian/Orrery/commit/1e67d4ac7f18e11459417ff4e04eef0ce065b28b",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "project-orrery-skill"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal",
+  "compatibility": {
+    "dsh": "0.1.0-rc.8",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

@@ -6,6 +6,7 @@ import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
+import { loadCatalogFromFiles } from '../src/catalog.mjs'
 
 const execFileAsync = promisify(execFile)
 const root = new URL('../', import.meta.url)
@@ -23,7 +24,7 @@ test('static marketplace derives manager identity and catalog cards without muta
   const output = await mkdtemp(new URL('.tmp-marketplace-static-', root))
   const catalogPath = new URL('registry/catalog.json', root)
   const catalogBefore = await readFile(catalogPath)
-  const catalog = JSON.parse(catalogBefore)
+  const catalog = await loadCatalogFromFiles()
   const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
   assert.ok(manager)
 
@@ -69,6 +70,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.ok(release.files['marketplace/standards/index.html'])
     assert.ok(release.files['marketplace/about/deepseek-harness-guide/index.html'])
     assert.ok(release.files['registry/catalog.json'])
+    assert.ok(release.files['registry/catalog/details/dsh-safe-plugin-manager.json'])
+    assert.equal(release.files['marketplace/catalog.snapshot.json'], undefined)
     assert.equal(release.files['automation-status.json'], undefined, 'run-only status must not rotate production releases')
     assert.equal(automationStatus.overall.status, 'unknown')
     assert.equal(automationStatus.catalog.entries, catalog.entries.length)
@@ -87,7 +90,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
     assert.doesNotMatch(home, /DSH_ALTERNATE_SITE/)
     assert.doesNotMatch(home, /id="catalog-snapshot"/)
-    assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, Math.min(24, catalog.entries.filter(entry => entry.status !== 'unlisted').length))
+    assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, Math.min(20, catalog.entries.filter(entry => entry.status !== 'unlisted').length))
     assert.match(plugins, /name="dsh-catalog-delivery" content="external-json"/)
     assert.match(plugins, /type="application\/json" href="https:\/\/dsh\.store\/registry\/catalog\.json"/)
     assert.match(plugins, /"@type": "SearchAction"/)

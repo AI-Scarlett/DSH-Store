@@ -4,8 +4,10 @@
 
 ## 决策
 
-插件市场只读取项目仓库中的 `registry/catalog.json`。条目必须对应 GitHub 仓库并固定
-到 40 位 Commit；安装与更新前重新读取该 Commit 的 manifest 和 Bundle Patch。
+插件市场读取同一提交中的轻量 `registry/catalog.json` 主索引与
+`registry/catalog/details/<插件编号>.json` 详情文件。索引通过插件编号和固定详情路径定位
+详情；条目必须对应 GitHub 仓库并固定到 40 位 Commit；安装与更新前重新读取该 Commit 的
+manifest 和 Bundle Patch。
 
 页面默认只做查看、搜索、健康检查和计划。每个安装、更新、卸载、启用或停用动作都
 生成单次、限时计划，用户必须精确输入包含动作、包名和 Profile 的确认语才能执行。
@@ -13,6 +15,7 @@
 ## 安全边界
 
 - `@deepseek-ai/*`、管理器自身和关键 DSH 入口永久只读；
+- 索引与详情分开校验、缓存和回滚；缺失、超限或身份不一致的详情必须失败关闭；
 - 包变更只调用官方 `dsh plugin --profile <name> ...`，不执行 Shell 字符串；
 - 启停只写管理器标记区块，区块外字节保持不变；
 - 写入前检查哈希并持有 Profile 锁；
