@@ -1,50 +1,45 @@
 {
-  "id": "dsh-checkpoint-rewind",
-  "name": "会话与文件回退（DSH Checkpoint Rewind）",
-  "packageName": "dsh-checkpoint-rewind",
-  "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
+  "id": "dsh-enterprise-ops",
+  "name": "实验功能插件（DSH Enterprise Ops）",
+  "packageName": "dsh-enterprise-ops",
+  "description": "企业 AI 资源统一管理平台 —— 基于 DeepSeek Harness「一切皆插件」架构",
   "searchTerms": [
-    "会话与文件回退",
-    "DSH Checkpoint Rewind",
-    "dsh-checkpoint-rewind",
-    "回退",
-    "检查点",
-    "恢复",
-    "会话",
-    "工具能力",
-    "工具",
-    "能力",
+    "实验功能插件",
+    "DSH Enterprise Ops",
+    "dsh-enterprise-ops",
+    "实验功能",
+    "新功能",
     "dsh",
-    "checkpoint",
-    "rewind"
+    "enterprise",
+    "ops"
   ],
-  "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
+  "repositoryUrl": "https://github.com/01men/RQ-DSH",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "f81256b2a3c6ec9d2c71dfcfc24b8c461e148f01",
-  "version": "0.6.4",
+  "updatePolicy": "external-only",
+  "commit": "5a9c70fa0182ceeaf27e5c4473a4e61282e2a4a6",
+  "version": "1.1.0",
   "categories": [
-    "tools"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T14:53:47.000Z",
+    "updatedAt": "2026-09-02T18:26:07.000Z",
     "observedAt": "2026-09-02T18:24:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-02T18:24:02.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind/commit/f81256b2a3c6ec9d2c71dfcfc24b8c461e148f01",
+      "evidenceUrl": "https://github.com/01men/RQ-DSH/commit/5a9c70fa0182ceeaf27e5c4473a4e61282e2a4a6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,14 +69,34 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "checkpoint-rewind"
+    "ops-platform-core",
+    "ops-connect",
+    "ops-resource-core",
+    "ops-iam",
+    "ops-authn",
+    "ops-usage",
+    "ops-billing",
+    "ops-audit",
+    "ops-market",
+    "ops-connector",
+    "ops-mcp",
+    "ops-nas",
+    "ops-skillhub",
+    "ops-agent",
+    "ops-app",
+    "ops-modelgw",
+    "ops-update",
+    "ops-portal",
+    "ops-console",
+    "ops-dsh-bridge",
+    "rq-card"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 2605674 total bytes (maximum 2097152); largest file 373498 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -144,33 +159,28 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=22.6",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
-    "license": "Apache-2.0",
+    "license": "UNKNOWN",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "none",
-      "commands": "shell",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "api-key"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "主机命令与插件声明的外部 CLI",
-      "用户配置的外部服务凭据"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

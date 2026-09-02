@@ -20,28 +20,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5775de83c0b36ac2f7e757b4b893362ff5245346",
-  "version": "0.5.15",
+  "commit": "4d6673a5d8e4ed329e2b923d294a3743c643deb5",
+  "version": "0.5.16",
   "categories": [
     "security"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T12:42:47.000Z",
-    "observedAt": "2026-09-02T12:42:45.000Z",
+    "updatedAt": "2026-09-02T18:07:46.000Z",
+    "observedAt": "2026-09-02T18:24:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-02T12:42:45.000Z",
-      "evidenceUrl": "https://github.com/jilian-dsh/dsh-rule-engine/commit/5775de83c0b36ac2f7e757b4b893362ff5245346",
+      "method": "automated-fixed-source-update-v2",
+      "checkedAt": "2026-09-02T18:24:02.000Z",
+      "evidenceUrl": "https://github.com/jilian-dsh/dsh-rule-engine/commit/4d6673a5d8e4ed329e2b923d294a3743c643deb5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated release was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,7 +71,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [

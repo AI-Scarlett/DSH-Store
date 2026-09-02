@@ -1,50 +1,49 @@
 {
-  "id": "dsh-checkpoint-rewind",
-  "name": "会话与文件回退（DSH Checkpoint Rewind）",
-  "packageName": "dsh-checkpoint-rewind",
-  "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
+  "id": "ccteam-ui",
+  "name": "会话管理（Ccteam UI）",
+  "packageName": "@ccteam/ccteam-ui",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：ccteam inside the DeepSeek Harness: the workbench in DSH web (cross-harness session tree, native-grade chat, one-click spawn), the eight ccteam MCP tools for DSH agents, and the ACP transport ccteam hires DSH sessions through",
   "searchTerms": [
-    "会话与文件回退",
-    "DSH Checkpoint Rewind",
-    "dsh-checkpoint-rewind",
-    "回退",
-    "检查点",
-    "恢复",
+    "会话管理",
+    "Ccteam UI",
+    "ccteam-ui",
+    "@ccteam/ccteam-ui",
     "会话",
-    "工具能力",
-    "工具",
-    "能力",
-    "dsh",
-    "checkpoint",
-    "rewind"
+    "对话",
+    "历史",
+    "消息",
+    "实验功能",
+    "新功能",
+    "ccteam",
+    "ui"
   ],
-  "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
+  "repositoryUrl": "https://github.com/firstintent/ccteam",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "f81256b2a3c6ec9d2c71dfcfc24b8c461e148f01",
-  "version": "0.6.4",
+  "manifestPath": "dsh-plugins/ccteam-ui/package.json",
+  "installPath": "dsh-plugins/ccteam-ui",
+  "updatePolicy": "external-only",
+  "commit": "9e5b7c31073e52b4ecd809e13274c6ff4643fddd",
+  "version": "0.10.5",
   "categories": [
-    "tools"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T14:53:47.000Z",
+    "updatedAt": "2026-09-02T18:21:32.000Z",
     "observedAt": "2026-09-02T18:24:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-02T18:24:02.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind/commit/f81256b2a3c6ec9d2c71dfcfc24b8c461e148f01",
+      "evidenceUrl": "https://github.com/firstintent/ccteam/commit/9e5b7c31073e52b4ecd809e13274c6ff4643fddd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,14 +73,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "checkpoint-rewind"
+    "ccteam-ui"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; bundled dependencies are not eligible for automatic approval; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credenti",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -144,33 +143,36 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
     ]
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
-    "license": "Apache-2.0",
+    "license": "UNKNOWN",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "none",
-      "commands": "shell",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "api-key"
+        "unknown"
       ]
     },
     "externalDependencies": [
-      "主机命令与插件声明的外部 CLI",
-      "用户配置的外部服务凭据"
+      "@ccteam/engine-darwin-arm64",
+      "@ccteam/engine-darwin-x64",
+      "@ccteam/engine-linux-arm64",
+      "@ccteam/engine-linux-x64",
+      "@deepseek-ai/schemastery"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
