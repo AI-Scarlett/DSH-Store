@@ -39,6 +39,7 @@ test('public status separates successful execution from actual Catalog changes',
         retainedCompatible: 4,
         retainedUnknown: 3,
         prunedUnsupported: 48,
+        durableDecisionsPreserved: 1,
         registryRemovals: 48,
       },
       rejectedCandidates: [],
@@ -67,6 +68,7 @@ test('public status separates successful execution from actual Catalog changes',
   assert.deepEqual(status.latestChanges.compatibilityUnlisted, ['blocked'])
   assert.deepEqual(status.latestChanges.compatibilityRestored, ['new-plugin'])
   assert.deepEqual(status.latestChanges.prunedCandidates, ['candidate-pruned'])
+  assert.equal(status.latestChanges.candidateRetention.durableDecisionsPreserved, 1)
   assert.equal(status.latestChanges.candidateRetention.registryRemovals, 48)
   assert.deepEqual(status.latestChanges.compatibilityPolicy.latestReleases, ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'])
   assert.equal(status.recentAdditions[0].name, '通知助手（Notify Helper）')

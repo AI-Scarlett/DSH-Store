@@ -142,6 +142,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /dshReleaseWindowSha256/)
   assert.match(source, /pruneHistoricalRejectedCandidates/)
   assert.match(source, /inspectRejectedCandidateCompatibility/)
+  assert.match(source, /isDurableRejectedCandidateDecision\(previous\)/)
+  assert.match(source, /candidateRetention\.durableDecisionsPreserved/)
   assert.match(source, /candidateRetention\.registryRemovals/)
   assert.match(source, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)

@@ -91,6 +91,7 @@ function reportRecord(item) {
       retainedCompatible: count(report.candidateRetention?.retainedCompatible),
       retainedUnknown: count(report.candidateRetention?.retainedUnknown),
       prunedUnsupported: count(report.candidateRetention?.prunedUnsupported),
+      durableDecisionsPreserved: count(report.candidateRetention?.durableDecisionsPreserved),
       registryRemovals: count(report.candidateRetention?.registryRemovals),
     },
     rejectedCandidates: Array.isArray(report.rejectedCandidates) ? report.rejectedCandidates.length : 0,

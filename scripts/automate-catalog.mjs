@@ -33,6 +33,7 @@ import {
 } from '../src/catalog-compatibility-policy.mjs'
 import {
   inspectRejectedCandidateCompatibility,
+  isDurableRejectedCandidateDecision,
   REJECTED_CANDIDATE_RETENTION_AUTHORITY,
   selectRejectedCandidateRetentionBatch,
 } from '../src/candidate-retention-policy.mjs'
@@ -679,11 +680,14 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
         record, 'new-discovery', policy, github, dshReleaseWindow, report,
       )
       if (retention.status === 'unsupported') {
-        if (previous) {
+        const preserveDurableDecision = previous && isDurableRejectedCandidateDecision(previous)
+        if (preserveDurableDecision) {
+          report.candidateRetention.durableDecisionsPreserved += 1
+        } else if (previous) {
           candidates.entries = candidates.entries.filter(item => item !== previous)
           report.candidateRetention.registryRemovals += 1
         }
-        candidateByRepository.delete(repositoryKey)
+        if (!preserveDurableDecision) candidateByRepository.delete(repositoryKey)
         report.prunedCandidates.push(prunedCandidateRecord(record, retention, 'new-discovery'))
         continue
       }
@@ -928,6 +932,7 @@ const report = {
     retainedCompatible: 0,
     retainedUnknown: 0,
     prunedUnsupported: 0,
+    durableDecisionsPreserved: 0,
     registryRemovals: 0,
   },
   skippedDiscoveries: [], transientFailures: [],
