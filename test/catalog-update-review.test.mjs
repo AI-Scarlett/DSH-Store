@@ -131,22 +131,22 @@ test('self-manager version refresh imports its new explicit compatibility matrix
       ...original.compatibility,
       dshReleases: {
         ...original.compatibility.dshReleases,
-        '0.1.2-alpha.2': 'compatible',
         '0.1.2-alpha.3': 'compatible',
         '0.1.2-alpha.4': 'compatible',
+        '0.1.2-alpha.5': 'compatible',
       },
     },
   }
   const updated = buildCatalogVersionUpdate(original, candidate, {}, '2026-08-22T06:00:00Z', 'user-reviewed')
-  assert.equal(updated.compatibility.dshReleases['0.1.2-alpha.4'], 'compatible')
-  assert.deepEqual(updated.compatibility.dshOperations['0.1.2-alpha.4'], {
+  assert.equal(updated.compatibility.dshReleases['0.1.2-alpha.5'], 'compatible')
+  assert.deepEqual(updated.compatibility.dshOperations['0.1.2-alpha.5'], {
     install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
   })
   assert.deepEqual(updated.compatibility.dshOperations['0.1.1-rc.2'], {
     install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
   })
   assert.equal(supportsDshReleaseWindow(updated, [
-    '0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4',
+    '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5',
   ]), true)
 })
 

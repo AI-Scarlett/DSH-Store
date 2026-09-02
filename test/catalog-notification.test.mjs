@@ -199,7 +199,7 @@ test('Catalog notification bounds every detail table below the GitHub Issue body
     version: '2.0.0',
     repositoryUrl: entry.repositoryUrl,
     commit: 'd'.repeat(40),
-    requiredDshReleases: ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4'],
+    requiredDshReleases: ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'],
     reasons: ['需要保留完整机器报告中的供应链复核原因'],
     reason: '需要保留完整机器报告中的供应链复核原因',
   }))
@@ -217,7 +217,7 @@ test('Catalog notification bounds every detail table below the GitHub Issue body
       },
       addedEntries: details,
       updatedEntries: details,
-      compatibilityPolicy: { latestReleases: ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4'] },
+      compatibilityPolicy: { latestReleases: ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'] },
       compatibilityUnlisted: details,
       compatibilityRestored: details.slice(0, 30),
       prunedCandidates: details,

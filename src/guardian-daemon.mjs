@@ -283,7 +283,7 @@ export async function runGuardian(rawConfig, options = {}) {
       } else await rm(target, { force: true })
     }
     const install = await new Promise(resolve => {
-      const command = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, 'plugin', '--profile', config.profile, 'install', '--offline'], {
+      const command = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, 'plugin', '--profile', config.profile, 'install', '--offline', '--ignore-scripts'], {
         cwd: config.cwd, env: commandEnvironment, shell: false, stdio: 'ignore',
       })
       command.once('exit', code => resolve(code === 0))
@@ -301,7 +301,7 @@ export async function runGuardian(rawConfig, options = {}) {
   async function publish(state, extra = {}) {
     const value = {
       schemaVersion: 1, installed: true, available: true, state, heartbeatAt: now(),
-      profile: config.profile, pid: child?.pid ?? null, failureCount: failures.length,
+      profile: config.profile, guardianPid: process.pid, pid: child?.pid ?? null, failureCount: failures.length,
       owner: child ? 'guardian' : 'unknown', lastError,
       circuit: failures.length >= maxRestarts ? 'open' : 'closed', ...extra,
     }

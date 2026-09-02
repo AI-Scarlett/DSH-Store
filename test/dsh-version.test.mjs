@@ -27,27 +27,27 @@ test('DSH version check detects a newer official preview tag and keeps the stabl
         assert.equal(options.headers.accept, 'application/vnd.npm.install-v1+json')
         return new Response(JSON.stringify({
           name: '@deepseek-ai/dsh',
-          'dist-tags': { latest: '0.1.1-rc.2', next: '0.2.0-next.1', alpha: '0.1.2-alpha.4' },
-          versions: { '0.1.1-rc.2': {}, '0.1.2-alpha.4': {}, '0.2.0-next.1': {} },
+          'dist-tags': { latest: '0.1.1-rc.2', next: '0.2.0-next.1', alpha: '0.1.2-alpha.5' },
+          versions: { '0.1.1-rc.2': {}, '0.1.2-alpha.5': {}, '0.2.0-next.1': {} },
         }))
       },
     })
     assert.equal(service.peek(), null)
     const value = await service.inspect()
     assert.equal(value.currentVersion, '0.1.0-rc.7')
-    assert.equal(value.latestVersion, '0.1.2-alpha.4')
+    assert.equal(value.latestVersion, '0.1.2-alpha.5')
     assert.equal(value.stableVersion, '0.1.1-rc.2')
     assert.equal(value.releaseChannel, 'preview')
     assert.equal(value.releaseTag, 'alpha')
     assert.equal(value.status, 'update-available')
     assert.equal(value.installationKind, 'source-checkout')
     assert.equal(value.upgrade.executable, false)
-    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.2-alpha.4'])
+    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.2-alpha.5'])
     assert.match(value.upgrade.reason, /不会修改 DSH 源码/)
     assert.equal(value.latestSource, 'npm-official:alpha')
     assert.equal(value.registryUrl, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh')
     assert.equal(value.cacheTtlMs, 10 * 60_000)
-    assert.equal(service.peek().latestVersion, '0.1.2-alpha.4')
+    assert.equal(service.peek().latestVersion, '0.1.2-alpha.5')
     assert.equal(service.peek().cacheStatus, 'peek')
     assert.equal((await service.inspect()).cacheStatus, 'hit')
     assert.equal(requests, 1)

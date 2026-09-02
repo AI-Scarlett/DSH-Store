@@ -87,7 +87,7 @@ function pluginCommandError(result) {
   const diagnostic = pnpmCode === 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED'
     ? {
         code: pnpmCode,
-        message: 'pnpm 已阻止固定 Git 源运行 prepare；该插件缺少经过审核的构建许可，商城不会自动放宽权限。',
+        message: 'pnpm 已阻止 Profile 中某个固定 Git 依赖运行 prepare；该错误不一定来自当前目标插件，商城不会为整个 Profile 自动放宽构建权限。',
       }
     : pnpmCode === 'ERR_PNPM_PREPARE_PACKAGE'
       ? {
@@ -113,8 +113,8 @@ function pluginCommandError(result) {
 
 function pluginAddArgs(entry, action) {
   const args = ['add']
-  if (entry.packageName === 'dsh-safe-plugin-manager' && ['update', 'migrate'].includes(action)) args.push('--ignore-scripts')
-  else if (entry.risk.installScripts.length > 0) args.push(`--allow-build=${entry.packageName}`)
+  if (entry.risk.installScripts.length === 0) args.push('--ignore-scripts')
+  else args.push(`--allow-build=${entry.packageName}`)
   args.push(githubInstallSpecifier(entry))
   return args
 }
@@ -219,8 +219,9 @@ function planImpact(action, entry) {
     neverModify: ['DeepSeek Harness source', '@deepseek-ai/* packages', 'other Profiles', 'managed-block external content'],
     restartRequired: packageOperation,
     installScripts: ['install', 'update', 'migrate'].includes(action) ? entry.risk.installScripts : [],
-    lifecyclePolicy: entry.packageName === 'dsh-safe-plugin-manager' && ['update', 'migrate'].includes(action)
-      ? 'ignore-all-scripts' : 'catalog-reviewed',
+    lifecyclePolicy: ['install', 'update', 'migrate'].includes(action)
+      ? entry.risk.installScripts.length === 0 ? 'ignore-all-scripts' : 'exact-target-allow-build'
+      : 'not-applicable',
     sourceReview: entry.sourceReview ?? null,
     sourceTransition: action === 'migrate'
       ? '仅将 Profile 依赖从本地链接切换为目录固定的 GitHub Commit，不删除或修改原本地目录'
@@ -407,7 +408,7 @@ export function createOperationService(options = {}) {
         }
         if (rollbackDetails.profileFiles === 'succeeded' && packageCommandMayHaveMutated) {
           try {
-            const restoreInstall = await runner.plugin(plan.profile, ['install', '--offline'])
+            const restoreInstall = await runner.plugin(plan.profile, ['install', '--offline', '--ignore-scripts'])
             if (!restoreInstall.ok) throw new Error('dependency restore command failed')
             rollbackDetails.dependencies = 'succeeded'
           } catch {

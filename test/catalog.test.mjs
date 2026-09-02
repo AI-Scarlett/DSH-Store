@@ -117,27 +117,27 @@ test('catalog projects a legacy-compatible partial bridge without weakening curr
 test('catalog exposes the historical and current DSH compatibility matrix', () => {
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.8 <0.2.0'), {
     'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
-    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible',
+    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible', '0.1.2-alpha.5': 'compatible',
   })
   assert.deepEqual(dshReleaseCompatibility('>=0.1.0-rc.7 <0.2.0'), {
     'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
-    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible',
+    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible', '0.1.2-alpha.5': 'compatible',
   })
   assert.deepEqual(dshReleaseCompatibility('0.1.0-rc.7'), {
     'rc.7': 'compatible', 'rc.8': 'incompatible', '0.1.1-rc.1': 'incompatible', '0.1.1-rc.2': 'incompatible',
-    '0.1.2-alpha.2': 'incompatible', '0.1.2-alpha.3': 'incompatible', '0.1.2-alpha.4': 'incompatible',
+    '0.1.2-alpha.2': 'incompatible', '0.1.2-alpha.3': 'incompatible', '0.1.2-alpha.4': 'incompatible', '0.1.2-alpha.5': 'incompatible',
   })
   assert.deepEqual(dshReleaseCompatibility('unknown'), {
     'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
-    '0.1.2-alpha.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown',
+    '0.1.2-alpha.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
   })
   assert.deepEqual(dshReleaseCompatibility('>= 0.1.0-rc.8 < 0.2.0'), {
     'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
-    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible',
+    '0.1.2-alpha.2': 'compatible', '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'compatible', '0.1.2-alpha.5': 'compatible',
   })
   assert.deepEqual(dshReleaseCompatibility(`${' '.repeat(200_000)}!`), {
     'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
-    '0.1.2-alpha.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown',
+    '0.1.2-alpha.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
   }, 'oversized uncontrolled ranges must fail closed before regular-expression parsing')
 })
 
@@ -447,6 +447,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     (packageManifest.version === '0.8.9' && manager.version === '0.8.8')
     || (packageManifest.version === '0.8.10' && manager.version === '0.8.9')
     || (packageManifest.version === '0.8.11' && manager.version === '0.8.10')
+    || (packageManifest.version === '0.8.12' && manager.version === '0.8.11')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -482,6 +483,13 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
       install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
     })
+  } else if (managerIsCurrent) {
+    for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
+      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
+      assert.deepEqual(manager.compatibility.dshOperations[release], {
+        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+      })
+    }
   } else {
     for (const release of ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']) {
       assert.equal(manager.compatibility.dshReleases[release], 'compatible')
@@ -563,9 +571,15 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
   const buildPlugin = source.entries.find(item => item.id === 'build-dsh-plugin')
   assert.equal(buildPlugin.status, 'approved')
-  assert.equal(buildPlugin.version, '0.4.0')
-  assert.equal(buildPlugin.commit, '99f054a42e60e3e91f8ca54eb8e8c6b22c21e870')
-  for (const release of ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']) {
+  const previousBuildPluginCommit = '99f054a42e60e3e91f8ca54eb8e8c6b22c21e870'
+  const buildPluginIsPrevious = buildPlugin.version === '0.4.0' && buildPlugin.commit === previousBuildPluginCommit
+  const buildPluginIsCurrent = buildPlugin.version === '0.4.1' && buildPlugin.commit !== previousBuildPluginCommit
+  assert.ok(buildPluginIsPrevious || buildPluginIsCurrent,
+    'build-dsh-plugin must be the staged previous release or the current fixed Catalog pin')
+  const buildPluginWindow = buildPluginIsCurrent
+    ? ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']
+    : ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']
+  for (const release of buildPluginWindow) {
     assert.equal(buildPlugin.compatibility.dshReleases[release], 'compatible')
   }
   for (const gate of ['installability', 'runtime', 'securityReview']) {

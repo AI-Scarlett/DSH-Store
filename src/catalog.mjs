@@ -15,7 +15,7 @@ const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
 const MAX_COUNTS_BYTES = 256 * 1024
-export const DSH_RC_RELEASES = ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']
+export const DSH_RC_RELEASES = ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']
 export const DSH_OPERATIONS = ['install', 'start', 'uninstall', 'rollback']
 export const DSH_RC_VERSIONS = {
   'rc.7': '0.1.0-rc.7',
@@ -25,6 +25,7 @@ export const DSH_RC_VERSIONS = {
   '0.1.2-alpha.2': '0.1.2-alpha.2',
   '0.1.2-alpha.3': '0.1.2-alpha.3',
   '0.1.2-alpha.4': '0.1.2-alpha.4',
+  '0.1.2-alpha.5': '0.1.2-alpha.5',
 }
 const MAX_DSH_RELEASE_KEYS = 64
 export const MARKET_PAGE_SIZE = 20

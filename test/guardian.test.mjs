@@ -6,6 +6,7 @@ import { delimiter, join } from 'node:path'
 import test from 'node:test'
 import { createGuardianService } from '../src/guardian.mjs'
 import { createProbeJournal, runGuardian } from '../src/guardian-daemon.mjs'
+import { runGuardianUpgrade } from '../src/guardian-upgrader.mjs'
 import { EventEmitter } from 'node:events'
 
 test('guardian status fails closed without an external heartbeat', async () => {
@@ -111,6 +112,14 @@ test('guardian restores prior artifacts after a bootstrap failure without touchi
       execFile: async (file, args) => {
         calls.push([file, args])
         if (args[0] === 'bootstrap' && bootstrapCalls++ === 0) throw new Error('bootstrap failed')
+        if (args[0] === 'bootstrap') {
+          await writeFile(join(stateDir, 'status.json'), JSON.stringify({
+            schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+            heartbeatAt: new Date(Date.now() + 10).toISOString(), profile: 'web', pid: 77,
+            health: { bootId: 'rollback-boot' },
+          }))
+        }
+        if (args[0] === 'print') return { stdout: 'pid = 7002\n' }
       },
     })
     const plan = await service.createInstallPlan({ profile: 'web' })
@@ -119,6 +128,271 @@ test('guardian restores prior artifacts after a bootstrap failure without touchi
     assert.equal(await readFile(join(stateDir, 'config.json'), 'utf8'), '{"previous":true}\n')
     assert.equal(await readFile(plistPath, 'utf8'), '<plist>previous</plist>\n')
     assert.equal(calls.some(item => item[1][1].endsWith('/local.dsh.web')), false)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('active Guardian upgrade binds the owner and launches a delayed out-of-process handoff before the HTTP Host stops', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-active-upgrade-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    const stateDir = join(root, 'dsh-safe-plugin-manager', 'guardian')
+    await mkdir(launchAgentsDir); await mkdir(stateDir, { recursive: true })
+    await writeFile(daemonSource, 'export const current = true\n')
+    await writeFile(join(stateDir, 'guardian-daemon.mjs'), 'export const previous = true\n')
+    await writeFile(join(stateDir, 'config.json'), '{"previous":true}\n')
+    const plistPath = join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist')
+    await writeFile(plistPath, '<plist>previous</plist>\n')
+    let clock = Date.parse('2026-09-03T00:00:00Z')
+    const calls = []
+    const writeStatus = value => writeFile(join(stateDir, 'status.json'), JSON.stringify(value))
+    await writeStatus({
+      schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+      heartbeatAt: new Date(clock).toISOString(), profile: 'web', pid: 501,
+      health: { bootId: 'old-boot' },
+    })
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true, now: () => clock,
+      delay: async ms => { clock += ms },
+      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      signalProcess: () => assert.fail('the in-process service must not signal the active HTTP Host'),
+      execFile: async (file, args) => {
+        calls.push([file, args])
+        if (args[0] === 'print') return { stdout: 'pid = 7001\n' }
+      },
+      schedule: () => assert.fail('active Guardian upgrade must not schedule the legacy local.dsh.web handoff'),
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    assert.equal(plan.action, 'upgrade-guardian')
+    assert.deepEqual(plan.impact.activeHandoff, {
+      mode: 'verified-owner-restart', guardianPid: 7001, hostPid: 501, hostBootId: 'old-boot',
+    })
+    const result = await service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'update-scheduled')
+    assert.equal(result.handoff.status, 'scheduled')
+    assert.equal(result.handoff.mode, 'active-guardian-upgrade')
+    assert.equal(result.handoff.previousGuardianPid, 7001)
+    assert.equal(result.handoff.previousHostPid, 501)
+    assert.equal(result.handoff.previousBootId, 'old-boot')
+    assert.ok(calls.some(item => item[1]?.[0] === 'bootstrap' && item[1]?.[2]?.endsWith('com.ai-scarlett.dsh-guardian-upgrader.plist')))
+    assert.equal(calls.some(item => item[1]?.[0] === 'bootout' && item[1]?.[1]?.endsWith('/com.ai-scarlett.dsh-guardian')), false)
+    const handoffPlan = JSON.parse(await readFile(join(
+      stateDir, 'upgrade-handoffs', result.handoff.planId, 'plan.json',
+    ), 'utf8'))
+    assert.equal(handoffPlan.operation, 'active-guardian-upgrade')
+    assert.equal(handoffPlan.old.guardianPid, 7001)
+    assert.equal(handoffPlan.old.hostPid, 501)
+    assert.equal(handoffPlan.old.hostBootId, 'old-boot')
+    assert.ok(Date.parse(handoffPlan.notBefore) > clock)
+    assert.equal(await readFile(handoffPlan.paths.stagedDaemon, 'utf8'), 'export const current = true\n')
+    let activeLaunchdPid = 7001
+    const alive = new Set([501])
+    const helperCalls = []
+    const receipt = await runGuardianUpgrade(handoffPlan, {
+      now: () => clock,
+      delay: async ms => { clock += ms },
+      signalProcess: (pid, signal) => {
+        helperCalls.push(['signal', pid, signal])
+        if (signal === 0 && !alive.has(pid)) throw Object.assign(new Error('missing'), { code: 'ESRCH' })
+        if (signal === 'SIGTERM' || signal === 'SIGKILL') alive.delete(pid)
+      },
+      execFile: async (file, args) => {
+        helperCalls.push([file, args])
+        if (args[0] === 'print') return { stdout: `pid = ${activeLaunchdPid}\n` }
+        if (args[0] === 'bootout') { activeLaunchdPid = null; return undefined }
+        if (args[0] === 'bootstrap') {
+          clock += 100; activeLaunchdPid = 7002; alive.add(502)
+          await writeStatus({
+            schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+            heartbeatAt: new Date(clock).toISOString(), profile: 'web', guardianPid: 7002, pid: 502,
+            health: { bootId: 'new-boot' },
+          })
+        }
+      },
+    })
+    assert.equal(receipt.status, 'completed')
+    assert.equal(receipt.previous.guardianPid, 7001)
+    assert.equal(receipt.replacement.guardianPid, 7002)
+    assert.equal(receipt.replacement.hostPid, 502)
+    assert.equal(receipt.replacement.hostBootId, 'new-boot')
+    assert.equal(alive.has(501), false)
+    assert.equal(alive.has(502), true)
+    assert.ok(helperCalls.some(item => item[0] === 'signal' && item[1] === 501 && item[2] === 'SIGTERM'))
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('active Guardian upgrade fails closed when the bound Host identity drifts after confirmation', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-active-drift-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    const stateDir = join(root, 'dsh-safe-plugin-manager', 'guardian')
+    await mkdir(launchAgentsDir); await mkdir(stateDir, { recursive: true })
+    await writeFile(daemonSource, 'export const current = true\n')
+    await writeFile(join(stateDir, 'guardian-daemon.mjs'), 'export const previous = true\n')
+    await writeFile(join(stateDir, 'config.json'), '{}\n')
+    await writeFile(join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'), '<plist/>\n')
+    const statusPath = join(stateDir, 'status.json')
+    const heartbeatAt = new Date().toISOString()
+    await writeFile(statusPath, JSON.stringify({
+      schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+      heartbeatAt, profile: 'web', pid: 601, health: { bootId: 'bound-boot' },
+    }))
+    const commands = []
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true,
+      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      execFile: async (file, args) => { commands.push([file, args]); return { stdout: 'pid = 7101\n' } },
+      signalProcess: () => assert.fail('a drifted Host must never be signalled'),
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    await writeFile(statusPath, JSON.stringify({
+      schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+      heartbeatAt: new Date(Date.now() + 10).toISOString(), profile: 'web', pid: 602,
+      health: { bootId: 'different-boot' },
+    }))
+    await assert.rejects(
+      service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation }),
+      error => error.code === 'GUARDIAN_ACTIVE_IDENTITY_CHANGED',
+    )
+    assert.equal(commands.some(item => item[1][0] === 'bootout' || item[1][0] === 'bootstrap'), false)
+    assert.equal(await readFile(join(stateDir, 'guardian-daemon.mjs'), 'utf8'), 'export const previous = true\n')
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('delayed Guardian upgrader rechecks identity immediately before bootout', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-delayed-drift-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    const stateDir = join(root, 'dsh-safe-plugin-manager', 'guardian')
+    await mkdir(launchAgentsDir); await mkdir(stateDir, { recursive: true })
+    await writeFile(daemonSource, 'export const current = true\n')
+    await writeFile(join(stateDir, 'guardian-daemon.mjs'), 'export const previous = true\n')
+    await writeFile(join(stateDir, 'config.json'), '{}\n')
+    await writeFile(join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'), '<plist/>\n')
+    let clock = Date.parse('2026-09-03T00:30:00Z')
+    const statusPath = join(stateDir, 'status.json')
+    await writeFile(statusPath, JSON.stringify({
+      schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+      heartbeatAt: new Date(clock).toISOString(), profile: 'web', pid: 651,
+      health: { bootId: 'bound-boot' },
+    }))
+    const stagingCalls = []
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true, now: () => clock,
+      activeHandoffDelayMs: 1_500,
+      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      execFile: async (_file, args) => {
+        stagingCalls.push(args)
+        if (args[0] === 'print') return { stdout: 'pid = 7151\n' }
+      },
+      signalProcess: () => assert.fail('the staging service must not signal the live Host'),
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    const staged = await service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation })
+    const handoffPlan = JSON.parse(await readFile(join(
+      stateDir, 'upgrade-handoffs', staged.handoff.planId, 'plan.json',
+    ), 'utf8'))
+    const helperCalls = []
+    await assert.rejects(
+      runGuardianUpgrade(handoffPlan, {
+        now: () => clock,
+        delay: async ms => {
+          clock += ms
+          await writeFile(statusPath, JSON.stringify({
+            schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+            heartbeatAt: new Date(clock).toISOString(), profile: 'web', pid: 652,
+            health: { bootId: 'replacement-boot' },
+          }))
+        },
+        execFile: async (_file, args) => {
+          helperCalls.push(args)
+          if (args[0] === 'print') return { stdout: 'pid = 7151\n' }
+        },
+        signalProcess: () => assert.fail('a drifted Host must never be signalled'),
+      }),
+      error => error.code === 'GUARDIAN_UPGRADE_FAILED'
+        && error.receipt?.error?.code === 'GUARDIAN_ACTIVE_IDENTITY_CHANGED'
+        && error.receipt?.recovery?.attempted === false,
+    )
+    assert.equal(helperCalls.some(args => args[0] === 'bootout' || args[0] === 'bootstrap'), false)
+    assert.equal(stagingCalls.some(args => args[0] === 'bootout' && args[1]?.endsWith('/com.ai-scarlett.dsh-guardian')), false)
+    assert.equal(await readFile(join(stateDir, 'guardian-daemon.mjs'), 'utf8'), 'export const previous = true\n')
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('failed active Guardian replacement restores the previous artifacts and verifies its fresh owner heartbeat', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-active-rollback-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    const stateDir = join(root, 'dsh-safe-plugin-manager', 'guardian')
+    await mkdir(launchAgentsDir); await mkdir(stateDir, { recursive: true })
+    const oldDaemon = 'export const previous = true\n'; const oldConfig = '{"previous":true}\n'; const oldPlist = '<plist>previous</plist>\n'
+    await writeFile(daemonSource, 'export const current = true\n')
+    await writeFile(join(stateDir, 'guardian-daemon.mjs'), oldDaemon)
+    await writeFile(join(stateDir, 'config.json'), oldConfig)
+    const plistPath = join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist')
+    await writeFile(plistPath, oldPlist)
+    let clock = Date.parse('2026-09-03T01:00:00Z')
+    const statusPath = join(stateDir, 'status.json')
+    await writeFile(statusPath, JSON.stringify({
+      schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+      heartbeatAt: new Date(clock).toISOString(), profile: 'web', pid: 701, health: { bootId: 'old-boot' },
+    }))
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true, now: () => clock,
+      bootstrapTimeoutMs: 30, bootstrapPollMs: 10, activeHandoffDelayMs: 20,
+      restartSpec: profile => ({ nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      execFile: async (_file, args) => args[0] === 'print' ? { stdout: 'pid = 7201\n' } : undefined,
+      signalProcess: () => assert.fail('the staging service must not stop the live Host'),
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    const staged = await service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation })
+    const handoffPlanPath = join(stateDir, 'upgrade-handoffs', staged.handoff.planId, 'plan.json')
+    const handoffPlan = JSON.parse(await readFile(handoffPlanPath, 'utf8'))
+    let launchdPid = 7201
+    let bootstrapCount = 0
+    const alive = new Set([701])
+    await assert.rejects(
+      runGuardianUpgrade(handoffPlan, {
+        now: () => clock,
+        delay: async ms => { clock += ms },
+        signalProcess: (pid, signal) => {
+          if (signal === 0 && !alive.has(pid)) throw Object.assign(new Error('missing'), { code: 'ESRCH' })
+          if (signal === 'SIGTERM' || signal === 'SIGKILL') alive.delete(pid)
+        },
+        execFile: async (_file, args) => {
+          if (args[0] === 'print') return { stdout: `pid = ${launchdPid}\n` }
+          if (args[0] === 'bootout') { launchdPid = null; return undefined }
+          if (args[0] === 'bootstrap') {
+            bootstrapCount += 1; clock += 100
+            if (bootstrapCount === 1) {
+              launchdPid = 7201; alive.add(702)
+              await writeFile(statusPath, JSON.stringify({
+                schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+                heartbeatAt: new Date(clock).toISOString(), profile: 'web', guardianPid: 7201, pid: 702,
+                health: { bootId: 'unaccepted-new-boot' },
+              }))
+            } else {
+              launchdPid = 7203; alive.add(703)
+              await writeFile(statusPath, JSON.stringify({
+                schemaVersion: 1, installed: true, available: true, state: 'healthy', owner: 'guardian',
+                heartbeatAt: new Date(clock).toISOString(), profile: 'web', pid: 703,
+                health: { bootId: 'restored-boot' },
+              }))
+            }
+          }
+        },
+      }),
+      error => error.code === 'GUARDIAN_UPGRADE_FAILED'
+        && error.receipt?.recovery?.restored === true
+        && error.receipt?.recovery?.relaunchedPreviousGuardian === true
+        && error.receipt?.recovery?.heartbeatVerified === true,
+    )
+    assert.equal(await readFile(join(stateDir, 'guardian-daemon.mjs'), 'utf8'), oldDaemon)
+    assert.equal(await readFile(join(stateDir, 'config.json'), 'utf8'), oldConfig)
+    assert.equal(await readFile(plistPath, 'utf8'), oldPlist)
+    assert.equal(alive.has(701), false)
+    assert.equal(alive.has(702), false)
+    assert.equal(alive.has(703), true)
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 
