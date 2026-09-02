@@ -12,6 +12,7 @@ readonly pages_subdir="${DSH_STORE_PAGES_SUBDIR:-}"
 readonly pages_path_prefix="${pages_subdir:+$pages_subdir/}"
 readonly health_scheme="${DSH_STORE_HEALTH_SCHEME:-https}"
 readonly site_prefix="${DSH_STORE_SITE_PREFIX:-}"
+readonly download_jobs="${DSH_STORE_DOWNLOAD_JOBS:-12}"
 
 case "$store_domain" in
   dsh.store|dsh-store.cn) ;;
@@ -35,6 +36,13 @@ case "$store_domain:$health_scheme:$site_prefix" in
   dsh-store.cn:https:) readonly health_port=443 ;;
   *) printf 'Unsupported DSH Store origin topology: %s %s %s\n' "$store_domain" "$health_scheme" "$site_prefix" >&2; exit 2 ;;
 esac
+case "$download_jobs" in
+  ''|*[!0-9]*) printf 'Invalid DSH Store download concurrency: %s\n' "$download_jobs" >&2; exit 2 ;;
+esac
+if test "$download_jobs" -lt 1 || test "$download_jobs" -gt 16; then
+  printf 'DSH Store download concurrency must be between 1 and 16: %s\n' "$download_jobs" >&2
+  exit 2
+fi
 readonly health_resolve="$store_domain:$health_port:127.0.0.1"
 readonly health_base="$health_scheme://$store_domain"
 
@@ -213,11 +221,16 @@ test ! -e "$candidate"
 test ! -e "$backup"
 install -d -o root -g root -m 0755 "$candidate"
 
-while IFS= read -r path; do
+download_artifact() {
+  local path="$1"
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
   curl -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
     "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"
-done < "$incoming/files.list"
+}
+
+export pages_base pages_path_prefix candidate
+export -f download_artifact
+xargs -P "$download_jobs" -n 1 bash -Eeuo pipefail -c 'download_artifact "$1"' _ < "$incoming/files.list"
 install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
 
 python3 - "$candidate" <<'PY'
