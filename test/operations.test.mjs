@@ -88,6 +88,45 @@ test('source-verified update plan pins the locally approved candidate commit', a
   }
 })
 
+test('marketplace self-update ignores every lifecycle script instead of widening allow-build', async () => {
+  const { root, profile } = await fixture({ installed: false })
+  const commit = 'd'.repeat(40)
+  const managerEntry = {
+    ...demoEntry,
+    id: 'dsh-safe-plugin-manager',
+    name: '安全插件商城',
+    packageName: 'dsh-safe-plugin-manager',
+    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+    commit,
+    version: '0.8.10',
+    entryIds: ['dsh-safe-plugin-manager'],
+    risk: { installScripts: [], review: 'owner-curated-not-security-audited' },
+  }
+  const profilePath = join(profile, 'package.json')
+  const profileManifest = JSON.parse(await readFile(profilePath, 'utf8'))
+  profileManifest.dependencies['dsh-safe-plugin-manager'] = `github:AI-Scarlett/DSH-Store#${'c'.repeat(40)}`
+  profileManifest.dsh.profile.bundles.push('dsh-safe-plugin-manager')
+  await writeFile(profilePath, `${JSON.stringify(profileManifest, null, 2)}\n`)
+  const installedDir = join(profile, 'node_modules', 'dsh-safe-plugin-manager')
+  await mkdir(installedDir, { recursive: true })
+  await writeFile(join(installedDir, 'package.json'), JSON.stringify({ name: 'dsh-safe-plugin-manager', version: '0.8.9' }))
+  const calls = []
+  const runner = {
+    plugin: async (_profile, args) => { calls.push(args); return { ok: true, exitCode: 0 } },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner, { entry: managerEntry })
+    const plan = await operations.createPlan({ action: 'update', pluginId: managerEntry.id })
+    assert.equal(plan.impact.lifecyclePolicy, 'ignore-all-scripts')
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'applied')
+    assert.deepEqual(calls[0], ['add', '--ignore-scripts', `git+https://github.com/AI-Scarlett/DSH-Store.git#${commit}`])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('high-risk source update requires local acceptance and binds warnings to the typed plan', async () => {
   const { root } = await fixture({ specifier: `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}` })
   const candidate = {

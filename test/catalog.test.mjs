@@ -434,7 +434,10 @@ test('bundled registry declares complete detail metadata for every entry', async
   const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
   const managerIsBootstrap = manager.version === '0.8.5' && manager.commit === bootstrapCommit
   const managerIsCurrent = manager.version === packageManifest.version && manager.commit !== bootstrapCommit
-  const managerIsPreviousReleaseBeforeCatalogPin = packageManifest.version === '0.8.9' && manager.version === '0.8.8'
+  const managerIsPreviousReleaseBeforeCatalogPin = (
+    (packageManifest.version === '0.8.9' && manager.version === '0.8.8')
+    || (packageManifest.version === '0.8.10' && manager.version === '0.8.9')
+  )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
   assert.match(manager.commit, /^[0-9a-f]{40}$/)

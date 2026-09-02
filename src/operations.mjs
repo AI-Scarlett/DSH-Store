@@ -111,9 +111,10 @@ function pluginCommandError(result) {
   })
 }
 
-function pluginAddArgs(entry) {
+function pluginAddArgs(entry, action) {
   const args = ['add']
-  if (entry.risk.installScripts.length > 0) args.push(`--allow-build=${entry.packageName}`)
+  if (entry.packageName === 'dsh-safe-plugin-manager' && ['update', 'migrate'].includes(action)) args.push('--ignore-scripts')
+  else if (entry.risk.installScripts.length > 0) args.push(`--allow-build=${entry.packageName}`)
   args.push(githubInstallSpecifier(entry))
   return args
 }
@@ -218,6 +219,8 @@ function planImpact(action, entry) {
     neverModify: ['DeepSeek Harness source', '@deepseek-ai/* packages', 'other Profiles', 'managed-block external content'],
     restartRequired: packageOperation,
     installScripts: ['install', 'update', 'migrate'].includes(action) ? entry.risk.installScripts : [],
+    lifecyclePolicy: entry.packageName === 'dsh-safe-plugin-manager' && ['update', 'migrate'].includes(action)
+      ? 'ignore-all-scripts' : 'catalog-reviewed',
     sourceReview: entry.sourceReview ?? null,
     sourceTransition: action === 'migrate'
       ? '仅将 Profile 依赖从本地链接切换为目录固定的 GitHub Commit，不删除或修改原本地目录'
@@ -360,7 +363,7 @@ export function createOperationService(options = {}) {
       const { action } = plan
       const { entry } = plan.privateData
       if (action === 'install' || action === 'update' || action === 'migrate') {
-        const result = await runner.plugin(plan.profile, pluginAddArgs(entry))
+        const result = await runner.plugin(plan.profile, pluginAddArgs(entry, action))
         packageCommandMayHaveMutated = result.ok || result.exitCode !== 127
         if (!result.ok) throw pluginCommandError(result)
       } else if (action === 'uninstall') {

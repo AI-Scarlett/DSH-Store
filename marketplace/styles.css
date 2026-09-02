@@ -1863,6 +1863,58 @@ dialog { border-radius: var(--radius-xl); }
 .dialog-repo { border-color: var(--blue); background: var(--blue); }
 .copy-button, .dialog-section h3 { color: var(--blue); }
 
+.repair-page code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+.info-hero { padding-top: clamp(72px, 10vw, 132px); padding-bottom: 32px; }
+.info-hero h1 { max-width: 920px; margin: 16px 0 24px; font-size: clamp(42px, 7vw, 88px); line-height: .98; letter-spacing: -.055em; }
+.info-hero .hero-copy { max-width: 860px; }
+.info-grid { margin-top: 34px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.info-card { min-height: 240px; padding: 28px; border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.72); }
+.info-card > span { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+.info-card h2 { margin: 42px 0 10px; font-size: clamp(22px, 3vw, 34px); }
+.info-card p { color: var(--muted); line-height: 1.75; }
+.repair-status-panel, .repair-warning { margin-top: 34px; }
+.repair-state-card, .repair-warning {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255,255,255,.82);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(22px, 4vw, 42px);
+}
+.repair-state-card[hidden] { display: none; }
+.repair-state-card h3, .repair-warning h2 { margin: 14px 0 10px; }
+.repair-command-shell {
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid rgba(74,91,156,.2);
+  border-radius: 14px;
+  background: #10162b;
+  color: #f2f5ff;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+}
+.repair-warning ul { margin: 14px 0 0; padding-left: 22px; display: grid; gap: 10px; line-height: 1.75; }
+.repair-page .muted { color: var(--muted); min-height: 1.5em; }
+.legacy-repair-banner {
+  width: min(1180px, calc(100% - 40px));
+  margin: 22px auto 0;
+  padding: 14px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  border: 1px solid rgba(229,91,69,.28);
+  border-radius: 16px;
+  background: rgba(255,245,238,.92);
+  color: var(--ink);
+}
+.legacy-repair-banner span { color: var(--muted); }
+.legacy-repair-banner a { margin-left: auto; color: var(--blue); font-weight: 750; }
+
 @media (max-width: 1120px) {
   .site-nav { border-top-color: var(--line); }
   .metric-deck { grid-template-columns: repeat(4, minmax(0,1fr)); }
@@ -1916,6 +1968,9 @@ dialog { border-radius: var(--radius-xl); }
   .process-card, .process-card:first-child, .process-card:last-child, .deliverable-card, .about-story-card:nth-child(n), .about-product-card, .about-product-card:last-child { grid-column: 1; }
   .about-reading-card { background: rgba(255,255,255,.88); }
   .site-footer { margin: 64px 8px 8px; padding: 48px 20px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .info-card { min-height: 210px; }
+  .legacy-repair-banner a { width: 100%; margin-left: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

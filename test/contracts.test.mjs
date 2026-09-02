@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.9')
+  assert.equal(pkg.version, '0.8.10')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -364,7 +364,7 @@ test('client fails closed when the live health endpoint still uses the legacy sc
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const [html, app, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, readme, previewServer, styles] = await Promise.all([
+  const [html, app, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, repairHtml, repairClient, repairCli, readme, previewServer, styles, packageManifest] = await Promise.all([
     readFile(new URL('marketplace/index.html', project), 'utf8'),
     readFile(new URL('marketplace/app.js', project), 'utf8'),
     readFile(new URL('marketplace/plugins/index.html', project), 'utf8'),
@@ -372,9 +372,13 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     readFile(new URL('marketplace/build/index.html', project), 'utf8'),
     readFile(new URL('marketplace/faq/index.html', project), 'utf8'),
     readFile(new URL('marketplace/about/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/repair/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/repair/repair.js', project), 'utf8'),
+    readFile(new URL('bin/dsh-store-repair.mjs', project), 'utf8'),
     readFile(new URL('README.md', project), 'utf8'),
     readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
+    readFile(new URL('package.json', project), 'utf8'),
   ])
   const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
   const installCommand = `dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}'`
@@ -398,7 +402,7 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.ok(html.includes(submissionUrl))
   assert.ok(pluginsHtml.includes(submissionUrl))
   assert.ok(buildHtml.includes(submissionUrl))
-  for (const page of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml]) {
+  for (const page of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, repairHtml]) {
     assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
   }
   assert.match(html, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
@@ -406,6 +410,17 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     assert.doesNotMatch(surface, /github\.com\/AI-Scarlett\/dsh-safe-plugin-manager|ai-scarlett\.github\.io\/dsh-safe-plugin-manager/)
   }
   assert.match(html, /id="manager"/)
+  assert.match(html, /DSH_LEGACY_REPAIR_BANNER/)
+  assert.match(repairHtml, /data-repair-state="catalog-pending"/)
+  assert.match(repairHtml, /DSH_REPAIR_COMMAND/)
+  assert.match(repairHtml, /--ignore-scripts/)
+  assert.match(repairClient, /navigator\.clipboard\.writeText/)
+  assert.doesNotMatch(repairClient, /fetch\(|eval\(|new Function/)
+  assert.match(repairCli, /createLegacyRepairService/)
+  const parsedPackage = JSON.parse(packageManifest)
+  assert.equal(parsedPackage.bin['dsh-store-repair'], './bin/dsh-store-repair.mjs')
+  assert.equal(parsedPackage.scripts.prepare, undefined)
+  assert.equal(parsedPackage.scripts.install, undefined)
   assert.match(html, /id="featured-grid"/)
   assert.doesNotMatch(html, /id="plugin-grid"/)
   assert.match(pluginsHtml, /id="plugin-grid"/)

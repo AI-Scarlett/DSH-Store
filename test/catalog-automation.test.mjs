@@ -80,6 +80,11 @@ test('automatic policy runs every eight hours and fails closed on permission or 
     'https://dsh.store/registry/catalog.json',
     'https://dsh-store.cn/registry/catalog.json',
   ])
+  assert.deepEqual(policy.publication.publicRepairUrls, [
+    'https://ai-scarlett.github.io/DSH-Store/marketplace/repair/',
+    'https://dsh.store/repair/',
+    'https://dsh-store.cn/repair/',
+  ])
 })
 
 test('scheduled automation uses a policy PR and never executes third-party package code', async () => {

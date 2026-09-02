@@ -17,11 +17,17 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 [目录准入规则](registry/README.md) ·
 [安全说明](SECURITY.md)
 
+> **旧版更新安全修复：** 如果商城更新出现
+> `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`，不要放开 `prepare` 权限，也不要手改
+> Profile。请使用 [DSH STORE 官方安全修复入口](https://dsh.store/repair/)；修复页只有在
+> Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
+
 ## 安装插件商城
 
 ### 前置条件
 
-- DeepSeek Harness `0.1.0-rc.7`、`0.1.0-rc.8`、`0.1.1-rc.1` 或 `0.1.1-rc.2`，并且官方 `dsh` CLI 可用；
+- DeepSeek Harness `0.1.0-rc.7`、`0.1.0-rc.8`、`0.1.1-rc.1`、`0.1.1-rc.2`
+  或当前官方 `0.1.2-alpha.2` 至 `0.1.2-alpha.4` 预发布通道，并且官方 `dsh` CLI 可用；
 - Node.js `22.13.0` 或更高版本；
 - 一个启用了 Web 客户端的目标 Profile。下面以 `web` 为例，如果你的 Profile 名称不同，
   请替换命令中的 `web`。
@@ -66,7 +72,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.8.9` |
+| 商城版本 | `0.8.10` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
@@ -75,6 +81,13 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
 `0.8.9` 把 Catalog 分成三层：`registry/catalog.json` 是约束在旧版 2 MiB 上限内的 schemaVersion 1 兼容桥，只保留商城自身完整条目并用 `indexPath`、SHA-256、字节数和条目数固定下一层；`registry/catalog-index.json` 是完整轻量主索引，只承载插件编号、中英文名称、版本、推荐标记、顺序、GitHub 地址及有界分页辅助字段；`registry/catalog/details/<插件编号>.json` 保存权限、兼容性、证据和安装信息。新商城验证桥接摘要后读取索引，并且每页只懒加载 20 个详情；桥、索引或详情身份不一致时失败关闭，不会混用远程索引与本地详情。主索引上限为 2 MiB，单详情上限为 512 KiB。`0.8.8` 先把旧的单体 Catalog 读取上限有界提高到 4 MiB，作为迁移过渡。
+
+`0.8.10` 为历史安装增加 Catalog 固定的官方安全修复器和双站 `/repair/` 页面。修复器只接受
+完整 Git Commit 和交互式确认，备份 Profile 后通过官方 DSH CLI 使用
+`--ignore-scripts` 更新，不执行任何第三方生命周期脚本；配置合成失败会恢复 Profile 和依赖。
+Guardian 可用时，修复器会写入可回滚冷启动记录、请求重启并等待新的 Boot ID 稳定；没有
+Guardian 时明确停在“等待安全重启”，不把包更新误称为运行验收。修复页只有在 Catalog Pin
+完成后才显示命令，避免源码 PR 与目录固定之间出现可执行的浮动窗口。
 
 ### 历史用户保留与更新路径
 

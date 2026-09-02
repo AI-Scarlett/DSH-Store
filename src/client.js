@@ -1176,6 +1176,7 @@ window.__ModuleLoader__.load({
       }
       if (operation.status === 'result') {
         const result = operation.value
+        const legacyRepairRequired = result.error?.diagnostic?.code === 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED'
         const footer = React.createElement(React.Fragment, null,
           React.createElement(Button, { onClick: cancel }, '完成'),
           result.status === 'applied' && result.restartRequired
@@ -1192,6 +1193,9 @@ window.__ModuleLoader__.load({
             React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`),
             result.error.diagnostic ? React.createElement('div', { style: styles.notice },
               `${result.error.diagnostic.code}：${result.error.diagnostic.message}`) : null) : null,
+          legacyRepairRequired ? React.createElement('div', { style: styles.notice },
+            React.createElement('div', { style: styles.name }, '不要放开第三方 prepare 权限，也不要手改 Profile。'),
+            React.createElement('a', { href: 'https://dsh.store/repair/', target: '_blank', rel: 'noreferrer', style: styles.link }, '打开 DSH STORE 官方安全修复入口')) : null,
           result.status === 'applied' && result.restartRequired ? React.createElement('div', { style: styles.notice },
             React.createElement('div', { style: styles.name }, '插件变更已写入，但尚未在当前 DSH Host 中生效'),
             React.createElement('div', { style: styles.muted }, '请使用“一键安全重启”；Guardian 会停止并启动同一个 web Profile。不要再手工启动第二个 DSH 实例。')) : null))
