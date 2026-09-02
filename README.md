@@ -17,17 +17,18 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 [目录准入规则](registry/README.md) ·
 [安全说明](SECURITY.md)
 
-> **旧版更新安全修复：** 如果商城更新出现
-> `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`，不要放开 `prepare` 权限，也不要手改
-> Profile。请使用 [DSH STORE 官方安全修复入口](https://dsh.store/repair/)；修复页只有在
-> Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
+> **旧版更新安全修复：** 如果商城或其他插件更新出现
+> `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`，不要放开整个 Profile 的 `prepare` 权限，也不要手改
+> Profile。请通过[国内站](https://dsh-store.cn/repair/)或
+> [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
+> 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
 ## 安装插件商城
 
 ### 前置条件
 
 - DeepSeek Harness `0.1.0-rc.7`、`0.1.0-rc.8`、`0.1.1-rc.1`、`0.1.1-rc.2`
-  或当前官方 `0.1.2-alpha.2` 至 `0.1.2-alpha.4` 预发布通道，并且官方 `dsh` CLI 可用；
+  或当前官方 `0.1.2-alpha.3` 至 `0.1.2-alpha.5` 最新三版预发布通道，并且官方 `dsh` CLI 可用；
 - Node.js `22.13.0` 或更高版本；
 - 一个启用了 Web 客户端的目标 Profile。下面以 `web` 为例，如果你的 Profile 名称不同，
   请替换命令中的 `web`。
@@ -72,13 +73,15 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.8.11` |
+| 商城版本 | `0.8.12` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
 | 分类 | 22 个 |
 | 推荐 | 以实时 Catalog 中同时满足 `featured: true` 与 `status: approved` 的条目为准 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
+
+`0.8.12` 适配官方 DSH `0.1.2-alpha.5`，将当前兼容与自动审查窗口推进到 `alpha.3`、`alpha.4`、`alpha.5`。所有 Catalog 详情都显式保存这三个版本的兼容状态与安装、启动、卸载、回滚证据；没有证据的字段保持 `unknown`，不会由版本范围猜测成已验证。本版同时修复两类历史用户升级阻断：无生命周期脚本的插件更新统一通过官方 DSH CLI 使用 `--ignore-scripts`，避免 Profile 中其他 Git 依赖的 `prepare` 误伤当前插件；已有 Guardian 的商城升级改由独立 launchd 交接器在 HTTP 响应结束后执行，绑定 Guardian PID、Host PID、Profile、Boot ID 与文件哈希，身份漂移时拒绝操作，替换失败时恢复上一版 Guardian。
 
 `0.8.11` 修正分表发布的历史客户端回归：`registry/catalog.json` 继续作为低于 2 MiB 的 schemaVersion 1 兼容桥，但现在为每个索引条目保留旧版验证器、搜索、权限展示和固定来源操作所必需的有界字段；因此尚未升级的 0.8.5–0.8.7 客户端也能看到完整目录，而不是只看到商城自身。长证据摘要、逐版本操作记录和其他详情仍只存放在独立详情文件中。公共 watchdog 同时从详情文件水合商城 Commit，避免把三个正常修复入口误报为失败。
 
@@ -97,6 +100,7 @@ Guardian 时明确停在“等待安全重启”，不把包更新误称为运�
 - 更新到 `0.8.8` 后，商城仍可读取兼容目录；更新到 `0.8.9` 及之后版本后，则验证并使用轻量主索引和按页详情懒加载。无论从哪个历史版本升级，都不依赖浮动分支或未知生命周期脚本。
 - `0.8.9` 验证 `indexPath` 与 SHA-256 后读取完整索引，后续 Catalog 增长不会再次堵住商城自身的更新入口。
 - 所有真实 Profile 更新仍使用商城已有的一次性计划、精确确认、官方 DSH CLI 固定参数、前置哈希、备份、健康检查和失败回滚；GitHub 发布不会自动修改任何已安装 Profile，也不要求执行未知修复脚本。
+- `0.8.12` 起，Catalog 声明为无生命周期脚本的所有插件在安装、更新和迁移时都会加 `--ignore-scripts`；只有 Catalog 明确列出的目标插件脚本才使用仅限该包的 `--allow-build=<package>`。因此历史用户修复商城后，更新其他插件也不会再被 Profile 中无关 Git 依赖的 `prepare` 阻断。
 
 `0.8.7` 把自动更新、商城兼容展示和 Catalog 门禁统一到官方 npm `latest`/`alpha`/`beta`/`rc` 最高有效通道，排除 `next` 独占和 deprecated 版本，并动态要求最新三个 DSH 版本的精确兼容证据；旧版本独占或全为 unknown 的已上架插件会被可逆地下架并进入不可安装复核候选。商城自身的自动审查允许单个运行文件最多 4 MiB、总运行文件最多 8 MiB，其他插件继续使用更严格的通用上限；Owner Report 的各明细表最多展开 20 条，完整记录保留在 Run Artifact。`0.8.6` 增加稳定版与官方预发布标签的联合检查。`0.8.5` 增加旧版商城自举更新桥：Catalog 仍保留 `partial` 的真实语义，但可以用 `status: unknown` 加 `evidenceStatus: partial` 的 schemaVersion 1 兼容编码发布。0.8.2 会保守地把这些记录显示为“未知”，不会再因为不认识 `partial` 而拒绝整个目录；当前版本则继续显示“部分验证”。这样已安装用户可以直接在商城里看到固定 Commit 的管理器更新，经过一次性计划、确认、备份和健康检查后更新，再由 Guardian 引导重启，不需要手动运行 CLI。
 

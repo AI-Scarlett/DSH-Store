@@ -26,8 +26,8 @@ test('public status separates successful execution from actual Catalog changes',
       prunedCandidates: [{ id: 'candidate-pruned' }],
       compatibilityPolicy: {
         authority: 'official-npm-registry-active-supported-channels-through-highest',
-        latestVersion: '0.1.2-alpha.4',
-        latestReleases: ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4'],
+        latestVersion: '0.1.2-alpha.5',
+        latestReleases: ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'],
         checkedApprovedEntries: 1,
         managedHeldEntries: 1,
       },
@@ -68,7 +68,7 @@ test('public status separates successful execution from actual Catalog changes',
   assert.deepEqual(status.latestChanges.compatibilityRestored, ['new-plugin'])
   assert.deepEqual(status.latestChanges.prunedCandidates, ['candidate-pruned'])
   assert.equal(status.latestChanges.candidateRetention.registryRemovals, 48)
-  assert.deepEqual(status.latestChanges.compatibilityPolicy.latestReleases, ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4'])
+  assert.deepEqual(status.latestChanges.compatibilityPolicy.latestReleases, ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'])
   assert.equal(status.recentAdditions[0].name, '通知助手（Notify Helper）')
   assert.equal(status.recentAdditions[0].runUrl, 'https://github.com/example/repo/actions/runs/42')
   assert.equal(status.recentUpdates[0].fromVersion, '0.9.0')

@@ -255,7 +255,7 @@ const DSH_VERSION_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh'
 const DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const DSH_RELEASE_TAGS = ['latest', 'alpha', 'beta', 'rc']
 const MAX_DSH_VERSION_RESPONSE_BYTES = 128 * 1024
-const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2', '0.1.2-alpha.3': '0.1.2-alpha.3', '0.1.2-alpha.4': '0.1.2-alpha.4' }
+const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2', '0.1.2-alpha.3': '0.1.2-alpha.3', '0.1.2-alpha.4': '0.1.2-alpha.4', '0.1.2-alpha.5': '0.1.2-alpha.5' }
 const OPERATION_KEYS = ['install', 'start', 'uninstall', 'rollback']
 const unknownOperations = () => Object.fromEntries(OPERATION_KEYS.map(operation => [operation, 'unknown']))
 function compareDshVersions(left, right) {

@@ -4,7 +4,7 @@ import { compareCatalogEntries, createDshReleaseContext } from '../src/catalog.m
 
 const entry = (id, latest, updatedAt, overrides = {}) => ({
   id, name: id, status: 'approved', featured: false, installCount: 0, version: '1.0.0',
-  compatibility: { dshReleases: { '0.1.2-alpha.4': latest } }, source: { updatedAt }, ...overrides,
+  compatibility: { dshReleases: { '0.1.2-alpha.5': latest } }, source: { updatedAt }, ...overrides,
 })
 
 test('trusted ranking is approved then latest-channel compatibility then source freshness', () => {

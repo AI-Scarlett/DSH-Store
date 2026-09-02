@@ -597,7 +597,7 @@ window.__ModuleLoader__.load({
       } catch { return '未知' }
     }
 
-    const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2', '0.1.2-alpha.3': '0.1.2-alpha.3', '0.1.2-alpha.4': '0.1.2-alpha.4' }
+    const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2', '0.1.2-alpha.3': '0.1.2-alpha.3', '0.1.2-alpha.4': '0.1.2-alpha.4', '0.1.2-alpha.5': '0.1.2-alpha.5' }
     const COMPATIBILITY_STATUSES = new Set(['compatible', 'incompatible', 'unknown'])
     const OPERATION_STATUSES = new Set(['passed', 'failed', 'unknown'])
     const unknownOperations = () => Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation, 'unknown']))
@@ -1195,7 +1195,10 @@ window.__ModuleLoader__.load({
               `${result.error.diagnostic.code}：${result.error.diagnostic.message}`) : null) : null,
           legacyRepairRequired ? React.createElement('div', { style: styles.notice },
             React.createElement('div', { style: styles.name }, '不要放开第三方 prepare 权限，也不要手改 Profile。'),
-            React.createElement('a', { href: 'https://dsh.store/repair/', target: '_blank', rel: 'noreferrer', style: styles.link }, '打开 DSH STORE 官方安全修复入口')) : null,
+            React.createElement('div', { style: styles.muted }, '请前往以下任一地址查看官方修复/升级方案：'),
+            React.createElement('a', { href: 'https://dsh-store.cn/repair/', target: '_blank', rel: 'noreferrer', style: styles.link }, '国内站修复/升级方案'),
+            React.createElement('span', { style: styles.muted }, ' · '),
+            React.createElement('a', { href: 'https://ai-scarlett.github.io/DSH-Store/marketplace/repair/', target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub Pages 修复/升级方案')) : null,
           result.status === 'applied' && result.restartRequired ? React.createElement('div', { style: styles.notice },
             React.createElement('div', { style: styles.name }, '插件变更已写入，但尚未在当前 DSH Host 中生效'),
             React.createElement('div', { style: styles.muted }, '请使用“一键安全重启”；Guardian 会停止并启动同一个 web Profile。不要再手工启动第二个 DSH 实例。')) : null))
@@ -1265,30 +1268,42 @@ window.__ModuleLoader__.load({
 
     function GuardianModal({ operation, confirmation, setConfirmation, execute, cancel }) {
       if (!operation || operation.status === 'idle') return null
+      const upgrading = operation.value?.action === 'upgrade-guardian'
+        || operation.value?.status === 'update-scheduled' || operation.value?.status === 'updated'
       if (operation.status === 'planning' || operation.status === 'executing' || operation.status === 'handoff') return React.createElement(Modal, {
-        open: true, onClose: operation.status === 'planning' ? cancel : () => {}, title: '安装 DSH Guardian',
+        open: true, onClose: operation.status === 'planning' ? cancel : () => {}, title: upgrading ? '升级 DSH Guardian' : '安装 DSH Guardian',
         footer: null, className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
       }, React.createElement('div', { style: styles.notice }, operation.status === 'planning'
         ? '正在核对 launchd 与守护文件预条件…'
         : operation.status === 'handoff'
-          ? 'Guardian 已验证，DSH 正在交接，页面会自动重新连接。'
-          : '正在原子安装并验证 Guardian 心跳…'))
+          ? upgrading
+            ? '独立升级交接器已验证旧 Guardian、Profile 与 Boot ID；正在替换守护并等待新 Guardian 成为唯一启动所有者，页面会自动重新连接。'
+            : 'Guardian 已验证，DSH 正在交接，页面会自动重新连接。'
+          : upgrading ? '正在生成绑定旧 Guardian、Profile、Boot ID 与文件哈希的一次性交接计划…' : '正在原子安装并验证 Guardian 心跳…'))
       if (operation.status === 'error' || operation.status === 'result') return React.createElement(Modal, {
-        open: true, onClose: cancel, title: operation.status === 'result' ? 'Guardian 已安装' : 'Guardian 安装失败',
+        open: true, onClose: cancel, title: operation.status === 'result'
+          ? upgrading ? 'Guardian 升级交接已启动' : 'Guardian 已安装'
+          : upgrading ? 'Guardian 升级失败' : 'Guardian 安装失败',
         footer: React.createElement(Button, { onClick: cancel }, '关闭'), className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
       }, React.createElement('div', { style: operation.status === 'result' ? styles.notice : styles.error },
-        operation.status === 'result' ? '外部 Guardian 已接管 DSH 启动监督；请等待健康状态变为正常。' : `${operation.code || 'GUARDIAN_FAILED'}：${operation.message}`))
+        operation.status === 'result'
+          ? upgrading ? '独立交接器已启动；它会在当前响应结束后升级 Guardian，并在失败时恢复上一版。' : '外部 Guardian 已接管 DSH 启动监督；请等待健康状态变为正常。'
+          : `${operation.code || 'GUARDIAN_FAILED'}：${operation.message}`))
       const plan = operation.value
       return React.createElement(Modal, {
-        open: true, onClose: cancel, title: '确认安装商城内置 Guardian',
-        description: 'Guardian 独立于 DSH 运行，并将替换当前 local.dsh.web 启动任务。',
+        open: true, onClose: cancel, title: upgrading ? '确认升级商城内置 Guardian' : '确认安装商城内置 Guardian',
+        description: upgrading
+          ? '升级计划绑定当前 Guardian PID、DSH Host PID、Profile、Boot ID 与守护文件哈希；独立交接器会在本次响应结束后执行，失败自动恢复上一版。'
+          : 'Guardian 独立于 DSH 运行，并将替换当前 local.dsh.web 启动任务。',
         footer: React.createElement(React.Fragment, null,
           React.createElement(Button, { onClick: cancel }, '取消'),
-          React.createElement(Button, { primary: true, danger: true, disabled: confirmation !== plan.confirmation, onClick: execute }, '安装并接管')),
+          React.createElement(Button, { primary: true, danger: true, disabled: confirmation !== plan.confirmation, onClick: execute }, upgrading ? '升级并安全交接' : '安装并接管')),
         className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
       }, React.createElement('div', { style: styles.detailSection },
         React.createElement('div', { style: styles.muted }, `写入：${plan.impact.writes.join('、')}`),
         React.createElement('div', { style: styles.muted }, `永久保护：${plan.impact.neverModifies.join('、')}`),
+        plan.impact.activeHandoff ? React.createElement('div', { style: styles.notice },
+          `主动交接：Guardian PID ${plan.impact.activeHandoff.guardianPid} · Host PID ${plan.impact.activeHandoff.hostPid} · Boot ID ${plan.impact.activeHandoff.hostBootId}`) : null,
         React.createElement('div', { style: styles.code }, plan.confirmation),
         React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
     }

@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.11')
+  assert.equal(pkg.version, '0.8.12')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -16,6 +16,8 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.2'], 'compatible')
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.3'], 'compatible')
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.4'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.5'], 'compatible')
+  assert.match(pkg.scripts.check, /src\/guardian-upgrader\.mjs/)
   for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
     assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0')
   }
@@ -304,6 +306,9 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /预发布/)
   assert.match(client, /插件源更新规则/)
   assert.match(client, /Guardian 已验证，DSH 正在交接，页面会自动重新连接/)
+  assert.match(client, /独立升级交接器已验证旧 Guardian、Profile 与 Boot ID/)
+  assert.match(client, /国内站修复\/升级方案/)
+  assert.match(client, /GitHub Pages 修复\/升级方案/)
   assert.match(client, /BOOT_RECOVERY_TIMEOUT/)
   assert.match(client, /dsh-safe-plugin-manager:boot-recovery:v1/)
   assert.match(client, /BroadcastChannel/)
@@ -316,7 +321,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
-test('public rc.7 through 0.1.2-alpha.4 client contract stays on official ModuleLoader and settings ordering', async () => {
+test('public rc.7 through 0.1.2-alpha.5 client contract stays on official ModuleLoader and settings ordering', async () => {
   const [pkg, client] = await Promise.all([
     readFile(new URL('package.json', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
@@ -331,14 +336,15 @@ test('public rc.7 through 0.1.2-alpha.4 client contract stays on official Module
   assert.match(client, /window\.__ModuleLoader__\.load/)
   assert.match(client, /settings\.plugins\.tab/)
   assert.match(client, /order:\s*-10/)
-  assert.match(client, /0\.1\.2-alpha\.4/)
+  assert.match(client, /0\.1\.2-alpha\.5/)
   assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
 })
 
-test('guardian health requires DSH HTTP identity and fails closed on an unowned port', async () => {
-  const [daemon, service] = await Promise.all([
+test('guardian health and active upgrade require bound DSH ownership', async () => {
+  const [daemon, service, upgrader] = await Promise.all([
     readFile(new URL('src/guardian-daemon.mjs', project), 'utf8'),
     readFile(new URL('src/guardian.mjs', project), 'utf8'),
+    readFile(new URL('src/guardian-upgrader.mjs', project), 'utf8'),
   ])
   assert.match(daemon, /\/api2\/dsh-safe-plugin-manager\/runtime/)
   assert.match(daemon, /runtime-identity-mismatch/)
@@ -351,6 +357,12 @@ test('guardian health requires DSH HTTP identity and fails closed on an unowned 
   assert.match(service, /commandPath/)
   assert.match(service, /GUARDIAN_BOOTSTRAP_UNVERIFIED/)
   assert.match(service, /waitForFreshGuardianHeartbeat/)
+  assert.match(service, /active-guardian-upgrade/)
+  assert.match(upgrader, /GUARDIAN_ACTIVE_IDENTITY_CHANGED/)
+  assert.match(upgrader, /GUARDIAN_UPGRADE_PRECONDITION_CHANGED/)
+  assert.match(upgrader, /GUARDIAN_UPGRADE_HEARTBEAT_UNVERIFIED/)
+  assert.match(upgrader, /atomicCopy/)
+  assert.match(upgrader, /recovery/)
   assert.ok((daemon.match(/env: commandEnvironment/g) || []).length >= 2, 'Guardian launch and offline restore must share the captured command PATH')
   assert.doesNotMatch(daemon, /adopting-existing-host/)
 })
@@ -414,6 +426,9 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(repairHtml, /data-repair-state="catalog-pending"/)
   assert.match(repairHtml, /DSH_REPAIR_COMMAND/)
   assert.match(repairHtml, /--ignore-scripts/)
+  assert.match(repairHtml, /https:\/\/dsh-store\.cn\/repair\//)
+  assert.match(repairHtml, /https:\/\/ai-scarlett\.github\.io\/DSH-Store\/marketplace\/repair\//)
+  assert.match(repairHtml, /查看本官方修复\/升级方案/)
   assert.match(repairClient, /navigator\.clipboard\.writeText/)
   assert.doesNotMatch(repairClient, /fetch\(|eval\(|new Function/)
   assert.match(repairCli, /createLegacyRepairService/)

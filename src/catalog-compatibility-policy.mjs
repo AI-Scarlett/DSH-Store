@@ -113,6 +113,30 @@ function transitionRecord(entry, releases, candidateDisposition) {
   }
 }
 
+function ensureReleaseWindowFields(entry, releases) {
+  if (!entry.compatibility || typeof entry.compatibility !== 'object' || Array.isArray(entry.compatibility)) {
+    entry.compatibility = {}
+  }
+  if (!entry.compatibility.dshReleases || typeof entry.compatibility.dshReleases !== 'object'
+    || Array.isArray(entry.compatibility.dshReleases)) entry.compatibility.dshReleases = {}
+  if (!entry.compatibility.dshOperations || typeof entry.compatibility.dshOperations !== 'object'
+    || Array.isArray(entry.compatibility.dshOperations)) entry.compatibility.dshOperations = {}
+  const added = []
+  for (const release of releases) {
+    if (!Object.hasOwn(entry.compatibility.dshReleases, release)) {
+      entry.compatibility.dshReleases[release] = 'unknown'
+      added.push(`${release}:compatibility`)
+    }
+    if (!Object.hasOwn(entry.compatibility.dshOperations, release)) {
+      entry.compatibility.dshOperations[release] = {
+        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+      }
+      added.push(`${release}:operations`)
+    }
+  }
+  return added
+}
+
 export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, observedAt) {
   if (!catalog || !Array.isArray(catalog.entries)) throw new Error('compatibility policy requires Catalog entries')
   if (!candidates || !Array.isArray(candidates.entries)) throw new Error('compatibility policy requires Candidate Registry entries')
@@ -132,6 +156,8 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
     managedCandidatesRefreshed: 0,
     managedCandidatesRemoved: 0,
     existingCandidatesPreserved: 0,
+    compatibilityRecordsAdded: 0,
+    compatibilityEntriesUpdated: [],
     catalogChanged: false,
     candidatesChanged: false,
     unlisted: [],
@@ -140,6 +166,12 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
   }
   const heldByRepository = new Map()
   for (const entry of catalog.entries) {
+    const addedFields = ensureReleaseWindowFields(entry, window.releases)
+    if (addedFields.length > 0) {
+      report.catalogChanged = true
+      report.compatibilityRecordsAdded += addedFields.length
+      report.compatibilityEntriesUpdated.push({ id: entry.id, fields: addedFields })
+    }
     const managedHold = isManagedHold(entry)
     if (entry.status !== 'approved' && !managedHold) continue
     if (entry.status === 'approved') report.checkedApprovedEntries += 1
