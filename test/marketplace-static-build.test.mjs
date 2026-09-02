@@ -6,7 +6,7 @@ import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
-import { loadCatalogFromFiles } from '../src/catalog.mjs'
+import { compareVersions, loadCatalogFromFiles } from '../src/catalog.mjs'
 
 const execFileAsync = promisify(execFile)
 const root = new URL('../', import.meta.url)
@@ -159,11 +159,25 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
     assert.match(styles, /\.site-nav a \{[\s\S]*font-size: 12px;/)
     assert.match(styles, /\.footer-bottom \{[\s\S]*font-size: 11px;/)
-    assert.match(repair, /data-repair-state="catalog-pending"/)
     assert.match(repair, /ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED/)
-    assert.doesNotMatch(repair, /pnpm dlx 'git\+https:\/\/github\.com\/AI-Scarlett\/DSH-Store\.git#/)
-    assert.equal(repairManifest.status, 'catalog-pending')
-    assert.equal(repairManifest.repairTool, null)
+    const repairActive = compareVersions(manager.version, '0.8.10') >= 0
+    if (repairActive) {
+      assert.match(home, /legacy-repair-banner/)
+      assert.match(repair, /data-repair-state="active"/)
+      assert.match(repair, new RegExp(manager.commit))
+      assert.equal(repairManifest.status, 'active')
+      assert.equal(repairManifest.repairTool.packageSpecifier,
+        `git+https://github.com/AI-Scarlett/DSH-Store.git#${manager.commit}`)
+      assert.match(repairManifest.repairTool.command, /pnpm --config\.ignore-scripts=true dlx/)
+      assert.match(repairManifest.repairTool.command, new RegExp(`--target-version ${manager.version}`))
+      assert.match(repairManifest.repairTool.command, new RegExp(`--target-commit ${manager.commit}`))
+    } else {
+      assert.doesNotMatch(home, /legacy-repair-banner/)
+      assert.match(repair, /data-repair-state="catalog-pending"/)
+      assert.doesNotMatch(repair, /pnpm --config\.ignore-scripts=true dlx/)
+      assert.equal(repairManifest.status, 'catalog-pending')
+      assert.equal(repairManifest.repairTool, null)
+    }
     assert.equal(repairManifest.target.version, manager.version)
     assert.equal(repairManifest.target.commit, manager.commit)
   } finally {

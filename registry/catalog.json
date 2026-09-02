@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH-Store GitHub Plugin Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-02T05:15:31.000Z",
+    "updatedAt": "2026-09-02T10:00:51.555Z",
     "sourceUpdates": {
       "mode": "client-on-demand",
       "defaultPolicy": "risk-derived"
@@ -39,8 +39,8 @@
     },
     "homepageUrl": "https://dsh.store/",
     "indexPath": "catalog-index.json",
-    "indexSha256": "ef7bcc2c70b0ac1f3439f469248e43923e2299bec4d4fe09b04ba0278b14d931",
-    "indexBytes": 451611,
+    "indexSha256": "7615dd850fe1543a129a266929be0503ca66176ba9d49aa9121465481275217b",
+    "indexBytes": 451702,
     "indexEntryCount": 580
   },
   "entries": [
@@ -48,7 +48,7 @@
       "id": "dsh-safe-plugin-manager",
       "name": "安全插件商城（DSH-Store）",
       "packageName": "dsh-safe-plugin-manager",
-      "description": "本插件商城与安全生命周期管理器；自身仅允许更新，禁止停用和卸载。",
+      "description": "DSH STORE 插件商城与安全生命周期管理器。旧版更新若出现 ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED，请前往 https://dsh.store/repair/；不要放开 prepare 权限或手改 Profile。",
       "searchTerms": [
         "安全插件商城",
         "DSH-Store",
@@ -66,15 +66,18 @@
         "dsh",
         "safe",
         "plugin",
-        "manager"
+        "manager",
+        "ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED",
+        "安全修复",
+        "repair"
       ],
       "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
       "defaultBranch": "main",
       "manifestPath": "package.json",
       "installPath": null,
       "updatePolicy": null,
-      "commit": "b7876eac85ae5325f2c0f0698e24fbfe0a256070",
-      "version": "0.8.9",
+      "commit": "a54acfc8dee29a7c98127c9e66f07f3ad6e9bae9",
+      "version": "0.8.10",
       "categories": [
         "marketplace",
         "management"
@@ -82,30 +85,34 @@
       "featured": true,
       "installCount": null,
       "source": {
-        "updatedAt": "2026-09-02T05:12:18.000Z",
-        "observedAt": "2026-09-02T05:15:31.000Z",
+        "updatedAt": "2026-09-02T08:56:32.000Z",
+        "observedAt": "2026-09-02T10:00:51.555Z",
         "provenance": "github-commit"
       },
       "assurance": {
         "discovery": {
           "status": "verified",
-          "method": "automated-fixed-source-update-v2",
-          "checkedAt": "2026-09-02T05:15:31.000Z",
-          "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/b7876eac85ae5325f2c0f0698e24fbfe0a256070",
+          "method": "maintainer-fixed-source-release-v2",
+          "checkedAt": "2026-09-02T10:00:51.555Z",
+          "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/a54acfc8dee29a7c98127c9e66f07f3ad6e9bae9",
           "dshRelease": null,
           "systems": [],
           "profiles": [],
-          "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+          "summary": "The fixed source Commit passed repository checks, source-contract review, and protected DSH boundary checks before the Catalog pin."
         },
         "installability": {
-          "status": "unknown",
-          "method": null,
-          "checkedAt": null,
-          "evidenceUrl": null,
-          "dshRelease": null,
-          "systems": [],
-          "profiles": [],
-          "summary": "The updated release was not installed or built by Catalog automation."
+          "status": "verified",
+          "method": "disposable-official-dsh-cli-safe-repair",
+          "checkedAt": "2026-09-02T10:00:51.555Z",
+          "evidenceUrl": "https://dsh.store/repair/",
+          "dshRelease": "0.1.2-alpha.4",
+          "systems": [
+            "macOS-arm64"
+          ],
+          "profiles": [
+            "web"
+          ],
+          "summary": "An isolated official DSH 0.1.2-alpha.4 Profile updated the historical STORE from 0.8.5 to this exact Commit with all lifecycle scripts disabled and composed the Profile successfully."
         },
         "runtime": {
           "status": "unknown",
@@ -115,7 +122,7 @@
           "dshRelease": null,
           "systems": [],
           "profiles": [],
-          "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+          "summary": "The disposable repair stopped at the explicit restart-required gate; no post-restart real Profile runtime acceptance is claimed."
         },
         "securityReview": {
           "status": "unknown",
@@ -125,7 +132,7 @@
           "dshRelease": null,
           "systems": [],
           "profiles": [],
-          "summary": "Automated fixed-source review is not an independent security audit."
+          "summary": "Repository checks and bounded recovery tests are not an independent security audit."
         }
       },
       "entryIds": [
