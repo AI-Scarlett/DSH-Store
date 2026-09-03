@@ -448,6 +448,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.8.10' && manager.version === '0.8.9')
     || (packageManifest.version === '0.8.11' && manager.version === '0.8.10')
     || (packageManifest.version === '0.8.12' && manager.version === '0.8.11')
+    || (packageManifest.version === '0.8.13' && manager.version === '0.8.12')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -483,7 +484,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
       install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
     })
-  } else if (managerIsCurrent) {
+  } else if (managerIsCurrent || manager.version === '0.8.12') {
     for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
       assert.equal(manager.compatibility.dshReleases[release], 'compatible')
       assert.deepEqual(manager.compatibility.dshOperations[release], {

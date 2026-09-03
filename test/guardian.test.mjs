@@ -572,11 +572,11 @@ test('guardian fails closed on an unknown process occupying the DSH port', async
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 
-test('guardian verifies root and runtime identity but never claims an externally started DSH', async () => {
+test('guardian accepts the authenticated DSH root fence and verifies runtime identity without claiming an external Host', async () => {
   const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-external-'))
   const server = createServer((request, response) => {
     if (request.method === 'GET' && request.url === '/') {
-      response.writeHead(200, { 'content-type': 'text/html' }); response.end('<!doctype html>')
+      response.writeHead(401, { 'content-type': 'text/plain' }); response.end('authentication required')
       return
     }
     if (request.method === 'POST' && request.url === '/api2/dsh-safe-plugin-manager/runtime') {
@@ -609,9 +609,53 @@ test('guardian verifies root and runtime identity but never claims an externally
     assert.ok(external)
     assert.equal(external.available, false)
     assert.equal(external.owner, 'external')
+    assert.equal(external.health.rootStatus, 401)
+    assert.equal(external.health.runtimeStatus, 200)
     assert.equal(external.health.bootId, 'external-boot')
     assert.equal(external.errorCode, 'GUARDIAN_NOT_OWNER')
     assert.equal(spawnCount, 0)
+  } finally {
+    await new Promise(resolve => server.close(resolve))
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('guardian keeps accepting the legacy unauthenticated root response', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-legacy-root-'))
+  const server = createServer((request, response) => {
+    if (request.method === 'GET' && request.url === '/') {
+      response.writeHead(200, { 'content-type': 'text/html' }); response.end('<!doctype html>')
+      return
+    }
+    if (request.method === 'POST' && request.url === '/api2/dsh-safe-plugin-manager/runtime') {
+      response.writeHead(200, { 'content-type': 'application/json' })
+      response.end(JSON.stringify({ ok: true, value: { profile: 'web', bootId: 'legacy-root-boot' } }))
+      return
+    }
+    response.writeHead(404); response.end('missing')
+  })
+  try {
+    await new Promise((resolve, reject) => {
+      server.once('error', reject)
+      server.listen(0, '127.0.0.1', resolve)
+    })
+    const controller = new AbortController()
+    const states = []
+    await runGuardian({
+      nodePath: '/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', stateDir: join(root, 'state'),
+      profileDir: join(root, 'profile'), profile: 'web', host: '127.0.0.1', port: server.address().port,
+      healthProbeTimeoutMs: 1_000,
+    }, {
+      signal: controller.signal,
+      spawn: () => { throw new Error('must not spawn') },
+      onPublish: value => states.push(value),
+      delay: async () => controller.abort(),
+    })
+    const external = states.find(item => item.state === 'external-dsh-detected')
+    assert.ok(external)
+    assert.equal(external.health.rootStatus, 200)
+    assert.equal(external.health.runtimeStatus, 200)
+    assert.equal(external.health.bootId, 'legacy-root-boot')
   } finally {
     await new Promise(resolve => server.close(resolve))
     await rm(root, { recursive: true, force: true })
