@@ -484,6 +484,17 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
       install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
     })
+  } else if (managerIsCurrent && manager.version === '0.8.13') {
+    for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4']) {
+      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
+      assert.deepEqual(manager.compatibility.dshOperations[release], {
+        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+      })
+    }
+    assert.equal(manager.compatibility.dshReleases['0.1.2-alpha.5'], 'compatible')
+    assert.deepEqual(manager.compatibility.dshOperations['0.1.2-alpha.5'], {
+      install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
+    })
   } else if (managerIsCurrent || manager.version === '0.8.12') {
     for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
       assert.equal(manager.compatibility.dshReleases[release], 'compatible')
