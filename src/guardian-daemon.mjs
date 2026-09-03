@@ -74,7 +74,12 @@ function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, 
 async function probeDshHost(config) {
   const timeoutMs = config.healthProbeTimeoutMs ?? 1_500
   const root = await httpExchange({ host: config.host, port: config.port, path: '/', timeoutMs })
-  if (!root.ok || root.statusCode !== 200) {
+  // DSH 0.1.2-alpha.5 protects the browser index with a process-token
+  // exchange. A credential-free Guardian probe therefore receives 401 from
+  // `/` even while the Host is healthy. Older supported releases return 200.
+  // Treat both as proof that the Web surface owns the port, then require the
+  // manager runtime endpoint to prove the exact Profile and Boot ID.
+  if (!root.ok || (root.statusCode !== 200 && root.statusCode !== 401)) {
     return {
       healthy: false, reason: root.reason ?? `root-http-${root.statusCode ?? 'unknown'}`,
       rootStatus: root.statusCode ?? null, rootDurationMs: root.durationMs, rootBytes: root.bytes ?? null,

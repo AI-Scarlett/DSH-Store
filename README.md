@@ -73,7 +73,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.8.12` |
+| 商城版本 | `0.8.13` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
@@ -81,7 +81,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 | 推荐 | 以实时 Catalog 中同时满足 `featured: true` 与 `status: approved` 的条目为准 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
-`0.8.12` 适配官方 DSH `0.1.2-alpha.5`，将当前兼容与自动审查窗口推进到 `alpha.3`、`alpha.4`、`alpha.5`。所有 Catalog 详情都显式保存这三个版本的兼容状态与安装、启动、卸载、回滚证据；没有证据的字段保持 `unknown`，不会由版本范围猜测成已验证。本版同时修复两类历史用户升级阻断：无生命周期脚本的插件更新统一通过官方 DSH CLI 使用 `--ignore-scripts`，避免 Profile 中其他 Git 依赖的 `prepare` 误伤当前插件；已有 Guardian 的商城升级改由独立 launchd 交接器在 HTTP 响应结束后执行，绑定 Guardian PID、Host PID、Profile、Boot ID 与文件哈希，身份漂移时拒绝操作，替换失败时恢复上一版 Guardian。
+`0.8.13` 适配官方 DSH `0.1.2-alpha.5` 的浏览器令牌认证：Guardian 现在把未认证根路径的预期 `401` 视为 Web 端口存活，但仍必须通过商城运行时接口核对 Profile 与 Boot ID，不能把未知占用者误认成 DSH。它继续保留 `0.8.12` 的三版本兼容窗口、无生命周期脚本插件更新保护和独立 launchd Guardian 交接器。所有 Catalog 详情都显式保存 `alpha.3`、`alpha.4`、`alpha.5` 的兼容状态与安装、启动、卸载、回滚证据；没有证据的字段保持 `unknown`，不会由版本范围猜测成已验证。
 
 `0.8.11` 修正分表发布的历史客户端回归：`registry/catalog.json` 继续作为低于 2 MiB 的 schemaVersion 1 兼容桥，但现在为每个索引条目保留旧版验证器、搜索、权限展示和固定来源操作所必需的有界字段；因此尚未升级的 0.8.5–0.8.7 客户端也能看到完整目录，而不是只看到商城自身。长证据摘要、逐版本操作记录和其他详情仍只存放在独立详情文件中。公共 watchdog 同时从详情文件水合商城 Commit，避免把三个正常修复入口误报为失败。
 
