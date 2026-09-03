@@ -108,7 +108,7 @@ function supportedPublishedVersion(version, record, latestVersion = null) {
   const parsed = parseVersion(version)
   if (!parsed || !record || typeof record !== 'object' || Array.isArray(record)) return false
   if (typeof record.deprecated === 'string') return false
-  if ((compareDshVersions(version, latestVersion) ?? 1) > 0) return false
+  if (latestVersion !== null && (compareDshVersions(version, latestVersion) ?? 1) > 0) return false
   if (parsed.prerelease.length === 0) return true
   return SUPPORTED_PRERELEASE_LANES.has(parsed.prerelease[0])
 }
