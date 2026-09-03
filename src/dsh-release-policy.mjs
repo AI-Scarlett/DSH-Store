@@ -6,6 +6,9 @@ const VERSION = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?
 const SUPPORTED_PRERELEASE_LANES = new Set(['alpha', 'beta', 'rc'])
 const COMPATIBILITY_CHANNELS = Object.freeze([
   Object.freeze({ tag: 'latest', kind: 'stable' }),
+  // Release candidates are published on npm's next channel; the channel name
+  // and the version suffix are independent.
+  Object.freeze({ tag: 'next', kind: 'preview' }),
   Object.freeze({ tag: 'alpha', kind: 'preview' }),
   Object.freeze({ tag: 'beta', kind: 'preview' }),
   Object.freeze({ tag: 'rc', kind: 'preview' }),
@@ -20,6 +23,11 @@ function parseVersion(value) {
     numbers: match.slice(1, 4).map(Number),
     prerelease: match[4] === undefined ? [] : match[4].split('.'),
   } : null
+}
+
+function versionSeries(value) {
+  const parsed = parseVersion(value)
+  return parsed ? parsed.numbers.slice(0, 2).join('.') : null
 }
 
 export function compareDshVersions(left, right) {
@@ -77,7 +85,31 @@ export function officialDshChannels(metadata) {
   const channels = channelRecords(value, COMPATIBILITY_CHANNELS)
   const stable = channels.find(channel => channel.tag === 'latest')
   if (!stable) throw new Error('official DSH package metadata does not declare a trusted latest dist-tag')
-  const target = channels.reduce((current, channel) => (compareDshVersions(channel.version, current.version) ?? -1) > 0 ? channel : current, stable)
+  // Dist-tags are hints, not a stable naming contract. Use published version
+  // records as the authority and choose the highest non-deprecated supported
+  // release in the current DSH major.minor line. This prevents a future
+  // next-only 0.2.x release from displacing the active 0.1.x line.
+  const referenceVersion = channels
+    .filter(channel => channel.tag !== 'next')
+    .map(channel => channel.version)
+    .filter(version => supportedPublishedVersion(version, value.versions[version]))
+    .reduce((current, version) => (
+      (compareDshVersions(version, current) ?? -1) > 0 ? version : current
+    ), stable.version)
+  const releaseSeries = versionSeries(referenceVersion)
+  const candidates = Object.entries(value.versions)
+    .filter(([version, record]) => supportedPublishedVersion(version, record))
+    .filter(([version]) => versionSeries(version) === releaseSeries)
+    .map(([version]) => version)
+  const latestVersion = candidates.reduce((current, version) => (
+    (compareDshVersions(version, current) ?? -1) > 0 ? version : current
+  ), stable.version)
+  const taggedTarget = channels.find(channel => channel.version === latestVersion)
+  const target = taggedTarget ?? {
+    tag: 'version',
+    kind: parseVersion(latestVersion)?.prerelease.length ? 'preview' : 'stable',
+    version: latestVersion,
+  }
   return { stable, target, channels }
 }
 
@@ -87,11 +119,11 @@ function releaseCount(value) {
   return value
 }
 
-function supportedPublishedVersion(version, record, latestVersion) {
+function supportedPublishedVersion(version, record, latestVersion = null) {
   const parsed = parseVersion(version)
   if (!parsed || !record || typeof record !== 'object' || Array.isArray(record)) return false
   if (typeof record.deprecated === 'string') return false
-  if ((compareDshVersions(version, latestVersion) ?? 1) > 0) return false
+  if (latestVersion !== null && (compareDshVersions(version, latestVersion) ?? 1) > 0) return false
   if (parsed.prerelease.length === 0) return true
   return SUPPORTED_PRERELEASE_LANES.has(parsed.prerelease[0])
 }
