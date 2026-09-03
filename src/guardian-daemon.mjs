@@ -74,7 +74,7 @@ function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, 
 async function probeDshHost(config) {
   const timeoutMs = config.healthProbeTimeoutMs ?? 1_500
   const root = await httpExchange({ host: config.host, port: config.port, path: '/', timeoutMs })
-  // DSH 0.1.2-alpha.5 protects the browser index with a process-token
+  // DSH 0.1.2-rc.1 protects the browser index with a process-token
   // exchange. A credential-free Guardian probe therefore receives 401 from
   // `/` even while the Host is healthy. Older supported releases return 200.
   // Treat both as proof that the Web surface owns the port, then require the

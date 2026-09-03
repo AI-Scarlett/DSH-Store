@@ -463,7 +463,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(agentReach, 'Agent Reach adapter must be listed')
   assert.ok(['approved', 'unlisted'].includes(agentReach.status), 'latest-three policy may reversibly unlist an older compatibility record')
   assert.equal(agentReach.featured, false)
-  assert.equal(agentReach.commit, '85d9801a3e8884baf33f8166eb2e587a4482050f')
+  assert.equal(agentReach.commit, '73d95c0ca3be631fbfffc70409d060cb114c1d31')
   assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
   assert.equal(agentReach.details.permissions.level, 'high')
   assert.ok(agentReach.details.externalDependencies.includes('Agent Reach CLI 1.5.0'))
@@ -512,13 +512,14 @@ test('bundled registry declares complete detail metadata for every entry', async
   }
   const settingsHub = source.entries.find(item => item.id === 'dsh-settings-hub')
   assert.ok(settingsHub, 'Settings Hub must be listed')
-  assert.equal(settingsHub.compatibility.dsh, '^0.1.1-rc.1')
+  assert.equal(settingsHub.compatibility.dsh, '>=0.1.2-rc.1 <0.2.0')
   assert.deepEqual(settingsHub.compatibility.dshReleases, {
     'rc.7': 'incompatible', 'rc.8': 'incompatible',
     '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
     '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
+    '0.1.2-rc.1': 'compatible',
   })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
+  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5', '0.1.2-rc.1']) {
     assert.deepEqual(settingsHub.compatibility.dshOperations[release], {
       install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
     })
@@ -529,28 +530,39 @@ test('bundled registry declares complete detail metadata for every entry', async
       version: '0.5.1',
       commit: '2db132bb430c5304627e5eb5681febecfc2d81ab',
       dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'unknown' },
     },
     {
       id: 'dsh-chat-import',
-      version: '0.4.0',
-      commit: '81f1a9785fbae6acd04a6b49a576b237c4f70eae',
-      dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
+      version: '0.4.1',
+      commit: '9e050c8230e985156bb450b460ce04d81b932c63',
+      dsh: '>=0.1.2-rc.1 <0.2.0',
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
+      securityStatus: 'unknown',
     },
     {
       id: 'dsh-token-monitor',
-      version: '1.3.0',
-      commit: 'd655a1627607968394fd823cee440e68f07e9f00',
-      dsh: '>=0.1.0-rc.6 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
+      version: '1.3.1',
+      commit: '27e643863adbd30d6488b0d00ecdc2f0e0d83b86',
+      dsh: '>=0.1.2-rc.1 <0.2.0',
+      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
+      securityStatus: 'unknown',
     },
     {
       id: 'dsh-agent-reach',
-      version: '0.1.0',
-      commit: '85d9801a3e8884baf33f8166eb2e587a4482050f',
-      dsh: '>=0.1.0-rc.6 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
+      version: '0.1.1',
+      commit: '73d95c0ca3be631fbfffc70409d060cb114c1d31',
+      dsh: '>=0.1.2-rc.1 <0.2.0',
+      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
+      securityStatus: 'unknown',
+    },
+    {
+      id: 'dsh-wecom-cli',
+      version: '0.3.1',
+      commit: 'ce7ae770aa6ee650c165047823492a673591e791',
+      dsh: '>=0.1.2-rc.1 <0.2.0',
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
+      securityStatus: 'unknown',
     },
   ]
   for (const expected of updatedSelfHosted) {
@@ -560,10 +572,10 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.equal(plugin.commit, expected.commit)
     assert.equal(plugin.compatibility.dsh, expected.dsh)
     assert.deepEqual(plugin.compatibility.dshReleases, expected.releases)
-    assert.equal(plugin.assurance.securityReview.status, 'partial')
+    assert.equal(plugin.assurance.securityReview.status, expected.securityStatus ?? 'partial')
     assert.equal(Object.hasOwn(plugin.assurance.securityReview, 'evidenceStatus'), false)
     const projectedPlugin = catalog.entries.find(item => item.id === expected.id)
-    assert.equal(projectedPlugin.assurance.securityReview.status, 'partial')
+    assert.equal(projectedPlugin.assurance.securityReview.status, expected.securityStatus ?? 'partial')
   }
   const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
   assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
@@ -573,9 +585,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(requestedIm.updatePolicy, 'user-reviewed')
   assert.deepEqual(requestedIm.compatibility.dshReleases, {
     'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
-    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
+    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'unknown',
   })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
+  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5', '0.1.2-rc.1']) {
     assert.deepEqual(requestedIm.compatibility.dshOperations[release], {
       install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
     })
