@@ -1,51 +1,52 @@
 {
-  "id": "dsh-subagent-model-picker",
-  "name": "模型提供商接入（DSH Subagent Model Picker）",
-  "packageName": "@dsh-external/dsh-subagent-model-picker",
-  "description": "让主会话模型从已配置模型里自主选择子代理模型",
+  "id": "workflow-visualizer",
+  "name": "图表与架构可视化（Workflow Visualizer）",
+  "packageName": "@dsh-plugins/workflow-visualizer",
+  "description": "为 DSH 提供图表与架构可视化能力。英文原始说明：Claude Code-style workflow visualization for the DSH web GUI: a Workflows view tab (per-run cards, phase progress bars, drill-down agent lists) plus a live progress strip above the composer while any workflow run is active.",
   "searchTerms": [
-    "模型提供商接入",
-    "DSH Subagent Model Picker",
-    "dsh-subagent-model-picker",
-    "@dsh-external/dsh-subagent-model-picker",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
-    "实验功能",
-    "新功能",
-    "dsh",
-    "subagent",
-    "model",
-    "picker"
+    "图表与架构可视化",
+    "Workflow Visualizer",
+    "workflow-visualizer",
+    "@dsh-plugins/workflow-visualizer",
+    "图表",
+    "架构图",
+    "流程图",
+    "可视化",
+    "工作流",
+    "自动化",
+    "任务",
+    "看板",
+    "workflow",
+    "visualizer"
   ],
-  "repositoryUrl": "https://github.com/cczzyy-cn/subagent-model-picker",
+  "repositoryUrl": "https://github.com/Max-LiQingYang/dsh-plugins",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "plugins/workflow-visualizer/package.json",
+  "installPath": "plugins/workflow-visualizer",
   "updatePolicy": "external-only",
-  "commit": "5556ac81a805f08a5c1d01145c96f67917d56bbb",
-  "version": "0.3.3",
+  "commit": "adf0b71ac89ab07c3b377f27d29dde1b35c0c928",
+  "version": "0.2.0",
   "categories": [
-    "experimental"
+    "workflow",
+    "visualization"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T20:16:05.000Z",
+    "updatedAt": "2026-09-03T04:06:46.000Z",
     "observedAt": "2026-09-03T04:06:05.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-03T04:06:05.000Z",
-      "evidenceUrl": "https://github.com/cczzyy-cn/subagent-model-picker/commit/5556ac81a805f08a5c1d01145c96f67917d56bbb",
+      "evidenceUrl": "https://github.com/Max-LiQingYang/dsh-plugins/commit/adf0b71ac89ab07c3b377f27d29dde1b35c0c928",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +56,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +66,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +76,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "subagent-model-picker"
+    "workflow-visualizer"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
   "compatibility": {
-    "dsh": ">=0.0.1-rc <2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -145,14 +146,16 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": null,
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -162,9 +165,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

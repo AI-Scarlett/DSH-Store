@@ -1,51 +1,46 @@
 {
-  "id": "dsh-subagent-model-picker",
-  "name": "模型提供商接入（DSH Subagent Model Picker）",
-  "packageName": "@dsh-external/dsh-subagent-model-picker",
-  "description": "让主会话模型从已配置模型里自主选择子代理模型",
+  "id": "dsh-enter-to-send",
+  "name": "实验功能插件（DSH Enter To Send）",
+  "packageName": "dsh-enter-to-send",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Remap the DSH web composer: plain Enter inserts a newline; Ctrl/Cmd+Enter sends (Shift+Enter also newline).",
   "searchTerms": [
-    "模型提供商接入",
-    "DSH Subagent Model Picker",
-    "dsh-subagent-model-picker",
-    "@dsh-external/dsh-subagent-model-picker",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
+    "实验功能插件",
+    "DSH Enter To Send",
+    "dsh-enter-to-send",
     "实验功能",
     "新功能",
     "dsh",
-    "subagent",
-    "model",
-    "picker"
+    "enter",
+    "to",
+    "send"
   ],
-  "repositoryUrl": "https://github.com/cczzyy-cn/subagent-model-picker",
+  "repositoryUrl": "https://github.com/passingby000/dsh-enter-to-send",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5556ac81a805f08a5c1d01145c96f67917d56bbb",
-  "version": "0.3.3",
+  "commit": "8892d32f65b183c871d74b5894c449032c255bba",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T20:16:05.000Z",
+    "updatedAt": "2026-09-03T04:06:39.000Z",
     "observedAt": "2026-09-03T04:06:05.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-03T04:06:05.000Z",
-      "evidenceUrl": "https://github.com/cczzyy-cn/subagent-model-picker/commit/5556ac81a805f08a5c1d01145c96f67917d56bbb",
+      "evidenceUrl": "https://github.com/passingby000/dsh-enter-to-send/commit/8892d32f65b183c871d74b5894c449032c255bba",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +70,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "subagent-model-picker"
+    "dsh-enter-to-send"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
   "compatibility": {
-    "dsh": ">=0.0.1-rc <2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -145,14 +140,16 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": null,
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -162,9 +159,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

@@ -1,51 +1,48 @@
 {
-  "id": "dsh-subagent-model-picker",
-  "name": "模型提供商接入（DSH Subagent Model Picker）",
-  "packageName": "@dsh-external/dsh-subagent-model-picker",
-  "description": "让主会话模型从已配置模型里自主选择子代理模型",
+  "id": "dsh-adapter",
+  "name": "同步与备份工具（DSH Adapter）",
+  "packageName": "@research-lab/dsh-adapter",
+  "description": "为 DSH 提供同步与备份工具能力。英文原始说明：This package is a thin Cordis adapter for the Research Lab Python CLI. It registers `research_init`, `research_create`, `research_inspect`, `research_validate`, `research_execute`, `research_status`, `research_evidence`, `research_compare`, `research_continue`, `research_verify`, `research_sync-init`, `research_sync-push`, and `research_sync-pull`.",
   "searchTerms": [
-    "模型提供商接入",
-    "DSH Subagent Model Picker",
-    "dsh-subagent-model-picker",
-    "@dsh-external/dsh-subagent-model-picker",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
+    "同步与备份工具",
+    "DSH Adapter",
+    "dsh-adapter",
+    "@research-lab/dsh-adapter",
+    "同步",
+    "备份",
+    "恢复",
     "实验功能",
     "新功能",
     "dsh",
-    "subagent",
-    "model",
-    "picker"
+    "adapter"
   ],
-  "repositoryUrl": "https://github.com/cczzyy-cn/subagent-model-picker",
+  "repositoryUrl": "https://github.com/ooooooooooooooooooop/agent-tools",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "dsh/research-lab-adapter/package.json",
+  "installPath": "dsh/research-lab-adapter",
   "updatePolicy": "external-only",
-  "commit": "5556ac81a805f08a5c1d01145c96f67917d56bbb",
-  "version": "0.3.3",
+  "commit": "062eeda73d1243b0fe231e49a532d1e820d3e60d",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T20:16:05.000Z",
+    "updatedAt": "2026-09-03T04:07:18.000Z",
     "observedAt": "2026-09-03T04:06:05.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-03T04:06:05.000Z",
-      "evidenceUrl": "https://github.com/cczzyy-cn/subagent-model-picker/commit/5556ac81a805f08a5c1d01145c96f67917d56bbb",
+      "evidenceUrl": "https://github.com/ooooooooooooooooooop/agent-tools/commit/062eeda73d1243b0fe231e49a532d1e820d3e60d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "subagent-model-picker"
+    "research-lab-adapter"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.0.1-rc <2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -145,14 +142,14 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": null,
     "systems": [],
     "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "BSD-3-Clause",
+    "license": "UNKNOWN",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -163,7 +160,7 @@
       ]
     },
     "externalDependencies": [
-      "schemastery"
+      "@deepseek-ai/dsh-tools"
     ],
     "reviewStatus": "automated-scan"
   },
