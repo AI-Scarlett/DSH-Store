@@ -41,6 +41,23 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
 })
 
+test('permission scan allows the documented keyed Tool view extension', () => {
+  const source = `
+    type ImageToolProps = PropsRuntime<'tool.call.toolview'>
+    ctx.slots.inject('tool.call.toolview', () => ctx.slots.register({
+      name: 'tool.call.toolview',
+      key: 'image_gen',
+    }, ImageToolRow))
+  `
+  assert.equal(permissionSignals(source).protectedDsh, false)
+})
+
+test('permission scan still fails closed on protected DSH mutations', () => {
+  assert.equal(permissionSignals(`window.__ModuleLoader__.remove('@deepseek-ai/dsh-client-ui-tool')`).protectedDsh, true)
+  assert.equal(permissionSignals(`Fiber.disable('@deepseek-ai/dsh-client-runtime')`).protectedDsh, true)
+  assert.equal(permissionSignals(`{ name: '@deepseek-ai/dsh-client-ui-tool', disabled: true }`).protectedDsh, true)
+})
+
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
   const policy = JSON.parse(await read('registry/automation-policy.json'))
   assert.equal(policy.scheduleHours, 8)
