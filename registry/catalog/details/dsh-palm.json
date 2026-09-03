@@ -1,50 +1,48 @@
 {
-  "id": "dsh-maestro-review",
-  "name": "审查与验证助手（DSH Maestro Review）",
-  "packageName": "@ddtcorex/dsh-maestro-review",
-  "description": "为 DSH 提供审查与验证助手能力。英文原始说明：Maestro Review — pluggable ReviewProvider (GitLab/GitHub) + orchestrator for automated MR review",
+  "id": "dsh-palm",
+  "name": "桌面客户端（DSH Palm）",
+  "packageName": "@eternalloveone/dsh-palm",
+  "description": "掌上 dsh — the standalone mobile surface for the dsh web GUI: scan-to-pair device trust, the /m/ phone UI, the /m/api RPC channel with realtime SSE mux bridge, and a polished desktop pairing panel. Extracted from dsh-remote-web-ui (M1, behavior-identical)",
   "searchTerms": [
-    "审查与验证助手",
-    "DSH Maestro Review",
-    "dsh-maestro-review",
-    "@ddtcorex/dsh-maestro-review",
-    "审查",
-    "验证",
-    "质量检查",
-    "新锐实验",
+    "桌面客户端",
+    "DSH Palm",
+    "dsh-palm",
+    "@eternalloveone/dsh-palm",
+    "桌面",
+    "托盘",
+    "快捷启动",
     "实验功能",
     "新功能",
     "dsh",
-    "maestro",
-    "review"
+    "palm"
   ],
-  "repositoryUrl": "https://github.com/ddtcorex/dsh-maestro-review",
-  "defaultBranch": "master",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "repositoryUrl": "https://github.com/Eternalloveone/dsh-palm",
+  "defaultBranch": "main",
+  "manifestPath": "packages/dsh-palm/package.json",
+  "installPath": "packages/dsh-palm",
   "updatePolicy": "external-only",
-  "commit": "b1ddcc29d8f1ba4d3b70b7b0dd1755c7b58d37b5",
-  "version": "0.4.0",
+  "commit": "3b403b0cf21b383ae118619de391a240398601e4",
+  "version": "0.7.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T21:45:12.000Z",
+    "updatedAt": "2026-09-03T23:36:10.000Z",
     "observedAt": "2026-09-03T23:34:48.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-03T23:34:48.000Z",
-      "evidenceUrl": "https://github.com/ddtcorex/dsh-maestro-review/commit/b1ddcc29d8f1ba4d3b70b7b0dd1755c7b58d37b5",
+      "evidenceUrl": "https://github.com/Eternalloveone/dsh-palm/commit/3b403b0cf21b383ae118619de391a240398601e4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,18 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "maestro-review-webhook",
-    "maestro-review-orchestrator",
-    "maestro-review-settings-rpc"
+    "dsh-palm"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; package contains symbolic links; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6 || >=0.1.1-rc.0 <0.2.0",
+    "dsh": ">=0.1.1-rc.1 <0.1.2-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -153,14 +149,16 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "UNKNOWN",
+    "license": "Apache-2.0",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -171,8 +169,11 @@
       ]
     },
     "externalDependencies": [
-      "@ddtcorex/dsh-maestro-config-lib",
-      "@deepseek-ai/schemastery"
+      "clsx",
+      "qrcode.react",
+      "schemastery",
+      "web-push",
+      "zod"
     ],
     "reviewStatus": "automated-scan"
   },
