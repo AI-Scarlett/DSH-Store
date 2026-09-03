@@ -1,50 +1,46 @@
 {
-  "id": "dsh-token-optimizer",
-  "name": "用量统计看板（DSH Token Optimizer）",
-  "packageName": "dsh-token-optimizer",
-  "description": "分层 token 优化管道:长文本转图、重复读文件增量 diff、结构感知压缩、结果缓存、重复去重、采样摘要、上下文修剪、工具 schema 按会话裁剪。基于 DeepSeek Harness 真实插件 API。",
+  "id": "dsh-possibility-space",
+  "name": "实验功能插件（DSH Possibility Space）",
+  "packageName": "@dsh-external/dsh-possibility-space",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Explore AI answers as a steerable two-dimensional semantic possibility space inside DeepSeek Harness.",
   "searchTerms": [
-    "用量统计看板",
-    "DSH Token Optimizer",
-    "dsh-token-optimizer",
-    "用量",
-    "Token",
-    "统计",
-    "看板",
-    "新锐实验",
+    "实验功能插件",
+    "DSH Possibility Space",
+    "dsh-possibility-space",
+    "@dsh-external/dsh-possibility-space",
     "实验功能",
     "新功能",
     "dsh",
-    "token",
-    "optimizer"
+    "possibility",
+    "space"
   ],
-  "repositoryUrl": "https://github.com/Liora2050348900/dsh-token-optimizer",
+  "repositoryUrl": "https://github.com/zhangguiping-xydt/dsh-possibility-space",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9be4b1f6e0712cf7cff6704493cc30c02e608ff5",
-  "version": "2.0.0",
+  "commit": "f951698147c2328426020a6cecc5204887e3f4ee",
+  "version": "0.2.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T08:52:53.000Z",
+    "updatedAt": "2026-09-03T12:45:04.000Z",
     "observedAt": "2026-09-03T12:45:40.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-03T12:45:40.000Z",
-      "evidenceUrl": "https://github.com/Liora2050348900/dsh-token-optimizer/commit/9be4b1f6e0712cf7cff6704493cc30c02e608ff5",
+      "evidenceUrl": "https://github.com/zhangguiping-xydt/dsh-possibility-space/commit/f951698147c2328426020a6cecc5204887e3f4ee",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +70,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "token-optimizer"
+    "dsh-possibility-space"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.0-rc.8 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -144,9 +140,11 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",

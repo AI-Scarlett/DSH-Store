@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "b04d2b5e39c671259b1c8c601c76d9c77b2c9d52",
-  "version": "0.3.1",
+  "commit": "97b9731abcccb14d32d3985df971982a56506e1a",
+  "version": "0.3.2",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T13:03:31.000Z",
-    "observedAt": "2026-09-02T18:24:02.000Z",
+    "updatedAt": "2026-09-03T10:43:57.000Z",
+    "observedAt": "2026-09-03T12:45:40.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-02T18:24:02.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-computer-use/commit/b04d2b5e39c671259b1c8c601c76d9c77b2c9d52",
+      "checkedAt": "2026-09-03T12:45:40.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-computer-use/commit/97b9731abcccb14d32d3985df971982a56506e1a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,19 +81,19 @@
   "entryIds": [
     "computer-use"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": ">=0.1.0-rc.8 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
-      "rc.8": "unknown",
-      "0.1.1-rc.1": "unknown",
-      "0.1.1-rc.2": "unknown",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible",
       "0.1.2-alpha.2": "unknown",
-      "0.1.2-alpha.3": "unknown",
-      "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown"
+      "0.1.2-alpha.3": "compatible",
+      "0.1.2-alpha.4": "compatible",
+      "0.1.2-alpha.5": "compatible"
     },
     "dshOperations": {
       "rc.7": {
