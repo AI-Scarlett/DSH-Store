@@ -27,8 +27,8 @@ test('DSH version check follows the official next channel when the release suffi
         assert.equal(options.headers.accept, 'application/vnd.npm.install-v1+json')
         return new Response(JSON.stringify({
           name: '@deepseek-ai/dsh',
-          'dist-tags': { latest: '0.1.1-rc.2', next: '0.1.2-rc.1', alpha: '0.1.2-rc.1' },
-          versions: { '0.1.1-rc.2': {}, '0.1.2-rc.1': {}, '0.1.2-rc.1': {} },
+          'dist-tags': { latest: '0.1.1-rc.2', next: '0.1.2-rc.1', alpha: '0.1.2-alpha.5' },
+          versions: { '0.1.1-rc.2': {}, '0.1.2-alpha.5': {}, '0.1.2-rc.1': {} },
         }))
       },
     })
@@ -51,6 +51,28 @@ test('DSH version check follows the official next channel when the release suffi
     assert.equal(service.peek().cacheStatus, 'peek')
     assert.equal((await service.inspect()).cacheStatus, 'hit')
     assert.equal(requests, 1)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+
+test('DSH version check uses published versions when a release has an unfamiliar dist-tag', async () => {
+  const { root, cliPath } = await fixture('0.1.1-rc.2')
+  try {
+    const service = createDshVersionService({
+      cliPath,
+      fetch: async () => new Response(JSON.stringify({
+        name: '@deepseek-ai/dsh',
+        'dist-tags': { latest: '0.1.1-rc.2', rolling: '0.1.2-rc.1' },
+        versions: { '0.1.1-rc.2': {}, '0.1.2-rc.1': {} },
+      })),
+    })
+    const value = await service.inspect()
+    assert.equal(value.latestVersion, '0.1.2-rc.1')
+    assert.equal(value.releaseTag, 'version')
+    assert.deepEqual(value.upgrade.command, ['npm', 'install', '--global', '@deepseek-ai/dsh@0.1.2-rc.1'])
+    assert.equal(value.status, 'update-available')
   } finally {
     await rm(root, { recursive: true, force: true })
   }
