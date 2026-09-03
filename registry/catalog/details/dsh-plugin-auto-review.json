@@ -1,50 +1,49 @@
 {
-  "id": "dsh-token-optimizer",
-  "name": "用量统计看板（DSH Token Optimizer）",
-  "packageName": "dsh-token-optimizer",
-  "description": "分层 token 优化管道:长文本转图、重复读文件增量 diff、结构感知压缩、结果缓存、重复去重、采样摘要、上下文修剪、工具 schema 按会话裁剪。基于 DeepSeek Harness 真实插件 API。",
+  "id": "dsh-plugin-auto-review",
+  "name": "审查与验证助手（DSH Plugin Auto Review）",
+  "packageName": "dsh-plugin-auto-review",
+  "description": "为 DSH 提供审查与验证助手能力。英文原始说明：Provider-backed automatic approval review for DeepSeek Harness.",
   "searchTerms": [
-    "用量统计看板",
-    "DSH Token Optimizer",
-    "dsh-token-optimizer",
-    "用量",
-    "Token",
-    "统计",
-    "看板",
-    "新锐实验",
+    "审查与验证助手",
+    "DSH Plugin Auto Review",
+    "dsh-plugin-auto-review",
+    "审查",
+    "验证",
+    "质量检查",
     "实验功能",
     "新功能",
     "dsh",
-    "token",
-    "optimizer"
+    "plugin",
+    "auto",
+    "review"
   ],
-  "repositoryUrl": "https://github.com/Liora2050348900/dsh-token-optimizer",
+  "repositoryUrl": "https://github.com/delef/dsh-plugin-auto-review",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9be4b1f6e0712cf7cff6704493cc30c02e608ff5",
-  "version": "2.0.0",
+  "commit": "720108043abef8e527e254ce067dcace53f937c7",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T08:52:53.000Z",
+    "updatedAt": "2026-09-03T12:46:35.000Z",
     "observedAt": "2026-09-03T12:45:40.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-03T12:45:40.000Z",
-      "evidenceUrl": "https://github.com/Liora2050348900/dsh-token-optimizer/commit/9be4b1f6e0712cf7cff6704493cc30c02e608ff5",
+      "evidenceUrl": "https://github.com/delef/dsh-plugin-auto-review/commit/720108043abef8e527e254ce067dcace53f937c7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "token-optimizer"
+    "auto-review"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.2-alpha.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -146,7 +145,9 @@
     },
     "node": null,
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -165,7 +166,9 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
