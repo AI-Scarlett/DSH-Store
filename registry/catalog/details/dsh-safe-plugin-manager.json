@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 插件商城与安全生命周期管理器。0.8.12 适配 DSH alpha.5，修复无生命周期脚本插件更新和已有 Guardian 的安全升级交接；历史用户可通过 https://dsh-store.cn/repair/ 或 GitHub Pages 查看官方修复/升级方案。",
+  "description": "DSH STORE 插件商城与安全生命周期管理器。0.8.13 适配 DSH alpha.5 浏览器令牌认证，修复 Guardian 将预期根路径 401 误判为启动失败的问题；历史用户可通过 https://dsh-store.cn/repair/ 或 GitHub Pages 查看官方修复/升级方案。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
-  "version": "0.8.12",
+  "commit": "3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
+  "version": "0.8.13",
   "categories": [
     "marketplace",
     "management"
@@ -39,26 +39,26 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T17:22:58.000Z",
-    "observedAt": "2026-09-02T17:28:18.800Z",
+    "updatedAt": "2026-09-03T02:08:42.000Z",
+    "observedAt": "2026-09-03T02:15:05.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "maintainer-fixed-source-release-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "method": "maintainer-fixed-source-release-v3",
+      "checkedAt": "2026-09-03T02:15:05.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "固定合并 Commit 的 0.8.12 manifest、Bundle Patch、更新事务、Guardian 独立交接器与双修复入口已完成源码、CI 和公开提交回读。"
+      "summary": "固定合并 Commit 的 0.8.13 manifest、Bundle Patch、Guardian 认证根路径兼容修复、回归测试与 CodeQL 已完成源码和公开提交回读。"
     },
     "installability": {
       "status": "partial",
-      "method": "disposable-dsh-latest-three-profile-cli-install-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "method": "real-profile-official-cli-repair-v3",
+      "checkedAt": "2026-09-03T02:15:05.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
       "dshRelease": "0.1.2-alpha.5",
       "systems": [
         "macOS"
@@ -66,13 +66,13 @@
       "profiles": [
         "web"
       ],
-      "summary": "部分验证：0.8.12 在 DSH alpha.3、alpha.4、alpha.5 一次性 Profile 中通过官方 CLI 安装、dump-config、卸载与复装；不代表历史用户真实 Profile 已更新。"
+      "summary": "部分验证：一个真实 macOS web Profile 通过官方固定参数 CLI 从 0.8.12 更新到此 Commit，禁止全部生命周期脚本并通过配置合成；不代表所有历史 Profile 均已更新。"
     },
     "runtime": {
       "status": "partial",
-      "method": "disposable-dsh-latest-three-web-runtime-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "method": "real-profile-guardian-authenticated-root-runtime-v3",
+      "checkedAt": "2026-09-03T02:15:05.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
       "dshRelease": "0.1.2-alpha.5",
       "systems": [
         "macOS"
@@ -80,17 +80,17 @@
       "profiles": [
         "web"
       ],
-      "summary": "部分验证：alpha.3、alpha.4、alpha.5 均完成隔离冷启动和运行时身份/清单读取；alpha.5 另验证 20 条按页商城响应。真实 Profile 与 Guardian launchd 交接仍为独立 E4。"
+      "summary": "部分验证：真实 DSH alpha.5 上根路径 401、商城运行时 200、Profile 与 Boot ID 一致，Guardian 接管后健康稳定超过 30 秒且仅一个 3080 listener；旧版根路径 200 由回归测试覆盖。"
     },
     "securityReview": {
       "status": "partial",
-      "method": "fixed-source-policy-transaction-and-codeql-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "method": "fixed-source-policy-transaction-and-codeql-v3",
+      "checkedAt": "2026-09-03T02:15:05.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "部分验证：固定参数、ignore-scripts、身份漂移失败关闭、Guardian 回滚测试及 CodeQL 通过；不等同于独立安全审计或真实 Profile 故障注入。"
+      "summary": "部分验证：223 项仓库测试、未知端口占用失败关闭、Profile/Boot ID 身份核验与 CodeQL 通过；不等同于独立安全审计。"
     }
   },
   "entryIds": [
@@ -142,22 +142,22 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.3": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.1.2-alpha.4": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
         "install": "passed",
         "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=22.13.0",
