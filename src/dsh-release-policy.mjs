@@ -25,6 +25,11 @@ function parseVersion(value) {
   } : null
 }
 
+function versionSeries(value) {
+  const parsed = parseVersion(value)
+  return parsed ? parsed.numbers.slice(0, 2).join('.') : null
+}
+
 export function compareDshVersions(left, right) {
   const a = parseVersion(left)
   const b = parseVersion(right)
@@ -82,9 +87,19 @@ export function officialDshChannels(metadata) {
   if (!stable) throw new Error('official DSH package metadata does not declare a trusted latest dist-tag')
   // Dist-tags are hints, not a stable naming contract. Use published version
   // records as the authority and choose the highest non-deprecated supported
-  // DSH release.
+  // release in the current DSH major.minor line. This prevents a future
+  // next-only 0.2.x release from displacing the active 0.1.x line.
+  const referenceVersion = channels
+    .filter(channel => channel.tag !== 'next')
+    .map(channel => channel.version)
+    .filter(version => supportedPublishedVersion(version, value.versions[version]))
+    .reduce((current, version) => (
+      (compareDshVersions(version, current) ?? -1) > 0 ? version : current
+    ), stable.version)
+  const releaseSeries = versionSeries(referenceVersion)
   const candidates = Object.entries(value.versions)
     .filter(([version, record]) => supportedPublishedVersion(version, record))
+    .filter(([version]) => versionSeries(version) === releaseSeries)
     .map(([version]) => version)
   const latestVersion = candidates.reduce((current, version) => (
     (compareDshVersions(version, current) ?? -1) > 0 ? version : current
