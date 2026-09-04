@@ -3,11 +3,17 @@ import test from 'node:test'
 import {
   assessUpstreamVersion,
   buildCatalogVersionUpdate,
+  catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
-import { supportsDshReleaseWindow } from '../src/catalog-compatibility-policy.mjs'
+import {
+  applyLatestDshCompatibilityPolicy,
+  COMPATIBILITY_CANDIDATE_SOURCE,
+  COMPATIBILITY_HOLD_PREFIX,
+  supportsDshReleaseWindow,
+} from '../src/catalog-compatibility-policy.mjs'
 
 const entry = (overrides = {}) => ({
   id: 'demo',
@@ -62,6 +68,16 @@ test('upstream version authority distinguishes newer SemVer from source-only cha
   }).status, 'update-blocked')
 })
 
+test('new versions and same-version source changes both enter fixed-source review with distinct contracts', () => {
+  assert.deepEqual(catalogChangeReviewContract({ status: 'newer-version' }), {
+    reviewable: true, expectedVersionComparison: 1, changeKind: 'version-update',
+  })
+  assert.deepEqual(catalogChangeReviewContract({ status: 'source-changed-without-version-bump' }), {
+    reviewable: true, expectedVersionComparison: 0, changeKind: 'same-version-source-update',
+  })
+  assert.equal(catalogChangeReviewContract({ status: 'upstream-version-behind' }).reviewable, false)
+})
+
 test('Catalog update policy preserves low-risk automation and higher-risk local review', () => {
   assert.equal(catalogUpdatePolicy(entry()), 'user-reviewed')
   assert.equal(catalogUpdatePolicy(entry({ status: 'blocked', updatePolicy: 'external-only' })), 'external-only')
@@ -69,6 +85,11 @@ test('Catalog update policy preserves low-risk automation and higher-risk local 
     updatePolicy: null,
     details: { license: 'MIT', permissions: { files: 'none', network: 'none', commands: 'none', credentials: ['none'] } },
   })), 'source-verified')
+  assert.equal(catalogUpdatePolicy(entry({
+    status: 'unlisted', updatePolicy: null,
+    statusReason: `${COMPATIBILITY_HOLD_PREFIX} fixture`,
+    details: { license: 'MIT', permissions: { files: 'none', network: 'none', commands: 'none', credentials: ['none'] } },
+  })), 'source-verified', 'a reversible compatibility hold must retain its fixed-source review path')
 })
 
 test('Catalog update identity includes package, repository, manifest, install path, and Bundle entries', () => {
@@ -98,7 +119,7 @@ test('a Catalog version refresh resets old runtime and compatibility evidence', 
   }, '2026-08-22T06:00:00Z', 'user-reviewed')
   assert.equal(updated.version, '1.3.0')
   assert.equal(updated.commit, 'b'.repeat(40))
-  assert.equal(updated.assurance.discovery.method, 'automated-fixed-source-update-v2')
+  assert.equal(updated.assurance.discovery.method, 'automated-fixed-source-update-v3')
   assert.equal(updated.assurance.installability.status, 'unknown')
   assert.equal(updated.assurance.runtime.status, 'unknown')
   assert.equal(updated.compatibility.dshReleases['0.1.1-rc.2'], 'unknown')
@@ -106,6 +127,44 @@ test('a Catalog version refresh resets old runtime and compatibility evidence', 
     install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
   })
   assert.deepEqual(updated.risk.installScripts, ['prepare'])
+})
+
+test('a compatible same-version fixed Commit can restore a latest-three compatibility hold', () => {
+  const original = entry({
+    status: 'unlisted',
+    statusReason: `${COMPATIBILITY_HOLD_PREFIX} fixture`,
+    compatibility: {
+      dsh: '>=0.1.1', dshReleases: { '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'unknown' },
+      dshOperations: {}, node: '>=22', systems: [], profiles: ['web'],
+    },
+  })
+  const candidate = {
+    ...original,
+    commit: 'b'.repeat(40),
+    compatibility: {
+      ...original.compatibility,
+      dshReleases: { '0.1.2-alpha.5': 'compatible', '0.1.2-rc.1': 'compatible' },
+    },
+  }
+  const updated = buildCatalogVersionUpdate(original, candidate, {}, '2026-09-04T02:00:00Z', 'user-reviewed')
+  assert.equal(updated.version, original.version)
+  assert.equal(updated.commit, candidate.commit)
+  assert.equal(updated.assurance.discovery.method, 'automated-fixed-source-update-v3')
+  const catalog = { entries: [updated] }
+  const candidates = { entries: [{
+    id: 'example-dsh-demo', name: original.name, description: original.description,
+    repositoryUrl: original.repositoryUrl, defaultBranch: 'main', latestCommit: original.commit,
+    sourceUpdatedAt: null, discoveredAt: '2026-09-04T01:00:00Z',
+    discoverySources: [COMPATIBILITY_CANDIDATE_SOURCE], topics: ['dsh-compatibility-review'],
+    status: 'reviewing', route: 'direct-review', statusReason: `${COMPATIBILITY_HOLD_PREFIX} fixture`,
+  }] }
+  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, {
+    authority: 'fixture', registryUrl: 'https://registry.npmjs.org', latestVersion: '0.1.2-rc.1',
+    releaseCount: 2, releases: ['0.1.2-alpha.5', '0.1.2-rc.1'],
+  }, '2026-09-04T02:00:00Z')
+  assert.equal(catalog.entries[0].status, 'approved')
+  assert.equal(report.restored.length, 1)
+  assert.equal(candidates.entries.length, 0)
 })
 
 test('self-manager version refresh imports its new explicit compatibility matrix', () => {

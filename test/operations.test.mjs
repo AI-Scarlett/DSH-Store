@@ -88,6 +88,20 @@ test('source-verified update plan pins the locally approved candidate commit', a
   }
 })
 
+test('an installed same-version older Commit cannot be overwritten through the marketplace update action', async () => {
+  const { root } = await fixture({ specifier: `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}` })
+  const runner = { plugin: async () => ({ ok: true, exitCode: 0 }), dumpConfig: async () => ({ ok: true, exitCode: 0 }) }
+  try {
+    const operations = service(root, runner, { entry: { ...demoEntry, version: '1.0.0' } })
+    await assert.rejects(
+      operations.createPlan({ action: 'update', pluginId: 'demo' }),
+      error => error.code === 'NO_UPDATE' && /newer version/.test(error.message),
+    )
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('marketplace self-update ignores every lifecycle script instead of widening allow-build', async () => {
   const { root, profile } = await fixture({ installed: false })
   const commit = 'd'.repeat(40)

@@ -7,6 +7,7 @@ test('Catalog notification separates additions, historical updates, and deferred
     entries: [
       { id: 'new-plugin', name: '通知助手（Notify Helper）', version: '1.0.0', status: 'blocked', repositoryUrl: 'https://github.com/example/new-plugin' },
       { id: 'old-plugin', name: '历史工具（History Tool）', version: '2.0.0', status: 'approved', repositoryUrl: 'https://github.com/example/old-plugin' },
+      { id: 'same-plugin', name: '同版本工具（Same Version Tool）', version: '1.0.0', status: 'approved', repositoryUrl: 'https://github.com/example/same-plugin' },
       { id: 'old-compat', name: '旧版兼容插件（Old Compatibility）', version: '1.2.0', status: 'unlisted', repositoryUrl: 'https://github.com/example/old-compat' },
       { id: 'restored-compat', name: '恢复兼容插件（Restored Compatibility）', version: '1.3.0', status: 'approved', repositoryUrl: 'https://github.com/example/restored-compat' },
     ],
@@ -20,10 +21,15 @@ test('Catalog notification separates additions, historical updates, and deferred
       catalogUpdates: 1,
       newerVersionsDeferred: 1,
       sourceChangedWithoutVersionBump: 3,
+      sameVersionCatalogUpdates: 1,
+      sameVersionUpdatesDeferred: 2,
       unresolvedEntries: 0,
     },
     addedEntries: [{ id: 'new-plugin', reasons: ['runtime dependency requires review'] }],
-    updatedEntries: [{ id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0' }],
+    updatedEntries: [
+      { id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0', changeKind: 'version-update' },
+      { id: 'same-plugin', fromVersion: '1.0.0', toVersion: '1.0.0', changeKind: 'same-version-source-update' },
+    ],
     compatibilityPolicy: {
       latestReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'],
     },
@@ -94,6 +100,10 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /综合结果：\*\*通过\*\*/)
   assert.match(output, /新增收录：1 个（可安装 0，blocked\/不可安装 1）/)
   assert.match(output, /历史版本自动更新：1 个/)
+  assert.match(output, /同版本固定 Commit 更新：1 个/)
+  assert.match(output, /上游源码变化但未提升版本：3 个（固定 Commit 已更新 1，暂缓 2）/)
+  assert.match(output, /同版本工具（Same Version Tool）/)
+  assert.match(output, /同版本固定 Commit/)
   assert.match(output, /通知助手（Notify Helper）/)
   assert.match(output, /历史工具（History Tool）/)
   assert.match(output, /1\.0\.0 \| 2\.0\.0/)

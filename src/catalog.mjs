@@ -1216,8 +1216,23 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       && typeof installed.declaredSpecifier === 'string'
       && installed.declaredSpecifier.toLowerCase().includes(entry.commit)
     const commitDrift = installed?.source === 'git' && !commitMatched
-    const updateAvailable = installed !== null
-      && (versionComparison === -1 || (commitDrift && versionComparison !== 1))
+    // A Catalog repin without a SemVer bump changes what new users install,
+    // but it must not masquerade as an in-market update for existing users.
+    // Their current package manager cannot prove which same-version files are
+    // active, so only a genuinely newer version gets the guarded update action.
+    const sameVersionSourceChange = installed !== null && versionComparison === 0 && commitDrift
+    const updateAvailable = installed !== null && versionComparison === -1
+    const manualLifecycleArgument = (entry.risk?.installScripts?.length ?? 0) === 0
+      ? '--ignore-scripts'
+      : `--allow-build=${entry.packageName}`
+    const manualSourceUpdate = sameVersionSourceChange ? {
+      status: 'manual-only',
+      commit: entry.commit,
+      evidenceUrl: `${entry.repositoryUrl}/commit/${entry.commit}`,
+      command: ['dsh', 'plugin', '--profile', inventory.profile, 'add', manualLifecycleArgument, githubInstallSpecifier(entry)],
+      commandText: `dsh plugin --profile ${inventory.profile} add ${manualLifecycleArgument} '${githubInstallSpecifier(entry)}'`,
+      reason: 'Catalog 已固定同版本的新 Commit；新安装会直接使用该 Commit，已安装副本不在商城内执行同版本覆盖。',
+    } : null
     const migrationAvailable = localProtected && entry.status === 'approved' && !installed?.official
     const self = entry.packageName === 'dsh-safe-plugin-manager'
     let managementBlockedReason = null
@@ -1248,6 +1263,8 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       installedVersion: installed?.version ?? null,
       installedSource: installed?.source ?? null,
       updateAvailable,
+      sameVersionSourceChange,
+      manualSourceUpdate,
       migrationAvailable,
       commitMatched,
       sourceDrift: commitDrift,
