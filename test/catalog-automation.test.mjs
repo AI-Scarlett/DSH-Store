@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
-import { permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
@@ -39,6 +39,16 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`import { spawn } from 'node:child_process'`).commands, true)
   assert.equal(permissionSignals(`process.env.API_KEY`).credentials, true)
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
+})
+
+test('self-manager generated Catalog details do not consume the executable source bound', () => {
+  const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.json'), true)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.js'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/nested/example.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog-index.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, id: 'another-plugin' }, 'registry/catalog/details/example.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog/details/example.json'), false)
 })
 
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
@@ -157,6 +167,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
   assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES = 4 \* 1024 \* 1024/)
   assert.match(source, /SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
+  assert.match(source, /isGeneratedSelfManagerCatalogDetail\(candidate, relativePath\)/)
   assert.match(source, /allowProtectedManager/)
   assert.doesNotMatch(source, /entry\.status !== 'approved' \|\| entry\.updatePolicy !== 'source-verified'/)
   assert.match(source, /localizeCatalogEntry/)
