@@ -108,6 +108,18 @@ test('matching source commit is current without downloading or installing source
   assert.equal(result.candidate, null)
 })
 
+test('a Catalog same-version repin remains manual-only for an installed older Commit', async () => {
+  const service = createSourceUpdateService({ fetch: githubFetch({ commit: catalogCommit }) })
+  const result = await service.inspect(entry(), {
+    version: '1.0.0', source: 'git', declaredSpecifier: `git#${'c'.repeat(40)}`,
+  })
+  assert.equal(result.status, 'current')
+  assert.equal(result.sameVersionSourceChange, true)
+  assert.equal(result.manualUpdateOnly, true)
+  assert.equal(result.catalogReviewed, true)
+  assert.match(result.reasons[0], /已固定同版本的新 Commit/)
+})
+
 test('same-version source commits stay informational and do not show a blocked update', async () => {
   const service = createSourceUpdateService({
     fetch: githubFetch({ candidateVersion: '1.0.0' }),
@@ -116,6 +128,8 @@ test('same-version source commits stay informational and do not show a blocked u
   const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
   assert.equal(result.status, 'current')
   assert.equal(result.sameVersionSourceChange, true)
+  assert.equal(result.manualUpdateOnly, true)
+  assert.equal(result.catalogReviewed, false)
   assert.equal(result.candidateVersion, '1.0.0')
   assert.equal(result.diff, null)
   assert.match(result.reasons[0], /同版本提交/)

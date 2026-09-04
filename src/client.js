@@ -894,13 +894,14 @@ window.__ModuleLoader__.load({
             : entry.sourceUpdate?.status === 'update-blocked' ? '源更新无法验证'
           : entry.status === 'blocked' ? '商城不可安装'
         : entry.migrationAvailable ? (entry.updateAvailable ? '可迁移并更新' : '可迁移到商城')
+          : entry.manualSourceUpdate ? '同版本源码已更新 · GitHub 手动更新'
           : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
       const origin = entry.installOrigin === 'marketplace-managed' ? '商城安装'
         : entry.installOrigin === 'catalog-source-matched' ? '目录来源匹配 · 渠道未知'
           : entry.installOrigin === 'local-development' ? '本地开发安装'
             : entry.installOrigin === 'external-or-drifted' ? '外部安装 / 来源漂移' : null
       const stateTone = entry.status === 'blocked' ? 'var(--dsw-alias-state-error-primary)'
-        : entry.updateAvailable || entry.migrationAvailable ? 'var(--dsw-alias-label-primary)'
+        : entry.updateAvailable || entry.migrationAvailable || entry.manualSourceUpdate ? 'var(--dsw-alias-label-primary)'
           : entry.installed ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)'
       const titleId = `dsh-store-plugin-${entry.id}`
       return React.createElement('article', { style: styles.card, role: 'listitem', 'aria-labelledby': titleId },
@@ -928,17 +929,25 @@ window.__ModuleLoader__.load({
           ? React.createElement('div', { style: styles.error }, entry.sourceUpdate.reasons.join('；'))
           : entry.sourceUpdate?.status === 'current'
             ? React.createElement('div', { style: styles.notice }, entry.sourceUpdate.sameVersionSourceChange
-              ? '源仓库有同版本提交；当前安装版本无需更新，商城不会把目录或文档提交当作插件升级。'
+              ? (entry.sourceUpdate.catalogReviewed
+                ? 'Catalog 已固定同版本的新 Commit；商城不会覆盖已安装副本，请使用下方 GitHub 固定 Commit 手动更新。'
+                : '源仓库有尚未进入 Catalog 的同版本提交；等待固定源自动审核，商城不会生成同版本更新计划。')
               : '已在本机按需检查 GitHub 源仓库，当前没有可用的新 Commit。')
             : entry.sourceUpdate?.status === 'error'
               ? React.createElement('div', { style: styles.error }, `${entry.sourceUpdate.code}：${entry.sourceUpdate.message}`)
               : null,
+        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+          React.createElement('div', null, entry.manualSourceUpdate.reason),
+          React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, '手动更新不受商城计划、备份、健康检查和失败回滚保护。')) : null,
         React.createElement(SourceDiffSummary, { update: entry.sourceUpdate }),
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('div', { style: styles.actions },
             React.createElement(PluginActions, { entry, health, beginPlan, checkSource }),
-            entry.status === 'blocked' || entry.sourceUpdate?.status === 'external-only'
-              ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub（不受商城保护）')
+            entry.manualSourceUpdate
+              ? React.createElement('a', { href: entry.manualSourceUpdate.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看同版本固定 Commit')
+              : entry.status === 'blocked' || entry.sourceUpdate?.status === 'external-only'
+                ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub（不受商城保护）')
               : null),
           React.createElement('div', { style: styles.detailAction },
             React.createElement(Button, { compact: true, onClick: () => openDetails(entry), ariaLabel: `查看 ${entry.name} 详情` }, '查看详情'))))
@@ -1041,6 +1050,12 @@ window.__ModuleLoader__.load({
           ? React.createElement('div', { style: styles.notice }, '当前 GitHub Catalog 详情文件尚未提供完整字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
           : null,
         entry.statusReason ? React.createElement('div', { style: styles.error }, `策略说明：${entry.statusReason}`) : null,
+        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+          React.createElement('div', { style: styles.name }, '同版本源码更新：仅限 GitHub 手动操作'),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, entry.manualSourceUpdate.reason),
+          React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
+          React.createElement('a', { href: entry.manualSourceUpdate.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '打开 Catalog 固定 Commit'),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, '该命令绕过商城事务保护；执行前应自行备份 Profile。')) : null,
         entry.status === 'blocked'
           ? React.createElement('div', { style: styles.notice }, '可前往 GitHub 阅读项目说明并自行决定是否手动安装；手动安装不受本商城的计划、备份、健康检查和失败回滚保护。')
           : null,

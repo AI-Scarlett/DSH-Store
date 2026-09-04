@@ -9,6 +9,7 @@ import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-
 import {
   assessUpstreamVersion,
   buildCatalogVersionUpdate,
+  catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
   sourceDeclaredCompatibility,
@@ -453,6 +454,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 
   async function inspectEntry(entry, index) {
     let snapshot
+    let versionAssessment = null
+    let changeContract = null
     try {
       snapshot = await sourceSnapshot(entry)
       if (snapshot.commit === entry.commit) return { index, entry, kind: 'current' }
@@ -465,12 +468,13 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         if (String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')) throw error
         return { index, entry, kind: 'deferred', snapshot, reason: 'the fixed-Commit manifest is not valid JSON' }
       }
-      const versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
-      if (versionAssessment.status !== 'newer-version') {
+      versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
+      changeContract = catalogChangeReviewContract(versionAssessment)
+      if (!changeContract.reviewable) {
         return { index, entry, kind: versionAssessment.status, snapshot, versionAssessment }
       }
 
-      process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
+      process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} kind=${changeContract.changeKind} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
       const withoutCurrent = { ...baselineCatalog, entries: baselineCatalog.entries.filter(item => item.id !== entry.id) }
       const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '', {
         catalogDocument: withoutCurrent,
@@ -481,7 +485,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (candidate.commit !== snapshot.commit || candidate.defaultBranch !== snapshot.defaultBranch) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the upstream default branch moved during the fixed-source review' }
       }
-      if (!catalogUpdateIdentityMatches(entry, candidate) || compareVersions(candidate.version, entry.version) !== 1) {
+      if (!catalogUpdateIdentityMatches(entry, candidate)
+        || compareVersions(candidate.version, entry.version) !== changeContract.expectedVersionComparison) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the package, path, Bundle entry identity, or version contract changed' }
       }
       if (normalizedLicense(candidate.details?.license) !== normalizedLicense(entry.details?.license)) {
@@ -523,7 +528,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
       }, observedAt, sourcePolicy)
       return {
-        index, entry, kind: 'updated', snapshot, versionAssessment, sourcePolicy, updated,
+        index, entry, kind: 'updated', snapshot, versionAssessment, changeContract, sourcePolicy, updated,
         warnings: analysis.reasons,
       }
     } catch (error) {
@@ -531,7 +536,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         || (String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')
           && ![404, 410, 451].includes(error?.status))
       return {
-        index, entry, kind: infrastructure ? 'transient' : 'deferred', snapshot,
+        index, entry, kind: infrastructure ? 'transient' : 'deferred', snapshot, versionAssessment, changeContract,
         reason: boundedText(error?.message, infrastructure ? 'temporary source update lookup failure' : 'source update review failed'),
       }
     }
@@ -549,12 +554,16 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       report.sourceVersionChecks.currentEntries += 1
       continue
     }
-    if (result.kind === 'source-changed-without-version-bump') {
+    if (versionAssessment?.status === 'source-changed-without-version-bump') {
       report.sourceVersionChecks.sourceChangedWithoutVersionBump += 1
       report.sourceChangesWithoutVersionBump.push({
         id: entry.id, version: entry.version, catalogCommit: entry.commit, candidateCommit: snapshot.commit,
+        decision: result.kind === 'updated' ? 'catalog-repinned'
+          : result.kind === 'transient' ? 'retry-later' : 'update-blocked',
+        reason: result.reason ?? null,
       })
-      continue
+      if (result.kind === 'updated') report.sourceVersionChecks.sameVersionCatalogUpdates += 1
+      else report.sourceVersionChecks.sameVersionUpdatesDeferred += 1
     }
     if (result.kind === 'upstream-version-behind') {
       report.sourceVersionChecks.upstreamVersionBehind += 1
@@ -567,7 +576,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     if (versionAssessment?.status === 'newer-version') report.sourceVersionChecks.newerVersionCandidates += 1
     if (result.kind === 'updated') {
       catalog.entries[result.index] = result.updated
-      report.sourceVersionChecks.catalogUpdates += 1
+      if (result.changeContract.changeKind === 'version-update') {
+        report.sourceVersionChecks.catalogUpdates += 1
+      }
       report.updatedEntries.push({
         id: entry.id,
         from: entry.commit,
@@ -575,6 +586,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         fromVersion: entry.version,
         toVersion: result.updated.version,
         version: result.updated.version,
+        changeKind: result.changeContract.changeKind,
         policy: result.sourcePolicy,
       })
       report.updateReviews.push({
@@ -585,7 +597,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         upstreamVersion: result.updated.version,
         candidateCommit: result.updated.commit,
         policy: result.sourcePolicy,
-        decision: 'catalog-updated',
+        decision: result.changeContract.changeKind === 'same-version-source-update'
+          ? 'catalog-repinned-same-version' : 'catalog-updated',
         warnings: result.warnings.slice(0, 20),
       })
       continue
@@ -913,6 +926,8 @@ const report = {
     catalogUpdates: 0,
     newerVersionsDeferred: 0,
     sourceChangedWithoutVersionBump: 0,
+    sameVersionCatalogUpdates: 0,
+    sameVersionUpdatesDeferred: 0,
     upstreamVersionBehind: 0,
     unresolvedEntries: 0,
   },

@@ -1,4 +1,5 @@
 import { compareVersions, DSH_RC_RELEASES, dshReleaseVersion } from './catalog.mjs'
+import { COMPATIBILITY_HOLD_PREFIX } from './catalog-compatibility-policy.mjs'
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
@@ -86,14 +87,31 @@ export function catalogUpdatePolicy(entry) {
   if (entry.updatePolicy === 'source-verified') return 'source-verified'
   const permissions = entry.details?.permissions ?? {}
   const credentials = permissions.credentials ?? ['unknown']
-  const lowRisk = entry.status === 'approved'
+  // A latest-three compatibility hold is a reversible policy state, not a
+  // permanent loss of the entry's previous installability class. Authors may
+  // add exact compatibility evidence without changing package.version, so the
+  // next fixed Commit must still receive the same bounded review an approved
+  // entry would receive.
+  const installableScope = entry.status === 'approved'
+    || (entry.status === 'unlisted' && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX))
+  const lowRisk = installableScope
     && (entry.risk?.installScripts?.length ?? 0) === 0
     && ['none', 'read-only'].includes(permissions.files)
     && permissions.network === 'none'
     && permissions.commands === 'none'
     && credentials.length === 1
     && credentials[0] === 'none'
-  return lowRisk ? 'source-verified' : entry.status === 'approved' ? 'user-reviewed' : 'external-only'
+  return lowRisk ? 'source-verified' : installableScope ? 'user-reviewed' : 'external-only'
+}
+
+export function catalogChangeReviewContract(versionAssessment) {
+  if (versionAssessment?.status === 'newer-version') {
+    return { reviewable: true, expectedVersionComparison: 1, changeKind: 'version-update' }
+  }
+  if (versionAssessment?.status === 'source-changed-without-version-bump') {
+    return { reviewable: true, expectedVersionComparison: 0, changeKind: 'same-version-source-update' }
+  }
+  return { reviewable: false, expectedVersionComparison: null, changeKind: null }
 }
 
 export function assessUpstreamVersion(entry, source) {
@@ -143,11 +161,13 @@ export function buildCatalogVersionUpdate(
   observedAt,
   policy = catalogUpdatePolicy(entry),
 ) {
+  const sameVersion = compareVersions(candidate.version, entry.version) === 0
+  const releaseDescription = sameVersion ? 'same-version fixed Commit' : 'newer fixed Commit'
   const reason = policy === 'source-verified'
-    ? 'The newer fixed Commit passed the complete automatic low-risk source policy.'
+    ? `The ${releaseDescription} passed the complete automatic low-risk source policy.`
     : policy === 'user-reviewed'
-      ? 'The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review.'
-      : 'The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred.'
+      ? `The ${releaseDescription} passed Catalog identity and source-contract review; installation still requires a separate local risk review.`
+      : 'The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred.'
   return {
     ...entry,
     defaultBranch: candidate.defaultBranch,
@@ -162,7 +182,7 @@ export function buildCatalogVersionUpdate(
     assurance: {
       discovery: {
         status: 'verified',
-        method: 'automated-fixed-source-update-v2',
+        method: 'automated-fixed-source-update-v3',
         checkedAt: observedAt,
         evidenceUrl: `${entry.repositoryUrl}/commit/${candidate.commit}`,
         dshRelease: null,
@@ -170,8 +190,8 @@ export function buildCatalogVersionUpdate(
         profiles: [],
         summary: reason,
       },
-      installability: unknownEvidence('The updated release was not installed or built by Catalog automation.'),
-      runtime: unknownEvidence('No DSH runtime acceptance was carried forward from the previous plugin version.'),
+      installability: unknownEvidence('The updated fixed Commit was not installed or built by Catalog automation.'),
+      runtime: unknownEvidence('No DSH runtime acceptance was carried forward after the source changed.'),
       securityReview: unknownEvidence('Automated fixed-source review is not an independent security audit.'),
     },
     risk: {

@@ -139,12 +139,12 @@ export function renderCatalogAutomationNotification({
     lines.push(
       `- 历史 Catalog 检查：${number(sourceChecks.checkedEntries)} 个`,
       `- 新增收录：${addedEntries.length} 个（可安装 ${approvedAdded}，blocked/不可安装 ${blockedAdded}）`,
-      `- 历史版本自动更新：${updatedEntries.length} 个`,
+      `- 历史版本自动更新：${number(sourceChecks.catalogUpdates)} 个；同版本固定 Commit 更新：${number(sourceChecks.sameVersionCatalogUpdates)} 个`,
       `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
       `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
       `- 不兼容且已有其他失败的候选清理：${prunedCandidates.length} 个`,
       `- 发现上游高版本：${number(sourceChecks.newerVersionCandidates)} 个（自动更新 ${number(sourceChecks.catalogUpdates)}，暂缓 ${number(sourceChecks.newerVersionsDeferred)}）`,
-      `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个`,
+      `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个（固定 Commit 已更新 ${number(sourceChecks.sameVersionCatalogUpdates)}，暂缓 ${number(sourceChecks.sameVersionUpdatesDeferred)}）`,
       `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
       `- 当前 Catalog 条目：${number(postCatalogEntries)} 个`,
     )
@@ -203,11 +203,12 @@ export function renderCatalogAutomationNotification({
   } else if (updatedEntries.length === 0) {
     lines.push('无历史插件版本更新。', '')
   } else {
-    lines.push('| 中文名（英文名） | 原版本 | 新版本 | 商城状态 | 原项目 |', '|---|---:|---:|---|---|')
+    lines.push('| 中文名（英文名） | 变更类型 | 原版本 | 新版本 | 商城状态 | 原项目 |', '|---|---|---:|---:|---|---|')
     const rows = visibleRows(updatedEntries)
     for (const item of rows) {
       const entry = byId.get(item.id)
-      lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${markdownCell(item.fromVersion)} | ${markdownCell(item.toVersion ?? item.version)} | ${markdownCell(statusLabels[entry?.status] ?? entry?.status)} | ${repositoryLink(entry)} |`)
+      const changeKind = item.changeKind === 'same-version-source-update' ? '同版本固定 Commit' : '版本更新'
+      lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${changeKind} | ${markdownCell(item.fromVersion)} | ${markdownCell(item.toVersion ?? item.version)} | ${markdownCell(statusLabels[entry?.status] ?? entry?.status)} | ${repositoryLink(entry)} |`)
     }
     lines.push('')
     appendOmittedRows(lines, updatedEntries.length, rows.length)

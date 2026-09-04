@@ -449,6 +449,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.8.11' && manager.version === '0.8.10')
     || (packageManifest.version === '0.8.12' && manager.version === '0.8.11')
     || (packageManifest.version === '0.8.13' && manager.version === '0.8.12')
+    || (packageManifest.version === '0.8.14' && manager.version === '0.8.13')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -484,7 +485,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
       install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
     })
-  } else if (managerIsCurrent && manager.version === '0.8.13') {
+  } else if (managerIsCurrent && ['0.8.13', '0.8.14'].includes(manager.version)) {
     for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4']) {
       assert.equal(manager.compatibility.dshReleases[release], 'compatible')
       assert.deepEqual(manager.compatibility.dshOperations[release], {
@@ -492,9 +493,9 @@ test('bundled registry declares complete detail metadata for every entry', async
       })
     }
     assert.equal(manager.compatibility.dshReleases['0.1.2-alpha.5'], 'compatible')
-    assert.deepEqual(manager.compatibility.dshOperations['0.1.2-alpha.5'], {
-      install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
-    })
+    assert.deepEqual(manager.compatibility.dshOperations['0.1.2-alpha.5'], manager.version === '0.8.13'
+      ? { install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown' }
+      : { install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' })
   } else if (managerIsCurrent || manager.version === '0.8.12') {
     for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
       assert.equal(manager.compatibility.dshReleases[release], 'compatible')
@@ -756,9 +757,20 @@ test('marketplace offers explicit migration for local links and reports version 
   const git = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '1.2.0', declaredSpecifier: 'github:example/dsh-demo#main' }],
   })
-  assert.equal(git.entries[0].updateAvailable, true)
+  assert.equal(git.entries[0].updateAvailable, false)
   assert.equal(git.entries[0].commitMatched, false)
   assert.equal(git.entries[0].sourceDrift, true)
+  assert.equal(git.entries[0].sameVersionSourceChange, true)
+  assert.equal(git.entries[0].manualSourceUpdate.status, 'manual-only')
+  assert.equal(git.entries[0].manualSourceUpdate.commit, entry.commit)
+  assert.deepEqual(git.entries[0].manualSourceUpdate.command, [
+    'dsh', 'plugin', '--profile', 'web', 'add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${entry.commit}`,
+  ])
+  assert.deepEqual(git.entries[0].allowedActions, ['disable', 'enable', 'uninstall'])
+  const uninstalled = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] })
+  assert.equal(uninstalled.entries[0].installed, false)
+  assert.equal(uninstalled.entries[0].manualSourceUpdate, null)
+  assert.deepEqual(uninstalled.entries[0].allowedActions, ['install'], 'new users install the current audited Catalog Commit')
   const sourceNewer = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '2.0.0', declaredSpecifier: 'github:example/dsh-demo#newer' }],
   })
