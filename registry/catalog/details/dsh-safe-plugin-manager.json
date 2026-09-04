@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
-  "version": "0.8.13",
+  "commit": "2337457b1aa5ec13cf1f73609321455ea4a609bb",
+  "version": "0.8.14",
   "categories": [
     "marketplace",
     "management"
@@ -39,58 +39,50 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T02:08:42.000Z",
-    "observedAt": "2026-09-03T02:15:05.000Z",
+    "updatedAt": "2026-09-04T05:45:38.000Z",
+    "observedAt": "2026-09-04T05:46:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "maintainer-fixed-source-release-v3",
-      "checkedAt": "2026-09-03T02:15:05.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-04T05:46:11.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/2337457b1aa5ec13cf1f73609321455ea4a609bb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "固定合并 Commit 的 0.8.13 manifest、Bundle Patch、Guardian 认证根路径兼容修复、回归测试与 CodeQL 已完成源码和公开提交回读。"
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
-      "status": "partial",
-      "method": "real-profile-official-cli-repair-v3",
-      "checkedAt": "2026-09-03T02:15:05.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
-      "dshRelease": "0.1.2-alpha.5",
-      "systems": [
-        "macOS"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "部分验证：一个真实 macOS web Profile 通过官方固定参数 CLI 从 0.8.12 更新到此 Commit，禁止全部生命周期脚本并通过配置合成；不代表所有历史 Profile 均已更新。"
-    },
-    "runtime": {
-      "status": "partial",
-      "method": "real-profile-guardian-authenticated-root-runtime-v3",
-      "checkedAt": "2026-09-03T02:15:05.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
-      "dshRelease": "0.1.2-alpha.5",
-      "systems": [
-        "macOS"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "部分验证：真实 DSH alpha.5 上根路径 401、商城运行时 200、Profile 与 Boot ID 一致，Guardian 接管后健康稳定超过 30 秒且仅一个 3080 listener；旧版根路径 200 由回归测试覆盖。"
-    },
-    "securityReview": {
-      "status": "partial",
-      "method": "fixed-source-policy-transaction-and-codeql-v3",
-      "checkedAt": "2026-09-03T02:15:05.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/3ed2cb4f53d52a2d7d628048266abf58218cd3f1",
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "部分验证：223 项仓库测试、未知端口占用失败关闭、Profile/Boot ID 身份核验与 CodeQL 通过；不等同于独立安全审计。"
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
@@ -155,8 +147,8 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "passed",
-        "start": "passed",
+        "install": "unknown",
+        "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
