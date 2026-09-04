@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-03T23:34:48.000Z",
+    "updatedAt": "2026-09-04T04:12:09.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -6618,8 +6618,8 @@
       "description": "DeepSeek Harness (DSH) Web Plugin Aggregation Ecosystem · Everything is a plugin, distributed via the Creative Workshop",
       "repositoryUrl": "https://github.com/zhu1090093659/dsh-web",
       "defaultBranch": "dev",
-      "latestCommit": "18c3b0ab2588444d196434711c64f5996fb33a7f",
-      "sourceUpdatedAt": "2026-09-01T13:22:41.000Z",
+      "latestCommit": "b5438099801b4f007ffdb47b4c214ef09bd94935",
+      "sourceUpdatedAt": "2026-09-04T03:48:57.000Z",
       "discoveredAt": "2026-08-24T13:07:51.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -6635,7 +6635,7 @@
       ],
       "status": "rejected",
       "route": "monorepo-review",
-      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., packages/dsh-community-plugins, packages/dsh-desktop-launcher, packages/dsh-doctor, packages/dsh-git-graph, packages/dsh-i18n, packages/dsh-liangshen, packages/dsh-market, packages/dsh-perf, packages/dsh-pet, packages/dsh-plugin-manager, packages/dsh-remote-web-ui, packages/dsh-session-archive, packages/dsh-session-id, packages/dsh-skill-explorer, packages/dsh-ssh, packages/dsh-task-board, packages/dsh-tool-describe-image, packages/dsh-usage, packages/dsh-web-all, packages/dsh-web-settings, scripts/plu"
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., packages/dsh-community-plugins, packages/dsh-doctor, packages/dsh-git-graph, packages/dsh-i18n, packages/dsh-liangshen, packages/dsh-market, packages/dsh-perf, packages/dsh-pet, packages/dsh-plugin-manager, packages/dsh-remote-web-ui, packages/dsh-session-archive, packages/dsh-session-id, packages/dsh-skill-explorer, packages/dsh-ssh, packages/dsh-task-board, packages/dsh-tool-describe-image, packages/dsh-usage, packages/dsh-web-all, packages/dsh-web-settings, scripts/plugin-template, packages/skins/sk"
     },
     {
       "id": "volcengine-openviking",
@@ -9947,8 +9947,8 @@
       "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Command Code Go provider adapter for dsh: scan the Go-plan model catalog dynamically and serve /alpha/generate through the harness LLM seam",
       "repositoryUrl": "https://github.com/jiesou/dsh-commandcode-go-provider",
       "defaultBranch": "main",
-      "latestCommit": "93f775bcee883741fc8c38709abe4e3941a35a18",
-      "sourceUpdatedAt": "2026-09-03T04:11:41.000Z",
+      "latestCommit": "7f95408d934d5fa5584414072413d51a83e6b719",
+      "sourceUpdatedAt": "2026-09-04T00:08:33.000Z",
       "discoveredAt": "2026-08-25T12:13:40.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14575,6 +14575,36 @@
         "awesome-dsh",
         "deepseek-harness",
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "zhu1090093659-dsh-trading",
+      "name": "zhu1090093659/dsh-trading",
+      "description": "Agent-native trading terminal built on DeepSeek Harness. Crypto, US, CN and HK in one three-column GUI, 19+ hot-swappable connectors, dry-run by default with human approval on every live order. BYOK, no data redistribution.",
+      "repositoryUrl": "https://github.com/zhu1090093659/dsh-trading",
+      "defaultBranch": "main",
+      "latestCommit": "02a12463793f525f2513062062ca5cc92c8832c9",
+      "sourceUpdatedAt": "2026-09-04T04:14:31.000Z",
+      "discoveredAt": "2026-09-04T04:12:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-native",
+        "ai-agent",
+        "cryptocurrency",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "lightweight-charts",
+        "multi-market",
+        "quantitative-trading",
+        "react",
+        "trading-terminal",
         "automatic-radar"
       ],
       "status": "rejected",
