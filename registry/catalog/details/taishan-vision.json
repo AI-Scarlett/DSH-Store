@@ -1,52 +1,48 @@
 {
-  "id": "dsh-model-hub-pro",
-  "name": "模型提供商接入（DSH Model Hub Pro）",
-  "packageName": "@alayai/dsh-model-hub-pro",
-  "description": "为 DSH 提供模型提供商接入能力。英文原始说明：DeepSeek Harness plugin: tiered task plans, role-aware model selection, and cost-aware routing.",
+  "id": "taishan-vision",
+  "name": "图像视觉工具（Taishan Vision）",
+  "packageName": "taishan-vision",
+  "description": "泰山识图 Taishan Vision - 让 DeepSeek Harness 纯文本模型也能识图:GLM 视觉识别 + 所选模型推理(静态插件包,重启永久生效;由鲸晴 JingQing v1.1.8 魔改)",
   "searchTerms": [
-    "模型提供商接入",
-    "DSH Model Hub Pro",
-    "dsh-model-hub-pro",
-    "@alayai/dsh-model-hub-pro",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
-    "模型路由",
-    "路由",
-    "故障切换",
-    "dsh",
-    "model",
-    "hub",
-    "pro"
+    "图像视觉工具",
+    "Taishan Vision",
+    "taishan-vision",
+    "视觉",
+    "识图",
+    "图片",
+    "多模态",
+    "实验功能",
+    "新功能",
+    "taishan",
+    "vision"
   ],
-  "repositoryUrl": "https://github.com/alayai/dsh-model-hub-pro",
+  "repositoryUrl": "https://github.com/iguanren/Taishan-Vision",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8ca93e0d05ceff94ccce6bde9e87d34b59b6b694",
-  "version": "0.1.5",
+  "commit": "43ff55d37d9b2cab5be546ee630daa4e3552238a",
+  "version": "2.2.1",
   "categories": [
-    "routing"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T04:13:56.000Z",
+    "updatedAt": "2026-09-04T05:10:39.000Z",
     "observedAt": "2026-09-04T05:10:33.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-04T05:10:33.000Z",
-      "evidenceUrl": "https://github.com/alayai/dsh-model-hub-pro/commit/8ca93e0d05ceff94ccce6bde9e87d34b59b6b694",
+      "evidenceUrl": "https://github.com/iguanren/Taishan-Vision/commit/43ff55d37d9b2cab5be546ee630daa4e3552238a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -56,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -66,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -76,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-model-hub-pro"
+    "taishan-vision"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.1-rc.2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -153,7 +149,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19 || >=24",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
@@ -172,9 +168,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
