@@ -1,52 +1,49 @@
 {
-  "id": "dsh-model-hub-pro",
-  "name": "模型提供商接入（DSH Model Hub Pro）",
-  "packageName": "@alayai/dsh-model-hub-pro",
-  "description": "为 DSH 提供模型提供商接入能力。英文原始说明：DeepSeek Harness plugin: tiered task plans, role-aware model selection, and cost-aware routing.",
+  "id": "dsh-xiaomi-tts",
+  "name": "语音输入与朗读（DSH Xiaomi TTS）",
+  "packageName": "dsh-xiaomi-tts",
+  "description": "为 DSH 提供语音输入与朗读能力。英文原始说明：Xiaomi MiMo text-to-speech controls for DeepSeek Harness Web assistant messages",
   "searchTerms": [
-    "模型提供商接入",
-    "DSH Model Hub Pro",
-    "dsh-model-hub-pro",
-    "@alayai/dsh-model-hub-pro",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
-    "模型路由",
-    "路由",
-    "故障切换",
+    "语音输入与朗读",
+    "DSH Xiaomi TTS",
+    "dsh-xiaomi-tts",
+    "语音",
+    "录音",
+    "转写",
+    "朗读",
+    "实验功能",
+    "新功能",
     "dsh",
-    "model",
-    "hub",
-    "pro"
+    "xiaomi",
+    "tts"
   ],
-  "repositoryUrl": "https://github.com/alayai/dsh-model-hub-pro",
+  "repositoryUrl": "https://github.com/ppy-web/dsh-plugin-xiaomi-mimo-tts",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8ca93e0d05ceff94ccce6bde9e87d34b59b6b694",
-  "version": "0.1.5",
+  "commit": "b1af78f2c93e8a9397f244a5fce6a2c6474b70d1",
+  "version": "3.0.1-alpha",
   "categories": [
-    "routing"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T04:13:56.000Z",
+    "updatedAt": "2026-09-04T05:11:48.000Z",
     "observedAt": "2026-09-04T05:10:33.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-04T05:10:33.000Z",
-      "evidenceUrl": "https://github.com/alayai/dsh-model-hub-pro/commit/8ca93e0d05ceff94ccce6bde9e87d34b59b6b694",
+      "evidenceUrl": "https://github.com/ppy-web/dsh-plugin-xiaomi-mimo-tts/commit/b1af78f2c93e8a9397f244a5fce6a2c6474b70d1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -56,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -66,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -76,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-model-hub-pro"
+    "xiaomi-mimo-tts"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.1-rc.2",
+    "dsh": "0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -153,7 +150,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19 || >=24",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
@@ -172,13 +169,13 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
