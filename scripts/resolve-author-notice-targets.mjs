@@ -3,6 +3,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MAX_AUTHOR_NOTICE_ACTIONS } from './plan-author-notices.mjs'
 
 const API_ROOT = 'https://api.github.com'
 
@@ -71,7 +72,7 @@ async function main() {
   const options = parseArgs(process.argv.slice(2))
   if (!options.plan || !options.output) throw new Error('--plan and --output are required')
   const plan = JSON.parse(await readFile(resolve(options.plan), 'utf8'))
-  if (plan?.schemaVersion !== 1 || !Array.isArray(plan.actions) || plan.actions.length > 100) {
+  if (plan?.schemaVersion !== 1 || !Array.isArray(plan.actions) || plan.actions.length > MAX_AUTHOR_NOTICE_ACTIONS) {
     throw new Error('preliminary author notice plan is invalid')
   }
   const keys = [...new Set(plan.actions.filter(action => action.type !== 'close').map(action => {

@@ -25,7 +25,7 @@ import {
   validateCatalog,
 } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -288,6 +288,12 @@ async function analyzeFixedSource(candidate, policy, github) {
     const relativePath = prefix ? item.path.slice(prefix.length) : item.path
     if (EXCLUDED_DIRECTORY.test(relativePath)) return false
     if (EXCLUDED_METADATA_FILE.test(relativePath)) return false
+    // Split Catalog details are bounded, schema-validated release data rather
+    // than executable plugin source. Counting every generated record made the
+    // self-manager's fixed-source gate shrink as the marketplace grew. Exclude
+    // only the canonical manager's one-level JSON detail records; all code,
+    // scripts, indexes and other JSON inputs remain in the permission scan.
+    if (isGeneratedSelfManagerCatalogDetail(candidate, relativePath)) return false
     if (NATIVE_FILE.test(relativePath) || item.mode === '100755') signals.nativeOrExecutableArtifacts = true
     return SOURCE_FILE.test(relativePath)
   })

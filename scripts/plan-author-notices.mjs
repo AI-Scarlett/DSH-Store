@@ -26,6 +26,7 @@ export const AUTHOR_NOTICE_LABELS = [
   { name: 'compatibility-outdated', color: 'E99695', description: 'Catalog entry is temporarily unlisted outside the latest-three DSH compatibility window' },
   { name: 'candidate-rejected', color: 'D4C5F9', description: 'DSH candidate needs upstream changes before another review' },
 ]
+export const MAX_AUTHOR_NOTICE_ACTIONS = 500
 
 function parseArgs(argv) {
   const options = { maxCreate: 10 }
@@ -603,6 +604,9 @@ export function buildAuthorNoticePlan({
 
   const actionOrder = { close: 0, baseline: 1, notify: 2, 'source-update': 3, update: 4, create: 5 }
   actions.sort((left, right) => actionOrder[left.type] - actionOrder[right.type] || left.key.localeCompare(right.key, 'en'))
+  if (actions.length > MAX_AUTHOR_NOTICE_ACTIONS) {
+    throw new Error(`author notice action bound exceeded: ${actions.length} actions (maximum ${MAX_AUTHOR_NOTICE_ACTIONS})`)
+  }
   const eligibleCreates = desired.filter(record => !existingByKey.has(record.key) && record.createCategories.size > 0).length
   const githubMessageTypes = new Set(['create', 'update', 'notify', 'source-update'])
   const githubMessages = actions.filter(action => githubMessageTypes.has(action.type)).length

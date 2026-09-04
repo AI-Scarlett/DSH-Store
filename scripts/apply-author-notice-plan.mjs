@@ -3,7 +3,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { canonicalExistingIssues, sha256 } from './plan-author-notices.mjs'
+import { canonicalExistingIssues, MAX_AUTHOR_NOTICE_ACTIONS, sha256 } from './plan-author-notices.mjs'
 
 const API_ROOT = 'https://api.github.com'
 const MANAGED_LABEL = 'author-action-required'
@@ -114,7 +114,7 @@ function validatePlan(plan) {
   for (const [name, value] of Object.entries(expectedCandidateSummary)) {
     if (plan.summary[name] !== value) throw new Error(`candidate coverage summary ${name} mismatch`)
   }
-  if (plan.actions.length > 100) throw new Error('author notice action bound exceeded')
+  if (plan.actions.length > MAX_AUTHOR_NOTICE_ACTIONS) throw new Error('author notice action bound exceeded')
   if (plan.actions.filter(action => action?.type === 'create').length > 12) throw new Error('author notice create bound exceeded')
   const issueNumbers = new Set()
   for (const action of plan.actions) {
