@@ -23,7 +23,7 @@
   "manifestPath": "plugin/dsh-local-speech/package.json",
   "installPath": "plugin/dsh-local-speech",
   "updatePolicy": "external-only",
-  "commit": "2db8b4038f1326a95625407f1427d7e3042e0d57",
+  "commit": "7a0c1f0e05a154ee8d69cdba3fdcd0e555bbaa38",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -31,20 +31,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T19:19:18.000Z",
-    "observedAt": "2026-09-02T19:20:12.000Z",
+    "updatedAt": "2026-09-03T19:02:11.000Z",
+    "observedAt": "2026-09-04T05:32:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-02T19:20:12.000Z",
-      "evidenceUrl": "https://github.com/astigmatism/dsh-container/commit/2db8b4038f1326a95625407f1427d7e3042e0d57",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-04T05:32:32.000Z",
+      "evidenceUrl": "https://github.com/astigmatism/dsh-container/commit/7a0c1f0e05a154ee8d69cdba3fdcd0e555bbaa38",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,7 +74,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [

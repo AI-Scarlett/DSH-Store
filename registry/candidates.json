@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-04T04:12:09.000Z",
+    "updatedAt": "2026-09-04T05:32:32.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -6765,8 +6765,8 @@
       "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
       "repositoryUrl": "https://github.com/SiriLee/dsh-rewind",
       "defaultBranch": "main",
-      "latestCommit": "a2b3c2428dd38646e264e350b5cff8da0e0f3d07",
-      "sourceUpdatedAt": "2026-09-03T12:38:49.000Z",
+      "latestCommit": "95c5361b00c383fec643a13760f258e705334475",
+      "sourceUpdatedAt": "2026-09-04T03:18:32.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6887,8 +6887,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "0579b45ccda795702e1aa1f7e601153d237b4488",
-      "sourceUpdatedAt": "2026-09-01T05:58:22.000Z",
+      "latestCommit": "a4e13ee239cc815532551c129c9b29246a2c0747",
+      "sourceUpdatedAt": "2026-09-03T06:38:31.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7032,8 +7032,8 @@
       "description": "为 DSH 提供社区插件中心能力。英文原始说明：Plugin center for DeepSeek Harness — installed metadata, community market, update detection, and What's New",
       "repositoryUrl": "https://github.com/Max-Null/dsh-plugin-center",
       "defaultBranch": "main",
-      "latestCommit": "52e5214a7c0f78b43aa20ecab007c5017c270ed7",
-      "sourceUpdatedAt": "2026-08-27T15:13:53.000Z",
+      "latestCommit": "d64abfbc0a77bc803e380fd99c24d8ead877d1a9",
+      "sourceUpdatedAt": "2026-08-29T02:41:07.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7072,8 +7072,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "f81256b2a3c6ec9d2c71dfcfc24b8c461e148f01",
-      "sourceUpdatedAt": "2026-09-02T14:53:47.000Z",
+      "latestCommit": "3b8ac4556ee2cc78b3085cf39fab41cc9726bdc3",
+      "sourceUpdatedAt": "2026-09-03T15:30:30.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7112,8 +7112,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "4e96cdfcdc2a11f130c12c0b6ac2653b79e8c060",
-      "sourceUpdatedAt": "2026-09-03T10:53:57.000Z",
+      "latestCommit": "2ccb1e33680a7cff4581e30dc9783382fd847974",
+      "sourceUpdatedAt": "2026-09-03T15:30:27.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7214,8 +7214,8 @@
       "description": "在一次性隔离配置中为 DSH 插件执行安装与冒烟测试，返回结构化的通过/失败记录与批量矩阵，不触碰真实配置。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-test-drive",
       "defaultBranch": "main",
-      "latestCommit": "86044b1767d0c41622827b680cfc6f1915b96bba",
-      "sourceUpdatedAt": "2026-09-02T14:55:38.000Z",
+      "latestCommit": "59d1dfcc15c61653c9984b7f7f5ac0cbdf6dba3e",
+      "sourceUpdatedAt": "2026-09-03T15:31:18.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7290,26 +7290,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-overleaf."
     },
     {
-      "id": "angeloszou-dsh-multi-folder",
-      "name": "会话管理（DSH Multi Folder）",
-      "description": "为 DSH 项目提供副工作目录：agent 保持主工作区为 cwd，同时对已配置的副目录获得同等读写/执行权限，可在会话头部与新会话页配置。",
-      "repositoryUrl": "https://github.com/AngelosZou/dsh-multi-folder",
-      "defaultBranch": "main",
-      "latestCommit": "2a72c25c769c51e3ccf78483b295f0296a91dc9e",
-      "sourceUpdatedAt": "2026-09-01T04:10:06.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-multi-folder."
-    },
-    {
       "id": "anweat-dsh-assistant-message-forge",
       "name": "配置导入迁移（DSH Assistant Message Forge）",
       "description": "消息锻造台：创建/修改/注入测试用 assistant 消息，导入识别并安全修复 session.jsonl(.zstd) 会话日志为新会话。",
@@ -7355,8 +7335,8 @@
       "description": "通过 MCP 让 ChatGPT Web 创建、查看、继续和监督 DeepSeek Harness Agent 会话与 Goal，同时保留 DSH 原生的审批、沙箱与工作区安全模型。",
       "repositoryUrl": "https://github.com/jiezeng2004-design/dsh-chatgpt-bridge",
       "defaultBranch": "main",
-      "latestCommit": "35072e17439c3e0a2f7dba5d1ff92ea78f816498",
-      "sourceUpdatedAt": "2026-08-28T11:52:32.000Z",
+      "latestCommit": "18cbaf5a6eec508e31a6f6885d59dd91ada46878",
+      "sourceUpdatedAt": "2026-08-29T13:09:55.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7660,8 +7640,8 @@
       "description": "DeepSeek Harness (DSH) 插件：用官方 OAuth 一键绑定 ChatGPT 订阅（Codex），在 DSH 内直接使用 ChatGPT 模型对话（消耗 ChatGPT Plus/Pro 订阅额度），并在设置侧边栏「订阅」页展示绑定状态与剩余额度。",
       "repositoryUrl": "https://github.com/songoao25/dsh-chatgpt-subscription",
       "defaultBranch": "main",
-      "latestCommit": "ae3c1be56b4ce0d233c3d5b084cb168b65f14d2a",
-      "sourceUpdatedAt": "2026-08-20T13:45:27.000Z",
+      "latestCommit": "99d57b1a38fa7ecf99d565d6cf882915fef3609a",
+      "sourceUpdatedAt": "2026-09-02T06:54:50.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8373,8 +8353,8 @@
       "description": "Session management for DSH Web: archive / unarchive / truly delete chats / export data (bilingual). 会话管理：归档 / 取消归档 / 真正删除聊天记录 / 导出数据（中英双语）。",
       "repositoryUrl": "https://github.com/cokiscarazo-rgb/dsh-session-management",
       "defaultBranch": "main",
-      "latestCommit": "c29f78f30b7e228218e7ad9bca5711038ec5e8bf",
-      "sourceUpdatedAt": "2026-08-17T01:54:09.000Z",
+      "latestCommit": "ae5258e3e780d10c468268682169e7e5fe01e45b",
+      "sourceUpdatedAt": "2026-08-23T01:51:29.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8415,8 +8395,8 @@
       "description": "dsh 定时任务插件：在左侧栏“新会话”下方提供“定时任务”入口，支持 cron 定时执行 shell / python / nodejs 脚本、skills 与自定义 agent 任务，可对接 chicheng-push 与 messaging-core 推送通知、成功后自动归档会话，移动端适配",
       "repositoryUrl": "https://github.com/534119219/chicheng-cron",
       "defaultBranch": "main",
-      "latestCommit": "31a8627ebf9af56d30c2e385f0f72ee22cc78a08",
-      "sourceUpdatedAt": "2026-08-16T17:11:37.000Z",
+      "latestCommit": "99a223edfa090afa2f1f05c77526a53a0f277961",
+      "sourceUpdatedAt": "2026-08-26T12:47:01.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8517,8 +8497,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：DeepSeek Harness (dsh) plugin: control how long the dsh service (node) stays alive when using the dsh-launcher shell. Writes %LOCALAPPDATA%\\dsh-launcher\\settings.json (serviceLifetime: 0 always-on, 1 tray-resident, 2 follow-window); the shell applies it on window close / tray exit. No runtime dependencies.",
       "repositoryUrl": "https://github.com/Ruler4396/dsh-launcher-lifetime",
       "defaultBranch": "master",
-      "latestCommit": "6bb13b55ef0d7f0b62e0389d5af647d4189207ca",
-      "sourceUpdatedAt": "2026-08-16T09:31:34.000Z",
+      "latestCommit": "d9c41a81aa00c38cb3605a2995988234fd337ed3",
+      "sourceUpdatedAt": "2026-08-25T04:47:08.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9704,8 +9684,8 @@
       "description": "为 DSH 提供技能管理工具能力。英文原始说明：Godot Engine 4.x full-stack game development skill for DeepSeek Harness (DSH). A host plugin that registers the `godot-4-development` skill — covering renderers, 2D/3D graphics & physics, GDScript/C#, shaders, audio, input, navigation, networking, i18n, GUI, animation, file formats, mobile/XR and exporting — so any session can load it via the `skill` tool.",
       "repositoryUrl": "https://github.com/akira399/dsh-godot-skill",
       "defaultBranch": "main",
-      "latestCommit": "393cec166392d2d8aeee2452ef6b82a622e5202a",
-      "sourceUpdatedAt": "2026-08-13T21:19:14.000Z",
+      "latestCommit": "5ff40843e2f9bba8f86e9a76eec3341a9a0e22ca",
+      "sourceUpdatedAt": "2026-08-28T07:54:51.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10030,8 +10010,8 @@
       "description": "Codex 官方插件一键移植为 DSH 技能（实测 186 插件/583 技能，移植 577 个 0 失败）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-codex-port",
       "defaultBranch": "master",
-      "latestCommit": "f909ab3465fb22178c8383e58698a901f5deae12",
-      "sourceUpdatedAt": "2026-08-26T07:31:27.000Z",
+      "latestCommit": "0a24eac27772a1a23aa5fa338376722942b1d4f7",
+      "sourceUpdatedAt": "2026-09-01T16:39:14.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10050,8 +10030,8 @@
       "description": "参考文献工具：DOI 精确查询与 Crossref 题录检索，GB/T 7714 / APA / MLA / Chicago 格式化，BibTeX 生成与有界并发 DOI 校验。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-cite",
       "defaultBranch": "master",
-      "latestCommit": "a12cd1d4160301928a56b3f41794268e22931948",
-      "sourceUpdatedAt": "2026-09-01T13:12:34.000Z",
+      "latestCommit": "25c6dd22df288aeddaaebeb4ee08a49b62099590",
+      "sourceUpdatedAt": "2026-09-01T16:38:51.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10070,8 +10050,8 @@
       "description": "语音双件套：edge-tts 免费微软神经语音合成 + OpenAI 兼容 ASR 转写。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-voice",
       "defaultBranch": "master",
-      "latestCommit": "d02a4445842bdd68ab55081ef87829297cec92bd",
-      "sourceUpdatedAt": "2026-09-01T04:29:47.000Z",
+      "latestCommit": "00aba522b4f7f281bd9311897baff87de96355a0",
+      "sourceUpdatedAt": "2026-09-01T16:40:13.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10150,8 +10130,8 @@
       "description": "视频处理七工具（探测/剪辑/拼接/转码/字幕烧录/抽帧/GIF），官方 subprocess 服务、argv 无 shell 注入、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ffmpeg",
       "defaultBranch": "master",
-      "latestCommit": "4ef9488cc90cefc98baa8d006be3735647a99575",
-      "sourceUpdatedAt": "2026-09-01T12:39:39.000Z",
+      "latestCommit": "6bac30464d780369bbe40306e1b12221a6154fb6",
+      "sourceUpdatedAt": "2026-09-02T05:30:12.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10170,8 +10150,8 @@
       "description": "RSS/Atom 订阅管理 + 抓取解析（rss_list/add/remove/fetch/check），订阅持久化到 settings。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-rss",
       "defaultBranch": "master",
-      "latestCommit": "9c3e0a7c4416840079e8315302e1dd73e48a7c96",
-      "sourceUpdatedAt": "2026-08-26T07:31:49.000Z",
+      "latestCommit": "7fc6383ef3844d2542d742bd711fa9580ded60d9",
+      "sourceUpdatedAt": "2026-09-01T16:39:57.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10230,8 +10210,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "3bee760cececbf5bca00b62d328825cc9cc483e3",
-      "sourceUpdatedAt": "2026-09-01T16:29:30.000Z",
+      "latestCommit": "7d8ed0280792d8ab24ff5802da95651c889f5fb2",
+      "sourceUpdatedAt": "2026-09-02T10:27:50.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10250,8 +10230,8 @@
       "description": "Matt Pocock 完整发布技能集（25 个 SKILL.md）的 DSH 移植。",
       "repositoryUrl": "https://github.com/gongyijie85/mattpocock-skills-dsh",
       "defaultBranch": "main",
-      "latestCommit": "7c326e8ee491459a9724ed893b6fa3eef23c968a",
-      "sourceUpdatedAt": "2026-08-26T03:06:06.000Z",
+      "latestCommit": "ab38276ab1073887b7204cc0c02e131adedf9ac9",
+      "sourceUpdatedAt": "2026-08-26T09:00:44.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10367,8 +10347,8 @@
       "description": "AI productivity studio with smart chat, autonomous agents, and 300+ assistants. Unified access to frontier LLMs",
       "repositoryUrl": "https://github.com/CherryHQ/cherry-studio",
       "defaultBranch": "main",
-      "latestCommit": "d0ceeff73477e2f91c27a8e0d6c75ff580bb01ba",
-      "sourceUpdatedAt": "2026-08-29T07:21:09.000Z",
+      "latestCommit": "aa8d0d77284bf5517ac32bf02eb5c794b9a780fc",
+      "sourceUpdatedAt": "2026-09-04T05:35:29.000Z",
       "discoveredAt": "2026-08-27T08:53:45.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -10869,8 +10849,8 @@
       "description": "该仓库中的 2 个 DSH STORE 条目因最新三个 DSH 版本兼容记录不足而暂时下架：dsh-vision-free-eyes、dsh-vision-proxy-route。",
       "repositoryUrl": "https://github.com/314857493/dsh-vision",
       "defaultBranch": "main",
-      "latestCommit": "c60205dd2352c6868f421f92d3a9382127fd22bf",
-      "sourceUpdatedAt": "2026-08-26T10:07:15.000Z",
+      "latestCommit": "ab81275b7a950dd9199a31064afcbca767e90f4e",
+      "sourceUpdatedAt": "2026-09-02T09:25:04.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10911,8 +10891,8 @@
       "description": "为 DSH 提供费用与账单能力。英文原始说明：RMB/USD token-billing plugin for DSH web: official-policy auto pricing (incl. peak/off-peak), full coding-plan billing by provider routing, Settings→Cost summary page, per-message ledger, account balance, locale-driven currency display",
       "repositoryUrl": "https://github.com/bpc-oss/dsh-web-billing",
       "defaultBranch": "master",
-      "latestCommit": "d1a9412156f13fa590721d677d20f2cb22b6640e",
-      "sourceUpdatedAt": "2026-08-20T14:45:02.000Z",
+      "latestCommit": "2f6d979e65a5b8fc666cc0feea0a6b7e5954889f",
+      "sourceUpdatedAt": "2026-08-22T10:09:49.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10931,8 +10911,8 @@
       "description": "为 DSH 提供任务通知提醒能力。英文原始说明：Task-completion reminder for DeepSeek Harness: in-page toast, OS notification, and sound when an agent turn or background job finishes",
       "repositoryUrl": "https://github.com/ltao0829/dsh-task-notify",
       "defaultBranch": "main",
-      "latestCommit": "8771ac7c56ec14377eb943ebd51d83a2f12ab578",
-      "sourceUpdatedAt": "2026-08-20T11:07:22.000Z",
+      "latestCommit": "d97985e63b76e788342a3e1e51e17bef52e8a6a5",
+      "sourceUpdatedAt": "2026-08-25T04:31:31.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11115,8 +11095,8 @@
       "description": "在设置页的「个性化」页编辑此主机全局指令（~/.dsh/AGENTS.md），此机器上的所有会话都会应用。",
       "repositoryUrl": "https://github.com/Relistencode/dsh-extension-hub",
       "defaultBranch": "main",
-      "latestCommit": "514a63215a98ec247f3b2c4b72e1cf05eb3f329d",
-      "sourceUpdatedAt": "2026-08-18T13:00:01.000Z",
+      "latestCommit": "ef7021ce3263f85e7ac981e095d1ba1370529ca6",
+      "sourceUpdatedAt": "2026-08-21T11:46:00.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11196,8 +11176,8 @@
       "description": "在输入框粘贴大段文本时自动保存为附件文件。",
       "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
       "defaultBranch": "main",
-      "latestCommit": "929ab98e3bd6b4f95b9fa8f500dea5f264a06522",
-      "sourceUpdatedAt": "2026-08-18T10:56:29.000Z",
+      "latestCommit": "bded67f19080941c8e135e4e973534b79c576a65",
+      "sourceUpdatedAt": "2026-09-03T16:43:31.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11236,8 +11216,8 @@
       "description": "通过 MCP 在 DeepSeek Harness 中驱动 Jiey 浏览器：导航、快照、操作、读取、截图与标签页管理，使用真实 Chromium 环境。",
       "repositoryUrl": "https://github.com/jiewaigongxing/dsh-jiey-browser",
       "defaultBranch": "main",
-      "latestCommit": "65be607daf07f644e21368e37ac9763a31814950",
-      "sourceUpdatedAt": "2026-08-18T08:44:37.000Z",
+      "latestCommit": "5754c35df81fb621989c49d5f03a75d58165d273",
+      "sourceUpdatedAt": "2026-08-22T06:20:25.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11318,8 +11298,8 @@
       "description": "四个面向 GitHub 工程工作流的 DSH Skill：PR 分诊、review 反馈、GitHub Actions 诊断和安全的 draft PR 发布；优先复用现有 DSH 能力，必要时回退到 gh/git。",
       "repositoryUrl": "https://github.com/Starfie1d1272/dsh-github-skills",
       "defaultBranch": "main",
-      "latestCommit": "5876d3ed83242c2c9cbc5fe7130f5db8b9f84564",
-      "sourceUpdatedAt": "2026-08-18T07:28:08.000Z",
+      "latestCommit": "101d90ff3fb6e1185c1972859c50fc1e95c9e469",
+      "sourceUpdatedAt": "2026-08-19T07:54:24.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11442,8 +11422,8 @@
       "description": "把重复的文本与视觉（OCR、图像分析、对比）劳动交给本地运行的 Unsloth Desktop（Unsloth Studio）服务器：unsloth_run 与 unsloth_vision 两个工具，纯 HTTP 客户端，不拉起也不持有任何进程。",
       "repositoryUrl": "https://github.com/MicroHEROX/dsh-unsloth-hands",
       "defaultBranch": "main",
-      "latestCommit": "011eee44d1768f534e11c77dff5336594b307be3",
-      "sourceUpdatedAt": "2026-08-18T03:31:41.000Z",
+      "latestCommit": "d86ff2e33344b7199f64c1ee80371e3202deb4f4",
+      "sourceUpdatedAt": "2026-08-21T09:54:14.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11626,8 +11606,8 @@
       "description": "秘塔AI搜索 providers for ctx.web：web_search 返回网页摘要，web_fetch 读取网页全文 markdown，多范围搜索（网页/文库/论文/图片/视频/播客）。",
       "repositoryUrl": "https://github.com/TZHR-invest/dsh-plugins",
       "defaultBranch": "main",
-      "latestCommit": "0fb47a496149d3d248108dc74897ad8f44d87410",
-      "sourceUpdatedAt": "2026-08-17T18:37:30.000Z",
+      "latestCommit": "f4b562a0d602a8b73c304e1a69691dc290acfcdb",
+      "sourceUpdatedAt": "2026-08-30T21:57:24.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12034,8 +12014,8 @@
       "description": "Web 客户端「写作」面板：项目分卷与统计、书库与全文检索、设定演化版本链 diff、线索 SVG 图谱，仅在写作预设会话显示。",
       "repositoryUrl": "https://github.com/x2802490130-prog/dsh-client-ui-writing",
       "defaultBranch": "main",
-      "latestCommit": "7bfce0e1bc4999afe84d806446a5600e5ee0b218",
-      "sourceUpdatedAt": "2026-08-16T17:17:54.000Z",
+      "latestCommit": "a7b759a110ee1cc4056e7726d31ccb0cb5fd577b",
+      "sourceUpdatedAt": "2026-08-25T04:26:07.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12054,8 +12034,8 @@
       "description": "写文引擎的 host 侧数据通道：把项目分卷、章节状态、书库、全文检索、演化条目与线索图谱以 Typert remote 暴露给客户端写作面板。",
       "repositoryUrl": "https://github.com/x2802490130-prog/dsh-writing-remote",
       "defaultBranch": "main",
-      "latestCommit": "445fbf732c90a043f02736df8b0051809e73ceb6",
-      "sourceUpdatedAt": "2026-08-16T17:17:51.000Z",
+      "latestCommit": "d92fc1060a848b8cc6054ce420f7fb84bdc96e8c",
+      "sourceUpdatedAt": "2026-08-25T04:26:04.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12135,8 +12115,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Inject rules when needed, without wasting context. DSH port of opencode-stream-rules.",
       "repositoryUrl": "https://github.com/jiesou/dsh-stream-rules",
       "defaultBranch": "main",
-      "latestCommit": "e0178c043c58e469fcf5abc595180c6f9df5aecc",
-      "sourceUpdatedAt": "2026-08-16T15:17:51.000Z",
+      "latestCommit": "c90e27c73e61a756de3bf5ebb2184b35b2a81711",
+      "sourceUpdatedAt": "2026-08-21T01:45:24.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12175,8 +12155,8 @@
       "description": "每小时检查 npm 上已安装插件的新版本，并询问升级其中哪些。",
       "repositoryUrl": "https://github.com/stuarthu/dsh-update-notifier",
       "defaultBranch": "main",
-      "latestCommit": "5f49ccbb97cf28d6fc3f2d70908168648631923c",
-      "sourceUpdatedAt": "2026-08-16T14:46:57.000Z",
+      "latestCommit": "cf32806aa995ea694f535348478f16fb87220276",
+      "sourceUpdatedAt": "2026-08-22T07:51:48.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12295,8 +12275,8 @@
       "description": "对话栏左侧常驻大纲：按轮次列出提问与最后回复，关键词过滤与一键跳转，轻便/全面两种历史模式，按住 Ctrl/Shift 单击可跳到轨迹视图同一位置。",
       "repositoryUrl": "https://github.com/liliuCourier/dsh-chat-outline",
       "defaultBranch": "main",
-      "latestCommit": "be56f36e4d51b7da3a618dbe5abc47c010a444ed",
-      "sourceUpdatedAt": "2026-08-16T13:45:35.000Z",
+      "latestCommit": "8596bc4e68d92c30f01648692f3aeb4d61e173a3",
+      "sourceUpdatedAt": "2026-08-20T04:34:39.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12336,8 +12316,8 @@
       "description": "基于 gh CLI 的 GitHub 搜索/发现/审计技能包（SKILL.md 打包）：仓库搜索、多轴探索、趋势、仓库概览、相似项目、代码搜索、issue/PR 搜索与组织审计；以 dsh bundle 形式安装（并已发布 npm）。",
       "repositoryUrl": "https://github.com/Fectivnfy112357/github-explore",
       "defaultBranch": "main",
-      "latestCommit": "5533f3b46fd1e03e270ea448f0bb050fdf57fed4",
-      "sourceUpdatedAt": "2026-08-16T13:03:12.000Z",
+      "latestCommit": "e362c8c43b663083d496357c21ec5fb996fd5359",
+      "sourceUpdatedAt": "2026-08-20T05:09:28.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12824,8 +12804,8 @@
       "description": "工作区跨设备备份、恢复与扩展更新，经 uagent-sync CLI 桥接执行。",
       "repositoryUrl": "https://github.com/severin-ye/uagent-sync",
       "defaultBranch": "master",
-      "latestCommit": "774db37eac1ad56279ebc7c841557cde1caaa519",
-      "sourceUpdatedAt": "2026-08-16T04:49:49.000Z",
+      "latestCommit": "1935d295270db817a56dcd9c608aa2cddf9077cf",
+      "sourceUpdatedAt": "2026-08-25T08:25:23.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12969,8 +12949,8 @@
       "description": "为 DSH Web 添加成就引擎、图鉴、提示、奖杯与进度持久化。",
       "repositoryUrl": "https://github.com/WJNCT55555/dsh-achievements",
       "defaultBranch": "main",
-      "latestCommit": "ecd4b8f9607d1f42103b7342626d2fd4edd46915",
-      "sourceUpdatedAt": "2026-08-16T01:47:19.000Z",
+      "latestCommit": "ce6ceb3f3231648565cadcd598edbe50e41eda26",
+      "sourceUpdatedAt": "2026-08-16T12:35:54.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13382,8 +13362,8 @@
       "description": "钉钉 IM 双向 channel（Stream 模式）：每条单聊/群聊驱动一个 agent，思考与回复通过 WebSocket 长连接回流消息，免公网回调。",
       "repositoryUrl": "https://github.com/ttmouse/dsh-dingtalk-channel",
       "defaultBranch": "main",
-      "latestCommit": "49a9152340a167fb9cd47a48f28d451a6368391f",
-      "sourceUpdatedAt": "2026-08-15T14:17:54.000Z",
+      "latestCommit": "ee4a098c6086241bca8a4f393d122f377f9f04a6",
+      "sourceUpdatedAt": "2026-08-20T03:13:42.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13524,8 +13504,8 @@
       "description": "DeepSeek Prism for DeepSeek Harness (DSH): 纯文本模型图片附件降级 + 技能运行时注册 + 设置界面（视觉 API 密钥掩码输入与模型选择）。Image-attachment degradation, runtime skill registration, and settings UI (masked vision API key + model selection).",
       "repositoryUrl": "https://github.com/YOGEMOW/DeepSeek_Prism",
       "defaultBranch": "master",
-      "latestCommit": "49bfc89101c6071af5f5c02f49459411b0e55f5a",
-      "sourceUpdatedAt": "2026-08-15T10:42:32.000Z",
+      "latestCommit": "18f3b80fa54753b7c4596d4e6e37bf5d36ffd8ae",
+      "sourceUpdatedAt": "2026-08-22T05:02:55.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13565,8 +13545,8 @@
       "description": "基于 uisfx 的语义化 UI 音效：任务开始/成功/失败、不同按钮情景 cue，设置页即时试听，12 种音色包，Host 持久化，并提供 `ctx.uisfx` 服务给其他插件。",
       "repositoryUrl": "https://github.com/XanthanL/dsh-plugin-uisfx",
       "defaultBranch": "main",
-      "latestCommit": "0fa6ad20857a3c2fa41df45d3fba77fd5509ee0d",
-      "sourceUpdatedAt": "2026-08-15T09:30:15.000Z",
+      "latestCommit": "f020972c3291abcbd84b99c6355953866e045b5c",
+      "sourceUpdatedAt": "2026-08-29T12:25:41.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13958,8 +13938,8 @@
       "description": "为 DSH 提供 Blender 三维建模、重建、渲染、验证和导出工具及配套技能。",
       "repositoryUrl": "https://github.com/CheshireJCat/blender",
       "defaultBranch": "main",
-      "latestCommit": "3d641dae1c84248f213095f322f6beace0631409",
-      "sourceUpdatedAt": "2026-08-14T11:50:52.000Z",
+      "latestCommit": "2e240ed7d939d6b7035075d509fd1d9fb6d57526",
+      "sourceUpdatedAt": "2026-08-20T08:06:10.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14000,8 +13980,8 @@
       "description": "为 DSH 提供移动端与远程访问能力。英文原始说明：Mobile adaptation for the DeepSeek Harness Web GUI: single-column layout, sidebar drawer, compact header/composer, fullscreen settings, trajectory floating details, stats pill panel",
       "repositoryUrl": "https://github.com/Hotsteel2901/dsh-client-ui-mobile-adapt",
       "defaultBranch": "main",
-      "latestCommit": "0fa5276a36ddc57a9380aa6488145a2567c3433e",
-      "sourceUpdatedAt": "2026-08-14T11:34:55.000Z",
+      "latestCommit": "8390f651a086414eee3bf12bca75403c85c2a909",
+      "sourceUpdatedAt": "2026-08-28T09:09:49.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14021,8 +14001,8 @@
       "description": "为 DSH 提供模型提供商接入能力。英文原始说明：AWS Kiro (CodeWhisperer) adapter for the DeepSeek Harness LLM seam: Claude and open-weight models through one signed-in Kiro account",
       "repositoryUrl": "https://github.com/caopu16/dsh-llm-kiro",
       "defaultBranch": "main",
-      "latestCommit": "f3f71e75d03def9f6aa2f10ba54eef31ada597b2",
-      "sourceUpdatedAt": "2026-08-14T09:00:00.000Z",
+      "latestCommit": "94ca2c2e55d0d95612ba2613010b0fefaf3101f6",
+      "sourceUpdatedAt": "2026-08-27T02:19:06.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14164,8 +14144,8 @@
       "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：DeepSeek Harness Cordis tools for All in Flash, powered by All in Luna",
       "repositoryUrl": "https://github.com/zenx0x/allinluna",
       "defaultBranch": "main",
-      "latestCommit": "723088a7c0d7342f077ad675c6ea72d7e3996536",
-      "sourceUpdatedAt": "2026-08-14T01:37:23.000Z",
+      "latestCommit": "b471713089d8352c1c97e05fe3d25907a4164b1a",
+      "sourceUpdatedAt": "2026-09-01T10:47:52.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14605,6 +14585,83 @@
         "quantitative-trading",
         "react",
         "trading-terminal",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "anywhere-labs-dsh-desktop",
+      "name": "anywhere-labs/dsh-desktop",
+      "description": "为 DeepSeek Harness (DSH) 插件生态打造的现代化桌面端解决方案。万物皆「插件」，桌面本身也是「插件」。",
+      "repositoryUrl": "https://github.com/anywhere-labs/dsh-desktop",
+      "defaultBranch": "master",
+      "latestCommit": "6881298562ca9c9193a7101a452e87c492f27de7",
+      "sourceUpdatedAt": "2026-09-04T05:35:56.000Z",
+      "discoveredAt": "2026-09-04T05:32:32.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "cordis",
+        "cordis-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "desktop",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: dsh-plugin-desktop-beta, dsh-plugin-desktop"
+    },
+    {
+      "id": "jaywedgeworth22-botfleet",
+      "name": "jaywedgeworth22/BotFleet",
+      "description": "Pick any platform for each bot. Use your own subscriptions and APIs. Friendly fork of OpenMausBot with iOS companion, iMessage relay, fallbacks, and more — all BotFleet add-ons are in testing.",
+      "repositoryUrl": "https://github.com/jaywedgeworth22/BotFleet",
+      "defaultBranch": "main",
+      "latestCommit": "5c4b4304936b6bd56ad7d6ceb28de353d94cd18b",
+      "sourceUpdatedAt": "2026-09-04T05:35:37.000Z",
+      "discoveredAt": "2026-09-04T05:32:32.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "ai-framework",
+        "antigravity-cli",
+        "bot-framework",
+        "claude-cli",
+        "codex-cli",
+        "coding-agents",
+        "cross-platform",
+        "deepseek-harness",
+        "grok-bot",
+        "kimi-cli",
+        "openmausbot",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "sandeep-presents-deepseek-harness",
+      "name": "Sandeep-Presents/deepseek-harness",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Sandeep-Presents/deepseek-harness",
+      "defaultBranch": "master",
+      "latestCommit": "76fda729799fe9b3848dbe2c211d4b231032b81e",
+      "sourceUpdatedAt": "2026-09-03T06:02:58.000Z",
+      "discoveredAt": "2026-09-04T05:32:32.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
         "automatic-radar"
       ],
       "status": "rejected",
