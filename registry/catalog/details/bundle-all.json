@@ -1,49 +1,45 @@
 {
-  "id": "dsh-ears",
-  "name": "语音输入与朗读（DSH Ears）",
-  "packageName": "dsh-ears",
-  "description": "为 DSH 提供语音输入与朗读能力。英文原始说明：Voice input plugin for DeepSeek Harness",
+  "id": "bundle-all",
+  "name": "实验功能插件（Bundle All）",
+  "packageName": "@dsh-test/bundle-all",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：DSH harness (0.1+) plugin test bundle: proves install scripts, dsh.bundle patch-layer reconciliation, self-mounting out-of-tree Cordis plugins, and agent-preset authoring inside the container.",
   "searchTerms": [
-    "语音输入与朗读",
-    "DSH Ears",
-    "dsh-ears",
-    "语音",
-    "录音",
-    "转写",
-    "朗读",
-    "新锐实验",
+    "实验功能插件",
+    "Bundle All",
+    "bundle-all",
+    "@dsh-test/bundle-all",
     "实验功能",
     "新功能",
-    "dsh",
-    "ears"
+    "bundle",
+    "all"
   ],
-  "repositoryUrl": "https://github.com/WizisCool/dsh-ears",
-  "defaultBranch": "master",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "repositoryUrl": "https://github.com/AndreasSeidl/dsh-docker",
+  "defaultBranch": "main",
+  "manifestPath": "test-plugins/dsh-test-bundle/package.json",
+  "installPath": "test-plugins/dsh-test-bundle",
   "updatePolicy": "external-only",
-  "commit": "8696a78d4bbb545d1bb1e12e4ce8f884ea118654",
-  "version": "0.3.0",
+  "commit": "61f5e03a92bed56e2c58773f7d25158ce64b8e5b",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T12:17:51.000Z",
+    "updatedAt": "2026-09-04T12:41:54.000Z",
     "observedAt": "2026-09-04T12:39:30.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-04T12:39:30.000Z",
-      "evidenceUrl": "https://github.com/WizisCool/dsh-ears/commit/8696a78d4bbb545d1bb1e12e4ce8f884ea118654",
+      "evidenceUrl": "https://github.com/AndreasSeidl/dsh-docker/commit/61f5e03a92bed56e2c58773f7d25158ce64b8e5b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +69,17 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-ears"
+    "tool-bash",
+    "dsh-test-sentinel"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; install lifecycle scripts are present: postinstall; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.2-rc.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -150,11 +147,9 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=20",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
@@ -169,15 +164,13 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@fugood/whisper.node",
-      "@thesvg/react",
-      "zod"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "postinstall"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

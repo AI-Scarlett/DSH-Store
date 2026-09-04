@@ -1,49 +1,48 @@
 {
-  "id": "dsh-ears",
-  "name": "语音输入与朗读（DSH Ears）",
-  "packageName": "dsh-ears",
-  "description": "为 DSH 提供语音输入与朗读能力。英文原始说明：Voice input plugin for DeepSeek Harness",
+  "id": "dsh-taskfold",
+  "name": "任务与工作流自动化（DSH Taskfold）",
+  "packageName": "dsh-taskfold",
+  "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Keeps long coding-agent sessions lean: wrap work in named tasks and, when one is done, fold its whole span into a short titled summary. The conversation stays readable, context costs stay low, and every fold's original content can be read back on demand. For DeepSeek Harness.",
   "searchTerms": [
-    "语音输入与朗读",
-    "DSH Ears",
-    "dsh-ears",
-    "语音",
-    "录音",
-    "转写",
-    "朗读",
-    "新锐实验",
+    "任务与工作流自动化",
+    "DSH Taskfold",
+    "dsh-taskfold",
+    "任务",
+    "工作流",
+    "自动化",
+    "定时",
     "实验功能",
     "新功能",
     "dsh",
-    "ears"
+    "taskfold"
   ],
-  "repositoryUrl": "https://github.com/WizisCool/dsh-ears",
+  "repositoryUrl": "https://github.com/yindf/taskfold",
   "defaultBranch": "master",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8696a78d4bbb545d1bb1e12e4ce8f884ea118654",
-  "version": "0.3.0",
+  "commit": "a0c87b4fba58c69a5d835b8607a25caa4dc8b637",
+  "version": "0.17.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T12:17:51.000Z",
+    "updatedAt": "2026-09-04T12:40:43.000Z",
     "observedAt": "2026-09-04T12:39:30.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-04T12:39:30.000Z",
-      "evidenceUrl": "https://github.com/WizisCool/dsh-ears/commit/8696a78d4bbb545d1bb1e12e4ce8f884ea118654",
+      "evidenceUrl": "https://github.com/yindf/taskfold/commit/a0c87b4fba58c69a5d835b8607a25caa4dc8b637",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +72,17 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-ears"
+    "cmpct-region",
+    "cmpct-stats"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": ">=0.1.2-rc.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -150,11 +150,9 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
@@ -169,11 +167,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@fugood/whisper.node",
-      "@thesvg/react",
-      "zod"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
