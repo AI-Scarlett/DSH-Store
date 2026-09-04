@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "69ad6d381f4ed43b2b6f9c8f85a156db1d51a07f",
-  "version": "1.5.2",
+  "commit": "f038b02ac12432592630a81bc0e1c9e0b4c9a6e2",
+  "version": "1.6.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T23:48:22.000Z",
-    "observedAt": "2026-09-04T04:12:09.000Z",
+    "updatedAt": "2026-09-04T06:09:28.000Z",
+    "observedAt": "2026-09-04T11:47:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-04T04:12:09.000Z",
-      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/69ad6d381f4ed43b2b6f9c8f85a156db1d51a07f",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-04T11:47:15.000Z",
+      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/f038b02ac12432592630a81bc0e1c9e0b4c9a6e2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -83,7 +83,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.1-rc.2",
+    "dsh": "^0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
