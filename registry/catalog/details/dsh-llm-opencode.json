@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f4d1176e3205b5d3750916c652b49fb399aafb2b",
+  "commit": "c8316a735b0a206240fc85fa84a57643e89855af",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-29T13:48:45.000Z",
-    "observedAt": "2026-09-04T05:32:32.000Z",
+    "updatedAt": "2026-09-04T17:24:02.000Z",
+    "observedAt": "2026-09-04T18:56:23.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T05:32:32.000Z",
-      "evidenceUrl": "https://github.com/bobowsh/dsh-llm-opencode/commit/f4d1176e3205b5d3750916c652b49fb399aafb2b",
+      "checkedAt": "2026-09-04T18:56:23.000Z",
+      "evidenceUrl": "https://github.com/bobowsh/dsh-llm-opencode/commit/c8316a735b0a206240fc85fa84a57643e89855af",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
