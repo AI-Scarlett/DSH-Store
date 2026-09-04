@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
 import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
+import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
@@ -49,6 +50,13 @@ test('self-manager generated Catalog details do not consume the executable sourc
   assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog-index.json'), false)
   assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, id: 'another-plugin' }, 'registry/catalog/details/example.json'), false)
   assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog/details/example.json'), false)
+})
+
+test('author target resolution falls back only for a deterministically unavailable repository', async () => {
+  const missing = async () => { throw Object.assign(new Error('missing'), { status: 404 }) }
+  assert.deepEqual(await resolveTargets(missing, 'example-owner/missing-plugin'), ['example-owner'])
+  const transient = async () => { throw Object.assign(new Error('temporary'), { status: 503 }) }
+  await assert.rejects(resolveTargets(transient, 'example-owner/plugin'), /temporary/)
 })
 
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
