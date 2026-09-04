@@ -148,6 +148,9 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
   对应 `pages.yml` Run 成功；无 Catalog 变更时，Pages 仍按三小时窗口第 25 分钟兜底重建；
 - 两台服务器的 systemd timer 仍按三小时窗口第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
 - `catalog-automation.yml` 直接调用作者通知与所有者报告可复用工作流，所有输入和 Artifact 均绑定当前 Run ID 与 Attempt；
+- 作者通知每轮仍最多新建 10 个外部整改项；已有修复单的更新、源码追踪基线和关闭动作共享
+  500 条有界计划上限，计划生成、维护者解析和实际写入使用同一常量，避免 Catalog 扩大后因旧的
+  100 条解析器上限让成功的自动更新整轮标红；
 - `catalog-run-report.yml` 立即发布一次按 Catalog Run ID 去重的所有者 `@mention` 报告，不依赖 `workflow_run`；
 - `marketplace-watchdog.yml` 仍按三小时窗口第 55 分钟核验 Catalog 以及 GitHub、Pages、国际站、国内站；补跑时等待精确的新 Run 完成并直接补调用其报告；
 - 上一轮缺失、失败、超过九小时或公共目录不一致时，自动重跑 Catalog 或 Pages；
