@@ -24,7 +24,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "30f83afe1f3abc2a643e17ea9fbd6820d2dcee22",
+  "commit": "c90e0bf9698324e0792b42fa544f5c782e28a737",
   "version": "0.7.33",
   "categories": [
     "experimental"
@@ -32,20 +32,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T19:59:20.000Z",
-    "observedAt": "2026-09-03T04:06:05.000Z",
+    "updatedAt": "2026-09-03T08:08:37.000Z",
+    "observedAt": "2026-09-04T05:32:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-03T04:06:05.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/30f83afe1f3abc2a643e17ea9fbd6820d2dcee22",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-04T05:32:32.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/c90e0bf9698324e0792b42fa544f5c782e28a737",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -152,7 +152,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"

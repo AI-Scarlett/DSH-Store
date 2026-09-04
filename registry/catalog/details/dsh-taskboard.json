@@ -20,7 +20,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "283840ed82c37c792298877176c4871f64370631",
+  "commit": "e72fa7c62063515e00e9f08bc37cdad4af8b5bd1",
   "version": "0.6.4",
   "categories": [
     "workflow"
@@ -28,20 +28,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T13:42:57.000Z",
-    "observedAt": "2026-09-02T18:24:02.000Z",
+    "updatedAt": "2026-09-04T00:40:57.000Z",
+    "observedAt": "2026-09-04T05:32:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-02T18:24:02.000Z",
-      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/283840ed82c37c792298877176c4871f64370631",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-04T05:32:32.000Z",
+      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/e72fa7c62063515e00e9f08bc37cdad4af8b5bd1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -90,7 +90,7 @@
       "0.1.2-alpha.3": "compatible",
       "0.1.2-alpha.4": "compatible",
       "0.1.2-alpha.5": "compatible",
-      "0.1.2-rc.1": "unknown"
+      "0.1.2-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {

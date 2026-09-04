@@ -1,51 +1,53 @@
 {
-  "id": "dsh-mcp-connector",
-  "name": "插件市场与管理（DSH MCP Connector）",
-  "packageName": "dsh-mcp-connector",
-  "description": "为 DSH 提供插件市场与管理能力。英文原始说明：General-purpose MCP connector, connection manager, plugin extension, and integration marketplace for DeepSeek Harness, initiated and maintained by Qichacha/QCC.",
+  "id": "dsh-knowledge",
+  "name": "会话管理（DSH Knowledge）",
+  "packageName": "dsh-knowledge",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Local knowledge base for DeepSeek Harness: index markdown / text / code / web pages into a zero-dependency SQLite FTS5 store, retrieve snippets with sources, distill session experiences — tools kb_add, kb_add_url, kb_search, kb_stats, kb_list, kb_remember, kb_ingest_session, kb_experiences + interactive Web panel (kbquery fence).",
   "searchTerms": [
-    "插件市场与管理",
-    "DSH MCP Connector",
-    "dsh-mcp-connector",
-    "插件市场",
-    "商城",
-    "插件管理",
-    "插件发现",
-    "工具能力",
-    "工具",
-    "能力",
+    "会话管理",
+    "DSH Knowledge",
+    "dsh-knowledge",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "搜索",
+    "联网",
+    "浏览器",
+    "记忆",
+    "知识库",
+    "召回",
     "dsh",
-    "mcp",
-    "connector"
+    "knowledge"
   ],
-  "repositoryUrl": "https://github.com/duhu2000/dsh-mcp-connector",
+  "repositoryUrl": "https://github.com/dhb861832993-star/dsh-knowledge",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "312becc78bb65809927e26e063ea255bd1aef2b3",
-  "version": "0.2.32",
+  "commit": "0b9a976c43c91650b005b3450d2627eb5c7a7f78",
+  "version": "0.2.2",
   "categories": [
-    "marketplace",
-    "tools"
+    "search",
+    "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T02:40:26.000Z",
+    "updatedAt": "2026-09-04T05:35:29.000Z",
     "observedAt": "2026-09-04T05:32:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-04T05:32:32.000Z",
-      "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/312becc78bb65809927e26e063ea255bd1aef2b3",
+      "evidenceUrl": "https://github.com/dhb861832993-star/dsh-knowledge/commit/0b9a976c43c91650b005b3450d2627eb5c7a7f78",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +57,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +67,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,14 +77,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "mcp-connector"
+    "dsh-knowledge"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -152,7 +154,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
