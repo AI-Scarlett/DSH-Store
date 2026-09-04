@@ -114,9 +114,14 @@ async function fetchJson(url, { authenticated = false } = {}) {
       const response = await fetch(url, { headers, signal: AbortSignal.timeout(20_000) })
       if (response.ok) return response.json()
       lastError = new Error(`${url} returned HTTP ${response.status}`)
+      lastError.status = response.status
+      lastError.rateLimited = response.status === 429
+        || (response.status === 403 && response.headers.get('x-ratelimit-remaining') === '0')
+      if (lastError.rateLimited && response.status === 403) throw lastError
       if (![429, 500, 502, 503, 504].includes(response.status)) throw lastError
     } catch (error) {
       lastError = error
+      if (error.rateLimited && error.status === 403) throw error
     }
     if (attempt < 4) await new Promise(resolvePromise => setTimeout(resolvePromise, attempt * 750))
   }
@@ -136,7 +141,9 @@ async function mapLimit(items, limit, worker) {
   return results
 }
 
+let githubMetadataComplete = false
 if (enrichGitHub) {
+  let githubMetadataRateLimited = false
   const repositoryRequests = new Map()
   const repositoryMetadata = entry => {
     const { owner, repository } = repositoryParts(entry.repositoryUrl)
@@ -148,13 +155,19 @@ if (enrichGitHub) {
   }
 
   await mapLimit(snapshot.entries.filter(entry => entry.status === 'approved'), 5, async entry => {
-    const [repository, manifest] = await Promise.all([
-      repositoryMetadata(entry),
+    const [repositoryResult, manifest] = await Promise.all([
+      repositoryMetadata(entry).then(repository => ({ repository })).catch(error => ({ error })),
       fetchJson(manifestUrl(entry)),
     ])
     if (manifest.version !== entry.version) {
       throw new Error(`${entry.id} catalog version ${entry.version} does not match pinned manifest ${manifest.version}`)
     }
+    if (repositoryResult.error) {
+      if (!repositoryResult.error.rateLimited) throw repositoryResult.error
+      githubMetadataRateLimited = true
+      return
+    }
+    const { repository } = repositoryResult
     entry.github = {
       stars: repository.stargazers_count,
       forks: repository.forks_count,
@@ -168,6 +181,10 @@ if (enrichGitHub) {
       manifestVersion: manifest.version,
     }
   })
+  if (githubMetadataRateLimited) {
+    process.stderr.write('GitHub repository metadata is rate-limited; publishing the fixed-Commit Catalog without mutable repository counters.\n')
+  }
+  githubMetadataComplete = !githubMetadataRateLimited
 }
 
 // A scheduled build may run even when neither the catalog nor its GitHub
@@ -186,7 +203,7 @@ snapshot.generated = {
   sourceCommit: sourceSha,
   catalogAuthority: 'registry/catalog.json',
   catalogIndexAuthority: 'registry/catalog-index.json',
-  githubEnriched: enrichGitHub,
+  githubEnriched: enrichGitHub && githubMetadataComplete,
 }
 
 const manager = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
@@ -520,7 +537,7 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,
   manager: { version: manager.version, commit: manager.commit, license: manager.details?.license, status: manager.status },
-  githubEnriched: enrichGitHub,
+  githubEnriched: snapshot.generated.githubEnriched,
 }, null, 2) + '\n')
 await writeFile(resolve(outputRoot, 'index.html'), `<!doctype html>\n<meta charset="utf-8">\n<meta http-equiv="refresh" content="0; url=marketplace/">\n<title>DSH STORE</title>\n<a href="marketplace/">打开 DSH STORE</a>\n`)
 await writeFile(resolve(outputRoot, '.nojekyll'), '')
@@ -554,4 +571,4 @@ await writeFile(resolve(outputRoot, 'release-manifest.json'), JSON.stringify({
   files: releaseFiles,
 }, null, 2) + '\n')
 
-console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} origin=${siteOrigin} enriched=${enrichGitHub}`)
+console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} origin=${siteOrigin} enriched=${snapshot.generated.githubEnriched}`)
