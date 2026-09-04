@@ -1,50 +1,47 @@
 {
-  "id": "dsh-service",
-  "name": "安全防护工具（DSH Service）",
-  "packageName": "@gehennawu/dsh-service",
-  "description": "DSH Web 自托管运维面板：安全重启、健康监控、备份和 Linux 权限维护。",
+  "id": "internet",
+  "name": "会话管理（Internet）",
+  "packageName": "@tsuuanmi/internet",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Browser-backed ChatGPT Web and Gemini Web tools for DeepSeek Harness: internet_chat, internet_team, and portable-account internet_browser login.",
   "searchTerms": [
-    "安全防护工具",
-    "DSH Service",
-    "dsh-service",
-    "@gehennawu/dsh-service",
-    "安全",
-    "审计",
-    "验证",
-    "防护",
-    "新锐实验",
+    "会话管理",
+    "Internet",
+    "internet",
+    "@tsuuanmi/internet",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
     "实验功能",
-    "新功能",
-    "dsh",
-    "service"
+    "新功能"
   ],
-  "repositoryUrl": "https://github.com/gehennawu/dsh-service",
+  "repositoryUrl": "https://github.com/tsuuanmi/internet",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d8a8b5f30db1155beb1a734b95a64d3ecd619cdd",
-  "version": "1.4.8",
+  "commit": "effb531ff13169bbb6135a91801db64571410176",
+  "version": "0.0.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T03:31:53.000Z",
+    "updatedAt": "2026-09-04T04:12:41.000Z",
     "observedAt": "2026-09-04T04:12:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-04T04:12:09.000Z",
-      "evidenceUrl": "https://github.com/gehennawu/dsh-service/commit/d8a8b5f30db1155beb1a734b95a64d3ecd619cdd",
+      "evidenceUrl": "https://github.com/tsuuanmi/internet/commit/effb531ff13169bbb6135a91801db64571410176",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +71,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-service"
+    "internet"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 578566 total bytes (maximum 2097152); largest file 354802 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; package contains symbolic links; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.0-rc.7",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -151,7 +148,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22",
+    "node": ">=22.19.0",
     "systems": [],
     "profiles": [
       "web"
@@ -171,7 +168,11 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/schemastery"
+      "@novnc/novnc",
+      "patchright-core",
+      "turndown",
+      "turndown-plugin-gfm",
+      "ws"
     ],
     "reviewStatus": "automated-scan"
   },

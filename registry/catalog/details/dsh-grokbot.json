@@ -1,50 +1,44 @@
 {
-  "id": "dsh-service",
-  "name": "安全防护工具（DSH Service）",
-  "packageName": "@gehennawu/dsh-service",
-  "description": "DSH Web 自托管运维面板：安全重启、健康监控、备份和 Linux 权限维护。",
+  "id": "dsh-grokbot",
+  "name": "实验功能插件（DSH Grokbot）",
+  "packageName": "dsh-grokbot",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Always-on named agent crew for DeepSeek Harness — replicate the Grok Bot mode as a pure out-of-tree plugin",
   "searchTerms": [
-    "安全防护工具",
-    "DSH Service",
-    "dsh-service",
-    "@gehennawu/dsh-service",
-    "安全",
-    "审计",
-    "验证",
-    "防护",
-    "新锐实验",
+    "实验功能插件",
+    "DSH Grokbot",
+    "dsh-grokbot",
     "实验功能",
     "新功能",
     "dsh",
-    "service"
+    "grokbot"
   ],
-  "repositoryUrl": "https://github.com/gehennawu/dsh-service",
+  "repositoryUrl": "https://github.com/nescafe2009/dsh-grokbot",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d8a8b5f30db1155beb1a734b95a64d3ecd619cdd",
-  "version": "1.4.8",
+  "commit": "e5da9e0969a1a2dcc54339d8abc49fda633b6825",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T03:31:53.000Z",
+    "updatedAt": "2026-09-04T04:13:41.000Z",
     "observedAt": "2026-09-04T04:12:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-04T04:12:09.000Z",
-      "evidenceUrl": "https://github.com/gehennawu/dsh-service/commit/d8a8b5f30db1155beb1a734b95a64d3ecd619cdd",
+      "evidenceUrl": "https://github.com/nescafe2009/dsh-grokbot/commit/e5da9e0969a1a2dcc54339d8abc49fda633b6825",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +48,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +58,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +68,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-service"
+    "grokbot"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 578566 total bytes (maximum 2097152); largest file 354802 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.0-rc.6",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -170,9 +164,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
