@@ -1,50 +1,49 @@
 {
-  "id": "dsh-vision-bench",
-  "name": "图像视觉工具（DSH Vision Bench）",
-  "packageName": "dsh-vision-bench",
-  "description": "Vision 模式：会话区调试/上位机点表（倍率/单位/告警上下限、CSV 导入导出、可视化组件），Keil 编译与日志、产物哈希、OpenOCD 烧录确认、串口报文订阅，Modbus 读点和受控写点（Agent 写点需界面批准），人工操作请求卡、共享任务与时间线，并安装「Vision模式」Agent 预设。",
+  "id": "dsh-remote-auth",
+  "name": "移动端与远程访问（DSH Remote Auth）",
+  "packageName": "dsh-remote-auth",
+  "description": "DSH remote-access authorization page: one click or QR scan mints the current process's browser-session URL (no more digging tokens out of server logs). Optional authority/subnet fence and 8-char PIN gate. · DSH 远程授权页：点击链接或扫码即可铸造当前进程的浏览器会话，带 Host/网段围栏与 PIN 门禁。",
   "searchTerms": [
-    "图像视觉工具",
-    "DSH Vision Bench",
-    "dsh-vision-bench",
-    "视觉",
-    "识图",
-    "图片",
-    "多模态",
-    "新锐实验",
+    "移动端与远程访问",
+    "DSH Remote Auth",
+    "dsh-remote-auth",
+    "移动端",
+    "手机",
+    "远程访问",
+    "PWA",
     "实验功能",
     "新功能",
     "dsh",
-    "vision",
-    "bench"
+    "remote",
+    "auth"
   ],
-  "repositoryUrl": "https://github.com/xingyingyuzhui/dsh-vision-bench",
+  "repositoryUrl": "https://github.com/wentao75/dsh-remote-auth",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6633a9a48e544c18f932140b72f35492037fe5c2",
-  "version": "0.27.0",
+  "commit": "238f8d1d5e0afa4e3fc639630b324d0f25b50301",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-05T10:49:47.000Z",
+    "updatedAt": "2026-09-05T11:50:01.000Z",
     "observedAt": "2026-09-05T11:47:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-05T11:47:14.000Z",
-      "evidenceUrl": "https://github.com/xingyingyuzhui/dsh-vision-bench/commit/6633a9a48e544c18f932140b72f35492037fe5c2",
+      "evidenceUrl": "https://github.com/wentao75/dsh-remote-auth/commit/238f8d1d5e0afa4e3fc639630b324d0f25b50301",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,14 +73,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-vision-bench"
+    "dsh-remote-auth"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1668859 total bytes (maximum 2097152); largest file 553093 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -151,11 +150,9 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": ">=22",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
@@ -170,15 +167,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@tanstack/react-virtual",
-      "@tanstack/virtual-core",
-      "modbus-serial",
-      "serialport",
-      "uplot",
-      "write-file-atomic",
-      "yaml"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
