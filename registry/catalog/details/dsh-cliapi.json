@@ -25,8 +25,8 @@
   "manifestPath": "plugin/package.json",
   "installPath": "plugin",
   "updatePolicy": "user-reviewed",
-  "commit": "2db132bb430c5304627e5eb5681febecfc2d81ab",
-  "version": "0.5.1",
+  "commit": "f88c9edbffe235bc1f9ac954f94dc326de1e1641",
+  "version": "0.5.2",
   "categories": [
     "models",
     "routing"
@@ -34,57 +34,65 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-25T12:49:19.000Z",
-    "observedAt": "2026-08-25T12:50:32.000Z",
+    "updatedAt": "2026-09-05T00:49:20.000Z",
+    "observedAt": "2026-09-05T00:52:16.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "github-fixed-commit-manifest-and-bundle-review-v1",
-      "checkedAt": "2026-08-25T12:50:32.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/2db132bb430c5304627e5eb5681febecfc2d81ab",
+      "method": "github-fixed-commit-release-readback-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/f88c9edbffe235bc1f9ac954f94dc326de1e1641",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Merged fixed Commit declares the DSH Bundle and explicit release compatibility matrix."
+      "summary": "公开固定合并 Commit 的 0.5.2 manifest、Bundle Patch、MIT 许可证与发行入口已回读。"
     },
     "installability": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
-      "dshRelease": null,
-      "systems": [],
-      "profiles": [],
-      "summary": "No Catalog automation install was executed; local source tests do not prove DSH installation."
+      "status": "partial",
+      "method": "disposable-dsh-latest-three-profile-cli-install-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/releases/tag/v0.5.2",
+      "dshRelease": "0.1.2-rc.1",
+      "systems": [
+        "macOS"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "部分验证：0.5.2 在 DSH alpha.4、alpha.5、rc.1 的一次性 Profile 中通过安装、dump-config、冷启动、卸载和子进程关闭清理；使用无凭据隔离代理夹具。"
     },
     "runtime": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
-      "dshRelease": null,
-      "systems": [],
-      "profiles": [],
-      "summary": "No disposable DSH Profile runtime acceptance was executed."
+      "status": "partial",
+      "method": "dsh-latest-three-cold-start-runtime-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/f88c9edbffe235bc1f9ac954f94dc326de1e1641",
+      "dshRelease": "0.1.2-rc.1",
+      "systems": [
+        "macOS"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "部分验证：0.5.2 在 DSH alpha.4、alpha.5、rc.1 的一次性 Profile 中通过安装、dump-config、冷启动、卸载和子进程关闭清理；使用无凭据隔离代理夹具。 真实用户 Profile 与真实账号/设备仍是独立验收层。"
     },
     "securityReview": {
       "status": "partial",
-      "method": "fixed-source-static-security-scan-v1",
-      "checkedAt": "2026-08-25T12:50:32.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/2db132bb430c5304627e5eb5681febecfc2d81ab",
+      "method": "fixed-source-policy-and-contract-scan-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/f88c9edbffe235bc1f9ac954f94dc326de1e1641",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Deterministic scan found no critical secret, exfiltration, destructive, SSH, or mining findings; capability warnings and an incomplete binary-file scan remain. This is not an independent security audit."
+      "summary": "部分验证：固定源与 Bundle/Client 边界检查通过，未修改 DSH 核心或官方包；真实 OAuth/API 账号与独立安全审计不在本次范围。"
     }
   },
   "entryIds": [
     "dsh-cliapi"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.0-rc.8 <0.2.0",
     "dshReleases": {
@@ -93,9 +101,9 @@
       "0.1.1-rc.1": "compatible",
       "0.1.1-rc.2": "compatible",
       "0.1.2-alpha.3": "unknown",
-      "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown"
+      "0.1.2-alpha.4": "compatible",
+      "0.1.2-alpha.5": "compatible",
+      "0.1.2-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -135,21 +143,21 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       }
     },
