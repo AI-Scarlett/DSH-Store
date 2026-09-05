@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1e3b7060799b5d9104e6eb48ff4523de74dc7825",
+  "commit": "606daa8a4a28c9b0aded910aad0cc6c7d0f49116",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T11:48:53.000Z",
-    "observedAt": "2026-09-04T11:47:15.000Z",
+    "updatedAt": "2026-09-04T20:06:30.000Z",
+    "observedAt": "2026-09-05T04:08:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-04T11:47:15.000Z",
-      "evidenceUrl": "https://github.com/aayan-cloud/dsh-reelsmaker/commit/1e3b7060799b5d9104e6eb48ff4523de74dc7825",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-05T04:08:10.000Z",
+      "evidenceUrl": "https://github.com/aayan-cloud/dsh-reelsmaker/commit/606daa8a4a28c9b0aded910aad0cc6c7d0f49116",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
@@ -149,7 +149,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
     "profiles": []
   },

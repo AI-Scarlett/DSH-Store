@@ -22,28 +22,28 @@
   "manifestPath": "dsh-plugins/ccteam-ui/package.json",
   "installPath": "dsh-plugins/ccteam-ui",
   "updatePolicy": "external-only",
-  "commit": "9e5b7c31073e52b4ecd809e13274c6ff4643fddd",
-  "version": "0.10.5",
+  "commit": "3ed05d4ab8b31299508ce81c819f77618c0adf00",
+  "version": "0.11.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T18:21:32.000Z",
-    "observedAt": "2026-09-02T18:24:02.000Z",
+    "updatedAt": "2026-09-04T21:35:15.000Z",
+    "observedAt": "2026-09-05T04:08:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-02T18:24:02.000Z",
-      "evidenceUrl": "https://github.com/firstintent/ccteam/commit/9e5b7c31073e52b4ecd809e13274c6ff4643fddd",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-05T04:08:10.000Z",
+      "evidenceUrl": "https://github.com/firstintent/ccteam/commit/3ed05d4ab8b31299508ce81c819f77618c0adf00",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
