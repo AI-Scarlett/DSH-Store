@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "529fcecc593404e84aa886f00978413ea1fc3613",
+  "commit": "0fceb8696e16fb174ea018a5e586089c665e0e35",
   "version": "0.6.5",
   "categories": [
     "tools"
@@ -31,20 +31,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T04:55:03.000Z",
-    "observedAt": "2026-09-04T18:56:23.000Z",
+    "updatedAt": "2026-09-05T15:06:45.000Z",
+    "observedAt": "2026-09-05T18:05:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T18:56:23.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind/commit/529fcecc593404e84aa886f00978413ea1fc3613",
+      "checkedAt": "2026-09-05T18:05:51.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind/commit/0fceb8696e16fb174ea018a5e586089c665e0e35",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -83,7 +83,7 @@
   "status": "unlisted",
   "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.2-rc.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
