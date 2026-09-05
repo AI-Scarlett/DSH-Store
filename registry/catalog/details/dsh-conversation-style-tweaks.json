@@ -1,50 +1,50 @@
 {
-  "id": "dsh-vision-bench",
-  "name": "图像视觉工具（DSH Vision Bench）",
-  "packageName": "dsh-vision-bench",
-  "description": "Vision 模式：会话区调试/上位机点表（倍率/单位/告警上下限、CSV 导入导出、可视化组件），Keil 编译与日志、产物哈希、OpenOCD 烧录确认、串口报文订阅，Modbus 读点和受控写点（Agent 写点需界面批准），人工操作请求卡、共享任务与时间线，并安装「Vision模式」Agent 预设。",
+  "id": "dsh-conversation-style-tweaks",
+  "name": "会话管理（DSH Conversation Style Tweaks）",
+  "packageName": "dsh-conversation-style-tweaks",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：DSH plugin: collection of opt-in CSS tweaks for the conversation view — precise column-width control (px stepper, presets, plugin-vs-native toggle, side margin) plus small layout fixes like stable table layout on hover. Each setting has its own toggle in Settings.",
   "searchTerms": [
-    "图像视觉工具",
-    "DSH Vision Bench",
-    "dsh-vision-bench",
-    "视觉",
-    "识图",
-    "图片",
-    "多模态",
-    "新锐实验",
+    "会话管理",
+    "DSH Conversation Style Tweaks",
+    "dsh-conversation-style-tweaks",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
     "实验功能",
     "新功能",
     "dsh",
-    "vision",
-    "bench"
+    "conversation",
+    "style",
+    "tweaks"
   ],
-  "repositoryUrl": "https://github.com/xingyingyuzhui/dsh-vision-bench",
-  "defaultBranch": "main",
+  "repositoryUrl": "https://github.com/zhj9709/dsh-conversation-style-tweaks",
+  "defaultBranch": "master",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6633a9a48e544c18f932140b72f35492037fe5c2",
-  "version": "0.27.0",
+  "commit": "2a54d8e7a60d6f6ef3f0a12c8b658db2501dfe5b",
+  "version": "0.0.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-05T10:49:47.000Z",
+    "updatedAt": "2026-09-05T11:49:35.000Z",
     "observedAt": "2026-09-05T11:47:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-05T11:47:14.000Z",
-      "evidenceUrl": "https://github.com/xingyingyuzhui/dsh-vision-bench/commit/6633a9a48e544c18f932140b72f35492037fe5c2",
+      "evidenceUrl": "https://github.com/zhj9709/dsh-conversation-style-tweaks/commit/2a54d8e7a60d6f6ef3f0a12c8b658db2501dfe5b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-vision-bench"
+    "conversation-style-tweaks"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1668859 total bytes (maximum 2097152); largest file 553093 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -170,19 +170,13 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@tanstack/react-virtual",
-      "@tanstack/virtual-core",
-      "modbus-serial",
-      "serialport",
-      "uplot",
-      "write-file-atomic",
-      "yaml"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

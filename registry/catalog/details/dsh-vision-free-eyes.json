@@ -27,8 +27,8 @@
   "manifestPath": "packages/vision-tool/package.json",
   "installPath": "packages/vision-tool",
   "updatePolicy": "user-reviewed",
-  "commit": "ab81275b7a950dd9199a31064afcbca767e90f4e",
-  "version": "0.1.3",
+  "commit": "10b0cbe8c6f06a175eaa985df28d276575539b6e",
+  "version": "0.1.4",
   "categories": [
     "visualization",
     "tools"
@@ -36,20 +36,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T09:25:04.000Z",
-    "observedAt": "2026-09-04T05:32:32.000Z",
+    "updatedAt": "2026-09-05T08:07:54.000Z",
+    "observedAt": "2026-09-05T11:47:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T05:32:32.000Z",
-      "evidenceUrl": "https://github.com/314857493/dsh-vision/commit/ab81275b7a950dd9199a31064afcbca767e90f4e",
+      "checkedAt": "2026-09-05T11:47:14.000Z",
+      "evidenceUrl": "https://github.com/314857493/dsh-vision/commit/10b0cbe8c6f06a175eaa985df28d276575539b6e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -85,8 +85,8 @@
   "entryIds": [
     "dsh-vision-free-eyes"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.0-rc.8 <0.2.0",
     "dshReleases": {
@@ -98,7 +98,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown"
+      "0.1.2-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {

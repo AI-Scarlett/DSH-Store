@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-05T04:08:10.000Z",
+    "updatedAt": "2026-09-05T11:47:14.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -5666,8 +5666,8 @@
       "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
       "repositoryUrl": "https://github.com/SiriLee/dsh-rewind",
       "defaultBranch": "main",
-      "latestCommit": "3fb4b6191276c042c5e3da4f79a50280868a6d0f",
-      "sourceUpdatedAt": "2026-09-05T03:52:49.000Z",
+      "latestCommit": "5326078800b59f61620ca5a28ce2d89cd8b84233",
+      "sourceUpdatedAt": "2026-09-05T09:26:27.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6277,8 +6277,8 @@
       "description": "独立单功能的工作区文件树面板：会话头部图标打开当前工作区目录树的动画弹窗；点击或拖拽文件即可把引用插入输入框；自带搜索、行内预览、实时设置与中英双语；零配置，一条命令即装即用。",
       "repositoryUrl": "https://github.com/Jiyr0119/dsh-workspace-explorer",
       "defaultBranch": "main",
-      "latestCommit": "2061ec57661dff1d5969d55c01ea00aea3e34610",
-      "sourceUpdatedAt": "2026-08-25T06:58:28.000Z",
+      "latestCommit": "e7b3e094901eff7f25e3fd1e8e4b23c79f7a534c",
+      "sourceUpdatedAt": "2026-09-05T08:27:50.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6738,26 +6738,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-recovery-proof."
-    },
-    {
-      "id": "chongcyrus-vibe-mathematics",
-      "name": "记忆与知识库（DSH Vibe Math）",
-      "description": "多代理数学问题求解与验证框架：头脑风暴 → 求解迭代 → 多验证器辩论 → 可信知识库沉淀，支持断点续跑与人工/自动干预（同时提供 agent preset 与可安装 bundle）。",
-      "repositoryUrl": "https://github.com/ChongCyrus/Vibe-Mathematics",
-      "defaultBranch": "main",
-      "latestCommit": "78cf1ea564a1d4c4b9acea391ee56886855b97b2",
-      "sourceUpdatedAt": "2026-08-27T06:32:50.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "workflow",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vibe-math."
     },
     {
       "id": "xiaozhe7772222-dsh-draw-router",
@@ -7516,26 +7496,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-native-playbook."
-    },
-    {
-      "id": "leemancheung-dsh-task-dag",
-      "name": "任务 DAG 看板（DSH Task DAG）",
-      "description": "为 DSH 提供任务 DAG 看板能力。英文原始说明：Persistent live DAG visualization for DeepSeek Harness subagents and workflows",
-      "repositoryUrl": "https://github.com/LeemanCheung/dsh-task-dag",
-      "defaultBranch": "main",
-      "latestCommit": "d063820f7895baf33e4e2d8c99d42750be7aa6ba",
-      "sourceUpdatedAt": "2026-08-31T03:02:31.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "workflow",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-task-dag."
     },
     {
       "id": "dawsondx-dsh-web-open",
@@ -8831,8 +8791,8 @@
       "description": "Codex 官方插件一键移植为 DSH 技能（实测 186 插件/583 技能，移植 577 个 0 失败）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-codex-port",
       "defaultBranch": "master",
-      "latestCommit": "0a24eac27772a1a23aa5fa338376722942b1d4f7",
-      "sourceUpdatedAt": "2026-09-01T16:39:14.000Z",
+      "latestCommit": "919299cc6d99d56a363cab0c05251cf1b7aa0485",
+      "sourceUpdatedAt": "2026-09-05T04:56:06.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8851,8 +8811,8 @@
       "description": "参考文献工具：DOI 精确查询与 Crossref 题录检索，GB/T 7714 / APA / MLA / Chicago 格式化，BibTeX 生成与有界并发 DOI 校验。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-cite",
       "defaultBranch": "master",
-      "latestCommit": "25c6dd22df288aeddaaebeb4ee08a49b62099590",
-      "sourceUpdatedAt": "2026-09-01T16:38:51.000Z",
+      "latestCommit": "a1449e5b9ff505998c0e469904548df78c07422c",
+      "sourceUpdatedAt": "2026-09-05T04:56:00.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8871,8 +8831,8 @@
       "description": "语音双件套：edge-tts 免费微软神经语音合成 + OpenAI 兼容 ASR 转写。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-voice",
       "defaultBranch": "master",
-      "latestCommit": "00aba522b4f7f281bd9311897baff87de96355a0",
-      "sourceUpdatedAt": "2026-09-01T16:40:13.000Z",
+      "latestCommit": "d1061e997dfcb6454434cfd277c56def73d98c21",
+      "sourceUpdatedAt": "2026-09-05T04:57:21.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8891,8 +8851,8 @@
       "description": "测试稳定性工具：重复运行 vitest/jest/pytest/node:test，识别 flaky 用例，历史留档与隔离清单。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-flakefinder",
       "defaultBranch": "master",
-      "latestCommit": "046a0cc9acfaa434c45d1c16b49d60ae1a5276be",
-      "sourceUpdatedAt": "2026-09-02T10:27:50.000Z",
+      "latestCommit": "3870b1401ec3f27ade499af9f025e11786728366",
+      "sourceUpdatedAt": "2026-09-05T04:56:17.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8911,8 +8871,8 @@
       "description": "数据库工具：sql_list/query/exec/schema，SQLite/MySQL/PostgreSQL 三引擎，词法级只读保护、行数钳制与写审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-sql",
       "defaultBranch": "master",
-      "latestCommit": "5f57ab0a75c2071b7e0e944c39874929df9d5c79",
-      "sourceUpdatedAt": "2026-09-02T10:27:50.000Z",
+      "latestCommit": "5ca347eb8f31059245cac4e2e3a29f61cd0d72ca",
+      "sourceUpdatedAt": "2026-09-05T04:57:15.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8971,8 +8931,8 @@
       "description": "RSS/Atom 订阅管理 + 抓取解析（rss_list/add/remove/fetch/check），订阅持久化到 settings。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-rss",
       "defaultBranch": "master",
-      "latestCommit": "7fc6383ef3844d2542d742bd711fa9580ded60d9",
-      "sourceUpdatedAt": "2026-09-01T16:39:57.000Z",
+      "latestCommit": "4ae44372a45e03ff20db91a4ed0217f6cefa9ac3",
+      "sourceUpdatedAt": "2026-09-05T04:57:11.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9031,8 +8991,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "7d8ed0280792d8ab24ff5802da95651c889f5fb2",
-      "sourceUpdatedAt": "2026-09-02T10:27:50.000Z",
+      "latestCommit": "79eaa38df97df4f5be9e4640b1da0e15bab5fe70",
+      "sourceUpdatedAt": "2026-09-05T04:56:13.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9548,8 +9508,8 @@
       "description": "演示文稿技能与工具：一句话或一篇文档生成 HTML 放映与可编辑 PPTX，内置 5 套主题，可配置默认主题/语言，中英双语。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ppt",
       "defaultBranch": "master",
-      "latestCommit": "1d86d3ac9e6074793bf51b53552bcf500c35df4d",
-      "sourceUpdatedAt": "2026-09-01T16:38:44.000Z",
+      "latestCommit": "f3f44cd78572d11af9018bbe902b0e6d430ed783",
+      "sourceUpdatedAt": "2026-09-05T04:56:23.000Z",
       "discoveredAt": "2026-09-01T12:56:30.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9623,27 +9583,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-peak-indicator."
-    },
-    {
-      "id": "314857493-dsh-vision",
-      "name": "兼容性复核：314857493/dsh-vision（2 个 Catalog 条目）",
-      "description": "该仓库中的 2 个 DSH STORE 条目因最新三个 DSH 版本兼容记录不足而暂时下架：dsh-vision-free-eyes、dsh-vision-proxy-route。",
-      "repositoryUrl": "https://github.com/314857493/dsh-vision",
-      "defaultBranch": "main",
-      "latestCommit": "ab81275b7a950dd9199a31064afcbca767e90f4e",
-      "sourceUpdatedAt": "2026-09-02T09:25:04.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "visualization",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision-free-eyes, dsh-vision-proxy-route."
     },
     {
       "id": "bpc-oss-dsh-web-billing",
@@ -13532,6 +13471,41 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "askie-grix",
+      "name": "askie/grix",
+      "description": "Grix : Work with agents like talking to people.",
+      "repositoryUrl": "https://github.com/askie/grix",
+      "defaultBranch": "main",
+      "latestCommit": "bf1c3a590d6dc09707e1d090a52fa8820d14ffb8",
+      "sourceUpdatedAt": "2026-09-05T11:49:25.000Z",
+      "discoveredAt": "2026-09-05T11:47:14.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "agentic-ai",
+        "agentic-workflow",
+        "agents",
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "android",
+        "coding-agent",
+        "coding-agents",
+        "deepseek",
+        "deepseek-harness",
+        "flutter",
+        "ios",
+        "mobile",
+        "self-hosted",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
