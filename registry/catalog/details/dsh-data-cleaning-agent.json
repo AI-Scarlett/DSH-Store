@@ -1,49 +1,50 @@
 {
-  "id": "dsh-work-continuity",
-  "name": "会话与文件回退（DSH Work Continuity）",
-  "packageName": "dsh-work-continuity",
-  "description": "为 DSH 提供会话与文件回退能力。英文原始说明：Work Continuity for DSH — goal/decisions/checkpoints/next-steps as explicit WorkState, decoupled from generic memory",
+  "id": "dsh-data-cleaning-agent",
+  "name": "文件与工作区工具（DSH Data Cleaning Agent）",
+  "packageName": "dsh-data-cleaning-agent",
+  "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：Clean, complete, and profile enterprise name lists in DeepSeek Harness — a data cleaning & completion agent plugin with local CSV/XLSX/JSON engine and optional Qichacha (QCC) MCP enrichment. Maintained by Qichacha/QCC.",
   "searchTerms": [
-    "会话与文件回退",
-    "DSH Work Continuity",
-    "dsh-work-continuity",
-    "回退",
-    "检查点",
-    "恢复",
-    "会话",
+    "文件与工作区工具",
+    "DSH Data Cleaning Agent",
+    "dsh-data-cleaning-agent",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
     "实验功能",
     "新功能",
     "dsh",
-    "work",
-    "continuity"
+    "data",
+    "cleaning",
+    "agent"
   ],
-  "repositoryUrl": "https://github.com/Icstick/dsh-work-continuity",
-  "defaultBranch": "master",
+  "repositoryUrl": "https://github.com/duhu2000/dsh-data-cleaning-agent",
+  "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "bcb789490bf5800bca082a854b1563a8d1efd5d6",
-  "version": "0.1.1",
+  "commit": "1fe65160093c7c00ad30ea0a291afeeff227cce3",
+  "version": "0.7.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-05T01:41:36.000Z",
+    "updatedAt": "2026-09-05T04:11:26.000Z",
     "observedAt": "2026-09-05T04:08:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-05T04:08:10.000Z",
-      "evidenceUrl": "https://github.com/Icstick/dsh-work-continuity/commit/bcb789490bf5800bca082a854b1563a8d1efd5d6",
+      "evidenceUrl": "https://github.com/duhu2000/dsh-data-cleaning-agent/commit/1fe65160093c7c00ad30ea0a291afeeff227cce3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "work-continuity"
+    "data-cleaning-agent"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "*",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -150,7 +151,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"
@@ -169,7 +170,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "xlsx"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

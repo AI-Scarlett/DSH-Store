@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3d7f6696676f572a62f76cbd151e8b67bb5e90d1",
-  "version": "0.1.0",
+  "commit": "c35064dbe67a8b7b25c48f0655090e24277ce86f",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T13:02:04.000Z",
-    "observedAt": "2026-09-04T18:56:23.000Z",
+    "updatedAt": "2026-09-05T01:00:34.000Z",
+    "observedAt": "2026-09-05T04:08:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T18:56:23.000Z",
-      "evidenceUrl": "https://github.com/FengZhiHen1/dsh-skill-manager/commit/3d7f6696676f572a62f76cbd151e8b67bb5e90d1",
+      "checkedAt": "2026-09-05T04:08:10.000Z",
+      "evidenceUrl": "https://github.com/FengZhiHen1/dsh-skill-manager/commit/c35064dbe67a8b7b25c48f0655090e24277ce86f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "*",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -150,7 +150,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24",
     "systems": [],
     "profiles": [
       "web"
