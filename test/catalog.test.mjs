@@ -528,10 +528,10 @@ test('bundled registry declares complete detail metadata for every entry', async
   const updatedSelfHosted = [
     {
       id: 'dsh-cliapi',
-      version: '0.5.1',
-      commit: '2db132bb430c5304627e5eb5681febecfc2d81ab',
+      version: '0.5.2',
+      commit: 'f88c9edbffe235bc1f9ac954f94dc326de1e1641',
       dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'unknown' },
+      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'compatible', '0.1.2-alpha.5': 'compatible', '0.1.2-rc.1': 'compatible' },
     },
     {
       id: 'dsh-chat-import',
@@ -598,21 +598,14 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
   const buildPlugin = source.entries.find(item => item.id === 'build-dsh-plugin')
   assert.equal(buildPlugin.status, 'approved')
-  const previousBuildPluginCommit = '99f054a42e60e3e91f8ca54eb8e8c6b22c21e870'
-  const buildPluginIsPrevious = buildPlugin.version === '0.4.0' && buildPlugin.commit === previousBuildPluginCommit
-  const buildPluginIsCurrent = buildPlugin.version === '0.4.1' && buildPlugin.commit !== previousBuildPluginCommit
-  assert.ok(buildPluginIsPrevious || buildPluginIsCurrent,
-    'build-dsh-plugin must be the staged previous release or the current fixed Catalog pin')
-  const buildPluginWindow = buildPluginIsCurrent
-    ? ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']
-    : ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']
-  for (const release of buildPluginWindow) {
+  assert.equal(buildPlugin.version, '0.4.2')
+  assert.equal(buildPlugin.commit, '4324904c4e88e52601c964d1e3b339aa8410b5d1')
+  for (const release of ['0.1.2-alpha.4', '0.1.2-alpha.5', '0.1.2-rc.1']) {
     assert.equal(buildPlugin.compatibility.dshReleases[release], 'compatible')
-    if (buildPluginIsCurrent) {
-      assert.deepEqual(buildPlugin.compatibility.dshOperations[release], {
-        install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
-      })
-    }
+    assert.deepEqual(buildPlugin.compatibility.dshOperations[release], {
+      install: 'passed', start: 'passed', uninstall: 'passed',
+      rollback: release === '0.1.2-rc.1' ? 'unknown' : 'passed',
+    })
   }
   for (const gate of ['installability', 'runtime', 'securityReview']) {
     assert.equal(buildPlugin.assurance[gate].status, 'partial')

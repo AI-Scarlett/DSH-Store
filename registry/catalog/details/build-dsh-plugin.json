@@ -29,8 +29,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "59860c850879599429c44e8806e0993881a1ded1",
-  "version": "0.4.1",
+  "commit": "4324904c4e88e52601c964d1e3b339aa8410b5d1",
+  "version": "0.4.2",
   "categories": [
     "development",
     "workflow",
@@ -39,58 +39,58 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T17:22:57.000Z",
-    "observedAt": "2026-09-02T17:28:18.800Z",
+    "updatedAt": "2026-09-05T00:49:16.000Z",
+    "observedAt": "2026-09-05T00:52:16.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "github-fixed-commit-release-readback",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/59860c850879599429c44e8806e0993881a1ded1",
+      "method": "github-fixed-commit-release-readback-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/4324904c4e88e52601c964d1e3b339aa8410b5d1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "公开固定合并 Commit 的 0.4.1 manifest、Bundle Patch、Host 入口、MIT 许可证与 v2026.09.03.1 发行资产已回读。"
+      "summary": "公开固定合并 Commit 的 0.4.2 manifest、Bundle Patch、MIT 许可证与发行入口已回读。"
     },
     "installability": {
       "status": "partial",
-      "method": "disposable-dsh-latest-three-profile-cli-install-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/releases/tag/v2026.09.03.1",
-      "dshRelease": "0.1.2-alpha.5",
+      "method": "disposable-dsh-latest-three-profile-cli-install-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/releases/tag/v2026.09.05.1",
+      "dshRelease": "0.1.2-rc.1",
       "systems": [
         "macOS"
       ],
       "profiles": [
         "web"
       ],
-      "summary": "部分验证：0.4.1 在 DSH alpha.3、alpha.4、alpha.5 一次性 Profile 中通过官方 CLI 安装、dump-config、卸载与复装；真实 Profile 未修改。"
+      "summary": "部分验证：0.4.2 在 DSH alpha.4、alpha.5、rc.1 的一次性 Profile 中通过官方 CLI 安装、dump-config、冷启动和卸载；真实 Profile 未修改。"
     },
     "runtime": {
       "status": "partial",
-      "method": "dsh-latest-three-skill-registration-runtime-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/59860c850879599429c44e8806e0993881a1ded1",
-      "dshRelease": "0.1.2-alpha.5",
+      "method": "dsh-latest-three-cold-start-runtime-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/4324904c4e88e52601c964d1e3b339aa8410b5d1",
+      "dshRelease": "0.1.2-rc.1",
       "systems": [
         "macOS"
       ],
       "profiles": [
         "web"
       ],
-      "summary": "部分验证：alpha.3、alpha.4、alpha.5 隔离冷启动均发现 bundled build-dsh-plugin Skill；尚无真实 Profile 或可见 UI E4 证据。"
+      "summary": "部分验证：0.4.2 在 DSH alpha.4、alpha.5、rc.1 的一次性 Profile 中通过官方 CLI 安装、dump-config、冷启动和卸载；真实 Profile 未修改。 真实用户 Profile 与真实账号/设备仍是独立验收层。"
     },
     "securityReview": {
       "status": "partial",
-      "method": "fixed-source-policy-and-distribution-check-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/59860c850879599429c44e8806e0993881a1ded1",
+      "method": "fixed-source-policy-and-contract-scan-v3",
+      "checkedAt": "2026-09-05T00:52:16.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/4324904c4e88e52601c964d1e3b339aa8410b5d1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "部分验证：固定源策略、权限审计器、契约、动态未来版本窗口及分发一致性检查通过；不等同于独立安全审计。"
+      "summary": "部分验证：跨平台路径分类回归、固定源策略、权限审计器、动态版本窗口和发行 ZIP 完整性检查通过；不等同于独立安全审计。"
     }
   },
   "entryIds": [
@@ -109,7 +109,7 @@
       "0.1.2-alpha.3": "compatible",
       "0.1.2-alpha.4": "compatible",
       "0.1.2-alpha.5": "compatible",
-      "0.1.2-rc.1": "unknown"
+      "0.1.2-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -161,9 +161,9 @@
         "rollback": "passed"
       },
       "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       }
     },
