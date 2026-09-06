@@ -1,46 +1,49 @@
 {
-  "id": "dsh-tip-jar",
-  "name": "实验功能插件（DSH Tip Jar）",
-  "packageName": "dsh-tip-jar",
-  "description": "Tip jar for DeepSeek Harness: contributors declare USDC / fiat / subscription / sponsor channels in sponsors.json; a sponsor-center panel, settings page and tool-card credits make them one tap away. 打赏罐——开源贡献者的赞助入口。",
+  "id": "dsh-md-preview",
+  "name": "审查与验证助手（DSH Md Preview）",
+  "packageName": "@benz-ai-x/dsh-md-preview",
+  "description": "为 DSH 提供审查与验证助手能力。英文原始说明：DSH markdown preview: clicking a markdown document in the conversation opens a rendered preview panel docked to the right of the chat.",
   "searchTerms": [
-    "实验功能插件",
-    "DSH Tip Jar",
-    "dsh-tip-jar",
+    "审查与验证助手",
+    "DSH Md Preview",
+    "dsh-md-preview",
+    "@benz-ai-x/dsh-md-preview",
+    "审查",
+    "验证",
+    "质量检查",
     "实验功能",
     "新功能",
-    "新锐实验",
     "dsh",
-    "tip",
-    "jar"
+    "md",
+    "preview"
   ],
-  "repositoryUrl": "https://github.com/luoxin10086/dsh-tip-jar",
+  "repositoryUrl": "https://github.com/benz-ai-x/dsh-md-preview",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "55ef56f1438174e1e495c616f40b8bfdb13d6415",
-  "version": "0.1.9",
+  "commit": "fdc4c2c49eac555659aa834233d72876d161dbde",
+  "version": "0.6.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T10:42:56.000Z",
+    "updatedAt": "2026-09-06T12:06:48.000Z",
     "observedAt": "2026-09-06T12:05:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-06T12:05:04.000Z",
-      "evidenceUrl": "https://github.com/luoxin10086/dsh-tip-jar/commit/55ef56f1438174e1e495c616f40b8bfdb13d6415",
+      "evidenceUrl": "https://github.com/benz-ai-x/dsh-md-preview/commit/fdc4c2c49eac555659aa834233d72876d161dbde",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -50,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -60,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -70,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-tip-jar"
+    "md-preview"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the protectedDsh permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": "0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -147,7 +150,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -167,12 +170,17 @@
       ]
     },
     "externalDependencies": [
+      "@deepseek-ai/schemastery",
+      "tsdown",
+      "typescript",
       "zod"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
