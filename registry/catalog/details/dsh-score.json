@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "efac38046b044123bbabf60fd70247b313f5b2bd",
+  "commit": "10b7da5789dc91fb96e9dcd53a626a83a8c7f739",
   "version": "0.2.5",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T04:18:09.000Z",
-    "observedAt": "2026-09-06T04:15:58.000Z",
+    "updatedAt": "2026-09-06T11:55:25.000Z",
+    "observedAt": "2026-09-06T18:11:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-06T04:15:58.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-score/commit/efac38046b044123bbabf60fd70247b313f5b2bd",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-06T18:11:52.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-score/commit/10b7da5789dc91fb96e9dcd53a626a83a8c7f739",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
