@@ -1,46 +1,48 @@
 {
-  "id": "dsh-tip-jar",
-  "name": "实验功能插件（DSH Tip Jar）",
-  "packageName": "dsh-tip-jar",
-  "description": "Tip jar for DeepSeek Harness: contributors declare USDC / fiat / subscription / sponsor channels in sponsors.json; a sponsor-center panel, settings page and tool-card credits make them one tap away. 打赏罐——开源贡献者的赞助入口。",
+  "id": "dsh-guardrails",
+  "name": "安全防护工具（DSH Guardrails）",
+  "packageName": "dsh-guardrails",
+  "description": "对 AI 发起的工具调用做**硬阻断**（不弹确认框）的 Host 插件：",
   "searchTerms": [
-    "实验功能插件",
-    "DSH Tip Jar",
-    "dsh-tip-jar",
+    "安全防护工具",
+    "DSH Guardrails",
+    "dsh-guardrails",
+    "安全",
+    "审计",
+    "验证",
+    "防护",
     "实验功能",
     "新功能",
-    "新锐实验",
     "dsh",
-    "tip",
-    "jar"
+    "guardrails"
   ],
-  "repositoryUrl": "https://github.com/luoxin10086/dsh-tip-jar",
+  "repositoryUrl": "https://github.com/FengZhiHen1/dsh-guardrails",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "55ef56f1438174e1e495c616f40b8bfdb13d6415",
-  "version": "0.1.9",
+  "commit": "1f0171aba05ee13d64a396380c5e114bbc7be6cb",
+  "version": "1.4.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T10:42:56.000Z",
+    "updatedAt": "2026-09-06T12:06:44.000Z",
     "observedAt": "2026-09-06T12:05:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-06T12:05:04.000Z",
-      "evidenceUrl": "https://github.com/luoxin10086/dsh-tip-jar/commit/55ef56f1438174e1e495c616f40b8bfdb13d6415",
+      "evidenceUrl": "https://github.com/FengZhiHen1/dsh-guardrails/commit/1f0171aba05ee13d64a396380c5e114bbc7be6cb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -50,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -60,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -70,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-tip-jar"
+    "guardrails"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the protectedDsh permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": "^0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -147,7 +149,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24",
     "systems": [],
     "profiles": [
       "web"
@@ -167,7 +169,7 @@
       ]
     },
     "externalDependencies": [
-      "zod"
+      "@deepseek-ai/schemastery"
     ],
     "reviewStatus": "automated-scan"
   },

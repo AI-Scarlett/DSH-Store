@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-06T04:15:58.000Z",
+    "updatedAt": "2026-09-06T12:05:04.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -5666,8 +5666,8 @@
       "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
       "repositoryUrl": "https://github.com/SiriLee/dsh-rewind",
       "defaultBranch": "main",
-      "latestCommit": "c6d817bec0b8723ddc315ca954b7c4dd6b2083b2",
-      "sourceUpdatedAt": "2026-09-05T14:09:33.000Z",
+      "latestCommit": "8539d5a3d79cc013c5b4277b391866251c509a72",
+      "sourceUpdatedAt": "2026-09-06T11:59:51.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5831,8 +5831,8 @@
       "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
       "repositoryUrl": "https://github.com/liustack/modlens",
       "defaultBranch": "main",
-      "latestCommit": "926a6beea81ca6ea1fecc267bc1b02d880572669",
-      "sourceUpdatedAt": "2026-09-01T06:47:49.000Z",
+      "latestCommit": "fdc6c4bc49e1cb191a9541896d403a8995faf28a",
+      "sourceUpdatedAt": "2026-09-06T11:16:21.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5973,8 +5973,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "0fceb8696e16fb174ea018a5e586089c665e0e35",
-      "sourceUpdatedAt": "2026-09-05T15:06:45.000Z",
+      "latestCommit": "3473913b5406c9ca832e1082b5c9e164c9d94e88",
+      "sourceUpdatedAt": "2026-09-06T04:20:00.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5986,26 +5986,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-checkpoint-rewind."
-    },
-    {
-      "id": "limbo947-dsh-recall-plugin",
-      "name": "会话与文件回退（DSH Recall Plugin）",
-      "description": "消息撤回：在用户消息旁加「撤回」按钮，把对话历史（官方会话 fork）与项目文件（逐消息影子 git 快照）一并回退到该消息发送之前，带差异预览确认面板。",
-      "repositoryUrl": "https://github.com/limbo947/dsh-recall-plugin",
-      "defaultBranch": "main",
-      "latestCommit": "10f5e6118f28e87d6da026ac18689d69b4c6f383",
-      "sourceUpdatedAt": "2026-09-01T11:08:36.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "sessions",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-recall-plugin."
     },
     {
       "id": "perrylink-dsh-memento",
@@ -6095,8 +6075,8 @@
       "description": "在一次性隔离配置中为 DSH 插件执行安装与冒烟测试，返回结构化的通过/失败记录与批量矩阵，不触碰真实配置。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-test-drive",
       "defaultBranch": "main",
-      "latestCommit": "fe2a395a9b2c5ed76c1eb6813a63bedfd3eb3926",
-      "sourceUpdatedAt": "2026-09-05T14:57:46.000Z",
+      "latestCommit": "6fc92dd7c5bc296ff8c87c461d88e3d4c2ea8b62",
+      "sourceUpdatedAt": "2026-09-06T04:18:40.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6135,8 +6115,8 @@
       "description": "DeepSeek Harness 的更新助手：一次扫描覆盖 dsh 本体、官方 bundle 和每个 profile 的插件，说清改了什么、风险多大，只更新你确认过的那些。",
       "repositoryUrl": "https://github.com/hezhongtang/dsh-update-copilot",
       "defaultBranch": "main",
-      "latestCommit": "aadeb659a160cd86dc2361f7da28ef81dea5459d",
-      "sourceUpdatedAt": "2026-09-06T04:16:38.000Z",
+      "latestCommit": "1e0768ae750654724942a043734ee440a9961f07",
+      "sourceUpdatedAt": "2026-09-06T05:31:25.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11566,8 +11546,8 @@
       "description": "按厂商（订阅/官方API）统计用量看板：按供应商/模型拆分 Token、缓存、输出等 KPI，53 周热力图，趋势折线图（今天按小时），模型钻取，费用估算，CSV 导出，以及健康度卡片（TTFT、生成速度、峰值 Context、错误率）。",
       "repositoryUrl": "https://github.com/kirigayakazima/dsh-usage-vendor-stats",
       "defaultBranch": "main",
-      "latestCommit": "ac22bed8af20c8059c5f4d86bf21dc88d3870888",
-      "sourceUpdatedAt": "2026-08-16T02:22:24.000Z",
+      "latestCommit": "bdccf889df9f39df459f06482aca5cf3f8aaab55",
+      "sourceUpdatedAt": "2026-09-06T11:09:36.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12115,26 +12095,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-theme-plugin."
-    },
-    {
-      "id": "deep-ios-dsh-humanizer",
-      "name": "写作与润色助手（DSH Humanizer）",
-      "description": "中文写作与润色 bundle 插件：让模型动笔前完整读入全部理论、在思考中成为作者，然后一口气写。不评分、不检测、不画像、不配额。写作辅助，非 AI 检测器。",
-      "repositoryUrl": "https://github.com/DEEP-IOS/dsh-humanizer",
-      "defaultBranch": "main",
-      "latestCommit": "e956599769fedd236af7bcb9a2cd2bcbf5a0d2f2",
-      "sourceUpdatedAt": "2026-08-15T11:39:19.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-humanizer."
     },
     {
       "id": "fu3rte-dsh-sight",
