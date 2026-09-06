@@ -1,49 +1,49 @@
 {
-  "id": "dsh-plugin-shop",
-  "name": "GitHub 工程工具（DSH Plugin Shop）",
-  "packageName": "dsh-plugin-shop",
-  "description": "为 DSH 提供GitHub 工程工具能力。英文原始说明：The DeepSeek Harness plugin shop: browse, install, enable, and update dsh plugins from a git-auditable catalog.",
+  "id": "dsh-defend",
+  "name": "会话管理（DSH Defend）",
+  "packageName": "dsh-defend",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Prompt-injection, jailbreak, and secret-leak detection with allow/ask/block interception for DeepSeek Harness: an Aho-Corasick pattern engine and heuristics ported from the Prompt-Injection-Payloads, Jailbreak-Detector, and Secret-Key-Leaker-Detect assets, gating user messages on agent/pre-step, tool arguments on tools/pre-execute, and tool results on tools/post-execute, with sanitized defend/* session audit events, a defend_report tool, and a /defend command.",
   "searchTerms": [
-    "GitHub 工程工具",
-    "DSH Plugin Shop",
-    "dsh-plugin-shop",
-    "GitHub",
-    "Git",
-    "代码审查",
-    "PR",
-    "实验功能",
-    "新功能",
+    "会话管理",
+    "DSH Defend",
+    "dsh-defend",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "安全",
+    "审计",
+    "防护",
     "dsh",
-    "plugin",
-    "shop"
+    "defend"
   ],
-  "repositoryUrl": "https://github.com/LivXue/dsh-plugin-shop",
+  "repositoryUrl": "https://github.com/PerryLink/dsh-defend",
   "defaultBranch": "main",
-  "manifestPath": "packages/dsh-plugin-shop/package.json",
-  "installPath": "packages/dsh-plugin-shop",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "40fe5b79b32d80afbc257adf39263d3a67996df3",
-  "version": "0.8.0-beta.0",
+  "commit": "9c7baabeb27a47e40ec21261b1d3c7bd1163cad7",
+  "version": "0.3.4",
   "categories": [
-    "experimental"
+    "security"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T03:46:06.000Z",
+    "updatedAt": "2026-09-06T04:18:06.000Z",
     "observedAt": "2026-09-06T04:15:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-06T04:15:58.000Z",
-      "evidenceUrl": "https://github.com/LivXue/dsh-plugin-shop/commit/40fe5b79b32d80afbc257adf39263d3a67996df3",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-defend/commit/9c7baabeb27a47e40ec21261b1d3c7bd1163cad7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "shop"
+    "dsh-defend"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.1-rc.2",
+    "dsh": ">=0.1.2-rc.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -152,9 +152,7 @@
     },
     "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
@@ -170,14 +168,15 @@
       ]
     },
     "externalDependencies": [
-      "js-yaml",
-      "semver",
-      "zod"
+      "tsdown",
+      "typescript"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
