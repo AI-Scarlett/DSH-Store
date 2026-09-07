@@ -58,3 +58,13 @@ Catalog 工作流在扫描 Job 结束后，直接以可复用 Job 调用 `author
 补跑前的旧扫描。报告工作流按 Catalog Run ID 幂等，Catalog 内联报告已成功时补调用会安全跳过；内联
 报告失败时则完成恢复。发现公开页面陈旧时仍会重跑 Pages 构建。只有补跑最终失败、报告恢复失败或
 公开面仍失败时看门狗才标红。每次报告列出新增数量、历史插件更新数量、清单、作者通知量和公共表面状态。
+
+## Global author contact rule
+
+Author outreach follows the immutable GitHub person ID across every repository.
+Historical messages consume the single initial-contact slot. A new project, changed
+source, rename, retry, reopened or closed Issue never grants another message.
+Further communication requires a reviewed explicit positive request, consumed
+once for that request; thanks, emoji and source updates are not consent. Stops
+override older consent. Automated and manual senders share the central contact
+ledger and reserve before sending. See [the current policy](https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/README.md#作者整改通知).

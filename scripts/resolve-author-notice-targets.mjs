@@ -1,106 +1,43 @@
 #!/usr/bin/env node
-
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { MAX_AUTHOR_NOTICE_ACTIONS } from './plan-author-notices.mjs'
+import { githubClient } from './author-contact-http.mjs'
+import { humanIdentity, requireRepository } from './author-contact-state.mjs'
 
-const API_ROOT = 'https://api.github.com'
-
-function parseArgs(argv) {
-  const options = {}
-  for (let index = 0; index < argv.length; index += 1) {
-    const name = argv[index]
-    const value = argv[index + 1]
-    if (!name.startsWith('--') || value === undefined || value.startsWith('--')) throw new Error(`invalid argument: ${name}`)
-    options[name.slice(2)] = value
-    index += 1
-  }
-  return options
-}
-
-function githubClient(token) {
-  if (typeof token !== 'string' || token.length < 1) throw new Error('GITHUB_TOKEN is required')
-  return async function request(path, attempt = 1) {
-    const response = await fetch(`${API_ROOT}${path}`, {
-      headers: {
-        accept: 'application/vnd.github+json',
-        authorization: `Bearer ${token}`,
-        'user-agent': 'dsh-store-author-target-resolver',
-        'x-github-api-version': '2022-11-28',
-      },
-    })
-    if ((response.status === 429 || response.status >= 500) && attempt < 4) {
-      await new Promise(resolvePromise => setTimeout(resolvePromise, attempt * 1_000))
-      return request(path, attempt + 1)
-    }
-    if (!response.ok) {
-      const requestId = response.headers.get('x-github-request-id') ?? 'unknown'
-      throw Object.assign(new Error(`GitHub API GET failed: HTTP ${response.status}, request ${requestId}`), {
-        status: response.status,
-      })
-    }
-    return response.json()
-  }
-}
-
-function humanLogin(account, excluded) {
-  const login = String(account?.login ?? '')
-  if (account?.type !== 'User' || login === '' || login.toLowerCase() === excluded.toLowerCase()) return null
-  if (/\[bot\]$|^(?:dependabot|github-actions)$/i.test(login)) return null
-  return login
-}
-
+// A personal owner is authoritative. A shared organization or contribution is
+// not proof of a single responsible maintainer: leave it unresolved.
 export async function resolveTargets(request, key) {
-  const keyOwner = String(key).split('/')[0]
+  requireRepository(key)
   try {
     const repository = await request(`/repos/${key}`)
-    const owner = String(repository?.owner?.login ?? '')
-    if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(owner)) throw new Error(`repository owner is invalid for ${key}`)
-    if (repository.owner.type === 'User') return [owner]
-
-    const commits = await request(`/repos/${key}/commits?per_page=20`)
-    const commitAuthor = Array.isArray(commits)
-      ? commits.map(commit => humanLogin(commit.author, owner)).find(Boolean)
-      : null
-    if (commitAuthor) return [commitAuthor]
-
-    const contributors = await request(`/repos/${key}/contributors?per_page=20&anon=0`)
-    const contributor = Array.isArray(contributors)
-      ? contributors.map(item => humanLogin(item, owner)).find(Boolean)
-      : null
-    return [contributor ?? owner]
+    if (String(repository.full_name).toLowerCase() !== key.toLowerCase()) return null
+    const owner = humanIdentity(repository.owner)
+    if (!owner) return null
+    const account = humanIdentity(await request(`/user/${owner.id}`))
+    return account?.id === owner.id && account.node_id === owner.node_id ? account : null
   } catch (error) {
-    // A repository already recorded in the bounded remediation ledger may be
-    // deleted, renamed, or made legally unavailable between scans. Keep the
-    // local owner fallback so one stale source cannot abort every unrelated
-    // Catalog notification. Transient and permission failures still fail.
-    if ([404, 410, 451].includes(error?.status)
-      && /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(keyOwner)) return [keyOwner]
+    if ([404, 410, 451].includes(error.status)) return null
     throw error
   }
 }
-
 async function main() {
-  const options = parseArgs(process.argv.slice(2))
-  if (!options.plan || !options.output) throw new Error('--plan and --output are required')
+  const options = {}
+  const args = process.argv.slice(2)
+  for (let i = 0; i < args.length; i += 2) {
+    if (!args[i].startsWith('--') || !args[i + 1]) throw new Error('invalid argument')
+    options[args[i].slice(2)] = args[i + 1]
+  }
+  if (!options.plan || !options.output) throw new Error('--plan and --output required')
   const plan = JSON.parse(await readFile(resolve(options.plan), 'utf8'))
-  if (plan?.schemaVersion !== 1 || !Array.isArray(plan.actions) || plan.actions.length > MAX_AUTHOR_NOTICE_ACTIONS) {
-    throw new Error('preliminary author notice plan is invalid')
-  }
-  const keys = [...new Set(plan.actions.filter(action => action.type !== 'close').map(action => {
-    if (!/^[a-z0-9_.-]+\/[a-z0-9_.-]+$/.test(String(action.key ?? ''))) throw new Error('action repository key is invalid')
-    return action.key
-  }))].sort()
-  const request = githubClient(process.env.GITHUB_TOKEN)
+  if (!Array.isArray(plan.contactRepositoryKeys) || plan.contactRepositoryKeys.length > 2500) throw new Error('invalid preliminary plan')
+  const keys = [...new Set(plan.contactRepositoryKeys)].sort()
+  const github = githubClient(process.env.GITHUB_TOKEN)
   const entries = []
-  for (let index = 0; index < keys.length; index += 6) {
-    const batch = keys.slice(index, index + 6)
-    entries.push(...await Promise.all(batch.map(async key => [key, await resolveTargets(request, key)])))
+  for (let i = 0; i < keys.length; i += 6) {
+    entries.push(...await Promise.all(keys.slice(i, i + 6).map(async key => [key, await resolveTargets(path => github.request('GET', path), key)])))
   }
-  const targets = Object.fromEntries(entries.sort(([left], [right]) => left.localeCompare(right, 'en')))
-  await writeFile(resolve(options.output), `${JSON.stringify(targets, null, 2)}\n`, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
-  process.stdout.write(`AUTHOR_NOTICE_TARGETS_OK repositories=${keys.length}\n`)
+  await writeFile(resolve(options.output), JSON.stringify(Object.fromEntries(entries), null, 2) + '\n', { flag: 'wx', mode: 0o600 })
+  process.stdout.write(`AUTHOR_NOTICE_TARGETS_OK repositories=${keys.length} verifiedPeople=${entries.filter(([, value]) => value).length}\n`)
 }
-
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) await main()

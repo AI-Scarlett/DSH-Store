@@ -2,12 +2,15 @@
 
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { canonicalExistingIssues, MAX_AUTHOR_NOTICE_ACTIONS, sha256 } from './plan-author-notices.mjs'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { loadCatalogFromFiles } from '../src/catalog.mjs'
+import { githubClient } from './author-contact-http.mjs'
+import { CONTACT_POLICY, contactBody, humanIdentity, reserveContact, readContactState } from './author-contact-state.mjs'
+import { resolveTargets } from './resolve-author-notice-targets.mjs'
+import { buildAuthorNoticePlan, canonicalExistingIssues, MAX_AUTHOR_NOTICE_ACTIONS, sha256 } from './plan-author-notices.mjs'
 
-const API_ROOT = 'https://api.github.com'
 const MANAGED_LABEL = 'author-action-required'
-const ACTION_TYPES = new Set(['create', 'update', 'notify', 'source-update', 'baseline', 'close'])
+const ACTION_TYPES = new Set(['create'])
 const SOURCE_STATUSES = new Set([
   'new-baseline', 'tracking-baseline', 'modified-still-blocked', 'not-modified',
   'modified-and-resolved', 'resolved-without-source-change', 'resolved-source-unknown', 'unknown',
@@ -15,7 +18,7 @@ const SOURCE_STATUSES = new Set([
 const CANDIDATE_COVERAGE_DISPOSITIONS = new Set([
   'direct-remediation', 'public-reviewing', 'public-remediation', 'public-deferred', 'public-discovery-only',
 ])
-const CANDIDATE_NOTIFICATION_STATES = new Set(['managed-issue', 'scheduled-this-run', 'queued', 'public-registry-only'])
+const CANDIDATE_NOTIFICATION_STATES = new Set(['managed-issue', 'scheduled-this-run', 'queued', 'public-registry-only', 'author-paused', 'contact-suppressed'])
 
 function parseArgs(argv) {
   const options = {}
@@ -46,14 +49,14 @@ function snapshotBuffer(issues) {
   return Buffer.from(`${JSON.stringify(canonicalExistingIssues(issues), null, 2)}\n`)
 }
 
-function validatePlan(plan) {
-  if (plan?.schemaVersion !== 1) throw new Error('unsupported author notice plan schema')
+export function validatePlan(plan) {
+  if (plan?.schemaVersion !== 2 || plan?.policy?.globalPersonPolicy !== CONTACT_POLICY || plan.policy.automaticFollowups !== false) throw new Error('unsupported author notice plan schema')
   requiredString(plan.planId, 'planId', /^[0-9a-f]{24}$/)
   requiredString(plan.baseCommit, 'baseCommit', /^[0-9a-f]{40}$/)
   if (plan.sourceCatalogRunId !== null && plan.sourceCatalogRunId !== undefined) {
     requiredString(plan.sourceCatalogRunId, 'sourceCatalogRunId', /^\d+$/)
   }
-  for (const name of ['catalogSha256', 'candidatesSha256', 'reportSha256', 'existingIssuesSha256', 'notificationTargetsSha256']) {
+  for (const name of ['catalogSha256', 'candidatesSha256', 'reportSha256', 'existingIssuesSha256', 'notificationTargetsSha256', 'contactStateSha256']) {
     requiredString(plan?.preconditions?.[name], `preconditions.${name}`, /^[0-9a-f]{64}$/)
   }
   if (!Array.isArray(plan.requiredLabels) || !Array.isArray(plan.actions)) throw new Error('plan arrays are missing')
@@ -83,7 +86,7 @@ function validatePlan(plan) {
     for (const route of record.routes) requiredString(route, 'candidateCoverage.route', /^[a-z0-9-]{1,40}$/)
     if (!CANDIDATE_COVERAGE_DISPOSITIONS.has(record.disposition)) throw new Error(`candidate disposition for ${record.key} is invalid`)
     if (!CANDIDATE_NOTIFICATION_STATES.has(record.notificationState)) throw new Error(`candidate notification state for ${record.key} is invalid`)
-    if ((record.disposition === 'direct-remediation') === (record.notificationState === 'public-registry-only')) {
+    if (!['author-paused', 'contact-suppressed'].includes(record.notificationState) && (record.disposition === 'direct-remediation') === (record.notificationState === 'public-registry-only')) {
       throw new Error(`candidate notification lane for ${record.key} is inconsistent`)
     }
     if (record.managedIssueNumber !== null && (!Number.isInteger(record.managedIssueNumber) || record.managedIssueNumber < 1)) {
@@ -105,20 +108,30 @@ function validatePlan(plan) {
     candidateDirectManagedIssues: candidateNotificationCounts['managed-issue'],
     candidateDirectScheduledThisRun: candidateNotificationCounts['scheduled-this-run'],
     candidateDirectQueued: candidateNotificationCounts.queued,
+    candidateDirectSuppressed: candidateNotificationCounts['contact-suppressed'],
+    candidateAuthorPaused: candidateNotificationCounts['author-paused'],
     candidatePublicReviewing: candidateDispositionCounts['public-reviewing'],
     candidatePublicRemediation: candidateDispositionCounts['public-remediation'],
     candidatePublicDeferred: candidateDispositionCounts['public-deferred'],
     candidatePublicDiscoveryOnly: candidateDispositionCounts['public-discovery-only'],
-    candidatePublicRegistryOnly: candidateNotificationCounts['public-registry-only'],
+    candidatePublicRegistryOnly: plan.candidateCoverage.length - candidateDispositionCounts['direct-remediation'],
   }
   for (const [name, value] of Object.entries(expectedCandidateSummary)) {
     if (plan.summary[name] !== value) throw new Error(`candidate coverage summary ${name} mismatch`)
   }
   if (plan.actions.length > MAX_AUTHOR_NOTICE_ACTIONS) throw new Error('author notice action bound exceeded')
   if (plan.actions.filter(action => action?.type === 'create').length > 12) throw new Error('author notice create bound exceeded')
+  const people = new Set()
   const issueNumbers = new Set()
   for (const action of plan.actions) {
-    if (!ACTION_TYPES.has(action?.type)) throw new Error('plan action type is invalid')
+    if (!ACTION_TYPES.has(action?.type)) throw new Error('automatic followup is forbidden')
+    const person = humanIdentity(action.recipient)
+    if (!person || people.has(person.id)) throw new Error('invalid or duplicate recipient')
+    people.add(person.id)
+    const prefix = '@' + person.login + '\n\n'
+    if (!action.body?.startsWith(prefix) || action.body !== contactBody(action.body.slice(prefix.length), person)
+      || action.title?.includes('@')) throw new Error('unexpected recipient syntax')
+
     requiredString(action.key, 'action.key', /^[a-z0-9_.-]+\/[a-z0-9_.-]+$/)
     requiredString(action.signature, 'action.signature', /^[0-9a-f]{64}$/)
     requiredString(action.sourceFingerprint, 'action.sourceFingerprint', /^[0-9a-f]{64}$/)
@@ -160,45 +173,6 @@ function validatePlan(plan) {
   }
 }
 
-function githubClient(token) {
-  requiredString(token, 'GITHUB_TOKEN', null, 10_000)
-  const request = async (method, path, body, attempt = 1) => {
-    const response = await fetch(`${API_ROOT}${path}`, {
-      method,
-      headers: {
-        accept: 'application/vnd.github+json',
-        authorization: `Bearer ${token}`,
-        'user-agent': 'dsh-store-author-notifications',
-        'x-github-api-version': '2022-11-28',
-        ...(body === undefined ? {} : { 'content-type': 'application/json' }),
-      },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    })
-    if ((response.status === 429 || response.status >= 500) && attempt < 4) {
-      await new Promise(resolvePromise => setTimeout(resolvePromise, attempt * 1_000))
-      return request(method, path, body, attempt + 1)
-    }
-    if (!response.ok) {
-      const requestId = response.headers.get('x-github-request-id') ?? 'unknown'
-      throw new Error(`GitHub API ${method} ${path} failed: HTTP ${response.status}, request ${requestId}`)
-    }
-    if (response.status === 204) return null
-    return response.json()
-  }
-  const paginate = async path => {
-    const output = []
-    for (let page = 1; page <= 20; page += 1) {
-      const joiner = path.includes('?') ? '&' : '?'
-      const batch = await request('GET', `${path}${joiner}per_page=100&page=${page}`)
-      if (!Array.isArray(batch)) throw new Error(`GitHub API pagination response for ${path} is invalid`)
-      output.push(...batch)
-      if (batch.length < 100) return output
-    }
-    throw new Error(`GitHub API pagination bound exceeded for ${path}`)
-  }
-  return { request, paginate }
-}
-
 async function managedIssueSnapshot(github, repository) {
   const issues = await github.paginate(`/repos/${repository}/issues?state=all&labels=${MANAGED_LABEL}`)
   return canonicalExistingIssues(issues.filter(issue => !issue.pull_request).map(issue => ({
@@ -225,13 +199,6 @@ async function ensureLabels(github, repository, labels) {
   }
 }
 
-async function ensureComment(github, repository, issueNumber, marker, body) {
-  const comments = await github.paginate(`/repos/${repository}/issues/${issueNumber}/comments?`)
-  if (comments.some(comment => String(comment.body ?? '').includes(`<!-- ${marker} -->`))) return false
-  await github.request('POST', `/repos/${repository}/issues/${issueNumber}/comments`, { body })
-  return true
-}
-
 async function verifyIssue(github, repository, issueNumber, expected) {
   const issue = await github.request('GET', `/repos/${repository}/issues/${issueNumber}`)
   if (expected.title !== undefined && issue.title !== expected.title) throw new Error(`issue #${issueNumber} title readback mismatch`)
@@ -244,82 +211,69 @@ async function verifyIssue(github, repository, issueNumber, expected) {
   return issue.html_url
 }
 
+
+export async function applyFirstContacts({ plan, github, repository, seed }) {
+  validatePlan(plan)
+  const changed = []
+  if (plan.actions.length) await ensureLabels(github, repository, plan.requiredLabels)
+  for (const action of plan.actions) {
+    const live = await resolveTargets(path => github.request('GET', path), action.key)
+    if (!live || live.id !== action.recipient.id || live.node_id !== action.recipient.node_id || live.login !== action.recipient.login) {
+      throw new Error('recipient identity changed after planning; no message sent')
+    }
+    const claim = await reserveContact({
+      github, repository, recipient: live, key: action.key, seed,
+      claimId: sha256(`${plan.planId}:${live.id}`),
+    })
+    if (!claim.allowed) { changed.push({ key: action.key, type: 'suppressed', reason: claim.reason }); continue }
+    const issue = await github.request('POST', `/repos/${repository}/issues`, {
+      title: action.title, body: action.body, labels: action.labels,
+    })
+    const url = await verifyIssue(github, repository, issue.number, {
+      title: action.title, body: action.body, state: 'open', labels: action.labels,
+    })
+    changed.push({ type: 'create', key: action.key, userId: live.id, issueNumber: issue.number, url })
+  }
+  return changed
+}
 async function main() {
   const options = parseArgs(process.argv.slice(2))
-  for (const required of ['plan', 'catalog', 'candidates', 'report', 'notification-targets']) {
-    if (!options[required]) throw new Error(`--${required} is required`)
+  for (const key of ['plan', 'catalog', 'candidates', 'report', 'notification-targets', 'contact-state']) {
+    if (!options[key]) throw new Error(`--${key} is required`)
   }
-  const [planBuffer, catalogBuffer, candidatesBuffer, reportBuffer, targetsBuffer] = await Promise.all([
-    readFile(resolve(options.plan)), readFile(resolve(options.catalog)), readFile(resolve(options.candidates)),
-    readFile(resolve(options.report)), readFile(resolve(options['notification-targets'])),
-  ])
+  const [planBuffer, catalogBuffer, candidatesBuffer, reportBuffer, targetsBuffer, contactBuffer] = await Promise.all(
+    ['plan', 'catalog', 'candidates', 'report', 'notification-targets', 'contact-state'].map(key => readFile(resolve(options[key]))),
+  )
   const plan = JSON.parse(planBuffer)
   validatePlan(plan)
   const expectedHashes = {
-    catalogSha256: sha256(catalogBuffer),
-    candidatesSha256: sha256(candidatesBuffer),
-    reportSha256: sha256(reportBuffer),
-    notificationTargetsSha256: sha256(targetsBuffer),
+    catalogSha256: sha256(catalogBuffer), candidatesSha256: sha256(candidatesBuffer),
+    reportSha256: sha256(reportBuffer), notificationTargetsSha256: sha256(targetsBuffer),
+    contactStateSha256: sha256(contactBuffer),
   }
   for (const [name, value] of Object.entries(expectedHashes)) {
-    if (plan.preconditions[name] !== value) throw new Error(`${name} changed after the author notice plan was created`)
+    if (plan.preconditions[name] !== value) throw new Error(`${name} changed after planning`)
   }
-
   const repository = repositoryName(process.env.GITHUB_REPOSITORY)
+  if (repository.toLowerCase() !== 'ai-scarlett/dsh-store') throw new Error('contact ledger authority must be AI-Scarlett/DSH-Store')
   const github = githubClient(process.env.GITHUB_TOKEN)
   const authority = await github.request('GET', `/repos/${repository}/commits/main`)
-  if (authority.sha !== plan.baseCommit) throw new Error('remote main changed after the author notice plan was created')
+  if (authority.sha !== plan.baseCommit) throw new Error('remote main changed after planning')
   const existing = await managedIssueSnapshot(github, repository)
-  if (sha256(snapshotBuffer(existing)) !== plan.preconditions.existingIssuesSha256) {
-    throw new Error('managed GitHub Issues changed after the author notice plan was created')
-  }
-
-  await ensureLabels(github, repository, plan.requiredLabels)
-  const changed = []
-  for (const action of plan.actions) {
-    if (action.type === 'create') {
-      const issue = await github.request('POST', `/repos/${repository}/issues`, {
-        title: action.title, body: action.body, labels: action.labels,
-      })
-      const url = await verifyIssue(github, repository, issue.number, {
-        title: action.title, body: action.body, state: 'open', labels: action.labels,
-      })
-      changed.push({ type: action.type, key: action.key, issueNumber: issue.number, url })
-      continue
-    }
-    if (action.type === 'update') {
-      await github.request('PATCH', `/repos/${repository}/issues/${action.issueNumber}`, {
-        title: action.title, body: action.pendingBody, state: 'open', labels: action.labels,
-      })
-      await ensureComment(github, repository, action.issueNumber, action.commentMarker, action.comment)
-      await github.request('PATCH', `/repos/${repository}/issues/${action.issueNumber}`, { body: action.body })
-      const url = await verifyIssue(github, repository, action.issueNumber, {
-        title: action.title, body: action.body, state: 'open', labels: action.labels,
-      })
-      changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
-      continue
-    }
-    if (action.type === 'notify' || action.type === 'source-update') {
-      await ensureComment(github, repository, action.issueNumber, action.commentMarker, action.comment)
-      await github.request('PATCH', `/repos/${repository}/issues/${action.issueNumber}`, { body: action.body })
-      const url = await verifyIssue(github, repository, action.issueNumber, { body: action.body, state: 'open' })
-      changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
-      continue
-    }
-    if (action.type === 'baseline') {
-      await github.request('PATCH', `/repos/${repository}/issues/${action.issueNumber}`, { body: action.body })
-      const url = await verifyIssue(github, repository, action.issueNumber, { body: action.body, state: 'open' })
-      changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
-      continue
-    }
-    await ensureComment(github, repository, action.issueNumber, action.commentMarker, action.comment)
-    await github.request('PATCH', `/repos/${repository}/issues/${action.issueNumber}`, { state: 'closed' })
-    const url = await verifyIssue(github, repository, action.issueNumber, { state: 'closed' })
-    changed.push({ type: action.type, key: action.key, issueNumber: action.issueNumber, url })
-  }
-
-  process.stdout.write(`AUTHOR_NOTICES_APPLIED plan=${plan.planId} creates=${changed.filter(item => item.type === 'create').length} updates=${changed.filter(item => item.type === 'update' || item.type === 'notify' || item.type === 'source-update').length} baselines=${changed.filter(item => item.type === 'baseline').length} closes=${changed.filter(item => item.type === 'close').length}\n`)
-  for (const item of changed) process.stdout.write(`${item.type.toUpperCase()} ${item.key} #${item.issueNumber} ${item.url}\n`)
+  if (sha256(snapshotBuffer(existing)) !== plan.preconditions.existingIssuesSha256) throw new Error('managed Issues changed after planning')
+  const contactSnapshot = JSON.parse(contactBuffer)
+  const liveState = await readContactState(github, repository)
+  if (liveState.fileSha !== contactSnapshot.fileSha) throw new Error('contact state changed after planning; regenerate plan')
+  const root = JSON.parse(catalogBuffer)
+  const catalog = root?.registry?.indexPath ? await loadCatalogFromFiles({ indexUrl: pathToFileURL(resolve(options.catalog)) }) : root
+  const expected = buildAuthorNoticePlan({
+    catalog, candidates: JSON.parse(candidatesBuffer), report: JSON.parse(reportBuffer),
+    notificationTargets: JSON.parse(targetsBuffer), existingIssues: existing, contactSnapshot,
+    baseCommit: plan.baseCommit, inputHashes: plan.preconditions,
+    maxCreate: plan.policy.maxNewIssuesPerRun, sourceCatalogRunId: plan.sourceCatalogRunId,
+  })
+  if (JSON.stringify(plan) !== JSON.stringify(expected)) throw new Error('plan does not match the recomputed contact policy')
+  const changed = await applyFirstContacts({ plan, github, repository })
+  process.stdout.write(`AUTHOR_NOTICES_APPLIED plan=${plan.planId} creates=${changed.filter(item => item.type === 'create').length} suppressed=${changed.filter(item => item.type === 'suppressed').length}\n`)
 }
-
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) await main()
