@@ -263,6 +263,7 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.match(workflow, /plan-author-notices\.mjs/)
   assert.match(workflow, /apply-author-notice-plan\.mjs/)
   assert.match(workflow, /resolve-author-notice-targets\.mjs/)
+  assert.match(workflow, /--issues "\$RUNNER_TEMP\/author-notice-issues\.json"/)
   assert.match(workflow, /collect-author-feedback\.mjs/)
   assert.match(workflow, /author-feedback\.json/)
   assert.match(reportWorkflow, /--author-feedback/)
