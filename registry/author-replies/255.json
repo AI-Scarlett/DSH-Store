@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 255,
+  "userId": 229862838,
+  "requestCommentId": 5567501575,
+  "requestBodySha256": "ca38692e6363e6a48abbbe7c930a30d2ef7668f8e949d9ce1de46fceec5d66d1",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "@AI-Scarlett 感谢确认 symlink 修复闭环，以及明确「后续版本暂缓不再归因于该修复」。为加速单独审查，这里主动提供 **1.0.24（当前 Catalog）→ 1.0.37（固定 Commit f118a3d）的能力面对照表**——四类信号逐一说明：\n\n**network（唯一新增：1 个域名）**\n\n- 新增 `tokenhub.tencentcloudapi.com`（v1.0.29，PR #35）：腾讯云 TokenHub 管控面 `DescribeTokenPlan` 查询，TC3-HMAC-SHA256 签名 POST。**仅当**用户同时配置了腾讯云 Token Plan 路由与 API 密钥时才会调用；未配置时不发出任何请求。代码位于 `src/tc3.ts`，域名硬编码常量 `TOKENHUB_HOST`，无其它端点。\n- 其余全部对外端点（各厂商余额探测、中转站 relay 探测、models.dev 汇率、tokendance.space、qt.gtimg.cn 等）**与 1.0.24 完全一致**，已逐一 diff 核对。\n\n**credentials（唯一新增：1 种密钥形态）**\n\n- 新增腾讯云 API 密钥对（`SecretId:SecretKey` 形态，v1.0.29 / PR #35）：经宿主 credentials 能力按既定 provider key 读取，仅用于上述 TC3 请求签名，不落盘、不转发到任何第三方。\n- 其余凭据读取（DeepSeek / 各厂商 API key 用于余额与 relay 探测）与 1.0.24 一致。\n\n**files（无新增）**\n\n- `~/.dsh/.dsh-usage-ledger.json`(+`.bak`) 持久账本与 `~/.dsh/.dsh-usage-stats.json` 快照回退，均为 1.0.24 已有的路径与读写模式，未新增任何文件访问。\n\n**commands（无）**\n\n- 全仓库（`src/`，node 与 client 半区）无 `child_process` / `spawn` / `execSync` / 命令执行。若自动扫描命中 `exec(` 字样，那来自 `src/pricing-fetch.ts:31` 的**正则方法调用**（`/\"([^\"]*)\"/.exec(text)`），不是进程执行——如需我调整写法规避误报（如改用 `String.prototype.match`），可以直接说。\n\n**运行依赖**\n\n- `dependencies` 无变化；`peerDependencies` 无新增（反而移除了 `@deepseek-ai/dsh-client-ui-renderer`）。node 半区经宿主模块表 require 宿主服务属插件机制本身，1.0.24 起即如此。\n\n请告知单独审查需要的材料形式（如：逐端点清单、数据流说明、声明字段调整，或指定用 build-dsh-plugin 复核的哪几项），我会按清单逐项配合。若上述某项信号与扫描结果对不上，也请指出具体条目，我来核实或修正。",
+    "scope": "Respond to the author's explicit request for the materials and review boundary for the 1.0.24 to 1.0.37 capability comparison; report the scanner false-positive fix and the remaining manual-review evidence needed for the new network and credential signals."
+  },
+  "responseBody": "感谢你提供 1.0.24 → 1.0.37 的逐项能力面对照。你指出的 `/.exec()` 是正则成员方法，不是进程执行；我们已在 DSH Store 修复 PR #578 中修正扫描边界：只有独立的 `exec`、`execFile`、`spawn`、`fork` 调用会产生 commands 信号，`/.exec()` 和 `parser.exec()` 不再误报，source-update 差异扫描也同步修复。\n\n你列出的 `tokenhub.tencentcloudapi.com` 和腾讯云 `SecretId:SecretKey` 会继续作为真实的 network/credentials 信号保留，不会因扫描器修复而自动放行。为完成这部分单独审查，现有对照表已经覆盖版本差异；还需要固定 Commit 上对应端点、凭据读取入口、未配置时的禁用路径及最小请求/失败边界的可复核证据。我们会在 #578 合并后的下一轮固定 Commit 复检中读取 `f118a3d08cb70f470fc712ab726fb2e99a3627f4`，并把结果写入 Catalog/自动化报告。1.0.24 的现有记录不会被这次后续版本审查覆盖。\n\nThanks for the detailed 1.0.24 to 1.0.37 capability comparison. The regex member call is now excluded from the command signal in DSH Store PR #578; real command calls remain fail-closed. The new TokenHub domain and Tencent credential shape remain explicit review signals. We will recheck fixed Commit `f118a3d08cb70f470fc712ab726fb2e99a3627f4` after the fix is on `main` and publish the bounded result."
+}

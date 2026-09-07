@@ -42,6 +42,13 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
 })
 
+test('permission scan does not classify ordinary member exec methods as command execution', () => {
+  assert.equal(permissionSignals(`const match = /"([^"]*)"/.exec(text)`).commands, false)
+  assert.equal(permissionSignals(`const nested = parser.exec(text)`).commands, false)
+  assert.equal(permissionSignals(`exec(command)`).commands, true)
+  assert.equal(permissionSignals(`execFile(command)`).commands, true)
+})
+
 test('self-manager generated Catalog details do not consume the executable source bound', () => {
   const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
   assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.json'), true)
@@ -212,11 +219,12 @@ test('failed Catalog automation preserves a machine-readable failure report befo
 })
 
 test('author remediation notifications are hash-bound, rate-limited, and use only the repository token', async () => {
-  const [workflow, planner, resolver, apply] = await Promise.all([
+  const [workflow, planner, resolver, apply, reportWorkflow] = await Promise.all([
     read('.github/workflows/author-notifications.yml'),
     read('scripts/plan-author-notices.mjs'),
     read('scripts/resolve-author-notice-targets.mjs'),
     read('scripts/apply-author-notice-plan.mjs'),
+    read('.github/workflows/catalog-run-report.yml'),
   ])
   assert.match(workflow, /workflow_call:/)
   assert.match(workflow, /workflow_dispatch:/)
@@ -242,6 +250,9 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.match(workflow, /plan-author-notices\.mjs/)
   assert.match(workflow, /apply-author-notice-plan\.mjs/)
   assert.match(workflow, /resolve-author-notice-targets\.mjs/)
+  assert.match(workflow, /collect-author-feedback\.mjs/)
+  assert.match(workflow, /author-feedback\.json/)
+  assert.match(reportWorkflow, /--author-feedback/)
   assert.match(workflow, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/)
   assert.doesNotMatch(workflow, /PAT|SMTP|npm (?:install|ci)|pnpm|yarn/)
   assert.match(planner, /ignoreInfrastructureFailures: true/)

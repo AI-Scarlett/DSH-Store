@@ -168,6 +168,42 @@ test('Catalog notification remains useful when an automation artifact is missing
   assert.match(output, /已自动触发修复任务/)
 })
 
+test('Catalog notification reports author-reported Store problems to the owner without echoing author mentions', () => {
+  const output = renderCatalogAutomationNotification({
+    catalog: { entries: [] },
+    report: { observedAt: '2026-09-07T10:00:00Z', addedEntries: [], updatedEntries: [], compatibilityUnlisted: [], compatibilityRestored: [], prunedCandidates: [], deferredUpdates: [], transientFailures: [], sourceVersionChecks: {} },
+    watchdog: { status: 'passed', surfaces: [], candidateSurfaces: [], checkedAt: '2026-09-07T10:01:00Z' },
+    catalogRunId: '123',
+    catalogConclusion: 'success',
+    mention: '@AI-Scarlett',
+    authorFeedback: {
+      schemaVersion: 1,
+      observedAt: '2026-09-07T10:00:30Z',
+      source: { repository: 'AI-Scarlett/DSH-Store', managedLabel: 'author-action-required', identity: 'issue-author-immutable-user-id' },
+      items: [{
+        issueNumber: 434,
+        issueTitle: '作者修复请求：vshulcz/deja-vu（DSH STORE）',
+        issueUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/434',
+        author: { id: 99616188, login: 'vshulcz', nodeId: 'U_kgDOBfAFvA' },
+        commentId: 5568172291,
+        commentUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/434#issuecomment-5568172291',
+        createdAt: '2026-09-07T09:05:16Z',
+        bodySha256: '3e8d522e907c6df21a5cfa0132b07a89a887a36ed90dc6b14cd42bfc747f162b',
+        category: 'dsh-store-problem',
+        needsManualReview: true,
+        excerpt: 'Every push triggers a new ＠mention; automaticFollowups is false.',
+      }],
+      summary: { storeProblems: 1, manualReview: 1 },
+    },
+  })
+  assert.match(output, /作者反馈：DSH Store 问题/)
+  assert.match(output, /检测到 1 条作者反馈/)
+  assert.match(output, /查看评论/)
+  assert.match(output, /3e8d522e907c6df2/)
+  assert.match(output, /＠mention/)
+  assert.doesNotMatch(output, /Every push triggers a new @mention/)
+})
+
 test('Catalog notification exposes a preserved partial failure without presenting partial counts as final', () => {
   const output = renderCatalogAutomationNotification({
     catalog: { entries: [{ id: 'existing' }] },

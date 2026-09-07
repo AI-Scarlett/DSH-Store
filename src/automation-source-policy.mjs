@@ -6,6 +6,11 @@ const moduleImport = names => new RegExp(
 const FILE_MODULE = moduleImport('fs|fs/promises')
 const NETWORK_MODULE = moduleImport('http|https|net|tls|dgram|axios|got|undici')
 const COMMAND_MODULE = moduleImport('child_process')
+// Match an actual command function call while ignoring member calls such as
+// RegExp#exec() and parser.exec(). The scanner is intentionally conservative:
+// imports and explicit shell modes still fail closed, but ordinary library
+// member methods must not become command-capability evidence.
+const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
 const GENERATED_CATALOG_DETAIL = /^registry\/catalog\/details\/[^/]+\.json$/i
 
@@ -27,7 +32,8 @@ export function permissionSignals(source) {
       || /\b(?:fetch|WebSocket|EventSource)\s*\(/i.test(source)
       || /\b(?:axios|got|undici)\s*(?:\.|\()/i.test(source),
     commands: COMMAND_MODULE.test(source)
-      || /\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(source),
+      || COMMAND_CALL.test(source)
+      || /shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(source),
     credentials: /process\.env/i.test(source)
       || /\b(?:keychain|credentials?|oauth)\b\s*(?:\.|\[|\()/i.test(source)
       || /\b(?:api[_-]?key|apiKey|access[_-]?token|accessToken|client[_-]?secret|clientSecret|password)\b/i.test(source),
