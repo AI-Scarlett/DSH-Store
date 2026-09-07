@@ -33,14 +33,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-06T03:36:40.000Z",
-    "observedAt": "2026-09-06T04:15:58.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-06T04:15:58.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
       "evidenceUrl": "https://github.com/bobjia/dsh-context-milvus/commit/1c092ed10db78abbbb1b0d14d7601957961d16b1",
       "dshRelease": null,
       "systems": [],
@@ -82,7 +82,7 @@
     "dsh-context-milvus"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: dist/plugins/dsh-context-milvus/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/plugins/dsh-context-milvus/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/plugins/dsh-cont",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -95,7 +95,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -157,6 +158,12 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": null,
@@ -179,8 +186,10 @@
       ]
     },
     "externalDependencies": [
+      "@deepseek-ai/dsh-llm",
       "@zilliz/milvus2-sdk-node",
       "ignore",
+      "js-yaml",
       "tree-sitter",
       "tree-sitter-c-sharp",
       "tree-sitter-cpp",

@@ -22,7 +22,7 @@
   "manifestPath": "plugins/dsh-desktop-controls/package.json",
   "installPath": "plugins/dsh-desktop-controls",
   "updatePolicy": "external-only",
-  "commit": "b6a47edc7ec2f68a6a9582b5bf7bff32841756b6",
+  "commit": "21b8d88e75a9f5105f6ff510750006f9c5a0b782",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T04:18:18.000Z",
-    "observedAt": "2026-09-07T05:18:20.000Z",
+    "updatedAt": "2026-09-07T13:43:59.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-07T05:18:20.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/b6a47edc7ec2f68a6a9582b5bf7bff32841756b6",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
+      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/21b8d88e75a9f5105f6ff510750006f9c5a0b782",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "desktop-controls"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,7 +93,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -151,6 +152,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
