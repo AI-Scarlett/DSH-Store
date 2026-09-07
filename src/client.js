@@ -1634,14 +1634,15 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.versionBox, 'aria-label': 'DSH 版本与升级' },
           React.createElement('span', {
             style: styles.versionPill,
-            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH 与 npm 官方稳定版和预发布通道',
+            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH、官方 GitHub Release 与 npm 发行记录',
           }, versionLabel),
           React.createElement(Button, { compact: true, disabled: versionChecking, onClick: refreshDshVersion },
             versionChecking ? '检测中…' : '检测升级'),
-          dshVersion?.updateAvailable ? React.createElement(Button, {
+          dshVersion?.updateAvailable && dshVersion?.upgrade?.commandText ? React.createElement(Button, {
             compact: true, primary: true, onClick: copyUpgradeCommand,
             title: dshVersion.upgrade.reason,
           }, '复制升级命令') : null,
+          dshVersion?.npmAvailable === false ? React.createElement('span', { style: styles.muted }, '新版已发布，npm 包待发布') : null,
           dshVersion?.releaseUrl ? React.createElement('a', {
             href: dshVersion.releaseUrl, target: '_blank', rel: 'noreferrer', style: styles.link,
           }, '官方 Release') : null,

@@ -907,6 +907,7 @@ failureContext.stage = 'fetch-official-dsh-release-window'
 const dshReleaseWindow = await fetchOfficialDshReleaseWindow({
   registryUrl: policy.compatibility.registryUrl,
   releaseCount: policy.compatibility.latestReleaseCount,
+  githubToken: process.env.GITHUB_TOKEN,
 })
 const dshReleaseWindowSha = sha256(JSON.stringify(dshReleaseWindow))
 const report = {

@@ -3,10 +3,10 @@ name: Registry validation
 on:
   workflow_dispatch:
   pull_request:
-    paths: ["registry/**", "src/catalog.mjs", "scripts/validate-registry.mjs"]
+    paths: ["registry/**", "src/**", "bin/**", "scripts/**", "test/**", "marketplace/**", "install-counter/**", "package.json", ".github/workflows/registry.yml"]
   push:
     branches: [main]
-    paths: ["registry/**", "src/catalog.mjs", "scripts/validate-registry.mjs"]
+    paths: ["registry/**", "src/**", "bin/**", "scripts/**", "test/**", "marketplace/**", "install-counter/**", "package.json", ".github/workflows/registry.yml"]
 
 permissions:
   contents: read
@@ -19,5 +19,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm run validate:registry
+      - run: npm run check
       - run: npm run verify:registry-sources
