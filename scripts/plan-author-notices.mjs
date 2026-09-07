@@ -19,7 +19,9 @@ const CANDIDATE_COVERAGE_DISPOSITIONS = new Set([
   'public-discovery-only',
 ])
 
+export const AUTHOR_NOTICE_PAUSED_LABEL = 'author-notice-paused'
 export const AUTHOR_NOTICE_LABELS = [
+  { name: AUTHOR_NOTICE_PAUSED_LABEL, color: 'C5DEF5', description: 'Maintainer acknowledged author decision; no automated issue mutations or pings' },
   { name: 'author-action-required', color: 'D93F0B', description: 'Upstream author changes are required before DSH STORE can proceed' },
   { name: 'catalog-blocked', color: 'B60205', description: 'Catalog entry remains non-installable' },
   { name: 'update-deferred', color: 'FBCA04', description: 'A newer upstream version was found but could not be applied' },
@@ -220,6 +222,7 @@ export function canonicalExistingIssues(issues) {
       title: String(issue.title ?? ''),
       state,
       body: String(issue.body ?? ''),
+      labels: [...new Set(array(issue.labels).map(label => String(typeof label === 'string' ? label : label?.name ?? '')).filter(Boolean))].sort(),
       url: String(issue.url ?? issue.html_url ?? ''),
     }
   }).sort((left, right) => left.number - right.number)
@@ -400,6 +403,7 @@ export function buildAuthorNoticePlan({
     existingByKey.set(marker.key, { ...issue, marker })
   }
 
+  const pausedKeys = new Set([...existingByKey].filter(([, issue]) => issue.labels.includes(AUTHOR_NOTICE_PAUSED_LABEL)).map(([key]) => key))
   const repositories = new Map()
   const observedSources = collectObservedSources(catalog, candidates, report)
   const catalogById = new Map(array(catalog?.entries).map(entry => [entry.id, entry]))
@@ -500,7 +504,7 @@ export function buildAuthorNoticePlan({
   const createKeys = new Set(createRecords.map(record => record.key))
   const finalCandidateCoverage = candidateCoverageRecords.map(record => ({
     ...record,
-    notificationState: record.disposition !== 'direct-remediation'
+    notificationState: pausedKeys.has(record.key) ? 'author-paused' : record.disposition !== 'direct-remediation'
       ? 'public-registry-only'
       : record.managedIssueNumber !== null
         ? 'managed-issue'
@@ -514,6 +518,7 @@ export function buildAuthorNoticePlan({
   const sourceStatuses = []
   for (const record of desired) {
     const current = existingByKey.get(record.key)
+    if (pausedKeys.has(record.key)) continue
     if (!current) {
       if (!createKeys.has(record.key)) continue
       const sourceStatus = record.source.known ? 'new-baseline' : 'unknown'
@@ -584,7 +589,7 @@ export function buildAuthorNoticePlan({
 
   const desiredKeys = new Set(desired.map(record => record.key))
   for (const [key, current] of existingByKey) {
-    if (desiredKeys.has(key) || current.state === 'closed') continue
+    if (pausedKeys.has(key) || desiredKeys.has(key) || current.state === 'closed') continue
     const source = observedSources.get(key)
     const canCompareSource = current.marker.sourceKnown && current.marker.sourceFingerprint && source?.known
     const sourceStatus = canCompareSource && current.marker.sourceFingerprint !== source.fingerprint
@@ -658,6 +663,8 @@ export function buildAuthorNoticePlan({
     summary: {
       desiredRepositories: desired.length,
       managedExistingIssues: existingByKey.size,
+      pausedRepositories: pausedKeys.size,
+      candidateAuthorPaused: finalCandidateCoverage.filter(record => record.notificationState === 'author-paused').length,
       eligibleNewIssues: eligibleCreates,
       queuedNewIssues: Math.max(0, eligibleCreates - createRecords.length),
       creates: actions.filter(action => action.type === 'create').length,

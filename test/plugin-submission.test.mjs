@@ -336,3 +336,10 @@ test('GitHub workflow gates a one-required-field form with an upserted bot repor
   assert.doesNotMatch(form, /label: (?:Manifest path|Package name|Permission level|Immutable commit)/)
   assert.match(form, /不会.*运行第三方/)
 })
+
+test('explicit Catalog review snapshot remains authoritative after excluding the entry being updated', async () => {
+  const document = catalog()
+  document.registry = { ...document.registry, indexPath: 'catalog-index.json', indexSha256: 'b'.repeat(64), indexBytes: 100, indexEntryCount: 627 }
+  const result = await checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: document, fetch: sourceFetch(), retryDelaysMs: [] })
+  assert.equal(result.candidate.packageName, 'dsh-demo')
+})

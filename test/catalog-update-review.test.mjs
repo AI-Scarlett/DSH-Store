@@ -259,3 +259,18 @@ test('source compatibility still fails closed on genuinely conflicting aliases',
     },
   }), /conflicting aliases for 0\.1\.0-rc\.8/)
 })
+
+test('a complete new automatic review refreshes a stale blocked classification while preserving curated identity', async () => {
+  const { isAutomaticPolicyBlocked, refreshAutomaticPolicyReview } = await import('../src/catalog-update-review.mjs')
+  const previous = entry({ status: 'blocked', statusReason: 'Automatic policy blocked installation: old prepare', updatePolicy: 'external-only', risk: { review: 'automatic-policy-blocked-not-installable', installScripts: [] } })
+  const reviewed = { ...previous, id: 'generated-id', status: 'approved', statusReason: undefined, updatePolicy: 'source-verified', details: { permissions: { level: 'low' }, externalDependencies: [] }, assurance: { discovery: { method: 'automated-fixed-source-policy-v1' } } }
+  assert.equal(isAutomaticPolicyBlocked(previous), true)
+  const refreshed = refreshAutomaticPolicyReview(previous, reviewed)
+  assert.equal(refreshed.id, previous.id)
+  assert.equal(refreshed.status, 'approved')
+  assert.equal(refreshed.statusReason, undefined)
+  assert.deepEqual(refreshed.details.externalDependencies, [])
+  const manual = { ...previous, statusReason: 'Maintainer selected display-only', risk: { review: 'manual' } }
+  assert.equal(refreshAutomaticPolicyReview(manual, reviewed), manual)
+  assert.throws(() => refreshAutomaticPolicyReview(previous, { ...reviewed, assurance: {} }), /complete automatic/)
+})

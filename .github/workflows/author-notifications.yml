@@ -100,7 +100,7 @@ jobs:
         run: |
           gh api --method GET --paginate --slurp \
             "repos/$GITHUB_REPOSITORY/issues?state=all&labels=author-action-required&per_page=100" \
-            | jq '[.[][] | select(has("pull_request") | not) | {number, title, state, body: (.body // ""), url: .html_url}] | sort_by(.number)' \
+            | jq '[.[][] | select(has("pull_request") | not) | {number, title, state, body: (.body // ""), url: .html_url, labels: [.labels[] | if type == "string" then . else .name end]}] | sort_by(.number)' \
             > "$RUNNER_TEMP/author-notice-issues.json"
       - name: Select the bounded notification set
         run: |

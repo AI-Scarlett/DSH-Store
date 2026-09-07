@@ -9,7 +9,14 @@
       "\"deepseek harness\" plugin in:name,description,readme"
     ],
     "resultsPerQuery": 20,
-    "maxNewRepositoriesPerRun": 8
+    "maxNewRepositoriesPerRun": 8,
+    "excludedRepositories": [
+      {
+        "repositoryUrl": "https://github.com/mengxingGG/dsh-desktop",
+        "reason": "Author confirmed this is a complete DSH downstream distribution, not an installable plugin.",
+        "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/issues/230#issuecomment-5426569042"
+      }
+    ]
   },
   "sourceBounds": {
     "maxTreeEntries": 1200,

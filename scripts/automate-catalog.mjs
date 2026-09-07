@@ -8,6 +8,8 @@ import { checkRepository } from './check-plugin-submission.mjs'
 import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-localization.mjs'
 import {
   assessUpstreamVersion,
+  isAutomaticPolicyBlocked,
+  refreshAutomaticPolicyReview,
   buildCatalogVersionUpdate,
   catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
@@ -24,8 +26,9 @@ import {
   splitCatalogDocument,
   validateCatalog,
 } from '../src/catalog.mjs'
+import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -283,6 +286,8 @@ async function analyzeFixedSource(candidate, policy, github) {
   if (!policy.automaticApproval.allowSymlinks && packageEntries.some(item => item.mode === '120000')) reasons.push('package contains symbolic links')
   if (!policy.automaticApproval.allowSubmodules && packageEntries.some(item => item.mode === '160000' || item.type === 'commit')) reasons.push('package contains Git submodules')
 
+  reasons.push(...missingRuntimeEntryReasons(manifest, packageEntries, prefix))
+
   const runtimeFiles = packageEntries.filter(item => {
     if (item.type !== 'blob') return false
     const relativePath = prefix ? item.path.slice(prefix.length) : item.path
@@ -397,12 +402,14 @@ function candidateRecord(repository, head, previous, observedAt, outcome) {
 
 async function discoverRepositories(policy, github) {
   const found = new Map()
+  const excluded = excludedRepositoryKeys(policy)
   for (const query of policy.search.queries) {
     const result = await github.api(`search/repositories?q=${encodeURIComponent(query)}&sort=updated&order=desc&per_page=${policy.search.resultsPerQuery}`)
     for (const item of result?.items ?? []) {
       if (item?.private || item?.archived || item?.disabled || typeof item?.html_url !== 'string') continue
       const url = canonicalGithubRepository(item.html_url)
       if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
+      if (excluded.has(url.toLowerCase())) continue
       found.set(url.toLowerCase(), { ...item, html_url: url })
     }
   }
@@ -464,7 +471,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     let changeContract = null
     try {
       snapshot = await sourceSnapshot(entry)
-      if (snapshot.commit === entry.commit) return { index, entry, kind: 'current' }
+      const recheckCurrent = snapshot.commit === entry.commit && isAutomaticPolicyBlocked(entry) && entry.assurance?.discovery?.method !== 'automated-fixed-source-recheck-v1'
+      if (snapshot.commit === entry.commit && !recheckCurrent) return { index, entry, kind: 'current' }
       let manifest
       try {
         manifest = JSON.parse(await github.raw(entry.repositoryUrl, snapshot.commit, entry.manifestPath, {
@@ -475,7 +483,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         return { index, entry, kind: 'deferred', snapshot, reason: 'the fixed-Commit manifest is not valid JSON' }
       }
       versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
-      changeContract = catalogChangeReviewContract(versionAssessment)
+      changeContract = recheckCurrent
+        ? { reviewable: true, expectedVersionComparison: 0, changeKind: 'automatic-policy-recheck' }
+        : catalogChangeReviewContract(versionAssessment)
       if (!changeContract.reviewable) {
         return { index, entry, kind: versionAssessment.status, snapshot, versionAssessment }
       }
@@ -503,7 +513,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
         { maxBytes: 4 * 1024 * 1024 },
       ))
-      if (lineage?.status !== 'ahead' || !Number.isInteger(lineage?.total_commits) || lineage.total_commits > maxCommitSpan) {
+      if ((!recheckCurrent && lineage?.status !== 'ahead') || (recheckCurrent && lineage?.status !== 'identical') || !Number.isInteger(lineage?.total_commits) || lineage.total_commits > maxCommitSpan) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the candidate is not a bounded direct descendant of the Catalog Commit' }
       }
       const analysisPolicy = isSelfManagerEntry(entry)
@@ -529,10 +539,15 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
           return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: hardReasons.join('; ') }
         }
       }
-      const updated = buildCatalogVersionUpdate(entry, candidate, {
+      const reviewed = refreshAutomaticPolicyReview(entry, automatedEntry(candidate, analysis, observedAt))
+      // Avoid daily source rechecks rewriting identical unresolved records.
+      if (recheckCurrent && reviewed.status === entry.status && reviewed.statusReason === entry.statusReason
+        && JSON.stringify(reviewed.details) === JSON.stringify(entry.details)) return { index, entry, kind: 'current' }
+      const updated = buildCatalogVersionUpdate(reviewed, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
       }, observedAt, sourcePolicy)
+      if (isAutomaticPolicyBlocked(entry)) updated.assurance.discovery.method = 'automated-fixed-source-recheck-v1'
       return {
         index, entry, kind: 'updated', snapshot, versionAssessment, changeContract, sourcePolicy, updated,
         warnings: analysis.reasons,
@@ -963,6 +978,7 @@ failureContext.report = report
 const github = createGithubClient()
 failureContext.stage = 'inspect-historical-catalog-entries'
 await updateExistingEntries(catalog, policy, github, observedAt, report)
+report.excludedCandidates = pruneExcludedCandidates(candidates, policy)
 failureContext.stage = 'prune-historical-candidates'
 await pruneHistoricalRejectedCandidates(candidates, policy, github, dshReleaseWindow, observedAt, report)
 failureContext.stage = 'inspect-new-discoveries'
@@ -979,7 +995,7 @@ assertCatalogLocalization(catalog)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
   || report.compatibilityPolicy.catalogChanged
-const candidatesChanged = report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0
+const candidatesChanged = report.excludedCandidates.length > 0 || report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0
   || report.candidateRetention.registryRemovals > 0 || report.compatibilityPolicy.candidatesChanged
 if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
