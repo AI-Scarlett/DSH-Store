@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "ca5a7c7d218c5537b68f6262d1f040b47d7b2450",
+  "commit": "f3ba5e56a642d2894302e9f9cbc7386fa4d2cc77",
   "version": "0.9.0-alpha.1",
   "categories": [
     "sessions"
@@ -31,20 +31,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T14:39:05.000Z",
-    "observedAt": "2026-09-06T18:11:52.000Z",
+    "updatedAt": "2026-09-07T02:59:59.000Z",
+    "observedAt": "2026-09-07T05:18:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-06T18:11:52.000Z",
-      "evidenceUrl": "https://github.com/SiriLee/dsh-rewind/commit/ca5a7c7d218c5537b68f6262d1f040b47d7b2450",
+      "checkedAt": "2026-09-07T05:18:20.000Z",
+      "evidenceUrl": "https://github.com/SiriLee/dsh-rewind/commit/f3ba5e56a642d2894302e9f9cbc7386fa4d2cc77",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -81,7 +81,7 @@
     "dsh-rewind-plugin"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.4, 0.1.2-alpha.5, 0.1.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": "^0.1.2-rc.1",
     "dshReleases": {
@@ -93,7 +93,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown"
+      "0.1.2-rc.1": "unknown",
+      "0.1.3-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,6 +146,12 @@
         "rollback": "unknown"
       },
       "0.1.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
