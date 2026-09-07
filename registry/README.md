@@ -107,7 +107,9 @@ Catalog 通知和插件提交预检共用此记录及并发组。预检在编辑
 中单独发送一次 `@AI-Scarlett` 站内评论。评论按 `dsh-author-feedback:v1` 加作者评论 ID、正文哈希
 和 Issue 号去重；因此后续三小时报告更新不会重复触发通知。该评论只把问题交给仓库所有者人工处理，
 不会自动回复作者，也不会改变“一位用户仅一次主动联系”的规则。GitHub 通知系统是否实际送达邮箱仍
-无法由仓库验证。
+无法由仓库验证。分类只检查该作者最新的非空评论，邮件转发的原机器人内容和 Markdown 引用会先剥离，
+并且必须出现明确的问题、误报、重复通知、干扰、错误或修复请求信号；致谢、整改完成、接受 guarded
+状态、普通复检请求和停止联系不会把历史评论重新升级为新的 Store 问题。
 
 每轮计划会把 Candidate Registry 的全部 canonical 仓库逐一归入机器可读台账，去重后只能处于
 `direct-remediation`、`public-reviewing`、`public-remediation`、`public-deferred` 或
