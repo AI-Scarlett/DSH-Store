@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-07T15:40:28.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -5519,8 +5519,8 @@
       "description": "DeepSeek Harness (DSH) Web Plugin Aggregation Ecosystem · Everything is a plugin, distributed via the Creative Workshop",
       "repositoryUrl": "https://github.com/zhu1090093659/dsh-web",
       "defaultBranch": "dev",
-      "latestCommit": "b5438099801b4f007ffdb47b4c214ef09bd94935",
-      "sourceUpdatedAt": "2026-09-04T03:48:57.000Z",
+      "latestCommit": "9b361da97b1a942c1a58b33b17cd6c004c314104",
+      "sourceUpdatedAt": "2026-09-07T15:43:53.000Z",
       "discoveredAt": "2026-08-24T13:07:51.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -5536,7 +5536,7 @@
       ],
       "status": "rejected",
       "route": "monorepo-review",
-      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., packages/dsh-community-plugins, packages/dsh-doctor, packages/dsh-git-graph, packages/dsh-i18n, packages/dsh-liangshen, packages/dsh-market, packages/dsh-perf, packages/dsh-pet, packages/dsh-plugin-manager, packages/dsh-remote-web-ui, packages/dsh-session-archive, packages/dsh-session-id, packages/dsh-skill-explorer, packages/dsh-ssh, packages/dsh-task-board, packages/dsh-tool-describe-image, packages/dsh-usage, packages/dsh-web-all, packages/dsh-web-settings, scripts/plugin-template, packages/skins/sk"
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., packages/dsh-community-plugins, packages/dsh-doctor, packages/dsh-git-graph, packages/dsh-i18n, packages/dsh-liangshen, packages/dsh-market, packages/dsh-pet, packages/dsh-plugin-manager, packages/dsh-remote-web-ui, packages/dsh-session-archive, packages/dsh-session-id, packages/dsh-skill-explorer, packages/dsh-ssh, packages/dsh-task-board, packages/dsh-tool-describe-image, packages/dsh-usage, packages/dsh-web-all, packages/dsh-web-settings, scripts/plugin-template, packages/skins/skin-center, market/s"
     },
     {
       "id": "volcengine-openviking",
@@ -6585,8 +6585,8 @@
       "description": "给 DeepSeek Harness 加入更好的流式文字动画。",
       "repositoryUrl": "https://github.com/SpookySandwich/dsh-plugin-smooth-stream",
       "defaultBranch": "main",
-      "latestCommit": "93b1e816c0336310b7c362bfc67d7b53da7a6861",
-      "sourceUpdatedAt": "2026-08-19T08:44:04.000Z",
+      "latestCommit": "23bd57cdf3c97ce7d53bbc181d9a6ceccd99016c",
+      "sourceUpdatedAt": "2026-09-07T15:41:16.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9554,8 +9554,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "a3c5b5a9eeda98c7ef6c390b8b966e11f2645931",
-      "sourceUpdatedAt": "2026-09-03T02:17:14.000Z",
+      "latestCommit": "7ed67cd339953e59370be506fa1459714f047316",
+      "sourceUpdatedAt": "2026-09-07T15:25:56.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13337,6 +13337,45 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-rc.1, 0.1.3-alpha.1, 0.1.3-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-multi-folder."
+    },
+    {
+      "id": "personaljarvis-personaljarvis",
+      "name": "PersonalJarvis/PersonalJarvis",
+      "description": "Self-hosted voice assistant. Speak to your computer: it answers aloud, types your dictation, and operates your apps.",
+      "repositoryUrl": "https://github.com/PersonalJarvis/PersonalJarvis",
+      "defaultBranch": "main",
+      "latestCommit": "34d3de5feae4f358df3c02dc2e0b8ebd417acbb9",
+      "sourceUpdatedAt": "2026-09-07T15:41:38.000Z",
+      "discoveredAt": "2026-09-07T15:40:28.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-orchestration",
+        "ai-agent",
+        "ai-coding-assistant",
+        "claude-code",
+        "coding-agent",
+        "computer-use",
+        "desktop-app",
+        "dictation",
+        "llm",
+        "mcp",
+        "personal-assistant",
+        "privacy",
+        "self-hosted",
+        "speech-recognition",
+        "speech-to-text",
+        "text-to-speech",
+        "voice-assistant",
+        "voice-coding",
+        "voice-control",
+        "wake-word",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
