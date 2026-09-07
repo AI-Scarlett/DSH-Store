@@ -281,7 +281,8 @@ export function renderCatalogAutomationNotification({
       candidateCoverageAvailable
         ? `- Candidate Registry 全量覆盖：${number(authorSummary.candidateCoverageAccounted)} / ${number(authorSummary.candidateRegistryRecords)} 条，canonical 仓库 ${number(authorSummary.candidateRegistryRepositories)} 个，未覆盖 ${number(authorSummary.candidateCoverageUnaccounted)} 条。`
         : '- Candidate Registry 全量覆盖：**校验不可用，禁止按已覆盖解读**。',
-      `- 符合一次性直接整改通知的候选：${number(authorSummary.candidateDirectNotificationEligible)} 个（已有修复单 ${number(authorSummary.candidateDirectManagedIssues)}，本轮安排 ${number(authorSummary.candidateDirectScheduledThisRun)}，待限速发送 ${number(authorSummary.candidateDirectQueued)}）。`,
+      `- 有确定整改原因的候选（仍须全局人员门禁）：${number(authorSummary.candidateDirectNotificationEligible)} 个（已有修复单 ${number(authorSummary.candidateDirectManagedIssues)}，本轮安排 ${number(authorSummary.candidateDirectScheduledThisRun)}，待限速发送 ${number(authorSummary.candidateDirectQueued)}）。`,
+      `- 自动跟进关闭；跨项目联系门禁跳过仓库：${number(authorSummary.contactSuppressedRepositories)}。候选中因该门禁跳过：${number(authorSummary.candidateDirectSuppressed)}。`,
       `- 仅在[公开候选库](https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/candidates.json)展示、不主动 @ 的候选：${number(authorSummary.candidatePublicRegistryOnly)} 个（待复检 ${number(authorSummary.candidatePublicReviewing)}，公开整改原因 ${number(authorSummary.candidatePublicRemediation)}，基础设施暂缓 ${number(authorSummary.candidatePublicDeferred)}，发现记录 ${number(authorSummary.candidatePublicDiscoveryOnly)}）。`,
       '- 公开展示不等于向作者发送消息；直接通知只用于具体、确定性的上架整改，不发送纯推广内容，也不去第三方仓库批量开 Issue。',
       `- 检测到上游修改但仍未通过：${number(authorSummary.upstreamModifiedStillBlocked)} 个项目`,

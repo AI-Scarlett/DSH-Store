@@ -176,7 +176,7 @@ jobs:
       catalog_conclusion: ${{ needs.update.result }}
       inline_catalog_run: true
     permissions:
-      contents: read
+      contents: write
       actions: read
       issues: write
 

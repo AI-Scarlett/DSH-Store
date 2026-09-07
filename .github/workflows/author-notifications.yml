@@ -31,12 +31,12 @@ on:
 run-name: Author notifications for Catalog run ${{ inputs.catalog_run_id }}
 
 permissions:
-  contents: read
+  contents: write
   actions: read
   issues: write
 
 concurrency:
-  group: author-notifications-${{ inputs.catalog_run_id }}-${{ inputs.catalog_run_attempt }}
+  group: author-notifications-global-contact
   cancel-in-progress: false
 
 jobs:
@@ -115,13 +115,17 @@ jobs:
             --catalog-run-id "${{ steps.report.outputs.run_id }}" \
             --max-create 10 \
             --output "$RUNNER_TEMP/author-notice-preliminary-plan.json"
-      - name: Resolve a human maintainer for organization repositories
+      - name: Resolve verified human identities
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           node scripts/resolve-author-notice-targets.mjs \
             --plan "$RUNNER_TEMP/author-notice-preliminary-plan.json" \
             --output "$RUNNER_TEMP/author-notice-targets.json"
+      - name: Snapshot the required global contact ledger
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/author-contact-state.mjs --output "$RUNNER_TEMP/author-contact-state.json"
       - name: Create a hash-bound author notification plan
         id: plan
         run: |
@@ -130,6 +134,7 @@ jobs:
             --candidates registry/candidates.json \
             --report "${{ steps.report.outputs.path }}" \
             --existing-issues "$RUNNER_TEMP/author-notice-issues.json" \
+            --contact-state "$RUNNER_TEMP/author-contact-state.json" \
             --notification-targets "$RUNNER_TEMP/author-notice-targets.json" \
             --base-commit "${{ steps.base.outputs.sha }}" \
             --catalog-run-id "${{ steps.report.outputs.run_id }}" \
@@ -146,30 +151,20 @@ jobs:
             --catalog registry/catalog.json \
             --candidates registry/candidates.json \
             --report "${{ steps.report.outputs.path }}" \
+            --contact-state "$RUNNER_TEMP/author-contact-state.json" \
             --notification-targets "$RUNNER_TEMP/author-notice-targets.json"
       - name: Publish the bounded run summary
         if: always() && steps.plan.outcome == 'success'
         run: |
           {
-            echo "## 插件作者自动通知"
+            echo "## 作者联系规则核验"
             echo
-            echo "- 计划：\`${{ steps.plan.outputs.plan_id }}\`"
-            echo "- 新修复单：${{ steps.plan.outputs.creates }}"
-            echo "- 原因变化：${{ steps.plan.outputs.updates }}"
-            echo "- 静默建立源码追踪基线：${{ steps.plan.outputs.baselines }}"
-            echo "- 自动关闭：${{ steps.plan.outputs.closes }}"
-            echo "- 待后续限速通知：${{ steps.plan.outputs.queued }}"
-            echo "- 向不符合条件项目发送 GitHub 整改消息：${{ steps.plan.outputs.github_messages }}"
-            echo "- 触发 GitHub 通知邮件：${{ steps.plan.outputs.email_triggers }}（实际送达取决于接收者 GitHub 设置，仓库无法验证）"
-            echo "- Candidate Registry 全量覆盖：${{ steps.plan.outputs.candidate_accounted }} / ${{ steps.plan.outputs.candidate_records }} 条；未覆盖：${{ steps.plan.outputs.candidate_unaccounted }}"
-            echo "- canonical 候选仓库：${{ steps.plan.outputs.candidate_repositories }}；符合一次性直接整改通知：${{ steps.plan.outputs.candidate_direct }}（已建单 ${{ steps.plan.outputs.candidate_direct_managed }}，本轮 ${{ steps.plan.outputs.candidate_direct_scheduled }}，排队 ${{ steps.plan.outputs.candidate_direct_queued }}）"
-            echo "- 仅在公开候选库展示、不主动 @：${{ steps.plan.outputs.candidate_public }}（待复检 ${{ steps.plan.outputs.candidate_public_reviewing }}，异常的未入队整改项 ${{ steps.plan.outputs.candidate_public_remediation }}，基础设施暂缓 ${{ steps.plan.outputs.candidate_public_deferred }}，发现记录 ${{ steps.plan.outputs.candidate_public_discovery }}）"
-            echo "- 完整候选清单：https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/candidates.json"
-            echo "- 检测到作者修改但仍未通过：${{ steps.plan.outputs.modified_blocked }}"
-            echo "- 检测到作者修改且阻断清除：${{ steps.plan.outputs.modified_resolved }}"
-            echo "- 未检测到新提交：${{ steps.plan.outputs.not_modified }}"
-            echo "- 首次建立基线／暂无法判断：${{ steps.plan.outputs.source_baselines }} / ${{ steps.plan.outputs.source_unknown }}"
-            echo "- Catalog 决策运行：#${{ steps.report.outputs.run_id }}"
+            jq -r '"- 全局规则：每位 GitHub 用户跨所有项目仅一次初始联系",
+              "- 本轮首次联系计划：\(.summary.creates)",
+              "- 因联系规则跳过的仓库：\(.summary.contactSuppressedRepositories)",
+              "- 自动跟进、重开、修改旧通知和关闭提醒：禁止",
+              "- 候选记录覆盖：\(.summary.candidateCoverageAccounted) / \(.summary.candidateRegistryRecords)",
+              "- 实际发送以 Apply 步骤为准；邮箱送达未验证"' "$RUNNER_TEMP/author-notice-plan.json"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Preserve the machine-readable notification plan
         if: always()

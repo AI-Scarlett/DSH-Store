@@ -52,9 +52,9 @@ test('self-manager generated Catalog details do not consume the executable sourc
   assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog/details/example.json'), false)
 })
 
-test('author target resolution falls back only for a deterministically unavailable repository', async () => {
+test('author target resolution suppresses deterministically unavailable repositories', async () => {
   const missing = async () => { throw Object.assign(new Error('missing'), { status: 404 }) }
-  assert.deepEqual(await resolveTargets(missing, 'example-owner/missing-plugin'), ['example-owner'])
+  assert.equal(await resolveTargets(missing, 'example-owner/missing-plugin'), null)
   const transient = async () => { throw Object.assign(new Error('temporary'), { status: 503 }) }
   await assert.rejects(resolveTargets(transient, 'example-owner/plugin'), /temporary/)
 })
@@ -233,9 +233,9 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.match(workflow, /author-notification-plan-\$\{\{ inputs\.catalog_run_id \}\}-\$\{\{ inputs\.catalog_run_attempt \}\}/)
   assert.match(workflow, /--max-create 10/)
   assert.match(planner, /MAX_AUTHOR_NOTICE_ACTIONS = 500/)
-  assert.match(resolver, /plan\.actions\.length > MAX_AUTHOR_NOTICE_ACTIONS/)
+  assert.match(resolver, /plan\.contactRepositoryKeys\.length > 2500/)
   assert.match(apply, /plan\.actions\.length > MAX_AUTHOR_NOTICE_ACTIONS/)
-  assert.match(workflow, /Candidate Registry 全量覆盖/)
+  assert.match(workflow, /候选记录覆盖/)
   assert.match(workflow, /candidate_unaccounted/)
   assert.match(workflow, /registry\/candidates\.json/)
   assert.match(workflow, /--catalog-run-id "\$\{\{ steps\.report\.outputs\.run_id \}\}"/)
@@ -259,11 +259,11 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.match(planner, /github\.com\/AI-Scarlett\/build-dsh-plugin/)
   assert.match(planner, /https:\/\/dsh\.store\//)
   assert.doesNotMatch(planner, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
-  assert.match(resolver, /repository\.owner\.type === 'User'/)
-  assert.match(resolver, /commits\?per_page=20/)
+  assert.match(resolver, /humanIdentity\(repository\.owner\)/)
+  assert.doesNotMatch(resolver, /commits\?per_page=20/)
   assert.doesNotMatch(resolver, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
-  assert.match(apply, /remote main changed after the author notice plan was created/)
-  assert.match(apply, /managed GitHub Issues changed after the author notice plan was created/)
+  assert.match(apply, /remote main changed after planning/)
+  assert.match(apply, /managed Issues changed after planning/)
   assert.match(apply, /candidate coverage summary invariant failed/)
   assert.match(apply, /candidate coverage fingerprint mismatch/)
   assert.match(apply, /source-update/)
