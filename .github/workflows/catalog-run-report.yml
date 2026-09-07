@@ -124,6 +124,9 @@ jobs:
           jq -e --arg catalog_run_id "$CATALOG_RUN_ID" \
             '.sourceCatalogRunId == $catalog_run_id' "$plan_path" >/dev/null
           echo "path=$plan_path" >> "$GITHUB_OUTPUT"
+          feedback_path=$(find "$plan_dir" -type f -name author-feedback.json -print -quit)
+          test -n "$feedback_path"
+          echo "feedback_path=$feedback_path" >> "$GITHUB_OUTPUT"
       - name: Verify current public Catalog and Candidate surfaces
         id: public
         continue-on-error: true
@@ -164,6 +167,9 @@ jobs:
           fi
           if test -n "$AUTHOR_NOTICE_PLAN_PATH" && test -f "$AUTHOR_NOTICE_PLAN_PATH"; then
             args+=(--author-notice-plan "$AUTHOR_NOTICE_PLAN_PATH")
+          fi
+          if test -n "${{ steps.author_report.outputs.feedback_path }}" && test -f "${{ steps.author_report.outputs.feedback_path }}"; then
+            args+=(--author-feedback "${{ steps.author_report.outputs.feedback_path }}")
           fi
           node scripts/render-catalog-automation-notification.mjs "${args[@]}"
           cat "$RUNNER_TEMP/catalog-run-report.md" >> "$GITHUB_STEP_SUMMARY"

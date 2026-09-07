@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { loadCatalogFromFiles } from '../src/catalog.mjs'
+import { validateAuthorFeedback } from './collect-author-feedback.mjs'
 
 const statusLabels = {
   approved: '可安装',
@@ -25,7 +26,7 @@ function parseArgs(argv) {
 }
 
 function markdownCell(value) {
-  return String(value ?? '未知').replace(/\r?\n/g, ' ').replaceAll('|', '\\|')
+  return String(value ?? '未知').replace(/\r?\n/g, ' ').replaceAll('|', '\\|').replaceAll('@', '＠')
 }
 
 function code(value) {
@@ -83,6 +84,7 @@ export function renderCatalogAutomationNotification({
   repairTriggered = false,
   mention = null,
   authorNotices = null,
+  authorFeedback = null,
 }) {
   const catalogEntries = array(catalog?.entries)
   const byId = new Map(catalogEntries.map(entry => [entry.id, entry]))
@@ -121,6 +123,7 @@ export function renderCatalogAutomationNotification({
   const authorStatisticsAvailable = authorSummary !== null
   const candidateCoverageAvailable = authorSummary?.candidateCoverageInvariantPassed === true
     && number(authorSummary.candidateCoverageUnaccounted) === 0
+  if (authorFeedback !== null) validateAuthorFeedback(authorFeedback)
   const title = statisticsAvailable
     ? `DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}，兼容性下架 ${compatibilityUnlisted.length}，恢复 ${compatibilityRestored.length}`
     : 'DSH STORE 自动更新报告：本轮扫描失败，统计不可用'
@@ -339,6 +342,29 @@ export function renderCatalogAutomationNotification({
     appendOmittedRows(lines, candidateSurfaces.length, rows.length)
   }
 
+  lines.push('### 作者反馈：DSH Store 问题', '')
+  if (authorFeedback === null) {
+    lines.push('本轮未取得作者反馈快照；不能按没有反馈解读。', '')
+  } else if (authorFeedback.items.length === 0) {
+    lines.push('本轮没有发现作者明确指出的 DSH Store 自动化、扫描或通知问题。', '')
+  } else {
+    lines.push(
+      `- 检测到 ${authorFeedback.items.length} 条作者反馈，已列入仓库所有者人工处理队列。`,
+      '- 这部分只触发仓库所有者的站内通知，不授予自动回复或绕过“一位作者一次联系”门禁的权限。',
+      '',
+      '| Issue | 作者 | 最新反馈 | 原文 SHA-256 | 摘要 |',
+      '|---|---|---|---|---|',
+    )
+    const rows = visibleRows(authorFeedback.items)
+    for (const item of rows) {
+      const issueUrl = /^https:\/\/github\.com\//.test(item.issueUrl) ? item.issueUrl : '#'
+      const commentUrl = /^https:\/\/github\.com\//.test(item.commentUrl) ? item.commentUrl : '#'
+      lines.push(`| [#${item.issueNumber}](${issueUrl}) | ${markdownCell(item.author.login)} | [查看评论](${commentUrl}) | ${code(item.bodySha256)} | ${markdownCell(item.excerpt)} |`)
+    }
+    lines.push('')
+    appendOmittedRows(lines, authorFeedback.items.length, rows.length)
+  }
+
   lines.push(
     '> 状态边界：本报告只证明 GitHub Catalog 固定源检查、自动策略 PR 和公开商城目录核验；不表示插件已安装到真实 DSH Profile，也不表示插件运行时已验收或经过独立安全审计。',
     '',
@@ -359,11 +385,12 @@ async function readJson(path, optional = false) {
 async function main() {
   const options = parseArgs(process.argv.slice(2))
   if (!options.catalog || !options.output) throw new Error('--catalog and --output are required')
-  const [catalogRoot, report, watchdog, authorNotices] = await Promise.all([
+  const [catalogRoot, report, watchdog, authorNotices, authorFeedback] = await Promise.all([
     readJson(options.catalog),
     readJson(options.report, true),
     readJson(options['watchdog-report'], true),
     readJson(options['author-notice-plan'], true),
+    readJson(options['author-feedback'], true),
   ])
   const catalog = catalogRoot?.registry?.indexPath
     ? await loadCatalogFromFiles({ indexUrl: pathToFileURL(resolve(options.catalog)) })
@@ -380,6 +407,7 @@ async function main() {
     repairTriggered: options['repair-triggered'] === 'true',
     mention: options.mention ?? null,
     authorNotices,
+    authorFeedback,
   })
   await writeFile(resolve(options.output), body, { encoding: 'utf8', flag: 'wx', mode: 0o644 })
 }
