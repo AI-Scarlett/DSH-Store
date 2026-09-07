@@ -25,8 +25,8 @@
   "manifestPath": "plugin/package.json",
   "installPath": "plugin",
   "updatePolicy": "user-reviewed",
-  "commit": "f88c9edbffe235bc1f9ac954f94dc326de1e1641",
-  "version": "0.5.2",
+  "commit": "e7fd2eb2c5a8cd777350da38066043f1019a0161",
+  "version": "0.5.3",
   "categories": [
     "models",
     "routing"
@@ -34,58 +34,62 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-05T00:49:20.000Z",
-    "observedAt": "2026-09-05T00:52:16.000Z",
+    "updatedAt": "2026-09-07T04:09:10.000Z",
+    "observedAt": "2026-09-07T04:11:58.370Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "github-fixed-commit-release-readback-v3",
-      "checkedAt": "2026-09-05T00:52:16.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/f88c9edbffe235bc1f9ac954f94dc326de1e1641",
-      "dshRelease": null,
-      "systems": [],
-      "profiles": [],
-      "summary": "公开固定合并 Commit 的 0.5.2 manifest、Bundle Patch、MIT 许可证与发行入口已回读。"
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/blob/e7fd2eb2c5a8cd777350da38066043f1019a0161/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
+      "systems": [
+        "macos"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Canonical GitHub manifest and Bundle Patch read back at the immutable candidate commit."
     },
     "installability": {
       "status": "partial",
-      "method": "disposable-dsh-latest-three-profile-cli-install-v3",
-      "checkedAt": "2026-09-05T00:52:16.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/releases/tag/v0.5.2",
-      "dshRelease": "0.1.2-rc.1",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/blob/e7fd2eb2c5a8cd777350da38066043f1019a0161/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
       "systems": [
-        "macOS"
+        "macos"
       ],
       "profiles": [
         "web"
       ],
-      "summary": "部分验证：0.5.2 在 DSH alpha.4、alpha.5、rc.1 的一次性 Profile 中通过安装、dump-config、冷启动、卸载和子进程关闭清理；使用无凭据隔离代理夹具。"
+      "summary": "Official source CLI link install, configuration composition and npm tarball contents passed in a disposable Profile; remote Git install was not tested."
     },
     "runtime": {
       "status": "partial",
-      "method": "dsh-latest-three-cold-start-runtime-v3",
-      "checkedAt": "2026-09-05T00:52:16.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/f88c9edbffe235bc1f9ac954f94dc326de1e1641",
-      "dshRelease": "0.1.2-rc.1",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/blob/e7fd2eb2c5a8cd777350da38066043f1019a0161/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
       "systems": [
-        "macOS"
+        "macos"
       ],
       "profiles": [
         "web"
       ],
-      "summary": "部分验证：0.5.2 在 DSH alpha.4、alpha.5、rc.1 的一次性 Profile 中通过安装、dump-config、冷启动、卸载和子进程关闭清理；使用无凭据隔离代理夹具。 真实用户 Profile 与真实账号/设备仍是独立验收层。"
+      "summary": "Official 0.1.3-alpha.1 source host cold start and uninstall passed; UI, real model calls and version rollback remain unverified."
     },
     "securityReview": {
-      "status": "partial",
-      "method": "fixed-source-policy-and-contract-scan-v3",
-      "checkedAt": "2026-09-05T00:52:16.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH_CLIAPI/commit/f88c9edbffe235bc1f9ac954f94dc326de1e1641",
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "部分验证：固定源与 Bundle/Client 边界检查通过，未修改 DSH 核心或官方包；真实 OAuth/API 账号与独立安全审计不在本次范围。"
+      "summary": null
     }
   },
   "entryIds": [
@@ -94,7 +98,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.3-alpha.1",
     "dshReleases": {
       "rc.7": "incompatible",
       "rc.8": "compatible",
@@ -103,7 +107,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "compatible",
       "0.1.2-alpha.5": "compatible",
-      "0.1.2-rc.1": "compatible"
+      "0.1.2-rc.1": "compatible",
+      "0.1.3-alpha.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -155,6 +160,12 @@
         "rollback": "unknown"
       },
       "0.1.2-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
