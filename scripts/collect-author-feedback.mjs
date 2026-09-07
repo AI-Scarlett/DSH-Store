@@ -51,6 +51,7 @@ function canonicalIssue(value) {
     number: integer(value?.number, 'issue number'),
     title: requiredString(value?.title ?? '', 'issue title', 256),
     url: safeUrl(value?.url ?? value?.html_url),
+    body: typeof value?.body === 'string' ? value.body : '',
     author: value?.author && {
       id: integer(value.author.id, 'issue author id'),
       login: requiredString(value.author.login, 'issue author login', 40),
@@ -59,16 +60,33 @@ function canonicalIssue(value) {
   }
 }
 
+function noticeRepositoryKey(body) {
+  const match = /<!--\s*dsh-author-notice:v1\s+key=([A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{1,100})\b/.exec(String(body ?? ''))
+  return match?.[1] ?? null
+}
+
+function notificationTarget(issue, notificationTargets) {
+  if (notificationTargets === null) return issue.author ?? null
+  const key = noticeRepositoryKey(issue.body)
+  if (!key || !notificationTargets || typeof notificationTargets !== 'object' || Array.isArray(notificationTargets)) return null
+  const target = notificationTargets[key]
+    ?? Object.entries(notificationTargets).find(([candidate]) => candidate.toLowerCase() === key.toLowerCase())?.[1]
+  return target?.type === 'User' && Number.isSafeInteger(target.id)
+    && typeof target.login === 'string' && typeof target.node_id === 'string'
+    ? { id: target.id, login: target.login, nodeId: target.node_id }
+    : null
+}
+
 function commentTime(comment) {
   const value = Date.parse(comment?.updated_at ?? comment?.created_at ?? '')
   return Number.isFinite(value) ? value : 0
 }
 
-function isHumanAuthorComment(comment, issue) {
+function isHumanAuthorComment(comment, recipient) {
   const user = comment?.user
   return user?.type === 'User'
-    && Number(user.id) === issue.author?.id
-    && String(user.node_id) === issue.author?.nodeId
+    && Number(user.id) === recipient?.id
+    && String(user.node_id) === recipient?.nodeId
 }
 
 function excerpt(body) {
@@ -107,17 +125,18 @@ export function validateAuthorFeedback(value) {
   return value
 }
 
-export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/DSH-Store', issues, observedAt }) {
+export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/DSH-Store', issues, observedAt, notificationTargets = null }) {
   if (repository.toLowerCase() !== 'ai-scarlett/dsh-store') throw new Error('feedback authority must be AI-Scarlett/DSH-Store')
   if (!Array.isArray(issues) || issues.length > MAX_ISSUES) throw new Error('managed issue snapshot is invalid')
   const items = []
   for (const rawIssue of issues) {
     const issue = canonicalIssue(rawIssue)
-    if (!issue.author) continue
+    const recipient = notificationTarget(issue, notificationTargets)
+    if (!recipient) continue
     const comments = await github.paginate(`/repos/${repository}/issues/${issue.number}/comments`)
     if (comments.length > MAX_COMMENT_PAGES * 100) throw new Error('author feedback comment bound exceeded')
     const latest = comments
-      .filter(comment => isHumanAuthorComment(comment, issue) && String(comment.body ?? '').trim() && isDshStoreProblem(comment.body))
+      .filter(comment => isHumanAuthorComment(comment, recipient) && String(comment.body ?? '').trim() && isDshStoreProblem(comment.body))
       .sort((left, right) => commentTime(left) - commentTime(right) || Number(left.id) - Number(right.id))
       .at(-1)
     if (!latest) continue
@@ -167,10 +186,14 @@ async function main() {
   const args = parseArgs(process.argv.slice(2))
   if (!args.issues || !args.output) throw new Error('--issues and --output are required')
   const issues = JSON.parse(await readFile(resolve(args.issues), 'utf8'))
+  const notificationTargets = args['notification-targets']
+    ? JSON.parse(await readFile(resolve(args['notification-targets']), 'utf8'))
+    : null
   const feedback = await collectAuthorFeedback({
     github: githubClient(process.env.GITHUB_TOKEN),
     issues,
     observedAt: args['observed-at'],
+    notificationTargets,
   })
   await writeFile(resolve(args.output), `${JSON.stringify(feedback, null, 2)}\n`, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
   process.stdout.write(`AUTHOR_FEEDBACK_OK store_problems=${feedback.summary.storeProblems} manual_review=${feedback.summary.manualReview}\n`)

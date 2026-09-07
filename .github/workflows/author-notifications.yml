@@ -100,16 +100,8 @@ jobs:
         run: |
           gh api --method GET --paginate --slurp \
             "repos/$GITHUB_REPOSITORY/issues?state=all&labels=author-action-required&per_page=100" \
-            | jq '[.[][] | select(has("pull_request") | not) | {number, title, state, body: (.body // ""), url: .html_url, author: (if .user then {id: .user.id, login: .user.login, node_id: .user.node_id} else null end), labels: [.labels[] | if type == "string" then . else .name end]}] | sort_by(.number)' \
+            | jq '[.[][] | select(has("pull_request") | not) | {number, title, state, body: (.body // ""), url: .html_url, author: (if .user then {id: .user.id, login: .user.login, node_id: .user.node_id, type: .user.type} else null end), labels: [.labels[] | if type == "string" then . else .name end]}] | sort_by(.number)' \
             > "$RUNNER_TEMP/author-notice-issues.json"
-      - name: Collect DSH Store problems from author replies
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          node scripts/collect-author-feedback.mjs \
-            --issues "$RUNNER_TEMP/author-notice-issues.json" \
-            --observed-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            --output "$RUNNER_TEMP/author-feedback.json"
       - name: Select the bounded notification set
         run: |
           jq -n '{}' > "$RUNNER_TEMP/author-notice-targets-empty.json"
@@ -130,6 +122,15 @@ jobs:
           node scripts/resolve-author-notice-targets.mjs \
             --plan "$RUNNER_TEMP/author-notice-preliminary-plan.json" \
             --output "$RUNNER_TEMP/author-notice-targets.json"
+      - name: Collect DSH Store problems from author replies
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/collect-author-feedback.mjs \
+            --issues "$RUNNER_TEMP/author-notice-issues.json" \
+            --notification-targets "$RUNNER_TEMP/author-notice-targets.json" \
+            --observed-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --output "$RUNNER_TEMP/author-feedback.json"
       - name: Snapshot the required global contact ledger
         env:
           GITHUB_TOKEN: ${{ github.token }}
