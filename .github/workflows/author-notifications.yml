@@ -121,6 +121,7 @@ jobs:
         run: |
           node scripts/resolve-author-notice-targets.mjs \
             --plan "$RUNNER_TEMP/author-notice-preliminary-plan.json" \
+            --issues "$RUNNER_TEMP/author-notice-issues.json" \
             --output "$RUNNER_TEMP/author-notice-targets.json"
       - name: Collect DSH Store problems from author replies
         env:

@@ -7,7 +7,7 @@ import { githubClient } from '../scripts/author-contact-http.mjs'
 import { CONTACT_POLICY, humanIdentity, validateState, verifyHistoryPreserved, contactDecision, contactBody, reserveContact, digest } from '../scripts/author-contact-state.mjs'
 import { buildAuthorNoticePlan } from '../scripts/plan-author-notices.mjs'
 import { validatePlan, applyFirstContacts } from '../scripts/apply-author-notice-plan.mjs'
-import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
+import { repositoryKeysFromIssues, resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
 import { submissionDecision, sendSubmissionResult } from '../scripts/send-submission-result.mjs'
 import { validateReplyGrant, verifyReplyRequest, sendReviewedReply } from '../scripts/reply-author-contact.mjs'
 
@@ -110,6 +110,16 @@ test('repository redirects, missing owners, organizations and bots do not fall b
   }
   assert.equal(await resolveTargets(async () => { throw Object.assign(new Error('gone'), { status: 404 }) }, 'alice/one'), null)
   assert.equal(await resolveTargets(async () => ({ full_name: 'different/one', owner: person }), 'alice/one'), null)
+})
+test('target resolution includes every historical managed Issue for feedback collection', () => {
+  const issues = [
+    { body: '<!-- dsh-author-notice:v1 key=alice/one signature=abc -->' },
+    { body: '<!-- dsh-author-notice:v1 key=alice/one signature=def -->' },
+    { body: '<!-- dsh-author-notice:v1 key=bob/two signature=ghi -->' },
+    { body: 'ordinary Issue without a managed marker' },
+  ]
+  assert.deepEqual(repositoryKeysFromIssues(issues), ['alice/one', 'bob/two'])
+  assert.throws(() => repositoryKeysFromIssues(Array.from({ length: 501 }, () => ({ body: '' }))), /snapshot is invalid/)
 })
 test('all historical thread updates, reopenings, baselines and closing notices are suppressed', () => {
   const old = plan().actions[0]

@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 import { githubClient } from './author-contact-http.mjs'
 import { humanIdentity, requireRepository } from './author-contact-state.mjs'
 
+const AUTHOR_NOTICE_KEY_PATTERN = /<!--\s*dsh-author-notice:v1\s+key=([A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{1,100})\b/
+
 // A personal owner is authoritative. A shared organization or contribution is
 // not proof of a single responsible maintainer: leave it unresolved.
 export async function resolveTargets(request, key) {
@@ -21,6 +23,20 @@ export async function resolveTargets(request, key) {
     throw error
   }
 }
+
+export function repositoryKeysFromIssues(issues) {
+  if (!Array.isArray(issues) || issues.length > 500) throw new Error('managed issue snapshot is invalid')
+  const keys = new Set()
+  for (const issue of issues) {
+    const key = AUTHOR_NOTICE_KEY_PATTERN.exec(String(issue?.body ?? ''))?.[1]
+    if (key) {
+      requireRepository(key)
+      keys.add(key)
+    }
+  }
+  return [...keys].sort()
+}
+
 async function main() {
   const options = {}
   const args = process.argv.slice(2)
@@ -31,7 +47,11 @@ async function main() {
   if (!options.plan || !options.output) throw new Error('--plan and --output required')
   const plan = JSON.parse(await readFile(resolve(options.plan), 'utf8'))
   if (!Array.isArray(plan.contactRepositoryKeys) || plan.contactRepositoryKeys.length > 2500) throw new Error('invalid preliminary plan')
-  const keys = [...new Set(plan.contactRepositoryKeys)].sort()
+  const issueKeys = options.issues
+    ? repositoryKeysFromIssues(JSON.parse(await readFile(resolve(options.issues), 'utf8')))
+    : []
+  const keys = [...new Set([...plan.contactRepositoryKeys, ...issueKeys])].sort()
+  if (keys.length > 2500) throw new Error('author target repository bound exceeded')
   const github = githubClient(process.env.GITHUB_TOKEN)
   const entries = []
   for (let i = 0; i < keys.length; i += 6) {
