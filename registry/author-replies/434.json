@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 434,
+  "userId": 99616188,
+  "requestCommentId": 5568172291,
+  "requestBodySha256": "3e8d522e907c6df21a5cfa0132b07a89a887a36ed90dc6b14cd42bfc747f162b",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "Every push to the default branch of vshulcz/deja-vu produces a new \"upstream fixed Commit changed, blockers remain\" comment here — six since Sep 3, on a repository that merges several times a day. `registry/author-contact-policy.json` says `automaticFollowups: false` and one initial contact per person, so I assume the per-commit recheck notice is not meant to re-notify the author each time.\n\nCould the recheck update the issue body instead of adding a comment with an @mention, or only comment when the blocker set actually changes? Happy to keep the plugin listed as `user-reviewed`; it does need the `deja` binary and reads local files, which is what it is for, so the \"runtime dependency\" and \"files\" findings will not clear.\n\n每次向默认分支推送都会在这里新增一条评论并 @ 我（9 月 3 日起已六条）。`author-contact-policy.json` 写明 `automaticFollowups: false`，能否改为更新 Issue 正文、或仅在阻断条件变化时评论？插件保持 `user-reviewed` 即可。\n",
+    "scope": "Respond to the explicit request to stop per-commit @mentions and change the automatic recheck behavior while preserving the author's requested user-reviewed status and the one-contact-per-person rule."
+  },
+  "responseBody": "你指出的问题是成立的：按固定 Commit 逐次追加 @mention 与 `automaticFollowups: false` 及“一位用户一次主动消息”规则冲突。我们已在 DSH Store 修复 PR #578 中补上回归保护：对已经联系过的 GitHub 不变用户 ID，新的 push、固定 Commit、Issue 更新/重开、阻断条件变化和任务重试都不会再生成自动作者跟进消息；联系人记录仍由 central ledger 原子保留。后续状态继续通过 Catalog、候选库和公开自动化报告查看，不再用新评论打扰你。\n\n你要求保持 `user-reviewed` 的边界也会保留；`deja` 二进制与本地文件能力不会被自动化误改成 approved。#578 合并后我们会复跑策略并核对不再产生新的作者通知。这条回复只处理你这次明确提出的自动化通知修复，不构成以后项目或版本的永久联系许可；只有你另行给出明确、具体的正向继续请求，才会按规则再审查一次。\n\nYou are right that the repeated per-commit mentions violated the declared policy. PR #578 makes the existing contact ledger suppress all automatic author follow-ups for your immutable GitHub user ID, including new commits and issue transitions. The plugin remains on the guarded `user-reviewed` path, and status stays visible in the Catalog and public reports without new mentions. This reply is limited to the request in your comment."
+}

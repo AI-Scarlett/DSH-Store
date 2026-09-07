@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 390,
+  "userId": 316841218,
+  "requestCommentId": 5570897307,
+  "requestBodySha256": "a1ec118a8fd5047273eb2a2d8e7a88da1ddb3582332044eb793f7f8fa2670ef7",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "感谢核查。jilian-dsh/dsh-rules-manager 已完成内容净化并恢复公开：历史经 git filter-repo 净化重写（真实路径/个人标识已替换为示例命名空间，旧 commit SHA 全部作废；Release 已清算并重建，仅保留当前版本 v1.5.4 / client v1.4.5，产物已重新打包）。固定源已更新（main @ 3d1d1d7）。\n\n现在 canonical 公开地址：https://github.com/jilian-dsh/dsh-rules-manager\n插件路径：dsh-rules-manager（主包）与 dsh-rules-manager-client（配套 UI，同仓库）。\n\n请按当前固定 Commit 复检；如仍有阻断项请继续提示。",
+    "scope": "Recheck the author-provided canonical repository and fixed Commit for both declared plugin subpaths, report the verified manifest/license/Bundle evidence, and identify any remaining deterministic Catalog blockers without marking the entries approved prematurely."
+  },
+  "responseBody": "感谢提供净化后的公开仓库、固定 Commit 和两个插件路径。我们已按你给出的 `3d1d1d7293de7c6180fd07f7ff8bf29a73e51fc2` 只读复核：`dsh-rules-manager/package.json` 与 `dsh-rules-manager-client/package.json` 都存在，repository canonical 地址均指向 `https://github.com/jilian-dsh/dsh-rules-manager`，两者 license 都是 MIT；根目录和 client 子包的 LICENSE 存在，主包的 `cordis.patch.yml` Bundle Patch 也存在。\n\n这清除了此前旧固定 Commit 上的公开性、manifest repository 和许可证读取阻断，但不会自动批准安装：主包仍声明 Node `>=22`、宿主 peerDependencies，并包含本地文件/命令/凭据等需要独立审查的能力信号。当前 Catalog 记录仍固定在旧 Commit `a16fb383400817edd6c9a71e3bbeabcc5beb45cd`；我们会通过下一轮策略更新将当前固定 Commit 纳入复检，并分别保留 verified、partial 和 blocked 证据，只有完整自动门禁通过才会改变可安装状态。\n\nThanks for the sanitized public repository and the new fixed Commit. We verified both requested package manifests, canonical repository metadata, MIT license files, and the main package Bundle Patch at `3d1d1d7293de7c6180fd07f7ff8bf29a73e51fc2`. The old source and license identity findings are no longer the current evidence, while runtime dependencies and file/command/credential capability signals still require the guarded review path. The Catalog will repin only through the policy run and will not label the packages approved before the complete fixed-source gates pass."
+}
