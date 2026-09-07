@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 import { createDshVersionService } from '../src/dsh-version.mjs'
+import { DSH_RELEASES_URL } from '../src/dsh-release-policy.mjs'
 
 async function fixture(version = '0.1.0-rc.7') {
   const root = await mkdtemp(join(tmpdir(), 'dsh-version-'))
@@ -18,7 +19,7 @@ async function fixture(version = '0.1.0-rc.7') {
 test('GitHub-only release is visible without offering an unpublished npm command', async () => {
   const { root, cliPath } = await fixture('0.1.2-rc.1')
   try {
-    const service = createDshVersionService({ cliPath, fetch: async url => Response.json(url.includes('api.github.com') ? [{
+    const service = createDshVersionService({ cliPath, fetch: async url => Response.json(url === DSH_RELEASES_URL ? [{
       tag_name: 'dsh-v0.1.3-alpha.1', draft: false, published_at: '2026-09-04T11:34:32Z',
       html_url: 'https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.1.3-alpha.1',
     }] : { name: '@deepseek-ai/dsh', 'dist-tags': { latest: '0.1.2-rc.1' }, versions: { '0.1.2-rc.1': {} } }) })
@@ -41,7 +42,7 @@ test('DSH version check follows the official next channel when the release suffi
       cliPath, now: () => Date.parse('2026-08-18T09:00:00Z'),
       fetch: async (url, options) => {
         requests += 1
-        if (url.includes('api.github.com')) return new Response('[]')
+        if (url === DSH_RELEASES_URL) return new Response('[]')
         assert.equal(url, 'https://registry.npmjs.org/@deepseek-ai%2Fdsh')
         assert.equal(options.headers.accept, 'application/vnd.npm.install-v1+json')
         return new Response(JSON.stringify({
@@ -81,7 +82,7 @@ test('DSH version check uses published versions when a release has an unfamiliar
   try {
     const service = createDshVersionService({
       cliPath,
-      fetch: async url => url.includes('api.github.com') ? new Response('[]') : new Response(JSON.stringify({
+      fetch: async url => url === DSH_RELEASES_URL ? new Response('[]') : new Response(JSON.stringify({
         name: '@deepseek-ai/dsh',
         'dist-tags': { latest: '0.1.1-rc.2', rolling: '0.1.2-rc.1' },
         versions: { '0.1.1-rc.2': {}, '0.1.2-rc.1': {} },
@@ -101,7 +102,7 @@ test('DSH version check fails closed on an untrusted registry identity', async (
   const { root, cliPath } = await fixture('0.1.0-rc.7')
   try {
     const service = createDshVersionService({
-      cliPath, fetch: async url => url.includes('api.github.com') ? new Response('[]') : new Response(JSON.stringify({ name: 'other-package', 'dist-tags': {}, versions: {} })),
+      cliPath, fetch: async url => url === DSH_RELEASES_URL ? new Response('[]') : new Response(JSON.stringify({ name: 'other-package', 'dist-tags': {}, versions: {} })),
     })
     await assert.rejects(service.inspect(), error => error.code === 'DSH_VERSION_REGISTRY_INVALID')
   } finally {
@@ -118,7 +119,7 @@ test('DSH version check resolves a global launcher symlink before locating the p
     await symlink(cliPath, launcherPath)
     const service = createDshVersionService({
       cliPath: launcherPath,
-      fetch: async url => url.includes('api.github.com') ? new Response('[]') : new Response(JSON.stringify({
+      fetch: async url => url === DSH_RELEASES_URL ? new Response('[]') : new Response(JSON.stringify({
         name: '@deepseek-ai/dsh',
         'dist-tags': { latest: '0.1.1-rc.2' },
         versions: { '0.1.1-rc.2': {} },
