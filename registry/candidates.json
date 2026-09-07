@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-07T16:32:25.000Z",
+    "updatedAt": "2026-09-07T19:26:25.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -6277,8 +6277,8 @@
       "description": "Tavily 多密钥搜索：支持密钥轮换/故障转移、用量仪表盘与设置卡片。",
       "repositoryUrl": "https://github.com/moguiyu/dsh-tavily",
       "defaultBranch": "main",
-      "latestCommit": "8f2784af3d89754acdd9baf58bdd21353ae9c00e",
-      "sourceUpdatedAt": "2026-09-02T15:43:08.000Z",
+      "latestCommit": "67ac974174e621850f38643f9fe14423e87f9176",
+      "sourceUpdatedAt": "2026-09-07T16:46:23.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8672,8 +8672,8 @@
       "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
       "repositoryUrl": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
       "defaultBranch": "main",
-      "latestCommit": "5f261ecddc6b9a9d980b58c9256bf7622de7acdc",
-      "sourceUpdatedAt": "2026-09-06T04:17:47.000Z",
+      "latestCommit": "aa60f5c930551822b77ca7af82aa96042b7bb407",
+      "sourceUpdatedAt": "2026-09-07T19:27:59.000Z",
       "discoveredAt": "2026-08-28T12:18:06.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -13351,6 +13351,56 @@
         "voice-coding",
         "voice-control",
         "wake-word",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "microsoft-argusagent",
+      "name": "microsoft/ArgusAgent",
+      "description": "A persistent, reviewed multi-agent runtime for long-horizon research and engineering.",
+      "repositoryUrl": "https://github.com/microsoft/ArgusAgent",
+      "defaultBranch": "main",
+      "latestCommit": "6a5614564b0b933482d29e5c1f85c4df5f0333e7",
+      "sourceUpdatedAt": "2026-09-07T19:22:40.000Z",
+      "discoveredAt": "2026-09-07T19:26:25.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agentic-ai",
+        "ai-agents",
+        "autonomous-agents",
+        "claude",
+        "codex",
+        "copilot",
+        "llm",
+        "mcp",
+        "multi-agent-systems",
+        "python",
+        "research",
+        "software-engineering",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "lbx154-argus",
+      "name": "lbx154/Argus",
+      "description": "A self-evolving multi-agent system for autonomous research, operating 24/7 to explore, learn, and improve.",
+      "repositoryUrl": "https://github.com/lbx154/Argus",
+      "defaultBranch": "main",
+      "latestCommit": "c3be0d54ab0afb9bab47d788e98d0833d251e0e9",
+      "sourceUpdatedAt": "2026-09-07T19:19:29.000Z",
+      "discoveredAt": "2026-09-07T19:26:25.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
         "automatic-radar"
       ],
       "status": "rejected",

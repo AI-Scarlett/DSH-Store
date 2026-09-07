@@ -1,56 +1,49 @@
 {
-  "id": "moguiyu-dsh-tool-tavily-search",
-  "name": "联网搜索工具（DSH Tool Tavily Search）",
-  "packageName": "@moguiyu/dsh-tool-tavily-search",
-  "description": "Tavily 多密钥搜索：支持密钥轮换/故障转移、用量仪表盘与设置卡片。",
+  "id": "petdex-dsh-plugin",
+  "name": "趣味互动插件（DSH Plugin）",
+  "packageName": "@petdex/dsh-plugin",
+  "description": "为 DSH 提供趣味互动插件能力。英文原始说明：This bundled plugin mirrors normalized DeepSeek Harness Web session events into the local Petdex desktop app.",
   "searchTerms": [
-    "联网搜索工具",
-    "DSH Tool Tavily Search",
-    "moguiyu-dsh-tool-tavily-search",
-    "@moguiyu/dsh-tool-tavily-search",
-    "联网搜索",
-    "网页搜索",
-    "Web",
-    "搜索与网络",
-    "搜索",
-    "联网",
-    "浏览器",
-    "工具能力",
-    "工具",
-    "能力",
+    "趣味互动插件",
+    "DSH Plugin",
+    "petdex-dsh-plugin",
+    "@petdex/dsh-plugin",
+    "趣味",
+    "桌宠",
+    "互动",
+    "娱乐",
+    "实验功能",
+    "新功能",
     "dsh",
-    "tool",
-    "tavily",
-    "search"
+    "plugin"
   ],
-  "repositoryUrl": "https://github.com/moguiyu/dsh-tavily",
+  "repositoryUrl": "https://github.com/crafter-station/petdex",
   "defaultBranch": "main",
-  "manifestPath": "packages/dsh-tool-tavily-search/package.json",
-  "installPath": "packages/dsh-tool-tavily-search",
-  "updatePolicy": "user-reviewed",
-  "commit": "67ac974174e621850f38643f9fe14423e87f9176",
-  "version": "0.2.2",
+  "manifestPath": "packages/petdex-desktop-native/integrations/dsh/package.json",
+  "installPath": "packages/petdex-desktop-native/integrations/dsh",
+  "updatePolicy": "external-only",
+  "commit": "5d1844be151bb4e613b62b2e50a70bc8e1540d65",
+  "version": "0.1.0",
   "categories": [
-    "search",
-    "tools"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T16:46:23.000Z",
+    "updatedAt": "2026-09-07T19:27:42.000Z",
     "observedAt": "2026-09-07T19:26:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-07T19:26:25.000Z",
-      "evidenceUrl": "https://github.com/moguiyu/dsh-tavily/commit/67ac974174e621850f38643f9fe14423e87f9176",
+      "evidenceUrl": "https://github.com/crafter-station/petdex/commit/5d1844be151bb4e613b62b2e50a70bc8e1540d65",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -60,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -70,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -80,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "tool-tavily-search"
+    "petdex-dsh-bridge"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-rc.1, 0.1.3-alpha.1, 0.1.3-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.8 || ^0.1.2-alpha.2 || ^0.1.3-alpha.2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -176,26 +169,23 @@
     "profiles": []
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "UNKNOWN",
     "permissions": {
-      "level": "high",
-      "files": "none",
-      "network": "any",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "api-key"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "第三方网络服务（插件可访问任意网络端点）",
-      "用户配置的外部服务凭据"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
