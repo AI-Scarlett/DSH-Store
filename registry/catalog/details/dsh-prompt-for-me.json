@@ -1,50 +1,49 @@
 {
-  "id": "dsh-coc-keeper",
-  "name": "任务通知提醒（DSH Coc Keeper）",
-  "packageName": "@dsh-external/dsh-coc-keeper",
-  "description": "克苏鲁的呼唤 (CoC) 跑团主持人插件：规则/剧本/人物导入（含 PDF）、明骰/暗骰、AI KP 与随时接替、关键剧情点与分支跟踪、分支提醒、酒馆式完整前端面板",
+  "id": "dsh-prompt-for-me",
+  "name": "提示词优化器（DSH Prompt For Me）",
+  "packageName": "dsh-prompt-for-me",
+  "description": "为 DSH 提供提示词优化器能力。英文原始说明：Prompt optimizer and next-message predictor for DeepSeek Harness, with streamed direct-fill generation.",
   "searchTerms": [
-    "任务通知提醒",
-    "DSH Coc Keeper",
-    "dsh-coc-keeper",
-    "@dsh-external/dsh-coc-keeper",
-    "任务完成",
-    "通知",
-    "提醒",
-    "消息推送",
+    "提示词优化器",
+    "DSH Prompt For Me",
+    "dsh-prompt-for-me",
+    "提示词",
+    "指令优化",
+    "Prompt",
     "实验功能",
     "新功能",
     "dsh",
-    "coc",
-    "keeper"
+    "prompt",
+    "for",
+    "me"
   ],
-  "repositoryUrl": "https://github.com/RuichiXu/coc-keeper",
+  "repositoryUrl": "https://github.com/XXXXXQ-0206/dsh-prompt-for-me",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9d3db64942022744249ff379e1836a7506018248",
-  "version": "0.2.0",
+  "commit": "0f806e3a651a52adeb52831687a8779b7b05c5a6",
+  "version": "0.6.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T16:26:26.000Z",
+    "updatedAt": "2026-09-07T16:34:59.000Z",
     "observedAt": "2026-09-07T16:32:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-07T16:32:25.000Z",
-      "evidenceUrl": "https://github.com/RuichiXu/coc-keeper/commit/9d3db64942022744249ff379e1836a7506018248",
+      "evidenceUrl": "https://github.com/XXXXXQ-0206/dsh-prompt-for-me/commit/0f806e3a651a52adeb52831687a8779b7b05c5a6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "coc-keeper"
+    "prompt-for-me"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; manifest does not declare an explicit distributable files list; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 5234415 total bytes (maximum 2097152); largest file 2646968 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -165,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.19",
     "systems": [],
     "profiles": [
       "web"
@@ -185,12 +184,14 @@
       ]
     },
     "externalDependencies": [
-      "pdf-parse"
+      "@deepseek-ai/schemastery"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
