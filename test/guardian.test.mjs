@@ -57,7 +57,8 @@ test('guardian installation verifies a fresh heartbeat before scheduling fixed-a
     assert.match(calls.at(-1)[1][1], /\/local\.dsh\.web$/)
     const plist = await readFile(join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'), 'utf8')
     assert.match(plist, /<string>\/node<\/string>/)
-    assert.doesNotMatch(plist, /bash|-c/)
+    // Temporary directory names can contain -c; forbid shell argument tokens.
+    assert.doesNotMatch(plist, /<string>(?:[^<]*\/)?(?:bash|sh|zsh|dash)<\/string>|<string>-c<\/string>/)
     const config = JSON.parse(await readFile(join(root, 'dsh-safe-plugin-manager', 'guardian', 'config.json'), 'utf8'))
     assert.equal(config.healthProbeTimeoutMs, 1_500)
     assert.equal(config.unhealthyThreshold, 3)

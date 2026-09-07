@@ -67,7 +67,7 @@ test('automatic policy runs every eight hours and fails closed on permission or 
   assert.equal(policy.updates.concurrency, 8)
   assert.equal(policy.updates.maxCommitSpan, 200)
   assert.deepEqual(policy.compatibility, {
-    authority: 'official-npm-registry-active-supported-channels-through-highest',
+    authority: 'official-github-releases-and-npm-published-versions',
     registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh',
     latestReleaseCount: 3,
     requiredCompatibleReleases: 1,

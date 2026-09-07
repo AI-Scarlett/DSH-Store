@@ -1047,16 +1047,19 @@ export function createDshReleaseContext(entries = [], dshVersion = {}) {
     for (const release of Object.keys(entry?.compatibility?.dshReleases ?? {})) addReleaseRecord(byVersion, release)
     for (const release of Object.keys(entry?.compatibility?.dshOperations ?? {})) addReleaseRecord(byVersion, release)
   }
-  const npmLatest = VERSION.test(dshVersion?.latestVersion ?? '') ? dshVersion.latestVersion : null
-  if (npmLatest) addReleaseRecord(byVersion, npmLatest)
+  const officialLatest = VERSION.test(dshVersion?.latestVersion ?? '') ? dshVersion.latestVersion : null
+  if (officialLatest) {
+    addReleaseRecord(byVersion, officialLatest)
+    for (const channel of dshVersion.channels ?? []) addReleaseRecord(byVersion, channel.version)
+  }
   const allReleases = [...byVersion.values()]
     .sort((left, right) => compareVersions(left.version, right.version) ?? left.version.localeCompare(right.version, 'en'))
-  const officialLatestIndex = npmLatest ? allReleases.findIndex(release => release.version === npmLatest) : -1
+  const officialLatestIndex = officialLatest ? allReleases.findIndex(release => release.version === officialLatest) : -1
   const boundedReleases = officialLatestIndex >= 0
     ? allReleases.slice(Math.max(0, officialLatestIndex - MAX_DSH_RELEASE_KEYS + 1), officialLatestIndex + 1)
     : allReleases.slice(-MAX_DSH_RELEASE_KEYS)
   const fallbackLatest = boundedReleases.at(-1)?.version ?? null
-  const latestVersion = npmLatest ?? fallbackLatest
+  const latestVersion = officialLatest ?? fallbackLatest
   const releases = boundedReleases.map(release => ({
     key: release.key,
     version: release.version,
@@ -1067,11 +1070,11 @@ export function createDshReleaseContext(entries = [], dshVersion = {}) {
   const latestIndex = Math.max(0, releases.findIndex(release => release.latest))
   return {
     schemaVersion: 1,
-    source: npmLatest ? 'npm-official' : 'catalog-fallback',
+    source: officialLatest ? (dshVersion.latestSource === 'github-official:release' ? 'github-official' : 'npm-official') : 'catalog-fallback',
     latestVersion,
-    checkedAt: npmLatest && typeof dshVersion.checkedAt === 'string' ? dshVersion.checkedAt : null,
-    registryUrl: npmLatest && typeof dshVersion.registryUrl === 'string' ? dshVersion.registryUrl : null,
-    errorCode: npmLatest ? null : (dshVersion?.errorCode ?? null),
+    checkedAt: officialLatest && typeof dshVersion.checkedAt === 'string' ? dshVersion.checkedAt : null,
+    registryUrl: officialLatest && typeof dshVersion.registryUrl === 'string' ? dshVersion.registryUrl : null,
+    errorCode: officialLatest ? null : (dshVersion?.errorCode ?? null),
     releases,
     cardReleases: releases.slice(Math.max(0, latestIndex - 2), latestIndex + 1),
   }

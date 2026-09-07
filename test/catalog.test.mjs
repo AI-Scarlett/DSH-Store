@@ -152,6 +152,13 @@ test('dynamic DSH releases keep range support pending until exact catalog eviden
     latestVersion: '0.1.1-rc.2', checkedAt: '2026-08-21T13:00:00.000Z', registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest',
   })
   assert.equal(context.source, 'npm-official')
+  const github = createDshReleaseContext([], {
+    latestVersion: '0.1.3-alpha.1', latestSource: 'github-official:release',
+    channels: [{ version: '0.1.2-rc.1' }, { version: '0.1.2-alpha.5' }],
+  })
+  assert.equal(github.source, 'github-official')
+  assert.deepEqual(github.cardReleases.map(release => release.version), ['0.1.2-alpha.5', '0.1.2-rc.1', '0.1.3-alpha.1'])
+
   assert.equal(context.latestVersion, '0.1.1-rc.2')
   assert.deepEqual(context.cardReleases.map(release => release.version), ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'])
   const latest = projectDshRelease(catalog.entries[0], context.releases.find(release => release.latest))
@@ -450,6 +457,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.8.12' && manager.version === '0.8.11')
     || (packageManifest.version === '0.8.13' && manager.version === '0.8.12')
     || (packageManifest.version === '0.8.14' && manager.version === '0.8.13')
+    || (packageManifest.version === '0.8.15' && manager.version === '0.8.14')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -464,7 +472,8 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(agentReach, 'Agent Reach adapter must be listed')
   assert.ok(['approved', 'unlisted'].includes(agentReach.status), 'latest-three policy may reversibly unlist an older compatibility record')
   assert.equal(agentReach.featured, false)
-  assert.equal(agentReach.commit, '73d95c0ca3be631fbfffc70409d060cb114c1d31')
+  assert.equal(agentReach.repositoryUrl, 'https://github.com/AI-Scarlett/dsh-agent-reach')
+  assert.match(agentReach.commit, /^[0-9a-f]{40}$/, 'automatic updates retain an immutable source, not one historical commit')
   assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
   assert.equal(agentReach.details.permissions.level, 'high')
   assert.ok(agentReach.details.externalDependencies.includes('Agent Reach CLI 1.5.0'))
@@ -480,138 +489,32 @@ test('bundled registry declares complete detail metadata for every entry', async
       assert.match(release, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/, `${id} dynamic releases must use full SemVer`)
     }
   }
-  assert.equal(manager.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
-  if (managerIsBootstrap) {
-    assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
-      install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
-    })
-  } else if (managerIsCurrent && ['0.8.13', '0.8.14'].includes(manager.version)) {
-    for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4']) {
-      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
-      assert.deepEqual(manager.compatibility.dshOperations[release], {
-        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
-      })
+  // The live catalog is mutable. Test its admission contract rather than
+  // freezing one release's version, SHA, range or lifecycle observations.
+  for (const [id, repo] of [
+    ['dsh-settings-hub', 'dsh-settings-hub'], ['dsh-cliapi', 'DSH_CLIAPI'],
+    ['dsh-chat-import', 'dsh-chat-import'], ['dsh-token-monitor', 'DSH_TokenMonitor'],
+    ['dsh-agent-reach', 'dsh-agent-reach'], ['build-dsh-plugin', 'build-dsh-plugin'],
+  ]) {
+    const plugin = source.entries.find(item => item.id === id)
+    assert.ok(plugin, `${id} must remain represented during compatibility review`)
+    assert.equal(plugin.repositoryUrl, `https://github.com/AI-Scarlett/${repo}`)
+    assert.match(plugin.commit, /^[0-9a-f]{40}$/)
+    assert.match(plugin.version, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/)
+    assert.ok(githubInstallSpecifier(plugin).includes(`#${plugin.commit}`))
+    for (const record of Object.values(plugin.compatibility.dshOperations)) {
+      assert.deepEqual(Object.keys(record).sort(), ['install', 'rollback', 'start', 'uninstall'])
+      assert.ok(Object.values(record).every(status => ['passed', 'failed', 'unknown'].includes(status)))
     }
-    assert.equal(manager.compatibility.dshReleases['0.1.2-alpha.5'], 'compatible')
-    assert.deepEqual(manager.compatibility.dshOperations['0.1.2-alpha.5'], manager.version === '0.8.13'
-      ? { install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown' }
-      : { install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' })
-  } else if (managerIsCurrent || manager.version === '0.8.12') {
-    for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
-      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
-      assert.deepEqual(manager.compatibility.dshOperations[release], {
-        install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
-      })
+    for (const gate of ['installability', 'runtime', 'securityReview']) {
+      assert.ok(['verified', 'partial', 'failed', 'unknown', 'not-applicable'].includes(plugin.assurance[gate].status))
+      assert.equal(Object.hasOwn(plugin.assurance[gate], 'evidenceStatus'), false, 'hydrated evidence must preserve its actual status')
     }
-  } else {
-    for (const release of ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']) {
-      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
-      assert.deepEqual(manager.compatibility.dshOperations[release], {
-        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
-      })
-    }
-  }
-  const settingsHub = source.entries.find(item => item.id === 'dsh-settings-hub')
-  assert.ok(settingsHub, 'Settings Hub must be listed')
-  assert.equal(settingsHub.compatibility.dsh, '>=0.1.2-rc.1 <0.2.0')
-  assert.deepEqual(settingsHub.compatibility.dshReleases, {
-    'rc.7': 'incompatible', 'rc.8': 'incompatible',
-    '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
-    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
-    '0.1.2-rc.1': 'compatible',
-  })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5', '0.1.2-rc.1']) {
-    assert.deepEqual(settingsHub.compatibility.dshOperations[release], {
-      install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
-    })
-  }
-  const updatedSelfHosted = [
-    {
-      id: 'dsh-cliapi',
-      version: '0.5.2',
-      commit: 'f88c9edbffe235bc1f9ac954f94dc326de1e1641',
-      dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'compatible', '0.1.2-alpha.5': 'compatible', '0.1.2-rc.1': 'compatible' },
-    },
-    {
-      id: 'dsh-chat-import',
-      version: '0.4.1',
-      commit: '9e050c8230e985156bb450b460ce04d81b932c63',
-      dsh: '>=0.1.2-rc.1 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
-      securityStatus: 'unknown',
-    },
-    {
-      id: 'dsh-token-monitor',
-      version: '1.3.1',
-      commit: '27e643863adbd30d6488b0d00ecdc2f0e0d83b86',
-      dsh: '>=0.1.2-rc.1 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
-      securityStatus: 'unknown',
-    },
-    {
-      id: 'dsh-agent-reach',
-      version: '0.1.1',
-      commit: '73d95c0ca3be631fbfffc70409d060cb114c1d31',
-      dsh: '>=0.1.2-rc.1 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
-      securityStatus: 'unknown',
-    },
-    {
-      id: 'dsh-wecom-cli',
-      version: '0.3.1',
-      commit: 'ce7ae770aa6ee650c165047823492a673591e791',
-      dsh: '>=0.1.2-rc.1 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'unknown', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'compatible' },
-      securityStatus: 'unknown',
-    },
-  ]
-  for (const expected of updatedSelfHosted) {
-    const plugin = source.entries.find(item => item.id === expected.id)
-    assert.ok(['approved', 'unlisted'].includes(plugin.status), `${expected.id} must remain represented during compatibility review`)
-    assert.equal(plugin.version, expected.version)
-    assert.equal(plugin.commit, expected.commit)
-    assert.equal(plugin.compatibility.dsh, expected.dsh)
-    assert.deepEqual(plugin.compatibility.dshReleases, expected.releases)
-    assert.equal(plugin.assurance.securityReview.status, expected.securityStatus ?? 'partial')
-    assert.equal(Object.hasOwn(plugin.assurance.securityReview, 'evidenceStatus'), false)
-    const projectedPlugin = catalog.entries.find(item => item.id === expected.id)
-    assert.equal(projectedPlugin.assurance.securityReview.status, expected.securityStatus ?? 'partial')
   }
   const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
-  assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
-  assert.equal(requestedIm.name, '多平台 IM 机器人桥接（DSH IM）')
-  assert.equal(requestedIm.version, '0.14.0')
-  assert.equal(requestedIm.commit, '832bd539a2bca2518cbf575d9b61606f868290e4')
+  assert.ok(requestedIm, 'the requested DSH IM plugin must remain represented')
   assert.equal(requestedIm.updatePolicy, 'user-reviewed')
-  assert.deepEqual(requestedIm.compatibility.dshReleases, {
-    'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
-    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown', '0.1.2-rc.1': 'unknown',
-  })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5', '0.1.2-rc.1']) {
-    assert.deepEqual(requestedIm.compatibility.dshOperations[release], {
-      install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
-    })
-  }
-  assert.equal(requestedIm.assurance.discovery.status, 'verified')
-  assert.equal(requestedIm.assurance.runtime.status, 'unknown')
-  assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
-  const buildPlugin = source.entries.find(item => item.id === 'build-dsh-plugin')
-  assert.equal(buildPlugin.status, 'approved')
-  assert.equal(buildPlugin.version, '0.4.2')
-  assert.equal(buildPlugin.commit, '4324904c4e88e52601c964d1e3b339aa8410b5d1')
-  for (const release of ['0.1.2-alpha.4', '0.1.2-alpha.5', '0.1.2-rc.1']) {
-    assert.equal(buildPlugin.compatibility.dshReleases[release], 'compatible')
-    assert.deepEqual(buildPlugin.compatibility.dshOperations[release], {
-      install: 'passed', start: 'passed', uninstall: 'passed',
-      rollback: release === '0.1.2-rc.1' ? 'unknown' : 'passed',
-    })
-  }
-  for (const gate of ['installability', 'runtime', 'securityReview']) {
-    assert.equal(buildPlugin.assurance[gate].status, 'partial')
-    assert.equal(Object.hasOwn(buildPlugin.assurance[gate], 'evidenceStatus'), false)
-    assert.equal(catalog.entries.find(item => item.id === 'build-dsh-plugin').assurance[gate].status, 'partial')
-  }
+
 })
 
 test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {
