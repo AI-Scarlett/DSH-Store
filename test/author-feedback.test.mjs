@@ -8,6 +8,13 @@ const issue = {
   url: 'https://github.com/AI-Scarlett/DSH-Store/issues/434',
   author: { id: 99616188, login: 'vshulcz', node_id: 'U_kgDOBfAFvA' },
 }
+const managedBotIssue = {
+  number: 434,
+  title: issue.title,
+  url: issue.url,
+  body: '<!-- dsh-author-notice:v1 key=vshulcz/deja-vu signature=abc -->',
+  author: { id: 41898282, login: 'github-actions[bot]', node_id: 'MDM6Qm90NDE4OTgyODI=', type: 'Bot' },
+}
 const author = { id: 99616188, login: 'vshulcz', node_id: 'U_kgDOBfAFvA', type: 'User' }
 
 function mock(comments) {
@@ -54,6 +61,18 @@ test('collector keeps the latest verified issue-author Store problem and never e
   assert.equal(feedback.items[0].needsManualReview, true)
   assert.doesNotMatch(feedback.items[0].excerpt, /@mention/)
   assert.match(feedback.items[0].excerpt, /＠mention/)
+})
+
+test('collector matches the verified notification target when the Issue was created by the bot', async () => {
+  const body = 'Every push creates another automaticFollowups notice; this is a DSH Store workflow problem.'
+  const feedback = await collectAuthorFeedback({
+    github: mock([{ id: 15, body, user: author, created_at: '2026-09-07T09:00:00Z', html_url: 'https://github.com/AI-Scarlett/DSH-Store/issues/434#issuecomment-15' }]),
+    issues: [managedBotIssue],
+    notificationTargets: { 'vshulcz/deja-vu': author },
+    observedAt: '2026-09-07T10:00:00Z',
+  })
+  assert.equal(feedback.summary.storeProblems, 1)
+  assert.equal(feedback.items[0].author.login, 'vshulcz')
 })
 
 test('collector ignores comments from another person and ordinary author updates', async () => {
