@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { collectAuthorFeedback, isDshStoreProblem, sha256, validateAuthorFeedback } from '../scripts/collect-author-feedback.mjs'
+import { collectAuthorFeedback, isDshStoreProblem, parseArgs, sha256, validateAuthorFeedback } from '../scripts/collect-author-feedback.mjs'
 
 const issue = {
   number: 434,
@@ -20,6 +20,20 @@ function mock(comments) {
 test('author feedback classifier only routes explicit DSH Store problems', () => {
   assert.equal(isDshStoreProblem('The Catalog scanner reports a false positive.'), true)
   assert.equal(isDshStoreProblem('感谢核查，当前固定 Commit 已更新。'), false)
+})
+
+test('CLI argument parser consumes flag values exactly once', () => {
+  assert.deepEqual(parseArgs([
+    '--issues', '/tmp/issues.json',
+    '--observed-at', '2026-09-07T10:00:00Z',
+    '--output', '/tmp/feedback.json',
+  ]), {
+    issues: '/tmp/issues.json',
+    'observed-at': '2026-09-07T10:00:00Z',
+    output: '/tmp/feedback.json',
+  })
+  assert.throws(() => parseArgs(['--issues', '/tmp/issues.json', '--issues', '/tmp/other.json']), /duplicate argument/)
+  assert.throws(() => parseArgs(['--issues']), /requires a value/)
 })
 
 test('collector keeps the latest verified issue-author Store problem and never echoes mentions', async () => {

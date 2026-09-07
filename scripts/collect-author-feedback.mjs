@@ -148,12 +148,23 @@ export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/
   return validateAuthorFeedback(result)
 }
 
+export function parseArgs(argv) {
+  const args = {}
+  for (let index = 0; index < argv.length; index += 1) {
+    const flag = argv[index]
+    if (!flag.startsWith('--')) throw new Error(`invalid argument: ${flag}`)
+    const value = argv[index + 1]
+    if (!value || value.startsWith('--')) throw new Error(`${flag} requires a value`)
+    const key = flag.slice(2)
+    if (Object.hasOwn(args, key)) throw new Error(`duplicate argument: ${flag}`)
+    args[key] = value
+    index += 1
+  }
+  return args
+}
+
 async function main() {
-  const args = Object.fromEntries(process.argv.slice(2).reduce((pairs, value, index, all) => {
-    if (!value.startsWith('--') || !all[index + 1] || all[index + 1].startsWith('--')) throw new Error(`invalid argument: ${value}`)
-    pairs.push([value.slice(2), all[index + 1]])
-    return pairs
-  }, []))
+  const args = parseArgs(process.argv.slice(2))
   if (!args.issues || !args.output) throw new Error('--issues and --output are required')
   const issues = JSON.parse(await readFile(resolve(args.issues), 'utf8'))
   const feedback = await collectAuthorFeedback({
