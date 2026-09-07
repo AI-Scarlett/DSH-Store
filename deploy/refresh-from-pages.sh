@@ -12,6 +12,7 @@ readonly pages_subdir="${DSH_STORE_PAGES_SUBDIR:-}"
 readonly pages_path_prefix="${pages_subdir:+$pages_subdir/}"
 readonly health_scheme="${DSH_STORE_HEALTH_SCHEME:-https}"
 readonly site_prefix="${DSH_STORE_SITE_PREFIX:-}"
+readonly download_jobs="${DSH_STORE_DOWNLOAD_JOBS:-12}"
 
 case "$store_domain" in
   dsh.store|dsh-store.cn) ;;
@@ -35,6 +36,13 @@ case "$store_domain:$health_scheme:$site_prefix" in
   dsh-store.cn:https:) readonly health_port=443 ;;
   *) printf 'Unsupported DSH Store origin topology: %s %s %s\n' "$store_domain" "$health_scheme" "$site_prefix" >&2; exit 2 ;;
 esac
+case "$download_jobs" in
+  ''|*[!0-9]*) printf 'Invalid DSH Store download concurrency: %s\n' "$download_jobs" >&2; exit 2 ;;
+esac
+if test "$download_jobs" -lt 1 || test "$download_jobs" -gt 16; then
+  printf 'DSH Store download concurrency must be between 1 and 16: %s\n' "$download_jobs" >&2
+  exit 2
+fi
 readonly health_resolve="$store_domain:$health_port:127.0.0.1"
 readonly health_base="$health_scheme://$store_domain"
 
@@ -90,7 +98,12 @@ trap rollback_on_error ERR
 trap cleanup_incoming EXIT
 
 check_public() {
+  local domestic_public_check=''
+  if test "$store_domain" = dsh-store.cn; then
+    domestic_public_check="usage-guide $site_prefix/dsh-store-guide/"
+  fi
   while read -r label path; do
+    test -n "$label" || continue
     code='000'
     for attempt in 1 2 3 4 5; do
       code=$(origin_health -o "$incoming/health-$label" -w '%{http_code}' "$health_base$path" || true)
@@ -110,13 +123,18 @@ guide $site_prefix/dsh-plugins/
 catalog /registry/catalog.json
 candidates /registry/candidates.json
 sitemap $site_prefix/sitemap.xml
+robots $site_prefix/robots.txt
+markdown $site_prefix/index.md
+$domestic_public_check
 EOF
 
-  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" <<'PY'
+  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" "$incoming/health-robots" "$incoming/health-markdown" <<'PY'
 import json,sys
 home=open(sys.argv[1],encoding='utf-8').read()
 catalog=json.load(open(sys.argv[2],encoding='utf-8'))
 candidates=json.load(open(sys.argv[3],encoding='utf-8'))
+robots=open(sys.argv[4],encoding='utf-8').read()
+markdown=open(sys.argv[5],encoding='utf-8').read()
 manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
 if manager['commit'] not in home:
     raise SystemExit('public homepage install identity mismatch')
@@ -125,6 +143,15 @@ if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entrie
     raise SystemExit('public Candidate Registry is invalid or empty')
 if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True, 'unknownIsNotVerified': True}:
     raise SystemExit('public Candidate Registry trust boundary is invalid')
+for bot in (
+    'GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended',
+    'Bytespider', 'KimiBot', 'Kimi-User', 'Kimi-SearchBot', 'DeepSeekBot',
+    'YuanBaoBot', 'ChatGLM-Spider', 'MiniMaxBot', 'PetalBot', 'Baiduspider',
+):
+    if f'User-agent: {bot}\nAllow: /' not in robots:
+        raise SystemExit(f'public robots policy is missing an explicit Allow rule for {bot}')
+if len(markdown) <= 200 or '第三方插件商城' not in markdown:
+    raise SystemExit('public homepage Markdown is missing or incomplete')
 print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'], 'candidates', len(candidates['entries']))
 PY
 }
@@ -154,11 +181,15 @@ required = {
     'marketplace/faq/index.html',
     'marketplace/about/index.html',
     'marketplace/dsh-plugins/index.html',
+    'marketplace/robots.txt',
+    'marketplace/index.md',
     'marketplace/sitemap.xml',
     'registry/catalog.json',
     'registry/candidates.json',
 }
 required.add('marketplace/about/deepseek-harness-guide/index.html')
+if domain == 'dsh-store.cn':
+    required.add('marketplace/dsh-store-guide/index.html')
 if not required.issubset(files):
     raise SystemExit('release manifest is incomplete')
 for path, metadata in sorted(files.items()):
@@ -190,11 +221,16 @@ test ! -e "$candidate"
 test ! -e "$backup"
 install -d -o root -g root -m 0755 "$candidate"
 
-while IFS= read -r path; do
+download_artifact() {
+  local path="$1"
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
   curl -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
     "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"
-done < "$incoming/files.list"
+}
+
+export pages_base pages_path_prefix candidate
+export -f download_artifact
+xargs -P "$download_jobs" -n 1 bash -Eeuo pipefail -c 'download_artifact "$1"' _ < "$incoming/files.list"
 install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
 
 python3 - "$candidate" <<'PY'
@@ -226,10 +262,23 @@ if boundary != {'installActionsDisabled': True, 'catalogPromotionRequired': True
 home = (root / 'marketplace/index.html').read_text(encoding='utf-8')
 plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
 styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')
+robots = (root / 'marketplace/robots.txt').read_text(encoding='utf-8')
+markdown = (root / 'marketplace/index.md').read_text(encoding='utf-8')
+usage_guide = root / 'marketplace/dsh-store-guide/index.html'
 if manager['commit'] not in home or 'data-static-featured-id=' not in home or 'data-static-plugin-id=' not in plugins:
     raise SystemExit('static marketplace content is incomplete')
 if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
     raise SystemExit('catalog error visibility guard is missing')
+for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
+    if f'User-agent: {bot}\nAllow: /' not in robots:
+        raise SystemExit(f'AI bot policy is missing an explicit Allow rule for {bot}')
+if len(markdown) <= 200 or '第三方插件商城' not in markdown:
+    raise SystemExit('homepage Markdown artifact is missing or incomplete')
+if build.get('siteOrigin') == 'https://dsh-store.cn':
+    if not usage_guide.is_file() or '商城、CLI、Profile、依赖与 Catalog' not in usage_guide.read_text(encoding='utf-8'):
+        raise SystemExit('domestic use and troubleshooting guide is missing or incomplete')
+elif usage_guide.exists():
+    raise SystemExit('domestic-only use and troubleshooting guide leaked into the international artifact')
 for path in root.rglob('*'):
     if path.is_symlink() or path.name == '.git' or path.name.startswith('.env') or path.name.startswith('._'):
         raise SystemExit(f'forbidden artifact entry: {path.relative_to(root)}')

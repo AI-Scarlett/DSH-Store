@@ -3,12 +3,16 @@ import { execFile } from 'node:child_process'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
-import { permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
+import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
+const rootPath = fileURLToPath(new URL('..', import.meta.url))
+const catalogAutomationPath = fileURLToPath(new URL('../scripts/automate-catalog.mjs', import.meta.url))
 
 test('permission scan ignores inert Catalog metadata and ordinary identifiers', () => {
   const source = `
@@ -38,6 +42,23 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
 })
 
+test('self-manager generated Catalog details do not consume the executable source bound', () => {
+  const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.json'), true)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.js'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/nested/example.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog-index.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, id: 'another-plugin' }, 'registry/catalog/details/example.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog/details/example.json'), false)
+})
+
+test('author target resolution falls back only for a deterministically unavailable repository', async () => {
+  const missing = async () => { throw Object.assign(new Error('missing'), { status: 404 }) }
+  assert.deepEqual(await resolveTargets(missing, 'example-owner/missing-plugin'), ['example-owner'])
+  const transient = async () => { throw Object.assign(new Error('temporary'), { status: 503 }) }
+  await assert.rejects(resolveTargets(transient, 'example-owner/plugin'), /temporary/)
+})
+
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
   const policy = JSON.parse(await read('registry/automation-policy.json'))
   assert.equal(policy.scheduleHours, 8)
@@ -46,7 +67,7 @@ test('automatic policy runs every eight hours and fails closed on permission or 
   assert.equal(policy.updates.concurrency, 8)
   assert.equal(policy.updates.maxCommitSpan, 200)
   assert.deepEqual(policy.compatibility, {
-    authority: 'official-npm-registry-published-versions-through-latest',
+    authority: 'official-github-releases-and-npm-published-versions',
     registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh',
     latestReleaseCount: 3,
     requiredCompatibleReleases: 1,
@@ -77,6 +98,11 @@ test('automatic policy runs every eight hours and fails closed on permission or 
     'https://dsh.store/registry/catalog.json',
     'https://dsh-store.cn/registry/catalog.json',
   ])
+  assert.deepEqual(policy.publication.publicRepairUrls, [
+    'https://ai-scarlett.github.io/DSH-Store/marketplace/repair/',
+    'https://dsh.store/repair/',
+    'https://dsh-store.cn/repair/',
+  ])
 })
 
 test('scheduled automation uses a policy PR and never executes third-party package code', async () => {
@@ -95,10 +121,21 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(workflow, /codeql_passed/)
   assert.match(workflow, /gh pr merge --squash --delete-branch/)
   assert.match(workflow, /--json state --jq \.state/)
-  assert.match(workflow, /createCommitOnBranch/)
-  assert.match(workflow, /registry\/catalog\.json.+@base64/s)
-  assert.match(workflow, /registry\/candidates\.json.+@base64/s)
+  assert.match(workflow, /--json mergeCommit --jq '\.mergeCommit\.oid'/)
+  assert.match(workflow, /Publish the merged Catalog immediately/)
+  assert.match(workflow, /EXPECTED_MAIN_SHA: \$\{\{ steps\.pull_request\.outputs\.merge_sha \}\}/)
+  assert.match(workflow, /gh workflow run pages\.yml --ref main/)
+  assert.match(workflow, /gh run watch "\$pages_run_id" --exit-status/)
+  assert.match(workflow, /CATALOG_BRANCH="\$branch" node scripts\/create-catalog-commit\.mjs/)
+  assert.match(workflow, /--match-head-commit "\$commit_oid"/)
+  assert.match(workflow, /test "\$CATALOG_BASE_COMMIT" = "\$\(gh api "repos\/\$GITHUB_REPOSITORY\/commits\/main" --jq \.sha\)"/)
   assert.match(workflow, /commit\.verification\.verified/)
+  assert.match(workflow, /uses: \.\/\.github\/workflows\/author-notifications\.yml/)
+  assert.match(workflow, /uses: \.\/\.github\/workflows\/catalog-run-report\.yml/)
+  assert.match(workflow, /catalog_run_id: \$\{\{ github\.run_id \}\}/)
+  assert.match(workflow, /catalog_run_attempt: \$\{\{ github\.run_attempt \}\}/)
+  assert.match(workflow, /inline_catalog_run: true/)
+  assert.match(workflow, /owner-report:[\s\S]+needs: \[update, author-notifications\][\s\S]+if: always\(\)/)
   assert.doesNotMatch(workflow, /git commit|git push/)
   assert.doesNotMatch(workflow, /npm (?:install|ci)|pnpm|yarn/)
   assert.doesNotMatch(source, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
@@ -115,6 +152,9 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /baselineCatalog\.entries\.slice/)
   assert.match(source, /sourceVersionChecks\.checkedEntries/)
   assert.match(source, /sourceVersionChecks\.newerVersionsDeferred/)
+  assert.match(source, /catalogChangeReviewContract/)
+  assert.match(source, /sourceVersionChecks\.sameVersionCatalogUpdates/)
+  assert.match(source, /catalog-repinned-same-version/)
   assert.match(source, /sourceVersionChecks\.unresolvedEntries/)
   assert.match(source, /fetchOfficialDshReleaseWindow/)
   assert.match(source, /applyLatestDshCompatibilityPolicy/)
@@ -122,6 +162,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /dshReleaseWindowSha256/)
   assert.match(source, /pruneHistoricalRejectedCandidates/)
   assert.match(source, /inspectRejectedCandidateCompatibility/)
+  assert.match(source, /isDurableRejectedCandidateDecision\(previous\)/)
+  assert.match(source, /candidateRetention\.durableDecisionsPreserved/)
   assert.match(source, /candidateRetention\.registryRemovals/)
   assert.match(source, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
@@ -131,14 +173,18 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /isSafeSelfManagerUpdate/)
   assert.match(source, /SELF_MANAGER_PROTECTED_ENTRY_REASON/)
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
-  assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES/)
+  assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES = 4 \* 1024 \* 1024/)
   assert.match(source, /SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
+  assert.match(source, /isGeneratedSelfManagerCatalogDetail\(candidate, relativePath\)/)
   assert.match(source, /allowProtectedManager/)
   assert.doesNotMatch(source, /entry\.status !== 'approved' \|\| entry\.updatePolicy !== 'source-verified'/)
   assert.match(source, /localizeCatalogEntry/)
   assert.match(source, /assertCatalogLocalization/)
   assert.match(source, /assertLegacyCatalogCompatibility/)
   assert.match(source, /automation precondition hash mismatch/)
+  assert.match(source, /expectedCatalogIndexSha/)
+  assert.match(source, /catalogIndexBackup/)
+  assert.match(source, /atomicWrite\(catalogIndexPath, originalCatalogIndex\)/)
   assert.match(source, /automation base Commit must be a full Git SHA/)
   assert.match(source, /writeAutomationFailureReport/)
   assert.match(source, /statisticsAvailable: false/)
@@ -149,11 +195,11 @@ test('failed Catalog automation preserves a machine-readable failure report befo
   t.after(() => rm(directory, { recursive: true, force: true }))
   const reportPath = join(directory, 'catalog-automation-report.json')
   await assert.rejects(execFileAsync(process.execPath, [
-    new URL('../scripts/automate-catalog.mjs', import.meta.url).pathname,
+    catalogAutomationPath,
     '--observed-at', '2026-08-25T10:00:00Z',
     '--report', reportPath,
   ], {
-    cwd: new URL('..', import.meta.url).pathname,
+    cwd: rootPath,
     env: { ...process.env, CATALOG_BASE_COMMIT: 'not-a-full-commit' },
   }))
   const report = JSON.parse(await readFile(reportPath, 'utf8'))
@@ -172,12 +218,23 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
     read('scripts/resolve-author-notice-targets.mjs'),
     read('scripts/apply-author-notice-plan.mjs'),
   ])
-  assert.match(workflow, /workflow_run:/)
-  assert.match(workflow, /workflows: \["Automated plugin radar and Catalog update"\]/)
+  assert.match(workflow, /workflow_call:/)
+  assert.match(workflow, /workflow_dispatch:/)
+  assert.doesNotMatch(workflow, /workflow_run:/)
+  assert.match(workflow, /Exact completed Catalog run ID to recover/)
+  assert.match(workflow, /run-name: Author notifications for Catalog run \$\{\{ inputs\.catalog_run_id \}\}/)
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /actions: read/)
+  assert.match(workflow, /jq -r \.path/)
+  assert.match(workflow, /\.github\/workflows\/catalog-automation\.yml/)
+  assert.doesNotMatch(workflow, /jq -r \.name/)
   assert.match(workflow, /group: author-notifications/)
+  assert.match(workflow, /catalog-automation-\$\{CATALOG_RUN_ID\}-\$\{CATALOG_RUN_ATTEMPT\}/)
+  assert.match(workflow, /author-notification-plan-\$\{\{ inputs\.catalog_run_id \}\}-\$\{\{ inputs\.catalog_run_attempt \}\}/)
   assert.match(workflow, /--max-create 10/)
+  assert.match(planner, /MAX_AUTHOR_NOTICE_ACTIONS = 500/)
+  assert.match(resolver, /plan\.actions\.length > MAX_AUTHOR_NOTICE_ACTIONS/)
+  assert.match(apply, /plan\.actions\.length > MAX_AUTHOR_NOTICE_ACTIONS/)
   assert.match(workflow, /Candidate Registry 全量覆盖/)
   assert.match(workflow, /candidate_unaccounted/)
   assert.match(workflow, /registry\/candidates\.json/)
@@ -214,20 +271,25 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.doesNotMatch(apply, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
 })
 
-test('every completed Catalog run creates one deduplicated owner report notification', async () => {
+test('Catalog directly creates one exact and deduplicated owner report notification', async () => {
   const [workflow, delivery] = await Promise.all([
     read('.github/workflows/catalog-run-report.yml'),
     read('scripts/catalog-report-delivery.mjs'),
   ])
-  assert.match(workflow, /workflow_run:/)
-  assert.match(workflow, /workflows: \["Automated plugin radar and Catalog update"\]/)
-  assert.match(workflow, /types: \[completed\]/)
+  assert.match(workflow, /workflow_call:/)
   assert.match(workflow, /workflow_dispatch:/)
+  assert.doesNotMatch(workflow, /workflow_run:/)
+  assert.match(workflow, /Exact completed Catalog run ID to report/)
+  assert.match(workflow, /run-name: Owner report for Catalog run \$\{\{ inputs\.catalog_run_id \}\} \(\$\{\{ inputs\.request_id \}\}\)/)
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /actions: read/)
-  assert.match(workflow, /--status completed/)
+  assert.match(workflow, /jq -r \.path/)
+  assert.match(workflow, /\.github\/workflows\/catalog-automation\.yml/)
+  assert.doesNotMatch(workflow, /jq -r \.name/)
   assert.match(workflow, /\.sourceCatalogRunId == \$catalog_run_id/)
-  assert.match(workflow, /seq 1 30/)
+  assert.doesNotMatch(workflow, /gh run list --workflow author-notifications\.yml/)
+  assert.match(workflow, /author-notification-plan-\$\{CATALOG_RUN_ID\}-\$\{CATALOG_RUN_ATTEMPT\}/)
+  assert.match(workflow, /catalog-automation-\$\{CATALOG_RUN_ID\}-\$\{CATALOG_RUN_ATTEMPT\}/)
   assert.match(workflow, /CATALOG_RUN_ID: \$\{\{ steps\.catalog\.outputs\.run_id \}\}/)
   assert.match(workflow, /--delivery-key "catalog-\$CATALOG_RUN_ID"/)
   assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
@@ -268,7 +330,7 @@ test('Pages publishes bounded public automation evidence and recent additions', 
   assert.match(client, /entry\.searchTerms/)
 })
 
-test('watchdog checks the previous run and every public Catalog surface', async () => {
+test('watchdog waits for its exact repair run, invokes its report, and checks every public surface', async () => {
   const [workflow, timer, service, international, intlPublic, domestic, refresh, verifier, governance] = await Promise.all([
     read('.github/workflows/marketplace-watchdog.yml'),
     read('deploy/dsh-store-refresh@.timer'),
@@ -281,20 +343,31 @@ test('watchdog checks the previous run and every public Catalog surface', async 
     read('AGENTS.md'),
   ])
   assert.match(workflow, /cron: "55 \*\/3 \* \* \*"/)
-  assert.match(workflow, /test "\$age" -gt 32400/)
+  assert.match(workflow, /32400/)
   assert.match(workflow, /issues: write/)
-  assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main/)
+  assert.match(workflow, /request_id="watchdog-\$\{GITHUB_RUN_ID\}-\$\{GITHUB_RUN_ATTEMPT\}"/)
+  assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main -f request_id="\$request_id"/)
+  assert.match(workflow, /select\(\.displayTitle == \$expected\)/)
+  assert.match(workflow, /repos\/\$GITHUB_REPOSITORY\/actions\/runs\/\$target_id/)
+  assert.match(workflow, /Directly invoke the owner report for the repaired Catalog run/)
+  assert.match(workflow, /gh workflow run catalog-run-report\.yml --ref main/)
+  assert.match(workflow, /expected_title="Owner report for Catalog run \$\{CATALOG_RUN_ID\} \(\$\{REQUEST_ID\}\)"/)
+  assert.match(workflow, /-f catalog_run_id="\$CATALOG_RUN_ID"/)
+  assert.match(workflow, /-f catalog_run_attempt="\$CATALOG_RUN_ATTEMPT"/)
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)
   assert.match(workflow, /render-catalog-automation-notification\.mjs/)
   assert.match(workflow, /Catalog and Candidate Registries/)
-  assert.match(workflow, /Download the matching author notification record/)
-  assert.match(workflow, /author-notification-plan-\$\{run_id\}-\*/)
+  assert.match(workflow, /Download the exact author notification record/)
+  assert.match(workflow, /author-notification-plan-\$\{REPORT_RUN_ID\}-\$\{REPORT_RUN_ATTEMPT\}/)
+  assert.doesNotMatch(workflow, /gh run list --workflow author-notifications\.yml/)
   assert.match(workflow, /--author-notice-plan/)
   assert.match(workflow, /id: catalog_report[\s\S]{0,160}continue-on-error: true/)
   assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
   assert.match(workflow, /catalog-report-delivery\.mjs plan/)
   assert.match(workflow, /catalog-report-delivery\.mjs apply/)
   assert.match(workflow, /watchdog-alert/)
+  assert.match(workflow, /catalog-report-state\.json/)
+  assert.match(workflow, /\.issue\.comments\[\]\?\.body \| contains\(\$marker\)/)
   assert.doesNotMatch(workflow, /gh issue comment/)
   assert.match(timer, /00,03,06,09,12,15,18,21:47:00 UTC/)
   assert.match(service, /EnvironmentFile=\/etc\/dsh-store\/refresh-%i\.env/)
@@ -321,6 +394,9 @@ test('watchdog checks the previous run and every public Catalog surface', async 
   assert.match(refresh, /Candidate Registry artifact trust boundary is invalid/)
   assert.doesNotMatch(refresh, /id="catalog-snapshot"/)
   assert.match(refresh, /Refusing to remove unexpected failed candidate/)
+  assert.match(refresh, /download_jobs="\$\{DSH_STORE_DOWNLOAD_JOBS:-12\}"/)
+  assert.match(refresh, /download concurrency must be between 1 and 16/)
+  assert.match(refresh, /xargs -P "\$download_jobs" -n 1 bash -Eeuo pipefail/)
   assert.match(refresh, /--max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at -/)
   assert.match(refresh, /dsh\.store:http:\/marketplace/)
   assert.match(refresh, /dsh\.store:https:/)

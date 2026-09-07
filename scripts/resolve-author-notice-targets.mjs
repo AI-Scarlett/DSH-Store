@@ -3,6 +3,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MAX_AUTHOR_NOTICE_ACTIONS } from './plan-author-notices.mjs'
 
 const API_ROOT = 'https://api.github.com'
 
@@ -35,7 +36,9 @@ function githubClient(token) {
     }
     if (!response.ok) {
       const requestId = response.headers.get('x-github-request-id') ?? 'unknown'
-      throw new Error(`GitHub API GET failed: HTTP ${response.status}, request ${requestId}`)
+      throw Object.assign(new Error(`GitHub API GET failed: HTTP ${response.status}, request ${requestId}`), {
+        status: response.status,
+      })
     }
     return response.json()
   }
@@ -48,30 +51,41 @@ function humanLogin(account, excluded) {
   return login
 }
 
-async function resolveTargets(request, key) {
-  const repository = await request(`/repos/${key}`)
-  const owner = String(repository?.owner?.login ?? '')
-  if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(owner)) throw new Error(`repository owner is invalid for ${key}`)
-  if (repository.owner.type === 'User') return [owner]
+export async function resolveTargets(request, key) {
+  const keyOwner = String(key).split('/')[0]
+  try {
+    const repository = await request(`/repos/${key}`)
+    const owner = String(repository?.owner?.login ?? '')
+    if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(owner)) throw new Error(`repository owner is invalid for ${key}`)
+    if (repository.owner.type === 'User') return [owner]
 
-  const commits = await request(`/repos/${key}/commits?per_page=20`)
-  const commitAuthor = Array.isArray(commits)
-    ? commits.map(commit => humanLogin(commit.author, owner)).find(Boolean)
-    : null
-  if (commitAuthor) return [commitAuthor]
+    const commits = await request(`/repos/${key}/commits?per_page=20`)
+    const commitAuthor = Array.isArray(commits)
+      ? commits.map(commit => humanLogin(commit.author, owner)).find(Boolean)
+      : null
+    if (commitAuthor) return [commitAuthor]
 
-  const contributors = await request(`/repos/${key}/contributors?per_page=20&anon=0`)
-  const contributor = Array.isArray(contributors)
-    ? contributors.map(item => humanLogin(item, owner)).find(Boolean)
-    : null
-  return [contributor ?? owner]
+    const contributors = await request(`/repos/${key}/contributors?per_page=20&anon=0`)
+    const contributor = Array.isArray(contributors)
+      ? contributors.map(item => humanLogin(item, owner)).find(Boolean)
+      : null
+    return [contributor ?? owner]
+  } catch (error) {
+    // A repository already recorded in the bounded remediation ledger may be
+    // deleted, renamed, or made legally unavailable between scans. Keep the
+    // local owner fallback so one stale source cannot abort every unrelated
+    // Catalog notification. Transient and permission failures still fail.
+    if ([404, 410, 451].includes(error?.status)
+      && /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(keyOwner)) return [keyOwner]
+    throw error
+  }
 }
 
 async function main() {
   const options = parseArgs(process.argv.slice(2))
   if (!options.plan || !options.output) throw new Error('--plan and --output are required')
   const plan = JSON.parse(await readFile(resolve(options.plan), 'utf8'))
-  if (plan?.schemaVersion !== 1 || !Array.isArray(plan.actions) || plan.actions.length > 100) {
+  if (plan?.schemaVersion !== 1 || !Array.isArray(plan.actions) || plan.actions.length > MAX_AUTHOR_NOTICE_ACTIONS) {
     throw new Error('preliminary author notice plan is invalid')
   }
   const keys = [...new Set(plan.actions.filter(action => action.type !== 'close').map(action => {

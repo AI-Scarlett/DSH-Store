@@ -157,8 +157,23 @@ export function createSourceUpdateService(options = {}) {
     const commit = typeof head?.sha === 'string' ? head.sha.toLowerCase() : ''
     if (!COMMIT_SHA.test(commit)) throw updateError('SOURCE_UPDATE_COMMIT_INVALID', 'GitHub 未返回完整候选 Commit。')
     const policy = effectivePolicy(entry)
-    if (commit === entry.commit || installed.declaredSpecifier?.toLowerCase().includes(commit)) {
-      const value = { status: 'current', policy, branch, catalogCommit: entry.commit, candidateCommit: commit, candidate: null, reasons: [] }
+    const installedCommitMatched = installed.declaredSpecifier?.toLowerCase().includes(commit) === true
+    if (commit === entry.commit || installedCommitMatched) {
+      const sameVersionCatalogRepin = commit === entry.commit
+        && !installedCommitMatched
+        && compareVersions(installed.version, entry.version) === 0
+      const value = {
+        status: 'current', policy, branch, catalogCommit: entry.commit, candidateCommit: commit, candidate: null,
+        sameVersionSourceChange: sameVersionCatalogRepin,
+        manualUpdateOnly: sameVersionCatalogRepin,
+        catalogReviewed: sameVersionCatalogRepin,
+        reasons: sameVersionCatalogRepin
+          ? ['Catalog 已固定同版本的新 Commit；新安装直接使用该 Commit，已安装用户只能通过 GitHub 手动覆盖。']
+          : [],
+        notice: sameVersionCatalogRepin
+          ? '商城不会为已安装副本生成同版本更新计划；请前往 GitHub 核对固定 Commit 后手动更新。'
+          : null,
+      }
       cache.set(key, { cachedAt: now(), value })
       return { ...value, cacheStatus: 'fresh' }
     }
@@ -197,10 +212,11 @@ export function createSourceUpdateService(options = {}) {
       const value = {
         status: 'current', policy, branch, catalogCommit: entry.commit, candidateCommit: commit,
         candidateVersion, candidate: publicCandidate(candidate), sameVersionSourceChange: true,
+        manualUpdateOnly: true, catalogReviewed: false,
         warnings: [], blockers: [],
-        reasons: ['源仓库存在同版本提交，商城不会将目录或文档提交当作插件升级。'],
+        reasons: ['源仓库存在尚未进入 Catalog 的同版本提交，等待固定源自动审核；商城不会生成同版本更新计划。'],
         checkedFiles: 0, checkedCommits: 0, diff: null,
-        notice: '已确认候选版本与当前安装版本相同；未生成更新计划，也未将目录或文档变更当作插件更新。',
+        notice: '候选版本与当前安装版本相同；未生成更新计划。若后续通过 Catalog 审核，新安装用户将使用新 Commit，已安装用户仍需自行从 GitHub 手动更新。',
       }
       cache.set(key, { cachedAt: now(), value })
       return { ...value, cacheStatus: 'fresh' }

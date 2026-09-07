@@ -4,11 +4,17 @@ on:
   schedule:
     - cron: "5 */8 * * *"
   workflow_dispatch:
+    inputs:
+      request_id:
+        description: Optional caller correlation identifier
+        required: false
+        default: manual
+        type: string
+
+run-name: Catalog automation (${{ inputs.request_id || github.event_name }})
 
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write
+  contents: read
 
 concurrency:
   group: catalog-automation
@@ -18,6 +24,10 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,17 +52,21 @@ jobs:
           CATALOG_BASE_COMMIT: ${{ steps.base.outputs.sha }}
         run: |
           catalog_sha=$(sha256sum registry/catalog.json | cut -d ' ' -f 1)
+          catalog_index_sha=$(sha256sum registry/catalog-index.json | cut -d ' ' -f 1)
           candidates_sha=$(sha256sum registry/candidates.json | cut -d ' ' -f 1)
           observed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           node scripts/automate-catalog.mjs \
             --write \
             --expected-catalog-sha "$catalog_sha" \
+            --expected-catalog-index-sha "$catalog_index_sha" \
             --expected-candidates-sha "$candidates_sha" \
             --catalog-backup "$RUNNER_TEMP/catalog.before.json" \
+            --catalog-index-backup "$RUNNER_TEMP/catalog-index.before.json" \
+            --catalog-details-backup "$RUNNER_TEMP/catalog-details.before" \
             --candidates-backup "$RUNNER_TEMP/candidates.before.json" \
             --observed-at "$observed_at" \
             --report "$RUNNER_TEMP/catalog-automation-report.json"
-          if git diff --quiet -- registry/catalog.json registry/candidates.json; then
+          if git diff --quiet -- registry/catalog.json registry/catalog-index.json registry/catalog/details registry/candidates.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -67,6 +81,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           CATALOG_BASE_COMMIT: ${{ steps.base.outputs.sha }}
         run: |
+          test "$CATALOG_BASE_COMMIT" = "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
           branch="automation/catalog-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" \
             -f ref="refs/heads/$branch" \
@@ -75,32 +90,10 @@ jobs:
             gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$branch" >/dev/null 2>&1 || true
           }
           trap cleanup_branch ERR
-          mutation='mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }'
-          jq -n \
-            --arg query "$mutation" \
-            --arg repository "$GITHUB_REPOSITORY" \
-            --arg branch "$branch" \
-            --arg head "$CATALOG_BASE_COMMIT" \
-            --rawfile catalog registry/catalog.json \
-            --rawfile candidates registry/candidates.json \
-            '{
-              query: $query,
-              variables: { input: {
-                branch: { repositoryNameWithOwner: $repository, branchName: $branch },
-                expectedHeadOid: $head,
-                message: { headline: "chore: apply automated Catalog policy" },
-                fileChanges: { additions: [
-                  { path: "registry/catalog.json", contents: ($catalog | @base64) },
-                  { path: "registry/candidates.json", contents: ($candidates | @base64) }
-                ] }
-              } }
-            }' > "$RUNNER_TEMP/create-catalog-commit.json"
-          gh api graphql --input "$RUNNER_TEMP/create-catalog-commit.json" \
-            > "$RUNNER_TEMP/create-catalog-commit-response.json"
-          commit_oid=$(jq -er '.data.createCommitOnBranch.commit.oid | select(test("^[0-9a-f]{40}$"))' \
+          CATALOG_BRANCH="$branch" node scripts/create-catalog-commit.mjs \
+            --output "$RUNNER_TEMP/create-catalog-commit-response.json"
+          commit_oid=$(jq -er '.commit | select(test("^[0-9a-f]{40}$"))' \
             "$RUNNER_TEMP/create-catalog-commit-response.json")
-          gh api "repos/$GITHUB_REPOSITORY/commits/$commit_oid" \
-            --jq '.commit.verification.verified' | grep -qx true
           pr_url=$(gh pr create \
             --base main \
             --head "$branch" \
@@ -133,8 +126,12 @@ jobs:
             sleep 10
           done
           test "$codeql_ready" = true
-          gh pr merge --squash --delete-branch "$pr_url"
+          test "$CATALOG_BASE_COMMIT" = "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          gh pr merge --squash --delete-branch --match-head-commit "$commit_oid" "$pr_url"
           test "$(gh pr view "$pr_url" --json state --jq .state)" = MERGED
+          merge_sha=$(gh pr view "$pr_url" --json mergeCommit --jq '.mergeCommit.oid')
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/$merge_sha" --jq '.commit.verification.verified')" = true
+          echo "merge_sha=$merge_sha" >> "$GITHUB_OUTPUT"
           trap - ERR
       - name: Preserve the machine plan and decision record
         if: always()
@@ -144,3 +141,56 @@ jobs:
           path: ${{ runner.temp }}/catalog-automation-report.json
           if-no-files-found: warn
           retention-days: 30
+      - name: Publish the merged Catalog immediately
+        if: steps.automate.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_MAIN_SHA: ${{ steps.pull_request.outputs.merge_sha }}
+        run: |
+          test "$EXPECTED_MAIN_SHA" = "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          dispatched_at=$(date -u +%s)
+          gh workflow run pages.yml --ref main
+          pages_run_id=''
+          for attempt in $(seq 1 30); do
+            runs=$(gh run list --workflow pages.yml --event workflow_dispatch --limit 20 \
+              --json databaseId,headSha,createdAt)
+            pages_run_id=$(jq -r \
+              --arg sha "$EXPECTED_MAIN_SHA" \
+              --argjson dispatched_at "$dispatched_at" \
+              '.[] | select(.headSha == $sha and (.createdAt | fromdateiso8601) >= $dispatched_at) | .databaseId' \
+              <<<"$runs" | head -n 1)
+            test -n "$pages_run_id" && break
+            sleep 2
+          done
+          test -n "$pages_run_id"
+          test "$(gh run view "$pages_run_id" --json headSha --jq .headSha)" = "$EXPECTED_MAIN_SHA"
+          gh run watch "$pages_run_id" --exit-status --interval 10
+
+  author-notifications:
+    needs: update
+    if: needs.update.result == 'success'
+    uses: ./.github/workflows/author-notifications.yml
+    with:
+      catalog_run_id: ${{ github.run_id }}
+      catalog_run_attempt: ${{ github.run_attempt }}
+      catalog_conclusion: ${{ needs.update.result }}
+      inline_catalog_run: true
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+
+  owner-report:
+    needs: [update, author-notifications]
+    if: always()
+    uses: ./.github/workflows/catalog-run-report.yml
+    with:
+      catalog_run_id: ${{ github.run_id }}
+      catalog_run_attempt: ${{ github.run_attempt }}
+      catalog_conclusion: ${{ needs.update.result }}
+      inline_catalog_run: true
+      request_id: catalog-inline
+    permissions:
+      contents: read
+      actions: read
+      issues: write

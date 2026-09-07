@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI-Scarlett/DSH-Store/registry/catalog-index.schema.json",
+  "title": "DSH STORE lightweight plugin Catalog index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "catalogType",
+    "registry",
+    "entries"
+  ],
+  "$defs": {
+    "dshReleaseKey": {
+      "type": "string",
+      "pattern": "^(?:rc\\.(?:7|8)|[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?)$"
+    },
+    "releaseCompatibility": {
+      "enum": [
+        "compatible",
+        "incompatible",
+        "unknown"
+      ]
+    },
+    "operationEvidence": {
+      "enum": [
+        "passed",
+        "failed",
+        "unknown"
+      ]
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "verified",
+            "failed",
+            "unknown",
+            "not-applicable"
+          ]
+        },
+        "evidenceStatus": {
+          "const": "partial"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidenceUrl": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "dshRelease": {
+          "$ref": "#/$defs/dshReleaseKey"
+        },
+        "systems": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "verified"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "method",
+              "checkedAt",
+              "evidenceUrl"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "evidenceStatus"
+            ]
+          },
+          "then": {
+            "required": [
+              "method",
+              "checkedAt",
+              "evidenceUrl"
+            ],
+            "properties": {
+              "status": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "releaseOperations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "install",
+        "start",
+        "uninstall",
+        "rollback"
+      ],
+      "properties": {
+        "install": {
+          "$ref": "#/$defs/operationEvidence"
+        },
+        "start": {
+          "$ref": "#/$defs/operationEvidence"
+        },
+        "uninstall": {
+          "$ref": "#/$defs/operationEvidence"
+        },
+        "rollback": {
+          "$ref": "#/$defs/operationEvidence"
+        }
+      }
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "catalogType": {
+      "const": "index"
+    },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "repositoryUrl",
+        "updatedAt",
+        "sourceUpdates",
+        "trustPolicy",
+        "detailsPath"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repositoryUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/[^/]+/[^/]+$"
+        },
+        "homepageUrl": {
+          "type": "string"
+        },
+        "installCountsUrl": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceUpdates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "defaultPolicy"
+          ],
+          "properties": {
+            "mode": {
+              "const": "client-on-demand"
+            },
+            "defaultPolicy": {
+              "const": "risk-derived"
+            }
+          }
+        },
+        "trustPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "candidateInstallDisabled",
+            "unknownIsNotVerified",
+            "promotionIndependentOfVerification"
+          ],
+          "properties": {
+            "candidateInstallDisabled": {
+              "const": true
+            },
+            "unknownIsNotVerified": {
+              "const": true
+            },
+            "promotionIndependentOfVerification": {
+              "const": true
+            }
+          }
+        },
+        "categories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "detailsPath": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._/-]+$"
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "nameZh",
+          "nameEn",
+          "packageName",
+          "version",
+          "featured",
+          "order",
+          "repositoryUrl",
+          "detailPath",
+          "status",
+          "categories",
+          "searchTerms"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$"
+          },
+          "nameZh": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nameEn": {
+            "type": "string",
+            "minLength": 1
+          },
+          "packageName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "repositoryUrl": {
+            "type": "string",
+            "pattern": "^https://github\\.com/[^/]+/[^/]+$"
+          },
+          "detailPath": {
+            "type": "string",
+            "pattern": "^catalog/details/[A-Za-z0-9][A-Za-z0-9._-]{0,95}\\.json$"
+          },
+          "status": {
+            "enum": [
+              "approved",
+              "blocked",
+              "unlisted"
+            ]
+          },
+          "categories": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "searchTerms": {
+            "type": "array",
+            "maxItems": 40,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -7,14 +7,19 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.5')
+  assert.equal(pkg.version, '0.8.15')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
   assert.equal(pkg.repository.url, 'git+https://github.com/AI-Scarlett/DSH-Store.git')
   assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.2'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.3'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.4'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.5'], 'compatible')
+  assert.match(pkg.scripts.check, /src\/guardian-upgrader\.mjs/)
   for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
-    assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0')
+    assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.3-alpha.1')
   }
   assert.equal(pkg.private, true)
 })
@@ -28,6 +33,7 @@ test('canonical DSH-Store repository and Pages URLs replace legacy aliases', asy
     'marketplace/standards/index.html', 'package.json',
     'registry/README.md', 'registry/automation-policy.json', 'registry/candidates.json',
     'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json',
+    'registry/catalog-index.json', 'registry/catalog-index.schema.json', 'registry/catalog-detail.schema.json',
     'scripts/automate-catalog.mjs', 'scripts/build-marketplace-static.mjs', 'scripts/check-plugin-submission.mjs',
     'scripts/plan-author-notices.mjs', 'scripts/verify-marketplace-public.mjs', 'src/candidates.mjs', 'src/catalog.mjs',
   ]
@@ -55,6 +61,38 @@ test('static storefront templates expose the cross-site navigation and analytics
     const source = await readFile(new URL(path, project), 'utf8')
     assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
   }
+})
+
+test('public storefront verifies the legacy bridge before loading the split Catalog index', async () => {
+  const source = await readFile(new URL('marketplace/app.js', project), 'utf8')
+  assert.match(source, /payload\.registry\.indexPath/)
+  assert.match(source, /crypto\.subtle\.digest\('SHA-256'/)
+  assert.match(source, /Catalog bridge index SHA-256 does not match/)
+  assert.match(source, /state\.detailPromises/)
+  assert.match(source, /Math\.min\(6, entries\.length\)/)
+})
+
+test('storefront uses the bright glass and responsive Bento design contract', async () => {
+  const pagePaths = [
+    'marketplace/index.html',
+    'marketplace/plugins/index.html',
+    'marketplace/standards/index.html',
+    'marketplace/build/index.html',
+    'marketplace/faq/index.html',
+    'marketplace/about/index.html',
+    'marketplace/about/deepseek-harness-guide/index.html',
+    'marketplace/dsh-plugins/index.html',
+  ]
+  const [styles, ...pages] = await Promise.all([
+    readFile(new URL('marketplace/styles.css', project), 'utf8'),
+    ...pagePaths.map(path => readFile(new URL(path, project), 'utf8')),
+  ])
+  for (const page of pages) assert.match(page, /<meta name="theme-color" content="#f6f9ff">/)
+  assert.match(styles, /--glass: rgba\(255, 255, 255, \.72\)/)
+  assert.match(styles, /--radius-xl: 32px/)
+  assert.match(styles, /\.automation-grid article:first-child \{\s*grid-column: span 2;/)
+  assert.match(styles, /\.featured-grid > :first-child \{ grid-row: span 2; \}/)
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/)
 })
 
 test('featured DeepSeek Harness article preserves source attribution and long-form structure', async () => {
@@ -98,8 +136,10 @@ test('marketplace cards derive the latest three DSH releases while details retai
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
   ])
-  assert.match(storefront, /DSH_VERSION_URL = 'https:\/\/registry\.npmjs\.org\/@deepseek-ai%2Fdsh\/latest'/)
+  assert.match(storefront, /DSH_VERSION_URL = 'https:\/\/registry\.npmjs\.org\/@deepseek-ai%2Fdsh'/)
   assert.match(storefront, /function createDshReleaseContext/)
+  assert.match(storefront, /import\('\.\/lib\/dsh-release-policy\.js'\)/)
+  assert.match(storefront, /fetchOfficialDshReleaseWindow\(/)
   assert.match(storefront, /const cardReleaseViews = views =>/)
   assert.match(storefront, /\$\{compatibilityMatrix\(entry\)\}/)
   assert.match(storefront, /compatibility\.dshReleaseViews\.map\(view =>/)
@@ -174,6 +214,8 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /partial: '部分验证'/)
   assert.match(client, /const SUPPORT_URL = 'https:\/\/dsh\.store\/'/)
   assert.match(client, /技术支持：DSH-Store/)
+  assert.match(client, /同版本源码已更新 · GitHub 手动更新/)
+  assert.match(client, /手动更新不受商城计划、备份、健康检查和失败回滚保护/)
   assert.match(client, /compactButton/)
   assert.match(client, /function TabButton/)
   assert.match(client, /function StatusPill/)
@@ -263,8 +305,12 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /DSH 版本与升级/)
   assert.match(client, /检测升级/)
   assert.match(client, /复制升级命令/)
+  assert.match(client, /预发布/)
   assert.match(client, /插件源更新规则/)
   assert.match(client, /Guardian 已验证，DSH 正在交接，页面会自动重新连接/)
+  assert.match(client, /独立升级交接器已验证旧 Guardian、Profile 与 Boot ID/)
+  assert.match(client, /国内站修复\/升级方案/)
+  assert.match(client, /GitHub Pages 修复\/升级方案/)
   assert.match(client, /BOOT_RECOVERY_TIMEOUT/)
   assert.match(client, /dsh-safe-plugin-manager:boot-recovery:v1/)
   assert.match(client, /BroadcastChannel/)
@@ -277,7 +323,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.doesNotMatch(client, /执行 DSH 升级|一键升级 DSH/)
 })
 
-test('public rc.7 through 0.1.1-rc.2 client contract stays on official ModuleLoader and settings ordering', async () => {
+test('public rc.7 through 0.1.2-alpha.5 client contract stays on official ModuleLoader and settings ordering', async () => {
   const [pkg, client] = await Promise.all([
     readFile(new URL('package.json', project), 'utf8'),
     readFile(new URL('src/client.js', project), 'utf8'),
@@ -292,17 +338,19 @@ test('public rc.7 through 0.1.1-rc.2 client contract stays on official ModuleLoa
   assert.match(client, /window\.__ModuleLoader__\.load/)
   assert.match(client, /settings\.plugins\.tab/)
   assert.match(client, /order:\s*-10/)
-  assert.match(client, /0\.1\.1-rc\.2/)
+  assert.match(client, /0\.1\.2-alpha\.5/)
   assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
 })
 
-test('guardian health requires DSH HTTP identity and fails closed on an unowned port', async () => {
-  const [daemon, service] = await Promise.all([
+test('guardian health and active upgrade require bound DSH ownership', async () => {
+  const [daemon, service, upgrader] = await Promise.all([
     readFile(new URL('src/guardian-daemon.mjs', project), 'utf8'),
     readFile(new URL('src/guardian.mjs', project), 'utf8'),
+    readFile(new URL('src/guardian-upgrader.mjs', project), 'utf8'),
   ])
   assert.match(daemon, /\/api2\/dsh-safe-plugin-manager\/runtime/)
   assert.match(daemon, /runtime-identity-mismatch/)
+  assert.match(daemon, /root\.statusCode !== 200 && root\.statusCode !== 401/)
   assert.match(daemon, /external-dsh-detected/)
   assert.match(daemon, /port-conflict/)
   assert.match(daemon, /consecutiveProbeFailures/)
@@ -312,6 +360,12 @@ test('guardian health requires DSH HTTP identity and fails closed on an unowned 
   assert.match(service, /commandPath/)
   assert.match(service, /GUARDIAN_BOOTSTRAP_UNVERIFIED/)
   assert.match(service, /waitForFreshGuardianHeartbeat/)
+  assert.match(service, /active-guardian-upgrade/)
+  assert.match(upgrader, /GUARDIAN_ACTIVE_IDENTITY_CHANGED/)
+  assert.match(upgrader, /GUARDIAN_UPGRADE_PRECONDITION_CHANGED/)
+  assert.match(upgrader, /GUARDIAN_UPGRADE_HEARTBEAT_UNVERIFIED/)
+  assert.match(upgrader, /atomicCopy/)
+  assert.match(upgrader, /recovery/)
   assert.ok((daemon.match(/env: commandEnvironment/g) || []).length >= 2, 'Guardian launch and offline restore must share the captured command PATH')
   assert.doesNotMatch(daemon, /adopting-existing-host/)
 })
@@ -325,7 +379,7 @@ test('client fails closed when the live health endpoint still uses the legacy sc
 })
 
 test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const [html, app, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, readme, previewServer, styles, catalogDocument] = await Promise.all([
+  const [html, app, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, repairHtml, repairClient, repairCli, readme, previewServer, styles, packageManifest] = await Promise.all([
     readFile(new URL('marketplace/index.html', project), 'utf8'),
     readFile(new URL('marketplace/app.js', project), 'utf8'),
     readFile(new URL('marketplace/plugins/index.html', project), 'utf8'),
@@ -333,13 +387,16 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     readFile(new URL('marketplace/build/index.html', project), 'utf8'),
     readFile(new URL('marketplace/faq/index.html', project), 'utf8'),
     readFile(new URL('marketplace/about/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/repair/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/repair/repair.js', project), 'utf8'),
+    readFile(new URL('bin/dsh-store-repair.mjs', project), 'utf8'),
     readFile(new URL('README.md', project), 'utf8'),
     readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
-    readFile(new URL('registry/catalog.json', project), 'utf8').then(JSON.parse),
+    readFile(new URL('package.json', project), 'utf8'),
   ])
-  const managerCommit = catalogDocument.entries.find(entry => entry.id === 'dsh-safe-plugin-manager').commit
-  const installCommand = `dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#${managerCommit}'`
+  const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
+  const installCommand = `dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}'`
   const submissionUrl = 'https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml'
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)
@@ -360,7 +417,7 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.ok(html.includes(submissionUrl))
   assert.ok(pluginsHtml.includes(submissionUrl))
   assert.ok(buildHtml.includes(submissionUrl))
-  for (const page of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml]) {
+  for (const page of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, repairHtml]) {
     assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
   }
   assert.match(html, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
@@ -368,6 +425,20 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     assert.doesNotMatch(surface, /github\.com\/AI-Scarlett\/dsh-safe-plugin-manager|ai-scarlett\.github\.io\/dsh-safe-plugin-manager/)
   }
   assert.match(html, /id="manager"/)
+  assert.match(html, /DSH_LEGACY_REPAIR_BANNER/)
+  assert.match(repairHtml, /data-repair-state="catalog-pending"/)
+  assert.match(repairHtml, /DSH_REPAIR_COMMAND/)
+  assert.match(repairHtml, /--ignore-scripts/)
+  assert.match(repairHtml, /https:\/\/dsh-store\.cn\/repair\//)
+  assert.match(repairHtml, /https:\/\/ai-scarlett\.github\.io\/DSH-Store\/marketplace\/repair\//)
+  assert.match(repairHtml, /查看本官方修复\/升级方案/)
+  assert.match(repairClient, /navigator\.clipboard\.writeText/)
+  assert.doesNotMatch(repairClient, /fetch\(|eval\(|new Function/)
+  assert.match(repairCli, /createLegacyRepairService/)
+  const parsedPackage = JSON.parse(packageManifest)
+  assert.equal(parsedPackage.bin['dsh-store-repair'], './bin/dsh-store-repair.mjs')
+  assert.equal(parsedPackage.scripts.prepare, undefined)
+  assert.equal(parsedPackage.scripts.install, undefined)
   assert.match(html, /id="featured-grid"/)
   assert.doesNotMatch(html, /id="plugin-grid"/)
   assert.match(pluginsHtml, /id="plugin-grid"/)

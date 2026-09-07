@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
-import { compareCatalogEntries, validateCatalog } from '../src/catalog.mjs'
+import { compareCatalogEntries, loadCatalogFromFiles } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
@@ -9,9 +9,8 @@ const DISCOVERY = 'blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa'
 const REVIEW_METHOD = 'github-fixed-commit-static-contract-review'
 
 test('Blue Whale review keeps fixed-source admissions separate from rejected candidates', async () => {
-  const catalogSource = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
   const candidateSource = JSON.parse(await readFile(new URL('../registry/candidates.json', import.meta.url), 'utf8'))
-  const catalog = validateCatalog(catalogSource)
+  const catalog = await loadCatalogFromFiles()
   const candidates = validateCandidateRegistry(candidateSource)
   const admitted = catalog.entries.filter(entry => entry.assurance.discovery.method === REVIEW_METHOD)
   const rejected = candidates.entries.filter(entry => entry.discoverySources.includes(DISCOVERY))

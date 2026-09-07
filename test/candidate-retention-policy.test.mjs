@@ -5,6 +5,7 @@ import {
   candidateRetentionBucketAt,
   evaluateCandidateManifests,
   inspectRejectedCandidateCompatibility,
+  isDurableRejectedCandidateDecision,
   selectRejectedCandidateRetentionBatch,
 } from '../src/candidate-retention-policy.mjs'
 
@@ -86,4 +87,39 @@ test('hash buckets cover only rejected candidates without storing a cursor', () 
   const batch = selectRejectedCandidateRetentionBatch({ entries: [selected, other, reviewing] }, observedAt, policy, 8)
   assert.equal(batch.bucket, activeBucket)
   assert.deepEqual(batch.entries, [selected])
+})
+
+test('explicit user-request rejection decisions remain durable audit records', () => {
+  const observedAt = '2026-08-24T16:00:00.000Z'
+  const activeBucket = candidateRetentionBucketAt(observedAt, 8, 24)
+  const requested = candidate({ discoverySources: ['user-request-2026-08-21', 'github-fixed-commit-review'] })
+  let suffix = 0
+  while (candidateRetentionBucket(requested, 24) !== activeBucket) {
+    suffix += 1
+    requested.repositoryUrl = `https://github.com/example/requested-${suffix}`
+  }
+  assert.equal(isDurableRejectedCandidateDecision(requested), true)
+  const batch = selectRejectedCandidateRetentionBatch({ entries: [requested] }, observedAt, policy, 8)
+  assert.deepEqual(batch.entries, [])
+})
+
+test('an unsupported new upstream Commit does not mutate a durable user-request decision', () => {
+  const previous = candidate({
+    latestCommit: 'a'.repeat(40),
+    discoverySources: ['user-request-2026-08-21', 'github-fixed-commit-review'],
+    statusReason: 'CATALOG_CONFLICT: reviewed at the requested fixed Commit',
+  })
+  const before = JSON.stringify(previous)
+  const newDiscovery = candidate({
+    latestCommit: 'b'.repeat(40),
+    discoverySources: ['github-search'],
+    statusReason: 'AUTOMATIC_POLICY_REJECTED: no latest-three compatibility evidence',
+  })
+
+  assert.notEqual(newDiscovery.latestCommit, previous.latestCommit)
+  assert.equal(isDurableRejectedCandidateDecision(previous), true)
+  assert.equal(JSON.stringify(previous), before)
+
+  const ordinary = candidate({ discoverySources: ['github-search'] })
+  assert.equal(isDurableRejectedCandidateDecision(ordinary), false)
 })

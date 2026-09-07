@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 const API_ROOT = 'https://api.github.com'
 const ISSUE_TITLE = 'DSH STORE 自动更新报告（每 3 小时）'
 const MANAGED_MARKER_PREFIX = '<!-- dsh-catalog-report:'
-const ACTION_TYPES = new Set(['create', 'comment', 'skip'])
+const ACTION_TYPES = new Set(['create', 'comment', 'update', 'skip'])
 
 function parseArgs(argv) {
   const mode = argv[0]
@@ -106,15 +106,27 @@ export function createCatalogReportDeliveryPlan({
   const body = publishedBody(marker, reportBody)
   if (!body.includes('@AI-Scarlett')) throw new Error('catalog report must mention @AI-Scarlett')
   const issue = canonicalState.issue
-  const alreadyDelivered = issue !== null && (
-    issue.body.includes(`<!-- ${marker} -->`)
-    || issue.comments.some(comment => comment.body.includes(`<!-- ${marker} -->`))
-  )
-  const action = alreadyDelivered
-    ? { type: 'skip', issueNumber: issue.number, reopen: false }
-    : issue === null
-      ? { type: 'create', issueNumber: null, reopen: false }
-      : { type: 'comment', issueNumber: issue.number, reopen: issue.state === 'closed' }
+  const markerText = `<!-- ${marker} -->`
+  const deliveredTargets = issue === null ? [] : [
+    ...(issue.body.includes(markerText) ? [{ commentId: null, body: issue.body }] : []),
+    ...issue.comments
+      .filter(comment => comment.body.includes(markerText))
+      .map(comment => ({ commentId: comment.id, body: comment.body })),
+  ]
+  if (deliveredTargets.length > 1) throw new Error('catalog report marker is duplicated')
+  const deliveredTarget = deliveredTargets[0] ?? null
+  const action = issue === null
+    ? { type: 'create', issueNumber: null, reopen: false }
+    : deliveredTarget === null
+      ? { type: 'comment', issueNumber: issue.number, reopen: issue.state === 'closed' }
+      : deliveredTarget.body === body
+        ? { type: 'skip', issueNumber: issue.number, reopen: false }
+        : {
+            type: 'update',
+            issueNumber: issue.number,
+            commentId: deliveredTarget.commentId,
+            reopen: issue.state === 'closed',
+          }
   const planWithoutId = {
     schemaVersion: 1,
     operation: 'deliver-catalog-run-report',
@@ -163,6 +175,14 @@ export function validateCatalogReportDeliveryPlan(plan) {
     if (plan.action.issueNumber !== null || plan.action.reopen !== false) throw new Error('catalog report create action is invalid')
   } else if (!Number.isInteger(plan.action.issueNumber) || plan.action.issueNumber < 1) {
     throw new Error('catalog report issue action is invalid')
+  }
+  if (plan.action.type === 'update'
+    && plan.action.commentId !== null
+    && (!Number.isInteger(plan.action.commentId) || plan.action.commentId < 1)) {
+    throw new Error('catalog report update target is invalid')
+  }
+  if (plan.action.type !== 'update' && plan.action.commentId !== undefined) {
+    throw new Error('catalog report comment target is unexpected')
   }
   if (typeof plan.action.reopen !== 'boolean') throw new Error('catalog report reopen flag is invalid')
 }
@@ -302,6 +322,30 @@ async function applyMode(options) {
       throw new Error('created Catalog report Issue readback mismatch')
     }
     process.stdout.write(`CATALOG_REPORT_APPLIED plan=${plan.planId} action=create run=${plan.catalogRunId} issue=${issue.number} ${issue.html_url}\n`)
+    return
+  }
+
+  if (plan.action.type === 'update') {
+    let url
+    if (plan.action.commentId === null) {
+      const issue = await github.request('PATCH', `/repos/${repository}/issues/${plan.action.issueNumber}`, {
+        body,
+        ...(plan.action.reopen ? { state: 'open' } : {}),
+      })
+      if (issue.body !== body || (plan.action.reopen && issue.state !== 'open')) {
+        throw new Error('updated Catalog report Issue readback mismatch')
+      }
+      url = issue.html_url
+    } else {
+      const comment = await github.request('PATCH', `/repos/${repository}/issues/comments/${plan.action.commentId}`, { body })
+      if (comment.body !== body) throw new Error('updated Catalog report comment readback mismatch')
+      url = comment.html_url
+      if (plan.action.reopen) {
+        const issue = await github.request('PATCH', `/repos/${repository}/issues/${plan.action.issueNumber}`, { state: 'open' })
+        if (issue.state !== 'open') throw new Error('Catalog report Issue reopen readback mismatch')
+      }
+    }
+    process.stdout.write(`CATALOG_REPORT_APPLIED plan=${plan.planId} action=update run=${plan.catalogRunId} issue=${plan.action.issueNumber} ${url}\n`)
     return
   }
 

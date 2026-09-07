@@ -1,0 +1,219 @@
+{
+  "id": "dsh-agent-reach",
+  "name": "联网能力（Agent Reach for DSH）",
+  "packageName": "dsh-agent-reach",
+  "description": "将 Agent Reach 联网能力路由 Skill 安全挂载到 DSH；Python CLI 与所选渠道依赖需另行安装授权。",
+  "searchTerms": [
+    "联网能力",
+    "Agent Reach for DSH",
+    "dsh-agent-reach",
+    "安全",
+    "审计",
+    "验证",
+    "防护",
+    "搜索与网络",
+    "搜索",
+    "联网",
+    "浏览器",
+    "工具能力",
+    "工具",
+    "能力",
+    "工作流与自动化",
+    "工作流",
+    "自动化",
+    "任务",
+    "dsh",
+    "agent",
+    "reach"
+  ],
+  "repositoryUrl": "https://github.com/AI-Scarlett/dsh-agent-reach",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "f5050929f85c977478208d38c4b850aa5cb9c71b",
+  "version": "0.1.2",
+  "categories": [
+    "search",
+    "tools",
+    "workflow"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-07T04:10:46.000Z",
+    "observedAt": "2026-09-07T04:11:58.370Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/dsh-agent-reach/blob/f5050929f85c977478208d38c4b850aa5cb9c71b/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
+      "systems": [
+        "macos"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Canonical GitHub manifest and Bundle Patch read back at the immutable candidate commit."
+    },
+    "installability": {
+      "status": "partial",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/dsh-agent-reach/blob/f5050929f85c977478208d38c4b850aa5cb9c71b/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
+      "systems": [
+        "macos"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Official source CLI link install, configuration composition and npm tarball contents passed in a disposable Profile; remote Git install was not tested."
+    },
+    "runtime": {
+      "status": "partial",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/dsh-agent-reach/blob/f5050929f85c977478208d38c4b850aa5cb9c71b/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
+      "systems": [
+        "macos"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Official 0.1.3-alpha.1 source host cold start and uninstall passed; UI, real model calls and version rollback remain unverified."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [
+    "dsh-agent-reach-skill-provider"
+  ],
+  "status": "approved",
+  "statusReason": null,
+  "compatibility": {
+    "dsh": ">=0.1.2-rc.1 <0.2.0 || 0.1.3-alpha.1",
+    "dshReleases": {
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.1.2-rc.1": "compatible",
+      "0.1.3-alpha.1": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [
+      "macOS",
+      "Linux",
+      "Windows"
+    ],
+    "profiles": [
+      "web",
+      "headless"
+    ]
+  },
+  "details": {
+    "pluginType": "suite",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "shell",
+      "credentials": [
+        "api-key",
+        "oauth",
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "Python 3.10+",
+      "Agent Reach CLI 1.5.0",
+      "第三方 CLI/API（按渠道）"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "owner-adapter-upstream-manual-review-not-security-audited"
+  }
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from 'node:crypto'
-import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
+import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkRepository } from './check-plugin-submission.mjs'
@@ -9,32 +9,39 @@ import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-
 import {
   assessUpstreamVersion,
   buildCatalogVersionUpdate,
+  catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
 import {
   assertLegacyCatalogCompatibility,
+  catalogBridgeBuffer,
   canonicalGithubRepository,
   compareCatalogEntries,
   compareVersions,
+  loadCatalogFromFiles,
+  splitCatalogDocument,
   validateCatalog,
 } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
+  DSH_RELEASE_WINDOW_AUTHORITY,
   DSH_REGISTRY_URL,
   fetchOfficialDshReleaseWindow,
 } from '../src/catalog-compatibility-policy.mjs'
 import {
   inspectRejectedCandidateCompatibility,
+  isDurableRejectedCandidateDecision,
   REJECTED_CANDIDATE_RETENTION_AUTHORITY,
   selectRejectedCandidateRetentionBatch,
 } from '../src/candidate-retention-policy.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
+const catalogIndexPath = resolve(root, 'registry/catalog-index.json')
 const candidatesPath = resolve(root, 'registry/candidates.json')
 const policyPath = resolve(root, 'registry/automation-policy.json')
 const SOURCE_FILE = /\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
@@ -51,7 +58,7 @@ const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
 const SELF_MANAGER_PROTECTED_ENTRY_REASON = 'Bundle Patch uses a protected DSH entry ID'
 const SELF_MANAGER_PROTECTED_DSH_REASON = 'runtime source contains the protectedDsh permission signal'
 const SELF_MANAGER_MAX_RUNTIME_FILES = 512
-const SELF_MANAGER_MAX_FILE_BYTES = 2 * 1024 * 1024
+const SELF_MANAGER_MAX_FILE_BYTES = 4 * 1024 * 1024
 const SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES = 8 * 1024 * 1024
 
 function sha256(value) {
@@ -60,15 +67,19 @@ function sha256(value) {
 
 function parseArgs(argv) {
   const options = {
-    write: false, expectedCatalogSha: null, expectedCandidatesSha: null,
-    catalogBackup: null, candidatesBackup: null, observedAt: null, report: null,
+    write: false, expectedCatalogSha: null, expectedCatalogIndexSha: null, expectedCandidatesSha: null,
+    catalogBackup: null, catalogIndexBackup: null, catalogDetailsBackup: null,
+    candidatesBackup: null, observedAt: null, report: null,
   }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
     if (value === '--write') options.write = true
     else if (value === '--expected-catalog-sha') options.expectedCatalogSha = argv[++index]
+    else if (value === '--expected-catalog-index-sha') options.expectedCatalogIndexSha = argv[++index]
     else if (value === '--expected-candidates-sha') options.expectedCandidatesSha = argv[++index]
     else if (value === '--catalog-backup') options.catalogBackup = argv[++index]
+    else if (value === '--catalog-index-backup') options.catalogIndexBackup = argv[++index]
+    else if (value === '--catalog-details-backup') options.catalogDetailsBackup = argv[++index]
     else if (value === '--candidates-backup') options.candidatesBackup = argv[++index]
     else if (value === '--observed-at') options.observedAt = argv[++index]
     else if (value === '--report') options.report = argv[++index]
@@ -277,6 +288,12 @@ async function analyzeFixedSource(candidate, policy, github) {
     const relativePath = prefix ? item.path.slice(prefix.length) : item.path
     if (EXCLUDED_DIRECTORY.test(relativePath)) return false
     if (EXCLUDED_METADATA_FILE.test(relativePath)) return false
+    // Split Catalog details are bounded, schema-validated release data rather
+    // than executable plugin source. Counting every generated record made the
+    // self-manager's fixed-source gate shrink as the marketplace grew. Exclude
+    // only the canonical manager's one-level JSON detail records; all code,
+    // scripts, indexes and other JSON inputs remain in the permission scan.
+    if (isGeneratedSelfManagerCatalogDetail(candidate, relativePath)) return false
     if (NATIVE_FILE.test(relativePath) || item.mode === '100755') signals.nativeOrExecutableArtifacts = true
     return SOURCE_FILE.test(relativePath)
   })
@@ -443,6 +460,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 
   async function inspectEntry(entry, index) {
     let snapshot
+    let versionAssessment = null
+    let changeContract = null
     try {
       snapshot = await sourceSnapshot(entry)
       if (snapshot.commit === entry.commit) return { index, entry, kind: 'current' }
@@ -455,12 +474,13 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         if (String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')) throw error
         return { index, entry, kind: 'deferred', snapshot, reason: 'the fixed-Commit manifest is not valid JSON' }
       }
-      const versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
-      if (versionAssessment.status !== 'newer-version') {
+      versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
+      changeContract = catalogChangeReviewContract(versionAssessment)
+      if (!changeContract.reviewable) {
         return { index, entry, kind: versionAssessment.status, snapshot, versionAssessment }
       }
 
-      process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
+      process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} kind=${changeContract.changeKind} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
       const withoutCurrent = { ...baselineCatalog, entries: baselineCatalog.entries.filter(item => item.id !== entry.id) }
       const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '.', {
         catalogDocument: withoutCurrent,
@@ -471,7 +491,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (candidate.commit !== snapshot.commit || candidate.defaultBranch !== snapshot.defaultBranch) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the upstream default branch moved during the fixed-source review' }
       }
-      if (!catalogUpdateIdentityMatches(entry, candidate) || compareVersions(candidate.version, entry.version) !== 1) {
+      if (!catalogUpdateIdentityMatches(entry, candidate)
+        || compareVersions(candidate.version, entry.version) !== changeContract.expectedVersionComparison) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the package, path, Bundle entry identity, or version contract changed' }
       }
       if (normalizedLicense(candidate.details?.license) !== normalizedLicense(entry.details?.license)) {
@@ -511,9 +532,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const updated = buildCatalogVersionUpdate(entry, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
-      }, observedAt, sourcePolicy, { preserveCompatibility: isSelfManagerEntry(entry) })
+      }, observedAt, sourcePolicy)
       return {
-        index, entry, kind: 'updated', snapshot, versionAssessment, sourcePolicy, updated,
+        index, entry, kind: 'updated', snapshot, versionAssessment, changeContract, sourcePolicy, updated,
         warnings: analysis.reasons,
       }
     } catch (error) {
@@ -521,7 +542,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         || (String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')
           && ![404, 410, 451].includes(error?.status))
       return {
-        index, entry, kind: infrastructure ? 'transient' : 'deferred', snapshot,
+        index, entry, kind: infrastructure ? 'transient' : 'deferred', snapshot, versionAssessment, changeContract,
         reason: boundedText(error?.message, infrastructure ? 'temporary source update lookup failure' : 'source update review failed'),
       }
     }
@@ -539,12 +560,16 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       report.sourceVersionChecks.currentEntries += 1
       continue
     }
-    if (result.kind === 'source-changed-without-version-bump') {
+    if (versionAssessment?.status === 'source-changed-without-version-bump') {
       report.sourceVersionChecks.sourceChangedWithoutVersionBump += 1
       report.sourceChangesWithoutVersionBump.push({
         id: entry.id, version: entry.version, catalogCommit: entry.commit, candidateCommit: snapshot.commit,
+        decision: result.kind === 'updated' ? 'catalog-repinned'
+          : result.kind === 'transient' ? 'retry-later' : 'update-blocked',
+        reason: result.reason ?? null,
       })
-      continue
+      if (result.kind === 'updated') report.sourceVersionChecks.sameVersionCatalogUpdates += 1
+      else report.sourceVersionChecks.sameVersionUpdatesDeferred += 1
     }
     if (result.kind === 'upstream-version-behind') {
       report.sourceVersionChecks.upstreamVersionBehind += 1
@@ -557,7 +582,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     if (versionAssessment?.status === 'newer-version') report.sourceVersionChecks.newerVersionCandidates += 1
     if (result.kind === 'updated') {
       catalog.entries[result.index] = result.updated
-      report.sourceVersionChecks.catalogUpdates += 1
+      if (result.changeContract.changeKind === 'version-update') {
+        report.sourceVersionChecks.catalogUpdates += 1
+      }
       report.updatedEntries.push({
         id: entry.id,
         from: entry.commit,
@@ -565,6 +592,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         fromVersion: entry.version,
         toVersion: result.updated.version,
         version: result.updated.version,
+        changeKind: result.changeContract.changeKind,
         policy: result.sourcePolicy,
       })
       report.updateReviews.push({
@@ -575,7 +603,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         upstreamVersion: result.updated.version,
         candidateCommit: result.updated.commit,
         policy: result.sourcePolicy,
-        decision: 'catalog-updated',
+        decision: result.changeContract.changeKind === 'same-version-source-update'
+          ? 'catalog-repinned-same-version' : 'catalog-updated',
         warnings: result.warnings.slice(0, 20),
       })
       continue
@@ -670,11 +699,14 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
         record, 'new-discovery', policy, github, dshReleaseWindow, report,
       )
       if (retention.status === 'unsupported') {
-        if (previous) {
+        const preserveDurableDecision = previous && isDurableRejectedCandidateDecision(previous)
+        if (preserveDurableDecision) {
+          report.candidateRetention.durableDecisionsPreserved += 1
+        } else if (previous) {
           candidates.entries = candidates.entries.filter(item => item !== previous)
           report.candidateRetention.registryRemovals += 1
         }
-        candidateByRepository.delete(repositoryKey)
+        if (!preserveDurableDecision) candidateByRepository.delete(repositoryKey)
         report.prunedCandidates.push(prunedCandidateRecord(record, retention, 'new-discovery'))
         continue
       }
@@ -758,6 +790,40 @@ async function atomicWrite(path, buffer) {
   await rename(temporary, path)
 }
 
+const catalogDetailsPath = resolve(root, 'registry/catalog/details')
+
+async function backupCatalogDetails(path) {
+  await rm(path, { recursive: true, force: true })
+  await cp(catalogDetailsPath, path, { recursive: true, force: true })
+}
+
+async function restoreCatalogDetails(path) {
+  await rm(catalogDetailsPath, { recursive: true, force: true })
+  await mkdir(resolve(catalogDetailsPath, '..'), { recursive: true })
+  await cp(path, catalogDetailsPath, { recursive: true, force: true })
+}
+
+async function writeCatalogFiles(bridgeBuffer, indexBuffer, details) {
+  await mkdir(catalogDetailsPath, { recursive: true })
+  const expected = new Set()
+  for (const detail of details) {
+    const target = resolve(root, 'registry', detail.path)
+    const scoped = relative(root, target)
+    if (!scoped || scoped.startsWith('..') || isAbsolute(scoped)) throw new Error(`catalog detail path escapes the repository: ${detail.path}`)
+    expected.add(target)
+    await atomicWrite(target, Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`))
+  }
+  for (const name of await readdir(catalogDetailsPath)) {
+    const target = resolve(catalogDetailsPath, name)
+    if (!expected.has(target)) await rm(target, { recursive: true, force: true })
+  }
+  await atomicWrite(catalogIndexPath, indexBuffer)
+  // Publish the compatibility bridge last: readers either observe the old
+  // complete generation or a bridge whose integrity metadata matches the new
+  // index and details generation.
+  await atomicWrite(catalogPath, bridgeBuffer)
+}
+
 const options = parseArgs(process.argv.slice(2))
 const failureContext = {
   options,
@@ -802,7 +868,7 @@ failureContext.observedAt = observedAt
 failureContext.stage = 'validate-policy'
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
 if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
-if (policy.compatibility?.authority !== 'official-npm-registry-published-versions-through-latest'
+if (policy.compatibility?.authority !== DSH_RELEASE_WINDOW_AUTHORITY
   || policy.compatibility?.registryUrl !== DSH_REGISTRY_URL
   || policy.compatibility?.latestReleaseCount !== 3
   || policy.compatibility?.requiredCompatibleReleases !== 1
@@ -823,10 +889,12 @@ if (policy.candidateRetention?.authority !== REJECTED_CANDIDATE_RETENTION_AUTHOR
   throw new Error('unsupported rejected Candidate Registry retention policy')
 }
 const originalCatalog = await readFile(catalogPath)
+const originalCatalogIndex = await readFile(catalogIndexPath)
 const originalCandidates = await readFile(candidatesPath)
 const catalogSha = sha256(originalCatalog)
+const catalogIndexSha = sha256(originalCatalogIndex)
 const candidatesSha = sha256(originalCandidates)
-const catalog = JSON.parse(originalCatalog.toString('utf8'))
+const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
 const candidates = JSON.parse(originalCandidates.toString('utf8'))
 failureContext.stage = 'validate-authority'
 const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
@@ -839,6 +907,7 @@ failureContext.stage = 'fetch-official-dsh-release-window'
 const dshReleaseWindow = await fetchOfficialDshReleaseWindow({
   registryUrl: policy.compatibility.registryUrl,
   releaseCount: policy.compatibility.latestReleaseCount,
+  githubToken: process.env.GITHUB_TOKEN,
 })
 const dshReleaseWindowSha = sha256(JSON.stringify(dshReleaseWindow))
 const report = {
@@ -846,11 +915,12 @@ const report = {
   status: 'running',
   completed: false,
   statisticsAvailable: false,
-  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${candidatesSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
+  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   baseCommit,
   observedAt,
   preconditions: {
     catalogSha256: catalogSha,
+    catalogIndexSha256: catalogIndexSha,
     candidatesSha256: candidatesSha,
     dshReleaseWindowSha256: dshReleaseWindowSha,
   },
@@ -863,6 +933,8 @@ const report = {
     catalogUpdates: 0,
     newerVersionsDeferred: 0,
     sourceChangedWithoutVersionBump: 0,
+    sameVersionCatalogUpdates: 0,
+    sameVersionUpdatesDeferred: 0,
     upstreamVersionBehind: 0,
     unresolvedEntries: 0,
   },
@@ -882,6 +954,7 @@ const report = {
     retainedCompatible: 0,
     retainedUnknown: 0,
     prunedUnsupported: 0,
+    durableDecisionsPreserved: 0,
     registryRemovals: 0,
   },
   skippedDiscoveries: [], transientFailures: [],
@@ -914,7 +987,9 @@ failureContext.stage = 'validate-automation-output'
 const validatedCatalog = validateCatalog(catalog)
 assertLegacyCatalogCompatibility(catalog)
 const validatedCandidates = validateCandidateRegistry(candidates)
-const catalogBuffer = Buffer.from(`${JSON.stringify(catalog, null, 2)}\n`)
+const split = splitCatalogDocument(catalog, { detailsPath: catalog.registry.detailsPath })
+const catalogBuffer = catalogBridgeBuffer(split.bridge)
+const catalogIndexBuffer = Buffer.from(`${JSON.stringify(split.index, null, 2)}\n`)
 const candidatesBuffer = Buffer.from(`${JSON.stringify({
   schemaVersion: validatedCandidates.schemaVersion,
   registry: validatedCandidates.registry,
@@ -922,8 +997,10 @@ const candidatesBuffer = Buffer.from(`${JSON.stringify({
 }, null, 2)}\n`)
 report.postconditions = {
   catalogChanged, candidatesChanged,
-  catalogSha256: sha256(catalogBuffer), candidatesSha256: sha256(candidatesBuffer),
+  catalogSha256: sha256(catalogBuffer), catalogIndexSha256: sha256(catalogIndexBuffer),
+  candidatesSha256: sha256(candidatesBuffer),
   catalogEntries: validatedCatalog.entries.length, candidateEntries: validatedCandidates.entries.length,
+  catalogDetails: split.details.length,
 }
 report.status = 'passed'
 report.completed = true
@@ -936,19 +1013,28 @@ if (!options.write) {
   process.exit(0)
 }
 failureContext.stage = 'validate-write-preconditions'
-if (options.expectedCatalogSha !== catalogSha || options.expectedCandidatesSha !== candidatesSha) {
+if (options.expectedCatalogSha !== catalogSha || options.expectedCatalogIndexSha !== catalogIndexSha
+  || options.expectedCandidatesSha !== candidatesSha) {
   throw new Error('automation precondition hash mismatch')
 }
 failureContext.stage = 'apply-catalog-transaction'
 const catalogBackup = requireExternalBackup(options.catalogBackup, '--catalog-backup')
+const catalogIndexBackup = requireExternalBackup(options.catalogIndexBackup, '--catalog-index-backup')
+const catalogDetailsBackup = requireExternalBackup(options.catalogDetailsBackup, '--catalog-details-backup')
 const candidatesBackup = requireExternalBackup(options.candidatesBackup, '--candidates-backup')
 await copyFile(catalogPath, catalogBackup)
+await copyFile(catalogIndexPath, catalogIndexBackup)
+await backupCatalogDetails(catalogDetailsBackup)
 await copyFile(candidatesPath, candidatesBackup)
 try {
-  if (catalogChanged) await atomicWrite(catalogPath, catalogBuffer)
+  if (catalogChanged) await writeCatalogFiles(catalogBuffer, catalogIndexBuffer, split.details)
   if (candidatesChanged) await atomicWrite(candidatesPath, candidatesBuffer)
 } catch (error) {
-  if (catalogChanged) await atomicWrite(catalogPath, originalCatalog)
+  if (catalogChanged) {
+    await atomicWrite(catalogPath, originalCatalog)
+    await atomicWrite(catalogIndexPath, originalCatalogIndex)
+    await restoreCatalogDetails(catalogDetailsBackup)
+  }
   if (candidatesChanged) await atomicWrite(candidatesPath, originalCandidates)
   throw error
 }

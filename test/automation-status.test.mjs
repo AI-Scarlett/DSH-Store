@@ -20,14 +20,14 @@ test('public status separates successful execution from actual Catalog changes',
     reports: [{ runId: 42, report: {
       observedAt: '2026-08-22T02:01:00Z',
       addedEntries: [{ id: 'new-plugin' }],
-      updatedEntries: [{ id: 'new-plugin', fromVersion: '0.9.0', toVersion: '1.0.0', policy: 'user-reviewed' }],
+      updatedEntries: [{ id: 'new-plugin', fromVersion: '1.0.0', toVersion: '1.0.0', changeKind: 'same-version-source-update', policy: 'user-reviewed' }],
       compatibilityUnlisted: [{ id: 'blocked' }],
       compatibilityRestored: [{ id: 'new-plugin' }],
       prunedCandidates: [{ id: 'candidate-pruned' }],
       compatibilityPolicy: {
-        authority: 'official-npm-registry-published-versions-through-latest',
-        latestVersion: '0.1.1-rc.2',
-        latestReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'],
+        authority: 'official-npm-registry-active-supported-channels-through-highest',
+        latestVersion: '0.1.2-alpha.5',
+        latestReleases: ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'],
         checkedApprovedEntries: 1,
         managedHeldEntries: 1,
       },
@@ -39,6 +39,7 @@ test('public status separates successful execution from actual Catalog changes',
         retainedCompatible: 4,
         retainedUnknown: 3,
         prunedUnsupported: 48,
+        durableDecisionsPreserved: 1,
         registryRemovals: 48,
       },
       rejectedCandidates: [],
@@ -51,7 +52,9 @@ test('public status separates successful execution from actual Catalog changes',
         newerVersionCandidates: 1,
         catalogUpdates: 1,
         newerVersionsDeferred: 0,
-        sourceChangedWithoutVersionBump: 0,
+        sourceChangedWithoutVersionBump: 1,
+        sameVersionCatalogUpdates: 1,
+        sameVersionUpdatesDeferred: 0,
         upstreamVersionBehind: 0,
         unresolvedEntries: 0,
       },
@@ -63,16 +66,20 @@ test('public status separates successful execution from actual Catalog changes',
   assert.deepEqual(status.latestChanges.updated, ['new-plugin'])
   assert.equal(status.latestChanges.sourceVersionChecks.checkedEntries, 2)
   assert.equal(status.latestChanges.sourceVersionChecks.catalogUpdates, 1)
+  assert.equal(status.latestChanges.sourceVersionChecks.sameVersionCatalogUpdates, 1)
+  assert.equal(status.latestChanges.sourceVersionChecks.sameVersionUpdatesDeferred, 0)
   assert.equal(status.latestChanges.sourceVersionChecks.unresolvedEntries, 0)
   assert.deepEqual(status.latestChanges.compatibilityUnlisted, ['blocked'])
   assert.deepEqual(status.latestChanges.compatibilityRestored, ['new-plugin'])
   assert.deepEqual(status.latestChanges.prunedCandidates, ['candidate-pruned'])
+  assert.equal(status.latestChanges.candidateRetention.durableDecisionsPreserved, 1)
   assert.equal(status.latestChanges.candidateRetention.registryRemovals, 48)
-  assert.deepEqual(status.latestChanges.compatibilityPolicy.latestReleases, ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'])
+  assert.deepEqual(status.latestChanges.compatibilityPolicy.latestReleases, ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'])
   assert.equal(status.recentAdditions[0].name, '通知助手（Notify Helper）')
   assert.equal(status.recentAdditions[0].runUrl, 'https://github.com/example/repo/actions/runs/42')
-  assert.equal(status.recentUpdates[0].fromVersion, '0.9.0')
+  assert.equal(status.recentUpdates[0].fromVersion, '1.0.0')
   assert.equal(status.recentUpdates[0].toVersion, '1.0.0')
+  assert.equal(status.recentUpdates[0].changeKind, 'same-version-source-update')
   assert.equal(status.recentUpdates[0].policy, 'user-reviewed')
   assert.deepEqual(status.catalog, { entries: 2, approved: 1, blocked: 1, unlisted: 0, candidates: 1, updatedAt: '2026-08-22T00:00:00.000Z' })
 })

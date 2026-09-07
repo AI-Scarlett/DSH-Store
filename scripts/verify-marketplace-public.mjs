@@ -5,7 +5,10 @@ import { readFile, rename, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { assertLegacyCatalogCompatibility, validateCatalog } from '../src/catalog.mjs'
+import {
+  assertLegacyCatalogCompatibility, validateCatalog, validateCatalogBridgeIndex,
+  compareVersions, validateCatalogDetail, validateCatalogIndex,
+} from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const policy = JSON.parse(await readFile(resolve(root, 'registry/automation-policy.json'), 'utf8'))
@@ -51,15 +54,57 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex')
 }
 
-function semanticCatalog(text) {
+async function verifyDetails(index, catalogUrl) {
+  const entries = index.entries
+  let next = 0
+  let manager = null
+  const worker = async () => {
+    while (next < entries.length) {
+      const entry = entries[next++]
+      const text = await fetchText(new URL(entry.detailPath, catalogUrl).href, 512 * 1024)
+      const detail = validateCatalogDetail(JSON.parse(text), entry, index.registry)
+      if (detail.id === 'dsh-safe-plugin-manager') manager = detail
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(12, entries.length) }, worker))
+  return { count: entries.length, manager }
+}
+
+async function semanticCatalog(text, catalogUrl) {
   const document = JSON.parse(text)
-  assertLegacyCatalogCompatibility(document)
-  const catalog = validateCatalog(document)
+  let catalog
+  let index = null
+  let detailBaseUrl = catalogUrl
+  if (document?.schemaVersion === 2) {
+    catalog = validateCatalogIndex(document)
+    index = { url: catalogUrl, bytes: Buffer.byteLength(text), sha256: sha256(text) }
+  } else {
+    const bridge = validateCatalog(document)
+    if (bridge.registry.indexPath) {
+      const indexUrl = new URL(bridge.registry.indexPath, catalogUrl).href
+      const indexText = await fetchText(indexUrl, 2 * 1024 * 1024)
+      catalog = validateCatalogBridgeIndex(document, JSON.parse(indexText), Buffer.from(indexText))
+      index = { url: indexUrl, bytes: Buffer.byteLength(indexText), sha256: sha256(indexText) }
+      detailBaseUrl = indexUrl
+    } else {
+      assertLegacyCatalogCompatibility(document)
+      catalog = bridge
+    }
+  }
+  let manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager') ?? null
+  let details = catalog.entries.length
+  if (catalog.schemaVersion === 2) {
+    const verified = await verifyDetails(catalog, detailBaseUrl)
+    details = verified.count
+    manager = verified.manager ?? manager
+  }
   return {
     entries: catalog.entries.length,
+    details,
+    index,
     registryUpdatedAt: catalog.registry.updatedAt,
     fingerprint: sha256(JSON.stringify(catalog.entries)),
-    manager: catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager') ?? null,
+    manager,
   }
 }
 
@@ -102,6 +147,7 @@ const report = {
   candidateAuthority: null,
   surfaces: [],
   candidateSurfaces: [],
+  repairSurfaces: [],
   pages: null,
   failures: [],
 }
@@ -109,7 +155,7 @@ const report = {
 for (const url of urls) {
   try {
     const text = await fetchText(url)
-    const semantic = semanticCatalog(text)
+    const semantic = await semanticCatalog(text, url)
     const surface = { url, status: 'passed', bytes: Buffer.byteLength(text), sha256: sha256(text), ...semantic }
     if (report.authority === null) report.authority = surface
     else if (surface.fingerprint !== report.authority.fingerprint || surface.entries !== report.authority.entries) {
@@ -140,6 +186,44 @@ for (const url of candidateUrls) {
   }
 }
 
+const repairUrls = policy.publication.publicRepairUrls
+if (!Array.isArray(repairUrls) || repairUrls.length < 3) {
+  report.failures.push('automation policy must declare Pages and both production repair surfaces')
+} else {
+  const manager = report.authority?.manager
+  const expectedActive = manager && compareVersions(manager.version, '0.8.10') >= 0
+  for (const url of repairUrls) {
+    try {
+      const [html, manifestText] = await Promise.all([
+        fetchText(url, 512 * 1024),
+        fetchText(new URL('./repair-manifest.json', url).href, 128 * 1024),
+      ])
+      const manifest = JSON.parse(manifestText)
+      const expectedState = expectedActive ? 'active' : 'catalog-pending'
+      const stateMatches = html.includes(`data-repair-state="${expectedState}"`) && manifest?.status === expectedState
+      const identityMatches = !expectedActive || (
+        manifest?.target?.version === manager.version
+        && manifest?.target?.commit === manager.commit
+        && manifest?.lifecyclePolicy === 'ignore-all-scripts'
+        && manifest?.requiresInteractiveConfirmation === true
+        && String(manifest?.repairTool?.command ?? '').includes(manager.commit)
+        && String(manifest?.repairTool?.command ?? '').includes('--target-version')
+        && html.includes(manager.commit)
+      )
+      const surface = {
+        url, status: stateMatches && identityMatches ? 'passed' : 'failed',
+        repairState: manifest?.status ?? null, targetVersion: manifest?.target?.version ?? null,
+        targetCommit: manifest?.target?.commit ?? null,
+      }
+      if (surface.status !== 'passed') report.failures.push(`${url} repair surface does not match the Catalog manager identity`)
+      report.repairSurfaces.push(surface)
+    } catch (error) {
+      report.failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`)
+      report.repairSurfaces.push({ url, status: 'failed' })
+    }
+  }
+}
+
 try {
   const repository = policy.publication.repository
   const [commitText, manifestText] = await Promise.all([
@@ -158,5 +242,5 @@ try {
 
 if (report.failures.length > 0) report.status = 'failed'
 if (options.report) await atomicReport(options.report, report)
-process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} catalogs=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} candidates=${report.candidateSurfaces.filter(item => item.status === 'passed').length}/${candidateUrls.length} failures=${report.failures.length}\n`)
+process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} catalogs=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} candidates=${report.candidateSurfaces.filter(item => item.status === 'passed').length}/${candidateUrls.length} repairs=${report.repairSurfaces.filter(item => item.status === 'passed').length}/${repairUrls?.length ?? 0} failures=${report.failures.length}\n`)
 if (report.status !== 'passed') process.exitCode = 1

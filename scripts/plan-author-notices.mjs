@@ -3,8 +3,9 @@
 import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
+import { loadCatalogFromFiles } from '../src/catalog.mjs'
 
 const MARKER_PATTERN = /<!-- dsh-author-notice:v1 key=([a-z0-9_.-]+\/[a-z0-9_.-]+) signature=([0-9a-f]{64}) notified=([0-9a-f]{64}) -->/i
 const SOURCE_MARKER_PATTERN = /<!-- dsh-author-source:v1 fingerprint=([0-9a-f]{64}) known=(true|false) -->/i
@@ -25,6 +26,7 @@ export const AUTHOR_NOTICE_LABELS = [
   { name: 'compatibility-outdated', color: 'E99695', description: 'Catalog entry is temporarily unlisted outside the latest-three DSH compatibility window' },
   { name: 'candidate-rejected', color: 'D4C5F9', description: 'DSH candidate needs upstream changes before another review' },
 ]
+export const MAX_AUTHOR_NOTICE_ACTIONS = 500
 
 function parseArgs(argv) {
   const options = { maxCreate: 10 }
@@ -602,6 +604,9 @@ export function buildAuthorNoticePlan({
 
   const actionOrder = { close: 0, baseline: 1, notify: 2, 'source-update': 3, update: 4, create: 5 }
   actions.sort((left, right) => actionOrder[left.type] - actionOrder[right.type] || left.key.localeCompare(right.key, 'en'))
+  if (actions.length > MAX_AUTHOR_NOTICE_ACTIONS) {
+    throw new Error(`author notice action bound exceeded: ${actions.length} actions (maximum ${MAX_AUTHOR_NOTICE_ACTIONS})`)
+  }
   const eligibleCreates = desired.filter(record => !existingByKey.has(record.key) && record.createCategories.size > 0).length
   const githubMessageTypes = new Set(['create', 'update', 'notify', 'source-update'])
   const githubMessages = actions.filter(action => githubMessageTypes.has(action.type)).length
@@ -707,7 +712,10 @@ async function main() {
   const [catalogBuffer, candidatesBuffer, reportBuffer, existingBuffer, targetsBuffer] = await Promise.all([
     readFile(paths.catalog), readFile(paths.candidates), readFile(paths.report), readFile(paths.existing), readFile(paths.targets),
   ])
-  const catalog = JSON.parse(catalogBuffer)
+  const catalogRoot = JSON.parse(catalogBuffer)
+  const catalog = catalogRoot?.registry?.indexPath
+    ? await loadCatalogFromFiles({ indexUrl: pathToFileURL(paths.catalog) })
+    : catalogRoot
   const candidates = JSON.parse(candidatesBuffer)
   const report = JSON.parse(reportBuffer)
   const existingIssues = JSON.parse(existingBuffer)

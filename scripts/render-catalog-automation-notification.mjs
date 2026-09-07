@@ -1,12 +1,15 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { loadCatalogFromFiles } from '../src/catalog.mjs'
 
 const statusLabels = {
   approved: '可安装',
   blocked: '不可安装（blocked）',
   unlisted: '已下架（unlisted）',
 }
+
+const DETAIL_ROW_LIMIT = 20
 
 function parseArgs(argv) {
   const options = {}
@@ -48,6 +51,17 @@ function array(value) {
 
 function number(value) {
   return Number.isSafeInteger(value) && value >= 0 ? value : 0
+}
+
+function visibleRows(value) {
+  return array(value).slice(0, DETAIL_ROW_LIMIT)
+}
+
+function appendOmittedRows(lines, total, shown) {
+  const omitted = Math.max(0, total - shown)
+  if (omitted > 0) {
+    lines.push(`> 另有 ${omitted} 条未展开，完整记录见本次 Run Artifact 中的机器报告。`, '')
+  }
 }
 
 function zhConclusion(value) {
@@ -125,12 +139,12 @@ export function renderCatalogAutomationNotification({
     lines.push(
       `- 历史 Catalog 检查：${number(sourceChecks.checkedEntries)} 个`,
       `- 新增收录：${addedEntries.length} 个（可安装 ${approvedAdded}，blocked/不可安装 ${blockedAdded}）`,
-      `- 历史版本自动更新：${updatedEntries.length} 个`,
+      `- 历史版本自动更新：${number(sourceChecks.catalogUpdates)} 个；同版本固定 Commit 更新：${number(sourceChecks.sameVersionCatalogUpdates)} 个`,
       `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
       `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
       `- 不兼容且已有其他失败的候选清理：${prunedCandidates.length} 个`,
       `- 发现上游高版本：${number(sourceChecks.newerVersionCandidates)} 个（自动更新 ${number(sourceChecks.catalogUpdates)}，暂缓 ${number(sourceChecks.newerVersionsDeferred)}）`,
-      `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个`,
+      `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个（固定 Commit 已更新 ${number(sourceChecks.sameVersionCatalogUpdates)}，暂缓 ${number(sourceChecks.sameVersionUpdatesDeferred)}）`,
       `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
       `- 当前 Catalog 条目：${number(postCatalogEntries)} 个`,
     )
@@ -173,12 +187,14 @@ export function renderCatalogAutomationNotification({
     lines.push('无新增收录。', '')
   } else {
     lines.push('| 中文名（英文名） | 版本 | 商城状态 | 原项目 | 说明 |', '|---|---:|---|---|---|')
-    for (const item of addedEntries) {
+    const rows = visibleRows(addedEntries)
+    for (const item of rows) {
       const entry = byId.get(item.id)
       const reasons = array(item.reasons).join('；') || entry?.statusReason || '通过自动策略'
       lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${markdownCell(entry?.version)} | ${markdownCell(statusLabels[entry?.status] ?? entry?.status)} | ${repositoryLink(entry)} | ${markdownCell(reasons)} |`)
     }
     lines.push('')
+    appendOmittedRows(lines, addedEntries.length, rows.length)
   }
 
   lines.push('### 历史插件更新清单', '')
@@ -187,12 +203,15 @@ export function renderCatalogAutomationNotification({
   } else if (updatedEntries.length === 0) {
     lines.push('无历史插件版本更新。', '')
   } else {
-    lines.push('| 中文名（英文名） | 原版本 | 新版本 | 商城状态 | 原项目 |', '|---|---:|---:|---|---|')
-    for (const item of updatedEntries) {
+    lines.push('| 中文名（英文名） | 变更类型 | 原版本 | 新版本 | 商城状态 | 原项目 |', '|---|---|---:|---:|---|---|')
+    const rows = visibleRows(updatedEntries)
+    for (const item of rows) {
       const entry = byId.get(item.id)
-      lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${markdownCell(item.fromVersion)} | ${markdownCell(item.toVersion ?? item.version)} | ${markdownCell(statusLabels[entry?.status] ?? entry?.status)} | ${repositoryLink(entry)} |`)
+      const changeKind = item.changeKind === 'same-version-source-update' ? '同版本固定 Commit' : '版本更新'
+      lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${changeKind} | ${markdownCell(item.fromVersion)} | ${markdownCell(item.toVersion ?? item.version)} | ${markdownCell(statusLabels[entry?.status] ?? entry?.status)} | ${repositoryLink(entry)} |`)
     }
     lines.push('')
+    appendOmittedRows(lines, updatedEntries.length, rows.length)
   }
 
   lines.push('### 发现高版本但暂缓更新', '')
@@ -202,11 +221,13 @@ export function renderCatalogAutomationNotification({
     lines.push('无暂缓更新项。', '')
   } else {
     lines.push('| 中文名（英文名） | Catalog 版本 | 上游版本 | 暂缓原因 |', '|---|---:|---:|---|')
-    for (const item of higherVersionDeferred) {
+    const rows = visibleRows(higherVersionDeferred)
+    for (const item of rows) {
       const entry = byId.get(item.id)
       lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${markdownCell(item.catalogVersion)} | ${markdownCell(item.upstreamVersion)} | ${markdownCell(item.reason ?? '证据不足，自动失败关闭')} |`)
     }
     lines.push('')
+    appendOmittedRows(lines, higherVersionDeferred.length, rows.length)
   }
 
   lines.push('### 最新三个 DSH 版本兼容性变更', '')
@@ -216,15 +237,17 @@ export function renderCatalogAutomationNotification({
     lines.push('无兼容性上下架变更。', '')
   } else {
     lines.push('| 变更 | 中文名（英文名） | 插件版本 | 原项目 | 要求窗口 |', '|---|---|---:|---|---|')
-    for (const item of compatibilityUnlisted) {
+    const changes = [
+      ...compatibilityUnlisted.map(item => ({ item, label: '暂时下架并转入候选' })),
+      ...compatibilityRestored.map(item => ({ item, label: '恢复上架' })),
+    ]
+    const rows = visibleRows(changes)
+    for (const { item, label } of rows) {
       const entry = byId.get(item.id)
-      lines.push(`| 暂时下架并转入候选 | ${markdownCell(entryName(entry, item.id))} | ${markdownCell(entry?.version ?? item.version)} | ${repositoryLink(entry)} | ${markdownCell(array(item.requiredDshReleases).join(', '))} |`)
-    }
-    for (const item of compatibilityRestored) {
-      const entry = byId.get(item.id)
-      lines.push(`| 恢复上架 | ${markdownCell(entryName(entry, item.id))} | ${markdownCell(entry?.version ?? item.version)} | ${repositoryLink(entry)} | ${markdownCell(array(item.requiredDshReleases).join(', '))} |`)
+      lines.push(`| ${label} | ${markdownCell(entryName(entry, item.id))} | ${markdownCell(entry?.version ?? item.version)} | ${repositoryLink(entry)} | ${markdownCell(array(item.requiredDshReleases).join(', '))} |`)
     }
     lines.push('')
+    appendOmittedRows(lines, changes.length, rows.length)
   }
 
   lines.push('### 已清理的不兼容失败候选', '')
@@ -234,7 +257,8 @@ export function renderCatalogAutomationNotification({
     lines.push('无候选清理。', '')
   } else {
     lines.push('| 候选 | 固定 Commit | 原项目 | 清理原因 |', '|---|---|---|---|')
-    for (const item of prunedCandidates) {
+    const rows = visibleRows(prunedCandidates)
+    for (const item of rows) {
       const repositoryUrl = item.repositoryUrl
       const repository = typeof repositoryUrl === 'string' && /^https:\/\/github\.com\//.test(repositoryUrl)
         ? `[原项目](${repositoryUrl})`
@@ -242,6 +266,7 @@ export function renderCatalogAutomationNotification({
       lines.push(`| ${markdownCell(item.name ?? item.id)} | ${shortSha(item.commit)} | ${repository} | ${markdownCell(item.reason)} |`)
     }
     lines.push('')
+    appendOmittedRows(lines, prunedCandidates.length, rows.length)
   }
 
   lines.push('### 作者整改通知与修改跟踪', '')
@@ -279,11 +304,13 @@ export function renderCatalogAutomationNotification({
         'resolved-source-unknown': '问题清除，修改状态未知', 'tracking-baseline': '首次建立基线', unknown: '暂无法判断',
       }
       lines.push('| 项目 | 本轮动作 | 作者源码状态 |', '|---|---|---|')
-      for (const action of visibleActions) {
+      const rows = visibleRows(visibleActions)
+      for (const action of rows) {
         const url = `https://github.com/${action.key}`
         lines.push(`| [${markdownCell(action.key)}](${url}) | ${markdownCell(actionLabels[action.type] ?? action.type)} | ${markdownCell(sourceLabels[action.sourceStatus] ?? action.sourceStatus)} |`)
       }
       lines.push('')
+      appendOmittedRows(lines, visibleActions.length, rows.length)
     } else {
       lines.push('本轮没有需要新发或更新的作者整改消息。', '')
     }
@@ -291,20 +318,24 @@ export function renderCatalogAutomationNotification({
 
   if (surfaces.length > 0) {
     lines.push('### Catalog 公开面核验', '', '| 地址 | 状态 | 条目数 | SHA-256 |', '|---|---|---:|---|')
-    for (const surface of surfaces) {
+    const rows = visibleRows(surfaces)
+    for (const surface of rows) {
       const url = typeof surface?.url === 'string' ? surface.url : '#'
       lines.push(`| [${markdownCell(url)}](${url}) | ${markdownCell(zhConclusion(surface?.status))} | ${number(surface?.entries)} | ${shortSha(surface?.sha256)} |`)
     }
     lines.push('')
+    appendOmittedRows(lines, surfaces.length, rows.length)
   }
 
   if (candidateSurfaces.length > 0) {
     lines.push('### Candidate Registry 公开面核验', '', '| 地址 | 状态 | 候选数 | SHA-256 |', '|---|---|---:|---|')
-    for (const surface of candidateSurfaces) {
+    const rows = visibleRows(candidateSurfaces)
+    for (const surface of rows) {
       const url = typeof surface?.url === 'string' ? surface.url : '#'
       lines.push(`| [${markdownCell(url)}](${url}) | ${markdownCell(zhConclusion(surface?.status))} | ${number(surface?.entries)} | ${shortSha(surface?.sha256)} |`)
     }
     lines.push('')
+    appendOmittedRows(lines, candidateSurfaces.length, rows.length)
   }
 
   lines.push(
@@ -327,12 +358,15 @@ async function readJson(path, optional = false) {
 async function main() {
   const options = parseArgs(process.argv.slice(2))
   if (!options.catalog || !options.output) throw new Error('--catalog and --output are required')
-  const [catalog, report, watchdog, authorNotices] = await Promise.all([
+  const [catalogRoot, report, watchdog, authorNotices] = await Promise.all([
     readJson(options.catalog),
     readJson(options.report, true),
     readJson(options['watchdog-report'], true),
     readJson(options['author-notice-plan'], true),
   ])
+  const catalog = catalogRoot?.registry?.indexPath
+    ? await loadCatalogFromFiles({ indexUrl: pathToFileURL(resolve(options.catalog)) })
+    : catalogRoot
   const body = renderCatalogAutomationNotification({
     catalog,
     report,

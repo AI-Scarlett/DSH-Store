@@ -12,10 +12,13 @@ const observedAt = '2026-08-24T12:00:00.000Z'
 const releaseWindow = {
   packageName: '@deepseek-ai/dsh',
   registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh',
-  latestVersion: '0.1.1-rc.2',
-  releases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'],
+  stableVersion: '0.1.1-rc.2',
+  latestVersion: '0.1.2-alpha.5',
+  releaseTag: 'alpha',
+  releaseChannel: 'preview',
+  releases: ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'],
   releaseCount: 3,
-  authority: 'official-npm-registry-published-versions-through-latest',
+  authority: 'official-npm-registry-active-supported-channels-through-highest',
 }
 
 function entry(overrides = {}) {
@@ -50,21 +53,26 @@ function documents(catalogEntry = entry(), candidateEntries = []) {
   }
 }
 
-test('official release window follows the latest dist-tag and excludes newer next-only or deprecated releases', () => {
+test('official release window follows the highest supported channel and excludes newer next-only or deprecated releases', () => {
   const result = officialDshReleaseWindow({
     name: '@deepseek-ai/dsh',
-    'dist-tags': { latest: '0.1.1-rc.2', next: '0.2.0-rc.1' },
+    'dist-tags': { latest: '0.1.1-rc.2', next: '0.2.0-rc.1', alpha: '0.1.2-alpha.5' },
     versions: {
       '0.1.0-rc.7': {},
       '0.1.0-rc.8': {},
       '0.1.1-rc.1': {},
       '0.1.1-rc.2': {},
+      '0.1.2-alpha.2': {},
+      '0.1.2-alpha.3': {},
+      '0.1.2-alpha.4': {},
+      '0.1.2-alpha.5': {},
       '0.2.0-rc.1': {},
       '0.1.0-rc.6': { deprecated: 'do not use' },
     },
   }, 3)
-  assert.equal(result.latestVersion, '0.1.1-rc.2')
+  assert.equal(result.latestVersion, '0.1.2-alpha.5')
   assert.deepEqual(result.releases, releaseWindow.releases)
+  assert.ok(!result.releases.includes('0.2.0-rc.1'))
 })
 
 test('official registry errors fail closed instead of using Catalog fallback releases', async () => {
@@ -93,11 +101,46 @@ test('old-only or unknown compatibility is unlisted and moved to a non-installab
   assert.equal(report.candidatesChanged, true)
 })
 
+test('each policy run materializes the live latest-three fields without inventing evidence', () => {
+  const value = entry({
+    compatibility: {
+      dsh: '>=0.1.0-rc.7',
+      dshReleases: { '0.1.2-alpha.3': 'compatible' },
+      dshOperations: {
+        '0.1.2-alpha.3': { install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown' },
+      },
+    },
+  })
+  const { catalog, candidates } = documents(value)
+  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, observedAt)
+  assert.deepEqual(catalog.entries[0].compatibility.dshReleases, {
+    '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
+  })
+  assert.deepEqual(catalog.entries[0].compatibility.dshOperations['0.1.2-alpha.5'], {
+    install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+  })
+  assert.equal(report.compatibilityRecordsAdded, 4)
+  assert.deepEqual(report.compatibilityEntriesUpdated.map(item => item.id), ['dsh-example'])
+  assert.equal(report.catalogChanged, true)
+})
+
+test('future official alpha releases advance the window without source constants', () => {
+  const result = officialDshReleaseWindow({
+    name: '@deepseek-ai/dsh',
+    'dist-tags': { latest: '0.1.1-rc.2', alpha: '0.1.2-alpha.7' },
+    versions: {
+      '0.1.1-rc.2': {}, '0.1.2-alpha.3': {}, '0.1.2-alpha.4': {},
+      '0.1.2-alpha.5': {}, '0.1.2-alpha.6': {}, '0.1.2-alpha.7': {},
+    },
+  }, 3)
+  assert.deepEqual(result.releases, ['0.1.2-alpha.5', '0.1.2-alpha.6', '0.1.2-alpha.7'])
+})
+
 test('an exact compatible alias in any of the latest three releases keeps an approved entry listed', () => {
   const supported = entry({
     compatibility: {
       dsh: '>=0.1.0-rc.7',
-      dshReleases: { 'rc.8': 'compatible', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown' },
+      dshReleases: { '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
     },
   })
   const { catalog, candidates } = documents(supported)
@@ -105,7 +148,7 @@ test('an exact compatible alias in any of the latest three releases keeps an app
   assert.equal(catalog.entries[0].status, 'approved')
   assert.equal(candidates.entries.length, 0)
   assert.equal(report.unlisted.length, 0)
-  assert.equal(report.catalogChanged, false)
+  assert.equal(report.catalogChanged, true, 'missing operation records are materialized as unknown')
 })
 
 test('a managed hold restores automatically and removes only its managed candidate', () => {
@@ -114,7 +157,7 @@ test('a managed hold restores automatically and removes only its managed candida
     statusReason: `${COMPATIBILITY_HOLD_PREFIX} prior window`,
     compatibility: {
       dsh: '>=0.1.0-rc.7',
-      dshReleases: { 'rc.8': 'unknown', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'unknown' },
+      dshReleases: { '0.1.2-alpha.3': 'compatible', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
     },
   })
   const managed = {
@@ -177,7 +220,7 @@ test('multiple held plugins from one repository share one candidate and partial 
   assert.equal(candidates.entries[0].latestCommit, null)
   assert.match(candidates.entries[0].statusReason, /dsh-example-one, dsh-example-two/)
 
-  first.compatibility.dshReleases['0.1.1-rc.2'] = 'compatible'
+  first.compatibility.dshReleases['0.1.2-alpha.5'] = 'compatible'
   const followUp = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, '2026-08-25T00:00:00.000Z')
   assert.equal(first.status, 'approved')
   assert.equal(second.status, 'unlisted')

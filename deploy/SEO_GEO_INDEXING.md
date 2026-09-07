@@ -2,6 +2,26 @@
 
 Canonical properties: `https://dsh.store/` (international) and `https://dsh-store.cn/` (domestic)
 
+## AI crawler log review
+
+The repository includes a read-only analyzer for common Nginx/Apache access
+logs. It recognizes `Bytespider`, `KimiBot`, `Kimi-User`, `Kimi-SearchBot`,
+`DeepSeekBot`, `YuanBaoBot`, `ChatGLM-Spider`, `MiniMaxBot`, `PetalBot`, and
+`Baiduspider`. It omits client IPs, raw lines, and query strings from reports:
+
+```bash
+python3 scripts/analyze-ai-crawler-logs.py \
+  --input /path/to/access.log \
+  --output /path/to/ai-crawler-weekly.md \
+  --json-output /path/to/ai-crawler-weekly.json \
+  --period 2026-09-01-to-2026-09-07
+```
+
+This proves only what the supplied server log records. It does not prove that
+a crawler has read `robots.txt`, that a page is indexed, or that an AI answer
+has cited the site. Use `docs/ops/AI_CRAWLER_WEEKLY_BRIEF_TEMPLATE.md` and
+`docs/ops/GEO_FACT_SOURCE_LEDGER.md` for the manual evidence record.
+
 ## Automated path
 
 1. Publish the website and verify the canonical pages, `robots.txt`, `sitemap.xml`, `llms.txt`, the DSH plugin guide, and the public IndexNow key file.

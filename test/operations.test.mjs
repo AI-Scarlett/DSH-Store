@@ -82,7 +82,88 @@ test('source-verified update plan pins the locally approved candidate commit', a
     assert.equal(plan.plugin.sourceUpdate, true)
     const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
     assert.equal(result.status, 'applied')
-    assert.deepEqual(calls[0], ['add', `git+https://github.com/example/dsh-demo.git#${candidate.commit}`])
+    assert.deepEqual(calls[0], ['add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${candidate.commit}`])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('an installed same-version older Commit cannot be overwritten through the marketplace update action', async () => {
+  const { root } = await fixture({ specifier: `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}` })
+  const runner = { plugin: async () => ({ ok: true, exitCode: 0 }), dumpConfig: async () => ({ ok: true, exitCode: 0 }) }
+  try {
+    const operations = service(root, runner, { entry: { ...demoEntry, version: '1.0.0' } })
+    await assert.rejects(
+      operations.createPlan({ action: 'update', pluginId: 'demo' }),
+      error => error.code === 'NO_UPDATE' && /newer version/.test(error.message),
+    )
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('marketplace self-update ignores every lifecycle script instead of widening allow-build', async () => {
+  const { root, profile } = await fixture({ installed: false })
+  const commit = 'd'.repeat(40)
+  const managerEntry = {
+    ...demoEntry,
+    id: 'dsh-safe-plugin-manager',
+    name: '安全插件商城',
+    packageName: 'dsh-safe-plugin-manager',
+    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+    commit,
+    version: '0.8.10',
+    entryIds: ['dsh-safe-plugin-manager'],
+    risk: { installScripts: [], review: 'owner-curated-not-security-audited' },
+  }
+  const profilePath = join(profile, 'package.json')
+  const profileManifest = JSON.parse(await readFile(profilePath, 'utf8'))
+  profileManifest.dependencies['dsh-safe-plugin-manager'] = `github:AI-Scarlett/DSH-Store#${'c'.repeat(40)}`
+  profileManifest.dsh.profile.bundles.push('dsh-safe-plugin-manager')
+  await writeFile(profilePath, `${JSON.stringify(profileManifest, null, 2)}\n`)
+  const installedDir = join(profile, 'node_modules', 'dsh-safe-plugin-manager')
+  await mkdir(installedDir, { recursive: true })
+  await writeFile(join(installedDir, 'package.json'), JSON.stringify({ name: 'dsh-safe-plugin-manager', version: '0.8.9' }))
+  const calls = []
+  const runner = {
+    plugin: async (_profile, args) => { calls.push(args); return { ok: true, exitCode: 0 } },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner, { entry: managerEntry })
+    const plan = await operations.createPlan({ action: 'update', pluginId: managerEntry.id })
+    assert.equal(plan.impact.lifecyclePolicy, 'ignore-all-scripts')
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'applied')
+    assert.deepEqual(calls[0], ['add', '--ignore-scripts', `git+https://github.com/AI-Scarlett/DSH-Store.git#${commit}`])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('lifecycle-free plugin updates ignore unrelated Git prepare scripts already present in the Profile', async () => {
+  const { root } = await fixture({ specifier: `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}` })
+  const calls = []
+  const runner = {
+    plugin: async (_profile, args) => {
+      calls.push(args)
+      if (!args.includes('--ignore-scripts')) return {
+        ok: false, exitCode: 1,
+        stderr: 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED unrelated-git-plugin',
+      }
+      return { ok: true, exitCode: 0 }
+    },
+    dumpConfig: async () => ({ ok: true, exitCode: 0 }),
+  }
+  try {
+    const operations = service(root, runner)
+    const plan = await operations.createPlan({ action: 'update', pluginId: 'demo' })
+    assert.equal(plan.impact.lifecyclePolicy, 'ignore-all-scripts')
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'applied')
+    assert.deepEqual(calls, [[
+      'add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`,
+    ]])
   } finally {
     await rm(root, { recursive: true, force: true })
   }
@@ -179,10 +260,10 @@ test('disable and enable require a typed plan and preserve external patch conten
 test('failed GitHub install restores exact profile files', async () => {
   const { root, profile } = await fixture({ installed: false })
   const before = await readFile(join(profile, 'package.json'), 'utf8')
-  let calls = 0
+  const calls = []
   const runner = {
     async plugin(_profile, args) {
-      calls += 1
+      calls.push(args)
       if (args[0] === 'add') {
         await writeFile(join(profile, 'package.json'), '{"broken":true}\n')
         return { ok: false, exitCode: 1 }
@@ -200,7 +281,10 @@ test('failed GitHub install restores exact profile files', async () => {
     assert.equal(result.rollback, 'succeeded')
     assert.deepEqual(result.rollbackDetails, { profileFiles: 'succeeded', dependencies: 'succeeded' })
     assert.equal(await readFile(join(profile, 'package.json'), 'utf8'), before)
-    assert.equal(calls, 2)
+    assert.deepEqual(calls, [
+      ['add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`],
+      ['install', '--offline', '--ignore-scripts'],
+    ])
   } finally {
     await rm(root, { recursive: true, force: true })
   }
@@ -224,7 +308,8 @@ test('failed GitHub prepare returns a bounded actionable diagnostic without comm
     const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
     assert.equal(result.error.code, 'DSH_PLUGIN_COMMAND_FAILED')
     assert.equal(result.error.diagnostic.code, 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED')
-    assert.match(result.error.diagnostic.message, /不会自动放宽权限/)
+    assert.match(result.error.diagnostic.message, /不一定来自当前目标插件/)
+    assert.match(result.error.diagnostic.message, /不会为整个 Profile 自动放宽/)
     assert.doesNotMatch(JSON.stringify(result), /must-not-leak|private\/path/)
   } finally {
     await rm(root, { recursive: true, force: true })
@@ -273,7 +358,7 @@ test('missing pnpm reports a precise failure and does not run an unnecessary dep
     assert.equal(result.error.exitCode, 127)
     assert.equal(result.rollback, 'succeeded')
     assert.deepEqual(result.rollbackDetails, { profileFiles: 'succeeded', dependencies: 'not-required' })
-    assert.deepEqual(calls, [['add', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`]])
+    assert.deepEqual(calls, [['add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`]])
     assert.equal(await readFile(join(profile, 'package.json'), 'utf8'), before)
   } finally {
     await rm(root, { recursive: true, force: true })
@@ -301,7 +386,7 @@ test('local development links require an explicit migration plan', async () => {
     assert.equal(result.status, 'applied')
     assert.equal(result.runtimeInstanceId, 'boot-fixture')
     assert.equal(result.targetVersion, '2.0.0')
-    assert.deepEqual(calls[0], ['web', ['add', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`]])
+    assert.deepEqual(calls[0], ['web', ['add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`]])
   } finally {
     await rm(root, { recursive: true, force: true })
   }

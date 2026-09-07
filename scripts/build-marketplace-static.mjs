@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { compareCatalogEntries } from '../src/catalog.mjs'
+import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { buildAutomationStatus } from '../src/automation-status.mjs'
 
@@ -46,11 +46,7 @@ if (!outputRelative || outputRelative.startsWith('..')) {
   throw new Error('The static output directory must be a child of the repository root')
 }
 
-const catalogPath = resolve(projectRoot, 'registry/catalog.json')
-const catalog = JSON.parse(await readFile(catalogPath, 'utf8'))
-if (catalog?.schemaVersion !== 1 || !Array.isArray(catalog.entries)) {
-  throw new Error('registry/catalog.json is not a supported catalog')
-}
+const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
 const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(resolve(projectRoot, 'registry/candidates.json'), 'utf8')))
 
 async function readAutomationRuns(path) {
@@ -118,9 +114,14 @@ async function fetchJson(url, { authenticated = false } = {}) {
       const response = await fetch(url, { headers, signal: AbortSignal.timeout(20_000) })
       if (response.ok) return response.json()
       lastError = new Error(`${url} returned HTTP ${response.status}`)
+      lastError.status = response.status
+      lastError.rateLimited = response.status === 429
+        || (response.status === 403 && response.headers.get('x-ratelimit-remaining') === '0')
+      if (lastError.rateLimited && response.status === 403) throw lastError
       if (![429, 500, 502, 503, 504].includes(response.status)) throw lastError
     } catch (error) {
       lastError = error
+      if (error.rateLimited && error.status === 403) throw error
     }
     if (attempt < 4) await new Promise(resolvePromise => setTimeout(resolvePromise, attempt * 750))
   }
@@ -140,7 +141,9 @@ async function mapLimit(items, limit, worker) {
   return results
 }
 
+let githubMetadataComplete = false
 if (enrichGitHub) {
+  let githubMetadataRateLimited = false
   const repositoryRequests = new Map()
   const repositoryMetadata = entry => {
     const { owner, repository } = repositoryParts(entry.repositoryUrl)
@@ -152,13 +155,19 @@ if (enrichGitHub) {
   }
 
   await mapLimit(snapshot.entries.filter(entry => entry.status === 'approved'), 5, async entry => {
-    const [repository, manifest] = await Promise.all([
-      repositoryMetadata(entry),
+    const [repositoryResult, manifest] = await Promise.all([
+      repositoryMetadata(entry).then(repository => ({ repository })).catch(error => ({ error })),
       fetchJson(manifestUrl(entry)),
     ])
     if (manifest.version !== entry.version) {
       throw new Error(`${entry.id} catalog version ${entry.version} does not match pinned manifest ${manifest.version}`)
     }
+    if (repositoryResult.error) {
+      if (!repositoryResult.error.rateLimited) throw repositoryResult.error
+      githubMetadataRateLimited = true
+      return
+    }
+    const { repository } = repositoryResult
     entry.github = {
       stars: repository.stargazers_count,
       forks: repository.forks_count,
@@ -172,6 +181,10 @@ if (enrichGitHub) {
       manifestVersion: manifest.version,
     }
   })
+  if (githubMetadataRateLimited) {
+    process.stderr.write('GitHub repository metadata is rate-limited; publishing the fixed-Commit Catalog without mutable repository counters.\n')
+  }
+  githubMetadataComplete = !githubMetadataRateLimited
 }
 
 // A scheduled build may run even when neither the catalog nor its GitHub
@@ -189,7 +202,8 @@ snapshot.generated = {
   sourceRepository: 'https://github.com/AI-Scarlett/DSH-Store',
   sourceCommit: sourceSha,
   catalogAuthority: 'registry/catalog.json',
-  githubEnriched: enrichGitHub,
+  catalogIndexAuthority: 'registry/catalog-index.json',
+  githubEnriched: enrichGitHub && githubMetadataComplete,
 }
 
 const manager = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
@@ -296,8 +310,12 @@ const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="extern
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+const repairVersionComparison = compareVersions(manager.version, '0.8.10')
+const repairAvailable = repairVersionComparison !== null && repairVersionComparison >= 0
+const repairPackageSpecifier = `git+${manager.repositoryUrl}.git#${manager.commit}`
+const repairCommand = `pnpm --config.ignore-scripts=true dlx '${repairPackageSpecifier}' --profile web --target-version ${manager.version} --target-commit ${manager.commit}`
 const approvedCount = visibleEntries.filter(entry => entry.status === 'approved').length
-const staticCatalogEntries = visibleEntries.slice(0, 24)
+const staticCatalogEntries = visibleEntries.slice(0, MARKET_PAGE_SIZE)
 const catalogItemList = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -330,6 +348,9 @@ await cp(resolve(projectRoot, 'marketplace'), resolve(outputRoot, 'marketplace')
 await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { recursive: true, filter: copyFilter })
 await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
 
+const isDomestic = siteOriginUrl.host === 'dsh-store.cn'
+if (!isDomestic) await rm(resolve(outputRoot, 'marketplace/dsh-store-guide'), { recursive: true, force: true })
+
 const articlePromoBegin = '<!-- DSH_ARTICLE_PROMO_BEGIN -->'
 const articlePromoEnd = '<!-- DSH_ARTICLE_PROMO_END -->'
 const aboutPagePath = resolve(outputRoot, 'marketplace/about/index.html')
@@ -337,6 +358,16 @@ let aboutPage = await readFile(aboutPagePath, 'utf8')
 aboutPage = replaceRequired(aboutPage, articlePromoBegin, '', 'article promo begin')
 aboutPage = replaceRequired(aboutPage, articlePromoEnd, '', 'article promo end')
 await writeFile(aboutPagePath, aboutPage)
+
+const domesticGuideMarker = '<!-- DSH_DOMESTIC_GUIDE -->'
+const faqPagePath = resolve(outputRoot, 'marketplace/faq/index.html')
+let faqPage = await readFile(faqPagePath, 'utf8')
+const domesticGuideMarkup = `<section class="faq-cta section-shell reveal domestic-guide-cta" aria-labelledby="domestic-guide-title">
+      <div><span>CHINA SITE / USE &amp; TROUBLESHOOTING</span><h2 id="domestic-guide-title">先分清问题在哪一层，再决定下一步。</h2><p>国内站指南将商城页面、Catalog、DSH CLI、Profile、插件依赖和运行时问题分开说明，并链接可复核的公开入口。</p></div>
+      <div><a class="button button-primary" href="../dsh-store-guide/" data-analytics-event="domestic_guide_open" data-analytics-item="faq"><span>查看使用与排查指南</span><i>↗</i></a></div>
+    </section>`
+faqPage = replaceRequired(faqPage, domesticGuideMarker, isDomestic ? domesticGuideMarkup : '', 'domestic guide marker')
+await writeFile(faqPagePath, faqPage)
 
 const alternateIsDomestic = alternateOriginUrl.host === 'dsh-store.cn'
 const alternateLabel = alternateIsDomestic ? '国内站' : '国际站'
@@ -352,14 +383,22 @@ const canonicalPages = [
   { file: 'marketplace/build/index.html', route: '/build/' },
   { file: 'marketplace/faq/index.html', route: '/faq/' },
   { file: 'marketplace/about/index.html', route: '/about/' },
+  { file: 'marketplace/repair/index.html', route: '/repair/' },
   {
     file: 'marketplace/about/deepseek-harness-guide/index.html',
     route: '/about/deepseek-harness-guide/',
     fixedLocale: 'zh-CN',
   },
   { file: 'marketplace/dsh-plugins/index.html', route: '/dsh-plugins/' },
+  ...(isDomestic ? [{
+    file: 'marketplace/dsh-store-guide/index.html',
+    route: '/dsh-store-guide/',
+    fixedLocale: 'zh-CN',
+    domesticOnly: true,
+  }] : []),
 ]
-const hreflangMarkup = route => {
+const hreflangMarkup = (route, domesticOnly = false) => {
+  if (domesticOnly) return `<link rel="alternate" hreflang="zh-CN" href="${htmlEscape(`${siteOrigin}${route}`)}">`
   const intl = siteOriginUrl.host === 'dsh.store' ? siteOrigin : alternateOrigin
   const domestic = siteOriginUrl.host === 'dsh-store.cn' ? siteOrigin : alternateOrigin
   return [
@@ -372,8 +411,12 @@ const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
-const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
+const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+if (isDomestic) {
+  sitemapPriority['/dsh-store-guide/'] = '0.8'
+  sitemapChangefreq['/dsh-store-guide/'] = 'monthly'
+}
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:mobile="http://www.baidu.com/schemas/sitemap-mobile/1/">
 ${canonicalPages.map(({ route }) => `  <url><loc>${htmlEscape(`${siteOrigin}${route}`)}</loc><lastmod>${sitemapDate}</lastmod><changefreq>${sitemapChangefreq[route]}</changefreq><priority>${sitemapPriority[route]}</priority><mobile:mobile type="pc,mobile" /></url>`).join('\n')}
@@ -387,11 +430,11 @@ const icpMarkup = icpNumber
 const baiduVerificationMarkup = baiduVerificationCode
   ? `<meta name="baidu-site-verification" content="${htmlEscape(baiduVerificationCode)}">`
   : ''
-for (const { file: pagePath, route, fixedLocale } of canonicalPages) {
+for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
-  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route), `${pagePath} hreflang marker`)
+  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
   const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
   const pageLanguage = fixedLocale || htmlLanguage
@@ -404,6 +447,9 @@ for (const { file: pagePath, route, fixedLocale } of canonicalPages) {
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
 home = replaceRequired(home, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'home external catalog marker')
+home = replaceRequired(home, '<!-- DSH_LEGACY_REPAIR_BANNER -->', repairAvailable
+  ? `<aside class="legacy-repair-banner" aria-label="旧版商城安全修复"><strong>旧版商城更新被 pnpm 拦截？</strong><span>不要放开 prepare 权限，也不要手改 Profile。</span><a href="./repair/">打开官方安全修复入口 →</a></aside>`
+  : '', 'home legacy repair banner')
 home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_FEATURED_BEGIN -->', '<!-- DSH_STATIC_FEATURED_END -->', featured.map(featuredCard).join(''), 'featured catalog')
 home = home.replace(/"softwareVersion"\s*:\s*"[^"]*"/, `"softwareVersion": "${htmlEscape(manager.version)}"`)
 home = replaceElementText(home, 'install-version', `v${manager.version} · SHA PINNED`)
@@ -414,8 +460,26 @@ home = replaceElementText(home, 'stat-total', String(visibleEntries.length).padS
 home = replaceElementText(home, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 home = replaceElementText(home, 'stat-categories', String(categoryCount).padStart(2, '0'))
 home = replaceElementText(home, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
-home = replaceElementText(home, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
+home = replaceElementText(home, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
 await writeFile(resolve(outputRoot, 'marketplace/index.html'), home)
+
+const repairPagePath = resolve(outputRoot, 'marketplace/repair/index.html')
+let repairPage = await readFile(repairPagePath, 'utf8')
+repairPage = repairPage.replace('data-repair-state="catalog-pending"', `data-repair-state="${repairAvailable ? 'active' : 'catalog-pending'}"`)
+repairPage = replaceRequired(repairPage, 'DSH_REPAIR_COMMAND', htmlEscape(repairAvailable ? repairCommand : 'Catalog pin pending'), 'repair command')
+await writeFile(repairPagePath, repairPage)
+await writeFile(resolve(outputRoot, 'marketplace/repair/repair-manifest.json'), JSON.stringify({
+  schemaVersion: 1,
+  status: repairAvailable ? 'active' : 'catalog-pending',
+  errorCode: 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED',
+  affected: { minimumVersion: '0.8.5', versionsBelow: manager.version },
+  target: { packageName: manager.packageName, version: manager.version, repositoryUrl: manager.repositoryUrl, commit: manager.commit },
+  repairTool: repairAvailable ? { packageSpecifier: repairPackageSpecifier, command: repairCommand } : null,
+  lifecyclePolicy: 'ignore-all-scripts',
+  requiresInteractiveConfirmation: true,
+  profileMutation: 'official-dsh-cli-only',
+  generatedAt,
+}, null, 2) + '\n')
 
 let plugins = await readFile(resolve(outputRoot, 'marketplace/plugins/index.html'), 'utf8')
 plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'plugins external catalog marker')
@@ -426,8 +490,8 @@ plugins = replaceElementText(plugins, 'stat-total', String(visibleEntries.length
 plugins = replaceElementText(plugins, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-categories', String(categoryCount).padStart(2, '0'))
 plugins = replaceElementText(plugins, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
-plugins = replaceElementText(plugins, 'catalog-date', `catalog.json · ${snapshot.registry.updatedAt}`)
-plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(24, visibleEntries.length)} / ${visibleEntries.length}`)
+plugins = replaceElementText(plugins, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
+plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(MARKET_PAGE_SIZE, visibleEntries.length)} / ${visibleEntries.length}`)
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
 
 const catalogUpdatedAt = typeof snapshot.registry?.updatedAt === 'string' && snapshot.registry.updatedAt
@@ -446,9 +510,14 @@ const llmsFacts = [
 ].join('\n')
 let llms = await readFile(resolve(outputRoot, 'marketplace/llms.txt'), 'utf8')
 llms = replaceRequired(llms, '<!-- DSH_DYNAMIC_CATALOG_FACTS -->', llmsFacts, 'dynamic llms catalog facts')
+llms = replaceRequired(llms, domesticGuideMarker, isDomestic
+  ? `Domestic product use and issue-boundary guide: ${siteOrigin}/dsh-store-guide/`
+  : '', 'domestic llms guide marker')
 await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 
-await writeFile(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), JSON.stringify(snapshot, null, 2) + '\n')
+// Do not publish a second monolithic catalog snapshot. The copied registry
+// contains the legacy bridge, small index, and independently cacheable detail records.
+await rm(resolve(outputRoot, 'marketplace/catalog.snapshot.json'), { force: true })
 await writeFile(resolve(outputRoot, 'automation-status.json'), JSON.stringify(buildAutomationStatus({
   catalog: snapshot,
   candidates: candidateRegistry,
@@ -468,7 +537,7 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,
   manager: { version: manager.version, commit: manager.commit, license: manager.details?.license, status: manager.status },
-  githubEnriched: enrichGitHub,
+  githubEnriched: snapshot.generated.githubEnriched,
 }, null, 2) + '\n')
 await writeFile(resolve(outputRoot, 'index.html'), `<!doctype html>\n<meta charset="utf-8">\n<meta http-equiv="refresh" content="0; url=marketplace/">\n<title>DSH STORE</title>\n<a href="marketplace/">打开 DSH STORE</a>\n`)
 await writeFile(resolve(outputRoot, '.nojekyll'), '')
@@ -502,4 +571,4 @@ await writeFile(resolve(outputRoot, 'release-manifest.json'), JSON.stringify({
   files: releaseFiles,
 }, null, 2) + '\n')
 
-console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} origin=${siteOrigin} enriched=${enrichGitHub}`)
+console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} origin=${siteOrigin} enriched=${snapshot.generated.githubEnriched}`)

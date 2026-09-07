@@ -6,6 +6,17 @@ const moduleImport = names => new RegExp(
 const FILE_MODULE = moduleImport('fs|fs/promises')
 const NETWORK_MODULE = moduleImport('http|https|net|tls|dgram|axios|got|undici')
 const COMMAND_MODULE = moduleImport('child_process')
+const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
+const GENERATED_CATALOG_DETAIL = /^registry\/catalog\/details\/[^/]+\.json$/i
+
+export function isGeneratedSelfManagerCatalogDetail(candidate, relativePath) {
+  const repository = typeof candidate?.repositoryUrl === 'string'
+    ? candidate.repositoryUrl.trim().replace(/\.git\/?$/i, '').replace(/\/$/, '').toLowerCase()
+    : null
+  return String(candidate?.id ?? '').trim().toLowerCase() === 'dsh-safe-plugin-manager'
+    && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
+    && GENERATED_CATALOG_DETAIL.test(String(relativePath ?? ''))
+}
 
 export function permissionSignals(source) {
   return {

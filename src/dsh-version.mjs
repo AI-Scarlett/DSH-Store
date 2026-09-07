@@ -1,11 +1,11 @@
 import { readFile, realpath } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { compareVersions } from './catalog.mjs'
+import { fetchOfficialDshMetadata, officialDshChannels } from './dsh-release-policy.mjs'
 
 const PACKAGE_NAME = '@deepseek-ai/dsh'
-const REGISTRY_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest'
+const REGISTRY_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh'
 const RELEASE_URL = 'https://github.com/deepseek-ai/deepseek-harness/releases'
-const MAX_RESPONSE_BYTES = 64 * 1024
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 
 function versionError(code, message) {
@@ -42,19 +42,12 @@ async function findCliManifest(cliPath) {
 }
 
 async function latestVersion(request, timeoutMs) {
-  const response = await request(REGISTRY_URL, {
-    headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager' },
-    signal: AbortSignal.timeout(timeoutMs),
-  })
-  if (!response.ok) throw versionError('DSH_VERSION_REGISTRY_HTTP', `npm Registry 返回 HTTP ${response.status}。`)
-  const text = await response.text()
-  if (Buffer.byteLength(text) > MAX_RESPONSE_BYTES) throw versionError('DSH_VERSION_REGISTRY_TOO_LARGE', 'npm Registry 版本响应超过本机检查上限。')
-  let payload
-  try { payload = JSON.parse(text) } catch { throw versionError('DSH_VERSION_REGISTRY_INVALID', 'npm Registry 版本响应不是有效 JSON。') }
-  if (payload?.name !== PACKAGE_NAME || !VERSION.test(payload?.version ?? '')) {
-    throw versionError('DSH_VERSION_REGISTRY_INVALID', 'npm Registry 未返回可信的 DSH 包版本。')
+  try {
+    const { metadata, githubReleases } = await fetchOfficialDshMetadata({ fetch: request, timeoutMs })
+    return officialDshChannels(metadata, githubReleases)
+  } catch (error) {
+    throw versionError('DSH_VERSION_REGISTRY_INVALID', `官方版本检测未完成：${error.message}`)
   }
-  return payload.version
 }
 
 export function createDshVersionService(options = {}) {
@@ -68,21 +61,29 @@ export function createDshVersionService(options = {}) {
   async function inspect({ force = false } = {}) {
     if (!force && cache && now() - cache.checkedAt < cacheTtlMs) return { ...cache.value, cacheStatus: 'hit' }
     const current = await findCliManifest(cliPath)
-    const latest = await latestVersion(request, timeoutMs)
-    const comparison = compareVersions(current.version, latest)
+    const official = await latestVersion(request, timeoutMs)
+    const latest = official.target
+    const comparison = compareVersions(current.version, latest.version)
     const updateAvailable = comparison !== null && comparison < 0
-    const command = ['npm', 'install', '--global', `${PACKAGE_NAME}@${latest}`]
+    const command = latest.npmAvailable ? ['npm', 'install', '--global', `${PACKAGE_NAME}@${latest.version}`] : []
+    const preview = latest.kind === 'preview'
     const value = {
       schemaVersion: 1, packageName: PACKAGE_NAME,
-      currentVersion: current.version, latestVersion: latest,
-      latestSource: 'npm-official', registryUrl: REGISTRY_URL, cacheTtlMs,
+      currentVersion: current.version, latestVersion: latest.version, stableVersion: official.stable.version,
+      latestSource: latest.source === 'github-release' ? 'github-official:release' : `npm-official:${latest.tag}`, releaseChannel: latest.kind, releaseTag: latest.tag,
+      npmVersion: official.npmVersion, npmAvailable: latest.npmAvailable,
+      channels: official.channels, registryUrl: REGISTRY_URL, cacheTtlMs,
       installationKind: current.installationKind,
       status: updateAvailable ? 'update-available' : comparison === 0 ? 'current' : 'ahead',
-      updateAvailable, checkedAt: new Date(now()).toISOString(), releaseUrl: RELEASE_URL,
+      updateAvailable, checkedAt: new Date(now()).toISOString(), releaseUrl: latest.releaseUrl ?? RELEASE_URL,
       upgrade: {
         executable: false, command, commandText: command.join(' '),
-        reason: current.installationKind === 'source-checkout'
+        reason: !latest.npmAvailable
+          ? `官方 GitHub 已发布 ${latest.version}，npm 当前可用版本仍为 ${official.npmVersion}。请查看官方 Release；该版本尚无可复制的 npm 升级命令。`
+          : current.installationKind === 'source-checkout'
           ? '当前 Host 来自 DSH 源码工作区；商城不会修改 DSH 源码。可查看官方 Release，或复制 npm 固定版本安装命令作为独立安装。'
+          : preview
+            ? `官方 npm 已提供预发布版本 ${latest.version}。商城只提供固定版本命令，不静默执行全局包管理器。`
           : '官方 DSH CLI 暂无自升级子命令；商城只提供固定版本命令，不静默执行全局包管理器。',
       },
     }

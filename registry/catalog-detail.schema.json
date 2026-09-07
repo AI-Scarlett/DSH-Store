@@ -1,0 +1,536 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI-Scarlett/DSH-Store/registry/catalog-detail.schema.json",
+  "title": "DSH STORE plugin Catalog detail record",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "dshReleaseKey": {
+      "type": "string",
+      "pattern": "^(?:rc\\.(?:7|8)|[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?)$"
+    },
+    "releaseCompatibility": {
+      "enum": [
+        "compatible",
+        "incompatible",
+        "unknown"
+      ]
+    },
+    "operationEvidence": {
+      "enum": [
+        "passed",
+        "failed",
+        "unknown"
+      ]
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "verified",
+            "partial",
+            "failed",
+            "unknown",
+            "not-applicable"
+          ]
+        },
+        "evidenceStatus": {
+          "const": "partial"
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "checkedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "evidenceUrl": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^https://"
+        },
+        "dshRelease": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/dshReleaseKey"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "systems": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "verified"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "method",
+              "checkedAt",
+              "evidenceUrl"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "partial"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "method",
+              "checkedAt",
+              "evidenceUrl"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "evidenceStatus"
+            ]
+          },
+          "then": {
+            "required": [
+              "method",
+              "checkedAt",
+              "evidenceUrl"
+            ],
+            "properties": {
+              "status": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "releaseOperations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "install",
+        "start",
+        "uninstall",
+        "rollback"
+      ],
+      "properties": {
+        "install": {
+          "$ref": "#/$defs/operationEvidence"
+        },
+        "start": {
+          "$ref": "#/$defs/operationEvidence"
+        },
+        "uninstall": {
+          "$ref": "#/$defs/operationEvidence"
+        },
+        "rollback": {
+          "$ref": "#/$defs/operationEvidence"
+        }
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "packageName",
+    "description",
+    "repositoryUrl",
+    "commit",
+    "version",
+    "entryIds",
+    "status",
+    "compatibility",
+    "details",
+    "risk"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "packageName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "searchTerms": {
+      "type": "array",
+      "maxItems": 40,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 120
+      }
+    },
+    "repositoryUrl": {
+      "type": "string",
+      "pattern": "^https://github\\.com/[^/]+/[^/]+$"
+    },
+    "defaultBranch": {
+      "type": "string"
+    },
+    "manifestPath": {
+      "type": "string"
+    },
+    "installPath": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "updatePolicy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "source-verified",
+        "user-reviewed",
+        "external-only",
+        null
+      ]
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "featured": {
+      "type": "boolean"
+    },
+    "installCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "updatedAt",
+        "observedAt",
+        "provenance"
+      ],
+      "properties": {
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "provenance": {
+          "enum": [
+            "github-commit",
+            "github-repository",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "discovery",
+        "installability",
+        "runtime",
+        "securityReview"
+      ],
+      "properties": {
+        "discovery": {
+          "$ref": "#/$defs/evidenceRecord"
+        },
+        "installability": {
+          "$ref": "#/$defs/evidenceRecord"
+        },
+        "runtime": {
+          "$ref": "#/$defs/evidenceRecord"
+        },
+        "securityReview": {
+          "$ref": "#/$defs/evidenceRecord"
+        }
+      }
+    },
+    "entryIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "enum": [
+        "approved",
+        "blocked",
+        "unlisted"
+      ]
+    },
+    "statusReason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dsh",
+        "node",
+        "systems",
+        "profiles"
+      ],
+      "properties": {
+        "dsh": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dshReleases": {
+          "type": "object",
+          "maxProperties": 64,
+          "propertyNames": {
+            "$ref": "#/$defs/dshReleaseKey"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/releaseCompatibility"
+          }
+        },
+        "dshOperations": {
+          "type": "object",
+          "maxProperties": 64,
+          "propertyNames": {
+            "$ref": "#/$defs/dshReleaseKey"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/releaseOperations"
+          }
+        },
+        "node": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "systems": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pluginType",
+        "installSource",
+        "license",
+        "permissions",
+        "externalDependencies",
+        "reviewStatus"
+      ],
+      "properties": {
+        "pluginType": {
+          "enum": [
+            "feature",
+            "theme",
+            "suite",
+            "client",
+            "provider",
+            "unknown"
+          ]
+        },
+        "installSource": {
+          "enum": [
+            "npm",
+            "github",
+            "local-bundle",
+            "unknown"
+          ]
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1
+        },
+        "permissions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "level",
+            "files",
+            "network",
+            "commands",
+            "credentials"
+          ],
+          "properties": {
+            "level": {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "unknown"
+              ]
+            },
+            "files": {
+              "enum": [
+                "none",
+                "read-only",
+                "write",
+                "unknown"
+              ]
+            },
+            "network": {
+              "enum": [
+                "none",
+                "specified-services",
+                "any",
+                "unknown"
+              ]
+            },
+            "commands": {
+              "enum": [
+                "none",
+                "restricted",
+                "shell",
+                "unknown"
+              ]
+            },
+            "credentials": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "none",
+                  "api-key",
+                  "oauth",
+                  "keychain",
+                  "unknown"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        },
+        "externalDependencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "reviewStatus": {
+          "enum": [
+            "unreviewed",
+            "automated-scan",
+            "manual-review",
+            "author-verified"
+          ]
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "required": [
+        "installScripts",
+        "review"
+      ],
+      "properties": {
+        "installScripts": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "preinstall",
+              "install",
+              "postinstall",
+              "prepare"
+            ]
+          }
+        },
+        "review": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

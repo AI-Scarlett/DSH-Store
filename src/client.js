@@ -21,7 +21,7 @@ window.__ModuleLoader__.load({
       guardianExecute: '/api2/dsh-safe-plugin-manager/guardian/execute',
     }
     const SUPPORT_URL = 'https://dsh.store/'
-    const MARKET_PAGE_SIZE = 24
+    const MARKET_PAGE_SIZE = 20
     const RESTART_STORAGE_KEY = 'dsh-safe-plugin-manager:pending-restart:v1'
     const BOOT_RECOVERY_STORAGE_KEY = 'dsh-safe-plugin-manager:tab-boot:v1'
     const BOOT_RECOVERY_NAVIGATED_KEY = 'dsh-safe-plugin-manager:last-recovered-boot:v1'
@@ -597,7 +597,7 @@ window.__ModuleLoader__.load({
       } catch { return '未知' }
     }
 
-    const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2' }
+    const LEGACY_DSH_VERSIONS = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8', '0.1.1-rc.1': '0.1.1-rc.1', '0.1.1-rc.2': '0.1.1-rc.2', '0.1.2-alpha.2': '0.1.2-alpha.2', '0.1.2-alpha.3': '0.1.2-alpha.3', '0.1.2-alpha.4': '0.1.2-alpha.4', '0.1.2-alpha.5': '0.1.2-alpha.5' }
     const COMPATIBILITY_STATUSES = new Set(['compatible', 'incompatible', 'unknown'])
     const OPERATION_STATUSES = new Set(['passed', 'failed', 'unknown'])
     const unknownOperations = () => Object.fromEntries(DSH_OPERATIONS.map(([operation]) => [operation, 'unknown']))
@@ -894,13 +894,14 @@ window.__ModuleLoader__.load({
             : entry.sourceUpdate?.status === 'update-blocked' ? '源更新无法验证'
           : entry.status === 'blocked' ? '商城不可安装'
         : entry.migrationAvailable ? (entry.updateAvailable ? '可迁移并更新' : '可迁移到商城')
+          : entry.manualSourceUpdate ? '同版本源码已更新 · GitHub 手动更新'
           : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
       const origin = entry.installOrigin === 'marketplace-managed' ? '商城安装'
         : entry.installOrigin === 'catalog-source-matched' ? '目录来源匹配 · 渠道未知'
           : entry.installOrigin === 'local-development' ? '本地开发安装'
             : entry.installOrigin === 'external-or-drifted' ? '外部安装 / 来源漂移' : null
       const stateTone = entry.status === 'blocked' ? 'var(--dsw-alias-state-error-primary)'
-        : entry.updateAvailable || entry.migrationAvailable ? 'var(--dsw-alias-label-primary)'
+        : entry.updateAvailable || entry.migrationAvailable || entry.manualSourceUpdate ? 'var(--dsw-alias-label-primary)'
           : entry.installed ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)'
       const titleId = `dsh-store-plugin-${entry.id}`
       return React.createElement('article', { style: styles.card, role: 'listitem', 'aria-labelledby': titleId },
@@ -928,17 +929,25 @@ window.__ModuleLoader__.load({
           ? React.createElement('div', { style: styles.error }, entry.sourceUpdate.reasons.join('；'))
           : entry.sourceUpdate?.status === 'current'
             ? React.createElement('div', { style: styles.notice }, entry.sourceUpdate.sameVersionSourceChange
-              ? '源仓库有同版本提交；当前安装版本无需更新，商城不会把目录或文档提交当作插件升级。'
+              ? (entry.sourceUpdate.catalogReviewed
+                ? 'Catalog 已固定同版本的新 Commit；商城不会覆盖已安装副本，请使用下方 GitHub 固定 Commit 手动更新。'
+                : '源仓库有尚未进入 Catalog 的同版本提交；等待固定源自动审核，商城不会生成同版本更新计划。')
               : '已在本机按需检查 GitHub 源仓库，当前没有可用的新 Commit。')
             : entry.sourceUpdate?.status === 'error'
               ? React.createElement('div', { style: styles.error }, `${entry.sourceUpdate.code}：${entry.sourceUpdate.message}`)
               : null,
+        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+          React.createElement('div', null, entry.manualSourceUpdate.reason),
+          React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, '手动更新不受商城计划、备份、健康检查和失败回滚保护。')) : null,
         React.createElement(SourceDiffSummary, { update: entry.sourceUpdate }),
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('div', { style: styles.actions },
             React.createElement(PluginActions, { entry, health, beginPlan, checkSource }),
-            entry.status === 'blocked' || entry.sourceUpdate?.status === 'external-only'
-              ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub（不受商城保护）')
+            entry.manualSourceUpdate
+              ? React.createElement('a', { href: entry.manualSourceUpdate.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看同版本固定 Commit')
+              : entry.status === 'blocked' || entry.sourceUpdate?.status === 'external-only'
+                ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub（不受商城保护）')
               : null),
           React.createElement('div', { style: styles.detailAction },
             React.createElement(Button, { compact: true, onClick: () => openDetails(entry), ariaLabel: `查看 ${entry.name} 详情` }, '查看详情'))))
@@ -1038,14 +1047,20 @@ window.__ModuleLoader__.load({
         React.createElement('h3', { style: styles.detailHeading }, 'DSH 版本操作证据'),
         React.createElement(OperationEvidence, { entry }),
         !entry.catalogDetailsAvailable
-          ? React.createElement('div', { style: styles.notice }, '当前 GitHub catalog.json 尚未提供完整详情字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
+          ? React.createElement('div', { style: styles.notice }, '当前 GitHub Catalog 详情文件尚未提供完整字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
           : null,
         entry.statusReason ? React.createElement('div', { style: styles.error }, `策略说明：${entry.statusReason}`) : null,
+        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+          React.createElement('div', { style: styles.name }, '同版本源码更新：仅限 GitHub 手动操作'),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, entry.manualSourceUpdate.reason),
+          React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
+          React.createElement('a', { href: entry.manualSourceUpdate.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '打开 Catalog 固定 Commit'),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, '该命令绕过商城事务保护；执行前应自行备份 Profile。')) : null,
         entry.status === 'blocked'
           ? React.createElement('div', { style: styles.notice }, '可前往 GitHub 阅读项目说明并自行决定是否手动安装；手动安装不受本商城的计划、备份、健康检查和失败回滚保护。')
           : null,
         entry.risk.installScripts.length > 0 ? React.createElement('div', { style: styles.error }, `安装生命周期脚本：${entry.risk.installScripts.join(', ')}`) : null,
-        React.createElement('div', { style: styles.notice }, '详情来自 GitHub catalog.json 的固定 Commit 核验与声明；自动扫描或作者认证均不等于完成安全审计。')))
+        React.createElement('div', { style: styles.notice }, '详情来自 GitHub catalog.json 主索引、对应插件详情文件的固定 Commit 核验与声明；自动扫描或作者认证均不等于完成安全审计。')))
     }
 
     function HealthPanel({ health, permissionDecisions, setPermissionDecision, rerun }) {
@@ -1176,6 +1191,7 @@ window.__ModuleLoader__.load({
       }
       if (operation.status === 'result') {
         const result = operation.value
+        const legacyRepairRequired = result.error?.diagnostic?.code === 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED'
         const footer = React.createElement(React.Fragment, null,
           React.createElement(Button, { onClick: cancel }, '完成'),
           result.status === 'applied' && result.restartRequired
@@ -1192,6 +1208,12 @@ window.__ModuleLoader__.load({
             React.createElement('div', { style: styles.error }, `${result.error.code}：${result.error.message}`),
             result.error.diagnostic ? React.createElement('div', { style: styles.notice },
               `${result.error.diagnostic.code}：${result.error.diagnostic.message}`) : null) : null,
+          legacyRepairRequired ? React.createElement('div', { style: styles.notice },
+            React.createElement('div', { style: styles.name }, '不要放开第三方 prepare 权限，也不要手改 Profile。'),
+            React.createElement('div', { style: styles.muted }, '请前往以下任一地址查看官方修复/升级方案：'),
+            React.createElement('a', { href: 'https://dsh-store.cn/repair/', target: '_blank', rel: 'noreferrer', style: styles.link }, '国内站修复/升级方案'),
+            React.createElement('span', { style: styles.muted }, ' · '),
+            React.createElement('a', { href: 'https://ai-scarlett.github.io/DSH-Store/marketplace/repair/', target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub Pages 修复/升级方案')) : null,
           result.status === 'applied' && result.restartRequired ? React.createElement('div', { style: styles.notice },
             React.createElement('div', { style: styles.name }, '插件变更已写入，但尚未在当前 DSH Host 中生效'),
             React.createElement('div', { style: styles.muted }, '请使用“一键安全重启”；Guardian 会停止并启动同一个 web Profile。不要再手工启动第二个 DSH 实例。')) : null))
@@ -1261,30 +1283,42 @@ window.__ModuleLoader__.load({
 
     function GuardianModal({ operation, confirmation, setConfirmation, execute, cancel }) {
       if (!operation || operation.status === 'idle') return null
+      const upgrading = operation.value?.action === 'upgrade-guardian'
+        || operation.value?.status === 'update-scheduled' || operation.value?.status === 'updated'
       if (operation.status === 'planning' || operation.status === 'executing' || operation.status === 'handoff') return React.createElement(Modal, {
-        open: true, onClose: operation.status === 'planning' ? cancel : () => {}, title: '安装 DSH Guardian',
+        open: true, onClose: operation.status === 'planning' ? cancel : () => {}, title: upgrading ? '升级 DSH Guardian' : '安装 DSH Guardian',
         footer: null, className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
       }, React.createElement('div', { style: styles.notice }, operation.status === 'planning'
         ? '正在核对 launchd 与守护文件预条件…'
         : operation.status === 'handoff'
-          ? 'Guardian 已验证，DSH 正在交接，页面会自动重新连接。'
-          : '正在原子安装并验证 Guardian 心跳…'))
+          ? upgrading
+            ? '独立升级交接器已验证旧 Guardian、Profile 与 Boot ID；正在替换守护并等待新 Guardian 成为唯一启动所有者，页面会自动重新连接。'
+            : 'Guardian 已验证，DSH 正在交接，页面会自动重新连接。'
+          : upgrading ? '正在生成绑定旧 Guardian、Profile、Boot ID 与文件哈希的一次性交接计划…' : '正在原子安装并验证 Guardian 心跳…'))
       if (operation.status === 'error' || operation.status === 'result') return React.createElement(Modal, {
-        open: true, onClose: cancel, title: operation.status === 'result' ? 'Guardian 已安装' : 'Guardian 安装失败',
+        open: true, onClose: cancel, title: operation.status === 'result'
+          ? upgrading ? 'Guardian 升级交接已启动' : 'Guardian 已安装'
+          : upgrading ? 'Guardian 升级失败' : 'Guardian 安装失败',
         footer: React.createElement(Button, { onClick: cancel }, '关闭'), className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
       }, React.createElement('div', { style: operation.status === 'result' ? styles.notice : styles.error },
-        operation.status === 'result' ? '外部 Guardian 已接管 DSH 启动监督；请等待健康状态变为正常。' : `${operation.code || 'GUARDIAN_FAILED'}：${operation.message}`))
+        operation.status === 'result'
+          ? upgrading ? '独立交接器已启动；它会在当前响应结束后升级 Guardian，并在失败时恢复上一版。' : '外部 Guardian 已接管 DSH 启动监督；请等待健康状态变为正常。'
+          : `${operation.code || 'GUARDIAN_FAILED'}：${operation.message}`))
       const plan = operation.value
       return React.createElement(Modal, {
-        open: true, onClose: cancel, title: '确认安装商城内置 Guardian',
-        description: 'Guardian 独立于 DSH 运行，并将替换当前 local.dsh.web 启动任务。',
+        open: true, onClose: cancel, title: upgrading ? '确认升级商城内置 Guardian' : '确认安装商城内置 Guardian',
+        description: upgrading
+          ? '升级计划绑定当前 Guardian PID、DSH Host PID、Profile、Boot ID 与守护文件哈希；独立交接器会在本次响应结束后执行，失败自动恢复上一版。'
+          : 'Guardian 独立于 DSH 运行，并将替换当前 local.dsh.web 启动任务。',
         footer: React.createElement(React.Fragment, null,
           React.createElement(Button, { onClick: cancel }, '取消'),
-          React.createElement(Button, { primary: true, danger: true, disabled: confirmation !== plan.confirmation, onClick: execute }, '安装并接管')),
+          React.createElement(Button, { primary: true, danger: true, disabled: confirmation !== plan.confirmation, onClick: execute }, upgrading ? '升级并安全交接' : '安装并接管')),
         className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
       }, React.createElement('div', { style: styles.detailSection },
         React.createElement('div', { style: styles.muted }, `写入：${plan.impact.writes.join('、')}`),
         React.createElement('div', { style: styles.muted }, `永久保护：${plan.impact.neverModifies.join('、')}`),
+        plan.impact.activeHandoff ? React.createElement('div', { style: styles.notice },
+          `主动交接：Guardian PID ${plan.impact.activeHandoff.guardianPid} · Host PID ${plan.impact.activeHandoff.hostPid} · Boot ID ${plan.impact.activeHandoff.hostBootId}`) : null,
         React.createElement('div', { style: styles.code }, plan.confirmation),
         React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
     }
@@ -1587,7 +1621,7 @@ window.__ModuleLoader__.load({
       const closeDetails = useCallback(() => setDetailEntry(null), [])
       const dshVersion = state.status === 'ready' ? state.dshVersion : null
       const versionLabel = dshVersion?.currentVersion
-        ? `DSH ${dshVersion.currentVersion}${dshVersion.updateAvailable ? ` → ${dshVersion.latestVersion}` : dshVersion.status === 'current' ? ' · 已是最新' : ''}`
+        ? `DSH ${dshVersion.currentVersion}${dshVersion.updateAvailable ? ` → ${dshVersion.latestVersion}${dshVersion.releaseChannel === 'preview' ? '（预发布）' : ''}` : dshVersion.status === 'current' ? dshVersion.releaseChannel === 'preview' ? ' · 已是当前预发布' : ' · 稳定版已是最新' : ''}`
         : 'DSH 版本待检测'
       const heading = React.createElement('div', { style: styles.toolbar },
         React.createElement('div', { style: styles.headingCopy },
@@ -1600,14 +1634,15 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.versionBox, 'aria-label': 'DSH 版本与升级' },
           React.createElement('span', {
             style: styles.versionPill,
-            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH 与 npm 官方最新版本',
+            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH、官方 GitHub Release 与 npm 发行记录',
           }, versionLabel),
           React.createElement(Button, { compact: true, disabled: versionChecking, onClick: refreshDshVersion },
             versionChecking ? '检测中…' : '检测升级'),
-          dshVersion?.updateAvailable ? React.createElement(Button, {
+          dshVersion?.updateAvailable && dshVersion?.upgrade?.commandText ? React.createElement(Button, {
             compact: true, primary: true, onClick: copyUpgradeCommand,
             title: dshVersion.upgrade.reason,
           }, '复制升级命令') : null,
+          dshVersion?.npmAvailable === false ? React.createElement('span', { style: styles.muted }, '新版已发布，npm 包待发布') : null,
           dshVersion?.releaseUrl ? React.createElement('a', {
             href: dshVersion.releaseUrl, target: '_blank', rel: 'noreferrer', style: styles.link,
           }, '官方 Release') : null,

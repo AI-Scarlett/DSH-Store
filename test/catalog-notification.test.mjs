@@ -7,6 +7,7 @@ test('Catalog notification separates additions, historical updates, and deferred
     entries: [
       { id: 'new-plugin', name: '通知助手（Notify Helper）', version: '1.0.0', status: 'blocked', repositoryUrl: 'https://github.com/example/new-plugin' },
       { id: 'old-plugin', name: '历史工具（History Tool）', version: '2.0.0', status: 'approved', repositoryUrl: 'https://github.com/example/old-plugin' },
+      { id: 'same-plugin', name: '同版本工具（Same Version Tool）', version: '1.0.0', status: 'approved', repositoryUrl: 'https://github.com/example/same-plugin' },
       { id: 'old-compat', name: '旧版兼容插件（Old Compatibility）', version: '1.2.0', status: 'unlisted', repositoryUrl: 'https://github.com/example/old-compat' },
       { id: 'restored-compat', name: '恢复兼容插件（Restored Compatibility）', version: '1.3.0', status: 'approved', repositoryUrl: 'https://github.com/example/restored-compat' },
     ],
@@ -20,10 +21,15 @@ test('Catalog notification separates additions, historical updates, and deferred
       catalogUpdates: 1,
       newerVersionsDeferred: 1,
       sourceChangedWithoutVersionBump: 3,
+      sameVersionCatalogUpdates: 1,
+      sameVersionUpdatesDeferred: 2,
       unresolvedEntries: 0,
     },
     addedEntries: [{ id: 'new-plugin', reasons: ['runtime dependency requires review'] }],
-    updatedEntries: [{ id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0' }],
+    updatedEntries: [
+      { id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0', changeKind: 'version-update' },
+      { id: 'same-plugin', fromVersion: '1.0.0', toVersion: '1.0.0', changeKind: 'same-version-source-update' },
+    ],
     compatibilityPolicy: {
       latestReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'],
     },
@@ -94,6 +100,10 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /综合结果：\*\*通过\*\*/)
   assert.match(output, /新增收录：1 个（可安装 0，blocked\/不可安装 1）/)
   assert.match(output, /历史版本自动更新：1 个/)
+  assert.match(output, /同版本固定 Commit 更新：1 个/)
+  assert.match(output, /上游源码变化但未提升版本：3 个（固定 Commit 已更新 1，暂缓 2）/)
+  assert.match(output, /同版本工具（Same Version Tool）/)
+  assert.match(output, /同版本固定 Commit/)
   assert.match(output, /通知助手（Notify Helper）/)
   assert.match(output, /历史工具（History Tool）/)
   assert.match(output, /1\.0\.0 \| 2\.0\.0/)
@@ -180,4 +190,70 @@ test('Catalog notification exposes a preserved partial failure without presentin
   assert.match(output, /apply-latest-dsh-compatibility-policy/)
   assert.match(output, /conflicting compatibility aliases/)
   assert.doesNotMatch(output, /发现上游高版本：12 个/)
+})
+
+test('Catalog notification bounds every detail table below the GitHub Issue body limit', () => {
+  const entries = Array.from({ length: 240 }, (_, index) => ({
+    id: `plugin-${index}`,
+    name: `插件 ${index}（Plugin ${index}）`,
+    version: '2.0.0',
+    status: 'unlisted',
+    repositoryUrl: `https://github.com/example/plugin-${index}`,
+  }))
+  const details = entries.map((entry, index) => ({
+    id: entry.id,
+    fromVersion: '1.0.0',
+    toVersion: '2.0.0',
+    catalogVersion: '1.0.0',
+    upstreamVersion: '2.0.0',
+    version: '2.0.0',
+    repositoryUrl: entry.repositoryUrl,
+    commit: 'd'.repeat(40),
+    requiredDshReleases: ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'],
+    reasons: ['需要保留完整机器报告中的供应链复核原因'],
+    reason: '需要保留完整机器报告中的供应链复核原因',
+  }))
+  const surfaces = Array.from({ length: 40 }, (_, index) => ({
+    url: `https://example.com/catalog-${index}.json`, status: 'passed', entries: 240, sha256: 'e'.repeat(64),
+  }))
+  const output = renderCatalogAutomationNotification({
+    catalog: { entries },
+    report: {
+      observedAt: '2026-09-02T00:00:00.000Z',
+      baseCommit: 'a'.repeat(40),
+      sourceVersionChecks: {
+        checkedEntries: 240, newerVersionCandidates: 240, catalogUpdates: 240,
+        newerVersionsDeferred: 240, sourceChangedWithoutVersionBump: 0, unresolvedEntries: 0,
+      },
+      addedEntries: details,
+      updatedEntries: details,
+      compatibilityPolicy: { latestReleases: ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'] },
+      compatibilityUnlisted: details,
+      compatibilityRestored: details.slice(0, 30),
+      prunedCandidates: details,
+      deferredUpdates: details,
+      transientFailures: [],
+      postconditions: { catalogEntries: 240 },
+    },
+    watchdog: { status: 'passed', surfaces, candidateSurfaces: surfaces, checkedAt: '2026-09-02T00:10:00.000Z' },
+    catalogRunId: '999',
+    catalogConclusion: 'success',
+    authorNotices: {
+      sourceCatalogRunId: '999',
+      summary: {
+        desiredRepositories: 240, githubMessages: 240, githubNotificationEmailTriggers: 240,
+        candidateCoverageInvariantPassed: true, candidateCoverageUnaccounted: 0,
+        candidateCoverageAccounted: 240, candidateRegistryRecords: 240, candidateRegistryRepositories: 240,
+      },
+      actions: details.map((_, index) => ({
+        type: 'source-update', key: `example/plugin-${index}`, sourceStatus: 'modified-still-blocked',
+      })),
+    },
+  })
+  assert.ok(Buffer.byteLength(output) < 65_000, `notification is ${Buffer.byteLength(output)} bytes`)
+  assert.match(output, /另有 220 条未展开/)
+  assert.match(output, /另有 250 条未展开/)
+  assert.match(output, /另有 20 条未展开/)
+  assert.doesNotMatch(output, /插件 239（Plugin 239）/)
+  assert.match(output, /完整记录见本次 Run Artifact 中的机器报告/)
 })

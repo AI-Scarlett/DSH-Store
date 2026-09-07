@@ -1,0 +1,213 @@
+{
+  "id": "build-dsh-plugin",
+  "name": "DSH 插件开发工作流（Build DSH Plugin）",
+  "packageName": "dsh-build-plugin",
+  "description": "把插件需求转化为标准 DSH Bundle、卡片契约、审计、发布和商城候选；候选发现与可信安装严格分层，并强制执行非破坏性边界与分级验收。",
+  "searchTerms": [
+    "DSH 插件开发工作流",
+    "Build DSH Plugin",
+    "build-dsh-plugin",
+    "dsh-build-plugin",
+    "任务",
+    "工作流",
+    "自动化",
+    "定时",
+    "开发与运行时",
+    "开发",
+    "调试",
+    "运行时",
+    "工作流与自动化",
+    "工具能力",
+    "工具",
+    "能力",
+    "dsh",
+    "build",
+    "plugin"
+  ],
+  "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": null,
+  "commit": "1d4053cee6071b8b7d2e60a15671253601e1a855",
+  "version": "0.4.3",
+  "categories": [
+    "development",
+    "workflow",
+    "tools"
+  ],
+  "featured": true,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-07T04:10:38.000Z",
+    "observedAt": "2026-09-07T04:11:58.370Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/blob/1d4053cee6071b8b7d2e60a15671253601e1a855/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
+      "systems": [
+        "macos"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Canonical GitHub manifest and Bundle Patch read back at the immutable candidate commit."
+    },
+    "installability": {
+      "status": "partial",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/blob/1d4053cee6071b8b7d2e60a15671253601e1a855/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
+      "systems": [
+        "macos"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Official source CLI link install, configuration composition and npm tarball contents passed in a disposable Profile; remote Git install was not tested."
+    },
+    "runtime": {
+      "status": "partial",
+      "method": "disposable-official-source-cli-and-package-audit",
+      "checkedAt": "2026-09-07T04:11:58.370Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/blob/1d4053cee6071b8b7d2e60a15671253601e1a855/docs/dsh-0.1.3-alpha.1-validation.md",
+      "dshRelease": "0.1.3-alpha.1",
+      "systems": [
+        "macos"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Official 0.1.3-alpha.1 source host cold start and uninstall passed; UI, real model calls and version rollback remain unverified."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": null
+    }
+  },
+  "entryIds": [
+    "dsh-build-plugin-skill-provider"
+  ],
+  "status": "approved",
+  "statusReason": null,
+  "compatibility": {
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.3-alpha.1",
+    "dshReleases": {
+      "rc.7": "incompatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
+      "0.1.1-rc.2": "compatible",
+      "0.1.2-alpha.2": "compatible",
+      "0.1.2-alpha.3": "compatible",
+      "0.1.2-alpha.4": "compatible",
+      "0.1.2-alpha.5": "compatible",
+      "0.1.2-rc.1": "compatible",
+      "0.1.3-alpha.1": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "passed",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "failed",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.2-alpha.4": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.2-alpha.5": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.2-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22.13.0",
+    "systems": [
+      "macOS"
+    ],
+    "profiles": [
+      "web",
+      "headless"
+    ]
+  },
+  "details": {
+    "pluginType": "suite",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "shell",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "Git（发布与固定源验证时）",
+      "GitHub（发布与 DSH STORE 上架时）"
+    ],
+    "reviewStatus": "author-verified"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "owner-skill-development-workflow-can-direct-high-privilege-agent-actions-not-security-audited"
+  }
+}

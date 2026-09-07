@@ -74,7 +74,12 @@ function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, 
 async function probeDshHost(config) {
   const timeoutMs = config.healthProbeTimeoutMs ?? 1_500
   const root = await httpExchange({ host: config.host, port: config.port, path: '/', timeoutMs })
-  if (!root.ok || root.statusCode !== 200) {
+  // DSH 0.1.2-rc.1 protects the browser index with a process-token
+  // exchange. A credential-free Guardian probe therefore receives 401 from
+  // `/` even while the Host is healthy. Older supported releases return 200.
+  // Treat both as proof that the Web surface owns the port, then require the
+  // manager runtime endpoint to prove the exact Profile and Boot ID.
+  if (!root.ok || (root.statusCode !== 200 && root.statusCode !== 401)) {
     return {
       healthy: false, reason: root.reason ?? `root-http-${root.statusCode ?? 'unknown'}`,
       rootStatus: root.statusCode ?? null, rootDurationMs: root.durationMs, rootBytes: root.bytes ?? null,
@@ -283,7 +288,7 @@ export async function runGuardian(rawConfig, options = {}) {
       } else await rm(target, { force: true })
     }
     const install = await new Promise(resolve => {
-      const command = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, 'plugin', '--profile', config.profile, 'install', '--offline'], {
+      const command = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, 'plugin', '--profile', config.profile, 'install', '--offline', '--ignore-scripts'], {
         cwd: config.cwd, env: commandEnvironment, shell: false, stdio: 'ignore',
       })
       command.once('exit', code => resolve(code === 0))
@@ -301,7 +306,7 @@ export async function runGuardian(rawConfig, options = {}) {
   async function publish(state, extra = {}) {
     const value = {
       schemaVersion: 1, installed: true, available: true, state, heartbeatAt: now(),
-      profile: config.profile, pid: child?.pid ?? null, failureCount: failures.length,
+      profile: config.profile, guardianPid: process.pid, pid: child?.pid ?? null, failureCount: failures.length,
       owner: child ? 'guardian' : 'unknown', lastError,
       circuit: failures.length >= maxRestarts ? 'open' : 'closed', ...extra,
     }

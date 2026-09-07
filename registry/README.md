@@ -1,6 +1,12 @@
 # DSH-Store GitHub Plugin Registry
 
-`catalog.json` 是 DSH-Store 与 GitHub Pages 市场页共同读取的唯一目录。
+`catalog.json` 是旧版 DSH-Store 可读取的 schemaVersion 1 完整兼容目录：它为每个插件保留旧版
+验证器、搜索、权限展示和固定来源操作所需的有界字段，并用 `indexPath`、`indexSha256`、
+`indexBytes` 和 `indexEntryCount` 固定 `catalog-index.json`。
+`catalog-index.json` 是 DSH-Store 与 GitHub Pages 市场页共同读取的轻量主索引；每个插件的完整记录
+位于 `catalog/details/<插件编号>.json`。主索引通过插件编号把名称、版本、推荐状态、顺序和 GitHub
+地址映射到对应详情，新商城验证兼容目录后加载索引，再按当前 20 条页面或详情请求懒加载详情。兼容目录和
+主索引都保持在 2 MiB 内，单个详情文件保持在 512 KiB 内。
 目录只接受 GitHub 仓库，不接受 npm-only、任意下载 URL、本地路径或浮动安装目标。
 
 新增或更新插件必须通过 Pull Request 修改一个条目，并同时满足：
@@ -62,7 +68,8 @@ Profile、不用低层测试冒充运行验收”的边界。
 
 ## 作者整改通知
 
-每次八小时 Catalog 扫描成功后，`author-notifications.yml` 会对四类确定性结果维护公开 GitHub
+每次八小时 Catalog 扫描策略 Job 成功后，Catalog 工作流会直接调用 `author-notifications.yml`，
+对四类确定性结果维护公开 GitHub
 修复单：Catalog 中仍为 `blocked` 的仓库、发现更高上游版本但因源码契约暂缓更新的仓库，以及
 明确属于 DSH 且被固定 Commit 门禁拒绝的候选仓库，以及因不在最新三个 DSH 版本兼容窗口而
 暂时下架的仓库。修复单逐项列出原因和建议，并 `@` canonical
@@ -74,10 +81,12 @@ Profile、不用低层测试冒充运行验收”的边界。
 Commit 的有界指纹；后续复检会区分“已修改但仍未通过、已修改且阻断清除、未检测到新提交、首次
 建立基线或暂无法判断”。该状态只表示上游源码是否变化及确定性阻断是否消失，不等同于运行时验收。
 
-`catalog-run-report.yml` 会在每一次 Catalog 工作流完成后立即生成所有者报告；成功扫描会有界等待
-最多五分钟，以纳入与同一 Catalog Run ID 绑定的作者通知计划，失败扫描也会报告失败阶段而不是
-静默跳过。报告通过固定 Issue 评论 `@AI-Scarlett`，按 Catalog Run ID 只发送一次普通报告；三小时
-看门狗仅在即时报告缺失时补发，或为修复/公开面失败使用独立告警标记。报告列出 GitHub 整改消息
+作者通知完成后，Catalog 工作流会直接调用 `catalog-run-report.yml` 生成所有者报告。两个可复用
+工作流都接收当前 Catalog Run ID 和 Run Attempt，并只读取同一次 Catalog Run 中的精确 Artifact，
+不依赖 `workflow_run`。失败扫描也会报告失败阶段而不是静默跳过。报告通过固定 Issue 评论
+`@AI-Scarlett`，按 Catalog Run ID 只发送一次普通报告；三小时看门狗补跑 Catalog 时，会先等待与
+本轮唯一请求 ID 对应的新 Run 完成，再用该新 Run ID 直接补调用报告工作流，不能回退到上一次扫描。
+若内联报告已经成功，补调用会按相同幂等标记跳过。报告列出 GitHub 整改消息
 涉及的项目数和 GitHub 通知邮件触发项目数。GitHub 是否实际投递邮件取决于被提及维护者的个人
 通知设置，仓库无法读取私人邮箱回执，因此必须显示“送达未验证”，不能把触发数量表述成实际送达数量。
 
@@ -121,17 +130,32 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
   2097152 字节（2 MiB）。超过上限时报告会写出实际文件数、总字节和最大文件字节并失败关闭。
   这些是保证完整读取、限制 API/时间消耗并抵御超大输入的审核边界，不是插件运行时内存限制；
   不得通过取消上限或跳过未读源码来获得自动批准；
-- 只有原项目 SemVer 高于商城版本、候选 Commit 是旧 Commit 的有界直接后继，且包名、仓库、
-  manifest 路径、安装路径、Bundle 入口和许可证保持一致时，才进入固定源更新审查；
+- 商城自身仍使用 512 个运行文件、单文件 4 MiB、合计 8 MiB 的有界审查；分表生成的
+  `registry/catalog/details/<插件编号>.json` 已由 Registry schema、摘要和完整性门禁负责，且不是
+  可执行插件源码，因此不占用商城自身的运行源码文件计数。该例外只匹配官方商城仓库的一层
+  `.json` 详情文件；脚本、索引、其他 JSON、嵌套文件和任何其他仓库仍进入源码审查；
+- 原项目 SemVer 高于商城版本，或版本相同但默认分支出现新 Commit 时，候选 Commit 都必须是
+  旧 Commit 的有界直接后继，并在包名、仓库、manifest 路径、安装路径、Bundle 入口和许可证
+  保持一致后进入同一套固定源更新审查；
 - `source-verified` 更新必须继续满足完整低风险自动策略；`user-reviewed` 条目可以自动刷新
   商城中的固定 Commit 和版本号，但真实安装仍逐次执行本机风险审查；`external-only`、blocked
   和 unlisted 条目只刷新可追溯的项目元数据，不会因此获得安装资格；
-- 新版本写入后，旧版本的安装、运行、安全和精确兼容证据全部重置为 `unknown`，不把历史
-  验收沿用到新版本；源码变化但没有提升版本号时只记录异常，不移动 Catalog 固定 Commit；
-- `pages.yml` 仍按三小时窗口第 25 分钟重新构建 GitHub Pages；
+- 版本或固定 Commit 写入后，旧来源的安装、运行、安全和精确兼容证据全部重置为 `unknown`，
+  不把历史验收沿用到新来源；同版本源码变化通过完整审查后移动 Catalog 固定 Commit，使未安装
+  用户直接安装新 Commit，并允许新的精确兼容声明恢复可逆下架；已安装相同版本的用户不会获得
+  商城更新计划，只能按界面提示使用 GitHub 完整 Commit 手动覆盖；
+- Catalog 自动 PR 合并后，`catalog-automation.yml` 会绑定已验证的 merge Commit，立即调度并等待
+  对应 `pages.yml` Run 成功；无 Catalog 变更时，Pages 仍按三小时窗口第 25 分钟兜底重建；
 - 两台服务器的 systemd timer 仍按三小时窗口第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
-- `catalog-run-report.yml` 监听每一次 Catalog 完成事件，立即发布一次按 Run ID 去重的所有者 `@mention` 报告；
-- `marketplace-watchdog.yml` 仍按三小时窗口第 55 分钟核验上一轮工作流以及 GitHub、Pages、国际站、国内站；
+- `catalog-automation.yml` 直接调用作者通知与所有者报告可复用工作流，所有输入和 Artifact 均绑定当前 Run ID 与 Attempt；
+- 作者通知每轮仍最多新建 10 个外部整改项；已有修复单的更新、源码追踪基线和关闭动作共享
+  500 条有界计划上限，计划生成、维护者解析和实际写入使用同一常量，避免 Catalog 扩大后因旧的
+  100 条解析器上限让成功的自动更新整轮标红；
+- 已进入修复台账的仓库若在通知时已删除、迁移或因法律原因不可用（GitHub 404/410/451），
+  维护者解析仅回退到台账中的仓库所有者名，不让一个失效仓库中断其他通知；403、429、5xx 和
+  网络故障仍失败关闭并留待重试；
+- `catalog-run-report.yml` 立即发布一次按 Catalog Run ID 去重的所有者 `@mention` 报告，不依赖 `workflow_run`；
+- `marketplace-watchdog.yml` 仍按三小时窗口第 55 分钟核验 Catalog 以及 GitHub、Pages、国际站、国内站；补跑时等待精确的新 Run 完成并直接补调用其报告；
 - 上一轮缺失、失败、超过九小时或公共目录不一致时，自动重跑 Catalog 或 Pages；
 - 所有 Catalog 写入绑定 base Commit、文件 SHA-256、外部备份、机器计划 ID 和精确文件范围。
 
@@ -154,7 +178,9 @@ Catalog 扫描、四端巡检、扫描新增数、历史版本检查数、发现
 
 ## 详情元数据
 
-商城详情由 GitHub 上的同一份 `catalog.json` 提供。每个条目必须显式声明：
+商城详情由 GitHub 上与兼容桥、主索引同一提交的独立详情文件提供。主索引条目至少包含 `id`、
+`nameZh`、`nameEn`、`version`、`featured`、`order`、`repositoryUrl` 和由编号确定的
+`detailPath`；详情文件必须显式声明：
 
 - `details.pluginType`、`installSource`、`license`；
 - 文件、网络、命令与凭据访问，以及汇总后的权限等级；
