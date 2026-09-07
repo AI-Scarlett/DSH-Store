@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-07T06:27:56.787Z",
+    "updatedAt": "2026-09-07T06:37:59.073Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -6293,27 +6293,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: moguiyu-dsh-tool-tavily-search."
     },
     {
-      "id": "amethystluna-logicprobe",
-      "name": "模型提供商接入（Logicprobe）",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Design document & plan claim verification — enumerate claims, verify against codebase facts, then escalate to logic-primitive verification (7 structural checks + 7 adversarial probes) for behavioral claims. Before/after model comparison for refactoring regression detection. Ships a native DeepSeek Harness (dsh) bundle that injects the claim-verification gate into the first model step.",
-      "repositoryUrl": "https://github.com/AmethystLuna/logicprobe",
-      "defaultBranch": "main",
-      "latestCommit": "56cfe83e1c7bd8770f05fbb84cd57c07ef3acf17",
-      "sourceUpdatedAt": "2026-08-21T07:31:56.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "workflow",
-        "design",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: logicprobe."
-    },
-    {
       "id": "kaixinbaba-dsh-vision-recognizer",
       "name": "图像视觉工具（DSH Vision Recognizer）",
       "description": "视觉模型路由：把附加图片经可配置模型（15+ OpenAI 兼容与 Anthropic 供应商）转译为文字，对话仍由 DeepSeek 作答。",
@@ -6373,26 +6352,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-cad-review."
-    },
-    {
-      "id": "xmanrui-dsh-im",
-      "name": "多平台 IM 机器人桥接（DSH IM）",
-      "description": "通过二维码或机器人凭据将 IM 机器人接入 DeepSeek Harness，支持飞书、微信、钉钉、企业微信、QQ、Slack、Telegram、Discord 和 WhatsApp，并提供实验性的 AI Office 连接器。",
-      "repositoryUrl": "https://github.com/xmanrui/dsh-im",
-      "defaultBranch": "main",
-      "latestCommit": "832bd539a2bca2518cbf575d9b61606f868290e4",
-      "sourceUpdatedAt": "2026-08-20T20:23:51.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "notifications",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: xmanrui-dsh-im."
     },
     {
       "id": "cyanseek-dsh-landscape",
@@ -6941,27 +6900,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-trilium."
-    },
-    {
-      "id": "amethystluna-embedded-workbench",
-      "name": "模型提供商接入（Embedded Workbench）",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Embedded C/C++ firmware development toolbox — 4 agents, 7 skills covering FreeRTOS, ISR, NVM storage, Keil MDK, ARMCLANG, HardFault, state machines, architecture, and LVGL patterns. Ships a native DeepSeek Harness (dsh) bundle that injects the session-start gate into the first model step.",
-      "repositoryUrl": "https://github.com/AmethystLuna/embedded-workbench",
-      "defaultBranch": "master",
-      "latestCommit": "9728f9a5ca8352460a0ad51287ed0f4fb6c311d0",
-      "sourceUpdatedAt": "2026-08-18T16:51:02.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "workflow",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: embedded-workbench."
     },
     {
       "id": "zoahdev-dsh-subscribe",
@@ -9464,26 +9402,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-builtin-browser."
-    },
-    {
-      "id": "sjh9714-dsh-movein",
-      "name": "配置导入迁移（DSH Movein）",
-      "description": "一键迁移导入整套 Claude Code 或 Codex 配置到 DSH：技能、斜杠命令、MCP、hooks、子代理、权限规则，默认先出搬家清单预演，输出迁移差异报告，搬完可用 doctor 体检；作为插件提供 movein_from_claude_code 工具，直接让 agent 帮你搬。",
-      "repositoryUrl": "https://github.com/sjh9714/dsh-movein",
-      "defaultBranch": "main",
-      "latestCommit": "d305b89a08b8ed0901aac398bb1abfdc374055c3",
-      "sourceUpdatedAt": "2026-08-18T02:00:10.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "development",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-movein."
     },
     {
       "id": "future007s-dsh-peak-indicator",
@@ -12140,28 +12058,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-plugin-uisfx."
     },
     {
-      "id": "hanzhangzzz-dsh-diagram",
-      "name": "文章图解（DSH Diagram）",
-      "description": "将 DSH 中的文章转换为可编辑的 Excalidraw 画布并在会话中持续管理。",
-      "repositoryUrl": "https://github.com/hanzhangzzz/dsh-diagram",
-      "defaultBranch": "master",
-      "latestCommit": "6d7534b20ccaac268bbd4949cbfebfea5ae63c67",
-      "sourceUpdatedAt": "2026-09-01T02:57:52.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "visualization",
-        "design",
-        "experimental",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-diagram."
-    },
-    {
       "id": "saisenbox-dsh-boot-guard",
       "name": "安全防护工具（DSH Boot Guard）",
       "description": "独立于常规客户端插件加载链的 DSH Web 启动救援工具，可定位疑似故障插件、临时跳过，并且只恢复 Boot Guard 写入的配置。",
@@ -13519,6 +13415,26 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-wsl-workspace."
+    },
+    {
+      "id": "cymosehq-cymose-code",
+      "name": "会话管理（Cymose Code）",
+      "description": "为 DSH 提供会话管理能力。英文原始说明：Cymose session graph as plugins for coding harnesses. See what you already tried — not another linear chat.",
+      "repositoryUrl": "https://github.com/cymosehq/cymose-code",
+      "defaultBranch": "main",
+      "latestCommit": "fea03f2714263eb5eeebcd6fc80be32544aca19a",
+      "sourceUpdatedAt": "2026-09-04T11:50:05Z",
+      "discoveredAt": "2026-09-07T06:37:59.073Z",
+      "discoverySources": [
+        "catalog-latest-three-compatibility-v1"
+      ],
+      "topics": [
+        "experimental",
+        "dsh-compatibility-review"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.5, 0.1.2-rc.1, 0.1.3-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: cymose-code."
     }
   ]
 }

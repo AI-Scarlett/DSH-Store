@@ -235,6 +235,18 @@ function inferredCompatibility(manifest) {
   }
 }
 
+function submissionCatalogId(packageName, repositoryUrl, catalog) {
+  const existing = catalog.entries.find(item => item.packageName === packageName && item.repositoryUrl === repositoryUrl)
+  if (existing) return existing.id
+  const id = catalogId(packageName)
+  const conflict = catalog.entries.find(item => item.id === id)
+  // Distinct scoped npm packages may share a basename. Namespace the Catalog
+  // ID only; package-name and Bundle entry collisions still fail closed below.
+  return conflict && conflict.packageName !== packageName && packageName.startsWith('@')
+    ? catalogId(packageName.slice(1).replace('/', '-'))
+    : id
+}
+
 function checkCatalogCollisions(entry, catalog) {
   const existing = catalog.entries.find(item => item.id === entry.id || item.packageName === entry.packageName)
   if (existing && (existing.id !== entry.id || existing.packageName !== entry.packageName || existing.repositoryUrl !== entry.repositoryUrl)) {
@@ -348,7 +360,7 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
   // repository Catalog is v2, validate against the already hydrated view so
   // the candidate does not accidentally inherit the lightweight index shape.
   const candidate = validateCatalog({ ...catalog, entries: [{
-    id: catalogId(manifest.name),
+    id: submissionCatalogId(manifest.name, repositoryInput.repositoryUrl, catalog),
     name: cleanValue(manifest.displayName ?? manifest?.dsh?.displayName) || manifest.name,
     packageName: manifest.name,
     description: cleanValue(manifest.description) || readmeDescription(readme.text) || `${manifest.name} DSH plugin submission candidate`,
