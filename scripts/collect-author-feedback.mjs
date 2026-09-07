@@ -150,10 +150,10 @@ export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/
     const comments = await github.paginate(`/repos/${repository}/issues/${issue.number}/comments`)
     if (comments.length > MAX_COMMENT_PAGES * 100) throw new Error('author feedback comment bound exceeded')
     const latest = comments
-      .filter(comment => isHumanAuthorComment(comment, recipient) && String(comment.body ?? '').trim() && isDshStoreProblem(comment.body))
+      .filter(comment => isHumanAuthorComment(comment, recipient) && String(comment.body ?? '').trim())
       .sort((left, right) => commentTime(left) - commentTime(right) || Number(left.id) - Number(right.id))
       .at(-1)
-    if (!latest) continue
+    if (!latest || !isDshStoreProblem(latest.body)) continue
     const author = latest.user
     const body = String(latest.body)
     items.push({

@@ -93,3 +93,15 @@ test('collector ignores comments from another person and ordinary author updates
   })
   assert.deepEqual(feedback.items, [])
 })
+
+test('collector does not revive an older Store problem after a later stop request', async () => {
+  const feedback = await collectAuthorFeedback({
+    github: mock([
+      { id: 16, body: 'The repeated workflow mentions are a DSH Store problem.', user: author, created_at: '2026-09-07T09:00:00Z' },
+      { id: 17, body: '不要再发消息给我了，请关闭这个 issue。', user: author, created_at: '2026-09-07T10:00:00Z' },
+    ]),
+    issues: [issue],
+    observedAt: '2026-09-07T10:00:00Z',
+  })
+  assert.deepEqual(feedback.items, [])
+})
