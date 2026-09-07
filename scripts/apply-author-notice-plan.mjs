@@ -207,6 +207,7 @@ async function managedIssueSnapshot(github, repository) {
     state: issue.state,
     body: issue.body ?? '',
     url: issue.html_url,
+    labels: issue.labels,
   })))
 }
 

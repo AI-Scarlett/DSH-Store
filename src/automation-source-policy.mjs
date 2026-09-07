@@ -34,3 +34,22 @@ export function permissionSignals(source) {
     protectedDsh: /(?:__ModuleLoader__[^\n]{0,120}(?:unload|remove)|\bFiber\b[^\n]{0,120}(?:remove|disable|replace)|@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true|tool\.call\.toolview)/i.test(source),
   }
 }
+
+export function missingRuntimeEntryReasons(manifest, entries, prefix = '') {
+  const files = new Set(entries.filter(item => item.type === 'blob' && item.mode !== '120000').map(item => item.path))
+  const targets = new Set()
+  const collect = value => {
+    if (typeof value === 'string') targets.add(value)
+    else if (Array.isArray(value)) value.forEach(collect)
+    else if (value && typeof value === 'object') Object.values(value).forEach(collect)
+  }
+  collect(manifest.main)
+  collect(manifest.module)
+  collect(manifest.exports)
+  collect(manifest.dsh?.client?.entry)
+  return [...targets].filter(target => !target.includes('*')).flatMap(target => {
+    const normalized = target.replace(/^\.\//, '')
+    if (!normalized || normalized.startsWith('/') || normalized.split('/').includes('..')) return [`runtime artifact path is invalid: ${target}`]
+    return files.has(prefix + normalized) ? [] : [`runtime artifact is missing from the fixed Git Commit: ${target}`]
+  })
+}

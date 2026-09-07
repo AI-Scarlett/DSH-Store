@@ -329,3 +329,24 @@ test('pruned incompatible candidates still receive one report-backed remediation
   assert.match(action.body, /dsh\.compatibility\.dshReleases/)
   assert.match(action.body, /@PrunedOwner/)
 })
+
+test('maintainer pause survives closure, changed source and changed findings; removing it resumes notices', () => {
+  const original = fixture()
+  const created = buildAuthorNoticePlan(original).actions.find(action => action.key === 'candidateowner/dsh-candidate')
+  const issue = { number: 230, state: 'closed', title: created.title, body: created.body, labels: [{ name: 'author-notice-paused' }] }
+  const changed = { ...original, existingIssues: [issue], candidates: { entries: [candidate({ latestCommit: 'f'.repeat(40), statusReason: 'different source blocker' })] } }
+  const paused = buildAuthorNoticePlan(changed)
+  assert.equal(paused.actions.some(action => action.key === created.key), false)
+  assert.equal(paused.summary.pausedRepositories, 1)
+  assert.equal(paused.summary.candidateCoverageUnaccounted, 0)
+  assert.equal(paused.candidateCoverage[0].notificationState, 'author-paused')
+  const resumed = buildAuthorNoticePlan({ ...changed, existingIssues: [{ ...issue, labels: [] }] })
+  assert.equal(resumed.actions.find(action => action.key === created.key).type, 'update')
+})
+
+test('pause text in an author comment or issue body does not grant a policy exemption', () => {
+  const original = fixture()
+  const created = buildAuthorNoticePlan(original).actions.find(action => action.key === 'candidateowner/dsh-candidate')
+  const plan = buildAuthorNoticePlan({ ...original, existingIssues: [{ number: 230, state: 'closed', title: created.title, body: created.body + '\nauthor-notice-paused', labels: [] }] })
+  assert.equal(plan.actions.find(action => action.key === created.key).type, 'update')
+})

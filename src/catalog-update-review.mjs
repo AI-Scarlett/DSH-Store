@@ -200,3 +200,18 @@ export function buildCatalogVersionUpdate(
     },
   }
 }
+
+export function isAutomaticPolicyBlocked(entry) {
+  return entry.status === 'blocked'
+    && entry.updatePolicy === 'external-only'
+    && entry.risk?.review === 'automatic-policy-blocked-not-installable'
+    && String(entry.statusReason ?? '').startsWith('Automatic policy blocked installation:')
+}
+
+export function refreshAutomaticPolicyReview(entry, reviewed) {
+  if (!isAutomaticPolicyBlocked(entry)) return entry
+  if (!reviewed || reviewed.commit !== entry.commit && !/^[0-9a-f]{40}$/.test(reviewed.commit ?? '')) throw new Error('reviewed fixed Commit is required')
+  if (reviewed.assurance?.discovery?.method !== 'automated-fixed-source-policy-v1') throw new Error('complete automatic source review is required')
+  return { ...reviewed, id: entry.id, name: entry.name, description: entry.description,
+    categories: entry.categories, searchTerms: entry.searchTerms, featured: entry.featured, installCount: entry.installCount }
+}
