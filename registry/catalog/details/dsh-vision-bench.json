@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-06T14:07:36.000Z",
-    "observedAt": "2026-09-06T18:11:52.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-06T18:11:52.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
       "evidenceUrl": "https://github.com/xingyingyuzhui/dsh-vision-bench/commit/be0d14476bca5ee2207bd905191b991a170f43d7",
       "dshRelease": null,
       "systems": [],
@@ -81,7 +81,7 @@
     "dsh-vision-bench"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1668859 total bytes (maximum 2097152); largest file 553093 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source file count is outside the automatic review bound: 322 files (maximum 240); runtime source exceeds the automatic review byte bound: 3554845 total bytes (maximum 2097152); largest file 1540651 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -94,7 +94,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -156,6 +157,12 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=20",
@@ -178,8 +185,20 @@
       ]
     },
     "externalDependencies": [
+      "@codemirror/commands",
+      "@codemirror/lang-cpp",
+      "@codemirror/lang-json",
+      "@codemirror/language",
+      "@codemirror/search",
+      "@codemirror/state",
+      "@codemirror/view",
+      "@tanstack/react-table",
       "@tanstack/react-virtual",
+      "@tanstack/table-core",
       "@tanstack/virtual-core",
+      "echarts",
+      "fast-xml-parser",
+      "gridstack",
       "modbus-serial",
       "serialport",
       "uplot",

@@ -20,24 +20,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "efd144483f3737f063214e9014e983fb34d85a48",
-  "version": "0.12.7",
+  "commit": "1b19f123a8cdcaa611ff840af9916683ea5ef224",
+  "version": "0.13.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-05T04:20:05.000Z",
-    "observedAt": "2026-09-05T11:47:14.000Z",
+    "updatedAt": "2026-09-07T13:28:01.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-05T11:47:14.000Z",
-      "evidenceUrl": "https://github.com/master1Sun/dsh-prompt-library/commit/efd144483f3737f063214e9014e983fb34d85a48",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
+      "evidenceUrl": "https://github.com/master1Sun/dsh-prompt-library/commit/1b19f123a8cdcaa611ff840af9916683ea5ef224",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
     "prompt-library"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime source exceeds the automatic review byte bound: 4513718 total bytes (maximum 2097152); largest file 1840352 bytes (maximum 262144)",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -91,7 +91,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -153,6 +154,12 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=22.19",
@@ -175,7 +182,10 @@
       ]
     },
     "externalDependencies": [
-      "js-yaml"
+      "@types/prismjs",
+      "js-yaml",
+      "jszip",
+      "prismjs"
     ],
     "reviewStatus": "automated-scan"
   },

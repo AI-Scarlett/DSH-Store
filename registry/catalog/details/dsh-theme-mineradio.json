@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-05T05:15:33.000Z",
-    "observedAt": "2026-09-05T11:47:14.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-05T11:47:14.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
       "evidenceUrl": "https://github.com/dhicoc/dsh-theme-mineradio/commit/ac9ffe1b0855557d58a214515f0b8f1d1fd38b13",
       "dshRelease": null,
       "systems": [],
@@ -81,7 +81,7 @@
     "ui-mineradio"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 611215 total bytes (maximum 2097152); largest file 316008 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 912363 total bytes (maximum 2097152); largest file 318900 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -94,7 +94,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -152,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
