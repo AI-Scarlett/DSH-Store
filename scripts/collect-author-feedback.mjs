@@ -9,12 +9,19 @@ import { githubClient } from './author-contact-http.mjs'
 const MAX_ISSUES = 500
 const MAX_ITEMS = 100
 const MAX_COMMENT_PAGES = 20
-const STORE_PROBLEM_PATTERNS = [
+const STORE_CONTEXT_PATTERNS = [
   /dsh[\s-]*store/i,
   /automaticFollowups/i,
   /自动(?:化|复检|更新|通知)/i,
-  /扫描(?:器|逻辑)?|误报|阻断条件/i,
-  /false[\s-]+positive|@mention|recheck|follow[\s-]?up|workflow/i,
+  /扫描(?:器|逻辑)?|阻断条件/i,
+  /@mention|recheck|follow[\s-]?up|workflow|catalog/i,
+]
+const EXPLICIT_STORE_PROBLEM_PATTERNS = [
+  /\b(?:bug|problem|error|broken|wrong|incorrect|false[\s-]+positive|spam|interfer(?:e|ence)|disturb(?:ance)?|unwanted|violat(?:e|ion)|not\s+meant|re-?notify)\b/i,
+  /问题|错误|误报|重复(?:的)?(?:通知|评论|消息|mention|@)|干扰|骚扰|不应|不该|不对|不正确|不一致|缺陷|故障|打扰/i,
+  /(?:为什么|为何|能否|可否).{0,80}(?:改|修复|停止|更正|说明|避免|调整)/i,
+  /(?:请|希望).{0,80}(?:修复|停止|更正|避免|调整)(?:这个|该|此)?(?:问题|错误|误报|通知|评论|扫描|工作流)?/i,
+  /\b(?:please\s+(?:fix|stop|change|correct|avoid|adjust)|could\s+(?:the\s+recheck|you)|can\s+you|would\s+(?:the\s+recheck|you)|should(?:n't|\s+not))\b.{0,120}(?:fix|change|stop|avoid|correct|explain|adjust|instead|notify|mention|recheck|scan|workflow)\b/i,
 ]
 
 function requiredString(value, name, maximum = 65_000) {
@@ -51,7 +58,8 @@ export function authorFeedbackText(body) {
 
 export function isDshStoreProblem(body) {
   const text = authorFeedbackText(body)
-  return STORE_PROBLEM_PATTERNS.some(pattern => pattern.test(text))
+  return STORE_CONTEXT_PATTERNS.some(pattern => pattern.test(text))
+    && EXPLICIT_STORE_PROBLEM_PATTERNS.some(pattern => pattern.test(text))
 }
 
 function safeUrl(value) {

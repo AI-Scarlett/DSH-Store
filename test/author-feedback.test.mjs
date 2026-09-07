@@ -27,6 +27,8 @@ function mock(comments) {
 test('author feedback classifier only routes explicit DSH Store problems', () => {
   assert.equal(isDshStoreProblem('The Catalog scanner reports a false positive.'), true)
   assert.equal(isDshStoreProblem('感谢核查，当前固定 Commit 已更新。'), false)
+  assert.equal(isDshStoreProblem('感谢 DSH STORE 的自动检查与修复建议，已完成整改，请安排复检。'), false)
+  assert.equal(isDshStoreProblem('DSH STORE 的自动复检已完成，当前版本请按固定 Commit 重新入库。'), false)
 })
 
 test('author feedback classifier ignores quoted bot notifications in email replies', () => {
