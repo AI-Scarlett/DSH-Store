@@ -1,50 +1,49 @@
 {
-  "id": "dsh-coc-keeper",
-  "name": "任务通知提醒（DSH Coc Keeper）",
-  "packageName": "@dsh-external/dsh-coc-keeper",
-  "description": "克苏鲁的呼唤 (CoC) 跑团主持人插件：规则/剧本/人物导入（含 PDF）、明骰/暗骰、AI KP 与随时接替、关键剧情点与分支跟踪、分支提醒、酒馆式完整前端面板",
+  "id": "dsh-git-push",
+  "name": "GitHub 工程工具（DSH Git Push）",
+  "packageName": "dsh-git-push",
+  "description": "git 自动提交推送 + 代码审计门禁（含硬编码路径/IP）：设置页检测 token/公钥并显示 GitHub 用户；推送后用表格回传远端最近 3 次。内置提交历史查看器（只读，多语言配置文件默认中文 + 手动选择本地仓库）与 AI 回复推送许可（默认关）。",
   "searchTerms": [
-    "任务通知提醒",
-    "DSH Coc Keeper",
-    "dsh-coc-keeper",
-    "@dsh-external/dsh-coc-keeper",
-    "任务完成",
-    "通知",
-    "提醒",
-    "消息推送",
+    "GitHub 工程工具",
+    "DSH Git Push",
+    "dsh-git-push",
+    "GitHub",
+    "Git",
+    "代码审查",
+    "PR",
     "实验功能",
     "新功能",
     "dsh",
-    "coc",
-    "keeper"
+    "git",
+    "push"
   ],
-  "repositoryUrl": "https://github.com/RuichiXu/coc-keeper",
-  "defaultBranch": "main",
+  "repositoryUrl": "https://github.com/EIGHTfs/dsh-git-push",
+  "defaultBranch": "master",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9d3db64942022744249ff379e1836a7506018248",
-  "version": "0.2.0",
+  "commit": "e117b80a363cccfcde1041f798d43bcfb277ebb2",
+  "version": "1.36.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T16:26:26.000Z",
+    "updatedAt": "2026-09-07T16:35:13.000Z",
     "observedAt": "2026-09-07T16:32:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-07T16:32:25.000Z",
-      "evidenceUrl": "https://github.com/RuichiXu/coc-keeper/commit/9d3db64942022744249ff379e1836a7506018248",
+      "evidenceUrl": "https://github.com/EIGHTfs/dsh-git-push/commit/e117b80a363cccfcde1041f798d43bcfb277ebb2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "coc-keeper"
+    "git-push"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; manifest does not declare an explicit distributable files list; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 5234415 total bytes (maximum 2097152); largest file 2646968 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -174,7 +173,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "UNKNOWN",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -184,9 +183,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "pdf-parse"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
