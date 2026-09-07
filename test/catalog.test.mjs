@@ -152,6 +152,13 @@ test('dynamic DSH releases keep range support pending until exact catalog eviden
     latestVersion: '0.1.1-rc.2', checkedAt: '2026-08-21T13:00:00.000Z', registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest',
   })
   assert.equal(context.source, 'npm-official')
+  const github = createDshReleaseContext([], {
+    latestVersion: '0.1.3-alpha.1', latestSource: 'github-official:release',
+    channels: [{ version: '0.1.2-rc.1' }, { version: '0.1.2-alpha.5' }],
+  })
+  assert.equal(github.source, 'github-official')
+  assert.deepEqual(github.cardReleases.map(release => release.version), ['0.1.2-alpha.5', '0.1.2-rc.1', '0.1.3-alpha.1'])
+
   assert.equal(context.latestVersion, '0.1.1-rc.2')
   assert.deepEqual(context.cardReleases.map(release => release.version), ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'])
   const latest = projectDshRelease(catalog.entries[0], context.releases.find(release => release.latest))
