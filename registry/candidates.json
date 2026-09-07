@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-07T19:26:25.000Z",
+    "updatedAt": "2026-09-07T23:49:22.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -5154,8 +5154,8 @@
       "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability — leave it running.",
       "repositoryUrl": "https://github.com/esengine/DeepSeek-Reasonix",
       "defaultBranch": "main-v2",
-      "latestCommit": "d01e8e19c015b37d80a34df058862b3c0887b150",
-      "sourceUpdatedAt": "2026-09-01T13:19:53.000Z",
+      "latestCommit": "c6a4e47247b3ee075cfd9c2b2795a42ba2eb515a",
+      "sourceUpdatedAt": "2026-09-07T23:51:15.000Z",
       "discoveredAt": "2026-08-23T01:40:55.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -5831,8 +5831,8 @@
       "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
       "repositoryUrl": "https://github.com/liustack/modlens",
       "defaultBranch": "main",
-      "latestCommit": "fdc6c4bc49e1cb191a9541896d403a8995faf28a",
-      "sourceUpdatedAt": "2026-09-06T11:16:21.000Z",
+      "latestCommit": "a1923d016c2b617ccd1d6ef3f9e9368622841e67",
+      "sourceUpdatedAt": "2026-09-07T22:15:47.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13406,6 +13406,71 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "openagentinternet-open-agent-connect",
+      "name": "openagentinternet/open-agent-connect",
+      "description": "Open-source connector for local AI agents. Give Codex, Claude Code, OpenClaw, and more a persistent Bot identity, public Bot Page, private Bot-to-Bot messaging, and MetaApp publishing on Open Agent Internet.",
+      "repositoryUrl": "https://github.com/openagentinternet/open-agent-connect",
+      "defaultBranch": "main",
+      "latestCommit": "e3f94cd3bd91a9e9efeac3662900589a38694669",
+      "sourceUpdatedAt": "2026-09-07T23:46:00.000Z",
+      "discoveredAt": "2026-09-07T23:49:22.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "octo-o-o-o-contexpect",
+      "name": "Octo-o-o-o/Contexpect",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Octo-o-o-o/Contexpect",
+      "defaultBranch": "main",
+      "latestCommit": "a38301182c41f4fd60b04fcde61e73e1a1fb73d4",
+      "sourceUpdatedAt": "2026-09-07T23:51:02.000Z",
+      "discoveredAt": "2026-09-07T23:49:22.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "arnon-hs-open-source",
+      "name": "Arnon-hs/open-source",
+      "description": "A living, machine-readable catalog of open-source projects with practical summaries, categories, quality signals and transparent scoring.",
+      "repositoryUrl": "https://github.com/Arnon-hs/open-source",
+      "defaultBranch": "main",
+      "latestCommit": "276ca8d60e8f1f10df3e849ded8daea8d7e50fb4",
+      "sourceUpdatedAt": "2026-09-07T23:49:24.000Z",
+      "discoveredAt": "2026-09-07T23:49:22.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "atlasrepo",
+        "awesome-list",
+        "developer-tools",
+        "mcp",
+        "open-source",
+        "open-source-catalog",
+        "software-discovery",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
     }
   ]
 }

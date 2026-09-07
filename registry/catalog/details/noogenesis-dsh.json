@@ -1,49 +1,48 @@
 {
-  "id": "dsh-git-push",
-  "name": "GitHub 工程工具（DSH Git Push）",
-  "packageName": "dsh-git-push",
-  "description": "git 自动提交推送 + 代码审计门禁（含硬编码路径/IP）：设置页检测 token/公钥并显示 GitHub 用户；推送后用表格回传远端最近 3 次。内置提交历史查看器（只读，多语言配置文件默认中文 + 手动选择本地仓库）与 AI 回复推送许可（默认关）。",
+  "id": "noogenesis-dsh",
+  "name": "会话管理（Noogenesis DSH）",
+  "packageName": "noogenesis-dsh",
+  "description": "Noogenesis (心源) DSH adapter — swarm evolution framework on DeepSeek Harness: zero-dependency evolution engine (P1) wired into the session lifecycle.",
   "searchTerms": [
-    "GitHub 工程工具",
-    "DSH Git Push",
-    "dsh-git-push",
-    "GitHub",
-    "Git",
-    "代码审查",
-    "PR",
+    "会话管理",
+    "Noogenesis DSH",
+    "noogenesis-dsh",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
     "实验功能",
     "新功能",
-    "dsh",
-    "git",
-    "push"
+    "noogenesis",
+    "dsh"
   ],
-  "repositoryUrl": "https://github.com/EIGHTfs/dsh-git-push",
-  "defaultBranch": "master",
+  "repositoryUrl": "https://github.com/ZK-Andy/noogenesis",
+  "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e5d08a7be9e83799450c28ccb14beba93e65bfff",
-  "version": "1.37.0",
+  "commit": "9ceca3c4e53acbb2d7f8b1e429d1c9c1228a01a3",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T23:16:32.000Z",
+    "updatedAt": "2026-09-07T23:50:41.000Z",
     "observedAt": "2026-09-07T23:49:22.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-07T23:49:22.000Z",
-      "evidenceUrl": "https://github.com/EIGHTfs/dsh-git-push/commit/e5d08a7be9e83799450c28ccb14beba93e65bfff",
+      "evidenceUrl": "https://github.com/ZK-Andy/noogenesis/commit/9ceca3c4e53acbb2d7f8b1e429d1c9c1228a01a3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +72,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "git-push"
+    "noogenesis"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime artifact is missing from the fixed Git Commit: dist/adapters/dsh/index.mjs; runtime artifact is missing from the fixed Git Commit: ./dist/adapters/dsh/index.mjs; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -164,16 +163,14 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "UNKNOWN",
+    "license": "AGPL-3.0-only",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
