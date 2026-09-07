@@ -35,8 +35,22 @@ export function sha256(value) {
   return createHash('sha256').update(value).digest('hex')
 }
 
+// GitHub email replies can include the previous bot notification below the
+// author's text.  Classify only the author's visible message so quoted
+// `automaticFollowups`/workflow language cannot create a false Store alert.
+export function authorFeedbackText(body) {
+  const text = String(body ?? '').replace(/\r\n?/g, '\n')
+  const separator = /(?:^|\n)\s*----\s*(?:回复的原邮件|原邮件|Original Message|Forwarded message|转发邮件)\s*----\s*(?:\n|$)/i
+  const unquoted = text.split(separator, 1)[0]
+  return unquoted
+    .split('\n')
+    .filter(line => !/^\s*>/.test(line))
+    .join('\n')
+    .trim()
+}
+
 export function isDshStoreProblem(body) {
-  const text = String(body ?? '')
+  const text = authorFeedbackText(body)
   return STORE_PROBLEM_PATTERNS.some(pattern => pattern.test(text))
 }
 

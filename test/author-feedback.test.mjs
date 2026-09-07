@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { collectAuthorFeedback, isDshStoreProblem, parseArgs, sha256, validateAuthorFeedback } from '../scripts/collect-author-feedback.mjs'
+import { authorFeedbackText, collectAuthorFeedback, isDshStoreProblem, parseArgs, sha256, validateAuthorFeedback } from '../scripts/collect-author-feedback.mjs'
 
 const issue = {
   number: 434,
@@ -27,6 +27,13 @@ function mock(comments) {
 test('author feedback classifier only routes explicit DSH Store problems', () => {
   assert.equal(isDshStoreProblem('The Catalog scanner reports a false positive.'), true)
   assert.equal(isDshStoreProblem('感谢核查，当前固定 Commit 已更新。'), false)
+})
+
+test('author feedback classifier ignores quoted bot notifications in email replies', () => {
+  const body = '可以帮我提pr么\n\n---- 回复的原邮件 ----\n@huangruiteng 自动复检发现 automaticFollowups 问题，请修复 workflow。'
+  assert.equal(authorFeedbackText(body), '可以帮我提pr么')
+  assert.equal(isDshStoreProblem(body), false)
+  assert.equal(isDshStoreProblem('请修复重复 @mention。\n> automaticFollowups: false'), true)
 })
 
 test('CLI argument parser consumes flag values exactly once', () => {
