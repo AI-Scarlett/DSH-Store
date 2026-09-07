@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e74b1a281e3e0a791cb2a934c966e4c5135f6e16",
-  "version": "0.1.5",
+  "commit": "19961c890370856606287bc5f8c56d1185590b4c",
+  "version": "0.1.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-26T10:03:12.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-07T15:26:30.000Z",
+    "observedAt": "2026-09-07T15:40:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/lsq-dsh-plugins/dsh-workbench-layout/commit/e74b1a281e3e0a791cb2a934c966e4c5135f6e16",
+      "checkedAt": "2026-09-07T15:40:28.000Z",
+      "evidenceUrl": "https://github.com/lsq-dsh-plugins/dsh-workbench-layout/commit/19961c890370856606287bc5f8c56d1185590b4c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,9 +82,9 @@
     "workbench-layout"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime so",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source co",
   "compatibility": {
-    "dsh": "^0.1.1-rc.2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

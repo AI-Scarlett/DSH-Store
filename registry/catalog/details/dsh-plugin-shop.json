@@ -22,24 +22,24 @@
   "manifestPath": "packages/dsh-plugin-shop/package.json",
   "installPath": "packages/dsh-plugin-shop",
   "updatePolicy": "external-only",
-  "commit": "f088438862e6ae0d7661cf66221f8b1ec71443ab",
-  "version": "0.8.0-beta.2",
+  "commit": "0b9201749915dc83172b619767c1e3d9bac55ffb",
+  "version": "0.8.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T04:35:42.000Z",
-    "observedAt": "2026-09-07T05:18:20.000Z",
+    "updatedAt": "2026-09-07T14:05:32.000Z",
+    "observedAt": "2026-09-07T15:40:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-07T05:18:20.000Z",
-      "evidenceUrl": "https://github.com/LivXue/dsh-plugin-shop/commit/f088438862e6ae0d7661cf66221f8b1ec71443ab",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T15:40:28.000Z",
+      "evidenceUrl": "https://github.com/LivXue/dsh-plugin-shop/commit/0b9201749915dc83172b619767c1e3d9bac55ffb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "shop"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is missing from the fixed Git Commit: ./lib/typert.remote-client.d.ts; runtime artifact is mis",
   "compatibility": {
     "dsh": "^0.1.1-rc.2",
     "dshReleases": {
