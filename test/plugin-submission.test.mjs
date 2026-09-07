@@ -343,3 +343,12 @@ test('explicit Catalog review snapshot remains authoritative after excluding the
   const result = await checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: document, fetch: sourceFetch(), retryDelaysMs: [] })
   assert.equal(result.candidate.packageName, 'dsh-demo')
 })
+
+test('different scoped packages sharing a basename get distinct Catalog IDs without weakening Bundle collisions', async () => {
+  const first = await checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: catalog(), fetch: sourceFetch(), retryDelaysMs: [] })
+  const existing = { ...first.candidate, repositoryUrl: 'https://github.com/another/dsh-demo' }
+  const options = { manifest: { name: '@mymeter/dsh-demo' }, patch: '- insert:\n    - id: mymeter\n      name: "@mymeter/dsh-demo"\n' }
+  const result = await checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: catalog([existing]), fetch: sourceFetch(options), retryDelaysMs: [] })
+  assert.equal(result.candidate.id, 'mymeter-dsh-demo')
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: catalog([existing]), fetch: sourceFetch({ ...options, patch: `- insert:\n    - id: ${existing.entryIds[0]}\n      name: "@mymeter/dsh-demo"\n` }), retryDelaysMs: [] }), error => error.code === 'SUBMISSION_ENTRY_COLLISION')
+})
