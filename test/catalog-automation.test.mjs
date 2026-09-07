@@ -98,6 +98,19 @@ test('automatic policy runs every eight hours and fails closed on permission or 
   assert.equal(policy.automaticApproval.requireManifestRepositoryMatch, true)
   assert.equal(policy.automaticApproval.requireRepositoryLicenseMatch, true)
   assert.ok(Object.values(policy.automaticApproval.permissionSignals).every(value => value === false))
+  assert.deepEqual(policy.authorFeedback, {
+    source: 'verified-authors-on-managed-issue-comments',
+    classification: 'dsh-store-problem',
+    ownerNotification: {
+      channel: 'github-issue-comment',
+      mention: '@AI-Scarlett',
+      markerPrefix: 'dsh-author-feedback:v1',
+      oncePerFeedbackComment: true,
+      githubNotificationEmailDeliveryVerified: false,
+    },
+    automaticAuthorReplies: false,
+    requiresVerifiedAuthorIdentity: true,
+  })
   assert.equal(policy.publication.repository, 'AI-Scarlett/DSH-Store')
   assert.deepEqual(policy.publication.publicCatalogUrls, [
     'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json',
@@ -306,6 +319,8 @@ test('Catalog directly creates one exact and deduplicated owner report notificat
   assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
   assert.match(workflow, /catalog-report-delivery\.mjs plan/)
   assert.match(workflow, /catalog-report-delivery\.mjs apply/)
+  assert.match(workflow, /AUTHOR_FEEDBACK_PATH: \$\{\{ steps\.author_report\.outputs\.feedback_path \}\}/)
+  assert.match(workflow, /--author-feedback "\$AUTHOR_FEEDBACK_PATH"/)
   assert.match(workflow, /--mention "@\$GITHUB_REPOSITORY_OWNER"/)
   assert.doesNotMatch(workflow, /SMTP|RESEND|\bPAT\b|npm (?:install|ci)|pnpm|yarn/)
   assert.match(delivery, /reportBodySha256/)
@@ -313,6 +328,10 @@ test('Catalog directly creates one exact and deduplicated owner report notificat
   assert.match(delivery, /remote main changed after the Catalog report delivery plan was created/)
   assert.match(delivery, /managed Catalog report Issue changed after the delivery plan was created/)
   assert.match(delivery, /dsh-catalog-report:v1:/)
+  assert.match(delivery, /dsh-author-feedback:v1:/)
+  assert.match(delivery, /AUTHOR_FEEDBACK_NOTIFICATION_APPLIED/)
+  assert.match(delivery, /authorFeedbackSha256/)
+  assert.match(delivery, /feedbackOwnerMention: '@AI-Scarlett'/)
   assert.match(delivery, /githubNotificationEmailDeliveryVerified: false/)
   assert.doesNotMatch(delivery, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
 })
