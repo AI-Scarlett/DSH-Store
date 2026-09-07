@@ -30,14 +30,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-04T20:06:30.000Z",
-    "observedAt": "2026-09-05T04:08:10.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-05T04:08:10.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
       "evidenceUrl": "https://github.com/aayan-cloud/dsh-reelsmaker/commit/606daa8a4a28c9b0aded910aad0cc6c7d0f49116",
       "dshRelease": null,
       "systems": [],
@@ -79,7 +79,7 @@
     "reelsmaker"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -92,7 +92,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -154,6 +155,12 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=20",
@@ -176,7 +183,9 @@
     "externalDependencies": [
       "@deepseek-ai/cordis",
       "@deepseek-ai/dsh-tools",
+      "@remotion/bundler",
       "@remotion/cli",
+      "@remotion/renderer",
       "msedge-tts",
       "react",
       "react-dom",

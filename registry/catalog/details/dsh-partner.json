@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "cd1fd8918589a38ac3c4cd64a7cfa0fd4095641f",
-  "version": "1.7.1",
+  "commit": "c8675390d44b771d097f4164de51446eddf0020a",
+  "version": "1.9.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T09:16:37.000Z",
-    "observedAt": "2026-09-06T12:05:04.000Z",
+    "updatedAt": "2026-09-07T13:09:50.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-06T12:05:04.000Z",
-      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/cd1fd8918589a38ac3c4cd64a7cfa0fd4095641f",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
+      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/c8675390d44b771d097f4164de51446eddf0020a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "partner"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "^0.1.2-rc.1",
     "dshReleases": {
@@ -94,7 +94,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -152,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

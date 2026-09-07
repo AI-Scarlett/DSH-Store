@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-01T06:15:11.000Z",
-    "observedAt": "2026-09-04T05:32:32.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T05:32:32.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
       "evidenceUrl": "https://github.com/Yiklek/dsh-settings-manager/commit/3cbbfc9aa16e8b8f35603ed1741ab04e29e29408",
       "dshRelease": null,
       "systems": [],
@@ -81,7 +81,7 @@
     "settings-manager"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the fixed Git Commit: ./lib/host.mjs; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -94,7 +94,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -152,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

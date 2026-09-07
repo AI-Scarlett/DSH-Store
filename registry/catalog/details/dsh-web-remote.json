@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-05T16:48:51.000Z",
-    "observedAt": "2026-09-05T18:05:51.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-05T18:05:51.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
       "evidenceUrl": "https://github.com/floatinghotpot/remote-dsh/commit/213287e6609fdd56ddf0905a5d44f9e9ad50aa33",
       "dshRelease": null,
       "systems": [],
@@ -81,7 +81,7 @@
     "remote-access"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -94,7 +94,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -152,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

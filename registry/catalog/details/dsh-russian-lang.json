@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-06T15:31:30.000Z",
-    "observedAt": "2026-09-06T18:11:52.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-06T18:11:52.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
       "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/aaa78988c6bc0be9830c119ba2952ad38e0c73f7",
       "dshRelease": null,
       "systems": [],
@@ -80,7 +80,7 @@
     "dsh-russian-lang"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 2481436 total bytes (maximum 2097152); largest file 774767 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": "^0.1.2-alpha.2",
     "dshReleases": {
@@ -93,7 +93,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -151,6 +152,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

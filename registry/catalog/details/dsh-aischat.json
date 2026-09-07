@@ -22,7 +22,7 @@
   "manifestPath": "dsh-aischat/package.json",
   "installPath": "dsh-aischat",
   "updatePolicy": "external-only",
-  "commit": "9ac809de58a27232b1ff8466525c6ea8eee9d8aa",
+  "commit": "37631f927c9782a1ffe10fee81c65417e995df49",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T09:23:40.000Z",
-    "observedAt": "2026-09-06T12:05:04.000Z",
+    "updatedAt": "2026-09-07T09:35:53.000Z",
+    "observedAt": "2026-09-07T14:02:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-06T12:05:04.000Z",
-      "evidenceUrl": "https://github.com/Coprexist/AIsChat/commit/9ac809de58a27232b1ff8466525c6ea8eee9d8aa",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-07T14:02:43.000Z",
+      "evidenceUrl": "https://github.com/Coprexist/AIsChat/commit/37631f927c9782a1ffe10fee81c65417e995df49",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "dsh-aischat"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 7274316 total bytes (maximum 2097152); largest file 2472764 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,7 +93,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown"
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -151,6 +152,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
