@@ -4,11 +4,14 @@ import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validateAuthorFeedback } from './collect-author-feedback.mjs'
 
 const API_ROOT = 'https://api.github.com'
 const ISSUE_TITLE = 'DSH STORE 自动更新报告（每 3 小时）'
 const MANAGED_MARKER_PREFIX = '<!-- dsh-catalog-report:'
+const FEEDBACK_MARKER_PREFIX = '<!-- dsh-author-feedback:v1:'
 const ACTION_TYPES = new Set(['create', 'comment', 'update', 'skip'])
+const FEEDBACK_ACTION_TYPES = new Set(['comment', 'skip'])
 
 function parseArgs(argv) {
   const mode = argv[0]
@@ -90,12 +93,80 @@ function publishedBody(marker, reportBody) {
   return body
 }
 
+function feedbackItemKey(item) {
+  return sha256(JSON.stringify({
+    issueNumber: item.issueNumber,
+    commentId: item.commentId,
+    bodySha256: item.bodySha256,
+  }))
+}
+
+function feedbackMarker(item) {
+  return `${FEEDBACK_MARKER_PREFIX}${feedbackItemKey(item)} -->`
+}
+
+function deliveredFeedbackKeys(state) {
+  const keys = new Set()
+  for (const comment of state?.issue?.comments ?? []) {
+    for (const match of String(comment.body ?? '').matchAll(/<!-- dsh-author-feedback:v1:([0-9a-f]{64}) -->/g)) {
+      keys.add(match[1])
+    }
+  }
+  return keys
+}
+
+function feedbackText(value) {
+  return String(value ?? '').replace(/\r?\n/g, ' ').replaceAll('|', '\\|').replaceAll('@', '＠')
+}
+
+function feedbackNotificationBody(items, catalogRunId) {
+  const lines = []
+  for (const item of items) lines.push(feedbackMarker(item))
+  lines.push(
+    '@AI-Scarlett',
+    '',
+    '## ⚠️ 作者反馈指出 DSH Store 问题',
+    '',
+    `Catalog Run：#${feedbackText(catalogRunId)}`,
+    '',
+    '以下作者评论明确涉及 DSH Store 自动化、扫描或通知问题，请人工核查并决定是否修复：',
+    '',
+    '| Issue | 作者 | 作者评论 | 摘要 |',
+    '|---|---|---|---|',
+  )
+  for (const item of items) {
+    lines.push(`| [#${item.issueNumber}](${item.issueUrl}) | ${feedbackText(item.author.login)} | [查看评论](${item.commentUrl}) | ${feedbackText(item.excerpt)} |`)
+  }
+  lines.push('', '这条通知只表示已发现待人工处理的 DSH Store 问题，不会自动回复作者或授予继续联系权限。')
+  const body = `${lines.join('\n')}\n`
+  if (Buffer.byteLength(body) > 65_000) throw new Error('author feedback notification body exceeds the GitHub Issue bound')
+  return body
+}
+
+function createFeedbackAction({ state, authorFeedback, catalogRunId }) {
+  if (authorFeedback !== null) validateAuthorFeedback(authorFeedback)
+  const issueNumber = state?.issue?.number ?? null
+  const delivered = deliveredFeedbackKeys(state)
+  const items = (authorFeedback?.items ?? []).filter(item => !delivered.has(feedbackItemKey(item)))
+  if (items.length === 0) {
+    return { type: 'skip', issueNumber, reopen: false, markers: [], body: null }
+  }
+  return {
+    type: 'comment',
+    issueNumber,
+    reopen: state?.issue?.state === 'closed',
+    markers: items.map(feedbackMarker),
+    body: feedbackNotificationBody(items, catalogRunId),
+  }
+}
+
 export function createCatalogReportDeliveryPlan({
   baseCommit,
   catalogRunId,
   deliveryKey,
   reportBody,
   state,
+  authorFeedback = null,
 }) {
   requiredString(baseCommit, 'baseCommit', /^[0-9a-f]{40}$/)
   requiredString(catalogRunId, 'catalogRunId', /^\d+$/)
@@ -126,7 +197,8 @@ export function createCatalogReportDeliveryPlan({
             issueNumber: issue.number,
             commentId: deliveredTarget.commentId,
             reopen: issue.state === 'closed',
-          }
+        }
+  const feedbackAction = createFeedbackAction({ state: canonicalState, authorFeedback, catalogRunId })
   const planWithoutId = {
     schemaVersion: 1,
     operation: 'deliver-catalog-run-report',
@@ -138,13 +210,17 @@ export function createCatalogReportDeliveryPlan({
     preconditions: {
       reportBodySha256: sha256(reportBody),
       reportStateSha256: sha256(stateBuffer(canonicalState)),
+      authorFeedbackSha256: sha256(JSON.stringify(authorFeedback)),
     },
     postconditions: {
       publishedBodySha256: sha256(body),
       mention: '@AI-Scarlett',
       githubNotificationEmailDeliveryVerified: false,
+      feedbackOwnerMention: '@AI-Scarlett',
+      feedbackMarkerPrefix: 'dsh-author-feedback:v1',
     },
     action,
+    feedbackAction,
   }
   return {
     ...planWithoutId,
@@ -165,9 +241,12 @@ export function validateCatalogReportDeliveryPlan(plan) {
   for (const name of ['reportBodySha256', 'reportStateSha256']) {
     requiredString(plan?.preconditions?.[name], `preconditions.${name}`, /^[0-9a-f]{64}$/)
   }
+  requiredString(plan?.preconditions?.authorFeedbackSha256, 'preconditions.authorFeedbackSha256', /^[0-9a-f]{64}$/)
   requiredString(plan?.postconditions?.publishedBodySha256, 'postconditions.publishedBodySha256', /^[0-9a-f]{64}$/)
   if (plan?.postconditions?.mention !== '@AI-Scarlett'
-    || plan?.postconditions?.githubNotificationEmailDeliveryVerified !== false) {
+    || plan?.postconditions?.githubNotificationEmailDeliveryVerified !== false
+    || plan?.postconditions?.feedbackOwnerMention !== '@AI-Scarlett'
+    || plan?.postconditions?.feedbackMarkerPrefix !== 'dsh-author-feedback:v1') {
     throw new Error('catalog report delivery postconditions are invalid')
   }
   if (!ACTION_TYPES.has(plan?.action?.type)) throw new Error('catalog report action type is invalid')
@@ -185,6 +264,33 @@ export function validateCatalogReportDeliveryPlan(plan) {
     throw new Error('catalog report comment target is unexpected')
   }
   if (typeof plan.action.reopen !== 'boolean') throw new Error('catalog report reopen flag is invalid')
+  const feedbackAction = plan.feedbackAction
+  if (!feedbackAction || !FEEDBACK_ACTION_TYPES.has(feedbackAction.type)) throw new Error('feedback action is invalid')
+  if (feedbackAction.issueNumber !== null
+    && (!Number.isInteger(feedbackAction.issueNumber) || feedbackAction.issueNumber < 1)) {
+    throw new Error('feedback issue number is invalid')
+  }
+  if (feedbackAction.type === 'comment' && feedbackAction.issueNumber === null && plan.action.type !== 'create') {
+    throw new Error('feedback comment target is missing')
+  }
+  if (typeof feedbackAction.reopen !== 'boolean') throw new Error('feedback reopen flag is invalid')
+  if (!Array.isArray(feedbackAction.markers) || feedbackAction.markers.length > 100) throw new Error('feedback markers are invalid')
+  const markers = new Set()
+  for (const marker of feedbackAction.markers) {
+    requiredString(marker, 'feedback marker', /^<!-- dsh-author-feedback:v1:[0-9a-f]{64} -->$/)
+    if (markers.has(marker)) throw new Error('duplicate feedback marker')
+    markers.add(marker)
+  }
+  if (feedbackAction.type === 'skip') {
+    if (feedbackAction.body !== null || feedbackAction.markers.length !== 0 || feedbackAction.reopen) {
+      throw new Error('feedback skip action is invalid')
+    }
+  } else {
+    requiredString(feedbackAction.body, 'feedback notification body')
+    if (!feedbackAction.body.includes('@AI-Scarlett')) throw new Error('feedback notification must mention @AI-Scarlett')
+    for (const marker of feedbackAction.markers) if (!feedbackAction.body.includes(marker)) throw new Error('feedback marker missing from notification body')
+    if (feedbackAction.markers.length < 1) throw new Error('feedback comment requires at least one marker')
+  }
 }
 
 function githubClient(token) {
@@ -241,7 +347,8 @@ async function snapshotReportState(github, repository) {
       url: issue.html_url,
       body: issue.body ?? '',
       comments: comments
-        .filter(comment => String(comment.body ?? '').includes(MANAGED_MARKER_PREFIX))
+        .filter(comment => String(comment.body ?? '').includes(MANAGED_MARKER_PREFIX)
+          || String(comment.body ?? '').includes(FEEDBACK_MARKER_PREFIX))
         .map(comment => ({ id: comment.id, body: comment.body ?? '' })),
     },
   })
@@ -264,16 +371,21 @@ async function planMode(options) {
   for (const required of ['report', 'state', 'base-commit', 'catalog-run-id', 'delivery-key', 'output']) {
     if (!options[required]) throw new Error(`--${required} is required`)
   }
+  const feedbackBuffer = options['author-feedback']
+    ? await readFile(resolve(options['author-feedback']))
+    : Buffer.from('null')
   const [reportBody, stateBufferValue] = await Promise.all([
     readFile(resolve(options.report)),
     readFile(resolve(options.state)),
   ])
+  const authorFeedback = JSON.parse(feedbackBuffer)
   const plan = createCatalogReportDeliveryPlan({
     baseCommit: options['base-commit'],
     catalogRunId: options['catalog-run-id'],
     deliveryKey: options['delivery-key'],
     reportBody,
     state: JSON.parse(stateBufferValue),
+    authorFeedback,
   })
   await writeNewJson(options.output, plan)
   process.stdout.write(`CATALOG_REPORT_PLAN_OK plan=${plan.planId} action=${plan.action.type} run=${plan.catalogRunId}\n`)
@@ -281,11 +393,15 @@ async function planMode(options) {
 
 async function applyMode(options) {
   for (const required of ['plan', 'report']) if (!options[required]) throw new Error(`--${required} is required`)
+  const feedbackBuffer = options['author-feedback']
+    ? await readFile(resolve(options['author-feedback']))
+    : Buffer.from('null')
   const [planBuffer, reportBody] = await Promise.all([
     readFile(resolve(options.plan)),
     readFile(resolve(options.report)),
   ])
   const plan = JSON.parse(planBuffer)
+  const authorFeedback = JSON.parse(feedbackBuffer)
   validateCatalogReportDeliveryPlan(plan)
   if (sha256(reportBody) !== plan.preconditions.reportBodySha256) {
     throw new Error('catalog report body changed after the delivery plan was created')
@@ -293,6 +409,9 @@ async function applyMode(options) {
   const body = publishedBody(plan.marker, reportBody)
   if (sha256(body) !== plan.postconditions.publishedBodySha256 || !body.includes('@AI-Scarlett')) {
     throw new Error('catalog report published body postcondition failed')
+  }
+  if (sha256(JSON.stringify(authorFeedback)) !== plan.preconditions.authorFeedbackSha256) {
+    throw new Error('author feedback changed after the delivery plan was created')
   }
 
   const repository = repositoryName(process.env.GITHUB_REPOSITORY)
@@ -309,23 +428,21 @@ async function applyMode(options) {
     deliveryKey: plan.deliveryKey,
     reportBody,
     state: currentState,
+    authorFeedback,
   })
   if (JSON.stringify(expected) !== JSON.stringify(plan)) throw new Error('Catalog report delivery plan no longer matches current state')
 
+  let deliveredIssueNumber = plan.action.issueNumber
   if (plan.action.type === 'skip') {
     process.stdout.write(`CATALOG_REPORT_APPLIED plan=${plan.planId} action=skip run=${plan.catalogRunId} issue=${plan.action.issueNumber}\n`)
-    return
-  }
-  if (plan.action.type === 'create') {
+  } else if (plan.action.type === 'create') {
     const issue = await github.request('POST', `/repos/${repository}/issues`, { title: plan.issueTitle, body })
     if (issue.title !== plan.issueTitle || issue.body !== body || issue.state !== 'open') {
       throw new Error('created Catalog report Issue readback mismatch')
     }
+    deliveredIssueNumber = issue.number
     process.stdout.write(`CATALOG_REPORT_APPLIED plan=${plan.planId} action=create run=${plan.catalogRunId} issue=${issue.number} ${issue.html_url}\n`)
-    return
-  }
-
-  if (plan.action.type === 'update') {
+  } else if (plan.action.type === 'update') {
     let url
     if (plan.action.commentId === null) {
       const issue = await github.request('PATCH', `/repos/${repository}/issues/${plan.action.issueNumber}`, {
@@ -346,16 +463,30 @@ async function applyMode(options) {
       }
     }
     process.stdout.write(`CATALOG_REPORT_APPLIED plan=${plan.planId} action=update run=${plan.catalogRunId} issue=${plan.action.issueNumber} ${url}\n`)
-    return
+  } else {
+    const comment = await github.request('POST', `/repos/${repository}/issues/${plan.action.issueNumber}/comments`, { body })
+    if (comment.body !== body) throw new Error('Catalog report comment readback mismatch')
+    if (plan.action.reopen) {
+      const issue = await github.request('PATCH', `/repos/${repository}/issues/${plan.action.issueNumber}`, { state: 'open' })
+      if (issue.state !== 'open') throw new Error('Catalog report Issue reopen readback mismatch')
+    }
+    process.stdout.write(`CATALOG_REPORT_APPLIED plan=${plan.planId} action=comment run=${plan.catalogRunId} issue=${plan.action.issueNumber} ${comment.html_url}\n`)
   }
 
-  const comment = await github.request('POST', `/repos/${repository}/issues/${plan.action.issueNumber}/comments`, { body })
-  if (comment.body !== body) throw new Error('Catalog report comment readback mismatch')
-  if (plan.action.reopen) {
-    const issue = await github.request('PATCH', `/repos/${repository}/issues/${plan.action.issueNumber}`, { state: 'open' })
-    if (issue.state !== 'open') throw new Error('Catalog report Issue reopen readback mismatch')
+  const feedbackAction = plan.feedbackAction
+  if (feedbackAction.type === 'comment') {
+    const issueNumber = feedbackAction.issueNumber ?? deliveredIssueNumber
+    if (!Number.isInteger(issueNumber) || issueNumber < 1) throw new Error('feedback notification has no report Issue target')
+    const comment = await github.request('POST', `/repos/${repository}/issues/${issueNumber}/comments`, { body: feedbackAction.body })
+    if (comment.body !== feedbackAction.body) throw new Error('author feedback notification readback mismatch')
+    if (feedbackAction.reopen) {
+      const issue = await github.request('PATCH', `/repos/${repository}/issues/${issueNumber}`, { state: 'open' })
+      if (issue.state !== 'open') throw new Error('author feedback Issue reopen readback mismatch')
+    }
+    process.stdout.write(`AUTHOR_FEEDBACK_NOTIFICATION_APPLIED plan=${plan.planId} issue=${issueNumber} ${comment.html_url}\n`)
+  } else {
+    process.stdout.write(`AUTHOR_FEEDBACK_NOTIFICATION_APPLIED plan=${plan.planId} action=skip\n`)
   }
-  process.stdout.write(`CATALOG_REPORT_APPLIED plan=${plan.planId} action=comment run=${plan.catalogRunId} issue=${plan.action.issueNumber} ${comment.html_url}\n`)
 }
 
 async function main() {

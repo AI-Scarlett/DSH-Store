@@ -102,6 +102,13 @@ Catalog 通知和插件提交预检共用此记录及并发组。预检在编辑
 涉及的项目数和 GitHub 通知邮件触发项目数。GitHub 是否实际投递邮件取决于被提及维护者的个人
 通知设置，仓库无法读取私人邮箱回执，因此必须显示“送达未验证”，不能把触发数量表述成实际送达数量。
 
+作者在修复单中明确指出自动化、扫描或通知属于 DSH Store 问题时，`author-notifications.yml` 会先用
+已核验的 GitHub 不变用户 ID 采集最新评论，再由 `catalog-run-report.yml` 在同一个所有者报告 Issue
+中单独发送一次 `@AI-Scarlett` 站内评论。评论按 `dsh-author-feedback:v1` 加作者评论 ID、正文哈希
+和 Issue 号去重；因此后续三小时报告更新不会重复触发通知。该评论只把问题交给仓库所有者人工处理，
+不会自动回复作者，也不会改变“一位用户仅一次主动联系”的规则。GitHub 通知系统是否实际送达邮箱仍
+无法由仓库验证。
+
 每轮计划会把 Candidate Registry 的全部 canonical 仓库逐一归入机器可读台账，去重后只能处于
 `direct-remediation`、`public-reviewing`、`public-remediation`、`public-deferred` 或
 `public-discovery-only` 之一；台账条目数、候选记录数和未覆盖数必须通过不变量校验，未覆盖不为 0

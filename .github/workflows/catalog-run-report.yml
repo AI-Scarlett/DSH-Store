@@ -147,6 +147,7 @@ jobs:
           CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
           CATALOG_RUN_URL: ${{ steps.catalog.outputs.run_url }}
           CATALOG_RUN_CONCLUSION: ${{ steps.catalog.outputs.conclusion }}
+          AUTHOR_FEEDBACK_PATH: ${{ steps.author_report.outputs.feedback_path }}
         run: |
           args=(
             --catalog registry/catalog.json
@@ -168,8 +169,8 @@ jobs:
           if test -n "$AUTHOR_NOTICE_PLAN_PATH" && test -f "$AUTHOR_NOTICE_PLAN_PATH"; then
             args+=(--author-notice-plan "$AUTHOR_NOTICE_PLAN_PATH")
           fi
-          if test -n "${{ steps.author_report.outputs.feedback_path }}" && test -f "${{ steps.author_report.outputs.feedback_path }}"; then
-            args+=(--author-feedback "${{ steps.author_report.outputs.feedback_path }}")
+          if test -n "$AUTHOR_FEEDBACK_PATH" && test -f "$AUTHOR_FEEDBACK_PATH"; then
+            args+=(--author-feedback "$AUTHOR_FEEDBACK_PATH")
           fi
           node scripts/render-catalog-automation-notification.mjs "${args[@]}"
           cat "$RUNNER_TEMP/catalog-run-report.md" >> "$GITHUB_STEP_SUMMARY"
@@ -186,14 +187,20 @@ jobs:
           BASE_COMMIT: ${{ steps.base.outputs.sha }}
           CATALOG_RUN_ID: ${{ steps.catalog.outputs.run_id }}
           REPORT_PATH: ${{ steps.render.outputs.path }}
+          AUTHOR_FEEDBACK_PATH: ${{ steps.author_report.outputs.feedback_path }}
         run: |
-          node scripts/catalog-report-delivery.mjs plan \
-            --report "$REPORT_PATH" \
-            --state "$RUNNER_TEMP/catalog-report-state.json" \
-            --base-commit "$BASE_COMMIT" \
-            --catalog-run-id "$CATALOG_RUN_ID" \
-            --delivery-key "catalog-$CATALOG_RUN_ID" \
+          args=(
+            --report "$REPORT_PATH"
+            --state "$RUNNER_TEMP/catalog-report-state.json"
+            --base-commit "$BASE_COMMIT"
+            --catalog-run-id "$CATALOG_RUN_ID"
+            --delivery-key "catalog-$CATALOG_RUN_ID"
             --output "$RUNNER_TEMP/catalog-report-delivery-plan.json"
+          )
+          if test -n "$AUTHOR_FEEDBACK_PATH" && test -f "$AUTHOR_FEEDBACK_PATH"; then
+            args+=(--author-feedback "$AUTHOR_FEEDBACK_PATH")
+          fi
+          node scripts/catalog-report-delivery.mjs plan "${args[@]}"
           jq -r '"plan_id=\(.planId)", "action=\(.action.type)"' \
             "$RUNNER_TEMP/catalog-report-delivery-plan.json" >> "$GITHUB_OUTPUT"
       - name: Publish one owner report for this Catalog run
@@ -201,10 +208,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           REPORT_PATH: ${{ steps.render.outputs.path }}
+          AUTHOR_FEEDBACK_PATH: ${{ steps.author_report.outputs.feedback_path }}
         run: |
-          node scripts/catalog-report-delivery.mjs apply \
-            --plan "$RUNNER_TEMP/catalog-report-delivery-plan.json" \
-            --report "$REPORT_PATH"
+          args=(--plan "$RUNNER_TEMP/catalog-report-delivery-plan.json" --report "$REPORT_PATH")
+          if test -n "$AUTHOR_FEEDBACK_PATH" && test -f "$AUTHOR_FEEDBACK_PATH"; then
+            args+=(--author-feedback "$AUTHOR_FEEDBACK_PATH")
+          fi
+          node scripts/catalog-report-delivery.mjs apply "${args[@]}"
       - name: Preserve the report and delivery decision
         if: always()
         uses: actions/upload-artifact@v4

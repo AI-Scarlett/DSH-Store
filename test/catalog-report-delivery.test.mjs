@@ -19,6 +19,26 @@ const issue = {
   comments: [],
 }
 
+const authorFeedback = {
+  schemaVersion: 1,
+  observedAt: '2026-09-08T01:00:00Z',
+  source: { repository: 'AI-Scarlett/DSH-Store', managedLabel: 'author-action-required', identity: 'issue-author-immutable-user-id' },
+  items: [{
+    issueNumber: 434,
+    issueTitle: '作者修复请求：vshulcz/deja-vu（DSH STORE）',
+    issueUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/434',
+    author: { id: 99616188, login: 'vshulcz', nodeId: 'U_kgDOBfAFvA' },
+    commentId: 5568172291,
+    commentUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/434#issuecomment-5568172291',
+    createdAt: '2026-09-07T09:05:16Z',
+    bodySha256: '3e8d522e907c6df21a5cfa0132b07a89a887a36ed90dc6b14cd42bfc747f162b',
+    category: 'dsh-store-problem',
+    needsManualReview: true,
+    excerpt: 'Every push triggers a new ＠mention; automaticFollowups is false.',
+  }],
+  summary: { storeProblems: 1, manualReview: 1 },
+}
+
 test('Catalog report delivery creates one hash-bound owner notification for a new run', () => {
   const plan = createCatalogReportDeliveryPlan({
     baseCommit,
@@ -142,6 +162,49 @@ test('closed report thread is reopened only after its new run comment is planned
     state: { issue: { ...issue, state: 'closed' } },
   })
   assert.deepEqual(plan.action, { type: 'comment', issueNumber: 148, reopen: true })
+})
+
+test('new DSH Store author feedback plans a separate owner mention comment', () => {
+  const plan = createCatalogReportDeliveryPlan({
+    baseCommit,
+    catalogRunId,
+    deliveryKey: `catalog-${catalogRunId}`,
+    reportBody,
+    state: { issue },
+    authorFeedback,
+  })
+  validateCatalogReportDeliveryPlan(plan)
+  assert.equal(plan.feedbackAction.type, 'comment')
+  assert.equal(plan.feedbackAction.issueNumber, issue.number)
+  assert.equal(plan.feedbackAction.markers.length, 1)
+  assert.match(plan.feedbackAction.body, /@AI-Scarlett/)
+  assert.match(plan.feedbackAction.body, /5568172291/)
+
+  const repeated = createCatalogReportDeliveryPlan({
+    baseCommit,
+    catalogRunId,
+    deliveryKey: `catalog-${catalogRunId}`,
+    reportBody,
+    state: { issue: { ...issue, comments: [{ id: 22, body: plan.feedbackAction.body }] } },
+    authorFeedback,
+  })
+  assert.equal(repeated.feedbackAction.type, 'skip')
+  assert.deepEqual(repeated.feedbackAction.markers, [])
+})
+
+test('feedback is retained when the first owner report Issue is created in the same plan', () => {
+  const plan = createCatalogReportDeliveryPlan({
+    baseCommit,
+    catalogRunId,
+    deliveryKey: `catalog-${catalogRunId}`,
+    reportBody,
+    state: { issue: null },
+    authorFeedback,
+  })
+  validateCatalogReportDeliveryPlan(plan)
+  assert.equal(plan.action.type, 'create')
+  assert.equal(plan.feedbackAction.type, 'comment')
+  assert.equal(plan.feedbackAction.issueNumber, null)
 })
 
 test('Catalog report delivery fails closed on ambiguous state or a report without the owner mention', () => {

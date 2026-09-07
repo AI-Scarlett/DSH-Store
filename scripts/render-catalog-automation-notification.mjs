@@ -350,7 +350,7 @@ export function renderCatalogAutomationNotification({
   } else {
     lines.push(
       `- 检测到 ${authorFeedback.items.length} 条作者反馈，已列入仓库所有者人工处理队列。`,
-      '- 这部分只触发仓库所有者的站内通知，不授予自动回复或绕过“一位作者一次联系”门禁的权限。',
+      '- 自动化会为每条新的反馈评论发送一次单独的 @AI-Scarlett 站内评论以触发 GitHub 通知邮件；不会自动回复作者或绕过“一位作者一次联系”门禁。',
       '',
       '| Issue | 作者 | 最新反馈 | 原文 SHA-256 | 摘要 |',
       '|---|---|---|---|---|',

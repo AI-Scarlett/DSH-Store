@@ -30,6 +30,19 @@
     "concurrency": 8,
     "maxCommitSpan": 200
   },
+  "authorFeedback": {
+    "source": "verified-authors-on-managed-issue-comments",
+    "classification": "dsh-store-problem",
+    "ownerNotification": {
+      "channel": "github-issue-comment",
+      "mention": "@AI-Scarlett",
+      "markerPrefix": "dsh-author-feedback:v1",
+      "oncePerFeedbackComment": true,
+      "githubNotificationEmailDeliveryVerified": false
+    },
+    "automaticAuthorReplies": false,
+    "requiresVerifiedAuthorIdentity": true
+  },
   "compatibility": {
     "authority": "official-github-releases-and-npm-published-versions",
     "registryUrl": "https://registry.npmjs.org/@deepseek-ai%2Fdsh",
