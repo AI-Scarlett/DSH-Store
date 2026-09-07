@@ -90,6 +90,17 @@ test('source update exposes bounded network and file-change signals without retu
   assert.equal(Object.hasOwn(result.diff.files[0], 'patch'), false)
 })
 
+test('source update risk scan ignores a regex member exec while retaining command calls', async () => {
+  const service = createSourceUpdateService({
+    fetch: githubFetch({
+      patch: '+const value = /x/.exec(text)\n',
+    }),
+    sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(result.diff.permissionSignals.commandExecution, false)
+})
+
 test('protected DSH mutations remain external-only and cannot produce a marketplace plan', async () => {
   const service = createSourceUpdateService({
     fetch: githubFetch({ patch: '+await writeFile("node_modules/@deepseek-ai/dsh-core/index.js", source)' }),

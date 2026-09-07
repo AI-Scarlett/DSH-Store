@@ -5,7 +5,8 @@ const COMMIT_SHA = /^[0-9a-f]{40}$/
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 10 * 60_000
 const MAX_COMPARE_FILES = 100
-const RISK_PATTERN = /(?:node:)?child_process|\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true|(?:node:)?(?:fs|fs\/promises)|\b(?:fetch|WebSocket)\s*\(|process\.env|keychain|__ModuleLoader__.*(?:unload|remove)|\bFiber\b|@deepseek-ai\/.*disabled\s*:\s*true/i
+const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
+const RISK_PATTERN = /(?:node:)?child_process|shell\s*:\s*true|(?:node:)?(?:fs|fs\/promises)|\b(?:fetch|WebSocket)\s*\(|process\.env|keychain|__ModuleLoader__.*(?:unload|remove)|\bFiber\b|@deepseek-ai\/.*disabled\s*:\s*true/i
 const DSH_NATIVE_MUTATION_PATTERN = /(?:^|[/\\])(?:node_modules|packages|vendor)[/\\]@deepseek-ai[/\\]|(?:writeFile|appendFile|rename|unlink|rm)\s*\([^\n]{0,240}(?:node_modules|packages)[/\\]@deepseek-ai|(?:git\s+(?:apply|checkout)|patch\s+)[^\n]{0,240}(?:deepseek|@deepseek-ai)/i
 
 function updateError(code, message) {
@@ -277,7 +278,7 @@ export function createSourceUpdateService(options = {}) {
       for (const host of addedNetworkHosts(patch)) networkHosts.add(host)
       if (patch && /(?:node:)?(?:fs|fs\/promises)|\b(?:writeFile|appendFile|rename|unlink|rm)\s*\(/i.test(patch)) permissionSignals.filesystem = true
       if (patch && /\b(?:fetch|WebSocket)\s*\(|https?:\/\//i.test(patch)) permissionSignals.network = true
-      if (patch && /(?:node:)?child_process|\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true/i.test(patch)) permissionSignals.commandExecution = true
+      if (patch && (/(?:node:)?child_process|shell\s*:\s*true/i.test(patch) || COMMAND_CALL.test(patch))) permissionSignals.commandExecution = true
       if (patch && /process\.env|keychain|api[_-]?key|oauth|credential/i.test(patch)) permissionSignals.credentials = true
       if ((DSH_NATIVE_MUTATION_PATTERN.test(name) || (patch && DSH_NATIVE_MUTATION_PATTERN.test(patch)))) {
         permissionSignals.protectedDsh = true

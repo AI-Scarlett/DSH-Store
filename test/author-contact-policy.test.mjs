@@ -30,6 +30,8 @@ function plan(state = empty(), people = { 'alice/one': person, 'alice/two': pers
 }
 function mock(initial = empty()) {
   let state = structuredClone(initial), version = 1, messageFailure = false, putFailure = false
+  let staleReads = 0
+  let staleState = null
   const posts = [], comments = [], issues = new Map()
   const sha = () => version.toString(16).padStart(40, '0')
   const api = {
@@ -37,11 +39,16 @@ function mock(initial = empty()) {
     get state() { return state },
     failMessage() { messageFailure = true },
     failPutAfterCommit() { putFailure = true },
+    delayReservationReadback(count = 1) { staleReads = count },
     async request(method, path, body) {
       if (path.includes('/contents/contacts.json')) {
-        if (method === 'GET') return { sha: sha(), encoding: 'base64', size: 2000, content: Buffer.from(JSON.stringify(state)).toString('base64') }
+        if (method === 'GET') {
+          const visible = staleReads > 0 ? (staleReads -= 1, staleState) : state
+          return { sha: sha(), encoding: 'base64', size: 2000, content: Buffer.from(JSON.stringify(visible ?? state)).toString('base64') }
+        }
         assert.equal(method, 'PUT')
         if (body.sha !== sha()) throw Object.assign(new Error('conflict'), { status: 409 })
+        staleState = structuredClone(state)
         state = JSON.parse(Buffer.from(body.content, 'base64')); version++
         if (putFailure) { putFailure = false; throw Object.assign(new Error('uncertain PUT'), { status: 503 }) }
         return { content: { sha: sha() } }
@@ -117,6 +124,23 @@ test('all historical thread updates, reopenings, baselines and closing notices a
     const p = plan(); p.actions[0].type = type; assert.throws(() => validatePlan(p), /followup/)
   }
 })
+test('a new fixed Commit does not trigger an automatic follow-up for an already-contacted author', () => {
+  const old = plan().actions[0]
+  const changedCatalog = {
+    entries: [{
+      id: 'plugin-0', name: 'Plugin 0', version: '1.0.0', commit: 'f'.repeat(40),
+      status: 'blocked', statusReason: 'missing runtime files',
+      repositoryUrl: 'https://github.com/alice/one',
+    }],
+  }
+  const p = plan(prior(), undefined, {
+    catalog: changedCatalog,
+    existingIssues: [{ number: 11, title: old.title, state: 'open', body: old.body, labels: [] }],
+  })
+  assert.equal(p.actions.length, 0)
+  assert.equal(p.summary.githubMessages, 0)
+  assert.equal(p.summary.sourceUpdates, 0)
+})
 test('untrusted findings cannot mention extra people or encoded usernames', () => {
   const body = contactBody('@Bob &#64;Carol &#x40;Dave &commat;Eve', person)
   assert.deepEqual(body.match(/@[A-Za-z0-9-]+/g), ['@Alice'])
@@ -136,6 +160,12 @@ test('crash after reservation and uncertain PUT never release the contact slot',
   await assert.rejects(reserve(api), /uncertain PUT/)
   assert.equal((await reserve(api, person, 'e'.repeat(64))).allowed, false)
   assert.equal(api.posts.length, 0)
+})
+test('reservation readback tolerates a short-lived stale Contents response', async () => {
+  const api = mock(); api.delayReservationReadback(1)
+  const result = await reserve(api)
+  assert.equal(result.allowed, true)
+  assert.equal(Object.keys(api.state.contacts).length, 1)
 })
 test('message failure followed by a retry produces only one outbound attempt', async () => {
   const api = mock(); api.failMessage()

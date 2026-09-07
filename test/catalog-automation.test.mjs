@@ -42,6 +42,13 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
 })
 
+test('permission scan does not classify ordinary member exec methods as command execution', () => {
+  assert.equal(permissionSignals(`const match = /"([^"]*)"/.exec(text)`).commands, false)
+  assert.equal(permissionSignals(`const nested = parser.exec(text)`).commands, false)
+  assert.equal(permissionSignals(`exec(command)`).commands, true)
+  assert.equal(permissionSignals(`execFile(command)`).commands, true)
+})
+
 test('self-manager generated Catalog details do not consume the executable source bound', () => {
   const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
   assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.json'), true)

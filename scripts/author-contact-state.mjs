@@ -11,6 +11,8 @@ export const STATE_PATH = 'contacts.json'
 export const digest = value => createHash('sha256').update(value).digest('hex')
 const loginPattern = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/
 const repositoryPattern = /^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{1,100}$/
+const RESERVATION_READBACK_ATTEMPTS = 5
+const RESERVATION_READBACK_DELAY_MS = 200
 export function requireRepository(value) {
   if (!repositoryPattern.test(value)) throw new Error('invalid repository')
   return value
@@ -133,12 +135,24 @@ export async function reserveContact({ github, repository, recipient, key, claim
       if (error.status === 409) continue
       throw error
     }
-    const confirmed = await readContactState(github, repository, seed)
-    const committed = confirmed.state.contacts[String(person.id)]
-    if (committed.stopped || JSON.stringify(committed.reservations[claimId]) !== JSON.stringify(reservation)) {
-      throw new Error('contact reservation readback failed; do not send')
+    // GitHub's Contents API can acknowledge the branch commit before a
+    // subsequent GET is served from the new revision. Treat a temporarily
+    // missing record as eventual consistency, while still failing closed on a
+    // present-but-different or stopped record.
+    for (let readbackAttempt = 0; readbackAttempt < RESERVATION_READBACK_ATTEMPTS; readbackAttempt += 1) {
+      const confirmed = await readContactState(github, repository, seed)
+      const committed = confirmed.state.contacts[String(person.id)]
+      if (committed) {
+        if (committed.stopped || JSON.stringify(committed.reservations[claimId]) !== JSON.stringify(reservation)) {
+          throw new Error('contact reservation readback failed; do not send')
+        }
+        return { allowed: true, claimId }
+      }
+      if (readbackAttempt + 1 < RESERVATION_READBACK_ATTEMPTS) {
+        await new Promise(resolveDelay => setTimeout(resolveDelay, RESERVATION_READBACK_DELAY_MS))
+      }
     }
-    return { allowed: true, claimId }
+    throw new Error('contact reservation readback failed; do not send')
   }
   throw new Error('contact state contention; no message sent')
 }
