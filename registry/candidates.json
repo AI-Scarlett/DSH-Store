@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-07T23:49:22.000Z",
+    "updatedAt": "2026-09-08T03:29:23.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -6482,8 +6482,8 @@
       "description": "把 Engramory 策展式记忆纪律做成可安装插件（[npm: dsh-engramory](https://www.npmjs.com/package/dsh-engramory)）：通过 `ctx.tools.guard()` 对 `MEMORY.md` 索引施加确定性的 200 行 / 25KB 上限（增长即拒、缩小的重写一律放行），并把协议注册为运行时 skill。记忆库是纯 markdown、一条事实一个文件，与 Claude Code、Codex、Kiro、OpenClaw 共用。",
       "repositoryUrl": "https://github.com/tinqiao-oss/engramory",
       "defaultBranch": "master",
-      "latestCommit": "1bc98e32aa33ba4acd6984b4845f8668be8bcdd5",
-      "sourceUpdatedAt": "2026-08-31T11:30:32.000Z",
+      "latestCommit": "33f1aa8fa0c90c5a7310241a0a76d83ab30fc5df",
+      "sourceUpdatedAt": "2026-09-08T02:19:14.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7322,8 +7322,8 @@
       "description": "DeepSeek Harness 插件「墨言」：在 WebUI 侧边栏「设置」上方完整显示一句名言、诗词或游戏台词，语料可用 txt 直接编辑",
       "repositoryUrl": "https://github.com/elviszhang007/dsh-moyan",
       "defaultBranch": "main",
-      "latestCommit": "da5389836a5bf843884230a65411a0d8605508f6",
-      "sourceUpdatedAt": "2026-08-15T04:32:36.000Z",
+      "latestCommit": "2799a4a313013bc974ce806d0e21a9712ae54102",
+      "sourceUpdatedAt": "2026-09-08T03:02:53.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9554,8 +9554,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "7ed67cd339953e59370be506fa1459714f047316",
-      "sourceUpdatedAt": "2026-09-07T15:25:56.000Z",
+      "latestCommit": "26405e1867a837e967467f41d0054f45c5cdf1ef",
+      "sourceUpdatedAt": "2026-09-08T03:14:03.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12592,8 +12592,8 @@
       "description": "Toward Autonomous Scientific Discovery",
       "repositoryUrl": "https://github.com/ZJU-REAL/Polaris",
       "defaultBranch": "main",
-      "latestCommit": "04886cd2a34d9411c749dae6cc17e79470ee6e30",
-      "sourceUpdatedAt": "2026-09-03T19:16:26.000Z",
+      "latestCommit": "17ee0fe777a433d53160f1255dde0fc9b7a2291b",
+      "sourceUpdatedAt": "2026-09-08T03:32:09.000Z",
       "discoveredAt": "2026-09-03T19:14:41.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -13451,8 +13451,8 @@
       "description": "A living, machine-readable catalog of open-source projects with practical summaries, categories, quality signals and transparent scoring.",
       "repositoryUrl": "https://github.com/Arnon-hs/open-source",
       "defaultBranch": "main",
-      "latestCommit": "276ca8d60e8f1f10df3e849ded8daea8d7e50fb4",
-      "sourceUpdatedAt": "2026-09-07T23:49:24.000Z",
+      "latestCommit": "b66b31e9fee5e210c115e34c1b196df9977668ef",
+      "sourceUpdatedAt": "2026-09-08T03:32:28.000Z",
       "discoveredAt": "2026-09-07T23:49:22.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -13471,6 +13471,25 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "ricardo-m-l-metis",
+      "name": "Ricardo-M-L/metis",
+      "description": "Metis — a Go agent CLI: streaming agent loop, 16 built-in tools, multi-provider LLM, multi-tier memory, TUI, ACP server.",
+      "repositoryUrl": "https://github.com/Ricardo-M-L/metis",
+      "defaultBranch": "main",
+      "latestCommit": "41f975a8621c3471306d2f7da9f26216d19cc1e0",
+      "sourceUpdatedAt": "2026-09-08T03:31:47.000Z",
+      "discoveredAt": "2026-09-08T03:29:23.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }

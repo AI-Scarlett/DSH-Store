@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9ceca3c4e53acbb2d7f8b1e429d1c9c1228a01a3",
-  "version": "0.2.0",
+  "commit": "7686cb0fcb19baedac7812c87ef7deb97ed134a8",
+  "version": "0.2.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T23:50:41.000Z",
-    "observedAt": "2026-09-07T23:49:22.000Z",
+    "updatedAt": "2026-09-08T03:20:18.000Z",
+    "observedAt": "2026-09-08T03:29:23.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-07T23:49:22.000Z",
-      "evidenceUrl": "https://github.com/ZK-Andy/noogenesis/commit/9ceca3c4e53acbb2d7f8b1e429d1c9c1228a01a3",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-08T03:29:23.000Z",
+      "evidenceUrl": "https://github.com/ZK-Andy/noogenesis/commit/7686cb0fcb19baedac7812c87ef7deb97ed134a8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
