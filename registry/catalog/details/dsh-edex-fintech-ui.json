@@ -1,48 +1,51 @@
 {
-  "id": "dsh-notification",
-  "name": "完成通知（DSH Notification）",
-  "packageName": "dsh-notification",
-  "description": "DSH 回合完成后发送可配置的浏览器桌面通知。",
+  "id": "dsh-edex-fintech-ui",
+  "name": "余额与额度监控（DSH Edex Fintech UI）",
+  "packageName": "@danielng23/dsh-edex-fintech-ui",
+  "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Ledger fintech eDEX-UI theme: lime #76b900 on deep green-black #060a03, 1px #262c22 card hairlines at 14px radius, gradient TOTAL BALANCE hero featured widget",
   "searchTerms": [
-    "完成通知",
-    "DSH Notification",
-    "dsh-notification",
-    "任务完成",
-    "通知",
-    "提醒",
-    "消息推送",
-    "通知与集成",
-    "消息",
+    "余额与额度监控",
+    "DSH Edex Fintech UI",
+    "dsh-edex-fintech-ui",
+    "@danielng23/dsh-edex-fintech-ui",
+    "余额",
+    "额度",
+    "配额",
+    "钱包",
+    "实验功能",
+    "新功能",
     "dsh",
-    "notification"
+    "edex",
+    "fintech",
+    "ui"
   ],
-  "repositoryUrl": "https://github.com/omdsh-dev/dsh-notification",
+  "repositoryUrl": "https://github.com/ph4310822/dsh-edex-fintech-ui",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
-  "updatePolicy": null,
-  "commit": "675aab9b43d5011738feb6185281596c0365ccba",
-  "version": "0.1.4",
+  "manifestPath": "packages/bundle/package.json",
+  "installPath": "packages/bundle",
+  "updatePolicy": "external-only",
+  "commit": "857f127484ad5ad721857bac2d93f66ac75dbbef",
+  "version": "0.1.0",
   "categories": [
-    "notifications"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-01T01:00:23.000Z",
-    "observedAt": "2026-09-01T19:20:14.000Z",
+    "updatedAt": "2026-09-08T21:31:34.000Z",
+    "observedAt": "2026-09-08T21:29:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-01T19:20:14.000Z",
-      "evidenceUrl": "https://github.com/omdsh-dev/dsh-notification/commit/675aab9b43d5011738feb6185281596c0365ccba",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-09-08T21:29:07.000Z",
+      "evidenceUrl": "https://github.com/ph4310822/dsh-edex-fintech-ui/commit/857f127484ad5ad721857bac2d93f66ac75dbbef",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +75,18 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-notification"
+    "host-system-metrics",
+    "ui-edex",
+    "ui-theme-terminal"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.3-alpha.1, 0.1.3-alpha.2, 0.1.5-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review",
   "compatibility": {
-    "dsh": "*",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -91,7 +96,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
       "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "unknown"
@@ -145,12 +149,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.3-alpha.1": {
         "install": "unknown",
         "start": "unknown",
@@ -172,30 +170,30 @@
     },
     "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "low",
-      "files": "none",
-      "network": "none",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "none"
+        "unknown"
       ]
     },
     "externalDependencies": [
-      "浏览器通知 API"
+      "@danielng23/dsh-fintech-client-ui-edex",
+      "@danielng23/dsh-fintech-client-ui-theme-terminal",
+      "@danielng23/dsh-fintech-host-system-metrics"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "community-index-not-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
