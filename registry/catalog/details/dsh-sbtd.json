@@ -1,49 +1,50 @@
 {
-  "id": "launcher-brand",
-  "name": "界面主题与美化（Launcher Brand）",
-  "packageName": "launcher-brand",
-  "description": "DeepSeek Harness Launcher 内置品牌插件：覆盖 web UI 的 sidebar 品牌名称（避免与默认官方品牌冲突）。",
+  "id": "dsh-sbtd",
+  "name": "会话管理（DSH Sbtd）",
+  "packageName": "@kunolu/dsh-sbtd",
+  "description": "DSH 宿主上的 SBTD workflow 适配器。当前为 T6：注册短中文 sbtd section、进程内会话状态、`sbtd_plan`、`sbtd_review`、`sbtd_clarify`、`tools/pre-execute` / `agent/pre-step` hooks 门禁，以及从 640-skills 只读同步的 `manuals/`。",
   "searchTerms": [
-    "界面主题与美化",
-    "Launcher Brand",
-    "launcher-brand",
-    "主题",
-    "皮肤",
-    "背景",
-    "界面美化",
-    "新锐实验",
-    "实验功能",
-    "新功能",
-    "launcher",
-    "brand"
+    "会话管理",
+    "DSH Sbtd",
+    "dsh-sbtd",
+    "@kunolu/dsh-sbtd",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "工作流",
+    "自动化",
+    "任务",
+    "dsh",
+    "sbtd"
   ],
-  "repositoryUrl": "https://github.com/evlon/deepseek-harness-launcher",
-  "defaultBranch": "master",
-  "manifestPath": "launcher-brand/package.json",
-  "installPath": "launcher-brand",
+  "repositoryUrl": "https://github.com/KunoLu/sbtd-plugins",
+  "defaultBranch": "main",
+  "manifestPath": "packages/dsh-sbtd/package.json",
+  "installPath": "packages/dsh-sbtd",
   "updatePolicy": "external-only",
-  "commit": "da73408a4c462a4f5941e2ea290379a4497f0621",
-  "version": "0.1.0",
+  "commit": "86bcdcef5cadfc35ced9b0f704a1f1809b6c5a38",
+  "version": "0.1.0-rc.1",
   "categories": [
-    "experimental"
+    "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T03:01:17.000Z",
+    "updatedAt": "2026-09-08T03:32:35.000Z",
     "observedAt": "2026-09-08T03:29:23.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-08T03:29:23.000Z",
-      "evidenceUrl": "https://github.com/evlon/deepseek-harness-launcher/commit/da73408a4c462a4f5941e2ea290379a4497f0621",
+      "evidenceUrl": "https://github.com/KunoLu/sbtd-plugins/commit/86bcdcef5cadfc35ced9b0f704a1f1809b6c5a38",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +74,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "launcher-brand"
+    "sbtd"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime source contains the files permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -166,14 +167,12 @@
     },
     "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "permissions": {
       "level": "unknown",
       "files": "unknown",

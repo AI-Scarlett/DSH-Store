@@ -1,28 +1,27 @@
 {
-  "id": "launcher-brand",
-  "name": "界面主题与美化（Launcher Brand）",
-  "packageName": "launcher-brand",
-  "description": "DeepSeek Harness Launcher 内置品牌插件：覆盖 web UI 的 sidebar 品牌名称（避免与默认官方品牌冲突）。",
+  "id": "desktop-layer",
+  "name": "桌面客户端（Desktop Layer）",
+  "packageName": "@dsh-forge/desktop-layer",
+  "description": "English | 中文",
   "searchTerms": [
-    "界面主题与美化",
-    "Launcher Brand",
-    "launcher-brand",
-    "主题",
-    "皮肤",
-    "背景",
-    "界面美化",
-    "新锐实验",
+    "桌面客户端",
+    "Desktop Layer",
+    "desktop-layer",
+    "@dsh-forge/desktop-layer",
+    "桌面",
+    "托盘",
+    "快捷启动",
     "实验功能",
     "新功能",
-    "launcher",
-    "brand"
+    "desktop",
+    "layer"
   ],
-  "repositoryUrl": "https://github.com/evlon/deepseek-harness-launcher",
-  "defaultBranch": "master",
-  "manifestPath": "launcher-brand/package.json",
-  "installPath": "launcher-brand",
+  "repositoryUrl": "https://github.com/ptonlix/dsh-forge",
+  "defaultBranch": "main",
+  "manifestPath": "packages/bundles/desktop-layer/package.json",
+  "installPath": "packages/bundles/desktop-layer",
   "updatePolicy": "external-only",
-  "commit": "da73408a4c462a4f5941e2ea290379a4497f0621",
+  "commit": "8e08604870e5f29d65c3221f891bfa27ba6e4293",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T03:01:17.000Z",
+    "updatedAt": "2026-09-08T03:33:11.000Z",
     "observedAt": "2026-09-08T03:29:23.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-08T03:29:23.000Z",
-      "evidenceUrl": "https://github.com/evlon/deepseek-harness-launcher/commit/da73408a4c462a4f5941e2ea290379a4497f0621",
+      "evidenceUrl": "https://github.com/ptonlix/dsh-forge/commit/8e08604870e5f29d65c3221f891bfa27ba6e4293",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +72,17 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "launcher-brand"
+    "dsh-forge-desktop-layer",
+    "dsh-forge-desktop-services"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is mis",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.2-alpha.4",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -183,7 +183,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@dsh-forge/desktop-services-local"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

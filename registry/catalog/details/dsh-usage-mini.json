@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "632d14d32842327f247dd2397b236b3e1a412cdf",
-  "version": "0.1.1",
+  "commit": "25b6b4bde8d6647c7392f7343795893ebddeda04",
+  "version": "0.1.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T23:50:34.000Z",
-    "observedAt": "2026-09-07T23:49:22.000Z",
+    "updatedAt": "2026-09-08T02:18:35.000Z",
+    "observedAt": "2026-09-08T03:29:23.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-07T23:49:22.000Z",
-      "evidenceUrl": "https://github.com/teethyachi/dsh-usage-mini/commit/632d14d32842327f247dd2397b236b3e1a412cdf",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-08T03:29:23.000Z",
+      "evidenceUrl": "https://github.com/teethyachi/dsh-usage-mini/commit/25b6b4bde8d6647c7392f7343795893ebddeda04",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +73,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "usage-mini"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the network permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -164,8 +164,10 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
-    "systems": [],
+    "node": "22.23.2",
+    "systems": [
+      "Windows"
+    ],
     "profiles": [
       "web"
     ]
