@@ -22,24 +22,24 @@
   "manifestPath": "dsh-plugin-desktop/package.json",
   "installPath": "dsh-plugin-desktop",
   "updatePolicy": "external-only",
-  "commit": "7b845c02ce3224e121d362f5bffb924c609924bb",
-  "version": "2.0.2",
+  "commit": "f0b252f970cf380f9a52c8951ee3b973a7fb9367",
+  "version": "2.0.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-22T14:13:52.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-08T15:26:26.000Z",
+    "observedAt": "2026-09-08T21:29:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/vconlln/deepseek-harness-arch-desktop/commit/7b845c02ce3224e121d362f5bffb924c609924bb",
+      "checkedAt": "2026-09-08T21:29:07.000Z",
+      "evidenceUrl": "https://github.com/vconlln/deepseek-harness-arch-desktop/commit/f0b252f970cf380f9a52c8951ee3b973a7fb9367",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -87,7 +87,7 @@
     "web-runtime"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/main.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/profile.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/profile.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/cli",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: lib/main.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/profile.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/profile.js; runtime artifact i",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -99,9 +99,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
       "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown"
+      "0.1.3-alpha.2": "unknown",
+      "0.1.5-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -152,12 +152,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.3-alpha.1": {
         "install": "unknown",
         "start": "unknown",
@@ -165,6 +159,12 @@
         "rollback": "unknown"
       },
       "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -199,10 +199,15 @@
       "@deepseek-ai/dsh",
       "@deepseek-ai/dsh-agent",
       "@deepseek-ai/dsh-agent-default-model",
+      "@deepseek-ai/dsh-agent-instructions",
+      "@deepseek-ai/dsh-agent-loop",
       "@deepseek-ai/dsh-agent-presets",
       "@deepseek-ai/dsh-anonymous-user-id",
       "@deepseek-ai/dsh-api-gateway",
       "@deepseek-ai/dsh-api-remotes",
+      "@deepseek-ai/dsh-api-session-controller",
+      "@deepseek-ai/dsh-api-settings-controller",
+      "@deepseek-ai/dsh-api-workspace-controller",
       "@deepseek-ai/dsh-app-boot",
       "@deepseek-ai/dsh-atomic-write",
       "@deepseek-ai/dsh-attachment",
@@ -213,8 +218,10 @@
       "@deepseek-ai/dsh-client-connection",
       "@deepseek-ai/dsh-client-locale",
       "@deepseek-ai/dsh-client-modules",
-      "@deepseek-ai/dsh-client-runtime",
+      "@deepseek-ai/dsh-client-store",
+      "@deepseek-ai/dsh-client-ui-approval",
       "@deepseek-ai/dsh-client-ui-attachment",
+      "@deepseek-ai/dsh-client-ui-chat",
       "@deepseek-ai/dsh-client-ui-commands",
       "@deepseek-ai/dsh-client-ui-conversation",
       "@deepseek-ai/dsh-client-ui-directory-picker-browse",
@@ -223,24 +230,17 @@
       "@deepseek-ai/dsh-client-ui-layout",
       "@deepseek-ai/dsh-client-ui-primitives",
       "@deepseek-ai/dsh-client-ui-renderer",
+      "@deepseek-ai/dsh-client-ui-session",
       "@deepseek-ai/dsh-client-ui-settings",
       "@deepseek-ai/dsh-client-ui-sidebar",
       "@deepseek-ai/dsh-client-ui-slots",
       "@deepseek-ai/dsh-client-ui-theme",
       "@deepseek-ai/dsh-client-ui-tool",
+      "@deepseek-ai/dsh-client-ui-trajectory",
       "@deepseek-ai/dsh-client-ui-workspace",
       "@deepseek-ai/dsh-cmdline",
       "@deepseek-ai/dsh-code-runtime",
-      "@deepseek-ai/dsh-command-feedback",
-      "@deepseek-ai/dsh-commands",
-      "@deepseek-ai/dsh-compaction",
-      "@deepseek-ai/dsh-cordis-client-runner",
-      "@deepseek-ai/dsh-cordis-host-runner",
-      "@deepseek-ai/dsh-credentials",
-      "@deepseek-ai/dsh-file-reference",
-      "@deepseek-ai/dsh-fs",
-      "@deepseek-ai/dsh-fs-local",
-      "@deepseek-ai/dsh-goal"
+      "@deepseek-ai/dsh-command-feedback"
     ],
     "reviewStatus": "automated-scan"
   },
