@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d0fd62c4f85fc81686cdfb13bddba27305c708c9",
-  "version": "1.39.0",
+  "commit": "3435aac57634a9afa21b568c83b6196f01f50424",
+  "version": "1.46.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T00:42:20.000Z",
-    "observedAt": "2026-09-08T03:29:23.000Z",
+    "updatedAt": "2026-09-08T11:42:52.000Z",
+    "observedAt": "2026-09-08T12:40:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-08T03:29:23.000Z",
-      "evidenceUrl": "https://github.com/EIGHTfs/dsh-git-push/commit/d0fd62c4f85fc81686cdfb13bddba27305c708c9",
+      "checkedAt": "2026-09-08T12:40:26.000Z",
+      "evidenceUrl": "https://github.com/EIGHTfs/dsh-git-push/commit/3435aac57634a9afa21b568c83b6196f01f50424",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,9 +80,9 @@
     "git-push"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "*",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18.0.0",
     "systems": [],
     "profiles": [
       "web"
