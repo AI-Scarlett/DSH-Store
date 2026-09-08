@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9271370b333cbc9d124a8a9fd8283c37bf9a4b77",
-  "version": "0.3.0",
+  "commit": "f47520d042d0dbf90e5e10340974fe1a94870fbc",
+  "version": "0.3.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-23T18:50:06.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-08T11:39:22.000Z",
+    "observedAt": "2026-09-08T12:40:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/B1lli/dsh-learning-bundle/commit/9271370b333cbc9d124a8a9fd8283c37bf9a4b77",
+      "checkedAt": "2026-09-08T12:40:26.000Z",
+      "evidenceUrl": "https://github.com/B1lli/dsh-learning-bundle/commit/f47520d042d0dbf90e5e10340974fe1a94870fbc",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,9 +81,9 @@
     "dsh-learning"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.1.2-rc.1 || 0.1.3-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,9 +93,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
+      "0.1.2-rc.1": "compatible",
       "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown"
+      "0.1.3-alpha.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -167,7 +167,9 @@
     },
     "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "headless"
+    ]
   },
   "details": {
     "pluginType": "unknown",
