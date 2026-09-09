@@ -1,52 +1,45 @@
 {
-  "id": "dsh-web-attention-badge",
-  "name": "会话管理（DSH Web Attention Badge）",
-  "packageName": "dsh-web-attention-badge",
-  "description": "会话需要你时三处同时亮起：角标、标签页标题计数、按状态换色的鲸鱼 favicon。",
+  "id": "lean4-harness-plugin",
+  "name": "实验功能插件（Lean4 Harness Plugin）",
+  "packageName": "lean4-harness-plugin",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Lean 4 service and Harness tools for deepseek-harness.",
   "searchTerms": [
-    "会话管理",
-    "DSH Web Attention Badge",
-    "dsh-web-attention-badge",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
-    "界面增强",
-    "界面",
-    "交互",
-    "侧栏",
-    "dsh",
-    "web",
-    "attention",
-    "badge"
+    "实验功能插件",
+    "Lean4 Harness Plugin",
+    "lean4-harness-plugin",
+    "实验功能",
+    "新功能",
+    "lean4",
+    "harness",
+    "plugin"
   ],
-  "repositoryUrl": "https://github.com/Luaphes/dsh-web-attention-badge",
+  "repositoryUrl": "https://github.com/Cosmicwanderer1/lean4-harness-plugin",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "dc2265bf5c3962ad8c26b20073e3254e264d0e13",
-  "version": "0.3.2",
+  "updatePolicy": "external-only",
+  "commit": "e6b9d4ca90829e7a99919c22bd2355aba9c87155",
+  "version": "0.1.0",
   "categories": [
-    "ui"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-09T06:18:34.000Z",
+    "updatedAt": "2026-09-09T12:52:45.000Z",
     "observedAt": "2026-09-09T12:47:01.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-09T12:47:01.000Z",
-      "evidenceUrl": "https://github.com/Luaphes/dsh-web-attention-badge/commit/dc2265bf5c3962ad8c26b20073e3254e264d0e13",
+      "evidenceUrl": "https://github.com/Cosmicwanderer1/lean4-harness-plugin/commit/e6b9d4ca90829e7a99919c22bd2355aba9c87155",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -56,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -66,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -76,14 +69,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "ui-attention-badge"
+    "lean4-harness-plugin"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.3-alpha.1, 0.1.3-alpha.2, 0.1.5-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the fixed Git Commit: dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime sour",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -95,7 +88,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
       "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "unknown"
@@ -149,12 +141,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.3-alpha.1": {
         "install": "unknown",
         "start": "unknown",
@@ -174,32 +160,30 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.19.0",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
-    "pluginType": "client",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "none",
-      "network": "any",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "none"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "第三方网络服务（插件可访问任意网络端点）"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "installScripts": [
+      "prepare"
+    ],
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

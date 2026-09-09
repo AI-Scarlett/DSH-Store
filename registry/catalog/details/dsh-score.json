@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d711054c342c55b72f9c926969699ba1525fe40e",
-  "version": "0.2.8",
+  "commit": "946be68f18d97533fe7276b631f7c9bf44bc1700",
+  "version": "0.2.9",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T14:53:49.000Z",
-    "observedAt": "2026-09-08T21:29:07.000Z",
+    "updatedAt": "2026-09-09T11:34:48.000Z",
+    "observedAt": "2026-09-09T12:47:01.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-08T21:29:07.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-score/commit/d711054c342c55b72f9c926969699ba1525fe40e",
+      "checkedAt": "2026-09-09T12:47:01.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-score/commit/946be68f18d97533fe7276b631f7c9bf44bc1700",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.2-rc.1 <0.2.0",
+    "dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
