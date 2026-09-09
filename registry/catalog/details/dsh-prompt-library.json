@@ -20,24 +20,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "634de4e17d74fe2334d9e4d8f84d3fe9073ddd9a",
-  "version": "0.13.0",
+  "commit": "e4855c1bde2c4251fa9563b0fc65456b6d42a908",
+  "version": "0.13.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T14:27:05.000Z",
-    "observedAt": "2026-09-07T15:40:28.000Z",
+    "updatedAt": "2026-09-09T03:10:32.000Z",
+    "observedAt": "2026-09-09T03:33:33.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T15:40:28.000Z",
-      "evidenceUrl": "https://github.com/master1Sun/dsh-prompt-library/commit/634de4e17d74fe2334d9e4d8f84d3fe9073ddd9a",
+      "checkedAt": "2026-09-09T03:33:33.000Z",
+      "evidenceUrl": "https://github.com/master1Sun/dsh-prompt-library/commit/e4855c1bde2c4251fa9563b0fc65456b6d42a908",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
     "prompt-library"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime source exceeds the automatic review byte bound: 4521406 total bytes (maximum 2097152); largest file 1842111 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime source exceeds the automatic review byte bound: 4523848 total bytes (maximum 2097152); largest file 1843286 bytes (maximum 262144)",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -90,7 +90,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
       "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "unknown"
@@ -139,12 +138,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
