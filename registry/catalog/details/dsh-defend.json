@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "806c0591538bae447657ba7578d79b7198e3c2fa",
-  "version": "0.3.6",
+  "commit": "47dcf8c9c008f542df3daa02adf9f4bc07478585",
+  "version": "0.3.8",
   "categories": [
     "security"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T13:16:02.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-09T11:33:16.000Z",
+    "observedAt": "2026-09-09T12:47:01.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-defend/commit/806c0591538bae447657ba7578d79b7198e3c2fa",
+      "checkedAt": "2026-09-09T12:47:01.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-defend/commit/47dcf8c9c008f542df3daa02adf9f4bc07478585",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.2-rc.1 <0.2.0",
+    "dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,7 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
       "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "unknown"
@@ -141,12 +140,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
