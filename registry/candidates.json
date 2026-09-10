@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-10T05:03:49.000Z",
+    "updatedAt": "2026-09-10T12:45:09.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2132,8 +2132,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "a48b211b7d48d0c11679752bb7d3c39bee8307df",
-      "sourceUpdatedAt": "2026-09-10T01:30:03.000Z",
+      "latestCommit": "e081be846317c52e3db4fbb78e7b20744c6b8ca3",
+      "sourceUpdatedAt": "2026-09-10T08:04:36.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2196,8 +2196,8 @@
       "description": "手机远程访问 DSH Web 界面：扫码即用局域网或公网（cloudflared 隧道）访问，实时同屏、移动端适配布局，带设置页管理。",
       "repositoryUrl": "https://github.com/shaobeichen/dsh-pocket",
       "defaultBranch": "main",
-      "latestCommit": "eb255032991949d95c896f762e681c19e622cbdc",
-      "sourceUpdatedAt": "2026-09-03T01:17:39.000Z",
+      "latestCommit": "d664c3def9fdcd4903cc3718dbab1e8f8249b09a",
+      "sourceUpdatedAt": "2026-09-10T10:07:39.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2317,8 +2317,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "e86dcfe307fb9168380707fe0b63affee99e8fa3",
-      "sourceUpdatedAt": "2026-09-10T04:24:19.000Z",
+      "latestCommit": "5d7ac35cef3911126603bb70103522030342c3df",
+      "sourceUpdatedAt": "2026-09-10T10:07:38.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2337,8 +2337,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "2921af0f56a1e33632ce0dd1412a8885ff50b7e7",
-      "sourceUpdatedAt": "2026-09-10T04:25:37.000Z",
+      "latestCommit": "30b3614771ef2a1ffd5f3a8e55d73ea2788adcf5",
+      "sourceUpdatedAt": "2026-09-10T10:07:41.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2764,8 +2764,8 @@
       "description": "DeepSeek Harness (DSH) 插件：任务完成 / 等待审批 / 等待回答时发送 Windows 系统桌面通知",
       "repositoryUrl": "https://github.com/SeverusZh/dsh-notify-windows",
       "defaultBranch": "main",
-      "latestCommit": "a917be871086e6b25dbe56b2d36e3b0b9e9c6ddb",
-      "sourceUpdatedAt": "2026-09-04T08:00:05.000Z",
+      "latestCommit": "3c76ce56756444f934faad405563531a4de462b8",
+      "sourceUpdatedAt": "2026-09-10T10:12:57.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3250,26 +3250,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: chicheng-cron."
-    },
-    {
-      "id": "hyqhyq3-dsh-mcp-manager",
-      "name": "文件与工作区工具（DSH MCP Manager）",
-      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：MCP server manager for DeepSeek Harness: OAuth/stdio servers, workspace isolation, and an opt-in on-demand tool broker",
-      "repositoryUrl": "https://github.com/hyqhyq3/dsh-mcp-manager",
-      "defaultBranch": "main",
-      "latestCommit": "cb927755edf0324c8e5fb94d1847c6e9e900d4a8",
-      "sourceUpdatedAt": "2026-09-09T02:46:52.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mcp-manager."
     },
     {
       "id": "miku196-dsh-tokensave",
@@ -5838,8 +5818,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "fec21e62fc7a7ff6f8cbd9a76b73c51bc4d6db42",
-      "sourceUpdatedAt": "2026-09-08T06:28:18.000Z",
+      "latestCommit": "1f4430e2a2128b92c49e6e4091765c9e2cc6b097",
+      "sourceUpdatedAt": "2026-09-10T08:28:53.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9338,46 +9318,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-verification-receipt."
     },
     {
-      "id": "anionex-dsh-turn-rewind",
-      "name": "会话回退（DSH Turn Rewind）",
-      "description": "为 DSH 会话提供回合回退能力。",
-      "repositoryUrl": "https://github.com/Anionex/dsh-turn-rewind",
-      "defaultBranch": "main",
-      "latestCommit": "3bcb1d0c18c0ee66cf2754ba362f89bddeac78b1",
-      "sourceUpdatedAt": "2026-09-09T14:02:09.000Z",
-      "discoveredAt": "2026-09-07T14:02:43.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "sessions",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-turn-rewind."
-    },
-    {
-      "id": "anionex-dsh-computer-use",
-      "name": "安全防护工具（DSH Computer Use）",
-      "description": "macOS 电脑控制：Accessibility 观测、过期状态拒绝、作用域权限与安全输入。",
-      "repositoryUrl": "https://github.com/Anionex/dsh-computer-use",
-      "defaultBranch": "main",
-      "latestCommit": "97b9731abcccb14d32d3985df971982a56506e1a",
-      "sourceUpdatedAt": "2026-09-03T10:43:57.000Z",
-      "discoveredAt": "2026-09-07T14:02:43.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: anionex-dsh-computer-use."
-    },
-    {
       "id": "anionex-dsh-suggested-replies",
       "name": "实用工具（DSH Suggested Replies）",
       "description": "为 DSH 提供实用工具能力。英文原始说明：DSH Web plugin that proposes concise next user messages above the composer and inserts a selected reply into the draft without sending it.",
@@ -10404,46 +10344,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: sage-mem."
     },
     {
-      "id": "mars-sea-dsh-commandcode-provider",
-      "name": "Command Code 模型提供商（DSH Command Code Provider）",
-      "description": "为 DSH 注册 Command Code 模型提供商与模型目录。",
-      "repositoryUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
-      "defaultBranch": "main",
-      "latestCommit": "0427d5bc9e1c8eae1dfe6d8b77a1691c5db2dabb",
-      "sourceUpdatedAt": "2026-09-08T03:58:24.000Z",
-      "discoveredAt": "2026-09-10T03:30:58.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "models",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-commandcode-provider."
-    },
-    {
-      "id": "git121995-dsh-memory-gate",
-      "name": "记忆与知识库（DSH Memory Gate）",
-      "description": "有界本地记忆 + CBDC 权威门控：SQLite + FTS5 claims，作用域召回并给出可解释的采用/核验/忽略决策与完整审计轨迹，/memory 命令，每次注入 ≤3 条/1200 字符，不增加额外模型调用。",
-      "repositoryUrl": "https://github.com/GIT121995/dsh-memory-gate",
-      "defaultBranch": "main",
-      "latestCommit": "2e9b008b59932cf809d645ad5d479e6b86eb6904",
-      "sourceUpdatedAt": "2026-09-08T03:51:32.000Z",
-      "discoveredAt": "2026-09-10T03:30:58.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "memory",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-memory-gate."
-    },
-    {
       "id": "cymosehq-cymose-code",
       "name": "会话管理（Cymose Code）",
       "description": "为 DSH 提供会话管理能力。英文原始说明：Cymose session graph as plugins for coding harnesses. See what you already tried — not another linear chat.",
@@ -10462,6 +10362,71 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: cymose-code."
+    },
+    {
+      "id": "wecode-ai-wegent",
+      "name": "wecode-ai/Wegent",
+      "description": "Plan, build, and deliver with an open-source, self-hostable AI workspace for coding, collaboration, and automation.",
+      "repositoryUrl": "https://github.com/wecode-ai/Wegent",
+      "defaultBranch": "main",
+      "latestCommit": "08bb6338fddad0c4da882c5f1f25e06d3a1a5b42",
+      "sourceUpdatedAt": "2026-09-10T12:26:28.000Z",
+      "discoveredAt": "2026-09-10T12:45:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "ai",
+        "chatbot",
+        "claude-code",
+        "codex",
+        "dsh-plugin",
+        "wework",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: wework/dsh/app-wework, wework/dsh/browser-runtime, wework/dsh/conversation-export, wework/dsh/electron-host, wework/dsh/executor-runtime, wework/dsh/plugin-developer, wework/dsh/plugin-runtime, wework/dsh/secure-storage, wework/dsh/terminal-runtime, wework/dsh/transcript-sync, wework/dsh/ui-applications, wework/dsh/ui-automations, wework/dsh/ui-cloud-work, wework/dsh/ui-core-apps, wework/dsh/ui-core-settings, wework/dsh/ui-git, wework/dsh/ui-home-developer, wework/dsh/ui-home-focus, wework/dsh/ui-plugin-c"
+    },
+    {
+      "id": "oliver-kriska-claude-elixir-phoenix",
+      "name": "oliver-kriska/claude-elixir-phoenix",
+      "description": "Claude Code plugin for Elixir/Phoenix/LiveView — 26 specialist agents, Iron Laws enforcement, and Tidewave MCP integration. Plan features with parallel research agents, execute with automatic verification, review with 4-agent parallel audits, and capture learnings as reusable knowledge.",
+      "repositoryUrl": "https://github.com/oliver-kriska/claude-elixir-phoenix",
+      "defaultBranch": "main",
+      "latestCommit": "666d4d7de9c6dd490b49b7491ac007b2c85147e3",
+      "sourceUpdatedAt": "2026-09-10T12:46:03.000Z",
+      "discoveredAt": "2026-09-10T12:45:09.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "ai-coding-assistant",
+        "automation",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "claude-code-skills",
+        "claude-skills",
+        "code-review",
+        "developer-tools",
+        "ecto",
+        "elixir",
+        "elixir-lang",
+        "elixir-phoenix",
+        "liveview",
+        "oban",
+        "phoenix",
+        "phoenix-framework",
+        "tidewave",
+        "vibe-coding",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }

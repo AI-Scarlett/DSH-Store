@@ -20,24 +20,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "2e9b008b59932cf809d645ad5d479e6b86eb6904",
-  "version": "0.11.3",
+  "commit": "bdb0fc8714afeba5b221af23970705ab1f4e610b",
+  "version": "0.12.0",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T03:51:32.000Z",
-    "observedAt": "2026-09-08T12:40:26.000Z",
+    "updatedAt": "2026-09-10T06:59:36.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-08T12:40:26.000Z",
-      "evidenceUrl": "https://github.com/GIT121995/dsh-memory-gate/commit/2e9b008b59932cf809d645ad5d479e6b86eb6904",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/GIT121995/dsh-memory-gate/commit/bdb0fc8714afeba5b221af23970705ab1f4e610b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,10 +77,10 @@
   "entryIds": [
     "memory-gate"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": "^0.1.0-rc.6 || ^0.1.1-rc.1 || ^0.1.2-alpha.1 || ^0.1.3-alpha.1",
+    "dsh": "^0.1.0-rc.6 || ^0.1.1-rc.1 || ^0.1.2-alpha.1 || ^0.1.3-alpha.1 || ^0.1.5-alpha.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,9 +93,9 @@
       "0.1.2-rc.1": "compatible",
       "0.1.3-alpha.1": "compatible",
       "0.1.3-alpha.2": "compatible",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.5-alpha.1": "compatible",
+      "0.1.5-alpha.2": "compatible",
+      "0.1.5-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {

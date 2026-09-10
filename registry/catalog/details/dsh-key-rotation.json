@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0d49e3fcc6ba31bc5bc68c9139842474ec41a03b",
-  "version": "0.7.39",
+  "commit": "3ba1a395de3b3cffd96709bcbb6ef40768b97012",
+  "version": "0.8.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T15:52:45.000Z",
-    "observedAt": "2026-09-08T21:29:07.000Z",
+    "updatedAt": "2026-09-10T10:33:18.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-08T21:29:07.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/0d49e3fcc6ba31bc5bc68c9139842474ec41a03b",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/3ba1a395de3b3cffd96709bcbb6ef40768b97012",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
     "dsh-key-rotation"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -94,8 +94,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown"
@@ -144,18 +142,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

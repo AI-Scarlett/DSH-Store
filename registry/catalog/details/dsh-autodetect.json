@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6e4de69afc61887be7914e1e447dbe9e3e27d63f",
-  "version": "0.1.0",
+  "commit": "47144647f7f2327161624111f62d392a6c542009",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T03:57:37.000Z",
-    "observedAt": "2026-09-10T05:03:49.000Z",
+    "updatedAt": "2026-09-10T07:28:45.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T05:03:49.000Z",
-      "evidenceUrl": "https://github.com/Xiaoph123/dsh-autodetect/commit/6e4de69afc61887be7914e1e447dbe9e3e27d63f",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/Xiaoph123/dsh-autodetect/commit/47144647f7f2327161624111f62d392a6c542009",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "dsh-autodetect"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -183,6 +183,7 @@
       ]
     },
     "externalDependencies": [
+      "iconv-lite",
       "react"
     ],
     "reviewStatus": "automated-scan"

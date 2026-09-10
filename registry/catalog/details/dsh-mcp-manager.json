@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "cb927755edf0324c8e5fb94d1847c6e9e900d4a8",
-  "version": "0.7.1",
+  "commit": "03761f5d552ee3ad0c1cba61ef74a3a339248c91",
+  "version": "0.10.0",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-09T02:46:52.000Z",
-    "observedAt": "2026-09-09T03:33:33.000Z",
+    "updatedAt": "2026-09-10T12:06:38.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-09T03:33:33.000Z",
-      "evidenceUrl": "https://github.com/hyqhyq3/dsh-mcp-manager/commit/cb927755edf0324c8e5fb94d1847c6e9e900d4a8",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/hyqhyq3/dsh-mcp-manager/commit/03761f5d552ee3ad0c1cba61ef74a3a339248c91",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,10 +80,10 @@
   "entryIds": [
     "mcp-manager"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.2-rc.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,12 +93,12 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
+      "0.1.2-rc.1": "compatible",
       "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.5-alpha.1": "compatible",
+      "0.1.5-alpha.2": "compatible",
+      "0.1.5-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -186,7 +186,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"

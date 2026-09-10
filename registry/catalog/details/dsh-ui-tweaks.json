@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8289731a09b10196551aba77d028fa012996cfb0",
-  "version": "0.16.2",
+  "commit": "fb3e67dde93c80b01f4f008e730f771186c23fd9",
+  "version": "0.16.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T03:35:04.000Z",
-    "observedAt": "2026-09-10T05:03:49.000Z",
+    "updatedAt": "2026-09-10T05:29:12.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T05:03:49.000Z",
-      "evidenceUrl": "https://github.com/wlj521/dsh-ui-tweaks/commit/8289731a09b10196551aba77d028fa012996cfb0",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/wlj521/dsh-ui-tweaks/commit/fb3e67dde93c80b01f4f008e730f771186c23fd9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,9 +80,9 @@
     "ui-tweaks"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime so",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1393578 total bytes (maximum 2097152); largest file 389251 bytes (maximum 262144)",
   "compatibility": {
-    "dsh": "^0.1.5-alpha.2",
+    "dsh": "^0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -191,9 +191,7 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
