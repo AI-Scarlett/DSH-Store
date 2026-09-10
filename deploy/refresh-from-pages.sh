@@ -219,7 +219,49 @@ candidate="$deploy_root/releases/$release_id"
 backup="$deploy_root/backups/$release_id-before"
 test ! -e "$candidate"
 test ! -e "$backup"
+old_target=$(readlink -f "$current_link")
+case "$old_target" in
+  "$deploy_root"/releases/*) ;;
+  *) printf 'Unexpected current release target: %s\n' "$old_target" >&2; exit 1 ;;
+esac
+test -d "$old_target"
+test -f "$old_target/release-manifest.json"
+old_manifest_sha=$(sha256sum "$old_target/release-manifest.json" | awk '{print $1}')
 install -d -o root -g root -m 0755 "$candidate"
+
+python3 - "$old_target" "$candidate" "$incoming/release-manifest.json" "$incoming/files.list" <<'PY'
+import hashlib, json, pathlib, shutil, sys
+
+old_root = pathlib.Path(sys.argv[1]).resolve()
+candidate = pathlib.Path(sys.argv[2]).resolve()
+manifest = json.loads(pathlib.Path(sys.argv[3]).read_text(encoding='utf-8'))
+remaining = pathlib.Path(sys.argv[4])
+
+def safe_path(root, relative):
+    path = (root / relative).resolve()
+    if root not in path.parents:
+        raise SystemExit(f'unsafe artifact path: {relative}')
+    return path
+
+download = []
+reused = 0
+for relative, metadata in sorted(manifest['files'].items()):
+    source = safe_path(old_root, relative)
+    if source.is_file() and not source.is_symlink():
+        digest = hashlib.sha256()
+        with source.open('rb') as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                digest.update(chunk)
+        if source.stat().st_size == metadata['size'] and digest.hexdigest() == metadata['sha256']:
+            destination = safe_path(candidate, relative)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+            reused += 1
+            continue
+    download.append(relative)
+remaining.write_text(''.join(f'{path}\n' for path in download), encoding='utf-8')
+print(f'DSH_STORE_REFRESH_REUSED reused={reused} download={len(download)}')
+PY
 
 download_artifact() {
   local path="$1"
@@ -230,7 +272,7 @@ download_artifact() {
 
 export pages_base pages_path_prefix candidate
 export -f download_artifact
-xargs -P "$download_jobs" -n 1 bash -Eeuo pipefail -c 'download_artifact "$1"' _ < "$incoming/files.list"
+xargs -r -P "$download_jobs" -n 1 bash -Eeuo pipefail -c 'download_artifact "$1"' _ < "$incoming/files.list"
 install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
 
 python3 - "$candidate" <<'PY'
@@ -289,8 +331,8 @@ chown -R root:root "$candidate"
 find "$candidate" -type d -exec chmod 0755 {} +
 find "$candidate" -type f -exec chmod 0644 {} +
 
-old_target=$(readlink -f "$current_link")
-test -d "$old_target"
+test "$(readlink -f "$current_link")" = "$old_target"
+test "$(sha256sum "$old_target/release-manifest.json" | awk '{print $1}')" = "$old_manifest_sha"
 install -d -o root -g root -m 0750 "$backup"
 cp -a "$old_target"/. "$backup"/
 if test -f /etc/nginx/sites-available/dsh-store-pending.conf; then
