@@ -68,7 +68,7 @@ cleanup_incoming() {
 }
 
 origin_health() {
-  curl -4 -fsS --resolve "$health_resolve" --connect-timeout 5 --max-time 30 \
+  curl -4 --http1.1 -fsS --resolve "$health_resolve" --connect-timeout 5 --max-time 30 \
     --retry 4 --retry-all-errors --retry-delay 1 "$@"
 }
 
@@ -156,7 +156,7 @@ print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['sta
 PY
 }
 
-curl -4 -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
+curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
   "$pages_base/${pages_path_prefix}release-manifest.json" -o "$incoming/release-manifest.json"
 
 python3 - "$incoming/release-manifest.json" "$store_domain" > "$incoming/files.list" <<'PY'
@@ -224,7 +224,7 @@ install -d -o root -g root -m 0755 "$candidate"
 download_artifact() {
   local path="$1"
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
-  curl -4 -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
+  curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
     "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"
 }
 
