@@ -266,11 +266,27 @@ PY
 download_artifact() {
   local path="$1"
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
-  curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
-    "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"
+  if curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
+    "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"; then
+    return 0
+  fi
+  case "$path" in
+    registry/catalog.json|registry/catalog-index.json)
+      # These two source files are also available at the exact Commit. Keep the
+      # Pages manifest as the authority and let the final hash gate reject any
+      # raw response that differs from the signed public artifact.
+      rm -f -- "$candidate/$path"
+      curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
+        "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/$source_sha/$path" -o "$candidate/$path"
+      printf 'DSH_STORE_REFRESH_RAW_FALLBACK path=%s source=%s\n' "$path" "$source_sha"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
 }
 
-export pages_base pages_path_prefix candidate
+export pages_base pages_path_prefix candidate source_sha
 export -f download_artifact
 xargs -r -P "$download_jobs" -n 1 bash -Eeuo pipefail -c 'download_artifact "$1"' _ < "$incoming/files.list"
 install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
