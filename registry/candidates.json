@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-10T04:35:00.000Z",
+    "updatedAt": "2026-09-10T05:03:49.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1966,8 +1966,8 @@
       "description": "DeepSeek Harness 的 TencentDB Agent Memory 移植：L0 对话捕获 → L1 结构化记忆提取 → L2 场景/L3 画像，自动召回注入 + 记忆/对话搜索工具；���用现有 ~/.memory-tencentdb/memory-tdai 数据；附 Web UI 设置栏。",
       "repositoryUrl": "https://github.com/Scorp1o117/dsh-tdai-memory",
       "defaultBranch": "main",
-      "latestCommit": "e55f5d8b1c8d2ec90d13d6fa4735c2090e96bf7d",
-      "sourceUpdatedAt": "2026-09-03T13:26:05.000Z",
+      "latestCommit": "b57908f8153e416b83fa58762d7c7e5aeb842f13",
+      "sourceUpdatedAt": "2026-09-10T03:57:13.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -1989,8 +1989,8 @@
       "description": "DeepSeek Harness 的 soul.md 风格人设 + 长期记忆插件：设置页输入人设卡名称和内容即可，文件由插件自动管理；可按工作区指定人设、聊天框可给会话单独切人设；AI 可自行演化人设与记忆（soul_read/soul_update/memory_*）。",
       "repositoryUrl": "https://github.com/Scorp1o117/dsh-soul-md",
       "defaultBranch": "main",
-      "latestCommit": "ac4b78e8f5115c73951147f02c257732fbf72d37",
-      "sourceUpdatedAt": "2026-09-03T13:26:12.000Z",
+      "latestCommit": "046dafe66c168f2f1d49a533f48f4153e12dc557",
+      "sourceUpdatedAt": "2026-09-10T03:57:03.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2317,8 +2317,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "d0e707ae270ab2d388cf0b933f87849819356293",
-      "sourceUpdatedAt": "2026-09-09T13:58:16.000Z",
+      "latestCommit": "e86dcfe307fb9168380707fe0b63affee99e8fa3",
+      "sourceUpdatedAt": "2026-09-10T04:24:19.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2337,8 +2337,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "a1c74a80b0e2ec644bbdadb8e8eaeb5180f1abf2",
-      "sourceUpdatedAt": "2026-09-09T13:58:23.000Z",
+      "latestCommit": "2921af0f56a1e33632ce0dd1412a8885ff50b7e7",
+      "sourceUpdatedAt": "2026-09-10T04:25:37.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3070,8 +3070,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Sidebar Archived entry + archived-session panel with unarchive and delete, for the DeepSeek Harness web GUI",
       "repositoryUrl": "https://github.com/huahai0202/dsh-better-archive",
       "defaultBranch": "main",
-      "latestCommit": "db3d8f714cbc1e342432f0ee69dd59b876706cca",
-      "sourceUpdatedAt": "2026-09-09T10:32:36.000Z",
+      "latestCommit": "81496b6ba8f82da734c1782c637fb71ca3b4ce62",
+      "sourceUpdatedAt": "2026-09-10T04:26:42.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8349,26 +8349,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-llm-kiro."
-    },
-    {
-      "id": "hurry060215-tech-dsh-api-usage-bar",
-      "name": "用量统计看板（DSH API Usage Bar）",
-      "description": "为 DSH 提供用量统计看板能力。英文原始说明：Cache-aware API token usage bar for the DeepSeek Harness Web UI",
-      "repositoryUrl": "https://github.com/hurry060215-tech/dsh-api-usage-bar",
-      "defaultBranch": "main",
-      "latestCommit": "b7e2b54dae8d8400fd24f55c3b7fcededbdd31d5",
-      "sourceUpdatedAt": "2026-08-14T08:38:08.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "ui",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-api-usage-bar."
     },
     {
       "id": "flymysql-dsh-memory",
