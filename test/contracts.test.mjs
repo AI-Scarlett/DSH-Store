@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.16')
+  assert.equal(pkg.version, '0.8.17')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -20,10 +20,17 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.3-alpha.2'], 'unknown')
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-alpha.1'], 'compatible')
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-alpha.2'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-rc.1'], 'compatible')
+  assert.equal(pkg.engines.node, '^22.19.0 || >=24.0.0')
   assert.match(pkg.scripts.check, /src\/guardian-upgrader\.mjs/)
-  for (const dependency of Object.keys(pkg.peerDependencies).filter(name => name.startsWith('@deepseek-ai/dsh-client-'))) {
-    assert.equal(pkg.peerDependencies[dependency], '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2')
-  }
+  const legacyClientRange = '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2'
+  const rcClientRange = `${legacyClientRange} || 0.1.5-rc.1`
+  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], legacyClientRange)
+  for (const dependency of [
+    '@deepseek-ai/dsh-client-ui-primitives',
+    '@deepseek-ai/dsh-client-ui-settings',
+    '@deepseek-ai/dsh-client-ui-slots',
+  ]) assert.equal(pkg.peerDependencies[dependency], rcClientRange)
   assert.equal(pkg.private, true)
 })
 

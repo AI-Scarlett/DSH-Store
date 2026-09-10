@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "operation": "dsh-store-source-upgrade",
+  "planId": "dsh-0.1.5-rc1-20260910",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "dc17b440b2b964d6562cd3d9b55fc6dacdf38f12",
+  "branch": "codex/dsh-0.1.5-rc1-upgrade-20260910",
+  "observedAt": "2026-09-10T04:51:56Z",
+  "objective": "Align DSH STORE's package contract and compatibility evidence with the official DSH 0.1.5-rc.1 release without changing DSH source, official packages, inventory, Profile state, or ~/.dsh.",
+  "authority": {
+    "package": "@deepseek-ai/dsh@0.1.5-rc.1",
+    "releaseTag": "dsh-v0.1.5-rc.1",
+    "releaseCommit": "183f08e9c6dde7e36cd2318eaee70b0da08fb35e",
+    "releaseUrl": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.1.5-rc.1",
+    "npmRegistry": "https://registry.npmjs.org/@deepseek-ai%2Fdsh"
+  },
+  "sourceReview": {
+    "status": "verified",
+    "result": "DSH STORE uses webServer, settings.section, settings.plugins.tab, shell.overlay, runtime status, and official CLI seams. DSH 0.1.5-rc.1 Session V3, Inbox, ctx.agent, and main/sidebar panel changes do not intersect this bundle.",
+    "runtimeStatus": "unverified",
+    "profileStatus": "unchanged"
+  },
+  "scope": [
+    "package.json",
+    "README.md",
+    "test/contracts.test.mjs",
+    "test/catalog.test.mjs",
+    "docs/reviews/dsh-0.1.5-rc.1-20260910.md",
+    "docs/ops/dsh-0.1.5-rc1-upgrade-plan-20260910.json"
+  ],
+  "preconditions": {
+    "package.json": "960bd825a589c9d76ee6edf9cc520a43bd9652affe31123d1747346432e22364",
+    "README.md": "32b6212f533d1edc9508c120fd419b8b23e9adb03e58adff37a3b3f1ec0b740a",
+    "test/contracts.test.mjs": "c640d8fda259c4060caa56836f65ecf38efbf7c6a6883405bffc4a10f3c5d680",
+    "test/catalog.test.mjs": "8b22a9b7a8ac3c2ea780273fb2822cd5f492fccf3a26394aa709e8c460e12333"
+  },
+  "commands": [
+    ["npm", "run", "check"],
+    ["git", "diff", "--check"],
+    ["git", "status", "--short"]
+  ],
+  "postconditions": [
+    "package.json declares version 0.8.17, DSH 0.1.5-rc.1 compatibility, published UI peer ranges, and the DSH 0.1.5 Node floor.",
+    "README and contract tests describe the official latest-three window including 0.1.5-rc.1.",
+    "the source review records the release Commit and keeps real Profile/runtime acceptance separate.",
+    "source changes are submitted through a CI-checked pull request before Catalog self-pinning."
+  ],
+  "rollback": "Close or abandon the source PR; restore the exact precondition files from the base Commit. Do not reset author-contact-state, delete history, or mutate DSH Profile/~/.dsh.",
+  "confirmation": "Source upgrade is authorized by the user's explicit DSH upgrade request; no Profile or package installation confirmation is included."
+}
