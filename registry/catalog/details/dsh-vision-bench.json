@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "eb9e70ac00b7f907fc24caaea8adb381daa2efce",
+  "commit": "4fc09728f73846ef40e392d2ffdf9d7049e855b9",
   "version": "0.27.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-09T01:48:42.000Z",
-    "observedAt": "2026-09-09T03:33:33.000Z",
+    "updatedAt": "2026-09-10T02:32:00.000Z",
+    "observedAt": "2026-09-10T02:50:00.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-09T03:33:33.000Z",
-      "evidenceUrl": "https://github.com/xingyingyuzhui/dsh-vision-bench/commit/eb9e70ac00b7f907fc24caaea8adb381daa2efce",
+      "checkedAt": "2026-09-10T02:50:00.000Z",
+      "evidenceUrl": "https://github.com/xingyingyuzhui/dsh-vision-bench/commit/4fc09728f73846ef40e392d2ffdf9d7049e855b9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "dsh-vision-bench"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source file count is outside the automatic review bound: 366 files (maximum 240); runtime source exceeds the automatic review byte bound: 3651616 total bytes (maximum 2097152); largest file 1572829 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source file count is outside the automatic review bound: 366 files (maximum 240); runtime source exceeds the automatic review byte bound: 3651903 total bytes (maximum 2097152); largest file 1572829 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,9 +93,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown"
+      "0.1.5-alpha.1": "unknown",
+      "0.1.5-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,12 +146,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -159,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.1.5-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
