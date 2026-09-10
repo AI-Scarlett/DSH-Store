@@ -28,9 +28,9 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": null,
-  "commit": "1d4053cee6071b8b7d2e60a15671253601e1a855",
-  "version": "0.4.3",
+  "updatePolicy": "user-reviewed",
+  "commit": "55cb8ca5dec05373c1d1fbb62fe8cc8c39771663",
+  "version": "0.4.4",
   "categories": [
     "development",
     "workflow",
@@ -39,52 +39,40 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T04:10:38.000Z",
-    "observedAt": "2026-09-07T04:11:58.370Z",
+    "updatedAt": "2026-09-10T02:09:52.000Z",
+    "observedAt": "2026-09-10T04:35:00.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "disposable-official-source-cli-and-package-audit",
-      "checkedAt": "2026-09-07T04:11:58.370Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/blob/1d4053cee6071b8b7d2e60a15671253601e1a855/docs/dsh-0.1.3-alpha.1-validation.md",
-      "dshRelease": "0.1.3-alpha.1",
-      "systems": [
-        "macos"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "Canonical GitHub manifest and Bundle Patch read back at the immutable candidate commit."
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-10T04:35:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/55cb8ca5dec05373c1d1fbb62fe8cc8c39771663",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
-      "status": "partial",
-      "method": "disposable-official-source-cli-and-package-audit",
-      "checkedAt": "2026-09-07T04:11:58.370Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/blob/1d4053cee6071b8b7d2e60a15671253601e1a855/docs/dsh-0.1.3-alpha.1-validation.md",
-      "dshRelease": "0.1.3-alpha.1",
-      "systems": [
-        "macos"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "Official source CLI link install, configuration composition and npm tarball contents passed in a disposable Profile; remote Git install was not tested."
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
-      "status": "partial",
-      "method": "disposable-official-source-cli-and-package-audit",
-      "checkedAt": "2026-09-07T04:11:58.370Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/blob/1d4053cee6071b8b7d2e60a15671253601e1a855/docs/dsh-0.1.3-alpha.1-validation.md",
-      "dshRelease": "0.1.3-alpha.1",
-      "systems": [
-        "macos"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "Official 0.1.3-alpha.1 source host cold start and uninstall passed; UI, real model calls and version rollback remain unverified."
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -94,21 +82,21 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": null
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-build-plugin-skill-provider"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.3-alpha.1",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2",
     "dshReleases": {
-      "rc.7": "incompatible",
-      "rc.8": "compatible",
-      "0.1.1-rc.1": "compatible",
-      "0.1.1-rc.2": "compatible",
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
       "0.1.2-alpha.2": "compatible",
       "0.1.2-alpha.3": "compatible",
       "0.1.2-alpha.4": "compatible",
@@ -116,8 +104,8 @@
       "0.1.2-rc.1": "compatible",
       "0.1.3-alpha.1": "compatible",
       "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
+      "0.1.5-alpha.1": "compatible",
+      "0.1.5-alpha.2": "compatible",
       "0.1.5-rc.1": "unknown"
     },
     "dshOperations": {
@@ -128,57 +116,57 @@
         "rollback": "unknown"
       },
       "rc.8": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.1-rc.1": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.1-rc.2": {
-        "install": "passed",
+        "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.2-alpha.2": {
-        "install": "failed",
+        "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.2-alpha.3": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.1.2-alpha.4": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.1.2-rc.1": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.3-alpha.1": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.3-alpha.2": {
@@ -207,13 +195,8 @@
       }
     },
     "node": ">=22.13.0",
-    "systems": [
-      "macOS"
-    ],
-    "profiles": [
-      "web",
-      "headless"
-    ]
+    "systems": [],
+    "profiles": []
   },
   "details": {
     "pluginType": "suite",
