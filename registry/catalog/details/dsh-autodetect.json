@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4264e37bf31e43e5f83113e660e70f7fb10a2dd5",
+  "commit": "6e4de69afc61887be7914e1e447dbe9e3e27d63f",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T03:33:20.000Z",
-    "observedAt": "2026-09-10T03:30:58.000Z",
+    "updatedAt": "2026-09-10T03:57:37.000Z",
+    "observedAt": "2026-09-10T05:03:49.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-10T03:30:58.000Z",
-      "evidenceUrl": "https://github.com/Xiaoph123/dsh-autodetect/commit/4264e37bf31e43e5f83113e660e70f7fb10a2dd5",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-10T05:03:49.000Z",
+      "evidenceUrl": "https://github.com/Xiaoph123/dsh-autodetect/commit/6e4de69afc61887be7914e1e447dbe9e3e27d63f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [

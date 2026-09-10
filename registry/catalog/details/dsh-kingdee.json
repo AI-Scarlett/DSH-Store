@@ -1,49 +1,47 @@
 {
-  "id": "dsh-desktop-controls",
-  "name": "桌面客户端（DSH Desktop Controls）",
-  "packageName": "dsh-desktop-controls",
-  "description": "为 DSH 提供桌面客户端能力。英文原始说明：Small in-app controls surface for the dsh-desktop shell",
+  "id": "dsh-kingdee",
+  "name": "技能管理工具（DSH Kingdee）",
+  "packageName": "dsh-kingdee",
+  "description": "Kingdee Cloud Starry Sky secondary-development plugin for DeepSeek Harness (DSH) — 金蝶云星空二次开发插件（DSH）。Typed tools over the Kingdee Cloud WebAPI, credential-safe config, and a companion domain skill.",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Controls",
-    "dsh-desktop-controls",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "技能管理工具",
+    "DSH Kingdee",
+    "dsh-kingdee",
+    "技能",
+    "Skill",
+    "扩展能力",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "controls"
+    "kingdee"
   ],
-  "repositoryUrl": "https://github.com/citrusli2026/dsh-electron-shell",
+  "repositoryUrl": "https://github.com/maxwell-feng/dsh-kingdee",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-controls/package.json",
-  "installPath": "plugins/dsh-desktop-controls",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a2a368ee639467ef0c4a5d3db67da0b99d2d69a9",
-  "version": "0.1.0",
+  "commit": "188862d3883507b66a2ff0adc48f94e1beb65571",
+  "version": "0.4.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T04:05:18.000Z",
+    "updatedAt": "2026-09-10T05:07:26.000Z",
     "observedAt": "2026-09-10T05:03:49.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-10T05:03:49.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/a2a368ee639467ef0c4a5d3db67da0b99d2d69a9",
+      "evidenceUrl": "https://github.com/maxwell-feng/dsh-kingdee/commit/188862d3883507b66a2ff0adc48f94e1beb65571",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +71,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "desktop-controls"
+    "kingdee"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is missing from the fixed Git Commit: ./lib/kd-core/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/kd-core/index.js; runtime source contains the credentia",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +162,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
     "profiles": [
       "web"
@@ -173,7 +171,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "SEE LICENSE IN LICENSE",
     "permissions": {
       "level": "unknown",
       "files": "unknown",

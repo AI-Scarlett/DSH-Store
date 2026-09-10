@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "ac4b78e8f5115c73951147f02c257732fbf72d37",
-  "version": "0.6.0",
+  "commit": "046dafe66c168f2f1d49a533f48f4153e12dc557",
+  "version": "0.6.1",
   "categories": [
     "tools",
     "memory"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T13:26:12.000Z",
-    "observedAt": "2026-09-03T19:14:41.000Z",
+    "updatedAt": "2026-09-10T03:57:03.000Z",
+    "observedAt": "2026-09-10T05:03:49.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-03T19:14:41.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/ac4b78e8f5115c73951147f02c257732fbf72d37",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-10T05:03:49.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/046dafe66c168f2f1d49a533f48f4153e12dc557",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -58,7 +58,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -68,7 +68,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -87,7 +87,7 @@
   "status": "unlisted",
   "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": "^0.1.0-rc.7 || ^0.1.1-rc.1 || ^0.1.2-rc.1",
+    "dsh": "^0.1.0-rc.7 || ^0.1.1-rc.1 || ^0.1.2-rc.1 || ^0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
