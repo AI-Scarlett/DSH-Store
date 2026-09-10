@@ -22,7 +22,7 @@ function response(body, status = 200) {
   return new Response(typeof body === 'string' ? body : JSON.stringify(body), { status })
 }
 
-function githubFetch({ patch = '+export const version = 2', commit = candidateCommit, candidateVersion = '2.0.0' } = {}) {
+function githubFetch({ patch = '+export const version = 2', bundlePatch = '- insert:\n    - id: demo\n      name: dsh-demo\n', commit = candidateCommit, candidateVersion = '2.0.0' } = {}) {
   return async url => {
     const parsedUrl = new URL(url)
     if (url.includes('/commits/main')) return response({ sha: commit })
@@ -30,7 +30,7 @@ function githubFetch({ patch = '+export const version = 2', commit = candidateCo
       const version = url.includes(`/${catalogCommit}/`) ? '1.0.0' : candidateVersion
       return response(JSON.stringify({ name: 'dsh-demo', version, license: 'MIT', main: 'lib/index.js', dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {} }))
     }
-    if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/cordis.patch.yml')) return response('- id: demo\n')
+    if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/cordis.patch.yml')) return response(bundlePatch)
     if (url.includes('/compare/')) return response({
       status: 'ahead', total_commits: 1,
       files: [{ filename: 'lib/index.js', status: 'modified', additions: 2, deletions: 1, changes: 3, patch }],
@@ -110,6 +110,28 @@ test('protected DSH mutations remain external-only and cannot produce a marketpl
   assert.equal(result.status, 'external-only')
   assert.match(result.reasons.join(' '), /DSH 原生代码/)
   assert.throws(() => service.approvedCandidate(entry(), candidateCommit, { userAcceptedRisk: true }), error => error.code === 'SOURCE_UPDATE_NOT_VERIFIED')
+})
+
+test('source update compares only plugin-owned insert IDs when the bundle also overlays Host rows', async () => {
+  const bundlePatch = [
+    "- id: modules",
+    "  name: '@deepseek-ai/dsh-client-modules'",
+    "  inject: [webServer]",
+    "- insert:",
+    "    - id: demo",
+    "      name: dsh-demo",
+    "- id: attachment-local",
+    "  config:",
+    "    maxImageBytes: 20971520",
+    "",
+  ].join('\n')
+  const service = createSourceUpdateService({
+    fetch: githubFetch({ bundlePatch }), sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(result.status, 'update-ready')
+  assert.deepEqual(result.candidate.entryIds, ['demo'])
+  assert.doesNotMatch(result.reasons.join(' '), /入口 ID.*不一致/)
 })
 
 test('matching source commit is current without downloading or installing source', async () => {

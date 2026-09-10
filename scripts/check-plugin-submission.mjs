@@ -3,6 +3,7 @@ import { posix } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { canonicalGithubRepository, loadCatalogFromFiles, validateCatalog, verifyCatalogEntry } from '../src/catalog.mjs'
 import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
+import { analyzeBundlePatch } from '../src/bundle-patch-semantics.mjs'
 
 export const SUBMISSION_REPORT_MARKER = '<!-- dsh-plugin-submission-check -->'
 
@@ -168,19 +169,25 @@ function safePatchPath(manifestPath, declared) {
 }
 
 function patchEntryIds(patch, options = {}) {
-  if (/\bname:\s*['"]?@deepseek-ai\//i.test(patch)) {
-    throw submissionError('SUBMISSION_PATCH_PROTECTED', 'Bundle Patch impersonates the protected @deepseek-ai namespace')
+  let semantics
+  try {
+    semantics = analyzeBundlePatch(patch)
+  } catch {
+    throw submissionError('SUBMISSION_BUNDLE_PATCH_INVALID', 'Bundle Patch ownership structure is ambiguous or invalid')
   }
-  if (/@deepseek-ai\//.test(patch) && /disabled:\s*true/i.test(patch)) {
+  if (semantics.ownedEntries.some(entry => entry.name?.toLowerCase().startsWith('@deepseek-ai/'))) {
+    throw submissionError('SUBMISSION_PATCH_PROTECTED', 'Bundle Patch inserts an entry in the protected @deepseek-ai namespace')
+  }
+  if (semantics.hostOverlays.some(entry => entry.disabled && entry.name?.toLowerCase().startsWith('@deepseek-ai/'))) {
     throw submissionError('SUBMISSION_PATCH_PROTECTED', 'Bundle Patch appears to disable an official component')
   }
-  const ids = [...new Set([...patch.matchAll(/(?:^|\n)\s*- id:\s*['"]?([A-Za-z0-9][A-Za-z0-9._-]{0,95})['"]?\s*(?:\n|$)/g)]
-    .map(match => match[1]))]
-  if (ids.length === 0) throw submissionError('SUBMISSION_ENTRY_MISSING', 'Bundle Patch does not declare a DSH entry ID')
-  const protectedIds = ids.filter(id => PROTECTED_ENTRY_IDS.has(id))
+  const ids = semantics.ownedEntryIds
+  if (ids.length === 0) throw submissionError('SUBMISSION_ENTRY_MISSING', 'Bundle Patch does not insert a plugin-owned DSH entry ID')
+  const allTargetIds = [...new Set([...ids, ...semantics.hostOverlays.map(entry => entry.id)])]
+  const protectedIds = allTargetIds.filter(id => PROTECTED_ENTRY_IDS.has(id))
   const allowProtectedManager = options.allowProtectedManager === true
-    && ids.length === 1
-    && ids[0] === 'dsh-safe-plugin-manager'
+    && ids.length === 1 && ids[0] === 'dsh-safe-plugin-manager'
+    && semantics.hostOverlays.length === 0
   if (protectedIds.length > 0 && !allowProtectedManager) {
     throw submissionError('SUBMISSION_ENTRY_PROTECTED', 'Bundle Patch uses a protected DSH entry ID')
   }

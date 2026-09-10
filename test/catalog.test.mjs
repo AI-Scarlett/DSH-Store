@@ -692,6 +692,28 @@ test('source verification checks manifest, lifecycle scripts, and Bundle ids at 
   }, { fetch: request }), /license does not match/)
 })
 
+test('source verification accepts a migrated owned entry when the Bundle also overlays Host rows', async () => {
+  const catalogEntry = { ...validateCatalog(document()).entries[0], entryIds: ['vision-router'] }
+  const request = async url => {
+    if (url.endsWith('/package.json')) return new Response(JSON.stringify({
+      name: 'dsh-demo', version: '1.2.0', license: 'MIT', dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {},
+    }))
+    return new Response([
+      "- id: modules",
+      "  name: '@deepseek-ai/dsh-client-modules'",
+      "  inject: [webServer]",
+      "- insert:",
+      "    - id: vision-router",
+      "      name: dsh-demo",
+      "- id: attachment-local",
+      "  config:",
+      "    maxImageBytes: 20971520",
+      "",
+    ].join('\n'))
+  }
+  assert.equal((await verifyCatalogEntry(catalogEntry, { fetch: request })).status, 'verified')
+})
+
 test('source verification retries transient GitHub transport failures', async () => {
   const catalogEntry = validateCatalog(document()).entries[0]
   let calls = 0

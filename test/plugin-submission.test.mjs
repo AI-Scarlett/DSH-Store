@@ -296,6 +296,37 @@ test('submission rejects private, archived, protected, and malformed plugin sour
   )
 })
 
+test('host overlays may assert official names without becoming plugin-owned entry IDs', async () => {
+  const patch = [
+    "- id: modules",
+    "  name: '@deepseek-ai/dsh-client-modules'",
+    "  inject: [webServer]",
+    "- insert:",
+    "    - id: vision-router",
+    "      name: dsh-demo",
+    "- id: attachment-local",
+    "  config:",
+    "    maxImageBytes: 20971520",
+    "",
+  ].join('\n')
+  const result = await checkRepository('https://github.com/example/dsh-demo', '.', {
+    catalogDocument: catalog(), fetch: sourceFetch({ patch }), retryDelaysMs: [],
+  })
+  assert.deepEqual(result.candidate.entryIds, ['vision-router'])
+
+  await assert.rejects(() => checkRepository('https://github.com/example/dsh-demo', '.', {
+    catalogDocument: catalog(),
+    fetch: sourceFetch({ patch: "- insert:\n    - id: fake-official\n      name: '@deepseek-ai/fake'\n" }),
+    retryDelaysMs: [],
+  }), error => error.code === 'SUBMISSION_PATCH_PROTECTED')
+
+  await assert.rejects(() => checkRepository('https://github.com/example/dsh-demo', '.', {
+    catalogDocument: catalog(),
+    fetch: sourceFetch({ patch: "- id: modules\n  name: '@deepseek-ai/dsh-client-modules'\n  disabled: true\n- insert:\n    - id: demo\n      name: dsh-demo\n" }),
+    retryDelaysMs: [],
+  }), error => error.code === 'SUBMISSION_PATCH_PROTECTED')
+})
+
 test('submission derives lifecycle scripts and rejects existing entry collisions', async () => {
   const first = await checkSubmission(issueBody(), {
     catalogDocument: catalog(), fetch: sourceFetch({ manifest: { scripts: { prepare: 'node build.mjs' } } }), retryDelaysMs: [],

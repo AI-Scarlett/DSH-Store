@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import {
   assessUpstreamVersion,
@@ -103,6 +104,17 @@ test('Catalog update identity includes package, repository, manifest, install pa
   assert.equal(catalogUpdateIdentityMatches(entry(), candidate), true)
   assert.equal(catalogUpdateIdentityMatches(entry(), { ...candidate, entryIds: ['other'] }), false)
   assert.equal(catalogUpdateIdentityMatches(entry(), { ...candidate, installPath: 'packages/demo' }), false)
+})
+
+test('DVR Catalog ownership migration excludes Host overlay targets and matches new candidates', async () => {
+  const dvr = JSON.parse(await readFile(new URL('../registry/catalog/details/dsh-vision-router.json', import.meta.url), 'utf8'))
+  assert.deepEqual(dvr.entryIds, ['vision-router'])
+  const candidate = {
+    packageName: dvr.packageName, repositoryUrl: dvr.repositoryUrl, manifestPath: dvr.manifestPath,
+    installPath: dvr.installPath, entryIds: ['vision-router'],
+  }
+  assert.equal(catalogUpdateIdentityMatches(dvr, candidate), true)
+  assert.equal(catalogUpdateIdentityMatches(dvr, { ...candidate, entryIds: ['vision-router', 'attachment-local'] }), false)
 })
 
 test('a Catalog version refresh resets old runtime and compatibility evidence', () => {

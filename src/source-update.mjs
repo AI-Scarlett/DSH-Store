@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import { compareVersions, verifyCatalogEntry } from './catalog.mjs'
+import { ownedBundleEntryIds } from './bundle-patch-semantics.mjs'
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const DEFAULT_TIMEOUT_MS = 10_000
@@ -83,7 +84,11 @@ function lifecycleScripts(manifest) {
 }
 
 function patchEntryIds(patch) {
-  return [...patch.matchAll(/(?:^|\n)\s*- id:\s*['"]?([A-Za-z0-9][A-Za-z0-9._-]{0,95})['"]?\s*(?:\n|$)/g)].map(match => match[1])
+  try {
+    return ownedBundleEntryIds(patch)
+  } catch {
+    throw updateError('SOURCE_UPDATE_PATCH_INVALID', '候选 Bundle Patch ownership 结构无效或存在歧义。')
+  }
 }
 
 function publicCandidate(entry) {
