@@ -81,7 +81,7 @@
     "llm-codebuddy"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.3-alpha.1, 0.1.3-alpha.2, 0.1.5-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.3-alpha.2, 0.1.5-alpha.1, 0.1.5-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -95,7 +95,8 @@
       "0.1.2-rc.1": "unknown",
       "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown"
+      "0.1.5-alpha.1": "unknown",
+      "0.1.5-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -165,6 +166,12 @@
         "rollback": "unknown"
       },
       "0.1.5-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
