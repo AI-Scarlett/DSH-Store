@@ -429,6 +429,8 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
   assert.match(refresh, /download concurrency must be between 1 and 16/)
   assert.match(refresh, /xargs -P "\$download_jobs" -n 1 bash -Eeuo pipefail/)
   assert.match(refresh, /--max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at -/)
+  assert.match(refresh, /curl -4 -fsS --resolve/)
+  assert.match(refresh, /curl -4 -fsSL --connect-timeout 10/)
   assert.match(refresh, /dsh\.store:http:\/marketplace/)
   assert.match(refresh, /dsh\.store:https:/)
   assert.match(refresh, /dsh-store\.cn:https:/)
