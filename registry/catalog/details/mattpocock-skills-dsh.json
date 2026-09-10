@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "67f23eb341663372e0907301b03fa54db9b40827",
-  "version": "0.1.4",
+  "commit": "c92005d3f03a402abab7b3fcd635f0c11192b39b",
+  "version": "0.1.6",
   "categories": [
     "workflow",
     "tools"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T05:51:45.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-10T17:24:39.000Z",
+    "observedAt": "2026-09-10T18:59:12.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/gongyijie85/mattpocock-skills-dsh/commit/67f23eb341663372e0907301b03fa54db9b40827",
+      "checkedAt": "2026-09-10T18:59:12.000Z",
+      "evidenceUrl": "https://github.com/gongyijie85/mattpocock-skills-dsh/commit/c92005d3f03a402abab7b3fcd635f0c11192b39b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -84,25 +84,32 @@
   "entryIds": [
     "mattpocock-skills-dsh"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": null,
     "dshReleases": {
-      "rc.7": "unknown",
-      "rc.8": "unknown",
-      "0.1.1-rc.1": "unknown",
+      "rc.7": "compatible",
+      "rc.8": "compatible",
+      "0.1.1-rc.1": "compatible",
       "0.1.1-rc.2": "compatible",
-      "0.1.2-alpha.2": "unknown",
-      "0.1.2-alpha.3": "unknown",
-      "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
+      "0.1.2-alpha.2": "compatible",
+      "0.1.2-alpha.3": "compatible",
+      "0.1.2-alpha.4": "compatible",
+      "0.1.2-alpha.5": "compatible",
+      "0.1.2-rc.1": "compatible",
       "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.3-alpha.2": "compatible",
+      "0.1.5-alpha.1": "compatible",
+      "0.1.5-alpha.2": "compatible",
+      "0.1.5-rc.1": "compatible",
+      "0.0.1-rc.1": "incompatible",
+      "0.0.1-rc.2": "incompatible",
+      "0.0.1-rc.5": "incompatible",
+      "0.1.0-rc.2": "incompatible",
+      "0.1.0-rc.3": "incompatible",
+      "0.1.0-rc.6": "compatible",
+      "0.1.5-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -184,6 +191,48 @@
         "rollback": "unknown"
       },
       "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.0.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.0.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.0.1-rc.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.0-rc.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.0-rc.6": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

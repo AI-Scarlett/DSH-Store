@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "c90e27c73e61a756de3bf5ebb2184b35b2a81711",
-  "version": "0.1.7",
+  "commit": "fc90d77b6330225d6d16eba03943694a5744d618",
+  "version": "0.1.8",
   "categories": [
     "sessions"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-21T01:45:24.000Z",
-    "observedAt": "2026-09-04T05:32:32.000Z",
+    "updatedAt": "2026-09-10T14:34:53.000Z",
+    "observedAt": "2026-09-10T18:59:12.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T05:32:32.000Z",
-      "evidenceUrl": "https://github.com/jiesou/dsh-stream-rules/commit/c90e27c73e61a756de3bf5ebb2184b35b2a81711",
+      "checkedAt": "2026-09-10T18:59:12.000Z",
+      "evidenceUrl": "https://github.com/jiesou/dsh-stream-rules/commit/fc90d77b6330225d6d16eba03943694a5744d618",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -80,8 +80,8 @@
   "entryIds": [
     "stream-rules"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.0-rc.6 <0.2.0",
     "dshReleases": {
@@ -96,9 +96,10 @@
       "0.1.2-rc.1": "unknown",
       "0.1.3-alpha.1": "unknown",
       "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.5-alpha.1": "compatible",
+      "0.1.5-alpha.2": "compatible",
+      "0.1.5-rc.1": "compatible",
+      "0.1.5-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -184,11 +185,20 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "headless",
+      "web"
+    ]
   },
   "details": {
     "pluginType": "feature",

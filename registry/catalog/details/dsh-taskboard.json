@@ -20,24 +20,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "0a0cfe6b1f7e3ebc7cf6045c093d37630f7909a0",
-  "version": "0.6.6",
+  "commit": "b9d3a523cc57aa52746aaa003e034e206f5ec741",
+  "version": "0.6.7",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-09T13:50:04.000Z",
-    "observedAt": "2026-09-10T02:50:00.000Z",
+    "updatedAt": "2026-09-10T13:31:47.000Z",
+    "observedAt": "2026-09-10T18:59:12.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-10T02:50:00.000Z",
-      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/0a0cfe6b1f7e3ebc7cf6045c093d37630f7909a0",
+      "checkedAt": "2026-09-10T18:59:12.000Z",
+      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/b9d3a523cc57aa52746aaa003e034e206f5ec741",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
     "dsh-taskboard"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -95,7 +95,8 @@
       "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -177,6 +178,12 @@
         "rollback": "unknown"
       },
       "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
