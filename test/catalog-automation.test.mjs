@@ -433,6 +433,8 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
   assert.match(refresh, /curl -4 --http1\.1 -fsSL --connect-timeout 10/)
   assert.match(refresh, /DSH_STORE_REFRESH_REUSED reused=/)
   assert.match(refresh, /old_manifest_sha/)
+  assert.match(refresh, /DSH_STORE_REFRESH_RAW_FALLBACK path=/)
+  assert.match(refresh, /raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/\$source_sha/)
   assert.match(refresh, /dsh\.store:http:\/marketplace/)
   assert.match(refresh, /dsh\.store:https:/)
   assert.match(refresh, /dsh-store\.cn:https:/)
