@@ -28,7 +28,7 @@ import {
 } from '../src/catalog.mjs'
 import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { isGeneratedSelfManagerCatalogDetail, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
+import { distributablePackageEntries, isGeneratedSelfManagerCatalogDetail, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -288,7 +288,8 @@ async function analyzeFixedSource(candidate, policy, github) {
 
   reasons.push(...missingRuntimeEntryReasons(manifest, packageEntries, prefix))
 
-  const runtimeFiles = packageEntries.filter(item => {
+  const runtimeSurface = distributablePackageEntries(manifest, packageEntries, prefix)
+  const runtimeFiles = runtimeSurface.entries.filter(item => {
     if (item.type !== 'blob') return false
     const relativePath = prefix ? item.path.slice(prefix.length) : item.path
     if (EXCLUDED_DIRECTORY.test(relativePath)) return false

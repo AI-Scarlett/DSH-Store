@@ -59,3 +59,53 @@ export function missingRuntimeEntryReasons(manifest, entries, prefix = '') {
     return files.has(prefix + normalized) ? [] : [`runtime artifact is missing from the fixed Git Commit: ${target}`]
   })
 }
+
+function collectRuntimeTargets(manifest) {
+  const targets = new Set()
+  const collect = value => {
+    if (typeof value === 'string') targets.add(value)
+    else if (Array.isArray(value)) value.forEach(collect)
+    else if (value && typeof value === 'object') Object.values(value).forEach(collect)
+  }
+  collect(manifest?.main)
+  collect(manifest?.module)
+  collect(manifest?.exports)
+  collect(manifest?.dsh?.client?.entry)
+  collect(manifest?.dsh?.bundle?.patch)
+  return targets
+}
+
+function safePackagePath(value) {
+  if (typeof value !== 'string') return null
+  let path = value.trim().replace(/^\.\//, '').replace(/\/$/, '')
+  if (!path || path.startsWith('/') || path.includes('\\') || path.split('/').includes('..')) return null
+  if (/[*?\[\]{}!]/.test(path)) return null
+  return path
+}
+
+export function distributablePackageEntries(manifest, entries, prefix = '') {
+  const packageEntries = Array.isArray(entries) ? entries : []
+  const declared = manifest?.files
+  if (!Array.isArray(declared) || declared.length === 0) {
+    return { entries: packageEntries, mode: 'repository-fallback' }
+  }
+  const roots = []
+  for (const value of declared) {
+    const path = safePackagePath(value)
+    if (path === null) return { entries: packageEntries, mode: 'repository-fallback' }
+    roots.push(path)
+  }
+  const runtimeTargets = new Set()
+  for (const value of collectRuntimeTargets(manifest)) {
+    const path = safePackagePath(value)
+    if (path !== null) runtimeTargets.add(path)
+  }
+  const alwaysIncluded = /^(?:package\.json|readme(?:\.[^/]*)?|licen[cs]e(?:\.[^/]*)?|copying(?:\.[^/]*)?|notice(?:\.[^/]*)?)$/i
+  const selected = packageEntries.filter(item => {
+    if (typeof item?.path !== 'string') return false
+    const relativePath = prefix ? item.path.slice(prefix.length) : item.path
+    if (alwaysIncluded.test(relativePath) || runtimeTargets.has(relativePath)) return true
+    return roots.some(root => relativePath === root || relativePath.startsWith(`${root}/`))
+  })
+  return { entries: selected, mode: 'manifest-files' }
+}

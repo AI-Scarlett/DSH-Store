@@ -6,13 +6,51 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
-import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
+import { distributablePackageEntries, isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
 import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
 const rootPath = fileURLToPath(new URL('..', import.meta.url))
 const catalogAutomationPath = fileURLToPath(new URL('../scripts/automate-catalog.mjs', import.meta.url))
+
+test('runtime source scope follows safe manifest.files entries and retains implicit runtime targets', () => {
+  const entries = [
+    { type: 'blob', path: 'package.json' },
+    { type: 'blob', path: 'index.js' },
+    { type: 'blob', path: 'lib/client.js' },
+    { type: 'blob', path: 'cordis.patch.yml' },
+    { type: 'blob', path: 'scripts/release.mjs' },
+    { type: 'blob', path: 'test/fixture.js' },
+  ]
+  const result = distributablePackageEntries({
+    files: ['index.js', 'lib', 'cordis.patch.yml'],
+    main: './lib/client.js',
+    dsh: { bundle: { patch: './cordis.patch.yml' } },
+  }, entries)
+  assert.equal(result.mode, 'manifest-files')
+  assert.deepEqual(result.entries.map(item => item.path), [
+    'package.json', 'index.js', 'lib/client.js', 'cordis.patch.yml',
+  ])
+})
+
+test('runtime source scope fails closed to the repository when manifest.files is absent or ambiguous', () => {
+  const entries = [{ type: 'blob', path: 'lib/index.js' }, { type: 'blob', path: 'scripts/release.mjs' }]
+  assert.deepEqual(distributablePackageEntries({}, entries), { entries, mode: 'repository-fallback' })
+  assert.deepEqual(distributablePackageEntries({ files: ['lib/**/*.js'] }, entries), { entries, mode: 'repository-fallback' })
+  assert.deepEqual(distributablePackageEntries({ files: ['lib', '!lib/private.js'] }, entries), { entries, mode: 'repository-fallback' })
+})
+
+test('runtime source scope handles monorepo package prefixes without admitting sibling repository files', () => {
+  const entries = [
+    { type: 'blob', path: 'plugins/demo/package.json' },
+    { type: 'blob', path: 'plugins/demo/lib/index.js' },
+    { type: 'blob', path: 'plugins/demo/scripts/build.mjs' },
+  ]
+  const result = distributablePackageEntries({ files: ['lib'], main: './lib/index.js' }, entries, 'plugins/demo/')
+  assert.equal(result.mode, 'manifest-files')
+  assert.deepEqual(result.entries.map(item => item.path), ['plugins/demo/package.json', 'plugins/demo/lib/index.js'])
+})
 
 test('permission scan ignores inert Catalog metadata and ordinary identifiers', () => {
   const source = `
