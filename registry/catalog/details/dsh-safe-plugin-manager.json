@@ -30,7 +30,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "0d3523a3c41aeac543579f2c5b50e1030e4cf05f",
+  "commit": "c9c22588698d6d729ce29924bc1d89ad17564bc9",
   "version": "0.8.16",
   "categories": [
     "marketplace",
@@ -39,20 +39,20 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T02:11:53.000Z",
-    "observedAt": "2026-09-10T02:50:00.000Z",
+    "updatedAt": "2026-09-10T03:29:11.000Z",
+    "observedAt": "2026-09-10T03:30:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-10T02:50:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/0d3523a3c41aeac543579f2c5b50e1030e4cf05f",
+      "checkedAt": "2026-09-10T03:30:58.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/c9c22588698d6d729ce29924bc1d89ad17564bc9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -105,7 +105,8 @@
       "0.1.3-alpha.1": "compatible",
       "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "compatible",
-      "0.1.5-alpha.2": "compatible"
+      "0.1.5-alpha.2": "compatible",
+      "0.1.5-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -181,6 +182,12 @@
         "rollback": "unknown"
       },
       "0.1.5-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
