@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "50e94f0d41cda23a66bb6c7e1f72739051083c4d",
-  "version": "0.4.3",
+  "commit": "a8f89fa7fc2f08fcace35c9758c5a3243fcfee8b",
+  "version": "0.5.0",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-09T11:41:03.000Z",
-    "observedAt": "2026-09-09T12:47:01.000Z",
+    "updatedAt": "2026-09-10T13:09:22.000Z",
+    "observedAt": "2026-09-10T18:59:12.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-09T12:47:01.000Z",
-      "evidenceUrl": "https://github.com/gezi-wen/sage-mem/commit/50e94f0d41cda23a66bb6c7e1f72739051083c4d",
+      "checkedAt": "2026-09-10T18:59:12.000Z",
+      "evidenceUrl": "https://github.com/gezi-wen/sage-mem/commit/a8f89fa7fc2f08fcace35c9758c5a3243fcfee8b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,8 +78,8 @@
   "entryIds": [
     "sage-mem"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.2-rc.1",
     "dshReleases": {
@@ -96,7 +96,8 @@
       "0.1.3-alpha.2": "compatible",
       "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.5-rc.1": "compatible",
+      "0.1.5-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -178,6 +179,12 @@
         "rollback": "unknown"
       },
       "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

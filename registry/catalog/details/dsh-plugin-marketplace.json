@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9b503e0dcad29844c07d382c62c03153dd52f3b1",
+  "commit": "4b257d82163518af8abf373912361e9484798b18",
   "version": "0.9.4",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T11:37:28.000Z",
-    "observedAt": "2026-09-10T12:45:09.000Z",
+    "updatedAt": "2026-09-10T17:17:17.000Z",
+    "observedAt": "2026-09-10T18:59:12.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T12:45:09.000Z",
-      "evidenceUrl": "https://github.com/YELEBAI/dsh-plugin-marketplace/commit/9b503e0dcad29844c07d382c62c03153dd52f3b1",
+      "checkedAt": "2026-09-10T18:59:12.000Z",
+      "evidenceUrl": "https://github.com/YELEBAI/dsh-plugin-marketplace/commit/4b257d82163518af8abf373912361e9484798b18",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "plugin-marketplace"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/types.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/types.js; runtime artifact is missing from the fixed Git Commit: ./lib/typert.d.ts; runtime artifact is missing from the fixed",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 67334081 total bytes (maximum 2097152); largest file 44559543 bytes (maximum 262144)",
   "compatibility": {
     "dsh": "^0.1.0-rc.5",
     "dshReleases": {
@@ -91,9 +91,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -144,12 +144,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -161,9 +155,15 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
