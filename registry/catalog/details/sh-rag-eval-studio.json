@@ -19,7 +19,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "48fe063447bef5f2bd69d2732c619d1f87581fd1",
+  "commit": "e83404521491a0ea139286561bc5b454f03e2ce9",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -27,20 +27,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T03:32:38.000Z",
-    "observedAt": "2026-09-10T03:30:58.000Z",
+    "updatedAt": "2026-09-10T09:26:45.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-10T03:30:58.000Z",
-      "evidenceUrl": "https://github.com/wcy1222yeah-afk/sh-rag-eval-studio/commit/48fe063447bef5f2bd69d2732c619d1f87581fd1",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/wcy1222yeah-afk/sh-rag-eval-studio/commit/e83404521491a0ea139286561bc5b454f03e2ce9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -50,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -60,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -70,14 +70,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "sh-rag-eval-studio"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is missing from the fixed Git Commit: ./lib/core/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.0.1-rc.1 <1",
     "dshReleases": {

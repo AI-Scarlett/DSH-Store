@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "0427d5bc9e1c8eae1dfe6d8b77a1691c5db2dabb",
-  "version": "0.10.2",
+  "commit": "94c0fb01b105089879300c89155f6706428474b0",
+  "version": "0.10.3",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T03:58:24.000Z",
-    "observedAt": "2026-09-08T12:40:26.000Z",
+    "updatedAt": "2026-09-10T07:19:53.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-08T12:40:26.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/0427d5bc9e1c8eae1dfe6d8b77a1691c5db2dabb",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/94c0fb01b105089879300c89155f6706428474b0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,8 +80,8 @@
   "entryIds": [
     "llm-commandcode"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.1, 0.1.5-alpha.2, 0.1.5-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": "^0.1.2-rc.1",
     "dshReleases": {
@@ -96,7 +96,7 @@
       "0.1.2-rc.1": "compatible",
       "0.1.3-alpha.1": "compatible",
       "0.1.3-alpha.2": "compatible",
-      "0.1.5-alpha.1": "unknown",
+      "0.1.5-alpha.1": "compatible",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown"
     },

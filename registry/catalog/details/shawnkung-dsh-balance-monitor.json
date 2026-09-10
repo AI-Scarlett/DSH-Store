@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8d6f0d68725f6ee92b6ac2d0c13478af3adce95b",
-  "version": "0.1.12",
+  "commit": "45e0a581245bee9ad9c4a8aad233c5e26b0ee2e1",
+  "version": "0.1.14",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T03:36:37.000Z",
-    "observedAt": "2026-09-10T05:03:49.000Z",
+    "updatedAt": "2026-09-10T08:03:31.000Z",
+    "observedAt": "2026-09-10T12:45:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T05:03:49.000Z",
-      "evidenceUrl": "https://github.com/ShawnKung/dsh-balance-monitor/commit/8d6f0d68725f6ee92b6ac2d0c13478af3adce95b",
+      "checkedAt": "2026-09-10T12:45:09.000Z",
+      "evidenceUrl": "https://github.com/ShawnKung/dsh-balance-monitor/commit/45e0a581245bee9ad9c4a8aad233c5e26b0ee2e1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,9 +81,9 @@
     "dsh-balance-monitor"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.2-rc.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,9 +93,10 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
+      "0.1.2-rc.1": "compatible",
+      "0.1.5-rc.1": "compatible",
       "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown"
+      "0.1.5-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,6 +147,18 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.1.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.1.5-alpha.1": {
         "install": "unknown",
         "start": "unknown",
@@ -153,12 +166,6 @@
         "rollback": "unknown"
       },
       "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -185,16 +192,12 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/schemastery",
-      "semver",
-      "sortablejs"
+      "semver"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
