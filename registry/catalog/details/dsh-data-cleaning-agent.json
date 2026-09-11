@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "604f2bc82cfd7dd11e4e40888053ee1b5912ff07",
-  "version": "0.9.6",
+  "commit": "2424c9742cd61d85422e046953c27817b8ec502f",
+  "version": "0.9.7",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T02:21:34.000Z",
-    "observedAt": "2026-09-11T03:28:51.000Z",
+    "updatedAt": "2026-09-11T06:34:37.000Z",
+    "observedAt": "2026-09-11T12:39:42.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-11T03:28:51.000Z",
-      "evidenceUrl": "https://github.com/duhu2000/dsh-data-cleaning-agent/commit/604f2bc82cfd7dd11e4e40888053ee1b5912ff07",
+      "checkedAt": "2026-09-11T12:39:42.000Z",
+      "evidenceUrl": "https://github.com/duhu2000/dsh-data-cleaning-agent/commit/2424c9742cd61d85422e046953c27817b8ec502f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "data-cleaning-agent"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 701202 total bytes (maximum 2097152); largest file 278248 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {

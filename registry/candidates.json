@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-11T03:28:51.000Z",
+    "updatedAt": "2026-09-11T12:39:42.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1621,34 +1621,29 @@
       "description": "📚 A zero-dependency, git-backed micro-lesson library for AI Agents to asynchronously share and search verified debugging experience. Python stdlib only. | https://misakanet.org",
       "repositoryUrl": "https://github.com/Ikalus1988/MisakaNet",
       "defaultBranch": "main",
-      "latestCommit": "9e6439a61e54ee0d541384490c14c472df20e2d8",
-      "sourceUpdatedAt": "2026-08-23T09:36:30.000Z",
+      "latestCommit": "6d63642e449764bc15330004c47186ef92fdd937",
+      "sourceUpdatedAt": "2026-09-11T12:45:22.000Z",
       "discoveredAt": "2026-08-23T06:56:22.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
       ],
       "topics": [
-        "ai-agent",
-        "ai-infra",
-        "claude",
-        "deepseek-harness",
-        "devops",
-        "dsh-plugin",
-        "failure-analysis",
+        "agents",
+        "ai-agents",
+        "cloudflare-workers",
+        "d1",
+        "documentation",
         "failure-memory",
-        "git-based",
-        "knowledge-sharing",
-        "lesson-database",
+        "knowledge-base",
+        "llm",
         "mcp",
         "mcp-server",
-        "multi-agent",
-        "open-source",
-        "python",
+        "sqlite",
         "automatic-radar"
       ],
       "status": "rejected",
       "route": "blocked",
-      "statusReason": "SUBMISSION_VERSION_INVALID: package.json must declare a semantic version"
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
     },
     {
       "id": "haroonsh-dev-deepseek-harness",
@@ -2439,8 +2434,8 @@
       "description": "DeepSeek Harness 的更新助手：一次扫描覆盖 dsh 本体、官方 bundle 和每个 profile 的插件，说清改了什么、风险多大，只更新你确认过的那些。",
       "repositoryUrl": "https://github.com/hezhongtang/dsh-update-copilot",
       "defaultBranch": "main",
-      "latestCommit": "1e0768ae750654724942a043734ee440a9961f07",
-      "sourceUpdatedAt": "2026-09-06T05:31:25.000Z",
+      "latestCommit": "f5371fc09b332061b9d9304c15817a945e3d5126",
+      "sourceUpdatedAt": "2026-09-11T05:05:03.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2889,8 +2884,8 @@
       "description": "一键分享你的对话。",
       "repositoryUrl": "https://github.com/hellodigua/dsh-share",
       "defaultBranch": "main",
-      "latestCommit": "4cca10110cc3cde7b58febfd2c1ffdbdc66c630d",
-      "sourceUpdatedAt": "2026-09-01T09:15:58.000Z",
+      "latestCommit": "d807c18d5ffa3dea670497cf109dd2d383a57242",
+      "sourceUpdatedAt": "2026-09-11T10:30:47.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3070,8 +3065,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Sidebar Archived entry + archived-session panel with unarchive and delete, for the DeepSeek Harness web GUI",
       "repositoryUrl": "https://github.com/huahai0202/dsh-better-archive",
       "defaultBranch": "main",
-      "latestCommit": "81496b6ba8f82da734c1782c637fb71ca3b4ce62",
-      "sourceUpdatedAt": "2026-09-10T04:26:42.000Z",
+      "latestCommit": "deef9769843dea67764bdc323e89eee2553c4d5b",
+      "sourceUpdatedAt": "2026-09-11T09:49:41.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4200,8 +4195,8 @@
       "description": "为 DSH 提供终端命令工具能力。英文原始说明：DSH client plugin — flip to the back of the page for a floating glass task console: live background jobs, subagents, session overview and workspace of the current session, with mouse-draggable cards.",
       "repositoryUrl": "https://github.com/He2way/dsh-task-console",
       "defaultBranch": "main",
-      "latestCommit": "a3f130852db0b7d86a819a22586b3f37029ae360",
-      "sourceUpdatedAt": "2026-08-14T01:43:43.000Z",
+      "latestCommit": "747396050c62f5b9c4b1530d81ff370fc5868409",
+      "sourceUpdatedAt": "2026-09-11T05:06:50.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5757,8 +5752,8 @@
       "description": "会话历史消息查看：列出当前会话全部你发送的消息，支持排序、搜索、一键复制与点击跳转定位（目标未加载时自动加载更早历史）。",
       "repositoryUrl": "https://github.com/chenproton/dsh-history",
       "defaultBranch": "main",
-      "latestCommit": "0dd37138713aeb61cc2dc9ced6ef6932df2917ec",
-      "sourceUpdatedAt": "2026-08-18T06:05:34.000Z",
+      "latestCommit": "ecb474edf44c85d8d7ec7a0ade15e3d22ad5bd80",
+      "sourceUpdatedAt": "2026-09-11T07:52:00.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6024,8 +6019,8 @@
       "description": "秘塔AI搜索 providers for ctx.web：web_search 返回网页摘要，web_fetch 读取网页全文 markdown，多范围搜索（网页/文库/论文/图片/视频/播客）。",
       "repositoryUrl": "https://github.com/TZHR-invest/dsh-plugins",
       "defaultBranch": "main",
-      "latestCommit": "321f7c6edf3e7795673c7c018fa1c29ec88ed38a",
-      "sourceUpdatedAt": "2026-09-10T19:33:03.000Z",
+      "latestCommit": "17ebdfb4c2cba30ede4bc6b8b23937811d6a16b3",
+      "sourceUpdatedAt": "2026-09-11T12:19:29.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6814,8 +6809,8 @@
       "description": "基于官方 OAuth Open API 双向同步滴答清单（TickTick/Dida365）任务：拉取各清单任务、创建/更新/完成/删除、按标题去重的一键同步，带 Web 设置面板。",
       "repositoryUrl": "https://github.com/zhengjy01/dsh-ticktick",
       "defaultBranch": "main",
-      "latestCommit": "e510a51148b69345a0654024a6d20295e00246db",
-      "sourceUpdatedAt": "2026-08-16T08:51:14.000Z",
+      "latestCommit": "7cfc8ca610b8b96753a0a70c53be92c3b447fb71",
+      "sourceUpdatedAt": "2026-09-11T12:37:33.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9937,26 +9932,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vibe-math."
     },
     {
-      "id": "abcdefgxw-dsh-toolbox-web",
-      "name": "会话管理（DSH Toolbox Web）",
-      "description": "Web 界面工具箱：会话/回收站/子目录/搜索/预设/配置管理、标签分组、长消息折叠，以及支持 IM 渠道推送的定时心跳。",
-      "repositoryUrl": "https://github.com/AbcdefgXW/dsh-toolbox-web",
-      "defaultBranch": "main",
-      "latestCommit": "60673efca0a516006ac250f6c5fe781a161251fe",
-      "sourceUpdatedAt": "2026-09-10T20:06:00.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-toolbox-web."
-    },
-    {
       "id": "kw78-dsh-office-tools",
       "name": "Office 文档工具（DSH Office Tools）",
       "description": "面向 agent 的工作区安全 Office 工具集：创建/读取 Word、创建/读取/更新 Excel、创建/读取 PowerPoint，并支持 PNG/JPG/GIF 图片排版。",
@@ -10335,8 +10310,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "3c5954a10e979901699d3c12d26999c23e96810f",
-      "sourceUpdatedAt": "2026-09-10T11:37:30.000Z",
+      "latestCommit": "3eee6a366b834989c8787d90daa109b52e9c8860",
+      "sourceUpdatedAt": "2026-09-11T12:37:26.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10376,8 +10351,8 @@
       "description": "为 AI 回复自动添加表情。",
       "repositoryUrl": "https://github.com/hellodigua/dsh-emoji",
       "defaultBranch": "main",
-      "latestCommit": "716b3045dbf15a4c158b09090735e04b283e6960",
-      "sourceUpdatedAt": "2026-09-10T09:30:29.000Z",
+      "latestCommit": "dc3d04d7efb6fa9769c1c43fff726e27d99df22c",
+      "sourceUpdatedAt": "2026-09-11T10:52:59.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
