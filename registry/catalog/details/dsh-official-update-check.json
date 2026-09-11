@@ -1,50 +1,47 @@
 {
-  "id": "dsh-commandcode-provider",
-  "name": "Command Code 模型提供商（DSH Command Code Provider）",
-  "packageName": "@mars-sea/dsh-commandcode-provider",
-  "description": "为 DSH 注册 Command Code 模型提供商与模型目录。",
+  "id": "dsh-official-update-check",
+  "name": "实验功能插件（DSH Official Update Check）",
+  "packageName": "@themis4226/dsh-official-update-check",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Maintainer-only DSH settings integration for checking the official npm release.",
   "searchTerms": [
-    "Command Code 模型提供商",
-    "DSH Command Code Provider",
-    "dsh-commandcode-provider",
-    "@mars-sea/dsh-commandcode-provider",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
-    "模型与账号",
-    "模型提供商",
+    "实验功能插件",
+    "DSH Official Update Check",
+    "dsh-official-update-check",
+    "@themis4226/dsh-official-update-check",
+    "实验功能",
+    "新功能",
     "dsh",
-    "commandcode",
-    "provider"
+    "official",
+    "update",
+    "check"
   ],
-  "repositoryUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider",
+  "repositoryUrl": "https://github.com/Themis4226/Installing-Deepseek-Harness-lazily",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
-  "updatePolicy": null,
-  "commit": "f49d4bc007d612b67a359b5b9c4486e081cbed3f",
-  "version": "0.10.5",
+  "manifestPath": "launcher-integration/dsh-official-update-check/package.json",
+  "installPath": "launcher-integration/dsh-official-update-check",
+  "updatePolicy": "external-only",
+  "commit": "35d3d253b6a77dce185b44921cc3bdb7c1b58a91",
+  "version": "1.0.0",
   "categories": [
-    "models"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T02:42:11.000Z",
+    "updatedAt": "2026-09-11T03:33:04.000Z",
     "observedAt": "2026-09-11T03:28:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-11T03:28:51.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/f49d4bc007d612b67a359b5b9c4486e081cbed3f",
+      "evidenceUrl": "https://github.com/Themis4226/Installing-Deepseek-Harness-lazily/commit/35d3d253b6a77dce185b44921cc3bdb7c1b58a91",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +71,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "llm-commandcode"
+    "official-update-check"
   ],
-  "status": "approved",
-  "statusReason": null,
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
   "compatibility": {
-    "dsh": "^0.1.2-rc.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,13 +90,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "compatible",
-      "0.1.3-alpha.1": "compatible",
-      "0.1.3-alpha.2": "compatible",
-      "0.1.5-alpha.1": "compatible",
       "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "compatible",
-      "0.1.5-rc.2": "compatible"
+      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -150,30 +143,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -193,34 +162,30 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
     ]
   },
   "details": {
-    "pluginType": "provider",
+    "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "UNLICENSED",
     "permissions": {
-      "level": "high",
-      "files": "read-only",
-      "network": "specified-services",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "api-key"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "第三方 API"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
-    "review": "community-index-not-security-audited"
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
