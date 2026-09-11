@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "05f674afab5572b475fed6036770054d60771f0d",
-  "version": "0.5.0",
+  "commit": "46ad865317ff3929f0afbce32c38669023585bed",
+  "version": "0.5.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T17:07:07.000Z",
-    "observedAt": "2026-09-10T18:59:12.000Z",
+    "updatedAt": "2026-09-11T03:11:56.000Z",
+    "observedAt": "2026-09-11T03:28:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T18:59:12.000Z",
-      "evidenceUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks/commit/05f674afab5572b475fed6036770054d60771f0d",
+      "checkedAt": "2026-09-11T03:28:51.000Z",
+      "evidenceUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks/commit/46ad865317ff3929f0afbce32c38669023585bed",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/client/index.js; runtime source contains the files permission signal; runtime source cont",
   "compatibility": {
-    "dsh": "^0.1.5-rc.1",
+    "dsh": "^0.1.5-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
