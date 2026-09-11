@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6b2db149d7eccb0aff7f8c705f1c1a7e34ee0d30",
-  "version": "0.2.22",
+  "commit": "9d7f2a6387bda079907057861d111c476abcd722",
+  "version": "0.3.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T05:50:23.000Z",
-    "observedAt": "2026-09-10T12:45:09.000Z",
+    "updatedAt": "2026-09-11T07:41:06.000Z",
+    "observedAt": "2026-09-11T12:39:42.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T12:45:09.000Z",
-      "evidenceUrl": "https://github.com/xia-sc/dsh-cc-studio/commit/6b2db149d7eccb0aff7f8c705f1c1a7e34ee0d30",
+      "checkedAt": "2026-09-11T12:39:42.000Z",
+      "evidenceUrl": "https://github.com/xia-sc/dsh-cc-studio/commit/9d7f2a6387bda079907057861d111c476abcd722",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
     "dsh-cc-studio"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -94,7 +94,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown"
@@ -143,12 +142,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -1,48 +1,49 @@
 {
-  "id": "dsh-ticktick",
-  "name": "任务通知提醒（DSH Ticktick）",
-  "packageName": "dsh-ticktick",
-  "description": "基于官方 OAuth Open API 双向同步滴答清单（TickTick/Dida365）任务：拉取各清单任务、创建/更新/完成/删除、按标题去重的一键同步，带 Web 设置面板。",
+  "id": "dsh-vs-game",
+  "name": "用量统计看板（DSH Vs Game）",
+  "packageName": "dsh-vs-game",
+  "description": "工作中的大肥鱼：工作驱动的解压小游戏。文件是敌人，token 是经验，DSH 干活就是你变强的方式。",
   "searchTerms": [
-    "任务通知提醒",
-    "DSH Ticktick",
-    "dsh-ticktick",
-    "任务完成",
-    "通知",
-    "提醒",
-    "消息推送",
-    "通知与集成",
-    "消息",
+    "用量统计看板",
+    "DSH Vs Game",
+    "dsh-vs-game",
+    "用量",
+    "Token",
+    "统计",
+    "看板",
+    "实验功能",
+    "新功能",
     "dsh",
-    "ticktick"
+    "vs",
+    "game"
   ],
-  "repositoryUrl": "https://github.com/zhengjy01/dsh-ticktick",
+  "repositoryUrl": "https://github.com/shang-han/dsh-vs-game",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "7cfc8ca610b8b96753a0a70c53be92c3b447fb71",
-  "version": "0.1.4",
+  "updatePolicy": "external-only",
+  "commit": "9df0da97c484f589005107853aa506318a3d57b4",
+  "version": "0.1.0",
   "categories": [
-    "notifications"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T12:37:33.000Z",
+    "updatedAt": "2026-09-11T12:44:41.000Z",
     "observedAt": "2026-09-11T12:39:42.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-11T12:39:42.000Z",
-      "evidenceUrl": "https://github.com/zhengjy01/dsh-ticktick/commit/7cfc8ca610b8b96753a0a70c53be92c3b447fb71",
+      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/9df0da97c484f589005107853aa506318a3d57b4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "ticktick"
+    "vs-game"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6 || ^0.1.1-rc.1 || ^0.1.2-alpha.1 || ^0.1.5-rc.1",
+    "dsh": "^0.1.0-rc.6",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -91,10 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown"
@@ -148,30 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -191,33 +164,30 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
     ]
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "any",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "oauth"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "第三方网络服务（插件可访问任意网络端点）",
-      "用户配置的外部服务凭据"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

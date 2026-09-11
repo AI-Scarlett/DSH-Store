@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5539044fec7220fe1aacd4b3dcbda50f339d127c",
-  "version": "1.14.1",
+  "commit": "b5d2ff46b6634bc1253508f4664b8ed091391fa7",
+  "version": "1.14.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T01:34:08.000Z",
-    "observedAt": "2026-09-11T03:28:51.000Z",
+    "updatedAt": "2026-09-11T06:09:49.000Z",
+    "observedAt": "2026-09-11T12:39:42.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-11T03:28:51.000Z",
-      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/5539044fec7220fe1aacd4b3dcbda50f339d127c",
+      "checkedAt": "2026-09-11T12:39:42.000Z",
+      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/b5d2ff46b6634bc1253508f4664b8ed091391fa7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.2-rc.1",
+    "dsh": "^0.1.2-rc.1 || ^0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "27bf03e68b26b7cbfb82a6f5f1b3623f2af50d43",
-  "version": "0.1.0",
+  "commit": "c3ad1a94adb7cc51aa6f42e85dcd0fa2dc3b0919",
+  "version": "0.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T12:14:36.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-11T07:34:32.000Z",
+    "observedAt": "2026-09-11T12:39:42.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/delef/dsh-plugin-auto-review/commit/27bf03e68b26b7cbfb82a6f5f1b3623f2af50d43",
+      "checkedAt": "2026-09-11T12:39:42.000Z",
+      "evidenceUrl": "https://github.com/delef/dsh-plugin-auto-review/commit/c3ad1a94adb7cc51aa6f42e85dcd0fa2dc3b0919",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,9 +80,9 @@
     "auto-review"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the credentials permi",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.2-alpha.3",
+    "dsh": "0.1.2-alpha.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,10 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown"
@@ -149,30 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -192,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.13.0",
     "systems": [],
     "profiles": [
       "web"
@@ -215,9 +187,7 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
