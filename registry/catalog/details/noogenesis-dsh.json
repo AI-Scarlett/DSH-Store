@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dbce2840f3332f5f83e9dd3920e4b6bc1a9b2e99",
+  "commit": "438e50988b3aa0c34812e08177c38067c04874a9",
   "version": "0.2.6",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-12T20:44:45.000Z",
-    "observedAt": "2026-09-12T21:02:38.000Z",
+    "updatedAt": "2026-09-12T23:17:50.000Z",
+    "observedAt": "2026-09-12T23:27:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-12T21:02:38.000Z",
-      "evidenceUrl": "https://github.com/ZK-Andy/noogenesis/commit/dbce2840f3332f5f83e9dd3920e4b6bc1a9b2e99",
+      "checkedAt": "2026-09-12T23:27:43.000Z",
+      "evidenceUrl": "https://github.com/ZK-Andy/noogenesis/commit/438e50988b3aa0c34812e08177c38067c04874a9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,9 +79,9 @@
     "noogenesis"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime artifact is missing from the fixed Git Commit: dist/adapters/dsh/index.mjs; runtime artifact is missing from the fixed Git Commit: ./dist/adapters/dsh/index.mjs; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime artifact is missing from the fixed Git Commit: dist/adapters/dsh/index.mjs; runtime artifact is missing from the fixed Git Commit: ./dist/adapters/dsh/index.mjs; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.5-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
