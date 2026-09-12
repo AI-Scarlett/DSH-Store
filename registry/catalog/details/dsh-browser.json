@@ -1,49 +1,49 @@
 {
-  "id": "dsh-desktop-companion",
-  "name": "桌面客户端（DSH Desktop Companion）",
-  "packageName": "dsh-desktop-companion",
-  "description": "DeepSeek Harness Desktop 的桌面伴生插件：外部链接接管系统浏览器等壳集成能力。Desktop shell companion for dotnet-deepseek-harness-desktop.",
+  "id": "dsh-browser",
+  "name": "浏览器与网页工具（DSH Browser）",
+  "packageName": "@dsh-community/dsh-browser",
+  "description": "为 DSH 提供浏览器与网页工具能力。英文原始说明：DeepSeek Harness plugin — a live, stealth-capable Chrome inside the conversation. Tiered frame transport, Patchright engine seam, four-tier CAPTCHA pipeline with interactive human handoff, and a page-owned browser panel the user can grab the mouse in. Tested against DSH 0.1.5-rc.2.",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Companion",
-    "dsh-desktop-companion",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "浏览器与网页工具",
+    "DSH Browser",
+    "dsh-browser",
+    "@dsh-community/dsh-browser",
+    "浏览器",
+    "网页",
+    "页面操作",
+    "截图",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "companion"
+    "browser"
   ],
-  "repositoryUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop",
+  "repositoryUrl": "https://github.com/canelaslorenzoenego-ai/Orderzx",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-companion/package.json",
-  "installPath": "plugins/dsh-desktop-companion",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3230a5de730d3fce4f03c3913bc166dde8bef788",
-  "version": "0.0.18",
+  "commit": "ad7d8c1ddc3eca52d9f3e48de6f9f3aac927a921",
+  "version": "0.2.0-rc.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-12T22:39:42.000Z",
+    "updatedAt": "2026-09-12T23:30:53.000Z",
     "observedAt": "2026-09-12T23:27:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-12T23:27:43.000Z",
-      "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/3230a5de730d3fce4f03c3913bc166dde8bef788",
+      "evidenceUrl": "https://github.com/canelaslorenzoenego-ai/Orderzx/commit/ad7d8c1ddc3eca52d9f3e48de6f9f3aac927a921",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +73,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-desktop-companion"
+    "dsh-browser"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -164,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"
