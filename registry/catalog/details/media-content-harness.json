@@ -1,49 +1,49 @@
 {
-  "id": "dsh-russian-lang",
-  "name": "翻译助手（DSH Russian Lang）",
-  "packageName": "@goodandready/dsh-russian-lang",
-  "description": "为 DSH 提供翻译助手能力。英文原始说明：Russian localization for the DeepSeek Harness web UI: adds Русский as the third option in the native Settings - General - Language menu. Translates 30 core namespaces (722 keys, 100% coverage of the DSH 0.1.1-rc.2 surface) and 9 plugin namespaces (962 keys). The locale runtime snapshot is extended at runtime on unpatched cores; no files in the DSH installation are modified. The choice is persisted through the plugin-owned russian-lang namespace.",
+  "id": "media-content-harness",
+  "name": "模型提供商接入（Media Content Harness）",
+  "packageName": "media-content-harness",
+  "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Out-of-tree media production bundle and project model for DeepSeek Harness.",
   "searchTerms": [
-    "翻译助手",
-    "DSH Russian Lang",
-    "dsh-russian-lang",
-    "@goodandready/dsh-russian-lang",
-    "翻译",
-    "多语言",
-    "新锐实验",
+    "模型提供商接入",
+    "Media Content Harness",
+    "media-content-harness",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
     "实验功能",
     "新功能",
-    "dsh",
-    "russian",
-    "lang"
+    "media",
+    "content",
+    "harness"
   ],
-  "repositoryUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang",
+  "repositoryUrl": "https://github.com/BernydotJar/media-content-harness",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b98e24b3563d89a958ee5b3baeedc9bca351207a",
-  "version": "0.2.14",
+  "commit": "c648711cd2cf53d6371c1de5504165f4b423eda8",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-12T18:40:49.000Z",
+    "updatedAt": "2026-09-12T21:05:32.000Z",
     "observedAt": "2026-09-12T21:02:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-12T21:02:38.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/b98e24b3563d89a958ee5b3baeedc9bca351207a",
+      "evidenceUrl": "https://github.com/BernydotJar/media-content-harness/commit/c648711cd2cf53d6371c1de5504165f4b423eda8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,21 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-russian-lang"
+    "media-foundation",
+    "media-seedance-policy",
+    "media-browser-policy",
+    "media-tenant-profile",
+    "media-weekly-factory",
+    "media-graph"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 2872176 total bytes (maximum 2097152); largest file 910771 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.2-alpha.2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,11 +169,9 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
@@ -184,7 +187,13 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/schemastery"
+      "@radix-ui/react-dropdown-menu",
+      "ajv",
+      "ajv-formats",
+      "next",
+      "react",
+      "react-dom",
+      "thinking-orbs"
     ],
     "reviewStatus": "automated-scan"
   },
