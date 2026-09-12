@@ -18,7 +18,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d46d7e11c9b207e77d512f5b84272734383ef69b",
+  "commit": "d2f61becf18918eeb864097a9a9cf1f4d984d997",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -26,16 +26,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-12T05:52:06.000Z",
-    "observedAt": "2026-09-12T12:00:07.000Z",
+    "updatedAt": "2026-09-12T17:38:15.000Z",
+    "observedAt": "2026-09-12T18:01:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-12T12:00:07.000Z",
-      "evidenceUrl": "https://github.com/madalee-com/dsh-tiny-tool/commit/d46d7e11c9b207e77d512f5b84272734383ef69b",
+      "checkedAt": "2026-09-12T18:01:25.000Z",
+      "evidenceUrl": "https://github.com/madalee-com/dsh-tiny-tool/commit/d2f61becf18918eeb864097a9a9cf1f4d984d997",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,7 +76,7 @@
     "dsh-tiny-tool"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -177,9 +177,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/dsh-llm"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
