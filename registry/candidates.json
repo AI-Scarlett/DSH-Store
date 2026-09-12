@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-11T19:01:01.000Z",
+    "updatedAt": "2026-09-12T03:34:34.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2312,8 +2312,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "201533181bdfe166d82f638d944a10c05323eff4",
-      "sourceUpdatedAt": "2026-09-10T15:04:47.000Z",
+      "latestCommit": "31d8ca24ec279a3ccf9cda21019a688dc69c79f9",
+      "sourceUpdatedAt": "2026-09-12T02:21:52.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2332,8 +2332,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "d4a992ce06eca5876a197be2da153c329119989b",
-      "sourceUpdatedAt": "2026-09-10T15:04:48.000Z",
+      "latestCommit": "2fc2d803367028fcefaf31f9040b6f4d8f23f259",
+      "sourceUpdatedAt": "2026-09-12T02:25:28.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2576,8 +2576,8 @@
       "description": "独立单功能的工作区文件树面板：会话头部图标打开当前工作区目录树的动画弹窗；点击或拖拽文件即可把引用插入输入框；自带搜索、行内预览、实时设置与中英双语；零配置，一条命令即装即用。",
       "repositoryUrl": "https://github.com/Jiyr0119/dsh-workspace-explorer",
       "defaultBranch": "main",
-      "latestCommit": "f662720d11f1dd1448cd3b19806c112dca294962",
-      "sourceUpdatedAt": "2026-09-07T05:58:31.000Z",
+      "latestCommit": "0e9729cf2b0531abf9cf1d3786c825bebdee1dd9",
+      "sourceUpdatedAt": "2026-09-12T02:44:02.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3818,28 +3818,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision."
-    },
-    {
-      "id": "iyllyt-dsh-btw",
-      "name": "会话管理（DSH Btw）",
-      "description": "为 DSH 提供会话管理能力。英文原始说明：Transient /btw side questions for DeepSeek Harness: immediate while the main agent is busy, context-sharing, tool-free, one-shot, cache-aware, and invisible to the main session catalog.",
-      "repositoryUrl": "https://github.com/iyllyt/dsh-btw",
-      "defaultBranch": "main",
-      "latestCommit": "0ca9db4bfd864ef510dfd469d13845d5d5b872fb",
-      "sourceUpdatedAt": "2026-08-14T13:30:43.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "sessions",
-        "workflow",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-btw."
     },
     {
       "id": "fyy99-dsh-livis-connector",
@@ -10162,8 +10140,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Cymose session graph as plugins for coding harnesses. See what you already tried — not another linear chat.",
       "repositoryUrl": "https://github.com/cymosehq/cymose-code",
       "defaultBranch": "main",
-      "latestCommit": "eda577c5ebff9df835d1d005ef59a36eff2fe590",
-      "sourceUpdatedAt": "2026-09-07T16:20:23.000Z",
+      "latestCommit": "22188459944afab508408755a2d7e0b5c6c7bff6",
+      "sourceUpdatedAt": "2026-09-11T19:30:08.000Z",
       "discoveredAt": "2026-09-10T03:30:58.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10371,6 +10349,34 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "dataelement-dsh-desktop",
+      "name": "dataelement/dsh-desktop",
+      "description": "DSHDesktop：DeepSeek Harness Desktop / DeepSeek Harness 桌面版",
+      "repositoryUrl": "https://github.com/dataelement/dsh-desktop",
+      "defaultBranch": "main",
+      "latestCommit": "c7e6a59eec467810adb46032530533667af51f55",
+      "sourceUpdatedAt": "2026-09-11T14:01:46.000Z",
+      "discoveredAt": "2026-09-12T03:34:34.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "apps",
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-harness-desktop",
+        "desktop",
+        "dsh-plugins",
+        "dshdesktop",
+        "harness",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/ppt-runtime/adapter, packages/ppt-runtime/core"
     }
   ]
 }
