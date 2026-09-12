@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "5552311654573353ef17c5557aa42fdcc4288158",
-  "version": "0.3.11",
+  "commit": "e0fd086c826848bc04d4a6167366f662f2b3b5f0",
+  "version": "0.3.15",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-05T17:25:48.000Z",
-    "observedAt": "2026-09-05T18:05:51.000Z",
+    "updatedAt": "2026-09-12T06:59:37.000Z",
+    "observedAt": "2026-09-12T12:00:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-05T18:05:51.000Z",
-      "evidenceUrl": "https://github.com/NOirBRight/dsh-llm-grok/commit/5552311654573353ef17c5557aa42fdcc4288158",
+      "checkedAt": "2026-09-12T12:00:07.000Z",
+      "evidenceUrl": "https://github.com/NOirBRight/dsh-llm-grok/commit/e0fd086c826848bc04d4a6167366f662f2b3b5f0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,10 +79,10 @@
   "entryIds": [
     "llm-grok"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.2-alpha.4 <1.0.0 || 0.1.2-alpha.5 || 0.1.2-rc.1",
+    "dsh": ">=0.1.2-alpha.4 <1.0.0 || 0.1.2-alpha.5 || 0.1.2-rc.1 || 0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -97,7 +97,7 @@
       "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "unknown"
     },
     "dshOperations": {
