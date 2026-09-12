@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-12T18:01:25.000Z",
+    "updatedAt": "2026-09-12T21:02:38.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4840,8 +4840,8 @@
       "description": "AI productivity studio with smart chat, autonomous agents, and 300+ assistants. Unified access to frontier LLMs",
       "repositoryUrl": "https://github.com/CherryHQ/cherry-studio",
       "defaultBranch": "main",
-      "latestCommit": "aa8d0d77284bf5517ac32bf02eb5c794b9a780fc",
-      "sourceUpdatedAt": "2026-09-04T05:35:29.000Z",
+      "latestCommit": "840c65bbc619f8751976aaee651f959dae07a9b8",
+      "sourceUpdatedAt": "2026-09-12T19:28:54.000Z",
       "discoveredAt": "2026-08-27T08:53:45.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -10363,6 +10363,25 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/dsh-a6api, plugins/dsh-antigravity-auth, plugins/dsh-chat-translate, plugins/dsh-llm-agentrouter, plugins/dsh-oil-sticky-prompt, plugins/dsh-qr-access, plugins/dsh-smooth-stream, plugins/dsh-ui-beam-orbs, plugins/dsh-ui-deepseek-bg, plugins/dsh-web-auth-url, plugins/dsh-workspace-tree, plugins/dsh-mattpocock-skills-deck/package"
+    },
+    {
+      "id": "yanliang-li-hil-safety-benchmark",
+      "name": "yanliang-li/hil-safety-benchmark",
+      "description": "InterveneBench: human-in-the-loop agent safety benchmark, Docker evaluation, and research draft.",
+      "repositoryUrl": "https://github.com/yanliang-li/hil-safety-benchmark",
+      "defaultBranch": "main",
+      "latestCommit": "56d63e299d9681f4c2b0bc943753e019cd568b9f",
+      "sourceUpdatedAt": "2026-09-12T21:04:42.000Z",
+      "discoveredAt": "2026-09-12T21:02:38.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
