@@ -23,24 +23,24 @@
   "manifestPath": "packages/dsh-tongflow/package.json",
   "installPath": "packages/dsh-tongflow",
   "updatePolicy": "external-only",
-  "commit": "1d145e781749783f67d7bb105110510bec2d7238",
-  "version": "0.8.0",
+  "commit": "8d47404f5b4c0027351f0af6ad607aaeeeef7ab2",
+  "version": "0.8.2",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-12T01:35:20.000Z",
-    "observedAt": "2026-09-12T03:34:34.000Z",
+    "updatedAt": "2026-09-12T05:43:39.000Z",
+    "observedAt": "2026-09-12T12:00:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-12T03:34:34.000Z",
-      "evidenceUrl": "https://github.com/tong-io/tongflow/commit/1d145e781749783f67d7bb105110510bec2d7238",
+      "checkedAt": "2026-09-12T12:00:07.000Z",
+      "evidenceUrl": "https://github.com/tong-io/tongflow/commit/8d47404f5b4c0027351f0af6ad607aaeeeef7ab2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission sign",
   "compatibility": {
-    "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0",
+    "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0 || ^0.1.5-alpha.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

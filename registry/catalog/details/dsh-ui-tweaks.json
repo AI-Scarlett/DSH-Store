@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fb3e67dde93c80b01f4f008e730f771186c23fd9",
-  "version": "0.16.3",
+  "commit": "d87e52902c216e4e3e66ee8f123be32142bec066",
+  "version": "0.16.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T05:29:12.000Z",
-    "observedAt": "2026-09-10T12:45:09.000Z",
+    "updatedAt": "2026-09-12T09:08:04.000Z",
+    "observedAt": "2026-09-12T12:00:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T12:45:09.000Z",
-      "evidenceUrl": "https://github.com/wlj521/dsh-ui-tweaks/commit/fb3e67dde93c80b01f4f008e730f771186c23fd9",
+      "checkedAt": "2026-09-12T12:00:07.000Z",
+      "evidenceUrl": "https://github.com/wlj521/dsh-ui-tweaks/commit/d87e52902c216e4e3e66ee8f123be32142bec066",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,9 +80,9 @@
     "ui-tweaks"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1393578 total bytes (maximum 2097152); largest file 389251 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal",
   "compatibility": {
-    "dsh": "^0.1.5-rc.1",
+    "dsh": "^0.1.5-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,7 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown"
@@ -141,12 +140,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
