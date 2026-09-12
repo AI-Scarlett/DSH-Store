@@ -1,49 +1,48 @@
 {
-  "id": "cymose-code",
-  "name": "会话管理（Cymose Code）",
-  "packageName": "cymose-code",
-  "description": "为 DSH 提供会话管理能力。英文原始说明：Cymose session graph as plugins for coding harnesses. See what you already tried — not another linear chat.",
+  "id": "dsh-typst-preview",
+  "name": "审查与验证助手（DSH Typst Preview）",
+  "packageName": "dsh-typst-preview",
+  "description": "为 DSH 提供审查与验证助手能力。英文原始说明：DeepSeek Harness web plugin: live Typst preview as a native right-Sidebar tab, rendered by a per-file `tinymist preview` server proxied over the app origin, with the source face highlighted from tinymist's semantic tokens.",
   "searchTerms": [
-    "会话管理",
-    "Cymose Code",
-    "cymose-code",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
-    "新锐实验",
+    "审查与验证助手",
+    "DSH Typst Preview",
+    "dsh-typst-preview",
+    "审查",
+    "验证",
+    "质量检查",
     "实验功能",
     "新功能",
-    "cymose",
-    "code"
+    "dsh",
+    "typst",
+    "preview"
   ],
-  "repositoryUrl": "https://github.com/cymosehq/cymose-code",
+  "repositoryUrl": "https://github.com/Limbo-137/dsh-typst-preview",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "source-verified",
-  "commit": "22188459944afab508408755a2d7e0b5c6c7bff6",
-  "version": "0.1.4",
+  "updatePolicy": "external-only",
+  "commit": "1eafbf66dd2ac985a0ef47e1a99dfb55f9daf4a0",
+  "version": "0.3.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T19:30:08.000Z",
+    "updatedAt": "2026-09-12T03:38:26.000Z",
     "observedAt": "2026-09-12T03:34:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-12T03:34:34.000Z",
-      "evidenceUrl": "https://github.com/cymosehq/cymose-code/commit/22188459944afab508408755a2d7e0b5c6c7bff6",
+      "evidenceUrl": "https://github.com/Limbo-137/dsh-typst-preview/commit/1eafbf66dd2ac985a0ef47e1a99dfb55f9daf4a0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "cymose"
+    "typst-preview"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dsh": "^0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,10 +91,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "compatible",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "compatible",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown"
@@ -149,30 +144,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -192,24 +163,23 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": null,
     "systems": [],
     "profiles": [
-      "headless",
       "web"
     ]
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "permissions": {
-      "level": "low",
-      "files": "none",
-      "network": "none",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "none"
+        "unknown"
       ]
     },
     "externalDependencies": [],
@@ -217,6 +187,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "automated-fixed-source-policy-v1"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

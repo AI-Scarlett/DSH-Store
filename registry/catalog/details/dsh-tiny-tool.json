@@ -1,49 +1,45 @@
 {
-  "id": "cymose-code",
-  "name": "会话管理（Cymose Code）",
-  "packageName": "cymose-code",
-  "description": "为 DSH 提供会话管理能力。英文原始说明：Cymose session graph as plugins for coding harnesses. See what you already tried — not another linear chat.",
+  "id": "dsh-tiny-tool",
+  "name": "实验功能插件（DSH Tiny Tool）",
+  "packageName": "dsh-tiny-tool",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Hide all tool/MCP descriptions from the system prompt; expose them on demand via tool_describe",
   "searchTerms": [
-    "会话管理",
-    "Cymose Code",
-    "cymose-code",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
-    "新锐实验",
+    "实验功能插件",
+    "DSH Tiny Tool",
+    "dsh-tiny-tool",
     "实验功能",
     "新功能",
-    "cymose",
-    "code"
+    "dsh",
+    "tiny",
+    "tool"
   ],
-  "repositoryUrl": "https://github.com/cymosehq/cymose-code",
-  "defaultBranch": "main",
+  "repositoryUrl": "https://github.com/madalee-com/dsh-tiny-tool",
+  "defaultBranch": "master",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "source-verified",
-  "commit": "22188459944afab508408755a2d7e0b5c6c7bff6",
-  "version": "0.1.4",
+  "updatePolicy": "external-only",
+  "commit": "491c01efcff92a22b98203b3543862693a6459d9",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T19:30:08.000Z",
+    "updatedAt": "2026-09-12T03:37:45.000Z",
     "observedAt": "2026-09-12T03:34:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-12T03:34:34.000Z",
-      "evidenceUrl": "https://github.com/cymosehq/cymose-code/commit/22188459944afab508408755a2d7e0b5c6c7bff6",
+      "evidenceUrl": "https://github.com/madalee-com/dsh-tiny-tool/commit/491c01efcff92a22b98203b3543862693a6459d9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +69,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "cymose"
+    "dsh-tiny-tool"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dsh": "^0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,10 +88,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "compatible",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "compatible",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown"
@@ -149,30 +141,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -192,31 +160,30 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": null,
     "systems": [],
-    "profiles": [
-      "headless",
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "permissions": {
-      "level": "low",
-      "files": "none",
-      "network": "none",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "none"
+        "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/dsh-llm"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "automated-fixed-source-policy-v1"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
