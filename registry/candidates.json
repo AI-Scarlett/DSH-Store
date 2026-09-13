@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-12T23:27:43.000Z",
+    "updatedAt": "2026-09-13T03:40:19.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4603,8 +4603,8 @@
       "description": "测试稳定性工具：重复运行 vitest/jest/pytest/node:test，识别 flaky 用例，历史留档与隔离清单。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-flakefinder",
       "defaultBranch": "master",
-      "latestCommit": "0063a07f9ca31251dc69e5b8e91c6cba761351bc",
-      "sourceUpdatedAt": "2026-09-12T10:14:52.000Z",
+      "latestCommit": "ecd47394c02b63d2f50820da6cee8bffe38f2c92",
+      "sourceUpdatedAt": "2026-09-13T03:05:56.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4643,8 +4643,8 @@
       "description": "Docker 工具：ps/images/logs/inspect/exec/manage，JSON 输出、DSH_DOCKER_PATH 环境变量、exec 审批门、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-docker",
       "defaultBranch": "master",
-      "latestCommit": "b7375da2b4fa0dccf809214a3734b5bc85b47f94",
-      "sourceUpdatedAt": "2026-09-12T10:27:28.000Z",
+      "latestCommit": "d5471f3b92f7e8e553908a0946e915817223258f",
+      "sourceUpdatedAt": "2026-09-13T03:05:28.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4663,8 +4663,8 @@
       "description": "视频处理七工具（探测/剪辑/拼接/转码/字幕烧录/抽帧/GIF），官方 subprocess 服务、argv 无 shell 注入、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ffmpeg",
       "defaultBranch": "master",
-      "latestCommit": "044b383d5d20c0f50d51adb89c61121d40f74924",
-      "sourceUpdatedAt": "2026-09-12T10:27:34.000Z",
+      "latestCommit": "5cf1ef2d257f744e65a0f7fc704a22af34e978b9",
+      "sourceUpdatedAt": "2026-09-13T03:05:43.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10208,8 +10208,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "3eee6a366b834989c8787d90daa109b52e9c8860",
-      "sourceUpdatedAt": "2026-09-11T12:37:26.000Z",
+      "latestCommit": "539da4451e41bf0353984e36a141f7c6505e5b31",
+      "sourceUpdatedAt": "2026-09-13T03:25:18.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10382,6 +10382,82 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "zhougepeng-learnpilot",
+      "name": "zhougepeng/LearnPilot",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/zhougepeng/LearnPilot",
+      "defaultBranch": "master",
+      "latestCommit": "3de2d2e0448deace039559a7c13eaff6122ca684",
+      "sourceUpdatedAt": "2026-09-13T03:16:02.000Z",
+      "discoveredAt": "2026-09-13T03:40:19.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "tuantuan0218-tdsh",
+      "name": "tuantuan0218/TDSH",
+      "description": "DeepSeek Harness 桌面壳：把 DeepSeek Harness Web 界面装进原生 Electron 窗口，双击即用，含自动更新与 agent-loop 无限续跑补丁",
+      "repositoryUrl": "https://github.com/tuantuan0218/TDSH",
+      "defaultBranch": "main",
+      "latestCommit": "dae35cd5468c7c46947d0bcaf01aad07407a7143",
+      "sourceUpdatedAt": "2026-09-13T03:42:10.000Z",
+      "discoveredAt": "2026-09-13T03:40:19.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "ai-assistant",
+        "deepseek",
+        "deepseek-harness",
+        "desktop-app",
+        "electron",
+        "electron-updater",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "baosfeng-my-dsh-plugins",
+      "name": "baosfeng/my-dsh-plugins",
+      "description": "DSH（DeepSeek Harness）插件集合仓库：文件活动、思考增强、Mermaid 渲染、通知提醒、插件守护、Skill 管理、任务可靠性、插件开发模式等 8 个插件，独立版本、GitHub Release 发布",
+      "repositoryUrl": "https://github.com/baosfeng/my-dsh-plugins",
+      "defaultBranch": "main",
+      "latestCommit": "c58db2932d6ab8d2e0578d09cda9a683715da490",
+      "sourceUpdatedAt": "2026-09-13T03:41:54.000Z",
+      "discoveredAt": "2026-09-13T03:40:19.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-file-activity",
+        "dsh-guardian",
+        "dsh-mermaid-render",
+        "dsh-notify",
+        "dsh-plugin",
+        "dsh-skill-manager",
+        "dsh-task-reliability",
+        "dsh-think-zh-expand",
+        "file-activity",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/dsh-file-activity, plugins/dsh-md-render, plugins/dsh-mermaid-render, plugins/dsh-my-context, plugins/dsh-my-guard, plugins/dsh-my-guardian, plugins/dsh-my-memory, plugins/dsh-my-notify, plugins/dsh-my-observability, plugins/dsh-my-opencode-session-header, plugins/dsh-my-plugin-manager, plugins/dsh-my-remote, plugins/dsh-my-skill-manager, plugins/dsh-session-title-gen, plugins/dsh-task-reliability, plugins/dsh-think-zh-expand, plugins/dsh-ts-example"
     }
   ]
 }

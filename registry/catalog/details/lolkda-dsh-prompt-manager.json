@@ -1,50 +1,50 @@
 {
-  "id": "stardustlc-dsh-docker",
-  "name": "Docker 管理工具（DSH Docker）",
-  "packageName": "@stardustlc/dsh-docker",
-  "description": "Docker 工具：ps/images/logs/inspect/exec/manage，JSON 输出、DSH_DOCKER_PATH 环境变量、exec 审批门、零运行时依赖。",
+  "id": "lolkda-dsh-prompt-manager",
+  "name": "提示词管理器（DSH Prompt Manager）",
+  "packageName": "@lolkda/dsh-prompt-manager",
+  "description": "为 DSH 提供提示词管理器能力。英文原始说明：Manage DeepSeek Harness system-prompt sections from the Web GUI: enable, edit, and subscribe markdown prompt entries, switch named presets from the composer, feed them machine facts as {{variables}}, replace the instruction DSH sends when it compacts the context, and carry a preset to another machine as a JSON pack.",
   "searchTerms": [
-    "Docker 管理工具",
-    "DSH Docker",
-    "stardustlc-dsh-docker",
-    "@stardustlc/dsh-docker",
-    "Docker",
-    "容器",
-    "镜像",
-    "日志",
-    "工具能力",
-    "工具",
-    "能力",
+    "提示词管理器",
+    "DSH Prompt Manager",
+    "lolkda-dsh-prompt-manager",
+    "@lolkda/dsh-prompt-manager",
+    "提示词",
+    "提示词库",
+    "系统提示",
+    "会话",
+    "对话",
+    "历史消息",
     "dsh",
-    "docker"
+    "prompt",
+    "manager"
   ],
-  "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-docker",
-  "defaultBranch": "master",
+  "repositoryUrl": "https://github.com/lolkda/dsh-prompt-manager",
+  "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "d5471f3b92f7e8e553908a0946e915817223258f",
-  "version": "0.3.3",
+  "updatePolicy": "external-only",
+  "commit": "4935d601e787dd22e1a1d7ec404bbfa328e9dcbb",
+  "version": "3.1.5",
   "categories": [
-    "tools"
+    "sessions"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-13T03:05:28.000Z",
+    "updatedAt": "2026-09-13T03:42:03.000Z",
     "observedAt": "2026-09-13T03:40:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-13T03:40:19.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-docker/commit/d5471f3b92f7e8e553908a0946e915817223258f",
+      "evidenceUrl": "https://github.com/lolkda/dsh-prompt-manager/commit/4935d601e787dd22e1a1d7ec404bbfa328e9dcbb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "docker"
+    "dsh-prompt-manager"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.5-rc.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,12 +93,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "unknown"
     },
     "dshOperations": {
@@ -150,30 +146,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -193,31 +165,30 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=22",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "none",
-      "network": "none",
-      "commands": "shell",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "api-key"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "主机命令与插件声明的外部 CLI",
-      "用户配置的外部服务凭据"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
