@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-13T03:40:19.000Z",
+    "updatedAt": "2026-09-13T13:09:15.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2127,8 +2127,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "e7cd98673af2705d1680359cf9f07bcf1d6f9b5b",
-      "sourceUpdatedAt": "2026-09-10T23:28:17.000Z",
+      "latestCommit": "3fcbcc1987fd7d102b2f659af00964d730f41b4e",
+      "sourceUpdatedAt": "2026-09-13T13:06:43.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4132,8 +4132,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：DSH web client plugin: select text in a chat message and quote it into the composer as an inline reference chip; the full text materializes on submit via the input-trigger reference codec.",
       "repositoryUrl": "https://github.com/nekogpt/dsh-ui-quote-selection",
       "defaultBranch": "main",
-      "latestCommit": "728d16234d59908007754901e8e1c6a32824caf5",
-      "sourceUpdatedAt": "2026-08-14T04:48:03.000Z",
+      "latestCommit": "c5034b4be26116bce5175e0db844b12ba8873828",
+      "sourceUpdatedAt": "2026-09-13T12:57:45.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5275,28 +5275,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-web-billing."
-    },
-    {
-      "id": "ltao0829-dsh-task-notify",
-      "name": "任务通知提醒（DSH Task Notify）",
-      "description": "为 DSH 提供任务通知提醒能力。英文原始说明：Task-completion reminder for DeepSeek Harness: in-page toast, OS notification, and sound when an agent turn or background job finishes",
-      "repositoryUrl": "https://github.com/ltao0829/dsh-task-notify",
-      "defaultBranch": "main",
-      "latestCommit": "d97985e63b76e788342a3e1e51e17bef52e8a6a5",
-      "sourceUpdatedAt": "2026-08-25T04:31:31.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "notifications",
-        "workflow",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-task-notify."
     },
     {
       "id": "wtiaw-dsh-ccswitch-importer",
@@ -7033,8 +7011,8 @@
       "description": "工作区跨设备备份、恢复与扩展更新，经 uagent-sync CLI 桥接执行。",
       "repositoryUrl": "https://github.com/severin-ye/uagent-sync",
       "defaultBranch": "master",
-      "latestCommit": "1935d295270db817a56dcd9c608aa2cddf9077cf",
-      "sourceUpdatedAt": "2026-08-25T08:25:23.000Z",
+      "latestCommit": "a5166b613891bdcadc01cdda1a6e64a8c7016b5c",
+      "sourceUpdatedAt": "2026-09-13T05:23:58.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10458,6 +10436,26 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/dsh-file-activity, plugins/dsh-md-render, plugins/dsh-mermaid-render, plugins/dsh-my-context, plugins/dsh-my-guard, plugins/dsh-my-guardian, plugins/dsh-my-memory, plugins/dsh-my-notify, plugins/dsh-my-observability, plugins/dsh-my-opencode-session-header, plugins/dsh-my-plugin-manager, plugins/dsh-my-remote, plugins/dsh-my-skill-manager, plugins/dsh-session-title-gen, plugins/dsh-task-reliability, plugins/dsh-think-zh-expand, plugins/dsh-ts-example"
+    },
+    {
+      "id": "flizzywine-dsh-tavern",
+      "name": "flizzywine/dsh-tavern",
+      "description": "基于 DeepSeek Harness（DSH）的 SillyTavern 类文字游戏 Agent，支持候选项生成、对话式人物卡编辑、剧本模式与素材抽取。",
+      "repositoryUrl": "https://github.com/flizzywine/dsh-tavern",
+      "defaultBranch": "main",
+      "latestCommit": "273b89578869fb23c6357549260cdcf6d68636f2",
+      "sourceUpdatedAt": "2026-09-13T13:13:34.000Z",
+      "discoveredAt": "2026-09-13T13:09:15.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: tavern-plugin, android/dsh-tavern-entry, tavern-plugin/packages/dsh-image-gen, tavern-plugin/packages/dsh-tavern-remote"
     }
   ]
 }

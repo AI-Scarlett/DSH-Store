@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "bdeea1efa667c74fccd331233effa5415fd0d32f",
-  "version": "0.2.0-rc.8",
+  "commit": "591c11f24f7269614c9ae6f48c62fa629a3aaaed",
+  "version": "0.2.0-rc.24",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-13T03:37:04.000Z",
-    "observedAt": "2026-09-13T03:40:19.000Z",
+    "updatedAt": "2026-09-13T10:11:59.000Z",
+    "observedAt": "2026-09-13T13:09:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-13T03:40:19.000Z",
-      "evidenceUrl": "https://github.com/canelaslorenzoenego-ai/Orderzx/commit/bdeea1efa667c74fccd331233effa5415fd0d32f",
+      "checkedAt": "2026-09-13T13:09:15.000Z",
+      "evidenceUrl": "https://github.com/canelaslorenzoenego-ai/Orderzx/commit/591c11f24f7269614c9ae6f48c62fa629a3aaaed",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "dsh-browser"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; run",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -183,7 +183,10 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "patchright",
+      "playwright-core"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

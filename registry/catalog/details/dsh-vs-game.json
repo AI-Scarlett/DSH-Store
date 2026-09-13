@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5c34858234887783b7014ecb4eeca1513779c387",
+  "commit": "2a7e3d0f780af4b06b050e458ae5e923d5373458",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-12T06:33:41.000Z",
-    "observedAt": "2026-09-12T12:00:07.000Z",
+    "updatedAt": "2026-09-13T08:17:16.000Z",
+    "observedAt": "2026-09-13T13:09:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-12T12:00:07.000Z",
-      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/5c34858234887783b7014ecb4eeca1513779c387",
+      "checkedAt": "2026-09-13T13:09:15.000Z",
+      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/2a7e3d0f780af4b06b050e458ae5e923d5373458",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "vs-game"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -164,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"
