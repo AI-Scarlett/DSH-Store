@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-13T13:09:15.000Z",
+    "updatedAt": "2026-09-13T21:09:48.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2127,8 +2127,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "3fcbcc1987fd7d102b2f659af00964d730f41b4e",
-      "sourceUpdatedAt": "2026-09-13T13:06:43.000Z",
+      "latestCommit": "a6dd12525360b95cbfae543aa12f41f3b12244d1",
+      "sourceUpdatedAt": "2026-09-13T15:10:12.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2719,8 +2719,8 @@
       "description": "跨会话档案柜：总览工作台、折叠时间线、子代理血缘、内容检索、规则+LLM 双模式摘要、ZIP 导出、实时跟踪。",
       "repositoryUrl": "https://github.com/YeqingTang/dsh-session-flow",
       "defaultBranch": "main",
-      "latestCommit": "dac670160afa150581c9838b34366a0233c8314a",
-      "sourceUpdatedAt": "2026-08-20T11:07:19.000Z",
+      "latestCommit": "4aae7dfce776f0e1bd888015f3f40606dd6fc698",
+      "sourceUpdatedAt": "2026-09-13T16:33:07.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3065,8 +3065,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Sidebar Archived entry + archived-session panel with unarchive and delete, for the DeepSeek Harness web GUI",
       "repositoryUrl": "https://github.com/huahai0202/dsh-better-archive",
       "defaultBranch": "main",
-      "latestCommit": "deef9769843dea67764bdc323e89eee2553c4d5b",
-      "sourceUpdatedAt": "2026-09-11T09:49:41.000Z",
+      "latestCommit": "48a3cc9d6cc63720114ee23708fafe38c4fb147c",
+      "sourceUpdatedAt": "2026-09-13T15:43:30.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6928,8 +6928,8 @@
       "description": "可拖动的 API 余额/配额悬浮卡片：自动显示最近使用的 provider 余额/配额（DeepSeek/Moonshot/Kimi For Coding），按余额分档变色、实时刷新。",
       "repositoryUrl": "https://github.com/FengHuoLinShan/dsh-plugin-llm-balance",
       "defaultBranch": "main",
-      "latestCommit": "b5ac299e9f038ac0601ecb55b964df6cb62bde4d",
-      "sourceUpdatedAt": "2026-09-08T11:16:41.000Z",
+      "latestCommit": "7f7be3a4c0e8e42502da1d453665a66dd727283e",
+      "sourceUpdatedAt": "2026-09-13T17:14:44.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10456,6 +10456,62 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: tavern-plugin, android/dsh-tavern-entry, tavern-plugin/packages/dsh-image-gen, tavern-plugin/packages/dsh-tavern-remote"
+    },
+    {
+      "id": "tzukwan-metis-dsh",
+      "name": "TZUKWAN/metis-dsh",
+      "description": "METIS Research Plugins — 科研领域插件家族，运行于 DeepSeek Harness",
+      "repositoryUrl": "https://github.com/TZUKWAN/metis-dsh",
+      "defaultBranch": "master",
+      "latestCommit": "1475cf4738448b0481395fa1b86a2e91d64138c1",
+      "sourceUpdatedAt": "2026-09-13T21:13:07.000Z",
+      "discoveredAt": "2026-09-13T21:09:48.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "harnessdesk-harnessdesk",
+      "name": "HarnessDesk/HarnessDesk",
+      "description": "Open-source control plane for coding agents you own — run Codex, Claude Code, Gemini, Cursor and ACP agents side by side with shared history, permissions, handoffs and audit logs.",
+      "repositoryUrl": "https://github.com/HarnessDesk/HarnessDesk",
+      "defaultBranch": "main",
+      "latestCommit": "023570d6f635fc78ea448837de5f9115c37b4229",
+      "sourceUpdatedAt": "2026-09-13T21:12:22.000Z",
+      "discoveredAt": "2026-09-13T21:09:48.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "acp",
+        "agent-client-protocol",
+        "agent-harness",
+        "ai-agent",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "deepseek-harness",
+        "desktop-app",
+        "developer-tools",
+        "dsh",
+        "gemini",
+        "gemini-cli",
+        "local-first",
+        "macos",
+        "mcp",
+        "multi-agent",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
