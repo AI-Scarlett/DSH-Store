@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-13T21:09:48.000Z",
+    "updatedAt": "2026-09-14T03:49:31.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2679,8 +2679,8 @@
       "description": "DeepSeek Harness 表情包插件:内置官方-001 与大肥鱼两套图库,设置页扫描切换,send_meme 发图(Web/QQ)。",
       "repositoryUrl": "https://github.com/yyh-001/dsh-meme",
       "defaultBranch": "main",
-      "latestCommit": "6d8dbfebea79e0dc85b262720be7ea1d6865de0f",
-      "sourceUpdatedAt": "2026-09-07T06:21:17.000Z",
+      "latestCommit": "8a60ed639e7c7e32f671a08d028d24b8e7cabc20",
+      "sourceUpdatedAt": "2026-09-14T03:50:55.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3065,8 +3065,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Sidebar Archived entry + archived-session panel with unarchive and delete, for the DeepSeek Harness web GUI",
       "repositoryUrl": "https://github.com/huahai0202/dsh-better-archive",
       "defaultBranch": "main",
-      "latestCommit": "48a3cc9d6cc63720114ee23708fafe38c4fb147c",
-      "sourceUpdatedAt": "2026-09-13T15:43:30.000Z",
+      "latestCommit": "321e33424a6a04d646b9205f1186d8f53c8f6d39",
+      "sourceUpdatedAt": "2026-09-14T03:50:12.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9873,8 +9873,8 @@
       "description": "面向 agent 的工作区安全 Office 工具集：创建/读取 Word、创建/读取/更新 Excel、创建/读取 PowerPoint，并支持 PNG/JPG/GIF 图片排版。",
       "repositoryUrl": "https://github.com/kw78/dsh-office-tools",
       "defaultBranch": "main",
-      "latestCommit": "30d063323e01d506a56ea89f4b2925a3a686a9fc",
-      "sourceUpdatedAt": "2026-09-04T17:26:07.000Z",
+      "latestCommit": "d92ac3863ece6248a5f8c1e4aa1958a60b8aaccb",
+      "sourceUpdatedAt": "2026-09-14T02:17:53.000Z",
       "discoveredAt": "2026-09-08T21:29:07.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10186,8 +10186,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "539da4451e41bf0353984e36a141f7c6505e5b31",
-      "sourceUpdatedAt": "2026-09-13T03:25:18.000Z",
+      "latestCommit": "ecdfa5a0d0c697bc9e103a15bba89c67b63fc53d",
+      "sourceUpdatedAt": "2026-09-14T03:07:15.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10386,8 +10386,8 @@
       "description": "DeepSeek Harness 桌面壳：把 DeepSeek Harness Web 界面装进原生 Electron 窗口，双击即用，含自动更新与 agent-loop 无限续跑补丁",
       "repositoryUrl": "https://github.com/tuantuan0218/TDSH",
       "defaultBranch": "main",
-      "latestCommit": "dae35cd5468c7c46947d0bcaf01aad07407a7143",
-      "sourceUpdatedAt": "2026-09-13T03:42:10.000Z",
+      "latestCommit": "f9457b79fc5cfa98ed7c09a6f98af4eca36c6083",
+      "sourceUpdatedAt": "2026-09-14T03:52:10.000Z",
       "discoveredAt": "2026-09-13T03:40:19.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -10507,6 +10507,33 @@
         "macos",
         "mcp",
         "multi-agent",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "lovstudio-skills",
+      "name": "lovstudio/skills",
+      "description": "Top-level index for the Lovstudio skills ecosystem",
+      "repositoryUrl": "https://github.com/lovstudio/skills",
+      "defaultBranch": "main",
+      "latestCommit": "703b37345d95ba06dd109763c7854c9f3b221db4",
+      "sourceUpdatedAt": "2026-09-14T03:52:40.000Z",
+      "discoveredAt": "2026-09-14T03:49:31.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-skills",
+        "ai-coding-assistant",
+        "cjk",
+        "claude-code",
+        "cursor",
+        "gemini-cli",
+        "markdown-to-docx",
+        "markdown-to-pdf",
         "automatic-radar"
       ],
       "status": "rejected",
