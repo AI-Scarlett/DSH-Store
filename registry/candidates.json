@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-14T13:24:37.000Z",
+    "updatedAt": "2026-09-14T14:47:38.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -3682,8 +3682,8 @@
       "description": "为 DSH 提供实用工具能力。英文原始说明：Multimedia WebUI input support for DeepSeek Harness",
       "repositoryUrl": "https://github.com/LCYLYM/dsh-attachments",
       "defaultBranch": "main",
-      "latestCommit": "028dc1f8dc9c7f963e714013b36adc4f48d88c2a",
-      "sourceUpdatedAt": "2026-08-14T15:25:33.000Z",
+      "latestCommit": "aefa6baccdc7fad547f605453853d91a176a269d",
+      "sourceUpdatedAt": "2026-09-14T14:29:16.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5688,8 +5688,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "f4942ae549c747fe267a3d979f290c5916056815",
-      "sourceUpdatedAt": "2026-09-14T07:04:15.000Z",
+      "latestCommit": "4a86af566ed9f15760fba7c79cb60376a3158985",
+      "sourceUpdatedAt": "2026-09-14T13:51:50.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5935,8 +5935,8 @@
       "description": "秘塔AI搜索 providers for ctx.web：web_search 返回网页摘要，web_fetch 读取网页全文 markdown，多范围搜索（网页/文库/论文/图片/视频/播客）。",
       "repositoryUrl": "https://github.com/TZHR-invest/dsh-plugins",
       "defaultBranch": "main",
-      "latestCommit": "d526260d6c4f1ca29f4c3c6dd0856133b14ede48",
-      "sourceUpdatedAt": "2026-09-14T10:18:54.000Z",
+      "latestCommit": "0d0376829261b7b5b576b346723c96734ca3886e",
+      "sourceUpdatedAt": "2026-09-14T13:44:23.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10514,6 +10514,44 @@
         "gemini-cli",
         "markdown-to-docx",
         "markdown-to-pdf",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "yyy2579-opsdph",
+      "name": "YYY2579/opsdph",
+      "description": "二开dph",
+      "repositoryUrl": "https://github.com/YYY2579/opsdph",
+      "defaultBranch": "main",
+      "latestCommit": "59b7c863b4e48506cf6f443d89818e60196abb1d",
+      "sourceUpdatedAt": "2026-09-14T14:51:57.000Z",
+      "discoveredAt": "2026-09-14T14:47:38.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "dlmastery-simple-coding-harness",
+      "name": "dlmastery/simple-coding-harness",
+      "description": "A coding agent harness built in 14 progressive snapshots, from a 27-line round trip to subagents. No frameworks.",
+      "repositoryUrl": "https://github.com/dlmastery/simple-coding-harness",
+      "defaultBranch": "main",
+      "latestCommit": "b6c175a93ccda5e1f2562a01c42f1a718950da59",
+      "sourceUpdatedAt": "2026-09-14T14:51:45.000Z",
+      "discoveredAt": "2026-09-14T14:47:38.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
         "automatic-radar"
       ],
       "status": "rejected",

@@ -1,50 +1,48 @@
 {
-  "id": "dsh-math-modeling-ui",
-  "name": "模型提供商接入（DSH Math Modeling UI）",
-  "packageName": "dsh-math-modeling-ui",
-  "description": "数学建模 Workbench 进度看板：右侧详情面板显示三阶段进度/五门禁/任务清单 + 设置页开关。组合包（持久化，重启自动加载）",
+  "id": "dsh-craft-adapter",
+  "name": "插件市场与管理（DSH Craft Adapter）",
+  "packageName": "dsh-craft-adapter",
+  "description": "为 DSH 提供插件市场与管理能力。英文原始说明：This Cordis bundle exposes Craft's MCP tools through one `craft_call` tool while keeping Craft's TypeScript core and `~/.craft_data` store independent of DSH.",
   "searchTerms": [
-    "模型提供商接入",
-    "DSH Math Modeling UI",
-    "dsh-math-modeling-ui",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
+    "插件市场与管理",
+    "DSH Craft Adapter",
+    "dsh-craft-adapter",
+    "插件市场",
+    "商城",
+    "插件管理",
     "实验功能",
     "新功能",
     "dsh",
-    "math",
-    "modeling",
-    "ui"
+    "craft",
+    "adapter"
   ],
-  "repositoryUrl": "https://github.com/XiaoMaColtAI/math-modeling-skill",
+  "repositoryUrl": "https://github.com/wdx9413/craft",
   "defaultBranch": "main",
-  "manifestPath": "dsh-plugin/math-modeling-agent/plugins/dsh-math-modeling-ui/package.json",
-  "installPath": "dsh-plugin/math-modeling-agent/plugins/dsh-math-modeling-ui",
+  "manifestPath": "adapters/deepseek-harness/package.json",
+  "installPath": "adapters/deepseek-harness",
   "updatePolicy": "external-only",
-  "commit": "671aa574491a91182cff575da19e33bebb6d70f0",
-  "version": "1.0.0",
+  "commit": "fe048f909f5304babdbcda77f729b4eb5a0080c0",
+  "version": "0.12.24",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-14T14:14:40.000Z",
+    "updatedAt": "2026-09-14T14:51:56.000Z",
     "observedAt": "2026-09-14T14:47:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-14T14:47:38.000Z",
-      "evidenceUrl": "https://github.com/XiaoMaColtAI/math-modeling-skill/commit/671aa574491a91182cff575da19e33bebb6d70f0",
+      "evidenceUrl": "https://github.com/wdx9413/craft/commit/fe048f909f5304babdbcda77f729b4eb5a0080c0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,14 +72,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-math-modeling-ui"
+    "craft-adapter"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime artifact is missing from the fixed Git Commit: dist/index.js; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -167,14 +165,12 @@
     },
     "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "UNKNOWN",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
