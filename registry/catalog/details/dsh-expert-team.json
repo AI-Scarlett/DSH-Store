@@ -1,50 +1,51 @@
 {
-  "id": "dsh-math-modeling-ui",
-  "name": "模型提供商接入（DSH Math Modeling UI）",
-  "packageName": "dsh-math-modeling-ui",
-  "description": "数学建模 Workbench 进度看板：右侧详情面板显示三阶段进度/五门禁/任务清单 + 设置页开关。组合包（持久化，重启自动加载）",
+  "id": "dsh-expert-team",
+  "name": "文件与工作区工具（DSH Expert Team）",
+  "packageName": "@yangdcm/dsh-expert-team",
+  "description": "dsh「专家团」bundle：一句自然语言自动组建/持久化一支 12 角色多智能体团队，共享工作区协议 + 阶段门控编排 + 结构化交接 + 质量门禁/自动调度，实现者直接改代码并产出持久工件；带 live 团队浮层（质量门禁/覆盖率/工件预览）。 · Role-based multi-agent expert team for DeepSeek Harness: one sentence in, a staged and gated team delivery out.",
   "searchTerms": [
-    "模型提供商接入",
-    "DSH Math Modeling UI",
-    "dsh-math-modeling-ui",
-    "模型",
-    "LLM",
-    "Provider",
-    "模型接入",
-    "实验功能",
-    "新功能",
+    "文件与工作区工具",
+    "DSH Expert Team",
+    "dsh-expert-team",
+    "@yangdcm/dsh-expert-team",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
+    "工作流",
+    "自动化",
+    "任务",
     "dsh",
-    "math",
-    "modeling",
-    "ui"
+    "expert",
+    "team"
   ],
-  "repositoryUrl": "https://github.com/XiaoMaColtAI/math-modeling-skill",
+  "repositoryUrl": "https://github.com/yangdcm/dsh-expert-team",
   "defaultBranch": "main",
-  "manifestPath": "dsh-plugin/math-modeling-agent/plugins/dsh-math-modeling-ui/package.json",
-  "installPath": "dsh-plugin/math-modeling-agent/plugins/dsh-math-modeling-ui",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "671aa574491a91182cff575da19e33bebb6d70f0",
-  "version": "1.0.0",
+  "commit": "91d5cb625a3e552d44cb16c6c8bc796b344f9c4e",
+  "version": "1.1.0",
   "categories": [
-    "experimental"
+    "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-14T14:14:40.000Z",
+    "updatedAt": "2026-09-14T14:51:46.000Z",
     "observedAt": "2026-09-14T14:47:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-14T14:47:38.000Z",
-      "evidenceUrl": "https://github.com/XiaoMaColtAI/math-modeling-skill/commit/671aa574491a91182cff575da19e33bebb6d70f0",
+      "evidenceUrl": "https://github.com/yangdcm/dsh-expert-team/commit/91d5cb625a3e552d44cb16c6c8bc796b344f9c4e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +75,17 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-math-modeling-ui"
+    "expert-team-command",
+    "expert-team-bundle"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 1850442 total bytes (maximum 2097152); largest file 315557 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": "*",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -165,7 +167,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"
