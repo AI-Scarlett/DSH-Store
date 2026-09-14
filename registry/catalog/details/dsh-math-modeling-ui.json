@@ -1,48 +1,50 @@
 {
-  "id": "dsh-guardrails",
-  "name": "安全防护工具（DSH Guardrails）",
-  "packageName": "dsh-guardrails",
-  "description": "对 AI 发起的工具调用做**硬阻断**（不弹确认框）的 Host 插件：",
+  "id": "dsh-math-modeling-ui",
+  "name": "模型提供商接入（DSH Math Modeling UI）",
+  "packageName": "dsh-math-modeling-ui",
+  "description": "数学建模 Workbench 进度看板：右侧详情面板显示三阶段进度/五门禁/任务清单 + 设置页开关。组合包（持久化，重启自动加载）",
   "searchTerms": [
-    "安全防护工具",
-    "DSH Guardrails",
-    "dsh-guardrails",
-    "安全",
-    "审计",
-    "验证",
-    "防护",
+    "模型提供商接入",
+    "DSH Math Modeling UI",
+    "dsh-math-modeling-ui",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
     "实验功能",
     "新功能",
     "dsh",
-    "guardrails"
+    "math",
+    "modeling",
+    "ui"
   ],
-  "repositoryUrl": "https://github.com/FengZhiHen1/dsh-guardrails",
+  "repositoryUrl": "https://github.com/XiaoMaColtAI/math-modeling-skill",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "dsh-plugin/math-modeling-agent/plugins/dsh-math-modeling-ui/package.json",
+  "installPath": "dsh-plugin/math-modeling-agent/plugins/dsh-math-modeling-ui",
   "updatePolicy": "external-only",
-  "commit": "8b00ffb201a9000e005d345554cac63aaba37880",
-  "version": "1.5.0",
+  "commit": "714bf4a5408e22b411bfa2fb16b1cd9d9a251a71",
+  "version": "1.0.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T07:52:05.000Z",
+    "updatedAt": "2026-09-14T13:28:06.000Z",
     "observedAt": "2026-09-14T13:24:37.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-14T13:24:37.000Z",
-      "evidenceUrl": "https://github.com/FengZhiHen1/dsh-guardrails/commit/8b00ffb201a9000e005d345554cac63aaba37880",
+      "evidenceUrl": "https://github.com/XiaoMaColtAI/math-modeling-skill/commit/714bf4a5408e22b411bfa2fb16b1cd9d9a251a71",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "guardrails"
+    "dsh-math-modeling-ui"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.2-rc.1",
+    "dsh": "*",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -163,7 +165,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"

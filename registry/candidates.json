@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-14T03:49:31.000Z",
+    "updatedAt": "2026-09-14T13:24:37.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1883,8 +1883,8 @@
       "description": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
       "repositoryUrl": "https://github.com/volcengine/OpenViking",
       "defaultBranch": "main",
-      "latestCommit": "98f7dfe0e39333ee9d11f83c563d59fa3a3b6a71",
-      "sourceUpdatedAt": "2026-09-09T12:36:10.000Z",
+      "latestCommit": "192b813e7e3106680a5534e2d4c9bcf6d2390abd",
+      "sourceUpdatedAt": "2026-09-14T13:04:10.000Z",
       "discoveredAt": "2026-08-24T13:28:14.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -2059,26 +2059,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-auto-vision."
-    },
-    {
-      "id": "mombrane-dsh-subagent-monitor",
-      "name": "多代理协作（DSH UI Subagent Monitor）",
-      "description": "Web UI 子代理实时监视面板：侧边栏底部入口 + 右上角常驻卡片面板，实时展示当前会话每个子代理的运行状态（运行中/耗时/终态）、树形缩进，一键跳转子代理会话并支持返回主会话，刷新自恢复、移动端默认隐藏。",
-      "repositoryUrl": "https://github.com/Mombrane/dsh-subagent-monitor",
-      "defaultBranch": "master",
-      "latestCommit": "3fa30438d5e976b9c0796d15c3d41b211f52904d",
-      "sourceUpdatedAt": "2026-08-24T08:09:01.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "ui",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-alpha.2, 0.1.5-rc.1, 0.1.5-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: leetoners-dsh-ui-subagent-monitor."
     },
     {
       "id": "jiangli07-dsh-deepseek-quota-bar",
@@ -2679,8 +2659,8 @@
       "description": "DeepSeek Harness 表情包插件:内置官方-001 与大肥鱼两套图库,设置页扫描切换,send_meme 发图(Web/QQ)。",
       "repositoryUrl": "https://github.com/yyh-001/dsh-meme",
       "defaultBranch": "main",
-      "latestCommit": "8a60ed639e7c7e32f671a08d028d24b8e7cabc20",
-      "sourceUpdatedAt": "2026-09-14T03:50:55.000Z",
+      "latestCommit": "8ddc253c8165a123a632d7e7f73917705b7d306c",
+      "sourceUpdatedAt": "2026-09-14T09:43:17.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3065,8 +3045,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Sidebar Archived entry + archived-session panel with unarchive and delete, for the DeepSeek Harness web GUI",
       "repositoryUrl": "https://github.com/huahai0202/dsh-better-archive",
       "defaultBranch": "main",
-      "latestCommit": "321e33424a6a04d646b9205f1186d8f53c8f6d39",
-      "sourceUpdatedAt": "2026-09-14T03:50:12.000Z",
+      "latestCommit": "00e07202d5e9771ccf53d70b28e161c75951fa92",
+      "sourceUpdatedAt": "2026-09-14T03:57:04.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4153,8 +4133,8 @@
       "description": "为 DSH 提供终端命令工具能力。英文原始说明：DSH client plugin — flip to the back of the page for a floating glass task console: live background jobs, subagents, session overview and workspace of the current session, with mouse-draggable cards.",
       "repositoryUrl": "https://github.com/He2way/dsh-task-console",
       "defaultBranch": "main",
-      "latestCommit": "747396050c62f5b9c4b1530d81ff370fc5868409",
-      "sourceUpdatedAt": "2026-09-11T05:06:50.000Z",
+      "latestCommit": "76fcfd32615d065c4ebe76513fa1b09b518eba4f",
+      "sourceUpdatedAt": "2026-09-14T06:38:50.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5606,8 +5586,8 @@
       "description": "显示 DeepSeek 余额与今日花费估算，合并外部视觉调用 JSONL 记录，并提供含模型统计、TTFT、缓存率、调用日志、费用估算、筛选与 CSV 导出的会话看板。",
       "repositoryUrl": "https://github.com/1HelloMan1/dsh-usage-dashboard-plus",
       "defaultBranch": "main",
-      "latestCommit": "b198d5da62a17cb0ee2bb27e7b04aa71f4cd47d3",
-      "sourceUpdatedAt": "2026-08-18T07:57:56.000Z",
+      "latestCommit": "ee53a4d07d212f02fe64ec64eb8a9a84163bd439",
+      "sourceUpdatedAt": "2026-09-14T08:15:07.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5708,8 +5688,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "548394a090537d371cab5f80285db236db9e0977",
-      "sourceUpdatedAt": "2026-09-11T01:29:25.000Z",
+      "latestCommit": "f4942ae549c747fe267a3d979f290c5916056815",
+      "sourceUpdatedAt": "2026-09-14T07:04:15.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5955,8 +5935,8 @@
       "description": "秘塔AI搜索 providers for ctx.web：web_search 返回网页摘要，web_fetch 读取网页全文 markdown，多范围搜索（网页/文库/论文/图片/视频/播客）。",
       "repositoryUrl": "https://github.com/TZHR-invest/dsh-plugins",
       "defaultBranch": "main",
-      "latestCommit": "3cf48f4551bef2d76ec43f66706cb5dc9f066b50",
-      "sourceUpdatedAt": "2026-09-11T15:33:52.000Z",
+      "latestCommit": "d526260d6c4f1ca29f4c3c6dd0856133b14ede48",
+      "sourceUpdatedAt": "2026-09-14T10:18:54.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10017,8 +9997,8 @@
       "description": "为 DSH 提供鲸娘主题能力。英文原始说明：A whale-girl Kanban Musume mascot for DeepSeek Harness",
       "repositoryUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume",
       "defaultBranch": "main",
-      "latestCommit": "ba9c69480ec4e606ff654160348eb3682a483dd7",
-      "sourceUpdatedAt": "2026-09-05T04:43:29.000Z",
+      "latestCommit": "41a21d289af2bc268cbc83ebc50ba10158007026",
+      "sourceUpdatedAt": "2026-09-14T05:47:48.000Z",
       "discoveredAt": "2026-09-08T21:29:07.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10186,8 +10166,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "ecdfa5a0d0c697bc9e103a15bba89c67b63fc53d",
-      "sourceUpdatedAt": "2026-09-14T03:07:15.000Z",
+      "latestCommit": "abb9e96a0fcd24df7daf34b12c7a08b18b74673b",
+      "sourceUpdatedAt": "2026-09-14T11:55:57.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
