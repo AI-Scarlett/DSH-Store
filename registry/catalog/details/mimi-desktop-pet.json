@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "12947e6d4d2545c994b9f9c6c0df95e72b4ea3bc",
-  "version": "0.6.4",
+  "commit": "3daba9f2d24cfae9f4e9e15a9a30108a7dd67691",
+  "version": "0.7.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T10:55:25.000Z",
-    "observedAt": "2026-09-10T12:45:09.000Z",
+    "updatedAt": "2026-09-14T15:43:10.000Z",
+    "observedAt": "2026-09-14T19:57:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-10T12:45:09.000Z",
-      "evidenceUrl": "https://github.com/mekos2772/dsh-plugin-mimi/commit/12947e6d4d2545c994b9f9c6c0df95e72b4ea3bc",
+      "checkedAt": "2026-09-14T19:57:36.000Z",
+      "evidenceUrl": "https://github.com/mekos2772/dsh-plugin-mimi/commit/3daba9f2d24cfae9f4e9e15a9a30108a7dd67691",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "mimi-pet"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; bundled dependencies are not eligible for automatic approval; repository tree exceeds the automatic review bound; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; bundled dependencies are not eligible for automatic approval; repository tree exceeds the automatic review bound; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,7 +91,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-alpha.1": "unknown",
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown"
@@ -145,12 +144,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -172,7 +165,9 @@
     },
     "node": ">=18",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
