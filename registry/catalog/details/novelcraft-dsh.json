@@ -1,49 +1,47 @@
 {
-  "id": "dsh-codebase-chat",
-  "name": "会话管理（DSH Codebase Chat）",
-  "packageName": "dsh-codebase-chat",
-  "description": "为 DSH 提供会话管理能力。英文原始说明：Multi-language codebase intelligence for DeepSeek Harness and MCP-compatible IDEs: chat, search, audit, refactor, and board-ready reports from local code.",
+  "id": "novelcraft-dsh",
+  "name": "写作与润色助手（Novelcraft DSH）",
+  "packageName": "novelcraft-dsh",
+  "description": "为 DSH 提供写作与润色助手能力。英文原始说明：NovelCraft autonomous writing assistant for DeepSeek Harness",
   "searchTerms": [
-    "会话管理",
-    "DSH Codebase Chat",
-    "dsh-codebase-chat",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
+    "写作与润色助手",
+    "Novelcraft DSH",
+    "novelcraft-dsh",
+    "写作",
+    "润色",
+    "文章",
     "实验功能",
     "新功能",
-    "dsh",
-    "codebase",
-    "chat"
+    "novelcraft",
+    "dsh"
   ],
-  "repositoryUrl": "https://github.com/shinzarou-eng/dsh-codebase-chat",
+  "repositoryUrl": "https://github.com/FengHuoLinShan/novelAssist-dsh",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "plugin/package.json",
+  "installPath": "plugin",
   "updatePolicy": "external-only",
-  "commit": "b52084e30adb05d928681266bf3d17e0d538a62f",
-  "version": "0.29.1",
+  "commit": "57dd276beaab35b7c0d4a9be57b7495775fa84af",
+  "version": "0.1.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-13T21:58:43.000Z",
+    "updatedAt": "2026-09-14T03:52:22.000Z",
     "observedAt": "2026-09-14T03:49:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-14T03:49:31.000Z",
-      "evidenceUrl": "https://github.com/shinzarou-eng/dsh-codebase-chat/commit/b52084e30adb05d928681266bf3d17e0d538a62f",
+      "evidenceUrl": "https://github.com/FengHuoLinShan/novelAssist-dsh/commit/57dd276beaab35b7c0d4a9be57b7495775fa84af",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +71,15 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "codebase-chat"
+    "novelcraft",
+    "novelcraft-client"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client-host.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.js",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -164,7 +163,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": ">=24.11.0",
     "systems": [],
     "profiles": [
       "web"
@@ -183,16 +182,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@babel/parser",
-      "@babel/traverse",
-      "@babel/types",
-      "@xenova/transformers",
-      "figlet",
-      "gpt-tokenizer",
-      "tree-sitter-wasms",
-      "web-tree-sitter"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
