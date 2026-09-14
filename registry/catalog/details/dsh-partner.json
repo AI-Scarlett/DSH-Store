@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b5d2ff46b6634bc1253508f4664b8ed091391fa7",
-  "version": "1.14.2",
+  "commit": "4fbaf88ef50e4f8ae4e972f771051e8397cf6fad",
+  "version": "1.16.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T06:09:49.000Z",
-    "observedAt": "2026-09-11T12:39:42.000Z",
+    "updatedAt": "2026-09-14T11:28:37.000Z",
+    "observedAt": "2026-09-14T13:24:37.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-11T12:39:42.000Z",
-      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/b5d2ff46b6634bc1253508f4664b8ed091391fa7",
+      "checkedAt": "2026-09-14T13:24:37.000Z",
+      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/4fbaf88ef50e4f8ae4e972f771051e8397cf6fad",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -185,7 +185,11 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/schemastery"
+      "@deepseek-ai/schemastery",
+      "mdast-util-from-markdown",
+      "mdast-util-gfm",
+      "mdast-util-to-markdown",
+      "micromark-extension-gfm"
     ],
     "reviewStatus": "automated-scan"
   },

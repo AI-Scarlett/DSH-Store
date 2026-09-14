@@ -1,48 +1,48 @@
 {
-  "id": "dsh-guardrails",
-  "name": "安全防护工具（DSH Guardrails）",
-  "packageName": "dsh-guardrails",
-  "description": "对 AI 发起的工具调用做**硬阻断**（不弹确认框）的 Host 插件：",
+  "id": "dsh-s-m-c-center",
+  "name": "文件与工作区工具（DSH S M C Center）",
+  "packageName": "dsh-s-m-c-center",
+  "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：Skills, MCP & CLI manager for the dsh web GUI: browse/enable/import/delete skills across project and user roots; manage MCP servers with a REAL connection through @deepseek-ai/dsh-mcp-client (enabled servers connect and register their tools on ctx.tools; enable/disable actually connects/disconnects); and discover/diagnose local CLI tools (skill-embedded run-cli wrappers plus a ~/.dsh/S-M-C/cli.json registry, reporting install/version/update/subcommands/API-key state). Hot-pluggable — mounted via a profile bundle patch + node_modules package, no dsh source changes. Requires DeepSeek Harness >= 0.1.2-alpha.2 (tested on 0.1.5-rc.2).",
   "searchTerms": [
-    "安全防护工具",
-    "DSH Guardrails",
-    "dsh-guardrails",
-    "安全",
-    "审计",
-    "验证",
-    "防护",
+    "文件与工作区工具",
+    "DSH S M C Center",
+    "dsh-s-m-c-center",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
     "实验功能",
     "新功能",
     "dsh",
-    "guardrails"
+    "center"
   ],
-  "repositoryUrl": "https://github.com/FengZhiHen1/dsh-guardrails",
+  "repositoryUrl": "https://github.com/YpipaQ/dsh-s-m-c-center",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8b00ffb201a9000e005d345554cac63aaba37880",
-  "version": "1.5.0",
+  "commit": "84dc0593c1794d70176318134b3f08b5de9528a0",
+  "version": "0.0.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T07:52:05.000Z",
+    "updatedAt": "2026-09-14T13:28:12.000Z",
     "observedAt": "2026-09-14T13:24:37.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-14T13:24:37.000Z",
-      "evidenceUrl": "https://github.com/FengZhiHen1/dsh-guardrails/commit/8b00ffb201a9000e005d345554cac63aaba37880",
+      "evidenceUrl": "https://github.com/YpipaQ/dsh-s-m-c-center/commit/84dc0593c1794d70176318134b3f08b5de9528a0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "guardrails"
+    "ui-dsh-s-m-c-center"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.2-rc.1",
+    "dsh": ">=0.1.2-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -163,7 +163,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -182,7 +182,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "schemastery"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

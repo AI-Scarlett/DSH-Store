@@ -1,48 +1,49 @@
 {
-  "id": "dsh-guardrails",
-  "name": "安全防护工具（DSH Guardrails）",
-  "packageName": "dsh-guardrails",
-  "description": "对 AI 发起的工具调用做**硬阻断**（不弹确认框）的 Host 插件：",
+  "id": "dsh-whale-widget",
+  "name": "趣味互动插件（DSH Whale Widget）",
+  "packageName": "dsh-whale-widget",
+  "description": "DSH Web 界面右下角的 DeepSeek 余额小鲸鱼挂件:余额/今日已用/峰谷定价、自定义泡泡点击序列(文本/余额/今日/峰谷/图片/随机语句与并列加权选择)、逐行样式与字体、悬浮快捷编辑、音效与每轮消耗、自定义角色/动图/音效、吸附与翻转自定义",
   "searchTerms": [
-    "安全防护工具",
-    "DSH Guardrails",
-    "dsh-guardrails",
-    "安全",
-    "审计",
-    "验证",
-    "防护",
+    "趣味互动插件",
+    "DSH Whale Widget",
+    "dsh-whale-widget",
+    "趣味",
+    "桌宠",
+    "互动",
+    "娱乐",
     "实验功能",
     "新功能",
     "dsh",
-    "guardrails"
+    "whale",
+    "widget"
   ],
-  "repositoryUrl": "https://github.com/FengZhiHen1/dsh-guardrails",
+  "repositoryUrl": "https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8b00ffb201a9000e005d345554cac63aaba37880",
-  "version": "1.5.0",
+  "commit": "40cebc2937aea674247a0d0e03e16c154f7b9864",
+  "version": "0.3.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T07:52:05.000Z",
+    "updatedAt": "2026-09-14T13:18:30.000Z",
     "observedAt": "2026-09-14T13:24:37.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-14T13:24:37.000Z",
-      "evidenceUrl": "https://github.com/FengZhiHen1/dsh-guardrails/commit/8b00ffb201a9000e005d345554cac63aaba37880",
+      "evidenceUrl": "https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget/commit/40cebc2937aea674247a0d0e03e16c154f7b9864",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "guardrails"
+    "dsh-whale-widget"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 805058 total bytes (maximum 2097152); largest file 650618 bytes (maximum 262144)",
   "compatibility": {
-    "dsh": "^0.1.2-rc.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -163,11 +164,9 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24",
+    "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
