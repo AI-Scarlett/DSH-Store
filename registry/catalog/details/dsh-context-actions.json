@@ -1,50 +1,45 @@
 {
-  "id": "dsh-plugin-focus",
-  "name": "会话管理（DSH Plugin Focus）",
-  "packageName": "dsh-plugin-focus",
-  "description": "为 DeepSeek Harness agent 提供持久化专注板：在会话工作区维护目标、约束与决策笔记，跨压缩与会话存活，支持自动注入上下文、清空归档与可选 Web 面板。",
+  "id": "dsh-context-actions",
+  "name": "实验功能插件（DSH Context Actions）",
+  "packageName": "dsh-context-actions",
+  "description": "DeepSeek Harness（dsh）Web GUI 插件：在上下文占用面板新增「压缩」与「交接」按钮。Adds Compact / Handover buttons to the dsh context panel (unofficial plugin).",
   "searchTerms": [
-    "会话管理",
-    "DSH Plugin Focus",
-    "dsh-plugin-focus",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
-    "记忆",
-    "知识库",
-    "召回",
+    "实验功能插件",
+    "DSH Context Actions",
+    "dsh-context-actions",
+    "实验功能",
+    "新功能",
     "dsh",
-    "plugin",
-    "focus"
+    "context",
+    "actions"
   ],
-  "repositoryUrl": "https://github.com/863683348/dsh-plugin-focus",
+  "repositoryUrl": "https://github.com/CN-Hang/dsh-context-actions",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "6aabf70615a191a14c7a1e25141b4d15560f3a47",
-  "version": "1.1.2",
+  "updatePolicy": "external-only",
+  "commit": "44435a535564a316f9d764765a975162ac0ed74b",
+  "version": "0.1.0",
   "categories": [
-    "memory"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-11T03:02:57.000Z",
-    "observedAt": "2026-09-11T03:28:51.000Z",
+    "updatedAt": "2026-09-15T03:52:32.000Z",
+    "observedAt": "2026-09-15T03:49:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-11T03:28:51.000Z",
-      "evidenceUrl": "https://github.com/863683348/dsh-plugin-focus/commit/6aabf70615a191a14c7a1e25141b4d15560f3a47",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-09-15T03:49:25.000Z",
+      "evidenceUrl": "https://github.com/CN-Hang/dsh-context-actions/commit/44435a535564a316f9d764765a975162ac0ed74b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +69,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "focus"
+    "context-actions"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.1, 0.1.5-rc.2, 0.1.6-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,11 +88,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown",
       "0.1.6-alpha.1": "unknown"
@@ -151,36 +141,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -200,32 +160,30 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"
     ]
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "none",
-      "commands": "shell",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "none"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "主机命令与插件声明的外部 CLI"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

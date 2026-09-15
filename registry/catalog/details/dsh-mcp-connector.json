@@ -23,8 +23,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6eb31f5f949130011508c3c0be60c9398b730e0e",
-  "version": "0.2.47",
+  "commit": "9c15746007ece2829e81e8be81b4b3082bf0acdf",
+  "version": "0.2.48",
   "categories": [
     "marketplace",
     "tools"
@@ -32,16 +32,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-14T01:43:21.000Z",
-    "observedAt": "2026-09-14T03:49:31.000Z",
+    "updatedAt": "2026-09-15T02:34:03.000Z",
+    "observedAt": "2026-09-15T03:49:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-14T03:49:31.000Z",
-      "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/6eb31f5f949130011508c3c0be60c9398b730e0e",
+      "checkedAt": "2026-09-15T03:49:25.000Z",
+      "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/9c15746007ece2829e81e8be81b4b3082bf0acdf",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
     "mcp-connector"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -94,9 +94,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
-      "0.1.5-rc.2": "unknown"
+      "0.1.5-rc.2": "unknown",
+      "0.1.6-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -147,12 +147,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -160,6 +154,12 @@
         "rollback": "unknown"
       },
       "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
