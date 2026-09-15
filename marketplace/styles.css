@@ -26,6 +26,11 @@
   --radius-md: 18px;
   --radius-sm: 12px;
   --ease: cubic-bezier(.2, .8, .2, 1);
+  --motion-fast: 160ms;
+  --motion-normal: 240ms;
+  --motion-enter: 420ms;
+  --motion-stagger: 40ms;
+  --motion-ease-out: cubic-bezier(.22, 1, .36, 1);
   --shell: min(1320px, calc(100% - 64px));
   color-scheme: light;
 }
@@ -1235,8 +1240,25 @@ dialog::backdrop { background: rgba(40, 72, 86, .38); backdrop-filter: blur(8px)
 .toast { position: fixed; z-index: 150; left: 50%; bottom: 24px; padding: 11px 16px; border: 1px solid var(--line-strong); background: #fff; color: var(--green); box-shadow: 0 12px 40px rgba(22, 72, 92, .16); opacity: 0; pointer-events: none; transform: translate(-50%, 18px); transition: opacity .2s, transform .2s; font-size: 9px; font-weight: 800; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-.reveal { opacity: 0; transform: translateY(16px); transition: opacity .65s ease, transform .65s ease; }
-.reveal.visible { opacity: 1; transform: none; }
+.reveal, .motion-reveal { opacity: 1; transform: none; }
+html.motion-ready .reveal:not(.visible),
+html.motion-ready .motion-reveal:not(.visible) { opacity: 0; transform: translate3d(0, 10px, 0); }
+html.motion-ready .reveal.visible,
+html.motion-ready .motion-reveal.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity var(--motion-enter) var(--motion-ease-out) var(--motion-delay, 0ms),
+    transform var(--motion-enter) var(--motion-ease-out) var(--motion-delay, 0ms);
+}
+.button:active, .faq-more:active, .catalog-gateway:active, .repo-link:active { transform: scale(.98); }
+@media (hover: hover) and (pointer: fine) {
+  .plugin-card:hover,
+  .safety-card:hover,
+  .about-story-card:hover,
+  .about-product-card:hover,
+  .seo-guide-link-grid a:hover { transform: translateY(-2px); }
+}
 @keyframes pulse { 50% { opacity: .45; box-shadow: 0 0 6px currentColor; } }
 @keyframes shimmer { to { background-position: -200% 0; } }
 
@@ -1976,11 +1998,11 @@ dialog { border-radius: var(--radius-xl); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal, .motion-reveal { opacity: 1 !important; transform: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal, .motion-reveal { opacity: 1 !important; transform: none !important; }
 }
