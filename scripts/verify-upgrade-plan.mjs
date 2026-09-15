@@ -7,7 +7,7 @@ if (plan.schemaVersion !== 1 || !/^[a-f0-9]{40}$/.test(plan.baseCommit) || !Arra
 execFileSync('git', ['merge-base', '--is-ancestor', plan.baseCommit, 'HEAD'])
 for (const [file, hash] of Object.entries(plan.preconditions)) {
   let bytes = null
-  try { bytes = execFileSync('git', ['show', `${plan.baseCommit}:${file}`], { stdio: ['ignore','pipe','ignore'] }) } catch {}
+  try { bytes = execFileSync('git', ['show', `${plan.baseCommit}:${file}`], { stdio: ['ignore','pipe','ignore'], maxBuffer: 16 * 1024 * 1024 }) } catch {}
   const actual = bytes ? createHash('sha256').update(bytes).digest('hex') : null
   if (actual !== hash) throw new Error(`base hash mismatch: ${file}`)
 }
