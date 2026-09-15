@@ -104,7 +104,7 @@ Observable success criterion:`,
 
 const RELEASE_API = 'https://api.github.com/repos/AI-Scarlett/build-dsh-plugin/releases/latest'
 const REPOSITORY_URL = 'https://github.com/AI-Scarlett/build-dsh-plugin/'
-const TAG_PATTERN = /^v\d{4}\.\d{2}\.\d{2}(?:\.\d+)?$/
+const TAG_PATTERN = /^v(?:\d+\.\d+\.\d+|\d{4}\.\d{2}\.\d{2}\.\d+)$/
 const defaultLocale = document.documentElement.dataset.defaultLocale === 'en' ? 'en' : 'zh'
 const storedLocale = localStorage.getItem('dsh-marketplace-locale')
 const state = {
@@ -186,6 +186,28 @@ function parseDshContract(manifest) {
   return { installSpecifier, packageName, bundlePatch, profile }
 }
 
+function parseCatalogDshContract(catalog, manifest) {
+  if (catalog?.schemaVersion !== 1 || catalog?.registry?.repositoryUrl !== 'https://github.com/AI-Scarlett/DSH-Store' || !Array.isArray(catalog.entries) || catalog.entries.length > 2000) return null
+  const entries = catalog.entries.filter(entry => entry.id === 'build-dsh-plugin')
+  if (entries.length !== 1) return null
+  const entry = entries[0]
+  if (entry.status !== 'approved' || entry.version !== manifest.distributionVersion
+    || entry.repositoryUrl !== 'https://github.com/AI-Scarlett/build-dsh-plugin'
+    || entry.packageName !== 'dsh-build-plugin' || !/^[0-9a-f]{40}$/.test(entry.commit || '')
+    || entry.manifestPath !== 'package.json' || entry.installPath != null
+    || !Array.isArray(entry.entryIds) || entry.entryIds.length !== 1 || entry.entryIds[0] !== 'dsh-build-plugin-skill-provider'
+    || !Object.values(entry.compatibility?.dshReleases || {}).includes('compatible')) return null
+  return parseDshContract({ dsh: { compatible: true, installSpecifier: `git+https://github.com/AI-Scarlett/build-dsh-plugin.git#${entry.commit}`, packageName: entry.packageName, bundlePatch: 'cordis.patch.yml', profile: 'web' } })
+}
+
+async function loadCatalogDshContract(manifest) {
+  const response = await fetch(new URL('../../registry/catalog.json', window.location.href), { cache: 'no-store', credentials: 'omit' })
+  if (!response.ok) return null
+  const text = await response.text()
+  if (new TextEncoder().encode(text).byteLength > 2 * 1024 * 1024) return null
+  return parseCatalogDshContract(JSON.parse(text), manifest)
+}
+
 function validateRelease(release, manifest, manifestUrl) {
   if (!release || !TAG_PATTERN.test(release.tag_name || '')) throw new Error('invalid release tag')
   if (!manifest || manifest.schemaVersion !== 1 || manifest.name !== 'build-dsh-plugin') throw new Error('invalid manifest')
@@ -226,8 +248,8 @@ function installContent() {
       body: t('install.dshStoreBody'),
       boundary: t('install.dshBoundaryReady'),
       command: state.locale === 'en'
-        ? `Open DSH STORE inside DSH → Plugin catalog, find build-dsh-plugin, review the pinned source, and install it.\n\nCLI fallback:\ndsh plugin --profile ${state.dsh.profile} add '${state.dsh.installSpecifier}'`
-        : `在 DSH 中打开 DSH STORE → 插件目录，搜索 build-dsh-plugin，确认固定来源后安装。\n\n备用命令：\ndsh plugin --profile ${state.dsh.profile} add '${state.dsh.installSpecifier}'`,
+        ? `Open DSH STORE inside DSH → Plugin catalog, find build-dsh-plugin, review the pinned source, and install it.\n\nCLI fallback:\ndsh plugin --profile ${state.dsh.profile} add --ignore-scripts '${state.dsh.installSpecifier}'`
+        : `在 DSH 中打开 DSH STORE → 插件目录，搜索 build-dsh-plugin，确认固定来源后安装。\n\n备用命令：\ndsh plugin --profile ${state.dsh.profile} add --ignore-scripts '${state.dsh.installSpecifier}'`,
       enabled: true,
     } : {
       kicker: 'DSH / COMPATIBILITY GATE',
@@ -307,7 +329,7 @@ async function loadSkillRelease() {
     if (!manifestResponse.ok) throw new Error(`manifest HTTP ${manifestResponse.status}`)
     const manifest = validateRelease(release, await manifestResponse.json(), manifestUrl)
     state.release = manifest
-    state.dsh = parseDshContract(manifest)
+    state.dsh = parseDshContract(manifest) || await loadCatalogDshContract(manifest).catch(() => null)
     state.releaseStatus = 'ready'
     renderInstall()
     sendDshEvent('skill_release_verified', { item: manifest.release.tag, value: state.dsh ? 'dsh_ready' : 'agent_skill' })
