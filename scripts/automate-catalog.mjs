@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
 import { createHash } from 'node:crypto'
 import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
@@ -413,7 +414,13 @@ async function discoverRepositories(policy, github) {
       found.set(url.toLowerCase(), { ...item, html_url: url })
     }
   }
-  return [...found.values()].sort((left, right) => Date.parse(right.updated_at ?? 0) - Date.parse(left.updated_at ?? 0))
+  if (policy.discoveryFeeds?.enabled === true) {
+    const offset = Math.floor(Date.now() / 3600000) * 8
+    for (const item of await discoverFeedCandidates(github, { offset })) {
+      if (!excluded.has(item.html_url.toLowerCase()) && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
+    }
+  }
+  return orderDiscoveryCandidates(found.values())
 }
 
 async function updateExistingEntries(catalog, policy, github, observedAt, report) {
@@ -682,6 +689,15 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
     if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
       inspected += 1
       report.skippedDiscoveries.push({ repository: repository.html_url, reason: 'GitHub did not return a fixed Commit' })
+      continue
+    }
+    if (repository.discoveryOnly) {
+      if (!previous) {
+        const record = candidateRecord(repository, head, null, observedAt, { status: 'reviewing', route: 'direct-review', reason: 'External discovery signal only; fixed-source Catalog review required before installation.' })
+        record.discoverySources = [repository.feedEvidence]
+        candidates.entries.push(record); candidateByRepository.set(repositoryKey, record)
+      }
+      inspected += 1
       continue
     }
     if (previous?.latestCommit === head.sha && previous.status === 'rejected') continue

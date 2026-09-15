@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.8.17')
+  assert.equal(pkg.version, '0.9.0')
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -204,7 +204,7 @@ test('current Host implementation contains no mutation or shell primitives', asy
     /\bwriteFile(?:Sync)?\b/, /\bappendFile(?:Sync)?\b/, /\brename(?:Sync)?\b/,
     /\bunlink(?:Sync)?\b/, /\brm(?:Sync)?\b/, /node:child_process/,
     /\bspawn(?:Sync)?\s*\(/,
-    /ctx\.loader/, /ctx\.reflect/,
+    /ctx\.loader\s*\.\s*(?:create|update|remove|write)\s*\(/, /ctx\.reflect/,
   ]) {
     assert.doesNotMatch(joined, forbidden, `forbidden primitive found: ${forbidden}`)
   }
@@ -290,7 +290,8 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /请勿再运行 pnpm dsh web 或 dsh web/)
   assert.match(client, /GUARDIAN_PORT_CONFLICT/)
   assert.doesNotMatch(client, /复制重启命令|请手动运行：/)
-  assert.equal(client.match(/操作失败并已触发回滚/g)?.length, 1)
+  assert.match(client, /操作失败，需要恢复/)
+  assert.match(client, /操作失败，已回滚/)
   const headingSource = client.slice(client.indexOf('const heading ='), client.indexOf('const nav ='))
   const navSource = client.slice(client.indexOf('const nav ='), client.indexOf('let content'))
   assert.doesNotMatch(headingSource, /刷新 GitHub 目录/)

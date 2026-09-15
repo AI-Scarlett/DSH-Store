@@ -1,3 +1,5 @@
+import { createOperationJournal } from './operation-journal.mjs'
+import { diagnoseCommand } from './diagnostics.mjs'
 import { createHash, randomUUID } from 'node:crypto'
 import {
   appendFile, chmod, copyFile, mkdir, readFile, rename, rm, writeFile,
@@ -84,24 +86,7 @@ function pluginCommandError(result) {
   const pnpmUnavailable = result?.exitCode === 127
   const output = `${String(result?.stderr ?? '')}\n${String(result?.stdout ?? '')}`
   const pnpmCode = output.match(/\b(ERR_PNPM_[A-Z0-9_]+)\b/)?.[1] ?? null
-  const diagnostic = pnpmCode === 'ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED'
-    ? {
-        code: pnpmCode,
-        message: 'pnpm 已阻止 Profile 中某个固定 Git 依赖运行 prepare；该错误不一定来自当前目标插件，商城不会为整个 Profile 自动放宽构建权限。',
-      }
-    : pnpmCode === 'ERR_PNPM_PREPARE_PACKAGE'
-      ? {
-          code: pnpmCode,
-          message: '插件固定 Git 源的 prepare 构建失败；这是插件发布包或安装契约问题，不是 Profile 写入失败。',
-        }
-      : pnpmCode === 'ERR_PNPM_WORKSPACE_PKG_NOT_FOUND'
-        ? {
-            code: pnpmCode,
-            message: '插件使用 workspace:* 依赖，但固定 Git 子目录安装不包含完整工作区；该发布源不满足商城安装契约。',
-          }
-      : pnpmCode
-        ? { code: pnpmCode, message: `pnpm 安装失败（${pnpmCode}）。` }
-        : null
+  const diagnostic = diagnoseCommand(result)
   return Object.assign(new Error(pnpmUnavailable
     ? 'pnpm is unavailable in the DSH plugin runtime PATH'
     : 'official DSH plugin command failed'), {
@@ -241,6 +226,7 @@ export function createOperationService(options = {}) {
   const runtimeInstanceId = typeof options.runtimeInstanceId === 'string' ? options.runtimeInstanceId : null
   const planTtlMs = options.planTtlMs ?? PLAN_TTL_MS
   const sourceVerificationCacheTtlMs = options.sourceVerificationCacheTtlMs ?? SOURCE_VERIFICATION_CACHE_TTL_MS
+  const journal = createOperationJournal({ dshHome, bootId: runtimeInstanceId ?? randomUUID() })
   const plans = new Map()
   const sourceVerificationCache = new Map()
 
@@ -323,6 +309,8 @@ export function createOperationService(options = {}) {
     const plan = {
       schemaVersion: 1,
       planId,
+      operationId: planId,
+      journalPath: `dsh-safe-plugin-manager/operations/${planId}.json`,
       action,
       profile,
       createdAt: createdAt.toISOString(),
@@ -334,6 +322,7 @@ export function createOperationService(options = {}) {
         targetVersion: ['install', 'update', 'migrate'].includes(action) ? targetEntry.version : null,
         repositoryUrl: entry.repositoryUrl,
         commit: targetEntry.commit,
+        manifestPath: targetEntry.manifestPath, installPath: targetEntry.installPath ?? null,
         entryIds: entry.entryIds,
         sourceUpdate: targetEntry.commit !== entry.commit,
         sourceReview: targetEntry.sourceReview ?? null,
@@ -348,13 +337,16 @@ export function createOperationService(options = {}) {
     return publicPlan(plan)
   }
 
-  async function execute(input = {}) {
+  function claimPlan(input = {}) {
     const plan = plans.get(input.planId)
     if (!plan) throw Object.assign(new Error('operation plan is missing or already used'), { code: 'PLAN_NOT_FOUND' })
     plans.delete(input.planId)
     if (Date.now() > Date.parse(plan.expiresAt)) throw Object.assign(new Error('operation plan expired'), { code: 'PLAN_EXPIRED' })
     if (input.confirmation !== plan.confirmation) throw Object.assign(new Error('confirmation text does not match the operation plan'), { code: 'CONFIRMATION_MISMATCH' })
-    const transactionId = randomUUID()
+    return plan
+  }
+
+  async function executePlan(plan, transactionId = randomUUID()) {
     const release = await acquireLock(dshHome, plan.profile)
     let backupDir = null
     let packageCommandMayHaveMutated = false
@@ -419,7 +411,9 @@ export function createOperationService(options = {}) {
           && rollbackDetails.dependencies !== 'failed' ? 'succeeded' : 'failed'
       }
       const value = {
-        schemaVersion: 1, transactionId, status: 'rolled-back', action: plan.action,
+        schemaVersion: 1, transactionId,
+        status: rollback === 'succeeded' ? 'rolled-back' : rollback === 'failed' ? 'recovery-required' : 'failed',
+        restartRequired: false, action: plan.action,
         profile: plan.profile, packageName: plan.plugin.packageName, backupId: backupDir ? transactionId : null,
         error: {
           code: error?.code ?? 'OPERATION_FAILED', message: String(error?.message ?? error),
@@ -434,5 +428,33 @@ export function createOperationService(options = {}) {
     }
   }
 
-  return { createPlan, execute }
+  async function execute(input = {}) { return executePlan(claimPlan(input)) }
+
+  async function start(input = {}) {
+    const plan = claimPlan(input)
+    const id = plan.operationId
+    const queued = await journal.reserve(plan, id)
+    // Reservation is durable before work is dispatched. Never replay from disk.
+    setImmediate(() => { void (async () => {
+      try {
+        await journal.update(id, { state: 'running', phase: 'cli-and-health' })
+        const value = await executePlan(plan, id)
+        const state = value.status === 'applied' ? 'succeeded' : value.status
+        await journal.update(id, { state, phase: 'complete', result: {
+          schemaVersion: 1, transactionId: id, status: value.status, action: value.action,
+          profile: value.profile, packageName: value.packageName, targetVersion: value.targetVersion,
+          backupId: value.backupId, restartRequired: value.restartRequired === true,
+          runtimeInstanceId: value.runtimeInstanceId, rollback: value.rollback,
+          rollbackDetails: value.rollbackDetails,
+          health: value.health ? { status: value.health.status } : null,
+          error: value.error ? { code: value.error.code, message: value.error.diagnostic?.message ?? '操作失败，请检查恢复记录。', diagnostic: value.error.diagnostic } : null,
+        }, restartRequired: value.restartRequired === true })
+      } catch {
+        await journal.update(id, { state: 'recovery-required', phase: 'execution-or-record-failed', restartRequired: false }).catch(() => {})
+      }
+    })() })
+    return queued
+  }
+  return { createPlan, execute, start, journal }
+
 }

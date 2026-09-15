@@ -1,3 +1,4 @@
+import { createActivationService } from './activation.mjs'
 import { createCatalogService, DEFAULT_CATALOG_URL } from './catalog.mjs'
 import { createCandidateService, DEFAULT_CANDIDATES_URL } from './candidates.mjs'
 import { createDshRunner } from './dsh.mjs'
@@ -34,7 +35,7 @@ export function apply(ctx, config = {}) {
   const options = normalizeConfig(config)
   const catalogService = createCatalogService({ catalogUrl: options.catalogUrl, installCountsUrl: options.installCountsUrl })
   const candidateService = createCandidateService({ candidateUrl: options.candidateUrl })
-  const runner = createDshRunner({ cliPath: options.dshCliPath })
+  const runner = createDshRunner({ cliPath: options.dshCliPath, environment: { ...process.env, DSH_HOME: options.dshHome } })
   const launchSpec = runner.restartSpec(options.defaultProfile)
   const launchProfileArgs = options.defaultProfile === 'web' ? ['web'] : ['--profile', options.defaultProfile]
   const runtimeStatus = createRuntimeStatus({
@@ -59,10 +60,21 @@ export function apply(ctx, config = {}) {
     sourceUpdateService,
     runtimeInstanceId: runtimeStatus.bootId,
   })
-  ctx.inject(['webServer'], (webCtx) => {
+  const activationService = createActivationService({ dshHome: options.dshHome, profile: options.defaultProfile, bootId: runtimeStatus.bootId,
+    readRows: () => {
+      if (typeof ctx.loader?.entries !== 'function') return null
+      const rows = []
+      for (const entry of ctx.loader.entries()) {
+        if (rows.length >= 4096) return null
+        rows.push({ id: entry.id, state: entry.fiber?.state })
+      }
+      return rows
+    },
+  })
+  ctx.inject(['webServer', 'connection'], (webCtx) => {
     const dispose = registerManagerRoutes(webCtx.webServer, {
       ...options, catalogService, candidateService, runner, operationService, sourceUpdateService, dshVersionService,
-      runtimeStatus, restartService, guardianService,
+      runtimeStatus, restartService, guardianService, activationService, connection: webCtx.connection,
     })
     if (typeof dispose === 'function' && typeof webCtx.effect === 'function') {
       webCtx.effect(() => dispose, 'dsh-safe-plugin-manager: inventory route')

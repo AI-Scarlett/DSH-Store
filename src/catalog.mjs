@@ -565,6 +565,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
       profiles: stringArray(value.compatibility?.profiles ?? [], `entries[${index}].compatibility.profiles`),
     },
     details: {
+      ...(value.details?.screenshots ? { screenshots: validateScreenshots(value.details.screenshots) } : {}),
       pluginType: enumValue(value.details?.pluginType, `entries[${index}].details.pluginType`, [
         'feature', 'theme', 'suite', 'client', 'provider', 'unknown',
       ]),
@@ -777,6 +778,16 @@ export function validateCatalogDetail(document, indexEntry, registry) {
   return detail
 }
 
+export function validateScreenshots(value) {
+  if (!Array.isArray(value) || value.length > 3) throw new Error('invalid screenshots')
+  return value.map(item => {
+    if (!item || typeof item.path !== 'string' || item.path.length > 240 || !/^[A-Za-z0-9_./-]+\.(png|jpg|jpeg|webp)$/.test(item.path)
+      || item.path.startsWith('/') || item.path.split('/').some(part => !part || part === '..' || part === '.')
+      || !/^[a-f0-9]{64}$/.test(item.sha256 ?? '') || Object.keys(item).some(key => !['path', 'sha256'].includes(key))) throw new Error('unsafe screenshot metadata')
+    return { path: item.path, sha256: item.sha256 }
+  })
+}
+
 function legacyAssurance(assurance) {
   return Object.fromEntries(Object.entries(assurance ?? {}).map(([gate, record]) => {
     const value = { status: record?.status === 'partial' ? 'unknown' : record?.status ?? 'unknown' }
@@ -818,6 +829,7 @@ function legacyWireEntry(entry) {
       profiles: entry.compatibility.profiles,
     },
     details: {
+      ...(entry.details.screenshots ? { screenshots: entry.details.screenshots } : {}),
       pluginType: entry.details.pluginType,
       installSource: entry.details.installSource,
       license: entry.details.license,
@@ -1170,6 +1182,12 @@ function catalogIndexSearchValues(entry) {
  * The explicit order is the source of truth for the default marketplace order;
  * this keeps page boundaries stable while detail files are loaded lazily.
  */
+function compatibleFilter(value) {
+  if (!value) return ''
+  if (typeof value !== 'string' || !/^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?$/.test(value) || value.length > 80) throw new Error('invalid compatibility filter')
+  return value
+}
+
 export function selectMarketplaceIndexEntries(index, options = {}) {
   const catalog = validateCatalogIndex(index)
   const view = options.view ?? 'market'
@@ -1186,9 +1204,11 @@ export function selectMarketplaceIndexEntries(index, options = {}) {
   const pageSize = positiveInteger(options.pageSize, MARKET_PAGE_SIZE, MAX_MARKET_PAGE_SIZE, 'pageSize')
   const installedPackages = new Set((options.inventory?.plugins ?? []).filter(plugin => plugin.installed !== false).map(plugin => plugin.packageName))
   const featuredOnly = options.featuredOnly === true
+  const compatibleWith = compatibleFilter(options.compatibleWith)
   const scoped = catalog.entries
     .filter(entry => view === 'installed' ? installedPackages.has(entry.packageName) : entry.status !== 'unlisted')
     .filter(entry => !featuredOnly || entry.featured === true)
+    .filter(entry => !compatibleWith || entry.compatibility?.dshReleases?.[compatibleWith] === 'compatible')
     .filter(entry => category === '' || entry.categories.includes(category))
     .filter(entry => query === '' || catalogIndexSearchValues(entry).some(value => value.includes(query)))
     .sort((left, right) => left.order - right.order || left.nameZh.localeCompare(right.nameZh, 'zh-CN') || left.id.localeCompare(right.id))
@@ -1200,7 +1220,7 @@ export function selectMarketplaceIndexEntries(index, options = {}) {
     entries: scoped.slice((page - 1) * pageSize, page * pageSize),
     categoryIds: [...new Set(scoped.flatMap(entry => entry.categories))].sort(),
     pagination: {
-      view, query, category, featuredOnly, page, pageSize, total, pageCount,
+      view, query, category, featuredOnly, ...(compatibleWith ? { compatibleWith } : {}), page, pageSize, total, pageCount,
       hasPrevious: page > 1, hasNext: page < pageCount,
     },
   }
@@ -1351,8 +1371,10 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
   const scopedEntries = snapshot.entries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
   const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories ?? []))].sort()
   const featuredOnly = options.featuredOnly === true
+  const compatibleWith = compatibleFilter(options.compatibleWith)
   const matchingEntries = scopedEntries
     .filter(entry => !featuredOnly || entry.featured === true)
+    .filter(entry => !compatibleWith || entry.compatibility?.dshReleases?.[compatibleWith] === 'compatible')
     .filter(entry => category === '' || entry.categories?.includes(category))
     .filter(entry => query === '' || marketplaceSearchValues(entry).some(item => item.includes(query)))
   const matchingCandidates = view === 'candidates'
@@ -1375,7 +1397,7 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
     catalogPackageNames: options.catalogPackageNames ?? snapshot.entries.map(entry => entry.packageName),
     filters: { categoryIds, featuredOnly },
     pagination: {
-      view, query, category, featuredOnly, page, pageSize, total, pageCount,
+      view, query, category, featuredOnly, ...(compatibleWith ? { compatibleWith } : {}), page, pageSize, total, pageCount,
       hasPrevious: page > 1,
       hasNext: page < pageCount,
     },

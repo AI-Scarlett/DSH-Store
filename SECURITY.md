@@ -53,3 +53,9 @@ with fixed argument arrays and `shell=false`. A detached helper waits for the
 old PID to exit, escalates only that exact PID if graceful termination times
 out, and refuses to launch a duplicate when the loopback web port is already
 restored by an external supervisor.
+
+## Store management authentication and operation recovery
+
+All exact manager HTTP routes delegate to the public DSH Connection requestRejection authority, including read-only inventory and progress. Missing/throwing authorities fail closed. Host/Origin and intent checks remain CSRF controls, not identity. The owned Guardian exchanges its child's official launch URL and retains the cookie only in memory. Never expose this cookie or token through diagnostics.
+
+Version 0.8.18 introduces bounded operation journals and truthful recovery-required status. A new boot cannot replay unfinished operations. Read progress through GET; never resubmit a mutation after uncertain delivery. Windows file locks, failed rollback or corrupted journals require explicit recovery. Upgrade the bundled Guardian before a real Profile starts the authenticated runtime endpoint.
