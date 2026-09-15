@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "operation": "authorized-storefront-compatibility-fix",
+  "baseCommit": "3d635e7deea990c92810b6a60bf6395cf3ee7854",
+  "createdAt": "2026-09-15T04:49:51.151340+00:00",
+  "scope": [
+    "marketplace/build/build.js",
+    "test/build-release-page.test.mjs",
+    "docs/ops/build-page050-fix-20260915.json"
+  ],
+  "preconditions": {
+    "marketplace/build/build.js": "3ca9453f91655afcf099635261b1dd285830958a6025be8a1ea7a15ec8f70ef4",
+    "test/build-release-page.test.mjs": null,
+    "docs/ops/build-page050-fix-20260915.json": null
+  },
+  "reason": "Public browser acceptance rejected semver v0.5.0 because download page only accepted legacy date tags. DSH readiness must use the separately audited matching Catalog entry for the hybrid source adapter.",
+  "gates": [
+    "version and Catalog identity negative tests",
+    "npm run check",
+    "CI PR",
+    "public browser download and Catalog readback"
+  ],
+  "rollback": "Revert only this storefront PR; preserve releases, Catalog identity and contact ledger."
+}
