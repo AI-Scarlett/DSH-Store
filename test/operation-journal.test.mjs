@@ -28,7 +28,8 @@ test('corrupt journal blocks mutation', async () => {
   try {
     const journal = createOperationJournal({ dshHome: root, bootId: 'first' })
     const id = randomUUID(); await journal.reserve(plan, id)
-    await writeFile(join(root, 'dsh-safe-plugin-manager', 'operations', `${id}.json`), '{}')
+    const path = join(root, 'dsh-safe-plugin-manager', 'operations', `${id}.json`)
+    await writeFile(path, JSON.stringify({ schemaVersion: 1, id, bootId: 'first', state: 'running' }))
     await assert.rejects(journal.reserve(plan, randomUUID()), /JOURNAL_INVALID/)
   } finally { await rm(root, { recursive: true, force: true }) }
 })

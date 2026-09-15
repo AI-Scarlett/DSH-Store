@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { discoverFeedCandidates } from '../src/discovery-feeds.mjs'
+import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
 import { createHash } from 'node:crypto'
 import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
@@ -420,7 +420,7 @@ async function discoverRepositories(policy, github) {
       if (!excluded.has(item.html_url.toLowerCase()) && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
     }
   }
-  return [...found.values()].sort((left, right) => Date.parse(right.updated_at ?? 0) - Date.parse(left.updated_at ?? 0))
+  return orderDiscoveryCandidates(found.values())
 }
 
 async function updateExistingEntries(catalog, policy, github, observedAt, report) {

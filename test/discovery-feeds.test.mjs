@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { discoverFeedCandidates } from '../src/discovery-feeds.mjs'
+import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
 const hash = 'a'.repeat(40)
 const client = (source, truncated=false) => ({
   async api(path) {
@@ -22,4 +22,12 @@ test('feed bounds, tags, ambiguous URLs and arbitrary sources fail closed', asyn
   assert.deepEqual(await discoverFeedCandidates(client('url: !!js malicious\n')),[])
   assert.deepEqual(await discoverFeedCandidates(client('url: https://other.example/plugin\n')),[])
   assert.deepEqual(await discoverFeedCandidates(client('url: https://github.com/example/demo\nurl: https://github.com/other/demo\n')),[])
+})
+
+test('new GitHub activity cannot starve older feed candidates within a bounded run', () => {
+  const recent = Array.from({ length: 20 }, (_, i) => ({ id: i, updated_at: '2026-09-15' }))
+  const feed = Array.from({ length: 8 }, (_, i) => ({ id: `feed-${i}`, discoveryOnly: true, updated_at: '2026-01-01' }))
+  const selected = orderDiscoveryCandidates([...recent, ...feed]).slice(0, 8)
+  assert.equal(selected.filter(item => item.discoveryOnly).length, 4)
+  assert.equal(selected.filter(item => !item.discoveryOnly).length, 4)
 })

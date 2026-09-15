@@ -24,7 +24,11 @@ export function createOperationJournal({ dshHome, bootId, capacity = 128 }) {
       const stat = await handle.stat()
       if (!stat.isFile() || stat.size > 65536) throw fail('JOURNAL_INVALID')
       const value = JSON.parse(await handle.readFile('utf8'))
-      if (value.schemaVersion !== 1 || value.id !== id || !STATES.has(value.state) || typeof value.bootId !== 'string') throw fail('JOURNAL_INVALID')
+      if (value.schemaVersion !== 1 || value.id !== id || !STATES.has(value.state) || typeof value.bootId !== 'string' || !value.bootId
+        || typeof value.profile !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(value.profile)
+        || !['install', 'update', 'migrate', 'uninstall', 'enable', 'disable'].includes(value.action)
+        || typeof value.packageName !== 'string' || !value.packageName
+        || typeof value.createdAt !== 'string' || !Number.isFinite(Date.parse(value.createdAt))) throw fail('JOURNAL_INVALID')
       return value
     } finally { await handle.close() }
   }

@@ -1,16 +1,16 @@
 import { execFile, spawn } from 'node:child_process'
 import { mkdtemp, rm, mkdir, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { join, resolve, dirname } from 'node:path'
 import { createServer } from 'node:net'
 import assert from 'node:assert/strict'
 const cli = resolve(process.argv[2])
 const buildRoot = process.argv[3] ? resolve(process.argv[3]) : null
-const root = await mkdtemp(join(tmpdir(), 'store-e3-'))
+const root = await mkdtemp(join(dirname(resolve('.')), 'store-e3-'))
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/TOKEN|SECRET|PASSWORD|API_KEY/i.test(key)))
 Object.assign(env, { DSH_HOME: join(root, 'home'), DSH_AGENTS_HOME: join(root, 'agents'), DSH_TELEMETRY_DISABLED: '1', npm_config_cache: join(root, 'cache'), CI: 'true' })
 const run = args => new Promise((resolveRun, reject) => execFile(process.execPath, [cli, ...args], { cwd: root, env, timeout: 180000, maxBuffer: 6 * 1024 * 1024 }, (error, stdout, stderr) => {
-  if (error) return reject(Object.assign(new Error('Official CLI failed'), { exitCode: error.code, codes: [...new Set((String(stdout) + String(stderr)).match(/\b(?:ERR_[A-Z0-9_]+|ENOENT|EPERM|EACCES|EBUSY|ENOSPC|EINVAL)\b/g) ?? [])], diagnostic: (String(stdout) + String(stderr)).replace(/https?:\/\/[^\s]+/g, '[url]').replace(/(?:[A-Za-z]:)?[\\/][^\s,"']+/g, '[path]').replace(/[A-Za-z0-9_-]{40,}/g, '[value]').slice(-1800), stage: args.slice(0, 4).join(' ') }))
+  if (error) return reject(Object.assign(new Error('Official CLI failed'), { exitCode: error.code, codes: [...new Set((String(stdout) + String(stderr)).match(/\b(?:ERR_[A-Z0-9_]+|ENOENT|EPERM|EACCES|EBUSY|ENOSPC|EINVAL)\b/g) ?? [])], diagnostic: (String(stdout) + String(stderr)).replace(/https?:\/\/[^\s]+/g, '[url]').replaceAll(root, '[fixture]').replaceAll(resolve('.'), '[source]').replace(/[A-Za-z0-9_-]{40,}/g, '[value]').slice(-1800), stage: args.slice(0, 4).join(' ') }))
   resolveRun(stdout)
 }))
 let child

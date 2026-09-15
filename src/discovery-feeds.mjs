@@ -26,3 +26,16 @@ export async function discoverFeedCandidates(github, { offset = 0, limit = 8, ob
   }
   return result
 }
+
+// Alternate sources so a busy GitHub search cannot starve the bounded feed.
+export function orderDiscoveryCandidates(repositories) {
+  const recent = [...repositories].sort((a, b) => Date.parse(b.updated_at ?? 0) - Date.parse(a.updated_at ?? 0))
+  const feed = recent.filter(item => item.discoveryOnly)
+  const search = recent.filter(item => !item.discoveryOnly)
+  const result = []
+  for (let i = 0; i < Math.max(feed.length, search.length); i++) {
+    if (feed[i]) result.push(feed[i])
+    if (search[i]) result.push(search[i])
+  }
+  return result
+}
