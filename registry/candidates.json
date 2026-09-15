@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-15T03:49:25.000Z",
+    "updatedAt": "2026-09-15T04:39:01.769Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -10608,28 +10608,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
-    },
-    {
-      "id": "ai-scarlett-build-dsh-plugin",
-      "name": "DSH 插件开发工作流（Build DSH Plugin）",
-      "description": "把插件需求转化为标准 DSH Bundle、卡片契约、审计、发布和商城候选；候选发现与可信安装严格分层，并强制执行非破坏性边界与分级验收。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
-      "defaultBranch": "main",
-      "latestCommit": "55cb8ca5dec05373c1d1fbb62fe8cc8c39771663",
-      "sourceUpdatedAt": "2026-09-10T02:09:52.000Z",
-      "discoveredAt": "2026-09-15T03:49:25.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "development",
-        "workflow",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.1, 0.1.5-rc.2, 0.1.6-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: build-dsh-plugin."
     },
     {
       "id": "ai-scarlett-dsh-settings-hub",

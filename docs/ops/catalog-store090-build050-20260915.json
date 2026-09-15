@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "operation": "authorized-catalog-upgrade",
+  "planId": "catalog-store090-build050-20260915",
+  "createdAt": "2026-09-15T04:39:01.769Z",
+  "baseCommit": "ea41138aeaff4ad7403639046b5865d803f2ea75",
+  "scope": [
+    "registry/catalog.json",
+    "registry/catalog-index.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    "registry/catalog/details/build-dsh-plugin.json",
+    "registry/candidates.json",
+    "docs/ops/catalog-store090-build050-20260915.json",
+    "scripts/verify-upgrade-plan.mjs"
+  ],
+  "preconditions": {
+    "registry/catalog.json": "5dba830d8599f63efb5e394d830e351f614849c505aeb49f966fae1ce398e984",
+    "registry/catalog-index.json": "7bf83e8e70f3a271dbddecc9ce1180ea601ab0defeeb31f527a636809f97d8cf",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "26eda07d4c552342e95a93d6ab9efe5f10b22cec622513c359b15f32cf461719",
+    "registry/catalog/details/build-dsh-plugin.json": "d41cb5ed3df18cfdeec5107075f96227f9f39839fb01c9d1cda560c427067901",
+    "registry/candidates.json": "03e0e4168ebf68826ab732ae8c8cea3a4fb5e7c5362f659f6493c267b5f3f50c",
+    "docs/ops/catalog-store090-build050-20260915.json": null,
+    "scripts/verify-upgrade-plan.mjs": "f2071b5c6f2f870f39136d3691868d7c63c01f6bbff4e25aae1aaac95943f2db"
+  },
+  "targets": [
+    {
+      "id": "dsh-safe-plugin-manager",
+      "commit": "d2447a6d80399525b5f57a12b932e1b8a5318f4d"
+    },
+    {
+      "id": "build-dsh-plugin",
+      "commit": "e0c2b5e23040a5dfebd4fb2c29bab40b34d21b2e"
+    }
+  ],
+  "authorization": "User approved the Store and build-dsh-plugin upgrade plan including publication and Catalog synchronization.",
+  "gates": [
+    "fixed source manifest and Bundle verification",
+    "npm run check",
+    "exact scope and base hashes",
+    "CI checked PR",
+    "all four public surfaces"
+  ],
+  "rollback": "Revert this Catalog-only PR; never reset author-contact state.",
+  "reasonForVerifierChange": "The full Catalog exceeds the child_process default 1 MiB buffer; hash verification must read bounded tracked files up to 16 MiB rather than classify ENOBUFS as a missing file."
+}
