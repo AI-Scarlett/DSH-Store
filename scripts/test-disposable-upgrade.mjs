@@ -10,7 +10,7 @@ const root = await mkdtemp(join(tmpdir(), 'store-e3-'))
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/TOKEN|SECRET|PASSWORD|API_KEY/i.test(key)))
 Object.assign(env, { DSH_HOME: join(root, 'home'), DSH_AGENTS_HOME: join(root, 'agents'), DSH_TELEMETRY_DISABLED: '1', npm_config_cache: join(root, 'cache'), CI: 'true' })
 const run = args => new Promise((resolveRun, reject) => execFile(process.execPath, [cli, ...args], { cwd: root, env, timeout: 180000, maxBuffer: 6 * 1024 * 1024 }, (error, stdout, stderr) => {
-  if (error) return reject(Object.assign(new Error('Official CLI failed'), { exitCode: error.code, codes: String(stderr).match(/\bERR_[A-Z0-9_]+\b/g) ?? [], stage: args.slice(0, 4).join(' ') }))
+  if (error) return reject(Object.assign(new Error('Official CLI failed'), { exitCode: error.code, codes: [...new Set((String(stdout) + String(stderr)).match(/\b(?:ERR_[A-Z0-9_]+|ENOENT|EPERM|EACCES|EBUSY|ENOSPC|EINVAL)\b/g) ?? [])], diagnostic: (String(stdout) + String(stderr)).replace(/https?:\/\/[^\s]+/g, '[url]').replace(/(?:[A-Za-z]:)?[\\/][^\s,"']+/g, '[path]').replace(/[A-Za-z0-9_-]{40,}/g, '[value]').slice(-1800), stage: args.slice(0, 4).join(' ') }))
   resolveRun(stdout)
 }))
 let child
@@ -59,7 +59,7 @@ try {
   const after = await run(['--profile', 'web', '--dump-config']); assert.ok(!after.includes('name: dsh-safe-plugin-manager'))
   console.log(JSON.stringify({ status: 'passed', cliVersion: (await run(['--version'])).trim(), install: true, dumpConfig: true, startup: true, unauthenticated: 401, authenticated: 200, crossOrigin: 403, journal: true, activation: true, uninstall: true, buildBundle: Boolean(buildRoot), realProfile: 'unchanged' }))
 } catch (error) {
-  console.error(JSON.stringify({ status: 'failed', message: error.message, stage: error.stage, exitCode: error.exitCode, codes: error.codes })); process.exitCode = 1
+  console.error(JSON.stringify({ status: 'failed', message: error.message, stage: error.stage, exitCode: error.exitCode, codes: error.codes, diagnostic: error.diagnostic })); process.exitCode = 1
 } finally {
   if (child && child.exitCode === null) { child.kill('SIGKILL'); await new Promise(done => child.once('exit', done)) }
   await rm(root, { recursive: true, force: true })

@@ -21,6 +21,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ matrix.pnpm }}
+      - run: pnpm --version
       - run: node --test test/manager-auth.test.mjs test/operation-journal.test.mjs test/diagnostics.test.mjs test/activation.test.mjs test/discovery-feeds.test.mjs
       - run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund @deepseek-ai/dsh@0.1.5-rc.2
       - run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
