@@ -12,11 +12,13 @@ Authentication is unavailable until Connection loads. Unsupported Connection con
 
 ## Evidence
 
-- E2: npm run check: 306 tests passed on the local macOS checkout before publication.
+- E2: npm run check: 308 tests passed on the local macOS checkout before publication.
 - E3 DSH 0.1.5-rc.1 and 0.1.5-rc.2: official CLI file-source install of both own bundles, dump-config, boot, Store unauthenticated 401/authenticated 200, forged Origin 403, inventory, operation GET, activation route, Store uninstall and subsequent dump-config passed in disposable DSH_HOME. build adapter present in dump-config; interactive Skill use remains unverified.
 - 0.1.6-alpha.1: npm bootstrap failed ETARGET for @deepseek-ai/dsh-client-ui-sidebar-documentpreview@^0.1.6-alpha.1. No corresponding GitHub Release. Compatibility remains unknown.
-- Windows/Linux/macOS pnpm 10/11/12 CI is a separate gate; local macOS smoke does not establish all cells.
-- E4 real Profile and E5 public distribution remain unverified until separately read back.
+- Windows/Linux/macOS × pnpm 10/11/12: 9/9 passed in GitHub Actions run 34929045500. The Windows pnpm 10 cross-drive file-source fixture returned ENOENT; keeping source and disposable home on the same drive resolved it. This does not establish support for cross-drive file installs.
+- Browser E3 on DSH rc2: marketplace, details, persisted notes/favorites after reopening, and server compatibility filter passed; no page errors. The official first-run dialogs were dismissed only inside the disposable fixture.
+- build-dsh-plugin 0.5.0 is published at merge e0c2b5e23040a5dfebd4fb2c29bab40b34d21b2e; local Skill bytes matched its public ZIP. Interactive Skill execution remains unverified.
+- Store E4 real Profile and E5 public distribution remain unverified until separately read back.
 
 ## Decisions
 
