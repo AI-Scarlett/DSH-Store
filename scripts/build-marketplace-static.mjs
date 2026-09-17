@@ -430,6 +430,9 @@ const icpMarkup = icpNumber
 const baiduVerificationMarkup = baiduVerificationCode
   ? `<meta name="baidu-site-verification" content="${htmlEscape(baiduVerificationCode)}">`
   : ''
+const baiduUnionVerificationMarkup = isDomestic
+  ? '<meta name="baidu_union_verify" content="f7a5e80f6ec4d01cdfd011c771e7e706">'
+  : ''
 for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
@@ -437,11 +440,14 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
   const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
   const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
+  const withBaiduUnionVerification = route === '/'
+    ? replaceRequired(withBaiduVerification, '<!-- DSH_BAIDU_UNION_VERIFY -->', baiduUnionVerificationMarkup, `${pagePath} Baidu Union verification marker`)
+    : withBaiduVerification
   const pageLanguage = fixedLocale || htmlLanguage
   const pageDefaultLocale = fixedLocale === 'zh-CN' ? 'zh' : defaultLocale
   const fixedLocaleAttribute = fixedLocale ? ` data-fixed-locale="${fixedLocale}"` : ''
-  const localizedDocument = withBaiduVerification.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
-  if (localizedDocument === withBaiduVerification) throw new Error(`${pagePath} html language marker is missing`)
+  const localizedDocument = withBaiduUnionVerification.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
+  if (localizedDocument === withBaiduUnionVerification) throw new Error(`${pagePath} html language marker is missing`)
   await writeFile(absolutePath, localizedDocument)
 }
 
@@ -534,6 +540,7 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   alternateOrigin,
   icp: icpNumber || null,
   baiduSiteVerification: baiduVerificationCode ? 'configured' : null,
+  baiduUnionVerification: isDomestic ? 'configured' : null,
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,
   manager: { version: manager.version, commit: manager.commit, license: manager.details?.license, status: manager.status },
