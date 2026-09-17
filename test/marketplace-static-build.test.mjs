@@ -97,6 +97,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
     assert.match(home, /<html lang="en" data-default-locale="en">/)
     assert.doesNotMatch(home, /baidu-site-verification/)
+    assert.doesNotMatch(home, /baidu_union_verify/)
     assert.match(home, /DSH STORE \| DeepSeek Harness Plugin Marketplace/)
     assert.match(home, /name="applicable-device" content="pc,mobile"/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
@@ -221,6 +222,11 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       assert.match(page, /<meta name="baidu-site-verification" content="codeva-gZjUUScijx">/)
       assert.match(page, /<html lang="zh-CN" data-default-locale="zh">/)
       assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
+      if (pagePath === 'marketplace/index.html') {
+        assert.match(page, /<meta name="baidu_union_verify" content="f7a5e80f6ec4d01cdfd011c771e7e706">/)
+      } else {
+        assert.doesNotMatch(page, /baidu_union_verify/)
+      }
     }
     const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')
     const markdown = await readFile(join(output, 'marketplace/index.md'), 'utf8')
@@ -271,6 +277,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.equal(manifest.alternateOrigin, 'https://dsh.store')
     assert.equal(manifest.icp, icp)
     assert.equal(manifest.baiduSiteVerification, 'configured')
+    assert.equal(manifest.baiduUnionVerification, 'configured')
   } finally {
     await rm(output, { recursive: true, force: true })
   }
