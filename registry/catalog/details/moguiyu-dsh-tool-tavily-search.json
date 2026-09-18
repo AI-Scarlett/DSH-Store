@@ -28,8 +28,8 @@
   "manifestPath": "packages/dsh-tool-tavily-search/package.json",
   "installPath": "packages/dsh-tool-tavily-search",
   "updatePolicy": "user-reviewed",
-  "commit": "d1d52a9b0daf5523d264086bfa5a1b62e31ec524",
-  "version": "0.2.4",
+  "commit": "e40b1101fc6114d622db6daf2d27048ff92a046c",
+  "version": "0.2.8",
   "categories": [
     "search",
     "tools"
@@ -37,16 +37,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-14T15:26:31.000Z",
-    "observedAt": "2026-09-14T19:57:36.000Z",
+    "updatedAt": "2026-09-18T13:28:31.000Z",
+    "observedAt": "2026-09-18T13:50:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-14T19:57:36.000Z",
-      "evidenceUrl": "https://github.com/moguiyu/dsh-tavily/commit/d1d52a9b0daf5523d264086bfa5a1b62e31ec524",
+      "checkedAt": "2026-09-18T13:50:17.000Z",
+      "evidenceUrl": "https://github.com/moguiyu/dsh-tavily/commit/e40b1101fc6114d622db6daf2d27048ff92a046c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -89,7 +89,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "^0.1.0-rc.8 || ^0.1.2-alpha.2 || ^0.1.3-alpha.2 || ^0.1.5-0",
+    "dsh": "^0.1.0-rc.7 || ^0.1.1-rc.1 || ^0.1.2-alpha.2 || ^0.1.3-alpha.1 || ^0.1.5-0 || ^0.1.6-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -106,7 +106,8 @@
       "0.1.5-alpha.2": "compatible",
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "compatible",
-      "0.1.6-alpha.1": "unknown"
+      "0.1.6-alpha.1": "compatible",
+      "0.1.6-alpha.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -200,6 +201,12 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

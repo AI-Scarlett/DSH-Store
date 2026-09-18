@@ -25,24 +25,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "6f532336954b3a69f8be627d0f414e311f78957e",
-  "version": "0.1.11",
+  "commit": "6f3ab373ff3a0ec978f7f9eac92584fa428e31cb",
+  "version": "0.1.12",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T14:27:07.000Z",
-    "observedAt": "2026-09-10T18:59:12.000Z",
+    "updatedAt": "2026-09-16T11:23:38.000Z",
+    "observedAt": "2026-09-18T13:50:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-10T18:59:12.000Z",
-      "evidenceUrl": "https://github.com/jiesou/dsh-commandcode-go-provider/commit/6f532336954b3a69f8be627d0f414e311f78957e",
+      "checkedAt": "2026-09-18T13:50:17.000Z",
+      "evidenceUrl": "https://github.com/jiesou/dsh-commandcode-go-provider/commit/6f3ab373ff3a0ec978f7f9eac92584fa428e31cb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,8 +82,8 @@
   "entryIds": [
     "commandcode-go-provider"
   ],
-  "status": "approved",
-  "statusReason": null,
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": ">=0.1.2-alpha.3 <0.2.0",
     "dshReleases": {
@@ -102,7 +102,8 @@
       "0.1.5-alpha.2": "compatible",
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown"
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -196,6 +197,12 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
