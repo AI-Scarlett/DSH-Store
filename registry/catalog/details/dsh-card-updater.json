@@ -1,50 +1,49 @@
 {
-  "id": "dsh-email",
-  "name": "邮件收发工具（DSH Email）",
-  "packageName": "dsh-email",
-  "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
+  "id": "dsh-card-updater",
+  "name": "移动端与远程访问（DSH Card Updater）",
+  "packageName": "dsh-card-updater",
+  "description": "DSH Tavern 卡片更新器：按链接检测人物卡更新、更新原版卡，并把变更合并进 MVU 版卡。Card updater for DSH Tavern: diff remote cards by link, refresh the original, and merge into the MVU variant.",
   "searchTerms": [
-    "邮件收发工具",
-    "DSH Email",
-    "dsh-email",
-    "邮件",
-    "收件箱",
-    "发信",
-    "附件",
-    "通知与集成",
-    "通知",
-    "提醒",
-    "消息",
+    "移动端与远程访问",
+    "DSH Card Updater",
+    "dsh-card-updater",
+    "移动端",
+    "手机",
+    "远程访问",
+    "PWA",
+    "实验功能",
+    "新功能",
     "dsh",
-    "email"
+    "card",
+    "updater"
   ],
-  "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
+  "repositoryUrl": "https://github.com/XGUIMAX/dsh-card-updater",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "311e23e73a24fb148adf131cfe91b99f63028694",
-  "version": "0.12.0",
+  "updatePolicy": "external-only",
+  "commit": "dd3f56f8d7c52bc5730e88ac6e9123ebb4039307",
+  "version": "1.13.0",
   "categories": [
-    "notifications"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-18T14:55:42.000Z",
+    "updatedAt": "2026-09-18T15:16:49.000Z",
     "observedAt": "2026-09-18T15:13:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-18T15:13:15.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-email/commit/311e23e73a24fb148adf131cfe91b99f63028694",
+      "evidenceUrl": "https://github.com/XGUIMAX/dsh-card-updater/commit/dd3f56f8d7c52bc5730e88ac6e9123ebb4039307",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,14 +73,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "tool-email"
+    "dsh-card-updater"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,12 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown",
       "0.1.6-alpha.1": "unknown",
       "0.1.6-alpha.2": "unknown"
@@ -152,42 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -207,33 +164,30 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"
     ]
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "any",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "oauth"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "第三方网络服务（插件可访问任意网络端点）",
-      "用户配置的外部服务凭据"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

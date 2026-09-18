@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-18T14:14:37.000Z",
+    "updatedAt": "2026-09-18T15:13:15.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4681,8 +4681,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "947138d13fb2f4a34f75f287b122c6c9355ad650",
-      "sourceUpdatedAt": "2026-09-18T14:02:53.000Z",
+      "latestCommit": "311e23e73a24fb148adf131cfe91b99f63028694",
+      "sourceUpdatedAt": "2026-09-18T14:55:42.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11048,6 +11048,106 @@
       ],
       "topics": [
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "stuarthu-dsh-chrome",
+      "name": "stuarthu/dsh-chrome",
+      "description": "DeepSeek Harness (dsh) browser companion: Chrome side panel embedding the full dsh web UI + host plugins for page reading, HTTP capture, and browser control.",
+      "repositoryUrl": "https://github.com/stuarthu/dsh-chrome",
+      "defaultBranch": "main",
+      "latestCommit": "1c15b3caa4d4c2ceac74a2bf049a590186a3f88f",
+      "sourceUpdatedAt": "2026-08-22T07:49:53.000Z",
+      "discoveredAt": "2026-09-18T15:13:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5ae6a947031d065690e872a6d1d42d84c481b52d:data/plugins/stuarthu__dsh-chrome.yml:sha256=22436b3a2c9444c495886de4e38e14728eca509198f11cc20881d58270c4cddb:at=2026-09-18T15:16:57.416Z:owner=16526001"
+      ],
+      "topics": [
+        "browser-agent",
+        "browser-automation",
+        "chrome-extension",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "studyzy-dsh-suggest-prompt",
+      "name": "studyzy/dsh-suggest-prompt",
+      "description": "dsh-plugin 根据AI回复给出建议的下一个提示词",
+      "repositoryUrl": "https://github.com/studyzy/dsh-suggest-prompt",
+      "defaultBranch": "main",
+      "latestCommit": "14d4f3abfb784812ce5fe63d55689f3f8ea6edb0",
+      "sourceUpdatedAt": "2026-08-21T09:21:41.000Z",
+      "discoveredAt": "2026-09-18T15:13:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5ae6a947031d065690e872a6d1d42d84c481b52d:data/plugins/studyzy__dsh-suggest-prompt.yml:sha256=7abd93e8a063df1f23923976079bd0e938e1ac9072e8d9477cccfd452a3dd618:at=2026-09-18T15:16:57.416Z:owner=1635408"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kevinchennewbee-penglaiagent",
+      "name": "kevinchennewbee/PenglaiAgent",
+      "description": "Penglai 蓬莱 — a local-first desktop distribution and composable plugin ecosystem for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/kevinchennewbee/PenglaiAgent",
+      "defaultBranch": "main",
+      "latestCommit": "d885c9ce2a31057f16e3a72855eeb4b09f618c3d",
+      "sourceUpdatedAt": "2026-09-18T15:16:36.000Z",
+      "discoveredAt": "2026-09-18T15:13:15.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "ai-assistant",
+        "chinese",
+        "deepseek-harness",
+        "electron",
+        "feishu-bot",
+        "local-first",
+        "personal-assistant",
+        "typescript",
+        "voice-assistant",
+        "wechat-bot",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "stuarthu-dsh-crew",
+      "name": "stuarthu/dsh-crew",
+      "description": "dsh plugin: run work as a small crew of role agents (product manager, researcher, architect, engineer, QA, code reviewer, security reviewer, doc reviewer) that share work through files on disk",
+      "repositoryUrl": "https://github.com/stuarthu/dsh-crew",
+      "defaultBranch": "main",
+      "latestCommit": "09c6e037ef42153d9f5f7a0d7aa9df2b6e432e21",
+      "sourceUpdatedAt": "2026-08-23T22:08:24.000Z",
+      "discoveredAt": "2026-09-18T15:13:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5ae6a947031d065690e872a6d1d42d84c481b52d:data/plugins/stuarthu__dsh-crew.yml:sha256=4db25664268a44bddea1a8a368fb623ed40df36bad4bca28eec1d46838c7b13c:at=2026-09-18T15:16:57.416Z:owner=16526001"
+      ],
+      "topics": [
+        "ai-agent",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "multi-agent",
         "automatic-radar"
       ],
       "status": "reviewing",
