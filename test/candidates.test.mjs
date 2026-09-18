@@ -31,6 +31,14 @@ test('candidate discovery records are read-only and reject trusted install field
   }
 })
 
+test('candidate registry preserves bounded feed provenance', () => {
+  const provenance = `github-feed:awesome-dsh-plugin/awesome-dsh-plugin@${'a'.repeat(40)}:data/plugins/example__demo.yml:sha256=${'b'.repeat(64)}:at=2026-09-18T05:23:00.000Z:owner=12`
+  assert.ok(provenance.length > 160)
+  const registry = validateCandidateRegistry(document([{ ...candidate, discoverySources: [provenance] }]))
+  assert.equal(registry.entries[0].discoverySources[0], provenance)
+  assert.throws(() => validateCandidateRegistry(document([{ ...candidate, discoverySources: ['x'.repeat(513)] }])), /no longer than 512 characters/)
+})
+
 test('candidate registry fails closed when its trust boundary is weakened', () => {
   const unsafe = document()
   unsafe.registry.trustBoundary.installActionsDisabled = false
