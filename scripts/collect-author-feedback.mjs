@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { createHash } from 'node:crypto'
 import { githubClient } from './author-contact-http.mjs'
 
-const MAX_ISSUES = 500
+const MAX_ISSUES = 2500
 const MAX_ITEMS = 100
 const MAX_COMMENT_PAGES = 20
 const STORE_CONTEXT_PATTERNS = [

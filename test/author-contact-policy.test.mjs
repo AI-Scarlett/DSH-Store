@@ -119,7 +119,7 @@ test('target resolution includes every historical managed Issue for feedback col
     { body: 'ordinary Issue without a managed marker' },
   ]
   assert.deepEqual(repositoryKeysFromIssues(issues), ['alice/one', 'bob/two'])
-  assert.throws(() => repositoryKeysFromIssues(Array.from({ length: 501 }, () => ({ body: '' }))), /snapshot is invalid/)
+  assert.throws(() => repositoryKeysFromIssues(Array.from({ length: 2501 }, () => ({ body: '' }))), /snapshot is invalid/)
 })
 test('all historical thread updates, reopenings, baselines and closing notices are suppressed', () => {
   const old = plan().actions[0]

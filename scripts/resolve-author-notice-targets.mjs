@@ -25,7 +25,7 @@ export async function resolveTargets(request, key) {
 }
 
 export function repositoryKeysFromIssues(issues) {
-  if (!Array.isArray(issues) || issues.length > 500) throw new Error('managed issue snapshot is invalid')
+  if (!Array.isArray(issues) || issues.length > 2500) throw new Error('managed issue snapshot is invalid')
   const keys = new Set()
   for (const issue of issues) {
     const key = AUTHOR_NOTICE_KEY_PATTERN.exec(String(issue?.body ?? ''))?.[1]
