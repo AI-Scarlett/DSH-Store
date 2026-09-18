@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-18T13:50:17.000Z",
+    "updatedAt": "2026-09-18T14:14:37.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4681,8 +4681,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "2a879276cb2875602b0d84c278359d3e88a57795",
-      "sourceUpdatedAt": "2026-09-17T16:46:33.000Z",
+      "latestCommit": "947138d13fb2f4a34f75f287b122c6c9355ad650",
+      "sourceUpdatedAt": "2026-09-18T14:02:53.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10941,6 +10941,118 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-api-usage-bar."
+    },
+    {
+      "id": "gcry13067381632-jpg-dsh-qqbot",
+      "name": "gcry13067381632-jpg/dsh-qqbot",
+      "description": "AI 统管 QQ 群组：审核放行、群发文件、沟通其他web会话的ai！ 气氛组担当：表情包自动入库，AI 自己决定开口，多预设多人格轮班陪聊！ 远程办公：权限审批、提问卡片转发qq",
+      "repositoryUrl": "https://github.com/gcry13067381632-jpg/dsh-qqbot",
+      "defaultBranch": "main",
+      "latestCommit": "eb08b18c9e6601b15ce0e2159dee4d611a63b712",
+      "sourceUpdatedAt": "2026-09-15T08:38:43.000Z",
+      "discoveredAt": "2026-09-18T14:14:37.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcfd31f32ba28bacc6da729860f835fc39ede460:data/plugins/gcry13067381632-jpg__dsh-qqbot.yml:sha256=e286ff03abc13250c714e99d8713fde886f6f53514d8234e235ee2615824dc38:at=2026-09-18T14:18:19.760Z:owner=235990452"
+      ],
+      "topics": [
+        "bot",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "qq-bot",
+        "qqbot",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "geekricardo-claude-in-dsh",
+      "name": "GeekRicardo/claude-in-dsh",
+      "description": "在 dsh web 里用本机 Claude Code 驱动会话：原生渲染、权限档、模型/effort、命令面板、broker 托管进程",
+      "repositoryUrl": "https://github.com/GeekRicardo/claude-in-dsh",
+      "defaultBranch": "main",
+      "latestCommit": "62e3805b3572f3478e5db73968b9c1d29233047e",
+      "sourceUpdatedAt": "2026-08-27T03:47:33.000Z",
+      "discoveredAt": "2026-09-18T14:14:37.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcfd31f32ba28bacc6da729860f835fc39ede460:data/plugins/GeekRicardo__claude-in-dsh.yml:sha256=ae604c723d87d4f00625bc472512e907b5d9b0eae33d90e0b48a98aaf581a841:at=2026-09-18T14:18:19.760Z:owner=35123328"
+      ],
+      "topics": [
+        "ai-agent",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "gdwhisper-dsh-web-startup-auth",
+      "name": "GDWhisper/dsh-web-startup-auth",
+      "description": "DSH（DeepSeek Harness）远程 Web 启动 + 用户名/密码认证插件。 | DeepSeek Harness Remote‑Web‑Launch Plugin with Username/Password Auth",
+      "repositoryUrl": "https://github.com/GDWhisper/dsh-web-startup-auth",
+      "defaultBranch": "main",
+      "latestCommit": "b5f7f1c651e79ea0815f1e89ba41f27b053b972a",
+      "sourceUpdatedAt": "2026-09-15T17:26:20.000Z",
+      "discoveredAt": "2026-09-18T14:14:37.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcfd31f32ba28bacc6da729860f835fc39ede460:data/plugins/GDWhisper__dsh-web-startup-auth.yml:sha256=e3cc5a28799e275cffcce325f4469e18c281467b8989a2e5daf5a856fb149bb8:at=2026-09-18T14:18:19.760Z:owner=129148123"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "czh869452912-deepseek-harness-win7",
+      "name": "czh869452912/deepseek-harness-win7",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/czh869452912/deepseek-harness-win7",
+      "defaultBranch": "master",
+      "latestCommit": "59f52c7f6cb1aa74afb4a7a5844d14b6c1272122",
+      "sourceUpdatedAt": "2026-09-18T13:26:05.000Z",
+      "discoveredAt": "2026-09-18T14:14:37.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "garrisonz-dsh-sidebar-width",
+      "name": "garrisonz/dsh-sidebar-width",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/garrisonz/dsh-sidebar-width",
+      "defaultBranch": "main",
+      "latestCommit": "ff9e16386068f815d5a189e2eea40675addd0f08",
+      "sourceUpdatedAt": "2026-09-11T00:43:56.000Z",
+      "discoveredAt": "2026-09-18T14:14:37.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcfd31f32ba28bacc6da729860f835fc39ede460:data/plugins/garrisonz__dsh-sidebar-width.yml:sha256=93d2a628e08f7fad27ed4aa2e85ecabf55d8733eb3ee320c4a8b312440413e12:at=2026-09-18T14:18:19.760Z:owner=1321005"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
