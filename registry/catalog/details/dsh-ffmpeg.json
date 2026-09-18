@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "5cf1ef2d257f744e65a0f7fc704a22af34e978b9",
+  "commit": "a7260e3b283d7a514e25585361752c438a12aadf",
   "version": "0.4.2",
   "categories": [
     "tools"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-13T03:05:43.000Z",
-    "observedAt": "2026-09-13T03:40:19.000Z",
+    "updatedAt": "2026-09-17T16:51:11.000Z",
+    "observedAt": "2026-09-18T13:50:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-13T03:40:19.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-ffmpeg/commit/5cf1ef2d257f744e65a0f7fc704a22af34e978b9",
+      "checkedAt": "2026-09-18T13:50:17.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-ffmpeg/commit/a7260e3b283d7a514e25585361752c438a12aadf",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "ffmpeg"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.1, 0.1.5-rc.2, 0.1.6-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -100,7 +100,8 @@
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown"
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -194,6 +195,12 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

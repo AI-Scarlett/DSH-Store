@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1529bbd3d1efc82de495709615c555421f0bc561",
-  "version": "1.3.12",
+  "commit": "ca3e2dd4c90969471945693185e8f093c900b680",
+  "version": "1.3.34",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-15T03:23:21.000Z",
-    "observedAt": "2026-09-15T03:49:25.000Z",
+    "updatedAt": "2026-09-18T03:25:34.000Z",
+    "observedAt": "2026-09-18T13:50:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-15T03:49:25.000Z",
-      "evidenceUrl": "https://github.com/yangdcm/dsh-expert-team/commit/1529bbd3d1efc82de495709615c555421f0bc561",
+      "checkedAt": "2026-09-18T13:50:17.000Z",
+      "evidenceUrl": "https://github.com/yangdcm/dsh-expert-team/commit/ca3e2dd4c90969471945693185e8f093c900b680",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
     "expert-team-bundle"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source exceeds the automatic review byte bound: 2065824 total bytes (maximum 2097152); largest file 375719 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source exceeds the automatic review byte bound: 2914907 total bytes (maximum 2097152); largest file 504932 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": ">=0.1.5-rc.1",
     "dshReleases": {
@@ -97,7 +97,8 @@
       "0.1.2-alpha.5": "unknown",
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown"
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -161,6 +162,12 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

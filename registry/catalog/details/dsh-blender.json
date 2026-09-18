@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "2e240ed7d939d6b7035075d509fd1d9fb6d57526",
-  "version": "0.2.1",
+  "commit": "19dec3cdd48368dd0d9865ac2072ea6f5f65cc02",
+  "version": "0.2.2",
   "categories": [
     "design",
     "tools",
@@ -40,20 +40,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-20T08:06:10.000Z",
-    "observedAt": "2026-09-04T05:32:32.000Z",
+    "updatedAt": "2026-09-16T07:01:26.000Z",
+    "observedAt": "2026-09-18T13:50:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T05:32:32.000Z",
-      "evidenceUrl": "https://github.com/CheshireJCat/blender/commit/2e240ed7d939d6b7035075d509fd1d9fb6d57526",
+      "checkedAt": "2026-09-18T13:50:17.000Z",
+      "evidenceUrl": "https://github.com/CheshireJCat/blender/commit/19dec3cdd48368dd0d9865ac2072ea6f5f65cc02",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -90,7 +90,7 @@
     "blender-modeling"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.1, 0.1.5-rc.2, 0.1.6-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -109,7 +109,8 @@
       "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown"
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -203,6 +204,12 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
