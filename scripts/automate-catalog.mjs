@@ -405,19 +405,27 @@ async function discoverRepositories(policy, github) {
   const found = new Map()
   const excluded = excludedRepositoryKeys(policy)
   for (const query of policy.search.queries) {
-    const result = await github.api(`search/repositories?q=${encodeURIComponent(query)}&sort=updated&order=desc&per_page=${policy.search.resultsPerQuery}`)
-    for (const item of result?.items ?? []) {
-      if (item?.private || item?.archived || item?.disabled || typeof item?.html_url !== 'string') continue
-      const url = canonicalGithubRepository(item.html_url)
-      if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
-      if (excluded.has(url.toLowerCase())) continue
-      found.set(url.toLowerCase(), { ...item, html_url: url })
+    try {
+      const result = await github.api(`search/repositories?q=${encodeURIComponent(query)}&sort=updated&order=desc&per_page=${policy.search.resultsPerQuery}`)
+      for (const item of result?.items ?? []) {
+        if (item?.private || item?.archived || item?.disabled || typeof item?.html_url !== 'string') continue
+        const url = canonicalGithubRepository(item.html_url)
+        if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
+        if (excluded.has(url.toLowerCase())) continue
+        found.set(url.toLowerCase(), { ...item, html_url: url })
+      }
+    } catch {
+      // transient search query failures do not abort other discoveries
     }
   }
   if (policy.discoveryFeeds?.enabled === true) {
-    const offset = Math.floor(Date.now() / 3600000) * 8
-    for (const item of await discoverFeedCandidates(github, { offset })) {
-      if (!excluded.has(item.html_url.toLowerCase()) && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
+    try {
+      const offset = Math.floor(Date.now() / 3600000) * 8
+      for (const item of await discoverFeedCandidates(github, { offset })) {
+        if (!excluded.has(item.html_url.toLowerCase()) && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
+      }
+    } catch {
+      // feed failures do not abort search discoveries or overall automation
     }
   }
   return orderDiscoveryCandidates(found.values())
@@ -447,24 +455,58 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     if (!repositorySnapshots.has(key)) {
       repositorySnapshots.set(key, retryInfrastructure(async () => {
         const { owner, repository } = repositoryParts(entry.repositoryUrl)
+        const defaultBranch = entry.defaultBranch || 'main'
+        let head
+        try {
+          head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(defaultBranch)}`)
+        } catch (error) {
+          if (error?.status === 404) {
+            const metadata = await github.api(`repos/${owner}/${repository}`)
+            if (metadata?.private === true || metadata?.archived === true || metadata?.disabled === true) {
+              throw Object.assign(new Error('the canonical repository is private, archived, or disabled'), {
+                code: 'CATALOG_SOURCE_REPOSITORY_INACTIVE',
+              })
+            }
+            const resolvedBranch = typeof metadata?.default_branch === 'string' && metadata.default_branch
+              ? metadata.default_branch
+              : defaultBranch
+            head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(resolvedBranch || 'main')}`)
+            if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
+              throw Object.assign(new Error('GitHub did not return a full immutable Commit'), {
+                code: 'CATALOG_SOURCE_COMMIT_INVALID',
+              })
+            }
+            return {
+              commit: head.sha,
+              defaultBranch: resolvedBranch,
+              sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? metadata?.pushed_at ?? null,
+            }
+          }
+          throw error
+        }
+        if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
+          throw Object.assign(new Error('GitHub did not return a full immutable Commit'), {
+            code: 'CATALOG_SOURCE_COMMIT_INVALID',
+          })
+        }
+        if (head.sha === entry.commit) {
+          return {
+            commit: head.sha,
+            defaultBranch,
+            sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? null,
+          }
+        }
         const metadata = await github.api(`repos/${owner}/${repository}`)
         if (metadata?.private === true || metadata?.archived === true || metadata?.disabled === true) {
           throw Object.assign(new Error('the canonical repository is private, archived, or disabled'), {
             code: 'CATALOG_SOURCE_REPOSITORY_INACTIVE',
           })
         }
-        const defaultBranch = typeof metadata?.default_branch === 'string' && metadata.default_branch
-          ? metadata.default_branch
-          : entry.defaultBranch
-        const head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(defaultBranch || 'main')}`)
-        if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
-          throw Object.assign(new Error('GitHub did not return a full immutable Commit'), {
-            code: 'CATALOG_SOURCE_COMMIT_INVALID',
-          })
-        }
         return {
           commit: head.sha,
-          defaultBranch,
+          defaultBranch: typeof metadata?.default_branch === 'string' && metadata.default_branch
+            ? metadata.default_branch
+            : defaultBranch,
           sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? metadata?.pushed_at ?? null,
         }
       }))
@@ -664,7 +706,16 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 }
 
 async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow) {
-  const repositories = await retryInfrastructure(() => discoverRepositories(policy, github))
+  let repositories = []
+  try {
+    repositories = await retryInfrastructure(() => discoverRepositories(policy, github))
+  } catch (error) {
+    report.transientFailures.push({
+      repository: 'https://github.com/AI-Scarlett/DSH-Store',
+      reason: boundedText(error?.message, 'discovery scan was temporarily unavailable'),
+    })
+    return
+  }
   const catalogRepositories = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
   const candidateByRepository = new Map(candidates.entries.map(entry => [entry.repositoryUrl.toLowerCase(), entry]))
   let inspected = 0
