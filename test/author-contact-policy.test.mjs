@@ -111,6 +111,24 @@ test('repository redirects, missing owners, organizations and bots do not fall b
   assert.equal(await resolveTargets(async () => { throw Object.assign(new Error('gone'), { status: 404 }) }, 'alice/one'), null)
   assert.equal(await resolveTargets(async () => ({ full_name: 'different/one', owner: person }), 'alice/one'), null)
 })
+test("target resolution reuses cached account across repositories owned by the same person", async () => {
+  let userFetches = 0
+  const request = async path => {
+    if (path === "/repos/alice/one") return { full_name: "alice/one", owner: person }
+    if (path === "/repos/alice/two") return { full_name: "alice/two", owner: person }
+    if (path === "/user/" + person.id) {
+      userFetches++
+      return person
+    }
+    throw new Error("unexpected path: " + path)
+  }
+  const accountCache = new Map()
+  const one = await resolveTargets(request, "alice/one", accountCache)
+  const two = await resolveTargets(request, "alice/two", accountCache)
+  assert.equal(one.login, "Alice")
+  assert.equal(two.login, "Alice")
+  assert.equal(userFetches, 1)
+})
 test('target resolution includes every historical managed Issue for feedback collection', () => {
   const issues = [
     { body: '<!-- dsh-author-notice:v1 key=alice/one signature=abc -->' },
@@ -183,6 +201,19 @@ test('message failure followed by a retry produces only one outbound attempt', a
   await assert.rejects(applyFirstContacts(args), /uncertain delivery/)
   const retry = await applyFirstContacts(args)
   assert.equal(retry[0].type, 'suppressed'); assert.equal(api.posts.length, 1)
+})
+test("HTTP client retries GET on 429 and rate-limited 403", async () => {
+  let attempts = 0
+  const fetcher = async () => {
+    attempts++
+    if (attempts === 1) return { ok: false, status: 429, headers: new Headers({ "retry-after": "0" }) }
+    if (attempts === 2) return { ok: false, status: 403, headers: new Headers({ "x-ratelimit-remaining": "0" }) }
+    return { ok: true, status: 200, json: async () => ({ success: true }) }
+  }
+  const client = githubClient("token", fetcher)
+  const result = await client.request("GET", "/rate-test")
+  assert.equal(result.success, true)
+  assert.equal(attempts, 3)
 })
 test('HTTP client never retries POST, PATCH or PUT', async () => {
   for (const method of ['POST', 'PATCH', 'PUT']) {

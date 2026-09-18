@@ -74,6 +74,7 @@ function canonicalIssue(value) {
     title: requiredString(value?.title ?? '', 'issue title', 256),
     url: safeUrl(value?.url ?? value?.html_url),
     body: typeof value?.body === 'string' ? value.body : '',
+    comments: typeof value?.comments === 'number' ? value.comments : null,
     author: value?.author && {
       id: integer(value.author.id, 'issue author id'),
       login: requiredString(value.author.login, 'issue author login', 40),
@@ -153,6 +154,7 @@ export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/
   const items = []
   for (const rawIssue of issues) {
     const issue = canonicalIssue(rawIssue)
+    if (issue.comments === 0) continue
     const recipient = notificationTarget(issue, notificationTargets)
     if (!recipient) continue
     const comments = await github.paginate(`/repos/${repository}/issues/${issue.number}/comments`)
