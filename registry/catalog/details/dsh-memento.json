@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "3bc40a0b70f371c316cf6ecf6a68caadbd169a12",
-  "version": "0.5.12",
+  "commit": "d3b419e2d7b7844a10e611a5c8a588709ae5f5be",
+  "version": "0.5.13",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-16T02:27:31.000Z",
-    "observedAt": "2026-09-18T13:50:17.000Z",
+    "updatedAt": "2026-09-18T16:52:14.000Z",
+    "observedAt": "2026-09-18T18:55:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-18T13:50:17.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-memento/commit/3bc40a0b70f371c316cf6ecf6a68caadbd169a12",
+      "checkedAt": "2026-09-18T18:55:06.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-memento/commit/d3b419e2d7b7844a10e611a5c8a588709ae5f5be",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -82,7 +82,7 @@
   "status": "unlisted",
   "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0",
+    "dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

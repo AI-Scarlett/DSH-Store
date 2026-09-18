@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dd3f56f8d7c52bc5730e88ac6e9123ebb4039307",
-  "version": "1.13.0",
+  "commit": "a11179031cc35747b606627fa391cd6fedd1f876",
+  "version": "1.17.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-18T15:16:49.000Z",
-    "observedAt": "2026-09-18T15:13:15.000Z",
+    "updatedAt": "2026-09-18T16:38:37.000Z",
+    "observedAt": "2026-09-18T18:55:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-18T15:13:15.000Z",
-      "evidenceUrl": "https://github.com/XGUIMAX/dsh-card-updater/commit/dd3f56f8d7c52bc5730e88ac6e9123ebb4039307",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-18T18:55:06.000Z",
+      "evidenceUrl": "https://github.com/XGUIMAX/dsh-card-updater/commit/a11179031cc35747b606627fa391cd6fedd1f876",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-card-updater"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.0-rc.8 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,6 +92,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
+      "0.1.2-rc.1": "compatible",
       "0.1.5-rc.2": "unknown",
       "0.1.6-alpha.1": "unknown",
       "0.1.6-alpha.2": "unknown"
@@ -140,6 +141,12 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e6172250914e9b82b64af5384a828c73baedbb9d",
-  "version": "0.3.3",
+  "commit": "cd09fe0ef160d2cb1281e7e42b06ab9a0b082410",
+  "version": "0.4.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-18T14:56:33.000Z",
-    "observedAt": "2026-09-18T15:13:15.000Z",
+    "updatedAt": "2026-09-18T17:57:44.000Z",
+    "observedAt": "2026-09-18T18:55:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-18T15:13:15.000Z",
-      "evidenceUrl": "https://github.com/satan9394/dsh-usage-unified/commit/e6172250914e9b82b64af5384a828c73baedbb9d",
+      "checkedAt": "2026-09-18T18:55:06.000Z",
+      "evidenceUrl": "https://github.com/satan9394/dsh-usage-unified/commit/cd09fe0ef160d2cb1281e7e42b06ab9a0b082410",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,9 +80,9 @@
     "usage-unified"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.5-rc.2 <0.1.6",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,7 +92,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-rc.2": "unknown",
+      "0.1.5-rc.2": "compatible",
       "0.1.6-alpha.1": "unknown",
       "0.1.6-alpha.2": "unknown"
     },
