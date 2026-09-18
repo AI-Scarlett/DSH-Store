@@ -13,8 +13,15 @@ export function githubClient(token, fetcher = fetch) {
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: AbortSignal.timeout(30_000),
     })
-    if (method === 'GET' && (response.status === 429 || response.status >= 500) && attempt < 4) {
-      await new Promise(done => setTimeout(done, attempt * 1_000))
+    const isRateLimited = response.status === 429 || (
+      response.status === 403 && (
+        Boolean(response.headers?.get?.('retry-after')) || response.headers?.get?.('x-ratelimit-remaining') === '0'
+      )
+    )
+    if (method === 'GET' && (isRateLimited || response.status >= 500) && attempt < 4) {
+      const retryAfter = Number(response.headers?.get?.('retry-after'))
+      const retryDelay = Number.isFinite(retryAfter) && retryAfter > 0 ? Math.min(retryAfter, 60) : attempt * 2
+      await new Promise(done => setTimeout(done, retryDelay * 1_000))
       return request(method, path, body, attempt + 1)
     }
     if (!response.ok) throw Object.assign(new Error(`GitHub ${method} failed: HTTP ${response.status}`), { status: response.status })

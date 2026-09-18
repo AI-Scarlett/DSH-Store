@@ -108,6 +108,29 @@ test('collector does not revive an older Store problem after a later stop reques
   assert.deepEqual(feedback.items, [])
 })
 
+test("collector skips issues with zero comments without querying comments API", async () => {
+  let called = false
+  const github = {
+    paginate: async () => {
+      called = true
+      return []
+    },
+  }
+  const zeroCommentIssue = {
+    number: 999,
+    title: "Test issue",
+    url: "https://github.com/AI-Scarlett/DSH-Store/issues/999",
+    comments: 0,
+    author: { id: 99616188, login: "vshulcz", node_id: "U_kgDOBfAFvA" },
+  }
+  const feedback = await collectAuthorFeedback({
+    github,
+    issues: [zeroCommentIssue],
+    observedAt: "2026-09-07T10:00:00Z",
+  })
+  assert.equal(called, false)
+  assert.equal(feedback.items.length, 0)
+})
 test('collector rejects when managed issue snapshot exceeds bound', async () => {
   await assert.rejects(
     () => collectAuthorFeedback({ github: mock([]), issues: Array.from({ length: 2501 }, () => ({})) }),

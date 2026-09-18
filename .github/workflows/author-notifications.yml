@@ -100,7 +100,7 @@ jobs:
         run: |
           gh api --method GET --paginate --slurp \
             "repos/$GITHUB_REPOSITORY/issues?state=all&labels=author-action-required&per_page=100" \
-            | jq '[.[][] | select(has("pull_request") | not) | {number, title, state, body: (.body // ""), url: .html_url, author: (if .user then {id: .user.id, login: .user.login, node_id: .user.node_id, type: .user.type} else null end), labels: [.labels[] | if type == "string" then . else .name end]}] | sort_by(.number)' \
+            | jq '[.[][] | select(has("pull_request") | not) | {number, title, state, comments, body: (.body // ""), url: .html_url, author: (if .user then {id: .user.id, login: .user.login, node_id: .user.node_id, type: .user.type} else null end), labels: [.labels[] | if type == "string" then . else .name end]}] | sort_by(.number)' \
             > "$RUNNER_TEMP/author-notice-issues.json"
       - name: Select the bounded notification set
         run: |
@@ -115,6 +115,10 @@ jobs:
             --catalog-run-id "${{ steps.report.outputs.run_id }}" \
             --max-create 10 \
             --output "$RUNNER_TEMP/author-notice-preliminary-plan.json"
+      - name: Snapshot the required global contact ledger
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/author-contact-state.mjs --output "$RUNNER_TEMP/author-contact-state.json"
       - name: Resolve verified human identities
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -122,6 +126,7 @@ jobs:
           node scripts/resolve-author-notice-targets.mjs \
             --plan "$RUNNER_TEMP/author-notice-preliminary-plan.json" \
             --issues "$RUNNER_TEMP/author-notice-issues.json" \
+            --contact-state "$RUNNER_TEMP/author-contact-state.json" \
             --output "$RUNNER_TEMP/author-notice-targets.json"
       - name: Collect DSH Store problems from author replies
         env:
@@ -132,10 +137,6 @@ jobs:
             --notification-targets "$RUNNER_TEMP/author-notice-targets.json" \
             --observed-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --output "$RUNNER_TEMP/author-feedback.json"
-      - name: Snapshot the required global contact ledger
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node scripts/author-contact-state.mjs --output "$RUNNER_TEMP/author-contact-state.json"
       - name: Create a hash-bound author notification plan
         id: plan
         run: |
