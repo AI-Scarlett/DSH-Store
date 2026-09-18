@@ -1,47 +1,48 @@
 {
-  "id": "dsh-memory",
-  "name": "记忆与知识库（DSH Memory）",
-  "packageName": "@furongjun1999/dsh-memory",
-  "description": "灵枢（Lingshu·líng shū）DeepSeek Harness 插件：完整大脑——长期记忆/知识飞轮/自我认知/递归反思接入 DSH，对话自动沉淀进 md_cg 认知图（md 文档）",
+  "id": "dsh-dpharness",
+  "name": "会话管理（DSH Dpharness）",
+  "packageName": "dsh-dpharness",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Curated dpharness.com plugin catalog inside the DeepSeek Harness Web GUI: a conversation-view tab, a sidebar entry and a site-wide floating panel, with one-click install via dshmarket or the dsh CLI. Read-only catalog plus an opt-out telemetry relay.",
   "searchTerms": [
-    "记忆与知识库",
-    "DSH Memory",
-    "dsh-memory",
-    "@furongjun1999/dsh-memory",
-    "记忆",
-    "知识库",
-    "召回",
-    "长期记忆",
+    "会话管理",
+    "DSH Dpharness",
+    "dsh-dpharness",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "实验功能",
+    "新功能",
     "dsh",
-    "memory"
+    "dpharness"
   ],
-  "repositoryUrl": "https://github.com/FuRongJun-1999/dsh-memory",
+  "repositoryUrl": "https://github.com/zhanghao3693/dsh-dpharness",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "7ec77ff7cad8af5abdd2e106bf8bf7306d4f1d44",
-  "version": "0.4.8",
+  "commit": "46795627957a558294ec23b4c2415af6c84aba2b",
+  "version": "0.4.0",
   "categories": [
-    "memory"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-18T13:57:07.000Z",
+    "updatedAt": "2026-09-18T14:17:55.000Z",
     "observedAt": "2026-09-18T14:14:37.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-18T14:14:37.000Z",
-      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/7ec77ff7cad8af5abdd2e106bf8bf7306d4f1d44",
+      "evidenceUrl": "https://github.com/zhanghao3693/dsh-dpharness/commit/46795627957a558294ec23b4c2415af6c84aba2b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "furongjun1999-dsh-memory"
+    "dpharness"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime source file count is outside the automatic review bound: 2196 files (maximum 240); runtime source exceeds the automatic review byte bound: 14860488 total bytes (maximum 2097152); largest file 2105106 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -162,9 +163,11 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": null,
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -183,9 +186,7 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
