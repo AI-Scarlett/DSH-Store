@@ -107,3 +107,10 @@ test('collector does not revive an older Store problem after a later stop reques
   })
   assert.deepEqual(feedback.items, [])
 })
+
+test('collector rejects when managed issue snapshot exceeds bound', async () => {
+  await assert.rejects(
+    () => collectAuthorFeedback({ github: mock([]), issues: Array.from({ length: 2501 }, () => ({})) }),
+    /snapshot is invalid/
+  )
+})
