@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-18T18:55:06.000Z",
+    "updatedAt": "2026-09-19T03:35:43.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -8748,8 +8748,8 @@
       "description": "🐧 Harness for RSI. Let AI Build AI. Multi-Agent Auto-Dev Platform. Everything is Transparent.",
       "repositoryUrl": "https://github.com/Prism-Shadow/penguin-harness",
       "defaultBranch": "main",
-      "latestCommit": "8276f296ef7d3d815d4819b8fe4db2ef8f72e24c",
-      "sourceUpdatedAt": "2026-09-04T11:32:24.000Z",
+      "latestCommit": "078a7aa83f98eafe029491db15309c887d20b24c",
+      "sourceUpdatedAt": "2026-09-18T11:40:53.000Z",
       "discoveredAt": "2026-09-04T12:39:30.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -11244,6 +11244,25 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "harnesstap-harnesstap",
+      "name": "harnesstap/harnesstap",
+      "description": "Preset-based AI coding assistant configuration manager for Claude Code, Codex, Cursor, and other coding CLIs",
+      "repositoryUrl": "https://github.com/harnesstap/harnesstap",
+      "defaultBranch": "main",
+      "latestCommit": "aefd84ec2128e501d8e3f4bfd65932a654682c09",
+      "sourceUpdatedAt": "2026-09-19T03:38:35.000Z",
+      "discoveredAt": "2026-09-19T03:35:43.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }

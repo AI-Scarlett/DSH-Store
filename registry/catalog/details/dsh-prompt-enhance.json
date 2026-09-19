@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f68d19002d12aa87da6c59bb897816704d767a36",
-  "version": "0.5.1",
+  "commit": "a395ffa04c28feb49d92cdd2b105d9dc67393c26",
+  "version": "0.7.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T18:05:57.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-19T03:09:38.000Z",
+    "observedAt": "2026-09-19T03:35:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/Kian-Oraish/dsh-prompt-enhance/commit/f68d19002d12aa87da6c59bb897816704d767a36",
+      "checkedAt": "2026-09-19T03:35:43.000Z",
+      "evidenceUrl": "https://github.com/Kian-Oraish/dsh-prompt-enhance/commit/a395ffa04c28feb49d92cdd2b105d9dc67393c26",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,9 +81,9 @@
     "prompt-enhance"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": "*",
+    "dsh": ">=0.1.6-alpha.0 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,12 +93,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown",
       "0.1.6-alpha.1": "unknown",
       "0.1.6-alpha.2": "unknown"
@@ -147,42 +141,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
