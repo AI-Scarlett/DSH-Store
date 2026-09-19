@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-19T03:35:43.000Z",
+    "updatedAt": "2026-09-19T12:19:26.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2271,8 +2271,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "70a20f5ab548e23da1671135b319a21aea0cd8e7",
-      "sourceUpdatedAt": "2026-09-18T17:38:36.000Z",
+      "latestCommit": "2ffaa1a214b606c70c4e1fa454ee3a2f09f865ff",
+      "sourceUpdatedAt": "2026-09-19T12:01:54.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2291,8 +2291,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "d3b419e2d7b7844a10e611a5c8a588709ae5f5be",
-      "sourceUpdatedAt": "2026-09-18T16:52:14.000Z",
+      "latestCommit": "4955dfd7c3fec0fe420d17309f087371e64a6ac1",
+      "sourceUpdatedAt": "2026-09-19T12:01:28.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4681,8 +4681,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "c16f649b8d444f0316554ee4e3db24352e744e91",
-      "sourceUpdatedAt": "2026-09-18T16:30:30.000Z",
+      "latestCommit": "8f9a5f5ede476d0d12fc54c5bd2cfd0677f3c2ff",
+      "sourceUpdatedAt": "2026-09-19T07:26:47.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8042,8 +8042,8 @@
       "description": "为 DSH 提供移动端与远程访问能力。英文原始说明：Mobile adaptation for the DeepSeek Harness Web GUI: single-column layout, sidebar drawer, compact header/composer, fullscreen settings, trajectory floating details, stats pill panel",
       "repositoryUrl": "https://github.com/Hotsteel2901/dsh-client-ui-mobile-adapt",
       "defaultBranch": "main",
-      "latestCommit": "8390f651a086414eee3bf12bca75403c85c2a909",
-      "sourceUpdatedAt": "2026-08-28T09:09:49.000Z",
+      "latestCommit": "6a0708750e881477250bb16d764058beca7036fd",
+      "sourceUpdatedAt": "2026-09-19T08:46:28.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9188,26 +9188,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-paddleocr-skills."
-    },
-    {
-      "id": "angeloszou-dsh-multi-folder",
-      "name": "会话管理（DSH Multi Folder）",
-      "description": "为 DSH 项目提供副工作目录：agent 保持主工作区为 cwd，同时对已配置的副目录获得同等读写/执行权限，可在会话头部与新会话页配置。",
-      "repositoryUrl": "https://github.com/AngelosZou/dsh-multi-folder",
-      "defaultBranch": "main",
-      "latestCommit": "f11322b077c6ba2020daa847afc765026a65475b",
-      "sourceUpdatedAt": "2026-09-02T11:42:35.000Z",
-      "discoveredAt": "2026-09-07T14:02:43.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-multi-folder."
     },
     {
       "id": "personaljarvis-personaljarvis",
@@ -11263,6 +11243,114 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "johnxu22786-worktree-mgr",
+      "name": "JohnXu22786/worktree-mgr",
+      "description": "DSH 插件：为任务自动创建隔离的 git 工作区，管理创建/同步/收尾全生命周期 (task-isolated git worktrees for DeepSeek Harness)",
+      "repositoryUrl": "https://github.com/JohnXu22786/worktree-mgr",
+      "defaultBranch": "main",
+      "latestCommit": "ef04d3798f81ec7ada3baeb3b505da80c94d4ea3",
+      "sourceUpdatedAt": "2026-09-13T22:30:38.000Z",
+      "discoveredAt": "2026-09-19T12:19:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@73e57c313b113afad61c58213792325afa2216d0:data/plugins/JohnXu22786__worktree-mgr.yml:sha256=d6626d63bea6aaeda3010b282d6974e4a36d0b0870d3ea9c748dce81d6033c56:at=2026-09-19T12:22:53.042Z:owner=110079544"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "noirbright-dsh-model-switch",
+      "name": "NOirBRight/dsh-model-switch",
+      "description": "Model purposes spec and tickets for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/NOirBRight/dsh-model-switch",
+      "defaultBranch": "main",
+      "latestCommit": "4ecc66f8033daa9412eeb589debbe4b0c0266fa7",
+      "sourceUpdatedAt": "2026-09-19T12:22:43.000Z",
+      "discoveredAt": "2026-09-19T12:19:26.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "johnxu22786-session-titler",
+      "name": "JohnXu22786/session-titler",
+      "description": "Two-phase session captioning for the DeepSeek Harness: instant keyword captions while busy, budget-model refinement when idle",
+      "repositoryUrl": "https://github.com/JohnXu22786/session-titler",
+      "defaultBranch": "main",
+      "latestCommit": "cfd39f3946e7ebf31e6ddf21a14c4423be1de7c9",
+      "sourceUpdatedAt": "2026-08-17T02:05:45.000Z",
+      "discoveredAt": "2026-09-19T12:19:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@73e57c313b113afad61c58213792325afa2216d0:data/plugins/JohnXu22786__session-titler.yml:sha256=cdc1976d06d6fcfa891342d025cfe66b0887a0f3bfd7d43007b25d6df8e508a0:at=2026-09-19T12:22:53.042Z:owner=110079544"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "johnxu22786-skill-framework",
+      "name": "JohnXu22786/skill-framework",
+      "description": "Praxis — a bundled engineering-methodology skill library (Agent Skills) for DeepSeek Harness (dsh), served as a Cordis plugin via ctx.skills.",
+      "repositoryUrl": "https://github.com/JohnXu22786/skill-framework",
+      "defaultBranch": "main",
+      "latestCommit": "4b50d404566acf81e4cd0a6cfd818abd2e466f5f",
+      "sourceUpdatedAt": "2026-08-16T15:14:14.000Z",
+      "discoveredAt": "2026-09-19T12:19:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@73e57c313b113afad61c58213792325afa2216d0:data/plugins/JohnXu22786__skill-framework.yml:sha256=5db75101c12f5682913897366cdd4c534a3a12c457948b2f257b1b19d4498afd:at=2026-09-19T12:22:53.042Z:owner=110079544"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "johnxu22786-spec-driven",
+      "name": "JohnXu22786/spec-driven",
+      "description": "keel（龙骨）：规格驱动开发纪律技能包——先立规格、验证假设、防过度工程与范围蔓延，为 dsh 等插件化 harness 提供技能+工具+模板",
+      "repositoryUrl": "https://github.com/JohnXu22786/spec-driven",
+      "defaultBranch": "main",
+      "latestCommit": "378e0cdba34dfca5ce421dcf74a17d681364a36f",
+      "sourceUpdatedAt": "2026-08-16T23:44:17.000Z",
+      "discoveredAt": "2026-09-19T12:19:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@73e57c313b113afad61c58213792325afa2216d0:data/plugins/JohnXu22786__spec-driven.yml:sha256=5cd44c7422e15adc783368472bdcc717ae2db57330fa96f9c092a93d78da14b5:at=2026-09-19T12:22:53.042Z:owner=110079544"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
