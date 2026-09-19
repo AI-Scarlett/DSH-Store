@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-19T12:19:26.000Z",
+    "updatedAt": "2026-09-19T21:07:59.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -3245,26 +3245,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-balance."
-    },
-    {
-      "id": "ruler4396-dsh-launcher-lifetime",
-      "name": "桌面客户端（DSH Launcher Lifetime）",
-      "description": "为 DSH 提供桌面客户端能力。英文原始说明：DeepSeek Harness (dsh) plugin: control how long the dsh service (node) stays alive when using the dsh-launcher shell. Writes %LOCALAPPDATA%\\dsh-launcher\\settings.json (serviceLifetime: 0 always-on, 1 tray-resident, 2 follow-window); the shell applies it on window close / tray exit. No runtime dependencies.",
-      "repositoryUrl": "https://github.com/Ruler4396/dsh-launcher-lifetime",
-      "defaultBranch": "master",
-      "latestCommit": "d9c41a81aa00c38cb3605a2995988234fd337ed3",
-      "sourceUpdatedAt": "2026-08-25T04:47:08.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-launcher-lifetime."
     },
     {
       "id": "good-boy4069-dsh-mobile-remote",
@@ -11346,6 +11326,96 @@
         "deepseek-harness",
         "dsh",
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "objectivex666-dsh-settings-search",
+      "name": "objectivex666/dsh-settings-search",
+      "description": "A plugin that adds a search box to the DSH settings panel.",
+      "repositoryUrl": "https://github.com/objectivex666/dsh-settings-search",
+      "defaultBranch": "main",
+      "latestCommit": "c43f28ead456099bd582137c4d8660b8b44ee47a",
+      "sourceUpdatedAt": "2026-09-19T05:11:25.000Z",
+      "discoveredAt": "2026-09-19T21:07:59.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5706797a40590f2741ad7228003697ee3ee5ce10:data/plugins/objectivex666__dsh-settings-search.yml:sha256=aa79aafe794e2873a09bd30ac7f5f02b87b86e463746b81b8675db52556a8184:at=2026-09-19T21:10:50.220Z:owner=253837624"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "odefined-dsh-mobile-webui",
+      "name": "Odefined/dsh-mobile-webui",
+      "description": "Mobile-viewport fixes for the dsh web GUI (client plugin)",
+      "repositoryUrl": "https://github.com/Odefined/dsh-mobile-webui",
+      "defaultBranch": "main",
+      "latestCommit": "d1274d5803f5ec794db07b7a371d478bb5d1af12",
+      "sourceUpdatedAt": "2026-08-19T08:55:09.000Z",
+      "discoveredAt": "2026-09-19T21:07:59.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5706797a40590f2741ad7228003697ee3ee5ce10:data/plugins/Odefined__dsh-mobile-webui.yml:sha256=640676a3de28e816c69c6667ee5e5d2f98140ac05c98eacd0c3b7698a8ee6d83:at=2026-09-19T21:10:50.220Z:owner=200459238"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "nyantused-cpun-gewu-tools",
+      "name": "nyantused-cpun/gewu-tools",
+      "description": "格物审视面：让 DSH 无视觉模型经视觉子代理完成视觉检验。Model-agnostic visual-inspection pipeline for DSH: HTML screenshots + vision-subagent briefing + source-code truth verification. Install: npm i gewu-tools",
+      "repositoryUrl": "https://github.com/nyantused-cpun/gewu-tools",
+      "defaultBranch": "main",
+      "latestCommit": "d2ebc982c924fffd7488beafefe3c6e8f59426e2",
+      "sourceUpdatedAt": "2026-08-18T07:10:17.000Z",
+      "discoveredAt": "2026-09-19T21:07:59.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5706797a40590f2741ad7228003697ee3ee5ce10:data/plugins/nyantused-cpun__gewu-tools.yml:sha256=96e41652aaa24083361455f8268fb4aebf1c135b3253c331a88f323019209960:at=2026-09-19T21:10:50.220Z:owner=266419698"
+      ],
+      "topics": [
+        "automation",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "review",
+        "subagent",
+        "vision",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ok-wx-dsh-ocgo-lite",
+      "name": "OK-wx/dsh-ocgo-lite",
+      "description": "OpenCode Go 用量常驻条：套餐余量圆环 + token/花费实时统计（本次会话/全部范围 + 按模型联动，官方实时定价），一键复制 API Key。OpenCode Go usage bar for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/OK-wx/dsh-ocgo-lite",
+      "defaultBranch": "main",
+      "latestCommit": "96314bcd7966c88b6907fe5797719793a9b014e9",
+      "sourceUpdatedAt": "2026-08-21T01:21:35.000Z",
+      "discoveredAt": "2026-09-19T21:07:59.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5706797a40590f2741ad7228003697ee3ee5ce10:data/plugins/OK-wx__dsh-ocgo-lite.yml:sha256=2c996cbd63024a4aea125e89e8225f5d0d63161f7b38efd488c85739916f57f1:at=2026-09-19T21:10:50.220Z:owner=216104128"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "opencode-go-usage",
         "automatic-radar"
       ],
       "status": "reviewing",
