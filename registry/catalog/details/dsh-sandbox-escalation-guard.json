@@ -1,47 +1,50 @@
 {
-  "id": "dsh-prompt-library",
-  "name": "实验功能插件（DSH Prompt Library）",
-  "packageName": "@sunjuntao/dsh-prompt-library",
-  "description": "优化",
+  "id": "dsh-sandbox-escalation-guard",
+  "name": "安全防护工具（DSH Sandbox Escalation Guard）",
+  "packageName": "dsh-sandbox-escalation-guard",
+  "description": "为 DSH 提供安全防护工具能力。英文原始说明：Stops the DSH sandbox-escalation fields being offered to a model when the calling session cannot grant them, fixing the GPT-family retry loop at danger-full-access where every advertised enum value is rejected before the command runs.",
   "searchTerms": [
-    "实验功能插件",
-    "DSH Prompt Library",
-    "dsh-prompt-library",
-    "@sunjuntao/dsh-prompt-library",
+    "安全防护工具",
+    "DSH Sandbox Escalation Guard",
+    "dsh-sandbox-escalation-guard",
+    "安全",
+    "审计",
+    "验证",
+    "防护",
     "实验功能",
     "新功能",
-    "新锐实验",
     "dsh",
-    "prompt",
-    "library"
+    "sandbox",
+    "escalation",
+    "guard"
   ],
-  "repositoryUrl": "https://github.com/master1Sun/dsh-prompt-library",
-  "defaultBranch": "master",
+  "repositoryUrl": "https://github.com/iimaguest/dsh-sandbox-escalation-guard",
+  "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c8b37c7ff255c406d4622513b72f7be5d0ed9d17",
-  "version": "0.16.0",
+  "commit": "94d75fdd97c0d27c18d4689651b3391e8f7cc526",
+  "version": "1.0.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-19T01:29:47.000Z",
+    "updatedAt": "2026-09-19T03:38:35.000Z",
     "observedAt": "2026-09-19T03:35:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-19T03:35:43.000Z",
-      "evidenceUrl": "https://github.com/master1Sun/dsh-prompt-library/commit/c8b37c7ff255c406d4622513b72f7be5d0ed9d17",
+      "evidenceUrl": "https://github.com/iimaguest/dsh-sandbox-escalation-guard/commit/94d75fdd97c0d27c18d4689651b3391e8f7cc526",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "prompt-library"
+    "dsh-sandbox-escalation-guard"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime source exceeds the automatic review byte bound: 2250832 total bytes (maximum 2097152); largest file 814141 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -162,16 +165,14 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -181,9 +182,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "js-yaml"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
