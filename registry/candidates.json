@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-19T21:07:59.000Z",
+    "updatedAt": "2026-09-20T03:51:15.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2697,8 +2697,8 @@
       "description": "DeepSeek Harness (DSH) 插件：任务完成 / 等待审批 / 等待回答时发送 Windows 系统桌面通知",
       "repositoryUrl": "https://github.com/SeverusZh/dsh-notify-windows",
       "defaultBranch": "main",
-      "latestCommit": "3c76ce56756444f934faad405563531a4de462b8",
-      "sourceUpdatedAt": "2026-09-10T10:12:57.000Z",
+      "latestCommit": "a321d84723f559588b6e461fb6262043a8cecffd",
+      "sourceUpdatedAt": "2026-09-20T02:55:40.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5342,8 +5342,8 @@
       "description": "CalDAV 日历插件：查/建/改/删/搜日程，Google/iCloud/Nextcloud/自定义端点，RRULE 重复事件展开。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-calendar",
       "defaultBranch": "main",
-      "latestCommit": "5fab8267d61bb550df1565a06d224743c1ffaf8b",
-      "sourceUpdatedAt": "2026-08-18T13:00:52.000Z",
+      "latestCommit": "4a263edc2e7c77c298118482131dda9e9b16cf80",
+      "sourceUpdatedAt": "2026-09-20T03:22:38.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5626,8 +5626,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "4a86af566ed9f15760fba7c79cb60376a3158985",
-      "sourceUpdatedAt": "2026-09-14T13:51:50.000Z",
+      "latestCommit": "4dd161a812edb8e9af389452eaf25aa84ddf1c80",
+      "sourceUpdatedAt": "2026-09-20T02:59:39.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8227,8 +8227,8 @@
       "description": "为 DSH 提供模型提供商接入能力。英文原始说明：CodeBuddy OAuth, dynamic models, and reasoning controls for DeepSeek Harness",
       "repositoryUrl": "https://github.com/Lbryany/dsh-codebuddy",
       "defaultBranch": "main",
-      "latestCommit": "e8495e0c37c046408c76329042f91d093ee9a14f",
-      "sourceUpdatedAt": "2026-08-13T21:27:29.000Z",
+      "latestCommit": "60bfe09a73793db531a23df4d57c1faf21b63a81",
+      "sourceUpdatedAt": "2026-09-20T03:18:29.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10728,8 +10728,8 @@
       "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
       "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
       "defaultBranch": "main",
-      "latestCommit": "3aefbf1afb4a64b61da653a9436e5e305feb84a2",
-      "sourceUpdatedAt": "2026-09-16T14:03:37.000Z",
+      "latestCommit": "e85277c5e84d600797fa49426ca9b5275d203788",
+      "sourceUpdatedAt": "2026-09-20T01:25:06.000Z",
       "discoveredAt": "2026-09-18T13:50:17.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11416,6 +11416,106 @@
         "deepseek-harness",
         "dsh-plugin",
         "opencode-go-usage",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "q862877400-ux-dsh-fuhuobi",
+      "name": "q862877400-ux/dsh-fuhuobi",
+      "description": "一键复活！！装个新插件，重启又崩了？——装前自动快照、崩了自动回滚、桌面一键救回、坏插件自动隔离。",
+      "repositoryUrl": "https://github.com/q862877400-ux/dsh-fuhuobi",
+      "defaultBranch": "main",
+      "latestCommit": "0243885a985bae8b2f086308f1c2b407305a5ccb",
+      "sourceUpdatedAt": "2026-09-16T17:27:03.000Z",
+      "discoveredAt": "2026-09-20T03:51:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/q862877400-ux__dsh-fuhuobi.yml:sha256=27c9cb0e2b0c5e2df1cdc16eb9c93c9db8f6df1e794ef26b71d2a78a3112df7a:at=2026-09-20T03:54:05.345Z:owner=318616103"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "pyf2818-dsh-bili-widget",
+      "name": "pyf2818/dsh-bili-widget",
+      "description": "🎬 DSH (DeepSeek Harness) B站悬浮看片插件：边 coding 边刷视频。推荐/热门/排行/搜索/关注UP主、自动连播、迷你模式、历史持久化",
+      "repositoryUrl": "https://github.com/pyf2818/dsh-bili-widget",
+      "defaultBranch": "main",
+      "latestCommit": "7d564f5f134389a905b5f39485469d602eee2b4a",
+      "sourceUpdatedAt": "2026-08-17T10:02:52.000Z",
+      "discoveredAt": "2026-09-20T03:51:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/pyf2818__dsh-bili-widget.yml:sha256=411c116ce8e435ba2fc0db3e4ca8c459e858c14e18aac0ee593b015133295ee9:at=2026-09-20T03:54:05.345Z:owner=157668037"
+      ],
+      "topics": [
+        "bilibili",
+        "deepseek",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "dsh-plugins",
+        "dsharpplus",
+        "floating-widget",
+        "productivity",
+        "video-player",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "pzc2004-dsh-frostfin",
+      "name": "pzc2004/dsh-frostfin",
+      "description": "月芒霜鳍鲸——让 Kimi Code 本人直接驱动 DeepSeek Harness 会话的 loop 插件。DSH 的壳，Kimi 的脑，ACP 直连，无中间层。 Moonglow Frostfin — Kimi Code itself as the agent loop of DeepSeek Harness. ACP-bridged, no middleman: DSH's shell, Kimi's brain.",
+      "repositoryUrl": "https://github.com/pzc2004/dsh-frostfin",
+      "defaultBranch": "main",
+      "latestCommit": "1d86efcbc218698a58225e3381bc76b5b600baed",
+      "sourceUpdatedAt": "2026-08-21T10:00:41.000Z",
+      "discoveredAt": "2026-09-20T03:51:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/pzc2004__dsh-frostfin.yml:sha256=7d0290abb5b4edce268145c26f11810c8f676914693e0dd76177ef5ff3f01d6b:at=2026-09-20T03:54:05.345Z:owner=54268607"
+      ],
+      "topics": [
+        "acp",
+        "agent-client-protocol",
+        "agent-loop",
+        "deepseek-harness",
+        "dsh-plugin",
+        "kimi",
+        "kimi-code",
+        "moonshot",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "q1hangl-dsh-ask-guard",
+      "name": "Q1hangL/dsh-ask-guard",
+      "description": "Timeout guard for ask_user_question in DeepSeek Harness: a lost or unanswered question resolves as ASK_TIMEOUT instead of hanging the turn forever",
+      "repositoryUrl": "https://github.com/Q1hangL/dsh-ask-guard",
+      "defaultBranch": "main",
+      "latestCommit": "a45f230320edd3b2ca20fd4f4d0ccdf9ff186114",
+      "sourceUpdatedAt": "2026-08-14T18:03:08.000Z",
+      "discoveredAt": "2026-09-20T03:51:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/Q1hangL__dsh-ask-guard.yml:sha256=45d89fce3bd621f69f4b9de7a3bddc8173abd132232ff4654e96bf89749e0083:at=2026-09-20T03:54:05.345Z:owner=101320235"
+      ],
+      "topics": [
+        "ask-user-question",
+        "deepseek-harness",
+        "dsh-plugin",
+        "timeout",
         "automatic-radar"
       ],
       "status": "reviewing",

@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b99477edfc9497e868945391dbf872fecc9dff81",
-  "version": "0.2.25",
+  "commit": "d9f17d00fcd5a5741b55c6c0d36ab2f2166914f9",
+  "version": "0.3.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-17T22:03:39.000Z",
-    "observedAt": "2026-09-18T13:50:17.000Z",
+    "updatedAt": "2026-09-19T22:31:27.000Z",
+    "observedAt": "2026-09-20T03:51:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-18T13:50:17.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/b99477edfc9497e868945391dbf872fecc9dff81",
+      "checkedAt": "2026-09-20T03:51:15.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/d9f17d00fcd5a5741b55c6c0d36ab2f2166914f9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "dsh-russian-lang"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 3505237 total bytes (maximum 2097152); largest file 497322 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "^0.1.2-alpha.2",
     "dshReleases": {

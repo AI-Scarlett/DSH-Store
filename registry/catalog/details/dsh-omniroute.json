@@ -1,49 +1,48 @@
 {
-  "id": "dsh-lanmode",
-  "name": "浏览器与网页工具（DSH Lanmode）",
-  "packageName": "@goodandready/dsh-lanmode",
-  "description": "为 DSH 提供浏览器与网页工具能力。英文原始说明：LAN and reverse-proxy access for the DeepSeek Harness Web UI: returns the settings service on pages that are not localhost, fills in the Web APIs the browser withholds on plain HTTP, and can open a listener of its own so nothing else is needed. Compatible with DeepSeek Harness 0.1.2-alpha.5.",
+  "id": "dsh-omniroute",
+  "name": "余额与额度监控（DSH Omniroute）",
+  "packageName": "dsh-omniroute",
+  "description": "为 DSH 提供余额与额度监控能力。英文原始说明：OmniRoute provider surface for DeepSeek Harness: query its live model catalog, its connections, and the quota each upstream connection reports.",
   "searchTerms": [
-    "浏览器与网页工具",
-    "DSH Lanmode",
-    "dsh-lanmode",
-    "@goodandready/dsh-lanmode",
-    "浏览器",
-    "网页",
-    "页面操作",
-    "截图",
+    "余额与额度监控",
+    "DSH Omniroute",
+    "dsh-omniroute",
+    "余额",
+    "额度",
+    "配额",
+    "钱包",
     "实验功能",
     "新功能",
     "dsh",
-    "lanmode"
+    "omniroute"
   ],
-  "repositoryUrl": "https://github.com/GooDAnDReaDY/dsh-lanmode",
+  "repositoryUrl": "https://github.com/maci0/dsh-omniroute",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0ce0369f57cfd34501e827eb0bc85d6749b74fd3",
-  "version": "0.7.24",
+  "commit": "8b4f2105ce496b26ff378a8d39bc73ce4b47d848",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-19T22:32:23.000Z",
+    "updatedAt": "2026-09-20T03:53:46.000Z",
     "observedAt": "2026-09-20T03:51:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-20T03:51:15.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-lanmode/commit/0ce0369f57cfd34501e827eb0bc85d6749b74fd3",
+      "evidenceUrl": "https://github.com/maci0/dsh-omniroute/commit/8b4f2105ce496b26ff378a8d39bc73ce4b47d848",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-lanmode"
+    "omniroute"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,11 +163,9 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
