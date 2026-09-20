@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "95306aa8ce17b69f60ce44eeebfe33cec1824059",
-  "version": "1.11.0",
+  "commit": "84ff20c698b0bab4ed2811adbd3d6a992ed7adfb",
+  "version": "1.19.0",
   "categories": [
     "ui"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-19T21:09:36.000Z",
-    "observedAt": "2026-09-19T21:07:59.000Z",
+    "updatedAt": "2026-09-20T02:27:59.000Z",
+    "observedAt": "2026-09-20T03:51:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-19T21:07:59.000Z",
-      "evidenceUrl": "https://github.com/weifa860504-droid/dsh-greet-signoff/commit/95306aa8ce17b69f60ce44eeebfe33cec1824059",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-20T03:51:15.000Z",
+      "evidenceUrl": "https://github.com/weifa860504-droid/dsh-greet-signoff/commit/84ff20c698b0bab4ed2811adbd3d6a992ed7adfb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,14 +74,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "greet-signoff"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 553014 total bytes (maximum 2097152); largest file 374107 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {

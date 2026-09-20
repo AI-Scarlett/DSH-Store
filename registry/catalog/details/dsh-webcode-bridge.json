@@ -1,49 +1,49 @@
 {
-  "id": "dsh-lanmode",
-  "name": "浏览器与网页工具（DSH Lanmode）",
-  "packageName": "@goodandready/dsh-lanmode",
-  "description": "为 DSH 提供浏览器与网页工具能力。英文原始说明：LAN and reverse-proxy access for the DeepSeek Harness Web UI: returns the settings service on pages that are not localhost, fills in the Web APIs the browser withholds on plain HTTP, and can open a listener of its own so nothing else is needed. Compatible with DeepSeek Harness 0.1.2-alpha.5.",
+  "id": "dsh-webcode-bridge",
+  "name": "模型提供商接入（DSH Webcode Bridge）",
+  "packageName": "dsh-webcode-bridge",
+  "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Harness Web Bridge: DeepSeek web models, native Harness tool loops, DSH native right-sidebar tab and native settings; multi-account slots per site; real Team/subagent roster panel; left-column task-board panel (sidebar.panellist + main); session-slot continuity, marker-typo tolerant protocol parsing, attach/inline transport switch, content-anchored session cursor.",
   "searchTerms": [
-    "浏览器与网页工具",
-    "DSH Lanmode",
-    "dsh-lanmode",
-    "@goodandready/dsh-lanmode",
-    "浏览器",
-    "网页",
-    "页面操作",
-    "截图",
+    "模型提供商接入",
+    "DSH Webcode Bridge",
+    "dsh-webcode-bridge",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
     "实验功能",
     "新功能",
     "dsh",
-    "lanmode"
+    "webcode",
+    "bridge"
   ],
-  "repositoryUrl": "https://github.com/GooDAnDReaDY/dsh-lanmode",
+  "repositoryUrl": "https://github.com/RSLN-creator/dsh-web-bridge",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "package/dsh-webcode-bridge/package.json",
+  "installPath": "package/dsh-webcode-bridge",
   "updatePolicy": "external-only",
-  "commit": "0ce0369f57cfd34501e827eb0bc85d6749b74fd3",
-  "version": "0.7.24",
+  "commit": "556cb9550ec3b0d03422c7ae601c1611efe917cd",
+  "version": "0.16.30",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-19T22:32:23.000Z",
+    "updatedAt": "2026-09-20T03:54:01.000Z",
     "observedAt": "2026-09-20T03:51:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-20T03:51:15.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-lanmode/commit/0ce0369f57cfd34501e827eb0bc85d6749b74fd3",
+      "evidenceUrl": "https://github.com/RSLN-creator/dsh-web-bridge/commit/556cb9550ec3b0d03422c7ae601c1611efe917cd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-lanmode"
+    "webcode-bridge"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": "^0.1.5-alpha.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.13",
     "systems": [],
     "profiles": [
       "web"
@@ -183,7 +183,10 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "playwright-core",
+      "ws"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
