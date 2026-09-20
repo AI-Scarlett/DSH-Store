@@ -1,49 +1,50 @@
 {
-  "id": "dsh-desktop-controls",
-  "name": "桌面客户端（DSH Desktop Controls）",
-  "packageName": "dsh-desktop-controls",
-  "description": "为 DSH 提供桌面客户端能力。英文原始说明：Small in-app controls surface for the dsh-desktop shell",
+  "id": "dsh-plugin-tts",
+  "name": "语音输入与朗读（DSH Plugin TTS）",
+  "packageName": "@dsh-external/dsh-plugin-tts",
+  "description": "Edge TTS 语音大集成插件：消息朗读按钮、自动朗读开关、语音设置面板（Edge TTS / RVC / Index-TTS2）",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Controls",
-    "dsh-desktop-controls",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "语音输入与朗读",
+    "DSH Plugin TTS",
+    "dsh-plugin-tts",
+    "@dsh-external/dsh-plugin-tts",
+    "语音",
+    "录音",
+    "转写",
+    "朗读",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "controls"
+    "plugin",
+    "tts"
   ],
-  "repositoryUrl": "https://github.com/citrusli2026/dsh-electron-shell",
+  "repositoryUrl": "https://github.com/1624318455/dsh-plugin-tts",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-controls/package.json",
-  "installPath": "plugins/dsh-desktop-controls",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a70e0a9845c2719e7c6631a0913a514e08272541",
-  "version": "0.1.0",
+  "commit": "28645ab89cbe747f576364c35964be64dc5d6edf",
+  "version": "0.4.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-20T18:11:32.000Z",
+    "updatedAt": "2026-09-20T18:33:39.000Z",
     "observedAt": "2026-09-20T18:31:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-20T18:31:38.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/a70e0a9845c2719e7c6631a0913a514e08272541",
+      "evidenceUrl": "https://github.com/1624318455/dsh-plugin-tts/commit/28645ab89cbe747f576364c35964be64dc5d6edf",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "desktop-controls"
+    "tts"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.0-rc.6",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +165,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
     "profiles": [
       "web"

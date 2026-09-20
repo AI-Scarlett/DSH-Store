@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-20T12:54:20.000Z",
+    "updatedAt": "2026-09-20T18:31:38.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2190,8 +2190,8 @@
       "description": "为 DSH 提供社区插件中心能力。英文原始说明：Plugin center for DeepSeek Harness — installed metadata, community market, update detection, and What's New",
       "repositoryUrl": "https://github.com/Max-Null/dsh-plugin-center",
       "defaultBranch": "main",
-      "latestCommit": "0abdf721cdef83515e1c65a12e63c401844f9974",
-      "sourceUpdatedAt": "2026-09-14T17:42:00.000Z",
+      "latestCommit": "734038c37488a3e947a1c77bd719f5429385fffd",
+      "sourceUpdatedAt": "2026-09-20T17:43:59.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2230,8 +2230,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "2ffaa1a214b606c70c4e1fa454ee3a2f09f865ff",
-      "sourceUpdatedAt": "2026-09-19T12:01:54.000Z",
+      "latestCommit": "219ccb74a9fd79cbaffe23c4e6614cf9f7465604",
+      "sourceUpdatedAt": "2026-09-20T13:23:21.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2250,8 +2250,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "4955dfd7c3fec0fe420d17309f087371e64a6ac1",
-      "sourceUpdatedAt": "2026-09-19T12:01:28.000Z",
+      "latestCommit": "7a1d03ec7108d0555b02c626787b335774ce20cb",
+      "sourceUpdatedAt": "2026-09-20T13:24:32.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11575,6 +11575,135 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "eightfs-dsh-session-migrate",
+      "name": "EIGHTfs/dsh-session-migrate",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/EIGHTfs/dsh-session-migrate",
+      "defaultBranch": "master",
+      "latestCommit": "4493dcd80af13f4eacd1a2b06b9a9758e8e923b4",
+      "sourceUpdatedAt": "2026-09-19T19:59:10.000Z",
+      "discoveredAt": "2026-09-20T18:31:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/EIGHTfs__dsh-session-migrate.yml:sha256=37c19dfd9dd272a2c4d5dfb28279b7c75d1a1496083360f64669f35f0f272339:at=2026-09-20T18:34:40.224Z:owner=38984640"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "edisonzszs-web-clone",
+      "name": "Edisonzszs/web-clone",
+      "description": "网站复刻 / 克隆方法论。USE WHEN 用户说 复刻网站、克隆网站、clone website、抄个站、仿站、 照着这个站做一个、reproduce site、还原某个网页效果、把这个站搬下来改成我的、 复刻某个交互/WebGL/Canvas/Three.js 效果。提供「先拿真源码 → 判路径 → 逆向拆解 → 搭工程 → 替换内容」的可移植决策树，覆盖静态站 / React-Vue-Next 内容站 / WebGL-Canvas 重前端站三大分支，并强制核对任何 AI 二手分析里的可执行代码。",
+      "repositoryUrl": "https://github.com/Edisonzszs/web-clone",
+      "defaultBranch": "main",
+      "latestCommit": "1be49bb2d2bf6bfb944b83f998fe076832020ee9",
+      "sourceUpdatedAt": "2026-09-16T16:27:40.000Z",
+      "discoveredAt": "2026-09-20T18:31:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/Edisonzszs__web-clone.yml:sha256=eb0075c320885248af6ce5df3559b1cfc9d813c623c0e4c96aec45f04ee22105:at=2026-09-20T18:34:40.224Z:owner=204306259"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "edusrez-dsh-smart-restart",
+      "name": "edusrez/dsh-smart-restart",
+      "description": "Wakes the main agent after any DSH restart so interrupted work resumes automatically — adds a restart tool and an optional canary that validates the boot and warns instead of breaking.",
+      "repositoryUrl": "https://github.com/edusrez/dsh-smart-restart",
+      "defaultBranch": "main",
+      "latestCommit": "7626171fd3bf06714d8f8520e7b74184261e5fe8",
+      "sourceUpdatedAt": "2026-09-17T23:22:22.000Z",
+      "discoveredAt": "2026-09-20T18:31:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/edusrez__dsh-smart-restart.yml:sha256=aa6b569bc08f40b72729ae1fc887b43fee53e65801bea216175fbb093fcec90f:at=2026-09-20T18:34:40.224Z:owner=293043931"
+      ],
+      "topics": [
+        "agent-tools",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "quality-of-life",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "edgetype-dsh-better-deepseek",
+      "name": "EdgeTypE/dsh-better-deepseek",
+      "description": "DeepSeek Harness bridge plugin for Better DeepSeek Chrome extension.",
+      "repositoryUrl": "https://github.com/EdgeTypE/dsh-better-deepseek",
+      "defaultBranch": "main",
+      "latestCommit": "b1043860f5f10fd7ed12664ebe32ca4fd6445aca",
+      "sourceUpdatedAt": "2026-08-14T18:16:05.000Z",
+      "discoveredAt": "2026-09-20T18:31:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/EdgeTypE__dsh-better-deepseek.yml:sha256=f9084ebf30728f5fc15d12f0ae9ff5e1e63d32d4f7a7a45d7db919408a3a22fb:at=2026-09-20T18:34:40.224Z:owner=34396598"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zseven-w-rish-app",
+      "name": "ZSeven-W/rish-app",
+      "description": "Your pocket agent. Local-first AI agents on iOS and Android — real workspaces, tool execution with approvals, and your choice of model (DSH · Claude Code · Codex · GLM).",
+      "repositoryUrl": "https://github.com/ZSeven-W/rish-app",
+      "defaultBranch": "main",
+      "latestCommit": "bca5d2aa08cb31cc2f011a549f0d2302a325fde5",
+      "sourceUpdatedAt": "2026-09-20T18:33:11.000Z",
+      "discoveredAt": "2026-09-20T18:31:38.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent",
+        "agent-runtime",
+        "ai",
+        "ai-agent",
+        "android",
+        "claude",
+        "claude-code",
+        "codex",
+        "deepseek",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "glm",
+        "ios",
+        "llm",
+        "local-first",
+        "mobile",
+        "react-native",
+        "rust",
+        "vibecoding",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
