@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-20T03:51:15.000Z",
+    "updatedAt": "2026-09-20T12:54:20.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1979,27 +1979,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-tdai-memory."
     },
     {
-      "id": "scorp1o117-dsh-soul-md",
-      "name": "会话管理（DSH Soul Md）",
-      "description": "DeepSeek Harness 的 soul.md 风格人设 + 长期记忆插件：设置页输入人设卡名称和内容即可，文件由插件自动管理；可按工作区指定人设、聊天框可给会话单独切人设；AI 可自行演化人设与记忆（soul_read/soul_update/memory_*）。",
-      "repositoryUrl": "https://github.com/Scorp1o117/dsh-soul-md",
-      "defaultBranch": "main",
-      "latestCommit": "84e1cea06a717d402daa233d72d8752ffc29b168",
-      "sourceUpdatedAt": "2026-09-10T13:13:25.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "memory",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-soul-md."
-    },
-    {
       "id": "sirilee-dsh-rewind",
       "name": "会话与文件回退（DSH Rewind Plugin）",
       "description": "同一会话窗口内的 in-place 对话回退（不 fork，Claude Code /rewind 语义）：每条消息的 ↶ 按钮把模型上下文回退到任意用户消息，可选用磁盘持久化的 before-backups 还原工作区文件。",
@@ -2165,33 +2144,13 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-pocket."
     },
     {
-      "id": "seven282-oss-prompt-optimizer",
-      "name": "提示词优化器（OSS Prompt Optimizer）",
-      "description": "将原始指令经 harness llm 服务优化为专业提示词——默认 Role / Task / Context / Format 四段，可配置为无标题纯文本（outputStyle: ''plain''，更省 token）；提供输入框 ✨ 一键优化与撤销、prompt_optimize 工具、自动优化钩子与可配置元提示词。",
-      "repositoryUrl": "https://github.com/seven282/oss-prompt-optimizer",
-      "defaultBranch": "main",
-      "latestCommit": "3166fb56f2dd46b4d8990f003bd9f64478fdaa4c",
-      "sourceUpdatedAt": "2026-08-26T13:34:43.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: oss-prompt-optimizer."
-    },
-    {
       "id": "linkingoscar-dsh-billing-glass",
       "name": "费用与账单（DSH Billing Glass）",
       "description": "为 DSH 提供费用与账单能力。英文原始说明：Liquid-glass billing overlay for the DeepSeek Harness Web GUI: provider balances, session cost, daily spend and token buckets. DeepSeek-first with an extensible provider registry.",
       "repositoryUrl": "https://github.com/linkingoscar/dsh-billing-glass",
       "defaultBranch": "main",
-      "latestCommit": "0aeeff661a093d33e1f83ad0a67f252f0077fe33",
-      "sourceUpdatedAt": "2026-09-11T14:53:23.000Z",
+      "latestCommit": "3464204b4e3bd4a4ad9ad00ab295bbd18cc02d93",
+      "sourceUpdatedAt": "2026-09-20T09:33:40.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8063,8 +8022,8 @@
       "description": "跨会话记忆库：remember / recall / forget 工具、每轮提示注入与设置页条目浏览。",
       "repositoryUrl": "https://github.com/flymysql/dsh-memory",
       "defaultBranch": "main",
-      "latestCommit": "d6afee4bb594164193b7e262d6539d0c55b54a8b",
-      "sourceUpdatedAt": "2026-08-14T08:04:00.000Z",
+      "latestCommit": "21c82ff2f38aab9e009201a7cf7456f2a35d43d5",
+      "sourceUpdatedAt": "2026-09-20T07:48:41.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10151,8 +10110,8 @@
       "description": "DSHDesktop：DeepSeek Harness Desktop / DeepSeek Harness 桌面版",
       "repositoryUrl": "https://github.com/dataelement/dsh-desktop",
       "defaultBranch": "main",
-      "latestCommit": "c7e6a59eec467810adb46032530533667af51f55",
-      "sourceUpdatedAt": "2026-09-11T14:01:46.000Z",
+      "latestCommit": "32fc9ec952cb671b78d543ec8604c9996552f17f",
+      "sourceUpdatedAt": "2026-09-20T10:44:38.000Z",
       "discoveredAt": "2026-09-12T03:34:34.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -10164,7 +10123,8 @@
         "deepseek-harness",
         "deepseek-harness-desktop",
         "desktop",
-        "dsh-plugins",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
         "dshdesktop",
         "harness",
         "automatic-radar"
@@ -10728,8 +10688,8 @@
       "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
       "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
       "defaultBranch": "main",
-      "latestCommit": "e85277c5e84d600797fa49426ca9b5275d203788",
-      "sourceUpdatedAt": "2026-09-20T01:25:06.000Z",
+      "latestCommit": "f582a2d7e501f4c643fb9ba1fad7e3078187fb17",
+      "sourceUpdatedAt": "2026-09-20T11:46:37.000Z",
       "discoveredAt": "2026-09-18T13:50:17.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11516,6 +11476,100 @@
         "deepseek-harness",
         "dsh-plugin",
         "timeout",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "rayafriandion-dsh-oc-tui",
+      "name": "rayafriandion/dsh-oc-tui",
+      "description": "An opencode-inspired terminal UI (TUI) for DeepSeek Harness, shipped as a dsh profile app plugin. ｜ DeepSeek Harness 的终端界面（TUI），受 opencode 启发，以 dsh profile 应用插件形式启动。",
+      "repositoryUrl": "https://github.com/rayafriandion/dsh-oc-tui",
+      "defaultBranch": "main",
+      "latestCommit": "a9cc1b50af72c05c9c0e7cb96846f764b24c3044",
+      "sourceUpdatedAt": "2026-09-20T12:45:54.000Z",
+      "discoveredAt": "2026-09-20T12:54:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/rayafriandion__dsh-oc-tui.yml:sha256=75b860f10af04713c1b9719f2db4b99094b8a014e5b940cd5ab4d6e053763c16:at=2026-09-20T12:57:56.629Z:owner=50261377"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "tui",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "raullazaro-dsh-pwa-plugin",
+      "name": "RaulLazaro/dsh-pwa-plugin",
+      "description": "PWA plugin for DeepSeek Harness — adds offline support and install-as-app capability",
+      "repositoryUrl": "https://github.com/RaulLazaro/dsh-pwa-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "504e57f1a02b3c772e2704ee01a8c1d105bdc474",
+      "sourceUpdatedAt": "2026-09-15T08:19:45.000Z",
+      "discoveredAt": "2026-09-20T12:54:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/RaulLazaro__dsh-pwa-plugin.yml:sha256=5393afe57ce7132076727c16d7bbaaa4a515881c8294719947d6254cbcccda18:at=2026-09-20T12:57:56.629Z:owner=3456593"
+      ],
+      "topics": [
+        "deepseek",
+        "dsh",
+        "dsh-plugin",
+        "offline",
+        "pwa",
+        "service-worker",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "rayadesune-deepseek-harness-chat-billing",
+      "name": "rayadesune/DeepSeek-Harness-chat-billing",
+      "description": "类原生计费插件",
+      "repositoryUrl": "https://github.com/rayadesune/DeepSeek-Harness-chat-billing",
+      "defaultBranch": "main",
+      "latestCommit": "b15cff410f91fd9e256e6e8f08462494243586aa",
+      "sourceUpdatedAt": "2026-09-18T02:24:10.000Z",
+      "discoveredAt": "2026-09-20T12:54:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/rayadesune__DeepSeek-Harness-chat-billing.yml:sha256=6fe8ce9cd8230624f58f5e791ec459ffc010adf494c745ad3ab2c614f6add1d6:at=2026-09-20T12:57:56.629Z:owner=304305526"
+      ],
+      "topics": [
+        "billing",
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "raullazaro-dsh-preview-plugin",
+      "name": "RaulLazaro/dsh-preview-plugin",
+      "description": "Live preview tab for DeepSeek Harness — embed any dev server in an iframe with transparent SPA proxying",
+      "repositoryUrl": "https://github.com/RaulLazaro/dsh-preview-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "4c0e42dab69dc18d0ee798f42df9bac6171d8c0d",
+      "sourceUpdatedAt": "2026-09-18T10:00:30.000Z",
+      "discoveredAt": "2026-09-20T12:54:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b358926bf9e51c2dba9e934a79a849999067c5f:data/plugins/RaulLazaro__dsh-preview-plugin.yml:sha256=7bfbfef1db7eddadd4ebd601da93e2153daaa9fff4b5912b582025bdc49155e5:at=2026-09-20T12:57:56.629Z:owner=3456593"
+      ],
+      "topics": [
+        "dev-tools",
+        "dsh",
+        "dsh-plugin",
+        "iframe",
+        "preview",
         "automatic-radar"
       ],
       "status": "reviewing",
