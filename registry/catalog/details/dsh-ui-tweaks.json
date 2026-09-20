@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d9e521a85c7b0ba577e874fe60306f5b1dc79ff8",
+  "commit": "ebc27260b1ec5526fadeeacfb47704d55436dc6a",
   "version": "0.17.1",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-19T04:44:01.000Z",
-    "observedAt": "2026-09-19T12:19:26.000Z",
+    "updatedAt": "2026-09-20T05:52:22.000Z",
+    "observedAt": "2026-09-20T12:54:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-19T12:19:26.000Z",
-      "evidenceUrl": "https://github.com/wlj521/dsh-ui-tweaks/commit/d9e521a85c7b0ba577e874fe60306f5b1dc79ff8",
+      "checkedAt": "2026-09-20T12:54:20.000Z",
+      "evidenceUrl": "https://github.com/wlj521/dsh-ui-tweaks/commit/ebc27260b1ec5526fadeeacfb47704d55436dc6a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "ui-tweaks"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime so",
   "compatibility": {
     "dsh": "^0.1.6-alpha.2",
     "dshReleases": {
@@ -189,7 +189,9 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
