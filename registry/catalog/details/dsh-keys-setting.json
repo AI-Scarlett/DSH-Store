@@ -1,49 +1,45 @@
 {
-  "id": "dsh-desktop-controls",
-  "name": "桌面客户端（DSH Desktop Controls）",
-  "packageName": "dsh-desktop-controls",
-  "description": "为 DSH 提供桌面客户端能力。英文原始说明：Small in-app controls surface for the dsh-desktop shell",
+  "id": "dsh-keys-setting",
+  "name": "实验功能插件（DSH Keys Setting）",
+  "packageName": "dsh-keys-setting",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：DeepSeek Harness plugin: choose whether Enter, Shift+Enter and Ctrl/Cmd+Enter send the message or insert a line break, from the Settings window's General page.",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Controls",
-    "dsh-desktop-controls",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "实验功能插件",
+    "DSH Keys Setting",
+    "dsh-keys-setting",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "controls"
+    "keys",
+    "setting"
   ],
-  "repositoryUrl": "https://github.com/citrusli2026/dsh-electron-shell",
+  "repositoryUrl": "https://github.com/itchenshi/dsh-keys-setting",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-controls/package.json",
-  "installPath": "plugins/dsh-desktop-controls",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1d169af8946be8b3fd8d70d6cb5883b689538abd",
-  "version": "0.1.0",
+  "commit": "931713c20507daf026391d9118b250b3fa745cb2",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-21T12:17:50.000Z",
+    "updatedAt": "2026-09-21T13:29:02.000Z",
     "observedAt": "2026-09-21T13:24:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-21T13:24:28.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/1d169af8946be8b3fd8d70d6cb5883b689538abd",
+      "evidenceUrl": "https://github.com/itchenshi/dsh-keys-setting/commit/931713c20507daf026391d9118b250b3fa745cb2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +69,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "desktop-controls"
+    "composer-keys"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -164,7 +160,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"
@@ -183,7 +179,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "schemastery"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
