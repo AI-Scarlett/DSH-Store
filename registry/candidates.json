@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-20T18:31:38.000Z",
+    "updatedAt": "2026-09-21T03:48:06.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2065,8 +2065,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "a37fc94c51011123b4475b0ca638ffa9383583ce",
-      "sourceUpdatedAt": "2026-09-18T03:05:37.000Z",
+      "latestCommit": "1ee01d954c38b015f81fa4d9e16ac627d14497c2",
+      "sourceUpdatedAt": "2026-09-21T02:35:58.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2801,8 +2801,8 @@
       "description": "给 DeepSeek Harness 加入更好的流式文字动画。",
       "repositoryUrl": "https://github.com/SpookySandwich/dsh-plugin-smooth-stream",
       "defaultBranch": "main",
-      "latestCommit": "23bd57cdf3c97ce7d53bbc181d9a6ceccd99016c",
-      "sourceUpdatedAt": "2026-09-07T15:41:16.000Z",
+      "latestCommit": "c4b4740f28ba621d759a8b7aae8496ee1208bf5a",
+      "sourceUpdatedAt": "2026-09-20T20:14:09.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2962,8 +2962,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Sidebar Archived entry + archived-session panel with unarchive and delete, for the DeepSeek Harness web GUI",
       "repositoryUrl": "https://github.com/huahai0202/dsh-better-archive",
       "defaultBranch": "main",
-      "latestCommit": "aa8f1c7f77f81bbdc14a2be942d4844b9c709d1a",
-      "sourceUpdatedAt": "2026-09-17T15:11:25.000Z",
+      "latestCommit": "212a4e547ed0390d1568ff979019fa9666b02061",
+      "sourceUpdatedAt": "2026-09-21T00:55:18.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6333,26 +6333,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-update-notifier."
-    },
-    {
-      "id": "skr311-dsh-codex-pet",
-      "name": "趣味互动插件（DSH Codex Pet）",
-      "description": "导入/上传 Codex 风格精灵图序列帧宠物，在 DSH Web GUI 以悬浮浮层渲染，含图库管理、交互与 Agent 状态联动。",
-      "repositoryUrl": "https://github.com/skr311/dsh-codex-pet",
-      "defaultBranch": "main",
-      "latestCommit": "48ba4f437b34d1b20e4749b14902c0269487a7a5",
-      "sourceUpdatedAt": "2026-08-16T14:28:17.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "fun",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-codex-pet."
     },
     {
       "id": "lucky8197-dsh-devquest",
@@ -11704,6 +11684,95 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "fandc520-dsh-comfyui",
+      "name": "fandc520/dsh-comfyui",
+      "description": "一个基于DeepSeek-Harness的ComfyUI插件",
+      "repositoryUrl": "https://github.com/fandc520/dsh-comfyui",
+      "defaultBranch": "master",
+      "latestCommit": "9592a9d2a035c9148f0bf0d192d7fc2cfd94ce3a",
+      "sourceUpdatedAt": "2026-09-14T01:09:20.000Z",
+      "discoveredAt": "2026-09-21T03:48:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/fandc520__dsh-comfyui.yml:sha256=87d6e48342c4443a300eaf23285aa184c437b89223f06b70b55ce406704d1600:at=2026-09-21T03:51:39.485Z:owner=104415700"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fan56-dsh-subagent-registry",
+      "name": "fan56/dsh-subagent-registry",
+      "description": "dsh plugin: register ~/.dsh/agents/*.md as dsh-callable subagents",
+      "repositoryUrl": "https://github.com/fan56/dsh-subagent-registry",
+      "defaultBranch": "main",
+      "latestCommit": "ee74bd0fc4c27cf154989a19ccecff0e9e223ced",
+      "sourceUpdatedAt": "2026-09-20T05:28:04.000Z",
+      "discoveredAt": "2026-09-21T03:48:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/fan56__dsh-subagent-registry.yml:sha256=39c91c397ff1fe7a4e7e3e93c7465e1d931f7b17f7ffaae0182d3483556034f1:at=2026-09-21T03:51:39.485Z:owner=141002846"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fan56-dsh-dcp",
+      "name": "fan56/dsh-dcp",
+      "description": "dsh plugin: deterministic context compression backend — zero LLM calls, reproducible compression",
+      "repositoryUrl": "https://github.com/fan56/dsh-dcp",
+      "defaultBranch": "main",
+      "latestCommit": "5f99b41e23ebcd731db1341444dfa274b01ca7fc",
+      "sourceUpdatedAt": "2026-09-11T04:03:57.000Z",
+      "discoveredAt": "2026-09-21T03:48:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/fan56__dsh-dcp.yml:sha256=ef4f21d1efe2217d699fdcb665cdbcb0a7c7a2b096d645c35a5bb680925d3d4b:at=2026-09-21T03:51:39.485Z:owner=141002846"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fancr-code-dsh-plugin-usage-meter",
+      "name": "fancr-code/dsh-plugin-usage-meter",
+      "description": "DeepSeek Harness 网页插件：API 用量/费用/余额仪表 — 当日/近7天按模型堆叠柱状图、预算提醒、跨会话账本。",
+      "repositoryUrl": "https://github.com/fancr-code/dsh-plugin-usage-meter",
+      "defaultBranch": "main",
+      "latestCommit": "f573b735b1965dd5720b0d6f79a037f5c68c8ff5",
+      "sourceUpdatedAt": "2026-09-17T07:55:50.000Z",
+      "discoveredAt": "2026-09-21T03:48:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/fancr-code__dsh-plugin-usage-meter.yml:sha256=21c14fc826a96ddd549dcbe0d02ab451d3ab3b746a04dc09a859c60dac515c0f:at=2026-09-21T03:51:39.485Z:owner=265698714"
+      ],
+      "topics": [
+        "balance",
+        "billing",
+        "cost",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "usage",
+        "usage-meter",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
