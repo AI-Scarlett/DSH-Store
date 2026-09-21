@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-21T13:24:28.000Z",
+    "updatedAt": "2026-09-21T14:54:17.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -408,8 +408,8 @@
       "description": "A harness Agent system for DeepSeek.",
       "repositoryUrl": "https://github.com/PuddingAgent/PuddingAgent",
       "defaultBranch": "master",
-      "latestCommit": "44c022b28571a54a974e617d6724d34ae00ad847",
-      "sourceUpdatedAt": "2026-09-12T18:03:40.000Z",
+      "latestCommit": "e8a4c381eca1d48f9114b5db14f2f6744413cc37",
+      "sourceUpdatedAt": "2026-09-21T14:56:00.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -4978,8 +4978,8 @@
       "description": "Open-source antivirus for AI agents: block risky tools, secret access, prompt injection, malicious packages, MCP servers, plugins, and skills at runtime.",
       "repositoryUrl": "https://github.com/hashgraph-online/hol-guard",
       "defaultBranch": "main",
-      "latestCommit": "eac934b6fe715345a74f10d3a0ba940929d9620f",
-      "sourceUpdatedAt": "2026-08-30T21:41:37.000Z",
+      "latestCommit": "b3371c6557f6ab23ccf14861d62408fa8aaaace6",
+      "sourceUpdatedAt": "2026-09-21T14:56:04.000Z",
       "discoveredAt": "2026-08-30T21:40:03.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -5078,8 +5078,8 @@
       "description": "共享真实浏览器：用户可观看并随时接管的原生 Electron 窗口，agent 通过 CDP 驱动，内置 20 个 browser_* 工具（打开/快照/执行/填表/截图/下载/登录态）；任务级会话隔离、登录态持久化、人机验证识别，纯 `dsh web` 无需桌面外壳即可自托管。",
       "repositoryUrl": "https://github.com/wqty123/dsh-browser",
       "defaultBranch": "master",
-      "latestCommit": "7e2a14f4da08a6142616d22a491998107b52b75a",
-      "sourceUpdatedAt": "2026-09-16T07:45:25.000Z",
+      "latestCommit": "4315e48ee685aa754675d0b8964c8c3dae25671e",
+      "sourceUpdatedAt": "2026-09-21T13:46:14.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11871,6 +11871,32 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "dsh-tauri-deepseek-harness-desktop",
+      "name": "dsh-tauri/deepseek-harness-desktop",
+      "description": "DeepSeek Harness Tauri 桌面版 | Only 5mb installer, zero environment setup, preset plugins, Windows / macOS / Linux.",
+      "repositoryUrl": "https://github.com/dsh-tauri/deepseek-harness-desktop",
+      "defaultBranch": "main",
+      "latestCommit": "34cef7fbca09dfcea50df60bc14669aa68273b86",
+      "sourceUpdatedAt": "2026-09-21T12:20:09.000Z",
+      "discoveredAt": "2026-09-21T14:54:17.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "desktop",
+        "dsh",
+        "dsh-desktop",
+        "dsh-plugin",
+        "tauri",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/dsh-tauri-connection, packages/dsh-tauri-model-config, packages/dsh-tauri-panel-extension, packages/dsh-tauri-panel-scheduler, packages/dsh-tauri-pet, packages/dsh-tauri-rightclick, packages/dsh-tauri-session, packages/dsh-tauri-turnrewind, packages/dsh-tauri-ui, packages/dsh-tauri-worktree, packages/dsh-tauri"
     }
   ]
 }

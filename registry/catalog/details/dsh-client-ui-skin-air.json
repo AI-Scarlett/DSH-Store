@@ -1,49 +1,52 @@
 {
-  "id": "dsh-desktop-controls",
-  "name": "桌面客户端（DSH Desktop Controls）",
-  "packageName": "dsh-desktop-controls",
-  "description": "为 DSH 提供桌面客户端能力。英文原始说明：Small in-app controls surface for the dsh-desktop shell",
+  "id": "dsh-client-ui-skin-air",
+  "name": "界面主题与美化（DSH Client UI Skin Air）",
+  "packageName": "@dsh-external/dsh-client-ui-skin-air",
+  "description": "《AIR》夏日青空 — 高定制动漫主题皮肤 for the DeepSeek Harness web GUI. Full-viewport 神尾观铃 (Misuzu) sky backdrop, Q版 mascot sidebar, feather-fall / cloud-drift ambience, magic-circle thinking hook, hot-swappable via dsh-skin-switch.",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Controls",
-    "dsh-desktop-controls",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "界面主题与美化",
+    "DSH Client UI Skin Air",
+    "dsh-client-ui-skin-air",
+    "@dsh-external/dsh-client-ui-skin-air",
+    "主题",
+    "皮肤",
+    "背景",
+    "界面美化",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "controls"
+    "client",
+    "ui",
+    "skin",
+    "air"
   ],
-  "repositoryUrl": "https://github.com/citrusli2026/dsh-electron-shell",
+  "repositoryUrl": "https://github.com/qq2992254255-oss/dsh-air-theme",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-controls/package.json",
-  "installPath": "plugins/dsh-desktop-controls",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b6b2d277f355361161625a6baa71e512f9047a75",
-  "version": "0.1.0",
+  "commit": "9d5061b1bf1c7c7a0e1482c61bb623861145c5e2",
+  "version": "0.2.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-21T13:30:12.000Z",
+    "updatedAt": "2026-09-21T14:56:46.000Z",
     "observedAt": "2026-09-21T14:54:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-21T14:54:17.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/b6b2d277f355361161625a6baa71e512f9047a75",
+      "evidenceUrl": "https://github.com/qq2992254255-oss/dsh-air-theme/commit/9d5061b1bf1c7c7a0e1482c61bb623861145c5e2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +56,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +66,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +76,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "desktop-controls"
+    "ui-skin-air"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -173,7 +176,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "CC-BY-NC-SA-4.0",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
