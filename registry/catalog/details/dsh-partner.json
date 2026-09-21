@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "021a357ca4d8ca2d000ae029f51aad63e7376a9c",
-  "version": "2.3.0",
+  "commit": "45a37d62162608b6e52f20656535773f046cf29d",
+  "version": "2.4.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-18T07:34:28.000Z",
-    "observedAt": "2026-09-18T13:50:17.000Z",
+    "updatedAt": "2026-09-21T06:27:32.000Z",
+    "observedAt": "2026-09-21T13:24:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-18T13:50:17.000Z",
-      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/021a357ca4d8ca2d000ae029f51aad63e7376a9c",
+      "checkedAt": "2026-09-21T13:24:28.000Z",
+      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/45a37d62162608b6e52f20656535773f046cf29d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "partner"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source file count is outside the automatic review bound: 255 files (maximum 240)",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source file count is outside the automatic review bound: 271 files (maximum 240)",
   "compatibility": {
     "dsh": "^0.1.2-rc.1 || ^0.1.5-rc.1",
     "dshReleases": {
@@ -186,6 +186,7 @@
     },
     "externalDependencies": [
       "@deepseek-ai/schemastery",
+      "@modelcontextprotocol/sdk",
       "mdast-util-from-markdown",
       "mdast-util-gfm",
       "mdast-util-to-markdown",

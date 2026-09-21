@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-21T03:48:06.000Z",
+    "updatedAt": "2026-09-21T13:24:28.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2230,8 +2230,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "219ccb74a9fd79cbaffe23c4e6614cf9f7465604",
-      "sourceUpdatedAt": "2026-09-20T13:23:21.000Z",
+      "latestCommit": "28eb12cd75abf6a77eeee05ef1ed91cb3792ca2c",
+      "sourceUpdatedAt": "2026-09-21T04:18:50.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2250,8 +2250,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "7a1d03ec7108d0555b02c626787b335774ce20cb",
-      "sourceUpdatedAt": "2026-09-20T13:24:32.000Z",
+      "latestCommit": "c2e3303fcd043288d29a45bb13cfc710b5313639",
+      "sourceUpdatedAt": "2026-09-21T04:19:36.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3942,26 +3942,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-eyecare."
-    },
-    {
-      "id": "sunshine-lang-dsh-pdf",
-      "name": "文件与工作区工具（DSH Pdf）",
-      "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：PDF toolbox for DeepSeek Harness: extract text, metadata, and page ranges from PDF files (local parsing, no API key).",
-      "repositoryUrl": "https://github.com/sunshine-lang/dsh-pdf",
-      "defaultBranch": "main",
-      "latestCommit": "bfb4231ab6ca748871d679bb2895631262a9685f",
-      "sourceUpdatedAt": "2026-08-14T06:05:17.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-pdf."
     },
     {
       "id": "sunshine-lang-dsh-weather",
@@ -8558,8 +8538,8 @@
       "description": "为 DeepSeek Harness (DSH) 插件生态打造的现代化桌面端解决方案。万物皆「插件」，桌面本身也是「插件」。",
       "repositoryUrl": "https://github.com/anywhere-labs/dsh-desktop",
       "defaultBranch": "master",
-      "latestCommit": "6881298562ca9c9193a7101a452e87c492f27de7",
-      "sourceUpdatedAt": "2026-09-04T05:35:56.000Z",
+      "latestCommit": "e1472f74aa40a0545159d337fecdcce4c01d1e97",
+      "sourceUpdatedAt": "2026-09-21T13:29:06.000Z",
       "discoveredAt": "2026-09-04T05:32:32.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -8577,7 +8557,7 @@
       ],
       "status": "rejected",
       "route": "monorepo-review",
-      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: dsh-plugin-desktop-beta, dsh-plugin-desktop"
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: dsh-community-market, dsh-desktop-next, dsh-plugin-desktop-beta, dsh-plugin-desktop"
     },
     {
       "id": "jaywedgeworth22-botfleet",
@@ -10668,8 +10648,8 @@
       "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
       "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
       "defaultBranch": "main",
-      "latestCommit": "f582a2d7e501f4c643fb9ba1fad7e3078187fb17",
-      "sourceUpdatedAt": "2026-09-20T11:46:37.000Z",
+      "latestCommit": "2e6cf8d4cf6dc49a47cad2a39ae8f1b7b12c93a7",
+      "sourceUpdatedAt": "2026-09-21T11:15:12.000Z",
       "discoveredAt": "2026-09-18T13:50:17.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11768,6 +11748,124 @@
         "dsh-plugin",
         "usage",
         "usage-meter",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "frog755-dsh-prompt-vault",
+      "name": "Frog755/dsh-prompt-vault",
+      "description": "Prompt Vault: 输入框上方的提示词库（DSH 插件）— 📚 按钮展开面板，点条目一键填入 prompt。DeepSeek Harness prompt library plugin.",
+      "repositoryUrl": "https://github.com/Frog755/dsh-prompt-vault",
+      "defaultBranch": "master",
+      "latestCommit": "f2883612668bcc7af4bf065543bccfabf734a758",
+      "sourceUpdatedAt": "2026-09-10T03:03:05.000Z",
+      "discoveredAt": "2026-09-21T13:24:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/Frog755__dsh-prompt-vault.yml:sha256=f7a73c94825227f16c44857282db8f0e838e862cde43c207a9caefd3c6ad7fb4:at=2026-09-21T13:29:19.970Z:owner=192193058"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "prompt",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "freehul-sgme",
+      "name": "freehul/sgme",
+      "description": "SGME 拾光记忆引擎：AI 全面接管记忆、技能库、WIKI 知识库三大模块，跨会话、多智能体共享记忆，AI 会一直记得你的偏好。ShiGuang Memory Engine · AI takes full charge of three core modules — memory, skills, and wiki knowledge base. Memory is shared across sessions and multiple agents, so your AI always remembers your preferences.",
+      "repositoryUrl": "https://github.com/freehul/sgme",
+      "defaultBranch": "main",
+      "latestCommit": "84f7616ef3c9728fc363708274852b8127beef78",
+      "sourceUpdatedAt": "2026-09-19T12:58:48.000Z",
+      "discoveredAt": "2026-09-21T13:24:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/freehul__sgme.yml:sha256=29a99981bd417dc78f7b9188709deba1cb6646b27e0736d7128f550a5b96279c:at=2026-09-21T13:29:19.970Z:owner=12980696"
+      ],
+      "topics": [
+        "agent-memory",
+        "ai-agent",
+        "deepseek-harness",
+        "dsh-plugin",
+        "knowledge-graph",
+        "llm",
+        "memory",
+        "memory-engine",
+        "memory-management",
+        "personal-assistant",
+        "python",
+        "rag",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ahxmy-dsh-ios-ondevice",
+      "name": "AHXMY/dsh-ios-ondevice",
+      "description": "DSHIOS ?????(??? ipa):?? DeepSeek Harness ?? iPhone/iPad ??(?? iSH-ARM64 + Alpine + Node 22 + @deepseek-ai/dsh)",
+      "repositoryUrl": "https://github.com/AHXMY/dsh-ios-ondevice",
+      "defaultBranch": "main",
+      "latestCommit": "1d9e3867242eb369fb1420b079b426d021af7b6a",
+      "sourceUpdatedAt": "2026-09-21T13:29:03.000Z",
+      "discoveredAt": "2026-09-21T13:24:28.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "frog755-dsh-client-auto-retry",
+      "name": "Frog755/dsh-client-auto-retry",
+      "description": "DSH client plugin: auto-sends 「继续」 when a turn is interrupted/errored/overlong. No model/provider switching. Ships with a settings card.",
+      "repositoryUrl": "https://github.com/Frog755/dsh-client-auto-retry",
+      "defaultBranch": "main",
+      "latestCommit": "3ffab63905166bfeb9a3434bfe7f20e049e72c62",
+      "sourceUpdatedAt": "2026-09-10T03:00:56.000Z",
+      "discoveredAt": "2026-09-21T13:24:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/Frog755__dsh-client-auto-retry.yml:sha256=6760317afa95024183fcb60cb5afc37e616054a354a0ed0f753b04df38ac2d9e:at=2026-09-21T13:29:19.970Z:owner=192193058"
+      ],
+      "topics": [
+        "auto-retry",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fro2en12-dsh-download-progress",
+      "name": "Fro2en12/dsh-download-progress",
+      "description": "DSH web plugin: 下载进度面板（AI 产物）",
+      "repositoryUrl": "https://github.com/Fro2en12/dsh-download-progress",
+      "defaultBranch": "master",
+      "latestCommit": "c8299953d295975f34474ab8185ed6037f470a54",
+      "sourceUpdatedAt": "2026-09-01T16:43:04.000Z",
+      "discoveredAt": "2026-09-21T13:24:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@242d2a8d3709c017fb4af9b80603f6ae847948c7:data/plugins/Fro2en12__dsh-download-progress.yml:sha256=2f2f28c3406752b3b4628eaa8e54c1302e40b5cb2eaf4537b9ea2fdbf1514b9e:at=2026-09-21T13:29:19.970Z:owner=96874644"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "reviewing",
