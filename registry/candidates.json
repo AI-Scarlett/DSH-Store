@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-21T14:54:17.000Z",
+    "updatedAt": "2026-09-21T20:17:30.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2230,8 +2230,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "28eb12cd75abf6a77eeee05ef1ed91cb3792ca2c",
-      "sourceUpdatedAt": "2026-09-21T04:18:50.000Z",
+      "latestCommit": "d218a60f30210e517c07fa57a85d583849ba0dea",
+      "sourceUpdatedAt": "2026-09-21T16:46:22.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2250,8 +2250,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "c2e3303fcd043288d29a45bb13cfc710b5313639",
-      "sourceUpdatedAt": "2026-09-21T04:19:36.000Z",
+      "latestCommit": "67636827f8f5dd960292f971b27b29d07d5b0ef1",
+      "sourceUpdatedAt": "2026-09-21T16:46:17.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2649,27 +2649,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-vision-plugin."
-    },
-    {
-      "id": "severuszh-dsh-notify-windows",
-      "name": "任务通知提醒（DSH Notify Windows）",
-      "description": "DeepSeek Harness (DSH) 插件：任务完成 / 等待审批 / 等待回答时发送 Windows 系统桌面通知",
-      "repositoryUrl": "https://github.com/SeverusZh/dsh-notify-windows",
-      "defaultBranch": "main",
-      "latestCommit": "a321d84723f559588b6e461fb6262043a8cecffd",
-      "sourceUpdatedAt": "2026-09-20T02:55:40.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "notifications",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-notify-windows."
     },
     {
       "id": "iamfromchangsha-dsh-go-balance",
@@ -9962,8 +9941,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "29f9b01bda70a37eee46a99cf8e9f73438ebda4d",
-      "sourceUpdatedAt": "2026-09-18T12:48:50.000Z",
+      "latestCommit": "a83e81edb1b0f6329f063b978e23236ad35ec891",
+      "sourceUpdatedAt": "2026-09-21T16:30:41.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -11897,6 +11876,130 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/dsh-tauri-connection, packages/dsh-tauri-model-config, packages/dsh-tauri-panel-extension, packages/dsh-tauri-panel-scheduler, packages/dsh-tauri-pet, packages/dsh-tauri-rightclick, packages/dsh-tauri-session, packages/dsh-tauri-turnrewind, packages/dsh-tauri-ui, packages/dsh-tauri-worktree, packages/dsh-tauri"
+    },
+    {
+      "id": "wenbin-wb-dsh-bridge",
+      "name": "wenbin-wb/dsh-bridge",
+      "description": "🚀 DeepSeek Harness 多通道远程访问与安全守护插件 | 局域网扫码直连、Cloudflare / 自建公网隧道、微信 / QQ / 飞书 / Telegram 机器人全生命周期对话 | 内置全协议访问安全认证、后台防篡改与容灾保命体系",
+      "repositoryUrl": "https://github.com/wenbin-wb/dsh-bridge",
+      "defaultBranch": "main",
+      "latestCommit": "c18bdd83fb494c64ea10ce3fca49f5fbf897c545",
+      "sourceUpdatedAt": "2026-09-16T17:16:31.000Z",
+      "discoveredAt": "2026-09-21T20:17:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ac4ae7e47b67729530d1cf1a3912494bf8449002:data/plugins/wenbin-wb__dsh-bridge.yml:sha256=9bcf81350257d073ae9d5983e28dd06688ed52f6a9670afdaced462949200eef:at=2026-09-21T20:20:45.705Z:owner=57818063"
+      ],
+      "topics": [
+        "access-control",
+        "authentication",
+        "chatbot",
+        "cloudflare",
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "feishu",
+        "im-bot",
+        "lark",
+        "qq-bot",
+        "qr-code",
+        "remote-access",
+        "security",
+        "telegram",
+        "tunnel",
+        "websocket",
+        "wechat",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wendayuan-dsh-weixin",
+      "name": "wendayuan/dsh-weixin",
+      "description": "DeepSeek Harness 微信通道插件：手机微信直接对话 DSH agent | WeChat channel plugin for DSH",
+      "repositoryUrl": "https://github.com/wendayuan/dsh-weixin",
+      "defaultBranch": "main",
+      "latestCommit": "02e9ab2da91a9cac20e51abf619759052843a3df",
+      "sourceUpdatedAt": "2026-08-16T00:15:32.000Z",
+      "discoveredAt": "2026-09-21T20:17:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ac4ae7e47b67729530d1cf1a3912494bf8449002:data/plugins/wendayuan__dsh-weixin.yml:sha256=fc7ec9888549c7d21844376d3acd682aa0888a604dbc7446151f61989de2606f:at=2026-09-21T20:20:45.705Z:owner=47313356"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "wechat",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wenhongpan-dsh-projects",
+      "name": "WenhongPan/dsh-projects",
+      "description": "Project and session organization for DeepSeek Harness: multi-folder projects, searchable chats, attention summaries, and native folder picking.",
+      "repositoryUrl": "https://github.com/WenhongPan/dsh-projects",
+      "defaultBranch": "main",
+      "latestCommit": "6bf5d0dc5b5cbb56d151d1ff27ac423de2f4dffa",
+      "sourceUpdatedAt": "2026-08-27T14:45:27.000Z",
+      "discoveredAt": "2026-09-21T20:17:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ac4ae7e47b67729530d1cf1a3912494bf8449002:data/plugins/WenhongPan__dsh-projects.yml:sha256=a4cc0b79830c01141b726fdf44f645aa92a4266e45c2316cc20c3fa8c550d987:at=2026-09-21T20:20:45.705Z:owner=233260308"
+      ],
+      "topics": [
+        "ai-agents",
+        "chat-search",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "electron",
+        "productivity",
+        "project-management",
+        "react",
+        "session-management",
+        "workspace",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wenaixi-dsh-superpower",
+      "name": "Wenaixi/dsh-superpower",
+      "description": "DSH port of obra/superpowers — 完整移植、中文化、DSH 原生",
+      "repositoryUrl": "https://github.com/Wenaixi/dsh-superpower",
+      "defaultBranch": "main",
+      "latestCommit": "ad979f9b1b4e40930bfea0ffe561a1ee7e92d3e9",
+      "sourceUpdatedAt": "2026-08-30T09:55:14.000Z",
+      "discoveredAt": "2026-09-21T20:17:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ac4ae7e47b67729530d1cf1a3912494bf8449002:data/plugins/Wenaixi__dsh-superpower.yml:sha256=abc6f708d4acd6739b337c261023a73d0d86609b74c7df3516d2ec23b45789b0:at=2026-09-21T20:20:45.705Z:owner=216317561"
+      ],
+      "topics": [
+        "ai-agent",
+        "brainstorming",
+        "chinese",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-superpower",
+        "methodology",
+        "plugin",
+        "sdlc",
+        "skills",
+        "subagent",
+        "superpowers",
+        "tdd",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
