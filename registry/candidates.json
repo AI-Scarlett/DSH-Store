@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-21T20:17:30.000Z",
+    "updatedAt": "2026-09-22T03:45:43.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4579,8 +4579,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "8f9a5f5ede476d0d12fc54c5bd2cfd0677f3c2ff",
-      "sourceUpdatedAt": "2026-09-19T07:26:47.000Z",
+      "latestCommit": "2b8216508c049927a124a49fb8e2e05e2cfa4529",
+      "sourceUpdatedAt": "2026-09-21T11:16:35.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5036,8 +5036,8 @@
       "description": "演示文稿技能与工具：一句话或一篇文档生成 HTML 放映与可编辑 PPTX，内置 5 套主题，可配置默认主题/语言，中英双语。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ppt",
       "defaultBranch": "master",
-      "latestCommit": "659f7613d9ba94fc9ceda29f5578d8ec17a39c72",
-      "sourceUpdatedAt": "2026-09-18T16:29:49.000Z",
+      "latestCommit": "52957aa6ee491d8a757d27dbf3af1ec37dc82ba0",
+      "sourceUpdatedAt": "2026-09-21T11:16:33.000Z",
       "discoveredAt": "2026-09-01T12:56:30.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5260,8 +5260,8 @@
       "description": "CalDAV 日历插件：查/建/改/删/搜日程，Google/iCloud/Nextcloud/自定义端点，RRULE 重复事件展开。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-calendar",
       "defaultBranch": "main",
-      "latestCommit": "4a263edc2e7c77c298118482131dda9e9b16cf80",
-      "sourceUpdatedAt": "2026-09-20T03:22:38.000Z",
+      "latestCommit": "6e6508c228f86ead0c5e9b675ef3bb27c619542f",
+      "sourceUpdatedAt": "2026-09-21T11:16:31.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8626,8 +8626,8 @@
       "description": "🐧 Harness for RSI. Let AI Build AI. Multi-Agent Auto-Dev Platform. Everything is Transparent.",
       "repositoryUrl": "https://github.com/Prism-Shadow/penguin-harness",
       "defaultBranch": "main",
-      "latestCommit": "078a7aa83f98eafe029491db15309c887d20b24c",
-      "sourceUpdatedAt": "2026-09-18T11:40:53.000Z",
+      "latestCommit": "15defbb6714df055874472094512857c36dee489",
+      "sourceUpdatedAt": "2026-09-22T03:49:13.000Z",
       "discoveredAt": "2026-09-04T12:39:30.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -8740,8 +8740,8 @@
       "description": "Grix : Work with agents like talking to people.",
       "repositoryUrl": "https://github.com/askie/grix",
       "defaultBranch": "main",
-      "latestCommit": "bf1c3a590d6dc09707e1d090a52fa8820d14ffb8",
-      "sourceUpdatedAt": "2026-09-05T11:49:25.000Z",
+      "latestCommit": "a15e01f48f8992d9c6880aee627d8f4be0a7fac7",
+      "sourceUpdatedAt": "2026-09-22T03:49:08.000Z",
       "discoveredAt": "2026-09-05T11:47:14.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -11995,6 +11995,126 @@
         "subagent",
         "superpowers",
         "tdd",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "huashenglian-dsh-livechat",
+      "name": "huashenglian/dsh-livechat",
+      "description": "给 dsh 对话区叠加 B 站风格吐槽弹幕，可接入 LLM 生成弹幕。/Bilibili-style live-chat danmaku overlay for DeepSeek Harness Web — preset packs, optional LLM quips, drag ball, per-session pools.",
+      "repositoryUrl": "https://github.com/huashenglian/dsh-livechat",
+      "defaultBranch": "main",
+      "latestCommit": "b4b75e92daee8a438b9f2440bbd66c5877119e35",
+      "sourceUpdatedAt": "2026-09-21T23:46:45.000Z",
+      "discoveredAt": "2026-09-22T03:45:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@594be4abe0a5cfb88b4a07f780bf4d5407e26424:data/plugins/huashenglian__dsh-livechat.yml:sha256=5a9e4dda90050fadc410bcb4dce1e78e722529255c3729824796a5fb9a7123ce:at=2026-09-22T03:49:35.864Z:owner=121450510"
+      ],
+      "topics": [
+        "bilibili",
+        "danmaku",
+        "danmaku-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-plugin",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "dsh-plugins",
+        "live-chat",
+        "llm",
+        "overlay",
+        "realtime",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "huaweicloud-huaweicloud-devkit",
+      "name": "huaweicloud/huaweicloud-devkit",
+      "description": "Official Huawei Cloud plugin for AI agents — skills, MCP tools, safety guardrails, and cloud sandbox to help AI agents build, deploy, and operate on Huawei Cloud securely.",
+      "repositoryUrl": "https://github.com/huaweicloud/huaweicloud-devkit",
+      "defaultBranch": "main",
+      "latestCommit": "e7ed6f666ac5049ab467ff03daedd463da754d8a",
+      "sourceUpdatedAt": "2026-09-15T12:27:35.000Z",
+      "discoveredAt": "2026-09-22T03:45:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@594be4abe0a5cfb88b4a07f780bf4d5407e26424:data/plugins/huaweicloud__huaweicloud-devkit.yml:sha256=20944fbbba83f758d6795312b92cb1cbc89df56939fe75714a1a1517ff4bf969:at=2026-09-22T03:49:35.864Z:owner=36578213"
+      ],
+      "topics": [
+        "ai-coding",
+        "api",
+        "cli",
+        "cloud",
+        "codex",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "huaweicloud",
+        "koocli",
+        "mcp",
+        "opencode",
+        "plugins",
+        "sdk",
+        "terraform",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "huashenglian-dsh-omni-workstation",
+      "name": "huashenglian/dsh-omni-workstation",
+      "description": "dsh全模态工作站插件，让模型支持视频、图片、语音的输入与输出，支持comfyui图像生成工具调用。Any-to-Any.",
+      "repositoryUrl": "https://github.com/huashenglian/dsh-omni-workstation",
+      "defaultBranch": "main",
+      "latestCommit": "4462244aa61891b82d358966ef6c3904c6715369",
+      "sourceUpdatedAt": "2026-09-18T20:23:56.000Z",
+      "discoveredAt": "2026-09-22T03:45:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@594be4abe0a5cfb88b4a07f780bf4d5407e26424:data/plugins/huashenglian__dsh-omni-workstation.yml:sha256=553ba57dd342145cbb870776dbc32abb05f16f8bf633146c3e9f31d293a7d09f:at=2026-09-22T03:49:35.864Z:owner=121450510"
+      ],
+      "topics": [
+        "computer-vision",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "dsh-plugins",
+        "image-generation",
+        "multimodal-ai",
+        "omni",
+        "speech-recognition",
+        "text-to-speech",
+        "tts",
+        "video-generation",
+        "vlm",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "huanlinoto-dsh-plugin-mineru",
+      "name": "HuanLinOTO/dsh-plugin-mineru",
+      "description": "向模型暴露 MinerU 文档解析工具，将 PDF/图片/DOCX/PPTX/XLSX 转为结构化 Markdown/JSON | Exposes MinerU document-parsing tools to the model, converting PDF/images/DOCX/PPTX/XLSX into structured Markdown/JSON",
+      "repositoryUrl": "https://github.com/HuanLinOTO/dsh-plugin-mineru",
+      "defaultBranch": "master",
+      "latestCommit": "4a21ba0774708e5130adef5fe6fe3671efc6445b",
+      "sourceUpdatedAt": "2026-09-11T11:49:25.000Z",
+      "discoveredAt": "2026-09-22T03:45:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@594be4abe0a5cfb88b4a07f780bf4d5407e26424:data/plugins/HuanLinOTO__dsh-plugin-mineru.yml:sha256=d242085cf71e55489f7b2477e400e62246fd4d702963fe6b97e63ef44e7bb4f6:at=2026-09-22T03:49:35.864Z:owner=94176676"
+      ],
+      "topics": [
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "reviewing",
