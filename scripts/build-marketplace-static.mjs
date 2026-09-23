@@ -375,6 +375,7 @@ const alternateCode = alternateIsDomestic ? 'CN' : 'INTL'
 const alternateAriaLabel = alternateIsDomestic ? '切换到国内站 / Switch to China site' : '切换到国际站 / Switch to international site'
 const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international'
 const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
+const friendSisterSiteMarkup = `<a href="${htmlEscape(`${alternateOrigin}/`)}" target="_blank" rel="noopener noreferrer">DSH STORE · ${alternateIsDomestic ? '国内站' : 'International'} ↗</a>`
 
 const canonicalPages = [
   { file: 'marketplace/index.html', route: '/' },
@@ -437,7 +438,8 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
-  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
+  const withFriendLinks = replaceRequired(withAlternate, '<!-- DSH_FRIEND_SISTER_SITE -->', friendSisterSiteMarkup, `${pagePath} friend sister site marker`)
+  const withHreflang = replaceRequired(withFriendLinks, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
   const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
   const withBaiduUnionVerification = route === '/'
