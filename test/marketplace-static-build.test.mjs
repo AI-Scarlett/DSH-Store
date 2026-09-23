@@ -102,6 +102,9 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /name="applicable-device" content="pc,mobile"/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
     assert.match(home, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
+    assert.match(home, /href="https:\/\/aiaiai\.help\/"[^>]*>aiaiai\.help/)
+    assert.match(home, /href="https:\/\/dsh-store\.cn\/"[^>]*>DSH STORE · 国内站/)
+    assert.doesNotMatch(home, /href="https:\/\/dsh\.store\/"[^>]*>DSH STORE · International/)
     assert.match(home, /hreflang="en"[^>]*https:\/\/dsh\.store\//)
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
     assert.doesNotMatch(home, /DSH_ALTERNATE_SITE/)
@@ -222,6 +225,10 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       assert.match(page, /<meta name="baidu-site-verification" content="codeva-gZjUUScijx">/)
       assert.match(page, /<html lang="zh-CN" data-default-locale="zh">/)
       assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
+      assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
+      assert.match(page, /href="https:\/\/aiaiai\.help\/"[^>]*>aiaiai\.help/)
+      assert.match(page, /href="https:\/\/dsh\.store\/"[^>]*>DSH STORE · International/)
+      assert.doesNotMatch(page, /href="https:\/\/dsh-store\.cn\/"[^>]*>DSH STORE · 国内站/)
       if (pagePath === 'marketplace/index.html') {
         assert.match(page, /<meta name="baidu_union_verify" content="f7a5e80f6ec4d01cdfd011c771e7e706">/)
       } else {

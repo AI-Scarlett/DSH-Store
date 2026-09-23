@@ -430,6 +430,8 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.ok(buildHtml.includes(submissionUrl))
   for (const page of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, repairHtml]) {
     assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
+    assert.match(page, /href="https:\/\/aiaiai\.help\/"[^>]*>aiaiai\.help/)
+    assert.match(page, /DSH_FRIEND_SISTER_SITE/)
   }
   assert.match(html, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
   for (const surface of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, readme]) {
