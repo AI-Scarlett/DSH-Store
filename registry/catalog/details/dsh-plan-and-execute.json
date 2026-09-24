@@ -1,49 +1,50 @@
 {
-  "id": "dsh-desktop-controls",
-  "name": "桌面客户端（DSH Desktop Controls）",
-  "packageName": "dsh-desktop-controls",
-  "description": "为 DSH 提供桌面客户端能力。英文原始说明：Small in-app controls surface for the dsh-desktop shell",
+  "id": "dsh-plan-and-execute",
+  "name": "任务与工作流自动化（DSH Plan And Execute）",
+  "packageName": "dsh-plan-and-execute",
+  "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：dsh plugin: plan-and-execute orchestration over ReactLoopAgent",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Controls",
-    "dsh-desktop-controls",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "任务与工作流自动化",
+    "DSH Plan And Execute",
+    "dsh-plan-and-execute",
+    "任务",
+    "工作流",
+    "自动化",
+    "定时",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "controls"
+    "plan",
+    "and",
+    "execute"
   ],
-  "repositoryUrl": "https://github.com/citrusli2026/dsh-electron-shell",
-  "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-controls/package.json",
-  "installPath": "plugins/dsh-desktop-controls",
+  "repositoryUrl": "https://github.com/jimmyzhang219/dsh-plan-and-execute",
+  "defaultBranch": "master",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "008519210e925ea7d937a199d60ea03d3d128adb",
-  "version": "0.1.0",
+  "commit": "cfe697c683d972fea2266e652a4aa623ce91a578",
+  "version": "0.6.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T02:11:54.000Z",
+    "updatedAt": "2026-09-24T02:24:28.000Z",
     "observedAt": "2026-09-24T02:22:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-24T02:22:45.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/008519210e925ea7d937a199d60ea03d3d128adb",
+      "evidenceUrl": "https://github.com/jimmyzhang219/dsh-plan-and-execute/commit/cfe697c683d972fea2266e652a4aa623ce91a578",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "desktop-controls"
+    "dsh-plan-and-execute"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client/client.d.cts; runtime artifact is missing from the fixed Git Commit: ./lib/client/client.js; runt",
   "compatibility": {
-    "dsh": null,
+    "dsh": "*",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +165,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.19",
     "systems": [],
     "profiles": [
       "web"
@@ -183,11 +184,15 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "react-day-picker"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
