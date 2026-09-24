@@ -1,45 +1,50 @@
 {
-  "id": "dsh-plugins-catalog",
-  "name": "实验功能插件（DSH Plugins Catalog）",
-  "packageName": "dsh-plugins-catalog",
-  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Star-ranked DeepSeek Harness plugin catalog. Search and install other dsh-plugin repos.",
+  "id": "dsh-plugin-whale-pet",
+  "name": "趣味互动插件（DSH Plugin Whale Pet）",
+  "packageName": "dsh-plugin-whale-pet",
+  "description": "为 DSH 提供趣味互动插件能力。英文原始说明：Your little whale buddy for work, wins, and well-earned naps.",
   "searchTerms": [
-    "实验功能插件",
-    "DSH Plugins Catalog",
-    "dsh-plugins-catalog",
+    "趣味互动插件",
+    "DSH Plugin Whale Pet",
+    "dsh-plugin-whale-pet",
+    "趣味",
+    "桌宠",
+    "互动",
+    "娱乐",
     "实验功能",
     "新功能",
     "dsh",
-    "plugins",
-    "catalog"
+    "plugin",
+    "whale",
+    "pet"
   ],
-  "repositoryUrl": "https://github.com/Sakana-yuyu/dsh-plugins",
+  "repositoryUrl": "https://github.com/Yifffan/dsh-plugin-whale-pet",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "bc353af65d94313f0d9746fac07912ce306b97f7",
-  "version": "0.2.15",
+  "commit": "5b65a3485fa4243c690416eb23226ee0888f1418",
+  "version": "0.2.8-beta.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T05:36:21.000Z",
+    "updatedAt": "2026-09-24T05:43:48.000Z",
     "observedAt": "2026-09-24T05:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-24T05:40:34.000Z",
-      "evidenceUrl": "https://github.com/Sakana-yuyu/dsh-plugins/commit/bc353af65d94313f0d9746fac07912ce306b97f7",
+      "evidenceUrl": "https://github.com/Yifffan/dsh-plugin-whale-pet/commit/5b65a3485fa4243c690416eb23226ee0888f1418",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,14 +74,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-plugins-catalog"
+    "whale-pet"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 407669 total bytes (maximum 2097152); largest file 270556 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -160,7 +165,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
     "profiles": [
       "web"
@@ -169,7 +174,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "SEE LICENSE IN LICENSE",
     "permissions": {
       "level": "unknown",
       "files": "unknown",

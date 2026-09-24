@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "d2447a6d80399525b5f57a12b932e1b8a5318f4d",
-  "version": "0.9.0",
+  "commit": "af021dcab23eff616d8cb913b35be6f74e38a788",
+  "version": "0.9.1",
   "categories": [
     "marketplace",
     "management"
@@ -39,52 +39,40 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-15T04:34:58.000Z",
-    "observedAt": "2026-09-15T04:39:01.769Z",
+    "updatedAt": "2026-09-24T05:39:58.000Z",
+    "observedAt": "2026-09-24T05:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "reviewed-fixed-source-upgrade",
-      "checkedAt": "2026-09-15T04:39:01.769Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/d2447a6d80399525b5f57a12b932e1b8a5318f4d",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-24T05:40:34.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/af021dcab23eff616d8cb913b35be6f74e38a788",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed public source manifest, standard Bundle, permissions and lifecycle contract reviewed before Catalog pin."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
-      "status": "verified",
-      "method": "disposable-official-cli",
-      "checkedAt": "2026-09-15T04:39:01.769Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/34929399138",
-      "dshRelease": "0.1.5-rc.2",
-      "systems": [
-        "macOS",
-        "Linux",
-        "Windows"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "Disposable install, dump-config, startup and uninstall passed across three systems and pnpm 10/11/12. Windows file-source fixture uses one drive."
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
-      "status": "partial",
-      "method": "disposable-runtime-smoke",
-      "checkedAt": "2026-09-15T04:39:01.769Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/34929399138",
-      "dshRelease": "0.1.5-rc.2",
-      "systems": [
-        "macOS",
-        "Linux",
-        "Windows"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "Authenticated APIs and macOS browser market/details/notes/favorites/compatibility filter passed. Real Profile and complete package lifecycle UI remain separate."
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -100,8 +88,8 @@
   "entryIds": [
     "dsh-safe-plugin-manager"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2",
     "dshReleases": {
@@ -122,9 +110,9 @@
       "0.1.5-rc.2": "compatible",
       "0.1.6-alpha.1": "unknown",
       "0.1.6-alpha.2": "unknown",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown"
+      "0.1.7-alpha.1": "compatible",
+      "0.1.7-alpha.2": "compatible",
+      "0.1.7-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -206,15 +194,15 @@
         "rollback": "unknown"
       },
       "0.1.5-rc.1": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.5-rc.2": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.6-alpha.1": {
@@ -230,22 +218,22 @@
         "rollback": "unknown"
       },
       "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       }
     },
     "node": "^22.19.0 || >=24.0.0",
