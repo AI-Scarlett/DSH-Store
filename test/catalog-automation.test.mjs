@@ -185,6 +185,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /isDurableRejectedCandidateDecision\(previous\)/)
   assert.match(source, /candidateRetention\.durableDecisionsPreserved/)
   assert.match(source, /candidateRetention\.registryRemovals/)
+  assert.match(source, /candidatesChanged = !prospectiveCandidatesBuffer\.equals\(originalCandidates\)/)
+  assert.match(source, /Candidate Registry serialization changed without a write decision/)
   assert.match(source, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
   assert.match(source, /entry\.installPath \?\? ['"]\.['"]/)
