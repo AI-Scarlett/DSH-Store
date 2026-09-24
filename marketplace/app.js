@@ -5,8 +5,19 @@ const IS_DIRECTORY = document.body.classList.contains('plugins-page')
 
 const initialSearchQuery = (() => {
   try {
-    const value = new URLSearchParams(window.location.search).get('q') || ''
+    const fragment = window.location.hash.startsWith('#q=')
+      ? decodeURIComponent(window.location.hash.slice(3)) : ''
+    const value = fragment || new URLSearchParams(window.location.search).get('q') || ''
     return value.trim().slice(0, 80)
+  } catch {
+    return ''
+  }
+})()
+
+const initialCategory = (() => {
+  try {
+    const value = new URLSearchParams(window.location.search).get('category') || ''
+    return /^[a-z][a-z0-9-]{0,39}$/.test(value) ? value : ''
   } catch {
     return ''
   }
@@ -19,9 +30,11 @@ const translations = {
     'directory.meta.title': '全部 DSH 插件｜DSH STORE',
     'directory.meta.description': '浏览 DSH STORE 完整插件目录，按名称、能力、权限与兼容性搜索和筛选。',
     'a11y.skip': '跳到主要内容', 'a11y.skipCatalog': '跳到插件目录',
-    'nav.home': '首页', 'nav.discover': '插件目录', 'nav.standards': '收录标准', 'nav.safety': '信任机制', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
-    'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': '可信插件，', 'hero.title2': '安全接入 DSH。',
-    'hero.lead': '面向 DeepSeek Harness（DSH）的第三方插件商城。发现插件、核对来源与权限，再通过清楚、可恢复的路径安全接入。',
+    'nav.home': '首页', 'nav.discover': '插件目录', 'nav.community': '社区与开发者', 'nav.standards': '收录标准', 'nav.safety': '信任机制', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
+    'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': '让 DSH，', 'hero.title2': '拥有更多可能。',
+    'hero.lead': '发现插件、看清来源与权限，与开发者一起扩展工作流。所有真实接入仍通过清楚、可恢复的路径完成。',
+    'home.search': '搜索插件名称、用途或英文包名', 'home.searchTitle': '从一个需求，找到合适的插件。', 'home.searchLabel': '搜索插件', 'home.searchAction': '搜索插件 ↗', 'home.category.development': '开发工具', 'home.category.workflow': '工作流', 'home.category.files': '文件处理', 'home.category.sessions': '会话管理', 'home.category.search': '搜索发现', 'home.category.all': '更多分类',
+    'community.title': '加入 DSH 插件生态', 'community.lead': '从开发指南、收录标准到提交和反馈，现有入口集中在这里。', 'community.build.title': '做一个自己的 DSH 插件', 'community.build.body': '从真实需求出发，了解标准 Bundle 与开发工具。', 'community.submit.title': '提交你的插件', 'community.submit.body': '核对收录条件后，使用现有 GitHub 模板提交。', 'community.help.title': '交流与反馈', 'community.help.body': '先看常见问题，再通过现有项目渠道反馈。', 'community.build.action': '开始开发 ↗', 'community.submit.action': '查看提交入口 ↗', 'community.help.action': '查看帮助 ↗',
     'install.title': '安装 DSH Store', 'install.pinned': '固定 Commit', 'install.step1': '打开终端', 'install.step2': '粘贴命令并执行', 'install.step3': '重启 DSH 后打开商城',
     'install.note1': '确认正在操作目标设备', 'install.note2': '来源锁定到完整 Commit', 'install.note3': '在“设置 → 插件”中进入',
     'install.warning': '命令会修改 web Profile。请先备份；如执行失败，不要连续重试。',
@@ -41,7 +54,7 @@ const translations = {
     'builder.cardTitle': '三个答案，就是开发起点。', 'builder.input1': '现在遇到什么问题？', 'builder.input2': '希望达到什么结果？', 'builder.input3': '怎样观察到它成功？', 'builder.action': '打开开发插件工作台',
     'builder.outputTitle': '从 Brief 到可验证交付物', 'builder.output1': '宿主兼容性', 'builder.output2': '风险与权限', 'builder.output3': '标准源码工程', 'builder.output4': '验证证据等级', 'builder.note': '真实 Profile、重启与发布保持为独立确认步骤。',
     'featured.title': '精选插件，扩展你的 DSH 工作流。', 'featured.lead': '从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。',
-    'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索中文名、用途、别名或英文包名', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
+    'catalog.filterTitle': '筛选插件', 'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索中文名、用途、别名或英文包名', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
     'automation.title': '自动更新有没有成功，一眼就能看到。', 'automation.lead': '这里公开显示新插件发现、历史插件原项目版本检查、四端目录巡检和实际变更；“扫描成功”和“有更新”分别记录。',
     'automation.overall': '总体状态', 'automation.scanner': '插件与版本扫描', 'automation.watchdog': '四端巡检', 'automation.latestChange': '最近一次扫描变更',
     'automation.scannerNote': '每 8 小时扫描新插件并检查全部历史版本', 'automation.watchdogNote': 'GitHub、Pages、国际站、国内站', 'automation.changeUnit': '新增 / 更新',
@@ -85,9 +98,11 @@ const translations = {
     'directory.meta.title': 'All DSH Plugins | DSH STORE',
     'directory.meta.description': 'Browse the complete DSH STORE catalog and filter by name, capability, permission, or compatibility.',
     'a11y.skip': 'Skip to main content', 'a11y.skipCatalog': 'Skip to plugin catalog',
-    'nav.home': 'Home', 'nav.discover': 'Plugin catalog', 'nav.standards': 'Listing standards', 'nav.safety': 'Trust protocol', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
-    'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': 'Trusted plugins.', 'hero.title2': 'Safe access to DSH.',
-    'hero.lead': 'A third-party marketplace for DeepSeek Harness (DSH). Discover plugins, inspect sources and permissions, then connect them through a clear, recoverable path.',
+    'nav.home': 'Home', 'nav.discover': 'Plugin catalog', 'nav.community': 'Community & creators', 'nav.standards': 'Listing standards', 'nav.safety': 'Trust protocol', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
+    'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': 'Make DSH', 'hero.title2': 'more capable.',
+    'hero.lead': 'Discover plugins, inspect sources and permissions, and build better workflows with creators. Real changes still follow a clear, recoverable path.',
+    'home.search': 'Search plugin names, uses, or package names', 'home.searchTitle': 'Find the right plugin for your task.', 'home.searchLabel': 'Search plugins', 'home.searchAction': 'Search plugins ↗', 'home.category.development': 'Development', 'home.category.workflow': 'Workflow', 'home.category.files': 'Files', 'home.category.sessions': 'Sessions', 'home.category.search': 'Search', 'home.category.all': 'All categories',
+    'community.title': 'Join the DSH plugin ecosystem', 'community.lead': 'Existing development, standards, submission, and feedback paths in one place.', 'community.build.title': 'Build your own DSH plugin', 'community.build.body': 'Start with a real need and explore standard bundles and build tools.', 'community.submit.title': 'Submit your plugin', 'community.submit.body': 'Review the listing rules and use the existing GitHub template.', 'community.help.title': 'Questions and feedback', 'community.help.body': 'Start with the FAQ, then use the existing project channels.', 'community.build.action': 'Start building ↗', 'community.submit.action': 'Submit a plugin ↗', 'community.help.action': 'View help ↗',
     'install.title': 'Install DSH Store', 'install.pinned': 'Pinned commit', 'install.step1': 'Open Terminal', 'install.step2': 'Paste and run the command', 'install.step3': 'Restart DSH and open the store',
     'install.note1': 'Confirm the target device', 'install.note2': 'Source pinned to a full commit', 'install.note3': 'Open Settings → Plugins',
     'install.warning': 'This command changes the web Profile. Back it up first; if it fails, do not retry repeatedly.',
@@ -107,7 +122,7 @@ const translations = {
     'builder.cardTitle': 'Three answers start the build.', 'builder.input1': 'What problem exists today?', 'builder.input2': 'What outcome should change?', 'builder.input3': 'How will success be observed?', 'builder.action': 'Open the plugin build lab',
     'builder.outputTitle': 'From brief to verifiable artifacts', 'builder.output1': 'Host compatibility', 'builder.output2': 'Risk and permissions', 'builder.output3': 'Standard source project', 'builder.output4': 'Evidence level', 'builder.note': 'Real Profile changes, restart, and release remain separately confirmed steps.',
     'featured.title': 'Featured plugins for better DSH workflows.', 'featured.lead': 'Discover practical plugins for automation, knowledge, and development with traceable sources and transparent details. Review capabilities and permissions before connecting.',
-    'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
+    'catalog.filterTitle': 'Filter plugins', 'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
     'automation.title': 'See whether automation succeeded at a glance.', 'automation.lead': 'This shows new-plugin discovery, upstream version checks for every historical listing, the four-surface watchdog, and actual changes.',
     'automation.overall': 'Overall status', 'automation.scanner': 'Plugin and version scanner', 'automation.watchdog': 'Four-surface watchdog', 'automation.latestChange': 'Latest scan changes',
     'automation.scannerNote': 'Discovers plugins and checks every listed upstream version every 8 hours', 'automation.watchdogNote': 'GitHub, Pages, international, and China sites', 'automation.changeUnit': 'added / updated',
@@ -166,7 +181,7 @@ const state = {
   candidateSummary: { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 },
   catalogView: 'trusted',
   query: initialSearchQuery,
-  category: '',
+  category: initialCategory,
   sort: 'recommended',
   page: 1,
   pageSize: 20,
@@ -1404,6 +1419,13 @@ document.addEventListener('keydown', event => {
     event.preventDefault()
     els.search.focus()
   }
+})
+document.querySelector('.store-search-form')?.addEventListener('submit', event => {
+  event.preventDefault()
+  const query = document.querySelector('#home-plugin-search')?.value.trim().slice(0, 80) || ''
+  const destination = new URL('./plugins/', window.location.href)
+  if (query) destination.hash = `q=${encodeURIComponent(query)}`
+  window.location.assign(destination.href)
 })
 document.querySelector('#dialog-close')?.addEventListener('click', () => els.dialog?.close())
 els.dialog?.addEventListener('click', event => {

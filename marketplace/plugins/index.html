@@ -27,6 +27,7 @@
   <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
   <link rel="apple-touch-icon" href="../dsh-store-icon.png">
   <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../store-layout.css">
   <script defer src="../motion.js"></script>
   <script type="application/ld+json">
   {
@@ -94,6 +95,7 @@
     <nav class="site-nav" aria-label="Primary navigation">
       <a href="../" data-i18n="nav.home">首页</a>
       <a href="./" aria-current="page" data-i18n="nav.discover">插件目录</a>
+      <a href="../#community" data-i18n="nav.community">社区与开发者</a>
       <a href="../standards/" data-i18n="nav.standards" data-analytics-event="standards_open" data-analytics-item="catalog_header">收录标准</a>
       <a href="../build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="catalog_header">开发插件</a>
       <a href="../faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="catalog_header">常见问题</a>
@@ -141,15 +143,19 @@
 
     <section class="catalog-section section-shell" id="catalog" aria-labelledby="catalog-title">
       <div class="catalog-heading reveal"><div><span class="section-index">PLUGIN INDEX / SCALABLE</span><h2 id="catalog-title" data-i18n="catalog.title">找到你需要的能力</h2></div><p data-i18n="catalog.lead">目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。</p></div>
-      <div class="catalog-toolbar reveal">
-        <label class="search-box" for="search"><span aria-hidden="true">⌕</span><input id="search" type="search" autocomplete="off" aria-label="Search plugins" data-i18n-placeholder="catalog.search" placeholder="搜索中文名、用途、别名或英文包名"><kbd>⌘ K</kbd></label>
-        <label class="select-box" for="sort"><span data-i18n="catalog.sort">排序</span><select id="sort"><option value="recommended" data-i18n="sort.recommended">推荐优先</option><option value="name" data-i18n="sort.name">名称 A–Z</option><option value="recent" data-i18n="sort.recent">版本更新</option><option value="risk" data-i18n="sort.risk">权限由低到高</option></select></label>
-      </div>
+      <div class="catalog-layout">
+        <aside class="catalog-sidebar" aria-label="筛选插件"><h3 data-i18n="catalog.filterTitle">筛选插件</h3>
       <div id="catalog-view-tabs" class="catalog-view-tabs reveal" role="group" aria-label="Catalog trust layer">
         <button type="button" data-catalog-view="trusted" aria-pressed="true" data-i18n="view.trusted">可信安装库</button>
         <button type="button" data-catalog-view="candidates" aria-pressed="false" data-i18n="view.candidates">候选发现库</button>
       </div>
       <div class="catalog-controls reveal"><div id="category-pills" class="category-pills" aria-label="Categories"></div><button id="clear-filter" class="text-button" type="button" hidden data-i18n="action.clear">清除筛选</button></div>
+        </aside>
+        <div class="catalog-main">
+      <div class="catalog-toolbar reveal">
+        <label class="search-box" for="search"><span aria-hidden="true">⌕</span><input id="search" type="search" autocomplete="off" aria-label="Search plugins" data-i18n-placeholder="catalog.search" placeholder="搜索中文名、用途、别名或英文包名"><kbd>⌘ K</kbd></label>
+        <label class="select-box" for="sort"><span data-i18n="catalog.sort">排序</span><select id="sort"><option value="recommended" data-i18n="sort.recommended">推荐优先</option><option value="name" data-i18n="sort.name">名称 A–Z</option><option value="recent" data-i18n="sort.recent">版本更新</option><option value="risk" data-i18n="sort.risk">权限由低到高</option></select></label>
+      </div>
       <div class="result-row"><p id="catalog-meta" role="status" data-i18n="catalog.loading">正在读取目录…</p><span class="legend"><i class="legend-approved"></i><span data-i18n="status.available">可安装</span><i class="legend-blocked"></i><span data-i18n="status.viewOnly">仅展示</span></span></div>
       <div id="plugin-grid" class="plugin-grid" aria-live="polite"><!-- DSH_STATIC_PLUGIN_CARDS_BEGIN --><!-- DSH_STATIC_PLUGIN_CARDS_END --></div>
       <nav id="catalog-pagination" class="catalog-pagination" aria-label="插件目录分页" hidden>
@@ -161,6 +167,8 @@
       <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h3 data-i18n="empty.title">没有找到匹配插件</h3><p data-i18n="empty.body">换个关键词，或清除当前分类筛选。</p><button id="empty-clear" class="button button-primary" type="button" data-i18n="action.viewAll">查看全部插件</button></div>
       <div id="load-error" class="load-error" hidden><span aria-hidden="true">!</span><div><h3 data-i18n="error.title">目录暂时没有加载成功</h3><p data-i18n="error.body">请稍后重试，或前往 GitHub 查看最新目录。</p><div class="load-error-actions"><button id="retry-catalog" class="button button-primary" type="button" data-i18n="action.retry">重新加载</button><a class="button button-secondary" href="https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/catalog.json" target="_blank" rel="noreferrer" data-i18n="action.githubCatalog">查看 GitHub 目录 ↗</a></div></div></div>
       <div class="catalog-capacity reveal"><span>TRUST BOUNDARY / PRIVACY BY DEFAULT</span><b data-i18n="directory.capacity">搜索关键词留在你的浏览器里</b><small data-i18n="directory.capacityNote">筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。</small><small data-i18n="candidate.notice">候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。</small></div>
+        </div>
+      </div>
     </section>
   </main>
 

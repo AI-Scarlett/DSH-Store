@@ -32,6 +32,7 @@
   <link rel="apple-touch-icon" href="./dsh-store-icon.png">
   <link rel="manifest" href="./site.webmanifest">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./store-layout.css">
   <script defer src="./motion.js"></script>
   <script type="application/ld+json">
   {
@@ -128,6 +129,7 @@
     <nav class="site-nav" aria-label="Primary navigation">
       <a href="./" aria-current="page" data-i18n="nav.home">首页</a>
       <a href="./plugins/" data-i18n="nav.discover">插件目录</a>
+      <a href="#community" data-i18n="nav.community">社区与开发者</a>
       <a href="./standards/" data-i18n="nav.standards" data-analytics-event="standards_open" data-analytics-item="header">收录标准</a>
       <a href="./build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="header">开发插件</a>
       <a href="./faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="header">常见问题</a>
@@ -149,8 +151,8 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy reveal">
         <div class="system-status"><span></span><b data-i18n="hero.eyebrow">DSH TRUSTED EXTENSION LAYER</b><em>ONLINE</em></div>
-        <h1 id="hero-title"><span class="hero-brand-title">DSH STORE</span><span data-i18n="hero.title1">可信插件，</span><br><em data-i18n="hero.title2">安全接入 DSH。</em></h1>
-        <p class="hero-lead" data-i18n="hero.lead">面向 DeepSeek Harness（DSH）的第三方插件商城。发现插件、核对来源与权限，再通过清楚、可恢复的路径安全接入。</p>
+        <h1 id="hero-title"><span class="hero-brand-title">DSH STORE · PLUGIN ECOSYSTEM</span><span data-i18n="hero.title1">让 DSH，</span><br><em data-i18n="hero.title2">拥有更多可能。</em></h1>
+        <p class="hero-lead" data-i18n="hero.lead">发现插件、看清来源与权限，与开发者一起扩展工作流。所有真实接入仍通过清楚、可恢复的路径完成。</p>
         <div class="hero-actions">
           <a class="button button-primary" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="hero"><span data-i18n="action.explore">查看全部插件</span><i aria-hidden="true">↗</i></a>
           <a class="button button-secondary" href="#safety"><span data-i18n="action.trust">了解安全机制</span><i aria-hidden="true">↓</i></a>
@@ -174,6 +176,19 @@
           </ol>
           <div class="terminal-warning"><span>!</span><p data-i18n="install.warning">命令会修改 web Profile。请先备份；如执行失败，不要连续重试。</p><a href="#manager" data-i18n="action.fullGuide">查看说明 ↗</a></div>
         </div>
+      </div>
+    </section>
+
+    <section class="store-search section-shell" aria-labelledby="store-search-title">
+      <div class="store-search-heading"><span class="section-index">EXPLORE THE MARKETPLACE</span><h2 id="store-search-title" data-i18n="home.searchTitle">从一个需求，找到合适的插件。</h2></div>
+      <form class="store-search-form" action="./plugins/" role="search"><label for="home-plugin-search" data-i18n="home.searchLabel">搜索插件</label><span aria-hidden="true">⌕</span><input id="home-plugin-search" type="search" maxlength="80" placeholder="搜索插件名称、用途或英文包名" data-i18n-placeholder="home.search"><button type="submit" data-i18n="home.searchAction">搜索插件 ↗</button></form>
+      <div class="store-categories" aria-label="按能力发现插件">
+        <a href="./plugins/?category=development"><span>⌘</span><b data-i18n="home.category.development">开发工具</b><small>DEVELOPMENT</small></a>
+        <a href="./plugins/?category=workflow"><span>◇</span><b data-i18n="home.category.workflow">工作流</b><small>WORKFLOW</small></a>
+        <a href="./plugins/?category=files"><span>▤</span><b data-i18n="home.category.files">文件处理</b><small>FILES</small></a>
+        <a href="./plugins/?category=sessions"><span>◷</span><b data-i18n="home.category.sessions">会话管理</b><small>SESSIONS</small></a>
+        <a href="./plugins/?category=search"><span>⌕</span><b data-i18n="home.category.search">搜索发现</b><small>SEARCH</small></a>
+        <a href="./plugins/"><span>✦</span><b data-i18n="home.category.all">更多分类</b><small>ALL PLUGINS</small></a>
       </div>
     </section>
 
@@ -222,6 +237,15 @@
       <div id="featured-grid" class="featured-grid" aria-live="polite"><!-- DSH_STATIC_FEATURED_BEGIN --><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><!-- DSH_STATIC_FEATURED_END --></div>
       <a class="catalog-gateway reveal" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="featured_footer"><span><small data-i18n="catalog.gatewayKicker">探索更多能力</small><b data-i18n="catalog.gatewayTitle">查看全部 DSH 插件、权限与兼容性</b></span><em data-i18n="action.explore">查看全部插件</em><i aria-hidden="true">↗</i></a>
       <a class="catalog-gateway reveal" href="./dsh-plugins/" data-analytics-event="guide_open" data-analytics-item="featured_footer"><span><small>DSH PLUGINS / GUIDE</small><b>DSH 插件入门：来源、权限与安全安装</b></span><em>阅读插件指南</em><i aria-hidden="true">↗</i></a>
+    </section>
+
+    <section class="community-section section-shell" id="community" aria-labelledby="community-title">
+      <div class="section-heading"><div><span class="section-index">COMMUNITY & CREATORS</span><h2 id="community-title" data-i18n="community.title">加入 DSH 插件生态</h2></div><p data-i18n="community.lead">从开发指南、收录标准到提交和反馈，现有入口集中在这里。</p></div>
+      <div class="community-grid">
+        <article class="community-card community-card-primary"><span aria-hidden="true">✦</span><h3 data-i18n="community.build.title">做一个自己的 DSH 插件</h3><p data-i18n="community.build.body">从真实需求出发，了解标准 Bundle 与开发工具。</p><a href="./build/" data-analytics-event="build_tab_open" data-analytics-item="community" data-i18n="community.build.action">开始开发 ↗</a></article>
+        <article class="community-card"><span aria-hidden="true">↗</span><h3 data-i18n="community.submit.title">提交你的插件</h3><p data-i18n="community.submit.body">核对收录条件后，使用现有 GitHub 模板提交。</p><a href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="community" data-i18n="community.submit.action">查看提交入口 ↗</a></article>
+        <article class="community-card"><span aria-hidden="true">?</span><h3 data-i18n="community.help.title">交流与反馈</h3><p data-i18n="community.help.body">先看常见问题，再通过现有项目渠道反馈。</p><a href="./faq/" data-analytics-event="faq_open" data-analytics-item="community" data-i18n="community.help.action">查看帮助 ↗</a></article>
+      </div>
     </section>
 
     <section class="safety-section" id="safety" aria-labelledby="safety-title"><div class="section-shell">
