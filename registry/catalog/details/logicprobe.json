@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "7e11afe45825dddc47aa35aca86ce22e3fdce185",
-  "version": "0.6.7",
+  "commit": "28024a202bac93039a4a4e975dd5c2fcf2533002",
+  "version": "0.6.8",
   "categories": [
     "workflow",
     "design"
@@ -35,20 +35,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-22T02:23:47.000Z",
-    "observedAt": "2026-09-22T03:45:43.000Z",
+    "updatedAt": "2026-09-22T11:38:43.000Z",
+    "observedAt": "2026-09-24T01:36:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-22T03:45:43.000Z",
-      "evidenceUrl": "https://github.com/AmethystLuna/logicprobe/commit/7e11afe45825dddc47aa35aca86ce22e3fdce185",
+      "checkedAt": "2026-09-24T01:36:44.000Z",
+      "evidenceUrl": "https://github.com/AmethystLuna/logicprobe/commit/28024a202bac93039a4a4e975dd5c2fcf2533002",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -105,7 +105,10 @@
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "compatible",
       "0.1.6-alpha.1": "compatible",
-      "0.1.6-alpha.2": "compatible"
+      "0.1.6-alpha.2": "compatible",
+      "0.1.7-alpha.1": "compatible",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -205,6 +208,24 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

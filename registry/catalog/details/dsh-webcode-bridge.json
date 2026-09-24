@@ -22,24 +22,24 @@
   "manifestPath": "package/dsh-webcode-bridge/package.json",
   "installPath": "package/dsh-webcode-bridge",
   "updatePolicy": "external-only",
-  "commit": "fb7cd6e68f019ef40a2d52866cb799ca18f3a85d",
-  "version": "0.16.31",
+  "commit": "2a3d7fd56dabc574e1f8d0cba5d2d7a52a4bda6c",
+  "version": "0.19.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-20T08:17:09.000Z",
-    "observedAt": "2026-09-20T12:54:20.000Z",
+    "updatedAt": "2026-09-23T04:37:51.000Z",
+    "observedAt": "2026-09-24T01:36:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-20T12:54:20.000Z",
-      "evidenceUrl": "https://github.com/RSLN-creator/dsh-web-bridge/commit/fb7cd6e68f019ef40a2d52866cb799ca18f3a85d",
+      "checkedAt": "2026-09-24T01:36:44.000Z",
+      "evidenceUrl": "https://github.com/RSLN-creator/dsh-web-bridge/commit/2a3d7fd56dabc574e1f8d0cba5d2d7a52a4bda6c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "webcode-bridge"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 2013893 total bytes (maximum 2097152); largest file 359709 bytes (maximum 262144)",
   "compatibility": {
     "dsh": "^0.1.5-alpha.1",
     "dshReleases": {
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown"
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,19 +145,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-rc.2": {
+      "0.1.7-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.6-alpha.1": {
+      "0.1.7-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.6-alpha.2": {
+      "0.1.7-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

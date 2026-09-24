@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "60fe0dcc07d7a20fed6a5d82526b789892775f49",
+  "commit": "473251410c8c271650cd52402af4c102c7450a39",
   "version": "0.1.3",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T12:22:42.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-09-23T05:45:24.000Z",
+    "observedAt": "2026-09-24T01:36:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/L3n3L/dsh-resume/commit/60fe0dcc07d7a20fed6a5d82526b789892775f49",
+      "checkedAt": "2026-09-24T01:36:44.000Z",
+      "evidenceUrl": "https://github.com/L3n3L/dsh-resume/commit/473251410c8c271650cd52402af4c102c7450a39",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,9 +79,9 @@
     "dsh-resume"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 830889 total bytes (maximum 2097152); largest file 269571 bytes (maximum 262144)",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.0-rc.6 <0.2.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -91,15 +91,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown"
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -150,55 +144,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
+      "0.1.7-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.3-alpha.1": {
+      "0.1.7-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.2": {
+      "0.1.7-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -212,7 +170,7 @@
     ]
   },
   "details": {
-    "pluginType": "unknown",
+    "pluginType": "feature",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
@@ -225,7 +183,6 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/dsh-tools",
       "@modelcontextprotocol/server",
       "markdown-it",
       "zod"
