@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e078b1d5a2816774cff5adb09e221aa894e8f9e0",
+  "commit": "d98ac7cd4fbe0824d5a7ffcd5127c5bb59f56c4a",
   "version": "0.13.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T12:30:05.000Z",
-    "observedAt": "2026-09-24T13:19:30.000Z",
+    "updatedAt": "2026-09-24T17:06:20.000Z",
+    "observedAt": "2026-09-24T19:50:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-24T13:19:30.000Z",
-      "evidenceUrl": "https://github.com/XieZongChen/dsh-md-notes/commit/e078b1d5a2816774cff5adb09e221aa894e8f9e0",
+      "checkedAt": "2026-09-24T19:50:51.000Z",
+      "evidenceUrl": "https://github.com/XieZongChen/dsh-md-notes/commit/d98ac7cd4fbe0824d5a7ffcd5127c5bb59f56c4a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "md-notes"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source conta",
+  "statusReason": "Automatic policy blocked installation: runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source exceeds the automatic review byte bound: 936251 total bytes (maximum 2097152); largest file 485483 bytes (maximum 262144)",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -93,9 +93,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown"
+      "0.1.7-rc.1": "unknown",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,12 +146,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -159,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "fb592b8c2edf083d4e446f4858bcaeb2f26f5664",
-  "version": "0.3.19",
+  "commit": "2d8cfd91c61b1d23c8efcee7762898b5e34f14ca",
+  "version": "0.3.20",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T05:21:19.000Z",
-    "observedAt": "2026-09-24T05:40:34.000Z",
+    "updatedAt": "2026-09-24T15:15:11.000Z",
+    "observedAt": "2026-09-24T19:50:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T05:40:34.000Z",
-      "evidenceUrl": "https://github.com/NOirBRight/dsh-llm-grok/commit/fb592b8c2edf083d4e446f4858bcaeb2f26f5664",
+      "checkedAt": "2026-09-24T19:50:51.000Z",
+      "evidenceUrl": "https://github.com/NOirBRight/dsh-llm-grok/commit/2d8cfd91c61b1d23c8efcee7762898b5e34f14ca",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.1.7-alpha.2",
+    "dsh": ">=0.1.7-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,7 +103,8 @@
       "0.1.6-alpha.2": "unknown",
       "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "compatible",
-      "0.1.7-rc.1": "unknown"
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -221,6 +222,12 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "b2b40384dc359fb4699ac072cde06fe8cbd3bdf4",
-  "version": "0.3.23",
+  "commit": "da605ed7f443077181ee02268b0774a859e7723d",
+  "version": "0.3.24",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T05:33:04.000Z",
-    "observedAt": "2026-09-24T05:40:34.000Z",
+    "updatedAt": "2026-09-24T15:15:11.000Z",
+    "observedAt": "2026-09-24T19:50:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T05:40:34.000Z",
-      "evidenceUrl": "https://github.com/NOirBRight/dsh-llm-codex/commit/b2b40384dc359fb4699ac072cde06fe8cbd3bdf4",
+      "checkedAt": "2026-09-24T19:50:51.000Z",
+      "evidenceUrl": "https://github.com/NOirBRight/dsh-llm-codex/commit/da605ed7f443077181ee02268b0774a859e7723d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.1.7-alpha.2",
+    "dsh": ">=0.1.7-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,7 +103,8 @@
       "0.1.6-alpha.2": "unknown",
       "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "compatible",
-      "0.1.7-rc.1": "unknown"
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -221,6 +222,12 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

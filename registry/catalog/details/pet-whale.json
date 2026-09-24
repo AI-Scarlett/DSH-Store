@@ -19,24 +19,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "ae979248565061176e8c1374ca46bd7c6cd16675",
-  "version": "1.1.2",
+  "commit": "67a27fbe02732bff2b99f0958d848130ed009cb3",
+  "version": "1.2.0",
   "categories": [
     "fun"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-19T07:26:16.000Z",
-    "observedAt": "2026-09-19T12:19:26.000Z",
+    "updatedAt": "2026-09-24T17:00:58.000Z",
+    "observedAt": "2026-09-24T19:50:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-19T12:19:26.000Z",
-      "evidenceUrl": "https://github.com/nzl153/dsh-pet-whale/commit/ae979248565061176e8c1374ca46bd7c6cd16675",
+      "checkedAt": "2026-09-24T19:50:51.000Z",
+      "evidenceUrl": "https://github.com/nzl153/dsh-pet-whale/commit/67a27fbe02732bff2b99f0958d848130ed009cb3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,8 +76,8 @@
   "entryIds": [
     "pet-whale"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.5-alpha.2 <0.2.0",
     "dshReleases": {
@@ -100,7 +100,9 @@
       "0.1.6-alpha.2": "unknown",
       "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown"
+      "0.1.7-rc.1": "compatible",
+      "0.1.5-rc.3": "compatible",
+      "0.1.7-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -218,6 +220,18 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

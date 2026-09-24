@@ -30,7 +30,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "1185d557dfe321ca8d79ce565741cf619aaf9825",
+  "commit": "87e9bdc7f1b9c8985a806d3b42006ce52e75c2cd",
   "version": "0.9.1",
   "categories": [
     "marketplace",
@@ -39,16 +39,16 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T12:27:31.000Z",
-    "observedAt": "2026-09-24T13:19:30.000Z",
+    "updatedAt": "2026-09-24T15:41:58.000Z",
+    "observedAt": "2026-09-24T19:50:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T13:19:30.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/1185d557dfe321ca8d79ce565741cf619aaf9825",
+      "checkedAt": "2026-09-24T19:50:51.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/87e9bdc7f1b9c8985a806d3b42006ce52e75c2cd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -112,7 +112,8 @@
       "0.1.6-alpha.2": "unknown",
       "0.1.7-alpha.1": "compatible",
       "0.1.7-alpha.2": "compatible",
-      "0.1.7-rc.1": "compatible"
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -234,6 +235,12 @@
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": "^22.19.0 || >=24.0.0",
