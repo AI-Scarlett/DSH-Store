@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-09-24T02:37:38.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -12770,6 +12770,101 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-conversation-cost."
+    },
+    {
+      "id": "hackernotfound-dsh-tacit",
+      "name": "hackernotfound/dsh-tacit",
+      "description": "Learns what you leave unsaid in your prompts and steers the DeepSeek Harness agent for you",
+      "repositoryUrl": "https://github.com/hackernotfound/dsh-tacit",
+      "defaultBranch": "main",
+      "latestCommit": "76bdd650bd0ccddc8e8ce709c974e248ce1993d2",
+      "sourceUpdatedAt": "2026-09-09T14:43:16.000Z",
+      "discoveredAt": "2026-09-24T02:37:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5c893631eebc77479f6293260cc3efccd18626ff:data/plugins/hackernotfound__dsh-tacit.yml:sha256=40489e3d3d93a86a006fd48a14ed181b427b1ffa278e9a9008c168cd0cbc643e:at=2026-09-24T02:40:11.409Z:owner=46266726"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "prompt-engineering",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "han-yao94-dsh-session-toolkit",
+      "name": "Han-Yao94/dsh-session-toolkit",
+      "description": "会话身份、会话自动上线、会话日志按钮、会话间通信 + 全局提示词/重启服务这类工作台工具",
+      "repositoryUrl": "https://github.com/Han-Yao94/dsh-session-toolkit",
+      "defaultBranch": "master",
+      "latestCommit": "59d7757bd14e6d119ee6d28cc5750a058115184a",
+      "sourceUpdatedAt": "2026-09-23T07:58:31.000Z",
+      "discoveredAt": "2026-09-24T02:37:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5c893631eebc77479f6293260cc3efccd18626ff:data/plugins/Han-Yao94__dsh-session-toolkit.yml:sha256=78701a608c456fdb2e992ca513ec807e00c474c28e1477f559c677d8e0152e1a:at=2026-09-24T02:40:11.409Z:owner=295044342"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "plugin",
+        "session-management",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "han-1413141-dsh-ui-hub",
+      "name": "Han-1413141/dsh-ui-hub",
+      "description": "DeepSeek Harness plugin UI manager: discover, show/hide, move, resize, and arrange plugin interfaces. Bilingual English/Chinese UI.",
+      "repositoryUrl": "https://github.com/Han-1413141/dsh-ui-hub",
+      "defaultBranch": "main",
+      "latestCommit": "d1ecaffed06a03696ebd77f40c4c61d1cb558f8f",
+      "sourceUpdatedAt": "2026-08-15T12:47:37.000Z",
+      "discoveredAt": "2026-09-24T02:37:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5c893631eebc77479f6293260cc3efccd18626ff:data/plugins/Han-1413141__dsh-ui-hub.yml:sha256=513d435676825e016190a4abda5104621e3132268597446560d37bbf89c72bac:at=2026-09-24T02:40:11.409Z:owner=209751045"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "developer-tools",
+        "dsh-plugin",
+        "javascript",
+        "user-interface",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "han-1413141-dsh-sticky-disclosure",
+      "name": "Han-1413141/dsh-sticky-disclosure",
+      "description": "DSH Web client plugin: collapse every expanded section (Think / tool cards) in the conversation in one click, with a customizable hotkey.",
+      "repositoryUrl": "https://github.com/Han-1413141/dsh-sticky-disclosure",
+      "defaultBranch": "main",
+      "latestCommit": "873bc91035e51dc598e5e60ad0c06df3a1a552d6",
+      "sourceUpdatedAt": "2026-08-15T08:17:47.000Z",
+      "discoveredAt": "2026-09-24T02:37:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@5c893631eebc77479f6293260cc3efccd18626ff:data/plugins/Han-1413141__dsh-sticky-disclosure.yml:sha256=4e5f87a0ca6f1d52d4c47671136b46fd1f512abe4302c395002e12eb5543b946:at=2026-09-24T02:40:11.409Z:owner=209751045"
+      ],
+      "topics": [
+        "client-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
