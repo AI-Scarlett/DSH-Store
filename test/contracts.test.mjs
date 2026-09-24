@@ -480,7 +480,7 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(buildHtml, /id="install-skill"/)
   assert.match(faqHtml, /"@type": "FAQPage"/)
   assert.match(aboutHtml, /mailto:jadename\.zhou@gmail\.com/)
-  assert.match(aboutHtml, /https:\/\/x\.com\/JadeNameCulture/)
+  assert.match(aboutHtml, /https:\/\/x\.com\/builtbyxm/)
   assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
   assert.match(readme, /AI-Scarlett\/build-dsh-plugin/)
   assert.match(readme, /上架必要条件/)
