@@ -194,7 +194,7 @@ test('homepage uses a Raycast-inspired catalog-first storefront with a transpare
   assert.match(homepageDesign, /body\.home-page \.architecture-map \{ grid-template-columns: minmax\(0,1fr\) 14px minmax\(0,1\.12fr\) 14px minmax\(0,1fr\) !important/)
   assert.match(homepageDesign, /body\.home-page \.motion-reveal:not\(\.visible\) \{ opacity: 1 !important/)
   assert.match(homepageDesign, /\.discovery-spread\s*\{\s*display: block/)
-  assert.match(homepageDesign, /\.featured-grid\s*\{\s*display: grid[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/)
+  assert.match(homepageDesign, /\.featured-grid\s*\{\s*display: grid[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/)
   assert.match(homepageDesign, /\.home-plugin-grid\s*\{\s*display: grid[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/)
   assert.match(homepageDesign, /@media \(max-width: 760px\)/)
   assert.match(homepageDesign, /@media \(prefers-reduced-motion: reduce\)/)
