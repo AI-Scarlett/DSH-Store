@@ -814,7 +814,11 @@ async function main() {
     identityOnly: options['identity-only'] === 'true',
   })
   await writeFile(resolve(options.output), `${JSON.stringify(plan, null, 2)}\n`, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
-  process.stdout.write(`AUTHOR_NOTICE_PLAN_OK plan=${plan.planId} creates=${plan.summary.creates} updates=${plan.summary.updates} closes=${plan.summary.closes} queued=${plan.summary.queuedNewIssues}\n`)
+  if (plan.mode === 'identity-resolution-only') {
+    process.stdout.write(`AUTHOR_NOTICE_IDENTITY_PLAN_OK repositories=${plan.contactRepositoryKeys.length} candidateRecords=${plan.summary.candidateCoverageAccounted}\n`)
+  } else {
+    process.stdout.write(`AUTHOR_NOTICE_PLAN_OK plan=${plan.planId} creates=${plan.summary.creates} updates=${plan.summary.updates} closes=${plan.summary.closes} queued=${plan.summary.queuedNewIssues}\n`)
+  }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) await main()
