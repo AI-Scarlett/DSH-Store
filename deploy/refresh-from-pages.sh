@@ -120,6 +120,8 @@ faq $site_prefix/faq/
 about $site_prefix/about/
 article $site_prefix/about/deepseek-harness-guide/
 guide $site_prefix/dsh-plugins/
+repair $site_prefix/repair/
+repair-manifest $site_prefix/repair/repair-manifest.json
 catalog /registry/catalog.json
 candidates /registry/candidates.json
 sitemap $site_prefix/sitemap.xml
@@ -128,16 +130,24 @@ markdown $site_prefix/index.md
 $domestic_public_check
 EOF
 
-  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" "$incoming/health-robots" "$incoming/health-markdown" <<'PY'
-import json,sys
+  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" "$incoming/health-robots" "$incoming/health-markdown" "$incoming/health-repair-manifest" <<'PY'
+import json,re,sys
 home=open(sys.argv[1],encoding='utf-8').read()
 catalog=json.load(open(sys.argv[2],encoding='utf-8'))
 candidates=json.load(open(sys.argv[3],encoding='utf-8'))
 robots=open(sys.argv[4],encoding='utf-8').read()
 markdown=open(sys.argv[5],encoding='utf-8').read()
+repair=json.load(open(sys.argv[6],encoding='utf-8'))
 manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
-if manager['commit'] not in home:
-    raise SystemExit('public homepage install identity mismatch')
+copy_disabled=bool(re.search(r'data-copy-target="install-command"[^>]*\bdisabled\b', home))
+if manager['status'] == 'approved':
+    if manager['commit'] not in home or copy_disabled:
+        raise SystemExit('public homepage install identity mismatch')
+else:
+    if not copy_disabled or 'dsh plugin --profile web add' in home:
+        raise SystemExit('public homepage exposes an unavailable manager install command')
+    if repair.get('status') != 'catalog-pending' or repair.get('repairTool') is not None:
+        raise SystemExit('public repair surface exposes an unavailable manager repair command')
 boundary=candidates.get('registry', {}).get('trustBoundary', {})
 if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entries'), list) or not candidates['entries']:
     raise SystemExit('public Candidate Registry is invalid or empty')
@@ -179,6 +189,8 @@ required = {
     'marketplace/standards/index.html',
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
+    'marketplace/repair/index.html',
+    'marketplace/repair/repair-manifest.json',
     'marketplace/about/index.html',
     'marketplace/dsh-plugins/index.html',
     'marketplace/robots.txt',
@@ -322,9 +334,25 @@ plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
 styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')
 robots = (root / 'marketplace/robots.txt').read_text(encoding='utf-8')
 markdown = (root / 'marketplace/index.md').read_text(encoding='utf-8')
+repair = json.loads((root / 'marketplace/repair/repair-manifest.json').read_text(encoding='utf-8'))
 usage_guide = root / 'marketplace/dsh-store-guide/index.html'
-if manager['commit'] not in home or 'data-static-featured-id=' not in home or 'data-static-plugin-id=' not in plugins:
-    raise SystemExit('static marketplace content is incomplete')
+copy_disabled = bool(re.search(r'data-copy-target="install-command"[^>]*\bdisabled\b', home))
+if manager['status'] == 'approved':
+    if manager['commit'] not in home or copy_disabled:
+        raise SystemExit('static homepage install identity mismatch')
+else:
+    if not copy_disabled or 'dsh plugin --profile web add' in home:
+        raise SystemExit('static homepage exposes an unavailable manager install command')
+    if repair.get('status') != 'catalog-pending' or repair.get('repairTool') is not None:
+        raise SystemExit('static repair surface exposes an unavailable manager repair command')
+visible_count = sum(entry.get('status') != 'unlisted' for entry in catalog['entries'])
+approved_featured = any(entry.get('status') == 'approved' and entry.get('featured') is True for entry in catalog['entries'])
+if 'name="dsh-catalog-delivery" content="external-json"' not in home:
+    raise SystemExit('static homepage Catalog authority marker is missing')
+if visible_count and 'data-static-plugin-id=' not in plugins:
+    raise SystemExit('static plugin directory is incomplete')
+if approved_featured and 'data-static-featured-id=' not in home:
+    raise SystemExit('static featured catalog is incomplete')
 if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
     raise SystemExit('catalog error visibility guard is missing')
 for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
