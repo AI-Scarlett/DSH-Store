@@ -12,6 +12,7 @@ import {
   searchCatalog, splitCatalogDocument, validateCatalog, validateCatalogBridgeIndex, validateCatalogDetail,
   validateCatalogIndex, verifyCatalogEntry,
 } from '../src/catalog.mjs'
+import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 import {
   buildMarketplaceSnapshot as buildMarketplaceSnapshot085,
   compareVersions as compareVersions085,
@@ -202,7 +203,7 @@ for (const historical of [
     version: '0.8.7', commit: '79f2158be8f59d92d5227cad5474121081c0e32b',
     validate: validateCatalog087, snapshot: buildMarketplaceSnapshot087, compare: compareVersions087,
   },
-]) test(`legacy ${historical.version} accepts the complete bounded bridge and discovers the marketplace update`, async () => {
+]) test(`legacy ${historical.version} accepts the complete bounded bridge and respects manager availability`, async () => {
   const bridgeText = await readFile(new URL('../registry/catalog.json', import.meta.url))
   const bridge = JSON.parse(bridgeText)
   const index = JSON.parse(await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8'))
@@ -226,7 +227,8 @@ for (const historical of [
   const managerSnapshot = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
   assert.ok(managerSnapshot)
   assert.equal(managerSnapshot.updateAvailable, true)
-  assert.deepEqual(managerSnapshot.allowedActions, ['update'])
+  assert.deepEqual(managerSnapshot.allowedActions, manager.status === 'approved' ? ['update'] : [],
+    'historical clients must not offer a manager update while compatibility is on hold')
 })
 
 test('catalog v2 keeps the index bounded and maps every plugin id to one detail record', async () => {
@@ -445,7 +447,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
   assert.equal(catalog.registry.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
   assert.equal(manager.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
-  assert.equal(manager.status, 'approved', 'the self manager must remain available after its two-phase Catalog update')
+  assert.ok(manager.status === 'approved' || (
+    manager.status === 'unlisted' && manager.statusReason?.startsWith(COMPATIBILITY_HOLD_PREFIX)
+  ), 'the self manager may be hidden only by the latest-three compatibility hold')
   assert.ok(compareVersions(manager.version, packageManifest.version) <= 0, 'catalog manager version cannot be newer than package.json during two-phase self-pinning')
   const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
   const managerIsBootstrap = manager.version === '0.8.5' && manager.commit === bootstrapCommit

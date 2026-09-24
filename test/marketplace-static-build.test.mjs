@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
+import { tmpdir } from 'node:os'
 import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
-import { compareVersions, loadCatalogFromFiles } from '../src/catalog.mjs'
+import { catalogBridgeBuffer, compareVersions, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
+import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const execFileAsync = promisify(execFile)
 const root = new URL('../', import.meta.url)
@@ -91,7 +93,11 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(automationStatus.overall.status, 'unknown')
     assert.equal(automationStatus.catalog.entries, catalog.entries.length)
     assert.ok(home.includes(`"softwareVersion": "${manager.version}"`))
-    assert.match(home, new RegExp(manager.commit))
+    if (manager.status === 'approved') assert.match(home, new RegExp(manager.commit))
+    else {
+      assert.doesNotMatch(home, /dsh plugin --profile web add/)
+      assert.match(home, /data-copy-target="install-command" disabled aria-disabled="true"/)
+    }
     assert.match(home, /name="dsh-catalog-delivery" content="external-json"/)
     assert.match(home, /data-automation-overall/)
     assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
@@ -115,7 +121,11 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(plugins, /"@type": "SearchAction"/)
     assert.match(plugins, /"@type": "Dataset"/)
     assert.match(plugins, /"@type": "ItemList"/)
-    assert.match(plugins, /id="plugin-dsh-safe-plugin-manager"[^>]*data-static-plugin-id="dsh-safe-plugin-manager"/)
+    if (manager.status === 'approved') {
+      assert.match(plugins, /id="plugin-dsh-safe-plugin-manager"[^>]*data-static-plugin-id="dsh-safe-plugin-manager"/)
+    } else {
+      assert.doesNotMatch(plugins, /data-static-plugin-id="dsh-safe-plugin-manager"/)
+    }
     assert.match(plugins, /搜索中文名、用途、别名或英文包名/)
     assert.doesNotMatch(plugins, /id="catalog-snapshot"/)
     assert.ok(Buffer.byteLength(home) < 300_000, 'home HTML must not embed the complete catalog')
@@ -169,7 +179,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(styles, /\.site-nav a \{[\s\S]*font-size: 12px;/)
     assert.match(styles, /\.footer-bottom \{[\s\S]*font-size: 11px;/)
     assert.match(repair, /ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED/)
-    const repairActive = compareVersions(manager.version, '0.8.10') >= 0
+    const repairActive = manager.status === 'approved' && compareVersions(manager.version, '0.8.10') >= 0
     if (repairActive) {
       assert.match(home, /legacy-repair-banner/)
       assert.match(repair, /data-repair-state="active"/)
@@ -191,6 +201,48 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(repairManifest.target.commit, manager.commit)
   } finally {
     await rm(output, { recursive: true, force: true })
+  }
+})
+
+test('static marketplace publishes a compatibility-held manager without installation or repair commands', async () => {
+  const fixture = await mkdtemp(join(tmpdir(), 'dsh-store-unlisted-manager-'))
+  try {
+    await mkdir(join(fixture, 'scripts'))
+    await Promise.all([
+      cp(join(rootPath, 'package.json'), join(fixture, 'package.json')),
+      cp(join(rootPath, 'src'), join(fixture, 'src'), { recursive: true }),
+      cp(join(rootPath, 'marketplace'), join(fixture, 'marketplace'), { recursive: true }),
+      cp(join(rootPath, 'registry'), join(fixture, 'registry'), { recursive: true }),
+      cp(staticBuilderPath, join(fixture, 'scripts/build-marketplace-static.mjs')),
+    ])
+    const catalog = await loadCatalogFromFiles()
+    const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
+    assert.ok(manager)
+    manager.status = 'unlisted'
+    manager.statusReason = `${COMPATIBILITY_HOLD_PREFIX} test release window has no exact compatible result`
+    const split = splitCatalogDocument(catalog)
+    await Promise.all([
+      writeFile(join(fixture, 'registry/catalog.json'), catalogBridgeBuffer(split.bridge)),
+      writeFile(join(fixture, 'registry/catalog-index.json'), `${JSON.stringify(split.index, null, 2)}\n`),
+      writeFile(join(fixture, 'registry/catalog/details/dsh-safe-plugin-manager.json'), `${JSON.stringify(manager, null, 2)}\n`),
+    ])
+    const { stdout } = await execFileAsync(process.execPath, [
+      join(fixture, 'scripts/build-marketplace-static.mjs'), '--out', '_site', '--source-sha', 'held-manager-fixture',
+    ], { cwd: fixture })
+    assert.match(stdout, /STATIC_MARKETPLACE_OK/)
+    const home = await readFile(join(fixture, '_site/marketplace/index.html'), 'utf8')
+    const plugins = await readFile(join(fixture, '_site/marketplace/plugins/index.html'), 'utf8')
+    const repair = await readFile(join(fixture, '_site/marketplace/repair/index.html'), 'utf8')
+    const repairManifest = JSON.parse(await readFile(join(fixture, '_site/marketplace/repair/repair-manifest.json'), 'utf8'))
+    assert.match(home, /Compatibility review pending; installation is unavailable/)
+    assert.match(home, /data-copy-target="install-command" disabled aria-disabled="true"/)
+    assert.doesNotMatch(home, /dsh plugin --profile web add/)
+    assert.doesNotMatch(plugins, /data-static-plugin-id="dsh-safe-plugin-manager"/)
+    assert.match(repair, /data-repair-state="catalog-pending"/)
+    assert.equal(repairManifest.status, 'catalog-pending')
+    assert.equal(repairManifest.repairTool, null)
+  } finally {
+    await rm(fixture, { recursive: true, force: true })
   }
 })
 

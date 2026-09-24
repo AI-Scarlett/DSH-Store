@@ -517,11 +517,16 @@ function renderStats() {
 function renderManagerMetadata() {
   const manager = state.detailCache.get('dsh-safe-plugin-manager') || catalogIndexEntries().find(entry => entry.id === 'dsh-safe-plugin-manager')
   if (!manager) return
-  const installCommand = manager.commit
+  const approved = manager.status === 'approved'
+  const installable = approved && /^[0-9a-f]{40}$/.test(manager.commit || '')
+  const installCommand = installable
     ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
-    : '正在读取管理器详情…'
+    : approved
+      ? (state.locale === 'en' ? 'Loading verified manager details…' : '正在读取管理器详情…')
+      : (state.locale === 'en' ? 'Compatibility review pending; installation is unavailable.' : '兼容性待核验，暂不提供安装命令。')
   const values = {
-    '#install-version': `v${manager.version} · SHA PINNED`,
+    '#install-version': approved ? `v${manager.version} · SHA PINNED`
+      : (state.locale === 'en' ? `v${manager.version} · COMPATIBILITY REVIEW` : `v${manager.version} · 兼容性待核验`),
     '#install-command': installCommand,
     '#manager-protocol': `STANDARD BUNDLE / v${manager.version}`,
     '#manager-commit-short': manager.commit ? manager.commit.slice(0, 7) : 'DETAIL',
@@ -530,6 +535,11 @@ function renderManagerMetadata() {
     const element = document.querySelector(selector)
     if (element) element.textContent = value
   })
+  const copyButton = document.querySelector('[data-copy-target="install-command"]')
+  if (copyButton) {
+    copyButton.disabled = !installable
+    copyButton.setAttribute('aria-disabled', String(!installable))
+  }
 }
 
 function renderHeroPreview() {
@@ -1335,7 +1345,7 @@ els.pageButtons?.addEventListener('click', event => {
 })
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-copy-target]')
-  if (!button) return
+  if (!button || button.disabled) return
   const target = document.getElementById(button.dataset.copyTarget)
   const text = target?.textContent?.trim()
   if (!text) return

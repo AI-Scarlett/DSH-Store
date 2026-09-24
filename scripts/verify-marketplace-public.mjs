@@ -191,7 +191,7 @@ if (!Array.isArray(repairUrls) || repairUrls.length < 3) {
   report.failures.push('automation policy must declare Pages and both production repair surfaces')
 } else {
   const manager = report.authority?.manager
-  const expectedActive = manager && compareVersions(manager.version, '0.8.10') >= 0
+  const expectedActive = manager?.status === 'approved' && compareVersions(manager.version, '0.8.10') >= 0
   for (const url of repairUrls) {
     try {
       const [html, manifestText] = await Promise.all([
@@ -201,15 +201,16 @@ if (!Array.isArray(repairUrls) || repairUrls.length < 3) {
       const manifest = JSON.parse(manifestText)
       const expectedState = expectedActive ? 'active' : 'catalog-pending'
       const stateMatches = html.includes(`data-repair-state="${expectedState}"`) && manifest?.status === expectedState
-      const identityMatches = !expectedActive || (
-        manifest?.target?.version === manager.version
+      const identityMatches = Boolean(manager)
+        && manifest?.target?.version === manager.version
         && manifest?.target?.commit === manager.commit
         && manifest?.lifecyclePolicy === 'ignore-all-scripts'
         && manifest?.requiresInteractiveConfirmation === true
-        && String(manifest?.repairTool?.command ?? '').includes(manager.commit)
-        && String(manifest?.repairTool?.command ?? '').includes('--target-version')
-        && html.includes(manager.commit)
-      )
+        && (expectedActive
+          ? String(manifest?.repairTool?.command ?? '').includes(manager.commit)
+            && String(manifest?.repairTool?.command ?? '').includes('--target-version')
+            && html.includes(manager.commit)
+          : manifest?.repairTool === null && !html.includes('pnpm --config.ignore-scripts=true dlx'))
       const surface = {
         url, status: stateMatches && identityMatches ? 'passed' : 'failed',
         repairState: manifest?.status ?? null, targetVersion: manifest?.target?.version ?? null,
