@@ -4,10 +4,14 @@
   "type": "first-party-dsh-compatibility-refresh",
   "status": "implementation-in-progress",
   "createdAt": "2026-09-24T04:18:47Z",
-  "objective": "Refresh DSH-Store and build-dsh-plugin compatibility evidence and make their CI test the official latest-three DSH release window dynamically.",
+  "objective": "Adapt DSH-Store and build-dsh-plugin to the official DSH latest-three window, exercise install/start/uninstall/rollback in disposable Profiles, preserve exact operation evidence, and make compatibility CI follow official releases dynamically.",
   "authority": {
     "latestThreeSource": "official GitHub Releases and published npm versions",
-    "observedWindow": ["0.1.7-alpha.1", "0.1.7-alpha.2", "0.1.7-rc.1"],
+    "observedWindow": [
+      "0.1.7-alpha.1",
+      "0.1.7-alpha.2",
+      "0.1.7-rc.1"
+    ],
     "repositoryChanges": "CI-checked pull requests",
     "catalogChanges": "dedicated Catalog policy workflow only"
   },
@@ -21,15 +25,30 @@
         "test/contracts.test.mjs": "3ab96d30b8625980f80867f9e2e8e065efb0901e5e779bb40346e639d7f9164e",
         "scripts/test-disposable-upgrade.mjs": "2179ad1a890fbc72927ddab7205b1dc9982e82b90425918415853464d77d55c0",
         "src/dsh-release-policy.mjs": "899ee2db50205274283a232b935732c2b0d59365b31e81d94521501d274a10c9",
-        "docs/ops/dsh-017-compatibility-refresh-plan-20260924.json": null
+        "docs/ops/dsh-017-compatibility-refresh-plan-20260924.json": null,
+        "README.md": "9ddd2c4b2b38b57bca847b85c3bfb56a65f303dd09aab3c49861b37f85a95b21",
+        "scripts/check-plugin-submission.mjs": "2f65d25e088180c168d9e715e2678753bb021dca32cc7e7876b2a4ae56b95431",
+        "src/catalog-update-review.mjs": "f6d719b198f7ea0e34961d8ee12e425f0e38e0ec72144aca53de980effb70d4b",
+        "test/plugin-submission.test.mjs": "7d42dbbeac625cccbf160a140822402fd2ff1ffccff194af104a8816c8c79209",
+        "test/catalog-update-review.test.mjs": "170391ae2b84921c5fcdb9b31f0c6f78d79dd7d85211b4cbd057b005890c6878",
+        "test/catalog.test.mjs": "1613f6af1dbb935997c9b2f3b28745dd91859ff41f526dad2d5d4a2fadf20127",
+        "scripts/resolve-dsh-upgrade-matrix.mjs": null,
+        "test/upgrade-matrix.test.mjs": null
       },
       "allowedPaths": [
         ".github/workflows/upgrade-matrix.yml",
-        "scripts/resolve-dsh-upgrade-matrix.mjs",
-        "test/upgrade-matrix.test.mjs",
+        "README.md",
+        "docs/ops/dsh-017-compatibility-refresh-plan-20260924.json",
         "package.json",
+        "scripts/check-plugin-submission.mjs",
+        "scripts/resolve-dsh-upgrade-matrix.mjs",
+        "scripts/test-disposable-upgrade.mjs",
+        "src/catalog-update-review.mjs",
+        "test/catalog-update-review.test.mjs",
+        "test/catalog.test.mjs",
         "test/contracts.test.mjs",
-        "docs/ops/dsh-017-compatibility-refresh-plan-20260924.json"
+        "test/plugin-submission.test.mjs",
+        "test/upgrade-matrix.test.mjs"
       ]
     },
     {

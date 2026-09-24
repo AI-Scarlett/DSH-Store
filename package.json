@@ -1,6 +1,6 @@
 {
   "name": "dsh-safe-plugin-manager",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
   "repository": {
     "type": "git",
@@ -61,7 +61,15 @@
         "0.1.5-alpha.2": "compatible",
         "0.1.5-rc.1": "compatible",
         "0.1.5-rc.2": "compatible",
-        "0.1.6-alpha.1": "unknown"
+        "0.1.6-alpha.1": "unknown",
+        "0.1.7-alpha.1": "compatible",
+        "0.1.7-alpha.2": "compatible",
+        "0.1.7-rc.1": "compatible"
+      },
+      "dshOperations": {
+        "0.1.7-alpha.1": { "install": "passed", "start": "passed", "uninstall": "passed", "rollback": "passed" },
+        "0.1.7-alpha.2": { "install": "passed", "start": "passed", "uninstall": "passed", "rollback": "passed" },
+        "0.1.7-rc.1": { "install": "passed", "start": "passed", "uninstall": "passed", "rollback": "passed" }
       }
     }
   },

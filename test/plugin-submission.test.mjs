@@ -206,7 +206,7 @@ test('CLI converts a high-risk scan into a failed Issue gate and persists the sc
   }
 })
 
-test('submission preserves only an explicitly declared per-release compatibility matrix', async () => {
+test('submission preserves explicit operation evidence and marks other declared releases unknown', async () => {
   const result = await checkRepository('https://github.com/example/dsh-demo', '', {
     catalogDocument: catalog(),
     fetch: sourceFetch({ manifest: {
@@ -215,12 +215,20 @@ test('submission preserves only an explicitly declared per-release compatibility
         compatibility: {
           dsh: '>=0.1.0-rc.8 <0.2.0',
           dshReleases: { '0.1.1-rc.2': 'compatible' },
+          dshOperations: {
+            '0.1.1-rc.2': { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' },
+          },
         },
       },
     } }),
     retryDelaysMs: [],
   })
   assert.deepEqual(result.candidate.compatibility.dshReleases, { '0.1.1-rc.2': 'compatible' })
+  for (const release of Object.keys(result.candidate.compatibility.dshReleases)) {
+    assert.deepEqual(result.candidate.compatibility.dshOperations[release], release === '0.1.1-rc.2'
+      ? { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' }
+      : { install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' })
+  }
 })
 
 test('repository tree link supplies a monorepo plugin path automatically', async () => {

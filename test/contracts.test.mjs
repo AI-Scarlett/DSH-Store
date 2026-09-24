@@ -7,7 +7,13 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.0')
+  assert.equal(pkg.version, '0.9.1')
+  for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1']) {
+    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
+    assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
+      install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
+    })
+  }
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')

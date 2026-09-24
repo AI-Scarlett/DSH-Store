@@ -44,12 +44,38 @@ function normalizedDshReleaseStatuses(value, label) {
   return statuses
 }
 
+function normalizedDshOperationStatuses(value, label) {
+  const statuses = new Map()
+  const operations = ['install', 'start', 'uninstall', 'rollback']
+  for (const [release, record] of Object.entries(value ?? {})) {
+    const version = dshReleaseVersion(release)
+    if (version === null) throw new Error(`${label}.${release} is not a supported DSH release key`)
+    if (!record || typeof record !== 'object' || Array.isArray(record)
+      || Object.keys(record).some(operation => !operations.includes(operation))) {
+      throw new Error(`${label}.${release} must declare install, start, uninstall, and rollback`)
+    }
+    const normalized = Object.fromEntries(operations.map(operation => {
+      const status = record[operation] ?? 'unknown'
+      if (!['passed', 'failed', 'unknown'].includes(status)) {
+        throw new Error(`${label}.${release}.${operation} must be passed, failed, or unknown`)
+      }
+      return [operation, status]
+    }))
+    if (statuses.has(version) && JSON.stringify(statuses.get(version)) !== JSON.stringify(normalized)) {
+      throw new Error(`${label} declares conflicting operation aliases for ${version}`)
+    }
+    statuses.set(version, normalized)
+  }
+  return statuses
+}
+
 export function sourceDeclaredCompatibility(entry, candidate) {
   const releaseVersions = new Set([
     ...DSH_RC_RELEASES,
     ...Object.keys(entry.compatibility?.dshReleases ?? {}),
     ...Object.keys(entry.compatibility?.dshOperations ?? {}),
     ...Object.keys(candidate.compatibility?.dshReleases ?? {}),
+    ...Object.keys(candidate.compatibility?.dshOperations ?? {}),
   ].map(release => {
     const version = dshReleaseVersion(release)
     if (version === null) throw new Error(`compatibility release ${release} is not a supported DSH release key`)
@@ -59,12 +85,16 @@ export function sourceDeclaredCompatibility(entry, candidate) {
     candidate.compatibility?.dshReleases,
     'candidate compatibility.dshReleases',
   )
+  const candidateOperations = normalizedDshOperationStatuses(
+    candidate.compatibility?.dshOperations,
+    'candidate compatibility.dshOperations',
+  )
   const dshReleases = {}
   const dshOperations = {}
   for (const version of releaseVersions) {
     const release = PREFERRED_DSH_RELEASE_KEYS.get(version) ?? version
     dshReleases[release] = candidateStatuses.get(version) ?? 'unknown'
-    dshOperations[release] = {
+    dshOperations[release] = candidateOperations.get(version) ?? {
       install: 'unknown',
       start: 'unknown',
       uninstall: 'unknown',
