@@ -33,11 +33,12 @@ const translations = {
     'nav.home': '首页', 'nav.discover': '插件目录', 'nav.community': '社区与开发者', 'nav.standards': '收录标准', 'nav.safety': '信任机制', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
     'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': '让 DSH，', 'hero.title2': '拥有更多可能。',
     'hero.lead': '发现插件、看清来源与权限，与开发者一起扩展工作流。所有真实接入仍通过清楚、可恢复的路径完成。',
-    'home.search': '搜索插件名称、用途或英文包名', 'home.searchTitle': '从一个需求，找到合适的插件。', 'home.searchLabel': '搜索插件', 'home.searchAction': '搜索插件 ↗', 'home.category.development': '开发工具', 'home.category.workflow': '工作流', 'home.category.files': '文件处理', 'home.category.sessions': '会话管理', 'home.category.search': '搜索发现', 'home.category.all': '更多分类',
+    'home.search': '搜索插件名称、用途或英文包名', 'home.searchTitle': '按分类浏览插件', 'home.searchLabel': '搜索插件', 'home.searchAction': '搜索插件 ↗', 'home.catalogTitle': '从插件目录开始探索', 'home.catalogLead': '首页展示当前目录前六项；点击详情时再单独加载插件信息。列表展示不等于推荐、安全审计或安装验证。', 'home.catalogAction': '浏览完整插件目录', 'home.catalogDetailsDeferred': '打开详情后查看来源、权限与兼容性。', 'home.catalogOffline': '目录暂时未能加载，请稍后重试。', 'home.category.development': '开发工具', 'home.category.workflow': '工作流', 'home.category.files': '文件处理', 'home.category.sessions': '会话管理', 'home.category.search': '搜索发现', 'home.category.all': '更多分类',
     'community.title': '加入 DSH 插件生态', 'community.lead': '从开发指南、收录标准到提交和反馈，现有入口集中在这里。', 'community.build.title': '做一个自己的 DSH 插件', 'community.build.body': '从真实需求出发，了解标准 Bundle 与开发工具。', 'community.submit.title': '提交你的插件', 'community.submit.body': '核对收录条件后，使用现有 GitHub 模板提交。', 'community.help.title': '交流与反馈', 'community.help.body': '先看常见问题，再通过现有项目渠道反馈。', 'community.build.action': '开始开发 ↗', 'community.submit.action': '查看提交入口 ↗', 'community.help.action': '查看帮助 ↗',
     'install.title': '安装 DSH Store', 'install.pinned': '固定 Commit', 'install.step1': '打开终端', 'install.step2': '粘贴命令并执行', 'install.step3': '重启 DSH 后打开商城',
     'install.note1': '确认正在操作目标设备', 'install.note2': '来源锁定到完整 Commit', 'install.note3': '在“设置 → 插件”中进入',
     'install.warning': '命令会修改 web Profile。请先备份；如执行失败，不要连续重试。',
+    'install.floorTitle': '一条固定来源命令，开出完整路径。', 'install.floorBody': '网页只展示来源和步骤；是否改写 web Profile，由你在 DSH 的真实操作中决定。',
     'action.copyCommand': '复制', 'action.fullGuide': '查看说明 ↗', 'action.explore': '查看全部插件', 'action.manager': '了解 DSH Store', 'action.build': '开发 DSH 插件', 'action.installSkill': '安装 build-dsh-plugin', 'action.trust': '了解安全机制', 'action.allFaq': '查看完整常见问题', 'action.home': '返回首页',
     'action.source': '查看源码与说明', 'action.backCommand': '回到首屏复制命令 ↑', 'action.clear': '清除筛选', 'action.viewAll': '查看全部插件', 'action.previous': '上一页', 'action.next': '下一页', 'action.retry': '重新加载', 'action.githubCatalog': '查看 GitHub 目录 ↗', 'action.top': '回到顶部 ↑',
     'action.details': '查看插件详情', 'action.copyCommit': '复制 Commit', 'action.repo': '查看 GitHub 仓库', 'action.manual': '前往 GitHub 手动安装',
@@ -54,6 +55,7 @@ const translations = {
     'builder.cardTitle': '三个答案，就是开发起点。', 'builder.input1': '现在遇到什么问题？', 'builder.input2': '希望达到什么结果？', 'builder.input3': '怎样观察到它成功？', 'builder.action': '打开开发插件工作台',
     'builder.outputTitle': '从 Brief 到可验证交付物', 'builder.output1': '宿主兼容性', 'builder.output2': '风险与权限', 'builder.output3': '标准源码工程', 'builder.output4': '验证证据等级', 'builder.note': '真实 Profile、重启与发布保持为独立确认步骤。',
     'featured.title': '精选插件，扩展你的 DSH 工作流。', 'featured.lead': '从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。',
+    'featured.emptyTitle': '精选区暂时没有已批准的推荐条目。', 'featured.emptyBody': '我们不会把未获推荐的插件冒充精选；全部在架项目仍可在完整目录中浏览。', 'featured.emptyAction': '浏览完整插件目录',
     'catalog.filterTitle': '筛选插件', 'catalog.title': '找到你需要的能力', 'catalog.lead': '目录声明来自 GitHub。无法确认的安全、权限或兼容性字段继续显示为未知。', 'catalog.search': '搜索中文名、用途、别名或英文包名', 'catalog.sort': '排序', 'catalog.loading': '正在读取目录…',
     'automation.title': '自动更新有没有成功，一眼就能看到。', 'automation.lead': '这里公开显示新插件发现、历史插件原项目版本检查、四端目录巡检和实际变更；“扫描成功”和“有更新”分别记录。',
     'automation.overall': '总体状态', 'automation.scanner': '插件与版本扫描', 'automation.watchdog': '四端巡检', 'automation.latestChange': '最近一次扫描变更',
@@ -85,7 +87,7 @@ const translations = {
     'faq.q2': '“可安装”等于完成安全审计吗？', 'faq.a2': '不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。', 'faq.q3': '如何选择适合自己的插件？', 'faq.a3': '先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。',
     'directory.title1': '发现插件，', 'directory.title2': '扩展 DSH 能力。', 'directory.lead': '按能力、名称、权限或仓库快速查找。每个条目都提供可追溯来源、版本、权限与兼容性信息。',
     'directory.capacity': '搜索关键词留在你的浏览器里', 'directory.capacityNote': '筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。',
-    'footer.lead': '科技感来自清晰的系统，信任来自可检查的边界。', 'footer.catalogLead': '发现插件、看清权限，再决定是否接入。', 'footer.note': '收录不等于安全审计 · 浏览不会改写 Profile', 'dialog.title': '插件详情',
+    'footer.lead': '科技感来自清晰的系统，信任来自可检查的边界。', 'footer.catalogLead': '发现插件、看清权限，再决定是否接入。', 'footer.note': '收录不等于安全审计 · 浏览不会改写 Profile', 'footer.navTitle': '快速导航', 'footer.friendsTitle': '友情链接', 'footer.catalog': '插件目录', 'footer.community': '社区与开发者', 'footer.build': '开发插件', 'footer.standards': '收录标准', 'footer.faq': '常见问题', 'footer.about': '关于我们', 'dialog.title': '插件详情',
     'value.unknown': '未知', 'value.undeclared': '未声明', 'value.none': '无', 'value.noStats': '未启用统计', 'filter.all': '全部',
     'catalog.failed': '目录加载失败', 'catalog.offline': '本地目录未连接', 'catalog.meta': '显示 {shown} / {total} 个插件',
     'toast.commandCopied': '安装命令已复制', 'toast.copyDenied': '浏览器未允许复制，请手动选择命令', 'toast.commitCopied': 'Commit 已复制',
@@ -101,11 +103,12 @@ const translations = {
     'nav.home': 'Home', 'nav.discover': 'Plugin catalog', 'nav.community': 'Community & creators', 'nav.standards': 'Listing standards', 'nav.safety': 'Trust protocol', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
     'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': 'Make DSH', 'hero.title2': 'more capable.',
     'hero.lead': 'Discover plugins, inspect sources and permissions, and build better workflows with creators. Real changes still follow a clear, recoverable path.',
-    'home.search': 'Search plugin names, uses, or package names', 'home.searchTitle': 'Find the right plugin for your task.', 'home.searchLabel': 'Search plugins', 'home.searchAction': 'Search plugins ↗', 'home.category.development': 'Development', 'home.category.workflow': 'Workflow', 'home.category.files': 'Files', 'home.category.sessions': 'Sessions', 'home.category.search': 'Search', 'home.category.all': 'All categories',
+    'home.search': 'Search plugin names, uses, or package names', 'home.searchTitle': 'Browse plugins by category', 'home.searchLabel': 'Search plugins', 'home.searchAction': 'Search plugins ↗', 'home.catalogTitle': 'Explore the plugin catalog', 'home.catalogLead': 'The homepage shows the first six live catalog entries; each plugin detail loads only when opened. Listing does not imply endorsement, security audit, or install verification.', 'home.catalogAction': 'Browse the full plugin catalog', 'home.catalogDetailsDeferred': 'Open details to inspect source, permissions, and compatibility.', 'home.catalogOffline': 'Catalog could not be loaded. Please try again later.', 'home.category.development': 'Development', 'home.category.workflow': 'Workflow', 'home.category.files': 'Files', 'home.category.sessions': 'Sessions', 'home.category.search': 'Search', 'home.category.all': 'All categories',
     'community.title': 'Join the DSH plugin ecosystem', 'community.lead': 'Existing development, standards, submission, and feedback paths in one place.', 'community.build.title': 'Build your own DSH plugin', 'community.build.body': 'Start with a real need and explore standard bundles and build tools.', 'community.submit.title': 'Submit your plugin', 'community.submit.body': 'Review the listing rules and use the existing GitHub template.', 'community.help.title': 'Questions and feedback', 'community.help.body': 'Start with the FAQ, then use the existing project channels.', 'community.build.action': 'Start building ↗', 'community.submit.action': 'Submit a plugin ↗', 'community.help.action': 'View help ↗',
     'install.title': 'Install DSH Store', 'install.pinned': 'Pinned commit', 'install.step1': 'Open Terminal', 'install.step2': 'Paste and run the command', 'install.step3': 'Restart DSH and open the store',
     'install.note1': 'Confirm the target device', 'install.note2': 'Source pinned to a full commit', 'install.note3': 'Open Settings → Plugins',
     'install.warning': 'This command changes the web Profile. Back it up first; if it fails, do not retry repeatedly.',
+    'install.floorTitle': 'One pinned command. A clear way in.', 'install.floorBody': 'The website only shows the source and steps. You decide whether to change the web Profile through the real DSH operation.',
     'action.copyCommand': 'Copy', 'action.fullGuide': 'View guide ↗', 'action.explore': 'View all plugins', 'action.manager': 'Meet DSH Store', 'action.build': 'Build a DSH plugin', 'action.installSkill': 'Install build-dsh-plugin', 'action.trust': 'See the trust protocol', 'action.allFaq': 'View the complete FAQ', 'action.home': 'Back home',
     'action.source': 'View source and docs', 'action.backCommand': 'Back to the command ↑', 'action.clear': 'Clear filters', 'action.viewAll': 'View all plugins', 'action.previous': 'Previous', 'action.next': 'Next', 'action.retry': 'Retry', 'action.githubCatalog': 'View GitHub catalog ↗', 'action.top': 'Back to top ↑',
     'action.details': 'View plugin details', 'action.copyCommit': 'Copy commit', 'action.repo': 'View GitHub repository', 'action.manual': 'Install manually on GitHub',
@@ -122,6 +125,7 @@ const translations = {
     'builder.cardTitle': 'Three answers start the build.', 'builder.input1': 'What problem exists today?', 'builder.input2': 'What outcome should change?', 'builder.input3': 'How will success be observed?', 'builder.action': 'Open the plugin build lab',
     'builder.outputTitle': 'From brief to verifiable artifacts', 'builder.output1': 'Host compatibility', 'builder.output2': 'Risk and permissions', 'builder.output3': 'Standard source project', 'builder.output4': 'Evidence level', 'builder.note': 'Real Profile changes, restart, and release remain separately confirmed steps.',
     'featured.title': 'Featured plugins for better DSH workflows.', 'featured.lead': 'Discover practical plugins for automation, knowledge, and development with traceable sources and transparent details. Review capabilities and permissions before connecting.',
+    'featured.emptyTitle': 'No approved picks are currently featured.', 'featured.emptyBody': 'We do not present unfeatured plugins as editorial picks. Browse the full live catalog to see every listed project.', 'featured.emptyAction': 'Browse the full plugin catalog',
     'catalog.filterTitle': 'Filter plugins', 'catalog.title': 'Find the capability you need', 'catalog.lead': 'Catalog declarations come from GitHub. Unverified security, permission, or compatibility facts remain visibly unknown.', 'catalog.search': 'Search plugins, capabilities, or GitHub repositories', 'catalog.sort': 'Sort', 'catalog.loading': 'Reading catalog…',
     'automation.title': 'See whether automation succeeded at a glance.', 'automation.lead': 'This shows new-plugin discovery, upstream version checks for every historical listing, the four-surface watchdog, and actual changes.',
     'automation.overall': 'Overall status', 'automation.scanner': 'Plugin and version scanner', 'automation.watchdog': 'Four-surface watchdog', 'automation.latestChange': 'Latest scan changes',
@@ -153,7 +157,7 @@ const translations = {
     'faq.q2': 'Does “Available” mean security-audited?', 'faq.a2': 'No. It means the entry passes the current fixed-source, standard-bundle, and policy checks.', 'faq.q3': 'How should I choose a plugin?', 'faq.a3': 'Confirm the capability first, then review source, permissions, compatibility, and maintenance. Treat unknown information with caution.',
     'directory.title1': 'Discover plugins.', 'directory.title2': 'Extend DSH.', 'directory.lead': 'Find plugins by capability, name, permission, or repository. Every entry includes traceable source, version, permission, and compatibility details.',
     'directory.capacity': 'Your search terms stay in your browser', 'directory.capacityNote': 'Filtering and sorting never upload your query; catalog data comes from the traceable GitHub catalog.json.',
-    'footer.lead': 'Technology feels clear when the system is clear; trust comes from inspectable boundaries.', 'footer.catalogLead': 'Discover plugins, review permissions, then decide whether to connect.', 'footer.note': 'Listing is not a security audit · Browsing never writes to your Profile', 'dialog.title': 'Plugin details',
+    'footer.lead': 'Technology feels clear when the system is clear; trust comes from inspectable boundaries.', 'footer.catalogLead': 'Discover plugins, review permissions, then decide whether to connect.', 'footer.note': 'Listing is not a security audit · Browsing never writes to your Profile', 'footer.navTitle': 'Explore DSH STORE', 'footer.friendsTitle': 'Friends & ecosystem', 'footer.catalog': 'Plugin catalog', 'footer.community': 'Community & developers', 'footer.build': 'Build plugins', 'footer.standards': 'Listing standards', 'footer.faq': 'FAQ', 'footer.about': 'About us', 'dialog.title': 'Plugin details',
     'value.unknown': 'Unknown', 'value.undeclared': 'Not declared', 'value.none': 'None', 'value.noStats': 'Stats disabled', 'filter.all': 'All',
     'catalog.failed': 'Catalog load failed', 'catalog.offline': 'Local catalog unavailable', 'catalog.meta': 'Showing {shown} / {total} plugins',
     'toast.commandCopied': 'Install command copied', 'toast.copyDenied': 'Clipboard access was denied. Select the command manually.', 'toast.commitCopied': 'Commit copied',
@@ -214,6 +218,7 @@ const els = {
   pageButtons: document.querySelector('#page-buttons'),
   pageStatus: document.querySelector('#page-status'),
   featured: document.querySelector('#featured-grid'),
+  homeGrid: document.querySelector('#home-plugin-grid'),
   preview: document.querySelector('#hero-preview'),
   dialog: document.querySelector('#plugin-dialog'),
   dialogTitle: document.querySelector('#dialog-title'),
@@ -491,6 +496,36 @@ function catalogIndexEntries() {
   return state.indexEntries.length ? state.indexEntries : state.entries
 }
 
+function homePluginCardTemplate(indexEntry) {
+  const primaryName = state.locale === 'en'
+    ? indexEntry.nameEn || indexEntry.name || indexEntry.nameZh || indexEntry.packageName
+    : indexEntry.nameZh || indexEntry.name || indexEntry.nameEn || indexEntry.packageName
+  const alternateName = state.locale === 'en' ? indexEntry.nameZh : indexEntry.nameEn
+  const categories = indexEntry.categories || []
+  const statusClass = indexEntry.status === 'approved' ? '' : ' blocked'
+  const description = typeof indexEntry.description === 'string' && indexEntry.description.trim()
+    ? indexEntry.description
+    : t('home.catalogDetailsDeferred')
+  return `<article class="home-plugin-card">
+    <div class="home-plugin-card-top"><span class="home-plugin-icon" aria-hidden="true" style="--plugin-color:${pluginColor(indexEntry.id)}">${escape(initials(primaryName))}</span><span class="status-tag${statusClass}">${escape(statusLabel(indexEntry))}</span></div>
+    <h3>${escape(primaryName)}</h3>${alternateName && alternateName !== primaryName ? `<p class="home-plugin-alt">${escape(alternateName)}</p>` : ''}
+    ${categories.length ? `<p class="home-plugin-category">${escape(categoryLabel(categories[0]))}</p>` : ''}
+    <p class="home-plugin-description">${escape(description)}</p>
+    <div class="home-plugin-package"><code>${escape(indexEntry.packageName)}</code><span>v${escape(indexEntry.version)}</span></div>
+    <footer class="home-plugin-card-footer"><button class="home-plugin-detail details-button" type="button" data-details-id="${escape(indexEntry.id)}">${escape(t('action.details'))} →</button><a class="home-plugin-repo" href="${escape(indexEntry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(primaryName)}" data-repo-id="${escape(indexEntry.id)}">↗</a></footer>
+  </article>`
+}
+
+function renderHomeDirectoryPreview() {
+  if (!els.homeGrid || !state.catalog) return
+  const entries = visibleIndexEntries().slice(0, 6)
+  if (entries.length === 0) {
+    els.homeGrid.innerHTML = `<p class="home-plugin-empty">${escape(t('empty.title'))}</p>`
+    return
+  }
+  els.homeGrid.innerHTML = entries.map(homePluginCardTemplate).join('')
+}
+
 function visibleIndexEntries() {
   const query = state.query.trim().toLowerCase()
   const entries = catalogIndexEntries()
@@ -574,6 +609,16 @@ function renderHeroPreview() {
 function renderFeatured() {
   if (!els.featured) return
   const featured = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
+  if (featured.length === 0) {
+    els.featured.innerHTML = `
+      <article class="featured-empty">
+        <span class="featured-empty-index">EDITORIAL PICKS / 00</span>
+        <h3>${escape(t('featured.emptyTitle'))}</h3>
+        <p>${escape(t('featured.emptyBody'))}</p>
+        <a href="./plugins/">${escape(t('featured.emptyAction'))}<i aria-hidden="true">↗</i></a>
+      </article>`
+    return
+  }
   els.featured.innerHTML = featured.map((entry, index) => {
     const detail = state.detailCache.get(entry.id)
     const name = detail?.name || indexName(entry)
@@ -802,6 +847,7 @@ function applyLocale() {
     renderStats()
     renderManagerMetadata()
     renderHeroPreview()
+    renderHomeDirectoryPreview()
     renderFeatured()
     renderCatalog()
     if (els.dialog?.open && state.selectedEntry) {
@@ -1170,11 +1216,12 @@ async function loadCatalog() {
     renderStats()
     renderManagerMetadata()
     renderHeroPreview()
+    renderHomeDirectoryPreview()
     renderFeatured()
     renderCatalog()
     loadInstallCounts()
     if (state.indexEntries.length > 0) {
-      void loadCurrentPageDetails()
+      if (els.grid) void loadCurrentPageDetails()
       void loadFeaturedDetails()
     } else {
       refreshTrustedPage()
@@ -1187,6 +1234,7 @@ async function loadCatalog() {
       else rehydrateLoadedDetails()
       renderStats()
       renderHeroPreview()
+      renderHomeDirectoryPreview()
       renderFeatured()
       renderCatalog()
       loadInstallCounts()

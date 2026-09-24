@@ -44,7 +44,7 @@ test('canonical DSH-Store repository and Pages URLs replace legacy aliases', asy
   const paths = [
     'README.md', 'cordis.patch.yml', 'deploy/refresh-from-pages.sh', 'docs/VERIFICATION.md',
     'docs/ops/google-seo-20260824.json', 'install-counter/wrangler.jsonc', 'marketplace/about/index.html',
-    'marketplace/build/index.html', 'marketplace/dsh-plugins/index.html', 'marketplace/faq/index.html',
+    'marketplace/build/index.html', 'marketplace/community/index.html', 'marketplace/dsh-plugins/index.html', 'marketplace/faq/index.html',
     'marketplace/index.html', 'marketplace/llms.txt', 'marketplace/plugins/index.html',
     'marketplace/standards/index.html', 'package.json',
     'registry/README.md', 'registry/automation-policy.json', 'registry/candidates.json',
@@ -65,6 +65,7 @@ test('static storefront templates expose the cross-site navigation and analytics
   const pagePaths = [
     'marketplace/index.html',
     'marketplace/plugins/index.html',
+    'marketplace/community/index.html',
     'marketplace/standards/index.html',
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
@@ -79,6 +80,29 @@ test('static storefront templates expose the cross-site navigation and analytics
   }
 })
 
+test('community has a standalone route and the inner pages share the redesign stylesheet', async () => {
+  const [home, community, builder, staticBuilder, redesignStyles] = await Promise.all([
+    readFile(new URL('marketplace/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/community/index.html', project), 'utf8'),
+    readFile(new URL('marketplace/build/index.html', project), 'utf8'),
+    readFile(new URL('scripts/build-marketplace-static.mjs', project), 'utf8'),
+    readFile(new URL('marketplace/pages-redesign.css', project), 'utf8'),
+  ])
+  assert.doesNotMatch(home, /id="community"/)
+  assert.match(home, /href="\.\/community\/" data-i18n="nav\.community"/)
+  assert.match(home, /href="\.\/community\/" data-i18n="footer\.community"/)
+  assert.match(community, /<body class="community-page">/)
+  assert.match(community, /href="\.\/" aria-current="page" data-i18n="nav\.community"/)
+  assert.match(community, /class="community-flow-list"/)
+  assert.match(community, /pages-redesign\.css\?v=20260924-inner-store-2/)
+  assert.match(builder, /href="\.\.\/community\/" data-i18n="nav\.community"/)
+  assert.match(builder, /pages-redesign\.css\?v=20260924-inner-store-2/)
+  assert.match(staticBuilder, /route: '\/community\/'/)
+  assert.match(staticBuilder, /'\/community\/': '0\.8'/)
+  assert.match(redesignStyles, /body\.community-page \.community-grid/)
+  assert.match(redesignStyles, /body\.community-page \.community-flow-list/)
+})
+
 test('public storefront verifies the legacy bridge before loading the split Catalog index', async () => {
   const source = await readFile(new URL('marketplace/app.js', project), 'utf8')
   assert.match(source, /payload\.registry\.indexPath/)
@@ -88,10 +112,11 @@ test('public storefront verifies the legacy bridge before loading the split Cata
   assert.match(source, /Math\.min\(6, entries\.length\)/)
 })
 
-test('storefront uses the bright glass and responsive Bento design contract', async () => {
+test('homepage uses a Raycast-inspired catalog-first storefront with a transparent DSH brand lockup', async () => {
   const pagePaths = [
     'marketplace/index.html',
     'marketplace/plugins/index.html',
+    'marketplace/community/index.html',
     'marketplace/standards/index.html',
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
@@ -99,16 +124,90 @@ test('storefront uses the bright glass and responsive Bento design contract', as
     'marketplace/about/deepseek-harness-guide/index.html',
     'marketplace/dsh-plugins/index.html',
   ]
-  const [styles, ...pages] = await Promise.all([
+  const [styles, homepageDesign, ...pages] = await Promise.all([
     readFile(new URL('marketplace/styles.css', project), 'utf8'),
+    readFile(new URL('marketplace/home-redesign.css', project), 'utf8'),
     ...pagePaths.map(path => readFile(new URL(path, project), 'utf8')),
   ])
-  for (const page of pages) assert.match(page, /<meta name="theme-color" content="#f6f9ff">/)
+  assert.match(pages[0], /<meta name="theme-color" content="#f7f9fd">/)
+  for (const page of pages.slice(1)) assert.match(page, /<meta name="theme-color" content="#f6f9ff">/)
   assert.match(styles, /--glass: rgba\(255, 255, 255, \.72\)/)
   assert.match(styles, /--radius-xl: 32px/)
   assert.match(styles, /\.automation-grid article:first-child \{\s*grid-column: span 2;/)
   assert.match(styles, /\.featured-grid > :first-child \{ grid-row: span 2; \}/)
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/)
+  assert.match(pages[0], /home-redesign\.css\?v=20260924-raycast-store-9/)
+  assert.match(pages[0], /class="home-redesign"/)
+  assert.match(pages[0], /class="install-floor"/)
+  assert.match(pages[0], /class="discovery-spread"/)
+  assert.match(pages[0], /data-i18n="install\.floorTitle"/)
+  assert.match(pages[0], /class="trust-chapter"/)
+  assert.doesNotMatch(pages[0], /id="community"/)
+  assert.match(pages[0], /href="\.\/community\/" data-i18n="nav\.community"/)
+  assert.match(homepageDesign, /body\.home-page \.trust-chapter \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\) !important/)
+  assert.match(pages[0], /class="maker-chapter"/)
+  assert.match(pages[0], /class="brand-wordmark-frame"[^>]*>[\s\S]*?src="\.\/dsh-store-wordmark\.png"[^>]*width="1448" height="1086"/)
+  assert.doesNotMatch(pages[0], /brand-wordmark-text|brand-lockup/)
+  assert.match(pages[0], /id="home-plugin-grid"/)
+  assert.match(pages[0], /data-i18n="home\.catalogLead"/)
+  assert.match(pages[0], /<nav class="footer-nav" aria-label="网站快捷导航">/)
+  for (const route of ['./plugins/', './build/', './standards/', './faq/', './about/']) {
+    assert.ok(pages[0].includes(`href="${route}"`), `footer should link to ${route}`)
+  }
+  assert.match(pages[0], /data-i18n="footer\.friendsTitle">友情链接/)
+  assert.match(pages[0], /href="\.\/community\/" data-i18n="footer\.community">社区与开发者/)
+  assert.match(pages[0], /<!-- DSH_FRIEND_SISTER_SITE -->/)
+  assert.match(pages[0], /https:\/\/aiaiai\.help\//)
+  assert.match(pages[0], /https:\/\/tracefence\.com\//)
+  assert.ok(pages[0].indexOf('class="faq-more"') < pages[0].indexOf('class="faq-list"'), 'FAQ link should sit in the heading row above the questions')
+  assert.match(homepageDesign, /--dsh-cyan: #17bfe3/)
+  assert.match(homepageDesign, /--dsh-blue: #2874f5/)
+  assert.match(homepageDesign, /--dsh-violet: #7043e7/)
+  assert.match(homepageDesign, /grid-template-areas: "heading" "categories"/)
+  assert.match(homepageDesign, /\.brand-wordmark-frame,[\s\S]*?background: transparent !important/)
+  assert.match(homepageDesign, /\.site-header\s*\{[\s\S]*?background: linear-gradient\(108deg, #0c1436/)
+  assert.match(homepageDesign, /\.site-footer\s*\{[\s\S]*?background: linear-gradient\(120deg, #0c1436/)
+  assert.match(homepageDesign, /\.workflow-step > div \{ display: grid !important; grid-template-columns: minmax\(0,1fr\)/)
+  assert.match(homepageDesign, /\.workflow-step:last-child \{ grid-column: auto !important; \}/)
+  assert.match(homepageDesign, /\.manager-console \{[^}]*min-height: 0 !important/)
+  assert.match(homepageDesign, /\.build-bridge \{[^}]*min-height: 0 !important/)
+  assert.match(homepageDesign, /\.faq-list \{ margin: 16px 0 0 !important/)
+  assert.match(homepageDesign, /body\.home-page \.faq-section \{ padding: 42px 0 22px !important; \}/)
+  assert.match(homepageDesign, /body\.home-page \.faq-section \.section-heading \{ grid-template-columns: minmax\(0,1fr\) auto !important; align-items: center !important/)
+  assert.match(homepageDesign, /body\.home-page \.faq-section \.section-heading \.faq-more \{ justify-self: end !important/)
+  assert.match(homepageDesign, /body\.home-page \.faq-more \{ margin: 14px 0 0 !important/)
+  assert.match(homepageDesign, /body\.home-page \.site-footer \{ width: 100% !important; margin: 0 !important/)
+  assert.match(homepageDesign, /body\.home-page \.footer-nav \{ grid-column: 3 !important;/)
+  assert.match(homepageDesign, /body\.home-page \.faq-section \.section-heading \{ grid-template-columns: minmax\(0,1fr\) !important; align-items: start !important/)
+  assert.match(homepageDesign, /\.automation-section \{[\s\S]*?background: linear-gradient\(122deg,#0b1635 0%,#13254c 57%,#211b52 100%\) !important/)
+  assert.match(homepageDesign, /body\.home-page \.automation-grid article:last-child \{ min-height: 95px !important; padding: 10px 8px !important; border: 1px solid rgba\(205,221,255,\.15\) !important; background: rgba\(255,255,255,\.065\) !important/)
+  assert.match(homepageDesign, /\.build-bridge \{[\s\S]*?background: linear-gradient\(112deg,#0b1635 0%,#14285a 64%,#27205b 100%\) !important/)
+  assert.match(homepageDesign, /body\.home-page \.automation-grid article,[\s\S]*?grid-column: auto !important;[\s\S]*?grid-row: auto !important/)
+  assert.match(homepageDesign, /body\.home-page \.automation-section \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0,1fr\)\) !important/)
+  assert.match(homepageDesign, /body\.home-page \.automation-additions ul \{ display: grid !important; grid-template-columns: repeat\(2,minmax\(0,1fr\)\)/)
+  assert.match(homepageDesign, /body\.home-page \.automation-additions:not\(\.automation-updates\) ul \{ grid-template-columns: minmax\(0,1fr\) !important/)
+  assert.doesNotMatch(homepageDesign, /max-height: 248px !important; overflow: auto !important/)
+  assert.match(homepageDesign, /body\.home-page \.metric-deck \.metric-source \{[^}]*grid-column: auto !important; grid-row: auto !important/)
+  assert.match(homepageDesign, /background: #0a0f1e !important/)
+  assert.match(homepageDesign, /body\.home-page \.architecture-map \{ grid-template-columns: minmax\(0,1fr\) 22px minmax\(0,1\.12fr\) 22px minmax\(0,1fr\) !important/)
+  assert.match(homepageDesign, /body\.home-page \.manager-console \{ grid-template-columns: minmax\(0,1fr\) !important/)
+  assert.match(homepageDesign, /body\.home-page \.architecture-map \{ grid-template-columns: minmax\(0,1fr\) 14px minmax\(0,1\.12fr\) 14px minmax\(0,1fr\) !important/)
+  assert.match(homepageDesign, /body\.home-page \.motion-reveal:not\(\.visible\) \{ opacity: 1 !important/)
+  assert.match(homepageDesign, /\.discovery-spread\s*\{\s*display: block/)
+  assert.match(homepageDesign, /\.featured-grid\s*\{\s*display: grid[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/)
+  assert.match(homepageDesign, /\.home-plugin-grid\s*\{\s*display: grid[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/)
+  assert.match(homepageDesign, /@media \(max-width: 760px\)/)
+  assert.match(homepageDesign, /@media \(prefers-reduced-motion: reduce\)/)
+  assert.doesNotMatch(homepageDesign, /--zine-acid|--zine-hot/)
+  const homeOrder = ['class="hero"', 'class="discovery-spread"', 'class="store-search section-shell"', 'class="featured-section', 'class="home-directory-section"', 'class="metric-deck', 'class="install-floor"', 'class="workflow-section', 'id="automation-status"', 'class="trust-chapter"', 'class="maker-chapter"', 'class="faq-section']
+  const homeOffsets = homeOrder.map(marker => pages[0].indexOf(marker))
+  assert.ok(homeOffsets.every((offset, index) => offset >= 0 && (index === 0 || offset > homeOffsets[index - 1])), 'homepage chapters should follow the redesigned discovery journey')
+  assert.ok(pages[0].indexOf('class="store-search-form"') < homeOffsets[1], 'hero search should be visible before category browsing')
+  const storefrontApp = await readFile(new URL('marketplace/app.js', project), 'utf8')
+  assert.match(storefrontApp, /function renderHomeDirectoryPreview\(\)/)
+  assert.match(storefrontApp, /const entries = visibleIndexEntries\(\)\.slice\(0, 6\)/)
+  assert.match(storefrontApp, /void fetchCatalogDetail\(indexEntry\)/)
+  assert.match(storefrontApp, /if \(els\.grid\) void loadCurrentPageDetails\(\)/)
 })
 
 test('featured DeepSeek Harness article preserves source attribution and long-form structure', async () => {
@@ -468,6 +567,10 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.doesNotMatch(html, /git\+https:\/\/github\.com\/AI-Scarlett\/dsh-safe-plugin-manager\.git#[0-9a-f]{40}/)
   assert.ok(readme.includes(installCommand))
   assert.match(app, /featured === true/)
+  assert.match(app, /featured\.length === 0/)
+  assert.match(app, /featured\.emptyTitle/)
+  assert.match(app, /No approved picks are currently featured\./)
+  assert.match(app, /精选区暂时没有已批准的推荐条目。/)
   assert.match(app, /status !== 'unlisted'/)
   assert.match(app, /data-details-id/)
   assert.match(app, /showDetails/)
