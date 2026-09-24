@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolveDshUpgradeMatrix } from '../scripts/resolve-dsh-upgrade-matrix.mjs'
 
@@ -38,4 +39,12 @@ test('upgrade matrix fails closed on incomplete or unordered official release ev
     })),
     /complete ordered latest-three window/,
   )
+})
+
+test('runtime workflow has one timeout and keeps the expensive disposable smoke bounded', async () => {
+  const workflow = await readFile(new URL('../.github/workflows/upgrade-matrix.yml', import.meta.url), 'utf8')
+  const runtime = workflow.split('\n  runtime:\n')[1]?.split('\n  previous-latest-three:\n')[0]
+  assert.ok(runtime)
+  assert.equal(runtime.match(/^\s+timeout-minutes:/gm)?.length, 1)
+  assert.match(runtime, /timeout-minutes: 20/)
 })
