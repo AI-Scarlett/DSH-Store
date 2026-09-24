@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-24T12:20:28.000Z",
+    "updatedAt": "2026-09-24T13:19:30.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2207,8 +2207,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "ccc90d189933f7d8b3237535374ea642a4e01dd7",
-      "sourceUpdatedAt": "2026-09-24T11:43:26.000Z",
+      "latestCommit": "7fbdbc94092bdae27ece4a667c9646f8b3407bd8",
+      "sourceUpdatedAt": "2026-09-24T13:15:12.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2227,8 +2227,8 @@
       "description": "为 DSH 提供跨会话记忆能力。英文原始说明：Bounded, layered, approval-gated, auditable cross-session memory for DeepSeek Harness — a capability seam (ctx.memory service + local SQLite provider + memory tool + frozen snapshot injection), not another memory warehouse",
       "repositoryUrl": "https://github.com/PerryLink/dsh-memento",
       "defaultBranch": "main",
-      "latestCommit": "ed7b746519a73bd4fcb08734ccb9ce6d83f5d99c",
-      "sourceUpdatedAt": "2026-09-24T11:45:23.000Z",
+      "latestCommit": "c3876fb68cb940037c31106e1fc0ddea882b2238",
+      "sourceUpdatedAt": "2026-09-24T13:16:34.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9878,8 +9878,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "111669e5b46f6f72f64d8ee24f25c97e6ce58c3f",
-      "sourceUpdatedAt": "2026-09-23T03:12:07.000Z",
+      "latestCommit": "11ddcfe67e6d925b9433685c4f17ac8ddc1f3664",
+      "sourceUpdatedAt": "2026-09-24T12:54:04.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12991,6 +12991,97 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-client-ui-mobile-comfort."
+    },
+    {
+      "id": "snowcrescenter-tech-dsh-milestone",
+      "name": "SnowCrescenter-tech/dsh-milestone",
+      "description": "Git-style milestone timeline for DeepSeek Harness - hover for metadata, click to jump to any message. 会话里程碑导航条：像 Git 提交图一眼定位每条提问，悬停看时间/轮次/耗时/TTFT，点击即跳转。",
+      "repositoryUrl": "https://github.com/SnowCrescenter-tech/dsh-milestone",
+      "defaultBranch": "main",
+      "latestCommit": "3bdd8d1327f30b64a1119aeb62c752ef1e12c713",
+      "sourceUpdatedAt": "2026-09-12T13:32:14.000Z",
+      "discoveredAt": "2026-09-24T13:19:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2b37a45fc5b05fe3c3d68ca45d0b3d477342283c:data/plugins/SnowCrescenter-tech__dsh-milestone.yml:sha256=77f154e20b10628578462dfb82b770dc1b53c9831989a620ce1eae704fb863a1:at=2026-09-24T13:22:58.116Z:owner=192174378"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "milestone",
+        "navigation",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "snow-the-dsh-session-handoff",
+      "name": "snow-The/dsh-session-handoff",
+      "description": "Session handoff & context management for DeepSeek Harness: structured handoff docs (export/resume/status) + active context pruning (acp_* via official compaction API) + optional OpenViking/archify enhancers",
+      "repositoryUrl": "https://github.com/snow-The/dsh-session-handoff",
+      "defaultBranch": "main",
+      "latestCommit": "46ae6b58bcf2144267f00dc61d7d73f3d9db6872",
+      "sourceUpdatedAt": "2026-09-20T07:47:49.000Z",
+      "discoveredAt": "2026-09-24T13:19:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2b37a45fc5b05fe3c3d68ca45d0b3d477342283c:data/plugins/snow-The__dsh-session-handoff.yml:sha256=9e849993abaa39a954b0b2b6f6580799cd62cc3703a7cca0930f62cf9970ecca:at=2026-09-24T13:22:58.116Z:owner=73341983"
+      ],
+      "topics": [
+        "compaction",
+        "context",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "session",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "snowamberx-dsh-role-router",
+      "name": "SnowAmberX/dsh-role-router",
+      "description": "Role-based model routing plugin for DeepSeek Harness: planner/subagent roles plus a settings card and composer summary",
+      "repositoryUrl": "https://github.com/SnowAmberX/dsh-role-router",
+      "defaultBranch": "main",
+      "latestCommit": "81ec65b221bcd1147715100af4fd7f4887a4658a",
+      "sourceUpdatedAt": "2026-09-19T17:43:32.000Z",
+      "discoveredAt": "2026-09-24T13:19:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2b37a45fc5b05fe3c3d68ca45d0b3d477342283c:data/plugins/SnowAmberX__dsh-role-router.yml:sha256=b4513efc6e53e2195340539b0f4ebafd9710a83d8364b0ad9f484aea85a3ff27:at=2026-09-24T13:22:58.116Z:owner=91776775"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "socfeng-dsh-query-jump",
+      "name": "SocFeng/dsh-query-jump",
+      "description": "DSH WebUI 插件：右缘短横线 + 悬停提问列表，一键跳回历史 query；支持同步历史提问、永久删会话（可开关）、长上下文自动加载更早。",
+      "repositoryUrl": "https://github.com/SocFeng/dsh-query-jump",
+      "defaultBranch": "main",
+      "latestCommit": "d255937a0ac4b167bd761ae08c01263ceef9d328",
+      "sourceUpdatedAt": "2026-08-26T06:38:03.000Z",
+      "discoveredAt": "2026-09-24T13:19:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2b37a45fc5b05fe3c3d68ca45d0b3d477342283c:data/plugins/SocFeng__dsh-query-jump.yml:sha256=8698cf018778f95895db4ce31bba44c3c980b21d37053643c937cde40cda4526:at=2026-09-24T13:22:58.116Z:owner=78062786"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }

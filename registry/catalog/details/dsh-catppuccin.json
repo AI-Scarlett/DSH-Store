@@ -1,45 +1,49 @@
 {
-  "id": "dsh-weknora",
-  "name": "实验功能插件（DSH Weknora）",
-  "packageName": "@wxg-prc-cpg/dsh-weknora",
-  "description": "为 DSH 提供实验功能插件能力。英文原始说明：WeKnora knowledge retrieval tools for DeepSeek Harness (dsh): semantic search, document reading and RAG/agent answers over your own knowledge bases.",
+  "id": "dsh-catppuccin",
+  "name": "用量统计看板（DSH Catppuccin）",
+  "packageName": "@nonamelego/dsh-catppuccin",
+  "description": "为 DSH 提供用量统计看板能力。英文原始说明：Catppuccin themes + a toggleable glassmorphism skin for the DeepSeek Harness web GUI — Latte, Frappé, Macchiato and Mocha registered into the official theme system (Appearance settings), fully remapping the --dsw-* token ladder, with adjustable frosted glass for the top bar, sidebar, composer, stats line and trajectory view.",
   "searchTerms": [
-    "实验功能插件",
-    "DSH Weknora",
-    "dsh-weknora",
-    "@wxg-prc-cpg/dsh-weknora",
+    "用量统计看板",
+    "DSH Catppuccin",
+    "dsh-catppuccin",
+    "@nonamelego/dsh-catppuccin",
+    "用量",
+    "Token",
+    "统计",
+    "看板",
     "实验功能",
     "新功能",
     "dsh",
-    "weknora"
+    "catppuccin"
   ],
-  "repositoryUrl": "https://github.com/Tencent/WeKnora",
+  "repositoryUrl": "https://github.com/NoNameLeGo/dsh-catppuccin-theme",
   "defaultBranch": "main",
-  "manifestPath": "packages/dsh-weknora/package.json",
-  "installPath": "packages/dsh-weknora",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "7e82ee33dcefc398ca455775700bdf8730054aa5",
-  "version": "0.1.0",
+  "commit": "4b3fa5914e22b262e476ac1ec7bb667e5ea70f70",
+  "version": "0.5.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T13:17:30.000Z",
+    "updatedAt": "2026-09-24T13:22:11.000Z",
     "observedAt": "2026-09-24T13:19:30.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-24T13:19:30.000Z",
-      "evidenceUrl": "https://github.com/Tencent/WeKnora/commit/7e82ee33dcefc398ca455775700bdf8730054aa5",
+      "evidenceUrl": "https://github.com/NoNameLeGo/dsh-catppuccin-theme/commit/4b3fa5914e22b262e476ac1ec7bb667e5ea70f70",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,14 +73,15 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "weknora"
+    "dsh-catppuccin",
+    "dsh-catppuccin-tui-themes"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is missing from the fixed Git Commit: ./lib/tui-themes.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -160,9 +165,11 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20.11",
+    "node": ">=20",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
