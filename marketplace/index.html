@@ -32,7 +32,7 @@
   <link rel="apple-touch-icon" href="./dsh-store-icon.png">
   <link rel="manifest" href="./site.webmanifest">
   <link rel="stylesheet" href="./styles.css">
-  <link rel="stylesheet" href="./store-layout.css">
+  <link rel="stylesheet" href="./store-layout.css?v=20260924v2">
   <script defer src="./motion.js"></script>
   <script type="application/ld+json">
   {
@@ -192,6 +192,22 @@
       </div>
     </section>
 
+    <section class="featured-section section-shell" aria-labelledby="featured-title">
+      <div class="section-heading reveal"><div><span class="section-index">02 / SELECTED SIGNALS</span><h2 id="featured-title" data-i18n="featured.title">精选插件，扩展你的 DSH 工作流。</h2></div><p data-i18n="featured.lead">从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。</p></div>
+      <div id="featured-grid" class="featured-grid" aria-live="polite"><!-- DSH_STATIC_FEATURED_BEGIN --><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><!-- DSH_STATIC_FEATURED_END --></div>
+      <a class="catalog-gateway reveal" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="featured_footer"><span><small data-i18n="catalog.gatewayKicker">探索更多能力</small><b data-i18n="catalog.gatewayTitle">查看全部 DSH 插件、权限与兼容性</b></span><em data-i18n="action.explore">查看全部插件</em><i aria-hidden="true">↗</i></a>
+      <a class="catalog-gateway reveal" href="./dsh-plugins/" data-analytics-event="guide_open" data-analytics-item="featured_footer"><span><small>DSH PLUGINS / GUIDE</small><b>DSH 插件入门：来源、权限与安全安装</b></span><em>阅读插件指南</em><i aria-hidden="true">↗</i></a>
+    </section>
+
+    <section class="community-section section-shell" id="community" aria-labelledby="community-title">
+      <div class="section-heading"><div><span class="section-index">COMMUNITY & CREATORS</span><h2 id="community-title" data-i18n="community.title">加入 DSH 插件生态</h2></div><p data-i18n="community.lead">从开发指南、收录标准到提交和反馈，现有入口集中在这里。</p></div>
+      <div class="community-grid">
+        <article class="community-card community-card-primary"><span aria-hidden="true">✦</span><h3 data-i18n="community.build.title">做一个自己的 DSH 插件</h3><p data-i18n="community.build.body">从真实需求出发，了解标准 Bundle 与开发工具。</p><a href="./build/" data-analytics-event="build_tab_open" data-analytics-item="community" data-i18n="community.build.action">开始开发 ↗</a></article>
+        <article class="community-card"><span aria-hidden="true">↗</span><h3 data-i18n="community.submit.title">提交你的插件</h3><p data-i18n="community.submit.body">核对收录条件后，使用现有 GitHub 模板提交。</p><a href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="community" data-i18n="community.submit.action">查看提交入口 ↗</a></article>
+        <article class="community-card"><span aria-hidden="true">?</span><h3 data-i18n="community.help.title">交流与反馈</h3><p data-i18n="community.help.body">先看常见问题，再通过现有项目渠道反馈。</p><a href="./faq/" data-analytics-event="faq_open" data-analytics-item="community" data-i18n="community.help.action">查看帮助 ↗</a></article>
+      </div>
+    </section>
+
     <section class="metric-deck" aria-label="Marketplace metrics">
       <article><small>CATALOG</small><strong id="stat-total">—</strong><span data-i18n="stats.plugins">在架插件</span></article>
       <article><small>PLAN READY</small><strong id="stat-approved">—</strong><span data-i18n="stats.plannable">可生成计划</span></article>
@@ -229,22 +245,6 @@
           <div class="manager-facts"><span><i></i><b data-i18n="manager.fact1">标准扩展面</b></span><span><i></i><b data-i18n="manager.fact2">浏览默认只读</b></span><span><i></i><b data-i18n="manager.fact3">失败关闭</b></span></div>
           <a href="https://github.com/AI-Scarlett/DSH-Store" target="_blank" rel="noreferrer" data-analytics-event="github_open" data-analytics-item="manager"><span data-i18n="action.source">查看源码与边界</span> ↗</a>
         </div>
-      </div>
-    </section>
-
-    <section class="featured-section section-shell" aria-labelledby="featured-title">
-      <div class="section-heading reveal"><div><span class="section-index">02 / SELECTED SIGNALS</span><h2 id="featured-title" data-i18n="featured.title">精选插件，扩展你的 DSH 工作流。</h2></div><p data-i18n="featured.lead">从自动化、知识管理到开发协作，发现来源清晰、信息透明的实用插件。先看能力与权限，再决定是否接入。</p></div>
-      <div id="featured-grid" class="featured-grid" aria-live="polite"><!-- DSH_STATIC_FEATURED_BEGIN --><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><div class="featured-placeholder"></div><!-- DSH_STATIC_FEATURED_END --></div>
-      <a class="catalog-gateway reveal" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="featured_footer"><span><small data-i18n="catalog.gatewayKicker">探索更多能力</small><b data-i18n="catalog.gatewayTitle">查看全部 DSH 插件、权限与兼容性</b></span><em data-i18n="action.explore">查看全部插件</em><i aria-hidden="true">↗</i></a>
-      <a class="catalog-gateway reveal" href="./dsh-plugins/" data-analytics-event="guide_open" data-analytics-item="featured_footer"><span><small>DSH PLUGINS / GUIDE</small><b>DSH 插件入门：来源、权限与安全安装</b></span><em>阅读插件指南</em><i aria-hidden="true">↗</i></a>
-    </section>
-
-    <section class="community-section section-shell" id="community" aria-labelledby="community-title">
-      <div class="section-heading"><div><span class="section-index">COMMUNITY & CREATORS</span><h2 id="community-title" data-i18n="community.title">加入 DSH 插件生态</h2></div><p data-i18n="community.lead">从开发指南、收录标准到提交和反馈，现有入口集中在这里。</p></div>
-      <div class="community-grid">
-        <article class="community-card community-card-primary"><span aria-hidden="true">✦</span><h3 data-i18n="community.build.title">做一个自己的 DSH 插件</h3><p data-i18n="community.build.body">从真实需求出发，了解标准 Bundle 与开发工具。</p><a href="./build/" data-analytics-event="build_tab_open" data-analytics-item="community" data-i18n="community.build.action">开始开发 ↗</a></article>
-        <article class="community-card"><span aria-hidden="true">↗</span><h3 data-i18n="community.submit.title">提交你的插件</h3><p data-i18n="community.submit.body">核对收录条件后，使用现有 GitHub 模板提交。</p><a href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="community" data-i18n="community.submit.action">查看提交入口 ↗</a></article>
-        <article class="community-card"><span aria-hidden="true">?</span><h3 data-i18n="community.help.title">交流与反馈</h3><p data-i18n="community.help.body">先看常见问题，再通过现有项目渠道反馈。</p><a href="./faq/" data-analytics-event="faq_open" data-analytics-item="community" data-i18n="community.help.action">查看帮助 ↗</a></article>
       </div>
     </section>
 
