@@ -202,7 +202,7 @@ test('self-manager version refresh imports its new explicit compatibility matrix
     install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
   })
   assert.deepEqual(updated.compatibility.dshOperations['0.1.1-rc.2'], {
-    install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
   })
   assert.equal(supportsDshReleaseWindow(updated, [
     '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5',
@@ -235,6 +235,9 @@ test('source compatibility canonicalizes aliases internally while preserving leg
         '0.1.1-rc.1': 'incompatible',
         '0.1.1-rc.2': 'compatible',
       },
+      dshOperations: {
+        '0.1.1-rc.2': { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' },
+      },
       node: '>=22', systems: ['Linux'], profiles: ['web'],
     },
   }
@@ -249,6 +252,9 @@ test('source compatibility canonicalizes aliases internally while preserving leg
   assert.equal(compatibility.dshReleases['rc.8'], 'incompatible')
   assert.equal(Object.hasOwn(compatibility.dshReleases, '0.1.0-rc.8'), false)
   assert.equal(compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
+  assert.deepEqual(compatibility.dshOperations['0.1.1-rc.2'], {
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
+  })
   assert.equal(compatibility.dshOperations['rc.8'].install, 'unknown')
 })
 
@@ -258,6 +264,13 @@ test('source compatibility still fails closed on genuinely conflicting aliases',
       dshReleases: { 'rc.8': 'unknown', '0.1.0-rc.8': 'incompatible' },
     },
   }), /conflicting aliases for 0\.1\.0-rc\.8/)
+  assert.throws(() => sourceDeclaredCompatibility(entry(), {
+    compatibility: {
+      dshOperations: {
+        '0.1.7-rc.1': { install: 'passed', start: 'pending', uninstall: 'passed', rollback: 'passed' },
+      },
+    },
+  }), /must be passed, failed, or unknown/)
 })
 
 test('a complete new automatic review refreshes a stale blocked classification while preserving curated identity', async () => {

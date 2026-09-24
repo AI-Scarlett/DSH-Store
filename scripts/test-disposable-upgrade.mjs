@@ -5,6 +5,7 @@ import { createServer } from 'node:net'
 import assert from 'node:assert/strict'
 const cli = resolve(process.argv[2])
 const buildRoot = process.argv[3] ? resolve(process.argv[3]) : null
+const managerSpec = process.env.DSH_TEST_PLUGIN_SPEC ?? `file:${resolve('.')}`
 // Keep file dependencies on the fixture drive: pnpm 10 on Windows cannot
 // resolve the cross-drive file-source layout. This remains a disposable sibling.
 const root = await mkdtemp(join(dirname(resolve('.')), 'store-e3-'))
@@ -17,8 +18,8 @@ const run = args => new Promise((resolveRun, reject) => execFile(process.execPat
 let child
 try {
   await mkdir(env.DSH_HOME, { recursive: true })
-  await run(['--profile', 'web', '--dump-config'])
-  await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', '--config.auto-install-peers=false', `file:${resolve('.')}`])
+  const baselineConfig = await run(['--profile', 'web', '--dump-config'])
+  await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', '--config.auto-install-peers=false', managerSpec])
   if (buildRoot) await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', `file:${buildRoot}`])
   const config = await run(['--profile', 'web', '--dump-config'])
   assert.ok(config.includes('dsh-safe-plugin-manager'))
@@ -58,6 +59,7 @@ try {
   child.kill('SIGTERM'); await new Promise(done => child.once('exit', done)); child = null
   await run(['plugin', '--profile', 'web', 'remove', 'dsh-safe-plugin-manager'])
   const after = await run(['--profile', 'web', '--dump-config']); assert.ok(!after.includes('name: dsh-safe-plugin-manager'))
+  assert.equal(after, baselineConfig, 'uninstall must restore the exact pre-install Profile composition')
   console.log(JSON.stringify({ status: 'passed', cliVersion: (await run(['--version'])).trim(), install: true, dumpConfig: true, startup: true, unauthenticated: 401, authenticated: 200, crossOrigin: 403, journal: true, activation: true, uninstall: true, buildBundle: Boolean(buildRoot), realProfile: 'unchanged' }))
 } catch (error) {
   console.error(JSON.stringify({ status: 'failed', message: error.message, stage: error.stage, exitCode: error.exitCode, codes: error.codes })); process.exitCode = 1
