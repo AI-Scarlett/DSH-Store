@@ -29,7 +29,7 @@ import {
 } from '../src/catalog.mjs'
 import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { isGeneratedSelfManagerCatalogDetail, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
+import { isBoundedSourceLineage, isGeneratedSelfManagerCatalogDetail, isTestSourceFile, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -294,6 +294,9 @@ async function analyzeFixedSource(candidate, policy, github) {
     const relativePath = prefix ? item.path.slice(prefix.length) : item.path
     if (EXCLUDED_DIRECTORY.test(relativePath)) return false
     if (EXCLUDED_METADATA_FILE.test(relativePath)) return false
+    // Test scripts may contain deliberately unsafe fixture strings. They are
+    // not runtime capability evidence even when published under a scripts/ path.
+    if (isTestSourceFile(relativePath)) return false
     // Split Catalog details are bounded, schema-validated release data rather
     // than executable plugin source. Counting every generated record made the
     // self-manager's fixed-source gate shrink as the marketplace grew. Exclude
@@ -562,7 +565,20 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
         { maxBytes: 4 * 1024 * 1024 },
       ))
-      if ((!recheckCurrent && lineage?.status !== 'ahead') || (recheckCurrent && lineage?.status !== 'identical') || !Number.isInteger(lineage?.total_commits) || lineage.total_commits > maxCommitSpan) {
+      const boundedDescendant = !recheckCurrent && isBoundedSourceLineage(lineage, maxCommitSpan)
+      // DSH-Store's historical Catalog pin can reference a PR-head commit that
+      // was later squash-merged. Permit only this exact first-party entry to
+      // cross a bounded, shared-ancestor history split; the fixed candidate
+      // still must pass the complete manifest, Bundle, and runtime-source gates.
+      const boundedSelfManagerDivergence = !recheckCurrent && isSelfManagerEntry(entry)
+        && isBoundedSourceLineage(lineage, maxCommitSpan, { allowDiverged: true })
+        && lineage.status === 'diverged'
+      const identicalRecheck = recheckCurrent && lineage?.status === 'identical'
+        && Number.isInteger(lineage?.total_commits) && lineage.total_commits === 0
+      const lineageReview = identicalRecheck ? 'same-commit-policy-recheck'
+        : boundedSelfManagerDivergence ? 'bounded-self-manager-history-divergence'
+          : boundedDescendant ? 'direct-descendant' : null
+      if (!lineageReview) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the candidate is not a bounded direct descendant of the Catalog Commit' }
       }
       const analysisPolicy = isSelfManagerEntry(entry)
@@ -599,7 +615,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (isAutomaticPolicyBlocked(entry)) updated.assurance.discovery.method = 'automated-fixed-source-recheck-v1'
       return {
         index, entry, kind: 'updated', snapshot, versionAssessment, changeContract, sourcePolicy, updated,
-        warnings: analysis.reasons,
+        lineageReview, warnings: analysis.reasons,
       }
     } catch (error) {
       const infrastructure = INFRASTRUCTURE_CODES.has(error?.code)
@@ -658,6 +674,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         version: result.updated.version,
         changeKind: result.changeContract.changeKind,
         policy: result.sourcePolicy,
+        lineageReview: result.lineageReview,
       })
       report.updateReviews.push({
         id: entry.id,
@@ -667,6 +684,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         upstreamVersion: result.updated.version,
         candidateCommit: result.updated.commit,
         policy: result.sourcePolicy,
+        lineageReview: result.lineageReview,
         decision: result.changeContract.changeKind === 'same-version-source-update'
           ? 'catalog-repinned-same-version' : 'catalog-updated',
         warnings: result.warnings.slice(0, 20),
