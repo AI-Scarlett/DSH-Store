@@ -1062,8 +1062,10 @@ assertCatalogLocalization(catalog)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
   || report.compatibilityPolicy.catalogChanged
-const candidatesChanged = report.excludedCandidates.length > 0 || report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0
-  || report.candidateRetention.registryRemovals > 0 || report.compatibilityPolicy.candidatesChanged
+// Discovery can add or refresh Candidate records without entering any of the
+// decision lists above. Bind the write decision to the actual file contents.
+const prospectiveCandidatesBuffer = Buffer.from(`${JSON.stringify(candidates, null, 2)}\n`)
+const candidatesChanged = !prospectiveCandidatesBuffer.equals(originalCandidates)
 if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
 failureContext.stage = 'validate-automation-output'
@@ -1078,6 +1080,9 @@ const candidatesBuffer = Buffer.from(`${JSON.stringify({
   registry: validatedCandidates.registry,
   entries: validatedCandidates.entries.map(({ installable, allowedActions, ...entry }) => entry),
 }, null, 2)}\n`)
+if (!candidatesChanged && !candidatesBuffer.equals(originalCandidates)) {
+  throw new Error('Candidate Registry serialization changed without a write decision')
+}
 report.postconditions = {
   catalogChanged, candidatesChanged,
   catalogSha256: sha256(catalogBuffer), catalogIndexSha256: sha256(catalogIndexBuffer),
