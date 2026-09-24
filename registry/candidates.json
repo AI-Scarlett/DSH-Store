@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-24T05:40:34.000Z",
+    "updatedAt": "2026-09-24T05:53:42.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -5321,8 +5321,8 @@
       "description": "插件升级后在运行中的 dsh 内直接重载，无需重启；重载失败时回滚到旧版本并提示手动重启。",
       "repositoryUrl": "https://github.com/stuarthu/dsh-hot-reload",
       "defaultBranch": "main",
-      "latestCommit": "a0d674a88c0c9e59f3542c9f25c9bfbe6f67e191",
-      "sourceUpdatedAt": "2026-08-18T11:34:54.000Z",
+      "latestCommit": "006d91589e8edab031e46dea936db0cc0f301e02",
+      "sourceUpdatedAt": "2026-08-22T07:52:14.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6319,8 +6319,8 @@
       "description": "DSH Web 移动端适配插件：侧边栏/详情抽屉浮层化、输入栏与设置页响应式适配，桌面零回归。",
       "repositoryUrl": "https://github.com/TecFancy/dsh-mobile",
       "defaultBranch": "development",
-      "latestCommit": "aa5908a0b68689c1f6946666143b4b60f8b21601",
-      "sourceUpdatedAt": "2026-08-16T14:13:40.000Z",
+      "latestCommit": "505704abddb4fdb26efafe3e92160c956d664ee9",
+      "sourceUpdatedAt": "2026-09-23T05:06:22.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6662,8 +6662,8 @@
       "description": "新建会话页的 GitHub 风格每日 Token 用量热力图：可选日历年度视图、绿/蓝配色与显示开关，并附今日/本月/累计总量。",
       "repositoryUrl": "https://github.com/KIDLi1412/dsh-token-heatmap",
       "defaultBranch": "main",
-      "latestCommit": "c10389f4d7afd57ce7c5f3c3708cb18579e98ce0",
-      "sourceUpdatedAt": "2026-08-16T05:44:15.000Z",
+      "latestCommit": "fdc76cdbe02647e79ef49096299ca234a8bfa274",
+      "sourceUpdatedAt": "2026-09-15T15:46:56.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6683,8 +6683,8 @@
       "description": "对话底部的会话费用状态栏：按模型逐条计价估算 Token 费用（CNY），并实时显示 DeepSeek 账户余额（官方余额接口）。",
       "repositoryUrl": "https://github.com/KIDLi1412/dsh-session-cost",
       "defaultBranch": "main",
-      "latestCommit": "c524e62c9def21f914f3cdbab6b40346d409fa71",
-      "sourceUpdatedAt": "2026-08-16T05:43:44.000Z",
+      "latestCommit": "295f90d04ecd547b31ce031ca96d5b8014fb9636",
+      "sourceUpdatedAt": "2026-09-14T16:34:15.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12236,28 +12236,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
-    },
-    {
-      "id": "ai-scarlett-build-dsh-plugin",
-      "name": "DSH 插件开发工作流（Build DSH Plugin）",
-      "description": "把需求转为标准 DSH 插件与商城候选；0.5.0 增加管理类插件的登录校验、持久化操作与恢复边界审计，并区分源码检查和实际运行证据。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
-      "defaultBranch": "main",
-      "latestCommit": "e0c2b5e23040a5dfebd4fb2c29bab40b34d21b2e",
-      "sourceUpdatedAt": "2026-09-15T04:18:39.000Z",
-      "discoveredAt": "2026-09-24T01:36:44.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "development",
-        "workflow",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: build-dsh-plugin."
     },
     {
       "id": "angeloszou-dsh-multi-folder",
