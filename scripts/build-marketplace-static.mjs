@@ -352,7 +352,10 @@ await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { re
 await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
 
 const isDomestic = siteOriginUrl.host === 'dsh-store.cn'
-if (!isDomestic) await rm(resolve(outputRoot, 'marketplace/dsh-store-guide'), { recursive: true, force: true })
+if (!isDomestic) {
+  await rm(resolve(outputRoot, 'marketplace/dsh-store-guide'), { recursive: true, force: true })
+  await rm(resolve(outputRoot, 'marketplace/googled542dac4f5a6c169.html'), { force: true })
+}
 
 const articlePromoBegin = '<!-- DSH_ARTICLE_PROMO_BEGIN -->'
 const articlePromoEnd = '<!-- DSH_ARTICLE_PROMO_END -->'

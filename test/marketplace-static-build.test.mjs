@@ -69,6 +69,11 @@ test('static marketplace derives manager identity and catalog cards without muta
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
     const automationStatus = JSON.parse(await readFile(join(output, 'automation-status.json'), 'utf8'))
 
+    await assert.rejects(
+      readFile(join(output, 'marketplace/googled542dac4f5a6c169.html'), 'utf8'),
+      error => error?.code === 'ENOENT',
+    )
+
     assert.equal(manifest.manager.version, manager.version)
     assert.equal(manifest.manager.commit, manager.commit)
     assert.equal(manifest.manager.license, manager.details.license)
@@ -77,6 +82,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(manifest.alternateOrigin, 'https://dsh-store.cn')
     assert.equal(manifest.githubEnriched, false)
     assert.equal(release.sourceCommit, 'test-source-sha')
+    assert.equal(release.files['marketplace/googled542dac4f5a6c169.html'], undefined)
     assert.ok(release.files['marketplace/index.html'])
     assert.ok(release.files['marketplace/index.md'])
     assert.ok(release.files['marketplace/robots.txt'])
@@ -297,6 +303,8 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
     const domesticAbout = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const domesticArticle = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
+    const googleSiteVerification = await readFile(join(output, 'marketplace/googled542dac4f5a6c169.html'), 'utf8')
+    assert.equal(googleSiteVerification, 'google-site-verification: googled542dac4f5a6c169.html')
     assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)
     for (const bot of ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended']) {
       assert.match(robots, new RegExp(`User-agent: ${bot}\\nAllow: /`))
@@ -321,6 +329,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.doesNotMatch(domesticAbout, /DSH_ARTICLE_PROMO/)
     assert.ok(release.files['marketplace/about/deepseek-harness-guide/index.html'])
     assert.ok(release.files['marketplace/dsh-store-guide/index.html'])
+    assert.ok(release.files['marketplace/googled542dac4f5a6c169.html'])
     assert.match(domesticGuide, /商城、CLI、Profile、依赖与 Catalog/)
     assert.match(domesticGuide, /https:\/\/raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/main\/registry\/catalog\.json/)
     assert.match(domesticFaq, /href="\.\.\/dsh-store-guide\/"/)
