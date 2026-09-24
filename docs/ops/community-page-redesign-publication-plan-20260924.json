@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "planId": "community-page-redesign-publication-20260924",
+  "operation": "publish-marketplace-redesign",
+  "createdAt": "2026-09-24",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "b24b24080b6ef7c9f10b99ba585ab5338b32c933",
+  "scope": [
+    "docs/ops/community-page-redesign-publication-plan-20260924.json",
+    "marketplace/about/deepseek-harness-guide/index.html",
+    "marketplace/about/index.html",
+    "marketplace/app.js",
+    "marketplace/build/index.html",
+    "marketplace/community/community.js",
+    "marketplace/community/index.html",
+    "marketplace/dsh-plugins/index.html",
+    "marketplace/dsh-store-guide/index.html",
+    "marketplace/faq/index.html",
+    "marketplace/home-redesign.css",
+    "marketplace/index.html",
+    "marketplace/pages-redesign.css",
+    "marketplace/plugins/index.html",
+    "marketplace/repair/index.html",
+    "marketplace/standards/index.html",
+    "package.json",
+    "scripts/build-marketplace-static.mjs",
+    "test/contracts.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/community-page-redesign-publication-plan-20260924.json": null,
+    "marketplace/about/deepseek-harness-guide/index.html": "4b88d50045797456b445e709eaab63c29c6add5bdb93ca6dc12aa6229fab3b9a",
+    "marketplace/about/index.html": "ef46c8ae7f47f6862221687da8aee7f6ac0d04d1a1ff3c3a14a809ad68eb7bd7",
+    "marketplace/app.js": "4120d23697e68596973b58b927be8e0bd0ae57d96caa657dc43c5b6af08673a1",
+    "marketplace/build/index.html": "7afaefb34075ab7b74b8d5ae770f7c7fddc664a362d1d51d42e8115b2809661f",
+    "marketplace/community/community.js": null,
+    "marketplace/community/index.html": null,
+    "marketplace/dsh-plugins/index.html": "2427ac881ca990b106fd7540bdab44c55b0ef2c51ad6d54de4719037d20630eb",
+    "marketplace/dsh-store-guide/index.html": "01f9d75f22372af2c5514d01fbe63242e0cde5e8259605602bb7b33122b320b6",
+    "marketplace/faq/index.html": "7b9e0fd74f4facad0c8c08c62ac8ace9733a8d7fe33d5e81a832852eab5733ab",
+    "marketplace/home-redesign.css": null,
+    "marketplace/index.html": "7effcb6dbdd90ceafd49d92c7bab49dad4a764ead152cf2be3c94f7e1da4e43e",
+    "marketplace/pages-redesign.css": null,
+    "marketplace/plugins/index.html": "0293f28af6e79361db5afb51163e8f038c8ead2f0c9c00c2db9bb292e34bcd4e",
+    "marketplace/repair/index.html": "bd7ab877f0ac1a0dd100ca3b95d61459b4934181e44aecd1f1ba2597b741f3c1",
+    "marketplace/standards/index.html": "66768ebf2c8a9dc4f1800f7a6c5eddb149aefd1a92843449a5477b79a1a39f9b",
+    "package.json": "2fb8b1f17863e29f975e4cfcc9d5d078d48974430588ae95693ea181057cf32f",
+    "scripts/build-marketplace-static.mjs": "4b7c6fbe249e5476f7d1b553f7576c3b6002c93ce8d7b2d3a62f4d2bcee0e27c",
+    "test/contracts.test.mjs": "d3b292a18935565bdc85d257cef7c506af07c63527deb44453260ba7b4225215"
+  },
+  "deterministicGates": [
+    {
+      "id": "npm-check",
+      "command": "npm run check",
+      "required": "pass"
+    },
+    {
+      "id": "static-build",
+      "command": "npm run build:marketplace -- --source-sha <candidate-commit> --out .tmp-redesign-site",
+      "required": "pass"
+    },
+    {
+      "id": "static-route",
+      "required": "/community/ emitted, canonical/sitemap route valid, both international and domestic artifacts build"
+    },
+    {
+      "id": "diff-integrity",
+      "command": "git diff --check",
+      "required": "pass; changed paths equal scope excluding this plan until it is added"
+    },
+    {
+      "id": "pull-request",
+      "required": "CI required checks pass before protected-main merge"
+    },
+    {
+      "id": "public-readback",
+      "required": "independently verify GitHub Pages, dsh.store, and dsh-store.cn routes after merge/deploy"
+    }
+  ],
+  "deployment": {
+    "pages": "GitHub Pages workflow on main push builds international and domestic artifacts",
+    "storefronts": "existing validated Pages-refresh timers; verify both public origins after refresh",
+    "rollback": "revert the publication commit via audited PR; host deploys retain prior atomic release for rollback"
+  },
+  "safety": {
+    "dshCoreModified": false,
+    "thirdPartyRuntimeExecuted": false,
+    "authorOutreach": false,
+    "credentialsIncluded": false
+  },
+  "authorization": "User explicitly requested上线吧 for the completed local website redesign; merge and publication are in scope after gates pass.",
+  "localGateEvidence": {
+    "npmRunCheck": {
+      "status": "passed",
+      "testCount": 325,
+      "registryEntries": 712,
+      "evidence": "npm run check"
+    },
+    "staticBuildInternational": {
+      "status": "passed",
+      "origin": "https://dsh.store",
+      "communityRoute": "present",
+      "sitemap": "present"
+    },
+    "staticBuildDomestic": {
+      "status": "passed",
+      "origin": "https://dsh-store.cn",
+      "communityRoute": "present",
+      "sitemap": "present"
+    },
+    "diffCheck": {
+      "status": "passed",
+      "evidence": "git diff --check"
+    },
+    "publicReadback": {
+      "status": "pending",
+      "note": "Requires protected-main merge, Pages deployment, and both storefront refreshes."
+    }
+  }
+}
