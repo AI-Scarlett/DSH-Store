@@ -33,6 +33,16 @@ test('permission scan ignores inert Catalog metadata and ordinary identifiers', 
   })
 })
 
+test('protected DSH detection distinguishes direct mutations from static audit regexes', () => {
+  const auditPattern = String.raw`const loaderFiberMutations = linesMatching(records, /(?:ctx\.(?:loader|fiber)|\b(?:Loader|Fiber))\.(?:insert|remove|patch|enable|disable|write|mutate)\s*\(/`
+  assert.equal(permissionSignals(auditPattern).protectedDsh, false)
+  assert.equal(permissionSignals(`ctx.fiber.remove('official-plugin')`).protectedDsh, true)
+  assert.equal(permissionSignals(`Fiber.disable('official-plugin')`).protectedDsh, true)
+  assert.equal(permissionSignals(`window.__ModuleLoader__.unload('official-plugin')`).protectedDsh, true)
+  assert.equal(permissionSignals(`@deepseek-ai/dsh-web-app disabled: true`).protectedDsh, true)
+  assert.equal(permissionSignals(`tool.call.toolview`).protectedDsh, true)
+})
+
 test('permission scan still fails closed on executable capability signals', () => {
   assert.equal(permissionSignals(`import { readFile } from 'node:fs/promises'`).files, true)
   assert.equal(permissionSignals(`const transport = require('node:https')`).network, true)
