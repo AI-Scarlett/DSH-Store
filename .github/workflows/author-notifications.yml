@@ -114,6 +114,7 @@ jobs:
             --base-commit "${{ steps.base.outputs.sha }}" \
             --catalog-run-id "${{ steps.report.outputs.run_id }}" \
             --max-create 10 \
+            --identity-only true \
             --output "$RUNNER_TEMP/author-notice-preliminary-plan.json"
       - name: Snapshot the required global contact ledger
         env:

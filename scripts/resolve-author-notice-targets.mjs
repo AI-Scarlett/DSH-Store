@@ -52,6 +52,10 @@ async function main() {
   }
   if (!options.plan || !options.output) throw new Error('--plan and --output required')
   const plan = JSON.parse(await readFile(resolve(options.plan), 'utf8'))
+  if (plan.schemaVersion !== 0 || plan.mode !== 'identity-resolution-only'
+    || !Array.isArray(plan.actions) || plan.actions.length !== 0) {
+    throw new Error('invalid identity-only preliminary plan')
+  }
   if (!Array.isArray(plan.contactRepositoryKeys) || plan.contactRepositoryKeys.length > 2500) throw new Error('invalid preliminary plan')
   const issueKeys = options.issues
     ? repositoryKeysFromIssues(JSON.parse(await readFile(resolve(options.issues), 'utf8')))

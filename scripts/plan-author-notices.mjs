@@ -45,6 +45,9 @@ function parseArgs(argv) {
   if (!Number.isInteger(options.maxCreate) || options.maxCreate < 0 || options.maxCreate > 12) {
     throw new Error('--max-create must be an integer between 0 and 12')
   }
+  if (options['identity-only'] !== undefined && options['identity-only'] !== 'true') {
+    throw new Error('--identity-only only accepts true')
+  }
   return options
 }
 
@@ -392,7 +395,7 @@ function selectCreates(records, existingKeys, maximum) {
 
 export function buildAuthorNoticePlan({
   catalog, candidates, report, existingIssues, notificationTargets, baseCommit, inputHashes,
-  maxCreate = 10, sourceCatalogRunId = null, contactSnapshot = null,
+  maxCreate = 10, sourceCatalogRunId = null, contactSnapshot = null, identityOnly = false,
 }) {
   if (!/^[0-9a-f]{40}$/.test(String(baseCommit ?? ''))) throw new Error('base Commit must be a full Git SHA')
   if (sourceCatalogRunId !== null && !/^\d+$/.test(String(sourceCatalogRunId))) {
@@ -403,6 +406,9 @@ export function buildAuthorNoticePlan({
     if (!/^[0-9a-f]{40}$/.test(contactSnapshot.fileSha)) throw new Error('invalid contact state snapshot')
   }
   const targetsByRepository = canonicalNotificationTargets(notificationTargets)
+  if (identityOnly && (contactSnapshot || Object.keys(targetsByRepository).length > 0)) {
+    throw new Error('identity-only planning cannot use contact state or notification targets')
+  }
   const existing = canonicalExistingIssues(existingIssues)
   const existingByKey = new Map()
   for (const issue of existing) {
@@ -507,6 +513,28 @@ export function buildAuthorNoticePlan({
     record.labels.sort()
     record.signature = sha256(JSON.stringify({ key: record.key, items, notificationTargets: record.notificationTargets }))
     record.title = `作者修复请求：${record.owner}/${record.repository}（DSH STORE）`
+  }
+
+  if (identityOnly) {
+    const contactRepositoryKeys = desired.filter(record => !existingByKey.has(record.key)).map(record => record.key)
+    const candidateRegistryRecords = array(candidates?.entries).length
+    const candidateCoverageAccounted = candidateCoverageRecords.reduce((total, record) => total + record.candidateIds.length, 0)
+    if (contactRepositoryKeys.length > 2500 || candidateCoverageRecords.length > 2500
+      || candidateCoverageAccounted !== candidateRegistryRecords) {
+      throw new Error('identity-only repository or Candidate coverage bound exceeded')
+    }
+    return {
+      schemaVersion: 0,
+      mode: 'identity-resolution-only',
+      baseCommit,
+      sourceCatalogRunId: sourceCatalogRunId === null ? null : String(sourceCatalogRunId),
+      preconditions: inputHashes,
+      contactRepositoryKeys,
+      candidateCoverageFingerprint: sha256(JSON.stringify(candidateCoverageRecords)),
+      candidateCoverage: candidateCoverageRecords,
+      summary: { desiredRepositories: desired.length, candidateRegistryRecords, candidateCoverageAccounted },
+      actions: [],
+    }
   }
 
   const contactDecisions = []
@@ -783,6 +811,7 @@ async function main() {
     catalog, candidates, report, existingIssues, notificationTargets, contactSnapshot,
     baseCommit: options['base-commit'], inputHashes, maxCreate: options.maxCreate,
     sourceCatalogRunId: options['catalog-run-id'] ?? null,
+    identityOnly: options['identity-only'] === 'true',
   })
   await writeFile(resolve(options.output), `${JSON.stringify(plan, null, 2)}\n`, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
   process.stdout.write(`AUTHOR_NOTICE_PLAN_OK plan=${plan.planId} creates=${plan.summary.creates} updates=${plan.summary.updates} closes=${plan.summary.closes} queued=${plan.summary.queuedNewIssues}\n`)
