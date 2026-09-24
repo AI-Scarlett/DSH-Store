@@ -207,9 +207,10 @@ snapshot.generated = {
 }
 
 const manager = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
-if (!manager || manager.status !== 'approved' || !/^[0-9a-f]{40}$/.test(manager.commit || '')) {
-  throw new Error('The approved dsh-safe-plugin-manager catalog entry is required for the static build')
+if (!manager || !/^[0-9a-f]{40}$/.test(manager.commit || '')) {
+  throw new Error('A fixed-Commit dsh-safe-plugin-manager catalog entry is required for the static build')
 }
+const managerInstallable = manager.status === 'approved'
 
 const htmlEscape = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -309,9 +310,11 @@ async function rewriteSiteReferences(directory) {
 const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="external-json">'
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
-const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+const installCommand = managerInstallable
+  ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+  : (defaultLocale === 'en' ? 'Compatibility review pending; installation is unavailable.' : '兼容性待核验，暂不提供安装命令。')
 const repairVersionComparison = compareVersions(manager.version, '0.8.10')
-const repairAvailable = repairVersionComparison !== null && repairVersionComparison >= 0
+const repairAvailable = managerInstallable && repairVersionComparison !== null && repairVersionComparison >= 0
 const repairPackageSpecifier = `git+${manager.repositoryUrl}.git#${manager.commit}`
 const repairCommand = `pnpm --config.ignore-scripts=true dlx '${repairPackageSpecifier}' --profile web --target-version ${manager.version} --target-commit ${manager.commit}`
 const approvedCount = visibleEntries.filter(entry => entry.status === 'approved').length
@@ -460,8 +463,13 @@ home = replaceRequired(home, '<!-- DSH_LEGACY_REPAIR_BANNER -->', repairAvailabl
   : '', 'home legacy repair banner')
 home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_FEATURED_BEGIN -->', '<!-- DSH_STATIC_FEATURED_END -->', featured.map(featuredCard).join(''), 'featured catalog')
 home = home.replace(/"softwareVersion"\s*:\s*"[^"]*"/, `"softwareVersion": "${htmlEscape(manager.version)}"`)
-home = replaceElementText(home, 'install-version', `v${manager.version} · SHA PINNED`)
+home = replaceElementText(home, 'install-version', managerInstallable
+  ? `v${manager.version} · SHA PINNED`
+  : (defaultLocale === 'en' ? `v${manager.version} · COMPATIBILITY REVIEW` : `v${manager.version} · 兼容性待核验`))
 home = replaceElementText(home, 'install-command', installCommand)
+if (!managerInstallable) {
+  home = replaceRequired(home, 'data-copy-target="install-command"', 'data-copy-target="install-command" disabled aria-disabled="true"', 'manager install copy button')
+}
 home = replaceElementText(home, 'manager-protocol', `STANDARD BUNDLE / v${manager.version}`)
 home = replaceElementText(home, 'manager-commit-short', manager.commit.slice(0, 7))
 home = replaceElementText(home, 'stat-total', String(visibleEntries.length).padStart(2, '0'))
