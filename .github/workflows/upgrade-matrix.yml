@@ -5,7 +5,23 @@ on:
 permissions:
   contents: read
 jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      latest_version: ${{ steps.window.outputs.latest_version }}
+      previous_releases: ${{ steps.window.outputs.previous_releases }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Resolve official latest-three release window
+        id: window
+        run: node scripts/resolve-dsh-upgrade-matrix.mjs
+
   runtime:
+    needs: resolve
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -23,5 +39,33 @@ jobs:
           version: ${{ matrix.pnpm }}
       - run: pnpm --version
       - run: node --test test/manager-auth.test.mjs test/operation-journal.test.mjs test/diagnostics.test.mjs test/activation.test.mjs test/discovery-feeds.test.mjs
-      - run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund @deepseek-ai/dsh@0.1.5-rc.2
+      - name: Install the current official DSH release
+        env:
+          DSH_VERSION: ${{ needs.resolve.outputs.latest_version }}
+        run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund "@deepseek-ai/dsh@$DSH_VERSION"
+        shell: bash
+      - run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
+
+  previous-latest-three:
+    needs: resolve
+    strategy:
+      fail-fast: false
+      matrix:
+        dsh-version: ${{ fromJSON(needs.resolve.outputs.previous_releases) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - name: Run manager contracts
+        run: node --test test/manager-auth.test.mjs test/operation-journal.test.mjs test/diagnostics.test.mjs test/activation.test.mjs test/discovery-feeds.test.mjs
+      - name: Install the previous official DSH releases
+        env:
+          DSH_VERSION: ${{ matrix.dsh-version }}
+        run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund "@deepseek-ai/dsh@$DSH_VERSION"
       - run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
