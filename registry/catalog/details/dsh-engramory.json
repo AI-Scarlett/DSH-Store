@@ -19,7 +19,7 @@
   "manifestPath": "adapters/dsh/plugin/package.json",
   "installPath": "adapters/dsh/plugin",
   "updatePolicy": "user-reviewed",
-  "commit": "33f1aa8fa0c90c5a7310241a0a76d83ab30fc5df",
+  "commit": "27e578d2345d872768ecd191c78fc5c2fd142890",
   "version": "0.2.4",
   "categories": [
     "memory"
@@ -27,16 +27,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T02:19:14.000Z",
-    "observedAt": "2026-09-08T03:29:23.000Z",
+    "updatedAt": "2026-09-22T18:09:41.000Z",
+    "observedAt": "2026-09-24T01:36:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-08T03:29:23.000Z",
-      "evidenceUrl": "https://github.com/tinqiao-oss/engramory/commit/33f1aa8fa0c90c5a7310241a0a76d83ab30fc5df",
+      "checkedAt": "2026-09-24T01:36:44.000Z",
+      "evidenceUrl": "https://github.com/tinqiao-oss/engramory/commit/27e578d2345d872768ecd191c78fc5c2fd142890",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,7 +77,7 @@
     "engramory"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.5-rc.2, 0.1.6-alpha.1, 0.1.6-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": ">=0.0.1-rc.1",
     "dshReleases": {
@@ -97,7 +97,10 @@
       "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "unknown",
       "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown"
+      "0.1.6-alpha.2": "unknown",
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -197,6 +200,24 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
