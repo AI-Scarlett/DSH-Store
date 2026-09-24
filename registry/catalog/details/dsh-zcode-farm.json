@@ -1,45 +1,45 @@
 {
-  "id": "dsh-weknora",
-  "name": "实验功能插件（DSH Weknora）",
-  "packageName": "@wxg-prc-cpg/dsh-weknora",
-  "description": "为 DSH 提供实验功能插件能力。英文原始说明：WeKnora knowledge retrieval tools for DeepSeek Harness (dsh): semantic search, document reading and RAG/agent answers over your own knowledge bases.",
+  "id": "dsh-zcode-farm",
+  "name": "实验功能插件（DSH Zcode Farm）",
+  "packageName": "dsh-zcode-farm",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Let a DeepSeek Harness agent see every ComfyUI instance in a farm and dispatch each generation job to the idlest one, instead of always hitting the busiest single endpoint.",
   "searchTerms": [
     "实验功能插件",
-    "DSH Weknora",
-    "dsh-weknora",
-    "@wxg-prc-cpg/dsh-weknora",
+    "DSH Zcode Farm",
+    "dsh-zcode-farm",
     "实验功能",
     "新功能",
     "dsh",
-    "weknora"
+    "zcode",
+    "farm"
   ],
-  "repositoryUrl": "https://github.com/Tencent/WeKnora",
+  "repositoryUrl": "https://github.com/BOWLUNA/dsh-zcode-farm",
   "defaultBranch": "main",
-  "manifestPath": "packages/dsh-weknora/package.json",
-  "installPath": "packages/dsh-weknora",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "2e712a97a10900c82bed74993362823a7c77254f",
-  "version": "0.1.0",
+  "commit": "163250f0e3c013b1c69a5bb83626237677c1404d",
+  "version": "1.0.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T03:56:25.000Z",
+    "updatedAt": "2026-09-24T05:24:01.000Z",
     "observedAt": "2026-09-24T05:21:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-24T05:21:19.000Z",
-      "evidenceUrl": "https://github.com/Tencent/WeKnora/commit/2e712a97a10900c82bed74993362823a7c77254f",
+      "evidenceUrl": "https://github.com/BOWLUNA/dsh-zcode-farm/commit/163250f0e3c013b1c69a5bb83626237677c1404d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,14 +69,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "weknora"
+    "comfyui-farm"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -160,7 +160,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20.11",
+    "node": ">=20",
     "systems": [],
     "profiles": []
   },
@@ -181,9 +181,7 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

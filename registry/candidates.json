@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-24T02:37:38.000Z",
+    "updatedAt": "2026-09-24T05:21:19.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2065,8 +2065,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "665674367754098ffb7d417bbabd0c25ec5231b9",
-      "sourceUpdatedAt": "2026-09-22T23:50:56.000Z",
+      "latestCommit": "24e0296a6ae0ed49aa613b8a0ec6e3f497718852",
+      "sourceUpdatedAt": "2026-09-24T03:19:22.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2670,26 +2670,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-go-balance."
-    },
-    {
-      "id": "tinqiao-oss-engramory",
-      "name": "记忆与知识库（DSH Engramory）",
-      "description": "把 Engramory 策展式记忆纪律做成可安装插件（[npm: dsh-engramory](https://www.npmjs.com/package/dsh-engramory)）：通过 `ctx.tools.guard()` 对 `MEMORY.md` 索引施加确定性的 200 行 / 25KB 上限（增长即拒、缩小的重写一律放行），并把协议注册为运行时 skill。记忆库是纯 markdown、一条事实一个文件，与 Claude Code、Codex、Kiro、OpenClaw 共用。",
-      "repositoryUrl": "https://github.com/tinqiao-oss/engramory",
-      "defaultBranch": "master",
-      "latestCommit": "27e578d2345d872768ecd191c78fc5c2fd142890",
-      "sourceUpdatedAt": "2026-09-22T18:09:41.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "memory",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-engramory."
     },
     {
       "id": "131cda1-dsh-scrape-webpage",
@@ -12859,6 +12839,96 @@
         "client-plugin",
         "deepseek",
         "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kingofsoysauce-dsh-skin-market",
+      "name": "kingOfSoySauce/dsh-skin-market",
+      "description": "DeepSeek Harness skin market 皮肤市场 已收录200+DSH 皮肤 完善评分系统加人工审核，有便捷的社区收录入口；有在线页面方便在线浏览，也有插件方便管理本地皮肤",
+      "repositoryUrl": "https://github.com/kingOfSoySauce/dsh-skin-market",
+      "defaultBranch": "main",
+      "latestCommit": "4bbaaf4b6d9ad0cc283fb978b6d46a4642154f98",
+      "sourceUpdatedAt": "2026-09-24T03:27:03.000Z",
+      "discoveredAt": "2026-09-24T05:21:19.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@33fd819ba0848269b7eb125d6dea3233be96c341:data/plugins/kingOfSoySauce__dsh-skin-market.yml:sha256=1f709018b3cb8365bc681b943a2e5eeed19731a344bdabd8665025a22233a9e9:at=2026-09-24T05:24:43.021Z:owner=60259156"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "plugin-market",
+        "skin-market",
+        "themes",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kingao294-dsh-skin",
+      "name": "KinGao294/dsh-skin",
+      "description": "Skin switcher + custom wallpaper for DeepSeek Harness (dsh): curated --dsw-alias-* palettes, translucent wallpaper with opacity/blur controls, persisted per browser (like Codex themes) — 换皮肤 / 自定义背景插件",
+      "repositoryUrl": "https://github.com/KinGao294/dsh-skin",
+      "defaultBranch": "main",
+      "latestCommit": "0a571a27adcc5f780b7b72386c9c294243eec5b3",
+      "sourceUpdatedAt": "2026-08-18T11:23:24.000Z",
+      "discoveredAt": "2026-09-24T05:21:19.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@33fd819ba0848269b7eb125d6dea3233be96c341:data/plugins/KinGao294__dsh-skin.yml:sha256=36fdfc20ca8bdda8aa78819afc9615e664341f876b90e2e88d9b718fcebfb9bc:at=2026-09-24T05:24:43.021Z:owner=130439514"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "skin",
+        "theme",
+        "wallpaper",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kingofsoysauce-dsh-liang-skin",
+      "name": "kingOfSoySauce/dsh-liang-skin",
+      "description": "DeepSeek Harness 滑动变阻器皮肤",
+      "repositoryUrl": "https://github.com/kingOfSoySauce/dsh-liang-skin",
+      "defaultBranch": "main",
+      "latestCommit": "976fcbf9b4a91b79f14b90c16cbe0d3f553c2bd3",
+      "sourceUpdatedAt": "2026-08-21T03:22:40.000Z",
+      "discoveredAt": "2026-09-24T05:21:19.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@33fd819ba0848269b7eb125d6dea3233be96c341:data/plugins/kingOfSoySauce__dsh-liang-skin.yml:sha256=7c51a6b09ed9dea5e96dfa8891cd3832f860fd8ab605cd23051db2759cc44c5e:at=2026-09-24T05:24:43.021Z:owner=60259156"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kinderao-dsh-pocket-relay",
+      "name": "kinderao/dsh-pocket-relay",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/kinderao/dsh-pocket-relay",
+      "defaultBranch": "main",
+      "latestCommit": "02ece50b56d2c5e35f913b73088b0ec297fae469",
+      "sourceUpdatedAt": "2026-09-17T00:51:26.000Z",
+      "discoveredAt": "2026-09-24T05:21:19.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@33fd819ba0848269b7eb125d6dea3233be96c341:data/plugins/kinderao__dsh-pocket-relay.yml:sha256=d0b02f793643aef54a5cada3172892ceb4e5b5758dc61709c55c4a673b9310ca:at=2026-09-24T05:24:43.021Z:owner=20990642"
+      ],
+      "topics": [
         "dsh-plugin",
         "automatic-radar"
       ],
