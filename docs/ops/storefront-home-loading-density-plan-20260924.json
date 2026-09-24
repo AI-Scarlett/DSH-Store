@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "planId": "storefront-home-loading-density-20260924",
+  "operation": "storefront-source-repair",
+  "createdAt": "2026-09-24",
+  "baseCommit": "b8bef4deea41d216502b3704359f461d4b3db1e3",
+  "objective": "Render the homepage plugin preview immediately from the verified static build snapshot, load the integrity-pinned catalog index before the large legacy bridge, and remove unnecessary fixed-height whitespace from featured and preview cards.",
+  "scope": [
+    "marketplace/app.js",
+    "marketplace/home-redesign.css",
+    "marketplace/index.html",
+    "scripts/build-marketplace-static.mjs",
+    "test/deploy-refresh.test.mjs",
+    "test/contracts.test.mjs"
+  ],
+  "preconditionSha256": {
+    "marketplace/app.js": "b2b97804b23a7f46a37c6b546c0d29b1d9dfb4166a107e091a0290c0ddb8a144",
+    "marketplace/home-redesign.css": "5223de1145a5f643adfdfd3d69d15aa877ffe0541eb3b61192a411a71da5029e",
+    "marketplace/index.html": "56f082d9ba8f5304438038b05a1284fc6b3ab84d8806025dba3389a721fde0f8",
+    "scripts/build-marketplace-static.mjs": "0643d8d8ddf83c6bb4e4130104835702c52efbf5594d2e2ef676fa0ea0c8e64a",
+    "test/deploy-refresh.test.mjs": "a9a33a9544d8b811233aa12d20a99b63f15728d5884c80ed0dc5fca9ea4eb0bc",
+    "test/contracts.test.mjs": "6e8fb621434f5b4aab0412e5aa5d4dd9bc48c05ada32d8aa900f0d820a6ee095"
+  },
+  "deterministicGates": [
+    "All six scoped source precondition hashes and the base Commit still match before edits.",
+    "npm run check passes, including marketplace and catalog fixture tests.",
+    "Static build contains six real homepage preview cards and no loading placeholders.",
+    "Static build embeds the exact catalog-index byte length and SHA-256; the browser validates both before accepting the direct index response.",
+    "Disposable browser preview confirms catalog rendering and compact card layout; live dsh.store requests are measured and documented without production writes.",
+    "git diff --check passes and the change is submitted through a CI-checked PR."
+  ],
+  "verificationEvidence": {
+    "baseCommit": "b8bef4deea41d216502b3704359f461d4b3db1e3",
+    "tests": "npm run check: 325 passed, 0 failed; registry validation: 712 entries",
+    "staticBuild": "STATIC_MARKETPLACE_OK; homepage contains six catalog cards and no placeholders; index metadata matches its built bytes",
+    "liveInternationalSite": {
+      "home": "HTTP 200, 31999 bytes, 2.76 seconds",
+      "catalogIndex": "HTTP 200, Content-Length 548367; a 22-second full request transferred only 212469 bytes before timeout; 1 KiB Range request took 1.83 seconds",
+      "legacyBridge": "HTTP 200, Content-Length 1873706; a 22-second full request transferred only 278003 bytes before timeout",
+      "browserReadback": "The live homepage eventually rendered all six entries; this indicates slow initial Catalog transfer rather than a permanent missing-catalog state."
+    },
+    "productionMutation": "none"
+  },
+  "sideEffectBoundary": {
+    "allowed": ["local source changes", "disposable static build output", "auditable source PR"],
+    "excluded": ["merging the PR", "production storefront deployment", "DSH Profile/package/restart mutations", "third-party outreach"]
+  },
+  "rollback": {
+    "source": "Revert the storefront source PR to restore the previous behavior.",
+    "production": "No production files are changed by this plan; a separately authorized production rollout must use the existing atomic storefront refresh rollback path."
+  }
+}

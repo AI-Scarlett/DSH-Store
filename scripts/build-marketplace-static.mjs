@@ -47,6 +47,19 @@ if (!outputRelative || outputRelative.startsWith('..')) {
 }
 
 const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
+const catalogIndexBytes = await readFile(resolve(projectRoot, 'registry/catalog-index.json'))
+const catalogIndex = JSON.parse(catalogIndexBytes.toString('utf8'))
+const catalogIndexSha256 = createHash('sha256').update(catalogIndexBytes).digest('hex')
+const catalogBridge = JSON.parse(await readFile(resolve(projectRoot, 'registry/catalog.json'), 'utf8'))
+if (catalogIndex.schemaVersion !== 2 || !Array.isArray(catalogIndex.entries)
+  || catalogIndex.entries.length !== catalog.entries.length
+  || catalogIndex.registry?.updatedAt !== catalog.registry?.updatedAt
+  || catalogIndex.registry?.repositoryUrl !== catalog.registry?.repositoryUrl
+  || catalogBridge.registry?.indexSha256 !== catalogIndexSha256
+  || catalogBridge.registry?.indexBytes !== catalogIndexBytes.byteLength
+  || catalogBridge.registry?.indexEntryCount !== catalogIndex.entries.length) {
+  throw new Error('The static build catalog index does not match the validated Catalog bridge')
+}
 const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(resolve(projectRoot, 'registry/candidates.json'), 'utf8')))
 
 async function readAutomationRuns(path) {
@@ -272,6 +285,20 @@ function featuredCard(entry, index) {
   </article>`
 }
 
+function homePluginCard(entry) {
+  const topCategory = Array.isArray(entry.categories) ? entry.categories[0] : ''
+  const statusClass = entry.status === 'approved' ? '' : ' blocked'
+  const status = entry.status === 'approved' ? '可安装' : '仅展示'
+  return `<article class="home-plugin-card" data-static-home-plugin-id="${htmlEscape(entry.id)}">
+    <div class="home-plugin-card-top"><span class="home-plugin-icon" aria-hidden="true" style="--plugin-color:${pluginColor(entry.id)}">${htmlEscape(initials(entry.name))}</span><span class="status-tag${statusClass}">${status}</span></div>
+    <h3>${htmlEscape(entry.name)}</h3>
+    ${topCategory ? `<p class="home-plugin-category">${htmlEscape(categoryLabel(topCategory))}</p>` : ''}
+    <p class="home-plugin-description">${htmlEscape(entry.description || '打开详情查看插件信息。')}</p>
+    <div class="home-plugin-package"><code>${htmlEscape(entry.packageName)}</code><span>v${htmlEscape(entry.version)}</span></div>
+    <footer class="home-plugin-card-footer"><a class="home-plugin-detail" href="./plugins/#plugin-${htmlEscape(anchorId(entry.id))}">查看插件详情 →</a><a class="home-plugin-repo" href="${htmlEscape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="打开 GitHub 仓库: ${htmlEscape(entry.name)}">↗</a></footer>
+  </article>`
+}
+
 function replaceRequired(source, search, replacement, label) {
   if (!source.includes(search)) throw new Error(`Static template marker is missing: ${label}`)
   return source.replace(search, replacement)
@@ -307,7 +334,10 @@ async function rewriteSiteReferences(directory) {
   }
 }
 
-const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="external-json">'
+const externalCatalogMarker = `<meta name="dsh-catalog-delivery" content="external-json">
+  <meta name="dsh-catalog-index-sha256" content="${catalogIndexSha256}">
+  <meta name="dsh-catalog-index-bytes" content="${catalogIndexBytes.byteLength}">
+  <meta name="dsh-catalog-index-count" content="${catalogIndex.entries.length}">`
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = managerInstallable
@@ -466,6 +496,7 @@ home = replaceRequired(home, '<!-- DSH_LEGACY_REPAIR_BANNER -->', repairAvailabl
   ? `<aside class="legacy-repair-banner" aria-label="旧版商城安全修复"><strong>旧版商城更新被 pnpm 拦截？</strong><span>不要放开 prepare 权限，也不要手改 Profile。</span><a href="./repair/">打开官方安全修复入口 →</a></aside>`
   : '', 'home legacy repair banner')
 home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_FEATURED_BEGIN -->', '<!-- DSH_STATIC_FEATURED_END -->', featured.map(featuredCard).join(''), 'featured catalog')
+home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_HOME_CATALOG_BEGIN -->', '<!-- DSH_STATIC_HOME_CATALOG_END -->', visibleEntries.slice(0, 6).map(homePluginCard).join(''), 'homepage catalog preview')
 home = home.replace(/"softwareVersion"\s*:\s*"[^"]*"/, `"softwareVersion": "${htmlEscape(manager.version)}"`)
 home = replaceElementText(home, 'install-version', managerInstallable
   ? `v${manager.version} · SHA PINNED`

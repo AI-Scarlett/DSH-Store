@@ -940,10 +940,24 @@ async function loadInstallCounts() {
 }
 
 function catalogCandidates() {
+  const indexIntegrity = catalogIndexIntegrity()
+  const indexUrl = indexIntegrity
+    ? new URL('catalog-index.json', new URL(CATALOG_URL, window.location.href)).href
+    : null
   return [...new Set([
+    ...(indexUrl ? [indexUrl] : []),
     new URL(CATALOG_URL, window.location.href).href,
     new URL('/registry/catalog.json', window.location.origin).href,
   ])]
+}
+
+function catalogIndexIntegrity() {
+  const sha256 = document.querySelector('meta[name="dsh-catalog-index-sha256"]')?.content || ''
+  const bytes = Number(document.querySelector('meta[name="dsh-catalog-index-bytes"]')?.content)
+  const entries = Number(document.querySelector('meta[name="dsh-catalog-index-count"]')?.content)
+  if (!/^[0-9a-f]{64}$/.test(sha256) || !Number.isInteger(bytes) || bytes < 1 || bytes > 2 * 1024 * 1024
+    || !Number.isInteger(entries) || entries < 1) return null
+  return { sha256, bytes, entries }
 }
 
 function candidateRegistryUrls() {
@@ -984,6 +998,18 @@ async function fetchCatalog() {
       if (payload.schemaVersion === 2) {
         if (root.bytes.byteLength > 2 * 1024 * 1024) throw new Error('catalog index is too large')
         validateIndex(payload)
+        const indexIntegrity = catalogIndexIntegrity()
+        const indexUrl = indexIntegrity
+          ? new URL('catalog-index.json', new URL(CATALOG_URL, window.location.href)).href
+          : null
+        if (url === indexUrl) {
+          if (!indexIntegrity || root.bytes.byteLength !== indexIntegrity.bytes) throw new Error('Catalog index byte length does not match the build')
+          if (!globalThis.crypto?.subtle) throw new Error('Catalog index integrity verification is unavailable')
+          const digest = [...new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', root.bytes))]
+            .map(value => value.toString(16).padStart(2, '0')).join('')
+          if (digest !== indexIntegrity.sha256) throw new Error('Catalog index SHA-256 does not match the build')
+          if (payload.entries.length !== indexIntegrity.entries) throw new Error('Catalog index entry count does not match the build')
+        }
       } else if (payload.schemaVersion !== 1) {
         throw new Error('Unsupported catalog version')
       }
