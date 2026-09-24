@@ -47,4 +47,5 @@ test('runtime workflow has one timeout and keeps the expensive disposable smoke 
   assert.ok(runtime)
   assert.equal(runtime.match(/^\s+timeout-minutes:/gm)?.length, 1)
   assert.match(runtime, /timeout-minutes: 20/)
+  assert.equal(workflow.match(/DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett\/DSH-Store#/g)?.length, 2)
 })

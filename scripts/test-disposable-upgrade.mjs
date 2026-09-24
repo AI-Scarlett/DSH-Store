@@ -5,6 +5,7 @@ import { createServer } from 'node:net'
 import assert from 'node:assert/strict'
 const cli = resolve(process.argv[2])
 const buildRoot = process.argv[3] ? resolve(process.argv[3]) : null
+const managerSpec = process.env.DSH_TEST_PLUGIN_SPEC ?? `file:${resolve('.')}`
 // Keep file dependencies on the fixture drive: pnpm 10 on Windows cannot
 // resolve the cross-drive file-source layout. This remains a disposable sibling.
 const root = await mkdtemp(join(dirname(resolve('.')), 'store-e3-'))
@@ -18,7 +19,7 @@ let child
 try {
   await mkdir(env.DSH_HOME, { recursive: true })
   await run(['--profile', 'web', '--dump-config'])
-  await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', '--config.auto-install-peers=false', `file:${resolve('.')}`])
+  await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', '--config.auto-install-peers=false', managerSpec])
   if (buildRoot) await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', `file:${buildRoot}`])
   const config = await run(['--profile', 'web', '--dump-config'])
   assert.ok(config.includes('dsh-safe-plugin-manager'))
