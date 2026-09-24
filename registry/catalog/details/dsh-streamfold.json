@@ -1,49 +1,49 @@
 {
-  "id": "dsh-vs-game",
-  "name": "用量统计看板（DSH Vs Game）",
-  "packageName": "dsh-vs-game",
-  "description": "工作中的大肥鱼：工作驱动的解压小游戏。文件是敌人，token 是经验，DSH 干活就是你变强的方式。",
+  "id": "dsh-streamfold",
+  "name": "会话管理（DSH Streamfold）",
+  "packageName": "dsh-streamfold",
+  "description": "流式折叠：一个更好的会话窗口——运行时自动展开最新思考小窗、旧窗自动折叠，跑完把思考与工具调用折起，全程水流般的动效。",
   "searchTerms": [
-    "用量统计看板",
-    "DSH Vs Game",
-    "dsh-vs-game",
-    "用量",
-    "Token",
-    "统计",
-    "看板",
-    "实验功能",
-    "新功能",
+    "会话管理",
+    "DSH Streamfold",
+    "dsh-streamfold",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "界面",
+    "交互",
+    "侧栏",
     "dsh",
-    "vs",
-    "game"
+    "streamfold"
   ],
-  "repositoryUrl": "https://github.com/shang-han/dsh-vs-game",
+  "repositoryUrl": "https://github.com/rezon-aki/dsh-streamfold",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "abe85da6afcc60ae44d8486afe24eff5bb5ad77b",
-  "version": "0.1.7",
+  "commit": "2cb1a2ae2145434877201085456e55141a788232",
+  "version": "0.4.0",
   "categories": [
-    "experimental"
+    "ui"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T12:19:47.000Z",
+    "updatedAt": "2026-09-24T12:25:10.000Z",
     "observedAt": "2026-09-24T12:20:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-24T12:20:28.000Z",
-      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/abe85da6afcc60ae44d8486afe24eff5bb5ad77b",
+      "evidenceUrl": "https://github.com/rezon-aki/dsh-streamfold/commit/2cb1a2ae2145434877201085456e55141a788232",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "vs-game"
+    "dsh-streamfold"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=18",
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"

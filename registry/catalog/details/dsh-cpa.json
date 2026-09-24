@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1ecd032545a1d8f87c0d33c06ec925a367999b99",
+  "commit": "4cfec76076be6fa5375d295067e4814367dcc2bf",
   "version": "0.1.9",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-23T22:46:41.000Z",
-    "observedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-09-24T05:55:15.000Z",
+    "observedAt": "2026-09-24T12:20:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-24T01:36:44.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/1ecd032545a1d8f87c0d33c06ec925a367999b99",
+      "checkedAt": "2026-09-24T12:20:28.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/4cfec76076be6fa5375d295067e4814367dcc2bf",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,9 +79,9 @@
     "dsh-cpa"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.1.7-alpha.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

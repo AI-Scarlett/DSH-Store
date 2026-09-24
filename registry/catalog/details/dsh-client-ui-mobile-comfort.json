@@ -25,25 +25,25 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "e077d172b8c939099599ddd12e4f9a2ec1fd2c97",
-  "version": "0.1.0",
+  "updatePolicy": "source-verified",
+  "commit": "d04fb27d62ac39f8f7478ea5d165d32862b958a5",
+  "version": "0.1.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-26T01:39:08.000Z",
-    "observedAt": "2026-09-04T05:32:32.000Z",
+    "updatedAt": "2026-09-24T08:59:28.000Z",
+    "observedAt": "2026-09-24T12:20:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T05:32:32.000Z",
-      "evidenceUrl": "https://github.com/oksure/dsh-mobile-comfort/commit/e077d172b8c939099599ddd12e4f9a2ec1fd2c97",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-24T12:20:28.000Z",
+      "evidenceUrl": "https://github.com/oksure/dsh-mobile-comfort/commit/d04fb27d62ac39f8f7478ea5d165d32862b958a5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,10 +83,10 @@
   "entryIds": [
     "ui-mobile-comfort"
   ],
-  "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.1.5-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -96,15 +96,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown",
+      "0.1.5-rc.2": "compatible",
       "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown"
@@ -158,58 +150,10 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.1.7-alpha.1": {
@@ -231,7 +175,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -242,12 +186,12 @@
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
     "externalDependencies": [],
@@ -255,6 +199,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "automated-fixed-source-policy-v1"
   }
 }
