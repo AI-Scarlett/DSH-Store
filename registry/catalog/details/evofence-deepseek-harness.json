@@ -1,24 +1,25 @@
 {
-  "id": "dsh-weknora",
-  "name": "实验功能插件（DSH Weknora）",
-  "packageName": "@wxg-prc-cpg/dsh-weknora",
-  "description": "为 DSH 提供实验功能插件能力。英文原始说明：WeKnora knowledge retrieval tools for DeepSeek Harness (dsh): semantic search, document reading and RAG/agent answers over your own knowledge bases.",
+  "id": "evofence-deepseek-harness",
+  "name": "实验功能插件（Evofence DeepSeek Harness）",
+  "packageName": "@local/evofence-deepseek-harness",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：This local Cordis bundle adds two read-only tools to DeepSeek Harness:",
   "searchTerms": [
     "实验功能插件",
-    "DSH Weknora",
-    "dsh-weknora",
-    "@wxg-prc-cpg/dsh-weknora",
+    "Evofence DeepSeek Harness",
+    "evofence-deepseek-harness",
+    "@local/evofence-deepseek-harness",
     "实验功能",
     "新功能",
-    "dsh",
-    "weknora"
+    "evofence",
+    "deepseek",
+    "harness"
   ],
-  "repositoryUrl": "https://github.com/Tencent/WeKnora",
+  "repositoryUrl": "https://github.com/Calvin-Xia/EvoFence",
   "defaultBranch": "main",
-  "manifestPath": "packages/dsh-weknora/package.json",
-  "installPath": "packages/dsh-weknora",
+  "manifestPath": "integrations/deepseek-harness/package.json",
+  "installPath": "integrations/deepseek-harness",
   "updatePolicy": "external-only",
-  "commit": "7e82ee33dcefc398ca455775700bdf8730054aa5",
+  "commit": "aaa61397ce8b0352f38dff7cc0c3f4f42cef80fd",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -26,20 +27,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T13:17:30.000Z",
+    "updatedAt": "2026-09-24T13:22:22.000Z",
     "observedAt": "2026-09-24T13:19:30.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-24T13:19:30.000Z",
-      "evidenceUrl": "https://github.com/Tencent/WeKnora/commit/7e82ee33dcefc398ca455775700bdf8730054aa5",
+      "evidenceUrl": "https://github.com/Calvin-Xia/EvoFence/commit/aaa61397ce8b0352f38dff7cc0c3f4f42cef80fd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,16 +70,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "weknora"
+    "evofence-tools"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review",
   "compatibility": {
-    "dsh": null,
+    "dsh": "*",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -160,14 +161,14 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20.11",
+    "node": null,
     "systems": [],
     "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "UNKNOWN",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -177,13 +178,13 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "evofence"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
