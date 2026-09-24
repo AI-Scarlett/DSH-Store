@@ -13,6 +13,31 @@ const COMMAND_MODULE = moduleImport('child_process')
 const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
 const GENERATED_CATALOG_DETAIL = /^registry\/catalog\/details\/[^/]+\.json$/i
+const TEST_SOURCE_FILE = /^(?:test|spec)[-_.].*\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
+const SUFFIXED_TEST_SOURCE_FILE = /^.+\.(?:test|spec)\.(?:[cm]?[jt]sx?)$/i
+
+export function isTestSourceFile(relativePath) {
+  const name = String(relativePath ?? '').split('/').at(-1) ?? ''
+  return TEST_SOURCE_FILE.test(name) || SUFFIXED_TEST_SOURCE_FILE.test(name)
+}
+
+export function isBoundedSourceLineage(lineage, maxCommitSpan, { allowDiverged = false } = {}) {
+  if (!lineage || !Number.isInteger(maxCommitSpan) || maxCommitSpan < 1) return false
+  if (lineage.status === 'ahead') {
+    return Number.isInteger(lineage.total_commits)
+      && lineage.total_commits > 0
+      && lineage.total_commits <= maxCommitSpan
+  }
+  if (!allowDiverged || lineage.status !== 'diverged') return false
+  const aheadBy = lineage.ahead_by
+  const behindBy = lineage.behind_by
+  return Number.isInteger(lineage.total_commits)
+    && Number.isInteger(aheadBy) && aheadBy > 0
+    && Number.isInteger(behindBy) && behindBy > 0
+    && lineage.total_commits === aheadBy
+    && aheadBy + behindBy <= maxCommitSpan
+    && /^[0-9a-f]{40}$/.test(lineage.merge_base_commit?.sha ?? '')
+}
 
 export function isGeneratedSelfManagerCatalogDetail(candidate, relativePath) {
   const repository = typeof candidate?.repositoryUrl === 'string'
