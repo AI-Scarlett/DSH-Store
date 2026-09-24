@@ -19,28 +19,28 @@
   "manifestPath": "adapters/dsh/plugin/package.json",
   "installPath": "adapters/dsh/plugin",
   "updatePolicy": "user-reviewed",
-  "commit": "27e578d2345d872768ecd191c78fc5c2fd142890",
-  "version": "0.2.4",
+  "commit": "500cf5d49a19108196a420bd50e71ef0a3a80e7c",
+  "version": "0.2.5",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-22T18:09:41.000Z",
-    "observedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-09-24T03:15:58.000Z",
+    "observedAt": "2026-09-24T05:21:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T01:36:44.000Z",
-      "evidenceUrl": "https://github.com/tinqiao-oss/engramory/commit/27e578d2345d872768ecd191c78fc5c2fd142890",
+      "checkedAt": "2026-09-24T05:21:19.000Z",
+      "evidenceUrl": "https://github.com/tinqiao-oss/engramory/commit/500cf5d49a19108196a420bd50e71ef0a3a80e7c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -76,10 +76,10 @@
   "entryIds": [
     "engramory"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.1, 0.1.7-alpha.2, 0.1.7-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.0.1-rc.1",
+    "dsh": ">=0.1.0-rc.7 <0.2.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -98,9 +98,10 @@
       "0.1.5-rc.2": "unknown",
       "0.1.6-alpha.1": "unknown",
       "0.1.6-alpha.2": "unknown",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown"
+      "0.1.7-alpha.1": "compatible",
+      "0.1.7-alpha.2": "compatible",
+      "0.1.7-rc.1": "compatible",
+      "0.1.5-rc.3": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -218,6 +219,12 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
