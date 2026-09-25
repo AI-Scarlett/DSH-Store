@@ -79,12 +79,19 @@ test('author target resolution suppresses deterministically unavailable reposito
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
   const policy = JSON.parse(await read('registry/automation-policy.json'))
   assert.equal(policy.scheduleHours, 8)
-  assert.equal(policy.search.maxNewRepositoriesPerRun, 16)
+  assert.equal(policy.search.maxNewRepositoriesPerRun, 64)
   assert.deepEqual(policy.discoveryFeeds.sources.map(source => `${source.repository}:${source.format}`), [
+    'bruc3van/awesome-dsh-plugin:json-map',
     'awesome-dsh-plugin/awesome-dsh-plugin:yaml-tree',
     '0xsline/awesome-deepseek-harness:markdown-table',
   ])
-  assert.ok(policy.discoveryFeeds.sources.every(source => source.maxRecordsPerRun === 5))
+  assert.deepEqual(policy.discoveryFeeds.sources.filter(source => source.primary).map(source => source.repository), [
+    'bruc3van/awesome-dsh-plugin',
+  ])
+  assert.equal(policy.discoveryFeeds.sources[0].path, 'data/approved.json')
+  assert.equal(policy.discoveryFeeds.sources[0].excludeKey, 'excluded_repos')
+  assert.equal(policy.discoveryFeeds.sources[0].maxRecordsPerRun, 64)
+  assert.ok(policy.discoveryFeeds.sources.slice(1).every(source => source.maxRecordsPerRun === 5))
   assert.equal(policy.discoveryFeeds.admission, 'candidate-only')
   assert.equal(policy.discoveryFeeds.contactAuthors, false)
   assert.equal(policy.updates.checkAllCatalogEntries, true)

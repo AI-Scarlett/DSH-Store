@@ -135,10 +135,12 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
 
 ## 八小时 Catalog 自动化与三小时自愈
 
-新插件雷达不只读取已经收录的 Catalog：每轮同时搜索 GitHub 主题/关键词，并轮转检查
-`awesome-dsh-plugin` 的 YAML 清单与 `0xsline/awesome-deepseek-harness` 固定 Commit 的“单插件”表；
-候选去重后每轮最多对 16 个新仓库执行固定 Commit 契约扫描。每次自动化报告分别列出各来源的可用状态、
-线索数、唯一仓库数和实际固定 Commit 检查数。社区目录只提供发现线索，不会直接创建可安装条目；
+新插件雷达以固定大型目录 `bruc3van/awesome-dsh-plugin` 为主：每轮从其 `data/approved.json` 读取
+一个连续的 64 条窗口，并在相同固定 Commit 的 `data/curated.json#excluded_repos` 中排除目录明确剔除的项目；
+规划时该索引有 13,739 个仓库键。`awesome-dsh-plugin` YAML、`0xsline/awesome-deepseek-harness` 单插件表和
+GitHub 搜索作为补充来源。候选去重后每轮最多对 64 个新仓库执行固定 Commit 契约扫描。每次自动化报告分别列出
+主目录索引规模、本轮选取数、有效仓库数、来源可用状态、唯一仓库数和实际固定 Commit 检查数。
+所有社区目录只提供发现线索，不会直接创建可安装条目；
 任何新项目仍须通过与 GitHub 搜索结果完全相同的 manifest、Bundle、兼容性和权限门禁。目录不可用时仅
 标记该来源暂不可用，不中断其它来源，也不把缺失证据当作通过。
 
