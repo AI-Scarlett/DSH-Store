@@ -471,6 +471,15 @@ const baiduVerificationMarkup = baiduVerificationCode
 const baiduUnionVerificationMarkup = isDomestic
   ? '<meta name="baidu_union_verify" content="f7a5e80f6ec4d01cdfd011c771e7e706">'
   : ''
+const baiduTongjiMarkup = isDomestic ? `<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?7c34f1fd076e8f052b6a6f746ab1135d";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>` : ''
 for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
@@ -482,11 +491,14 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
   const withBaiduUnionVerification = route === '/'
     ? replaceRequired(withBaiduVerification, '<!-- DSH_BAIDU_UNION_VERIFY -->', baiduUnionVerificationMarkup, `${pagePath} Baidu Union verification marker`)
     : withBaiduVerification
+  const withBaiduTongji = baiduTongjiMarkup
+    ? replaceRequired(withBaiduUnionVerification, '</head>', `${baiduTongjiMarkup}\n</head>`, `${pagePath} head`)
+    : withBaiduUnionVerification
   const pageLanguage = fixedLocale || htmlLanguage
   const pageDefaultLocale = fixedLocale === 'zh-CN' ? 'zh' : defaultLocale
   const fixedLocaleAttribute = fixedLocale ? ` data-fixed-locale="${fixedLocale}"` : ''
-  const localizedDocument = withBaiduUnionVerification.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
-  if (localizedDocument === withBaiduUnionVerification) throw new Error(`${pagePath} html language marker is missing`)
+  const localizedDocument = withBaiduTongji.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
+  if (localizedDocument === withBaiduTongji) throw new Error(`${pagePath} html language marker is missing`)
   await writeFile(absolutePath, localizedDocument)
 }
 

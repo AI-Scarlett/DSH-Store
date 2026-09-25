@@ -110,6 +110,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /<html lang="en" data-default-locale="en">/)
     assert.doesNotMatch(home, /baidu-site-verification/)
     assert.doesNotMatch(home, /baidu_union_verify/)
+    assert.doesNotMatch(home, /hm\.baidu\.com\/hm\.js/)
     assert.match(home, /DSH STORE \| DeepSeek Harness Plugin Marketplace/)
     assert.match(home, /name="applicable-device" content="pc,mobile"/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
@@ -269,19 +270,24 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const pagePaths = [
       'marketplace/index.html',
       'marketplace/plugins/index.html',
+      'marketplace/community/index.html',
       'marketplace/standards/index.html',
       'marketplace/build/index.html',
       'marketplace/faq/index.html',
       'marketplace/about/index.html',
       'marketplace/repair/index.html',
       'marketplace/dsh-plugins/index.html',
+      'marketplace/dsh-store-guide/index.html',
+      'marketplace/about/deepseek-harness-guide/index.html',
     ]
     for (const pagePath of pagePaths) {
       const page = await readFile(join(output, pagePath), 'utf8')
       assert.match(page, /https:\/\/dsh-store\.cn/)
       assert.match(page, new RegExp(icp))
       assert.match(page, /<meta name="baidu-site-verification" content="codeva-gZjUUScijx">/)
-      assert.match(page, /<html lang="zh-CN" data-default-locale="zh">/)
+      assert.equal((page.match(/https:\/\/hm\.baidu\.com\/hm\.js\?7c34f1fd076e8f052b6a6f746ab1135d/g) || []).length, 1)
+      assert.ok(page.indexOf('hm.baidu.com/hm.js?7c34f1fd076e8f052b6a6f746ab1135d') < page.indexOf('</head>'))
+      assert.match(page, /<html lang="zh-CN" data-default-locale="zh"(?: data-fixed-locale="zh-CN")?>/)
       assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
       assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
       assert.match(page, /href="https:\/\/aiaiai\.help\/"[^>]*>aiaiai\.help/)
