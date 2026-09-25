@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "28024a202bac93039a4a4e975dd5c2fcf2533002",
-  "version": "0.6.8",
+  "commit": "7a741315988cd143cf7c5e2ac1b7940fb1e07238",
+  "version": "0.6.9",
   "categories": [
     "workflow",
     "design"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-22T11:38:43.000Z",
-    "observedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-09-25T07:05:27.000Z",
+    "observedAt": "2026-09-25T13:19:47.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T01:36:44.000Z",
-      "evidenceUrl": "https://github.com/AmethystLuna/logicprobe/commit/28024a202bac93039a4a4e975dd5c2fcf2533002",
+      "checkedAt": "2026-09-25T13:19:47.000Z",
+      "evidenceUrl": "https://github.com/AmethystLuna/logicprobe/commit/7a741315988cd143cf7c5e2ac1b7940fb1e07238",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -84,8 +84,8 @@
   "entryIds": [
     "logicprobe"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": "^0.1.0-rc.7 || ^0.1.1-rc.1 || ^0.1.2-alpha.2 || ^0.1.2-alpha.3 || ^0.1.2-alpha.4 || ^0.1.2-alpha.5 || ^0.1.2-rc.1 || ^0.",
     "dshReleases": {
@@ -107,9 +107,10 @@
       "0.1.6-alpha.1": "compatible",
       "0.1.6-alpha.2": "compatible",
       "0.1.7-alpha.1": "compatible",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-alpha.2": "compatible",
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-rc.2": "compatible",
+      "0.1.5-rc.3": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -233,6 +234,12 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

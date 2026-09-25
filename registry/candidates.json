@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-25T03:52:28.000Z",
+    "updatedAt": "2026-09-25T13:19:47.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2553,8 +2553,8 @@
       "description": "DeepSeek Harness 表情包插件:内置官方-001 与大肥鱼两套图库,设置页扫描切换,send_meme 发图(Web/QQ)。",
       "repositoryUrl": "https://github.com/yyh-001/dsh-meme",
       "defaultBranch": "main",
-      "latestCommit": "8ddc253c8165a123a632d7e7f73917705b7d306c",
-      "sourceUpdatedAt": "2026-09-14T09:43:17.000Z",
+      "latestCommit": "4a32736ba6a5172af4ce5bf900d89b8b11d28d51",
+      "sourceUpdatedAt": "2026-09-25T13:20:20.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3699,8 +3699,8 @@
       "description": "为 DSH 提供Exa 联网搜索能力。英文原始说明：Zero-config Exa web search provider for DeepSeek Harness (dsh): keyless anonymous MCP fallback (mcp.exa.ai/mcp) plus keyed REST search — a drop-in WebSearchProvider for the ctx.web seam, no API key required.",
       "repositoryUrl": "https://github.com/TonyDua/dsh-web-search-exa",
       "defaultBranch": "main",
-      "latestCommit": "d5783464e4dd8829859e987fd0db293261eee624",
-      "sourceUpdatedAt": "2026-09-23T07:19:52.000Z",
+      "latestCommit": "aa8bc17bfaa6734c23faaa6a6c507ca41ecc6ff7",
+      "sourceUpdatedAt": "2026-09-25T05:21:53.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12341,27 +12341,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-ponytail-skills."
     },
     {
-      "id": "severuszh-dsh-notify-windows",
-      "name": "任务通知提醒（DSH Notify Windows）",
-      "description": "DeepSeek Harness (DSH) 插件：任务完成 / 等待审批 / 等待回答时发送 Windows 系统桌面通知",
-      "repositoryUrl": "https://github.com/SeverusZh/dsh-notify-windows",
-      "defaultBranch": "main",
-      "latestCommit": "647077e31042b879c9b2904057a255a833851fb5",
-      "sourceUpdatedAt": "2026-09-21T18:24:31.000Z",
-      "discoveredAt": "2026-09-24T01:36:44.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "notifications",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-notify-windows."
-    },
-    {
       "id": "sunshine-lang-dsh-pdf",
       "name": "文件与工作区工具（DSH Pdf）",
       "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：PDF toolbox for DeepSeek Harness: extract text, metadata, and page ranges from PDF files (local parsing, no API key).",
@@ -13135,48 +13114,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "amethystluna-embedded-workbench",
-      "name": "模型提供商接入（Embedded Workbench）",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Embedded C/C++ firmware development toolbox — 4 agents, 7 skills covering FreeRTOS, ISR, NVM storage, Keil MDK, ARMCLANG, HardFault, state machines, architecture, and LVGL patterns. Ships a native DeepSeek Harness (dsh) bundle that injects the session-start gate into the first model step.",
-      "repositoryUrl": "https://github.com/AmethystLuna/embedded-workbench",
-      "defaultBranch": "master",
-      "latestCommit": "144dfdbd071ffc65f957ed8e725aa6a31481e441",
-      "sourceUpdatedAt": "2026-09-22T11:38:43.000Z",
-      "discoveredAt": "2026-09-24T19:50:51.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "workflow",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: embedded-workbench."
-    },
-    {
-      "id": "amethystluna-logicprobe",
-      "name": "模型提供商接入（Logicprobe）",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Design document & plan claim verification — enumerate claims, verify against codebase facts, then escalate to logic-primitive verification (7 structural checks + 7 adversarial probes) for behavioral claims. Before/after model comparison for refactoring regression detection. Ships a native DeepSeek Harness (dsh) bundle that injects the claim-verification gate into the first model step.",
-      "repositoryUrl": "https://github.com/AmethystLuna/logicprobe",
-      "defaultBranch": "main",
-      "latestCommit": "28024a202bac93039a4a4e975dd5c2fcf2533002",
-      "sourceUpdatedAt": "2026-09-22T11:38:43.000Z",
-      "discoveredAt": "2026-09-24T19:50:51.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "workflow",
-        "design",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: logicprobe."
-    },
-    {
       "id": "picsky-dsh-pocket-console",
       "name": "picsky/dsh-pocket-console",
       "description": "不把整台机器交出去，只送出挡路的决定和下一步：DeepSeek Harness 的审批、ask_user_question 提问与结果回复，以飞书卡片发到手机——桌面优先、只出站；执行过程实时可见，下一段任务一键即开。",
@@ -13277,6 +13214,81 @@
         "dsh-plugin",
         "image-upload",
         "picgo",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "988hj7tczd-oss-dsh-invoice-tools",
+      "name": "988hj7tczd-oss/dsh-invoice-tools",
+      "description": "DSH native tools: parse Chinese e-invoice PDFs into structured JSON with amount cross-check, and generate expense reports (Markdown / xlsx)",
+      "repositoryUrl": "https://github.com/988hj7tczd-oss/dsh-invoice-tools",
+      "defaultBranch": "main",
+      "latestCommit": "b1c8ee8f6ce6573e1de06587d428d331a0cfd02a",
+      "sourceUpdatedAt": "2026-08-24T14:53:44.000Z",
+      "discoveredAt": "2026-09-25T13:19:47.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2b5516480d133327b8dcb51afc140a855e84d8a1:data/plugins/988hj7tczd-oss__dsh-invoice-tools.yml:sha256=60a794f70f67ee2f14b60d3779cbb2a4bf91b10619945b78639c9ac8db850feb:at=2026-09-25T13:25:03.576Z:owner=284640983"
+      ],
+      "topics": [
+        "chinese-invoice",
+        "deepseek-harness",
+        "dsh-plugin",
+        "expense",
+        "finance",
+        "invoice",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "988hj7tczd-oss-dsh-im-qq",
+      "name": "988hj7tczd-oss/dsh-im-qq",
+      "description": "让 DeepSeek Harness 接入 QQ 官方机器人（q.qq.com）——通过 QQ 私聊/群聊/频道 @ 直接与完整 agent 对话（工具/记忆/子代理/文件系统/审批护栏，与 Web UI 同源）。WS 长连接、会话隔离、审批按钮、白名单 fail-closed。",
+      "repositoryUrl": "https://github.com/988hj7tczd-oss/dsh-im-qq",
+      "defaultBranch": "main",
+      "latestCommit": "d1ae12486264359f9c516bb2cf0ed5e75e811d37",
+      "sourceUpdatedAt": "2026-08-22T06:53:54.000Z",
+      "discoveredAt": "2026-09-25T13:19:47.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2b5516480d133327b8dcb51afc140a855e84d8a1:data/plugins/988hj7tczd-oss__dsh-im-qq.yml:sha256=850e73b9908a3be6c4f999a0b5936bb6ee70ef220f18468dbaaf5e20cdda3fb0:at=2026-09-25T13:25:03.576Z:owner=284640983"
+      ],
+      "topics": [
+        "agent",
+        "deepseek-harness",
+        "dsh-plugin",
+        "im",
+        "qq-bot",
+        "qqbot",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "988hj7tczd-oss-dsh-dep-vuln-scan",
+      "name": "988hj7tczd-oss/dsh-dep-vuln-scan",
+      "description": "Scan project lockfiles (npm/pnpm/yarn/pip/go/cargo/maven/gradle) against the free OSV API and report confirmed dependency vulnerabilities with fix versions",
+      "repositoryUrl": "https://github.com/988hj7tczd-oss/dsh-dep-vuln-scan",
+      "defaultBranch": "main",
+      "latestCommit": "db879fc01cd02b9f0821a87ba728a310ae08d9ac",
+      "sourceUpdatedAt": "2026-08-24T14:53:28.000Z",
+      "discoveredAt": "2026-09-25T13:19:47.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2b5516480d133327b8dcb51afc140a855e84d8a1:data/plugins/988hj7tczd-oss__dsh-dep-vuln-scan.yml:sha256=a017d5d94bff6fbfc3ab7308e4acb35813223fbf203bbed6d58c9274910573b1:at=2026-09-25T13:25:03.576Z:owner=284640983"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh-plugin",
+        "osv",
+        "security",
+        "vulnerability",
         "automatic-radar"
       ],
       "status": "reviewing",

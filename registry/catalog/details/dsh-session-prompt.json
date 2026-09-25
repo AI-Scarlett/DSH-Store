@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1a8db38064622fac9cff7f7b7d3f0f9cff070f26",
-  "version": "0.2.1",
+  "commit": "fd7a36347fe28e0f17cd3ca4cc0eb0de91a59f80",
+  "version": "0.2.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-18T05:08:29.000Z",
-    "observedAt": "2026-09-18T13:50:17.000Z",
+    "updatedAt": "2026-09-25T11:35:52.000Z",
+    "observedAt": "2026-09-25T13:19:47.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-18T13:50:17.000Z",
-      "evidenceUrl": "https://github.com/masknull/dsh-session-prompt/commit/1a8db38064622fac9cff7f7b7d3f0f9cff070f26",
+      "checkedAt": "2026-09-25T13:19:47.000Z",
+      "evidenceUrl": "https://github.com/masknull/dsh-session-prompt/commit/fd7a36347fe28e0f17cd3ca4cc0eb0de91a59f80",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "session-head-prompt"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.1.5-rc.1",
     "dshReleases": {
@@ -93,10 +93,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown",
-      "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown"
@@ -150,30 +146,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -212,7 +184,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "js-yaml"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
