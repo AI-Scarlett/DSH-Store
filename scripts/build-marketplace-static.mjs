@@ -416,6 +416,7 @@ const friendSisterSiteMarkup = `<a href="${htmlEscape(`${alternateOrigin}/`)}" t
 const canonicalPages = [
   { file: 'marketplace/index.html', route: '/' },
   { file: 'marketplace/plugins/index.html', route: '/plugins/' },
+  { file: 'marketplace/scans/index.html', route: '/scans/' },
   { file: 'marketplace/community/index.html', route: '/community/' },
   { file: 'marketplace/standards/index.html', route: '/standards/' },
   { file: 'marketplace/build/index.html', route: '/build/' },
@@ -449,8 +450,8 @@ const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
-const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
+const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
 if (isDomestic) {
   sitemapPriority['/dsh-store-guide/'] = '0.8'
   sitemapChangefreq['/dsh-store-guide/'] = 'monthly'

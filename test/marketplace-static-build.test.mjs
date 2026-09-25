@@ -60,6 +60,9 @@ test('static marketplace derives manager identity and catalog cards without muta
     const guide = await readFile(join(output, 'marketplace/dsh-plugins/index.html'), 'utf8')
     const faq = await readFile(join(output, 'marketplace/faq/index.html'), 'utf8')
     const repair = await readFile(join(output, 'marketplace/repair/index.html'), 'utf8')
+    const scans = await readFile(join(output, 'marketplace/scans/index.html'), 'utf8')
+    const scansStyles = await readFile(join(output, 'marketplace/scans/scans.css'), 'utf8')
+    const manualScan = JSON.parse(await readFile(join(output, 'marketplace/scans/data/manual-baseline-20260925.json'), 'utf8'))
     const repairManifest = JSON.parse(await readFile(join(output, 'marketplace/repair/repair-manifest.json'), 'utf8'))
     const robots = await readFile(join(output, 'marketplace/robots.txt'), 'utf8')
     const markdown = await readFile(join(output, 'marketplace/index.md'), 'utf8')
@@ -91,12 +94,17 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.ok(release.files['marketplace/about/deepseek-harness-guide/index.html'])
     assert.ok(release.files['marketplace/repair/index.html'])
     assert.ok(release.files['marketplace/repair/repair-manifest.json'])
+    assert.ok(release.files['marketplace/scans/index.html'])
+    assert.ok(release.files['marketplace/scans/scans.js'])
+    assert.ok(release.files['marketplace/scans/scans.css'])
+    assert.ok(release.files['marketplace/scans/data/manual-baseline-20260925.json'])
     assert.ok(release.files['registry/catalog.json'])
     assert.ok(release.files['registry/catalog-index.json'])
     assert.ok(release.files['registry/catalog/details/dsh-safe-plugin-manager.json'])
     assert.equal(release.files['marketplace/catalog.snapshot.json'], undefined)
     assert.equal(release.files['automation-status.json'], undefined, 'run-only status must not rotate production releases')
     assert.equal(automationStatus.overall.status, 'unknown')
+    assert.deepEqual(automationStatus.recentScanRuns, [])
     assert.equal(automationStatus.catalog.entries, catalog.entries.length)
     assert.ok(home.includes(`"softwareVersion": "${manager.version}"`))
     if (manager.status === 'approved') assert.match(home, new RegExp(manager.commit))
@@ -107,6 +115,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /name="dsh-catalog-delivery" content="external-json"/)
     assert.match(home, /data-automation-overall/)
     assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
+    assert.match(home, /href="\.\/scans\/" data-scan-history-nav/)
+    assert.match(plugins, /href="\.\.\/scans\/" data-scan-history-nav/)
     assert.match(home, /<html lang="en" data-default-locale="en">/)
     assert.doesNotMatch(home, /baidu-site-verification/)
     assert.doesNotMatch(home, /baidu_union_verify/)
@@ -178,6 +188,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(sitemap, /https:\/\/dsh\.store\/standards\//)
     assert.match(sitemap, /https:\/\/dsh\.store\/about\/deepseek-harness-guide\//)
     assert.match(sitemap, /https:\/\/dsh\.store\/repair\//)
+    assert.match(sitemap, /https:\/\/dsh\.store\/scans\//)
     assert.doesNotMatch(sitemap, /dsh-store-guide/)
     assert.match(sitemap, /xmlns:mobile="http:\/\/www\.baidu\.com\/schemas\/sitemap-mobile\/1\//)
     assert.match(sitemap, /<mobile:mobile type="pc,mobile" \/>/)
@@ -186,6 +197,20 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(styles, /\.site-nav a \{[\s\S]*font-size: 12px;/)
     assert.match(styles, /\.footer-bottom \{[\s\S]*font-size: 11px;/)
     assert.match(repair, /ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED/)
+    assert.equal(manualScan.scanId, 'DSH-STORE-MANUAL-BASELINE-13739-20260925')
+    assert.match(scans, /role="tablist"/)
+    assert.match(scans, /aria-controls="panel-automatic"/)
+    assert.match(scans, /data-automation-status-url="\.\.\/\.\.\/automation-status\.json"/)
+    assert.equal(manualScan.source.sourceCount, 13739)
+    assert.equal(manualScan.source.processedCount, 13739)
+    assert.deepEqual(manualScan.classificationCounts, {
+      'store-auto-eligible': 3,
+      'candidate-review-noninstallable': 13045,
+      'rejected-hard-gate': 500,
+      'unverified-deferred': 191,
+    })
+    assert.equal(manualScan.eligiblePackages.length, 3)
+    assert.match(scansStyles, /\.scan-tabs button\[aria-selected="true"\]/)
     const repairActive = manager.status === 'approved' && compareVersions(manager.version, '0.8.10') >= 0
     if (repairActive) {
       assert.match(home, /legacy-repair-banner/)
@@ -208,6 +233,58 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(repairManifest.target.commit, manager.commit)
   } finally {
     await rm(output, { recursive: true, force: true })
+  }
+})
+
+test('static build serializes only available automated scan evidence into the public run history', async () => {
+  const output = await mkdtemp(new URL('.tmp-scan-history-build-', root))
+  const fixture = await mkdtemp(join(tmpdir(), 'dsh-store-scan-history-fixture-'))
+  const reportDir = join(fixture, '40')
+  try {
+    await mkdir(reportDir)
+    await writeFile(join(fixture, 'automation-runs.json'), JSON.stringify({
+      catalogAutomation: [
+        { databaseId: 41, status: 'completed', conclusion: 'failure', event: 'schedule', createdAt: '2026-08-22T03:00:00Z', updatedAt: '2026-08-22T03:05:00Z', url: 'https://github.com/example/repo/actions/runs/41', headSha: 'b'.repeat(40) },
+        { databaseId: 40, status: 'completed', conclusion: 'success', event: 'workflow_dispatch', createdAt: '2026-08-22T02:00:00Z', updatedAt: '2026-08-22T02:05:00Z', url: 'https://github.com/example/repo/actions/runs/40', headSha: 'c'.repeat(40) },
+      ],
+    }))
+    await writeFile(join(reportDir, 'catalog-automation-report.json'), JSON.stringify({
+      completed: true,
+      observedAt: '2026-08-22T02:04:00Z',
+      addedEntries: [],
+      updatedEntries: [],
+      compatibilityUnlisted: [],
+      compatibilityRestored: [],
+      prunedCandidates: [],
+      rejectedCandidates: [],
+      deferredUpdates: [],
+      transientFailures: [],
+      sourceVersionChecks: { checkedEntries: 25, sameVersionCatalogUpdates: 0 },
+    }))
+
+    const { stdout } = await execFileAsync(process.execPath, [
+      staticBuilderPath,
+      '--out', relative(rootPath, output),
+      '--automation-runs', join(fixture, 'automation-runs.json'),
+      '--automation-reports', fixture,
+      '--source-sha', 'test-scan-history-sha',
+    ], { cwd: rootPath })
+    assert.match(stdout, /STATIC_MARKETPLACE_OK/)
+    const status = JSON.parse(await readFile(join(output, 'automation-status.json'), 'utf8'))
+    assert.equal(status.recentScanRuns.length, 2)
+    assert.equal(status.recentScanRuns[0].runId, 41)
+    assert.equal(status.recentScanRuns[0].event, 'schedule')
+    assert.equal(status.recentScanRuns[0].reportAvailable, false)
+    assert.equal(status.recentScanRuns[0].statisticsAvailable, false)
+    assert.equal(status.recentScanRuns[0].added, null)
+    assert.equal(status.recentScanRuns[1].runId, 40)
+    assert.equal(status.recentScanRuns[1].event, 'workflow_dispatch')
+    assert.equal(status.recentScanRuns[1].statisticsAvailable, true)
+    assert.equal(status.recentScanRuns[1].added, 0)
+    assert.equal(status.recentScanRuns[1].sourceVersionChecks.checkedEntries, 25)
+  } finally {
+    await rm(output, { recursive: true, force: true })
+    await rm(fixture, { recursive: true, force: true })
   }
 })
 

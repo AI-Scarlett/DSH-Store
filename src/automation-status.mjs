@@ -1,5 +1,6 @@
 const RUN_STATUS = new Set(['queued', 'in_progress', 'completed', 'waiting', 'requested', 'pending'])
 const RUN_CONCLUSION = new Set(['success', 'failure', 'cancelled', 'timed_out', 'action_required', 'neutral', 'skipped', 'stale', 'startup_failure'])
+const RUN_EVENT = new Set(['schedule', 'workflow_dispatch', 'push', 'workflow_run', 'repository_dispatch', 'workflow_call', 'pull_request', 'release'])
 
 function text(value, maximum = 240) {
   return typeof value === 'string' && value.trim() ? value.trim().slice(0, maximum) : null
@@ -15,6 +16,12 @@ function count(value) {
   return Number.isSafeInteger(number) && number >= 0 ? number : 0
 }
 
+function optionalCount(value) {
+  if (value === null || value === undefined) return null
+  const number = Number(value)
+  return Number.isSafeInteger(number) && number >= 0 ? number : null
+}
+
 function normalizeRun(run) {
   if (!run || typeof run !== 'object') return null
   const databaseId = Number(run.databaseId)
@@ -24,6 +31,7 @@ function normalizeRun(run) {
     runId: Number.isSafeInteger(databaseId) && databaseId > 0 ? databaseId : null,
     status,
     conclusion,
+    event: RUN_EVENT.has(run.event) ? run.event : null,
     createdAt: iso(run.createdAt),
     updatedAt: iso(run.updatedAt),
     url: /^https:\/\/github\.com\/[^/]+\/[^/]+\/actions\/runs\/\d+$/.test(run.url ?? '') ? run.url : null,
@@ -59,18 +67,18 @@ function reportRecord(item) {
   if (!statisticsAvailable) {
     return {
       ...identity,
-      addedEntries: [], updatedEntries: [], compatibilityUnlisted: [], compatibilityRestored: [], prunedCandidates: [],
+      addedEntries: null, updatedEntries: null, compatibilityUnlisted: null, compatibilityRestored: null, prunedCandidates: null,
       compatibilityPolicy: null, candidateRetention: null,
       rejectedCandidates: null, deferredUpdates: null, transientFailures: null, sourceVersionChecks: null,
     }
   }
   return {
     ...identity,
-    addedEntries: Array.isArray(report.addedEntries) ? report.addedEntries : [],
-    updatedEntries: Array.isArray(report.updatedEntries) ? report.updatedEntries : [],
-    compatibilityUnlisted: Array.isArray(report.compatibilityUnlisted) ? report.compatibilityUnlisted : [],
-    compatibilityRestored: Array.isArray(report.compatibilityRestored) ? report.compatibilityRestored : [],
-    prunedCandidates: Array.isArray(report.prunedCandidates) ? report.prunedCandidates : [],
+    addedEntries: Array.isArray(report.addedEntries) ? report.addedEntries : null,
+    updatedEntries: Array.isArray(report.updatedEntries) ? report.updatedEntries : null,
+    compatibilityUnlisted: Array.isArray(report.compatibilityUnlisted) ? report.compatibilityUnlisted : null,
+    compatibilityRestored: Array.isArray(report.compatibilityRestored) ? report.compatibilityRestored : null,
+    prunedCandidates: Array.isArray(report.prunedCandidates) ? report.prunedCandidates : null,
     compatibilityPolicy: {
       authority: text(report.compatibilityPolicy?.authority, 120),
       latestVersion: text(report.compatibilityPolicy?.latestVersion, 80),
@@ -94,22 +102,49 @@ function reportRecord(item) {
       durableDecisionsPreserved: count(report.candidateRetention?.durableDecisionsPreserved),
       registryRemovals: count(report.candidateRetention?.registryRemovals),
     },
-    rejectedCandidates: Array.isArray(report.rejectedCandidates) ? report.rejectedCandidates.length : 0,
-    deferredUpdates: Array.isArray(report.deferredUpdates) ? report.deferredUpdates.length : 0,
-    transientFailures: Array.isArray(report.transientFailures) ? report.transientFailures.length : 0,
-    sourceVersionChecks: {
+    rejectedCandidates: Array.isArray(report.rejectedCandidates) ? report.rejectedCandidates.length : null,
+    deferredUpdates: Array.isArray(report.deferredUpdates) ? report.deferredUpdates.length : null,
+    transientFailures: Array.isArray(report.transientFailures) ? report.transientFailures.length : null,
+    sourceVersionChecks: report.sourceVersionChecks && typeof report.sourceVersionChecks === 'object' ? {
       authority: text(report.sourceVersionChecks?.authority, 120),
-      checkedEntries: count(report.sourceVersionChecks?.checkedEntries),
-      currentEntries: count(report.sourceVersionChecks?.currentEntries),
-      newerVersionCandidates: count(report.sourceVersionChecks?.newerVersionCandidates),
-      catalogUpdates: count(report.sourceVersionChecks?.catalogUpdates),
-      newerVersionsDeferred: count(report.sourceVersionChecks?.newerVersionsDeferred),
-      sourceChangedWithoutVersionBump: count(report.sourceVersionChecks?.sourceChangedWithoutVersionBump),
-      sameVersionCatalogUpdates: count(report.sourceVersionChecks?.sameVersionCatalogUpdates),
-      sameVersionUpdatesDeferred: count(report.sourceVersionChecks?.sameVersionUpdatesDeferred),
-      upstreamVersionBehind: count(report.sourceVersionChecks?.upstreamVersionBehind),
-      unresolvedEntries: count(report.sourceVersionChecks?.unresolvedEntries),
-    },
+      checkedEntries: optionalCount(report.sourceVersionChecks.checkedEntries),
+      currentEntries: optionalCount(report.sourceVersionChecks.currentEntries),
+      newerVersionCandidates: optionalCount(report.sourceVersionChecks.newerVersionCandidates),
+      catalogUpdates: optionalCount(report.sourceVersionChecks.catalogUpdates),
+      newerVersionsDeferred: optionalCount(report.sourceVersionChecks.newerVersionsDeferred),
+      sourceChangedWithoutVersionBump: optionalCount(report.sourceVersionChecks.sourceChangedWithoutVersionBump),
+      sameVersionCatalogUpdates: optionalCount(report.sourceVersionChecks.sameVersionCatalogUpdates),
+      sameVersionUpdatesDeferred: optionalCount(report.sourceVersionChecks.sameVersionUpdatesDeferred),
+      upstreamVersionBehind: optionalCount(report.sourceVersionChecks.upstreamVersionBehind),
+      unresolvedEntries: optionalCount(report.sourceVersionChecks.unresolvedEntries),
+    } : null,
+  }
+}
+
+function publicScanRun(run, report) {
+  const statisticsAvailable = report?.statisticsAvailable === true
+  const arrayCount = value => Array.isArray(value) ? value.length : null
+  return {
+    runId: run.runId,
+    status: run.status,
+    conclusion: run.conclusion,
+    event: run.event,
+    createdAt: run.createdAt,
+    updatedAt: run.updatedAt,
+    url: run.url,
+    sourceCommit: run.sourceCommit,
+    reportAvailable: Boolean(report),
+    statisticsAvailable,
+    observedAt: report?.observedAt ?? null,
+    added: statisticsAvailable ? arrayCount(report.addedEntries) : null,
+    updated: statisticsAvailable ? arrayCount(report.updatedEntries) : null,
+    compatibilityUnlisted: statisticsAvailable ? arrayCount(report.compatibilityUnlisted) : null,
+    compatibilityRestored: statisticsAvailable ? arrayCount(report.compatibilityRestored) : null,
+    prunedCandidates: statisticsAvailable ? arrayCount(report.prunedCandidates) : null,
+    rejectedCandidates: statisticsAvailable ? report.rejectedCandidates : null,
+    deferredUpdates: statisticsAvailable ? report.deferredUpdates : null,
+    transientFailures: statisticsAvailable ? report.transientFailures : null,
+    sourceVersionChecks: statisticsAvailable ? report.sourceVersionChecks : null,
   }
 }
 
@@ -153,6 +188,12 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
   const runById = new Map(scannerRuns.map(normalizeRun).filter(Boolean).map(run => [run.runId, run]))
   const reportRecords = reports.map(reportRecord).filter(Boolean)
     .sort((left, right) => (Date.parse(right.observedAt ?? '') || 0) - (Date.parse(left.observedAt ?? '') || 0))
+  const reportByRunId = new Map()
+  for (const report of reportRecords) {
+    if (Number.isSafeInteger(report.runId) && report.runId > 0 && !reportByRunId.has(report.runId)) {
+      reportByRunId.set(report.runId, report)
+    }
+  }
   const completedReportRecords = reportRecords.filter(report => report.statisticsAvailable)
   const entryById = new Map(catalog.entries.map(entry => [entry.id, entry]))
   const recentAdditions = []
@@ -160,7 +201,7 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
   const seen = new Set()
   const seenUpdates = new Set()
   for (const report of completedReportRecords) {
-    for (const addition of report.addedEntries) {
+    for (const addition of report.addedEntries ?? []) {
       const id = text(addition?.id, 96)
       const entry = id ? entryById.get(id) : null
       if (!entry || seen.has(id)) continue
@@ -171,7 +212,7 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     if (recentAdditions.length >= 24) break
   }
   for (const report of completedReportRecords) {
-    for (const update of report.updatedEntries) {
+    for (const update of report.updatedEntries ?? []) {
       const id = text(update?.id, 96)
       const entry = id ? entryById.get(id) : null
       if (!entry || seenUpdates.has(id)) continue
@@ -183,10 +224,10 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
   }
   const latestReport = reportRecords[0] ?? null
   const latestStatisticsAvailable = latestReport?.statisticsAvailable === true
-  const latestAdded = latestStatisticsAvailable
+  const latestAdded = latestStatisticsAvailable && Array.isArray(latestReport.addedEntries)
     ? latestReport.addedEntries.map(item => text(item?.id, 96)).filter(Boolean)
     : null
-  const latestUpdated = latestStatisticsAvailable
+  const latestUpdated = latestStatisticsAvailable && Array.isArray(latestReport.updatedEntries)
     ? latestReport.updatedEntries.map(item => text(item?.id, 96)).filter(Boolean)
     : null
   const validGeneratedAt = iso(generatedAt) ?? new Date(0).toISOString()
@@ -198,6 +239,12 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     overall: { status: statusOf(scanner, watchdog) },
     scanner,
     watchdog,
+    recentScanRuns: [...scannerRuns]
+      .map(normalizeRun)
+      .filter(run => run && Number.isSafeInteger(run.runId) && run.runId > 0)
+      .sort((left, right) => (Date.parse(right.createdAt ?? '') || 0) - (Date.parse(left.createdAt ?? '') || 0))
+      .slice(0, 8)
+      .map(run => publicScanRun(run, reportByRunId.get(run.runId) ?? null)),
     catalog: {
       entries: catalog.entries.length,
       approved: catalog.entries.filter(entry => entry.status === 'approved').length,
@@ -212,13 +259,13 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
       failure: latestReport?.failure ?? null,
       added: latestAdded,
       updated: latestUpdated,
-      compatibilityUnlisted: latestStatisticsAvailable
+      compatibilityUnlisted: latestStatisticsAvailable && Array.isArray(latestReport.compatibilityUnlisted)
         ? latestReport.compatibilityUnlisted.map(item => text(item?.id, 96)).filter(Boolean)
         : null,
-      compatibilityRestored: latestStatisticsAvailable
+      compatibilityRestored: latestStatisticsAvailable && Array.isArray(latestReport.compatibilityRestored)
         ? latestReport.compatibilityRestored.map(item => text(item?.id, 96)).filter(Boolean)
         : null,
-      prunedCandidates: latestStatisticsAvailable
+      prunedCandidates: latestStatisticsAvailable && Array.isArray(latestReport.prunedCandidates)
         ? latestReport.prunedCandidates.map(item => text(item?.id, 96)).filter(Boolean)
         : null,
       compatibilityPolicy: latestStatisticsAvailable ? latestReport.compatibilityPolicy : null,
