@@ -1,49 +1,49 @@
 {
-  "id": "dsh-whale-widget",
-  "name": "趣味互动插件（DSH Whale Widget）",
-  "packageName": "dsh-whale-widget",
-  "description": "DSH Web 界面右下角的 DeepSeek 余额小鲸鱼挂件:余额/今日已用/峰谷定价、自定义泡泡点击序列(文本/余额/今日/峰谷/图片/随机语句与并列加权选择)、逐行样式与字体、悬浮快捷编辑、音效与每轮消耗、自定义角色/动图/音效、吸附与翻转自定义",
+  "id": "dsh-music-player",
+  "name": "桌面客户端（DSH Music Player）",
+  "packageName": "@local/dsh-music-player",
+  "description": "DSH 本地音乐播放器（Web + Desktop 双端）：会话视图「音乐」标签页，选择本地目录、扫描常见音频格式（mp3/flac/m4a/ogg/wav...），歌曲名/歌手/时长列表，单曲循环与列表循环播放。",
   "searchTerms": [
-    "趣味互动插件",
-    "DSH Whale Widget",
-    "dsh-whale-widget",
-    "趣味",
-    "桌宠",
-    "互动",
-    "娱乐",
+    "桌面客户端",
+    "DSH Music Player",
+    "dsh-music-player",
+    "@local/dsh-music-player",
+    "桌面",
+    "托盘",
+    "快捷启动",
     "实验功能",
     "新功能",
     "dsh",
-    "whale",
-    "widget"
+    "music",
+    "player"
   ],
-  "repositoryUrl": "https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget",
+  "repositoryUrl": "https://github.com/heshuren371/dsh-music-player",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ce34dcf523ab7791b7e27d1baf02f99a3b4b1cf6",
-  "version": "0.3.12",
+  "commit": "389b6e5c05f0243528b159b4609db13fd2685691",
+  "version": "0.8.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T02:42:35.000Z",
+    "updatedAt": "2026-09-25T03:55:31.000Z",
     "observedAt": "2026-09-25T03:52:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-25T03:52:28.000Z",
-      "evidenceUrl": "https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget/commit/ce34dcf523ab7791b7e27d1baf02f99a3b4b1cf6",
+      "evidenceUrl": "https://github.com/heshuren371/dsh-music-player/commit/389b6e5c05f0243528b159b4609db13fd2685691",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +73,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-whale-widget"
+    "music-player"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 932794 total bytes (maximum 2097152); largest file 741798 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -166,7 +166,9 @@
     },
     "node": null,
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -181,7 +183,13 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@libav.js/variant-webcodecs",
+      "libavjs-webcodecs-polyfill",
+      "mediabunny",
+      "music-metadata",
+      "node-taglib-sharp"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
