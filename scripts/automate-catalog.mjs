@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
+import { discoverFeedCandidates, discoveryWindowOffset, orderDiscoveryCandidates, validateDiscoveryFeedSource } from '../src/discovery-feeds.mjs'
 import { createHash } from 'node:crypto'
 import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
@@ -90,6 +90,29 @@ function parseArgs(argv) {
     else throw new Error(`unknown argument: ${value}`)
   }
   return options
+}
+
+function validateDiscoveryPolicy(policy) {
+  const search = policy.search
+  if (!Array.isArray(search?.queries) || search.queries.length < 1 || search.queries.length > 12
+    || search.queries.some(query => typeof query !== 'string' || query.trim() === '' || query.length > 240)
+    || !Number.isSafeInteger(search.resultsPerQuery) || search.resultsPerQuery < 1 || search.resultsPerQuery > 100
+    || !Number.isSafeInteger(search.maxNewRepositoriesPerRun) || search.maxNewRepositoriesPerRun < 1 || search.maxNewRepositoriesPerRun > 32) {
+    throw new Error('invalid bounded GitHub discovery search policy')
+  }
+  const feeds = policy.discoveryFeeds
+  if (!feeds || typeof feeds.enabled !== 'boolean') throw new Error('invalid curated discovery feed policy')
+  if (!feeds.enabled) return
+  if (!Array.isArray(feeds.sources) || feeds.sources.length < 1 || feeds.sources.length > 4
+    || feeds.admission !== 'candidate-only' || feeds.contactAuthors !== false) {
+    throw new Error('invalid curated discovery feed policy')
+  }
+  const seen = new Set()
+  for (const source of feeds.sources) {
+    validateDiscoveryFeedSource(source)
+    if (seen.has(source.repository.toLowerCase())) throw new Error('duplicate curated discovery source')
+    seen.add(source.repository.toLowerCase())
+  }
 }
 
 function iso(value, label) {
@@ -387,6 +410,9 @@ function automatedEntry(candidate, analysis, observedAt) {
 }
 
 function candidateRecord(repository, head, previous, observedAt, outcome) {
+  const sourceEvidence = Array.isArray(repository.discoverySources) && repository.discoverySources.length > 0
+    ? repository.discoverySources
+    : ['github-automatic-radar-v1']
   return {
     id: candidateId(repository.full_name),
     name: boundedText(repository.full_name, 'Unknown GitHub repository', 160),
@@ -396,7 +422,7 @@ function candidateRecord(repository, head, previous, observedAt, outcome) {
     latestCommit: head.sha,
     sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? repository.updated_at ?? null,
     discoveredAt: previous?.discoveredAt ?? observedAt,
-    discoverySources: [...new Set([...(previous?.discoverySources ?? []), 'github-automatic-radar-v1'])],
+    discoverySources: [...new Set([...(previous?.discoverySources ?? []), ...sourceEvidence])].slice(-16),
     topics: [...new Set([...(Array.isArray(repository.topics) ? repository.topics : []), 'automatic-radar'])].slice(0, 50),
     status: outcome.status,
     route: outcome.route,
@@ -404,34 +430,81 @@ function candidateRecord(repository, head, previous, observedAt, outcome) {
   }
 }
 
-async function discoverRepositories(policy, github) {
+async function discoverRepositories(policy, github, report) {
   const found = new Map()
   const excluded = excludedRepositoryKeys(policy)
-  for (const query of policy.search.queries) {
+  const discovery = report.discovery
+  function record(item, url, sourceKey) {
+    const key = url.toLowerCase()
+    const current = found.get(key)
+    if (!current) {
+      found.set(key, {
+        ...item,
+        html_url: url,
+        discoverySourceKey: sourceKey,
+        discoverySources: [...new Set(item.discoverySources ?? [])],
+      })
+      return
+    }
+    current.discoverySources = [...new Set([
+      ...(current.discoverySources ?? []),
+      ...(item.discoverySources ?? []),
+    ])].slice(-16)
+    if (current.discoveryOnly !== true || item.discoveryOnly !== true) {
+      current.discoveryOnly = false
+      current.discoverySourceKey = 'github-search'
+    }
+  }
+  for (const [index, query] of policy.search.queries.entries()) {
+    const sourceStatus = { source: `github-search-${index + 1}`, kind: 'github-search', status: 'running', results: 0 }
+    discovery.sources.push(sourceStatus)
     try {
       const result = await github.api(`search/repositories?q=${encodeURIComponent(query)}&sort=updated&order=desc&per_page=${policy.search.resultsPerQuery}`)
+      sourceStatus.status = 'available'
+      sourceStatus.results = Array.isArray(result?.items) ? result.items.length : 0
       for (const item of result?.items ?? []) {
         if (item?.private || item?.archived || item?.disabled || typeof item?.html_url !== 'string') continue
         const url = canonicalGithubRepository(item.html_url)
         if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
         if (excluded.has(url.toLowerCase())) continue
-        found.set(url.toLowerCase(), { ...item, html_url: url })
+        record(item, url, 'github-search')
       }
-    } catch {
-      // transient search query failures do not abort other discoveries
+    } catch (error) {
+      sourceStatus.status = 'unavailable'
+      sourceStatus.reason = boundedText(error?.message, 'GitHub repository search is temporarily unavailable', 240)
+      report.transientFailures.push({ repository: 'https://github.com/search/repositories', reason: sourceStatus.reason })
     }
   }
   if (policy.discoveryFeeds?.enabled === true) {
-    try {
-      const offset = Math.floor(Date.now() / 3600000) * 8
-      for (const item of await discoverFeedCandidates(github, { offset })) {
-        if (!excluded.has(item.html_url.toLowerCase()) && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
+    for (const source of policy.discoveryFeeds.sources) {
+      const sourceStatus = { source: source.repository, kind: source.format, status: 'running', results: 0 }
+      discovery.sources.push(sourceStatus)
+      try {
+        const limit = source.maxRecordsPerRun ?? policy.discoveryFeeds.maxRecordsPerRun ?? 8
+        const offset = discoveryWindowOffset(Date.now(), policy.scheduleHours, limit)
+        const items = await discoverFeedCandidates(github, {
+          source, offset, limit,
+        })
+        sourceStatus.status = 'available'
+        sourceStatus.results = items.length
+        sourceStatus.commit = items[0]?.feedEvidence?.match(/@([a-f0-9]{40}):/)?.[1] ?? null
+        for (const item of items) {
+          const url = canonicalGithubRepository(item.html_url)
+          if (!excluded.has(url.toLowerCase())) record(item, url, item.discoverySourceKey)
+        }
+      } catch (error) {
+        sourceStatus.status = 'unavailable'
+        sourceStatus.reason = boundedText(error?.message, 'curated discovery source is temporarily unavailable', 240)
+        report.transientFailures.push({
+          repository: `https://github.com/${source.repository}`,
+          reason: sourceStatus.reason,
+        })
       }
-    } catch {
-      // feed failures do not abort search discoveries or overall automation
     }
   }
-  return orderDiscoveryCandidates(found.values())
+  const ordered = orderDiscoveryCandidates(found.values())
+  discovery.uniqueRepositoriesFound = ordered.length
+  return ordered
 }
 
 async function updateExistingEntries(catalog, policy, github, observedAt, report) {
@@ -726,7 +799,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow) {
   let repositories = []
   try {
-    repositories = await retryInfrastructure(() => discoverRepositories(policy, github))
+    repositories = await retryInfrastructure(() => discoverRepositories(policy, github, report))
   } catch (error) {
     report.transientFailures.push({
       repository: 'https://github.com/AI-Scarlett/DSH-Store',
@@ -737,10 +810,13 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
   const catalogRepositories = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
   const candidateByRepository = new Map(candidates.entries.map(entry => [entry.repositoryUrl.toLowerCase(), entry]))
   let inspected = 0
+  let fixedCommitChecks = 0
+  let skippedCatalog = 0
+  let skippedUnchangedRejected = 0
   for (const repository of repositories) {
     if (inspected >= policy.search.maxNewRepositoriesPerRun) break
     const repositoryKey = repository.html_url.toLowerCase()
-    if (catalogRepositories.has(repositoryKey)) continue
+    if (catalogRepositories.has(repositoryKey)) { skippedCatalog += 1; continue }
     const previous = candidateByRepository.get(repositoryKey)
     const { owner, repository: name } = repositoryParts(repository.html_url)
     let head
@@ -760,17 +836,10 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
       report.skippedDiscoveries.push({ repository: repository.html_url, reason: 'GitHub did not return a fixed Commit' })
       continue
     }
-    if (repository.discoveryOnly) {
-      if (!previous) {
-        const record = candidateRecord(repository, head, null, observedAt, { status: 'reviewing', route: 'direct-review', reason: 'External discovery signal only; fixed-source Catalog review required before installation.' })
-        record.discoverySources = [repository.feedEvidence]
-        candidates.entries.push(record); candidateByRepository.set(repositoryKey, record)
-      }
-      inspected += 1
-      continue
-    }
-    if (previous?.latestCommit === head.sha && previous.status === 'rejected') continue
+    if (previous?.latestCommit === head.sha && previous.status === 'rejected') { skippedUnchangedRejected += 1; continue }
     inspected += 1
+    fixedCommitChecks += 1
+    report.discovery.fixedCommitChecks = fixedCommitChecks
     process.stdout.write(`CATALOG_AUTOMATION_DISCOVERY_CHECK repository=${repository.full_name} candidate=${head.sha.slice(0, 12)}\n`)
     try {
       const result = await retryInfrastructure(() => checkRepository(repository.html_url, '', {
@@ -816,6 +885,8 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
       report.rejectedCandidates.push({ repository: repository.html_url, commit: head.sha, reason: record.statusReason })
     }
   }
+  report.discovery.catalogDuplicatesSkipped = skippedCatalog
+  report.discovery.unchangedRejectedSkipped = skippedUnchangedRejected
 }
 
 function prunedCandidateRecord(candidate, retention, source) {
@@ -968,6 +1039,7 @@ failureContext.observedAt = observedAt
 failureContext.stage = 'validate-policy'
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
 if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
+validateDiscoveryPolicy(policy)
 if (policy.compatibility?.authority !== DSH_RELEASE_WINDOW_AUTHORITY
   || policy.compatibility?.registryUrl !== DSH_REGISTRY_URL
   || policy.compatibility?.latestReleaseCount !== 3
@@ -1037,6 +1109,15 @@ const report = {
     sameVersionUpdatesDeferred: 0,
     upstreamVersionBehind: 0,
     unresolvedEntries: 0,
+  },
+  discovery: {
+    authority: 'bounded-github-search-and-pinned-curated-directories',
+    maxRepositoriesPerRun: policy.search.maxNewRepositoriesPerRun,
+    sources: [],
+    uniqueRepositoriesFound: 0,
+    fixedCommitChecks: 0,
+    catalogDuplicatesSkipped: 0,
+    unchangedRejectedSkipped: 0,
   },
   updateReviews: [], updatedEntries: [], sourceChangesWithoutVersionBump: [], upstreamVersionBehind: [],
   addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [],

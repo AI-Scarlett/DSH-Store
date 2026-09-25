@@ -9,7 +9,7 @@
       "\"deepseek harness\" plugin in:name,description,readme"
     ],
     "resultsPerQuery": 20,
-    "maxNewRepositoriesPerRun": 8,
+    "maxNewRepositoriesPerRun": 16,
     "excludedRepositories": [
       {
         "repositoryUrl": "https://github.com/mengxingGG/dsh-desktop",
@@ -102,9 +102,26 @@
   },
   "discoveryFeeds": {
     "enabled": true,
-    "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
+    "sources": [
+      {
+        "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
+        "branch": "main",
+        "format": "yaml-tree",
+        "filePattern": "^data/plugins/[a-zA-Z0-9_.-]+\\.yml$",
+        "maxFileBytes": 65536,
+        "maxRecordsPerRun": 5
+      },
+      {
+        "repository": "0xsline/awesome-deepseek-harness",
+        "branch": "main",
+        "format": "markdown-table",
+        "path": "CATALOG.md",
+        "sectionHeading": "## 🔌 单插件",
+        "maxFileBytes": 400000,
+        "maxRecordsPerRun": 5
+      }
+    ],
     "admission": "candidate-only",
-    "maxRecordsPerRun": 8,
     "contactAuthors": false
   }
 }

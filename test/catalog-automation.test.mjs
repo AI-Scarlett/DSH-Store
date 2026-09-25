@@ -79,6 +79,14 @@ test('author target resolution suppresses deterministically unavailable reposito
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
   const policy = JSON.parse(await read('registry/automation-policy.json'))
   assert.equal(policy.scheduleHours, 8)
+  assert.equal(policy.search.maxNewRepositoriesPerRun, 16)
+  assert.deepEqual(policy.discoveryFeeds.sources.map(source => `${source.repository}:${source.format}`), [
+    'awesome-dsh-plugin/awesome-dsh-plugin:yaml-tree',
+    '0xsline/awesome-deepseek-harness:markdown-table',
+  ])
+  assert.ok(policy.discoveryFeeds.sources.every(source => source.maxRecordsPerRun === 5))
+  assert.equal(policy.discoveryFeeds.admission, 'candidate-only')
+  assert.equal(policy.discoveryFeeds.contactAuthors, false)
   assert.equal(policy.updates.checkAllCatalogEntries, true)
   assert.equal(policy.updates.versionAuthority, 'canonical-github-default-branch-manifest-at-fixed-commit')
   assert.equal(policy.updates.concurrency, 8)
@@ -174,6 +182,9 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /permissionSignals/)
   assert.match(source, /transientFailures/)
   assert.match(source, /skippedDiscoveries/)
+  assert.match(source, /validateDiscoveryPolicy\(policy\)/)
+  assert.match(source, /discovery\.fixedCommitChecks/)
+  assert.doesNotMatch(source, /if \(repository\.discoveryOnly\)\s*\{/)
   assert.match(source, /error\?\.status === 404 \|\| error\?\.status === 409/)
   assert.match(source, /retryInfrastructure/)
   assert.match(source, /runtimeFiles\.slice\(index, index \+ 8\)/)

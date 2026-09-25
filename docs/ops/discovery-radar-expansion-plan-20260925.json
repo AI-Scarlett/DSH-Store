@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "operation": "expand-new-plugin-discovery-and-fixed-source-screening",
+  "baseCommit": "6acad2c6729a26d43c38cc1686fe49609c85415f",
+  "createdAt": "2026-09-25T13:52:56+08:00",
+  "scope": [
+    "docs/ops/discovery-radar-expansion-plan-20260925.json",
+    "registry/automation-policy.json",
+    "src/discovery-feeds.mjs",
+    "scripts/automate-catalog.mjs",
+    "test/discovery-feeds.test.mjs",
+    "test/catalog-automation.test.mjs",
+    "scripts/render-catalog-automation-notification.mjs",
+    "test/catalog-notification.test.mjs",
+    "docs/wiki/Catalog-Automation.md",
+    "registry/README.md"
+  ],
+  "preconditions": {
+    "registry/automation-policy.json": "9887e33f1afc1986c71abe325cadc7d855460ec3f9262282980673e87d012a1c",
+    "src/discovery-feeds.mjs": "446cf89b8441344ace9853773f5c814dcf79b27108b4b68c82a98926c78940fc",
+    "scripts/automate-catalog.mjs": "d9d5dc36cee0ef633418dee6693f9fd39a46cff2c4884f0d08245723950b3815",
+    "test/discovery-feeds.test.mjs": "84cac0478accdd3449ac842645bf5f80dfa5df407eedeb27c23dce1fab9955c6",
+    "test/catalog-automation.test.mjs": "396756bb5aa936b5227f901bcb08c3830a9c268f41d8ae923040a4a7589b65c4",
+    "scripts/render-catalog-automation-notification.mjs": "4452799bb5a6fc1263187174497c5faa50f59476cc6fc75e228f32d9aa410c50",
+    "test/catalog-notification.test.mjs": "eed38a9f3d721b8120c56dde9cb93ce52642253c3468826adf3a30f992763c17",
+    "docs/wiki/Catalog-Automation.md": "b0d3fd8e26162edaeeb750dacd07617ec301e3cf501178aa3f5dfbc3f323dd3c",
+    "registry/README.md": "70823bfcd5d823a5572bea08840d0d724a1d93c6ace12c9dc5178e6c6fc82e84"
+  },
+  "evidence": {
+    "primaryGitHubFeedback": {
+      "issue": "https://github.com/AI-Scarlett/DSH-Store/issues/293",
+      "state": "closed",
+      "finding": "Reporter later confirmed their plugin manifest was stale through v1.0.15 and fixed in v1.0.16; the corrected Catalog was read back. No Store code defect remained."
+    },
+    "additionalDiscoverySource": {
+      "repository": "https://github.com/0xsline/awesome-deepseek-harness",
+      "commit": "e0b4a5676618ad6afe36e8172f9d3da169e892b8",
+      "file": "CATALOG.md",
+      "fileBytes": 367013,
+      "singlePluginRows": 179,
+      "handling": "parse only exact-root GitHub repository links in the single-plugin table; external directory is discovery evidence only"
+    },
+    "existingDiscoverySource": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin"
+  },
+  "targetPolicy": {
+    "boundedIndependentSources": 3,
+    "newRepositoriesScreenedPerRun": 16,
+    "perCuratedFeedLimit": 5,
+    "roundRobinSources": true,
+    "allFeedDiscoveriesReachFixedCommitScanner": true,
+    "feedEvidenceAloneCanApproveOrInstall": false,
+    "thirdPartyCodeExecution": false,
+    "authorOutreach": false,
+    "dshCoreOrProfileMutation": false
+  },
+  "gates": [
+    "remote main still equals baseCommit and every precondition hash matches",
+    "curated feed parsing accepts only bounded, canonical root GitHub repository URLs and records pinned-source evidence",
+    "stale deleted feed links are skipped individually and renamed repositories resolve to their live canonical URL",
+    "each source gets a fair bounded scan slot and duplicate repositories retain merged provenance",
+    "feed-discovered repositories use the same full fixed-Commit scanner as GitHub-search discoveries",
+    "external feed metadata cannot grant installability or bypass the Catalog admission policy",
+    "negative tests cover malformed/truncated inputs, unsafe URLs, duplicate sources, source starvation and discovery-only records",
+    "no third-party install, prepare, build, test or runtime code is executed",
+    "npm run check",
+    "CI-checked auditable pull request based on the exact precondition Commit"
+  ],
+  "rollback": "Close the source PR or revert only its scoped files; do not mutate the Catalog, contact ledger, DSH Profile, official inventory, or third-party repositories."
+}
