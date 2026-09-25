@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-25T13:19:47.000Z",
+    "updatedAt": "2026-09-25T17:35:31.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -982,27 +982,6 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
-    },
-    {
-      "id": "cking000bigdemon-dsh-toolbelt",
-      "name": "cking000bigdemon/dsh-toolbelt",
-      "description": "Eight DeepSeek Harness plugins: persona, language guard, per-request vision fallback, python/windows write guards, cross-agent memory, image generation, and skill shell injection.",
-      "repositoryUrl": "https://github.com/cking000bigdemon/dsh-toolbelt",
-      "defaultBranch": "main",
-      "latestCommit": "6a2467eb705cf11bb56fa2c8b022abd509194ceb",
-      "sourceUpdatedAt": "2026-08-13T23:22:30.000Z",
-      "discoveredAt": "2026-08-21T02:40:10.936Z",
-      "discoverySources": [
-        "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
-      ],
-      "topics": [
-        "dsh-plugin-candidate",
-        "llm"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: DSH entry ID collides with the approved catalog; install lifecycle script lacks disposable-install evidence; manifest repository does not match the canonical GitHub repository. Candidate records remain non-installable and may be re-reviewed after source changes."
     },
     {
       "id": "drscrewdriver-inferglow",
@@ -2777,8 +2756,8 @@
       "description": "为 DSH 提供插件发现能力。英文原始说明：Find DeepSeek Harness plugins inside the agent — live GitHub dsh-plugin topic search, ranked by stars.",
       "repositoryUrl": "https://github.com/awesome-dsh-plugin/dsh-find-plugin",
       "defaultBranch": "main",
-      "latestCommit": "e7a27eb01606e6deccdaacccb8e0cfd992c0bcdc",
-      "sourceUpdatedAt": "2026-08-19T05:24:30.000Z",
+      "latestCommit": "afce1cd43f98b8a8b02e4a35cd6a65d6444de412",
+      "sourceUpdatedAt": "2026-09-25T14:58:14.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13289,6 +13268,120 @@
         "osv",
         "security",
         "vulnerability",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "exoticknight-dsh-theme-eink-retro",
+      "name": "exoticknight/dsh-theme-eink-retro",
+      "description": "A paper-and-ink client-side theme for DeepSeek Harness with Balanced and Immersive modes.",
+      "repositoryUrl": "https://github.com/exoticknight/dsh-theme-eink-retro",
+      "defaultBranch": "main",
+      "latestCommit": "beffb5ab5737421ed744d18f584d8e1a1a742942",
+      "sourceUpdatedAt": "2026-09-24T06:18:10.000Z",
+      "discoveredAt": "2026-09-25T17:35:31.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@f6c32a2f4c796bbcb4f3752dc327fc0451ba87d8:data/plugins/exoticknight__dsh-theme-eink-retro.yml:sha256=91ce349de3b9d2a914c6d5a0d1e09eb0006debd079021d366c724b1308d9680d:at=2026-09-25T17:39:57.923Z:owner=1171407"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "e-ink",
+        "macintosh",
+        "monochrome",
+        "theme",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "exoticknight-dsh-labnana",
+      "name": "exoticknight/dsh-labnana",
+      "description": "Labnana image generation for DeepSeek Harness: text-to-image / image-to-image / precise editing — chat image cards, credentials-domain API key, settingsScope UI",
+      "repositoryUrl": "https://github.com/exoticknight/dsh-labnana",
+      "defaultBranch": "main",
+      "latestCommit": "b5ddd96901ef76ea29cc7c363c83967018b0777a",
+      "sourceUpdatedAt": "2026-09-24T06:16:12.000Z",
+      "discoveredAt": "2026-09-25T17:35:31.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@f6c32a2f4c796bbcb4f3752dc327fc0451ba87d8:data/plugins/exoticknight__dsh-labnana.yml:sha256=055d108d966671c00fc16df3a246d394b73bffd2ace7b1c64db000af5c99234a:at=2026-09-25T17:39:57.923Z:owner=1171407"
+      ],
+      "topics": [
+        "ai",
+        "ai-image-generation",
+        "deepseek-harness",
+        "dsh-plugin",
+        "gemini",
+        "gpt-image",
+        "image-editing",
+        "image-generation",
+        "image-to-image",
+        "labnana",
+        "nano-banana",
+        "seedream",
+        "text-to-image",
+        "wan",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "eyeing0721-dsh-cot-en2cn",
+      "name": "Eyeing0721/dsh-cot-en2cn",
+      "description": "DSH Web 插件：展开英文思考块即时呈现中文译文，不改动任何会话原文。",
+      "repositoryUrl": "https://github.com/Eyeing0721/dsh-cot-en2cn",
+      "defaultBranch": "main",
+      "latestCommit": "04add1b924982ca2f89e942da4c635bf84adfd07",
+      "sourceUpdatedAt": "2026-09-18T16:34:01.000Z",
+      "discoveredAt": "2026-09-25T17:35:31.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@f6c32a2f4c796bbcb4f3752dc327fc0451ba87d8:data/plugins/Eyeing0721__dsh-cot-en2cn.yml:sha256=8bc1eaf4aa0883ab0f4256248ab1639db4150aec5c3b3a8d5a81f5fa3e6e385a:at=2026-09-25T17:39:57.923Z:owner=126634942"
+      ],
+      "topics": [
+        "chain-of-thought",
+        "chinese",
+        "cot",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "reasoning",
+        "translation",
+        "web-ui",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fakechris-dsh-track",
+      "name": "fakechris/dsh-track",
+      "description": "DSH Track Bridge 插件：嵌入式任务管理引擎——决策点协议、念头捕获墙、Linear 形 issue 存储（bundle），AI 与人之间的任务轨道",
+      "repositoryUrl": "https://github.com/fakechris/dsh-track",
+      "defaultBranch": "main",
+      "latestCommit": "7d8e9d3969d95c2deb80e6fff689382f3e054d41",
+      "sourceUpdatedAt": "2026-09-18T14:17:04.000Z",
+      "discoveredAt": "2026-09-25T17:35:31.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@f6c32a2f4c796bbcb4f3752dc327fc0451ba87d8:data/plugins/fakechris__dsh-track.yml:sha256=1342b9fabb9b9029ab1227fe384e2be9b6180eae137f683e57aa2226f00daace:at=2026-09-25T17:39:57.923Z:owner=8452"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-bundle",
+        "dsh-plugin",
+        "plugin",
+        "task-management",
+        "track",
         "automatic-radar"
       ],
       "status": "reviewing",

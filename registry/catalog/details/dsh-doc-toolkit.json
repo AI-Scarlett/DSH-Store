@@ -18,25 +18,25 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "b384b94f955d3e4ba1b497b2b1f8c8a07ba7c357",
-  "version": "0.1.1",
+  "updatePolicy": "source-verified",
+  "commit": "44fa2b550968d5065412dbe1eb608a65db3e5266",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-04T18:11:59.000Z",
-    "observedAt": "2026-09-07T15:40:28.000Z",
+    "updatedAt": "2026-09-25T16:44:58.000Z",
+    "observedAt": "2026-09-25T17:35:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-07T15:40:28.000Z",
-      "evidenceUrl": "https://github.com/qingmumingyang/dsh-doc-toolkit/commit/b384b94f955d3e4ba1b497b2b1f8c8a07ba7c357",
+      "checkedAt": "2026-09-25T17:35:31.000Z",
+      "evidenceUrl": "https://github.com/qingmumingyang/dsh-doc-toolkit/commit/44fa2b550968d5065412dbe1eb608a65db3e5266",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,8 +76,8 @@
   "entryIds": [
     "dsh-doc-toolkit"
   ],
-  "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.0-rc.12 <0.2.0",
     "dshReleases": {
@@ -89,19 +89,11 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.5-rc.1": "compatible",
+      "0.1.5-rc.3": "compatible",
+      "0.1.7-alpha.2": "compatible",
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -152,80 +144,32 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
+        "install": "passed",
+        "start": "passed",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
+      "0.1.5-rc.3": {
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.7-alpha.2": {
-        "install": "unknown",
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.7-rc.1": {
-        "install": "unknown",
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.7-rc.2": {
-        "install": "unknown",
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
@@ -233,31 +177,28 @@
     },
     "node": ">=18",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
-    "pluginType": "unknown",
+    "pluginType": "feature",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
-    "externalDependencies": [
-      "docx",
-      "mammoth",
-      "pdf-parse",
-      "xlsx"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "automated-fixed-source-policy-v1"
   }
 }
