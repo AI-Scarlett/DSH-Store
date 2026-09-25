@@ -1,47 +1,48 @@
 {
-  "id": "dsh-memory",
-  "name": "记忆与知识库（DSH Memory）",
-  "packageName": "@furongjun1999/dsh-memory",
-  "description": "灵枢（Lingshu·líng shū）DeepSeek Harness 插件：完整大脑——长期记忆/知识飞轮/自我认知/递归反思接入 DSH，对话自动沉淀进 md_cg 认知图（md 文档）",
+  "id": "anban-dsh-plugin",
+  "name": "写作与润色助手（DSH Plugin）",
+  "packageName": "@anban/dsh-plugin",
+  "description": "> Claude Code 与 Codex 共用一份 Skill、模板、写作风格和运行资产；宿主差异只保留在原生 manifest、Agent、MCP/Hook 或安装适配层。",
   "searchTerms": [
-    "记忆与知识库",
-    "DSH Memory",
-    "dsh-memory",
-    "@furongjun1999/dsh-memory",
-    "记忆",
-    "知识库",
-    "召回",
-    "长期记忆",
+    "写作与润色助手",
+    "DSH Plugin",
+    "anban-dsh-plugin",
+    "@anban/dsh-plugin",
+    "写作",
+    "润色",
+    "文章",
+    "实验功能",
+    "新功能",
     "dsh",
-    "memory"
+    "plugin"
   ],
-  "repositoryUrl": "https://github.com/FuRongJun-1999/dsh-memory",
+  "repositoryUrl": "https://github.com/anbanai/creator-harness",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "733d7bb1fe7cce584bf3cb2631c95ed2a0cd43e0",
-  "version": "0.5.0",
+  "commit": "4a47bed8dea81e9ef03ecefa12abb25dc44d43f1",
+  "version": "4.2.10",
   "categories": [
-    "memory"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T06:16:36.000Z",
+    "updatedAt": "2026-09-25T13:24:38.000Z",
     "observedAt": "2026-09-25T13:19:47.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-25T13:19:47.000Z",
-      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/733d7bb1fe7cce584bf3cb2631c95ed2a0cd43e0",
+      "evidenceUrl": "https://github.com/anbanai/creator-harness/commit/4a47bed8dea81e9ef03ecefa12abb25dc44d43f1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,16 +72,17 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "furongjun1999-dsh-memory"
+    "anban-mcp",
+    "anban-preset-manager"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime source file count is outside the automatic review bound: 395 files (maximum 240); runtime source exceeds the automatic review byte bound: 13277278 total bytes (maximum 2097152); largest file 2105106 bytes (maximum 262144); runtime source co",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; package contains Git submodules; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/anban-mcp.d.ts; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/anban-mcp.js; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/preset-manager.d.ts; runtime artifact is missing fro",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.6",
+    "dsh": "0.1.5-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -162,14 +164,14 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": ">=22.19.0 <23 || >=24.0.0",
     "systems": [],
     "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "UNKNOWN",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -179,7 +181,22 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/cordis",
+      "@deepseek-ai/dsh-agent-instructions",
+      "@deepseek-ai/dsh-commands",
+      "@deepseek-ai/dsh-credentials",
+      "@deepseek-ai/dsh-home-paths",
+      "@deepseek-ai/dsh-mcp-client",
+      "@deepseek-ai/dsh-persona",
+      "@deepseek-ai/dsh-skill-filesystem",
+      "@deepseek-ai/dsh-tool-bash",
+      "@deepseek-ai/dsh-tool-fs",
+      "@deepseek-ai/dsh-tool-fs-search",
+      "@deepseek-ai/dsh-tool-pwsh",
+      "@deepseek-ai/dsh-tool-skill",
+      "@deepseek-ai/dsh-tool-todo"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

@@ -1,47 +1,49 @@
 {
-  "id": "dsh-memory",
-  "name": "记忆与知识库（DSH Memory）",
-  "packageName": "@furongjun1999/dsh-memory",
-  "description": "灵枢（Lingshu·líng shū）DeepSeek Harness 插件：完整大脑——长期记忆/知识飞轮/自我认知/递归反思接入 DSH，对话自动沉淀进 md_cg 认知图（md 文档）",
+  "id": "dsh-remote",
+  "name": "移动端与远程访问（DSH Remote）",
+  "packageName": "@suj1e/dsh-remote",
+  "description": "为 DSH 提供移动端与远程访问能力。英文原始说明：Mobile remote access for DeepSeek Harness: LAN HTTP+WebSocket bridge for a paired iOS client",
   "searchTerms": [
-    "记忆与知识库",
-    "DSH Memory",
-    "dsh-memory",
-    "@furongjun1999/dsh-memory",
-    "记忆",
-    "知识库",
-    "召回",
-    "长期记忆",
+    "移动端与远程访问",
+    "DSH Remote",
+    "dsh-remote",
+    "@suj1e/dsh-remote",
+    "移动端",
+    "手机",
+    "远程访问",
+    "PWA",
+    "实验功能",
+    "新功能",
     "dsh",
-    "memory"
+    "remote"
   ],
-  "repositoryUrl": "https://github.com/FuRongJun-1999/dsh-memory",
+  "repositoryUrl": "https://github.com/suj1e/dsh-remote",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "733d7bb1fe7cce584bf3cb2631c95ed2a0cd43e0",
-  "version": "0.5.0",
+  "commit": "b057ab54a4cc8b5d724f940e2d85935823a5fd96",
+  "version": "0.1.4",
   "categories": [
-    "memory"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T06:16:36.000Z",
+    "updatedAt": "2026-09-25T13:24:35.000Z",
     "observedAt": "2026-09-25T13:19:47.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-25T13:19:47.000Z",
-      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/733d7bb1fe7cce584bf3cb2631c95ed2a0cd43e0",
+      "evidenceUrl": "https://github.com/suj1e/dsh-remote/commit/b057ab54a4cc8b5d724f940e2d85935823a5fd96",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "furongjun1999-dsh-memory"
+    "dsh-remote"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime source file count is outside the automatic review bound: 395 files (maximum 240); runtime source exceeds the automatic review byte bound: 13277278 total bytes (maximum 2097152); largest file 2105106 bytes (maximum 262144); runtime source co",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the netwo",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.6",
+    "dsh": "0.1.7-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -162,9 +164,11 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": null,
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -179,13 +183,15 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/schemastery",
+      "qrcode",
+      "ws"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
