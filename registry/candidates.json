@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-24T19:50:51.000Z",
+    "updatedAt": "2026-09-25T03:52:28.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2042,8 +2042,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "24e0296a6ae0ed49aa613b8a0ec6e3f497718852",
-      "sourceUpdatedAt": "2026-09-24T03:19:22.000Z",
+      "latestCommit": "f907123ec5f17dd0ce4a1579dca1569e7fc96365",
+      "sourceUpdatedAt": "2026-09-24T23:33:20.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9878,8 +9878,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "11ddcfe67e6d925b9433685c4f17ac8ddc1f3664",
-      "sourceUpdatedAt": "2026-09-24T12:54:04.000Z",
+      "latestCommit": "fc96f9bb7333ed68efad5295deb92b5a7d3cccce",
+      "sourceUpdatedAt": "2026-09-25T03:52:05.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12805,8 +12805,8 @@
       "description": "Official BestPrice MCP and WebMCP for shopping decisions, product search, offer comparison, and price history",
       "repositoryUrl": "https://github.com/TheBestCo/bestprice-mcp",
       "defaultBranch": "main",
-      "latestCommit": "c761c3c66590d5c96171626cf69f9a90a7b10476",
-      "sourceUpdatedAt": "2026-09-24T12:25:19.000Z",
+      "latestCommit": "8ed03b883952f8073e0cf39fe1a5b40950b77b7b",
+      "sourceUpdatedAt": "2026-09-25T03:55:36.000Z",
       "discoveredAt": "2026-09-24T12:20:28.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -13175,6 +13175,113 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: logicprobe."
+    },
+    {
+      "id": "picsky-dsh-pocket-console",
+      "name": "picsky/dsh-pocket-console",
+      "description": "不把整台机器交出去，只送出挡路的决定和下一步：DeepSeek Harness 的审批、ask_user_question 提问与结果回复，以飞书卡片发到手机——桌面优先、只出站；执行过程实时可见，下一段任务一键即开。",
+      "repositoryUrl": "https://github.com/picsky/dsh-pocket-console",
+      "defaultBranch": "main",
+      "latestCommit": "ab01c9219fc182163e8e04edf2a9c8a5dc3eaaec",
+      "sourceUpdatedAt": "2026-09-22T09:20:36.000Z",
+      "discoveredAt": "2026-09-25T03:52:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@b038c20d298244507f7459dc6099b0df31800e97:data/plugins/picsky__dsh-pocket-console.yml:sha256=7d016945a66308cb7d7edaa53db701f4ddf6dc0ba3fc802d38ec5def2259214e:at=2026-09-25T03:55:45.534Z:owner=47309073"
+      ],
+      "topics": [
+        "approval",
+        "ask-user-question",
+        "chatops",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "desktop-first",
+        "dsh",
+        "dsh-plugin",
+        "feishu",
+        "human-in-the-loop",
+        "lark",
+        "least-privilege",
+        "mobile",
+        "no-tunnel",
+        "outbound-only",
+        "permissions",
+        "plugin",
+        "qr-code",
+        "remote-approval",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "pingze-github-dsh-cost-audit",
+      "name": "Pingze-github/dsh-cost-audit",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Pingze-github/dsh-cost-audit",
+      "defaultBranch": "master",
+      "latestCommit": "71653cb7bfb56c1f38c88e0c3ae165f3ee60448a",
+      "sourceUpdatedAt": "2026-09-22T06:39:03.000Z",
+      "discoveredAt": "2026-09-25T03:52:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@b038c20d298244507f7459dc6099b0df31800e97:data/plugins/Pingze-github__dsh-cost-audit.yml:sha256=43e2655daa00f1f3227eeddb365e8a67d067d301b66231646f55069534d204a1:at=2026-09-25T03:55:45.534Z:owner=21033585"
+      ],
+      "topics": [
+        "cost-optimization",
+        "deepseek-harness",
+        "dsh-cost-audit",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "pinzza-dsh-git-statusline",
+      "name": "pinzza/dsh-git-statusline",
+      "description": "DSH Web 侧边栏底部的紧凑 Git 状态插件，参考 ccstatusline-zh 的 Git widgets",
+      "repositoryUrl": "https://github.com/pinzza/dsh-git-statusline",
+      "defaultBranch": "main",
+      "latestCommit": "2223d107ae7cb0b2663c202393fee5bc44b27959",
+      "sourceUpdatedAt": "2026-09-21T10:23:00.000Z",
+      "discoveredAt": "2026-09-25T03:52:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@b038c20d298244507f7459dc6099b0df31800e97:data/plugins/pinzza__dsh-git-statusline.yml:sha256=84cc055a90f1896734b69b678e00c5691d93c68ecb40f7b1183e6623e1bb9346:at=2026-09-25T03:55:45.534Z:owner=278065723"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "picgo-dsh-plugin",
+      "name": "PicGo/dsh-plugin",
+      "description": "Upload images and files to your image host from DeepSeek Harness, powered by PicGo",
+      "repositoryUrl": "https://github.com/PicGo/dsh-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "84766fcbda8c9d50d55d0f89865e9c3428db17d4",
+      "sourceUpdatedAt": "2026-08-22T14:57:29.000Z",
+      "discoveredAt": "2026-09-25T03:52:28.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@b038c20d298244507f7459dc6099b0df31800e97:data/plugins/PicGo__dsh-plugin.yml:sha256=9a6e3c173fd06c6413ebed81ed67e043ea4a85ff730fcdc20b3657263c4b61dd:at=2026-09-25T03:55:45.534Z:owner=43027895"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "image-upload",
+        "picgo",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }

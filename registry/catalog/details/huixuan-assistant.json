@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ba427d11e8f0c288feca18714083b0c6b9a27684",
+  "commit": "edf015fa60c3ac5053c1cb2551cb5ab8b21d0d9c",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T19:55:48.000Z",
-    "observedAt": "2026-09-24T19:50:51.000Z",
+    "updatedAt": "2026-09-24T20:46:34.000Z",
+    "observedAt": "2026-09-25T03:52:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-24T19:50:51.000Z",
-      "evidenceUrl": "https://github.com/Hercules-debug/huixuan-assistant/commit/ba427d11e8f0c288feca18714083b0c6b9a27684",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-25T03:52:28.000Z",
+      "evidenceUrl": "https://github.com/Hercules-debug/huixuan-assistant/commit/edf015fa60c3ac5053c1cb2551cb5ab8b21d0d9c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "huixuan-assistant"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": "^0.1.0",
+    "dsh": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
