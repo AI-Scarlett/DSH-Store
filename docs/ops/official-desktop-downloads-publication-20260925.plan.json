@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "kind": "dual-site-storefront-publication-plan",
+  "planId": "DSH-STORE-DESKTOP-DOWNLOADS-PUBLICATION-20260925",
+  "status": "prepared",
+  "repository": "AI-Scarlett/DSH-Store",
+  "createdAt": "2026-09-25T15:21:49.725Z",
+  "authorization": {
+    "source": "explicit-user-request",
+    "instruction": "上线吧",
+    "scope": "Create an auditable pull request for the completed local DSH STORE website changes, merge only after required checks, deploy GitHub Pages, and serially refresh both dsh.store and dsh-store.cn.",
+    "supersedesPriorLocalOnlyPlans": [
+      "DSH-STORE-SCAN-HISTORY-TAB-20260925",
+      "DSH-STORE-OFFICIAL-DESKTOP-DOWNLOADS-20260925"
+    ],
+    "exclusions": [
+      "DSH Profile/package/restart/runtime mutations",
+      "Catalog or Candidate Registry changes",
+      "third-party runtime code execution",
+      "author outreach",
+      "system package updates"
+    ]
+  },
+  "base": {
+    "ref": "origin/main",
+    "commit": "6ca1fa51ef6192d0bacf740638a57eeea81e9759",
+    "remoteMainVerified": "6ca1fa51ef6192d0bacf740638a57eeea81e9759",
+    "branch": "codex/scan-history-tab",
+    "sourceHeadBeforePlan": "5b87226bb7cf7feb9511e64b8a999d715acec5f1"
+  },
+  "includedChanges": [
+    "Add public manual/automatic scan history page and shared nav helper",
+    "Add DSH download dropdown before locale switch with Mac, Windows and Web UI options"
+  ],
+  "scope": [
+    ".github/workflows/pages.yml",
+    "docs/ops/official-desktop-downloads-20260925.plan.json",
+    "docs/ops/official-desktop-downloads-publication-20260925.plan.json",
+    "docs/ops/scan-history-tab-20260925.plan.json",
+    "marketplace/about/deepseek-harness-guide/index.html",
+    "marketplace/about/index.html",
+    "marketplace/build/index.html",
+    "marketplace/community/index.html",
+    "marketplace/downloads/downloads.css",
+    "marketplace/downloads/downloads.js",
+    "marketplace/downloads/index.html",
+    "marketplace/dsh-plugins/index.html",
+    "marketplace/dsh-store-guide/index.html",
+    "marketplace/faq/index.html",
+    "marketplace/index.html",
+    "marketplace/plugins/index.html",
+    "marketplace/repair/index.html",
+    "marketplace/scan-history-nav.js",
+    "marketplace/scans/data/manual-baseline-20260925.json",
+    "marketplace/scans/index.html",
+    "marketplace/scans/scans.css",
+    "marketplace/scans/scans.js",
+    "marketplace/standards/index.html",
+    "marketplace/styles.css",
+    "package.json",
+    "scripts/build-marketplace-static.mjs",
+    "src/automation-status.mjs",
+    "test/automation-status.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditionSha256": {
+    ".github/workflows/pages.yml": "bbb2d4e34278dbd3f865f77113b320759a2392cef347a2dcfef32f9d0cb0df30",
+    "docs/ops/official-desktop-downloads-20260925.plan.json": null,
+    "docs/ops/official-desktop-downloads-publication-20260925.plan.json": null,
+    "docs/ops/scan-history-tab-20260925.plan.json": null,
+    "marketplace/about/deepseek-harness-guide/index.html": "78fb4d16edcc266ceb87cf7766a0dec505c69a075b9fdfd6ee0e71b2885c72e9",
+    "marketplace/about/index.html": "89d9f5e2ecaba2caa44aa2d5d6d50e906a322b82b48b5b8b5b7d0a2a4d840393",
+    "marketplace/build/index.html": "072a4c1f92330935f9338415b45c017b0f7bcd274c11d233f69b8fc7bc967acc",
+    "marketplace/community/index.html": "d8f172f9a40e607286e76f0b918769d9ebc06493f0c9b0013faac49a7900ea40",
+    "marketplace/downloads/downloads.css": null,
+    "marketplace/downloads/downloads.js": null,
+    "marketplace/downloads/index.html": null,
+    "marketplace/dsh-plugins/index.html": "7da2155c91d65ab95417af2b08b137c3b898f317e0f2c82277707f370ba93fec",
+    "marketplace/dsh-store-guide/index.html": "dd91b5d7c1afec1bd9c4d42e2c6f412f73c604cb220c46863ee4a5ea3a56998a",
+    "marketplace/faq/index.html": "3978c319916c835bc8822e1eba0cbb29d968e1fe8e66265715ede4c7b0647e8d",
+    "marketplace/index.html": "74714baa53557848f43b028bd71b5ed5b10b7ee7944d377ac4543e8f262782f5",
+    "marketplace/plugins/index.html": "4ee623bca7e6db70ad756440b743058916154c1c6890a1b87cfc5ba9a86a9632",
+    "marketplace/repair/index.html": "de329face0e4aa53e898e5c5f50216fbc46cdae1c74c414d3570950d317f5193",
+    "marketplace/scan-history-nav.js": null,
+    "marketplace/scans/data/manual-baseline-20260925.json": null,
+    "marketplace/scans/index.html": null,
+    "marketplace/scans/scans.css": null,
+    "marketplace/scans/scans.js": null,
+    "marketplace/standards/index.html": "9d80d93360a41c959de710b13f2ffdf22cc6d5c0cd613c6dca9dcc5753108b2e",
+    "marketplace/styles.css": "3131bfd76a364d629d9a13f39ff737513b5bcb3bda90a4a8b2d192023814ff8d",
+    "package.json": "81d7ec844e448e2baca28dd645eebb983df4ab0f350ba3790fbd8e352591bca5",
+    "scripts/build-marketplace-static.mjs": "8ef4ec9901e4d6229e2ef486dc7bd9e7ea37c7d7555c0ad1164e798bd2d5584a",
+    "src/automation-status.mjs": "8404ea8ec7d4c63144ae0b7406c449f5460550c2187bafecf00ae7bf812dff26",
+    "test/automation-status.test.mjs": "20f7cd2b47584cf1aea1ed1241260624748827a3cd7b080f5d64ebee7a8489f3",
+    "test/marketplace-static-build.test.mjs": "cdaa2e49f8c495debb185824109b7688d7368281e7e65df9e4a3ac8060ad664d"
+  },
+  "deterministicGates": [
+    {
+      "id": "local-check",
+      "required": "npm run check passes; Registry validates; all tests pass"
+    },
+    {
+      "id": "dual-static-build",
+      "required": "International and domestic static artifacts both include scan/download routes and their listed assets"
+    },
+    {
+      "id": "pr-checks",
+      "required": "Required GitHub checks pass before protected-main merge"
+    },
+    {
+      "id": "pages-release",
+      "required": "Pages release manifest sourceCommit equals merged main SHA and contains both routes and all menu/page assets for each origin"
+    },
+    {
+      "id": "public-storefronts",
+      "required": "dsh.store and dsh-store.cn each return the deployed pages and exact Mac/Windows/Web UI choices"
+    },
+    {
+      "id": "rollback-ready",
+      "required": "Each production refresh uses existing validated atomic switch, pre-switch backup, health check, and automatic rollback; refresh serially"
+    }
+  ],
+  "localEvidence": {
+    "npmRunCheck": {
+      "status": "passed",
+      "registry": "REGISTRY_OK entries=722 bridgeBytes=1910550 indexBytes=555613 details=722",
+      "tests": "327 passed, 0 failed"
+    },
+    "internationalBuild": {
+      "status": "passed",
+      "sourceCommit": "5b87226bb7cf7feb9511e64b8a999d715acec5f1",
+      "siteOrigin": "https://dsh.store",
+      "routes": [
+        "/marketplace/scans/",
+        "/marketplace/downloads/"
+      ]
+    },
+    "domesticBuild": {
+      "status": "passed",
+      "sourceCommit": "5b87226bb7cf7feb9511e64b8a999d715acec5f1",
+      "siteOrigin": "https://dsh-store.cn",
+      "routes": [
+        "/marketplace/scans/",
+        "/marketplace/downloads/"
+      ]
+    },
+    "localBrowser": {
+      "status": "passed",
+      "url": "http://127.0.0.1:4176/marketplace/",
+      "detail": "Chinese and English tested; three-item dropdown opens before locale switch; Web UI choice lands at #web-ui"
+    },
+    "gitDiffCheck": "passed"
+  },
+  "productionBaseline": {
+    "international": {
+      "serverRecord": "dsh-store-intl",
+      "currentSourceCommit": "6acad2c6729a26d43c38cc1686fe49609c85415f",
+      "downloadPage": "absent",
+      "timer": "dsh-store-refresh@intl-public.timer active"
+    },
+    "domestic": {
+      "serverRecord": "dsh-store-cn-814823065",
+      "currentSourceCommit": "6acad2c6729a26d43c38cc1686fe49609c85415f",
+      "downloadPage": "absent",
+      "timers": [
+        "dsh-store-refresh@international.timer active",
+        "dsh-store-refresh@domestic.timer active"
+      ]
+    }
+  },
+  "deployment": {
+    "pages": {
+      "international": "https://ai-scarlett.github.io/DSH-Store/marketplace/",
+      "domestic": "https://ai-scarlett.github.io/DSH-Store/domestic/marketplace/"
+    },
+    "servers": [
+      {
+        "order": 1,
+        "serverRecord": "dsh-store-intl",
+        "service": "dsh-store-refresh@intl-public.service",
+        "domain": "dsh.store"
+      },
+      {
+        "order": 2,
+        "serverRecord": "dsh-store-cn-814823065",
+        "service": "dsh-store-refresh@domestic.service",
+        "domain": "dsh-store.cn"
+      }
+    ],
+    "rollback": "Revert through an audited PR; each existing refresh script retains the prior current release and backup, with automatic rollback on failed public health check."
+  },
+  "secrets": "No credential values or private-key material included.",
+  "externalEffects": "PR, protected-main merge and the two production site refreshes are authorized; do not perform any other external mutation."
+}

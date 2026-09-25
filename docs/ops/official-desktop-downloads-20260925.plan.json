@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "planId": "DSH-STORE-OFFICIAL-DESKTOP-DOWNLOADS-20260925",
+  "createdAt": "2026-09-25T14:56:06.717Z",
+  "status": "implemented_local_preview",
+  "authorization": {
+    "type": "user-request",
+    "request": "Add a DSH download button immediately before the locale switch; on click show exactly three choices: Mac desktop, Windows desktop, and Web UI install. Do not add a standalone top-navigation tab.",
+    "scope": "source-only site change and local preview; no binary download or execution, no PR/push/deploy, no Catalog/Candidate mutation, no author outreach"
+  },
+  "baseCommit": "7d20c18604e96f3489b02bbefa9de4594f4d2b9e",
+  "branch": "codex/scan-history-tab",
+  "fileScope": {
+    "modify": [
+      "marketplace/scan-history-nav.js",
+      "marketplace/styles.css",
+      "scripts/build-marketplace-static.mjs",
+      "test/marketplace-static-build.test.mjs",
+      "package.json"
+    ],
+    "add": [
+      "marketplace/downloads/index.html",
+      "marketplace/downloads/downloads.css",
+      "marketplace/downloads/downloads.js"
+    ],
+    "plan": "docs/ops/official-desktop-downloads-20260925.plan.json"
+  },
+  "preconditions": {
+    "sha256": {
+      "marketplace/scan-history-nav.js": "a60af77b20322e087f8e23d5062ed61a2fac478adcc8a3e640fc362448d62719",
+      "marketplace/styles.css": "3131bfd76a364d629d9a13f39ff737513b5bcb3bda90a4a8b2d192023814ff8d",
+      "scripts/build-marketplace-static.mjs": "85ffa7e27d3f77bcb24db16a9cde7713a0f4d80c0bf0ea693f1673e4a512cffa",
+      "test/marketplace-static-build.test.mjs": "c9f9cf5c3add2f4ffbf4e5a7d751ebec43e2491ed53323137593150b6d3a3e80",
+      "package.json": "88bb36209a69ff6105fd61f092e614288d1626809569aef8d9efb3f98a725724"
+    },
+    "absent": [
+      "marketplace/downloads/index.html",
+      "marketplace/downloads/downloads.css",
+      "marketplace/downloads/downloads.js",
+      "docs/ops/official-desktop-downloads-20260925.plan.json"
+    ]
+  },
+  "implementation": {
+    "navigation": "Use the existing site-wide helper to insert a bilingual disclosure button immediately before the Chinese/English locale switch on every page. The button opens exactly three choices: official macOS Apple Silicon DMG, official Windows x64 installer, and Web UI install. No separate download item is added to the primary navigation.",
+    "downloads": "Keep a concise bilingual information page as the in-page destination for the Web UI menu choice; do not expose it as a standalone primary-navigation tab.",
+    "boundaries": [
+      "only expose official links and verified metadata",
+      "do not claim checksums, minimum OS requirements, Linux builds, or security verification without evidence"
+    ],
+    "webUi": "The Web UI choice opens the downloads information page at #web-ui, which presents the official GitHub repository, official quick-start reference, Node.js requirement, and the documented `npx @deepseek-ai/dsh web` command."
+  },
+  "deterministicGates": [
+    "npm run check",
+    "static build includes /downloads/ canonical, hreflang and sitemap route",
+    "both official supplied binary URLs return HTTP 200 and expected MIME type",
+    "local browser verifies nav link, page copy, locale toggle, and download anchors"
+  ],
+  "rollback": {
+    "type": "git-revert",
+    "reference": "Revert the one implementation commit; no production or Profile state changes."
+  },
+  "externalEffects": "none",
+  "validationResults": {
+    "focusedTests": "node --test test/marketplace-static-build.test.mjs: 5/5 passed",
+    "fullCheck": "npm run check: REGISTRY_OK entries=722; 327/327 tests passed",
+    "staticBuild": "npm run build:marketplace -- --out node_modules/.cache/dsh-store-scan-history-preview: STATIC_MARKETPLACE_OK entries=722",
+    "browser": "Local preview at 4176 verified on homepage and downloads page; localized Chinese and English; menu button is inserted immediately before locale switch, opens exactly three options, no standalone primary-nav download link; Web UI choice reaches #web-ui with official command and source links.",
+    "diff": "git diff --check passed",
+    "external": "No binaries downloaded or run; no push, PR, or production deployment performed"
+  }
+}

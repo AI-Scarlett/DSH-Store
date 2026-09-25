@@ -130,3 +130,60 @@ test('a failed latest scan exposes unavailable statistics while retaining comple
   assert.equal(status.recentAdditions.length, 1)
   assert.equal(status.recentAdditions[0].id, 'new-plugin')
 })
+
+test('public scan history includes the latest eight runs and never invents missing report counts', () => {
+  const runs = Array.from({ length: 10 }, (_, index) => ({
+    databaseId: 100 + index,
+    status: 'completed',
+    conclusion: index === 9 ? 'failure' : 'success',
+    event: index === 9 ? 'schedule' : 'workflow_dispatch',
+    createdAt: `2026-08-${String(10 + index).padStart(2, '0')}T02:00:00Z`,
+    updatedAt: `2026-08-${String(10 + index).padStart(2, '0')}T02:05:00Z`,
+    url: `https://github.com/example/repo/actions/runs/${100 + index}`,
+    headSha: 'b'.repeat(40),
+  }))
+  const status = buildAutomationStatus({
+    catalog,
+    candidates: { entries: [] },
+    generatedAt: '2026-08-22T03:00:00Z',
+    sourceCommit: 'a'.repeat(40),
+    runs: { catalogAutomation: runs },
+    reports: [
+      { runId: 109, report: { status: 'failed', completed: false, statisticsAvailable: false, failure: { stage: 'internal-stage', message: 'must not be exposed in run summary' } } },
+      { runId: 108, report: {
+        completed: true,
+        addedEntries: [],
+        updatedEntries: [],
+        compatibilityUnlisted: [],
+        compatibilityRestored: [],
+        prunedCandidates: [],
+        rejectedCandidates: [],
+        deferredUpdates: [],
+        transientFailures: [],
+        sourceVersionChecks: { checkedEntries: 12, sameVersionCatalogUpdates: 0 },
+      } },
+      { runId: 107, report: { completed: true } },
+    ],
+  })
+
+  assert.equal(status.recentScanRuns.length, 8)
+  assert.equal(status.recentScanRuns[0].runId, 109)
+  assert.equal(status.recentScanRuns[0].event, 'schedule')
+  assert.equal(status.recentScanRuns[0].reportAvailable, true)
+  assert.equal(status.recentScanRuns[0].statisticsAvailable, false)
+  assert.equal(status.recentScanRuns[0].added, null)
+  assert.equal(status.recentScanRuns[0].sourceVersionChecks, null)
+  assert.equal(JSON.stringify(status.recentScanRuns[0]).includes('internal-stage'), false)
+
+  const success = status.recentScanRuns.find(run => run.runId === 108)
+  assert.equal(success.statisticsAvailable, true)
+  assert.equal(success.added, 0)
+  assert.equal(success.updated, 0)
+  assert.equal(success.sourceVersionChecks.checkedEntries, 12)
+  assert.equal(success.sourceVersionChecks.sameVersionCatalogUpdates, 0)
+
+  const partial = status.recentScanRuns.find(run => run.runId === 107)
+  assert.equal(partial.statisticsAvailable, true)
+  assert.equal(partial.added, null)
+  assert.equal(partial.sourceVersionChecks, null)
+})
