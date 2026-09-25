@@ -1,50 +1,48 @@
 {
-  "id": "dsh-issue-reporter",
-  "name": "GitHub 工程工具（DSH Issue Reporter）",
-  "packageName": "@goodandready/dsh-issue-reporter",
-  "description": "为 DSH 提供GitHub 工程工具能力。英文原始说明：Preview and submit actionable GitHub bug reports from DeepSeek Harness",
+  "id": "dsh-tripo-studio",
+  "name": "桌面客户端（DSH Tripo Studio）",
+  "packageName": "dsh-tripo-studio",
+  "description": "为 DSH 提供桌面客户端能力。英文原始说明：Local-first GPT-image 2.5 to Tripo 3D workflow for DSH Desktop",
   "searchTerms": [
-    "GitHub 工程工具",
-    "DSH Issue Reporter",
-    "dsh-issue-reporter",
-    "@goodandready/dsh-issue-reporter",
-    "GitHub",
-    "Git",
-    "代码审查",
-    "PR",
+    "桌面客户端",
+    "DSH Tripo Studio",
+    "dsh-tripo-studio",
+    "桌面",
+    "托盘",
+    "快捷启动",
     "实验功能",
     "新功能",
     "dsh",
-    "issue",
-    "reporter"
+    "tripo",
+    "studio"
   ],
-  "repositoryUrl": "https://github.com/GooDAnDReaDY/dsh-issue-reporter",
+  "repositoryUrl": "https://github.com/azwosile/dsh-tripo-blender",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "plugin/package.json",
+  "installPath": "plugin",
   "updatePolicy": "external-only",
-  "commit": "588b46dd89c7d9869ba7cb55dce904f03181c739",
-  "version": "0.1.8",
+  "commit": "d48745466705f15eb953fa54a2c079cd069580b8",
+  "version": "0.3.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T17:13:36.000Z",
+    "updatedAt": "2026-09-25T17:39:00.000Z",
     "observedAt": "2026-09-25T17:35:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-25T17:35:31.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-issue-reporter/commit/588b46dd89c7d9869ba7cb55dce904f03181c739",
+      "evidenceUrl": "https://github.com/azwosile/dsh-tripo-blender/commit/d48745466705f15eb953fa54a2c079cd069580b8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,14 +72,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-issue-reporter"
+    "tripo-studio"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 1397188 total bytes (maximum 2097152); largest file 976322 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -165,7 +163,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"
