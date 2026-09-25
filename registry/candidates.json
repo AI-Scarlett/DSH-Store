@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-25T17:35:31.000Z",
+    "updatedAt": "2026-09-25T19:52:53.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -13382,6 +13382,65 @@
         "plugin",
         "task-management",
         "track",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fangwen9527-dsh-composer-ux",
+      "name": "fangwen9527/dsh-composer-ux",
+      "description": "DSH Web 输入体验插件：发送/换行键位切换、右键菜单、面板滚动与尺寸记忆、OpenCode 请求头自动注入",
+      "repositoryUrl": "https://github.com/fangwen9527/dsh-composer-ux",
+      "defaultBranch": "main",
+      "latestCommit": "3f85be432c1113624069f239b6bbd5b8d4b0ffc3",
+      "sourceUpdatedAt": "2026-09-25T15:47:04.000Z",
+      "discoveredAt": "2026-09-25T19:52:53.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2041a639e2f20f5f419fff0c43e9b0143bb181cc:data/plugins/fangwen9527__dsh-composer-ux.yml:sha256=d1a2033501e20ba4c218a76632a44e7e6e47386c2e618541751ca7496d39b4ac:at=2026-09-25T19:56:23.912Z:owner=124908512"
+      ],
+      "topics": [
+        "composer",
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "opencode",
+        "plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fantasality-dsh-origin-plugin",
+      "name": "Fantasality/dsh-origin-plugin",
+      "description": "Drive OriginLab Origin scientific plotting from AI chat via MCP. 74 tools: modal-dialog watchdog, LabTalk safety gate, FigureSpec declarative YAML, fit params, matrix tools, matplotlib bridge, PPT assembly, editable OPJU delivery. Windows + Origin 2021+.",
+      "repositoryUrl": "https://github.com/Fantasality/dsh-origin-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "54c1e83ffa7518dcdaf18379cd0c2ae0f873fb56",
+      "sourceUpdatedAt": "2026-09-18T09:39:16.000Z",
+      "discoveredAt": "2026-09-25T19:52:53.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2041a639e2f20f5f419fff0c43e9b0143bb181cc:data/plugins/Fantasality__dsh-origin-plugin.yml:sha256=68947b36d80089b5d01789416b958a9ba428c939d870672f06b9ea8bef0620e7:at=2026-09-25T19:56:23.912Z:owner=137522119"
+      ],
+      "topics": [
+        "agent-tools",
+        "ai-agent",
+        "com-automation",
+        "data-visualization",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "mcp",
+        "model-context-protocol",
+        "origin",
+        "originlab",
+        "originpro",
+        "plotting",
+        "scientific-plotting",
         "automatic-radar"
       ],
       "status": "reviewing",
