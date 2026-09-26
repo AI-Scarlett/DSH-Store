@@ -1,45 +1,46 @@
 {
-  "id": "dsh-grove",
-  "name": "实验功能插件（DSH Grove）",
-  "packageName": "dsh-grove",
-  "description": "为 DSH 提供实验功能插件能力。英文原始说明：DeepSeek Harness bundle that exposes the Grove CLI as agent tools.",
+  "id": "dsh-system-monitor-plugin",
+  "name": "实验功能插件（DSH System Monitor Plugin）",
+  "packageName": "dsh-system-monitor-plugin",
+  "description": "监控 dsh 进程及其子进程的资源占用,提供进程句柄汇报工具与 UI 面板展示",
   "searchTerms": [
     "实验功能插件",
-    "DSH Grove",
-    "dsh-grove",
+    "DSH System Monitor Plugin",
+    "dsh-system-monitor-plugin",
     "实验功能",
     "新功能",
-    "新锐实验",
     "dsh",
-    "grove"
+    "system",
+    "monitor",
+    "plugin"
   ],
-  "repositoryUrl": "https://github.com/alxshelepenok/grove",
+  "repositoryUrl": "https://github.com/JularDepick/dsh-system-monitor-plugin",
   "defaultBranch": "main",
-  "manifestPath": "packages/dsh/package.json",
-  "installPath": "packages/dsh",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "859922aa63b58b8f9093f8436e1355345033712f",
-  "version": "0.2.1",
+  "commit": "3c57daba7e468174609d31b0138e9e8a260684d7",
+  "version": "0.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-26T01:00:54.000Z",
+    "updatedAt": "2026-09-26T04:00:56.000Z",
     "observedAt": "2026-09-26T03:57:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-26T03:57:43.000Z",
-      "evidenceUrl": "https://github.com/alxshelepenok/grove/commit/859922aa63b58b8f9093f8436e1355345033712f",
+      "evidenceUrl": "https://github.com/JularDepick/dsh-system-monitor-plugin/commit/3c57daba7e468174609d31b0138e9e8a260684d7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,16 +70,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "grove"
+    "system-monitor"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; Node.js compatibility is not explicitly declared; runtime artifact is missing from the fixed Git Commit: target/index.js; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./dist/index.mjs; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.mts; runtime artifact is missing from the fixed Git Commit: ./dist/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission s",
   "compatibility": {
-    "dsh": "0.0.1-rc.1",
+    "dsh": "0.1.7-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -160,14 +161,16 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "AGPL-3.0",
+    "license": "MIT",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -177,11 +180,15 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/schemastery"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
