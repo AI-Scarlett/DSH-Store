@@ -1,0 +1,244 @@
+{
+  "id": "dsh-codebase-chat",
+  "name": "会话管理（DSH Codebase Chat）",
+  "packageName": "dsh-codebase-chat",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Multi-language codebase intelligence for DeepSeek Harness and MCP-compatible IDEs: chat, search, audit, refactor, and board-ready reports from local code.",
+  "searchTerms": [
+    "会话管理",
+    "DSH Codebase Chat",
+    "dsh-codebase-chat",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "codebase",
+    "chat"
+  ],
+  "repositoryUrl": "https://github.com/shinzarou-eng/dsh-codebase-chat",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "b52084e30adb05d928681266bf3d17e0d538a62f",
+  "version": "0.29.1",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-13T21:58:43.000Z",
+    "observedAt": "2026-09-14T03:49:31.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-14T03:49:31.000Z",
+      "evidenceUrl": "https://github.com/shinzarou-eng/dsh-codebase-chat/commit/b52084e30adb05d928681266bf3d17e0d538a62f",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "codebase-chat"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.1.5-alpha.2": "unknown",
+      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.2": "unknown",
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown",
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown",
+      "0.1.7-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=20",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@babel/parser",
+      "@babel/traverse",
+      "@babel/types",
+      "@xenova/transformers",
+      "figlet",
+      "gpt-tokenizer",
+      "tree-sitter-wasms",
+      "web-tree-sitter"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

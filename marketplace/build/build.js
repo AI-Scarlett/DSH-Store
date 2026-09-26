@@ -3,7 +3,7 @@ const translations = {
     'meta.title': '开发 DSH 插件｜DSH STORE Build Lab',
     'meta.description': '使用 build-dsh-plugin Agent Skill，把问题、期望结果和成功标准转换为标准、非破坏性的 DeepSeek Harness 插件工程与验证流程。',
     'a11y.skip': '跳到 Skill 安装',
-    'nav.home': '首页', 'nav.store': '插件目录', 'nav.standards': '收录标准', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.trust': '信任机制', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
+    'nav.home': '首页', 'nav.store': '插件目录', 'nav.community': '社区与开发者', 'nav.standards': '收录标准', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.trust': '信任机制', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
     'hero.title1': '用三个答案，', 'hero.title2': '启动一个 DSH 插件。',
     'hero.lead': '把自然语言 Brief 转换为标准 Bundle、风险边界、源码、测试和证据门槛。开发从用户结果开始，不从内部 API 开始。',
     'action.install': '安装 Skill', 'action.copyBrief': '复制开发 Brief', 'action.github': '查看开源 Skill', 'action.copy': '复制模板', 'action.copyInstall': '复制安装指令', 'action.download': '下载已验证 ZIP', 'action.downloadAgent': '下载当前 Agent Skill ZIP', 'action.source': '查看源码', 'action.top': '回到顶部 ↑',
@@ -42,7 +42,7 @@ const translations = {
     'meta.title': 'Build DSH Plugins | DSH STORE Build Lab',
     'meta.description': 'Use the build-dsh-plugin Agent Skill to turn a problem, outcome, and success criterion into a standard, non-destructive DeepSeek Harness plugin project.',
     'a11y.skip': 'Skip to Skill installation',
-    'nav.home': 'Home', 'nav.store': 'Plugin catalog', 'nav.standards': 'Listing standards', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.trust': 'Trust protocol', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
+    'nav.home': 'Home', 'nav.store': 'Plugin catalog', 'nav.community': 'Community & creators', 'nav.standards': 'Listing standards', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.trust': 'Trust protocol', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
     'hero.title1': 'Three answers', 'hero.title2': 'start a DSH plugin.',
     'hero.lead': 'Turn a natural-language brief into a standard Bundle, risk boundary, source project, tests, and evidence gates. Start with the user outcome, not internal APIs.',
     'action.install': 'Install Skill', 'action.copyBrief': 'Copy starter brief', 'action.github': 'View open-source Skill', 'action.copy': 'Copy template', 'action.copyInstall': 'Copy install request', 'action.download': 'Download verified ZIP', 'action.downloadAgent': 'Download current Agent Skill ZIP', 'action.source': 'View source', 'action.top': 'Back to top ↑',
@@ -104,7 +104,7 @@ Observable success criterion:`,
 
 const RELEASE_API = 'https://api.github.com/repos/AI-Scarlett/build-dsh-plugin/releases/latest'
 const REPOSITORY_URL = 'https://github.com/AI-Scarlett/build-dsh-plugin/'
-const TAG_PATTERN = /^v\d{4}\.\d{2}\.\d{2}(?:\.\d+)?$/
+const TAG_PATTERN = /^v(?:\d+\.\d+\.\d+|\d{4}\.\d{2}\.\d{2}\.\d+)$/
 const defaultLocale = document.documentElement.dataset.defaultLocale === 'en' ? 'en' : 'zh'
 const storedLocale = localStorage.getItem('dsh-marketplace-locale')
 const state = {
@@ -186,6 +186,28 @@ function parseDshContract(manifest) {
   return { installSpecifier, packageName, bundlePatch, profile }
 }
 
+function parseCatalogDshContract(catalog, manifest) {
+  if (catalog?.schemaVersion !== 1 || catalog?.registry?.repositoryUrl !== 'https://github.com/AI-Scarlett/DSH-Store' || !Array.isArray(catalog.entries) || catalog.entries.length > 2000) return null
+  const entries = catalog.entries.filter(entry => entry.id === 'build-dsh-plugin')
+  if (entries.length !== 1) return null
+  const entry = entries[0]
+  if (entry.status !== 'approved' || entry.version !== manifest.distributionVersion
+    || entry.repositoryUrl !== 'https://github.com/AI-Scarlett/build-dsh-plugin'
+    || entry.packageName !== 'dsh-build-plugin' || !/^[0-9a-f]{40}$/.test(entry.commit || '')
+    || entry.manifestPath !== 'package.json' || entry.installPath != null
+    || !Array.isArray(entry.entryIds) || entry.entryIds.length !== 1 || entry.entryIds[0] !== 'dsh-build-plugin-skill-provider'
+    || !Object.values(entry.compatibility?.dshReleases || {}).includes('compatible')) return null
+  return parseDshContract({ dsh: { compatible: true, installSpecifier: `git+https://github.com/AI-Scarlett/build-dsh-plugin.git#${entry.commit}`, packageName: entry.packageName, bundlePatch: 'cordis.patch.yml', profile: 'web' } })
+}
+
+async function loadCatalogDshContract(manifest) {
+  const response = await fetch(new URL('../../registry/catalog.json', window.location.href), { cache: 'no-store', credentials: 'omit' })
+  if (!response.ok) return null
+  const text = await response.text()
+  if (new TextEncoder().encode(text).byteLength > 2 * 1024 * 1024) return null
+  return parseCatalogDshContract(JSON.parse(text), manifest)
+}
+
 function validateRelease(release, manifest, manifestUrl) {
   if (!release || !TAG_PATTERN.test(release.tag_name || '')) throw new Error('invalid release tag')
   if (!manifest || manifest.schemaVersion !== 1 || manifest.name !== 'build-dsh-plugin') throw new Error('invalid manifest')
@@ -226,8 +248,8 @@ function installContent() {
       body: t('install.dshStoreBody'),
       boundary: t('install.dshBoundaryReady'),
       command: state.locale === 'en'
-        ? `Open DSH STORE inside DSH → Plugin catalog, find build-dsh-plugin, review the pinned source, and install it.\n\nCLI fallback:\ndsh plugin --profile ${state.dsh.profile} add '${state.dsh.installSpecifier}'`
-        : `在 DSH 中打开 DSH STORE → 插件目录，搜索 build-dsh-plugin，确认固定来源后安装。\n\n备用命令：\ndsh plugin --profile ${state.dsh.profile} add '${state.dsh.installSpecifier}'`,
+        ? `Open DSH STORE inside DSH → Plugin catalog, find build-dsh-plugin, review the pinned source, and install it.\n\nCLI fallback:\ndsh plugin --profile ${state.dsh.profile} add --ignore-scripts '${state.dsh.installSpecifier}'`
+        : `在 DSH 中打开 DSH STORE → 插件目录，搜索 build-dsh-plugin，确认固定来源后安装。\n\n备用命令：\ndsh plugin --profile ${state.dsh.profile} add --ignore-scripts '${state.dsh.installSpecifier}'`,
       enabled: true,
     } : {
       kicker: 'DSH / COMPATIBILITY GATE',
@@ -307,7 +329,7 @@ async function loadSkillRelease() {
     if (!manifestResponse.ok) throw new Error(`manifest HTTP ${manifestResponse.status}`)
     const manifest = validateRelease(release, await manifestResponse.json(), manifestUrl)
     state.release = manifest
-    state.dsh = parseDshContract(manifest)
+    state.dsh = parseDshContract(manifest) || await loadCatalogDshContract(manifest).catch(() => null)
     state.releaseStatus = 'ready'
     renderInstall()
     sendDshEvent('skill_release_verified', { item: manifest.release.tag, value: state.dsh ? 'dsh_ready' : 'agent_skill' })

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="applicable-device" content="pc,mobile">
+  <!-- DSH_BAIDU_VERIFICATION -->
+  <meta name="description" content="DSH STORE public scan history: fixed-source manual baselines and recent automated Catalog scans, with clear evidence boundaries.">
+  <meta name="robots" content="index,follow,max-snippet:-1">
+  <meta name="theme-color" content="#f6f9ff">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DSH STORE">
+  <meta property="og:title" content="扫描记录与结果 | DSH STORE Scan History">
+  <meta property="og:description" content="查看 DSH STORE 手动基准扫描与自动目录扫描记录、分类统计和公开证据边界。">
+  <meta property="og:url" content="https://dsh.store/scans/">
+  <title>扫描记录与结果 | DSH STORE</title>
+  <link rel="canonical" href="https://dsh.store/scans/">
+  <!-- DSH_HREFLANG -->
+  <link rel="icon" type="image/png" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../pages-redesign.css?v=20260924-inner-store-2">
+  <link rel="stylesheet" href="./scans.css?v=20260925-1">
+  <script defer src="../motion.js"></script>
+  <script defer src="../scan-history-nav.js"></script>
+  <script defer src="./scans.js"></script>
+</head>
+<body class="info-page scan-history-page" data-automation-status-url="https://ai-scarlett.github.io/DSH-Store/automation-status.json" data-manual-scan-url="./data/manual-baseline-20260925.json">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
+  <div class="tech-grid" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <a class="brand" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="../" data-i18n="nav.home">首页</a>
+      <a href="../plugins/" data-i18n="nav.plugins">插件目录</a>
+      <a href="../community/" data-i18n="nav.community">社区与开发者</a>
+      <a href="./" aria-current="page" data-i18n="nav.scans">扫描记录</a>
+      <a href="../standards/" data-i18n="nav.standards">收录标准</a>
+      <a href="../build/" data-i18n="nav.build">开发插件</a>
+      <a href="../faq/" data-i18n="nav.faq">常见问题</a>
+      <a href="../about/" data-i18n="nav.about">关于我们</a>
+      <a href="https://github.com/AI-Scarlett/DSH-Store/blob/main/README.md" target="_blank" rel="noreferrer"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <a href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
+      <!-- DSH_ALTERNATE_SITE -->
+    </nav>
+    <div class="header-tools"><div class="locale-switch" role="group" aria-label="Language"><button type="button" data-locale="zh" aria-pressed="true">中文</button><button type="button" data-locale="en" aria-pressed="false">EN</button></div></div>
+  </header>
+  <main id="main">
+    <section class="scan-hero section-shell">
+      <div class="system-status"><span></span><b data-i18n="hero.eyebrow">SCAN ARCHIVE / PUBLIC EVIDENCE</b><em data-i18n="hero.status">可复核</em></div>
+      <div class="scan-hero-row">
+        <div><h1 data-i18n="hero.title">扫描有记录，结果有边界。</h1><p data-i18n="hero.lead">集中查看固定来源的手动全量基准，以及商城自动化扫描的近期运行与结果。扫描结论不等于上架、安装或运行验收。</p></div>
+        <div class="scan-hero-note"><strong data-i18n="hero.noteTitle">透明展示</strong><span data-i18n="hero.note">缺失的报告明确标为不可用，不把未知数据伪装成 0。</span></div>
+      </div>
+    </section>
+    <section class="scan-content section-shell" aria-label="Scan history">
+      <div class="scan-tabs" role="tablist" aria-label="扫描类型">
+        <button id="tab-manual" type="button" role="tab" aria-selected="true" aria-controls="panel-manual" tabindex="0" data-scan-tab="manual"><span data-i18n="tabs.manual">手动扫描</span><small data-i18n="tabs.manualHint">全量基准</small></button>
+        <button id="tab-automatic" type="button" role="tab" aria-selected="false" aria-controls="panel-automatic" tabindex="-1" data-scan-tab="automatic"><span data-i18n="tabs.automatic">自动扫描</span><small data-i18n="tabs.automaticHint">近期运行</small></button>
+      </div>
+      <section id="panel-manual" class="scan-panel" role="tabpanel" aria-labelledby="tab-manual" tabindex="0">
+        <div id="manual-scan-content" class="scan-loading" role="status" aria-live="polite" data-i18n="state.loadingManual">正在读取手动扫描记录…</div>
+      </section>
+      <section id="panel-automatic" class="scan-panel" role="tabpanel" aria-labelledby="tab-automatic" tabindex="0" hidden>
+        <div id="automatic-scan-content" class="scan-loading" role="status" aria-live="polite" data-i18n="state.loadingAutomatic">正在读取近期自动扫描…</div>
+      </section>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">查看手动基准与自动扫描，不混淆发现、收录和运行验收。</p><nav class="footer-nav" aria-label="Quick links / 快速导航"><section class="footer-nav-group"><strong data-i18n="footer.explore">快速导航</strong><a href="../plugins/" data-i18n="nav.plugins">插件目录</a><a href="../community/" data-i18n="nav.community">社区与开发者</a><a href="./" data-i18n="nav.scans">扫描记录</a><a href="../standards/" data-i18n="nav.standards">收录标准</a><a href="../about/" data-i18n="nav.about">关于我们</a></section><section class="footer-nav-group"><strong data-i18n="footer.friends">友情链接</strong><!-- DSH_FRIEND_SISTER_SITE --><a href="https://aiaiai.help/" target="_blank" rel="noopener noreferrer">aiaiai.help · 模型百科 ↗</a><a href="https://tracefence.com/" target="_blank" rel="noopener noreferrer">TraceFence ↗</a></section></nav><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>DSH STORE · SCAN HISTORY</span><span data-i18n="footer.note">公开汇总 · 固定来源 · 未执行第三方代码</span><!-- DSH_ICP --></div></footer>
+</body>
+</html>

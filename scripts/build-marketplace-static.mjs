@@ -47,6 +47,19 @@ if (!outputRelative || outputRelative.startsWith('..')) {
 }
 
 const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
+const catalogIndexBytes = await readFile(resolve(projectRoot, 'registry/catalog-index.json'))
+const catalogIndex = JSON.parse(catalogIndexBytes.toString('utf8'))
+const catalogIndexSha256 = createHash('sha256').update(catalogIndexBytes).digest('hex')
+const catalogBridge = JSON.parse(await readFile(resolve(projectRoot, 'registry/catalog.json'), 'utf8'))
+if (catalogIndex.schemaVersion !== 2 || !Array.isArray(catalogIndex.entries)
+  || catalogIndex.entries.length !== catalog.entries.length
+  || catalogIndex.registry?.updatedAt !== catalog.registry?.updatedAt
+  || catalogIndex.registry?.repositoryUrl !== catalog.registry?.repositoryUrl
+  || catalogBridge.registry?.indexSha256 !== catalogIndexSha256
+  || catalogBridge.registry?.indexBytes !== catalogIndexBytes.byteLength
+  || catalogBridge.registry?.indexEntryCount !== catalogIndex.entries.length) {
+  throw new Error('The static build catalog index does not match the validated Catalog bridge')
+}
 const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(resolve(projectRoot, 'registry/candidates.json'), 'utf8')))
 
 async function readAutomationRuns(path) {
@@ -114,9 +127,14 @@ async function fetchJson(url, { authenticated = false } = {}) {
       const response = await fetch(url, { headers, signal: AbortSignal.timeout(20_000) })
       if (response.ok) return response.json()
       lastError = new Error(`${url} returned HTTP ${response.status}`)
+      lastError.status = response.status
+      lastError.rateLimited = response.status === 429
+        || (response.status === 403 && response.headers.get('x-ratelimit-remaining') === '0')
+      if (lastError.rateLimited && response.status === 403) throw lastError
       if (![429, 500, 502, 503, 504].includes(response.status)) throw lastError
     } catch (error) {
       lastError = error
+      if (error.rateLimited && error.status === 403) throw error
     }
     if (attempt < 4) await new Promise(resolvePromise => setTimeout(resolvePromise, attempt * 750))
   }
@@ -136,7 +154,9 @@ async function mapLimit(items, limit, worker) {
   return results
 }
 
+let githubMetadataComplete = false
 if (enrichGitHub) {
+  let githubMetadataRateLimited = false
   const repositoryRequests = new Map()
   const repositoryMetadata = entry => {
     const { owner, repository } = repositoryParts(entry.repositoryUrl)
@@ -148,13 +168,19 @@ if (enrichGitHub) {
   }
 
   await mapLimit(snapshot.entries.filter(entry => entry.status === 'approved'), 5, async entry => {
-    const [repository, manifest] = await Promise.all([
-      repositoryMetadata(entry),
+    const [repositoryResult, manifest] = await Promise.all([
+      repositoryMetadata(entry).then(repository => ({ repository })).catch(error => ({ error })),
       fetchJson(manifestUrl(entry)),
     ])
     if (manifest.version !== entry.version) {
       throw new Error(`${entry.id} catalog version ${entry.version} does not match pinned manifest ${manifest.version}`)
     }
+    if (repositoryResult.error) {
+      if (!repositoryResult.error.rateLimited) throw repositoryResult.error
+      githubMetadataRateLimited = true
+      return
+    }
+    const { repository } = repositoryResult
     entry.github = {
       stars: repository.stargazers_count,
       forks: repository.forks_count,
@@ -168,6 +194,10 @@ if (enrichGitHub) {
       manifestVersion: manifest.version,
     }
   })
+  if (githubMetadataRateLimited) {
+    process.stderr.write('GitHub repository metadata is rate-limited; publishing the fixed-Commit Catalog without mutable repository counters.\n')
+  }
+  githubMetadataComplete = !githubMetadataRateLimited
 }
 
 // A scheduled build may run even when neither the catalog nor its GitHub
@@ -186,13 +216,14 @@ snapshot.generated = {
   sourceCommit: sourceSha,
   catalogAuthority: 'registry/catalog.json',
   catalogIndexAuthority: 'registry/catalog-index.json',
-  githubEnriched: enrichGitHub,
+  githubEnriched: enrichGitHub && githubMetadataComplete,
 }
 
 const manager = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
-if (!manager || manager.status !== 'approved' || !/^[0-9a-f]{40}$/.test(manager.commit || '')) {
-  throw new Error('The approved dsh-safe-plugin-manager catalog entry is required for the static build')
+if (!manager || !/^[0-9a-f]{40}$/.test(manager.commit || '')) {
+  throw new Error('A fixed-Commit dsh-safe-plugin-manager catalog entry is required for the static build')
 }
+const managerInstallable = manager.status === 'approved'
 
 const htmlEscape = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -254,6 +285,20 @@ function featuredCard(entry, index) {
   </article>`
 }
 
+function homePluginCard(entry) {
+  const topCategory = Array.isArray(entry.categories) ? entry.categories[0] : ''
+  const statusClass = entry.status === 'approved' ? '' : ' blocked'
+  const status = entry.status === 'approved' ? '可安装' : '仅展示'
+  return `<article class="home-plugin-card" data-static-home-plugin-id="${htmlEscape(entry.id)}">
+    <div class="home-plugin-card-top"><span class="home-plugin-icon" aria-hidden="true" style="--plugin-color:${pluginColor(entry.id)}">${htmlEscape(initials(entry.name))}</span><span class="status-tag${statusClass}">${status}</span></div>
+    <h3>${htmlEscape(entry.name)}</h3>
+    ${topCategory ? `<p class="home-plugin-category">${htmlEscape(categoryLabel(topCategory))}</p>` : ''}
+    <p class="home-plugin-description">${htmlEscape(entry.description || '打开详情查看插件信息。')}</p>
+    <div class="home-plugin-package"><code>${htmlEscape(entry.packageName)}</code><span>v${htmlEscape(entry.version)}</span></div>
+    <footer class="home-plugin-card-footer"><a class="home-plugin-detail" href="./plugins/#plugin-${htmlEscape(anchorId(entry.id))}">查看插件详情 →</a><a class="home-plugin-repo" href="${htmlEscape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="打开 GitHub 仓库: ${htmlEscape(entry.name)}">↗</a></footer>
+  </article>`
+}
+
 function replaceRequired(source, search, replacement, label) {
   if (!source.includes(search)) throw new Error(`Static template marker is missing: ${label}`)
   return source.replace(search, replacement)
@@ -289,12 +334,17 @@ async function rewriteSiteReferences(directory) {
   }
 }
 
-const externalCatalogMarker = '<meta name="dsh-catalog-delivery" content="external-json">'
+const externalCatalogMarker = `<meta name="dsh-catalog-delivery" content="external-json">
+  <meta name="dsh-catalog-index-sha256" content="${catalogIndexSha256}">
+  <meta name="dsh-catalog-index-bytes" content="${catalogIndexBytes.byteLength}">
+  <meta name="dsh-catalog-index-count" content="${catalogIndex.entries.length}">`
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
-const installCommand = `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+const installCommand = managerInstallable
+  ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+  : (defaultLocale === 'en' ? 'Compatibility review pending; installation is unavailable.' : '兼容性待核验，暂不提供安装命令。')
 const repairVersionComparison = compareVersions(manager.version, '0.8.10')
-const repairAvailable = repairVersionComparison !== null && repairVersionComparison >= 0
+const repairAvailable = managerInstallable && repairVersionComparison !== null && repairVersionComparison >= 0
 const repairPackageSpecifier = `git+${manager.repositoryUrl}.git#${manager.commit}`
 const repairCommand = `pnpm --config.ignore-scripts=true dlx '${repairPackageSpecifier}' --profile web --target-version ${manager.version} --target-commit ${manager.commit}`
 const approvedCount = visibleEntries.filter(entry => entry.status === 'approved').length
@@ -332,7 +382,10 @@ await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { re
 await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
 
 const isDomestic = siteOriginUrl.host === 'dsh-store.cn'
-if (!isDomestic) await rm(resolve(outputRoot, 'marketplace/dsh-store-guide'), { recursive: true, force: true })
+if (!isDomestic) {
+  await rm(resolve(outputRoot, 'marketplace/dsh-store-guide'), { recursive: true, force: true })
+  await rm(resolve(outputRoot, 'marketplace/googled542dac4f5a6c169.html'), { force: true })
+}
 
 const articlePromoBegin = '<!-- DSH_ARTICLE_PROMO_BEGIN -->'
 const articlePromoEnd = '<!-- DSH_ARTICLE_PROMO_END -->'
@@ -358,10 +411,14 @@ const alternateCode = alternateIsDomestic ? 'CN' : 'INTL'
 const alternateAriaLabel = alternateIsDomestic ? '切换到国内站 / Switch to China site' : '切换到国际站 / Switch to international site'
 const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international'
 const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
+const friendSisterSiteMarkup = `<a href="${htmlEscape(`${alternateOrigin}/`)}" target="_blank" rel="noopener noreferrer">DSH STORE · ${alternateIsDomestic ? '国内站' : 'International'} ↗</a>`
 
 const canonicalPages = [
   { file: 'marketplace/index.html', route: '/' },
   { file: 'marketplace/plugins/index.html', route: '/plugins/' },
+  { file: 'marketplace/downloads/index.html', route: '/downloads/' },
+  { file: 'marketplace/scans/index.html', route: '/scans/' },
+  { file: 'marketplace/community/index.html', route: '/community/' },
   { file: 'marketplace/standards/index.html', route: '/standards/' },
   { file: 'marketplace/build/index.html', route: '/build/' },
   { file: 'marketplace/faq/index.html', route: '/faq/' },
@@ -394,8 +451,8 @@ const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
-const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/downloads/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
+const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/downloads/': 'weekly', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
 if (isDomestic) {
   sitemapPriority['/dsh-store-guide/'] = '0.8'
   sitemapChangefreq['/dsh-store-guide/'] = 'monthly'
@@ -413,18 +470,37 @@ const icpMarkup = icpNumber
 const baiduVerificationMarkup = baiduVerificationCode
   ? `<meta name="baidu-site-verification" content="${htmlEscape(baiduVerificationCode)}">`
   : ''
+const baiduUnionVerificationMarkup = isDomestic
+  ? '<meta name="baidu_union_verify" content="f7a5e80f6ec4d01cdfd011c771e7e706">'
+  : ''
+const baiduTongjiMarkup = isDomestic ? `<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?7c34f1fd076e8f052b6a6f746ab1135d";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>` : ''
 for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
   const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
-  const withHreflang = replaceRequired(withAlternate, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
+  const withFriendLinks = replaceRequired(withAlternate, '<!-- DSH_FRIEND_SISTER_SITE -->', friendSisterSiteMarkup, `${pagePath} friend sister site marker`)
+  const withHreflang = replaceRequired(withFriendLinks, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
   const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
+  const withBaiduUnionVerification = route === '/'
+    ? replaceRequired(withBaiduVerification, '<!-- DSH_BAIDU_UNION_VERIFY -->', baiduUnionVerificationMarkup, `${pagePath} Baidu Union verification marker`)
+    : withBaiduVerification
+  const withBaiduTongji = baiduTongjiMarkup
+    ? replaceRequired(withBaiduUnionVerification, '</head>', `${baiduTongjiMarkup}\n</head>`, `${pagePath} head`)
+    : withBaiduUnionVerification
   const pageLanguage = fixedLocale || htmlLanguage
   const pageDefaultLocale = fixedLocale === 'zh-CN' ? 'zh' : defaultLocale
   const fixedLocaleAttribute = fixedLocale ? ` data-fixed-locale="${fixedLocale}"` : ''
-  const localizedDocument = withBaiduVerification.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
-  if (localizedDocument === withBaiduVerification) throw new Error(`${pagePath} html language marker is missing`)
+  const localizedDocument = withBaiduTongji.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
+  if (localizedDocument === withBaiduTongji) throw new Error(`${pagePath} html language marker is missing`)
   await writeFile(absolutePath, localizedDocument)
 }
 
@@ -434,9 +510,15 @@ home = replaceRequired(home, '<!-- DSH_LEGACY_REPAIR_BANNER -->', repairAvailabl
   ? `<aside class="legacy-repair-banner" aria-label="旧版商城安全修复"><strong>旧版商城更新被 pnpm 拦截？</strong><span>不要放开 prepare 权限，也不要手改 Profile。</span><a href="./repair/">打开官方安全修复入口 →</a></aside>`
   : '', 'home legacy repair banner')
 home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_FEATURED_BEGIN -->', '<!-- DSH_STATIC_FEATURED_END -->', featured.map(featuredCard).join(''), 'featured catalog')
+home = replaceBetweenMarkers(home, '<!-- DSH_STATIC_HOME_CATALOG_BEGIN -->', '<!-- DSH_STATIC_HOME_CATALOG_END -->', visibleEntries.slice(0, 6).map(homePluginCard).join(''), 'homepage catalog preview')
 home = home.replace(/"softwareVersion"\s*:\s*"[^"]*"/, `"softwareVersion": "${htmlEscape(manager.version)}"`)
-home = replaceElementText(home, 'install-version', `v${manager.version} · SHA PINNED`)
+home = replaceElementText(home, 'install-version', managerInstallable
+  ? `v${manager.version} · SHA PINNED`
+  : (defaultLocale === 'en' ? `v${manager.version} · COMPATIBILITY REVIEW` : `v${manager.version} · 兼容性待核验`))
 home = replaceElementText(home, 'install-command', installCommand)
+if (!managerInstallable) {
+  home = replaceRequired(home, 'data-copy-target="install-command"', 'data-copy-target="install-command" disabled aria-disabled="true"', 'manager install copy button')
+}
 home = replaceElementText(home, 'manager-protocol', `STANDARD BUNDLE / v${manager.version}`)
 home = replaceElementText(home, 'manager-commit-short', manager.commit.slice(0, 7))
 home = replaceElementText(home, 'stat-total', String(visibleEntries.length).padStart(2, '0'))
@@ -517,10 +599,11 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   alternateOrigin,
   icp: icpNumber || null,
   baiduSiteVerification: baiduVerificationCode ? 'configured' : null,
+  baiduUnionVerification: isDomestic ? 'configured' : null,
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,
   manager: { version: manager.version, commit: manager.commit, license: manager.details?.license, status: manager.status },
-  githubEnriched: enrichGitHub,
+  githubEnriched: snapshot.generated.githubEnriched,
 }, null, 2) + '\n')
 await writeFile(resolve(outputRoot, 'index.html'), `<!doctype html>\n<meta charset="utf-8">\n<meta http-equiv="refresh" content="0; url=marketplace/">\n<title>DSH STORE</title>\n<a href="marketplace/">打开 DSH STORE</a>\n`)
 await writeFile(resolve(outputRoot, '.nojekyll'), '')
@@ -554,4 +637,4 @@ await writeFile(resolve(outputRoot, 'release-manifest.json'), JSON.stringify({
   files: releaseFiles,
 }, null, 2) + '\n')
 
-console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} origin=${siteOrigin} enriched=${enrichGitHub}`)
+console.log(`STATIC_MARKETPLACE_OK entries=${snapshot.entries.length} manager=${manager.version} commit=${manager.commit} origin=${siteOrigin} enriched=${snapshot.generated.githubEnriched}`)

@@ -1,4 +1,5 @@
 import { compareVersions, DSH_RC_RELEASES, dshReleaseVersion } from './catalog.mjs'
+import { COMPATIBILITY_HOLD_PREFIX } from './catalog-compatibility-policy.mjs'
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
@@ -43,12 +44,38 @@ function normalizedDshReleaseStatuses(value, label) {
   return statuses
 }
 
+function normalizedDshOperationStatuses(value, label) {
+  const statuses = new Map()
+  const operations = ['install', 'start', 'uninstall', 'rollback']
+  for (const [release, record] of Object.entries(value ?? {})) {
+    const version = dshReleaseVersion(release)
+    if (version === null) throw new Error(`${label}.${release} is not a supported DSH release key`)
+    if (!record || typeof record !== 'object' || Array.isArray(record)
+      || Object.keys(record).some(operation => !operations.includes(operation))) {
+      throw new Error(`${label}.${release} must declare install, start, uninstall, and rollback`)
+    }
+    const normalized = Object.fromEntries(operations.map(operation => {
+      const status = record[operation] ?? 'unknown'
+      if (!['passed', 'failed', 'unknown'].includes(status)) {
+        throw new Error(`${label}.${release}.${operation} must be passed, failed, or unknown`)
+      }
+      return [operation, status]
+    }))
+    if (statuses.has(version) && JSON.stringify(statuses.get(version)) !== JSON.stringify(normalized)) {
+      throw new Error(`${label} declares conflicting operation aliases for ${version}`)
+    }
+    statuses.set(version, normalized)
+  }
+  return statuses
+}
+
 export function sourceDeclaredCompatibility(entry, candidate) {
   const releaseVersions = new Set([
     ...DSH_RC_RELEASES,
     ...Object.keys(entry.compatibility?.dshReleases ?? {}),
     ...Object.keys(entry.compatibility?.dshOperations ?? {}),
     ...Object.keys(candidate.compatibility?.dshReleases ?? {}),
+    ...Object.keys(candidate.compatibility?.dshOperations ?? {}),
   ].map(release => {
     const version = dshReleaseVersion(release)
     if (version === null) throw new Error(`compatibility release ${release} is not a supported DSH release key`)
@@ -58,12 +85,16 @@ export function sourceDeclaredCompatibility(entry, candidate) {
     candidate.compatibility?.dshReleases,
     'candidate compatibility.dshReleases',
   )
+  const candidateOperations = normalizedDshOperationStatuses(
+    candidate.compatibility?.dshOperations,
+    'candidate compatibility.dshOperations',
+  )
   const dshReleases = {}
   const dshOperations = {}
   for (const version of releaseVersions) {
     const release = PREFERRED_DSH_RELEASE_KEYS.get(version) ?? version
     dshReleases[release] = candidateStatuses.get(version) ?? 'unknown'
-    dshOperations[release] = {
+    dshOperations[release] = candidateOperations.get(version) ?? {
       install: 'unknown',
       start: 'unknown',
       uninstall: 'unknown',
@@ -86,14 +117,31 @@ export function catalogUpdatePolicy(entry) {
   if (entry.updatePolicy === 'source-verified') return 'source-verified'
   const permissions = entry.details?.permissions ?? {}
   const credentials = permissions.credentials ?? ['unknown']
-  const lowRisk = entry.status === 'approved'
+  // A latest-three compatibility hold is a reversible policy state, not a
+  // permanent loss of the entry's previous installability class. Authors may
+  // add exact compatibility evidence without changing package.version, so the
+  // next fixed Commit must still receive the same bounded review an approved
+  // entry would receive.
+  const installableScope = entry.status === 'approved'
+    || (entry.status === 'unlisted' && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX))
+  const lowRisk = installableScope
     && (entry.risk?.installScripts?.length ?? 0) === 0
     && ['none', 'read-only'].includes(permissions.files)
     && permissions.network === 'none'
     && permissions.commands === 'none'
     && credentials.length === 1
     && credentials[0] === 'none'
-  return lowRisk ? 'source-verified' : entry.status === 'approved' ? 'user-reviewed' : 'external-only'
+  return lowRisk ? 'source-verified' : installableScope ? 'user-reviewed' : 'external-only'
+}
+
+export function catalogChangeReviewContract(versionAssessment) {
+  if (versionAssessment?.status === 'newer-version') {
+    return { reviewable: true, expectedVersionComparison: 1, changeKind: 'version-update' }
+  }
+  if (versionAssessment?.status === 'source-changed-without-version-bump') {
+    return { reviewable: true, expectedVersionComparison: 0, changeKind: 'same-version-source-update' }
+  }
+  return { reviewable: false, expectedVersionComparison: null, changeKind: null }
 }
 
 export function assessUpstreamVersion(entry, source) {
@@ -143,11 +191,13 @@ export function buildCatalogVersionUpdate(
   observedAt,
   policy = catalogUpdatePolicy(entry),
 ) {
+  const sameVersion = compareVersions(candidate.version, entry.version) === 0
+  const releaseDescription = sameVersion ? 'same-version fixed Commit' : 'newer fixed Commit'
   const reason = policy === 'source-verified'
-    ? 'The newer fixed Commit passed the complete automatic low-risk source policy.'
+    ? `The ${releaseDescription} passed the complete automatic low-risk source policy.`
     : policy === 'user-reviewed'
-      ? 'The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review.'
-      : 'The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred.'
+      ? `The ${releaseDescription} passed Catalog identity and source-contract review; installation still requires a separate local risk review.`
+      : 'The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred.'
   return {
     ...entry,
     defaultBranch: candidate.defaultBranch,
@@ -162,7 +212,7 @@ export function buildCatalogVersionUpdate(
     assurance: {
       discovery: {
         status: 'verified',
-        method: 'automated-fixed-source-update-v2',
+        method: 'automated-fixed-source-update-v3',
         checkedAt: observedAt,
         evidenceUrl: `${entry.repositoryUrl}/commit/${candidate.commit}`,
         dshRelease: null,
@@ -170,8 +220,8 @@ export function buildCatalogVersionUpdate(
         profiles: [],
         summary: reason,
       },
-      installability: unknownEvidence('The updated release was not installed or built by Catalog automation.'),
-      runtime: unknownEvidence('No DSH runtime acceptance was carried forward from the previous plugin version.'),
+      installability: unknownEvidence('The updated fixed Commit was not installed or built by Catalog automation.'),
+      runtime: unknownEvidence('No DSH runtime acceptance was carried forward after the source changed.'),
       securityReview: unknownEvidence('Automated fixed-source review is not an independent security audit.'),
     },
     risk: {
@@ -179,4 +229,19 @@ export function buildCatalogVersionUpdate(
       installScripts: sorted(candidate.risk?.installScripts),
     },
   }
+}
+
+export function isAutomaticPolicyBlocked(entry) {
+  return entry.status === 'blocked'
+    && entry.updatePolicy === 'external-only'
+    && entry.risk?.review === 'automatic-policy-blocked-not-installable'
+    && String(entry.statusReason ?? '').startsWith('Automatic policy blocked installation:')
+}
+
+export function refreshAutomaticPolicyReview(entry, reviewed) {
+  if (!isAutomaticPolicyBlocked(entry)) return entry
+  if (!reviewed || reviewed.commit !== entry.commit && !/^[0-9a-f]{40}$/.test(reviewed.commit ?? '')) throw new Error('reviewed fixed Commit is required')
+  if (reviewed.assurance?.discovery?.method !== 'automated-fixed-source-policy-v1') throw new Error('complete automatic source review is required')
+  return { ...reviewed, id: entry.id, name: entry.name, description: entry.description,
+    categories: entry.categories, searchTerms: entry.searchTerms, featured: entry.featured, installCount: entry.installCount }
 }

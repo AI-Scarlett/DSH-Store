@@ -24,8 +24,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "926a6beea81ca6ea1fecc267bc1b02d880572669",
-  "version": "3.25.4",
+  "commit": "ffeee3e32de1c05315e334be97c9f087242fe2f3",
+  "version": "3.26.5",
   "categories": [
     "tools",
     "visualization"
@@ -33,20 +33,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-01T06:47:49.000Z",
-    "observedAt": "2026-09-01T12:56:30.000Z",
+    "updatedAt": "2026-09-24T09:01:59.000Z",
+    "observedAt": "2026-09-24T12:20:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-01T12:56:30.000Z",
-      "evidenceUrl": "https://github.com/liustack/modlens/commit/926a6beea81ca6ea1fecc267bc1b02d880572669",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-24T12:20:28.000Z",
+      "evidenceUrl": "https://github.com/liustack/modlens/commit/ffeee3e32de1c05315e334be97c9f087242fe2f3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -56,7 +56,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -66,7 +66,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -83,7 +83,7 @@
     "modlens"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.2-alpha.3, 0.1.2-alpha.4, 0.1.2-alpha.5). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,9 +91,23 @@
       "rc.8": "unknown",
       "0.1.1-rc.1": "unknown",
       "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown"
+      "0.1.2-alpha.5": "unknown",
+      "0.1.2-rc.1": "unknown",
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "unknown",
+      "0.1.5-alpha.1": "unknown",
+      "0.1.5-alpha.2": "unknown",
+      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.2": "unknown",
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown",
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -139,6 +153,84 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

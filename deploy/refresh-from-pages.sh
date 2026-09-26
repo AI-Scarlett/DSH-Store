@@ -68,7 +68,7 @@ cleanup_incoming() {
 }
 
 origin_health() {
-  curl -fsS --resolve "$health_resolve" --connect-timeout 5 --max-time 30 \
+  curl -4 --http1.1 -fsS --resolve "$health_resolve" --connect-timeout 5 --max-time 30 \
     --retry 4 --retry-all-errors --retry-delay 1 "$@"
 }
 
@@ -120,6 +120,8 @@ faq $site_prefix/faq/
 about $site_prefix/about/
 article $site_prefix/about/deepseek-harness-guide/
 guide $site_prefix/dsh-plugins/
+repair $site_prefix/repair/
+repair-manifest $site_prefix/repair/repair-manifest.json
 catalog /registry/catalog.json
 candidates /registry/candidates.json
 sitemap $site_prefix/sitemap.xml
@@ -128,16 +130,24 @@ markdown $site_prefix/index.md
 $domestic_public_check
 EOF
 
-  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" "$incoming/health-robots" "$incoming/health-markdown" <<'PY'
-import json,sys
+  python3 - "$incoming/health-home" "$incoming/health-catalog" "$incoming/health-candidates" "$incoming/health-robots" "$incoming/health-markdown" "$incoming/health-repair-manifest" <<'PY'
+import json,re,sys
 home=open(sys.argv[1],encoding='utf-8').read()
 catalog=json.load(open(sys.argv[2],encoding='utf-8'))
 candidates=json.load(open(sys.argv[3],encoding='utf-8'))
 robots=open(sys.argv[4],encoding='utf-8').read()
 markdown=open(sys.argv[5],encoding='utf-8').read()
+repair=json.load(open(sys.argv[6],encoding='utf-8'))
 manager=next(item for item in catalog['entries'] if item.get('id') == 'dsh-safe-plugin-manager')
-if manager['commit'] not in home:
-    raise SystemExit('public homepage install identity mismatch')
+copy_disabled=bool(re.search(r'data-copy-target="install-command"[^>]*\bdisabled\b', home))
+if manager['status'] == 'approved':
+    if manager['commit'] not in home or copy_disabled:
+        raise SystemExit('public homepage install identity mismatch')
+else:
+    if not copy_disabled or 'dsh plugin --profile web add' in home:
+        raise SystemExit('public homepage exposes an unavailable manager install command')
+    if repair.get('status') != 'catalog-pending' or repair.get('repairTool') is not None:
+        raise SystemExit('public repair surface exposes an unavailable manager repair command')
 boundary=candidates.get('registry', {}).get('trustBoundary', {})
 if candidates.get('schemaVersion') != 1 or not isinstance(candidates.get('entries'), list) or not candidates['entries']:
     raise SystemExit('public Candidate Registry is invalid or empty')
@@ -156,7 +166,7 @@ print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['sta
 PY
 }
 
-curl -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
+curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
   "$pages_base/${pages_path_prefix}release-manifest.json" -o "$incoming/release-manifest.json"
 
 python3 - "$incoming/release-manifest.json" "$store_domain" > "$incoming/files.list" <<'PY'
@@ -179,6 +189,8 @@ required = {
     'marketplace/standards/index.html',
     'marketplace/build/index.html',
     'marketplace/faq/index.html',
+    'marketplace/repair/index.html',
+    'marketplace/repair/repair-manifest.json',
     'marketplace/about/index.html',
     'marketplace/dsh-plugins/index.html',
     'marketplace/robots.txt',
@@ -219,18 +231,76 @@ candidate="$deploy_root/releases/$release_id"
 backup="$deploy_root/backups/$release_id-before"
 test ! -e "$candidate"
 test ! -e "$backup"
+old_target=$(readlink -f "$current_link")
+case "$old_target" in
+  "$deploy_root"/releases/*) ;;
+  *) printf 'Unexpected current release target: %s\n' "$old_target" >&2; exit 1 ;;
+esac
+test -d "$old_target"
+test -f "$old_target/release-manifest.json"
+old_manifest_sha=$(sha256sum "$old_target/release-manifest.json" | awk '{print $1}')
 install -d -o root -g root -m 0755 "$candidate"
+
+python3 - "$old_target" "$candidate" "$incoming/release-manifest.json" "$incoming/files.list" <<'PY'
+import hashlib, json, pathlib, shutil, sys
+
+old_root = pathlib.Path(sys.argv[1]).resolve()
+candidate = pathlib.Path(sys.argv[2]).resolve()
+manifest = json.loads(pathlib.Path(sys.argv[3]).read_text(encoding='utf-8'))
+remaining = pathlib.Path(sys.argv[4])
+
+def safe_path(root, relative):
+    path = (root / relative).resolve()
+    if root not in path.parents:
+        raise SystemExit(f'unsafe artifact path: {relative}')
+    return path
+
+download = []
+reused = 0
+for relative, metadata in sorted(manifest['files'].items()):
+    source = safe_path(old_root, relative)
+    if source.is_file() and not source.is_symlink():
+        digest = hashlib.sha256()
+        with source.open('rb') as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                digest.update(chunk)
+        if source.stat().st_size == metadata['size'] and digest.hexdigest() == metadata['sha256']:
+            destination = safe_path(candidate, relative)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+            reused += 1
+            continue
+    download.append(relative)
+remaining.write_text(''.join(f'{path}\n' for path in download), encoding='utf-8')
+print(f'DSH_STORE_REFRESH_REUSED reused={reused} download={len(download)}')
+PY
 
 download_artifact() {
   local path="$1"
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
-  curl -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
-    "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"
+  if curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
+    "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"; then
+    return 0
+  fi
+  case "$path" in
+    registry/catalog.json|registry/catalog-index.json)
+      # These two source files are also available at the exact Commit. Keep the
+      # Pages manifest as the authority and let the final hash gate reject any
+      # raw response that differs from the signed public artifact.
+      rm -f -- "$candidate/$path"
+      curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
+        "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/$source_sha/$path" -o "$candidate/$path"
+      printf 'DSH_STORE_REFRESH_RAW_FALLBACK path=%s source=%s\n' "$path" "$source_sha"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
 }
 
-export pages_base pages_path_prefix candidate
+export pages_base pages_path_prefix candidate source_sha
 export -f download_artifact
-xargs -P "$download_jobs" -n 1 bash -Eeuo pipefail -c 'download_artifact "$1"' _ < "$incoming/files.list"
+xargs -r -P "$download_jobs" -n 1 bash -Eeuo pipefail -c 'download_artifact "$1"' _ < "$incoming/files.list"
 install -o root -g root -m 0644 "$incoming/release-manifest.json" "$candidate/release-manifest.json"
 
 python3 - "$candidate" <<'PY'
@@ -264,9 +334,25 @@ plugins = (root / 'marketplace/plugins/index.html').read_text(encoding='utf-8')
 styles = (root / 'marketplace/styles.css').read_text(encoding='utf-8')
 robots = (root / 'marketplace/robots.txt').read_text(encoding='utf-8')
 markdown = (root / 'marketplace/index.md').read_text(encoding='utf-8')
+repair = json.loads((root / 'marketplace/repair/repair-manifest.json').read_text(encoding='utf-8'))
 usage_guide = root / 'marketplace/dsh-store-guide/index.html'
-if manager['commit'] not in home or 'data-static-featured-id=' not in home or 'data-static-plugin-id=' not in plugins:
-    raise SystemExit('static marketplace content is incomplete')
+copy_disabled = bool(re.search(r'data-copy-target="install-command"[^>]*\bdisabled\b', home))
+if manager['status'] == 'approved':
+    if manager['commit'] not in home or copy_disabled:
+        raise SystemExit('static homepage install identity mismatch')
+else:
+    if not copy_disabled or 'dsh plugin --profile web add' in home:
+        raise SystemExit('static homepage exposes an unavailable manager install command')
+    if repair.get('status') != 'catalog-pending' or repair.get('repairTool') is not None:
+        raise SystemExit('static repair surface exposes an unavailable manager repair command')
+visible_count = sum(entry.get('status') != 'unlisted' for entry in catalog['entries'])
+approved_featured = any(entry.get('status') == 'approved' and entry.get('featured') is True for entry in catalog['entries'])
+if 'name="dsh-catalog-delivery" content="external-json"' not in home:
+    raise SystemExit('static homepage Catalog authority marker is missing')
+if visible_count and 'data-static-plugin-id=' not in plugins:
+    raise SystemExit('static plugin directory is incomplete')
+if approved_featured and 'data-static-featured-id=' not in home:
+    raise SystemExit('static featured catalog is incomplete')
 if not re.search(r'\.load-error\[hidden\]\s*\{\s*display:\s*none;', styles):
     raise SystemExit('catalog error visibility guard is missing')
 for bot in ('GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
@@ -289,8 +375,8 @@ chown -R root:root "$candidate"
 find "$candidate" -type d -exec chmod 0755 {} +
 find "$candidate" -type f -exec chmod 0644 {} +
 
-old_target=$(readlink -f "$current_link")
-test -d "$old_target"
+test "$(readlink -f "$current_link")" = "$old_target"
+test "$(sha256sum "$old_target/release-manifest.json" | awk '{print $1}')" = "$old_manifest_sha"
 install -d -o root -g root -m 0750 "$backup"
 cp -a "$old_target"/. "$backup"/
 if test -f /etc/nginx/sites-available/dsh-store-pending.conf; then

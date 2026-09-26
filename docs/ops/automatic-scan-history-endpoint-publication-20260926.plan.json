@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "planId": "DSH-STORE-AUTOMATIC-SCAN-HISTORY-20260926",
+  "createdAt": "2026-09-26T02:14:47Z",
+  "status": "validated_local",
+  "authorization": {
+    "type": "user-request",
+    "request": "Make daily automatic scan records visible on the official DSH STORE website; only manual scans currently appear.",
+    "scope": "Fix the automatic scan history data URL, add deterministic regression coverage, and publish the fix to both storefronts after CI and Pages validation. No Catalog/Candidate writes, no scan dispatch, no author outreach, no DSH Profile changes, and no third-party code execution."
+  },
+  "baseCommit": "c84e797e6655ad358ef359bd485953ce69db0a66",
+  "branch": "codex/automatic-scan-history-endpoint-20260926",
+  "fileScope": {
+    "modify": [
+      "marketplace/scans/index.html",
+      "test/marketplace-static-build.test.mjs",
+      "test/contracts.test.mjs"
+    ],
+    "add": [
+      "docs/ops/automatic-scan-history-endpoint-publication-20260926.plan.json"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "marketplace/scans/index.html": "a2cbb8151f5b60fcacf6053e40822bab47aef756632425d40e20ba61f8a692c7",
+      "test/marketplace-static-build.test.mjs": "96c3ebe9574d44dd085604d7d1e15f8bcf157be3c0af6b55d3f8c4d408984917",
+      "test/contracts.test.mjs": "8f8beec0248379ed5c79d5d442277395bda88b06c6017e33e8c65726985cb820"
+    },
+    "absent": [
+      "docs/ops/automatic-scan-history-endpoint-publication-20260926.plan.json"
+    ]
+  },
+  "implementation": {
+    "dataSource": "Use the already-published GitHub Pages automation-status.json endpoint, matching the homepage and plugin directory. It is refreshed by the existing Pages build every three hours and returns the latest eight Catalog automation runs; its public response permits cross-origin browser reads.",
+    "publicBoundary": "Only public run summaries and existing aggregate reports are exposed. Missing evidence remains unavailable and is never rendered as zero. No per-repository raw scan data is added.",
+    "releaseBoundary": "Keep automation-status.json outside the production release manifest so run-only refreshes do not alter the immutable static release. The scan page fetches this separately from the canonical Pages endpoint."
+  },
+  "deterministicGates": [
+    "npm run check",
+    "static marketplace build asserts the scan page points to the published automation-status.json endpoint",
+    "contract test prevents regression to a same-origin URL that is absent from custom-domain releases",
+    "verify production Pages automation-status.json has recentScanRuns and Access-Control-Allow-Origin permits storefront reads",
+    "after release, verify both custom-domain scan pages and their fetched JSON source are publicly available"
+  ],
+  "rollback": {
+    "type": "git-revert",
+    "reference": "Revert the single implementation commit through an audited PR, then run the existing serial storefront refresh. Existing deployments retain backups, atomic current symlink switching, health checks, and automatic rollback."
+  },
+  "externalEffects": "One auditable source PR, GitHub Pages build, then serial international and domestic storefront refreshes; no workflow_dispatch for scanning and no changes to Catalog/Candidate data.",
+  "validationResults": {
+    "preconditions": "PASS: all three source/test hashes match the pinned base Commit; the new plan path was absent at base.",
+    "rootCause": "PASS: both production custom domains return 404 for /automation-status.json; canonical Pages returns HTTP 200.",
+    "publicData": "PASS: Pages payload generated at 2026-09-26T00:17:32Z contains eight recent automatic scan runs; Access-Control-Allow-Origin is *.",
+    "focusedTests": "PASS: node --test test/marketplace-static-build.test.mjs test/contracts.test.mjs (23/23).",
+    "fullCheck": "PASS: npm run check; REGISTRY_OK entries=723; 328/328 tests passed.",
+    "staticBuilds": "PASS: international and domestic builds; both scan pages point to canonical Pages automation-status.json and keep run-only status out of release-manifest.json.",
+    "diffCheck": "PASS: git diff --check.",
+    "production": "PENDING: PR checks, Pages build, serial refresh and public custom-domain readback."
+  }
+}

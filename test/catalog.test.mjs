@@ -12,6 +12,7 @@ import {
   searchCatalog, splitCatalogDocument, validateCatalog, validateCatalogBridgeIndex, validateCatalogDetail,
   validateCatalogIndex, verifyCatalogEntry,
 } from '../src/catalog.mjs'
+import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 import {
   buildMarketplaceSnapshot as buildMarketplaceSnapshot085,
   compareVersions as compareVersions085,
@@ -152,6 +153,13 @@ test('dynamic DSH releases keep range support pending until exact catalog eviden
     latestVersion: '0.1.1-rc.2', checkedAt: '2026-08-21T13:00:00.000Z', registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest',
   })
   assert.equal(context.source, 'npm-official')
+  const github = createDshReleaseContext([], {
+    latestVersion: '0.1.3-alpha.1', latestSource: 'github-official:release',
+    channels: [{ version: '0.1.2-rc.1' }, { version: '0.1.2-alpha.5' }],
+  })
+  assert.equal(github.source, 'github-official')
+  assert.deepEqual(github.cardReleases.map(release => release.version), ['0.1.2-alpha.5', '0.1.2-rc.1', '0.1.3-alpha.1'])
+
   assert.equal(context.latestVersion, '0.1.1-rc.2')
   assert.deepEqual(context.cardReleases.map(release => release.version), ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'])
   const latest = projectDshRelease(catalog.entries[0], context.releases.find(release => release.latest))
@@ -195,7 +203,7 @@ for (const historical of [
     version: '0.8.7', commit: '79f2158be8f59d92d5227cad5474121081c0e32b',
     validate: validateCatalog087, snapshot: buildMarketplaceSnapshot087, compare: compareVersions087,
   },
-]) test(`legacy ${historical.version} accepts the complete bounded bridge and discovers the marketplace update`, async () => {
+]) test(`legacy ${historical.version} accepts the complete bounded bridge and respects manager availability`, async () => {
   const bridgeText = await readFile(new URL('../registry/catalog.json', import.meta.url))
   const bridge = JSON.parse(bridgeText)
   const index = JSON.parse(await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8'))
@@ -219,7 +227,8 @@ for (const historical of [
   const managerSnapshot = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
   assert.ok(managerSnapshot)
   assert.equal(managerSnapshot.updateAvailable, true)
-  assert.deepEqual(managerSnapshot.allowedActions, ['update'])
+  assert.deepEqual(managerSnapshot.allowedActions, manager.status === 'approved' ? ['update'] : [],
+    'historical clients must not offer a manager update while compatibility is on hold')
 })
 
 test('catalog v2 keeps the index bounded and maps every plugin id to one detail record', async () => {
@@ -438,7 +447,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
   assert.equal(catalog.registry.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
   assert.equal(manager.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
-  assert.equal(manager.status, 'approved', 'the self manager must remain available after its two-phase Catalog update')
+  assert.ok(manager.status === 'approved' || (
+    manager.status === 'unlisted' && manager.statusReason?.startsWith(COMPATIBILITY_HOLD_PREFIX)
+  ), 'the self manager may be hidden only by the latest-three compatibility hold')
   assert.ok(compareVersions(manager.version, packageManifest.version) <= 0, 'catalog manager version cannot be newer than package.json during two-phase self-pinning')
   const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
   const managerIsBootstrap = manager.version === '0.8.5' && manager.commit === bootstrapCommit
@@ -449,6 +460,12 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.8.11' && manager.version === '0.8.10')
     || (packageManifest.version === '0.8.12' && manager.version === '0.8.11')
     || (packageManifest.version === '0.8.13' && manager.version === '0.8.12')
+    || (packageManifest.version === '0.8.14' && manager.version === '0.8.13')
+    || (packageManifest.version === '0.8.15' && manager.version === '0.8.14')
+    || (packageManifest.version === '0.8.16' && manager.version === '0.8.15')
+    || (packageManifest.version === '0.8.17' && manager.version === '0.8.16')
+    || (packageManifest.version === '0.9.0' && manager.version === '0.8.17')
+    || (packageManifest.version === '0.9.1' && manager.version === '0.9.0')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -463,7 +480,8 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(agentReach, 'Agent Reach adapter must be listed')
   assert.ok(['approved', 'unlisted'].includes(agentReach.status), 'latest-three policy may reversibly unlist an older compatibility record')
   assert.equal(agentReach.featured, false)
-  assert.equal(agentReach.commit, '85d9801a3e8884baf33f8166eb2e587a4482050f')
+  assert.equal(agentReach.repositoryUrl, 'https://github.com/AI-Scarlett/dsh-agent-reach')
+  assert.match(agentReach.commit, /^[0-9a-f]{40}$/, 'automatic updates retain an immutable source, not one historical commit')
   assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
   assert.equal(agentReach.details.permissions.level, 'high')
   assert.ok(agentReach.details.externalDependencies.includes('Agent Reach CLI 1.5.0'))
@@ -479,122 +497,32 @@ test('bundled registry declares complete detail metadata for every entry', async
       assert.match(release, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/, `${id} dynamic releases must use full SemVer`)
     }
   }
-  assert.equal(manager.compatibility.dshReleases['0.1.1-rc.2'], 'compatible')
-  if (managerIsBootstrap) {
-    assert.deepEqual(manager.compatibility.dshOperations['0.1.1-rc.2'], {
-      install: 'passed', start: 'passed', uninstall: 'unknown', rollback: 'unknown',
-    })
-  } else if (managerIsCurrent || manager.version === '0.8.12') {
-    for (const release of ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
-      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
-      assert.deepEqual(manager.compatibility.dshOperations[release], {
-        install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
-      })
+  // The live catalog is mutable. Test its admission contract rather than
+  // freezing one release's version, SHA, range or lifecycle observations.
+  for (const [id, repo] of [
+    ['dsh-settings-hub', 'dsh-settings-hub'], ['dsh-cliapi', 'DSH_CLIAPI'],
+    ['dsh-chat-import', 'dsh-chat-import'], ['dsh-token-monitor', 'DSH_TokenMonitor'],
+    ['dsh-agent-reach', 'dsh-agent-reach'], ['build-dsh-plugin', 'build-dsh-plugin'],
+  ]) {
+    const plugin = source.entries.find(item => item.id === id)
+    assert.ok(plugin, `${id} must remain represented during compatibility review`)
+    assert.equal(plugin.repositoryUrl, `https://github.com/AI-Scarlett/${repo}`)
+    assert.match(plugin.commit, /^[0-9a-f]{40}$/)
+    assert.match(plugin.version, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/)
+    assert.ok(githubInstallSpecifier(plugin).includes(`#${plugin.commit}`))
+    for (const record of Object.values(plugin.compatibility.dshOperations)) {
+      assert.deepEqual(Object.keys(record).sort(), ['install', 'rollback', 'start', 'uninstall'])
+      assert.ok(Object.values(record).every(status => ['passed', 'failed', 'unknown'].includes(status)))
     }
-  } else {
-    for (const release of ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']) {
-      assert.equal(manager.compatibility.dshReleases[release], 'compatible')
-      assert.deepEqual(manager.compatibility.dshOperations[release], {
-        install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
-      })
+    for (const gate of ['installability', 'runtime', 'securityReview']) {
+      assert.ok(['verified', 'partial', 'failed', 'unknown', 'not-applicable'].includes(plugin.assurance[gate].status))
+      assert.equal(Object.hasOwn(plugin.assurance[gate], 'evidenceStatus'), false, 'hydrated evidence must preserve its actual status')
     }
-  }
-  const settingsHub = source.entries.find(item => item.id === 'dsh-settings-hub')
-  assert.ok(settingsHub, 'Settings Hub must be listed')
-  assert.equal(settingsHub.compatibility.dsh, '^0.1.1-rc.1')
-  assert.deepEqual(settingsHub.compatibility.dshReleases, {
-    'rc.7': 'incompatible', 'rc.8': 'incompatible',
-    '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible',
-    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
-  })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
-    assert.deepEqual(settingsHub.compatibility.dshOperations[release], {
-      install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
-    })
-  }
-  const updatedSelfHosted = [
-    {
-      id: 'dsh-cliapi',
-      version: '0.5.1',
-      commit: '2db132bb430c5304627e5eb5681febecfc2d81ab',
-      dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
-    },
-    {
-      id: 'dsh-chat-import',
-      version: '0.4.0',
-      commit: '81f1a9785fbae6acd04a6b49a576b237c4f70eae',
-      dsh: '>=0.1.0-rc.8 <0.2.0',
-      releases: { 'rc.7': 'incompatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
-    },
-    {
-      id: 'dsh-token-monitor',
-      version: '1.3.0',
-      commit: 'd655a1627607968394fd823cee440e68f07e9f00',
-      dsh: '>=0.1.0-rc.6 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
-    },
-    {
-      id: 'dsh-agent-reach',
-      version: '0.1.0',
-      commit: '85d9801a3e8884baf33f8166eb2e587a4482050f',
-      dsh: '>=0.1.0-rc.6 <0.2.0',
-      releases: { 'rc.7': 'compatible', 'rc.8': 'compatible', '0.1.1-rc.1': 'compatible', '0.1.1-rc.2': 'compatible', '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown' },
-    },
-  ]
-  for (const expected of updatedSelfHosted) {
-    const plugin = source.entries.find(item => item.id === expected.id)
-    assert.ok(['approved', 'unlisted'].includes(plugin.status), `${expected.id} must remain represented during compatibility review`)
-    assert.equal(plugin.version, expected.version)
-    assert.equal(plugin.commit, expected.commit)
-    assert.equal(plugin.compatibility.dsh, expected.dsh)
-    assert.deepEqual(plugin.compatibility.dshReleases, expected.releases)
-    assert.equal(plugin.assurance.securityReview.status, 'partial')
-    assert.equal(Object.hasOwn(plugin.assurance.securityReview, 'evidenceStatus'), false)
-    const projectedPlugin = catalog.entries.find(item => item.id === expected.id)
-    assert.equal(projectedPlugin.assurance.securityReview.status, 'partial')
   }
   const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
-  assert.ok(requestedIm, 'the requested DSH IM plugin must remain listed')
-  assert.equal(requestedIm.name, '多平台 IM 机器人桥接（DSH IM）')
-  assert.equal(requestedIm.version, '0.14.0')
-  assert.equal(requestedIm.commit, '832bd539a2bca2518cbf575d9b61606f868290e4')
+  assert.ok(requestedIm, 'the requested DSH IM plugin must remain represented')
   assert.equal(requestedIm.updatePolicy, 'user-reviewed')
-  assert.deepEqual(requestedIm.compatibility.dshReleases, {
-    'rc.7': 'unknown', 'rc.8': 'unknown', '0.1.1-rc.1': 'unknown', '0.1.1-rc.2': 'unknown',
-    '0.1.2-alpha.3': 'unknown', '0.1.2-alpha.4': 'unknown', '0.1.2-alpha.5': 'unknown',
-  })
-  for (const release of ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2', '0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']) {
-    assert.deepEqual(requestedIm.compatibility.dshOperations[release], {
-      install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
-    })
-  }
-  assert.equal(requestedIm.assurance.discovery.status, 'verified')
-  assert.equal(requestedIm.assurance.runtime.status, 'unknown')
-  assert.equal(source.entries.find(item => item.id === 'dsh-wecom-cli')?.status, 'unlisted')
-  const buildPlugin = source.entries.find(item => item.id === 'build-dsh-plugin')
-  assert.equal(buildPlugin.status, 'approved')
-  const previousBuildPluginCommit = '99f054a42e60e3e91f8ca54eb8e8c6b22c21e870'
-  const buildPluginIsPrevious = buildPlugin.version === '0.4.0' && buildPlugin.commit === previousBuildPluginCommit
-  const buildPluginIsCurrent = buildPlugin.version === '0.4.1' && buildPlugin.commit !== previousBuildPluginCommit
-  assert.ok(buildPluginIsPrevious || buildPluginIsCurrent,
-    'build-dsh-plugin must be the staged previous release or the current fixed Catalog pin')
-  const buildPluginWindow = buildPluginIsCurrent
-    ? ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5']
-    : ['0.1.2-alpha.2', '0.1.2-alpha.3', '0.1.2-alpha.4']
-  for (const release of buildPluginWindow) {
-    assert.equal(buildPlugin.compatibility.dshReleases[release], 'compatible')
-    if (buildPluginIsCurrent) {
-      assert.deepEqual(buildPlugin.compatibility.dshOperations[release], {
-        install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
-      })
-    }
-  }
-  for (const gate of ['installability', 'runtime', 'securityReview']) {
-    assert.equal(buildPlugin.assurance[gate].status, 'partial')
-    assert.equal(Object.hasOwn(buildPlugin.assurance[gate], 'evidenceStatus'), false)
-    assert.equal(catalog.entries.find(item => item.id === 'build-dsh-plugin').assurance[gate].status, 'partial')
-  }
+
 })
 
 test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {
@@ -733,9 +661,20 @@ test('marketplace offers explicit migration for local links and reports version 
   const git = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '1.2.0', declaredSpecifier: 'github:example/dsh-demo#main' }],
   })
-  assert.equal(git.entries[0].updateAvailable, true)
+  assert.equal(git.entries[0].updateAvailable, false)
   assert.equal(git.entries[0].commitMatched, false)
   assert.equal(git.entries[0].sourceDrift, true)
+  assert.equal(git.entries[0].sameVersionSourceChange, true)
+  assert.equal(git.entries[0].manualSourceUpdate.status, 'manual-only')
+  assert.equal(git.entries[0].manualSourceUpdate.commit, entry.commit)
+  assert.deepEqual(git.entries[0].manualSourceUpdate.command, [
+    'dsh', 'plugin', '--profile', 'web', 'add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${entry.commit}`,
+  ])
+  assert.deepEqual(git.entries[0].allowedActions, ['disable', 'enable', 'uninstall'])
+  const uninstalled = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] })
+  assert.equal(uninstalled.entries[0].installed, false)
+  assert.equal(uninstalled.entries[0].manualSourceUpdate, null)
+  assert.deepEqual(uninstalled.entries[0].allowedActions, ['install'], 'new users install the current audited Catalog Commit')
   const sourceNewer = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '2.0.0', declaredSpecifier: 'github:example/dsh-demo#newer' }],
   })

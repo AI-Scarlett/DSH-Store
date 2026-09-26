@@ -20,7 +20,7 @@ test('public status separates successful execution from actual Catalog changes',
     reports: [{ runId: 42, report: {
       observedAt: '2026-08-22T02:01:00Z',
       addedEntries: [{ id: 'new-plugin' }],
-      updatedEntries: [{ id: 'new-plugin', fromVersion: '0.9.0', toVersion: '1.0.0', policy: 'user-reviewed' }],
+      updatedEntries: [{ id: 'new-plugin', fromVersion: '1.0.0', toVersion: '1.0.0', changeKind: 'same-version-source-update', policy: 'user-reviewed' }],
       compatibilityUnlisted: [{ id: 'blocked' }],
       compatibilityRestored: [{ id: 'new-plugin' }],
       prunedCandidates: [{ id: 'candidate-pruned' }],
@@ -52,7 +52,9 @@ test('public status separates successful execution from actual Catalog changes',
         newerVersionCandidates: 1,
         catalogUpdates: 1,
         newerVersionsDeferred: 0,
-        sourceChangedWithoutVersionBump: 0,
+        sourceChangedWithoutVersionBump: 1,
+        sameVersionCatalogUpdates: 1,
+        sameVersionUpdatesDeferred: 0,
         upstreamVersionBehind: 0,
         unresolvedEntries: 0,
       },
@@ -64,6 +66,8 @@ test('public status separates successful execution from actual Catalog changes',
   assert.deepEqual(status.latestChanges.updated, ['new-plugin'])
   assert.equal(status.latestChanges.sourceVersionChecks.checkedEntries, 2)
   assert.equal(status.latestChanges.sourceVersionChecks.catalogUpdates, 1)
+  assert.equal(status.latestChanges.sourceVersionChecks.sameVersionCatalogUpdates, 1)
+  assert.equal(status.latestChanges.sourceVersionChecks.sameVersionUpdatesDeferred, 0)
   assert.equal(status.latestChanges.sourceVersionChecks.unresolvedEntries, 0)
   assert.deepEqual(status.latestChanges.compatibilityUnlisted, ['blocked'])
   assert.deepEqual(status.latestChanges.compatibilityRestored, ['new-plugin'])
@@ -73,8 +77,9 @@ test('public status separates successful execution from actual Catalog changes',
   assert.deepEqual(status.latestChanges.compatibilityPolicy.latestReleases, ['0.1.2-alpha.3', '0.1.2-alpha.4', '0.1.2-alpha.5'])
   assert.equal(status.recentAdditions[0].name, '通知助手（Notify Helper）')
   assert.equal(status.recentAdditions[0].runUrl, 'https://github.com/example/repo/actions/runs/42')
-  assert.equal(status.recentUpdates[0].fromVersion, '0.9.0')
+  assert.equal(status.recentUpdates[0].fromVersion, '1.0.0')
   assert.equal(status.recentUpdates[0].toVersion, '1.0.0')
+  assert.equal(status.recentUpdates[0].changeKind, 'same-version-source-update')
   assert.equal(status.recentUpdates[0].policy, 'user-reviewed')
   assert.deepEqual(status.catalog, { entries: 2, approved: 1, blocked: 1, unlisted: 0, candidates: 1, updatedAt: '2026-08-22T00:00:00.000Z' })
 })
@@ -124,4 +129,61 @@ test('a failed latest scan exposes unavailable statistics while retaining comple
   assert.equal(status.latestChanges.failure.stage, 'apply-latest-dsh-compatibility-policy')
   assert.equal(status.recentAdditions.length, 1)
   assert.equal(status.recentAdditions[0].id, 'new-plugin')
+})
+
+test('public scan history includes the latest eight runs and never invents missing report counts', () => {
+  const runs = Array.from({ length: 10 }, (_, index) => ({
+    databaseId: 100 + index,
+    status: 'completed',
+    conclusion: index === 9 ? 'failure' : 'success',
+    event: index === 9 ? 'schedule' : 'workflow_dispatch',
+    createdAt: `2026-08-${String(10 + index).padStart(2, '0')}T02:00:00Z`,
+    updatedAt: `2026-08-${String(10 + index).padStart(2, '0')}T02:05:00Z`,
+    url: `https://github.com/example/repo/actions/runs/${100 + index}`,
+    headSha: 'b'.repeat(40),
+  }))
+  const status = buildAutomationStatus({
+    catalog,
+    candidates: { entries: [] },
+    generatedAt: '2026-08-22T03:00:00Z',
+    sourceCommit: 'a'.repeat(40),
+    runs: { catalogAutomation: runs },
+    reports: [
+      { runId: 109, report: { status: 'failed', completed: false, statisticsAvailable: false, failure: { stage: 'internal-stage', message: 'must not be exposed in run summary' } } },
+      { runId: 108, report: {
+        completed: true,
+        addedEntries: [],
+        updatedEntries: [],
+        compatibilityUnlisted: [],
+        compatibilityRestored: [],
+        prunedCandidates: [],
+        rejectedCandidates: [],
+        deferredUpdates: [],
+        transientFailures: [],
+        sourceVersionChecks: { checkedEntries: 12, sameVersionCatalogUpdates: 0 },
+      } },
+      { runId: 107, report: { completed: true } },
+    ],
+  })
+
+  assert.equal(status.recentScanRuns.length, 8)
+  assert.equal(status.recentScanRuns[0].runId, 109)
+  assert.equal(status.recentScanRuns[0].event, 'schedule')
+  assert.equal(status.recentScanRuns[0].reportAvailable, true)
+  assert.equal(status.recentScanRuns[0].statisticsAvailable, false)
+  assert.equal(status.recentScanRuns[0].added, null)
+  assert.equal(status.recentScanRuns[0].sourceVersionChecks, null)
+  assert.equal(JSON.stringify(status.recentScanRuns[0]).includes('internal-stage'), false)
+
+  const success = status.recentScanRuns.find(run => run.runId === 108)
+  assert.equal(success.statisticsAvailable, true)
+  assert.equal(success.added, 0)
+  assert.equal(success.updated, 0)
+  assert.equal(success.sourceVersionChecks.checkedEntries, 12)
+  assert.equal(success.sourceVersionChecks.sameVersionCatalogUpdates, 0)
+
+  const partial = status.recentScanRuns.find(run => run.runId === 107)
+  assert.equal(partial.statisticsAvailable, true)
+  assert.equal(partial.added, null)
+  assert.equal(partial.sourceVersionChecks, null)
 })

@@ -206,7 +206,7 @@ test('CLI converts a high-risk scan into a failed Issue gate and persists the sc
   }
 })
 
-test('submission preserves only an explicitly declared per-release compatibility matrix', async () => {
+test('submission preserves explicit operation evidence and marks other declared releases unknown', async () => {
   const result = await checkRepository('https://github.com/example/dsh-demo', '', {
     catalogDocument: catalog(),
     fetch: sourceFetch({ manifest: {
@@ -215,12 +215,20 @@ test('submission preserves only an explicitly declared per-release compatibility
         compatibility: {
           dsh: '>=0.1.0-rc.8 <0.2.0',
           dshReleases: { '0.1.1-rc.2': 'compatible' },
+          dshOperations: {
+            '0.1.1-rc.2': { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' },
+          },
         },
       },
     } }),
     retryDelaysMs: [],
   })
   assert.deepEqual(result.candidate.compatibility.dshReleases, { '0.1.1-rc.2': 'compatible' })
+  for (const release of Object.keys(result.candidate.compatibility.dshReleases)) {
+    assert.deepEqual(result.candidate.compatibility.dshOperations[release], release === '0.1.1-rc.2'
+      ? { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed' }
+      : { install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown' })
+  }
 })
 
 test('repository tree link supplies a monorepo plugin path automatically', async () => {
@@ -246,6 +254,19 @@ test('multiple DSH packages ask only for an optional plugin path and then resolv
     catalogDocument: catalog(), fetch, retryDelaysMs: [],
   })
   assert.equal(selected.candidate.packageName, 'dsh-two')
+})
+
+test('an explicit root path selects the root package in a multi-plugin repository', async () => {
+  const packages = {
+    'package.json': manifest({ name: 'dsh-root' }),
+    'plugins/nested/package.json': manifest({ name: 'dsh-nested' }),
+  }
+  const result = await checkRepository('https://github.com/example/dsh-demo', '.', {
+    catalogDocument: catalog(), fetch: sourceFetch({ packages }), retryDelaysMs: [],
+  })
+  assert.equal(result.candidate.packageName, 'dsh-root')
+  assert.equal(result.candidate.manifestPath, 'package.json')
+  assert.equal(result.candidate.installPath, null)
 })
 
 test('submission input rejects non-GitHub and escaping paths', async () => {
@@ -303,23 +324,39 @@ test('submission report escapes untrusted failure text', () => {
   assert.doesNotMatch(report, /break\nnext/)
 })
 
-test('GitHub workflow gates a one-required-field form with an upserted bot report', async () => {
+test('GitHub workflow gates a one-required-field form with an artifact and a shared person contact gate', async () => {
   const workflow = await readFile(new URL('../.github/workflows/plugin-submission.yml', import.meta.url), 'utf8')
   const form = await readFile(new URL('../.github/ISSUE_TEMPLATE/plugin-submission.yml', import.meta.url), 'utf8')
   assert.match(workflow, /types: \[opened, edited, reopened\]/)
-  assert.match(workflow, /contents: read/)
+  assert.match(workflow, /contents: write/)
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/)
   assert.match(workflow, /continue-on-error: true/)
   assert.match(workflow, /Check fixed source and bounded security heuristics without executing third-party code/)
-  assert.match(workflow, /dsh-plugin-submission-check/)
-  assert.match(workflow, /updateComment/)
-  assert.match(workflow, /submission-passed/)
-  assert.match(workflow, /submission-failed/)
+  assert.match(workflow, /send-submission-result/)
+  assert.doesNotMatch(workflow, /updateComment|addLabels|removeLabel/)
+  assert.match(workflow, /plugin-submission-result/)
+  assert.match(workflow, /author-notifications-global-contact/)
   assert.doesNotMatch(workflow, /npm (?:install|ci)|pnpm|yarn/)
   assert.equal((form.match(/required: true/g) || []).length, 1)
   assert.match(form, /label: GitHub repository/)
   assert.match(form, /label: Plugin path \(optional\)/)
   assert.doesNotMatch(form, /label: (?:Manifest path|Package name|Permission level|Immutable commit)/)
   assert.match(form, /不会.*运行第三方/)
+})
+
+test('explicit Catalog review snapshot remains authoritative after excluding the entry being updated', async () => {
+  const document = catalog()
+  document.registry = { ...document.registry, indexPath: 'catalog-index.json', indexSha256: 'b'.repeat(64), indexBytes: 100, indexEntryCount: 627 }
+  const result = await checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: document, fetch: sourceFetch(), retryDelaysMs: [] })
+  assert.equal(result.candidate.packageName, 'dsh-demo')
+})
+
+test('different scoped packages sharing a basename get distinct Catalog IDs without weakening Bundle collisions', async () => {
+  const first = await checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: catalog(), fetch: sourceFetch(), retryDelaysMs: [] })
+  const existing = { ...first.candidate, repositoryUrl: 'https://github.com/another/dsh-demo' }
+  const options = { manifest: { name: '@mymeter/dsh-demo' }, patch: '- insert:\n    - id: mymeter\n      name: "@mymeter/dsh-demo"\n' }
+  const result = await checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: catalog([existing]), fetch: sourceFetch(options), retryDelaysMs: [] })
+  assert.equal(result.candidate.id, 'mymeter-dsh-demo')
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: catalog([existing]), fetch: sourceFetch({ ...options, patch: `- insert:\n    - id: ${existing.entryIds[0]}\n      name: "@mymeter/dsh-demo"\n` }), retryDelaysMs: [] }), error => error.code === 'SUBMISSION_ENTRY_COLLISION')
 })

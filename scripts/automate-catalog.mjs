@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
+import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
 import { createHash } from 'node:crypto'
+import { realpathSync } from 'node:fs'
 import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -8,7 +10,10 @@ import { checkRepository } from './check-plugin-submission.mjs'
 import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-localization.mjs'
 import {
   assessUpstreamVersion,
+  isAutomaticPolicyBlocked,
+  refreshAutomaticPolicyReview,
   buildCatalogVersionUpdate,
+  catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
   sourceDeclaredCompatibility,
@@ -23,8 +28,9 @@ import {
   splitCatalogDocument,
   validateCatalog,
 } from '../src/catalog.mjs'
+import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { permissionSignals } from '../src/automation-source-policy.mjs'
+import { isBoundedSourceLineage, isGeneratedSelfManagerCatalogDetail, isTestSourceFile, permissionSignals, permissionSignalReasons, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -122,7 +128,7 @@ function routeForFailure(code) {
   return 'blocked'
 }
 
-function isSafeSelfManagerUpdate(entry, hardReasons) {
+export function isSafeSelfManagerUpdate(entry, hardReasons) {
   const repository = isSelfManagerEntry(entry) ? SELF_MANAGER_REPOSITORY.toLowerCase() : null
   const reason = hardReasons?.length === 1 ? String(hardReasons[0]).trim() : null
   return repository === SELF_MANAGER_REPOSITORY.toLowerCase()
@@ -234,11 +240,11 @@ function packagePrefix(candidate) {
   return candidate.installPath ? `${candidate.installPath.replace(/\/$/, '')}/` : ''
 }
 
-async function analyzeFixedSource(candidate, policy, github) {
+export async function analyzeFixedSource(candidate, policy, github) {
   const reasons = []
   const signals = {
     files: false, network: false, commands: false, credentials: false,
-    protectedDsh: false, nativeOrExecutableArtifacts: false,
+    protectedDsh: false, toolViews: false, nativeOrExecutableArtifacts: false,
   }
   const { owner, repository } = repositoryParts(candidate.repositoryUrl)
   const metadata = await github.api(`repos/${owner}/${repository}`)
@@ -282,11 +288,22 @@ async function analyzeFixedSource(candidate, policy, github) {
   if (!policy.automaticApproval.allowSymlinks && packageEntries.some(item => item.mode === '120000')) reasons.push('package contains symbolic links')
   if (!policy.automaticApproval.allowSubmodules && packageEntries.some(item => item.mode === '160000' || item.type === 'commit')) reasons.push('package contains Git submodules')
 
+  reasons.push(...missingRuntimeEntryReasons(manifest, packageEntries, prefix))
+
   const runtimeFiles = packageEntries.filter(item => {
     if (item.type !== 'blob') return false
     const relativePath = prefix ? item.path.slice(prefix.length) : item.path
     if (EXCLUDED_DIRECTORY.test(relativePath)) return false
     if (EXCLUDED_METADATA_FILE.test(relativePath)) return false
+    // Test scripts may contain deliberately unsafe fixture strings. They are
+    // not runtime capability evidence even when published under a scripts/ path.
+    if (isTestSourceFile(relativePath)) return false
+    // Split Catalog details are bounded, schema-validated release data rather
+    // than executable plugin source. Counting every generated record made the
+    // self-manager's fixed-source gate shrink as the marketplace grew. Exclude
+    // only the canonical manager's one-level JSON detail records; all code,
+    // scripts, indexes and other JSON inputs remain in the permission scan.
+    if (isGeneratedSelfManagerCatalogDetail(candidate, relativePath)) return false
     if (NATIVE_FILE.test(relativePath) || item.mode === '100755') signals.nativeOrExecutableArtifacts = true
     return SOURCE_FILE.test(relativePath)
   })
@@ -316,9 +333,7 @@ async function analyzeFixedSource(candidate, policy, github) {
       for (const source of sources) mergeSignals(signals, permissionSignals(source))
     }
   }
-  for (const [signal, allowed] of Object.entries(policy.automaticApproval.permissionSignals)) {
-    if (!allowed && signals[signal]) reasons.push(`runtime source contains the ${signal} permission signal`)
-  }
+  reasons.push(...permissionSignalReasons(signals, policy.automaticApproval.permissionSignals))
   return {
     approved: reasons.length === 0,
     reasons: [...new Set(reasons)].slice(0, 20), signals,
@@ -390,24 +405,35 @@ function candidateRecord(repository, head, previous, observedAt, outcome) {
 
 async function discoverRepositories(policy, github) {
   const found = new Map()
+  const excluded = excludedRepositoryKeys(policy)
   for (const query of policy.search.queries) {
-    const result = await github.api(`search/repositories?q=${encodeURIComponent(query)}&sort=updated&order=desc&per_page=${policy.search.resultsPerQuery}`)
-    for (const item of result?.items ?? []) {
-      if (item?.private || item?.archived || item?.disabled || typeof item?.html_url !== 'string') continue
-      const url = canonicalGithubRepository(item.html_url)
-      if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
-      found.set(url.toLowerCase(), { ...item, html_url: url })
+    try {
+      const result = await github.api(`search/repositories?q=${encodeURIComponent(query)}&sort=updated&order=desc&per_page=${policy.search.resultsPerQuery}`)
+      for (const item of result?.items ?? []) {
+        if (item?.private || item?.archived || item?.disabled || typeof item?.html_url !== 'string') continue
+        const url = canonicalGithubRepository(item.html_url)
+        if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
+        if (excluded.has(url.toLowerCase())) continue
+        found.set(url.toLowerCase(), { ...item, html_url: url })
+      }
+    } catch {
+      // transient search query failures do not abort other discoveries
     }
   }
-  return [...found.values()].sort((left, right) => Date.parse(right.updated_at ?? 0) - Date.parse(left.updated_at ?? 0))
+  if (policy.discoveryFeeds?.enabled === true) {
+    try {
+      const offset = Math.floor(Date.now() / 3600000) * 8
+      for (const item of await discoverFeedCandidates(github, { offset })) {
+        if (!excluded.has(item.html_url.toLowerCase()) && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
+      }
+    } catch {
+      // feed failures do not abort search discoveries or overall automation
+    }
+  }
+  return orderDiscoveryCandidates(found.values())
 }
 
-async function updateExistingEntries(catalog, policy, github, observedAt, report) {
-  const baselineCatalog = { ...catalog, entries: [...catalog.entries] }
-  const repositorySnapshots = new Map()
-  const updatePolicy = policy.updates ?? {}
-  const concurrency = Number.isInteger(updatePolicy.concurrency) ? updatePolicy.concurrency : 8
-  const maxCommitSpan = Number.isInteger(updatePolicy.maxCommitSpan) ? updatePolicy.maxCommitSpan : 200
+export function hardSourceReviewReasons(reasons) {
   const reviewableReasons = [
     'DSH compatibility is not explicitly declared',
     'Node.js compatibility is not explicitly declared',
@@ -420,30 +446,73 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     'runtime source contains the credentials permission signal',
     'runtime source contains the nativeOrExecutableArtifacts permission signal',
   ]
+  return reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
+}
+
+async function updateExistingEntries(catalog, policy, github, observedAt, report) {
+  const baselineCatalog = { ...catalog, entries: [...catalog.entries] }
+  const repositorySnapshots = new Map()
+  const updatePolicy = policy.updates ?? {}
+  const concurrency = Number.isInteger(updatePolicy.concurrency) ? updatePolicy.concurrency : 8
+  const maxCommitSpan = Number.isInteger(updatePolicy.maxCommitSpan) ? updatePolicy.maxCommitSpan : 200
 
   function sourceSnapshot(entry) {
     const key = entry.repositoryUrl.toLowerCase()
     if (!repositorySnapshots.has(key)) {
       repositorySnapshots.set(key, retryInfrastructure(async () => {
         const { owner, repository } = repositoryParts(entry.repositoryUrl)
+        const defaultBranch = entry.defaultBranch || 'main'
+        let head
+        try {
+          head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(defaultBranch)}`)
+        } catch (error) {
+          if (error?.status === 404) {
+            const metadata = await github.api(`repos/${owner}/${repository}`)
+            if (metadata?.private === true || metadata?.archived === true || metadata?.disabled === true) {
+              throw Object.assign(new Error('the canonical repository is private, archived, or disabled'), {
+                code: 'CATALOG_SOURCE_REPOSITORY_INACTIVE',
+              })
+            }
+            const resolvedBranch = typeof metadata?.default_branch === 'string' && metadata.default_branch
+              ? metadata.default_branch
+              : defaultBranch
+            head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(resolvedBranch || 'main')}`)
+            if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
+              throw Object.assign(new Error('GitHub did not return a full immutable Commit'), {
+                code: 'CATALOG_SOURCE_COMMIT_INVALID',
+              })
+            }
+            return {
+              commit: head.sha,
+              defaultBranch: resolvedBranch,
+              sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? metadata?.pushed_at ?? null,
+            }
+          }
+          throw error
+        }
+        if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
+          throw Object.assign(new Error('GitHub did not return a full immutable Commit'), {
+            code: 'CATALOG_SOURCE_COMMIT_INVALID',
+          })
+        }
+        if (head.sha === entry.commit) {
+          return {
+            commit: head.sha,
+            defaultBranch,
+            sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? null,
+          }
+        }
         const metadata = await github.api(`repos/${owner}/${repository}`)
         if (metadata?.private === true || metadata?.archived === true || metadata?.disabled === true) {
           throw Object.assign(new Error('the canonical repository is private, archived, or disabled'), {
             code: 'CATALOG_SOURCE_REPOSITORY_INACTIVE',
           })
         }
-        const defaultBranch = typeof metadata?.default_branch === 'string' && metadata.default_branch
-          ? metadata.default_branch
-          : entry.defaultBranch
-        const head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(defaultBranch || 'main')}`)
-        if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
-          throw Object.assign(new Error('GitHub did not return a full immutable Commit'), {
-            code: 'CATALOG_SOURCE_COMMIT_INVALID',
-          })
-        }
         return {
           commit: head.sha,
-          defaultBranch,
+          defaultBranch: typeof metadata?.default_branch === 'string' && metadata.default_branch
+            ? metadata.default_branch
+            : defaultBranch,
           sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? metadata?.pushed_at ?? null,
         }
       }))
@@ -453,9 +522,12 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 
   async function inspectEntry(entry, index) {
     let snapshot
+    let versionAssessment = null
+    let changeContract = null
     try {
       snapshot = await sourceSnapshot(entry)
-      if (snapshot.commit === entry.commit) return { index, entry, kind: 'current' }
+      const recheckCurrent = snapshot.commit === entry.commit && isAutomaticPolicyBlocked(entry) && entry.assurance?.discovery?.method !== 'automated-fixed-source-recheck-v1'
+      if (snapshot.commit === entry.commit && !recheckCurrent) return { index, entry, kind: 'current' }
       let manifest
       try {
         manifest = JSON.parse(await github.raw(entry.repositoryUrl, snapshot.commit, entry.manifestPath, {
@@ -465,14 +537,17 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         if (String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')) throw error
         return { index, entry, kind: 'deferred', snapshot, reason: 'the fixed-Commit manifest is not valid JSON' }
       }
-      const versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
-      if (versionAssessment.status !== 'newer-version') {
+      versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
+      changeContract = recheckCurrent
+        ? { reviewable: true, expectedVersionComparison: 0, changeKind: 'automatic-policy-recheck' }
+        : catalogChangeReviewContract(versionAssessment)
+      if (!changeContract.reviewable) {
         return { index, entry, kind: versionAssessment.status, snapshot, versionAssessment }
       }
 
-      process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
+      process.stdout.write(`CATALOG_AUTOMATION_UPDATE_REVIEW id=${entry.id} kind=${changeContract.changeKind} from=${entry.version} to=${versionAssessment.upstreamVersion} candidate=${snapshot.commit.slice(0, 12)}\n`)
       const withoutCurrent = { ...baselineCatalog, entries: baselineCatalog.entries.filter(item => item.id !== entry.id) }
-      const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '', {
+      const result = await retryInfrastructure(() => checkRepository(entry.repositoryUrl, entry.installPath ?? '.', {
         catalogDocument: withoutCurrent,
         allowProtectedManager: isSelfManagerEntry(entry),
         token: process.env.GITHUB_TOKEN, timeoutMs: 12_000,
@@ -481,7 +556,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (candidate.commit !== snapshot.commit || candidate.defaultBranch !== snapshot.defaultBranch) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the upstream default branch moved during the fixed-source review' }
       }
-      if (!catalogUpdateIdentityMatches(entry, candidate) || compareVersions(candidate.version, entry.version) !== 1) {
+      if (!catalogUpdateIdentityMatches(entry, candidate)
+        || compareVersions(candidate.version, entry.version) !== changeContract.expectedVersionComparison) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the package, path, Bundle entry identity, or version contract changed' }
       }
       if (normalizedLicense(candidate.details?.license) !== normalizedLicense(entry.details?.license)) {
@@ -492,7 +568,20 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
         { maxBytes: 4 * 1024 * 1024 },
       ))
-      if (lineage?.status !== 'ahead' || !Number.isInteger(lineage?.total_commits) || lineage.total_commits > maxCommitSpan) {
+      const boundedDescendant = !recheckCurrent && isBoundedSourceLineage(lineage, maxCommitSpan)
+      // DSH-Store's historical Catalog pin can reference a PR-head commit that
+      // was later squash-merged. Permit only this exact first-party entry to
+      // cross a bounded, shared-ancestor history split; the fixed candidate
+      // still must pass the complete manifest, Bundle, and runtime-source gates.
+      const boundedSelfManagerDivergence = !recheckCurrent && isSelfManagerEntry(entry)
+        && isBoundedSourceLineage(lineage, maxCommitSpan, { allowDiverged: true })
+        && lineage.status === 'diverged'
+      const identicalRecheck = recheckCurrent && lineage?.status === 'identical'
+        && Number.isInteger(lineage?.total_commits) && lineage.total_commits === 0
+      const lineageReview = identicalRecheck ? 'same-commit-policy-recheck'
+        : boundedSelfManagerDivergence ? 'bounded-self-manager-history-divergence'
+          : boundedDescendant ? 'direct-descendant' : null
+      if (!lineageReview) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the candidate is not a bounded direct descendant of the Catalog Commit' }
       }
       const analysisPolicy = isSelfManagerEntry(entry)
@@ -508,7 +597,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         : policy
       const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, analysisPolicy, github))
       const sourcePolicy = catalogUpdatePolicy(entry)
-      const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
+      const hardReasons = hardSourceReviewReasons(analysis.reasons)
       const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
       if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: analysis.reasons.join('; ') }
@@ -518,20 +607,25 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
           return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: hardReasons.join('; ') }
         }
       }
-      const updated = buildCatalogVersionUpdate(entry, candidate, {
+      const reviewed = refreshAutomaticPolicyReview(entry, automatedEntry(candidate, analysis, observedAt))
+      // Avoid daily source rechecks rewriting identical unresolved records.
+      if (recheckCurrent && reviewed.status === entry.status && reviewed.statusReason === entry.statusReason
+        && JSON.stringify(reviewed.details) === JSON.stringify(entry.details)) return { index, entry, kind: 'current' }
+      const updated = buildCatalogVersionUpdate(reviewed, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
       }, observedAt, sourcePolicy)
+      if (isAutomaticPolicyBlocked(entry)) updated.assurance.discovery.method = 'automated-fixed-source-recheck-v1'
       return {
-        index, entry, kind: 'updated', snapshot, versionAssessment, sourcePolicy, updated,
-        warnings: analysis.reasons,
+        index, entry, kind: 'updated', snapshot, versionAssessment, changeContract, sourcePolicy, updated,
+        lineageReview, warnings: analysis.reasons,
       }
     } catch (error) {
       const infrastructure = INFRASTRUCTURE_CODES.has(error?.code)
         || (String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')
           && ![404, 410, 451].includes(error?.status))
       return {
-        index, entry, kind: infrastructure ? 'transient' : 'deferred', snapshot,
+        index, entry, kind: infrastructure ? 'transient' : 'deferred', snapshot, versionAssessment, changeContract,
         reason: boundedText(error?.message, infrastructure ? 'temporary source update lookup failure' : 'source update review failed'),
       }
     }
@@ -549,12 +643,16 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       report.sourceVersionChecks.currentEntries += 1
       continue
     }
-    if (result.kind === 'source-changed-without-version-bump') {
+    if (versionAssessment?.status === 'source-changed-without-version-bump') {
       report.sourceVersionChecks.sourceChangedWithoutVersionBump += 1
       report.sourceChangesWithoutVersionBump.push({
         id: entry.id, version: entry.version, catalogCommit: entry.commit, candidateCommit: snapshot.commit,
+        decision: result.kind === 'updated' ? 'catalog-repinned'
+          : result.kind === 'transient' ? 'retry-later' : 'update-blocked',
+        reason: result.reason ?? null,
       })
-      continue
+      if (result.kind === 'updated') report.sourceVersionChecks.sameVersionCatalogUpdates += 1
+      else report.sourceVersionChecks.sameVersionUpdatesDeferred += 1
     }
     if (result.kind === 'upstream-version-behind') {
       report.sourceVersionChecks.upstreamVersionBehind += 1
@@ -567,7 +665,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     if (versionAssessment?.status === 'newer-version') report.sourceVersionChecks.newerVersionCandidates += 1
     if (result.kind === 'updated') {
       catalog.entries[result.index] = result.updated
-      report.sourceVersionChecks.catalogUpdates += 1
+      if (result.changeContract.changeKind === 'version-update') {
+        report.sourceVersionChecks.catalogUpdates += 1
+      }
       report.updatedEntries.push({
         id: entry.id,
         from: entry.commit,
@@ -575,7 +675,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         fromVersion: entry.version,
         toVersion: result.updated.version,
         version: result.updated.version,
+        changeKind: result.changeContract.changeKind,
         policy: result.sourcePolicy,
+        lineageReview: result.lineageReview,
       })
       report.updateReviews.push({
         id: entry.id,
@@ -585,7 +687,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         upstreamVersion: result.updated.version,
         candidateCommit: result.updated.commit,
         policy: result.sourcePolicy,
-        decision: 'catalog-updated',
+        lineageReview: result.lineageReview,
+        decision: result.changeContract.changeKind === 'same-version-source-update'
+          ? 'catalog-repinned-same-version' : 'catalog-updated',
         warnings: result.warnings.slice(0, 20),
       })
       continue
@@ -623,7 +727,16 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 }
 
 async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow) {
-  const repositories = await retryInfrastructure(() => discoverRepositories(policy, github))
+  let repositories = []
+  try {
+    repositories = await retryInfrastructure(() => discoverRepositories(policy, github))
+  } catch (error) {
+    report.transientFailures.push({
+      repository: 'https://github.com/AI-Scarlett/DSH-Store',
+      reason: boundedText(error?.message, 'discovery scan was temporarily unavailable'),
+    })
+    return
+  }
   const catalogRepositories = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
   const candidateByRepository = new Map(candidates.entries.map(entry => [entry.repositoryUrl.toLowerCase(), entry]))
   let inspected = 0
@@ -648,6 +761,15 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
     if (!/^[0-9a-f]{40}$/.test(head?.sha ?? '')) {
       inspected += 1
       report.skippedDiscoveries.push({ repository: repository.html_url, reason: 'GitHub did not return a fixed Commit' })
+      continue
+    }
+    if (repository.discoveryOnly) {
+      if (!previous) {
+        const record = candidateRecord(repository, head, null, observedAt, { status: 'reviewing', route: 'direct-review', reason: 'External discovery signal only; fixed-source Catalog review required before installation.' })
+        record.discoverySources = [repository.feedEvidence]
+        candidates.entries.push(record); candidateByRepository.set(repositoryKey, record)
+      }
+      inspected += 1
       continue
     }
     if (previous?.latestCommit === head.sha && previous.status === 'rejected') continue
@@ -805,6 +927,21 @@ async function writeCatalogFiles(bridgeBuffer, indexBuffer, details) {
   await atomicWrite(catalogPath, bridgeBuffer)
 }
 
+function isDirectInvocation() {
+  if (!process.argv[1]) return false
+  try {
+    const invoked = realpathSync(process.argv[1])
+    const module = realpathSync(fileURLToPath(import.meta.url))
+    return process.platform === 'win32'
+      ? invoked.toLowerCase() === module.toLowerCase()
+      : invoked === module
+  } catch {
+    return false
+  }
+}
+
+// Imports must not scan; direct invocations through linked checkouts still run.
+if (isDirectInvocation()) {
 const options = parseArgs(process.argv.slice(2))
 const failureContext = {
   options,
@@ -888,6 +1025,7 @@ failureContext.stage = 'fetch-official-dsh-release-window'
 const dshReleaseWindow = await fetchOfficialDshReleaseWindow({
   registryUrl: policy.compatibility.registryUrl,
   releaseCount: policy.compatibility.latestReleaseCount,
+  githubToken: process.env.GITHUB_TOKEN,
 })
 const dshReleaseWindowSha = sha256(JSON.stringify(dshReleaseWindow))
 const report = {
@@ -913,6 +1051,8 @@ const report = {
     catalogUpdates: 0,
     newerVersionsDeferred: 0,
     sourceChangedWithoutVersionBump: 0,
+    sameVersionCatalogUpdates: 0,
+    sameVersionUpdatesDeferred: 0,
     upstreamVersionBehind: 0,
     unresolvedEntries: 0,
   },
@@ -941,6 +1081,7 @@ failureContext.report = report
 const github = createGithubClient()
 failureContext.stage = 'inspect-historical-catalog-entries'
 await updateExistingEntries(catalog, policy, github, observedAt, report)
+report.excludedCandidates = pruneExcludedCandidates(candidates, policy)
 failureContext.stage = 'prune-historical-candidates'
 await pruneHistoricalRejectedCandidates(candidates, policy, github, dshReleaseWindow, observedAt, report)
 failureContext.stage = 'inspect-new-discoveries'
@@ -957,8 +1098,10 @@ assertCatalogLocalization(catalog)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
   || report.compatibilityPolicy.catalogChanged
-const candidatesChanged = report.rejectedCandidates.length > 0 || report.promotedCandidates.length > 0
-  || report.candidateRetention.registryRemovals > 0 || report.compatibilityPolicy.candidatesChanged
+// Discovery can add or refresh Candidate records without entering any of the
+// decision lists above. Bind the write decision to the actual file contents.
+const prospectiveCandidatesBuffer = Buffer.from(`${JSON.stringify(candidates, null, 2)}\n`)
+const candidatesChanged = !prospectiveCandidatesBuffer.equals(originalCandidates)
 if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
 failureContext.stage = 'validate-automation-output'
@@ -973,6 +1116,9 @@ const candidatesBuffer = Buffer.from(`${JSON.stringify({
   registry: validatedCandidates.registry,
   entries: validatedCandidates.entries.map(({ installable, allowedActions, ...entry }) => entry),
 }, null, 2)}\n`)
+if (!candidatesChanged && !candidatesBuffer.equals(originalCandidates)) {
+  throw new Error('Candidate Registry serialization changed without a write decision')
+}
 report.postconditions = {
   catalogChanged, candidatesChanged,
   catalogSha256: sha256(catalogBuffer), catalogIndexSha256: sha256(catalogIndexBuffer),
@@ -1024,4 +1170,5 @@ process.stdout.write(`CATALOG_AUTOMATION_OK plan=${report.planId} catalogChanged
     throw new AggregateError([error, reportError], 'Catalog automation failed and its failure report could not be preserved')
   }
   throw error
+}
 }

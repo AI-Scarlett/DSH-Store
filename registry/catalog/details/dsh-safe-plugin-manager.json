@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 插件商城与安全生命周期管理器。0.8.12 适配 DSH alpha.5，修复无生命周期脚本插件更新和已有 Guardian 的安全升级交接；历史用户可通过 https://dsh-store.cn/repair/ 或 GitHub Pages 查看官方修复/升级方案。",
+  "description": "DSH STORE 0.9.0：官方登录校验、持久化安装更新记录、真实回滚与生效状态、兼容筛选、本机收藏备注；固定提交审核和作者全局一次联系规则保持不变。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
-  "version": "0.8.12",
+  "commit": "63d95ce2e773a2c9b91eb94015d65b419e64f873",
+  "version": "0.9.1",
   "categories": [
     "marketplace",
     "management"
@@ -39,58 +39,50 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T17:22:58.000Z",
-    "observedAt": "2026-09-02T17:28:18.800Z",
+    "updatedAt": "2026-09-26T02:20:28.000Z",
+    "observedAt": "2026-09-26T03:57:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "maintainer-fixed-source-release-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-26T03:57:43.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/63d95ce2e773a2c9b91eb94015d65b419e64f873",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "固定合并 Commit 的 0.8.12 manifest、Bundle Patch、更新事务、Guardian 独立交接器与双修复入口已完成源码、CI 和公开提交回读。"
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
-      "status": "partial",
-      "method": "disposable-dsh-latest-three-profile-cli-install-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
-      "dshRelease": "0.1.2-alpha.5",
-      "systems": [
-        "macOS"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "部分验证：0.8.12 在 DSH alpha.3、alpha.4、alpha.5 一次性 Profile 中通过官方 CLI 安装、dump-config、卸载与复装；不代表历史用户真实 Profile 已更新。"
-    },
-    "runtime": {
-      "status": "partial",
-      "method": "disposable-dsh-latest-three-web-runtime-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
-      "dshRelease": "0.1.2-alpha.5",
-      "systems": [
-        "macOS"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "部分验证：alpha.3、alpha.4、alpha.5 均完成隔离冷启动和运行时身份/清单读取；alpha.5 另验证 20 条按页商城响应。真实 Profile 与 Guardian launchd 交接仍为独立 E4。"
-    },
-    "securityReview": {
-      "status": "partial",
-      "method": "fixed-source-policy-transaction-and-codeql-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7db4534fc69ac9a0b3570a045bcfb2dfaaa555a2",
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "部分验证：固定参数、ignore-scripts、身份漂移失败关闭、Guardian 回滚测试及 CodeQL 通过；不等同于独立安全审计或真实 Profile 故障注入。"
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
@@ -99,7 +91,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0",
+    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2",
     "dshReleases": {
       "rc.7": "compatible",
       "rc.8": "compatible",
@@ -108,7 +100,20 @@
       "0.1.2-alpha.2": "compatible",
       "0.1.2-alpha.3": "compatible",
       "0.1.2-alpha.4": "compatible",
-      "0.1.2-alpha.5": "compatible"
+      "0.1.2-alpha.5": "compatible",
+      "0.1.2-rc.1": "unknown",
+      "0.1.3-alpha.1": "compatible",
+      "0.1.3-alpha.2": "unknown",
+      "0.1.5-alpha.1": "compatible",
+      "0.1.5-alpha.2": "compatible",
+      "0.1.5-rc.1": "compatible",
+      "0.1.5-rc.2": "compatible",
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown",
+      "0.1.7-alpha.1": "compatible",
+      "0.1.7-alpha.2": "compatible",
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -142,25 +147,103 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.3": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
       },
-      "0.1.2-alpha.5": {
+      "0.1.7-alpha.2": {
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
+      },
+      "0.1.7-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": ">=22.13.0",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"

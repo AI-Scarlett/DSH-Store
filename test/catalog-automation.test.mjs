@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, symlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
-import { permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
+import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
+import { analyzeFixedSource, hardSourceReviewReasons, isSafeSelfManagerUpdate } from '../scripts/automate-catalog.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
@@ -29,7 +31,82 @@ test('permission scan ignores inert Catalog metadata and ordinary identifiers', 
     commands: false,
     credentials: false,
     protectedDsh: false,
+    toolViews: false,
   })
+})
+
+test('protected DSH detection distinguishes direct mutations from static audit regexes', () => {
+  const auditPattern = String.raw`const loaderFiberMutations = linesMatching(records, /(?:ctx\.(?:loader|fiber)|\b(?:Loader|Fiber))\.(?:insert|remove|patch|enable|disable|write|mutate)\s*\(/`
+  assert.equal(permissionSignals(auditPattern).protectedDsh, false)
+  assert.equal(permissionSignals(`ctx.fiber.remove('official-plugin')`).protectedDsh, true)
+  assert.equal(permissionSignals(`Fiber.disable('official-plugin')`).protectedDsh, true)
+  assert.equal(permissionSignals(`window.__ModuleLoader__.unload('official-plugin')`).protectedDsh, true)
+  assert.equal(permissionSignals(`@deepseek-ai/dsh-web-app disabled: true`).protectedDsh, true)
+  assert.equal(permissionSignals(`tool.call.toolview`).protectedDsh, false)
+  assert.equal(permissionSignals(`tool.call.toolview`).toolViews, true)
+})
+
+test('fixed-source admission and existing-entry updates retain the Tool-view review gate', async () => {
+  const policy = JSON.parse(await read('registry/automation-policy.json'))
+  const candidate = {
+    repositoryUrl: 'https://github.com/example/dsh-image-fixture',
+    commit: 'a'.repeat(40), manifestPath: 'package.json',
+    compatibility: { dsh: '>=0.1.0 <0.2.0', node: '>=22.19.0' },
+    details: { license: 'MIT' }, risk: { installScripts: [] },
+  }
+  const manifest = {
+    name: 'dsh-image-fixture', repository: candidate.repositoryUrl,
+    main: './client.mjs', files: ['client.mjs'],
+  }
+  const cases = [
+    ['ordinary client', `export const title = 'image fixture'`, true],
+    ['plugin-key renderer', `ctx.slots.register({ name: 'tool.call.toolview', key: 'dsh-image-fixture.render' }, ImageRow)`, false],
+    ['unkeyed catch-all', `ctx.slots.register('tool.call.toolview', CatchAllRow)`, false],
+    ['official-key fixture', `ctx.slots.register({ name: 'tool.call.toolview', key: 'official_file_read' }, ImageRow)`, false],
+    ['dynamic key', `ctx.slots.register({ name: 'tool.call.toolview', key: pluginName + '.render' }, ImageRow)`, false],
+  ]
+  for (const [label, source, expectedApproved] of cases) {
+    const github = {
+      api: async path => {
+        if (path === 'repos/example/dsh-image-fixture') return { license: { spdx_id: 'MIT' } }
+        assert.equal(path, `repos/example/dsh-image-fixture/git/trees/${candidate.commit}?recursive=1`)
+        return { tree: ['package.json', 'client.mjs'].map(path => ({ type: 'blob', mode: '100644', path, size: 512 })) }
+      },
+      raw: async (repository, commit, path) => {
+        assert.equal(repository, candidate.repositoryUrl)
+        assert.equal(commit, candidate.commit)
+        if (path === 'package.json') return JSON.stringify(manifest)
+        assert.equal(path, 'client.mjs')
+        return source
+      },
+    }
+    // A policy written before toolViews existed must still block it. Explicit
+    // true cannot waive ownership review either.
+    for (const override of [{}, { toolViews: true }, { toolViews: false }]) {
+      const settings = { ...policy, automaticApproval: {
+        ...policy.automaticApproval,
+        permissionSignals: { ...policy.automaticApproval.permissionSignals, ...override },
+      } }
+      const result = await analyzeFixedSource(candidate, settings, github)
+      assert.equal(result.approved, expectedApproved, label)
+      assert.equal(result.signals.toolViews, !expectedApproved, label)
+      assert.equal(result.signals.protectedDsh, false, label)
+      if (expectedApproved) {
+        assert.deepEqual(result.reasons, [], label)
+      } else {
+        assert.equal(result.reasons.length, 1, label)
+        assert.match(result.reasons[0], /manual scope and key-ownership review/, label)
+        // user-reviewed updates filter ordinary capability reasons, but this
+        // new registration still requires review at the new fixed Commit.
+        assert.deepEqual(hardSourceReviewReasons([
+          ...result.reasons, 'runtime source contains the network permission signal',
+        ]), result.reasons, label)
+        assert.equal(isSafeSelfManagerUpdate({
+          id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+        }, result.reasons), false, label)
+      }
+    }
+  }
 })
 
 test('permission scan still fails closed on executable capability signals', () => {
@@ -41,21 +118,28 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
 })
 
-test('permission scan allows the documented keyed Tool view extension', () => {
-  const source = `
-    type ImageToolProps = PropsRuntime<'tool.call.toolview'>
-    ctx.slots.inject('tool.call.toolview', () => ctx.slots.register({
-      name: 'tool.call.toolview',
-      key: 'image_gen',
-    }, ImageToolRow))
-  `
-  assert.equal(permissionSignals(source).protectedDsh, false)
+test('permission scan does not classify ordinary member exec methods as command execution', () => {
+  assert.equal(permissionSignals(`const match = /"([^"]*)"/.exec(text)`).commands, false)
+  assert.equal(permissionSignals(`const nested = parser.exec(text)`).commands, false)
+  assert.equal(permissionSignals(`exec(command)`).commands, true)
+  assert.equal(permissionSignals(`execFile(command)`).commands, true)
 })
 
-test('permission scan still fails closed on protected DSH mutations', () => {
-  assert.equal(permissionSignals(`window.__ModuleLoader__.remove('@deepseek-ai/dsh-client-ui-tool')`).protectedDsh, true)
-  assert.equal(permissionSignals(`Fiber.disable('@deepseek-ai/dsh-client-runtime')`).protectedDsh, true)
-  assert.equal(permissionSignals(`{ name: '@deepseek-ai/dsh-client-ui-tool', disabled: true }`).protectedDsh, true)
+test('self-manager generated Catalog details do not consume the executable source bound', () => {
+  const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.json'), true)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.js'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/nested/example.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog-index.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, id: 'another-plugin' }, 'registry/catalog/details/example.json'), false)
+  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog/details/example.json'), false)
+})
+
+test('author target resolution suppresses deterministically unavailable repositories', async () => {
+  const missing = async () => { throw Object.assign(new Error('missing'), { status: 404 }) }
+  assert.equal(await resolveTargets(missing, 'example-owner/missing-plugin'), null)
+  const transient = async () => { throw Object.assign(new Error('temporary'), { status: 503 }) }
+  await assert.rejects(resolveTargets(transient, 'example-owner/plugin'), /temporary/)
 })
 
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
@@ -66,7 +150,7 @@ test('automatic policy runs every eight hours and fails closed on permission or 
   assert.equal(policy.updates.concurrency, 8)
   assert.equal(policy.updates.maxCommitSpan, 200)
   assert.deepEqual(policy.compatibility, {
-    authority: 'official-npm-registry-active-supported-channels-through-highest',
+    authority: 'official-github-releases-and-npm-published-versions',
     registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh',
     latestReleaseCount: 3,
     requiredCompatibleReleases: 1,
@@ -90,6 +174,19 @@ test('automatic policy runs every eight hours and fails closed on permission or 
   assert.equal(policy.automaticApproval.requireManifestRepositoryMatch, true)
   assert.equal(policy.automaticApproval.requireRepositoryLicenseMatch, true)
   assert.ok(Object.values(policy.automaticApproval.permissionSignals).every(value => value === false))
+  assert.deepEqual(policy.authorFeedback, {
+    source: 'verified-authors-on-managed-issue-comments',
+    classification: 'dsh-store-problem',
+    ownerNotification: {
+      channel: 'github-issue-comment',
+      mention: '@AI-Scarlett',
+      markerPrefix: 'dsh-author-feedback:v1',
+      oncePerFeedbackComment: true,
+      githubNotificationEmailDeliveryVerified: false,
+    },
+    automaticAuthorReplies: false,
+    requiresVerifiedAuthorIdentity: true,
+  })
   assert.equal(policy.publication.repository, 'AI-Scarlett/DSH-Store')
   assert.deepEqual(policy.publication.publicCatalogUrls, [
     'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json',
@@ -125,10 +222,9 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(workflow, /EXPECTED_MAIN_SHA: \$\{\{ steps\.pull_request\.outputs\.merge_sha \}\}/)
   assert.match(workflow, /gh workflow run pages\.yml --ref main/)
   assert.match(workflow, /gh run watch "\$pages_run_id" --exit-status/)
-  assert.match(workflow, /createCommitOnBranch/)
-  assert.match(workflow, /registry\/catalog\.json.+base64\.b64encode/s)
-  assert.match(workflow, /registry\/catalog-index\.json/)
-  assert.match(workflow, /registry\/candidates\.json.+base64\.b64encode/s)
+  assert.match(workflow, /CATALOG_BRANCH="\$branch" node scripts\/create-catalog-commit\.mjs/)
+  assert.match(workflow, /--match-head-commit "\$commit_oid"/)
+  assert.match(workflow, /test "\$CATALOG_BASE_COMMIT" = "\$\(gh api "repos\/\$GITHUB_REPOSITORY\/commits\/main" --jq \.sha\)"/)
   assert.match(workflow, /commit\.verification\.verified/)
   assert.match(workflow, /uses: \.\/\.github\/workflows\/author-notifications\.yml/)
   assert.match(workflow, /uses: \.\/\.github\/workflows\/catalog-run-report\.yml/)
@@ -152,6 +248,9 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /baselineCatalog\.entries\.slice/)
   assert.match(source, /sourceVersionChecks\.checkedEntries/)
   assert.match(source, /sourceVersionChecks\.newerVersionsDeferred/)
+  assert.match(source, /catalogChangeReviewContract/)
+  assert.match(source, /sourceVersionChecks\.sameVersionCatalogUpdates/)
+  assert.match(source, /catalog-repinned-same-version/)
   assert.match(source, /sourceVersionChecks\.unresolvedEntries/)
   assert.match(source, /fetchOfficialDshReleaseWindow/)
   assert.match(source, /applyLatestDshCompatibilityPolicy/)
@@ -162,8 +261,11 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /isDurableRejectedCandidateDecision\(previous\)/)
   assert.match(source, /candidateRetention\.durableDecisionsPreserved/)
   assert.match(source, /candidateRetention\.registryRemovals/)
+  assert.match(source, /candidatesChanged = !prospectiveCandidatesBuffer\.equals\(originalCandidates\)/)
+  assert.match(source, /Candidate Registry serialization changed without a write decision/)
   assert.match(source, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
+  assert.match(source, /entry\.installPath \?\? ['"]\.['"]/)
   assert.match(source, /catalogUpdateIdentityMatches/)
   assert.match(source, /buildCatalogVersionUpdate/)
   assert.match(source, /isSafeSelfManagerUpdate/)
@@ -171,6 +273,10 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
   assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES = 4 \* 1024 \* 1024/)
   assert.match(source, /SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
+  assert.match(source, /isGeneratedSelfManagerCatalogDetail\(candidate, relativePath\)/)
+  assert.match(source, /isTestSourceFile\(relativePath\)/)
+  assert.match(source, /isSelfManagerEntry\(entry\)\s*&&\s*isBoundedSourceLineage\(lineage, maxCommitSpan, \{ allowDiverged: true \}\)/)
+  assert.match(source, /bounded-self-manager-history-divergence/)
   assert.match(source, /allowProtectedManager/)
   assert.doesNotMatch(source, /entry\.status !== 'approved' \|\| entry\.updatePolicy !== 'source-verified'/)
   assert.match(source, /localizeCatalogEntry/)
@@ -206,12 +312,26 @@ test('failed Catalog automation preserves a machine-readable failure report befo
   assert.equal(Object.hasOwn(report, 'postconditions'), false)
 })
 
+test('Catalog CLI through a linked checkout still rejects unknown arguments before scanning', async () => {
+  const fixture = await mkdtemp(join(tmpdir(), 'dsh-catalog-linked-cli-'))
+  try {
+    const checkout = join(fixture, 'checkout')
+    await symlink(rootPath, checkout, process.platform === 'win32' ? 'junction' : 'dir')
+    await assert.rejects(execFileAsync(process.execPath, [
+      join(checkout, 'scripts', 'automate-catalog.mjs'), '--unknown-fixture-argument',
+    ]), error => error.code === 1 && /unknown argument: --unknown-fixture-argument/.test(error.stderr))
+  } finally {
+    await rm(fixture, { recursive: true, force: true })
+  }
+})
+
 test('author remediation notifications are hash-bound, rate-limited, and use only the repository token', async () => {
-  const [workflow, planner, resolver, apply] = await Promise.all([
+  const [workflow, planner, resolver, apply, reportWorkflow] = await Promise.all([
     read('.github/workflows/author-notifications.yml'),
     read('scripts/plan-author-notices.mjs'),
     read('scripts/resolve-author-notice-targets.mjs'),
     read('scripts/apply-author-notice-plan.mjs'),
+    read('.github/workflows/catalog-run-report.yml'),
   ])
   assert.match(workflow, /workflow_call:/)
   assert.match(workflow, /workflow_dispatch:/)
@@ -227,13 +347,22 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.match(workflow, /catalog-automation-\$\{CATALOG_RUN_ID\}-\$\{CATALOG_RUN_ATTEMPT\}/)
   assert.match(workflow, /author-notification-plan-\$\{\{ inputs\.catalog_run_id \}\}-\$\{\{ inputs\.catalog_run_attempt \}\}/)
   assert.match(workflow, /--max-create 10/)
-  assert.match(workflow, /Candidate Registry 全量覆盖/)
+  assert.match(workflow, /--identity-only true/)
+  assert.match(planner, /MAX_AUTHOR_NOTICE_ACTIONS = 500/)
+  assert.match(resolver, /plan\.contactRepositoryKeys\.length > 2500/)
+  assert.match(resolver, /identity-resolution-only/)
+  assert.match(apply, /plan\.actions\.length > MAX_AUTHOR_NOTICE_ACTIONS/)
+  assert.match(workflow, /候选记录覆盖/)
   assert.match(workflow, /candidate_unaccounted/)
   assert.match(workflow, /registry\/candidates\.json/)
   assert.match(workflow, /--catalog-run-id "\$\{\{ steps\.report\.outputs\.run_id \}\}"/)
   assert.match(workflow, /plan-author-notices\.mjs/)
   assert.match(workflow, /apply-author-notice-plan\.mjs/)
   assert.match(workflow, /resolve-author-notice-targets\.mjs/)
+  assert.match(workflow, /--issues "\$RUNNER_TEMP\/author-notice-issues\.json"/)
+  assert.match(workflow, /collect-author-feedback\.mjs/)
+  assert.match(workflow, /author-feedback\.json/)
+  assert.match(reportWorkflow, /--author-feedback/)
   assert.match(workflow, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/)
   assert.doesNotMatch(workflow, /PAT|SMTP|npm (?:install|ci)|pnpm|yarn/)
   assert.match(planner, /ignoreInfrastructureFailures: true/)
@@ -251,11 +380,11 @@ test('author remediation notifications are hash-bound, rate-limited, and use onl
   assert.match(planner, /github\.com\/AI-Scarlett\/build-dsh-plugin/)
   assert.match(planner, /https:\/\/dsh\.store\//)
   assert.doesNotMatch(planner, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
-  assert.match(resolver, /repository\.owner\.type === 'User'/)
-  assert.match(resolver, /commits\?per_page=20/)
+  assert.match(resolver, /humanIdentity\(repository\.owner\)/)
+  assert.doesNotMatch(resolver, /commits\?per_page=20/)
   assert.doesNotMatch(resolver, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
-  assert.match(apply, /remote main changed after the author notice plan was created/)
-  assert.match(apply, /managed GitHub Issues changed after the author notice plan was created/)
+  assert.match(apply, /remote main changed after planning/)
+  assert.match(apply, /managed Issues changed after planning/)
   assert.match(apply, /candidate coverage summary invariant failed/)
   assert.match(apply, /candidate coverage fingerprint mismatch/)
   assert.match(apply, /source-update/)
@@ -287,6 +416,8 @@ test('Catalog directly creates one exact and deduplicated owner report notificat
   assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
   assert.match(workflow, /catalog-report-delivery\.mjs plan/)
   assert.match(workflow, /catalog-report-delivery\.mjs apply/)
+  assert.match(workflow, /AUTHOR_FEEDBACK_PATH: \$\{\{ steps\.author_report\.outputs\.feedback_path \}\}/)
+  assert.match(workflow, /--author-feedback "\$AUTHOR_FEEDBACK_PATH"/)
   assert.match(workflow, /--mention "@\$GITHUB_REPOSITORY_OWNER"/)
   assert.doesNotMatch(workflow, /SMTP|RESEND|\bPAT\b|npm (?:install|ci)|pnpm|yarn/)
   assert.match(delivery, /reportBodySha256/)
@@ -294,6 +425,10 @@ test('Catalog directly creates one exact and deduplicated owner report notificat
   assert.match(delivery, /remote main changed after the Catalog report delivery plan was created/)
   assert.match(delivery, /managed Catalog report Issue changed after the delivery plan was created/)
   assert.match(delivery, /dsh-catalog-report:v1:/)
+  assert.match(delivery, /dsh-author-feedback:v1:/)
+  assert.match(delivery, /AUTHOR_FEEDBACK_NOTIFICATION_APPLIED/)
+  assert.match(delivery, /authorFeedbackSha256/)
+  assert.match(delivery, /feedbackOwnerMention: '@AI-Scarlett'/)
   assert.match(delivery, /githubNotificationEmailDeliveryVerified: false/)
   assert.doesNotMatch(delivery, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
 })
@@ -388,8 +523,14 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
   assert.match(refresh, /Refusing to remove unexpected failed candidate/)
   assert.match(refresh, /download_jobs="\$\{DSH_STORE_DOWNLOAD_JOBS:-12\}"/)
   assert.match(refresh, /download concurrency must be between 1 and 16/)
-  assert.match(refresh, /xargs -P "\$download_jobs" -n 1 bash -Eeuo pipefail/)
+  assert.match(refresh, /xargs -r -P "\$download_jobs" -n 1 bash -Eeuo pipefail/)
   assert.match(refresh, /--max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at -/)
+  assert.match(refresh, /curl -4 --http1\.1 -fsS --resolve/)
+  assert.match(refresh, /curl -4 --http1\.1 -fsSL --connect-timeout 10/)
+  assert.match(refresh, /DSH_STORE_REFRESH_REUSED reused=/)
+  assert.match(refresh, /old_manifest_sha/)
+  assert.match(refresh, /DSH_STORE_REFRESH_RAW_FALLBACK path=/)
+  assert.match(refresh, /raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/\$source_sha/)
   assert.match(refresh, /dsh\.store:http:\/marketplace/)
   assert.match(refresh, /dsh\.store:https:/)
   assert.match(refresh, /dsh-store\.cn:https:/)

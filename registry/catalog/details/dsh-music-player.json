@@ -1,0 +1,199 @@
+{
+  "id": "dsh-music-player",
+  "name": "桌面客户端（DSH Music Player）",
+  "packageName": "@local/dsh-music-player",
+  "description": "DSH 本地音乐播放器（Web + Desktop 双端）：会话视图「音乐」标签页，选择本地目录、扫描常见音频格式（mp3/flac/m4a/ogg/wav...），歌曲名/歌手/时长列表，单曲循环与列表循环播放。",
+  "searchTerms": [
+    "桌面客户端",
+    "DSH Music Player",
+    "dsh-music-player",
+    "@local/dsh-music-player",
+    "桌面",
+    "托盘",
+    "快捷启动",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "music",
+    "player"
+  ],
+  "repositoryUrl": "https://github.com/heshuren371/dsh-music-player",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "086237d8372c346593f3b7e2fddf5b699e3a8642",
+  "version": "0.8.5",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-25T15:06:18.000Z",
+    "observedAt": "2026-09-25T17:35:31.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-25T17:35:31.000Z",
+      "evidenceUrl": "https://github.com/heshuren371/dsh-music-player/commit/086237d8372c346593f3b7e2fddf5b699e3a8642",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "music-player"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "compatibility": {
+    "dsh": ">=0.1.6-alpha.1 <0.2.0",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown",
+      "0.1.7-rc.2": "compatible"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": "^22.19.0 || >=24.0.0",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@libav.js/variant-webcodecs",
+      "libavjs-webcodecs-polyfill",
+      "mediabunny",
+      "music-metadata",
+      "node-taglib-sharp"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

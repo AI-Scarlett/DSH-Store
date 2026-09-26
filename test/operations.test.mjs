@@ -88,6 +88,20 @@ test('source-verified update plan pins the locally approved candidate commit', a
   }
 })
 
+test('an installed same-version older Commit cannot be overwritten through the marketplace update action', async () => {
+  const { root } = await fixture({ specifier: `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}` })
+  const runner = { plugin: async () => ({ ok: true, exitCode: 0 }), dumpConfig: async () => ({ ok: true, exitCode: 0 }) }
+  try {
+    const operations = service(root, runner, { entry: { ...demoEntry, version: '1.0.0' } })
+    await assert.rejects(
+      operations.createPlan({ action: 'update', pluginId: 'demo' }),
+      error => error.code === 'NO_UPDATE' && /newer version/.test(error.message),
+    )
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('marketplace self-update ignores every lifecycle script instead of widening allow-build', async () => {
   const { root, profile } = await fixture({ installed: false })
   const commit = 'd'.repeat(40)
@@ -412,7 +426,7 @@ test('concurrent Profile changes invalidate the plan before backup or mutation',
     const changed = (await readFile(manifestPath, 'utf8')).replace('"fixture"', '"changed"')
     await writeFile(manifestPath, changed)
     const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
-    assert.equal(result.status, 'rolled-back')
+    assert.equal(result.status, 'failed')
     assert.equal(result.error.code, 'PRECONDITION_CHANGED')
     assert.equal(result.rollback, 'not-required')
     assert.equal(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), '[]\n')
@@ -435,4 +449,32 @@ test('health failure restores a managed enable-disable transaction', async () =>
   } finally {
     await rm(root, { recursive: true, force: true })
   }
+})
+
+test('async execution reserves one operation and exposes durable terminal state', async () => {
+  const { root } = await fixture()
+  let resolveRun; let calls = 0
+  const runner = { plugin: async () => { calls++; await new Promise(resolve => { resolveRun = resolve }); return { ok: true, exitCode: 0 } }, dumpConfig: async () => ({ ok:true, exitCode:0 }) }
+  try {
+    const operations = service(root, runner, { runtimeInstanceId: 'boot' })
+    const plan = await operations.createPlan({ action:'update', pluginId:'demo' })
+    const queued = await operations.start({ planId:plan.planId, confirmation:plan.confirmation })
+    assert.equal(queued.state,'queued')
+    await assert.rejects(operations.start({planId:plan.planId,confirmation:plan.confirmation}), /missing or already used/)
+    for (let i=0;i<100 && !resolveRun;i++) await new Promise(resolve => setTimeout(resolve,5))
+    assert.equal((await operations.journal.get(queued.id)).state,'running'); resolveRun()
+    let record
+    for (let i=0;i<100;i++) { record=await operations.journal.get(queued.id); if (record.state==='succeeded') break; await new Promise(resolve=>setTimeout(resolve,5)) }
+    assert.equal(record.state,'succeeded'); assert.equal(calls,1)
+    assert.equal(record.result.status,'applied'); assert.ok(!JSON.stringify(record).includes(plan.confirmation))
+  } finally { await rm(root,{recursive:true,force:true}) }
+})
+test('failed dependency rollback is recovery-required and never offers restart', async () => {
+  const { root } = await fixture()
+  try {
+    const operations = service(root, { plugin:async()=>({ok:false,exitCode:1,stderr:'EPERM rename locked'}), dumpConfig:async()=>({ok:true,exitCode:0}) })
+    const plan = await operations.createPlan({action:'update',pluginId:'demo'})
+    const result = await operations.execute({planId:plan.planId,confirmation:plan.confirmation})
+    assert.equal(result.status,'recovery-required'); assert.equal(result.rollback,'failed'); assert.equal(result.restartRequired,false)
+  } finally { await rm(root,{recursive:true,force:true}) }
 })

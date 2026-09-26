@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "18d1763b354e876724848ebd7b9eda49a46ee0ec",
-  "version": "1.0.4",
+  "commit": "5606883d08eb7bd1e186184109ccc9f536134b70",
+  "version": "1.0.7",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-30T08:56:19.000Z",
-    "observedAt": "2026-08-30T12:19:39.000Z",
+    "updatedAt": "2026-09-23T18:38:30.000Z",
+    "observedAt": "2026-09-24T01:36:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-08-30T12:19:39.000Z",
-      "evidenceUrl": "https://github.com/aa2246740/dsh-autoresearch/commit/18d1763b354e876724848ebd7b9eda49a46ee0ec",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-24T01:36:44.000Z",
+      "evidenceUrl": "https://github.com/aa2246740/dsh-autoresearch/commit/5606883d08eb7bd1e186184109ccc9f536134b70",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -80,17 +80,22 @@
     "dsh-autoresearch"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "*",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
       "0.1.1-rc.1": "unknown",
       "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown"
+      "0.1.2-alpha.5": "unknown",
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -140,6 +145,30 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=22.19.0",
@@ -161,30 +190,11 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/cordis",
-      "@deepseek-ai/dsh-agent",
-      "@deepseek-ai/dsh-attachment",
-      "@deepseek-ai/dsh-brand",
-      "@deepseek-ai/dsh-code-runtime",
-      "@deepseek-ai/dsh-invariants",
-      "@deepseek-ai/dsh-llm",
-      "@deepseek-ai/dsh-scope",
-      "@deepseek-ai/dsh-session",
-      "@deepseek-ai/dsh-settings",
-      "@deepseek-ai/dsh-system-prompt",
-      "@deepseek-ai/dsh-timeout",
-      "@deepseek-ai/dsh-tools",
-      "@deepseek-ai/dsh-typert-protocol",
-      "@deepseek-ai/dsh-user-approval",
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

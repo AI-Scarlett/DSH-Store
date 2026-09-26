@@ -565,6 +565,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
       profiles: stringArray(value.compatibility?.profiles ?? [], `entries[${index}].compatibility.profiles`),
     },
     details: {
+      ...(value.details?.screenshots ? { screenshots: validateScreenshots(value.details.screenshots) } : {}),
       pluginType: enumValue(value.details?.pluginType, `entries[${index}].details.pluginType`, [
         'feature', 'theme', 'suite', 'client', 'provider', 'unknown',
       ]),
@@ -777,6 +778,16 @@ export function validateCatalogDetail(document, indexEntry, registry) {
   return detail
 }
 
+export function validateScreenshots(value) {
+  if (!Array.isArray(value) || value.length > 3) throw new Error('invalid screenshots')
+  return value.map(item => {
+    if (!item || typeof item.path !== 'string' || item.path.length > 240 || !/^[A-Za-z0-9_./-]+\.(png|jpg|jpeg|webp)$/.test(item.path)
+      || item.path.startsWith('/') || item.path.split('/').some(part => !part || part === '..' || part === '.')
+      || !/^[a-f0-9]{64}$/.test(item.sha256 ?? '') || Object.keys(item).some(key => !['path', 'sha256'].includes(key))) throw new Error('unsafe screenshot metadata')
+    return { path: item.path, sha256: item.sha256 }
+  })
+}
+
 function legacyAssurance(assurance) {
   return Object.fromEntries(Object.entries(assurance ?? {}).map(([gate, record]) => {
     const value = { status: record?.status === 'partial' ? 'unknown' : record?.status ?? 'unknown' }
@@ -818,6 +829,7 @@ function legacyWireEntry(entry) {
       profiles: entry.compatibility.profiles,
     },
     details: {
+      ...(entry.details.screenshots ? { screenshots: entry.details.screenshots } : {}),
       pluginType: entry.details.pluginType,
       installSource: entry.details.installSource,
       license: entry.details.license,
@@ -1047,16 +1059,19 @@ export function createDshReleaseContext(entries = [], dshVersion = {}) {
     for (const release of Object.keys(entry?.compatibility?.dshReleases ?? {})) addReleaseRecord(byVersion, release)
     for (const release of Object.keys(entry?.compatibility?.dshOperations ?? {})) addReleaseRecord(byVersion, release)
   }
-  const npmLatest = VERSION.test(dshVersion?.latestVersion ?? '') ? dshVersion.latestVersion : null
-  if (npmLatest) addReleaseRecord(byVersion, npmLatest)
+  const officialLatest = VERSION.test(dshVersion?.latestVersion ?? '') ? dshVersion.latestVersion : null
+  if (officialLatest) {
+    addReleaseRecord(byVersion, officialLatest)
+    for (const channel of dshVersion.channels ?? []) addReleaseRecord(byVersion, channel.version)
+  }
   const allReleases = [...byVersion.values()]
     .sort((left, right) => compareVersions(left.version, right.version) ?? left.version.localeCompare(right.version, 'en'))
-  const officialLatestIndex = npmLatest ? allReleases.findIndex(release => release.version === npmLatest) : -1
+  const officialLatestIndex = officialLatest ? allReleases.findIndex(release => release.version === officialLatest) : -1
   const boundedReleases = officialLatestIndex >= 0
     ? allReleases.slice(Math.max(0, officialLatestIndex - MAX_DSH_RELEASE_KEYS + 1), officialLatestIndex + 1)
     : allReleases.slice(-MAX_DSH_RELEASE_KEYS)
   const fallbackLatest = boundedReleases.at(-1)?.version ?? null
-  const latestVersion = npmLatest ?? fallbackLatest
+  const latestVersion = officialLatest ?? fallbackLatest
   const releases = boundedReleases.map(release => ({
     key: release.key,
     version: release.version,
@@ -1067,11 +1082,11 @@ export function createDshReleaseContext(entries = [], dshVersion = {}) {
   const latestIndex = Math.max(0, releases.findIndex(release => release.latest))
   return {
     schemaVersion: 1,
-    source: npmLatest ? 'npm-official' : 'catalog-fallback',
+    source: officialLatest ? (dshVersion.latestSource === 'github-official:release' ? 'github-official' : 'npm-official') : 'catalog-fallback',
     latestVersion,
-    checkedAt: npmLatest && typeof dshVersion.checkedAt === 'string' ? dshVersion.checkedAt : null,
-    registryUrl: npmLatest && typeof dshVersion.registryUrl === 'string' ? dshVersion.registryUrl : null,
-    errorCode: npmLatest ? null : (dshVersion?.errorCode ?? null),
+    checkedAt: officialLatest && typeof dshVersion.checkedAt === 'string' ? dshVersion.checkedAt : null,
+    registryUrl: officialLatest && typeof dshVersion.registryUrl === 'string' ? dshVersion.registryUrl : null,
+    errorCode: officialLatest ? null : (dshVersion?.errorCode ?? null),
     releases,
     cardReleases: releases.slice(Math.max(0, latestIndex - 2), latestIndex + 1),
   }
@@ -1167,6 +1182,12 @@ function catalogIndexSearchValues(entry) {
  * The explicit order is the source of truth for the default marketplace order;
  * this keeps page boundaries stable while detail files are loaded lazily.
  */
+function compatibleFilter(value) {
+  if (!value) return ''
+  if (typeof value !== 'string' || !/^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?$/.test(value) || value.length > 80) throw new Error('invalid compatibility filter')
+  return value
+}
+
 export function selectMarketplaceIndexEntries(index, options = {}) {
   const catalog = validateCatalogIndex(index)
   const view = options.view ?? 'market'
@@ -1183,9 +1204,11 @@ export function selectMarketplaceIndexEntries(index, options = {}) {
   const pageSize = positiveInteger(options.pageSize, MARKET_PAGE_SIZE, MAX_MARKET_PAGE_SIZE, 'pageSize')
   const installedPackages = new Set((options.inventory?.plugins ?? []).filter(plugin => plugin.installed !== false).map(plugin => plugin.packageName))
   const featuredOnly = options.featuredOnly === true
+  const compatibleWith = compatibleFilter(options.compatibleWith)
   const scoped = catalog.entries
     .filter(entry => view === 'installed' ? installedPackages.has(entry.packageName) : entry.status !== 'unlisted')
     .filter(entry => !featuredOnly || entry.featured === true)
+    .filter(entry => !compatibleWith || entry.compatibility?.dshReleases?.[compatibleWith] === 'compatible')
     .filter(entry => category === '' || entry.categories.includes(category))
     .filter(entry => query === '' || catalogIndexSearchValues(entry).some(value => value.includes(query)))
     .sort((left, right) => left.order - right.order || left.nameZh.localeCompare(right.nameZh, 'zh-CN') || left.id.localeCompare(right.id))
@@ -1197,7 +1220,7 @@ export function selectMarketplaceIndexEntries(index, options = {}) {
     entries: scoped.slice((page - 1) * pageSize, page * pageSize),
     categoryIds: [...new Set(scoped.flatMap(entry => entry.categories))].sort(),
     pagination: {
-      view, query, category, featuredOnly, page, pageSize, total, pageCount,
+      view, query, category, featuredOnly, ...(compatibleWith ? { compatibleWith } : {}), page, pageSize, total, pageCount,
       hasPrevious: page > 1, hasNext: page < pageCount,
     },
   }
@@ -1216,8 +1239,23 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       && typeof installed.declaredSpecifier === 'string'
       && installed.declaredSpecifier.toLowerCase().includes(entry.commit)
     const commitDrift = installed?.source === 'git' && !commitMatched
-    const updateAvailable = installed !== null
-      && (versionComparison === -1 || (commitDrift && versionComparison !== 1))
+    // A Catalog repin without a SemVer bump changes what new users install,
+    // but it must not masquerade as an in-market update for existing users.
+    // Their current package manager cannot prove which same-version files are
+    // active, so only a genuinely newer version gets the guarded update action.
+    const sameVersionSourceChange = installed !== null && versionComparison === 0 && commitDrift
+    const updateAvailable = installed !== null && versionComparison === -1
+    const manualLifecycleArgument = (entry.risk?.installScripts?.length ?? 0) === 0
+      ? '--ignore-scripts'
+      : `--allow-build=${entry.packageName}`
+    const manualSourceUpdate = sameVersionSourceChange ? {
+      status: 'manual-only',
+      commit: entry.commit,
+      evidenceUrl: `${entry.repositoryUrl}/commit/${entry.commit}`,
+      command: ['dsh', 'plugin', '--profile', inventory.profile, 'add', manualLifecycleArgument, githubInstallSpecifier(entry)],
+      commandText: `dsh plugin --profile ${inventory.profile} add ${manualLifecycleArgument} '${githubInstallSpecifier(entry)}'`,
+      reason: 'Catalog 已固定同版本的新 Commit；新安装会直接使用该 Commit，已安装副本不在商城内执行同版本覆盖。',
+    } : null
     const migrationAvailable = localProtected && entry.status === 'approved' && !installed?.official
     const self = entry.packageName === 'dsh-safe-plugin-manager'
     let managementBlockedReason = null
@@ -1248,6 +1286,8 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       installedVersion: installed?.version ?? null,
       installedSource: installed?.source ?? null,
       updateAvailable,
+      sameVersionSourceChange,
+      manualSourceUpdate,
       migrationAvailable,
       commitMatched,
       sourceDrift: commitDrift,
@@ -1331,8 +1371,10 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
   const scopedEntries = snapshot.entries.filter(entry => view === 'installed' ? entry.installed : entry.listed !== false)
   const categoryIds = [...new Set(scopedEntries.flatMap(entry => entry.categories ?? []))].sort()
   const featuredOnly = options.featuredOnly === true
+  const compatibleWith = compatibleFilter(options.compatibleWith)
   const matchingEntries = scopedEntries
     .filter(entry => !featuredOnly || entry.featured === true)
+    .filter(entry => !compatibleWith || entry.compatibility?.dshReleases?.[compatibleWith] === 'compatible')
     .filter(entry => category === '' || entry.categories?.includes(category))
     .filter(entry => query === '' || marketplaceSearchValues(entry).some(item => item.includes(query)))
   const matchingCandidates = view === 'candidates'
@@ -1355,7 +1397,7 @@ export function paginateMarketplaceSnapshot(snapshot, options = {}) {
     catalogPackageNames: options.catalogPackageNames ?? snapshot.entries.map(entry => entry.packageName),
     filters: { categoryIds, featuredOnly },
     pagination: {
-      view, query, category, featuredOnly, page, pageSize, total, pageCount,
+      view, query, category, featuredOnly, ...(compatibleWith ? { compatibleWith } : {}), page, pageSize, total, pageCount,
       hasPrevious: page > 1,
       hasNext: page < pageCount,
     },

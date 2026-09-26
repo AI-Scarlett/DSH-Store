@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { loadCatalogFromFiles } from '../src/catalog.mjs'
+import { validateAuthorFeedback } from './collect-author-feedback.mjs'
 
 const statusLabels = {
   approved: '可安装',
@@ -25,7 +26,7 @@ function parseArgs(argv) {
 }
 
 function markdownCell(value) {
-  return String(value ?? '未知').replace(/\r?\n/g, ' ').replaceAll('|', '\\|')
+  return String(value ?? '未知').replace(/\r?\n/g, ' ').replaceAll('|', '\\|').replaceAll('@', '＠')
 }
 
 function code(value) {
@@ -83,6 +84,7 @@ export function renderCatalogAutomationNotification({
   repairTriggered = false,
   mention = null,
   authorNotices = null,
+  authorFeedback = null,
 }) {
   const catalogEntries = array(catalog?.entries)
   const byId = new Map(catalogEntries.map(entry => [entry.id, entry]))
@@ -121,6 +123,7 @@ export function renderCatalogAutomationNotification({
   const authorStatisticsAvailable = authorSummary !== null
   const candidateCoverageAvailable = authorSummary?.candidateCoverageInvariantPassed === true
     && number(authorSummary.candidateCoverageUnaccounted) === 0
+  if (authorFeedback !== null) validateAuthorFeedback(authorFeedback)
   const title = statisticsAvailable
     ? `DSH STORE 自动更新报告：新增 ${addedEntries.length}，历史更新 ${updatedEntries.length}，兼容性下架 ${compatibilityUnlisted.length}，恢复 ${compatibilityRestored.length}`
     : 'DSH STORE 自动更新报告：本轮扫描失败，统计不可用'
@@ -139,12 +142,12 @@ export function renderCatalogAutomationNotification({
     lines.push(
       `- 历史 Catalog 检查：${number(sourceChecks.checkedEntries)} 个`,
       `- 新增收录：${addedEntries.length} 个（可安装 ${approvedAdded}，blocked/不可安装 ${blockedAdded}）`,
-      `- 历史版本自动更新：${updatedEntries.length} 个`,
+      `- 历史版本自动更新：${number(sourceChecks.catalogUpdates)} 个；同版本固定 Commit 更新：${number(sourceChecks.sameVersionCatalogUpdates)} 个`,
       `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
       `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
       `- 不兼容且已有其他失败的候选清理：${prunedCandidates.length} 个`,
       `- 发现上游高版本：${number(sourceChecks.newerVersionCandidates)} 个（自动更新 ${number(sourceChecks.catalogUpdates)}，暂缓 ${number(sourceChecks.newerVersionsDeferred)}）`,
-      `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个`,
+      `- 上游源码变化但未提升版本：${number(sourceChecks.sourceChangedWithoutVersionBump)} 个（固定 Commit 已更新 ${number(sourceChecks.sameVersionCatalogUpdates)}，暂缓 ${number(sourceChecks.sameVersionUpdatesDeferred)}）`,
       `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
       `- 当前 Catalog 条目：${number(postCatalogEntries)} 个`,
     )
@@ -203,11 +206,12 @@ export function renderCatalogAutomationNotification({
   } else if (updatedEntries.length === 0) {
     lines.push('无历史插件版本更新。', '')
   } else {
-    lines.push('| 中文名（英文名） | 原版本 | 新版本 | 商城状态 | 原项目 |', '|---|---:|---:|---|---|')
+    lines.push('| 中文名（英文名） | 变更类型 | 原版本 | 新版本 | 商城状态 | 原项目 |', '|---|---|---:|---:|---|---|')
     const rows = visibleRows(updatedEntries)
     for (const item of rows) {
       const entry = byId.get(item.id)
-      lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${markdownCell(item.fromVersion)} | ${markdownCell(item.toVersion ?? item.version)} | ${markdownCell(statusLabels[entry?.status] ?? entry?.status)} | ${repositoryLink(entry)} |`)
+      const changeKind = item.changeKind === 'same-version-source-update' ? '同版本固定 Commit' : '版本更新'
+      lines.push(`| ${markdownCell(entryName(entry, item.id))} | ${changeKind} | ${markdownCell(item.fromVersion)} | ${markdownCell(item.toVersion ?? item.version)} | ${markdownCell(statusLabels[entry?.status] ?? entry?.status)} | ${repositoryLink(entry)} |`)
     }
     lines.push('')
     appendOmittedRows(lines, updatedEntries.length, rows.length)
@@ -280,7 +284,8 @@ export function renderCatalogAutomationNotification({
       candidateCoverageAvailable
         ? `- Candidate Registry 全量覆盖：${number(authorSummary.candidateCoverageAccounted)} / ${number(authorSummary.candidateRegistryRecords)} 条，canonical 仓库 ${number(authorSummary.candidateRegistryRepositories)} 个，未覆盖 ${number(authorSummary.candidateCoverageUnaccounted)} 条。`
         : '- Candidate Registry 全量覆盖：**校验不可用，禁止按已覆盖解读**。',
-      `- 符合一次性直接整改通知的候选：${number(authorSummary.candidateDirectNotificationEligible)} 个（已有修复单 ${number(authorSummary.candidateDirectManagedIssues)}，本轮安排 ${number(authorSummary.candidateDirectScheduledThisRun)}，待限速发送 ${number(authorSummary.candidateDirectQueued)}）。`,
+      `- 有确定整改原因的候选（仍须全局人员门禁）：${number(authorSummary.candidateDirectNotificationEligible)} 个（已有修复单 ${number(authorSummary.candidateDirectManagedIssues)}，本轮安排 ${number(authorSummary.candidateDirectScheduledThisRun)}，待限速发送 ${number(authorSummary.candidateDirectQueued)}）。`,
+      `- 自动跟进关闭；跨项目联系门禁跳过仓库：${number(authorSummary.contactSuppressedRepositories)}。候选中因该门禁跳过：${number(authorSummary.candidateDirectSuppressed)}。`,
       `- 仅在[公开候选库](https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/candidates.json)展示、不主动 @ 的候选：${number(authorSummary.candidatePublicRegistryOnly)} 个（待复检 ${number(authorSummary.candidatePublicReviewing)}，公开整改原因 ${number(authorSummary.candidatePublicRemediation)}，基础设施暂缓 ${number(authorSummary.candidatePublicDeferred)}，发现记录 ${number(authorSummary.candidatePublicDiscoveryOnly)}）。`,
       '- 公开展示不等于向作者发送消息；直接通知只用于具体、确定性的上架整改，不发送纯推广内容，也不去第三方仓库批量开 Issue。',
       `- 检测到上游修改但仍未通过：${number(authorSummary.upstreamModifiedStillBlocked)} 个项目`,
@@ -337,6 +342,29 @@ export function renderCatalogAutomationNotification({
     appendOmittedRows(lines, candidateSurfaces.length, rows.length)
   }
 
+  lines.push('### 作者反馈：DSH Store 问题', '')
+  if (authorFeedback === null) {
+    lines.push('本轮未取得作者反馈快照；不能按没有反馈解读。', '')
+  } else if (authorFeedback.items.length === 0) {
+    lines.push('本轮没有发现作者明确指出的 DSH Store 自动化、扫描或通知问题。', '')
+  } else {
+    lines.push(
+      `- 检测到 ${authorFeedback.items.length} 条作者反馈，已列入仓库所有者人工处理队列。`,
+      '- 自动化会为每条新的反馈评论发送一次单独的 @AI-Scarlett 站内评论以触发 GitHub 通知邮件；不会自动回复作者或绕过“一位作者一次联系”门禁。',
+      '',
+      '| Issue | 作者 | 最新反馈 | 原文 SHA-256 | 摘要 |',
+      '|---|---|---|---|---|',
+    )
+    const rows = visibleRows(authorFeedback.items)
+    for (const item of rows) {
+      const issueUrl = /^https:\/\/github\.com\//.test(item.issueUrl) ? item.issueUrl : '#'
+      const commentUrl = /^https:\/\/github\.com\//.test(item.commentUrl) ? item.commentUrl : '#'
+      lines.push(`| [#${item.issueNumber}](${issueUrl}) | ${markdownCell(item.author.login)} | [查看评论](${commentUrl}) | ${code(item.bodySha256)} | ${markdownCell(item.excerpt)} |`)
+    }
+    lines.push('')
+    appendOmittedRows(lines, authorFeedback.items.length, rows.length)
+  }
+
   lines.push(
     '> 状态边界：本报告只证明 GitHub Catalog 固定源检查、自动策略 PR 和公开商城目录核验；不表示插件已安装到真实 DSH Profile，也不表示插件运行时已验收或经过独立安全审计。',
     '',
@@ -357,11 +385,12 @@ async function readJson(path, optional = false) {
 async function main() {
   const options = parseArgs(process.argv.slice(2))
   if (!options.catalog || !options.output) throw new Error('--catalog and --output are required')
-  const [catalogRoot, report, watchdog, authorNotices] = await Promise.all([
+  const [catalogRoot, report, watchdog, authorNotices, authorFeedback] = await Promise.all([
     readJson(options.catalog),
     readJson(options.report, true),
     readJson(options['watchdog-report'], true),
     readJson(options['author-notice-plan'], true),
+    readJson(options['author-feedback'], true),
   ])
   const catalog = catalogRoot?.registry?.indexPath
     ? await loadCatalogFromFiles({ indexUrl: pathToFileURL(resolve(options.catalog)) })
@@ -378,6 +407,7 @@ async function main() {
     repairTriggered: options['repair-triggered'] === 'true',
     mention: options.mention ?? null,
     authorNotices,
+    authorFeedback,
   })
   await writeFile(resolve(options.output), body, { encoding: 'utf8', flag: 'wx', mode: 0o644 })
 }

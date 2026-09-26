@@ -37,10 +37,7 @@
 安装和混淆等常见 CLI 能力只产生警告并进入机器人清单。命中文件数、单文件体积、符号链接或
 目录树上限时，回执必须明确显示“扫描面不完整”，不能把没读到的源码当成安全通过。
 
-预检通过时添加 `submission-passed`，失败时添加 `submission-failed`，并幂等更新一条带固定
-标记的机器人评论；修改 Issue 会重新检查并移除相反状态标签。每八小时运行的 Catalog
-策略还会合并 GitHub 主动发现结果，固定默认分支当前 Commit，并以有界源码读取复用同一套
-结构门禁。工作流不会运行第三方 install、prepare、build、test 或运行时代码。
+预检结果保存在 Actions 摘要和 Artifact。仅首次提交且该用户从未被联系过时，才通过全局人员台账发送一次结果；编辑、重开或另一个项目的提交不会重复评论或变更通知标签。
 
 该门禁是固定源策略检查，不是安全审计或 DSH 运行验证。只有 canonical GitHub、完整 Commit、
 manifest/repository/license 一致、明确文件清单、无生命周期脚本和运行依赖、Bundle/入口唯一，
@@ -68,18 +65,33 @@ Profile、不用低层测试冒充运行验收”的边界。
 
 ## 作者整改通知
 
-每次八小时 Catalog 扫描策略 Job 成功后，Catalog 工作流会直接调用 `author-notifications.yml`，
-对四类确定性结果维护公开 GitHub
-修复单：Catalog 中仍为 `blocked` 的仓库、发现更高上游版本但因源码契约暂缓更新的仓库，以及
-明确属于 DSH 且被固定 Commit 门禁拒绝的候选仓库，以及因不在最新三个 DSH 版本兼容窗口而
-暂时下架的仓库。修复单逐项列出原因和建议，并 `@` canonical
-仓库维护者；个人仓库使用所有者，组织仓库优先使用最近的人类提交者。同一仓库只保留一单，原因
-变化才再次提醒，阻断消失后自动关闭。
+每八小时扫描仍会复检所有项目并公开 Catalog、候选状态和确定性原因。
+主动联系按**人**全局去重：先核实 GitHub 不变的数字用户 ID，一个人跨所有项目仅一次。
+GitHub 用户名只作为别名；新仓库、新版本、改名、代码变化、关闭或重开 Issue、任务重试，
+都不会恢复已使用的联系名额。组织或身份不明确的项目不猜测收件人。
 
-修复单固定附带 [build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) 自检与修改入口，
-并链接 [DSH STORE 官网](https://dsh.store/) 供作者查看后续状态。修复单还记录 canonical 仓库固定
-Commit 的有界指纹；后续复检会区分“已修改但仍未通过、已修改且阻断清除、未检测到新提交、首次
-建立基线或暂无法判断”。该状态只表示上游源码是否变化及确定性阻断是否消失，不等同于运行时验收。
+历史 Issue、通知评论、提交预检回复和人工联系已导入
+[历史记录](author-contact-history.json)。实时联系记录统一存放在
+[author-contact-state 分支](https://github.com/AI-Scarlett/DSH-Store/blob/author-contact-state/contacts.json)。
+发送前必须以文件 SHA 为条件原子登记名额，然后只执行一次消息请求；超时、失败、取消或
+送达不确定均保留名额，禁止盲目重发。记录缺失、历史不完整或身份有歧义时不发送。
+
+只有作者明确作出正向回复、提出具体继续沟通请求，才允许针对该请求继续回复。
+致谢、表情、沉默、代码修复及新的项目申请均不是授权。人工处理必须把请求的用户 ID、
+评论 ID、原文 SHA256、原文引用、请求范围与拟回复正文写入
+`registry/author-replies/<request>.json`，经检查合并至 main 后使用
+`node scripts/reply-author-contact.mjs --plan registry/author-replies/<request>.json`。
+计划字段为 `schemaVersion: 1`、`operation: requested-author-reply`、`repository`、
+`issueNumber`、`userId`、`requestCommentId`、`requestBodySha256`、
+`review: { decision: explicit-request-to-continue, requestQuote, scope }` 和 `responseBody`。
+回复命令回读 main 上的原计划，并核对作者最新原文；一次请求只消费一次，不构成永久豁免。
+任何更晚的撤回请求都使旧许可失效；已记录停止联系的人不会收到自动回复。
+解除停止状态需要另行核实对方新的明确请求并审查，不得回滚旧记录。
+
+Catalog 通知和插件提交预检共用此记录及并发组。预检在编辑、重开时仍生成 Actions
+报告和 Artifact，但不重复评论、改写旧通知或反复打标签。初始预检回复也消耗该用户的
+全局名额。旧通知不再自动重开、刷新正文或发送关闭提醒；结果在商城与公开候选库查看。
+人工 GitHub 评论、PR 沟通及其他渠道同样受此规则约束，不能通过换项目或渠道绕过。
 
 作者通知完成后，Catalog 工作流会直接调用 `catalog-run-report.yml` 生成所有者报告。两个可复用
 工作流都接收当前 Catalog Run ID 和 Run Attempt，并只读取同一次 Catalog Run 中的精确 Artifact，
@@ -90,6 +102,15 @@ Commit 的有界指纹；后续复检会区分“已修改但仍未通过、已�
 涉及的项目数和 GitHub 通知邮件触发项目数。GitHub 是否实际投递邮件取决于被提及维护者的个人
 通知设置，仓库无法读取私人邮箱回执，因此必须显示“送达未验证”，不能把触发数量表述成实际送达数量。
 
+作者在修复单中明确指出自动化、扫描或通知属于 DSH Store 问题时，`author-notifications.yml` 会先用
+已核验的 GitHub 不变用户 ID 采集最新评论，再由 `catalog-run-report.yml` 在同一个所有者报告 Issue
+中单独发送一次 `@AI-Scarlett` 站内评论。评论按 `dsh-author-feedback:v1` 加作者评论 ID、正文哈希
+和 Issue 号去重；因此后续三小时报告更新不会重复触发通知。该评论只把问题交给仓库所有者人工处理，
+不会自动回复作者，也不会改变“一位用户仅一次主动联系”的规则。GitHub 通知系统是否实际送达邮箱仍
+无法由仓库验证。分类只检查该作者最新的非空评论，邮件转发的原机器人内容和 Markdown 引用会先剥离，
+并且必须出现明确的问题、误报、重复通知、干扰、错误或修复请求信号；致谢、整改完成、接受 guarded
+状态、普通复检请求和停止联系不会把历史评论重新升级为新的 Store 问题。
+
 每轮计划会把 Candidate Registry 的全部 canonical 仓库逐一归入机器可读台账，去重后只能处于
 `direct-remediation`、`public-reviewing`、`public-remediation`、`public-deferred` 或
 `public-discovery-only` 之一；台账条目数、候选记录数和未覆盖数必须通过不变量校验，未覆盖不为 0
@@ -98,16 +119,16 @@ Commit 的有界指纹；后续复检会区分“已修改但仍未通过、已�
 全量覆盖不等于无差别群发。主动搜索中的普通项目不会因为关键词误命中而收到 `@mention`；GitHub
 403/404/429、限流、超时、连接失败和默认分支移动等基础设施状态也不会归责给作者。凡是明确属于
 DSH、状态为 `rejected`、并且已经有非基础设施类确定性整改原因的候选，不论来自用户提交、固定
-Commit 复核还是自动雷达，都会进入一次性直接通知队列；`reviewing`、仅发现记录和没有确定结论的
+Commit 复核还是自动雷达，只有通过全局人员联系门禁后才进入一次性直接通知队列；`reviewing`、仅发现记录和没有确定结论的
 项目仍只公开展示。通知必须带具体整改原因、build-dsh-plugin 和商城状态入口，不发送纯推广消息，
-也不在第三方仓库批量开 Issue。同一 canonical 仓库只保留一单，未变化的签名不重复提醒。每轮最多
+也不在第三方仓库批量开 Issue。同一人跨所有 canonical 仓库仅联系一次。每轮最多
 新建 10 单，以 `更新暂缓 → 兼容性下架 → 候选未通过 → Catalog blocked` 轮转选取。该流程只读
 固定源码，不执行第三方代码，也不把修复后的再次通过承诺为真实 Profile 安装或运行验收。
 
 Candidate Registry 只保留仍有单独复核价值的记录。`rejected` 候选按 canonical 仓库哈希分成
 24 个批次，每次八小时扫描其中一批，并只读取记录内完整 Commit 的有界仓库树与 `package.json`。
 如果候选已经存在其他确定性门禁失败，同时没有任何 manifest 对官方最新三个 DSH 版本给出精确
-`compatible` 声明，就直接从候选库删除；当轮报告仍保留清理清单并用于一次作者整改通知。
+`compatible` 声明，就直接从候选库删除；当轮报告仍保留清理清单；仅未联系过且身份已核实的作者可能收到一次通知。
 仅因最新三版兼容性不足而暂时下架的 Catalog 条目使用 `reviewing` 候选，不适用该删除规则。
 GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时保留候选并稍后重试，不把“没读到”
 冒充“不兼容”。24 个批次在正常八小时调度下约八天覆盖一轮，无需在候选文件中保存扫描游标。
@@ -130,17 +151,30 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
   2097152 字节（2 MiB）。超过上限时报告会写出实际文件数、总字节和最大文件字节并失败关闭。
   这些是保证完整读取、限制 API/时间消耗并抵御超大输入的审核边界，不是插件运行时内存限制；
   不得通过取消上限或跳过未读源码来获得自动批准；
-- 只有原项目 SemVer 高于商城版本、候选 Commit 是旧 Commit 的有界直接后继，且包名、仓库、
-  manifest 路径、安装路径、Bundle 入口和许可证保持一致时，才进入固定源更新审查；
+- 商城自身仍使用 512 个运行文件、单文件 4 MiB、合计 8 MiB 的有界审查；分表生成的
+  `registry/catalog/details/<插件编号>.json` 已由 Registry schema、摘要和完整性门禁负责，且不是
+  可执行插件源码，因此不占用商城自身的运行源码文件计数。该例外只匹配官方商城仓库的一层
+  `.json` 详情文件；脚本、索引、其他 JSON、嵌套文件和任何其他仓库仍进入源码审查；
+- 原项目 SemVer 高于商城版本，或版本相同但默认分支出现新 Commit 时，候选 Commit 都必须是
+  旧 Commit 的有界直接后继，并在包名、仓库、manifest 路径、安装路径、Bundle 入口和许可证
+  保持一致后进入同一套固定源更新审查；
 - `source-verified` 更新必须继续满足完整低风险自动策略；`user-reviewed` 条目可以自动刷新
   商城中的固定 Commit 和版本号，但真实安装仍逐次执行本机风险审查；`external-only`、blocked
   和 unlisted 条目只刷新可追溯的项目元数据，不会因此获得安装资格；
-- 新版本写入后，旧版本的安装、运行、安全和精确兼容证据全部重置为 `unknown`，不把历史
-  验收沿用到新版本；源码变化但没有提升版本号时只记录异常，不移动 Catalog 固定 Commit；
+- 版本或固定 Commit 写入后，旧来源的安装、运行、安全和精确兼容证据全部重置为 `unknown`，
+  不把历史验收沿用到新来源；同版本源码变化通过完整审查后移动 Catalog 固定 Commit，使未安装
+  用户直接安装新 Commit，并允许新的精确兼容声明恢复可逆下架；已安装相同版本的用户不会获得
+  商城更新计划，只能按界面提示使用 GitHub 完整 Commit 手动覆盖；
 - Catalog 自动 PR 合并后，`catalog-automation.yml` 会绑定已验证的 merge Commit，立即调度并等待
   对应 `pages.yml` Run 成功；无 Catalog 变更时，Pages 仍按三小时窗口第 25 分钟兜底重建；
 - 两台服务器的 systemd timer 仍按三小时窗口第 47 分钟校验清单、哈希、首页与 Catalog，必要时原子切换；
 - `catalog-automation.yml` 直接调用作者通知与所有者报告可复用工作流，所有输入和 Artifact 均绑定当前 Run ID 与 Attempt；
+- 作者通知每轮仍最多新建 10 个外部整改项；已有修复单的更新、源码追踪基线和关闭动作共享
+  500 条有界计划上限，计划生成、维护者解析和实际写入使用同一常量，避免 Catalog 扩大后因旧的
+  100 条解析器上限让成功的自动更新整轮标红；
+- 已进入修复台账的仓库若在通知时已删除、迁移或因法律原因不可用（GitHub 404/410/451），
+  维护者解析仅回退到台账中的仓库所有者名，不让一个失效仓库中断其他通知；403、429、5xx 和
+  网络故障仍失败关闭并留待重试；
 - `catalog-run-report.yml` 立即发布一次按 Catalog Run ID 去重的所有者 `@mention` 报告，不依赖 `workflow_run`；
 - `marketplace-watchdog.yml` 仍按三小时窗口第 55 分钟核验 Catalog 以及 GitHub、Pages、国际站、国内站；补跑时等待精确的新 Run 完成并直接补调用其报告；
 - 上一轮缺失、失败、超过九小时或公共目录不一致时，自动重跑 Catalog 或 Pages；

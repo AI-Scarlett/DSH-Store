@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "planId": "DSH-STORE-SCAN-HISTORY-TAB-20260925",
+  "createdAt": "2026-09-25T14:33:32.111Z",
+  "status": "implemented_local_preview",
+  "authorization": {
+    "type": "user-request",
+    "request": "Add a website tab/page showing scan history and results split into manual and automatic scans.",
+    "scope": "source-only implementation and local validation; no publish, deploy, Catalog/Candidate mutation, workflow dispatch, or author outreach"
+  },
+  "baseCommit": "6ca1fa51ef6192d0bacf740638a57eeea81e9759",
+  "branch": "codex/scan-history-tab",
+  "fileScope": {
+    "modify": [
+      ".github/workflows/pages.yml",
+      "marketplace/index.html",
+      "marketplace/plugins/index.html",
+      "marketplace/community/index.html",
+      "marketplace/standards/index.html",
+      "marketplace/build/index.html",
+      "marketplace/faq/index.html",
+      "marketplace/about/index.html",
+      "marketplace/repair/index.html",
+      "marketplace/dsh-plugins/index.html",
+      "marketplace/dsh-store-guide/index.html",
+      "marketplace/about/deepseek-harness-guide/index.html",
+      "src/automation-status.mjs",
+      "scripts/build-marketplace-static.mjs",
+      "test/automation-status.test.mjs",
+      "test/marketplace-static-build.test.mjs",
+      "package.json"
+    ],
+    "add": [
+      "marketplace/scan-history-nav.js",
+      "marketplace/scans/index.html",
+      "marketplace/scans/scans.css",
+      "marketplace/scans/scans.js",
+      "marketplace/scans/data/manual-baseline-20260925.json"
+    ],
+    "plan": "docs/ops/scan-history-tab-20260925.plan.json"
+  },
+  "preconditions": {
+    "sha256": {
+      ".github/workflows/pages.yml": "bbb2d4e34278dbd3f865f77113b320759a2392cef347a2dcfef32f9d0cb0df30",
+      "marketplace/index.html": "74714baa53557848f43b028bd71b5ed5b10b7ee7944d377ac4543e8f262782f5",
+      "marketplace/plugins/index.html": "4ee623bca7e6db70ad756440b743058916154c1c6890a1b87cfc5ba9a86a9632",
+      "marketplace/community/index.html": "d8f172f9a40e607286e76f0b918769d9ebc06493f0c9b0013faac49a7900ea40",
+      "marketplace/standards/index.html": "9d80d93360a41c959de710b13f2ffdf22cc6d5c0cd613c6dca9dcc5753108b2e",
+      "marketplace/build/index.html": "072a4c1f92330935f9338415b45c017b0f7bcd274c11d233f69b8fc7bc967acc",
+      "marketplace/faq/index.html": "3978c319916c835bc8822e1eba0cbb29d968e1fe8e66265715ede4c7b0647e8d",
+      "marketplace/about/index.html": "89d9f5e2ecaba2caa44aa2d5d6d50e906a322b82b48b5b8b5b7d0a2a4d840393",
+      "marketplace/repair/index.html": "de329face0e4aa53e898e5c5f50216fbc46cdae1c74c414d3570950d317f5193",
+      "marketplace/dsh-plugins/index.html": "7da2155c91d65ab95417af2b08b137c3b898f317e0f2c82277707f370ba93fec",
+      "marketplace/dsh-store-guide/index.html": "dd91b5d7c1afec1bd9c4d42e2c6f412f73c604cb220c46863ee4a5ea3a56998a",
+      "marketplace/about/deepseek-harness-guide/index.html": "78fb4d16edcc266ceb87cf7766a0dec505c69a075b9fdfd6ee0e71b2885c72e9",
+      "src/automation-status.mjs": "8404ea8ec7d4c63144ae0b7406c449f5460550c2187bafecf00ae7bf812dff26",
+      "scripts/build-marketplace-static.mjs": "8ef4ec9901e4d6229e2ef486dc7bd9e7ea37c7d7555c0ad1164e798bd2d5584a",
+      "test/automation-status.test.mjs": "20f7cd2b47584cf1aea1ed1241260624748827a3cd7b080f5d64ebee7a8489f3",
+      "test/marketplace-static-build.test.mjs": "cdaa2e49f8c495debb185824109b7688d7368281e7e65df9e4a3ac8060ad664d",
+      "package.json": "81d7ec844e448e2baca28dd645eebb983df4ab0f350ba3790fbd8e352591bca5"
+    },
+    "absent": [
+      "marketplace/scan-history-nav.js",
+      "marketplace/scans/index.html",
+      "marketplace/scans/scans.css",
+      "marketplace/scans/scans.js",
+      "marketplace/scans/data/manual-baseline-20260925.json",
+      "docs/ops/scan-history-tab-20260925.plan.json"
+    ]
+  },
+  "implementation": {
+    "manualData": "Sanitized aggregate of completed DSH-STORE-MANUAL-BASELINE-13739-20260925; no raw repository scan rows or per-file findings.",
+    "automaticData": "Expose up to eight Catalog automation run summaries already collected by Pages; missing report evidence remains unavailable, never fabricated as zero.",
+    "publicBoundaries": [
+      "scan admission is not Catalog publication",
+      "static scan is not security certification",
+      "no third-party code execution",
+      "automatic run details link to GitHub Actions evidence"
+    ]
+  },
+  "deterministicGates": [
+    "npm run check",
+    "static site build with fixture automatic run/report data",
+    "verify manual dataset counts and scan classifications",
+    "verify generated sitemap and scan page/navigation",
+    "verify unknown report metrics remain null/unavailable"
+  ],
+  "rollback": {
+    "type": "git-revert",
+    "reference": "The feature is isolated on codex/scan-history-tab and will be committed as one local change; revert that commit to restore the pinned base. No production or Profile state changes are included."
+  },
+  "externalEffects": "none",
+  "validationResults": {
+    "preconditions": "PASS: all 17 original-file SHA-256 values match the pinned base Commit; all new paths were absent there.",
+    "scope": "PASS: all modified and added files are within the typed file scope.",
+    "diffCheck": "PASS: git diff --check.",
+    "npmRunCheck": {
+      "status": "PASS",
+      "registry": "REGISTRY_OK entries=722 bridgeBytes=1910550 indexBytes=555613 details=722",
+      "tests": "327 passed, 0 failed"
+    },
+    "staticBuild": "PASS: STATIC_MARKETPLACE_OK; /scans/ canonical, sitemap entry, page assets, and sanitized manual dataset verified.",
+    "localBrowser": {
+      "status": "PASS",
+      "url": "http://127.0.0.1:4176/marketplace/scans/",
+      "checks": [
+        "manual baseline renders in Chinese and English",
+        "manual/automatic accessible tabs switch",
+        "automatic empty state is explicit when no run fixture is supplied",
+        "no missing metric is shown as zero"
+      ]
+    },
+    "externalEffects": "NONE: no workflow dispatched, no Catalog/Candidate write, no author outreach, no third-party code executed, no PR/push/deploy."
+  }
+}

@@ -20,7 +20,7 @@ Catalog 的远端 GitHub `main` 是权威；本地副本或页面缓存只可用
 1. 通过 `dsh-plugin`、`deepseek-harness` 等 GitHub 主题与检索词发现有限数量的新仓库。
 2. 对全部历史 Catalog 条目读取 canonical GitHub 默认分支，并将 manifest 版本与当前固定版本比较。
 3. 新版本只有在完整 Commit 上重新通过身份、许可证、Bundle、入口、依赖、生命周期和权限门禁后，才进入 Catalog 更新 PR。
-4. 从官方 npm Registry 读取最近三个 DSH 完整发布版本；至少兼容其中一个版本才保留可收录资格。已收录但不再满足时会暂时 `unlisted`，候选中同时“其他门禁失败且没有最新三版精确兼容证据”的条目会被清理。
+4. 联合官方 GitHub Releases 与 npm 已发布版本读取当前支持系列最近三个 DSH 完整版本（包括 alpha/beta/rc）；至少兼容其中一个版本才保留可收录资格。已收录但不再满足时会暂时 `unlisted`，候选中同时“其他门禁失败且没有最新三版精确兼容证据”的条目会被清理。
 5. 为插件生成面向普通用户的中文用途信息，并保留英文项目名、包名和搜索词；展示遵循“中文名（English Name）”，搜索仍可使用中文用途、英文名、包名、分类或 GitHub 仓库。
 
 ## 自动准入门禁
@@ -35,6 +35,13 @@ Catalog 的远端 GitHub `main` 是权威；本地副本或页面缓存只可用
 - 无文件、网络、命令、凭据、受保护 DSH 组件或原生可执行文件权限信号。
 
 任何未知、超限、歧义或高风险证据都失败关闭，进入候选、暂缓或阻止状态，而不是降低标准自动上架。
+
+`tool.call.toolview` 是官方支持的扩展槽，出现这个名称本身不等于替换官方组件。
+但当前固定源码文本扫描无法证明 renderer 的作用域和 key 归属，因此单独记录 `toolViews`
+信号并强制保留人工审核门禁；固定的插件 key、官方 key、无 key 和动态 key 均不能自动通过。
+这个门禁不会被权限 allowlist、历史 `user-reviewed` 状态或 self-manager 特例绕过。
+Loader/Fiber 修改和禁用官方包仍属于 `protectedDsh`。只有确定可信的 key 归属证据后，才能
+另行设计合法 keyed renderer 的自动豁免；本规则不承诺恢复任何现有条目的上架状态。
 
 ## 写入与发布
 
@@ -58,3 +65,13 @@ Catalog 工作流在扫描 Job 结束后，直接以可复用 Job 调用 `author
 补跑前的旧扫描。报告工作流按 Catalog Run ID 幂等，Catalog 内联报告已成功时补调用会安全跳过；内联
 报告失败时则完成恢复。发现公开页面陈旧时仍会重跑 Pages 构建。只有补跑最终失败、报告恢复失败或
 公开面仍失败时看门狗才标红。每次报告列出新增数量、历史插件更新数量、清单、作者通知量和公共表面状态。
+
+## Global author contact rule
+
+Author outreach follows the immutable GitHub person ID across every repository.
+Historical messages consume the single initial-contact slot. A new project, changed
+source, rename, retry, reopened or closed Issue never grants another message.
+Further communication requires a reviewed explicit positive request, consumed
+once for that request; thanks, emoji and source updates are not consent. Stops
+override older consent. Automated and manual senders share the central contact
+ledger and reserve before sending. See [the current policy](https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/README.md#作者整改通知).

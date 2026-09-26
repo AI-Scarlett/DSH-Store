@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "scanId": "DSH-STORE-MANUAL-BASELINE-13739-20260925",
+  "observedAt": "2026-09-25T13:55:19.272Z",
+  "complete": true,
+  "source": {
+    "repository": "bruc3van/awesome-dsh-plugin",
+    "commit": "98025d666ef076dfead0ec0567626a2dd033b5c3",
+    "sourceCount": 13739,
+    "processedCount": 13739,
+    "unverifiedCount": 191
+  },
+  "storeBaseCommit": "6acad2c6729a26d43c38cc1686fe49609c85415f",
+  "dsh": {
+    "latestThree": ["0.1.7-alpha.2", "0.1.7-rc.1", "0.1.7-rc.2"]
+  },
+  "classificationCounts": {
+    "store-auto-eligible": 3,
+    "candidate-review-noninstallable": 13045,
+    "rejected-hard-gate": 500,
+    "unverified-deferred": 191
+  },
+  "packageCounts": {
+    "dshBundles": 13056,
+    "candidateReviewNoninstallable": 13053,
+    "storeAutoEligible": 3
+  },
+  "blockerCountsMayOverlap": [
+    { "code": "no-exact-compatible-result-in-latest-three", "count": 11618 },
+    { "code": "node-compatibility-missing", "count": 6137 },
+    { "code": "dsh-compatibility-range-missing", "count": 5488 },
+    { "code": "manifest-repository-does-not-match", "count": 4946 },
+    { "code": "runtime-or-optional-dependencies-present", "count": 3834 },
+    { "code": "scan-catalog-id-collision", "count": 2751 },
+    { "code": "scan-entry-id-collision", "count": 2740 },
+    { "code": "scan-package-collision", "count": 1706 },
+    { "code": "install-lifecycle-scripts-present", "count": 1489 },
+    { "code": "no-dsh-bundle-patch", "count": 1416 }
+  ],
+  "catalogOverlap": {
+    "repositoriesWithCatalog": 508,
+    "repositoriesWithCandidates": 419,
+    "repositoriesInBoth": 324
+  },
+  "eligiblePackages": [
+    {
+      "packageName": "@oksure/dsh-client-ui-mobile-comfort",
+      "version": "0.1.3",
+      "repository": "oksure/dsh-mobile-comfort",
+      "commit": "6a17e2fbb3fd7dab6436db67addcd2b2b9d0b079",
+      "entryIds": ["ui-mobile-comfort"],
+      "compatibleDshReleases": ["0.1.7-rc.2"]
+    },
+    {
+      "packageName": "dsh-streamfold",
+      "version": "0.5.1",
+      "repository": "rezon-aki/dsh-streamfold",
+      "commit": "d00a44bf5fe8178aa7e7ec38f0fd57d07dde6440",
+      "entryIds": ["dsh-streamfold"],
+      "compatibleDshReleases": ["0.1.7-rc.1", "0.1.7-rc.2"]
+    },
+    {
+      "packageName": "dsh-progress-secretary",
+      "version": "0.7.3",
+      "repository": "zpda88888a88888-debug/dsh-progress-secretary",
+      "commit": "3cfd7f644e2ca899a1556c7671035ca57949c4c7",
+      "entryIds": ["progress-secretary"],
+      "compatibleDshReleases": ["0.1.7-rc.1"]
+    }
+  ],
+  "limitations": [
+    "Classification is a fixed-Commit source-admission result, not a DSH installation, runtime, UI, or security-audit result.",
+    "Blocker counts overlap and must not be summed.",
+    "The three eligible packages passed bounded static gates only; this scan did not write Catalog or Candidate Registry.",
+    "Raw per-repository scan rows and file-level findings are intentionally not published."
+  ]
+}

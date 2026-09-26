@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "operation": "enforce-global-once-per-github-person-contact",
+  "authorization": "explicit-user-request-2026-09-07",
+  "baseCommit": "5ed2894e11af9f14112c82a6ae917522562c7672",
+  "allowedFiles": [
+    "AGENTS.md",
+    "registry/README.md",
+    "docs/wiki/Catalog-Automation.md",
+    "registry/author-contact-policy.json",
+    "registry/author-contact-history.json",
+    "scripts/author-contact-state.mjs",
+    "scripts/author-contact-http.mjs",
+    "scripts/plan-author-notices.mjs",
+    "scripts/apply-author-notice-plan.mjs",
+    "scripts/resolve-author-notice-targets.mjs",
+    "scripts/reply-author-contact.mjs",
+    "scripts/send-submission-result.mjs",
+    "scripts/render-catalog-automation-notification.mjs",
+    ".github/workflows/author-notifications.yml",
+    ".github/workflows/plugin-submission.yml",
+    ".github/workflows/catalog-automation.yml",
+    "test/author-contact-policy.test.mjs",
+    "test/plugin-submission.test.mjs",
+    "test/catalog-automation.test.mjs",
+    "docs/ops/author-contact-once-plan-20260907.json",
+    "test/catalog-notification.test.mjs"
+  ],
+  "preconditionSha256": {
+    "AGENTS.md": "c755f7e61dd3547f60fdf01c79a27f16e3c3f13b4cff2079aeeee5fb82bdd4ed",
+    "registry/README.md": "39df8b60abf50da158120b575c3b034afbd93e2a4d4adec5280d0bec0592fd06",
+    "docs/wiki/Catalog-Automation.md": "6c5d292e5f933b56657f744fa26d81821480bc34ed817a0c2916f678e33f472a",
+    "registry/author-contact-policy.json": null,
+    "registry/author-contact-history.json": null,
+    "scripts/author-contact-state.mjs": null,
+    "scripts/author-contact-http.mjs": null,
+    "scripts/plan-author-notices.mjs": "f53c4b550917ceb167984001b5abaecf49ee6ae3f9f6b2bc7a20b7dacd867ab7",
+    "scripts/apply-author-notice-plan.mjs": "9de7c0078be064fd8b4b4acb60e649ae8ba634f0986827715ba23b9edb3338c2",
+    "scripts/resolve-author-notice-targets.mjs": "e0488974b0b977c868fc33eee29286bad1fb5eba9f3f8e5f75a51699036ef1e1",
+    "scripts/reply-author-contact.mjs": null,
+    "scripts/send-submission-result.mjs": null,
+    "scripts/render-catalog-automation-notification.mjs": "d360975d839bace6ca5783fd17d67994bd10a0f6bb5175251c2f99bc9e1e1a97",
+    ".github/workflows/author-notifications.yml": "7f0815fb924da45900793cdd5ef1530e771fc1b671c5101c0ac686af803728fc",
+    ".github/workflows/plugin-submission.yml": "08e0e3017bc9dfa8cc663b84310e8e19ea69fe72de29523e822fed2efabc27dc",
+    ".github/workflows/catalog-automation.yml": "5c5a16f25ad86082e27da7e581a99adf641cc811c2274db6f64f4d01ac6f2457",
+    "test/author-contact-policy.test.mjs": null,
+    "test/plugin-submission.test.mjs": "87b7cff4fff8cc461bcfcc96136e72f7a4ba309918790806aa18ce9d9c5964eb",
+    "test/catalog-automation.test.mjs": "d430dfa8ce628226a958d1d36cc946c9721bdbc3bb647d4778780286dbdc845a",
+    "docs/ops/author-contact-once-plan-20260907.json": null,
+    "test/catalog-notification.test.mjs": "39ab2948960a835093603a766e75ddd7b9b605ccd1d36cf2d658549ae3cf3fde"
+  },
+  "policy": {
+    "immutableUserId": true,
+    "crossRepository": true,
+    "historicalImportRequired": true,
+    "reserveBeforeSend": true,
+    "retryMutation": false,
+    "automatedFollowups": false,
+    "continuation": "main-reviewed-explicit-new-request-consumed-once",
+    "ambiguousIdentity": "no-contact"
+  },
+  "operationalState": {
+    "branch": "author-contact-state",
+    "path": "contacts.json",
+    "mutation": "GitHub Contents compare-and-swap, append-only reservations before sending",
+    "rollback": "disable notification entry points; never delete or revert contacts or reservations",
+    "initialization": "orphan state branch containing only the CI-reviewed history seed; read back exact contents before enabling senders"
+  },
+  "verification": [
+    "npm run check",
+    "history coverage and opt-out import",
+    "parallel reservation test",
+    "rename and multiple repository deduplication",
+    "CI checked source PR",
+    "read back main and live ledger",
+    "read-only replay of all historical recipients; no test messages"
+  ],
+  "boundaries": {
+    "thirdPartyCodeExecution": false,
+    "dshProfileMutation": false,
+    "outboundAuthorTestMessages": false
+  },
+  "historyImport": {
+    "people": 243,
+    "stoppedPeople": 8,
+    "consumedHistoricalRequests": 61,
+    "historySha256": "1e29fb7a597c109cf635740eb10f9965f0f3e97bb0346f1973318438c95c85f0",
+    "historicalRepositories": 272
+  }
+}

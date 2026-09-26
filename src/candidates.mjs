@@ -3,6 +3,10 @@ import { readFile } from 'node:fs/promises'
 const SIMPLE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const MAX_CANDIDATE_BYTES = 5 * 1024 * 1024
+// Feed provenance carries a fixed Commit, bounded source path, content hash,
+// observation time, and owner identity. Keep it intact for auditability while
+// still bounding the field independently from short display labels/topics.
+const MAX_DISCOVERY_SOURCE_LENGTH = 512
 const FORBIDDEN_INSTALL_FIELDS = ['packageName', 'manifestPath', 'installPath', 'entryIds', 'compatibility', 'details', 'risk', 'updatePolicy']
 
 export const DEFAULT_CANDIDATES_URL =
@@ -22,9 +26,9 @@ function isoDate(value, label, nullable = false) {
   return new Date(text).toISOString()
 }
 
-function stringArray(value, label, minimum = 0) {
+function stringArray(value, label, minimum = 0, max = 160) {
   if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`)
-  const normalized = [...new Set(value.map((item, index) => nonEmptyString(item, `${label}[${index}]`, 160)))]
+  const normalized = [...new Set(value.map((item, index) => nonEmptyString(item, `${label}[${index}]`, max)))]
   if (normalized.length < minimum) throw new TypeError(`${label} must contain at least ${minimum} value`)
   return normalized
 }
@@ -57,7 +61,7 @@ function validateCandidate(value, index) {
     latestCommit,
     sourceUpdatedAt: isoDate(value.sourceUpdatedAt, `entries[${index}].sourceUpdatedAt`, true),
     discoveredAt: isoDate(value.discoveredAt, `entries[${index}].discoveredAt`),
-    discoverySources: stringArray(value.discoverySources, `entries[${index}].discoverySources`, 1),
+    discoverySources: stringArray(value.discoverySources, `entries[${index}].discoverySources`, 1, MAX_DISCOVERY_SOURCE_LENGTH),
     topics: stringArray(value.topics ?? [], `entries[${index}].topics`),
     status,
     route,

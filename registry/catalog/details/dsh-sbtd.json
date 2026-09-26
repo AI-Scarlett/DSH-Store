@@ -1,0 +1,220 @@
+{
+  "id": "dsh-sbtd",
+  "name": "会话管理（DSH Sbtd）",
+  "packageName": "@kunolu/dsh-sbtd",
+  "description": "DSH 宿主上的 SBTD workflow 适配器。当前为 T6：注册短中文 sbtd section、进程内会话状态、`sbtd_plan`、`sbtd_review`、`sbtd_clarify`、`tools/pre-execute` / `agent/pre-step` hooks 门禁，以及从 640-skills 只读同步的 `manuals/`。",
+  "searchTerms": [
+    "会话管理",
+    "DSH Sbtd",
+    "dsh-sbtd",
+    "@kunolu/dsh-sbtd",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "工作流",
+    "自动化",
+    "任务",
+    "dsh",
+    "sbtd"
+  ],
+  "repositoryUrl": "https://github.com/KunoLu/sbtd-plugins",
+  "defaultBranch": "main",
+  "manifestPath": "packages/dsh-sbtd/package.json",
+  "installPath": "packages/dsh-sbtd",
+  "updatePolicy": "external-only",
+  "commit": "7a2cc6737e189d71c74eb3d36d068edb15f173f3",
+  "version": "0.1.0-rc.3",
+  "categories": [
+    "workflow"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-19T02:09:48.000Z",
+    "observedAt": "2026-09-19T03:35:43.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-19T03:35:43.000Z",
+      "evidenceUrl": "https://github.com/KunoLu/sbtd-plugins/commit/7a2cc6737e189d71c74eb3d36d068edb15f173f3",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "sbtd"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.1.5-rc.2": "unknown",
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown",
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown",
+      "0.1.7-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "Apache-2.0",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

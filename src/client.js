@@ -6,6 +6,7 @@ window.__ModuleLoader__.load({
     const { Modal } = require('@deepseek-ai/dsh-client-ui-primitives')
     const { useCallback, useEffect, useMemo, useRef, useState } = React
     const ROUTES = {
+      operations: '/api2/dsh-safe-plugin-manager/operations',
       inventory: '/api2/dsh-safe-plugin-manager/inventory',
       market: '/api2/dsh-safe-plugin-manager/market',
       health: '/api2/dsh-safe-plugin-manager/health',
@@ -50,6 +51,13 @@ window.__ModuleLoader__.load({
         error.code = payload?.error?.code || 'REQUEST_FAILED'
         throw error
       }
+      return payload.value
+    }
+
+    async function readOperations(id = null) {
+      const response = await fetch(ROUTES.operations + (id ? `?id=${encodeURIComponent(id)}` : ''), { cache: 'no-store' })
+      const payload = await response.json()
+      if (!response.ok || !payload.ok) throw new Error('无法读取操作进度；请刷新后查看记录，勿重复执行。')
       return payload.value
     }
 
@@ -722,6 +730,7 @@ window.__ModuleLoader__.load({
           profiles: Array.isArray(compatibility.profiles) ? compatibility.profiles : [],
         },
         details: {
+          screenshots: declaredDetails.screenshots || [],
           pluginType: declaredDetails.pluginType || 'unknown',
           installSource: declaredDetails.installSource || 'unknown',
           license: declaredDetails.license || 'UNKNOWN',
@@ -775,7 +784,7 @@ window.__ModuleLoader__.load({
       }, children)
     }
 
-    function CatalogFilters({ query, category, categoryIds, categoryLabels, featuredOnly, showFeatured, onQueryChange, onCategoryChange, onFeaturedChange }) {
+    function CatalogFilters({ query, category, categoryIds, categoryLabels, featuredOnly, showFeatured, onQueryChange, onCategoryChange, onFeaturedChange, compatibleWith, currentVersion, onCompatibilityChange }) {
       return React.createElement('div', { style: styles.toolbar },
         React.createElement('input', {
           type: 'search', value: query, onChange: event => onQueryChange(event.target.value),
@@ -787,6 +796,7 @@ window.__ModuleLoader__.load({
         },
         React.createElement('option', { value: '' }, '全部分类'),
         categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))),
+        currentVersion ? React.createElement(Button, { compact: true, primary: Boolean(compatibleWith), onClick: () => onCompatibilityChange(compatibleWith ? '' : currentVersion) }, compatibleWith ? `DSH ${compatibleWith} 兼容 · 显示全部` : `只看兼容 DSH ${currentVersion}`) : null,
         showFeatured ? React.createElement(Button, {
           compact: true, primary: featuredOnly, ariaPressed: featuredOnly,
           onClick: () => onFeaturedChange(!featuredOnly),
@@ -894,13 +904,14 @@ window.__ModuleLoader__.load({
             : entry.sourceUpdate?.status === 'update-blocked' ? '源更新无法验证'
           : entry.status === 'blocked' ? '商城不可安装'
         : entry.migrationAvailable ? (entry.updateAvailable ? '可迁移并更新' : '可迁移到商城')
+          : entry.manualSourceUpdate ? '同版本源码已更新 · GitHub 手动更新'
           : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
       const origin = entry.installOrigin === 'marketplace-managed' ? '商城安装'
         : entry.installOrigin === 'catalog-source-matched' ? '目录来源匹配 · 渠道未知'
           : entry.installOrigin === 'local-development' ? '本地开发安装'
             : entry.installOrigin === 'external-or-drifted' ? '外部安装 / 来源漂移' : null
       const stateTone = entry.status === 'blocked' ? 'var(--dsw-alias-state-error-primary)'
-        : entry.updateAvailable || entry.migrationAvailable ? 'var(--dsw-alias-label-primary)'
+        : entry.updateAvailable || entry.migrationAvailable || entry.manualSourceUpdate ? 'var(--dsw-alias-label-primary)'
           : entry.installed ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)'
       const titleId = `dsh-store-plugin-${entry.id}`
       return React.createElement('article', { style: styles.card, role: 'listitem', 'aria-labelledby': titleId },
@@ -921,6 +932,7 @@ window.__ModuleLoader__.load({
           Number.isInteger(entry.installCount) ? React.createElement('span', { style: styles.badge }, `累计安装 ${entry.installCount}`) : null),
         React.createElement(AssuranceMatrix, { entry }),
         React.createElement(CompatibilityMatrix, { entry }),
+        React.createElement('div', { style: styles.muted }, entry.activation ? `生效状态：${{ live: '运行中', restart: '等待重启', inert: '未加载', broken: '加载失败', missing: '文件缺失', disabled: '已禁用', unknown: '未知' }[entry.activation.status] || '未知'}` : ''),
         entry.risk.installScripts.length > 0
           ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join(', ')}`)
           : null,
@@ -928,17 +940,25 @@ window.__ModuleLoader__.load({
           ? React.createElement('div', { style: styles.error }, entry.sourceUpdate.reasons.join('；'))
           : entry.sourceUpdate?.status === 'current'
             ? React.createElement('div', { style: styles.notice }, entry.sourceUpdate.sameVersionSourceChange
-              ? '源仓库有同版本提交；当前安装版本无需更新，商城不会把目录或文档提交当作插件升级。'
+              ? (entry.sourceUpdate.catalogReviewed
+                ? 'Catalog 已固定同版本的新 Commit；商城不会覆盖已安装副本，请使用下方 GitHub 固定 Commit 手动更新。'
+                : '源仓库有尚未进入 Catalog 的同版本提交；等待固定源自动审核，商城不会生成同版本更新计划。')
               : '已在本机按需检查 GitHub 源仓库，当前没有可用的新 Commit。')
             : entry.sourceUpdate?.status === 'error'
               ? React.createElement('div', { style: styles.error }, `${entry.sourceUpdate.code}：${entry.sourceUpdate.message}`)
               : null,
+        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+          React.createElement('div', null, entry.manualSourceUpdate.reason),
+          React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, '手动更新不受商城计划、备份、健康检查和失败回滚保护。')) : null,
         React.createElement(SourceDiffSummary, { update: entry.sourceUpdate }),
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('div', { style: styles.actions },
             React.createElement(PluginActions, { entry, health, beginPlan, checkSource }),
-            entry.status === 'blocked' || entry.sourceUpdate?.status === 'external-only'
-              ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub（不受商城保护）')
+            entry.manualSourceUpdate
+              ? React.createElement('a', { href: entry.manualSourceUpdate.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看同版本固定 Commit')
+              : entry.status === 'blocked' || entry.sourceUpdate?.status === 'external-only'
+                ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub（不受商城保护）')
               : null),
           React.createElement('div', { style: styles.detailAction },
             React.createElement(Button, { compact: true, onClick: () => openDetails(entry), ariaLabel: `查看 ${entry.name} 详情` }, '查看详情'))))
@@ -966,6 +986,42 @@ window.__ModuleLoader__.load({
         React.createElement('dd', { style: { ...styles.detailValue, ...(code ? styles.code : {}) } }, value))
     }
 
+    function PersonalNotes({ entry }) {
+      const key = `dsh-safe-plugin-manager:notes:v1:${entry.repositoryUrl}:${entry.packageName}`
+      const [value, setValue] = useState(() => { try { const raw = window.localStorage.getItem(key) || '{}'; const parsed = raw.length <= 4096 ? JSON.parse(raw) : {}; return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {} } catch { return {} } })
+      const [error, setError] = useState('')
+      const save = next => { setValue(next); try { window.localStorage.setItem(key, JSON.stringify(next)); setError('') } catch { setError('本地保存失败') } }
+      return React.createElement('div', { style: styles.detailSection },
+        React.createElement(Button, { onClick: () => save({ ...value, favorite: !value.favorite }) }, value.favorite ? '已收藏 · 取消收藏' : '收藏插件'),
+        React.createElement('textarea', { 'aria-label': '个人备注', placeholder: '个人备注，仅保存于本机浏览器', maxLength: 1000, value: typeof value.note === 'string' ? value.note : '', onChange: event => save({ ...value, note: event.target.value.slice(0, 1000) }), style: styles.input }),
+        error ? React.createElement('div', { role: 'alert' }, error) : null)
+    }
+    function VerifiedScreenshots({ entry }) {
+      const [images, setImages] = useState([])
+      useEffect(() => {
+        const controller = new AbortController(); const urls = []
+        void (async () => {
+          for (const shot of (entry.details.screenshots || []).slice(0, 3)) {
+            try {
+              if (!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(entry.repositoryUrl) || !/^[a-f0-9]{40}$/.test(entry.commit)) continue
+              if (!/^[A-Za-z0-9_./-]+\.(png|jpg|jpeg|webp)$/.test(shot.path) || shot.path.startsWith('/') || shot.path.split('/').some(part => !part || part === '.' || part === '..')) continue
+              const url = entry.repositoryUrl.replace('github.com', 'raw.githubusercontent.com') + '/' + entry.commit + '/' + shot.path
+              const response = await fetch(url, { credentials: 'omit', redirect: 'error', signal: controller.signal, referrerPolicy: 'no-referrer' })
+              if (!response.ok || !/^image\/(png|jpeg|webp)(;|$)/.test(response.headers.get('content-type') || '')) continue
+              const reader = response.body.getReader(); const chunks = []; let total = 0
+              try { while (true) { const { done, value } = await reader.read(); if (done) break; total += value.length; if (total > 2 * 1024 * 1024) throw new Error('image too large'); chunks.push(value) } } finally { await reader.cancel() }
+              const blob = new Blob(chunks, { type: response.headers.get('content-type') })
+              const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256', await blob.arrayBuffer()))].map(value => value.toString(16).padStart(2, '0')).join('')
+              if (digest !== shot.sha256 || controller.signal.aborted) continue
+              urls.push(URL.createObjectURL(blob)); setImages([...urls])
+            } catch { /* Unverifiable assets remain hidden. */ }
+          }
+        })()
+        return () => { controller.abort(); urls.forEach(url => URL.revokeObjectURL(url)) }
+      }, [entry.commit, entry.repositoryUrl])
+      return React.createElement('div', null, images.map(url => React.createElement('img', { key: url, src: url, alt: `${entry.name} 插件截图`, style: { maxWidth: '100%' } })))
+    }
+
     function PluginDetailsModal({ entry, categoryLabels, health, beginPlan, close }) {
       if (!entry) return null
       const permissions = entry.details.permissions
@@ -991,6 +1047,8 @@ window.__ModuleLoader__.load({
           React.createElement('span', { style: styles.badge }, status),
           React.createElement('span', { style: styles.badge }, installed),
           ...(entry.categories || []).map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id))),
+        React.createElement(PersonalNotes, { key: entry.id, entry }),
+        React.createElement(VerifiedScreenshots, { key: `${entry.id}:${entry.commit}`, entry }),
         React.createElement('h3', { style: styles.detailHeading }, '基本信息'),
         React.createElement('dl', { style: styles.detailGrid },
           React.createElement(DetailRow, { label: '包名', value: entry.packageName, code: true }),
@@ -1041,6 +1099,12 @@ window.__ModuleLoader__.load({
           ? React.createElement('div', { style: styles.notice }, '当前 GitHub Catalog 详情文件尚未提供完整字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
           : null,
         entry.statusReason ? React.createElement('div', { style: styles.error }, `策略说明：${entry.statusReason}`) : null,
+        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+          React.createElement('div', { style: styles.name }, '同版本源码更新：仅限 GitHub 手动操作'),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, entry.manualSourceUpdate.reason),
+          React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
+          React.createElement('a', { href: entry.manualSourceUpdate.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '打开 Catalog 固定 Commit'),
+          React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, '该命令绕过商城事务保护；执行前应自行备份 Profile。')) : null,
         entry.status === 'blocked'
           ? React.createElement('div', { style: styles.notice }, '可前往 GitHub 阅读项目说明并自行决定是否手动安装；手动安装不受本商城的计划、备份、健康检查和失败回滚保护。')
           : null,
@@ -1182,7 +1246,7 @@ window.__ModuleLoader__.load({
           result.status === 'applied' && result.restartRequired
             ? React.createElement(Button, { primary: true, onClick: beginRestart }, '一键安全重启 DSH Host') : null)
         return React.createElement(Modal, {
-          open: true, onClose: cancel, title: result.status === 'applied' ? '操作已应用' : '操作失败并已触发回滚',
+          open: true, onClose: cancel, title: result.status === 'applied' ? '操作已应用' : result.status === 'rolled-back' ? '操作失败，已回滚' : result.status === 'recovery-required' ? '操作失败，需要恢复' : '操作失败',
           closeLabel: '关闭操作结果', footer,
           className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
         }, React.createElement('div', { style: styles.detailSection },
@@ -1308,6 +1372,28 @@ window.__ModuleLoader__.load({
         React.createElement('input', { value: confirmation, onChange: event => setConfirmation(event.target.value), style: styles.input, placeholder: '精确输入确认语' })))
     }
 
+    function OperationHistory({ revision }) {
+      const [records, setRecords] = useState([])
+      const [error, setError] = useState('')
+      useEffect(() => {
+        let cancelled = false; let timer
+        const refresh = async () => {
+          try {
+            const value = await readOperations()
+            if (!cancelled) { setRecords(value); setError('') }
+            if (!cancelled && value.some(row => ['queued', 'running'].includes(row.state))) timer = setTimeout(refresh, 1500)
+          } catch (err) { if (!cancelled) setError(err.message) }
+        }
+        void refresh()
+        return () => { cancelled = true; clearTimeout(timer) }
+      }, [revision])
+      return React.createElement('details', { style: styles.notice },
+        React.createElement('summary', null, '操作记录与恢复状态'),
+        error ? React.createElement('div', { role: 'alert' }, error) : null,
+        records.slice(0, 12).map(row => React.createElement('div', { key: row.id },
+          `${row.packageName} · ${{ queued: '等待执行', running: '执行及健康检查中', succeeded: '已完成', failed: '失败', 'rolled-back': '已回滚', 'recovery-required': '需要恢复' }[row.state]} · ${row.createdAt}`)))
+    }
+
     function ManagerPanel() {
       const [view, setView] = useState('market')
       const [query, setQuery] = useState('')
@@ -1316,12 +1402,15 @@ window.__ModuleLoader__.load({
       const [featuredOnly, setFeaturedOnly] = useState(false)
       const [page, setPage] = useState(1)
       const [state, setState] = useState({ status: 'loading' })
+      const [activations, setActivations] = useState({})
+      const [compatibleWith, setCompatibleWith] = useState('')
       const [marketLoading, setMarketLoading] = useState(false)
       const [marketError, setMarketError] = useState('')
       const marketRequestId = useRef(0)
       const sourceAutoScanned = useRef(new Set())
       const [confirmation, setConfirmation] = useState('')
       const [operation, setOperation] = useState({ status: 'idle' })
+      useEffect(() => { let cancelled = false; if (state.status === 'ready') void post('/api2/dsh-safe-plugin-manager/activation').then(rows => { if (!cancelled) setActivations(Object.fromEntries(rows.map(row => [row.packageName, row]))) }).catch(() => {}); return () => { cancelled = true } }, [state.status, operation.status])
       const [sourceUpdates, setSourceUpdates] = useState({})
       const [detailEntry, setDetailEntry] = useState(null)
       const [permissionDecisions, setPermissionDecisions] = useState(() => readHealthPermissionDecisions())
@@ -1345,6 +1434,7 @@ window.__ModuleLoader__.load({
             query: marketOptions.query ?? '',
             category: marketOptions.category ?? '',
             featuredOnly: marketOptions.featuredOnly === true,
+            compatibleWith: marketOptions.compatibleWith || '',
           }
           const [inventory, market, health, runtime, guardian] = await Promise.all([
             post(ROUTES.inventory), post(ROUTES.market, marketBody),
@@ -1388,14 +1478,14 @@ window.__ModuleLoader__.load({
         const current = state.market.pagination
         if (current?.view === view && current.page === page && current.pageSize === MARKET_PAGE_SIZE
           && current.query === debouncedQuery && current.category === requestedCategory
-          && current.featuredOnly === (view === 'market' && featuredOnly)) return undefined
+          && (current.compatibleWith || '') === compatibleWith && current.featuredOnly === (view === 'market' && featuredOnly)) return undefined
         const requestId = ++marketRequestId.current
         let cancelled = false
         setMarketLoading(true)
         setMarketError('')
         void post(ROUTES.market, {
           view, page, pageSize: MARKET_PAGE_SIZE, query: debouncedQuery, category: requestedCategory,
-          featuredOnly: view === 'market' && featuredOnly,
+          featuredOnly: view === 'market' && featuredOnly, compatibleWith,
         }).then(market => {
           if (cancelled || requestId !== marketRequestId.current) return
           setState(currentState => currentState.status === 'ready' ? { ...currentState, market } : currentState)
@@ -1406,7 +1496,7 @@ window.__ModuleLoader__.load({
           if (!cancelled && requestId === marketRequestId.current) setMarketLoading(false)
         })
         return () => { cancelled = true }
-      }, [category, debouncedQuery, featuredOnly, page, state.status, view])
+      }, [category, debouncedQuery, featuredOnly, compatibleWith, page, state.status, view])
 
       const refreshDshVersion = useCallback(async () => {
         setVersionChecking(true); setVersionFeedback('')
@@ -1414,7 +1504,7 @@ window.__ModuleLoader__.load({
           const dshVersion = await post(ROUTES.dshVersion, { refresh: true })
           const market = await post(ROUTES.market, {
             view, page, pageSize: MARKET_PAGE_SIZE, query: debouncedQuery, category: view === 'candidates' ? '' : category,
-            featuredOnly: view === 'market' && featuredOnly,
+            featuredOnly: view === 'market' && featuredOnly, compatibleWith,
           }).catch(() => null)
           setState(current => {
             if (current.status !== 'ready') return current
@@ -1431,7 +1521,7 @@ window.__ModuleLoader__.load({
             dshVersion: { status: 'unavailable', errorCode: error?.code || 'DSH_VERSION_FAILED', message: String(error?.message || error) },
           } : current)
         } finally { setVersionChecking(false) }
-      }, [category, debouncedQuery, featuredOnly, page, view])
+      }, [category, debouncedQuery, featuredOnly, compatibleWith, page, view])
 
       const copyUpgradeCommand = useCallback(async () => {
         const command = state.status === 'ready' ? state.dshVersion?.upgrade?.commandText : ''
@@ -1467,8 +1557,8 @@ window.__ModuleLoader__.load({
         if (state.status !== 'ready') return []
         return state.market.entries
           .map(entry => normalizeMarketEntry(entry, state.market.dshReleaseContext))
-          .map(entry => ({ ...entry, sourceUpdate: sourceUpdates[entry.id] ?? null }))
-      }, [sourceUpdates, state])
+          .map(entry => ({ ...entry, activation: activations[entry.packageName], sourceUpdate: sourceUpdates[entry.id] ?? null }))
+      }, [sourceUpdates, state, activations])
 
       const candidateEntries = useMemo(() => {
         if (state.status !== 'ready' || state.market.pagination?.view !== 'candidates') return []
@@ -1505,7 +1595,7 @@ window.__ModuleLoader__.load({
 
       const pagination = state.status === 'ready' ? state.market.pagination : null
       const expectedCategory = view === 'candidates' ? '' : category
-      const pageReady = pagination?.view === view && pagination.page === page
+      const pageReady = (pagination?.compatibleWith || '') === compatibleWith && pagination?.view === view && pagination.page === page
         && pagination.query === debouncedQuery && pagination.category === expectedCategory
         && pagination.featuredOnly === (view === 'market' && featuredOnly)
       const entries = pageReady ? normalizedEntries : []
@@ -1514,8 +1604,8 @@ window.__ModuleLoader__.load({
         page,
         query: debouncedQuery,
         category: view === 'candidates' ? '' : category,
-        featuredOnly: view === 'market' && featuredOnly,
-      }), [category, debouncedQuery, featuredOnly, page, view])
+        featuredOnly: view === 'market' && featuredOnly, compatibleWith,
+      }), [category, debouncedQuery, featuredOnly, compatibleWith, page, view])
 
       const beginPlan = useCallback(async (action, entry) => {
         setConfirmation('')
@@ -1544,7 +1634,12 @@ window.__ModuleLoader__.load({
         const plan = operation.value
         setOperation({ status: 'executing', value: plan })
         try {
-          const value = await post(ROUTES.execute, { planId: plan.planId, confirmation }, 'execute')
+          let record = await post(ROUTES.execute, { planId: plan.planId, confirmation }, 'execute')
+          while (['queued', 'running'].includes(record.state)) {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            record = await readOperations(record.id)
+          }
+          const value = record.result ?? { transactionId: record.id, status: record.state, restartRequired: false }
           if (value.status === 'applied' && value.restartRequired) {
             const pending = storePendingRestart(value)
             setPendingRestart(pending)
@@ -1619,14 +1714,15 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.versionBox, 'aria-label': 'DSH 版本与升级' },
           React.createElement('span', {
             style: styles.versionPill,
-            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH 与 npm 官方稳定版和预发布通道',
+            title: dshVersion?.upgrade?.reason || dshVersion?.message || '检测当前 DSH、官方 GitHub Release 与 npm 发行记录',
           }, versionLabel),
           React.createElement(Button, { compact: true, disabled: versionChecking, onClick: refreshDshVersion },
             versionChecking ? '检测中…' : '检测升级'),
-          dshVersion?.updateAvailable ? React.createElement(Button, {
+          dshVersion?.updateAvailable && dshVersion?.upgrade?.commandText ? React.createElement(Button, {
             compact: true, primary: true, onClick: copyUpgradeCommand,
             title: dshVersion.upgrade.reason,
           }, '复制升级命令') : null,
+          dshVersion?.npmAvailable === false ? React.createElement('span', { style: styles.muted }, '新版已发布，npm 包待发布') : null,
           dshVersion?.releaseUrl ? React.createElement('a', {
             href: dshVersion.releaseUrl, target: '_blank', rel: 'noreferrer', style: styles.link,
           }, '官方 Release') : null,
@@ -1648,6 +1744,7 @@ window.__ModuleLoader__.load({
       const categoryIds = state.status === 'ready' ? state.market.filters?.categoryIds || [] : []
       const categoryLabels = state.status === 'ready' ? state.market.registry.categories || {} : {}
       const filters = React.createElement(CatalogFilters, {
+        compatibleWith, currentVersion: state.dshVersion?.currentVersion, onCompatibilityChange: value => { setCompatibleWith(value); setPage(1) },
         query, category, categoryIds, categoryLabels, featuredOnly, showFeatured: view === 'market',
         onQueryChange: value => { setQuery(value); setPage(1) },
         onCategoryChange: value => { setCategory(value); setPage(1) },
@@ -1772,6 +1869,7 @@ window.__ModuleLoader__.load({
           React.createElement('p', { style: { ...styles.muted, margin: '8px 0 0' } },
             '本机只检查已安装插件并固定完整 Commit：低风险生成计划，高风险展示变化后由用户决定；修改 DSH 原生代码、冒用官方命名空间或停用受保护组件时禁止商城安装/更新。不会直接安装浮动 main，也不依赖服务端巡检全部仓库。')),
         guardianBanner, restartBanner, content,
+        React.createElement(OperationHistory, { revision: operation.status }),
         React.createElement(PlanPanel, { operation, confirmation, setConfirmation, execute, retryPlan, cancel, beginRestart }),
         React.createElement(RestartModal, {
           operation: restartOperation, confirmation: restartConfirmation, setConfirmation: setRestartConfirmation,

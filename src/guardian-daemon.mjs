@@ -33,7 +33,7 @@ function listening(host, port) {
   })
 }
 
-function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, maxBytes = 65_536 }) {
+function httpExchange({ host, port, path, method = 'GET', body = '', cookie = null, timeoutMs, maxBytes = 65_536 }) {
   return new Promise(resolve => {
     const startedAt = Date.now()
     let settled = false
@@ -44,7 +44,7 @@ function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, 
     }
     const request = requestHttp({
       host, port, path, method,
-      headers: body ? { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) } : undefined,
+      headers: { ...(body ? { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) } : {}), ...(cookie ? { cookie } : {}) },
     }, response => {
       const chunks = []
       let size = 0
@@ -58,7 +58,7 @@ function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, 
         chunks.push(chunk)
       })
       response.once('end', () => finish({
-        ok: true, statusCode: response.statusCode, bytes: size, body: Buffer.concat(chunks).toString('utf8'),
+        ok: true, statusCode: response.statusCode, cookies: response.headers['set-cookie'] ?? [], bytes: size, body: Buffer.concat(chunks).toString('utf8'),
       }))
       response.once('error', () => finish({ ok: false, statusCode: response.statusCode, reason: 'response-error' }))
     })
@@ -71,10 +71,10 @@ function httpExchange({ host, port, path, method = 'GET', body = '', timeoutMs, 
   })
 }
 
-async function probeDshHost(config) {
+async function probeDshHost(config, cookie = null) {
   const timeoutMs = config.healthProbeTimeoutMs ?? 1_500
   const root = await httpExchange({ host: config.host, port: config.port, path: '/', timeoutMs })
-  // DSH 0.1.2-alpha.5 protects the browser index with a process-token
+  // DSH 0.1.2-rc.1 protects the browser index with a process-token
   // exchange. A credential-free Guardian probe therefore receives 401 from
   // `/` even while the Host is healthy. Older supported releases return 200.
   // Treat both as proof that the Web surface owns the port, then require the
@@ -87,7 +87,7 @@ async function probeDshHost(config) {
   }
   const runtime = await httpExchange({
     host: config.host, port: config.port, path: '/api2/dsh-safe-plugin-manager/runtime', method: 'POST',
-    body: JSON.stringify({ profile: config.profile }), timeoutMs,
+    body: JSON.stringify({ profile: config.profile }), cookie, timeoutMs,
   })
   if (!runtime.ok || runtime.statusCode !== 200) {
     return {
@@ -228,7 +228,8 @@ export async function runGuardian(rawConfig, options = {}) {
   const config = validate(rawConfig)
   const spawnProcess = options.spawn ?? spawn
   const portReady = options.listening ?? listening
-  const probeHost = options.probeHost ?? probeDshHost
+  let browserCookie = null
+  const probeHost = options.probeHost ?? (value => probeDshHost(value, browserCookie))
   const sleep = options.delay ?? delay
   const currentTime = options.now ?? Date.now
   const statePath = join(config.stateDir, 'status.json')
@@ -316,15 +317,35 @@ export async function runGuardian(rawConfig, options = {}) {
 
   function launch() {
     const profileArgs = config.profile === 'web' ? ['web'] : ['--profile', config.profile]
+    browserCookie = null
     const launched = spawnProcess(config.nodePath, [...config.runtimeArgs, config.cliPath, ...profileArgs], {
-      cwd: config.cwd, env: commandEnvironment, shell: false, stdio: ['ignore', 'ignore', 'pipe'],
+      cwd: config.cwd, env: commandEnvironment, shell: false, stdio: ['ignore', 'pipe', 'pipe'],
     })
     child = launched
     childStartedAt = currentTime()
     healthyPid = null
     consecutiveProbeFailures = 0
     let tail = ''
-    launched.stderr?.on?.('data', chunk => { tail = `${tail}${String(chunk)}`.slice(-4096) })
+    let exchanging = false
+    const readLaunch = chunk => {
+      tail = `${tail}${String(chunk)}`.slice(-4096)
+      const match = /dsh web: (http:\/\/[^\s]+)/.exec(tail)
+      if (!match || exchanging) return
+      let url
+      try { url = new URL(match[1]) } catch { return }
+      if (url.hostname !== config.host || Number(url.port) !== config.port || url.pathname !== '/' || !url.searchParams.has('token')) return
+      exchanging = true
+      // The owned child's one-time launch URL exchanges through official auth.
+      // Cookies stay in memory; neither URL nor cookie enters status or logs.
+      void httpExchange({ host: config.host, port: config.port, path: '/' + url.search, timeoutMs: 1500 }).then(value => {
+        if (child === launched && value.ok && [302, 303].includes(value.statusCode)) {
+          browserCookie = value.cookies.map(item => item.split(';')[0]).join('; ')
+        }
+      }).catch(() => {})
+      tail = ''
+    }
+    launched.stderr?.on?.('data', readLaunch)
+    launched.stdout?.on?.('data', readLaunch)
     launched.once('exit', (code, signal) => {
       if (child === launched) {
         child = null

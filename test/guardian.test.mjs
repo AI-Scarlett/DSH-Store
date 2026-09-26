@@ -57,7 +57,8 @@ test('guardian installation verifies a fresh heartbeat before scheduling fixed-a
     assert.match(calls.at(-1)[1][1], /\/local\.dsh\.web$/)
     const plist = await readFile(join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'), 'utf8')
     assert.match(plist, /<string>\/node<\/string>/)
-    assert.doesNotMatch(plist, /bash|-c/)
+    // Temporary directory names can contain -c; forbid shell argument tokens.
+    assert.doesNotMatch(plist, /<string>(?:[^<]*\/)?(?:bash|sh|zsh|dash)<\/string>|<string>-c<\/string>/)
     const config = JSON.parse(await readFile(join(root, 'dsh-safe-plugin-manager', 'guardian', 'config.json'), 'utf8'))
     assert.equal(config.healthProbeTimeoutMs, 1_500)
     assert.equal(config.unhealthyThreshold, 3)
@@ -677,4 +678,28 @@ test('guardian service rejects restart when a fresh heartbeat belongs to an exte
     assert.equal(status.errorCode, 'GUARDIAN_NOT_OWNER')
     await assert.rejects(service.requestRestart({ profile: 'web', oldPid: 42 }), error => error.code === 'GUARDIAN_NOT_OWNER')
   } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('owned Guardian exchanges official 303 launch token and never writes the cookie to status', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-auth-'))
+  const controller = new AbortController(); const states = []; let authenticated = 0; let child
+  const server = createServer((req,res) => {
+    if (req.url === '/?token=fixture-launch') { res.writeHead(303, {'set-cookie':'fixture-session=fixture-secret; HttpOnly; SameSite=Strict', location:'/'}); res.end(); return }
+    if (req.url === '/') { res.writeHead(401); res.end(); return }
+    if (req.headers.cookie === 'fixture-session=fixture-secret') { authenticated++; res.writeHead(200, {'content-type':'application/json'}); res.end(JSON.stringify({ok:true,value:{profile:'web',bootId:'owned-boot'}})); return }
+    res.writeHead(401); res.end()
+  })
+  await new Promise(done=>server.listen(0,'127.0.0.1',done)); const port=server.address().port
+  let ticks=0
+  try {
+    await runGuardian({nodePath:'/node',runtimeArgs:[],cliPath:'/cli',cwd:root,stateDir:join(root,'state'),profileDir:join(root,'profile'),profile:'web',host:'127.0.0.1',port,stableMs:0,startupGraceMs:100000}, {
+      signal:controller.signal,
+      listening:async()=>Boolean(child),
+      spawn:()=>{ child=new EventEmitter();child.pid=90909;child.stderr=new EventEmitter();child.stdout=new EventEmitter();child.kill=()=>{child.emit('exit',0,null)};setImmediate(()=>child.stdout.emit('data',`dsh web: http://127.0.0.1:${port}/?token=fixture-launch\n`));return child },
+      onPublish:value=>{ states.push(value);if(value.state==='healthy')controller.abort() },
+      delay:async()=>{await new Promise(done=>setTimeout(done,20));if(++ticks>30)controller.abort()},
+    })
+    assert.ok(authenticated>0); assert.ok(states.some(value=>value.state==='healthy'))
+    assert.doesNotMatch(JSON.stringify(states),/fixture-secret|fixture-launch/)
+  } finally { controller.abort(); await new Promise(done=>server.close(done)); await rm(root,{recursive:true,force:true}) }
 })

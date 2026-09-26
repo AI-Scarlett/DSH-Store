@@ -1,0 +1,194 @@
+{
+  "id": "dsh-system-monitor-plugin",
+  "name": "实验功能插件（DSH System Monitor Plugin）",
+  "packageName": "dsh-system-monitor-plugin",
+  "description": "监控 dsh 进程及其子进程的资源占用,提供进程句柄汇报工具与 UI 面板展示",
+  "searchTerms": [
+    "实验功能插件",
+    "DSH System Monitor Plugin",
+    "dsh-system-monitor-plugin",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "system",
+    "monitor",
+    "plugin"
+  ],
+  "repositoryUrl": "https://github.com/JularDepick/dsh-system-monitor-plugin",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "3c57daba7e468174609d31b0138e9e8a260684d7",
+  "version": "0.1.1",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-09-26T04:00:56.000Z",
+    "observedAt": "2026-09-26T03:57:43.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-09-26T03:57:43.000Z",
+      "evidenceUrl": "https://github.com/JularDepick/dsh-system-monitor-plugin/commit/3c57daba7e468174609d31b0138e9e8a260684d7",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "entryIds": [
+    "system-monitor"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./dist/index.mjs; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.mts; runtime artifact is missing from the fixed Git Commit: ./dist/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission s",
+  "compatibility": {
+    "dsh": "0.1.7-rc.2",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown",
+      "0.1.7-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=20",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@deepseek-ai/schemastery"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [
+      "prepare"
+    ],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

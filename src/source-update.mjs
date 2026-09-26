@@ -5,7 +5,8 @@ const COMMIT_SHA = /^[0-9a-f]{40}$/
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 10 * 60_000
 const MAX_COMPARE_FILES = 100
-const RISK_PATTERN = /(?:node:)?child_process|\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true|(?:node:)?(?:fs|fs\/promises)|\b(?:fetch|WebSocket)\s*\(|process\.env|keychain|__ModuleLoader__.*(?:unload|remove)|\bFiber\b|@deepseek-ai\/.*disabled\s*:\s*true/i
+const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
+const RISK_PATTERN = /(?:node:)?child_process|shell\s*:\s*true|(?:node:)?(?:fs|fs\/promises)|\b(?:fetch|WebSocket)\s*\(|process\.env|keychain|__ModuleLoader__.*(?:unload|remove)|\bFiber\b|@deepseek-ai\/.*disabled\s*:\s*true/i
 const DSH_NATIVE_MUTATION_PATTERN = /(?:^|[/\\])(?:node_modules|packages|vendor)[/\\]@deepseek-ai[/\\]|(?:writeFile|appendFile|rename|unlink|rm)\s*\([^\n]{0,240}(?:node_modules|packages)[/\\]@deepseek-ai|(?:git\s+(?:apply|checkout)|patch\s+)[^\n]{0,240}(?:deepseek|@deepseek-ai)/i
 
 function updateError(code, message) {
@@ -157,8 +158,23 @@ export function createSourceUpdateService(options = {}) {
     const commit = typeof head?.sha === 'string' ? head.sha.toLowerCase() : ''
     if (!COMMIT_SHA.test(commit)) throw updateError('SOURCE_UPDATE_COMMIT_INVALID', 'GitHub 未返回完整候选 Commit。')
     const policy = effectivePolicy(entry)
-    if (commit === entry.commit || installed.declaredSpecifier?.toLowerCase().includes(commit)) {
-      const value = { status: 'current', policy, branch, catalogCommit: entry.commit, candidateCommit: commit, candidate: null, reasons: [] }
+    const installedCommitMatched = installed.declaredSpecifier?.toLowerCase().includes(commit) === true
+    if (commit === entry.commit || installedCommitMatched) {
+      const sameVersionCatalogRepin = commit === entry.commit
+        && !installedCommitMatched
+        && compareVersions(installed.version, entry.version) === 0
+      const value = {
+        status: 'current', policy, branch, catalogCommit: entry.commit, candidateCommit: commit, candidate: null,
+        sameVersionSourceChange: sameVersionCatalogRepin,
+        manualUpdateOnly: sameVersionCatalogRepin,
+        catalogReviewed: sameVersionCatalogRepin,
+        reasons: sameVersionCatalogRepin
+          ? ['Catalog 已固定同版本的新 Commit；新安装直接使用该 Commit，已安装用户只能通过 GitHub 手动覆盖。']
+          : [],
+        notice: sameVersionCatalogRepin
+          ? '商城不会为已安装副本生成同版本更新计划；请前往 GitHub 核对固定 Commit 后手动更新。'
+          : null,
+      }
       cache.set(key, { cachedAt: now(), value })
       return { ...value, cacheStatus: 'fresh' }
     }
@@ -197,10 +213,11 @@ export function createSourceUpdateService(options = {}) {
       const value = {
         status: 'current', policy, branch, catalogCommit: entry.commit, candidateCommit: commit,
         candidateVersion, candidate: publicCandidate(candidate), sameVersionSourceChange: true,
+        manualUpdateOnly: true, catalogReviewed: false,
         warnings: [], blockers: [],
-        reasons: ['源仓库存在同版本提交，商城不会将目录或文档提交当作插件升级。'],
+        reasons: ['源仓库存在尚未进入 Catalog 的同版本提交，等待固定源自动审核；商城不会生成同版本更新计划。'],
         checkedFiles: 0, checkedCommits: 0, diff: null,
-        notice: '已确认候选版本与当前安装版本相同；未生成更新计划，也未将目录或文档变更当作插件更新。',
+        notice: '候选版本与当前安装版本相同；未生成更新计划。若后续通过 Catalog 审核，新安装用户将使用新 Commit，已安装用户仍需自行从 GitHub 手动更新。',
       }
       cache.set(key, { cachedAt: now(), value })
       return { ...value, cacheStatus: 'fresh' }
@@ -261,7 +278,7 @@ export function createSourceUpdateService(options = {}) {
       for (const host of addedNetworkHosts(patch)) networkHosts.add(host)
       if (patch && /(?:node:)?(?:fs|fs\/promises)|\b(?:writeFile|appendFile|rename|unlink|rm)\s*\(/i.test(patch)) permissionSignals.filesystem = true
       if (patch && /\b(?:fetch|WebSocket)\s*\(|https?:\/\//i.test(patch)) permissionSignals.network = true
-      if (patch && /(?:node:)?child_process|\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true/i.test(patch)) permissionSignals.commandExecution = true
+      if (patch && (/(?:node:)?child_process|shell\s*:\s*true/i.test(patch) || COMMAND_CALL.test(patch))) permissionSignals.commandExecution = true
       if (patch && /process\.env|keychain|api[_-]?key|oauth|credential/i.test(patch)) permissionSignals.credentials = true
       if ((DSH_NATIVE_MUTATION_PATTERN.test(name) || (patch && DSH_NATIVE_MUTATION_PATTERN.test(patch)))) {
         permissionSignals.protectedDsh = true

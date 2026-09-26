@@ -9,7 +9,14 @@
       "\"deepseek harness\" plugin in:name,description,readme"
     ],
     "resultsPerQuery": 20,
-    "maxNewRepositoriesPerRun": 8
+    "maxNewRepositoriesPerRun": 8,
+    "excludedRepositories": [
+      {
+        "repositoryUrl": "https://github.com/mengxingGG/dsh-desktop",
+        "reason": "Author confirmed this is a complete DSH downstream distribution, not an installable plugin.",
+        "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/issues/230#issuecomment-5426569042"
+      }
+    ]
   },
   "sourceBounds": {
     "maxTreeEntries": 1200,
@@ -23,8 +30,21 @@
     "concurrency": 8,
     "maxCommitSpan": 200
   },
+  "authorFeedback": {
+    "source": "verified-authors-on-managed-issue-comments",
+    "classification": "dsh-store-problem",
+    "ownerNotification": {
+      "channel": "github-issue-comment",
+      "mention": "@AI-Scarlett",
+      "markerPrefix": "dsh-author-feedback:v1",
+      "oncePerFeedbackComment": true,
+      "githubNotificationEmailDeliveryVerified": false
+    },
+    "automaticAuthorReplies": false,
+    "requiresVerifiedAuthorIdentity": true
+  },
   "compatibility": {
-    "authority": "official-npm-registry-active-supported-channels-through-highest",
+    "authority": "official-github-releases-and-npm-published-versions",
     "registryUrl": "https://registry.npmjs.org/@deepseek-ai%2Fdsh",
     "latestReleaseCount": 3,
     "requiredCompatibleReleases": 1,
@@ -79,5 +99,12 @@
       "https://dsh.store/repair/",
       "https://dsh-store.cn/repair/"
     ]
+  },
+  "discoveryFeeds": {
+    "enabled": true,
+    "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
+    "admission": "candidate-only",
+    "maxRecordsPerRun": 8,
+    "contactAuthors": false
   }
 }

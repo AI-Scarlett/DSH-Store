@@ -28,6 +28,7 @@
   <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
   <link rel="apple-touch-icon" href="../dsh-store-icon.png">
   <link rel="stylesheet" href="../styles.css">
+  <script defer src="../motion.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -52,7 +53,7 @@
           {"@type":"Question","name":"如何向 DSH STORE 提交插件？","acceptedAnswer":{"@type":"Answer","text":"通过 GitHub 的插件提交表单提供仓库、固定提交、清单、权限和兼容性信息。提交进入评审流程，不代表自动收录。"}},
           {"@type":"Question","name":"如何开发自己的 DSH 插件？","acceptedAnswer":{"@type":"Answer","text":"可以在开发插件页面安装开源 build-dsh-plugin Skill，用问题、目标结果和成功标准生成标准 Bundle、风险边界、测试和证据门槛。"}},
           {"@type":"Question","name":"搜索插件会上传我的关键词吗？","acceptedAnswer":{"@type":"Answer","text":"不会。目录搜索、筛选和排序在浏览器本地完成。站点只记录有限的匿名交互事件，不发送搜索词、邮件地址或 Profile 内容。"}},
-          {"@type":"Question","name":"遇到问题或希望合作，如何联系 DSH STORE？","acceptedAnswer":{"@type":"Answer","text":"可以发送邮件至 jadename.zhou@gmail.com，或通过 X 上的 @JadeNameCulture 联系。插件提交请优先使用 GitHub 提交表单。"}}
+          {"@type":"Question","name":"遇到问题或希望合作，如何联系 DSH STORE？","acceptedAnswer":{"@type":"Answer","text":"可以发送邮件至 jadename.zhou@gmail.com，或通过 X 上的 @builtbyxm 联系。插件提交请优先使用 GitHub 提交表单。"}}
         ]
       },
       {
@@ -66,6 +67,8 @@
     ]
   }
   </script>
+  <link rel="stylesheet" href="../pages-redesign.css?v=20260924-inner-store-2">
+  <script defer src="../scan-history-nav.js"></script>
 </head>
 <body class="faq-page">
   <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
@@ -78,6 +81,8 @@
     <nav class="site-nav" aria-label="Primary navigation">
       <a href="../" data-i18n="nav.home">首页</a>
       <a href="../plugins/" data-i18n="nav.store">插件目录</a>
+      <a href="../community/" data-i18n="nav.community">社区与开发者</a>
+      <a href="../scans/" data-scan-history-nav>扫描记录</a>
       <a href="../standards/" data-i18n="nav.standards" data-analytics-event="standards_open" data-analytics-item="faq_header">收录标准</a>
       <a href="../build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="faq_header">开发插件</a>
       <a href="./" aria-current="page" data-i18n="nav.faq">常见问题</a>
@@ -158,7 +163,7 @@
         <header><span>04 / PRIVACY &amp; SUPPORT</span><h2 data-i18n="topic.support">隐私与支持</h2><p data-i18n="group.supportLead">确认网站收集什么，以及遇到问题时去哪里。</p></header>
         <div class="faq-list faq-page-list">
           <details><summary><span data-i18n="q11">搜索插件会上传我的关键词吗？</span><i>＋</i></summary><p data-i18n="a11">不会。目录搜索、筛选和排序在浏览器本地完成。站点只记录有限的匿名交互事件，不发送搜索词、邮件地址或 Profile 内容。</p></details>
-          <details><summary><span data-i18n="q12">遇到问题或希望合作，如何联系 DSH STORE？</span><i>＋</i></summary><p data-i18n="a12">可以发送邮件至 jadename.zhou@gmail.com，或通过 X 上的 @JadeNameCulture 联系。插件提交请优先使用 GitHub 提交表单。</p></details>
+          <details><summary><span data-i18n="q12">遇到问题或希望合作，如何联系 DSH STORE？</span><i>＋</i></summary><p data-i18n="a12">可以发送邮件至 jadename.zhou@gmail.com，或通过 X 上的 @builtbyxm 联系。插件提交请优先使用 GitHub 提交表单。</p></details>
         </div>
       </article>
     </section>
@@ -171,7 +176,7 @@
     </section>
   </main>
 
-  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">先看清能力、来源、权限与边界，再决定下一步。</p><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>FAQ · ZH-CN / EN</span><span data-i18n="footer.note">第三方商城 · 收录不等于安全审计</span><span class="footer-links">Friendly link / 友情链接 · <a href="https://tracefence.com/" target="_blank" rel="noreferrer">TraceFence ↗</a></span><!-- DSH_ICP --></div></footer>
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">先看清能力、来源、权限与边界，再决定下一步。</p><nav class="footer-nav" aria-label="Quick links / 快速导航"><section class="footer-nav-group"><strong>快速导航 / Explore</strong><a href="../community/">社区与开发者</a><a href="../plugins/">插件目录</a><a href="../build/">开发插件</a><a href="../standards/">收录标准</a><a href="../faq/">常见问题</a><a href="../about/">关于我们</a></section><section class="footer-nav-group"><strong>友情链接 / Friends</strong><!-- DSH_FRIEND_SISTER_SITE --><a href="https://aiaiai.help/" target="_blank" rel="noopener noreferrer">aiaiai.help · 模型百科 ↗</a><a href="https://tracefence.com/" target="_blank" rel="noopener noreferrer">TraceFence ↗</a></section></nav><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>FAQ · ZH-CN / EN</span><span data-i18n="footer.note">第三方商城 · 收录不等于安全审计</span><!-- DSH_ICP --></div></footer>
   <script defer src="./faq.js"></script>
 </body>
 </html>

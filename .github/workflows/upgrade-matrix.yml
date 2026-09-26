@@ -1,0 +1,76 @@
+name: DSH upgrade matrix
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      latest_version: ${{ steps.window.outputs.latest_version }}
+      previous_releases: ${{ steps.window.outputs.previous_releases }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Resolve official latest-three release window
+        id: window
+        run: node scripts/resolve-dsh-upgrade-matrix.mjs
+
+  runtime:
+    needs: resolve
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        pnpm: ['10', '11', '12']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ matrix.pnpm }}
+      - run: pnpm --version
+      - run: node --test test/manager-auth.test.mjs test/operation-journal.test.mjs test/diagnostics.test.mjs test/activation.test.mjs test/discovery-feeds.test.mjs
+      - name: Install the current official DSH release
+        env:
+          DSH_VERSION: ${{ needs.resolve.outputs.latest_version }}
+        run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund "@deepseek-ai/dsh@$DSH_VERSION"
+        shell: bash
+      - name: Verify Store in a disposable Profile
+        env:
+          DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett/DSH-Store#${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
+
+  previous-latest-three:
+    needs: resolve
+    strategy:
+      fail-fast: false
+      matrix:
+        dsh-version: ${{ fromJSON(needs.resolve.outputs.previous_releases) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - name: Run manager contracts
+        run: node --test test/manager-auth.test.mjs test/operation-journal.test.mjs test/diagnostics.test.mjs test/activation.test.mjs test/discovery-feeds.test.mjs
+      - name: Install the previous official DSH releases
+        env:
+          DSH_VERSION: ${{ matrix.dsh-version }}
+        run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund "@deepseek-ai/dsh@$DSH_VERSION"
+      - name: Verify Store in a disposable Profile
+        env:
+          DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett/DSH-Store#${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js

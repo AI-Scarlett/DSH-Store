@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-017-compatibility-refresh-20260924",
+  "type": "first-party-dsh-compatibility-refresh",
+  "status": "implementation-in-progress",
+  "createdAt": "2026-09-24T04:18:47Z",
+  "objective": "Adapt DSH-Store and build-dsh-plugin to the official DSH latest-three window, exercise install/start/uninstall/rollback in disposable Profiles, preserve exact operation evidence, and make compatibility CI follow official releases dynamically.",
+  "authority": {
+    "latestThreeSource": "official GitHub Releases and published npm versions",
+    "observedWindow": [
+      "0.1.7-alpha.1",
+      "0.1.7-alpha.2",
+      "0.1.7-rc.1"
+    ],
+    "repositoryChanges": "CI-checked pull requests",
+    "catalogChanges": "dedicated Catalog policy workflow only"
+  },
+  "repositories": [
+    {
+      "repository": "AI-Scarlett/DSH-Store",
+      "baseCommit": "4757cbc4153e28baa5ab38318837562d39ffc23d",
+      "preconditions": {
+        ".github/workflows/upgrade-matrix.yml": "101e2feaf9284b733548e5e7a362b441c6b5757ab31f7fbc709314596900400f",
+        "package.json": "01cf348ee87084dd6b68a3fdbbf615f59dac6ea8adf249b988430bf64e9529ea",
+        "test/contracts.test.mjs": "3ab96d30b8625980f80867f9e2e8e065efb0901e5e779bb40346e639d7f9164e",
+        "scripts/test-disposable-upgrade.mjs": "2179ad1a890fbc72927ddab7205b1dc9982e82b90425918415853464d77d55c0",
+        "src/dsh-release-policy.mjs": "899ee2db50205274283a232b935732c2b0d59365b31e81d94521501d274a10c9",
+        "docs/ops/dsh-017-compatibility-refresh-plan-20260924.json": null,
+        "README.md": "9ddd2c4b2b38b57bca847b85c3bfb56a65f303dd09aab3c49861b37f85a95b21",
+        "scripts/check-plugin-submission.mjs": "2f65d25e088180c168d9e715e2678753bb021dca32cc7e7876b2a4ae56b95431",
+        "src/catalog-update-review.mjs": "f6d719b198f7ea0e34961d8ee12e425f0e38e0ec72144aca53de980effb70d4b",
+        "test/plugin-submission.test.mjs": "7d42dbbeac625cccbf160a140822402fd2ff1ffccff194af104a8816c8c79209",
+        "test/catalog-update-review.test.mjs": "170391ae2b84921c5fcdb9b31f0c6f78d79dd7d85211b4cbd057b005890c6878",
+        "test/catalog.test.mjs": "1613f6af1dbb935997c9b2f3b28745dd91859ff41f526dad2d5d4a2fadf20127",
+        "scripts/resolve-dsh-upgrade-matrix.mjs": null,
+        "test/upgrade-matrix.test.mjs": null
+      },
+      "allowedPaths": [
+        ".github/workflows/upgrade-matrix.yml",
+        "README.md",
+        "docs/ops/dsh-017-compatibility-refresh-plan-20260924.json",
+        "package.json",
+        "scripts/check-plugin-submission.mjs",
+        "scripts/resolve-dsh-upgrade-matrix.mjs",
+        "scripts/test-disposable-upgrade.mjs",
+        "src/catalog-update-review.mjs",
+        "test/catalog-update-review.test.mjs",
+        "test/catalog.test.mjs",
+        "test/contracts.test.mjs",
+        "test/plugin-submission.test.mjs",
+        "test/upgrade-matrix.test.mjs"
+      ]
+    },
+    {
+      "repository": "AI-Scarlett/build-dsh-plugin",
+      "baseCommit": "e0c2b5e23040a5dfebd4fb2c29bab40b34d21b2e",
+      "preconditions": {
+        ".github/workflows/verify-distribution.yml": "a53d30954d7f11f4847a45e75f33e8333d25276cd2c8b47301485bdd03193ace",
+        "package.json": "885765b70c7d979dd1e75b91f5b8fe8eb9d2677abd9d0af6b0fbcea04afae3cc",
+        "test/dsh-bundle.test.mjs": "23a945c1e31d4579949402ca60528c37840f7bc1910a5fc8e81da249910f5b26",
+        "dist/manifest.json": "33cbd4096c16da46472324261376170618477aac4ff02a97f910ea957d4e25ed",
+        "build-dsh-plugin/SKILL.md": "4a01bbb718ce7d26514c94d80f078e6854dc4c4eea558e2602be00b246cc6182",
+        "scripts/verify-distribution.mjs": "aee9c0f52bf50395d0383666ebe08b0031b6bea3a440efef2c73b0872a2f2f0e",
+        "README.md": "3272763231c4657fd60d2a813c48ff9c274a7ca1159ecb13c34bdf082c205ca2",
+        "dist/INSTALL.md": "fd4b0e2b32eb28259a4cf7ac0723f2d5cbdd3ccba4d070b183f179d4175a5559",
+        "dist/build-dsh-plugin-0.5.0.zip": "ab4d701648aab6df20cdb0aa8d9e844cf5e609855115b3311dc73f508dc8cdd9",
+        "dist/build-dsh-plugin-0.5.0.sha256": "f7e7fbb56f33afdfe9e18828d1932e2a116d5a43708ecc7fe09101251706c4e6",
+        "dist/build-dsh-plugin-0.5.1.zip": null,
+        "dist/build-dsh-plugin-0.5.1.sha256": null,
+        "scripts/resolve-dsh-upgrade-matrix.mjs": null,
+        "scripts/test-disposable-dsh-bundle.mjs": null
+      },
+      "allowedPaths": [
+        ".github/workflows/verify-distribution.yml",
+        "scripts/resolve-dsh-upgrade-matrix.mjs",
+        "scripts/test-disposable-dsh-bundle.mjs",
+        "package.json",
+        "test/dsh-bundle.test.mjs",
+        "build-dsh-plugin/SKILL.md",
+        "dist/manifest.json",
+        "scripts/verify-distribution.mjs",
+        "README.md",
+        "dist/INSTALL.md",
+        "dist/build-dsh-plugin-0.5.1.zip",
+        "dist/build-dsh-plugin-0.5.1.sha256"
+      ]
+    }
+  ],
+  "gates": [
+    "Resolve exactly the current official three-release window and fail closed on partial or invalid authority.",
+    "Run install, configuration composition, cold start, host probe, uninstall, and rollback checks only in disposable DSH_HOME instances.",
+    "Mark an exact release compatible only after its matrix job passes; never infer compatibility from a semver range.",
+    "Run npm run check and all repository CI before submitting each source PR.",
+    "Update Catalog only through the dedicated policy workflow after source merges; confirm public Catalog readback separately."
+  ],
+  "prohibitions": [
+    "Do not modify DSH source or any @deepseek-ai/* package.",
+    "Do not write to ~/.dsh or any real Profile, install plugins there, or restart the running DSH.",
+    "Do not send author outreach or bypass the central contact ledger.",
+    "Do not mark unverified releases compatible or listed."
+  ],
+  "rollback": {
+    "source": "Revert the exact merged source commit in each repository; preserve the plan and all unrelated history.",
+    "catalog": "Use the dedicated Catalog policy workflow's recorded pre-change backup and reversible status transition.",
+    "profile": "No real Profile mutation is in scope."
+  },
+  "healthChecks": [
+    "GitHub PR CI is green for the exact latest-three resolver output.",
+    "Each compatibility result records the DSH version, source commit, operation results, and disposable Profile identity.",
+    "The Catalog's fixed source and public marketplace surfaces are read back after the policy workflow completes."
+  ]
+}

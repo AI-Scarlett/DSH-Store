@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { contactDecision, contactBody, humanIdentity, validateState } from './author-contact-state.mjs'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 import { loadCatalogFromFiles } from '../src/catalog.mjs'
 
@@ -19,13 +20,16 @@ const CANDIDATE_COVERAGE_DISPOSITIONS = new Set([
   'public-discovery-only',
 ])
 
+export const AUTHOR_NOTICE_PAUSED_LABEL = 'author-notice-paused'
 export const AUTHOR_NOTICE_LABELS = [
+  { name: AUTHOR_NOTICE_PAUSED_LABEL, color: 'C5DEF5', description: 'Maintainer acknowledged author decision; no automated issue mutations or pings' },
   { name: 'author-action-required', color: 'D93F0B', description: 'Upstream author changes are required before DSH STORE can proceed' },
   { name: 'catalog-blocked', color: 'B60205', description: 'Catalog entry remains non-installable' },
   { name: 'update-deferred', color: 'FBCA04', description: 'A newer upstream version was found but could not be applied' },
   { name: 'compatibility-outdated', color: 'E99695', description: 'Catalog entry is temporarily unlisted outside the latest-three DSH compatibility window' },
   { name: 'candidate-rejected', color: 'D4C5F9', description: 'DSH candidate needs upstream changes before another review' },
 ]
+export const MAX_AUTHOR_NOTICE_ACTIONS = 500
 
 function parseArgs(argv) {
   const options = { maxCreate: 10 }
@@ -40,6 +44,9 @@ function parseArgs(argv) {
   options.maxCreate = Number(options['max-create'] ?? options.maxCreate)
   if (!Number.isInteger(options.maxCreate) || options.maxCreate < 0 || options.maxCreate > 12) {
     throw new Error('--max-create must be an integer between 0 and 12')
+  }
+  if (options['identity-only'] !== undefined && options['identity-only'] !== 'true') {
+    throw new Error('--identity-only only accepts true')
   }
   return options
 }
@@ -66,6 +73,9 @@ function canonicalNotificationTargets(value) {
   const output = {}
   for (const key of Object.keys(value).sort()) {
     if (!/^[a-z0-9_.-]+\/[a-z0-9_.-]+$/.test(key)) throw new Error(`invalid notification target repository: ${key}`)
+    if (value[key] === null) { output[key] = []; continue }
+    const person = humanIdentity(value[key])
+    if (person) { output[key] = [person.login]; continue }
     if (!Array.isArray(value[key]) || value[key].length < 1 || value[key].length > 3) {
       throw new Error(`invalid notification targets for ${key}`)
     }
@@ -219,6 +229,7 @@ export function canonicalExistingIssues(issues) {
       title: String(issue.title ?? ''),
       state,
       body: String(issue.body ?? ''),
+      labels: [...new Set(array(issue.labels).map(label => String(typeof label === 'string' ? label : label?.name ?? '')).filter(Boolean))].sort(),
       url: String(issue.url ?? issue.html_url ?? ''),
     }
   }).sort((left, right) => left.number - right.number)
@@ -326,7 +337,8 @@ function renderNoticeBody(record, signature, notifiedSignature) {
     '### 自动复检 / Automatic recheck',
     '',
     '- 修复推送后或提交明确的 monorepo 子路径后，自动化会读取新的固定 Commit，重新检查 manifest、许可证、Bundle Patch、entry IDs、生命周期、依赖、权限和运行文件。',
-    '- When the deterministic blockers clear, this issue is updated or closed automatically.',
+    '- 同一位作者跨所有项目只主动联系一次。结果会更新到商城；只有您明确提出继续沟通的请求，我们才针对该请求回复。',
+    '- We contact each person only once across all projects. Results stay on the marketplace; further replies require your explicit request to continue.',
     '- 检查不会执行第三方 `install`、`prepare`、`build`、`test` 或运行时代码。',
     '',
     '> 这不是安全漏洞指控，也不表示项目质量有问题；它只说明当前固定源码尚未满足 DSH STORE 的可安装或自动更新契约。Catalog 通过也不等于真实 DSH Profile 已安装或完成运行时验收。',
@@ -383,13 +395,20 @@ function selectCreates(records, existingKeys, maximum) {
 
 export function buildAuthorNoticePlan({
   catalog, candidates, report, existingIssues, notificationTargets, baseCommit, inputHashes,
-  maxCreate = 10, sourceCatalogRunId = null,
+  maxCreate = 10, sourceCatalogRunId = null, contactSnapshot = null, identityOnly = false,
 }) {
   if (!/^[0-9a-f]{40}$/.test(String(baseCommit ?? ''))) throw new Error('base Commit must be a full Git SHA')
   if (sourceCatalogRunId !== null && !/^\d+$/.test(String(sourceCatalogRunId))) {
     throw new Error('source Catalog run ID must contain digits only')
   }
+  if (contactSnapshot) {
+    validateState(contactSnapshot.state)
+    if (!/^[0-9a-f]{40}$/.test(contactSnapshot.fileSha)) throw new Error('invalid contact state snapshot')
+  }
   const targetsByRepository = canonicalNotificationTargets(notificationTargets)
+  if (identityOnly && (contactSnapshot || Object.keys(targetsByRepository).length > 0)) {
+    throw new Error('identity-only planning cannot use contact state or notification targets')
+  }
   const existing = canonicalExistingIssues(existingIssues)
   const existingByKey = new Map()
   for (const issue of existing) {
@@ -399,6 +418,7 @@ export function buildAuthorNoticePlan({
     existingByKey.set(marker.key, { ...issue, marker })
   }
 
+  const pausedKeys = new Set([...existingByKey].filter(([, issue]) => issue.labels.includes(AUTHOR_NOTICE_PAUSED_LABEL)).map(([key]) => key))
   const repositories = new Map()
   const observedSources = collectObservedSources(catalog, candidates, report)
   const catalogById = new Map(array(catalog?.entries).map(entry => [entry.id, entry]))
@@ -495,15 +515,52 @@ export function buildAuthorNoticePlan({
     record.title = `作者修复请求：${record.owner}/${record.repository}（DSH STORE）`
   }
 
-  const createRecords = selectCreates(desired, new Set(existingByKey.keys()), maxCreate)
+  if (identityOnly) {
+    const contactRepositoryKeys = desired.filter(record => !existingByKey.has(record.key)).map(record => record.key)
+    const candidateRegistryRecords = array(candidates?.entries).length
+    const candidateCoverageAccounted = candidateCoverageRecords.reduce((total, record) => total + record.candidateIds.length, 0)
+    if (contactRepositoryKeys.length > 2500 || candidateCoverageRecords.length > 2500
+      || candidateCoverageAccounted !== candidateRegistryRecords) {
+      throw new Error('identity-only repository or Candidate coverage bound exceeded')
+    }
+    return {
+      schemaVersion: 0,
+      mode: 'identity-resolution-only',
+      baseCommit,
+      sourceCatalogRunId: sourceCatalogRunId === null ? null : String(sourceCatalogRunId),
+      preconditions: inputHashes,
+      contactRepositoryKeys,
+      candidateCoverageFingerprint: sha256(JSON.stringify(candidateCoverageRecords)),
+      candidateCoverage: candidateCoverageRecords,
+      summary: { desiredRepositories: desired.length, candidateRegistryRecords, candidateCoverageAccounted },
+      actions: [],
+    }
+  }
+
+  const contactDecisions = []
+  const seenPeople = new Set()
+  const contactEligible = desired.filter(record => {
+    if (!contactSnapshot) return true
+    const recipient = humanIdentity(notificationTargets?.[record.key])
+    let reason = existingByKey.has(record.key) ? 'existing-thread' : contactDecision(contactSnapshot.state, recipient, record.key)
+    if (pausedKeys.has(record.key)) reason = 'stopped'
+    if (reason === 'first-contact' && seenPeople.has(recipient.id)) reason = 'same-person-this-plan'
+    if (reason === 'first-contact') seenPeople.add(recipient.id)
+    contactDecisions.push({ key: record.key, userId: recipient?.id ?? null, reason })
+    return reason === 'first-contact'
+  })
+  const suppressedKeys = new Set(contactDecisions.filter(item => item.reason !== 'first-contact').map(item => item.key))
+  const createRecords = selectCreates(contactEligible, new Set(existingByKey.keys()), maxCreate)
   const createKeys = new Set(createRecords.map(record => record.key))
   const finalCandidateCoverage = candidateCoverageRecords.map(record => ({
     ...record,
-    notificationState: record.disposition !== 'direct-remediation'
+    notificationState: pausedKeys.has(record.key) ? 'author-paused' : record.disposition !== 'direct-remediation'
       ? 'public-registry-only'
       : record.managedIssueNumber !== null
         ? 'managed-issue'
-        : createKeys.has(record.key)
+        : suppressedKeys.has(record.key)
+          ? 'contact-suppressed'
+          : createKeys.has(record.key)
           ? 'scheduled-this-run'
           : 'queued',
   }))
@@ -513,6 +570,7 @@ export function buildAuthorNoticePlan({
   const sourceStatuses = []
   for (const record of desired) {
     const current = existingByKey.get(record.key)
+    if (pausedKeys.has(record.key) || (contactSnapshot && current)) continue
     if (!current) {
       if (!createKeys.has(record.key)) continue
       const sourceStatus = record.source.known ? 'new-baseline' : 'unknown'
@@ -583,7 +641,7 @@ export function buildAuthorNoticePlan({
 
   const desiredKeys = new Set(desired.map(record => record.key))
   for (const [key, current] of existingByKey) {
-    if (desiredKeys.has(key) || current.state === 'closed') continue
+    if (contactSnapshot || pausedKeys.has(key) || desiredKeys.has(key) || current.state === 'closed') continue
     const source = observedSources.get(key)
     const canCompareSource = current.marker.sourceKnown && current.marker.sourceFingerprint && source?.known
     const sourceStatus = canCompareSource && current.marker.sourceFingerprint !== source.fingerprint
@@ -601,9 +659,19 @@ export function buildAuthorNoticePlan({
     })
   }
 
+  if (contactSnapshot) {
+    for (const action of actions) {
+      action.recipient = humanIdentity(notificationTargets[action.key])
+      action.body = contactBody(action.body, action.recipient)
+      action.title = action.title.replaceAll('@', '＠')
+    }
+  }
   const actionOrder = { close: 0, baseline: 1, notify: 2, 'source-update': 3, update: 4, create: 5 }
   actions.sort((left, right) => actionOrder[left.type] - actionOrder[right.type] || left.key.localeCompare(right.key, 'en'))
-  const eligibleCreates = desired.filter(record => !existingByKey.has(record.key) && record.createCategories.size > 0).length
+  if (actions.length > MAX_AUTHOR_NOTICE_ACTIONS) {
+    throw new Error(`author notice action bound exceeded: ${actions.length} actions (maximum ${MAX_AUTHOR_NOTICE_ACTIONS})`)
+  }
+  const eligibleCreates = contactEligible.filter(record => !existingByKey.has(record.key) && record.createCategories.size > 0).length
   const githubMessageTypes = new Set(['create', 'update', 'notify', 'source-update'])
   const githubMessages = actions.filter(action => githubMessageTypes.has(action.type)).length
   const candidateDispositionCount = disposition => finalCandidateCoverage.filter(record => record.disposition === disposition).length
@@ -632,7 +700,9 @@ export function buildAuthorNoticePlan({
     })),
   }
   return {
-    schemaVersion: 1,
+    schemaVersion: contactSnapshot ? 2 : 1,
+    contactDecisions,
+    contactRepositoryKeys: desired.filter(record => !existingByKey.has(record.key)).map(record => record.key),
     planId: sha256(JSON.stringify(planIdentity)).slice(0, 24),
     baseCommit,
     sourceCatalogRunId: sourceCatalogRunId === null ? null : String(sourceCatalogRunId),
@@ -649,11 +719,17 @@ export function buildAuthorNoticePlan({
       ignoreInfrastructureFailures: true,
       neverExecuteThirdPartyCode: true,
       deduplicateByCanonicalRepository: true,
+      globalPersonPolicy: contactSnapshot ? 'github-person-once-v1' : null,
+      automaticFollowups: false,
     },
     requiredLabels: AUTHOR_NOTICE_LABELS,
     summary: {
       desiredRepositories: desired.length,
       managedExistingIssues: existingByKey.size,
+      pausedRepositories: pausedKeys.size,
+      contactSuppressedRepositories: contactDecisions.filter(item => item.reason !== 'first-contact').length,
+      candidateDirectSuppressed: finalCandidateCoverage.filter(record => record.notificationState === 'contact-suppressed').length,
+      candidateAuthorPaused: finalCandidateCoverage.filter(record => record.notificationState === 'author-paused').length,
       eligibleNewIssues: eligibleCreates,
       queuedNewIssues: Math.max(0, eligibleCreates - createRecords.length),
       creates: actions.filter(action => action.type === 'create').length,
@@ -721,7 +797,10 @@ async function main() {
   if (report?.postconditions?.catalogSha256 !== catalogSha256 || report?.postconditions?.candidatesSha256 !== candidatesSha256) {
     throw new Error('Catalog automation report does not match the current Registry hashes')
   }
+  const contactBuffer = options['contact-state'] ? await readFile(resolve(options['contact-state'])) : null
+  const contactSnapshot = contactBuffer ? JSON.parse(contactBuffer) : null
   const inputHashes = {
+    ...(contactBuffer ? { contactStateSha256: sha256(contactBuffer) } : {}),
     catalogSha256,
     candidatesSha256,
     reportSha256: sha256(reportBuffer),
@@ -729,12 +808,17 @@ async function main() {
     notificationTargetsSha256: sha256(targetsBuffer),
   }
   const plan = buildAuthorNoticePlan({
-    catalog, candidates, report, existingIssues, notificationTargets,
+    catalog, candidates, report, existingIssues, notificationTargets, contactSnapshot,
     baseCommit: options['base-commit'], inputHashes, maxCreate: options.maxCreate,
     sourceCatalogRunId: options['catalog-run-id'] ?? null,
+    identityOnly: options['identity-only'] === 'true',
   })
   await writeFile(resolve(options.output), `${JSON.stringify(plan, null, 2)}\n`, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
-  process.stdout.write(`AUTHOR_NOTICE_PLAN_OK plan=${plan.planId} creates=${plan.summary.creates} updates=${plan.summary.updates} closes=${plan.summary.closes} queued=${plan.summary.queuedNewIssues}\n`)
+  if (plan.mode === 'identity-resolution-only') {
+    process.stdout.write(`AUTHOR_NOTICE_IDENTITY_PLAN_OK repositories=${plan.contactRepositoryKeys.length} candidateRecords=${plan.summary.candidateCoverageAccounted}\n`)
+  } else {
+    process.stdout.write(`AUTHOR_NOTICE_PLAN_OK plan=${plan.planId} creates=${plan.summary.creates} updates=${plan.summary.updates} closes=${plan.summary.closes} queued=${plan.summary.queuedNewIssues}\n`)
+  }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) await main()

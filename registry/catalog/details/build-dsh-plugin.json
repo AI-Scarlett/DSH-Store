@@ -2,7 +2,7 @@
   "id": "build-dsh-plugin",
   "name": "DSH 插件开发工作流（Build DSH Plugin）",
   "packageName": "dsh-build-plugin",
-  "description": "把插件需求转化为标准 DSH Bundle、卡片契约、审计、发布和商城候选；候选发现与可信安装严格分层，并强制执行非破坏性边界与分级验收。",
+  "description": "把需求转为标准 DSH 插件与商城候选；0.5.0 增加管理类插件的登录校验、持久化操作与恢复边界审计，并区分源码检查和实际运行证据。",
   "searchTerms": [
     "DSH 插件开发工作流",
     "Build DSH Plugin",
@@ -28,9 +28,9 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": null,
-  "commit": "59860c850879599429c44e8806e0993881a1ded1",
-  "version": "0.4.1",
+  "updatePolicy": "user-reviewed",
+  "commit": "16393774a52bf93c02ebd461d1fee426a3b3ac83",
+  "version": "0.5.1",
   "categories": [
     "development",
     "workflow",
@@ -39,58 +39,50 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T17:22:57.000Z",
-    "observedAt": "2026-09-02T17:28:18.800Z",
+    "updatedAt": "2026-09-24T05:09:37.000Z",
+    "observedAt": "2026-09-24T05:53:42.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "github-fixed-commit-release-readback",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/59860c850879599429c44e8806e0993881a1ded1",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-24T05:53:42.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/16393774a52bf93c02ebd461d1fee426a3b3ac83",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "公开固定合并 Commit 的 0.4.1 manifest、Bundle Patch、Host 入口、MIT 许可证与 v2026.09.03.1 发行资产已回读。"
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
-      "status": "partial",
-      "method": "disposable-dsh-latest-three-profile-cli-install-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/releases/tag/v2026.09.03.1",
-      "dshRelease": "0.1.2-alpha.5",
-      "systems": [
-        "macOS"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "部分验证：0.4.1 在 DSH alpha.3、alpha.4、alpha.5 一次性 Profile 中通过官方 CLI 安装、dump-config、卸载与复装；真实 Profile 未修改。"
-    },
-    "runtime": {
-      "status": "partial",
-      "method": "dsh-latest-three-skill-registration-runtime-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/59860c850879599429c44e8806e0993881a1ded1",
-      "dshRelease": "0.1.2-alpha.5",
-      "systems": [
-        "macOS"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "部分验证：alpha.3、alpha.4、alpha.5 隔离冷启动均发现 bundled build-dsh-plugin Skill；尚无真实 Profile 或可见 UI E4 证据。"
-    },
-    "securityReview": {
-      "status": "partial",
-      "method": "fixed-source-policy-and-distribution-check-v2",
-      "checkedAt": "2026-09-02T17:28:18.800Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/59860c850879599429c44e8806e0993881a1ded1",
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "部分验证：固定源策略、权限审计器、契约、动态未来版本窗口及分发一致性检查通过；不等同于独立安全审计。"
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
@@ -99,16 +91,29 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2",
     "dshReleases": {
-      "rc.7": "incompatible",
-      "rc.8": "compatible",
-      "0.1.1-rc.1": "compatible",
-      "0.1.1-rc.2": "compatible",
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
       "0.1.2-alpha.2": "compatible",
       "0.1.2-alpha.3": "compatible",
       "0.1.2-alpha.4": "compatible",
-      "0.1.2-alpha.5": "compatible"
+      "0.1.2-alpha.5": "compatible",
+      "0.1.2-rc.1": "compatible",
+      "0.1.3-alpha.1": "compatible",
+      "0.1.3-alpha.2": "unknown",
+      "0.1.5-alpha.1": "compatible",
+      "0.1.5-alpha.2": "compatible",
+      "0.1.5-rc.1": "compatible",
+      "0.1.5-rc.2": "compatible",
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown",
+      "0.1.7-alpha.1": "compatible",
+      "0.1.7-alpha.2": "compatible",
+      "0.1.7-rc.1": "compatible",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -118,56 +123,129 @@
         "rollback": "unknown"
       },
       "rc.8": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.1-rc.1": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.1-rc.2": {
-        "install": "passed",
+        "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.2-alpha.2": {
-        "install": "failed",
+        "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.1.2-alpha.3": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
       },
-      "0.1.2-alpha.5": {
+      "0.1.7-alpha.2": {
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
+      },
+      "0.1.7-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=22.13.0",
-    "systems": [
-      "macOS"
-    ],
-    "profiles": [
-      "web",
-      "headless"
-    ]
+    "systems": [],
+    "profiles": []
   },
   "details": {
     "pluginType": "suite",

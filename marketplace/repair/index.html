@@ -19,6 +19,8 @@
   <link rel="icon" type="image/png" href="../dsh-store-icon.png">
   <link rel="stylesheet" href="../styles.css">
   <script defer src="./repair.js"></script>
+  <link rel="stylesheet" href="../pages-redesign.css?v=20260924-inner-store-2">
+  <script defer src="../scan-history-nav.js"></script>
 </head>
 <body class="info-page repair-page" data-repair-state="catalog-pending">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -29,6 +31,7 @@
     </a>
     <nav class="site-nav" aria-label="主要导航">
       <a href="../plugins/">插件目录</a>
+      <a href="../scans/" data-scan-history-nav>扫描记录</a>
       <a href="../standards/">收录标准</a>
       <a href="../build/">开发插件</a>
       <a href="./" aria-current="page">安全修复</a>
@@ -63,8 +66,8 @@
       </div>
       <div id="repair-pending" class="repair-state-card">
         <span class="status-tag blocked">尚未启用</span>
-        <h3>Catalog 尚未固定到包含修复器的商城版本</h3>
-        <p>当前页面不会生成浮动或未经 Catalog 固定的命令。请等待页面显示“可用 · 固定来源”；不要执行聊天、帖子或 Issue 中未经核验的替代命令。</p>
+        <h3>Catalog 尚未确认当前修复器可用</h3>
+        <p>版本固定或 DSH 兼容性证据仍待核验时，本页不会提供修复命令。请等待页面显示“可用 · 固定来源”；不要执行聊天、帖子或 Issue 中未经核验的替代命令。</p>
       </div>
     </section>
 
@@ -87,8 +90,6 @@
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-bottom"><span>DSH STORE · Official recovery surface · <a href="https://tracefence.com/" target="_blank" rel="noreferrer">TraceFence</a></span><span><!-- DSH_ICP --></span></div>
-  </footer>
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p>官方历史版本修复入口 · 固定来源、先计划、可回滚。</p><nav class="footer-nav" aria-label="Quick links / 快速导航"><section class="footer-nav-group"><strong>快速导航 / Explore</strong><a href="../community/">社区与开发者</a><a href="../plugins/">插件目录</a><a href="../build/">开发插件</a><a href="../standards/">收录标准</a><a href="../faq/">常见问题</a><a href="../about/">关于我们</a></section><section class="footer-nav-group"><strong>友情链接 / Friends</strong><!-- DSH_FRIEND_SISTER_SITE --><a href="https://aiaiai.help/" target="_blank" rel="noopener noreferrer">aiaiai.help · 模型百科 ↗</a><a href="https://tracefence.com/" target="_blank" rel="noopener noreferrer">TraceFence ↗</a></section></nav><a class="footer-top" href="#top">回到顶部 ↑</a></div><div class="footer-bottom"><span>DSH STORE · Official recovery surface</span><span><!-- DSH_ICP --></span></div></footer>
 </body>
 </html>

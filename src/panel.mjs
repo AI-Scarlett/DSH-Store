@@ -10,6 +10,7 @@ export const SOURCE_UPDATE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/source-up
 export const DSH_VERSION_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/dsh-version'
 export const PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/plan'
 export const EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/execute'
+export const OPERATIONS_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/operations'
 export const RUNTIME_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/runtime'
 export const RESTART_PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/restart/plan'
 export const RESTART_EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/restart/execute'
@@ -143,7 +144,7 @@ export function handleMarketRequest(req, res, options = {}) {
     const dshVersion = options.dshVersionService?.peek?.() ?? null
     if (catalogIndex.schemaVersion === 2 && view !== 'candidates') {
       const selection = selectMarketplaceIndexEntries(catalogIndex, {
-        view, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
+        view, compatibleWith: body.compatibleWith, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
         page: body.page, pageSize: body.pageSize, inventory,
       })
       try {
@@ -171,7 +172,7 @@ export function handleMarketRequest(req, res, options = {}) {
           managedPackages, candidateRegistry, dshVersion,
         })
         return paginateMarketplaceSnapshot(snapshot, {
-          view, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
+          view, compatibleWith: body.compatibleWith, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,
           page: body.page, pageSize: body.pageSize,
           catalogPackageNames: fallback.entries.map(entry => entry.packageName),
         })
@@ -182,7 +183,7 @@ export function handleMarketRequest(req, res, options = {}) {
       : catalogIndex
     const snapshot = buildMarketplaceSnapshot(catalog, inventory, '', { managedPackages, candidateRegistry, dshVersion })
     return paginateMarketplaceSnapshot(snapshot, {
-      view,
+      view, compatibleWith: body.compatibleWith,
       query: body.query,
       category: body.category,
       featuredOnly: body.featuredOnly === true,
@@ -229,7 +230,7 @@ export function handlePlanRequest(req, res, options = {}) {
 }
 
 export function handleExecuteRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, body => options.operationService.execute(body), 'execute')
+  return handleJsonRequest(req, res, body => options.operationService.start(body), 'execute')
 }
 
 export function handleRuntimeRequest(req, res, options = {}) {
@@ -266,12 +267,44 @@ export function registerInventoryRoute(webServer, options = {}) {
   return webServer.register({
     kind: 'exact',
     path: ROUTE_PATH,
-    handler: (req, res) => handleInventoryRequest(req, res, options),
+    handler: authenticated(options, (req, res) => handleInventoryRequest(req, res, options)),
   })
+}
+
+// WebServer dispatches exact routes before Connection's /api prefix. Every
+// route therefore delegates to the public Connection authority explicitly.
+function authenticated(options, handler) {
+  return async (req, res) => {
+    let rejection = 503
+    try {
+      if (typeof options.connection?.requestRejection === 'function') {
+        rejection = await options.connection.requestRejection(req)
+      }
+    } catch { /* Missing or failed authority never permits a request. */ }
+    if (rejection !== undefined) {
+      const status = rejection === 401 || rejection === 403 ? rejection : 503
+      sendJson(res, status, { ok: false, error: {
+        code: status === 503 ? 'AUTHORITY_UNAVAILABLE' : 'AUTHENTICATION_REQUIRED',
+        message: status === 503 ? 'DSH authentication is unavailable' : 'DSH browser authentication required',
+      } })
+      return
+    }
+    return handler(req, res)
+  }
 }
 
 export function registerManagerRoutes(webServer, options = {}) {
   const routes = [
+    ['/api2/dsh-safe-plugin-manager/activation', (req, res) => handleJsonRequest(req, res, async () => options.activationService.inspect(await options.catalogService.load()))],
+    [OPERATIONS_ROUTE_PATH, async (req, res) => {
+      try {
+        if (req.method !== 'GET') return sendJson(res, 405, { ok: false }, { allow: 'GET' })
+        assertSameOrigin(req)
+        const id = new URL(req.url, 'http://localhost').searchParams.get('id')
+        const value = id ? await options.operationService.journal.get(id) : await options.operationService.journal.list()
+        sendJson(res, 200, { ok: true, value })
+      } catch { sendJson(res, 409, { ok: false, error: { code: 'JOURNAL_UNAVAILABLE', message: '操作记录不可用，请检查恢复状态。' } }) }
+    }],
     [ROUTE_PATH, (req, res) => handleInventoryRequest(req, res, options)],
     [MARKET_ROUTE_PATH, (req, res) => handleMarketRequest(req, res, options)],
     [HEALTH_ROUTE_PATH, (req, res) => handleHealthRequest(req, res, options)],
@@ -286,7 +319,7 @@ export function registerManagerRoutes(webServer, options = {}) {
     [GUARDIAN_PLAN_ROUTE_PATH, (req, res) => handleGuardianPlanRequest(req, res, options)],
     [GUARDIAN_EXECUTE_ROUTE_PATH, (req, res) => handleGuardianExecuteRequest(req, res, options)],
   ]
-  const disposers = routes.map(([path, handler]) => webServer.register({ kind: 'exact', path, handler }))
+  const disposers = routes.map(([path, handler]) => webServer.register({ kind: 'exact', path, handler: authenticated(options, handler) }))
   return () => {
     for (const dispose of disposers.reverse()) if (typeof dispose === 'function') dispose()
   }

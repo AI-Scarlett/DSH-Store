@@ -119,6 +119,39 @@ test('author notice plan rate-limits and covers blocked, deferred, and explicit 
   assert.equal(plan.policy.queueAllDeterministicCandidateRemediation, true)
 })
 
+test('identity-only preliminary planning covers all repositories when legacy actions exceed the send bound', () => {
+  const legacyEntries = Array.from({ length: 508 }, (_, index) => ({
+    id: `legacy-${index}`, name: `Legacy ${index}`, version: '1.0.0', status: 'blocked',
+    statusReason: 'Bundle Patch is missing',
+    repositoryUrl: `https://github.com/LegacyOwner/dsh-legacy-${index}`,
+    commit: 'c'.repeat(40),
+  }))
+  const existingIssues = legacyEntries.map((_, index) => ({
+    number: index + 1, state: 'open', title: `Legacy ${index}`,
+    body: `<!-- dsh-author-notice:v1 key=legacyowner/dsh-legacy-${index} signature=${'0'.repeat(64)} notified=${'0'.repeat(64)} -->`,
+  }))
+  const inputs = fixture({
+    catalog: { entries: [...legacyEntries, ...fixture().catalog.entries] },
+    existingIssues,
+    maxCreate: 0,
+  })
+  assert.throws(() => buildAuthorNoticePlan(inputs), /author notice action bound exceeded: 508 actions/)
+  const preliminary = buildAuthorNoticePlan({ ...inputs, identityOnly: true })
+  assert.equal(preliminary.schemaVersion, 0)
+  assert.equal(preliminary.mode, 'identity-resolution-only')
+  assert.deepEqual(preliminary.actions, [])
+  assert.deepEqual(preliminary.contactRepositoryKeys, [
+    'blockedowner/dsh-blocked', 'candidateowner/dsh-candidate', 'updateowner/dsh-update',
+  ])
+  assert.equal(preliminary.summary.candidateRegistryRecords, 3)
+  assert.equal(preliminary.summary.candidateCoverageAccounted, 3)
+  assert.equal(preliminary.candidateCoverage.length, 3)
+  assert.match(preliminary.candidateCoverageFingerprint, /^[0-9a-f]{64}$/)
+  assert.throws(() => buildAuthorNoticePlan({ ...inputs, identityOnly: true,
+    notificationTargets: { 'candidateowner/dsh-candidate': ['Someone'] },
+  }), /identity-only planning cannot use contact state or notification targets/)
+})
+
 test('all candidate repositories receive exactly one public or direct coverage disposition', () => {
   const plan = buildAuthorNoticePlan(fixture({
     candidates: {
@@ -328,4 +361,25 @@ test('pruned incompatible candidates still receive one report-backed remediation
   assert.match(action.body, /候选未保留 \/ Candidate pruned/)
   assert.match(action.body, /dsh\.compatibility\.dshReleases/)
   assert.match(action.body, /@PrunedOwner/)
+})
+
+test('maintainer pause survives closure, changed source and changed findings; removing it resumes notices', () => {
+  const original = fixture()
+  const created = buildAuthorNoticePlan(original).actions.find(action => action.key === 'candidateowner/dsh-candidate')
+  const issue = { number: 230, state: 'closed', title: created.title, body: created.body, labels: [{ name: 'author-notice-paused' }] }
+  const changed = { ...original, existingIssues: [issue], candidates: { entries: [candidate({ latestCommit: 'f'.repeat(40), statusReason: 'different source blocker' })] } }
+  const paused = buildAuthorNoticePlan(changed)
+  assert.equal(paused.actions.some(action => action.key === created.key), false)
+  assert.equal(paused.summary.pausedRepositories, 1)
+  assert.equal(paused.summary.candidateCoverageUnaccounted, 0)
+  assert.equal(paused.candidateCoverage[0].notificationState, 'author-paused')
+  const resumed = buildAuthorNoticePlan({ ...changed, existingIssues: [{ ...issue, labels: [] }] })
+  assert.equal(resumed.actions.find(action => action.key === created.key).type, 'update')
+})
+
+test('pause text in an author comment or issue body does not grant a policy exemption', () => {
+  const original = fixture()
+  const created = buildAuthorNoticePlan(original).actions.find(action => action.key === 'candidateowner/dsh-candidate')
+  const plan = buildAuthorNoticePlan({ ...original, existingIssues: [{ number: 230, state: 'closed', title: created.title, body: created.body + '\nauthor-notice-paused', labels: [] }] })
+  assert.equal(plan.actions.find(action => action.key === created.key).type, 'update')
 })

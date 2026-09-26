@@ -6,6 +6,47 @@ const moduleImport = names => new RegExp(
 const FILE_MODULE = moduleImport('fs|fs/promises')
 const NETWORK_MODULE = moduleImport('http|https|net|tls|dgram|axios|got|undici')
 const COMMAND_MODULE = moduleImport('child_process')
+// Match an actual command function call while ignoring member calls such as
+// RegExp#exec() and parser.exec(). The scanner is intentionally conservative:
+// imports and explicit shell modes still fail closed, but ordinary library
+// member methods must not become command-capability evidence.
+const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
+const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
+const GENERATED_CATALOG_DETAIL = /^registry\/catalog\/details\/[^/]+\.json$/i
+const TEST_SOURCE_FILE = /^(?:test|spec)[-_.].*\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
+const SUFFIXED_TEST_SOURCE_FILE = /^.+\.(?:test|spec)\.(?:[cm]?[jt]sx?)$/i
+
+export function isTestSourceFile(relativePath) {
+  const name = String(relativePath ?? '').split('/').at(-1) ?? ''
+  return TEST_SOURCE_FILE.test(name) || SUFFIXED_TEST_SOURCE_FILE.test(name)
+}
+
+export function isBoundedSourceLineage(lineage, maxCommitSpan, { allowDiverged = false } = {}) {
+  if (!lineage || !Number.isInteger(maxCommitSpan) || maxCommitSpan < 1) return false
+  if (lineage.status === 'ahead') {
+    return Number.isInteger(lineage.total_commits)
+      && lineage.total_commits > 0
+      && lineage.total_commits <= maxCommitSpan
+  }
+  if (!allowDiverged || lineage.status !== 'diverged') return false
+  const aheadBy = lineage.ahead_by
+  const behindBy = lineage.behind_by
+  return Number.isInteger(lineage.total_commits)
+    && Number.isInteger(aheadBy) && aheadBy > 0
+    && Number.isInteger(behindBy) && behindBy > 0
+    && lineage.total_commits === aheadBy
+    && aheadBy + behindBy <= maxCommitSpan
+    && /^[0-9a-f]{40}$/.test(lineage.merge_base_commit?.sha ?? '')
+}
+
+export function isGeneratedSelfManagerCatalogDetail(candidate, relativePath) {
+  const repository = typeof candidate?.repositoryUrl === 'string'
+    ? candidate.repositoryUrl.trim().replace(/\.git\/?$/i, '').replace(/\/$/, '').toLowerCase()
+    : null
+  return String(candidate?.id ?? '').trim().toLowerCase() === 'dsh-safe-plugin-manager'
+    && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
+    && GENERATED_CATALOG_DETAIL.test(String(relativePath ?? ''))
+}
 
 export function permissionSignals(source) {
   return {
@@ -16,10 +57,46 @@ export function permissionSignals(source) {
       || /\b(?:fetch|WebSocket|EventSource)\s*\(/i.test(source)
       || /\b(?:axios|got|undici)\s*(?:\.|\()/i.test(source),
     commands: COMMAND_MODULE.test(source)
-      || /\b(?:exec|execFile|spawn|fork)\s*\(|shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(source),
+      || COMMAND_CALL.test(source)
+      || /shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(source),
     credentials: /process\.env/i.test(source)
       || /\b(?:keychain|credentials?|oauth)\b\s*(?:\.|\[|\()/i.test(source)
       || /\b(?:api[_-]?key|apiKey|access[_-]?token|accessToken|client[_-]?secret|clientSecret|password)\b/i.test(source),
-    protectedDsh: /(?:__ModuleLoader__[^\n]{0,120}(?:unload|remove)|\bFiber\b[^\n]{0,120}(?:remove|disable|replace)|@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true)/i.test(source),
+    protectedDsh: /(?:\b__ModuleLoader__\s*\.\s*(?:unload|remove)\s*\(|\b(?:ctx\s*\.\s*)?(?:loader|fiber|Loader|Fiber)\s*\.\s*(?:insert|remove|patch|enable|disable|write|mutate|replace)\s*\(|@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true)/i.test(source),
+    // The documented slot is not itself an official-component mutation. This
+    // bounded text scan cannot prove renderer scope or ownership of its key.
+    toolViews: /tool\.call\.toolview/i.test(source),
   }
+}
+
+export function permissionSignalReasons(signals, allowedSignals = {}) {
+  const reasons = []
+  // Fail closed independently of the configurable capability allowlist. A
+  // literal key, including a package-prefixed key, is not ownership evidence.
+  if (signals.toolViews) reasons.push('runtime Tool-view slot use requires manual scope and key-ownership review')
+  for (const [signal, allowed] of Object.entries(allowedSignals)) {
+    if (signal !== 'toolViews' && !allowed && signals[signal]) {
+      reasons.push(`runtime source contains the ${signal} permission signal`)
+    }
+  }
+  return reasons
+}
+
+export function missingRuntimeEntryReasons(manifest, entries, prefix = '') {
+  const files = new Set(entries.filter(item => item.type === 'blob' && item.mode !== '120000').map(item => item.path))
+  const targets = new Set()
+  const collect = value => {
+    if (typeof value === 'string') targets.add(value)
+    else if (Array.isArray(value)) value.forEach(collect)
+    else if (value && typeof value === 'object') Object.values(value).forEach(collect)
+  }
+  collect(manifest.main)
+  collect(manifest.module)
+  collect(manifest.exports)
+  collect(manifest.dsh?.client?.entry)
+  return [...targets].filter(target => !target.includes('*')).flatMap(target => {
+    const normalized = target.replace(/^\.\//, '')
+    if (!normalized || normalized.startsWith('/') || normalized.split('/').includes('..')) return [`runtime artifact path is invalid: ${target}`]
+    return files.has(prefix + normalized) ? [] : [`runtime artifact is missing from the fixed Git Commit: ${target}`]
+  })
 }

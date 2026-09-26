@@ -38,5 +38,36 @@ every change:
     It must update through CI-checked PRs and verify GitHub, Pages, and both
     production storefronts every three hours, retrying recoverable failures.
 
+
+13. 作者联系规则（2026-09-07 用户明确要求）：对于所有项目，先核实对应的人，
+    按 GitHub 不变的用户 ID 全局去重。一个人仅允许一次主动消息；无论以后新增
+    多少项目、改名、升级、修改代码、关闭或重开 Issue、任务重试，都不能再次主动联系。
+    历史消息也占用这一次名额。致谢、表情、沉默、代码修改和新的上架申请不算继续沟通授权。
+    唯一例外是对方明确给出正向回复，并提出需要继续沟通的具体请求：先核验原文、身份、
+    时间与当前撤回状态，再仅针对该请求回复一次；不能把一次请求视为永久授权。
+    “不要再联系”等撤回要求优先于更早的同意，且适用于其所有项目。
+14. All automated and manual outreach (Issues, comments, reviews, PR invitations,
+    and any other channel) shares the central immutable-person contact ledger in
+    AI-Scarlett/DSH-Store, branch author-contact-state, contacts.json. Never create
+    a per-project ledger, bypass the gate with gh/API/browser, or contact another
+    account to evade a recorded person's limit. Unknown people or ambiguous
+    historical identities receive no outreach. A known person using another
+    account remains the same person; add the verified alias before any contact.
+15. Load the complete imported history and atomically reserve the person's slot
+    through the Contents API SHA precondition BEFORE any notification-producing
+    request. A timeout, failure, uncertain readback or cancelled run consumes
+    the reservation permanently. Do not retry POST/PATCH messages. Old Issue
+    edits, reopening, baseline refreshes and closure notices are also messages.
+    Use scripts/reply-author-contact.mjs only with a main-reviewed, request-specific
+    registry/author-replies/*.json plan for continuing an Issue/PR comment thread.
+    Review-only requests and new communication channels need an equivalent
+    verified request and the SAME central reservation gate before sending.
+16. The operational state branch is the narrow exception to source/Catalog PR
+    writes: it may only append contact reservations/aliases and preserve history
+    and stops using compare-and-swap. Policy/source/history-seed changes still
+    require CI-checked PRs. Missing/corrupt history fails closed. Rollback disables
+    senders; it must NEVER reset the ledger, delete a reservation, replay an old
+    sender version, or restore the old per-repository notification behavior.
+
 Run `npm run check` before committing. Real DSH installation and UI verification
 are separate acceptance gates and must never be inferred from unit tests.

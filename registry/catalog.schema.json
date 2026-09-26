@@ -563,6 +563,29 @@
                   "manual-review",
                   "author-verified"
                 ]
+              },
+              "screenshots": {
+                "type": "array",
+                "maxItems": 3,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "path",
+                    "sha256"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_./-]+\\.(png|jpg|jpeg|webp)$"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    }
+                  }
+                }
               }
             }
           },

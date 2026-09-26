@@ -21,29 +21,29 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "fea03f2714263eb5eeebcd6fc80be32544aca19a",
-  "version": "0.1.3",
+  "updatePolicy": "source-verified",
+  "commit": "22188459944afab508408755a2d7e0b5c6c7bff6",
+  "version": "0.1.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-02T18:21:46.000Z",
-    "observedAt": "2026-09-02T18:24:02.000Z",
+    "updatedAt": "2026-09-11T19:30:08.000Z",
+    "observedAt": "2026-09-12T03:34:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-02T18:24:02.000Z",
-      "evidenceUrl": "https://github.com/cymosehq/cymose-code/commit/fea03f2714263eb5eeebcd6fc80be32544aca19a",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-12T03:34:34.000Z",
+      "evidenceUrl": "https://github.com/cymosehq/cymose-code/commit/22188459944afab508408755a2d7e0b5c6c7bff6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a verified fixed Commit; no installability was inferred."
+      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -79,8 +79,8 @@
   "entryIds": [
     "cymose"
   ],
-  "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": ">=0.1.0-rc.8 <0.2.0",
     "dshReleases": {
@@ -91,7 +91,20 @@
       "0.1.2-alpha.2": "unknown",
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown"
+      "0.1.2-alpha.5": "unknown",
+      "0.1.2-rc.1": "compatible",
+      "0.1.3-alpha.1": "unknown",
+      "0.1.3-alpha.2": "compatible",
+      "0.1.5-alpha.1": "unknown",
+      "0.1.5-alpha.2": "unknown",
+      "0.1.5-rc.1": "unknown",
+      "0.1.5-rc.2": "unknown",
+      "0.1.6-alpha.1": "unknown",
+      "0.1.6-alpha.2": "unknown",
+      "0.1.7-alpha.1": "unknown",
+      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.1": "unknown",
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -141,6 +154,84 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.1.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.3-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.6-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=20",
@@ -155,21 +246,19 @@
     "installSource": "github",
     "license": "Apache-2.0",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "automated-fixed-source-policy-v1"
   }
 }
