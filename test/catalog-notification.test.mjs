@@ -25,6 +25,18 @@ test('Catalog notification separates additions, historical updates, and deferred
       sameVersionUpdatesDeferred: 2,
       unresolvedEntries: 0,
     },
+    discovery: {
+      maxRepositoriesPerRun: 64,
+      uniqueRepositoriesFound: 27,
+      fixedCommitChecks: 16,
+      fixedCommitChecksBySource: { 'github-feed:bruc3van/awesome-dsh-plugin': 10 },
+      sources: [
+        { source: 'github-search-1', kind: 'github-search', status: 'available', results: 20 },
+        { source: 'bruc3van/awesome-dsh-plugin', kind: 'json-map', primary: true, status: 'available', results: 64, selectedRecords: 64, liveRepositories: 64, totalRecords: 13739, excludedRecords: 795, excludedMatches: 0 },
+        { source: 'awesome-dsh-plugin/awesome-dsh-plugin', kind: 'yaml-tree', status: 'available', results: 8 },
+        { source: '0xsline/awesome-deepseek-harness', kind: 'markdown-table', status: 'available', results: 8 },
+      ],
+    },
     addedEntries: [{ id: 'new-plugin', reasons: ['runtime dependency requires review'] }],
     updatedEntries: [
       { id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0', changeKind: 'version-update' },
@@ -99,6 +111,8 @@ test('Catalog notification separates additions, historical updates, and deferred
   })
   assert.match(output, /综合结果：\*\*通过\*\*/)
   assert.match(output, /新增收录：1 个（可安装 0，blocked\/不可安装 1）/)
+  assert.match(output, /固定主目录扫描：`bruc3van\/awesome-dsh-plugin`；本轮窗口 64 条；解析到 64 个有效仓库；索引 13739 条；排除表 795 项（命中索引 0 项）；固定 Commit 检查 10 次/)
+  assert.match(output, /新插件发现\/扫描：27 个唯一仓库；固定 Commit 检查 16 \/ 64；GitHub 搜索 1\/1 条可用，社区目录 3\/3 个可用/)
   assert.match(output, /历史版本自动更新：1 个/)
   assert.match(output, /同版本固定 Commit 更新：1 个/)
   assert.match(output, /上游源码变化但未提升版本：3 个（固定 Commit 已更新 1，暂缓 2）/)
