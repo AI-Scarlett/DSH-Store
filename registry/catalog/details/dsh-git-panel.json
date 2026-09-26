@@ -1,49 +1,50 @@
 {
-  "id": "dsh-desktop-companion",
-  "name": "桌面客户端（DSH Desktop Companion）",
-  "packageName": "dsh-desktop-companion",
-  "description": "DeepSeek Harness Desktop 的桌面伴生插件：外部链接接管系统浏览器等壳集成能力。Desktop shell companion for dotnet-deepseek-harness-desktop.",
+  "id": "dsh-git-panel",
+  "name": "GitHub 工程工具（DSH Git Panel）",
+  "packageName": "@xbzbing/dsh-git-panel",
+  "description": "为 DSH 提供GitHub 工程工具能力。英文原始说明：DeepSeek Harness (dsh) plugin: an IDE-style Git panel in the Web GUI — branch/history overview, uncommitted changes with commit & amend, diff stats, and a zsh-style branch marker in the input bar.",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Companion",
-    "dsh-desktop-companion",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "GitHub 工程工具",
+    "DSH Git Panel",
+    "dsh-git-panel",
+    "@xbzbing/dsh-git-panel",
+    "GitHub",
+    "Git",
+    "代码审查",
+    "PR",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "companion"
+    "git",
+    "panel"
   ],
-  "repositoryUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop",
+  "repositoryUrl": "https://github.com/xbzbing/dsh-git-panel",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-companion/package.json",
-  "installPath": "plugins/dsh-desktop-companion",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ec515cccd0a8b32f2e2791ab9a6777a5cfa454ed",
-  "version": "0.0.18",
+  "commit": "93abfa01145ef0a00b5e377a41cbd699c255e603",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-26T12:00:03.000Z",
+    "updatedAt": "2026-09-26T12:46:50.000Z",
     "observedAt": "2026-09-26T12:43:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-26T12:43:14.000Z",
-      "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/ec515cccd0a8b32f2e2791ab9a6777a5cfa454ed",
+      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/93abfa01145ef0a00b5e377a41cbd699c255e603",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-desktop-companion"
+    "git-panel"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +165,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -187,7 +188,9 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
