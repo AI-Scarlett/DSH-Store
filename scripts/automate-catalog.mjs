@@ -930,8 +930,8 @@ async function writeCatalogFiles(bridgeBuffer, indexBuffer, details) {
 function isDirectInvocation() {
   if (!process.argv[1]) return false
   try {
-    const invoked = realpathSync(process.argv[1])
-    const module = realpathSync(fileURLToPath(import.meta.url))
+    const invoked = realpathSync.native(process.argv[1])
+    const module = realpathSync.native(fileURLToPath(import.meta.url))
     return process.platform === 'win32'
       ? invoked.toLowerCase() === module.toLowerCase()
       : invoked === module

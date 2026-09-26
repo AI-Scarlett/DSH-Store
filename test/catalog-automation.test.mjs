@@ -312,14 +312,17 @@ test('failed Catalog automation preserves a machine-readable failure report befo
   assert.equal(Object.hasOwn(report, 'postconditions'), false)
 })
 
-test('Catalog CLI through a linked checkout still rejects unknown arguments before scanning', async () => {
+test('Catalog CLI through linked and lowercase linked checkouts rejects unknown arguments before scanning', async () => {
   const fixture = await mkdtemp(join(tmpdir(), 'dsh-catalog-linked-cli-'))
   try {
     const checkout = join(fixture, 'checkout')
     await symlink(rootPath, checkout, process.platform === 'win32' ? 'junction' : 'dir')
-    await assert.rejects(execFileAsync(process.execPath, [
-      join(checkout, 'scripts', 'automate-catalog.mjs'), '--unknown-fixture-argument',
-    ]), error => error.code === 1 && /unknown argument: --unknown-fixture-argument/.test(error.stderr))
+    const entry = join(checkout, 'scripts', 'automate-catalog.mjs')
+    const invocations = new Set([entry, process.platform === 'win32' ? entry.toLowerCase() : entry])
+    for (const invocation of invocations) {
+      await assert.rejects(execFileAsync(process.execPath, [invocation, '--unknown-fixture-argument']),
+        error => error.code === 1 && /unknown argument: --unknown-fixture-argument/.test(error.stderr))
+    }
   } finally {
     await rm(fixture, { recursive: true, force: true })
   }
