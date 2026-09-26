@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-26T03:57:43.000Z",
+    "updatedAt": "2026-09-26T12:43:14.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -7831,27 +7831,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-toy."
     },
     {
-      "id": "hotsteel2901-dsh-client-ui-mobile-adapt",
-      "name": "移动端与远程访问（DSH Client UI Mobile Adapt）",
-      "description": "为 DSH 提供移动端与远程访问能力。英文原始说明：Mobile adaptation for the DeepSeek Harness Web GUI: single-column layout, sidebar drawer, compact header/composer, fullscreen settings, trajectory floating details, stats pill panel",
-      "repositoryUrl": "https://github.com/Hotsteel2901/dsh-client-ui-mobile-adapt",
-      "defaultBranch": "main",
-      "latestCommit": "6a0708750e881477250bb16d764058beca7036fd",
-      "sourceUpdatedAt": "2026-09-19T08:46:28.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "ui",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-client-ui-mobile-adapt."
-    },
-    {
       "id": "caopu16-dsh-llm-kiro",
       "name": "模型提供商接入（DSH LLM Kiro）",
       "description": "为 DSH 提供模型提供商接入能力。英文原始说明：AWS Kiro (CodeWhisperer) adapter for the DeepSeek Harness LLM seam: Claude and open-weight models through one signed-in Kiro account",
@@ -9668,8 +9647,8 @@
       "description": "为 DSH 提供任务 DAG 看板能力。英文原始说明：Persistent live DAG visualization for DeepSeek Harness subagents and workflows",
       "repositoryUrl": "https://github.com/LeemanCheung/dsh-task-dag",
       "defaultBranch": "main",
-      "latestCommit": "8fe407f525823091523cd31bc940342feb83b7d1",
-      "sourceUpdatedAt": "2026-09-05T05:53:59.000Z",
+      "latestCommit": "8959f353bcdad728580062bcffed0763725ad4af",
+      "sourceUpdatedAt": "2026-09-26T10:03:06.000Z",
       "discoveredAt": "2026-09-08T21:29:07.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10518,26 +10497,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "anionex-dsh-turn-rewind",
-      "name": "会话回退（DSH Turn Rewind）",
-      "description": "为 DSH 会话提供回合回退能力。",
-      "repositoryUrl": "https://github.com/Anionex/dsh-turn-rewind",
-      "defaultBranch": "main",
-      "latestCommit": "4ddc9c1de01cbb740079223df48350976351ae1b",
-      "sourceUpdatedAt": "2026-09-14T06:57:33.000Z",
-      "discoveredAt": "2026-09-18T13:50:17.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "sessions",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-turn-rewind."
-    },
-    {
       "id": "cloader-dsh-taskboard",
       "name": "任务与工作流自动化（DSH Taskboard）",
       "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
@@ -10556,26 +10515,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-taskboard."
-    },
-    {
-      "id": "anionex-dsh-computer-use",
-      "name": "安全防护工具（DSH Computer Use）",
-      "description": "macOS 电脑控制：Accessibility 观测、过期状态拒绝、作用域权限与安全输入。",
-      "repositoryUrl": "https://github.com/Anionex/dsh-computer-use",
-      "defaultBranch": "main",
-      "latestCommit": "ba0d29308005744de969803453ce87d02a02cf51",
-      "sourceUpdatedAt": "2026-09-10T08:03:01.000Z",
-      "discoveredAt": "2026-09-18T13:50:17.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: anionex-dsh-computer-use."
     },
     {
       "id": "shaokeyibb-dsh-plugin-product-subagents",
@@ -12400,26 +12339,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-launcher-lifetime."
     },
     {
-      "id": "gezi-wen-sage-mem",
-      "name": "配置导入迁移（Sage Mem）",
-      "description": "基于文件的跨会话记忆：纯 Markdown 记忆文件，检索结果自动注入；格式与 Claude Code 的 CLAUDE.md 及记忆文件兼容，迁移即手工复制文件。",
-      "repositoryUrl": "https://github.com/gezi-wen/sage-mem",
-      "defaultBranch": "main",
-      "latestCommit": "528010cf89cd1b5bd1c533e2000ac3f12852f133",
-      "sourceUpdatedAt": "2026-09-18T16:31:11.000Z",
-      "discoveredAt": "2026-09-24T01:36:44.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "memory",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: sage-mem."
-    },
-    {
       "id": "moguiyu-dsh-tavily",
       "name": "联网搜索工具（DSH Tool Tavily Search）",
       "description": "Tavily 多密钥搜索：支持密钥轮换/故障转移、用量仪表盘与设置卡片。",
@@ -13569,6 +13488,91 @@
         "dsh-codevault",
         "dsh-plugin",
         "obsidian",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "173787247-dsh-wsl-ollama",
+      "name": "173787247/dsh-wsl-ollama",
+      "description": "DeepSeek Harness WSL plugin (dsh-wsl-ollama)",
+      "repositoryUrl": "https://github.com/173787247/dsh-wsl-ollama",
+      "defaultBranch": "master",
+      "latestCommit": "688ab5da94ddae12e9c54fb9e8f9ae18bc64ba3d",
+      "sourceUpdatedAt": "2026-09-26T04:43:17.000Z",
+      "discoveredAt": "2026-09-26T12:43:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/173787247__dsh-wsl-ollama.yml:sha256=e7925dcfdc80571777e15e243f7d71ea9a148c543dcf02438b1325e86277353e:at=2026-09-26T12:46:56.519Z:owner=25984532"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "wsl",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "173787247-dsh-wsl-obsidian",
+      "name": "173787247/dsh-wsl-obsidian",
+      "description": "DeepSeek Harness WSL bridge to a Windows Obsidian vault (status/open/read/write/search).",
+      "repositoryUrl": "https://github.com/173787247/dsh-wsl-obsidian",
+      "defaultBranch": "master",
+      "latestCommit": "ea50a20c92363a3133e70b404c1db970ce44ffeb",
+      "sourceUpdatedAt": "2026-09-26T04:43:16.000Z",
+      "discoveredAt": "2026-09-26T12:43:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/173787247__dsh-wsl-obsidian.yml:sha256=a6e7be0dc20e389c2fd51d863ffaf2eeb18ad883d113c0d99372d3a839ca0453:at=2026-09-26T12:46:56.519Z:owner=25984532"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "wsl",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "173787247-dsh-wsl-picker",
+      "name": "173787247/dsh-wsl-picker",
+      "description": "Browse WSL directories from / and /mnt drives for workspace picking.",
+      "repositoryUrl": "https://github.com/173787247/dsh-wsl-picker",
+      "defaultBranch": "master",
+      "latestCommit": "837a1ee6479b78e74909adc30dfda2e0f86b7478",
+      "sourceUpdatedAt": "2026-09-26T04:41:15.000Z",
+      "discoveredAt": "2026-09-26T12:43:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/173787247__dsh-wsl-picker.yml:sha256=957b80cdb5d3e9eead794381334461e12353e8193c6362dbdf9c62985ab57f71:at=2026-09-26T12:46:56.519Z:owner=25984532"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "173787247-dsh-wsl-notify",
+      "name": "173787247/dsh-wsl-notify",
+      "description": "DeepSeek Harness tool: Windows MessageBox notification from WSL.",
+      "repositoryUrl": "https://github.com/173787247/dsh-wsl-notify",
+      "defaultBranch": "master",
+      "latestCommit": "878819cc91f4673837bb3933eb026005b7966bf5",
+      "sourceUpdatedAt": "2026-09-26T04:41:13.000Z",
+      "discoveredAt": "2026-09-26T12:43:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/173787247__dsh-wsl-notify.yml:sha256=72045d08dd3c18eed7175bdef5011f80828df5ab7c8d4cd26ccfa7316df64850:at=2026-09-26T12:46:56.519Z:owner=25984532"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "wsl",
         "automatic-radar"
       ],
       "status": "reviewing",

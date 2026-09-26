@@ -24,7 +24,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "4ddc9c1de01cbb740079223df48350976351ae1b",
+  "commit": "87f59ef8a0e6c20170926e8cc3bbd13a58528f93",
   "version": "0.3.8",
   "categories": [
     "sessions"
@@ -32,16 +32,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-14T06:57:33.000Z",
-    "observedAt": "2026-09-14T13:24:37.000Z",
+    "updatedAt": "2026-09-26T11:30:42.000Z",
+    "observedAt": "2026-09-26T12:43:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-14T13:24:37.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-turn-rewind/commit/4ddc9c1de01cbb740079223df48350976351ae1b",
+      "checkedAt": "2026-09-26T12:43:14.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-turn-rewind/commit/87f59ef8a0e6c20170926e8cc3bbd13a58528f93",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,10 +81,10 @@
   "entryIds": [
     "turn-rewind"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || ^0.1.7-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -107,7 +107,7 @@
       "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
