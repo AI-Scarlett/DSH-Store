@@ -1,10 +1,10 @@
 import { createHash } from 'node:crypto'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
-import { dirname, relative, resolve } from 'node:path'
+import { dirname, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { buildAutomationStatus } from '../src/automation-status.mjs'
+import { automationReportRunId, buildAutomationStatus } from '../src/automation-status.mjs'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -81,8 +81,7 @@ async function readAutomationReports(directory) {
       else if (entry.isFile() && entry.name === 'catalog-automation-report.json') {
         const bytes = await readFile(absolute)
         if (bytes.length > 1_000_000) throw new Error('automation report exceeds the byte bound')
-        const firstSegment = relative(root, absolute).split('/')[0]
-        reports.push({ runId: /^\d+$/.test(firstSegment) ? Number(firstSegment) : null, report: JSON.parse(bytes.toString('utf8')) })
+        reports.push({ runId: automationReportRunId(relative(root, absolute), sep), report: JSON.parse(bytes.toString('utf8')) })
       }
     }
   }
