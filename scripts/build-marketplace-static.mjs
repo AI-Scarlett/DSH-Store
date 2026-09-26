@@ -482,6 +482,24 @@ var _hmt = _hmt || [];
   s.parentNode.insertBefore(hm, s);
 })();
 </script>` : ''
+const umamiWebsiteId = isDomestic
+  ? '763ad43e-f5c9-4342-9a82-8366d1ea90df'
+  : 'c0cf0ce3-b77c-4570-9573-59c07a583950'
+const umamiMarkup = `<script>
+(function () {
+  if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true) return;
+  var script = document.createElement('script');
+  script.src = 'https://aiaiai.help/umami/script.js';
+  script.async = true;
+  script.dataset.websiteId = '${umamiWebsiteId}';
+  script.dataset.hostUrl = 'https://aiaiai.help/umami';
+  script.dataset.domains = '${siteHost}';
+  script.dataset.doNotTrack = 'true';
+  script.dataset.excludeSearch = 'true';
+  script.dataset.excludeHash = 'true';
+  document.head.appendChild(script);
+})();
+</script>`
 for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
@@ -496,11 +514,12 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
   const withBaiduTongji = baiduTongjiMarkup
     ? replaceRequired(withBaiduUnionVerification, '</head>', `${baiduTongjiMarkup}\n</head>`, `${pagePath} head`)
     : withBaiduUnionVerification
+  const withUmami = replaceRequired(withBaiduTongji, '</head>', `${umamiMarkup}\n</head>`, `${pagePath} Umami head`)
   const pageLanguage = fixedLocale || htmlLanguage
   const pageDefaultLocale = fixedLocale === 'zh-CN' ? 'zh' : defaultLocale
   const fixedLocaleAttribute = fixedLocale ? ` data-fixed-locale="${fixedLocale}"` : ''
-  const localizedDocument = withBaiduTongji.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
-  if (localizedDocument === withBaiduTongji) throw new Error(`${pagePath} html language marker is missing`)
+  const localizedDocument = withUmami.replace('<html lang="zh-CN">', `<html lang="${pageLanguage}" data-default-locale="${pageDefaultLocale}"${fixedLocaleAttribute}>`)
+  if (localizedDocument === withUmami) throw new Error(`${pagePath} html language marker is missing`)
   await writeFile(absolutePath, localizedDocument)
 }
 
