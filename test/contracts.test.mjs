@@ -80,6 +80,12 @@ test('static storefront templates expose the cross-site navigation and analytics
   }
 })
 
+test('scan history reads automatic run summaries from the published Pages data source', async () => {
+  const scans = await readFile(new URL('marketplace/scans/index.html', project), 'utf8')
+  assert.match(scans, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
+  assert.doesNotMatch(scans, /data-automation-status-url="\.\.\/\.\.\/automation-status\.json"/)
+})
+
 test('community has a standalone route and the inner pages share the redesign stylesheet', async () => {
   const [home, community, builder, staticBuilder, redesignStyles] = await Promise.all([
     readFile(new URL('marketplace/index.html', project), 'utf8'),

@@ -220,7 +220,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(manualScan.scanId, 'DSH-STORE-MANUAL-BASELINE-13739-20260925')
     assert.match(scans, /role="tablist"/)
     assert.match(scans, /aria-controls="panel-automatic"/)
-    assert.match(scans, /data-automation-status-url="\.\.\/\.\.\/automation-status\.json"/)
+    assert.match(scans, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
     assert.equal(manualScan.source.sourceCount, 13739)
     assert.equal(manualScan.source.processedCount, 13739)
     assert.deepEqual(manualScan.classificationCounts, {
