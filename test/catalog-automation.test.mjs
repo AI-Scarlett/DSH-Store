@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, symlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -8,6 +8,7 @@ import test from 'node:test'
 import { promisify } from 'node:util'
 import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
 import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
+import { analyzeFixedSource, hardSourceReviewReasons, isSafeSelfManagerUpdate } from '../scripts/automate-catalog.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
@@ -30,6 +31,7 @@ test('permission scan ignores inert Catalog metadata and ordinary identifiers', 
     commands: false,
     credentials: false,
     protectedDsh: false,
+    toolViews: false,
   })
 })
 
@@ -40,7 +42,71 @@ test('protected DSH detection distinguishes direct mutations from static audit r
   assert.equal(permissionSignals(`Fiber.disable('official-plugin')`).protectedDsh, true)
   assert.equal(permissionSignals(`window.__ModuleLoader__.unload('official-plugin')`).protectedDsh, true)
   assert.equal(permissionSignals(`@deepseek-ai/dsh-web-app disabled: true`).protectedDsh, true)
-  assert.equal(permissionSignals(`tool.call.toolview`).protectedDsh, true)
+  assert.equal(permissionSignals(`tool.call.toolview`).protectedDsh, false)
+  assert.equal(permissionSignals(`tool.call.toolview`).toolViews, true)
+})
+
+test('fixed-source admission and existing-entry updates retain the Tool-view review gate', async () => {
+  const policy = JSON.parse(await read('registry/automation-policy.json'))
+  const candidate = {
+    repositoryUrl: 'https://github.com/example/dsh-image-fixture',
+    commit: 'a'.repeat(40), manifestPath: 'package.json',
+    compatibility: { dsh: '>=0.1.0 <0.2.0', node: '>=22.19.0' },
+    details: { license: 'MIT' }, risk: { installScripts: [] },
+  }
+  const manifest = {
+    name: 'dsh-image-fixture', repository: candidate.repositoryUrl,
+    main: './client.mjs', files: ['client.mjs'],
+  }
+  const cases = [
+    ['ordinary client', `export const title = 'image fixture'`, true],
+    ['plugin-key renderer', `ctx.slots.register({ name: 'tool.call.toolview', key: 'dsh-image-fixture.render' }, ImageRow)`, false],
+    ['unkeyed catch-all', `ctx.slots.register('tool.call.toolview', CatchAllRow)`, false],
+    ['official-key fixture', `ctx.slots.register({ name: 'tool.call.toolview', key: 'official_file_read' }, ImageRow)`, false],
+    ['dynamic key', `ctx.slots.register({ name: 'tool.call.toolview', key: pluginName + '.render' }, ImageRow)`, false],
+  ]
+  for (const [label, source, expectedApproved] of cases) {
+    const github = {
+      api: async path => {
+        if (path === 'repos/example/dsh-image-fixture') return { license: { spdx_id: 'MIT' } }
+        assert.equal(path, `repos/example/dsh-image-fixture/git/trees/${candidate.commit}?recursive=1`)
+        return { tree: ['package.json', 'client.mjs'].map(path => ({ type: 'blob', mode: '100644', path, size: 512 })) }
+      },
+      raw: async (repository, commit, path) => {
+        assert.equal(repository, candidate.repositoryUrl)
+        assert.equal(commit, candidate.commit)
+        if (path === 'package.json') return JSON.stringify(manifest)
+        assert.equal(path, 'client.mjs')
+        return source
+      },
+    }
+    // A policy written before toolViews existed must still block it. Explicit
+    // true cannot waive ownership review either.
+    for (const override of [{}, { toolViews: true }, { toolViews: false }]) {
+      const settings = { ...policy, automaticApproval: {
+        ...policy.automaticApproval,
+        permissionSignals: { ...policy.automaticApproval.permissionSignals, ...override },
+      } }
+      const result = await analyzeFixedSource(candidate, settings, github)
+      assert.equal(result.approved, expectedApproved, label)
+      assert.equal(result.signals.toolViews, !expectedApproved, label)
+      assert.equal(result.signals.protectedDsh, false, label)
+      if (expectedApproved) {
+        assert.deepEqual(result.reasons, [], label)
+      } else {
+        assert.equal(result.reasons.length, 1, label)
+        assert.match(result.reasons[0], /manual scope and key-ownership review/, label)
+        // user-reviewed updates filter ordinary capability reasons, but this
+        // new registration still requires review at the new fixed Commit.
+        assert.deepEqual(hardSourceReviewReasons([
+          ...result.reasons, 'runtime source contains the network permission signal',
+        ]), result.reasons, label)
+        assert.equal(isSafeSelfManagerUpdate({
+          id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+        }, result.reasons), false, label)
+      }
+    }
+  }
 })
 
 test('permission scan still fails closed on executable capability signals', () => {
@@ -244,6 +310,22 @@ test('failed Catalog automation preserves a machine-readable failure report befo
   assert.equal(report.failure.stage, 'validate-authority')
   assert.match(report.failure.message, /full Git SHA/)
   assert.equal(Object.hasOwn(report, 'postconditions'), false)
+})
+
+test('Catalog CLI through linked and lowercase linked checkouts rejects unknown arguments before scanning', async () => {
+  const fixture = await mkdtemp(join(tmpdir(), 'dsh-catalog-linked-cli-'))
+  try {
+    const checkout = join(fixture, 'checkout')
+    await symlink(rootPath, checkout, process.platform === 'win32' ? 'junction' : 'dir')
+    const entry = join(checkout, 'scripts', 'automate-catalog.mjs')
+    const invocations = new Set([entry, process.platform === 'win32' ? entry.toLowerCase() : entry])
+    for (const invocation of invocations) {
+      await assert.rejects(execFileAsync(process.execPath, [invocation, '--unknown-fixture-argument']),
+        error => error.code === 1 && /unknown argument: --unknown-fixture-argument/.test(error.stderr))
+    }
+  } finally {
+    await rm(fixture, { recursive: true, force: true })
+  }
 })
 
 test('author remediation notifications are hash-bound, rate-limited, and use only the repository token', async () => {

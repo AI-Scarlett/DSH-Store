@@ -62,8 +62,24 @@ export function permissionSignals(source) {
     credentials: /process\.env/i.test(source)
       || /\b(?:keychain|credentials?|oauth)\b\s*(?:\.|\[|\()/i.test(source)
       || /\b(?:api[_-]?key|apiKey|access[_-]?token|accessToken|client[_-]?secret|clientSecret|password)\b/i.test(source),
-    protectedDsh: /(?:\b__ModuleLoader__\s*\.\s*(?:unload|remove)\s*\(|\b(?:ctx\s*\.\s*)?(?:loader|fiber|Loader|Fiber)\s*\.\s*(?:insert|remove|patch|enable|disable|write|mutate|replace)\s*\(|@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true|tool\.call\.toolview)/i.test(source),
+    protectedDsh: /(?:\b__ModuleLoader__\s*\.\s*(?:unload|remove)\s*\(|\b(?:ctx\s*\.\s*)?(?:loader|fiber|Loader|Fiber)\s*\.\s*(?:insert|remove|patch|enable|disable|write|mutate|replace)\s*\(|@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true)/i.test(source),
+    // The documented slot is not itself an official-component mutation. This
+    // bounded text scan cannot prove renderer scope or ownership of its key.
+    toolViews: /tool\.call\.toolview/i.test(source),
   }
+}
+
+export function permissionSignalReasons(signals, allowedSignals = {}) {
+  const reasons = []
+  // Fail closed independently of the configurable capability allowlist. A
+  // literal key, including a package-prefixed key, is not ownership evidence.
+  if (signals.toolViews) reasons.push('runtime Tool-view slot use requires manual scope and key-ownership review')
+  for (const [signal, allowed] of Object.entries(allowedSignals)) {
+    if (signal !== 'toolViews' && !allowed && signals[signal]) {
+      reasons.push(`runtime source contains the ${signal} permission signal`)
+    }
+  }
+  return reasons
 }
 
 export function missingRuntimeEntryReasons(manifest, entries, prefix = '') {

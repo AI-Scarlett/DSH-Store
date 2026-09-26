@@ -2,6 +2,7 @@
 
 import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
 import { createHash } from 'node:crypto'
+import { realpathSync } from 'node:fs'
 import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -29,7 +30,7 @@ import {
 } from '../src/catalog.mjs'
 import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { isBoundedSourceLineage, isGeneratedSelfManagerCatalogDetail, isTestSourceFile, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
+import { isBoundedSourceLineage, isGeneratedSelfManagerCatalogDetail, isTestSourceFile, permissionSignals, permissionSignalReasons, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -127,7 +128,7 @@ function routeForFailure(code) {
   return 'blocked'
 }
 
-function isSafeSelfManagerUpdate(entry, hardReasons) {
+export function isSafeSelfManagerUpdate(entry, hardReasons) {
   const repository = isSelfManagerEntry(entry) ? SELF_MANAGER_REPOSITORY.toLowerCase() : null
   const reason = hardReasons?.length === 1 ? String(hardReasons[0]).trim() : null
   return repository === SELF_MANAGER_REPOSITORY.toLowerCase()
@@ -239,11 +240,11 @@ function packagePrefix(candidate) {
   return candidate.installPath ? `${candidate.installPath.replace(/\/$/, '')}/` : ''
 }
 
-async function analyzeFixedSource(candidate, policy, github) {
+export async function analyzeFixedSource(candidate, policy, github) {
   const reasons = []
   const signals = {
     files: false, network: false, commands: false, credentials: false,
-    protectedDsh: false, nativeOrExecutableArtifacts: false,
+    protectedDsh: false, toolViews: false, nativeOrExecutableArtifacts: false,
   }
   const { owner, repository } = repositoryParts(candidate.repositoryUrl)
   const metadata = await github.api(`repos/${owner}/${repository}`)
@@ -332,9 +333,7 @@ async function analyzeFixedSource(candidate, policy, github) {
       for (const source of sources) mergeSignals(signals, permissionSignals(source))
     }
   }
-  for (const [signal, allowed] of Object.entries(policy.automaticApproval.permissionSignals)) {
-    if (!allowed && signals[signal]) reasons.push(`runtime source contains the ${signal} permission signal`)
-  }
+  reasons.push(...permissionSignalReasons(signals, policy.automaticApproval.permissionSignals))
   return {
     approved: reasons.length === 0,
     reasons: [...new Set(reasons)].slice(0, 20), signals,
@@ -434,12 +433,7 @@ async function discoverRepositories(policy, github) {
   return orderDiscoveryCandidates(found.values())
 }
 
-async function updateExistingEntries(catalog, policy, github, observedAt, report) {
-  const baselineCatalog = { ...catalog, entries: [...catalog.entries] }
-  const repositorySnapshots = new Map()
-  const updatePolicy = policy.updates ?? {}
-  const concurrency = Number.isInteger(updatePolicy.concurrency) ? updatePolicy.concurrency : 8
-  const maxCommitSpan = Number.isInteger(updatePolicy.maxCommitSpan) ? updatePolicy.maxCommitSpan : 200
+export function hardSourceReviewReasons(reasons) {
   const reviewableReasons = [
     'DSH compatibility is not explicitly declared',
     'Node.js compatibility is not explicitly declared',
@@ -452,6 +446,15 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     'runtime source contains the credentials permission signal',
     'runtime source contains the nativeOrExecutableArtifacts permission signal',
   ]
+  return reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
+}
+
+async function updateExistingEntries(catalog, policy, github, observedAt, report) {
+  const baselineCatalog = { ...catalog, entries: [...catalog.entries] }
+  const repositorySnapshots = new Map()
+  const updatePolicy = policy.updates ?? {}
+  const concurrency = Number.isInteger(updatePolicy.concurrency) ? updatePolicy.concurrency : 8
+  const maxCommitSpan = Number.isInteger(updatePolicy.maxCommitSpan) ? updatePolicy.maxCommitSpan : 200
 
   function sourceSnapshot(entry) {
     const key = entry.repositoryUrl.toLowerCase()
@@ -594,7 +597,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         : policy
       const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, analysisPolicy, github))
       const sourcePolicy = catalogUpdatePolicy(entry)
-      const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
+      const hardReasons = hardSourceReviewReasons(analysis.reasons)
       const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
       if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: analysis.reasons.join('; ') }
@@ -924,6 +927,21 @@ async function writeCatalogFiles(bridgeBuffer, indexBuffer, details) {
   await atomicWrite(catalogPath, bridgeBuffer)
 }
 
+function isDirectInvocation() {
+  if (!process.argv[1]) return false
+  try {
+    const invoked = realpathSync.native(process.argv[1])
+    const module = realpathSync.native(fileURLToPath(import.meta.url))
+    return process.platform === 'win32'
+      ? invoked.toLowerCase() === module.toLowerCase()
+      : invoked === module
+  } catch {
+    return false
+  }
+}
+
+// Imports must not scan; direct invocations through linked checkouts still run.
+if (isDirectInvocation()) {
 const options = parseArgs(process.argv.slice(2))
 const failureContext = {
   options,
@@ -1152,4 +1170,5 @@ process.stdout.write(`CATALOG_AUTOMATION_OK plan=${report.planId} catalogChanged
     throw new AggregateError([error, reportError], 'Catalog automation failed and its failure report could not be preserved')
   }
   throw error
+}
 }
