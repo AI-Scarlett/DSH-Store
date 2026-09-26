@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-25T19:52:53.000Z",
+    "updatedAt": "2026-09-26T03:57:43.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -9857,8 +9857,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "fc96f9bb7333ed68efad5295deb92b5a7d3cccce",
-      "sourceUpdatedAt": "2026-09-25T03:52:05.000Z",
+      "latestCommit": "4bea0bdfeebdd63ad03e23f25caa8149a439b3e3",
+      "sourceUpdatedAt": "2026-09-26T02:57:09.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10543,8 +10543,8 @@
       "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
       "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
       "defaultBranch": "main",
-      "latestCommit": "92af89a8b7a4eaac9af311670e9aa09b3369e2e2",
-      "sourceUpdatedAt": "2026-09-24T13:40:51.000Z",
+      "latestCommit": "92805f91e947eab83fea32f3592a0ad3cfd58183",
+      "sourceUpdatedAt": "2026-09-26T03:25:05.000Z",
       "discoveredAt": "2026-09-18T13:50:17.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13441,6 +13441,134 @@
         "originpro",
         "plotting",
         "scientific-plotting",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "0xrabit-dsh-crypto-portfolio",
+      "name": "0xRabit/dsh-crypto-portfolio",
+      "description": "A free, 100% self-hosted DeepSeek Harness plugin that unifies your on-chain and CEX assets.",
+      "repositoryUrl": "https://github.com/0xRabit/dsh-crypto-portfolio",
+      "defaultBranch": "main",
+      "latestCommit": "ef0af277a23def84500c1982f17962b6cca035bd",
+      "sourceUpdatedAt": "2026-09-26T00:45:02.000Z",
+      "discoveredAt": "2026-09-26T03:57:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/0xRabit__dsh-crypto-portfolio.yml:sha256=f41ea9b14ceac56bcc381d6436da7476427b393bbd6b50e409bc7ef1c9359f04:at=2026-09-26T04:01:37.134Z:owner=12903884"
+      ],
+      "topics": [
+        "bitcoin",
+        "crypto",
+        "cryptoportfolio",
+        "deepseek-harness",
+        "dsh-plugin",
+        "ethereum",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "0xsline-dsh-spotlight",
+      "name": "0xsline/dsh-spotlight",
+      "description": "Keyboard-first command palette for DeepSeek Harness Web",
+      "repositoryUrl": "https://github.com/0xsline/dsh-spotlight",
+      "defaultBranch": "main",
+      "latestCommit": "b3565e8629d9a393d764681e96f4c41100cc12fa",
+      "sourceUpdatedAt": "2026-08-24T09:03:09.000Z",
+      "discoveredAt": "2026-09-26T03:57:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/0xsline__dsh-spotlight.yml:sha256=f2e57fd91a7fdb08ce08c4b414d1a670370a35d011a54181676f6a4c8a28b026:at=2026-09-26T04:01:37.134Z:owner=151105947"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "1010n111-dsh-about",
+      "name": "1010n111/dsh-about",
+      "description": "为 DeepSeek Harness Web 设置面板添加“关于”页，展示当前运行的 DSH 版本、插件版本与项目主页。",
+      "repositoryUrl": "https://github.com/1010n111/dsh-about",
+      "defaultBranch": "main",
+      "latestCommit": "febf7b0da6a2255ddfd84028c624ad9e4953dd83",
+      "sourceUpdatedAt": "2026-09-04T06:22:28.000Z",
+      "discoveredAt": "2026-09-26T03:57:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/1010n111__dsh-about.yml:sha256=2573e45559a4b193a90e9527491fb615140b47d98a3b8c0860354eaf5d7fe637:at=2026-09-26T04:01:37.134Z:owner=14970614"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "acryldev-acryl",
+      "name": "acryldev/acryl",
+      "description": "ACRYL - Agent Context Relay Yielding Lifecycles. One persistent workspace, one canonical context, any coding agent.",
+      "repositoryUrl": "https://github.com/acryldev/acryl",
+      "defaultBranch": "main",
+      "latestCommit": "0592b87cafeda6086bad24fd476d1a005e9072c7",
+      "sourceUpdatedAt": "2026-09-26T04:00:54.000Z",
+      "discoveredAt": "2026-09-26T03:57:43.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "acryl",
+        "agent-context-relay",
+        "agentic",
+        "agentic-ai",
+        "agentic-coding",
+        "agentic-development-environment",
+        "agentic-workflow",
+        "agentic-workflows",
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "ai-coding",
+        "ai-tools",
+        "coding-agent",
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "pi",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "1014029855-dsh-codevault",
+      "name": "1014029855/dsh-codevault",
+      "description": "Records what you understood while reading open-source code — quick notes and deep notes grouped into one card per repo/file/symbol, stored as Markdown you can open in Obsidian.",
+      "repositoryUrl": "https://github.com/1014029855/dsh-codevault",
+      "defaultBranch": "main",
+      "latestCommit": "14dcb88d65f7d9fcf30b3e6adac5764f705ffae9",
+      "sourceUpdatedAt": "2026-09-16T05:38:35.000Z",
+      "discoveredAt": "2026-09-26T03:57:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dcdc99e4f5255b72bfe134e96280018098c01e12:data/plugins/1014029855__dsh-codevault.yml:sha256=f6847dd507fa813d2d3fdac19303e73bed53a4844b12d4b73bc50b8d3148c2d8:at=2026-09-26T04:01:37.134Z:owner=42533671"
+      ],
+      "topics": [
+        "code-reading",
+        "dsh-codevault",
+        "dsh-plugin",
+        "obsidian",
         "automatic-radar"
       ],
       "status": "reviewing",
