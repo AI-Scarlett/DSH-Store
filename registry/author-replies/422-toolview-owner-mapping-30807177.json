@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 422,
+  "userId": 30807177,
+  "requestCommentId": 5844964002,
+  "requestBodySha256": "cdb1eca70a58b5f39ddf3a775ca1228318444f2d2873f7299d9eb741b277aa62",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "scope": "Answer only the author's explicit question about a trustworthy Tool-view key-to-owner mapping for fixed-commit admission; confirm the current manual-review gate and no automatic exemption. Do not address unrelated catalog listing, DSH compatibility, or offer ongoing support.",
+    "requestQuote": "Before adding an exemption, which trusted source should bind a key to its owner at the fixed commit?"
+  },
+  "responseBody": "There is no trusted key-to-owner mapping available to the fixed-commit Catalog scanner today. A key declared by the plugin itself, including a package-name or repository-name prefix, is self-asserted and does not prove ownership. The safe current boundary is to keep every Tool-view registration behind manual scope and key-ownership review. Do not add an automatic exemption until DSH provides a verifiable ownership contract or DSH Store maintains a centrally reviewed mapping from the canonical immutable repository identity to the key, checked against the pinned source commit. So the fail-closed gate in this revision is the right behavior for now."
+}
