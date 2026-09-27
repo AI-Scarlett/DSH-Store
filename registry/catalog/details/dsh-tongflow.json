@@ -23,24 +23,24 @@
   "manifestPath": "packages/dsh-tongflow/package.json",
   "installPath": "packages/dsh-tongflow",
   "updatePolicy": "external-only",
-  "commit": "f8016de403bf0a022ecb52355e8db10cb89352d7",
-  "version": "0.8.2",
+  "commit": "36e103c0ab6f6919c524051ab67448e1d057b339",
+  "version": "0.8.3",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T11:27:34.000Z",
-    "observedAt": "2026-09-25T13:19:47.000Z",
+    "updatedAt": "2026-09-27T03:55:34.000Z",
+    "observedAt": "2026-09-27T04:08:59.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-25T13:19:47.000Z",
-      "evidenceUrl": "https://github.com/tong-io/tongflow/commit/f8016de403bf0a022ecb52355e8db10cb89352d7",
+      "checkedAt": "2026-09-27T04:08:59.000Z",
+      "evidenceUrl": "https://github.com/tong-io/tongflow/commit/36e103c0ab6f6919c524051ab67448e1d057b339",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,9 +81,9 @@
     "tongflow"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission sign",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permis",
   "compatibility": {
-    "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0 || ^0.1.5-alpha.0",
+    "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0 || ^0.1.5-alpha.0 || ^0.1.7-alpha.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,9 +93,10 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
+      "0.1.5-rc.2": "compatible",
+      "0.1.7-rc.2": "compatible",
       "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,6 +147,18 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.1.7-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -157,15 +170,9 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"

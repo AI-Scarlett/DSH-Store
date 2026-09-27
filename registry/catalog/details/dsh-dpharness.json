@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "389369c0052c6f91ac900716a45f9b412cd0dbee",
+  "commit": "f72afeee1da0e1d0b14c48ec8b9574b804814585",
   "version": "0.4.4",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-23T21:10:32.000Z",
-    "observedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-09-26T22:34:54.000Z",
+    "observedAt": "2026-09-27T04:08:59.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-24T01:36:44.000Z",
-      "evidenceUrl": "https://github.com/zhanghao3693/dsh-dpharness/commit/389369c0052c6f91ac900716a45f9b412cd0dbee",
+      "checkedAt": "2026-09-27T04:08:59.000Z",
+      "evidenceUrl": "https://github.com/zhanghao3693/dsh-dpharness/commit/f72afeee1da0e1d0b14c48ec8b9574b804814585",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "dpharness"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,7 +91,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.1": "unknown",
+      "0.1.5-rc.3": "compatible",
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown"
@@ -145,7 +145,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.1": {
+      "0.1.5-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -170,7 +170,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
     "profiles": [
       "web"
