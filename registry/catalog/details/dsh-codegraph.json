@@ -1,51 +1,49 @@
 {
-  "id": "dsh-key-rotation",
-  "name": "余额与额度监控（DSH Key Rotation）",
-  "packageName": "@goodandready/dsh-key-rotation",
-  "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Per-provider API key rotation for DeepSeek Harness: a key pool per provider, auto-created clone routes, and switching to the next key on quota/rate-limit errors. Includes a Settings section (Key Rotation) to edit the key pools, cooldown and switch codes.",
+  "id": "dsh-codegraph",
+  "name": "数据库与 SQL 工具（DSH Codegraph）",
+  "packageName": "dsh-codegraph",
+  "description": "为 DSH 提供数据库与 SQL 工具能力。英文原始说明：CodeGraph for DeepSeek Harness (dsh): a Node bridge that exposes the codegraph Python CLI as dsh tools (callers / callees / deps / dependents / search / impact / overview / reindex) over a code index in SQLite.",
   "searchTerms": [
-    "余额与额度监控",
-    "DSH Key Rotation",
-    "dsh-key-rotation",
-    "@goodandready/dsh-key-rotation",
-    "余额",
-    "额度",
-    "配额",
-    "钱包",
-    "新锐实验",
+    "数据库与 SQL 工具",
+    "DSH Codegraph",
+    "dsh-codegraph",
+    "数据库",
+    "SQL",
+    "SQLite",
+    "MySQL",
+    "PostgreSQL",
     "实验功能",
     "新功能",
     "dsh",
-    "key",
-    "rotation"
+    "codegraph"
   ],
-  "repositoryUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation",
+  "repositoryUrl": "https://github.com/JohnXu22786/codegraph",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8b0c3a2cdaa338cb9272724115cb9feb180676c6",
-  "version": "0.8.25",
+  "commit": "a1b1dcf7659c6a0439d8020f61dad19b3f10fecf",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T12:08:20.000Z",
+    "updatedAt": "2026-09-27T13:39:47.000Z",
     "observedAt": "2026-09-27T13:35:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-27T13:35:11.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/8b0c3a2cdaa338cb9272724115cb9feb180676c6",
+      "evidenceUrl": "https://github.com/JohnXu22786/codegraph/commit/a1b1dcf7659c6a0439d8020f61dad19b3f10fecf",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-key-rotation"
+    "codegraph"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -168,9 +166,7 @@
     },
     "node": ">=18",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",

@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-27T04:08:59.000Z",
+    "updatedAt": "2026-09-27T13:35:11.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -5460,8 +5460,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "4dd161a812edb8e9af389452eaf25aa84ddf1c80",
-      "sourceUpdatedAt": "2026-09-20T02:59:39.000Z",
+      "latestCommit": "db51316c28d97917393fdb57cddaec3efa1bd9cd",
+      "sourceUpdatedAt": "2026-09-27T12:33:15.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9836,8 +9836,8 @@
       "description": "会话与当日 API 费用统计、预算图框（已用%）、官方余额、历史看板，支持峰谷计价与官方价格一键同步。",
       "repositoryUrl": "https://github.com/Han-1413141/dsh-cost-meter",
       "defaultBranch": "master",
-      "latestCommit": "4bea0bdfeebdd63ad03e23f25caa8149a439b3e3",
-      "sourceUpdatedAt": "2026-09-26T02:57:09.000Z",
+      "latestCommit": "c520d9bae873836bfafb1e672dca5042b50f05f9",
+      "sourceUpdatedAt": "2026-09-27T05:12:56.000Z",
       "discoveredAt": "2026-09-10T18:59:12.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -13811,6 +13811,92 @@
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@55c2667bb4defa69a78901f31b9bb539b25877fc:data/plugins/bf185003__dsh-favicon-status.yml:sha256=29e6063f295ba93a1644d1848897f40a448fa7788420c507d114ed01270a2c35:at=2026-09-27T04:12:21.928Z:owner=23185348"
       ],
       "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "btsd321-dsh-oh-my-terminal",
+      "name": "btsd321/dsh-oh-my-terminal",
+      "description": "A bottom terminal panel plugin for DSH GUI. Supports Windows ConPTY and POSIX openpty with no local compilation required.",
+      "repositoryUrl": "https://github.com/btsd321/dsh-oh-my-terminal",
+      "defaultBranch": "master",
+      "latestCommit": "54431b96796812ddaf59aaf9644079fdffc41bcb",
+      "sourceUpdatedAt": "2026-09-27T06:29:49.000Z",
+      "discoveredAt": "2026-09-27T13:35:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@55c2667bb4defa69a78901f31b9bb539b25877fc:data/plugins/btsd321__dsh-oh-my-terminal.yml:sha256=e10b9216287043c502ecf75eabd484d085d7eae258d41c194835a9c3c8b48cf5:at=2026-09-27T13:39:54.373Z:owner=66195252"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "brianhio-x-dsh-think-expand",
+      "name": "BrianHIO-x/dsh-think-expand",
+      "description": "DeepSeek Harness plugin that auto-expands Think rows while reasoning",
+      "repositoryUrl": "https://github.com/BrianHIO-x/dsh-think-expand",
+      "defaultBranch": "main",
+      "latestCommit": "c802aefb25e034cf160a302db65e995c3ee6a52b",
+      "sourceUpdatedAt": "2026-09-26T19:09:11.000Z",
+      "discoveredAt": "2026-09-27T13:35:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@55c2667bb4defa69a78901f31b9bb539b25877fc:data/plugins/BrianHIO-x__dsh-think-expand.yml:sha256=03e04dc54829dc4cf910318afd88a64d6dfed30b7622936e6a4dba656db76245:at=2026-09-27T13:39:54.373Z:owner=128887538"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "btsd321-dsh-remote-explorer",
+      "name": "btsd321/dsh-remote-explorer",
+      "description": "Remote development launcher: install dsh on a remote host and use it from your local browser. LLM credentials never leave your machine.",
+      "repositoryUrl": "https://github.com/btsd321/dsh-remote-explorer",
+      "defaultBranch": "master",
+      "latestCommit": "a849b4e2be6cc45353714dd9a96816b6601e3315",
+      "sourceUpdatedAt": "2026-09-25T16:20:01.000Z",
+      "discoveredAt": "2026-09-27T13:35:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@55c2667bb4defa69a78901f31b9bb539b25877fc:data/plugins/btsd321__dsh-remote-explorer.yml:sha256=88161a499528327413973d95eca031299f80494726cc72a0cece0984048160b6:at=2026-09-27T13:39:54.373Z:owner=66195252"
+      ],
+      "topics": [
+        "deepseek",
+        "dsh",
+        "dsh-plugin",
+        "remote-development",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "brucelanlan-dsh-tier-router",
+      "name": "BruceLanLan/dsh-tier-router",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/BruceLanLan/dsh-tier-router",
+      "defaultBranch": "main",
+      "latestCommit": "6c388142e4c2afc95c65ed068474c8ec3bb20cb5",
+      "sourceUpdatedAt": "2026-09-03T06:34:49.000Z",
+      "discoveredAt": "2026-09-27T13:35:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@55c2667bb4defa69a78901f31b9bb539b25877fc:data/plugins/BruceLanLan__dsh-tier-router.yml:sha256=63edb2338ca2c572ace558485ac475a0af91a0b499c125831bebdc8047c14682:at=2026-09-27T13:39:54.373Z:owner=62199498"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
         "dsh-plugin",
         "automatic-radar"
       ],
