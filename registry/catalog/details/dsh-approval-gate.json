@@ -1,48 +1,48 @@
 {
-  "id": "dsh-plugin-marketplace",
-  "name": "插件市场与管理（DSH Plugin Marketplace）",
-  "packageName": "dsh-plugin-marketplace",
-  "description": "为 DSH 提供插件市场与管理能力。英文原始说明：Verified DSH plugin marketplace with guided-install Agents, direct self-update, discovery and install management",
+  "id": "dsh-approval-gate",
+  "name": "审查与验证助手（DSH Approval Gate）",
+  "packageName": "dsh-approval-gate",
+  "description": "DeepSeek Harness 自动审批门控：Flash 模型预判写入/命令是否不可回补，安全自动批准、危险转人工（fail-safe），最小人工介入，含人工审查 UI",
   "searchTerms": [
-    "插件市场与管理",
-    "DSH Plugin Marketplace",
-    "dsh-plugin-marketplace",
-    "插件市场",
-    "商城",
-    "插件管理",
+    "审查与验证助手",
+    "DSH Approval Gate",
+    "dsh-approval-gate",
+    "审查",
+    "验证",
+    "质量检查",
     "实验功能",
     "新功能",
     "dsh",
-    "plugin",
-    "marketplace"
+    "approval",
+    "gate"
   ],
-  "repositoryUrl": "https://github.com/YELEBAI/dsh-plugin-marketplace",
-  "defaultBranch": "main",
+  "repositoryUrl": "https://github.com/ventisyn/dsh-approval-gate",
+  "defaultBranch": "0.1.7-rc.2-v1.1.1",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "605afd96a90efb25f50378329865adfb929340d3",
-  "version": "0.9.4",
+  "commit": "6bd5d029f2f00706c05ce8cadfbf9b0ce9c02175",
+  "version": "0.1.7-rc.2-v1.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T18:39:33.000Z",
+    "updatedAt": "2026-09-27T19:31:50.000Z",
     "observedAt": "2026-09-27T19:35:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-27T19:35:44.000Z",
-      "evidenceUrl": "https://github.com/YELEBAI/dsh-plugin-marketplace/commit/605afd96a90efb25f50378329865adfb929340d3",
+      "evidenceUrl": "https://github.com/ventisyn/dsh-approval-gate/commit/6bd5d029f2f00706c05ce8cadfbf9b0ce9c02175",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "plugin-marketplace"
+    "dsh-approval-gate"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 77809974 total bytes (maximum 2097152); largest file 52059837 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.5",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -163,7 +163,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
@@ -182,9 +182,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "zod"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

@@ -1,48 +1,49 @@
 {
-  "id": "dsh-plugin-marketplace",
-  "name": "插件市场与管理（DSH Plugin Marketplace）",
-  "packageName": "dsh-plugin-marketplace",
-  "description": "为 DSH 提供插件市场与管理能力。英文原始说明：Verified DSH plugin marketplace with guided-install Agents, direct self-update, discovery and install management",
+  "id": "lxai-app-bridge",
+  "name": "模型提供商接入（Lxai App Bridge）",
+  "packageName": "lxai-app-bridge",
+  "description": "Local HTTP bridge plugin for a local agent host: model catalog, session list with real model/effort/permission state, SSE agent turns, choice-box (ask_user_question) relay, approval relay and abort 鈥?used by the LxAI App remote bridge.",
   "searchTerms": [
-    "插件市场与管理",
-    "DSH Plugin Marketplace",
-    "dsh-plugin-marketplace",
-    "插件市场",
-    "商城",
-    "插件管理",
+    "模型提供商接入",
+    "Lxai App Bridge",
+    "lxai-app-bridge",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
     "实验功能",
     "新功能",
-    "dsh",
-    "plugin",
-    "marketplace"
+    "lxai",
+    "app",
+    "bridge"
   ],
-  "repositoryUrl": "https://github.com/YELEBAI/dsh-plugin-marketplace",
+  "repositoryUrl": "https://github.com/lx00924-lx/lxai-app-bridge",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "605afd96a90efb25f50378329865adfb929340d3",
-  "version": "0.9.4",
+  "commit": "2c5e2980a89c0352288ef5c39b73b9172992eb84",
+  "version": "0.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T18:39:33.000Z",
+    "updatedAt": "2026-09-27T19:38:41.000Z",
     "observedAt": "2026-09-27T19:35:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-27T19:35:44.000Z",
-      "evidenceUrl": "https://github.com/YELEBAI/dsh-plugin-marketplace/commit/605afd96a90efb25f50378329865adfb929340d3",
+      "evidenceUrl": "https://github.com/lx00924-lx/lxai-app-bridge/commit/2c5e2980a89c0352288ef5c39b73b9172992eb84",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "plugin-marketplace"
+    "lxai-app-bridge"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 77809974 total bytes (maximum 2097152); largest file 52059837 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.5",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -163,16 +164,14 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -182,9 +181,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "zod"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

@@ -21,28 +21,28 @@
   "manifestPath": "plugin/package.json",
   "installPath": "plugin",
   "updatePolicy": "external-only",
-  "commit": "d48745466705f15eb953fa54a2c079cd069580b8",
-  "version": "0.3.2",
+  "commit": "19198a4d4e465194754c13ca1f74fa0230a373c4",
+  "version": "0.3.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T17:39:00.000Z",
-    "observedAt": "2026-09-25T17:35:31.000Z",
+    "updatedAt": "2026-09-27T13:30:13.000Z",
+    "observedAt": "2026-09-27T19:35:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-25T17:35:31.000Z",
-      "evidenceUrl": "https://github.com/azwosile/dsh-tripo-blender/commit/d48745466705f15eb953fa54a2c079cd069580b8",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-27T19:35:44.000Z",
+      "evidenceUrl": "https://github.com/azwosile/dsh-tripo-blender/commit/19198a4d4e465194754c13ca1f74fa0230a373c4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,14 +72,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "tripo-studio"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 1397188 total bytes (maximum 2097152); largest file 976322 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 1469094 total bytes (maximum 2097152); largest file 1007809 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {

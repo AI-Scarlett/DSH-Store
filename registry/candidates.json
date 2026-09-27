@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-27T13:35:11.000Z",
+    "updatedAt": "2026-09-27T19:35:44.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2064,8 +2064,8 @@
       "description": "为 DSH 和纯文本模型提供图片 OCR、布局与语义分析，并输出结构化视觉证据。",
       "repositoryUrl": "https://github.com/liustack/modlens",
       "defaultBranch": "main",
-      "latestCommit": "ffeee3e32de1c05315e334be97c9f087242fe2f3",
-      "sourceUpdatedAt": "2026-09-24T09:01:59.000Z",
+      "latestCommit": "f01354e78a70ed18eab721762f18ea44a92d6e9e",
+      "sourceUpdatedAt": "2026-09-27T18:20:34.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5460,8 +5460,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "db51316c28d97917393fdb57cddaec3efa1bd9cd",
-      "sourceUpdatedAt": "2026-09-27T12:33:15.000Z",
+      "latestCommit": "4518d2bcbe57539be2e03bde6e3362af2f7ef607",
+      "sourceUpdatedAt": "2026-09-27T15:32:46.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5707,8 +5707,8 @@
       "description": "秘塔AI搜索 providers for ctx.web：web_search 返回网页摘要，web_fetch 读取网页全文 markdown，多范围搜索（网页/文库/论文/图片/视频/播客）。",
       "repositoryUrl": "https://github.com/TZHR-invest/dsh-plugins",
       "defaultBranch": "main",
-      "latestCommit": "2315479a1b246a9ce71df4fce319fac9ec6ac706",
-      "sourceUpdatedAt": "2026-09-14T17:30:40.000Z",
+      "latestCommit": "fd55d784273e612492d0ed598b3f4c67029fc001",
+      "sourceUpdatedAt": "2026-09-27T19:37:38.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10557,46 +10557,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-mcp-manager."
     },
     {
-      "id": "jiesou-dsh-stream-rules",
-      "name": "会话管理（DSH Stream Rules）",
-      "description": "为 DSH 提供会话管理能力。英文原始说明：Inject rules when needed, without wasting context. DSH port of opencode-stream-rules.",
-      "repositoryUrl": "https://github.com/jiesou/dsh-stream-rules",
-      "defaultBranch": "main",
-      "latestCommit": "fc90d77b6330225d6d16eba03943694a5744d618",
-      "sourceUpdatedAt": "2026-09-10T14:34:53.000Z",
-      "discoveredAt": "2026-09-18T13:50:17.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "sessions",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-stream-rules."
-    },
-    {
-      "id": "jiesou-dsh-commandcode-go-provider",
-      "name": "模型提供商接入（DSH Commandcode Go Provider）",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Command Code Go provider adapter for dsh: scan the Go-plan model catalog dynamically and serve /alpha/generate through the harness LLM seam",
-      "repositoryUrl": "https://github.com/jiesou/dsh-commandcode-go-provider",
-      "defaultBranch": "main",
-      "latestCommit": "6f3ab373ff3a0ec978f7f9eac92584fa428e31cb",
-      "sourceUpdatedAt": "2026-09-16T11:23:38.000Z",
-      "discoveredAt": "2026-09-18T13:50:17.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-commandcode-go-provider."
-    },
-    {
       "id": "git121995-dsh-memory-gate",
       "name": "记忆与知识库（DSH Memory Gate）",
       "description": "有界本地记忆 + CBDC 权威门控：SQLite + FTS5 claims，作用域召回并给出可解释的采用/核验/忽略决策与完整审计轨迹，/memory 命令，每次注入 ≤3 条/1200 字符，不增加额外模型调用。",
@@ -13898,6 +13858,137 @@
         "deepseek-harness",
         "dsh",
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "aik358-dsh-auto-memory",
+      "name": "Aik358/dsh-auto-memory",
+      "description": "Proactive associative memory for DSH: zero-prompt recall injected before the model speaks, three-layer auto-consolidation, skill crystallization, and Astra-style context management - handoff ledgers, PLAN whiteboard, water-level sensing. Local-first, model-agnostic, zero deps. 主动联想记忆+Astra 式上下文管理：自动唤回/自动沉淀/技能固化/交接账本与白板跨窗口续命/水位感知。",
+      "repositoryUrl": "https://github.com/Aik358/dsh-auto-memory",
+      "defaultBranch": "main",
+      "latestCommit": "98c7e6c35f997503273fa05be0bbd77937fc2c36",
+      "sourceUpdatedAt": "2026-09-27T19:06:20.000Z",
+      "discoveredAt": "2026-09-27T19:35:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4fee2fcc011f8e2d68e35695d6b411c82c7c9a12:data/plugins/Aik358__dsh-auto-memory.yml:sha256=ea64d790c4de3ba3d93c69786904134b7086d58724e6793b414c14932912e282:at=2026-09-27T19:39:08.522Z:owner=195134871"
+      ],
+      "topics": [
+        "context",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "memory",
+        "npm",
+        "plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ai-yukin-dsh-0-tools",
+      "name": "ai-yukin/dsh-0-tools",
+      "description": "Zero-cost, zero-hassle toolkit for DeepSeek Harness (DSH): one-click free model setup (Zhipu GLM-4-Flash + OpenRouter Ox-Alpha) for complete beginners. 小白零门槛零费用套件。",
+      "repositoryUrl": "https://github.com/ai-yukin/dsh-0-tools",
+      "defaultBranch": "main",
+      "latestCommit": "f49bd808461fd00a49119f83b7f3fc53103e1dde",
+      "sourceUpdatedAt": "2026-09-03T13:34:21.000Z",
+      "discoveredAt": "2026-09-27T19:35:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4fee2fcc011f8e2d68e35695d6b411c82c7c9a12:data/plugins/ai-yukin__dsh-0-tools.yml:sha256=f383a438afaf32afac292085155459e953b8693de6d8199af2c9435c4db64386:at=2026-09-27T19:39:08.522Z:owner=317927275"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "aicivilization-dsh-vps-manager",
+      "name": "AIcivilization/dsh-vps-manager",
+      "description": "VPS & SSH manager plugin for DeepSeek Harness (DSH): zero-token /vps- commands, an in-conversation web terminal, and AI server ops with risk-tiered confirmation. 在 DSH 里像 SSH 一样无感地用 VPS：零 token 命令、对话内终端、AI 分级确认运维。",
+      "repositoryUrl": "https://github.com/AIcivilization/dsh-vps-manager",
+      "defaultBranch": "main",
+      "latestCommit": "52b60d470b59d5d0d62aa1355c9927d58fea00cb",
+      "sourceUpdatedAt": "2026-09-26T16:45:43.000Z",
+      "discoveredAt": "2026-09-27T19:35:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4fee2fcc011f8e2d68e35695d6b411c82c7c9a12:data/plugins/AIcivilization__dsh-vps-manager.yml:sha256=6d62d1a5d31bde249b3c59a091a3fbc483b8df8fcd9840f7b6c74a03d458deea:at=2026-09-27T19:39:08.522Z:owner=268566591"
+      ],
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "linux",
+        "self-hosted",
+        "selfhosted",
+        "selfhosted-vpn",
+        "ssh",
+        "terminal",
+        "vless",
+        "vmess",
+        "vmess-ws",
+        "vpn",
+        "vps",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "metaid-developers-idbots",
+      "name": "metaid-developers/IDBots",
+      "description": "The first decentralized AI collaboration platform. You define the task — AI from around the world collaborates to solve it for you.",
+      "repositoryUrl": "https://github.com/metaid-developers/IDBots",
+      "defaultBranch": "main",
+      "latestCommit": "feaab76ddbc8d3d835d481f5e1e163b5c69a4daa",
+      "sourceUpdatedAt": "2026-09-27T19:16:08.000Z",
+      "discoveredAt": "2026-09-27T19:35:44.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-2-agent",
+        "agentic-ai",
+        "ai",
+        "blockchain-technology",
+        "decentralized-applications",
+        "p2p",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "aik358-dsh-cua-pre",
+      "name": "Aik358/dsh-cua-pre",
+      "description": "Computer Use plugin for DeepSeek Harness (30 tools, cards/sidebar/settings, tiled vision, audit/allowlist)",
+      "repositoryUrl": "https://github.com/Aik358/dsh-cua-pre",
+      "defaultBranch": "main",
+      "latestCommit": "6b64708e2514ef4a1b9cb6004adb4838d4b114bb",
+      "sourceUpdatedAt": "2026-09-08T05:53:58.000Z",
+      "discoveredAt": "2026-09-27T19:35:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4fee2fcc011f8e2d68e35695d6b411c82c7c9a12:data/plugins/Aik358__dsh-cua-pre.yml:sha256=f382ecfab67b51c5d4d44d1071c597cbc9d6160df285b3b9c9ea027235dd1cc6:at=2026-09-27T19:39:08.522Z:owner=195134871"
+      ],
+      "topics": [
         "automatic-radar"
       ],
       "status": "reviewing",
