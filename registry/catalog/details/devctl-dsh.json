@@ -1,51 +1,48 @@
 {
-  "id": "dsh-key-rotation",
-  "name": "余额与额度监控（DSH Key Rotation）",
-  "packageName": "@goodandready/dsh-key-rotation",
-  "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Per-provider API key rotation for DeepSeek Harness: a key pool per provider, auto-created clone routes, and switching to the next key on quota/rate-limit errors. Includes a Settings section (Key Rotation) to edit the key pools, cooldown and switch codes.",
+  "id": "devctl-dsh",
+  "name": "用量统计看板（Devctl DSH）",
+  "packageName": "devctl-dsh",
+  "description": "为 DSH 提供用量统计看板能力。英文原始说明：Drive a DSH instance from another device over a token-authenticated TCP control port - the DSH half of the devctl family.",
   "searchTerms": [
-    "余额与额度监控",
-    "DSH Key Rotation",
-    "dsh-key-rotation",
-    "@goodandready/dsh-key-rotation",
-    "余额",
-    "额度",
-    "配额",
-    "钱包",
-    "新锐实验",
+    "用量统计看板",
+    "Devctl DSH",
+    "devctl-dsh",
+    "用量",
+    "Token",
+    "统计",
+    "看板",
     "实验功能",
     "新功能",
-    "dsh",
-    "key",
-    "rotation"
+    "devctl",
+    "dsh"
   ],
-  "repositoryUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation",
+  "repositoryUrl": "https://github.com/menghuanshiguang/devctl-dsh",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d54451f0883ecda30eb269c3cd5526c2f575baf4",
-  "version": "0.8.35",
+  "commit": "1c8aa4d182cedc122a0c8eba9760dc02ec361635",
+  "version": "1.2.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T16:16:04.000Z",
+    "updatedAt": "2026-09-28T16:35:40.000Z",
     "observedAt": "2026-09-28T16:31:47.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-28T16:31:47.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/d54451f0883ecda30eb269c3cd5526c2f575baf4",
+      "evidenceUrl": "https://github.com/menghuanshiguang/devctl-dsh/commit/1c8aa4d182cedc122a0c8eba9760dc02ec361635",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-key-rotation"
+    "devctl-dsh"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -166,7 +163,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=18",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
