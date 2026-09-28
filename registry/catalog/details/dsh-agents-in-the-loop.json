@@ -1,48 +1,51 @@
 {
-  "id": "dsh-openbitfun",
-  "name": "趣味互动插件（DSH Openbitfun）",
-  "packageName": "dsh-openbitfun",
-  "description": "为 DSH 提供趣味互动插件能力。英文原始说明：DeepSeek Harness plugin bundle exposing the OpenBitFun Agent SDK Host as dsh tools",
+  "id": "dsh-agents-in-the-loop",
+  "name": "任务与工作流自动化（DSH Agents In The Loop）",
+  "packageName": "dsh-agents-in-the-loop",
+  "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：DSH plugin: cross-session call center for agents. session_message delivers messages between DSH sessions (idle: visible full-text wake; busy: mid-turn-safe notice; plus runtime-context notes) and resolves targets by registered contact name (stale-id-proof). contacts is a named directory over session ids. v1.5.0 adds a send-only loopback HTTP API so external agents (Claude Code etc.) can message registered contacts.",
   "searchTerms": [
-    "趣味互动插件",
-    "DSH Openbitfun",
-    "dsh-openbitfun",
-    "趣味",
-    "桌宠",
-    "互动",
-    "娱乐",
+    "任务与工作流自动化",
+    "DSH Agents In The Loop",
+    "dsh-agents-in-the-loop",
+    "任务",
+    "工作流",
+    "自动化",
+    "定时",
     "实验功能",
     "新功能",
     "dsh",
-    "openbitfun"
+    "agents",
+    "in",
+    "the",
+    "loop"
   ],
-  "repositoryUrl": "https://github.com/GCWing/OpenBitFun",
+  "repositoryUrl": "https://github.com/markelayan/agents-in-the-loop",
   "defaultBranch": "main",
-  "manifestPath": "extensions/dsh-openbitfun/package.json",
-  "installPath": "extensions/dsh-openbitfun",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "91b05f1cae803645852fa78f1697a4ec908607a2",
-  "version": "0.1.0",
+  "commit": "247863907e69a2400ba7910c3ff7b87d3f6952d1",
+  "version": "1.5.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T11:00:31.000Z",
+    "updatedAt": "2026-09-28T14:38:56.000Z",
     "observedAt": "2026-09-28T14:34:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-28T14:34:52.000Z",
-      "evidenceUrl": "https://github.com/GCWing/OpenBitFun/commit/91b05f1cae803645852fa78f1697a4ec908607a2",
+      "evidenceUrl": "https://github.com/markelayan/agents-in-the-loop/commit/247863907e69a2400ba7910c3ff7b87d3f6952d1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,14 +75,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "openbitfun"
+    "dsh-agents-in-the-loop"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; repository tree exceeds the automatic review bound; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -163,7 +166,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
     "profiles": []
   },

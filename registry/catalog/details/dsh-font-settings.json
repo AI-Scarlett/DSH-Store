@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "11a9d22c95a936afb32a830515646e116c69c925",
-  "version": "0.6.0",
+  "commit": "f8d6dd09e0d477031754e6499d70700ae0e4500a",
+  "version": "0.6.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-23T12:41:02.000Z",
-    "observedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-09-28T14:04:10.000Z",
+    "observedAt": "2026-09-28T14:34:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-24T01:36:44.000Z",
-      "evidenceUrl": "https://github.com/fuzz1og/dsh-font-settings/commit/11a9d22c95a936afb32a830515646e116c69c925",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-28T14:34:52.000Z",
+      "evidenceUrl": "https://github.com/fuzz1og/dsh-font-settings/commit/f8d6dd09e0d477031754e6499d70700ae0e4500a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "The newer fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -83,7 +83,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.7-alpha.1 <0.2.0",
+    "dsh": ">=0.1.7-alpha.1 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -97,7 +97,8 @@
       "0.1.7-alpha.1": "compatible",
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-rc.2": "unknown",
+      "0.2.0-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -173,6 +174,12 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
