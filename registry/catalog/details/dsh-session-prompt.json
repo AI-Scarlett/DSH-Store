@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fd7a36347fe28e0f17cd3ca4cc0eb0de91a59f80",
-  "version": "0.2.2",
+  "commit": "fbdfdce4e518c250a8df8785c21d5cd90996d263",
+  "version": "0.2.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T11:35:52.000Z",
-    "observedAt": "2026-09-25T13:19:47.000Z",
+    "updatedAt": "2026-09-28T08:22:17.000Z",
+    "observedAt": "2026-09-28T14:34:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-25T13:19:47.000Z",
-      "evidenceUrl": "https://github.com/masknull/dsh-session-prompt/commit/fd7a36347fe28e0f17cd3ca4cc0eb0de91a59f80",
+      "checkedAt": "2026-09-28T14:34:52.000Z",
+      "evidenceUrl": "https://github.com/masknull/dsh-session-prompt/commit/fbdfdce4e518c250a8df8785c21d5cd90996d263",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,9 +81,9 @@
     "session-head-prompt"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.5-rc.1",
+    "dsh": ">=0.1.7-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -184,9 +184,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "js-yaml"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

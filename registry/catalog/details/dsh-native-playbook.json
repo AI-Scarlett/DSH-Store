@@ -27,8 +27,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "415f344324f80892836703e0ff67fc6773f80941",
-  "version": "0.2.1",
+  "commit": "e2982f8123f0fec641d4d8079d2389c3c6ccc1d0",
+  "version": "0.3.0",
   "categories": [
     "tools",
     "ui"
@@ -36,20 +36,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-12T07:08:44.000Z",
-    "observedAt": "2026-09-12T12:00:07.000Z",
+    "updatedAt": "2026-09-28T11:10:06.000Z",
+    "observedAt": "2026-09-28T14:34:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-12T12:00:07.000Z",
-      "evidenceUrl": "https://github.com/cyanseek/dsh-native-playbook/commit/415f344324f80892836703e0ff67fc6773f80941",
+      "checkedAt": "2026-09-28T14:34:52.000Z",
+      "evidenceUrl": "https://github.com/cyanseek/dsh-native-playbook/commit/e2982f8123f0fec641d4d8079d2389c3c6ccc1d0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -88,7 +88,7 @@
   "status": "unlisted",
   "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.1.7-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

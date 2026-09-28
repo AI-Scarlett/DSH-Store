@@ -1,48 +1,48 @@
 {
-  "id": "dsh-openbitfun",
-  "name": "趣味互动插件（DSH Openbitfun）",
-  "packageName": "dsh-openbitfun",
-  "description": "为 DSH 提供趣味互动插件能力。英文原始说明：DeepSeek Harness plugin bundle exposing the OpenBitFun Agent SDK Host as dsh tools",
+  "id": "dsh-desktop-statusbar",
+  "name": "桌面客户端（DSH Desktop Statusbar）",
+  "packageName": "dsh-desktop-statusbar",
+  "description": "把 DSH 桌面端对话区底部的统计行换成可配置状态栏：9 个字段可选可排序，按官方峰谷口径估算费用，支持自定义模型单价与账户余额。",
   "searchTerms": [
-    "趣味互动插件",
-    "DSH Openbitfun",
-    "dsh-openbitfun",
-    "趣味",
-    "桌宠",
-    "互动",
-    "娱乐",
+    "桌面客户端",
+    "DSH Desktop Statusbar",
+    "dsh-desktop-statusbar",
+    "桌面",
+    "托盘",
+    "快捷启动",
     "实验功能",
     "新功能",
     "dsh",
-    "openbitfun"
+    "desktop",
+    "statusbar"
   ],
-  "repositoryUrl": "https://github.com/GCWing/OpenBitFun",
+  "repositoryUrl": "https://github.com/raphael-y7/dsh-desktop-statusbar",
   "defaultBranch": "main",
-  "manifestPath": "extensions/dsh-openbitfun/package.json",
-  "installPath": "extensions/dsh-openbitfun",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "91b05f1cae803645852fa78f1697a4ec908607a2",
-  "version": "0.1.0",
+  "commit": "86651438a14b611110a5ef48a3b3c1e6095597ab",
+  "version": "2.0.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T11:00:31.000Z",
+    "updatedAt": "2026-09-28T14:39:15.000Z",
     "observedAt": "2026-09-28T14:34:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-28T14:34:52.000Z",
-      "evidenceUrl": "https://github.com/GCWing/OpenBitFun/commit/91b05f1cae803645852fa78f1697a4ec908607a2",
+      "evidenceUrl": "https://github.com/raphael-y7/dsh-desktop-statusbar/commit/86651438a14b611110a5ef48a3b3c1e6095597ab",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,14 +72,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "openbitfun"
+    "dsh-desktop-statusbar"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; repository tree exceeds the automatic review bound; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -163,14 +163,16 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "PolyForm-Noncommercial-1.0.0",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -180,7 +182,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "zod"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
