@@ -19,28 +19,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "074c4af026e215a97715dfd355920a92800664d7",
-  "version": "1.2.4",
+  "commit": "cdcbca24fd646500d3d5d2e236cd13752b1e5718",
+  "version": "1.2.5",
   "categories": [
     "fun"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T06:00:24.000Z",
-    "observedAt": "2026-09-27T13:35:11.000Z",
+    "updatedAt": "2026-09-28T15:44:38.000Z",
+    "observedAt": "2026-09-28T16:31:47.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-27T13:35:11.000Z",
-      "evidenceUrl": "https://github.com/nzl153/dsh-pet-whale/commit/074c4af026e215a97715dfd355920a92800664d7",
+      "checkedAt": "2026-09-28T16:31:47.000Z",
+      "evidenceUrl": "https://github.com/nzl153/dsh-pet-whale/commit/cdcbca24fd646500d3d5d2e236cd13752b1e5718",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -79,7 +79,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.5-alpha.2 <0.2.0",
+    "dsh": ">=0.1.5-alpha.2 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -102,7 +102,8 @@
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "compatible",
       "0.1.5-rc.3": "compatible",
-      "0.1.7-rc.2": "compatible"
+      "0.1.7-rc.2": "compatible",
+      "0.2.0-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -232,6 +233,12 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
