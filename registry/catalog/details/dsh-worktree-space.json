@@ -1,49 +1,49 @@
 {
-  "id": "dsh-receipt",
-  "name": "安全防护工具（DSH Receipt）",
-  "packageName": "dsh-receipt",
-  "description": "会话消费小票：按模型展示每个对话的 token 用量、调用次数、耗时与费用（receipt-style per-conversation usage and cost）",
+  "id": "dsh-worktree-space",
+  "name": "GitHub 工程工具（DSH Worktree Space）",
+  "packageName": "dsh-worktree-space",
+  "description": "为 DSH 提供GitHub 工程工具能力。英文原始说明：Worktree Space: Creates an isolated workspace per task with Git worktrees for multiple repositories. Agents work in parallel without interference. On completion, it merges branches, removes worktrees, and archives documents.",
   "searchTerms": [
-    "安全防护工具",
-    "DSH Receipt",
-    "dsh-receipt",
-    "安全",
-    "审计",
-    "验证",
-    "防护",
-    "新锐实验",
+    "GitHub 工程工具",
+    "DSH Worktree Space",
+    "dsh-worktree-space",
+    "GitHub",
+    "Git",
+    "代码审查",
+    "PR",
     "实验功能",
     "新功能",
     "dsh",
-    "receipt"
+    "worktree",
+    "space"
   ],
-  "repositoryUrl": "https://github.com/bluechips-zhao/dsh-receipt",
+  "repositoryUrl": "https://github.com/kangtsang/dsh-worktree-space",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b032708010a0114e481013f88a73c9e45bc9fe0f",
-  "version": "0.1.0",
+  "commit": "73757cb607d271336ecf5b179153d30f20ddd706",
+  "version": "1.0.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T02:54:57.000Z",
+    "updatedAt": "2026-09-28T04:14:20.000Z",
     "observedAt": "2026-09-28T04:10:29.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-28T04:10:29.000Z",
-      "evidenceUrl": "https://github.com/bluechips-zhao/dsh-receipt/commit/b032708010a0114e481013f88a73c9e45bc9fe0f",
+      "evidenceUrl": "https://github.com/kangtsang/dsh-worktree-space/commit/73757cb607d271336ecf5b179153d30f20ddd706",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-receipt"
+    "worktree-space"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.1.7-rc.2",
+    "dsh": "0.1.7-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "compatible",
+      "0.1.7-rc.1": "compatible",
       "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown"
+      "0.1.7-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,7 +145,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
+      "0.1.7-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -157,14 +157,14 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.1": {
+      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
@@ -183,7 +183,11 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@hugeicons/core-free-icons",
+      "@hugeicons/react",
+      "@radix-ui/react-dialog"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

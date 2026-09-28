@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "2e83c3f7ef98e81566d8fac71030458efb175395",
+  "commit": "ab7301e841aa91f219652d07ae6a3272f949c62c",
   "version": "2.6.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-23T07:55:53.000Z",
-    "observedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-09-28T01:37:21.000Z",
+    "observedAt": "2026-09-28T04:10:29.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-24T01:36:44.000Z",
-      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/2e83c3f7ef98e81566d8fac71030458efb175395",
+      "checkedAt": "2026-09-28T04:10:29.000Z",
+      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/ab7301e841aa91f219652d07ae6a3272f949c62c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "partner"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source file count is outside the automatic review bound: 286 files (maximum 240)",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source file count is outside the automatic review bound: 352 files (maximum 240); runtime source exceeds the automatic review byte bound: 2700620 total bytes (maximum 2097152); largest file 165897 bytes (maximum 2621",
   "compatibility": {
     "dsh": "^0.1.2-rc.1 || ^0.1.5-rc.1",
     "dshReleases": {
@@ -93,7 +93,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown"
@@ -142,12 +141,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
