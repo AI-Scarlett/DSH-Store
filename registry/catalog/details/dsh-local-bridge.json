@@ -1,48 +1,49 @@
 {
-  "id": "devctl-dsh",
-  "name": "用量统计看板（Devctl DSH）",
-  "packageName": "devctl-dsh",
-  "description": "为 DSH 提供用量统计看板能力。英文原始说明：Drive a DSH instance from another device over a token-authenticated TCP control port - the DSH half of the devctl family.",
+  "id": "dsh-local-bridge",
+  "name": "终端命令工具（DSH Local Bridge）",
+  "packageName": "dsh-local-bridge",
+  "description": "让本机 CLI 自行取得 DSH Web 的带 token URL，无需人工从终端复制",
   "searchTerms": [
-    "用量统计看板",
-    "Devctl DSH",
-    "devctl-dsh",
-    "用量",
-    "Token",
-    "统计",
-    "看板",
+    "终端命令工具",
+    "DSH Local Bridge",
+    "dsh-local-bridge",
+    "终端",
+    "Shell",
+    "命令行",
+    "PTY",
     "实验功能",
     "新功能",
-    "devctl",
-    "dsh"
+    "dsh",
+    "local",
+    "bridge"
   ],
-  "repositoryUrl": "https://github.com/menghuanshiguang/devctl-dsh",
+  "repositoryUrl": "https://github.com/jijiwu3526/dsh-preset-studio",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "plugin/package.json",
+  "installPath": "plugin",
   "updatePolicy": "external-only",
-  "commit": "3c6eec66a1b04605af32120a3cd160b0c3a9a007",
-  "version": "1.2.1",
+  "commit": "c89fe66cc4009def32369b6fdcecf25478ebb965",
+  "version": "0.1.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T06:09:05.000Z",
+    "updatedAt": "2026-09-29T06:18:28.000Z",
     "observedAt": "2026-09-29T06:14:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-29T06:14:10.000Z",
-      "evidenceUrl": "https://github.com/menghuanshiguang/devctl-dsh/commit/3c6eec66a1b04605af32120a3cd160b0c3a9a007",
+      "evidenceUrl": "https://github.com/jijiwu3526/dsh-preset-studio/commit/c89fe66cc4009def32369b6fdcecf25478ebb965",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,14 +73,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "devctl-dsh"
+    "dsh-local-bridge"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -163,11 +164,9 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",

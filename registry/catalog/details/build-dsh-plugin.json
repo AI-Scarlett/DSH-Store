@@ -29,8 +29,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "16393774a52bf93c02ebd461d1fee426a3b3ac83",
-  "version": "0.5.1",
+  "commit": "5039626d229309f76b3c934b1a420e7f9d7ccb4e",
+  "version": "0.5.2",
   "categories": [
     "development",
     "workflow",
@@ -39,16 +39,16 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T05:09:37.000Z",
-    "observedAt": "2026-09-24T05:53:42.000Z",
+    "updatedAt": "2026-09-29T06:08:24.000Z",
+    "observedAt": "2026-09-29T06:14:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T05:53:42.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/16393774a52bf93c02ebd461d1fee426a3b3ac83",
+      "checkedAt": "2026-09-29T06:14:10.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/5039626d229309f76b3c934b1a420e7f9d7ccb4e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -91,7 +91,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -113,7 +113,8 @@
       "0.1.7-alpha.1": "compatible",
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-rc.2": "compatible",
+      "0.2.0-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -237,10 +238,16 @@
         "rollback": "passed"
       },
       "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.2.0-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       }
     },
     "node": ">=22.13.0",
