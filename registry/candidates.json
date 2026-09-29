@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-29T14:40:34.000Z",
+    "updatedAt": "2026-09-29T20:28:57.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -6437,8 +6437,8 @@
       "description": "基于官方 OAuth Open API 双向同步滴答清单（TickTick/Dida365）任务：拉取各清单任务、创建/更新/完成/删除、按标题去重的一键同步，带 Web 设置面板。",
       "repositoryUrl": "https://github.com/zhengjy01/dsh-ticktick",
       "defaultBranch": "main",
-      "latestCommit": "7cfc8ca610b8b96753a0a70c53be92c3b447fb71",
-      "sourceUpdatedAt": "2026-09-11T12:37:33.000Z",
+      "latestCommit": "715bc40810a7331c6539d9dc64df95bcc776cb15",
+      "sourceUpdatedAt": "2026-09-29T15:34:37.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6457,8 +6457,8 @@
       "description": "配置一次 flomo API URL / API Key，Agent 即可用 flomo_send 把笔记、摘要、待办写进 flomo（浮墨笔记）。",
       "repositoryUrl": "https://github.com/zhengjy01/dsh-flomo",
       "defaultBranch": "main",
-      "latestCommit": "f58a481aebcd2486e1f14af4853c3cc24eba0360",
-      "sourceUpdatedAt": "2026-08-16T08:51:03.000Z",
+      "latestCommit": "f7affc4edc6444aca755bb54308476bfee98eaf8",
+      "sourceUpdatedAt": "2026-09-29T15:33:44.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6571,48 +6571,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-alive."
-    },
-    {
-      "id": "kidli1412-dsh-token-heatmap",
-      "name": "用量统计看板（DSH Token Heatmap）",
-      "description": "新建会话页的 GitHub 风格每日 Token 用量热力图：可选日历年度视图、绿/蓝配色与显示开关，并附今日/本月/累计总量。",
-      "repositoryUrl": "https://github.com/KIDLi1412/dsh-token-heatmap",
-      "defaultBranch": "main",
-      "latestCommit": "fdc76cdbe02647e79ef49096299ca234a8bfa274",
-      "sourceUpdatedAt": "2026-09-15T15:46:56.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "visualization",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: kidli1412-dsh-token-heatmap."
-    },
-    {
-      "id": "kidli1412-dsh-session-cost",
-      "name": "费用与账单（DSH Session Cost）",
-      "description": "对话底部的会话费用状态栏：按模型逐条计价估算 Token 费用（CNY），并实时显示 DeepSeek 账户余额（官方余额接口）。",
-      "repositoryUrl": "https://github.com/KIDLi1412/dsh-session-cost",
-      "defaultBranch": "main",
-      "latestCommit": "295f90d04ecd547b31ce031ca96d5b8014fb9636",
-      "sourceUpdatedAt": "2026-09-14T16:34:15.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "visualization",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: kidli1412-dsh-session-cost."
     },
     {
       "id": "fenghuolinshan-dsh-plugin-llm-balance",
@@ -14568,6 +14526,125 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-engramory."
+    },
+    {
+      "id": "9livewolf-dsh-think-bounce-pet",
+      "name": "9livewolf/dsh-think-bounce-pet",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/9livewolf/dsh-think-bounce-pet",
+      "defaultBranch": "main",
+      "latestCommit": "3bfe9cb32afea176937379351af39dfd46f955f4",
+      "sourceUpdatedAt": "2026-08-24T06:03:36.000Z",
+      "discoveredAt": "2026-09-29T20:28:57.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/9livewolf__dsh-think-bounce-pet.yml:sha256=436b065da22b3f4e0d41a97327e459cf50b944cd9af278e5a92be9ef0f562b21:at=2026-09-29T20:33:35.215Z:owner=58944960"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "9931666-dsh-plugin-roundtable",
+      "name": "9931666/dsh-plugin-roundtable",
+      "description": "（roundtable V1.0.0）把一次 DeepSeek Harness 会话，从\"你和 AI 一对一聊天\"，升级成\"你 + 主持人(DeepSeek) + 一圈专家 AI 开圆桌会",
+      "repositoryUrl": "https://github.com/9931666/dsh-plugin-roundtable",
+      "defaultBranch": "main",
+      "latestCommit": "15d13b79078eeffb509911725f4079ca72d79141",
+      "sourceUpdatedAt": "2026-09-25T06:31:50.000Z",
+      "discoveredAt": "2026-09-29T20:28:57.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/9931666__dsh-plugin-roundtable.yml:sha256=fca8b0d8b3279c215f51eb8e53a88585373f4de1848b4af796c372b9479b89ef:at=2026-09-29T20:33:35.215Z:owner=160255340"
+      ],
+      "topics": [
+        "ai",
+        "ai-tools",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "roundtable",
+        "skills",
+        "workflow",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "99galaxy-dsh-plugin-market",
+      "name": "99galaxy/dsh-plugin-market",
+      "description": "在 DeepSeek Harness 设置面板里浏览并一键安装社区插件 | A plugin market inside the DeepSeek Harness settings panel",
+      "repositoryUrl": "https://github.com/99galaxy/dsh-plugin-market",
+      "defaultBranch": "main",
+      "latestCommit": "b97664510aafd55a74f17e304e271956f1c07659",
+      "sourceUpdatedAt": "2026-09-23T14:15:34.000Z",
+      "discoveredAt": "2026-09-29T20:28:57.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/99galaxy__dsh-plugin-market.yml:sha256=38ae8d7898b6e036b20d75523b776a8f8dca89b8b2985f0ccb0ff108ad633a02:at=2026-09-29T20:33:35.215Z:owner=117891108"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek",
+        "dsh",
+        "dsh-plugin",
+        "harness",
+        "plugin-market",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "a1073097082-dsh-model-search",
+      "name": "a1073097082/dsh-model-search",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/a1073097082/dsh-model-search",
+      "defaultBranch": "main",
+      "latestCommit": "8a6293a62a19142538830ac898ab62fcfa27f4a8",
+      "sourceUpdatedAt": "2026-08-15T11:47:50.000Z",
+      "discoveredAt": "2026-09-29T20:28:57.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/a1073097082__dsh-model-search.yml:sha256=4d3e7418f69e9380b1c48fb272f273af6ea3d414db181f3940c123f5656a6429:at=2026-09-29T20:33:35.215Z:owner=56302166"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "model-search",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "9ashwin-dsh-session-rename",
+      "name": "9Ashwin/dsh-session-rename",
+      "description": "DSH plugin: a model-facing rename_session tool, so the agent can retitle a session from inside the conversation.",
+      "repositoryUrl": "https://github.com/9Ashwin/dsh-session-rename",
+      "defaultBranch": "main",
+      "latestCommit": "f073bfa1fa7e59832df5efacb5b94ee44749326c",
+      "sourceUpdatedAt": "2026-09-13T06:36:18.000Z",
+      "discoveredAt": "2026-09-29T20:28:57.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/9Ashwin__dsh-session-rename.yml:sha256=9eb012b2393e6691d25ef6efc456253c1ad2f14e751c014f839b74572491f9e6:at=2026-09-29T20:33:35.215Z:owner=143918278"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
