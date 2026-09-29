@@ -10,6 +10,7 @@ jobs:
     outputs:
       latest_version: ${{ steps.window.outputs.latest_version }}
       previous_releases: ${{ steps.window.outputs.previous_releases }}
+      next_version: ${{ steps.window.outputs.next_version }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -70,6 +71,33 @@ jobs:
         env:
           DSH_VERSION: ${{ matrix.dsh-version }}
         run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund "@deepseek-ai/dsh@$DSH_VERSION"
+      - name: Verify Store in a disposable Profile
+        env:
+          DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett/DSH-Store#${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
+
+  next-channel:
+    needs: resolve
+    if: needs.resolve.outputs.next_version != ''
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - name: Install the official DSH next-channel release
+        env:
+          DSH_VERSION: ${{ needs.resolve.outputs.next_version }}
+        run: npm install --prefix .runtime --ignore-scripts --no-audit --no-fund "@deepseek-ai/dsh@$DSH_VERSION"
+        shell: bash
       - name: Verify Store in a disposable Profile
         env:
           DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett/DSH-Store#${{ github.event.pull_request.head.sha || github.sha }}

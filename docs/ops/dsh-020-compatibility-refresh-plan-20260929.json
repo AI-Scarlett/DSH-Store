@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-020-compatibility-refresh-20260929-store",
+  "type": "first-party-dsh-compatibility-refresh",
+  "status": "verified-ready-for-pr",
+  "createdAt": "2026-09-29T03:00:00Z",
+  "baseCommit": "1458fca31565e1023eda5094d257b92bd488ff12",
+  "objective": "Update DSH Store to the current official active latest-three release window and independently validate the official next-channel DSH 0.2.0-rc.1 release without changing DSH or Catalog state.",
+  "authority": {
+    "repository": "AI-Scarlett/DSH-Store",
+    "baseCommit": "1458fca31565e1023eda5094d257b92bd488ff12",
+    "observedLatestThree": ["0.1.7-alpha.2", "0.1.7-rc.1", "0.1.7-rc.2"],
+    "observedNextChannel": "0.2.0-rc.1",
+    "source": "official DSH GitHub Releases and published npm versions",
+    "delivery": "CI-checked source pull request; Catalog pin remains a separate authorized policy operation"
+  },
+  "scope": [
+    "docs/ops/dsh-020-compatibility-refresh-plan-20260929.json",
+    "package.json",
+    "scripts/resolve-dsh-upgrade-matrix.mjs",
+    ".github/workflows/upgrade-matrix.yml",
+    "test/upgrade-matrix.test.mjs",
+    "test/contracts.test.mjs",
+    "test/catalog.test.mjs",
+    "README.md"
+  ],
+  "preconditions": {
+    "package.json": "731b09b2663b89b3253855befd7a8be769fd8cf853073d4d0e10f18bf2afecc2",
+    "scripts/resolve-dsh-upgrade-matrix.mjs": "803c20e8c627b02b2e9b1ae3eeccfe7f8862a8e9d32e779521684d1b96f05025",
+    ".github/workflows/upgrade-matrix.yml": "701bee66807d87faf58dd2fefd1eb70eb9c7deb7fe94d45315e59e5030673b05",
+    "test/upgrade-matrix.test.mjs": "f1b5e7f938e18ddc8973ad764362930e96ea25a3d0ab28c52d7759c89bd313b9",
+    "test/contracts.test.mjs": "928d6f8a4a5702fad626187df8ff94778dc9e08c21456ff3c7ce95a19f7cc7af",
+    "test/catalog.test.mjs": "fc5e9f9d357fa78b34883d33337d75865cbfa38187abab0142f3a7ebf7e9f78c",
+    "README.md": "ed67865c53ce9f6c4ad3266fd3678c3228eaeaaa0409990d966e24eb77368075",
+    "docs/ops/dsh-020-compatibility-refresh-plan-20260929.json": null
+  },
+  "gates": [
+    "Preserve the active latest-three resolver and fail closed on incomplete official evidence.",
+    "Resolve next-channel only from the official channel object and verify it separately from the active latest-three series.",
+    "Use disposable DSH_HOME fixtures and fixed argument arrays for install, start, uninstall, and exact rollback tests.",
+    "Do not mark any exact release compatible unless install, start, uninstall, and rollback evidence passes.",
+    "Run npm run check and CI; use an auditable PR for source changes.",
+    "Keep public Catalog pinning, real Profile changes, and restarts out of scope."
+  ],
+  "prohibitions": [
+    "Do not modify DSH source or any @deepseek-ai/* package.",
+    "Do not access or change ~/.dsh or real Profiles.",
+    "Do not trigger GitHub automation for the manual plugin scan.",
+    "Do not contact plugin authors or modify Catalog/Candidate data."
+  ],
+  "rollback": {
+    "source": "Revert the exact merged Store source commit; preserve all other history.",
+    "catalog": "No Catalog mutation in this plan.",
+    "profile": "No real Profile mutation in this plan."
+  },
+  "healthChecks": [
+    "Local disposable DSH 0.2.0-rc.1 install/start/uninstall/rollback smoke passes.",
+    "PR CI exercises the dynamic active latest-three matrix and official next-channel matrix.",
+    "Final change list is contained exactly within scope."
+  ],
+  "verification": {
+    "localNpmCheck": "passed",
+    "disposableDsh020Rc1": "passed: install, authenticated startup, activation, uninstall, exact Profile rollback; real Profile unchanged",
+    "upgradePlanPreconditions": "passed",
+    "githubPrCi": "pending",
+    "catalogAndProductionRelease": "not in scope"
+  }
+}
