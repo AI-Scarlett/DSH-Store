@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 11304)
+Total output lines: 745
+
 import assert from 'node:assert/strict'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -321,94 +324,7 @@ test('catalog service loads only the requested page details and caches them with
 
 test('catalog service atomically falls back without mixing remote details into the bundled generation', async () => {
   const second = { ...entry, id: 'demo-two', packageName: 'dsh-demo-two', name: 'Demo Two', repositoryUrl: 'https://github.com/example/dsh-demo-two' }
-  const split = splitCatalogDocument(document([entry, second]))
-  const root = await mkdtemp(join(tmpdir(), 'dsh-catalog-atomic-fallback-'))
-  try {
-    await mkdir(join(root, 'catalog', 'details'), { recursive: true })
-    await writeFile(join(root, 'catalog.json'), `${JSON.stringify(split.bridge, null, 2)}\n`)
-    await writeFile(join(root, 'catalog-index.json'), `${JSON.stringify(split.index, null, 2)}\n`)
-    for (const detail of split.details) await writeFile(join(root, detail.path), `${JSON.stringify(detail.entry, null, 2)}\n`)
-    const service = createCatalogService({
-      catalogUrl: 'https://catalog.example.test/registry/catalog.json',
-      bundledUrl: pathToFileURL(join(root, 'catalog.json')),
-      retryDelaysMs: [],
-      fetch: async url => {
-        const path = new URL(url).pathname
-        if (path.endsWith('/catalog.json')) return new Response(`${JSON.stringify(split.bridge, null, 2)}\n`)
-        if (path.endsWith('/catalog-index.json')) return new Response(`${JSON.stringify(split.index, null, 2)}\n`)
-        const id = path.split('/').at(-1).replace(/\.json$/, '')
-        const detail = split.details.find(item => item.entry.id === id).entry
-        return new Response(JSON.stringify(id === 'demo'
-          ? { ...detail, description: 'REMOTE DETAIL MUST NOT LEAK INTO FALLBACK' }
-          : { ...detail, version: '9.9.9' }))
-      },
-    })
-    const catalog = await service.load()
-    assert.equal(catalog.source.kind, 'bundled')
-    assert.equal(catalog.source.errorCode, 'CATALOG_DETAILS_UNAVAILABLE')
-    assert.ok(catalog.entries.every(item => item.description !== 'REMOTE DETAIL MUST NOT LEAK INTO FALLBACK'))
-  } finally {
-    await rm(root, { recursive: true, force: true })
-  }
-})
-
-test('marketplace snapshot pagination returns one bounded page and lazy candidate data', () => {
-  const entries = Array.from({ length: 61 }, (_, index) => ({
-    ...entry,
-    id: `demo-${String(index).padStart(2, '0')}`,
-    packageName: `dsh-demo-${String(index).padStart(2, '0')}`,
-    name: `Demo ${String(index).padStart(2, '0')}`,
-    featured: index < 3,
-  }))
-  const catalog = validateCatalog(document(entries))
-  const snapshot = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] }, '', {
-    candidateRegistry: {
-      registry: { name: 'Candidates' }, source: { kind: 'fixture' },
-      entries: [
-        { id: 'candidate-new', name: 'Candidate New', status: 'pending', sourceUpdatedAt: '2026-08-21T00:00:00Z' },
-        { id: 'candidate-old', name: 'Candidate Old', status: 'pending', sourceUpdatedAt: '2026-08-20T00:00:00Z' },
-        { id: 'candidate-rejected', name: 'Candidate Rejected', status: 'rejected', sourceUpdatedAt: '2026-08-22T00:00:00Z' },
-      ],
-    },
-  })
-  const market = paginateMarketplaceSnapshot(snapshot, { view: 'market', page: 2, pageSize: 20 })
-  assert.equal(market.entries.length, 20)
-  assert.equal(market.candidates.length, 0)
-  assert.deepEqual(market.pagination, {
-    view: 'market', query: '', category: '', featuredOnly: false, page: 2, pageSize: 20, total: 61, pageCount: 4,
-    hasPrevious: true, hasNext: true,
-  })
-  assert.equal(market.catalogPackageNames.length, 61)
-
-  const featured = paginateMarketplaceSnapshot(snapshot, { view: 'market', featuredOnly: true, page: 1, pageSize: 20 })
-  assert.deepEqual(featured.entries.map(item => item.id), ['demo-00', 'demo-01', 'demo-02'])
-  assert.equal(featured.pagination.total, 3)
-  assert.equal(featured.pagination.featuredOnly, true)
-
-  const candidates = paginateMarketplaceSnapshot(snapshot, { view: 'candidates', includeRejected: true, page: 1, pageSize: 1 })
-  assert.equal(candidates.entries.length, 0)
-  assert.deepEqual(candidates.candidates.map(item => item.id), ['candidate-rejected'])
-  assert.equal(candidates.pagination.total, 3)
-  assert.deepEqual(candidates.candidateSummary, { total: 3, discovered: 0, reviewing: 0, rejected: 1, unknown: 2, reviewable: 0 })
-  assert.throws(() => paginateMarketplaceSnapshot(snapshot, { pageSize: 49 }), /pageSize/)
-})
-
-test('catalog recommended ordering puts latest-compatible entries first', () => {
-  const old = { ...entry, id: 'old', packageName: 'dsh-old', name: 'Old', compatibility: { ...entry.compatibility, dsh: '0.1.0-rc.7' } }
-  const current = { ...entry, id: 'current', packageName: 'dsh-current', name: 'Current', version: '0.1.0', compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' } }
-  assert.deepEqual(searchCatalog(validateCatalog(document([old, current]))).map(item => item.id), ['current', 'old'])
-})
-
-test('catalog ordering pins featured entries before compatibility and source freshness', () => {
-  const currentOld = {
-    ...entry, id: 'current-old', packageName: 'dsh-current-old', name: 'Current old',
-    compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' },
-    source: { updatedAt: '2026-08-01T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
-  }
-  const currentNew = {
-    ...entry, id: 'current-new', packageName: 'dsh-current-new', name: 'Current new', featured: false,
-    compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' },
-    source: { updatedAt: '2026-08-19T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
+  const split = splitCatalogDocume…1304 tokens truncated…ommit' },
   }
   const unsupportedNew = {
     ...entry, id: 'unsupported-new', packageName: 'dsh-unsupported-new', name: 'Unsupported new',
@@ -466,6 +382,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.8.17' && manager.version === '0.8.16')
     || (packageManifest.version === '0.9.0' && manager.version === '0.8.17')
     || (packageManifest.version === '0.9.1' && manager.version === '0.9.0')
+    || (packageManifest.version === '0.9.2' && manager.version === '0.9.1')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')

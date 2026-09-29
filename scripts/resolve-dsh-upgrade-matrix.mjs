@@ -3,7 +3,7 @@
 import { appendFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { fetchOfficialDshReleaseWindow } from '../src/dsh-release-policy.mjs'
+import { compareDshVersions, fetchOfficialDshReleaseWindow } from '../src/dsh-release-policy.mjs'
 
 export async function resolveDshUpgradeMatrix(fetchWindow = fetchOfficialDshReleaseWindow) {
   const window = await fetchWindow({ releaseCount: 3 })
@@ -11,13 +11,24 @@ export async function resolveDshUpgradeMatrix(fetchWindow = fetchOfficialDshRele
     || window?.releaseCount !== 3
     || !Array.isArray(window.releases)
     || window.releases.length !== 3
-    || window.latestVersion !== window.releases[2]) {
+    || window.latestVersion !== window.releases[2]
+    || !Array.isArray(window.channels)) {
     throw new Error('official DSH authority did not return a complete ordered latest-three window')
+  }
+  const nextChannels = window.channels.filter(channel => channel?.tag === 'next')
+  if (nextChannels.length > 1) throw new Error('official DSH authority returned duplicate next channels')
+  let nextVersion = null
+  if (nextChannels.length === 1) {
+    const channel = nextChannels[0]
+    const order = typeof channel.version === 'string' ? compareDshVersions(channel.version, window.latestVersion) : null
+    if (channel.kind !== 'preview' || order === null) throw new Error('official DSH next channel is malformed')
+    if (order > 0) nextVersion = channel.version
   }
   return {
     latestVersion: window.latestVersion,
     releases: [...window.releases],
     previousReleases: window.releases.slice(0, 2),
+    nextVersion,
   }
 }
 
@@ -28,6 +39,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       `latest_version=${matrix.latestVersion}`,
       `releases=${JSON.stringify(matrix.releases)}`,
       `previous_releases=${JSON.stringify(matrix.previousReleases)}`,
+      `next_version=${matrix.nextVersion ?? ''}`,
       '',
     ].join('\n'))
   }
