@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "41a21d289af2bc268cbc83ebc50ba10158007026",
-  "version": "2.1.0",
+  "commit": "d996e6f3dd181284266e344eca98eaf65b265505",
+  "version": "2.2.0",
   "categories": [
     "themes"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-14T05:47:48.000Z",
-    "observedAt": "2026-09-14T13:24:37.000Z",
+    "updatedAt": "2026-09-29T14:27:00.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-14T13:24:37.000Z",
-      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/41a21d289af2bc268cbc83ebc50ba10158007026",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/d996e6f3dd181284266e344eca98eaf65b265505",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,8 +79,8 @@
   "entryIds": [
     "dsh-whale-musume"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-alpha.2, 0.1.7-rc.1, 0.1.7-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -104,7 +104,9 @@
       "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-rc.2": "unknown",
+      "0.2.0-rc.2": "compatible",
+      "0.2.0-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -228,6 +230,18 @@
         "rollback": "unknown"
       },
       "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

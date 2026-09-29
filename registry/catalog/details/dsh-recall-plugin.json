@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "d9f38a4a0eb0447cadd5e0244ffdb98264c8b080",
+  "commit": "3837f3c0aece56ddf2cba645030662159c7aad28",
   "version": "2.4.6",
   "categories": [
     "sessions"
@@ -31,20 +31,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T16:42:31.000Z",
-    "observedAt": "2026-09-29T04:42:38.000Z",
+    "updatedAt": "2026-09-29T12:05:18.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-29T04:42:38.000Z",
-      "evidenceUrl": "https://github.com/limbo947/dsh-recall-plugin/commit/d9f38a4a0eb0447cadd5e0244ffdb98264c8b080",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/limbo947/dsh-recall-plugin/commit/3837f3c0aece56ddf2cba645030662159c7aad28",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -107,7 +107,8 @@
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
-      "0.2.0-rc.1": "compatible"
+      "0.2.0-rc.1": "compatible",
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -243,6 +244,12 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

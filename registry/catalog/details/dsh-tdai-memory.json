@@ -32,8 +32,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "38f4d6011d7f262734cc5172e87d8c16bb58620b",
-  "version": "0.3.5",
+  "commit": "58a2ebf92fb14674692a3330ad264c0cb781df7c",
+  "version": "0.3.6",
   "categories": [
     "sessions",
     "memory",
@@ -43,16 +43,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T04:18:24.000Z",
-    "observedAt": "2026-09-25T13:19:47.000Z",
+    "updatedAt": "2026-09-29T13:05:46.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-25T13:19:47.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-tdai-memory/commit/38f4d6011d7f262734cc5172e87d8c16bb58620b",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-tdai-memory/commit/58a2ebf92fb14674692a3330ad264c0cb781df7c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -95,7 +95,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.7-rc.1 <0.2.0",
+    "dsh": ">=0.1.7-rc.1 <0.2.0 || 0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -118,7 +118,9 @@
       "0.1.7-alpha.1": "unknown",
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "compatible",
-      "0.1.7-rc.2": "compatible"
+      "0.1.7-rc.2": "compatible",
+      "0.2.0-rc.2": "compatible",
+      "0.2.0-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -252,11 +254,24 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=22.18",
     "systems": [],
     "profiles": [
+      "desktop",
       "web"
     ]
   },

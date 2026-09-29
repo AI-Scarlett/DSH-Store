@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "da44a842b40e2262dfd19ab947dfcb1558f3f8d1",
-  "version": "0.8.0",
+  "commit": "fb434d434527398aff574ec7c19875acff8b1907",
+  "version": "0.9.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T05:47:25.000Z",
-    "observedAt": "2026-09-29T06:14:10.000Z",
+    "updatedAt": "2026-09-29T07:52:01.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T06:14:10.000Z",
-      "evidenceUrl": "https://github.com/XXXXXQ-0206/dsh-prompt-for-me/commit/da44a842b40e2262dfd19ab947dfcb1558f3f8d1",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/XXXXXQ-0206/dsh-prompt-for-me/commit/fb434d434527398aff574ec7c19875acff8b1907",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "prompt-for-me"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.2.0-rc.1 <0.3.0",
     "dshReleases": {
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-rc.2": "unknown",
+      "0.2.0-rc.1": "unknown",
+      "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,19 +145,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -183,9 +183,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
