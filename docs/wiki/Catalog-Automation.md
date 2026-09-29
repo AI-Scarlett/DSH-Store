@@ -17,7 +17,8 @@ Catalog 的远端 GitHub `main` 是权威；本地副本或页面缓存只可用
 
 自动化会：
 
-1. 通过 `dsh-plugin`、`deepseek-harness` 等 GitHub 主题与检索词发现有限数量的新仓库。
+1. 首先按 `bruc3van/awesome-dsh-plugin` 的 `main` 分支完整 Commit 读取大型 `data/approved.json` 与同一 Commit 的 `data/curated.json#excluded_repos`，每个 8 小时窗口按仓库名确定性地连续扫描 64 条索引记录；小型固定目录和 GitHub 搜索只补足主目录没有提供的可扫描线索。每轮最多对 64 个新仓库做固定 Commit 检查。报告逐源显示固定 Commit、索引规模、本轮选取数、有效仓库数、来源状态和最终检查数。
+   社区目录只提供发现线索，不授予 Catalog 准入或安装权限；每个候选都必须进入与 GitHub 搜索相同的固定源码扫描，满足自动策略后才可能进入 Catalog。扫描只读取有界 GitHub 元数据与固定 Commit 源码，不执行第三方安装、构建、测试或运行时代码。
 2. 对全部历史 Catalog 条目读取 canonical GitHub 默认分支，并将 manifest 版本与当前固定版本比较。
 3. 新版本只有在完整 Commit 上重新通过身份、许可证、Bundle、入口、依赖、生命周期和权限门禁后，才进入 Catalog 更新 PR。
 4. 联合官方 GitHub Releases 与 npm 已发布版本读取当前支持系列最近三个 DSH 完整版本（包括 alpha/beta/rc）；至少兼容其中一个版本才保留可收录资格。已收录但不再满足时会暂时 `unlisted`，候选中同时“其他门禁失败且没有最新三版精确兼容证据”的条目会被清理。

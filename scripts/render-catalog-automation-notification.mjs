@@ -97,6 +97,8 @@ export function renderCatalogAutomationNotification({
   const deferredUpdates = array(report?.deferredUpdates)
   const higherVersionDeferred = deferredUpdates.filter(item => typeof item?.upstreamVersion === 'string')
   const transientFailures = array(report?.transientFailures)
+  const discovery = report?.discovery ?? null
+  const discoverySources = array(discovery?.sources)
   const sourceChecks = report?.sourceVersionChecks ?? {}
   const surfaces = array(watchdog?.surfaces)
   const passedSurfaces = surfaces.filter(surface => surface?.status === 'passed').length
@@ -151,6 +153,21 @@ export function renderCatalogAutomationNotification({
       `- 暂时无法解析：${number(sourceChecks.unresolvedEntries)} 个；临时基础设施失败：${transientFailures.length} 个`,
       `- 当前 Catalog 条目：${number(postCatalogEntries)} 个`,
     )
+    if (discovery !== null) {
+      const searches = discoverySources.filter(source => source?.kind === 'github-search')
+      const directories = discoverySources.filter(source => source?.kind !== 'github-search')
+      const primary = directories.find(source => source?.primary === true)
+      if (primary) {
+        const primaryCheckKey = `github-feed:${primary.source}`
+        const primaryChecks = discovery.fixedCommitChecksBySource?.[primaryCheckKey]
+        lines.push(`- 固定主目录扫描：${code(primary.source)}；本轮窗口 ${number(primary.selectedRecords)} 条；解析到 ${number(primary.liveRepositories)} 个有效仓库；索引 ${number(primary.totalRecords)} 条；排除表 ${number(primary.excludedRecords)} 项（命中索引 ${number(primary.excludedMatches)} 项）；固定 Commit 检查 ${number(primaryChecks)} 次`)
+      } else {
+        lines.push('- 固定主目录扫描：**报告未标出主目录，不能确认固定源覆盖**')
+      }
+      lines.push(`- 新插件发现/扫描：${number(discovery.uniqueRepositoriesFound)} 个唯一仓库；固定 Commit 检查 ${number(discovery.fixedCommitChecks)} / ${number(discovery.maxRepositoriesPerRun)}；GitHub 搜索 ${searches.filter(source => source.status === 'available').length}/${searches.length} 条可用，社区目录 ${directories.filter(source => source.status === 'available').length}/${directories.length} 个可用`)
+    } else {
+      lines.push('- 新插件发现统计：本轮报告未提供，无法确认新仓库扫描情况')
+    }
     if (authorStatisticsAvailable) {
       lines.push(
         `- 向不符合条件项目发送 GitHub 整改消息：${number(authorSummary.githubMessages)} 个项目`,

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "operation": "make-large-fixed-plugin-index-primary-discovery-source",
+  "baseCommit": "c347c54e60efbe5455862377b2a8762babf77a08",
+  "createdAt": "2026-09-25T10:43:48Z",
+  "scope": [
+    "docs/ops/discovery-radar-primary-index-plan-20260925.json",
+    "registry/automation-policy.json",
+    "src/discovery-feeds.mjs",
+    "scripts/automate-catalog.mjs",
+    "test/discovery-feeds.test.mjs",
+    "test/catalog-automation.test.mjs",
+    "scripts/render-catalog-automation-notification.mjs",
+    "test/catalog-notification.test.mjs",
+    "docs/wiki/Catalog-Automation.md",
+    "registry/README.md"
+  ],
+  "preconditions": {
+    "registry/automation-policy.json": "50f4844e6f39f58dfa481f07d850cc9885c947ddc348462aef2be2af4fcfd692",
+    "src/discovery-feeds.mjs": "1a6d6bbc4969d6ca860fdafa83f85f6ddfdd0479c5e763a266112ddad5168776",
+    "scripts/automate-catalog.mjs": "4537795b8bd09d14f78438d6ff06a037d2fddc55f02b3576f82f5f228b2680fb",
+    "test/discovery-feeds.test.mjs": "95c29d066fb06943734beb3c5c3a673df3ed4711eeddba70ba2d4002fbfc79ef",
+    "test/catalog-automation.test.mjs": "08a727929304b791d60cd36879f8df9594c0955e237a2643d60db72f02a820d4",
+    "scripts/render-catalog-automation-notification.mjs": "5ee68723a3a3bb7a6f0909e94d6b6e287c4ab7e0b42cfccaa07ae4090b753377",
+    "test/catalog-notification.test.mjs": "5c867b3f545cf6e4f70cdb9d8007ee1197c74516d24fd3a387972f570c344ce5",
+    "docs/wiki/Catalog-Automation.md": "1ae316b28665de7d154cd6317ba3acd3c6a325af42fb7de51897209a4715c8f9",
+    "registry/README.md": "758ff2a99e6086e97e87a92bb40a096aee9faec96b095b4b27af97981a8d8ac9"
+  },
+  "source": {
+    "repository": "https://github.com/bruc3van/awesome-dsh-plugin",
+    "branch": "main",
+    "manifest": "data/approved.json",
+    "exclusions": "data/curated.json#excluded_repos",
+    "verifiedSnapshot": "13739 approved repository keys; 795 explicit excluded_repos at planning time",
+    "handling": "fixed-Commit discovery lead only; same canonical repository and complete fixed-Commit admission scan as search results"
+  },
+  "targetPolicy": {
+    "primarySource": "bruc3van/awesome-dsh-plugin",
+    "primaryRecordsPerEightHourWindow": 64,
+    "fixedCommitChecksPerRunMaximum": 64,
+    "smallerDirectoriesAndGithubSearch": "fallback only",
+    "feedEvidenceAloneCanApproveOrInstall": false,
+    "thirdPartyCodeExecution": false,
+    "authorOutreach": false,
+    "dshCoreOrProfileMutation": false
+  },
+  "gates": [
+    "branch remains based on the exact existing PR head and every precondition file hash matches",
+    "read only approved.json and curated.json at one fixed full Commit with strict byte, record, owner/repository, and exclusion bounds",
+    "scan a deterministic contiguous window from the primary fixed directory before using fallback directories/search",
+    "source selection and report distinguish directory rows selected, live repositories resolved, and fixed-Commit admission checks",
+    "all candidates use the existing complete fixed-Commit manifest, Bundle, license, lifecycle, dependency, compatibility, and permission policy",
+    "malformed/truncated snapshots fail closed; removed repositories are skipped individually; no third-party code is executed",
+    "npm run check",
+    "update the existing auditable PR only after local plan and deterministic gates pass; do not merge or contact authors"
+  ],
+  "rollback": "Revert this incremental commit or close the existing PR; do not mutate Catalog contents, DSH Profile, official inventory, third-party repositories, or contact history."
+}
