@@ -36,6 +36,13 @@ Catalog 的远端 GitHub `main` 是权威；本地副本或页面缓存只可用
 
 任何未知、超限、歧义或高风险证据都失败关闭，进入候选、暂缓或阻止状态，而不是降低标准自动上架。
 
+`tool.call.toolview` 是官方支持的扩展槽，出现这个名称本身不等于替换官方组件。
+但当前固定源码文本扫描无法证明 renderer 的作用域和 key 归属，因此单独记录 `toolViews`
+信号并强制保留人工审核门禁；固定的插件 key、官方 key、无 key 和动态 key 均不能自动通过。
+这个门禁不会被权限 allowlist、历史 `user-reviewed` 状态或 self-manager 特例绕过。
+Loader/Fiber 修改和禁用官方包仍属于 `protectedDsh`。只有确定可信的 key 归属证据后，才能
+另行设计合法 keyed renderer 的自动豁免；本规则不承诺恢复任何现有条目的上架状态。
+
 ## 写入与发布
 
 扫描先绑定当前 `main` Commit、Catalog 哈希和候选库哈希，生成机器可读计划。只有计划未漂移、`npm run check`、Registry 校验和 CodeQL 全部通过时，GitHub Actions 才会通过短期令牌创建 PR、等待门禁并 squash 合并。
