@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-29T04:42:38.000Z",
+    "updatedAt": "2026-09-29T06:14:10.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -7587,8 +7587,8 @@
       "description": "在设置面板中编辑 ~/.dsh/AGENTS.md 全局规则，保存后实时生效。",
       "repositoryUrl": "https://github.com/badai147/dsh-global-rules",
       "defaultBranch": "main",
-      "latestCommit": "6272995b86e5a114d1024bdcad545a3125de7170",
-      "sourceUpdatedAt": "2026-09-26T16:16:02.000Z",
+      "latestCommit": "43dade8d4f29d413a76bd1897f40cc62d889c1a8",
+      "sourceUpdatedAt": "2026-09-29T05:31:11.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9221,8 +9221,8 @@
       "description": "为 DSH 提供安全防护工具能力。英文原始说明：Content-addressed readiness proof for sanitized DeepSeek Harness observations on managed Windows hosts",
       "repositoryUrl": "https://github.com/dongsheng123132/dsh-windows-readiness-proof",
       "defaultBranch": "main",
-      "latestCommit": "415a07edb924ee7465e92536e8ca4aef48a9c8b5",
-      "sourceUpdatedAt": "2026-09-07T13:32:22.000Z",
+      "latestCommit": "46cc6b8dbaa0f970ffa326615cb1e52683516929",
+      "sourceUpdatedAt": "2026-09-29T05:30:21.000Z",
       "discoveredAt": "2026-09-08T21:29:07.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14379,6 +14379,88 @@
         "sglang",
         "vllm",
         "vram",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "apex-mochen-dsh-sandbox-arg-guard",
+      "name": "apex-mochen/dsh-sandbox-arg-guard",
+      "description": "Keeps a redundant sandbox-escalation argument from failing a tool call. · 让「同级或更窄的 sandbox_permissions」不再让工具调用直接失败。",
+      "repositoryUrl": "https://github.com/apex-mochen/dsh-sandbox-arg-guard",
+      "defaultBranch": "main",
+      "latestCommit": "7ea097a80f1ad2c15146a02fc19ef7d7d97b0ed7",
+      "sourceUpdatedAt": "2026-09-19T14:57:38.000Z",
+      "discoveredAt": "2026-09-29T06:14:10.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/apex-mochen__dsh-sandbox-arg-guard.yml:sha256=6a8ed29e3a156a5ed5200077e59397bf133972ed32e211a2513030d2be610af8:at=2026-09-29T06:18:34.861Z:owner=265981728"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "apex-mochen-dsh-todo-continuity",
+      "name": "apex-mochen/dsh-todo-continuity",
+      "description": "Keeps an unfinished task list visible across turns. · 让没做完的任务清单跨回合保留。",
+      "repositoryUrl": "https://github.com/apex-mochen/dsh-todo-continuity",
+      "defaultBranch": "main",
+      "latestCommit": "6cbbf84a53ffff2ba2e740dc0ba729d12e3da4af",
+      "sourceUpdatedAt": "2026-09-15T10:05:33.000Z",
+      "discoveredAt": "2026-09-29T06:14:10.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/apex-mochen__dsh-todo-continuity.yml:sha256=330a32081703bf030e20dc8c4f5d83672bf91e9f0cd4aa2a90cdb3194324d833:at=2026-09-29T06:18:34.861Z:owner=265981728"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "apex-mochen-dsh-reasoning-only-guard",
+      "name": "apex-mochen/dsh-reasoning-only-guard",
+      "description": "Stops a reasoning-only turn from bricking a DSH session. · 防止「只有推理、没有正文」的一轮把整个会话毒死。",
+      "repositoryUrl": "https://github.com/apex-mochen/dsh-reasoning-only-guard",
+      "defaultBranch": "main",
+      "latestCommit": "857ae2eeb324b562e865455c6cc323db09ed021d",
+      "sourceUpdatedAt": "2026-09-15T08:53:28.000Z",
+      "discoveredAt": "2026-09-29T06:14:10.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/apex-mochen__dsh-reasoning-only-guard.yml:sha256=2da8669965ba1c2a1499b8a9d155e1264c1b8cb14e52a56ff98ef2a2b70896e4:at=2026-09-29T06:18:34.861Z:owner=265981728"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "apex-mochen-dsh-clock-context",
+      "name": "apex-mochen/dsh-clock-context",
+      "description": "Give your DSH agent a clock: injects the current date and time into the runtime context on every turn, so the agent can read the time instead of inferring it.",
+      "repositoryUrl": "https://github.com/apex-mochen/dsh-clock-context",
+      "defaultBranch": "main",
+      "latestCommit": "0ab3d61000fc3cffc867963c1d509d4642ebaf3c",
+      "sourceUpdatedAt": "2026-09-15T05:28:23.000Z",
+      "discoveredAt": "2026-09-29T06:14:10.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/apex-mochen__dsh-clock-context.yml:sha256=adde91fdff02a683a79307996c2517fec136e85401dd71b98351aa0717d07dec:at=2026-09-29T06:18:34.861Z:owner=265981728"
+      ],
+      "topics": [
+        "agent-context",
+        "clock",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "time",
         "automatic-radar"
       ],
       "status": "reviewing",
