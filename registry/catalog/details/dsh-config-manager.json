@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4fe9d6fff2f3d9c589188fd76b93354e2bd6b955",
-  "version": "0.1.65",
+  "commit": "d6cbae2244e52a0f47220384417abd447404033e",
+  "version": "0.1.66",
   "categories": [
     "import"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T18:08:03.000Z",
-    "observedAt": "2026-09-27T19:35:44.000Z",
+    "updatedAt": "2026-09-28T18:36:10.000Z",
+    "observedAt": "2026-09-29T04:42:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-27T19:35:44.000Z",
-      "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/4fe9d6fff2f3d9c589188fd76b93354e2bd6b955",
+      "checkedAt": "2026-09-29T04:42:38.000Z",
+      "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/d6cbae2244e52a0f47220384417abd447404033e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/core/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/core/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/schema/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/schema/index.js; runtime artifact is missing from",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": ">=0.1.0-rc.6 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

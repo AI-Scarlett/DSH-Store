@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-28T16:31:47.000Z",
+    "updatedAt": "2026-09-29T04:42:38.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2146,8 +2146,8 @@
       "description": "为 DSH 提供社区插件中心能力。英文原始说明：Plugin center for DeepSeek Harness — installed metadata, community market, update detection, and What's New",
       "repositoryUrl": "https://github.com/Max-Null/dsh-plugin-center",
       "defaultBranch": "main",
-      "latestCommit": "dd5c4300c506ee0e10cb261f237275b35731e336",
-      "sourceUpdatedAt": "2026-09-28T05:21:12.000Z",
+      "latestCommit": "79bff175d343605a02f43efba5bc117d00e99c9b",
+      "sourceUpdatedAt": "2026-09-28T22:29:58.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2797,8 +2797,8 @@
       "description": "为 DSH 提供GitHub 工程工具能力。英文原始说明：DSH plugin: embedded git repository graph visualizer for the DeepSeek Harness web GUI - commit history graph, branch filtering, code diffs, VSCode-style uncommitted changes panel",
       "repositoryUrl": "https://github.com/1841220388zzzcccxxx-star/dsh-git-graph",
       "defaultBranch": "main",
-      "latestCommit": "2dc485e72e323a80f7b7915c2437a2c7a21cccc1",
-      "sourceUpdatedAt": "2026-08-19T03:26:33.000Z",
+      "latestCommit": "ec1a867b88358e2984249cc858690eea8501a1ce",
+      "sourceUpdatedAt": "2026-09-29T02:51:57.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14254,6 +14254,131 @@
       ],
       "topics": [
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "anweat-dsh-browser",
+      "name": "anweat/dsh-browser",
+      "description": "Self-contained browser runtime plugin for DeepSeek Harness — bundles Playwright (chromium) and OpenCLI as plugin-local dependencies, exposes a browser service and interactive browser tools.",
+      "repositoryUrl": "https://github.com/anweat/dsh-browser",
+      "defaultBranch": "master",
+      "latestCommit": "a9d0cf553c1bde73d984eaf2279392d4b6d70c24",
+      "sourceUpdatedAt": "2026-09-27T14:02:13.000Z",
+      "discoveredAt": "2026-09-29T04:42:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/anweat__dsh-browser.yml:sha256=8270b96c3b7643eced4f1a17ac093901251e882e301888d7c01fb2fe76f20df2:at=2026-09-29T04:46:14.737Z:owner=89571234"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "antonio-mastropaolo-dsh-anthropic-membership",
+      "name": "antonio-mastropaolo/dsh-anthropic-membership",
+      "description": "DeepSeek Harness plugin: Sign in with Claude Pro/Max (no API key). Caps Anthropic images at 2000px and slims /compact for 1M context.",
+      "repositoryUrl": "https://github.com/antonio-mastropaolo/dsh-anthropic-membership",
+      "defaultBranch": "main",
+      "latestCommit": "f41f6c6df3b78121106578f3f6d29ae83e8469ca",
+      "sourceUpdatedAt": "2026-09-16T16:57:37.000Z",
+      "discoveredAt": "2026-09-29T04:42:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/antonio-mastropaolo__dsh-anthropic-membership.yml:sha256=a404570996a4a930af2d4113ffb989263df62154c8a54cd37415767709302975:at=2026-09-29T04:46:14.737Z:owner=77482585"
+      ],
+      "topics": [
+        "anthropic",
+        "claude",
+        "deepseek",
+        "dsh-plugin",
+        "harness",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "antarescorn-dsh-auto-reviewer",
+      "name": "AntaresCorn/dsh-auto-reviewer",
+      "description": "为 DeepSeek Harness 提供类似 Codex Auto Reviewer / \"approve for me\" 的权限模式。A permission mode for DeepSeek Harness similar to Codex Auto Reviewer / \"approve for me\"",
+      "repositoryUrl": "https://github.com/AntaresCorn/dsh-auto-reviewer",
+      "defaultBranch": "main",
+      "latestCommit": "a17e04a80d4a58aee9c0df0fbf7639000c36d95e",
+      "sourceUpdatedAt": "2026-09-16T06:42:43.000Z",
+      "discoveredAt": "2026-09-29T04:42:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/AntaresCorn__dsh-auto-reviewer.yml:sha256=69bfc0d0a07b0e230d44010306ed2f8de5fe100bc6828b3e7702d62750936b1a:at=2026-09-29T04:46:14.737Z:owner=49019087"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "anweat-dsh-context-console",
+      "name": "anweat/dsh-context-console",
+      "description": "Complete context workbench for DeepSeek Harness: trajectory, inventory, cache history, message forge, and session-log recovery",
+      "repositoryUrl": "https://github.com/anweat/dsh-context-console",
+      "defaultBranch": "main",
+      "latestCommit": "ca081b2fbe8e925ef1bdc1842851e0eaf904cd8d",
+      "sourceUpdatedAt": "2026-09-09T05:23:07.000Z",
+      "discoveredAt": "2026-09-29T04:42:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/anweat__dsh-context-console.yml:sha256=f1a6f7a36d0a8e4d51e59a8998f8c479b3815346877134c111dbe2452052e0bf:at=2026-09-29T04:46:14.737Z:owner=89571234"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ansonfishing-dsh-model-manager",
+      "name": "Ansonfishing/dsh-model-manager",
+      "description": "Manage local LLM inference servers in DSH: GPU registry, parameter profiles, VRAM validation, and tok/s benchmarks for llama.cpp, SGLang, and vLLM",
+      "repositoryUrl": "https://github.com/Ansonfishing/dsh-model-manager",
+      "defaultBranch": "main",
+      "latestCommit": "d9c6b17c2a71528bbdd3faf9b7eb506cb7854dff",
+      "sourceUpdatedAt": "2026-09-03T01:43:06.000Z",
+      "discoveredAt": "2026-09-29T04:42:38.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4c4167fa0dc992395f8d9c56cfb27e1f812ddb33:data/plugins/Ansonfishing__dsh-model-manager.yml:sha256=a411c9c77dd3885cc9eb717738ec095fcd24a31b57cf2fa50e39afe4a43b4ef2:at=2026-09-29T04:46:14.737Z:owner=234308577"
+      ],
+      "topics": [
+        "dashboard",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "gpu",
+        "inference-server",
+        "llama-cpp",
+        "local-inference",
+        "local-llm",
+        "plugin",
+        "react",
+        "sglang",
+        "vllm",
+        "vram",
         "automatic-radar"
       ],
       "status": "reviewing",

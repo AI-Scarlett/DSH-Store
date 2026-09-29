@@ -24,28 +24,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "2dc485e72e323a80f7b7915c2437a2c7a21cccc1",
-  "version": "0.11.0",
+  "commit": "ec1a867b88358e2984249cc858690eea8501a1ce",
+  "version": "0.14.0",
   "categories": [
     "ui"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-19T03:26:33.000Z",
-    "observedAt": "2026-08-21T02:40:10.936Z",
+    "updatedAt": "2026-09-29T02:51:57.000Z",
+    "observedAt": "2026-09-29T04:42:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "github-fixed-commit-static-contract-review",
-      "checkedAt": "2026-08-21T02:40:10.936Z",
-      "evidenceUrl": "https://github.com/1841220388zzzcccxxx-star/dsh-git-graph/commit/2dc485e72e323a80f7b7915c2437a2c7a21cccc1",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-09-29T04:42:38.000Z",
+      "evidenceUrl": "https://github.com/1841220388zzzcccxxx-star/dsh-git-graph/commit/ec1a867b88358e2984249cc858690eea8501a1ce",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Public GitHub manifest, Bundle Patch, declared runtime artifacts, license, and fixed commit were read back."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Not installed in a disposable DSH profile during this bulk review."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Not started against a disposable rc.8 runtime during this bulk review."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,7 +75,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Static source signals and contract boundaries were reviewed; this is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
@@ -90,6 +90,7 @@
       "rc.8": "unknown",
       "0.1.1-rc.1": "unknown",
       "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
@@ -235,7 +236,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"

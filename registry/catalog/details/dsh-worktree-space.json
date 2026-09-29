@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "2c844caf1c6d7f0be6edbf93dd6e19d28d9ddeed",
-  "version": "1.0.6",
+  "commit": "0209e8e176e5b0fc36f6b9bd3c1fa49476370af0",
+  "version": "1.0.7",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T16:11:59.000Z",
-    "observedAt": "2026-09-28T16:31:47.000Z",
+    "updatedAt": "2026-09-29T02:40:20.000Z",
+    "observedAt": "2026-09-29T04:42:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-28T16:31:47.000Z",
-      "evidenceUrl": "https://github.com/kangtsang/dsh-worktree-space/commit/2c844caf1c6d7f0be6edbf93dd6e19d28d9ddeed",
+      "checkedAt": "2026-09-29T04:42:38.000Z",
+      "evidenceUrl": "https://github.com/kangtsang/dsh-worktree-space/commit/0209e8e176e5b0fc36f6b9bd3c1fa49476370af0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.1.7-rc.1",
+    "dsh": ">=0.1.7-alpha.2 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
+      "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,23 +145,23 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.7-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       }
     },
     "node": ">=22.19.0",
