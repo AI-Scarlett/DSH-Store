@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "45eec44e0f78f661a82039bd5809de7b2495b836",
-  "version": "2.2.0",
+  "commit": "1eefba4526fd71425c89bd218920943404b18dd0",
+  "version": "2.3.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T14:02:36.000Z",
-    "observedAt": "2026-09-29T06:14:10.000Z",
+    "updatedAt": "2026-09-29T07:50:55.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T06:14:10.000Z",
-      "evidenceUrl": "https://github.com/zhuifengqug/pixel-skin/commit/45eec44e0f78f661a82039bd5809de7b2495b836",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/zhuifengqug/pixel-skin/commit/1eefba4526fd71425c89bd218920943404b18dd0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "pixel-skin"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,9 +93,11 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.2": "unknown",
+      "0.1.7-rc.2": "compatible",
       "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown"
+      "0.1.7-alpha.2": "unknown",
+      "0.2.0-rc.1": "unknown",
+      "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,7 +148,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.2": {
+      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -158,14 +160,26 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
+      "0.1.7-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"

@@ -27,8 +27,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "94b6a4a07dc002ecc96944f68184f8cc81154067",
-  "version": "0.9.0",
+  "commit": "ff38bf4c4d4a69fdc12bf9428749238e3497574a",
+  "version": "0.9.1",
   "categories": [
     "workflow",
     "tools"
@@ -36,16 +36,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T17:02:48.000Z",
-    "observedAt": "2026-09-27T19:35:44.000Z",
+    "updatedAt": "2026-09-29T14:19:00.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-27T19:35:44.000Z",
-      "evidenceUrl": "https://github.com/AmethystLuna/embedded-workbench/commit/94b6a4a07dc002ecc96944f68184f8cc81154067",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/AmethystLuna/embedded-workbench/commit/ff38bf4c4d4a69fdc12bf9428749238e3497574a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -111,7 +111,9 @@
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
-      "0.1.5-rc.3": "compatible"
+      "0.1.5-rc.3": "compatible",
+      "0.2.0-rc.1": "compatible",
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -245,12 +247,25 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=20",
     "systems": [],
     "profiles": [
-      "headless"
+      "headless",
+      "web"
     ]
   },
   "details": {

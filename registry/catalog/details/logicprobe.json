@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "c9c51b6387af3135a53fbb8964e12d1bb93958d2",
-  "version": "0.7.0",
+  "commit": "b635c4a1f521e66120c183418cf738dba44927fa",
+  "version": "0.7.1",
   "categories": [
     "workflow",
     "design"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T14:22:16.000Z",
-    "observedAt": "2026-09-27T19:35:44.000Z",
+    "updatedAt": "2026-09-29T14:18:37.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-27T19:35:44.000Z",
-      "evidenceUrl": "https://github.com/AmethystLuna/logicprobe/commit/c9c51b6387af3135a53fbb8964e12d1bb93958d2",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/AmethystLuna/logicprobe/commit/b635c4a1f521e66120c183418cf738dba44927fa",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -110,7 +110,9 @@
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
-      "0.1.5-rc.3": "compatible"
+      "0.1.5-rc.3": "compatible",
+      "0.2.0-rc.1": "compatible",
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -244,12 +246,25 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=20",
     "systems": [],
     "profiles": [
-      "headless"
+      "headless",
+      "web"
     ]
   },
   "details": {

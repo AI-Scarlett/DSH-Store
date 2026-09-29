@@ -30,7 +30,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "2ac6829943d339be7ca3cc0d71def337b0ce8098",
+  "commit": "8b643f68f25dd5b012fec62674639ac0f3fabdfa",
   "version": "0.9.2",
   "categories": [
     "marketplace",
@@ -39,20 +39,20 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T06:10:05.000Z",
-    "observedAt": "2026-09-29T06:14:10.000Z",
+    "updatedAt": "2026-09-29T06:20:19.000Z",
+    "observedAt": "2026-09-29T14:40:34.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-29T06:14:10.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/2ac6829943d339be7ca3cc0d71def337b0ce8098",
+      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/8b643f68f25dd5b012fec62674639ac0f3fabdfa",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -114,7 +114,8 @@
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
-      "0.2.0-rc.1": "compatible"
+      "0.2.0-rc.1": "compatible",
+      "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -248,6 +249,12 @@
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": "^22.19.0 || >=24.0.0",
