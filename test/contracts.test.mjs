@@ -8,7 +8,7 @@ test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
   assert.equal(pkg.version, '0.9.2')
-  for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1']) {
+  for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
     assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
     assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
       install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
