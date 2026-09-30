@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "4315e48ee685aa754675d0b8964c8c3dae25671e",
-  "version": "0.1.22",
+  "commit": "e93db5784a1cccc40ecb201e7d17e1701d6bdfbd",
+  "version": "0.1.23",
   "categories": [
     "search",
     "tools"
@@ -35,20 +35,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-21T13:46:14.000Z",
-    "observedAt": "2026-09-21T14:54:17.000Z",
+    "updatedAt": "2026-09-30T17:05:20.000Z",
+    "observedAt": "2026-09-30T20:36:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-21T14:54:17.000Z",
-      "evidenceUrl": "https://github.com/wqty123/dsh-browser/commit/4315e48ee685aa754675d0b8964c8c3dae25671e",
+      "checkedAt": "2026-09-30T20:36:43.000Z",
+      "evidenceUrl": "https://github.com/wqty123/dsh-browser/commit/e93db5784a1cccc40ecb201e7d17e1701d6bdfbd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -86,10 +86,10 @@
     "browser-electron",
     "tool-browser"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.1-rc.1 <0.2.0",
+    "dsh": ">=0.1.1-rc.1 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -112,8 +112,8 @@
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.1": "compatible",
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
