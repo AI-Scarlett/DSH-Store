@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "59e14d0336c8ccd09dc8fd7a12bb81d7ad40222b",
-  "version": "0.8.38",
+  "commit": "cf256e4dd01b8d22d857e9380ee3e3c6dc1ef147",
+  "version": "0.8.39",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T11:38:06.000Z",
-    "observedAt": "2026-09-30T14:41:31.000Z",
+    "updatedAt": "2026-09-30T20:09:46.000Z",
+    "observedAt": "2026-09-30T20:36:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T14:41:31.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/59e14d0336c8ccd09dc8fd7a12bb81d7ad40222b",
+      "checkedAt": "2026-09-30T20:36:43.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/cf256e4dd01b8d22d857e9380ee3e3c6dc1ef147",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
     "dsh-key-rotation"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "^0.1.7-rc.2 || ^0.2.0-rc.1",
     "dshReleases": {
@@ -185,7 +185,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "undici"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

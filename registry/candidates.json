@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-30T14:41:31.000Z",
+    "updatedAt": "2026-09-30T20:36:43.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2021,8 +2021,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "f907123ec5f17dd0ce4a1579dca1569e7fc96365",
-      "sourceUpdatedAt": "2026-09-24T23:33:20.000Z",
+      "latestCommit": "3ac9a48697fe24c8cd2eb1e0d112b052e8f88ecd",
+      "sourceUpdatedAt": "2026-09-30T17:47:28.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4966,27 +4966,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-ppt."
-    },
-    {
-      "id": "wqty123-dsh-browser",
-      "name": "浏览器与网页工具（DSH Builtin Browser）",
-      "description": "共享真实浏览器：用户可观看并随时接管的原生 Electron 窗口，agent 通过 CDP 驱动，内置 20 个 browser_* 工具（打开/快照/执行/填表/截图/下载/登录态）；任务级会话隔离、登录态持久化、人机验证识别，纯 `dsh web` 无需桌面外壳即可自托管。",
-      "repositoryUrl": "https://github.com/wqty123/dsh-browser",
-      "defaultBranch": "master",
-      "latestCommit": "4315e48ee685aa754675d0b8964c8c3dae25671e",
-      "sourceUpdatedAt": "2026-09-21T13:46:14.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "search",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-builtin-browser."
     },
     {
       "id": "future007s-dsh-peak-indicator",
@@ -14845,6 +14824,101 @@
       "topics": [
         "dsh-plugin",
         "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kuun993-dsh-loop-engine",
+      "name": "kuun993/dsh-loop-engine",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/kuun993/dsh-loop-engine",
+      "defaultBranch": "main",
+      "latestCommit": "4269e90ec04fedab76bc32ff713765527f28f276",
+      "sourceUpdatedAt": "2026-09-29T11:57:48.000Z",
+      "discoveredAt": "2026-09-30T20:36:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/kuun993__dsh-loop-engine.yml:sha256=7554de5f4c70fb5037ad0f93848b42dece8fa72048851ac89f6a3d03fa366b8c:at=2026-09-30T20:40:32.397Z:owner=21998194"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kun2-5code-dsh-plugin-template",
+      "name": "kun2-5code/dsh-plugin-template",
+      "description": "A starter template for DeepSeek Harness (dsh) plugins: six plugin shapes, fourteen browser UI surfaces, and demo slash commands in one installable bundle.",
+      "repositoryUrl": "https://github.com/kun2-5code/dsh-plugin-template",
+      "defaultBranch": "main",
+      "latestCommit": "dc45ae1d23a7c20adefc24e40da8d8a103a9c8cd",
+      "sourceUpdatedAt": "2026-09-28T09:47:10.000Z",
+      "discoveredAt": "2026-09-30T20:36:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/kun2-5code__dsh-plugin-template.yml:sha256=cf1c5f629840b522ba6f172210c7bdfb1712b5c25506242bb340f96cbcc52039:at=2026-09-30T20:40:32.397Z:owner=307439037"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "template",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kui123456789-dsh-codex-workflow",
+      "name": "kui123456789/dsh-codex-workflow",
+      "description": "DSH plugin that coordinates Codex planning and independent review while DSH executes.",
+      "repositoryUrl": "https://github.com/kui123456789/dsh-codex-workflow",
+      "defaultBranch": "main",
+      "latestCommit": "8ea523bf80bfc6170ea96de99906ec8498b4ef87",
+      "sourceUpdatedAt": "2026-09-25T08:58:11.000Z",
+      "discoveredAt": "2026-09-30T20:36:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/kui123456789__dsh-codex-workflow.yml:sha256=8ad46631260b4b880f323506defc275a1dc088f7dce897d8a653bdab9b955905:at=2026-09-30T20:40:32.397Z:owner=170342099"
+      ],
+      "topics": [
+        "code-review",
+        "codex",
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kylinq01-dsh-startup-animation",
+      "name": "KylinQ01/dsh-startup-animation",
+      "description": "🌸 给 DeepSeek Harness 的开机动画 + 主界面壁纸：多层动效 + 鼠标视差，两张图可在设置里自由更换并实时预览",
+      "repositoryUrl": "https://github.com/KylinQ01/dsh-startup-animation",
+      "defaultBranch": "main",
+      "latestCommit": "a916aeb377c877b17deb7cdcb0140dfb7f4a196a",
+      "sourceUpdatedAt": "2026-09-21T15:04:26.000Z",
+      "discoveredAt": "2026-09-30T20:36:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/KylinQ01__dsh-startup-animation.yml:sha256=434b692225b51935c144f05c593ef517c902a24bf35c1a88d7882652e69fe942:at=2026-09-30T20:40:32.397Z:owner=124338990"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "splash-screen",
+        "startup-animation",
+        "wallpaper",
         "automatic-radar"
       ],
       "status": "reviewing",
