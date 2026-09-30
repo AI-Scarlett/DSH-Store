@@ -39,6 +39,14 @@ export function isBoundedSourceLineage(lineage, maxCommitSpan, { allowDiverged =
     && /^[0-9a-f]{40}$/.test(lineage.merge_base_commit?.sha ?? '')
 }
 
+export function isNoCommonAncestorError(error, baseCommit, candidateCommit) {
+  if (error?.status !== 404 || !/^[0-9a-f]{40}$/.test(baseCommit ?? '')
+    || !/^[0-9a-f]{40}$/.test(candidateCommit ?? '')) return false
+  const message = String(error?.message ?? '').trim()
+  return message === `No common ancestor between ${baseCommit} and ${candidateCommit}.`
+    || message === `No common ancestor between ${baseCommit} and ${candidateCommit}`
+}
+
 export function isGeneratedSelfManagerCatalogDetail(candidate, relativePath) {
   const repository = typeof candidate?.repositoryUrl === 'string'
     ? candidate.repositoryUrl.trim().replace(/\.git\/?$/i, '').replace(/\/$/, '').toLowerCase()

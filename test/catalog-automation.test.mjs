@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
-import { isGeneratedSelfManagerCatalogDetail, permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, isNoCommonAncestorError, permissionSignals } from '../src/automation-source-policy.mjs'
 import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -50,6 +50,16 @@ test('permission scan still fails closed on executable capability signals', () =
   assert.equal(permissionSignals(`import { spawn } from 'node:child_process'`).commands, true)
   assert.equal(permissionSignals(`process.env.API_KEY`).credentials, true)
   assert.equal(permissionSignals(`credentials.get('provider')`).credentials, true)
+})
+
+test('a disconnected GitHub history is recognized only from the exact compare response and immutable pair', () => {
+  const base = 'a'.repeat(40)
+  const candidate = 'b'.repeat(40)
+  const error = { status: 404, message: `No common ancestor between ${base} and ${candidate}.` }
+  assert.equal(isNoCommonAncestorError(error, base, candidate), true)
+  assert.equal(isNoCommonAncestorError({ ...error, message: 'Not Found' }, base, candidate), false)
+  assert.equal(isNoCommonAncestorError({ ...error, status: 403 }, base, candidate), false)
+  assert.equal(isNoCommonAncestorError(error, 'short', candidate), false)
 })
 
 test('permission scan does not classify ordinary member exec methods as command execution', () => {
@@ -175,6 +185,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /transientFailures/)
   assert.match(source, /skippedDiscoveries/)
   assert.match(source, /error\?\.status === 404 \|\| error\?\.status === 409/)
+  assert.match(source, /captureNoCommonAncestor === true/)
+  assert.match(source, /No common ancestor between \[0-9a-f\]/)
   assert.match(source, /retryInfrastructure/)
   assert.match(source, /runtimeFiles\.slice\(index, index \+ 8\)/)
   assert.match(source, /Promise\.all\(batch\.map/)
@@ -202,6 +214,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /entry\.installPath \?\? ['"]\.['"]/)
   assert.match(source, /catalogUpdateIdentityMatches/)
   assert.match(source, /buildCatalogVersionUpdate/)
+  assert.match(source, /sourcePolicy === 'external-only'\s*&&\s*isNoCommonAncestorError/)
+  assert.match(source, /holdExternalOnlyAfterDisconnectedHistory\(reviewed, entry\.commit, candidate\.commit, analysis\.reasons\)/)
   assert.match(source, /isSafeSelfManagerUpdate/)
   assert.match(source, /SELF_MANAGER_PROTECTED_ENTRY_REASON/)
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
@@ -214,6 +228,9 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /allowProtectedManager/)
   assert.doesNotMatch(source, /entry\.status !== 'approved' \|\| entry\.updatePolicy !== 'source-verified'/)
   assert.match(source, /localizeCatalogEntry/)
+  assert.match(source, /relocalizeCatalogEntries\(catalog\.entries, catalog\.registry\.categories\)/)
+  assert.match(source, /report\.relocalizedEntries = localized\.changes/)
+  assert.match(source, /report\.relocalizedEntries\.length > 0/)
   assert.match(source, /assertCatalogLocalization/)
   assert.match(source, /assertLegacyCatalogCompatibility/)
   assert.match(source, /automation precondition hash mismatch/)

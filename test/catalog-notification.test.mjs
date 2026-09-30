@@ -30,6 +30,7 @@ test('Catalog notification separates additions, historical updates, and deferred
       { id: 'old-plugin', fromVersion: '1.0.0', toVersion: '2.0.0', changeKind: 'version-update' },
       { id: 'same-plugin', fromVersion: '1.0.0', toVersion: '1.0.0', changeKind: 'same-version-source-update' },
     ],
+    relocalizedEntries: [{ id: 'old-plugin', fromName: '旧名称（History Tool）', toName: '新名称（History Tool）' }],
     compatibilityPolicy: {
       latestReleases: ['0.1.0-rc.8', '0.1.1-rc.1', '0.1.1-rc.2'],
     },
@@ -100,6 +101,8 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /综合结果：\*\*通过\*\*/)
   assert.match(output, /新增收录：1 个（可安装 0，blocked\/不可安装 1）/)
   assert.match(output, /历史版本自动更新：1 个/)
+  assert.match(output, /Catalog 展示信息校正：1 个/)
+  assert.match(output, /Catalog 展示信息校正[\s\S]*旧名称（History Tool） \| 新名称（History Tool）/)
   assert.match(output, /同版本固定 Commit 更新：1 个/)
   assert.match(output, /上游源码变化但未提升版本：3 个（固定 Commit 已更新 1，暂缓 2）/)
   assert.match(output, /同版本工具（Same Version Tool）/)

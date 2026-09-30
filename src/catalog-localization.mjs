@@ -94,6 +94,19 @@ const CAPABILITY_RULES = [
   [/market|store|商城|插件市场/i, '插件市场与管理', ['插件市场', '商城', '插件管理']],
 ]
 
+// A few plugins have semantics that cannot be inferred from migration-related
+// README text alone. Keep their public title and discovery terms explicitly
+// tied to their canonical package identity so routine Catalog refreshes do not
+// regress the author-curated positioning.
+const CURATED_CAPABILITIES = [
+  {
+    pattern: /(?:^|[^a-z0-9])sage[-_ ]?mem(?:$|[^a-z0-9])/i,
+    label: '文件式跨会话记忆',
+    terms: ['记忆', '跨会话记忆', '文件式记忆', 'Markdown 记忆', '知识库', '召回', '配置迁移'],
+    description: '跨会话文件记忆：每条记忆以透明 Markdown 文件保存；会话开始时按当前问题检索并注入，可选按需或定时整理记忆，并通过记忆星图查看关联。支持从 Claude Code 等工具迁入 Markdown 记忆文件。',
+  },
+]
+
 function titleToken(token) {
   const lower = token.toLowerCase()
   if (ACRONYMS.has(lower)) return ACRONYMS.get(lower)
@@ -121,6 +134,11 @@ function existingChineseName(value) {
 
 function capability(entry) {
   const identity = [entry?.id, entry?.packageName, entry?.name].join(' ')
+  for (const curated of CURATED_CAPABILITIES) {
+    if (curated.pattern.test(identity)) {
+      return { ...curated, priorityTerms: curated.terms.slice(0, 2), forceName: true }
+    }
+  }
   for (const [pattern, label, terms] of CAPABILITY_RULES) {
     if (pattern.test(identity)) return { label, terms }
   }
@@ -136,18 +154,36 @@ function capability(entry) {
 export function localizeCatalogEntry(entry, categories = {}) {
   const englishName = englishPluginName(entry)
   const matched = capability(entry)
-  const chineseName = (existingChineseName(entry?.name) || matched.label).slice(0, 50)
+  const chineseName = (matched.forceName ? matched.label : existingChineseName(entry?.name) || matched.label).slice(0, 50)
   const name = `${chineseName}（${englishName.slice(0, 100)}）`
   const originalDescription = String(entry?.description ?? '').replace(/\s+/gu, ' ').trim()
   const description = HAN.test(originalDescription)
-    ? originalDescription.slice(0, 2_000)
+    ? (matched.description ?? originalDescription).slice(0, 2_000)
     : `为 DSH 提供${chineseName}能力。英文原始说明：${originalDescription || englishName}`.slice(0, 2_000)
   const categoryTerms = (entry?.categories ?? []).flatMap(id => [categories[id], ...(CATEGORY_TERMS[id] ?? [])])
   const packageTokens = String(entry?.packageName ?? '').replace(/^@[^/]+\//, '').split(/[^A-Za-z0-9]+/u).filter(token => token.length >= 2)
   const searchTerms = [...new Set([
-    chineseName, englishName, entry?.id, entry?.packageName, ...matched.terms, ...categoryTerms, ...packageTokens,
+    chineseName, ...(matched.priorityTerms ?? []), englishName, entry?.id, entry?.packageName,
+    ...matched.terms, ...categoryTerms, ...packageTokens,
   ].map(value => String(value ?? '').trim()).filter(Boolean))].slice(0, 40)
   return { ...entry, name, description, searchTerms }
+}
+
+export function relocalizeCatalogEntries(entries, categories = {}) {
+  if (!Array.isArray(entries)) throw new TypeError('catalog entries are required for localization')
+  const changes = []
+  const localizedEntries = entries.map(entry => {
+    const identity = [entry?.id, entry?.packageName, entry?.name].join(' ')
+    if (!CURATED_CAPABILITIES.some(curated => curated.pattern.test(identity))) return entry
+    const localized = localizeCatalogEntry(entry, categories)
+    const before = { name: entry.name, description: entry.description, searchTerms: entry.searchTerms }
+    const after = { name: localized.name, description: localized.description, searchTerms: localized.searchTerms }
+    if (JSON.stringify(before) !== JSON.stringify(after)) {
+      changes.push({ id: entry.id, fromName: String(entry.name ?? ''), toName: localized.name })
+    }
+    return localized
+  })
+  return { entries: localizedEntries, changes }
 }
 
 export function assertCatalogLocalization(catalog) {

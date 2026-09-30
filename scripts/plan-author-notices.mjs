@@ -102,10 +102,8 @@ function githubRepository(value) {
 
 function candidateHasDshIntent(candidate) {
   const topics = new Set(array(candidate.topics).map(item => String(item).toLowerCase()))
-  const repositoryName = githubRepository(candidate.repositoryUrl).repository
   return topics.has('dsh-plugin') || topics.has('deepseek-harness')
     || STRONG_DSH_DESCRIPTION.test(String(candidate.description ?? ''))
-    || /(?:^|[-_.])dsh(?:$|[-_.])/i.test(repositoryName)
 }
 
 function candidateIsActionable(candidate) {

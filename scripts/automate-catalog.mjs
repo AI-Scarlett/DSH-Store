@@ -6,7 +6,7 @@ import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'n
 import { isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkRepository } from './check-plugin-submission.mjs'
-import { assertCatalogLocalization, localizeCatalogEntry } from '../src/catalog-localization.mjs'
+import { assertCatalogLocalization, localizeCatalogEntry, relocalizeCatalogEntries } from '../src/catalog-localization.mjs'
 import {
   assessUpstreamVersion,
   isAutomaticPolicyBlocked,
@@ -15,6 +15,7 @@ import {
   catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
+  holdExternalOnlyAfterDisconnectedHistory,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
 import {
@@ -29,7 +30,7 @@ import {
 } from '../src/catalog.mjs'
 import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { isBoundedSourceLineage, isGeneratedSelfManagerCatalogDetail, isTestSourceFile, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
+import { isBoundedSourceLineage, isNoCommonAncestorError, isGeneratedSelfManagerCatalogDetail, isTestSourceFile, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -193,9 +194,26 @@ function createGithubClient(options = {}) {
       const response = await request(url, {
         headers: githubHeaders(token, settings.accept), signal: controller.signal,
       })
-      if (!response.ok) throw Object.assign(new Error(`GitHub returned HTTP ${response.status}`), {
-        code: 'CATALOG_AUTOMATION_GITHUB_HTTP', status: response.status,
-      })
+      if (!response.ok) {
+        let message = `GitHub returned HTTP ${response.status}`
+        if (response.status === 404 && settings.captureNoCommonAncestor === true) {
+          try {
+            const body = await response.text()
+            if (Buffer.byteLength(body) <= 4_096) {
+              const parsed = JSON.parse(body)
+              if (typeof parsed?.message === 'string'
+                && /^No common ancestor between [0-9a-f]{40} and [0-9a-f]{40}\.?$/.test(parsed.message)) {
+                message = parsed.message
+              }
+            }
+          } catch {
+            // A malformed or oversized error body remains a generic 404.
+          }
+        }
+        throw Object.assign(new Error(message), {
+          code: 'CATALOG_AUTOMATION_GITHUB_HTTP', status: response.status,
+        })
+      }
       const value = await response.text()
       if (Buffer.byteLength(value) > (settings.maxBytes ?? 4 * 1024 * 1024)) {
         throw Object.assign(new Error('GitHub response exceeded the automation bound'), { code: 'CATALOG_AUTOMATION_SOURCE_TOO_LARGE' })
@@ -560,11 +578,20 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (normalizedLicense(candidate.details?.license) !== normalizedLicense(entry.details?.license)) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the manifest license changed from the Catalog declaration' }
       }
+      const sourcePolicy = catalogUpdatePolicy(entry)
       const { owner, repository } = repositoryParts(entry.repositoryUrl)
-      const lineage = await retryInfrastructure(() => github.api(
-        `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
-        { maxBytes: 4 * 1024 * 1024 },
-      ))
+      let lineage = null
+      let disconnectedExternalOnly = false
+      try {
+        lineage = await retryInfrastructure(() => github.api(
+          `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
+          { maxBytes: 4 * 1024 * 1024, captureNoCommonAncestor: true },
+        ))
+      } catch (error) {
+        disconnectedExternalOnly = sourcePolicy === 'external-only'
+          && isNoCommonAncestorError(error, entry.commit, candidate.commit)
+        if (!disconnectedExternalOnly) throw error
+      }
       const boundedDescendant = !recheckCurrent && isBoundedSourceLineage(lineage, maxCommitSpan)
       // DSH-Store's historical Catalog pin can reference a PR-head commit that
       // was later squash-merged. Permit only this exact first-party entry to
@@ -575,7 +602,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         && lineage.status === 'diverged'
       const identicalRecheck = recheckCurrent && lineage?.status === 'identical'
         && Number.isInteger(lineage?.total_commits) && lineage.total_commits === 0
-      const lineageReview = identicalRecheck ? 'same-commit-policy-recheck'
+      const lineageReview = disconnectedExternalOnly ? 'disconnected-history-external-only'
+        : identicalRecheck ? 'same-commit-policy-recheck'
         : boundedSelfManagerDivergence ? 'bounded-self-manager-history-divergence'
           : boundedDescendant ? 'direct-descendant' : null
       if (!lineageReview) {
@@ -593,7 +621,6 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         }
         : policy
       const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, analysisPolicy, github))
-      const sourcePolicy = catalogUpdatePolicy(entry)
       const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
       const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
       if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
@@ -604,7 +631,10 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
           return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: hardReasons.join('; ') }
         }
       }
-      const reviewed = refreshAutomaticPolicyReview(entry, automatedEntry(candidate, analysis, observedAt))
+      let reviewed = refreshAutomaticPolicyReview(entry, automatedEntry(candidate, analysis, observedAt))
+      if (disconnectedExternalOnly) {
+        reviewed = holdExternalOnlyAfterDisconnectedHistory(reviewed, entry.commit, candidate.commit, analysis.reasons)
+      }
       // Avoid daily source rechecks rewriting identical unresolved records.
       if (recheckCurrent && reviewed.status === entry.status && reviewed.statusReason === entry.statusReason
         && JSON.stringify(reviewed.details) === JSON.stringify(entry.details)) return { index, entry, kind: 'current' }
@@ -1038,7 +1068,7 @@ const report = {
     upstreamVersionBehind: 0,
     unresolvedEntries: 0,
   },
-  updateReviews: [], updatedEntries: [], sourceChangesWithoutVersionBump: [], upstreamVersionBehind: [],
+  updateReviews: [], updatedEntries: [], relocalizedEntries: [], sourceChangesWithoutVersionBump: [], upstreamVersionBehind: [],
   addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [],
   compatibilityUnlisted: [], compatibilityRestored: [], compatibilityRefreshed: [],
   prunedCandidates: [],
@@ -1075,11 +1105,15 @@ report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
 report.compatibilityUnlisted = report.compatibilityPolicy.unlisted
 report.compatibilityRestored = report.compatibilityPolicy.restored
 report.compatibilityRefreshed = report.compatibilityPolicy.refreshed
+failureContext.stage = 'refresh-catalog-localization'
+const localized = relocalizeCatalogEntries(catalog.entries, catalog.registry.categories)
+catalog.entries = localized.entries
+report.relocalizedEntries = localized.changes
 catalog.entries.sort(compareCatalogEntries)
 assertCatalogLocalization(catalog)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
-  || report.compatibilityPolicy.catalogChanged
+  || report.relocalizedEntries.length > 0 || report.compatibilityPolicy.catalogChanged
 // Discovery can add or refresh Candidate records without entering any of the
 // decision lists above. Bind the write decision to the actual file contents.
 const prospectiveCandidatesBuffer = Buffer.from(`${JSON.stringify(candidates, null, 2)}\n`)

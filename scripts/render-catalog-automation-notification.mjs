@@ -90,6 +90,7 @@ export function renderCatalogAutomationNotification({
   const byId = new Map(catalogEntries.map(entry => [entry.id, entry]))
   const addedEntries = array(report?.addedEntries)
   const updatedEntries = array(report?.updatedEntries)
+  const relocalizedEntries = array(report?.relocalizedEntries)
   const compatibilityUnlisted = array(report?.compatibilityUnlisted)
   const compatibilityRestored = array(report?.compatibilityRestored)
   const compatibilityPolicy = report?.compatibilityPolicy ?? {}
@@ -143,6 +144,7 @@ export function renderCatalogAutomationNotification({
       `- 历史 Catalog 检查：${number(sourceChecks.checkedEntries)} 个`,
       `- 新增收录：${addedEntries.length} 个（可安装 ${approvedAdded}，blocked/不可安装 ${blockedAdded}）`,
       `- 历史版本自动更新：${number(sourceChecks.catalogUpdates)} 个；同版本固定 Commit 更新：${number(sourceChecks.sameVersionCatalogUpdates)} 个`,
+      `- Catalog 展示信息校正：${relocalizedEntries.length} 个`,
       `- 最新三个 DSH 兼容窗口：${array(compatibilityPolicy.latestReleases).map(code).join('、') || '未知'}`,
       `- 兼容性暂时下架：${compatibilityUnlisted.length} 个；恢复上架：${compatibilityRestored.length} 个`,
       `- 不兼容且已有其他失败的候选清理：${prunedCandidates.length} 个`,
@@ -215,6 +217,21 @@ export function renderCatalogAutomationNotification({
     }
     lines.push('')
     appendOmittedRows(lines, updatedEntries.length, rows.length)
+  }
+
+  lines.push('### Catalog 展示信息校正', '')
+  if (!statisticsAvailable) {
+    lines.push('本轮扫描未完成，展示信息校正统计不可用。', '')
+  } else if (relocalizedEntries.length === 0) {
+    lines.push('无展示信息校正。', '')
+  } else {
+    lines.push('| 插件 ID | 原展示名 | 新展示名 |', '|---|---|---|')
+    const rows = visibleRows(relocalizedEntries)
+    for (const item of rows) {
+      lines.push(`| ${markdownCell(item.id)} | ${markdownCell(item.fromName)} | ${markdownCell(item.toName)} |`)
+    }
+    lines.push('')
+    appendOmittedRows(lines, relocalizedEntries.length, rows.length)
   }
 
   lines.push('### 发现高版本但暂缓更新', '')

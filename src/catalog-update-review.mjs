@@ -245,3 +245,24 @@ export function refreshAutomaticPolicyReview(entry, reviewed) {
   return { ...reviewed, id: entry.id, name: entry.name, description: entry.description,
     categories: entry.categories, searchTerms: entry.searchTerms, featured: entry.featured, installCount: entry.installCount }
 }
+
+export function holdExternalOnlyAfterDisconnectedHistory(entry, previousCommit, candidateCommit, reasons = []) {
+  if (entry?.updatePolicy !== 'external-only'
+    || !COMMIT_SHA.test(String(previousCommit ?? ''))
+    || !COMMIT_SHA.test(String(candidateCommit ?? ''))
+    || !Array.isArray(reasons)) {
+    throw new Error('disconnected history may only refresh a fixed external-only entry')
+  }
+  const details = reasons.map(value => String(value).replace(/\s+/gu, ' ').trim()).filter(Boolean)
+  const statusReason = [
+    `Automatic policy blocked installation: the current fixed source ${candidateCommit.slice(0, 12)} has no common ancestor with the prior Catalog pin ${previousCommit.slice(0, 12)}; independent source history remains external-only.`,
+    ...details,
+  ].join(' ').slice(0, 600)
+  return {
+    ...entry,
+    status: 'blocked',
+    statusReason,
+    updatePolicy: 'external-only',
+    risk: { ...entry.risk, review: 'disconnected-history-external-only' },
+  }
+}
