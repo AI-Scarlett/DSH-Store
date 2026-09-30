@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-29T20:28:57.000Z",
+    "updatedAt": "2026-09-30T02:08:17.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -10859,26 +10859,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "noirbright-dsh-model-switch",
-      "name": "NOirBRight/dsh-model-switch",
-      "description": "Model purposes spec and tickets for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/NOirBRight/dsh-model-switch",
-      "defaultBranch": "main",
-      "latestCommit": "4ecc66f8033daa9412eeb589debbe4b0c0266fa7",
-      "sourceUpdatedAt": "2026-09-19T12:22:43.000Z",
-      "discoveredAt": "2026-09-19T12:19:26.000Z",
-      "discoverySources": [
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "dsh-plugin",
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
-    },
-    {
       "id": "johnxu22786-session-titler",
       "name": "JohnXu22786/session-titler",
       "description": "Two-phase session captioning for the DeepSeek Harness: instant keyword captions while busy, budget-model refinement when idle",
@@ -14640,6 +14620,104 @@
         "deepseek-harness",
         "dsh",
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "adoresever-graph-memory",
+      "name": "adoresever/graph-memory",
+      "description": "Deepseek Harness、Openclaw知识图谱记忆插件。2026年4月受邀发布在清华大学讨论会。Knowledge Graph + Memory；Knowledge Graph Context Engine for OpenClaw — extracts structured triples from conversations, compresses context 75%, enables cross-session experience reuse",
+      "repositoryUrl": "https://github.com/adoresever/graph-memory",
+      "defaultBranch": "main",
+      "latestCommit": "441018a50236091b757af473c124fda0c584002e",
+      "sourceUpdatedAt": "2026-09-09T07:51:26.000Z",
+      "discoveredAt": "2026-09-30T02:08:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/adoresever__graph-memory.yml:sha256=2951312f5cbdcb885c6e0c61f33cdd4616d98af293b54f5b25510696fefbd321:at=2026-09-30T02:11:26.533Z:owner=167835671"
+      ],
+      "topics": [
+        "claude-code",
+        "codex",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "knowledge-graph",
+        "memory",
+        "openclaw",
+        "openclaw-plugin",
+        "opencode",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "aealen-dsh-coding-workspace",
+      "name": "Aealen/dsh-coding-workspace",
+      "description": "coding 工作台。以 git worktree 并行开发为地基，向上提供跨会话协作原语、项目分组侧栏与停靠式工作区面板,把 dsh 的单会话界面变成多工作区并行开发驾驶舱。",
+      "repositoryUrl": "https://github.com/Aealen/dsh-coding-workspace",
+      "defaultBranch": "main",
+      "latestCommit": "6c2429930d0a943ccedba7b3baba31f001bbd45f",
+      "sourceUpdatedAt": "2026-09-10T07:32:18.000Z",
+      "discoveredAt": "2026-09-30T02:08:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/Aealen__dsh-coding-workspace.yml:sha256=db431b31def96cdc0611827045bf05d80dd887cd1f419d7a1a22b191a3af9b0f:at=2026-09-30T02:11:26.533Z:owner=55618346"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "adithyanraj03-dsh-schedule-later",
+      "name": "adithyanraj03/dsh-schedule-later",
+      "description": "Schedule a message into a dsh chat for later: a Schedule button in the message box with a date and time picker, a sidebar panel of pending messages across chats, host-side delivery with the browser closed, and model tools plus a skill.",
+      "repositoryUrl": "https://github.com/adithyanraj03/dsh-schedule-later",
+      "defaultBranch": "main",
+      "latestCommit": "c8f3a1354893e80b2fc4af118ba2034bb3841bf8",
+      "sourceUpdatedAt": "2026-09-24T21:00:32.000Z",
+      "discoveredAt": "2026-09-30T02:08:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/adithyanraj03__dsh-schedule-later.yml:sha256=f07dbc930d41396897e601e62bb4ff1d75ef668f1324f47561f099a774dd4f67:at=2026-09-30T02:11:26.533Z:owner=39313793"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "reminder",
+        "schedule",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "advance-lion-dsh-brand",
+      "name": "advance-lion/dsh-brand",
+      "description": "方便魔改作者轻量化自定义商标",
+      "repositoryUrl": "https://github.com/advance-lion/dsh-brand",
+      "defaultBranch": "main",
+      "latestCommit": "6d945fe47827c301b30bba03c02fddb693b1ec0f",
+      "sourceUpdatedAt": "2026-09-23T04:47:26.000Z",
+      "discoveredAt": "2026-09-30T02:08:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/advance-lion__dsh-brand.yml:sha256=8697ef5a0f46758b0e842f1522c830397c4a76304afb50432fd7d850c72b2de4:at=2026-09-30T02:11:26.533Z:owner=98015681"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugins",
         "automatic-radar"
       ],
       "status": "reviewing",

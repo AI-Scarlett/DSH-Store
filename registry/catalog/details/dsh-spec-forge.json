@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "83ce9e8bed495b4ccc234ee063c56e3fa38faa58",
+  "commit": "31e2d085191c692be53c8ae234805c49900a0512",
   "version": "0.6.5",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-18T06:20:50.000Z",
-    "observedAt": "2026-09-18T13:50:17.000Z",
+    "updatedAt": "2026-09-21T03:53:31.000Z",
+    "observedAt": "2026-09-30T02:08:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-18T13:50:17.000Z",
-      "evidenceUrl": "https://github.com/winston-hoo/dsh-spec-forge/commit/83ce9e8bed495b4ccc234ee063c56e3fa38faa58",
+      "checkedAt": "2026-09-30T02:08:17.000Z",
+      "evidenceUrl": "https://github.com/winston-hoo/dsh-spec-forge/commit/31e2d085191c692be53c8ae234805c49900a0512",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "spec-forge"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: the current fixed source 31e2d085191c has no common ancestor with the prior Catalog pin 83ce9e8bed49; independent source history remains external-only. manifest repository does not match the canonical GitHub repository runtime source contains the files permission signal runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.1.0",
     "dshReleases": {
@@ -92,12 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown"
@@ -151,42 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -228,6 +186,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "disconnected-history-external-only"
   }
 }
