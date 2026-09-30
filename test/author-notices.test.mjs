@@ -363,6 +363,27 @@ test('pruned incompatible candidates still receive one report-backed remediation
   assert.match(action.body, /@PrunedOwner/)
 })
 
+test('a DSH-branded repository name without DSH plugin evidence does not trigger author outreach', () => {
+  const report = structuredClone(fixture().report)
+  report.deferredUpdates = []
+  report.prunedCandidates = [{
+    id: 'bqv-dsh-android',
+    name: 'bqv/dsh-android',
+    description: 'Kotlin Compose App frontend for DSH using deepseek-harness-auth',
+    repositoryUrl: 'https://github.com/bqv/dsh-android',
+    commit: 'f'.repeat(40),
+    discoverySources: ['github-automatic-radar-v1'],
+    topics: ['automatic-radar'],
+    previousFailure: 'SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found',
+    reason: 'SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found; no exact compatible declaration for official DSH releases',
+  }]
+  const plan = buildAuthorNoticePlan(fixture({
+    catalog: { entries: [] }, candidates: { entries: [] }, report, maxCreate: 4,
+  }))
+  assert.equal(plan.actions.some(action => action.key === 'bqv/dsh-android'), false)
+  assert.deepEqual(plan.actions, [])
+})
+
 test('maintainer pause survives closure, changed source and changed findings; removing it resumes notices', () => {
   const original = fixture()
   const created = buildAuthorNoticePlan(original).actions.find(action => action.key === 'candidateowner/dsh-candidate')

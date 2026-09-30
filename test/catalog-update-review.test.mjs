@@ -6,6 +6,7 @@ import {
   catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
+  holdExternalOnlyAfterDisconnectedHistory,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
 import {
@@ -286,4 +287,20 @@ test('a complete new automatic review refreshes a stale blocked classification w
   const manual = { ...previous, statusReason: 'Maintainer selected display-only', risk: { review: 'manual' } }
   assert.equal(refreshAutomaticPolicyReview(manual, reviewed), manual)
   assert.throws(() => refreshAutomaticPolicyReview(previous, { ...reviewed, assurance: {} }), /complete automatic/)
+})
+
+test('a disconnected third-party source refresh remains blocked and external-only', () => {
+  const previous = 'a'.repeat(40)
+  const candidate = 'b'.repeat(40)
+  const original = entry({
+    status: 'approved', updatePolicy: 'external-only', risk: { review: 'manual', installScripts: [] },
+  })
+  const held = holdExternalOnlyAfterDisconnectedHistory(original, previous, candidate, ['commands permission signal'])
+  assert.equal(held.status, 'blocked')
+  assert.equal(held.updatePolicy, 'external-only')
+  assert.equal(held.risk.review, 'disconnected-history-external-only')
+  assert.match(held.statusReason, /has no common ancestor/)
+  assert.match(held.statusReason, /commands permission signal/)
+  assert.equal(original.status, 'approved')
+  assert.throws(() => holdExternalOnlyAfterDisconnectedHistory({ ...original, updatePolicy: 'source-verified' }, previous, candidate), /external-only/)
 })
