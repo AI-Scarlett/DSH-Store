@@ -63,7 +63,13 @@ test('the production Catalog is fully localized and searchable by Chinese use ca
   const catalog = await loadCatalogFromFiles()
   assertCatalogLocalization(catalog)
   const refresh = relocalizeCatalogEntries(catalog.entries, catalog.registry.categories)
-  assert.deepEqual(refresh.changes.map(item => item.id), ['sage-mem'])
+  const sageMem = refresh.entries.find(entry => entry.id === 'sage-mem')
+  assert.equal(sageMem.name, '文件式跨会话记忆（Sage Mem）')
+  assert.deepEqual(
+    relocalizeCatalogEntries(refresh.entries, catalog.registry.categories).changes,
+    [],
+    'a localized production Catalog must stay stable on the next refresh',
+  )
   assert.ok(searchCatalog(catalog, '任务完成', { includeUnlisted: true }).some(entry => entry.id === 'dsh-task-notify'))
   assert.ok(searchCatalog(catalog, '余额', { includeUnlisted: true }).some(entry => entry.id === 'dsh-balance-monitor'))
   assert.ok(catalog.entries.every(entry => entry.searchTerms.some(term => /[\u3400-\u9fff]/u.test(term))))
