@@ -1,51 +1,49 @@
 {
-  "id": "dsh-asuka-school-theme",
-  "name": "界面主题与美化（DSH Asuka School Theme）",
-  "packageName": "dsh-asuka-school-theme",
-  "description": "为 DSH 提供界面主题与美化能力。英文原始说明：Asuka School // 02 theme for the DeepSeek Harness web UI.",
+  "id": "dsh-remote-desks",
+  "name": "移动端与远程访问（DSH Remote Desks）",
+  "packageName": "dsh-remote-desks",
+  "description": "把本机 / WSL / 远端 DSH 的 WebUI 镜像进桌面版 DSH，并在同一界面里启动、停止这些实例。",
   "searchTerms": [
-    "界面主题与美化",
-    "DSH Asuka School Theme",
-    "dsh-asuka-school-theme",
-    "主题",
-    "皮肤",
-    "背景",
-    "界面美化",
-    "新锐实验",
+    "移动端与远程访问",
+    "DSH Remote Desks",
+    "dsh-remote-desks",
+    "移动端",
+    "手机",
+    "远程访问",
+    "PWA",
     "实验功能",
     "新功能",
     "dsh",
-    "asuka",
-    "school",
-    "theme"
+    "remote",
+    "desks"
   ],
-  "repositoryUrl": "https://github.com/Yyyyyylor/dsh-asuka-school-theme",
+  "repositoryUrl": "https://github.com/TBChaos/dsh-remote-desks",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "efc6cee9d0c88c247efe9e3042728dad88a9f859",
-  "version": "3.2.1",
+  "commit": "50a544ae5c28196ca8b65b6d9a37bb023b0812ce",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T14:16:48.000Z",
+    "updatedAt": "2026-09-30T14:46:26.000Z",
     "observedAt": "2026-09-30T14:41:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-30T14:41:31.000Z",
-      "evidenceUrl": "https://github.com/Yyyyyylor/dsh-asuka-school-theme/commit/efc6cee9d0c88c247efe9e3042728dad88a9f859",
+      "evidenceUrl": "https://github.com/TBChaos/dsh-remote-desks/commit/50a544ae5c28196ca8b65b6d9a37bb023b0812ce",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "asuka-school-theme"
+    "remote-desks"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source exceeds the automatic review byte bound: 1058618 total bytes (maximum 2097152); largest file 617667 bytes (maximum 262144)",
   "compatibility": {
-    "dsh": "0.2.0-rc.2",
+    "dsh": "^0.2.0-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -94,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "compatible",
       "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown"
+      "0.2.0-rc.1": "unknown",
+      "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -147,12 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -160,6 +152,12 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -186,7 +184,8 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/schemastery"
+      "@deepseek-ai/schemastery",
+      "ssh2"
     ],
     "reviewStatus": "automated-scan"
   },

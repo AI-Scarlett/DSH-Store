@@ -1,51 +1,49 @@
 {
-  "id": "dsh-asuka-school-theme",
-  "name": "界面主题与美化（DSH Asuka School Theme）",
-  "packageName": "dsh-asuka-school-theme",
-  "description": "为 DSH 提供界面主题与美化能力。英文原始说明：Asuka School // 02 theme for the DeepSeek Harness web UI.",
+  "id": "yoka-dsh-billing",
+  "name": "费用与账单（Yoka DSH Billing）",
+  "packageName": "yoka-dsh-billing",
+  "description": "为 DSH 提供费用与账单能力。英文原始说明：DSH plugin: prices tokens from the official model price table, shows the per-session and global running cost beside the composer's context meter, mirrors your DeepSeek account balance in the sidebar, blocks a turn past your own global ceiling (clamped to that balance) or a per-session ceiling (each session's ceiling is independent), and lets you reset the billing baseline (per session or globally, the two are fully independent) so this period goes back to zero while history only rolls into the lifetime total, which every session row shows on its own second line.",
   "searchTerms": [
-    "界面主题与美化",
-    "DSH Asuka School Theme",
-    "dsh-asuka-school-theme",
-    "主题",
-    "皮肤",
-    "背景",
-    "界面美化",
-    "新锐实验",
+    "费用与账单",
+    "Yoka DSH Billing",
+    "yoka-dsh-billing",
+    "费用",
+    "计费",
+    "账单",
+    "成本",
     "实验功能",
     "新功能",
+    "yoka",
     "dsh",
-    "asuka",
-    "school",
-    "theme"
+    "billing"
   ],
-  "repositoryUrl": "https://github.com/Yyyyyylor/dsh-asuka-school-theme",
+  "repositoryUrl": "https://github.com/niliemi/dsh-billing",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "efc6cee9d0c88c247efe9e3042728dad88a9f859",
-  "version": "3.2.1",
+  "commit": "3cc93b6d8900ee40113018ec902ed007ca38702c",
+  "version": "0.2.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T14:16:48.000Z",
+    "updatedAt": "2026-09-30T14:46:00.000Z",
     "observedAt": "2026-09-30T14:41:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-09-30T14:41:31.000Z",
-      "evidenceUrl": "https://github.com/Yyyyyylor/dsh-asuka-school-theme/commit/efc6cee9d0c88c247efe9e3042728dad88a9f859",
+      "evidenceUrl": "https://github.com/niliemi/dsh-billing/commit/3cc93b6d8900ee40113018ec902ed007ca38702c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "asuka-school-theme"
+    "yoka-dsh-billing"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -94,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "compatible",
       "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown"
+      "0.2.0-rc.1": "unknown",
+      "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -147,12 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -164,9 +156,15 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
@@ -185,9 +183,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

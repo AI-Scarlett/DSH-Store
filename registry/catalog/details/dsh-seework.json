@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "751c8ab06c1a31b35a417cb43b06f01b91951f29",
+  "commit": "cdae99d8ea7f70701a4fd152153bc1b2b175c535",
   "version": "0.1.4",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T04:31:39.000Z",
-    "observedAt": "2026-09-30T04:27:24.000Z",
+    "updatedAt": "2026-09-30T05:47:50.000Z",
+    "observedAt": "2026-09-30T14:41:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-09-30T04:27:24.000Z",
-      "evidenceUrl": "https://github.com/dehuadong/dsh-seework/commit/751c8ab06c1a31b35a417cb43b06f01b91951f29",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-09-30T14:41:31.000Z",
+      "evidenceUrl": "https://github.com/dehuadong/dsh-seework/commit/cdae99d8ea7f70701a4fd152153bc1b2b175c535",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,14 +72,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-seework"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 1204167 total bytes (maximum 2097152); largest file 276492 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 1246834 total bytes (maximum 2097152); largest file 278719 bytes (maximum 262144)",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
