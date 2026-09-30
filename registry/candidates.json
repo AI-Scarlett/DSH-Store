@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-30T04:27:24.000Z",
+    "updatedAt": "2026-09-30T14:41:31.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2105,8 +2105,8 @@
       "description": "为 DSH 提供费用与账单能力。英文原始说明：Liquid-glass billing overlay for the DeepSeek Harness Web GUI: provider balances, session cost, daily spend and token buckets. DeepSeek-first with an extensible provider registry.",
       "repositoryUrl": "https://github.com/linkingoscar/dsh-billing-glass",
       "defaultBranch": "main",
-      "latestCommit": "04ee76d50d5653260fd2a9b947c4a3aa6c4410c6",
-      "sourceUpdatedAt": "2026-09-28T08:18:53.000Z",
+      "latestCommit": "07a37acb85aa2136d78fa78a117b3ab4988b715d",
+      "sourceUpdatedAt": "2026-09-30T10:38:58.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4572,8 +4572,8 @@
       "description": "通过机器可读检查点与乐观锁，在 DeepSeek Harness、WorkBuddy、Claude Code 和 Codex 之间交接持久任务状态。",
       "repositoryUrl": "https://github.com/dongsheng123132/task-passport",
       "defaultBranch": "main",
-      "latestCommit": "c9c31c4caa63771f21919c27fd5a14b2a3eb511f",
-      "sourceUpdatedAt": "2026-08-26T17:50:46.000Z",
+      "latestCommit": "af5cfa5f8dd22984cf7e759abfc8fe5907caf2c8",
+      "sourceUpdatedAt": "2026-09-30T06:40:39.000Z",
       "discoveredAt": "2026-08-27T02:16:38.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7525,8 +7525,8 @@
       "description": "在设置面板中编辑 ~/.dsh/AGENTS.md 全局规则，保存后实时生效。",
       "repositoryUrl": "https://github.com/badai147/dsh-global-rules",
       "defaultBranch": "main",
-      "latestCommit": "43dade8d4f29d413a76bd1897f40cc62d889c1a8",
-      "sourceUpdatedAt": "2026-09-29T05:31:11.000Z",
+      "latestCommit": "44f7fe1a18f0849337caf61653f93ed2c45198fb",
+      "sourceUpdatedAt": "2026-09-30T13:57:45.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14803,6 +14803,48 @@
       ],
       "topics": [
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "angeloszou-dsh-github-router",
+      "name": "AngelosZou/dsh-github-router",
+      "description": "Read-only GitHub access for agents, wrapping several tools. Inside the tool it automatically probes and selects whichever GitHub access method works locally, and tries network proxies on its own. That cuts down the network and parsing problems an agent may hit when accessing GitHub, and the overhead of it repeatedly trying different approaches.",
+      "repositoryUrl": "https://github.com/AngelosZou/dsh-github-router",
+      "defaultBranch": "main",
+      "latestCommit": "b5c056e1b50fb3446a153bae7ecf2d923f6f7923",
+      "sourceUpdatedAt": "2026-09-28T16:05:23.000Z",
+      "discoveredAt": "2026-09-30T14:41:31.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/AngelosZou__dsh-github-router.yml:sha256=48cd012455ecd479a7d07774549baa63a741d9eb97db24ec576f260b997683d5:at=2026-09-30T14:46:30.931Z:owner=183316854"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "angeloszou-dsh-pdf-reader",
+      "name": "AngelosZou/dsh-pdf-reader",
+      "description": "DeepSeek Harness plugin for content-aware PDF reading by vision models",
+      "repositoryUrl": "https://github.com/AngelosZou/dsh-pdf-reader",
+      "defaultBranch": "main",
+      "latestCommit": "ffecd361b7f2803fdccd1cf92149aad3e11a3271",
+      "sourceUpdatedAt": "2026-08-26T08:27:11.000Z",
+      "discoveredAt": "2026-09-30T14:41:31.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/AngelosZou__dsh-pdf-reader.yml:sha256=6994d8fd43bc6d0bda27a757138ffd67e54fed7e677200772aa35fc8cdc39926:at=2026-09-30T14:46:30.931Z:owner=183316854"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugins",
         "automatic-radar"
       ],
       "status": "reviewing",
