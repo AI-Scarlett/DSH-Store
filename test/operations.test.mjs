@@ -279,12 +279,60 @@ test('failed GitHub install restores exact profile files', async () => {
     const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
     assert.equal(result.status, 'rolled-back')
     assert.equal(result.rollback, 'succeeded')
-    assert.deepEqual(result.rollbackDetails, { profileFiles: 'succeeded', dependencies: 'succeeded' })
+    assert.equal(result.rollbackDetails.profileFiles, 'succeeded')
+    assert.equal(result.rollbackDetails.dependencies, 'succeeded')
     assert.equal(await readFile(join(profile, 'package.json'), 'utf8'), before)
     assert.deepEqual(calls, [
       ['add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${'b'.repeat(40)}`],
-      ['install', '--offline', '--ignore-scripts'],
+      ['install', '--ignore-scripts'],
     ])
+    assert.deepEqual(result.rollbackDetails.restoreAttempts, [{ strategy: 'online-install', ok: true, exitCode: 0 }])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('rollback converges when the pre-existing Profile declares an unresolvable bundle', async () => {
+  const { root, profile } = await fixture({ installed: false })
+  // Reported failure shape: the Profile already declared a Bundle whose package
+  // is not resolvable before the operation, so the backup the manager takes is
+  // already broken and re-running `install` on it can never converge.
+  const broken = {
+    name: 'fixture',
+    dependencies: { 'dsh-legacy': 'link:/tmp/does-not-exist-dsh-legacy' },
+    dsh: { profile: { bundles: ['dsh-legacy'] } },
+  }
+  await writeFile(join(profile, 'package.json'), JSON.stringify(broken, null, 2) + '\n')
+  const calls = []
+  const runner = {
+    async plugin(_profile, args) {
+      calls.push(args)
+      if (args[0] === 'add') return { ok: false, exitCode: 1, stderr: 'cannot resolve profile bundle "dsh-legacy"' }
+      // The two straight restores keep failing on the stale Bundle declaration;
+      // only the retry after that declaration is dropped can converge.
+      return calls.filter(call => call[0] === 'install').length >= 3
+        ? { ok: true, exitCode: 0 }
+        : { ok: false, exitCode: 1, stderr: 'cannot resolve profile bundle "dsh-legacy"' }
+    },
+    dumpConfig: async () => ({ ok: false, exitCode: 1 }),
+  }
+  try {
+    const operations = service(root, runner)
+    const plan = await operations.createPlan({ action: 'install', pluginId: 'demo' })
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.status, 'rolled-back')
+    assert.equal(result.rollback, 'succeeded')
+    assert.equal(result.rollbackDetails.dependencies, 'succeeded-with-bundle-repair')
+    assert.deepEqual(result.rollbackDetails.removedBundles, ['dsh-legacy'])
+    assert.equal(result.error.diagnostic.code, 'DSH_PROFILE_BUNDLE_UNRESOLVED')
+    assert.deepEqual(calls.slice(1), [
+      ['install', '--ignore-scripts'],
+      ['install', '--offline', '--ignore-scripts'],
+      ['install', '--ignore-scripts'],
+    ])
+    const manifest = JSON.parse(await readFile(join(profile, 'package.json'), 'utf8'))
+    assert.deepEqual(manifest.dsh.profile.bundles, [])
+    assert.equal(manifest.dependencies['dsh-legacy'], 'link:/tmp/does-not-exist-dsh-legacy')
   } finally {
     await rm(root, { recursive: true, force: true })
   }

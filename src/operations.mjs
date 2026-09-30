@@ -1,10 +1,11 @@
 import { createOperationJournal } from './operation-journal.mjs'
 import { diagnoseCommand } from './diagnostics.mjs'
 import { createHash, randomUUID } from 'node:crypto'
+import { existsSync } from 'node:fs'
 import {
   appendFile, chmod, copyFile, mkdir, readFile, rename, rm, writeFile,
 } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { dirname, isAbsolute, join, resolve } from 'node:path'
 import { buildMarketplaceSnapshot, compareVersions, githubInstallSpecifier, verifyCatalogEntry } from './catalog.mjs'
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, resolveProfileDirectory, validateProfileName } from './inventory.mjs'
@@ -172,6 +173,63 @@ async function restoreBackup(profileDir, backupDir, preconditions) {
     if (item.exists) await atomicWrite(target, await readFile(join(backupDir, item.relative)))
     else await rm(target, { force: true })
   }
+}
+
+function isSimplePackageName(value) {
+  return typeof value === 'string'
+    && /^(?:@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/.test(value)
+    && !value.includes('..')
+}
+
+async function manifestOrNull(path) {
+  try {
+    return JSON.parse(await readFile(path, 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+// A restored Profile can still declare a Bundle whose package is not resolvable
+// (removed dependency, unavailable link, unavailable shared install). The official
+// CLI aborts the whole package operation in its post-install reconcile step, so a
+// rollback that only re-runs `plugin install` can never converge. Detect exactly
+// that condition so recovery converges instead of looping into recovery-required.
+async function unresolvableDeclaredBundles(profileDir) {
+  const manifest = await manifestOrNull(join(profileDir, 'package.json'))
+  const declared = Array.isArray(manifest?.dsh?.profile?.bundles) ? manifest.dsh.profile.bundles : []
+  const dependencies = manifest?.dependencies && typeof manifest.dependencies === 'object'
+    ? manifest.dependencies
+    : {}
+  const unavailable = []
+  for (const packageName of declared) {
+    if (!isSimplePackageName(packageName)) continue
+    if (!Object.prototype.hasOwnProperty.call(dependencies, packageName)) continue
+    const specifier = dependencies[packageName]
+    const candidates = []
+    if (typeof specifier === 'string' && /^(?:link|file):/.test(specifier.trim())) {
+      const raw = specifier.trim().replace(/^(?:link|file):/, '').trim()
+      candidates.push(isAbsolute(raw) ? raw : resolve(profileDir, raw))
+    }
+    candidates.push(join(profileDir, 'node_modules', packageName))
+    const resolvable = candidates.some(candidate => existsSync(join(candidate, 'package.json')))
+    if (!resolvable) unavailable.push(packageName)
+  }
+  return unavailable
+}
+
+async function dropDeclaredBundles(profileDir, names) {
+  const path = join(profileDir, 'package.json')
+  const manifest = await manifestOrNull(path)
+  if (!manifest) return []
+  const current = Array.isArray(manifest.dsh?.profile?.bundles) ? manifest.dsh.profile.bundles : []
+  const removed = current.filter(name => names.includes(name))
+  if (removed.length === 0) return []
+  manifest.dsh = {
+    ...manifest.dsh,
+    profile: { ...manifest.dsh?.profile, bundles: current.filter(name => !names.includes(name)) },
+  }
+  await atomicWrite(path, JSON.stringify(manifest, undefined, 2) + '\n')
+  return removed
 }
 
 async function appendAudit(dshHome, event) {
@@ -346,6 +404,40 @@ export function createOperationService(options = {}) {
     return plan
   }
 
+  // Converge the restored Profile back to a resolvable dependency state.
+  // Online-first: `--offline` refuses to relink anything missing from the local
+  // store, which is exactly the state a failed install leaves behind. If the
+  // standard restore still cannot converge, drop only the Bundle declarations
+  // whose packages are unresolvable so the official CLI can finish reconcile.
+  async function restoreDependencies(plan, rollbackDetails) {
+    const profileDir = plan.privateData.profileDir
+    const attempts = []
+    const run = async (args, strategy) => {
+      const result = await runner.plugin(plan.profile, args)
+      attempts.push({ strategy, ok: result.ok === true, exitCode: result.exitCode ?? null })
+      return result
+    }
+    let standard = await run(['install', '--ignore-scripts'], 'online-install')
+    if (!standard.ok) standard = await run(['install', '--offline', '--ignore-scripts'], 'offline-install')
+    if (standard.ok) {
+      rollbackDetails.restoreAttempts = attempts
+      return 'succeeded'
+    }
+    rollbackDetails.restoreAttempts = attempts
+    const unresolvable = await unresolvableDeclaredBundles(profileDir)
+    if (unresolvable.length === 0) {
+      rollbackDetails.dependenciesError = diagnoseCommand(standard).message
+      return 'failed'
+    }
+    const removed = await dropDeclaredBundles(profileDir, unresolvable)
+    rollbackDetails.removedBundles = removed
+    const repaired = await run(['install', '--ignore-scripts'], 'bundle-declaration-repair')
+    rollbackDetails.restoreAttempts = attempts
+    if (repaired.ok) return 'succeeded-with-bundle-repair'
+    rollbackDetails.dependenciesError = diagnoseCommand(repaired).message
+    return 'failed'
+  }
+
   async function executePlan(plan, transactionId = randomUUID()) {
     const release = await acquireLock(dshHome, plan.profile)
     let backupDir = null
@@ -395,17 +487,12 @@ export function createOperationService(options = {}) {
         try {
           await restoreBackup(plan.privateData.profileDir, backupDir, plan.preconditions)
           rollbackDetails.profileFiles = 'succeeded'
-        } catch {
+        } catch (restoreError) {
           rollbackDetails.profileFiles = 'failed'
+          rollbackDetails.profileFilesError = diagnoseCommand(restoreError).message
         }
         if (rollbackDetails.profileFiles === 'succeeded' && packageCommandMayHaveMutated) {
-          try {
-            const restoreInstall = await runner.plugin(plan.profile, ['install', '--offline', '--ignore-scripts'])
-            if (!restoreInstall.ok) throw new Error('dependency restore command failed')
-            rollbackDetails.dependencies = 'succeeded'
-          } catch {
-            rollbackDetails.dependencies = 'failed'
-          }
+          rollbackDetails.dependencies = await restoreDependencies(plan, rollbackDetails)
         }
         rollback = rollbackDetails.profileFiles === 'succeeded'
           && rollbackDetails.dependencies !== 'failed' ? 'succeeded' : 'failed'
