@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-30T02:08:17.000Z",
+    "updatedAt": "2026-09-30T04:27:24.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2308,8 +2308,8 @@
       "description": "DeepSeek Harness 的更新助手：一次扫描覆盖 dsh 本体、官方 bundle 和每个 profile 的插件，说清改了什么、风险多大，只更新你确认过的那些。",
       "repositoryUrl": "https://github.com/hezhongtang/dsh-update-copilot",
       "defaultBranch": "main",
-      "latestCommit": "3fea976c20a5f680374e720bb1813ee1bac4bd61",
-      "sourceUpdatedAt": "2026-09-29T13:31:38.000Z",
+      "latestCommit": "0657539d42a97c41b7ecc3df201863c1a5be154e",
+      "sourceUpdatedAt": "2026-09-30T03:12:44.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2450,8 +2450,8 @@
       "description": "独立单功能的工作区文件树面板：会话头部图标打开当前工作区目录树的动画弹窗；点击或拖拽文件即可把引用插入输入框；自带搜索、行内预览、实时设置与中英双语；零配置，一条命令即装即用。",
       "repositoryUrl": "https://github.com/Jiyr0119/dsh-workspace-explorer",
       "defaultBranch": "main",
-      "latestCommit": "0e9729cf2b0531abf9cf1d3786c825bebdee1dd9",
-      "sourceUpdatedAt": "2026-09-12T02:44:02.000Z",
+      "latestCommit": "fb0c07eb5b4bf88f2b65bb89c42f3bed06aa51f7",
+      "sourceUpdatedAt": "2026-09-30T04:04:26.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14718,6 +14718,91 @@
       "topics": [
         "dsh-plugin",
         "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "aicivilization-deepseek-harness-vps",
+      "name": "AIcivilization/deepseek-harness-vps",
+      "description": "One-command DeepSeek Harness on your VPS: a zero-dependency login gateway puts the stock DSH web UI - settings, API keys, plugin market - behind HTTPS and a password, reachable from anywhere. · 一条命令把 DeepSeek Harness 装进 VPS：零依赖登录网关 + 自动 HTTPS，公网可达，设置、API Key、插件市场全都能用。",
+      "repositoryUrl": "https://github.com/AIcivilization/deepseek-harness-vps",
+      "defaultBranch": "main",
+      "latestCommit": "b2394b9f8bfc2ef2d0812b226f671fc3d36f585b",
+      "sourceUpdatedAt": "2026-09-29T11:07:01.000Z",
+      "discoveredAt": "2026-09-30T04:27:24.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/AIcivilization__deepseek-harness-vps.yml:sha256=3296ab097698ffe2a4a498c69b99f87f3375a28d2b3b5669cce6eb28776b34d1:at=2026-09-30T04:31:58.481Z:owner=268566591"
+      ],
+      "topics": [
+        "agent",
+        "ai-agents",
+        "cli",
+        "deepseek",
+        "deepseek-harness",
+        "deploy",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "dsh-skill",
+        "llm",
+        "llm-agents",
+        "ssh",
+        "ssh-agent",
+        "vpn",
+        "vps",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "hiq-ai-dingtalk-dsh-assistant",
+      "name": "HiQ-AI/dingtalk-dsh-assistant",
+      "description": "基于 DeepSeek Harness 的钉钉群聊常驻个人助理插件",
+      "repositoryUrl": "https://github.com/HiQ-AI/dingtalk-dsh-assistant",
+      "defaultBranch": "main",
+      "latestCommit": "50cfb899a9e53f51c4804ce46c6659c072d9ae1c",
+      "sourceUpdatedAt": "2026-09-30T04:31:56.000Z",
+      "discoveredAt": "2026-09-30T04:27:24.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "collaboration",
+        "deepseek-harness",
+        "digital-employee",
+        "dingtalk",
+        "dingtalk-bot",
+        "dsh-plugin",
+        "group-chat",
+        "multi-agent",
+        "task-automation",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., packages/dingtalk-dsh-assistant, packages/dingtalk-dsh-observer"
+    },
+    {
+      "id": "ai-fu-cn-dsh-plugin-memos-code-retrospect",
+      "name": "ai-fu-cn/dsh-plugin-memos-code-retrospect",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/ai-fu-cn/dsh-plugin-memos-code-retrospect",
+      "defaultBranch": "main",
+      "latestCommit": "8dad4147f912beb2d7a38b97b966457d795508c5",
+      "sourceUpdatedAt": "2026-09-03T13:33:23.000Z",
+      "discoveredAt": "2026-09-30T04:27:24.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@c18ba4a0d4f7bc8334a460b07c08e09a56f6868a:data/plugins/ai-fu-cn__dsh-plugin-memos-code-retrospect.yml:sha256=98cf0d817dc610c8c05d383219c78b1902ac113922a07e7ed2c43d53744c7587:at=2026-09-30T04:31:58.481Z:owner=20599550"
+      ],
+      "topics": [
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "reviewing",
