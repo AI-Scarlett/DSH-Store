@@ -1,50 +1,47 @@
 {
-  "id": "dsh-message-recall",
-  "name": "会话管理（DSH Message Recall）",
-  "packageName": "@kyle123740/dsh-message-recall",
-  "description": "删掉不喜欢的 AI 回复，或删掉已发送的错误提示词 —— 每条消息可撤回 / 删除 / 删除此处及之后。DSH 插件：写 append-only 墓碑，模型上下文与界面同步移除。Per-message recall & delete for DeepSeek Harness sessions.",
+  "id": "dsh-cross-memory",
+  "name": "记忆与知识库（DSH Cross Memory）",
+  "packageName": "dsh-cross-memory",
+  "description": "@a9i5k4/dsh-auto-memory 的增量插件：①把跨实例硬约束（cross/RULES.md）全文注入每一轮上下文，改一处即全部实例生效；②提供结构化写入工具 cross_memory_write_entry（自动锚点行、≤200 字符索引行校验、超长正文外移、写前留基线）。",
   "searchTerms": [
-    "会话管理",
-    "DSH Message Recall",
-    "dsh-message-recall",
-    "@kyle123740/dsh-message-recall",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
-    "实验功能",
-    "新功能",
+    "记忆与知识库",
+    "DSH Cross Memory",
+    "dsh-cross-memory",
+    "记忆",
+    "知识库",
+    "召回",
+    "长期记忆",
     "dsh",
-    "message",
-    "recall"
+    "cross",
+    "memory"
   ],
-  "repositoryUrl": "https://github.com/kyle123740/dsh-message-recall",
+  "repositoryUrl": "https://github.com/ShukebtAb/Dsh-Cross-Memory",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3664201ecc97e08a980aa02b8f7777fb80f534b5",
-  "version": "0.2.1",
+  "commit": "1677f7e607f26d1db6c0848d4d35cba89b6005c3",
+  "version": "0.2.0",
   "categories": [
-    "experimental"
+    "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T03:13:06.000Z",
+    "updatedAt": "2026-10-01T04:42:51.000Z",
     "observedAt": "2026-10-01T04:38:50.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-01T04:38:50.000Z",
-      "evidenceUrl": "https://github.com/kyle123740/dsh-message-recall/commit/3664201ecc97e08a980aa02b8f7777fb80f534b5",
+      "evidenceUrl": "https://github.com/ShukebtAb/Dsh-Cross-Memory/commit/1677f7e607f26d1db6c0848d4d35cba89b6005c3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +71,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "message-recall"
+    "cross-memory"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": ">=0.1.7-alpha.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -165,11 +162,9 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": ">=20",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
