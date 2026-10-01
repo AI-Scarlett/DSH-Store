@@ -1,50 +1,49 @@
 {
-  "id": "dsh-message-recall",
-  "name": "会话管理（DSH Message Recall）",
-  "packageName": "@kyle123740/dsh-message-recall",
-  "description": "删掉不喜欢的 AI 回复，或删掉已发送的错误提示词 —— 每条消息可撤回 / 删除 / 删除此处及之后。DSH 插件：写 append-only 墓碑，模型上下文与界面同步移除。Per-message recall & delete for DeepSeek Harness sessions.",
+  "id": "dsh-api-balance",
+  "name": "余额与额度监控（DSH API Balance）",
+  "packageName": "dsh-api-balance",
+  "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Read-only DeepSeek API account balance for the DeepSeek Harness web GUI. The API key never leaves the host process.",
   "searchTerms": [
-    "会话管理",
-    "DSH Message Recall",
-    "dsh-message-recall",
-    "@kyle123740/dsh-message-recall",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
+    "余额与额度监控",
+    "DSH API Balance",
+    "dsh-api-balance",
+    "余额",
+    "额度",
+    "配额",
+    "钱包",
     "实验功能",
     "新功能",
     "dsh",
-    "message",
-    "recall"
+    "api",
+    "balance"
   ],
-  "repositoryUrl": "https://github.com/kyle123740/dsh-message-recall",
+  "repositoryUrl": "https://github.com/CH2008445/dsh-api-balance",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3664201ecc97e08a980aa02b8f7777fb80f534b5",
-  "version": "0.2.1",
+  "commit": "decbea8cbc2919a2f7006aad05668c36ba55f9cb",
+  "version": "1.0.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T03:13:06.000Z",
+    "updatedAt": "2026-10-01T04:42:51.000Z",
     "observedAt": "2026-10-01T04:38:50.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-01T04:38:50.000Z",
-      "evidenceUrl": "https://github.com/kyle123740/dsh-message-recall/commit/3664201ecc97e08a980aa02b8f7777fb80f534b5",
+      "evidenceUrl": "https://github.com/CH2008445/dsh-api-balance/commit/decbea8cbc2919a2f7006aad05668c36ba55f9cb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "message-recall"
+    "api-balance"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.7-alpha.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -165,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"
@@ -174,7 +173,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "permissions": {
       "level": "unknown",
       "files": "unknown",

@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-09-30T20:36:43.000Z",
+    "updatedAt": "2026-10-01T04:38:50.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4475,8 +4475,8 @@
       "description": "Slack 双向通信（notify/channels/inbox/reply，Socket Mode 免公网回调）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-slack",
       "defaultBranch": "main",
-      "latestCommit": "dd0a61a6cec226452387662edf70d91ce1d61af4",
-      "sourceUpdatedAt": "2026-09-28T16:10:17.000Z",
+      "latestCommit": "635ab4011371468a112b104a1c2dffc4fb78c3bd",
+      "sourceUpdatedAt": "2026-10-01T02:53:05.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4495,8 +4495,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "1e6419d3092feb85886ea52c53dd95340f27d6d1",
-      "sourceUpdatedAt": "2026-09-29T11:57:28.000Z",
+      "latestCommit": "d80a83f5ee20bd0cef23cf7a3c73c62db93499ac",
+      "sourceUpdatedAt": "2026-10-01T02:17:45.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5419,8 +5419,8 @@
       "description": "Windows 托盘桌面壳：自动从 GitHub Releases 安装并升级 exe、创建应用与网页端两个桌面快捷方式，并提供 desktop_launch 工具在对话中一键启动。",
       "repositoryUrl": "https://github.com/RAFOLIE/dsh-desktop-windowos",
       "defaultBranch": "main",
-      "latestCommit": "9fc2d5f2ef0ca5a97dcd8c4fd778f9bdecefccf5",
-      "sourceUpdatedAt": "2026-09-28T10:37:28.000Z",
+      "latestCommit": "da99b91174f36cf9dfb16bdeaa08cf1afba73385",
+      "sourceUpdatedAt": "2026-10-01T03:22:41.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -14919,6 +14919,94 @@
         "splash-screen",
         "startup-animation",
         "wallpaper",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "leemancheung-dsh-whale-animation",
+      "name": "LeemanCheung/dsh-whale-animation",
+      "description": "Persistent closed-loop whale-dive animation for DeepSeek Harness Web turn status",
+      "repositoryUrl": "https://github.com/LeemanCheung/dsh-whale-animation",
+      "defaultBranch": "main",
+      "latestCommit": "ba3a88969420eb540746eedea4511c645ad71af7",
+      "sourceUpdatedAt": "2026-09-27T15:31:43.000Z",
+      "discoveredAt": "2026-10-01T04:38:50.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/LeemanCheung__dsh-whale-animation.yml:sha256=9358cbbae834c1b4577a7b9faa35a4cbb159467c9b8351f0737daa315da8ccf0:at=2026-10-01T04:42:59.026Z:owner=30807177"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "leemancheung-dsh-whale-companion",
+      "name": "LeemanCheung/dsh-whale-companion",
+      "description": "A native DSH desktop whale with growth, achievements, skins, and privacy-safe progress tracking",
+      "repositoryUrl": "https://github.com/LeemanCheung/dsh-whale-companion",
+      "defaultBranch": "main",
+      "latestCommit": "56ad75950d697db673ab544a9995fc555f17a8fe",
+      "sourceUpdatedAt": "2026-09-27T15:38:51.000Z",
+      "discoveredAt": "2026-10-01T04:38:50.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/LeemanCheung__dsh-whale-companion.yml:sha256=7edf3a3ddec9d311c6ddc67087ab9543da3b2c99038309c00127d3deab6371c1:at=2026-10-01T04:42:59.026Z:owner=30807177"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "leeyoung1-dsh-advisor-plugin",
+      "name": "leeyoung1/dsh-advisor-plugin",
+      "description": "DeepSeek Harness advisor plugin: pair a fast executor with a stronger reviewer model",
+      "repositoryUrl": "https://github.com/leeyoung1/dsh-advisor-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "c2299977d2e488415bef0203483e29ce46147b44",
+      "sourceUpdatedAt": "2026-09-11T08:51:58.000Z",
+      "discoveredAt": "2026-10-01T04:38:50.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/leeyoung1__dsh-advisor-plugin.yml:sha256=cc5061328805edf5a42414e579596c87a0dbfa73352e3aaf1783168a243cc5bb:at=2026-10-01T04:42:59.026Z:owner=153156567"
+      ],
+      "topics": [
+        "advisor",
+        "agent",
+        "coding-agent",
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "leetom314-dsh-tiered-memory",
+      "name": "leetom314/dsh-tiered-memory",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/leetom314/dsh-tiered-memory",
+      "defaultBranch": "main",
+      "latestCommit": "5ee5a50b5d36536a88ae8077251ebd8837a2f686",
+      "sourceUpdatedAt": "2026-09-09T23:22:48.000Z",
+      "discoveredAt": "2026-10-01T04:38:50.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/leetom314__dsh-tiered-memory.yml:sha256=f29930723f2e26fa6638f3614dee30ca51b1caec7de3e8df83114d43aa7233d5:at=2026-10-01T04:42:59.026Z:owner=190257916"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "reviewing",

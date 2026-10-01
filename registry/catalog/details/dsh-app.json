@@ -1,50 +1,49 @@
 {
-  "id": "dsh-message-recall",
-  "name": "会话管理（DSH Message Recall）",
-  "packageName": "@kyle123740/dsh-message-recall",
-  "description": "删掉不喜欢的 AI 回复，或删掉已发送的错误提示词 —— 每条消息可撤回 / 删除 / 删除此处及之后。DSH 插件：写 append-only 墓碑，模型上下文与界面同步移除。Per-message recall & delete for DeepSeek Harness sessions.",
+  "id": "dsh-app",
+  "name": "文件与工作区工具（DSH App）",
+  "packageName": "@rickylabs/dsh-app",
+  "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：Our dsh profile and bundle (cordis.patch.yml) composing every plugin package",
   "searchTerms": [
-    "会话管理",
-    "DSH Message Recall",
-    "dsh-message-recall",
-    "@kyle123740/dsh-message-recall",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
+    "文件与工作区工具",
+    "DSH App",
+    "dsh-app",
+    "@rickylabs/dsh-app",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
     "实验功能",
     "新功能",
     "dsh",
-    "message",
-    "recall"
+    "app"
   ],
-  "repositoryUrl": "https://github.com/kyle123740/dsh-message-recall",
+  "repositoryUrl": "https://github.com/rickylabs/harness",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "packages/dsh-app/package.json",
+  "installPath": "packages/dsh-app",
   "updatePolicy": "external-only",
-  "commit": "3664201ecc97e08a980aa02b8f7777fb80f534b5",
-  "version": "0.2.1",
+  "commit": "650604fc0ded9adc1bc7935e2e57544902d59fc1",
+  "version": "0.0.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T03:13:06.000Z",
+    "updatedAt": "2026-10-01T04:42:52.000Z",
     "observedAt": "2026-10-01T04:38:50.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-01T04:38:50.000Z",
-      "evidenceUrl": "https://github.com/kyle123740/dsh-message-recall/commit/3664201ecc97e08a980aa02b8f7777fb80f534b5",
+      "evidenceUrl": "https://github.com/rickylabs/harness/commit/650604fc0ded9adc1bc7935e2e57544902d59fc1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +73,21 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "message-recall"
+    "harness-subagents",
+    "harness-board",
+    "harness-coordinator",
+    "harness-telemetry",
+    "harness-routing",
+    "harness-llm"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/plugins/subagents.d.ts; runtime artifact is missing from the fix",
   "compatibility": {
-    "dsh": ">=0.1.7-alpha.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -165,11 +169,9 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": null,
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
@@ -184,7 +186,31 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/dsh",
+      "@deepseek-ai/dsh-home-paths",
+      "@deepseek-ai/dsh-llm",
+      "@deepseek-ai/dsh-session",
+      "@deepseek-ai/dsh-session-projection",
+      "@deepseek-ai/dsh-tool-todo",
+      "@deepseek-ai/dsh-tools",
+      "@deepseek-ai/schemastery",
+      "@rickylabs/board",
+      "@rickylabs/coordinator",
+      "@rickylabs/forge",
+      "@rickylabs/governance",
+      "@rickylabs/harness-contracts",
+      "@rickylabs/llm-local",
+      "@rickylabs/netscript-bridge",
+      "@rickylabs/provider-acp",
+      "@rickylabs/provider-claude",
+      "@rickylabs/provider-codex",
+      "@rickylabs/provider-opencode",
+      "@rickylabs/routing",
+      "@rickylabs/subagents",
+      "@rickylabs/telemetry",
+      "zod"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
