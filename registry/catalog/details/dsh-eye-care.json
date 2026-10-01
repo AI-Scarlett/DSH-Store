@@ -27,8 +27,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "a1e64b8cf3aa3f8919d292217e3aa5def196604b",
-  "version": "0.1.1",
+  "commit": "eb3432dc92d59f5f4056a9488f18071806f71ea0",
+  "version": "0.1.2",
   "categories": [
     "ui",
     "themes"
@@ -36,16 +36,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-03T10:43:50.000Z",
-    "observedAt": "2026-09-03T12:45:40.000Z",
+    "updatedAt": "2026-10-01T04:41:24.000Z",
+    "observedAt": "2026-10-01T13:57:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v2",
-      "checkedAt": "2026-09-03T12:45:40.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-eye-care/commit/a1e64b8cf3aa3f8919d292217e3aa5def196604b",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-01T13:57:52.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-eye-care/commit/eb3432dc92d59f5f4056a9488f18071806f71ea0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated release was not installed or built by Catalog automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -69,7 +69,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward from the previous plugin version."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -85,10 +85,10 @@
   "entryIds": [
     "dsh-eye-care"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -112,7 +112,7 @@
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
