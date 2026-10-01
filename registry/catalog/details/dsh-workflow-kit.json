@@ -1,49 +1,49 @@
 {
-  "id": "dsh-vs-game",
-  "name": "用量统计看板（DSH Vs Game）",
-  "packageName": "dsh-vs-game",
-  "description": "工作中的大肥鱼：工作驱动的解压小游戏。文件是敌人，token 是经验，DSH 干活就是你变强的方式。",
+  "id": "dsh-workflow-kit",
+  "name": "任务与工作流自动化（DSH Workflow Kit）",
+  "packageName": "dsh-workflow-kit",
+  "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：A DSH (DeepSeek Harness) plugin that owns workflow roles and profiles, task contracts, lanes, acceptance, integration and release, and delegates Codex execution to `dsh-codex-app-provider`.",
   "searchTerms": [
-    "用量统计看板",
-    "DSH Vs Game",
-    "dsh-vs-game",
-    "用量",
-    "Token",
-    "统计",
-    "看板",
+    "任务与工作流自动化",
+    "DSH Workflow Kit",
+    "dsh-workflow-kit",
+    "任务",
+    "工作流",
+    "自动化",
+    "定时",
     "实验功能",
     "新功能",
     "dsh",
-    "vs",
-    "game"
+    "workflow",
+    "kit"
   ],
-  "repositoryUrl": "https://github.com/shang-han/dsh-vs-game",
-  "defaultBranch": "main",
+  "repositoryUrl": "https://github.com/slepher/dsh-workflow-kit",
+  "defaultBranch": "master",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a484718350032ed23aa6932162411905d322ce6a",
-  "version": "0.1.70",
+  "commit": "957fe1e4a969cb34e7242228c8043adba35029c1",
+  "version": "0.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T15:03:39.000Z",
+    "updatedAt": "2026-10-01T15:14:44.000Z",
     "observedAt": "2026-10-01T15:10:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-01T15:10:39.000Z",
-      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/a484718350032ed23aa6932162411905d322ce6a",
+      "evidenceUrl": "https://github.com/slepher/dsh-workflow-kit/commit/957fe1e4a969cb34e7242228c8043adba35029c1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "vs-game"
+    "dsh-workflow-kit"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 522802 total bytes (maximum 2097152); largest file 409168 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/clie",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": "*",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.1.7-rc.2": "compatible",
+      "0.2.0-rc.2": "compatible",
+      "0.2.0-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -151,20 +151,20 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.1": {
+      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       }
     },
-    "node": ">=18",
+    "node": ">=22.19.0",
     "systems": [],
     "profiles": [
       "web"
@@ -184,7 +184,8 @@
       ]
     },
     "externalDependencies": [
-      "ws"
+      "@deepseek-ai/dsh-tools",
+      "@deepseek-ai/schemastery"
     ],
     "reviewStatus": "automated-scan"
   },

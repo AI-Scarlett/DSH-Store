@@ -1,49 +1,49 @@
 {
-  "id": "dsh-vs-game",
-  "name": "用量统计看板（DSH Vs Game）",
-  "packageName": "dsh-vs-game",
-  "description": "工作中的大肥鱼：工作驱动的解压小游戏。文件是敌人，token 是经验，DSH 干活就是你变强的方式。",
+  "id": "dsh-prompt-easymanager",
+  "name": "会话管理（DSH Prompt Easymanager）",
+  "packageName": "dsh-prompt-easymanager",
+  "description": "给 DeepSeek Harness 用的个人提示词管理器：把「个人提示词 + 系统提示词改动」存成预设，按会话或全局挂载，并能改写、关闭、还原 DSH 的原生段落，还能看清模型实际收到的最终提示词。",
   "searchTerms": [
-    "用量统计看板",
-    "DSH Vs Game",
-    "dsh-vs-game",
-    "用量",
-    "Token",
-    "统计",
-    "看板",
+    "会话管理",
+    "DSH Prompt Easymanager",
+    "dsh-prompt-easymanager",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
     "实验功能",
     "新功能",
     "dsh",
-    "vs",
-    "game"
+    "prompt",
+    "easymanager"
   ],
-  "repositoryUrl": "https://github.com/shang-han/dsh-vs-game",
+  "repositoryUrl": "https://github.com/XialerMoies/dsh-prompt-easymanager",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a484718350032ed23aa6932162411905d322ce6a",
-  "version": "0.1.70",
+  "commit": "3c27cfc72f58cf2d19140cbdd50e850ceca1b916",
+  "version": "0.3.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T15:03:39.000Z",
+    "updatedAt": "2026-10-01T15:14:39.000Z",
     "observedAt": "2026-10-01T15:10:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-01T15:10:39.000Z",
-      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/a484718350032ed23aa6932162411905d322ce6a",
+      "evidenceUrl": "https://github.com/XialerMoies/dsh-prompt-easymanager/commit/3c27cfc72f58cf2d19140cbdd50e850ceca1b916",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "vs-game"
+    "dsh-prompt-easymanager"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 522802 total bytes (maximum 2097152); largest file 409168 bytes (maximum 262144); runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=18",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -183,9 +183,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "ws"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

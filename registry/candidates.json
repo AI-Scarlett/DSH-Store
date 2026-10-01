@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-01T13:57:52.000Z",
+    "updatedAt": "2026-10-01T15:10:39.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -11909,27 +11909,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "kw78-dsh-office-tools",
-      "name": "Office 文档工具（DSH Office Tools）",
-      "description": "面向 agent 的工作区安全 Office 工具集：创建/读取 Word、创建/读取/更新 Excel、创建/读取 PowerPoint，并支持 PNG/JPG/GIF 图片排版。",
-      "repositoryUrl": "https://github.com/kw78/dsh-office-tools",
-      "defaultBranch": "main",
-      "latestCommit": "44224c3ca9cd9576a4ac90751bb53d104c99e67e",
-      "sourceUpdatedAt": "2026-09-22T15:59:42.000Z",
-      "discoveredAt": "2026-09-24T01:36:44.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "files",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-office-tools."
-    },
-    {
       "id": "abcdefgxw-dsh-toolbox-web",
       "name": "会话管理（DSH Toolbox Web）",
       "description": "Web 界面工具箱：会话/回收站/子目录/搜索/预设/配置管理、标签分组、长消息折叠，以及支持 IM 渠道推送的定时心跳。",
@@ -15090,6 +15069,115 @@
         "agentduel",
         "deepseek-harness",
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "linxichen-dsh-rigorquant",
+      "name": "linxichen/dsh-rigorquant",
+      "description": "Adds capability to Deepseek harness to do rigorous quant finance work",
+      "repositoryUrl": "https://github.com/linxichen/dsh-rigorquant",
+      "defaultBranch": "master",
+      "latestCommit": "7ec633e8b8fb1d5037d8d5bed07aac83fb709a98",
+      "sourceUpdatedAt": "2026-10-01T05:25:11.000Z",
+      "discoveredAt": "2026-10-01T15:10:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/linxichen__dsh-rigorquant.yml:sha256=8739446b70275e7d0135494e0de7659c754245c415fcd398a580c46d1b661ba4:at=2026-10-01T15:14:50.840Z:owner=7698749"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "linkingoscar-dsh-attachment-formats",
+      "name": "linkingoscar/dsh-attachment-formats",
+      "description": "Codex-style attachment formats for the DeepSeek Harness Web GUI: PDF text-layer extraction, Office text extraction, scanned-PDF OCR, long-document spill + index cards, image-to-PNG.",
+      "repositoryUrl": "https://github.com/linkingoscar/dsh-attachment-formats",
+      "defaultBranch": "main",
+      "latestCommit": "4bcfae40dbd69116125ab13f88efc1b65232110f",
+      "sourceUpdatedAt": "2026-09-30T10:41:31.000Z",
+      "discoveredAt": "2026-10-01T15:10:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/linkingoscar__dsh-attachment-formats.yml:sha256=5e62b4539db6f740356a25a96829db873dbdd3d6f293fc13ecabfc324a978070:at=2026-10-01T15:14:50.840Z:owner=145114874"
+      ],
+      "topics": [
+        "attachment",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "docx",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "dsh-plugin-verify",
+        "dsh-plugins",
+        "files-api",
+        "ocr",
+        "office",
+        "pdf",
+        "pdf-extraction",
+        "plugin",
+        "tesseract",
+        "vision",
+        "xlsx",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "linjiangxian0203-dsh-remote-tunnel",
+      "name": "Linjiangxian0203/dsh-remote-tunnel",
+      "description": "Remote Host Tunnel Manager for dsh: remote port allocation + registry + resilient SSH tunnel",
+      "repositoryUrl": "https://github.com/Linjiangxian0203/dsh-remote-tunnel",
+      "defaultBranch": "main",
+      "latestCommit": "52036dad6cf9c981c74bf2c40e849a38c526d358",
+      "sourceUpdatedAt": "2026-09-14T12:07:59.000Z",
+      "discoveredAt": "2026-10-01T15:10:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/Linjiangxian0203__dsh-remote-tunnel.yml:sha256=53d97ab64976a7896ceeeb785b8979ed7a23b3225e1179303385fcc2c8f640f4:at=2026-10-01T15:14:50.840Z:owner=149987761"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "javascript",
+        "ssh",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "linkbag-dsh-swarm-orchestrator",
+      "name": "linkbag/dsh-swarm-orchestrator",
+      "description": "Role-based AI swarm orchestration for DeepSeek Harness: per-role model pinning with fallbacks, parallel task DAG with review loops, live Swarm dashboard tab.",
+      "repositoryUrl": "https://github.com/linkbag/dsh-swarm-orchestrator",
+      "defaultBranch": "main",
+      "latestCommit": "efbb0c7e0f4dc4bff6e17416d2bdb0e8133fb8f7",
+      "sourceUpdatedAt": "2026-09-29T02:30:21.000Z",
+      "discoveredAt": "2026-10-01T15:10:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/linkbag__dsh-swarm-orchestrator.yml:sha256=9d620adba7661862af0659ee437fd3af6c422b5ed46ca04a0ea8598c95a98225:at=2026-10-01T15:14:50.840Z:owner=208331216"
+      ],
+      "topics": [
+        "cordis",
+        "dashboard",
+        "dsh",
+        "dsh-plugin",
+        "multi-agent",
+        "orchestration",
+        "swarm",
         "automatic-radar"
       ],
       "status": "reviewing",

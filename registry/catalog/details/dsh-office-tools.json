@@ -27,8 +27,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "44224c3ca9cd9576a4ac90751bb53d104c99e67e",
-  "version": "1.0.4",
+  "commit": "88e5e44954050615fb79b9a35c2c56becc76eb59",
+  "version": "1.0.5",
   "categories": [
     "files",
     "tools"
@@ -36,16 +36,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-22T15:59:42.000Z",
-    "observedAt": "2026-09-24T01:36:44.000Z",
+    "updatedAt": "2026-10-01T14:38:03.000Z",
+    "observedAt": "2026-10-01T15:10:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T01:36:44.000Z",
-      "evidenceUrl": "https://github.com/kw78/dsh-office-tools/commit/44224c3ca9cd9576a4ac90751bb53d104c99e67e",
+      "checkedAt": "2026-10-01T15:10:39.000Z",
+      "evidenceUrl": "https://github.com/kw78/dsh-office-tools/commit/88e5e44954050615fb79b9a35c2c56becc76eb59",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -85,10 +85,10 @@
   "entryIds": [
     "dsh-office-tools"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.6",
+    "dsh": "^0.1.0-rc.6 || ^0.1.1-rc.0 || ^0.1.2-alpha.0 || ^0.1.5-alpha.0 || >=0.2.0-rc.1 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -111,7 +111,7 @@
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
+      "0.2.0-rc.1": "compatible",
       "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
