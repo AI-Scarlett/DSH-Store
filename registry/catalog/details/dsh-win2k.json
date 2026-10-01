@@ -1,47 +1,48 @@
 {
-  "id": "dsh-memory",
-  "name": "记忆与知识库（DSH Memory）",
-  "packageName": "@furongjun1999/dsh-memory",
-  "description": "灵枢（Lingshu·líng shū）DeepSeek Harness 插件：完整大脑——长期记忆/知识飞轮/自我认知/递归反思接入 DSH，对话自动沉淀进 md_cg 认知图（md 文档）",
+  "id": "dsh-win2k",
+  "name": "用量统计看板（DSH Win2k）",
+  "packageName": "dsh-win2k",
+  "description": "为 DSH 提供用量统计看板能力。英文原始说明：Windows 2000 theme for DeepSeek Harness: a ctx.theme token layer, a cube under the Appearance row in Settings → General, and period chrome for the parts a token cannot spell.",
   "searchTerms": [
-    "记忆与知识库",
-    "DSH Memory",
-    "dsh-memory",
-    "@furongjun1999/dsh-memory",
-    "记忆",
-    "知识库",
-    "召回",
-    "长期记忆",
+    "用量统计看板",
+    "DSH Win2k",
+    "dsh-win2k",
+    "用量",
+    "Token",
+    "统计",
+    "看板",
+    "实验功能",
+    "新功能",
     "dsh",
-    "memory"
+    "win2k"
   ],
-  "repositoryUrl": "https://github.com/FuRongJun-1999/dsh-memory",
+  "repositoryUrl": "https://github.com/maci0/dsh-win2k",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "bfbdcb923da1ef2880dd3f9f979cf419d9211eb0",
-  "version": "0.7.0",
+  "commit": "0c4e90b054cce340435fc3cf16ac9944fd807fdf",
+  "version": "0.12.3",
   "categories": [
-    "memory"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T07:18:03.000Z",
+    "updatedAt": "2026-10-01T14:01:47.000Z",
     "observedAt": "2026-10-01T13:57:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-01T13:57:52.000Z",
-      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/bfbdcb923da1ef2880dd3f9f979cf419d9211eb0",
+      "evidenceUrl": "https://github.com/maci0/dsh-win2k/commit/0c4e90b054cce340435fc3cf16ac9944fd807fdf",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "furongjun1999-dsh-memory"
+    "win2k"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime source file count is outside the automatic review bound: 418 files (maximum 240); runtime source exceeds the automatic review byte bound: 14615820 total bytes (maximum 2097152); largest file 2105106 bytes (maximum 262144); runtime source co",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.6",
+    "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -162,9 +163,11 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.19",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -183,9 +186,7 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

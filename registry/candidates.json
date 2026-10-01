@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-01T04:38:50.000Z",
+    "updatedAt": "2026-10-01T13:57:52.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4435,8 +4435,8 @@
       "description": "RSS/Atom 订阅管理 + 抓取解析（rss_list/add/remove/fetch/check），订阅持久化到 settings。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-rss",
       "defaultBranch": "master",
-      "latestCommit": "583960d873585abbc13cb3e062ac7e1be83ee306",
-      "sourceUpdatedAt": "2026-09-28T16:10:11.000Z",
+      "latestCommit": "7e74f26befaa41724280299495910dcf922e0565",
+      "sourceUpdatedAt": "2026-10-01T11:33:19.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4952,8 +4952,8 @@
       "description": "演示文稿技能与工具：一句话或一篇文档生成 HTML 放映与可编辑 PPTX，内置 5 套主题，可配置默认主题/语言，中英双语。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ppt",
       "defaultBranch": "master",
-      "latestCommit": "aa9734d59d032b00d4cec47d477f658d0c9f5670",
-      "sourceUpdatedAt": "2026-09-28T16:09:57.000Z",
+      "latestCommit": "88a926804bdff1876dea5b7c06ce916f40200369",
+      "sourceUpdatedAt": "2026-10-01T13:54:29.000Z",
       "discoveredAt": "2026-09-01T12:56:30.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5135,8 +5135,8 @@
       "description": "CalDAV 日历插件：查/建/改/删/搜日程，Google/iCloud/Nextcloud/自定义端点，RRULE 重复事件展开。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-calendar",
       "defaultBranch": "main",
-      "latestCommit": "a3b085a2ece92b0077c488159311a8d965c7dbf0",
-      "sourceUpdatedAt": "2026-09-29T11:57:15.000Z",
+      "latestCommit": "192905a0ca04ff9397642573f87bccf6b7a0be77",
+      "sourceUpdatedAt": "2026-10-01T11:33:12.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8775,27 +8775,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-suggested-replies."
     },
     {
-      "id": "anionex-dsh-eye-care",
-      "name": "界面主题与美化（DSH Eye Care）",
-      "description": "为 DSH 提供界面主题与美化能力。英文原始说明：Warm light, warm dark, and system-aware eye-care themes for DSH Web",
-      "repositoryUrl": "https://github.com/Anionex/dsh-eye-care",
-      "defaultBranch": "main",
-      "latestCommit": "a1e64b8cf3aa3f8919d292217e3aa5def196604b",
-      "sourceUpdatedAt": "2026-09-03T10:43:50.000Z",
-      "discoveredAt": "2026-09-07T14:02:43.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "ui",
-        "themes",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-eye-care."
-    },
-    {
       "id": "kenz1117-dsh-ui-usage-billing",
       "name": "费用与账单（DSH UI Usage Billing）",
       "description": "侧边栏计费仪表盘：从会话日志聚合真实用量（按模型/按日统计调用、Token、缓存），按最新多厂商官方价格估算人民币费用，订阅套餐（coding/token/agent）通道豁免计费，并带各厂商健康状态圆点。",
@@ -10378,8 +10357,8 @@
       "description": "dsh 的任务看板：创建任务时可指定项目与模型，支持手动执行及定时执行；项目内新建会话会自动拉取该项目的待办任务，完成后移至待验收。",
       "repositoryUrl": "https://github.com/cloader/dsh-taskboard",
       "defaultBranch": "main",
-      "latestCommit": "c15a0e3447791df6b328e6aaf4549ae3a2728327",
-      "sourceUpdatedAt": "2026-09-28T10:01:24.000Z",
+      "latestCommit": "31e135ab53579768dd7460da3bef2800d6004608",
+      "sourceUpdatedAt": "2026-10-01T10:42:17.000Z",
       "discoveredAt": "2026-09-18T13:50:17.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -15006,6 +14985,110 @@
       "topics": [
         "deepseek-harness",
         "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "linhut-gongwen-skill",
+      "name": "linhut/gongwen-skill",
+      "description": "公文全流程处理工具——基于 GB/T 9704《党政机关公文格式》 国家标准，面向公文写作、企事业单位材料编制场景，支持 格式检查与修复、内容优化（Word 原生修订+批注/差异对比版）、模板生成、Markdown 转公文、版头版记页码注入、事实核验、风格增强 等完整能力。原生支持 DeepSeek Harness (DSH) 技能系统，打包为可被 AI Agent 直接调用的 Skill，完全自包含，克隆即用。",
+      "repositoryUrl": "https://github.com/linhut/gongwen-skill",
+      "defaultBranch": "master",
+      "latestCommit": "eb7a54e516b917f0dcaf4c30756c3e7a4f3c9dbc",
+      "sourceUpdatedAt": "2026-09-26T15:50:58.000Z",
+      "discoveredAt": "2026-10-01T13:57:52.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/linhut__gongwen-skill.yml:sha256=8c4aa90a156cf2abe8e4f0e8c2b81f8216c27177369adac02aae86d5e96c9fc4:at=2026-10-01T14:02:21.327Z:owner=26740855"
+      ],
+      "topics": [
+        "ai-docs",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "docx",
+        "dsh-plugin",
+        "gongwen",
+        "wps-office",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "linhay-harmony-next.skills",
+      "name": "linhay/harmony-next.skills",
+      "description": "Offline HarmonyOS NEXT developer skill library for AI coding assistants. Covers API 12–26 declarations, ArkTS/ArkUI, NDK, DevEco Studio, emulator automation, debugging, publishing, and reproducible local tooling.",
+      "repositoryUrl": "https://github.com/linhay/harmony-next.skills",
+      "defaultBranch": "master",
+      "latestCommit": "0243a77451a2ffa97a43114c6b39232544704101",
+      "sourceUpdatedAt": "2026-09-20T07:20:31.000Z",
+      "discoveredAt": "2026-10-01T13:57:52.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/linhay__harmony-next.skills.yml:sha256=5970fb3d834a33c9516ef536c25917b70c94977fbbea74f8e993b59b4c957fb2:at=2026-10-01T14:02:21.327Z:owner=15262434"
+      ],
+      "topics": [
+        "ai-coding-assistant",
+        "api-26",
+        "arkts",
+        "automation-testing",
+        "claude-code",
+        "codex",
+        "deveco-studio",
+        "developer-tools",
+        "dsh-plugin",
+        "gemini-cli",
+        "harmonyos",
+        "harmonyos-next",
+        "openharmony",
+        "performance-tuning",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "limuyang2-agent-team",
+      "name": "limuyang2/agent-team",
+      "description": "Multi-agent team collaboration for DeepSeek Harness, with independent models, skills, MCP tools, contexts, and a shared workspace.",
+      "repositoryUrl": "https://github.com/limuyang2/agent-team",
+      "defaultBranch": "main",
+      "latestCommit": "3dfc9c29ea3610e2bf9494aaff6b41bae120de9c",
+      "sourceUpdatedAt": "2026-08-26T06:43:15.000Z",
+      "discoveredAt": "2026-10-01T13:57:52.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/limuyang2__agent-team.yml:sha256=20530ee59c602dccb2d0887f12dbf8eb5d8aaf8fee74a90ee71c28a626a888aa:at=2026-10-01T14:02:21.327Z:owner=26565593"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "linconz-agentduel-dsh",
+      "name": "linconz/agentduel-dsh",
+      "description": "AgentDuel 是一个通过代码进行对战的游戏。允许你通过 AI 提交代码，并通过可回看的对战画面复盘整个战斗，然后再次优化。 | Code your agent, watch it fight, tweak and rematch — all inside DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/linconz/agentduel-dsh",
+      "defaultBranch": "main",
+      "latestCommit": "79b6f2c213234920353ff060be078ba1809eb34e",
+      "sourceUpdatedAt": "2026-09-02T08:25:36.000Z",
+      "discoveredAt": "2026-10-01T13:57:52.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@e483a501cec7d7446e84990e234ae0def7898c3b:data/plugins/linconz__agentduel-dsh.yml:sha256=4019612115f83fc3737ef57e9ce73eaa405d1277efbfc024853fa8c16c64526d:at=2026-10-01T14:02:21.327Z:owner=2417911"
+      ],
+      "topics": [
+        "agentduel",
+        "deepseek-harness",
         "dsh-plugin",
         "automatic-radar"
       ],
