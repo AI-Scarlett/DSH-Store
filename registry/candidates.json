@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-01T15:10:39.000Z",
+    "updatedAt": "2026-10-01T20:51:02.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -8469,8 +8469,8 @@
       "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
       "repositoryUrl": "https://github.com/omnimux-ai/omnimux-dsh",
       "defaultBranch": "main",
-      "latestCommit": "95f3238cad080c263b017f54da045944f2480f85",
-      "sourceUpdatedAt": "2026-09-11T03:30:34.000Z",
+      "latestCommit": "652d3fd10b1fa6bc4d9da11926d6fa590867dcd8",
+      "sourceUpdatedAt": "2026-10-01T20:51:20.000Z",
       "discoveredAt": "2026-09-04T12:39:30.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -8480,7 +8480,7 @@
       ],
       "status": "rejected",
       "route": "monorepo-review",
-      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/omnimux-accounts, plugins/omnimux-analytics, plugins/omnimux-assets, plugins/omnimux-clip, plugins/omnimux-forms, plugins/omnimux-inspiration, plugins/omnimux-market, plugins/omnimux-products, plugins/omnimux-publish, plugins/omnimux-studio, plugins/omnimux-video-preview, plugins/omnimux-video, plugins/omnimux-workflow, plugins/omnimux"
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/omnimux-accounts, plugins/omnimux-analytics, plugins/omnimux-apps, plugins/omnimux-assets, plugins/omnimux-automation, plugins/omnimux-browser, plugins/omnimux-clip, plugins/omnimux-device, plugins/omnimux-forms, plugins/omnimux-inspiration, plugins/omnimux-intercept, plugins/omnimux-market, plugins/omnimux-products, plugins/omnimux-publish, plugins/omnimux-social-harvest, plugins/omnimux-studio, plugins/omnimux-video-preview, plugins/omnimux-video, plugins/omnimux-viewer, plugins/omnimux-workflow"
     },
     {
       "id": "spyqwer1-dsh-codex-tools",
@@ -11934,8 +11934,8 @@
       "description": "为 DSH 提供任务通知提醒能力。英文原始说明：Task-completion reminder for DeepSeek Harness: in-page toast, OS notification, and sound when an agent turn or background job finishes",
       "repositoryUrl": "https://github.com/ltao0829/dsh-task-notify",
       "defaultBranch": "main",
-      "latestCommit": "5383b65bebb13159dc966f7e642de829c2fef86f",
-      "sourceUpdatedAt": "2026-09-15T11:09:08.000Z",
+      "latestCommit": "22b4678765f59a363be8f4333be8cdc73be746c0",
+      "sourceUpdatedAt": "2026-10-01T18:30:42.000Z",
       "discoveredAt": "2026-09-24T01:36:44.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -12051,26 +12051,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-codex-pet."
-    },
-    {
-      "id": "seven282-oss-prompt-optimizer",
-      "name": "提示词优化器（OSS Prompt Optimizer）",
-      "description": "将原始指令经 harness llm 服务优化为专业提示词——默认 Role / Task / Context / Format 四段，可配置为无标题纯文本（outputStyle: ''plain''，更省 token）；提供输入框 ✨ 一键优化与撤销、prompt_optimize 工具、自动优化钩子与可配置元提示词。",
-      "repositoryUrl": "https://github.com/seven282/oss-prompt-optimizer",
-      "defaultBranch": "main",
-      "latestCommit": "812582a1710164f7820a3d2a46909248e5d845c4",
-      "sourceUpdatedAt": "2026-09-20T05:10:42.000Z",
-      "discoveredAt": "2026-09-24T01:36:44.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: oss-prompt-optimizer."
     },
     {
       "id": "ruler4396-dsh-launcher-lifetime",
@@ -15178,6 +15158,112 @@
         "multi-agent",
         "orchestration",
         "swarm",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "2768651338-dsh-effort-slider",
+      "name": "2768651338/dsh-effort-slider",
+      "description": "仿 Claude Code 推理等级滑块 支持第三方模型 DSH 插件",
+      "repositoryUrl": "https://github.com/2768651338/dsh-effort-slider",
+      "defaultBranch": "main",
+      "latestCommit": "d822862d4ed84cc9338e1469ea1eadd0bbc04047",
+      "sourceUpdatedAt": "2026-10-01T07:21:43.000Z",
+      "discoveredAt": "2026-10-01T20:51:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/2768651338__dsh-effort-slider.yml:sha256=53ede17ae3f166847d69e1cce326e66a2deed5d1b3c18180c1c98ce411c67063:at=2026-10-01T20:54:38.294Z:owner=181658898"
+      ],
+      "topics": [
+        "claude-code",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "effort-slider",
+        "webgl",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "240xu-dsh-websearch",
+      "name": "240xu/dsh-websearch",
+      "description": "Unified web search provider for DSH",
+      "repositoryUrl": "https://github.com/240xu/dsh-websearch",
+      "defaultBranch": "main",
+      "latestCommit": "4caca4578f729a0accbbf50805ffe92e4aee02b3",
+      "sourceUpdatedAt": "2026-09-30T14:19:19.000Z",
+      "discoveredAt": "2026-10-01T20:51:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/240xu__dsh-websearch.yml:sha256=001e3c5d692591fdccd9b1098026fd54c65ecc0d425b85236b69d31b57047cf0:at=2026-10-01T20:54:38.294Z:owner=288388160"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "search-engine",
+        "web-search",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "2507483326-dsh-eteams",
+      "name": "2507483326/dsh-eteams",
+      "description": "一个增强deepseek harness 的 多成员协作插件",
+      "repositoryUrl": "https://github.com/2507483326/dsh-eteams",
+      "defaultBranch": "master",
+      "latestCommit": "cd6bc01ae511901e26c2b47d0a71e471dce262fd",
+      "sourceUpdatedAt": "2026-09-22T13:21:49.000Z",
+      "discoveredAt": "2026-10-01T20:51:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/2507483326__dsh-eteams.yml:sha256=2061738cf238a8f6fdf7b5fc3f6955e603a020619ab85645999b321d0604d984:at=2026-10-01T20:54:38.294Z:owner=10804157"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-agent-teams",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "dsh-plugin-market",
+        "workflow",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "2672243194-dsh-read-url",
+      "name": "2672243194/dsh-read-url",
+      "description": "DeepSeek Harness URL reader: fetch any page and return clean main-content text/Markdown. Auto charset (GBK/GB2312/UTF-8/Big5), token-efficient (6000-char cap, cache, offset), zero deps, no API key. 网页一键读全文 → 干净正文 / 结构化 Markdown",
+      "repositoryUrl": "https://github.com/2672243194/dsh-read-url",
+      "defaultBranch": "main",
+      "latestCommit": "e9776b29f59171475b2974856924b63d88cddce0",
+      "sourceUpdatedAt": "2026-09-27T17:29:34.000Z",
+      "discoveredAt": "2026-10-01T20:51:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/2672243194__dsh-read-url.yml:sha256=c66044632aee0037aa09826d795cdb7d32e17f2b42d717b9e25ec7e74bcb990c:at=2026-10-01T20:54:38.294Z:owner=86937075"
+      ],
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "ai-coding",
+        "ai-tools",
+        "deepseek-harness",
+        "dsh-plugin",
+        "dsh-plugins",
+        "llm",
+        "markdown",
+        "readability",
+        "url-reader",
+        "web-extraction",
+        "web-scraping",
         "automatic-radar"
       ],
       "status": "reviewing",
