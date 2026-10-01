@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "planId": "DSH-STORE-GITHUB-FEEDBACK-PERMISSION-SCAN-20261001",
   "createdAt": "2026-10-01T07:52:46Z",
-  "status": "validated_local",
+  "status": "draft_pr_open_checks_passed",
   "authorization": {
     "type": "user-request",
     "request": "Process recent GitHub user feedback on DSH Store plugin scanning.",
@@ -60,6 +60,6 @@
     "fixedSourceProbe": "PASS: author-stated dsh-token-ledger Commit 86aa60099b4e013bcb5174bca64fc3ab4ee8fa98 scanned read-only across 17 bounded eligible JavaScript files; commands=0. Genuine files=6 and network=1 remain detected.",
     "focusedTests": "PASS: node --test test/catalog-automation.test.mjs test/source-update.test.mjs (26/26).",
     "fullCheck": "PASS: npm run check; registry valid; 337/337 tests passed.",
-    "publication": "PENDING: draft PR checks; merge and deployment explicitly out of scope."
+    "publication": "PASS: draft PR #1261 is open and its source, CodeQL, compatibility, and runtime checks passed; merge and deployment remain explicitly out of scope."
   }
 }
