@@ -69,6 +69,32 @@ test('permission scan does not classify ordinary member exec methods as command 
   assert.equal(permissionSignals(`execFile(command)`).commands, true)
 })
 
+test('JavaScript permission scan ignores help strings, comments, regex literals, and template prose', () => {
+  const source = String.raw`
+    const summary = "scanned 277 session log(s), 94 fork(s), 0 unreadable"
+    const help = "DSH home to read (default: $DSH_HOME, else ~/.dsh/profiles)"
+    // spawn(command) and $DSH_HOME/.dsh/profiles are examples, not runtime behavior
+    const matcher = /fork\(s\)|spawn\(command\)|\.dsh\/profiles/
+    const template = ` + '`CLI says fork(s); default $DSH_HOME/.dsh/profiles`' + String.raw`
+  `
+  assert.deepEqual(permissionSignals(source, 'bin/cli.mjs'), {
+    files: false,
+    network: false,
+    commands: false,
+    credentials: false,
+    protectedDsh: false,
+  })
+})
+
+test('JavaScript permission scan retains executable calls and template expressions', () => {
+  assert.equal(permissionSignals('const result = `${spawn(command)}`', 'src/run.ts').commands, true)
+  assert.equal(permissionSignals('const result = `${parser.exec(text)}`', 'src/run.ts').commands, false)
+  assert.equal(permissionSignals('const home = process.env.DSH_HOME', 'src/run.js').files, true)
+  assert.equal(permissionSignals('import { readFile } from "node:fs/promises"', 'src/run.mjs').files, true)
+  assert.equal(permissionSignals('const text = "import { readFile } from \'node:fs\'"', 'src/run.mjs').files, false)
+  assert.equal(permissionSignals('const text = "import { readFile } from \'node:fs\'"; // 🧪\nimport { readFile } from "node:fs"', 'src/run.mjs').files, true)
+})
+
 test('self-manager generated Catalog details do not consume the executable source bound', () => {
   const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
   assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.json'), true)

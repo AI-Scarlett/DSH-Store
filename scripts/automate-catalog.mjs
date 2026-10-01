@@ -347,7 +347,9 @@ async function analyzeFixedSource(candidate, policy, github) {
         item.path,
         { maxBytes: policy.sourceBounds.maxFileBytes },
       )))
-      for (const source of sources) mergeSignals(signals, permissionSignals(source))
+      for (let sourceIndex = 0; sourceIndex < sources.length; sourceIndex++) {
+        mergeSignals(signals, permissionSignals(sources[sourceIndex], batch[sourceIndex].path))
+      }
     }
   }
   for (const [signal, allowed] of Object.entries(policy.automaticApproval.permissionSignals)) {

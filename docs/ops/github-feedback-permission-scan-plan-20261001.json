@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "planId": "DSH-STORE-GITHUB-FEEDBACK-PERMISSION-SCAN-20261001",
+  "createdAt": "2026-10-01T07:52:46Z",
+  "status": "validated_local",
+  "authorization": {
+    "type": "user-request",
+    "request": "Process recent GitHub user feedback on DSH Store plugin scanning.",
+    "scope": "Correct JavaScript/TypeScript Catalog permission-signal false positives reported in AI-Scarlett/DSH-Store#1243 and make source-update review use the same detector. Recheck findings locally at fixed public commits. No author contact, issue edits, Catalog/Candidate mutation, merge, deployment, DSH Profile changes, or third-party code execution."
+  },
+  "baseCommit": "c14d06aa8354f17d776a0c37e2b9e91f8721dc3b",
+  "branch": "codex/fix-source-permission-literals",
+  "fileScope": {
+    "modify": [
+      "src/automation-source-policy.mjs",
+      "scripts/automate-catalog.mjs",
+      "src/source-update.mjs",
+      "test/catalog-automation.test.mjs",
+      "test/source-update.test.mjs"
+    ],
+    "add": [
+      "docs/ops/github-feedback-permission-scan-plan-20261001.json"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "src/automation-source-policy.mjs": "3ed60f98d3c168e0b3706671885444b044d872eaadc302a87913b12730bc56c2",
+      "scripts/automate-catalog.mjs": "6441ae407549315f7b57f0de3e6b74641ea61e3e6c916265f6acfeab51b03f80",
+      "src/source-update.mjs": "bea17426b1e45b02724a4799010f236707020fb3594ee91c7c72908b0a792057",
+      "test/catalog-automation.test.mjs": "eb63c6fef2e48e6638f4849b3a8367a7ecba2b2a9187ed88acb12ac446406672",
+      "test/source-update.test.mjs": "cf933949ece600d6caa163b5dd00168d8a45aa584a6f8d89380665781792ceea"
+    },
+    "absent": [
+      "docs/ops/github-feedback-permission-scan-plan-20261001.json"
+    ]
+  },
+  "implementation": {
+    "scanner": "For JavaScript/TypeScript runtime files, lexically mask comments, quoted strings, regex literals, and template raw text while retaining executable template interpolation. Run import and permission-call heuristics only where source positions are code. Preserve conservative raw scanning for other languages and retain protected-DSH checks.",
+    "integration": "Pass each fixed-source runtime path into the permission scanner and reuse its result for source-update risk review instead of maintaining a duplicate raw command-call regex.",
+    "safety": "This reduces text-only false positives; it does not approve or install plugins. Actual filesystem, network, command, credential, compatibility, lifecycle, and bounded-source gates remain unchanged."
+  },
+  "feedbackDisposition": {
+    "issue1243": "Reproduce the reported CLI help-text false positives against the author's stated fixed Commit. Fix the scanner only. The repository's real filesystem/network capabilities remain signals, so no automatic approval is requested or granted.",
+    "issue1260": "The latest precheck was already run against the newer fixed Commit da33e4ae00e2576856e57c125dd993f48617d848. It is incomplete due source/tree/file bounds and reports child-process calls; retain the candidate as non-installable. No reply or re-trigger is made here."
+  },
+  "deterministicGates": [
+    "Precondition hashes and absent plan path match the pinned base before mutation.",
+    "Focused permission-scan and source-update tests cover help text, comments, regex literals, template prose, code interpolation, real imports, real calls, and UTF-16 offsets.",
+    "npm run check",
+    "git diff --check",
+    "Review changed paths and ensure no Catalog/Candidate, DSH core, Profile, or contact-ledger files are modified.",
+    "Open an auditable draft source PR; do not merge or deploy in this run."
+  ],
+  "rollback": {
+    "type": "git-revert",
+    "reference": "Close the draft PR or revert its exact source commit through an auditable PR. No Catalog/Profile state is changed; never reset or mutate the global author-contact ledger."
+  },
+  "externalEffects": "A draft source PR and its CI checks only. No GitHub issue/comment notification to the authors, Catalog scan dispatch, Catalog/Candidate write, production release, or third-party code execution.",
+  "validationResults": {
+    "fixedSourceProbe": "PASS: author-stated dsh-token-ledger Commit 86aa60099b4e013bcb5174bca64fc3ab4ee8fa98 scanned read-only across 17 bounded eligible JavaScript files; commands=0. Genuine files=6 and network=1 remain detected.",
+    "focusedTests": "PASS: node --test test/catalog-automation.test.mjs test/source-update.test.mjs (26/26).",
+    "fullCheck": "PASS: npm run check; registry valid; 337/337 tests passed.",
+    "publication": "PENDING: draft PR checks; merge and deployment explicitly out of scope."
+  }
+}

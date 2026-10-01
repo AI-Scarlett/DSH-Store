@@ -101,6 +101,23 @@ test('source update risk scan ignores a regex member exec while retaining comman
   assert.equal(result.diff.permissionSignals.commandExecution, false)
 })
 
+test('source update risk scan ignores inert CLI help and preserves executable permission evidence', async () => {
+  const helpService = createSourceUpdateService({
+    fetch: githubFetch({ patch: '+const help = "94 fork(s); default: $DSH_HOME, ~/.dsh/profiles"\n' }),
+    sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const help = await helpService.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(help.diff.permissionSignals.commandExecution, false)
+  assert.equal(help.diff.permissionSignals.filesystem, false)
+
+  const executableService = createSourceUpdateService({
+    fetch: githubFetch({ patch: '+spawn(command)\n' }),
+    sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const executable = await executableService.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(executable.diff.permissionSignals.commandExecution, true)
+})
+
 test('protected DSH mutations remain external-only and cannot produce a marketplace plan', async () => {
   const service = createSourceUpdateService({
     fetch: githubFetch({ patch: '+await writeFile("node_modules/@deepseek-ai/dsh-core/index.js", source)' }),
