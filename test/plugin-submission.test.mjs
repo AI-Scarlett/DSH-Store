@@ -360,3 +360,31 @@ test('different scoped packages sharing a basename get distinct Catalog IDs with
   assert.equal(result.candidate.id, 'mymeter-dsh-demo')
   await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '.', { catalogDocument: catalog([existing]), fetch: sourceFetch({ ...options, patch: `- insert:\n    - id: ${existing.entryIds[0]}\n      name: "@mymeter/dsh-demo"\n` }), retryDelaysMs: [] }), error => error.code === 'SUBMISSION_ENTRY_COLLISION')
 })
+
+
+test('manual submission scan uses package files and scans published test/minified entrypoints', async () => {
+  const fetch = sourceFetch({ manifest: { files: ['cordis.patch.yml', 'dist', 'tests'] },
+    sources: { 'dist/app.min.js': "import { execSync } from 'node:child_process'", 'tests/runtime.js': 'export const a = 1', 'scripts/deploy.py': 'not shipped' } })
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', { catalogDocument: catalog(), fetch })
+  const scan = await scanSubmissionRepository(result, { fetch })
+  assert.equal(scan.scope.kind, 'explicit-files-conservative-superset')
+  assert.equal(scan.filesScanned, 4)
+  assert.equal(scan.counts.warning, 1)
+  assert.equal(scan.complete, true)
+  const testWarning = scanSubmissionSources([{ path: 'tests/runtime.js', source: "import cp from 'node:child_process'" }], { packaged: true })
+  assert.equal(testWarning.counts.warning, 1)
+})
+
+test('CLI cannot call an incomplete scan a passed precheck', async t => {
+  const directory = await mkdtemp(join(tmpdir(), 'dsh-scan-incomplete-'))
+  t.after(() => rm(directory, { recursive: true, force: true }))
+  const event = join(directory, 'event.json'), report = join(directory, 'report.md'), result = join(directory, 'result.json')
+  await writeFile(event, JSON.stringify({ issue: { body: issueBody() } }))
+  const code = await runCli(['--event', event, '--report', report, '--result', result], {
+    catalogDocument: catalog(), fetch: sourceFetch(),
+    scanRepository: async () => scanSubmissionSources([], { eligibleFiles: 4, capped: true }),
+  })
+  assert.equal(code, 1)
+  assert.equal(JSON.parse(await readFile(result, 'utf8')).code, 'SUBMISSION_SCAN_INCOMPLETE')
+  assert.match(await readFile(report, 'utf8'), /扫描面不完整/)
+})
