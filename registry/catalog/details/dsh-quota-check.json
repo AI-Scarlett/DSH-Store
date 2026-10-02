@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5963b9c7c48c04232c3db1e45c3d8576f1d9a14f",
+  "commit": "7b6932fa5f88722575f8d5b7cf176578245088f7",
   "version": "0.13.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T13:46:48.000Z",
-    "observedAt": "2026-10-01T13:57:52.000Z",
+    "updatedAt": "2026-10-02T16:48:38.000Z",
+    "observedAt": "2026-10-02T20:24:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-01T13:57:52.000Z",
-      "evidenceUrl": "https://github.com/maci0/dsh-quota-check/commit/5963b9c7c48c04232c3db1e45c3d8576f1d9a14f",
+      "checkedAt": "2026-10-02T20:24:31.000Z",
+      "evidenceUrl": "https://github.com/maci0/dsh-quota-check/commit/7b6932fa5f88722575f8d5b7cf176578245088f7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "quota-check"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; local module is missing from the distributable surface: lib/types/index.d.ts -> ./host.ts; local module is missing from the distributable surface: lib/types/probes.d.ts -> ./local-usage.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission sign",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {

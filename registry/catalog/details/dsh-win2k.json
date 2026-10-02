@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ab01bbd62537ca76bcedff5242ab01d28275e369",
+  "commit": "2991d9a568a771ae08ce1a92932e85542d27be8e",
   "version": "0.12.4",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T14:09:10.000Z",
-    "observedAt": "2026-10-01T15:10:39.000Z",
+    "updatedAt": "2026-10-02T16:48:40.000Z",
+    "observedAt": "2026-10-02T20:24:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-01T15:10:39.000Z",
-      "evidenceUrl": "https://github.com/maci0/dsh-win2k/commit/ab01bbd62537ca76bcedff5242ab01d28275e369",
+      "checkedAt": "2026-10-02T20:24:31.000Z",
+      "evidenceUrl": "https://github.com/maci0/dsh-win2k/commit/2991d9a568a771ae08ce1a92932e85542d27be8e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "win2k"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
