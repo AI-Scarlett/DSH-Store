@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ab415e52daf15a4fe251b5af2d3203f3e3b6e4fd",
+  "commit": "1bc7c7e0cfed8033276b23ab4449bed2ad5ea24d",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-14T17:10:33.000Z",
-    "observedAt": "2026-09-27T04:08:59.000Z",
+    "updatedAt": "2026-10-02T17:25:02.000Z",
+    "observedAt": "2026-10-02T20:24:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-27T04:08:59.000Z",
-      "evidenceUrl": "https://github.com/havoc-rao/DSH-code-finder/commit/ab415e52daf15a4fe251b5af2d3203f3e3b6e4fd",
+      "checkedAt": "2026-10-02T20:24:31.000Z",
+      "evidenceUrl": "https://github.com/havoc-rao/DSH-code-finder/commit/1bc7c7e0cfed8033276b23ab4449bed2ad5ea24d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "dsh-code-finder"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/types/cordis/client.d.ts; runtime artifact",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/cordis/client.d.ts; runtime artifact is missing from the distributab",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,8 +93,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown"
@@ -143,18 +141,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

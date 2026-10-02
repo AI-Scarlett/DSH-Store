@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "21bede7d1867217f9944e5d8b9ddf1ec30eb8af9",
+  "commit": "9998186a0337b857a27b62eb32eb421a74679bb3",
   "version": "0.8.2",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T10:40:53.000Z",
-    "observedAt": "2026-10-01T13:57:52.000Z",
+    "updatedAt": "2026-10-02T16:48:33.000Z",
+    "observedAt": "2026-10-02T20:24:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-01T13:57:52.000Z",
-      "evidenceUrl": "https://github.com/maci0/dsh-omniroute/commit/21bede7d1867217f9944e5d8b9ddf1ec30eb8af9",
+      "checkedAt": "2026-10-02T20:24:31.000Z",
+      "evidenceUrl": "https://github.com/maci0/dsh-omniroute/commit/9998186a0337b857a27b62eb32eb421a74679bb3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "omniroute"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; local module is missing from the distributable surface: lib/types/index.d.ts -> ./host.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
