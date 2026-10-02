@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-01T20:51:02.000Z",
+    "updatedAt": "2026-10-02T04:30:43.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4435,8 +4435,8 @@
       "description": "RSS/Atom 订阅管理 + 抓取解析（rss_list/add/remove/fetch/check），订阅持久化到 settings。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-rss",
       "defaultBranch": "master",
-      "latestCommit": "7e74f26befaa41724280299495910dcf922e0565",
-      "sourceUpdatedAt": "2026-10-01T11:33:19.000Z",
+      "latestCommit": "b62285d6468db50554698399187aaea67698b074",
+      "sourceUpdatedAt": "2026-10-02T04:32:03.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4495,8 +4495,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "d80a83f5ee20bd0cef23cf7a3c73c62db93499ac",
-      "sourceUpdatedAt": "2026-10-01T02:17:45.000Z",
+      "latestCommit": "fd82702273ca81519526810961e7dfb1629b9a3c",
+      "sourceUpdatedAt": "2026-10-02T03:11:11.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -15264,6 +15264,60 @@
         "url-reader",
         "web-extraction",
         "web-scraping",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "940842546-dsh-usage-billing",
+      "name": "940842546/dsh-usage-billing",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/940842546/dsh-usage-billing",
+      "defaultBranch": "main",
+      "latestCommit": "d16e2445a8021814765fec14912507da6cafecae",
+      "sourceUpdatedAt": "2026-09-29T08:36:24.000Z",
+      "discoveredAt": "2026-10-02T04:30:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/940842546__dsh-usage-billing.yml:sha256=6fd6fe736254fa7a2060f3cbb6262dab80a1f97f69df2fac0ae1b8b024193030:at=2026-10-02T04:34:26.531Z:owner=8674798"
+      ],
+      "topics": [
+        "billing",
+        "deepseek-harness",
+        "dsh-plugin",
+        "usage-stats",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "988hj7tczd-oss-dsh-computer-use",
+      "name": "988hj7tczd-oss/dsh-computer-use",
+      "description": "Cross-platform Computer Use plugin for DeepSeek Harness: observable desktop automation with an isolated virtual cursor, AX/UIA observation, screenshot vision, and 12 guarded tools.",
+      "repositoryUrl": "https://github.com/988hj7tczd-oss/dsh-computer-use",
+      "defaultBranch": "main",
+      "latestCommit": "26d7f383003095030152cc114fad2c44ba81c226",
+      "sourceUpdatedAt": "2026-09-10T03:48:22.000Z",
+      "discoveredAt": "2026-10-02T04:30:43.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/988hj7tczd-oss__dsh-computer-use.yml:sha256=a9dde2f44987769ba696962a18dec147eb9b6889b7ce1599574703ea196d08d8:at=2026-10-02T04:34:26.531Z:owner=284640983"
+      ],
+      "topics": [
+        "ai-agents",
+        "ai-computer-use",
+        "computer-use",
+        "cua-driver",
+        "deepseek-harness",
+        "desktop-automation",
+        "dsh-plugin",
+        "linux",
+        "macos",
+        "mcp",
+        "virtual-cursor",
+        "windows",
         "automatic-radar"
       ],
       "status": "reviewing",

@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "888bcc0c92b6f85ada337f6a654a716c21a812c4",
-  "version": "2.0.1",
+  "commit": "ed702438121718f99595fdb5527537c919560d0e",
+  "version": "2.0.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-26T14:40:44.000Z",
-    "observedAt": "2026-09-26T19:04:39.000Z",
+    "updatedAt": "2026-10-02T03:16:11.000Z",
+    "observedAt": "2026-10-02T04:30:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-26T19:04:39.000Z",
-      "evidenceUrl": "https://github.com/xsoc1/math-research-dsh/commit/888bcc0c92b6f85ada337f6a654a716c21a812c4",
+      "checkedAt": "2026-10-02T04:30:43.000Z",
+      "evidenceUrl": "https://github.com/xsoc1/math-research-dsh/commit/ed702438121718f99595fdb5527537c919560d0e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": ">=0.1.7-rc.2 <0.2.0",
+    "dsh": ">=0.1.7-rc.2 <0.2.0 || 0.2.0-rc.1 || 0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -95,8 +95,8 @@
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "compatible",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.1": "compatible",
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -166,16 +166,16 @@
         "rollback": "passed"
       },
       "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       }
     },
     "node": "^22.19.0 || >=24.2.0",
@@ -186,7 +186,7 @@
     ]
   },
   "details": {
-    "pluginType": "unknown",
+    "pluginType": "suite",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
