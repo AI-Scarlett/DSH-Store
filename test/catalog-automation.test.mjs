@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
-import { isGeneratedSelfManagerCatalogDetail, isNoCommonAncestorError, permissionSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerCatalogDetail, isNoCommonAncestorError, permissionSignals, dshInterfaceSignals } from '../src/automation-source-policy.mjs'
 import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -39,8 +39,8 @@ test('protected DSH detection distinguishes direct mutations from static audit r
   assert.equal(permissionSignals(`ctx.fiber.remove('official-plugin')`).protectedDsh, true)
   assert.equal(permissionSignals(`Fiber.disable('official-plugin')`).protectedDsh, true)
   assert.equal(permissionSignals(`window.__ModuleLoader__.unload('official-plugin')`).protectedDsh, true)
-  assert.equal(permissionSignals(`@deepseek-ai/dsh-web-app disabled: true`).protectedDsh, true)
-  assert.equal(permissionSignals(`tool.call.toolview`).protectedDsh, true)
+  assert.equal(permissionSignals(`@deepseek-ai/dsh-web-app disabled: true`, 'cordis.patch.yml').protectedDsh, true)
+  assert.equal(permissionSignals(`tool.call.toolview`).protectedDsh, false)
 })
 
 test('permission scan still fails closed on executable capability signals', () => {
@@ -172,6 +172,7 @@ test('automatic policy runs every eight hours and fails closed on permission or 
 })
 
 test('scheduled automation uses a policy PR and never executes third-party package code', async () => {
+  const reviewSource = await read('src/fixed-source-review.mjs')
   const [workflow, source] = await Promise.all([
     read('.github/workflows/catalog-automation.yml'),
     read('scripts/automate-catalog.mjs'),
@@ -207,15 +208,15 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.doesNotMatch(source, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
   assert.doesNotMatch(source, /npm (?:install|ci)|pnpm|yarn/)
   assert.match(source, /allowLifecycleScripts/)
-  assert.match(source, /permissionSignals/)
+  assert.match(reviewSource, /permissionSignals/)
   assert.match(source, /transientFailures/)
   assert.match(source, /skippedDiscoveries/)
   assert.match(source, /error\?\.status === 404 \|\| error\?\.status === 409/)
   assert.match(source, /captureNoCommonAncestor === true/)
   assert.match(source, /No common ancestor between \[0-9a-f\]/)
   assert.match(source, /retryInfrastructure/)
-  assert.match(source, /runtimeFiles\.slice\(index, index \+ 8\)/)
-  assert.match(source, /Promise\.all\(batch\.map/)
+  assert.match(reviewSource, /runtimeFiles\.slice\(index, index \+ 8\)/)
+  assert.match(reviewSource, /Promise\.all\(batch\.map/)
   assert.match(source, /catalog\.entries\.sort\(compareCatalogEntries\)/)
   assert.match(source, /baselineCatalog\.entries\.slice/)
   assert.match(source, /sourceVersionChecks\.checkedEntries/)
@@ -235,7 +236,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /candidateRetention\.registryRemovals/)
   assert.match(source, /candidatesChanged = !prospectiveCandidatesBuffer\.equals\(originalCandidates\)/)
   assert.match(source, /Candidate Registry serialization changed without a write decision/)
-  assert.match(source, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
+  assert.match(reviewSource, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
   assert.match(source, /entry\.installPath \?\? ['"]\.['"]/)
   assert.match(source, /catalogUpdateIdentityMatches/)
@@ -247,8 +248,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
   assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES = 4 \* 1024 \* 1024/)
   assert.match(source, /SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
-  assert.match(source, /isGeneratedSelfManagerCatalogDetail\(candidate, relativePath\)/)
-  assert.match(source, /isTestSourceFile\(relativePath\)/)
+  assert.match(reviewSource, /isGeneratedSelfManagerCatalogDetail\(candidate, relativePath\)/)
+  assert.doesNotMatch(reviewSource, /isTestSourceFile\(relativePath\)/)
   assert.match(source, /isSelfManagerEntry\(entry\)\s*&&\s*isBoundedSourceLineage\(lineage, maxCommitSpan, \{ allowDiverged: true \}\)/)
   assert.match(source, /bounded-self-manager-history-divergence/)
   assert.match(source, /allowProtectedManager/)
@@ -505,4 +506,22 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
   assert.match(verifier, /Candidate Registry does not match GitHub main authority/)
   assert.match(governance, /does not require a human\s+confirmation for each scheduled run/)
   assert.match(governance, /Real DSH Profile\/package\/restart/)
+})
+
+
+test('tool views require key review rather than a blanket protected-component accusation', () => {
+  const own = `ctx.slots.register({ name: 'tool.call.toolview', key: 'mcp__demo__search' }, View)`
+  assert.deepEqual(dshInterfaceSignals(own, 'client.js'), { protectedDsh: false, toolViewExtension: true })
+  assert.equal(dshInterfaceSignals(own.replace('mcp__demo__search', 'bash')).protectedDsh, true)
+  assert.equal(dshInterfaceSignals(`const key = 'bash'; ctx.slots.register({ name: 'tool.call.toolview', key }, View)`).toolViewExtension, true)
+  assert.equal(dshInterfaceSignals("ctx.slots.register({ name: 'tool.call.toolview', key: 'bash', ...unknown }, View)").protectedDsh, false)
+  assert.equal(dshInterfaceSignals(`const unrelated = { key: 'read' }; ${own}`).protectedDsh, false)
+  assert.deepEqual(dshInterfaceSignals(`// ${own}`), { protectedDsh: false, toolViewExtension: false })
+  assert.equal(dshInterfaceSignals("register({ name: `tool.call.toolview`, key: unknown }, View)").toolViewExtension, true)
+  assert.equal(dshInterfaceSignals("ctx['slots'].register({ name: 'tool.call.toolview', key: dynamic }, View)").toolViewExtension, true)
+  assert.equal(dshInterfaceSignals(`const HELP = "ctx.fiber.remove('x')"`).protectedDsh, false)
+  assert.equal(dshInterfaceSignals(`ctx.fiber['remove']('official')`).protectedDsh, true)
+  assert.equal(dshInterfaceSignals(`ctx.fiber?.remove('official')`).protectedDsh, true)
+  assert.equal(dshInterfaceSignals(`ctx.loader.unwrapExports(module)`).protectedDsh, false)
+  assert.equal(dshInterfaceSignals(`window.__ModuleLoader__.load({ id: 'demo', factory })`).protectedDsh, false)
 })

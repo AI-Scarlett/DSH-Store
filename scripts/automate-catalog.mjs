@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { reviewFixedSource } from '../src/fixed-source-review.mjs'
 import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
 import { createHash } from 'node:crypto'
 import { copyFile, cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
@@ -30,7 +31,7 @@ import {
 } from '../src/catalog.mjs'
 import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { isBoundedSourceLineage, isNoCommonAncestorError, isGeneratedSelfManagerCatalogDetail, isTestSourceFile, permissionSignals, missingRuntimeEntryReasons } from '../src/automation-source-policy.mjs'
+import { isBoundedSourceLineage, isNoCommonAncestorError } from '../src/automation-source-policy.mjs'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -49,10 +50,6 @@ const catalogPath = resolve(root, 'registry/catalog.json')
 const catalogIndexPath = resolve(root, 'registry/catalog-index.json')
 const candidatesPath = resolve(root, 'registry/candidates.json')
 const policyPath = resolve(root, 'registry/automation-policy.json')
-const SOURCE_FILE = /\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
-const NATIVE_FILE = /\.(?:node|wasm|dll|dylib|so|exe|bin)$/i
-const EXCLUDED_DIRECTORY = /(?:^|\/)(?:node_modules|vendor|test|tests|docs?|examples?|fixtures?|benchmarks?|coverage|\.github)(?:\/|$)/i
-const EXCLUDED_METADATA_FILE = /(?:^|\/)(?:brief\.json|catalog-entry(?:\.draft)?\.json)$/i
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare']
 const INFRASTRUCTURE_CODES = new Set([
   'SUBMISSION_FETCH_UNAVAILABLE', 'SUBMISSION_GITHUB_HTTP', 'SUBMISSION_GITHUB_TIMEOUT',
@@ -249,20 +246,8 @@ function createGithubClient(options = {}) {
   }
 }
 
-function mergeSignals(target, current) {
-  for (const key of Object.keys(target)) target[key] = target[key] || Boolean(current[key])
-}
-
-function packagePrefix(candidate) {
-  return candidate.installPath ? `${candidate.installPath.replace(/\/$/, '')}/` : ''
-}
-
 async function analyzeFixedSource(candidate, policy, github) {
   const reasons = []
-  const signals = {
-    files: false, network: false, commands: false, credentials: false,
-    protectedDsh: false, nativeOrExecutableArtifacts: false,
-  }
   const { owner, repository } = repositoryParts(candidate.repositoryUrl)
   const metadata = await github.api(`repos/${owner}/${repository}`)
   const manifest = JSON.parse(await github.raw(candidate.repositoryUrl, candidate.commit, candidate.manifestPath, { maxBytes: policy.sourceBounds.maxFileBytes }))
@@ -297,72 +282,16 @@ async function analyzeFixedSource(candidate, policy, github) {
   const tree = await github.api(`repos/${owner}/${repository}/git/trees/${candidate.commit}?recursive=1`, {
     maxBytes: 8 * 1024 * 1024,
   })
-  if (tree?.truncated === true) reasons.push('repository tree is truncated')
-  const entries = Array.isArray(tree?.tree) ? tree.tree : []
-  if (entries.length === 0 || entries.length > policy.sourceBounds.maxTreeEntries) reasons.push('repository tree exceeds the automatic review bound')
-  const prefix = packagePrefix(candidate)
-  const packageEntries = entries.filter(item => typeof item?.path === 'string' && (!prefix || item.path.startsWith(prefix)))
-  if (!policy.automaticApproval.allowSymlinks && packageEntries.some(item => item.mode === '120000')) reasons.push('package contains symbolic links')
-  if (!policy.automaticApproval.allowSubmodules && packageEntries.some(item => item.mode === '160000' || item.type === 'commit')) reasons.push('package contains Git submodules')
-
-  reasons.push(...missingRuntimeEntryReasons(manifest, packageEntries, prefix))
-
-  const runtimeFiles = packageEntries.filter(item => {
-    if (item.type !== 'blob') return false
-    const relativePath = prefix ? item.path.slice(prefix.length) : item.path
-    if (EXCLUDED_DIRECTORY.test(relativePath)) return false
-    if (EXCLUDED_METADATA_FILE.test(relativePath)) return false
-    // Test scripts may contain deliberately unsafe fixture strings. They are
-    // not runtime capability evidence even when published under a scripts/ path.
-    if (isTestSourceFile(relativePath)) return false
-    // Split Catalog details are bounded, schema-validated release data rather
-    // than executable plugin source. Counting every generated record made the
-    // self-manager's fixed-source gate shrink as the marketplace grew. Exclude
-    // only the canonical manager's one-level JSON detail records; all code,
-    // scripts, indexes and other JSON inputs remain in the permission scan.
-    if (isGeneratedSelfManagerCatalogDetail(candidate, relativePath)) return false
-    if (NATIVE_FILE.test(relativePath) || item.mode === '100755') signals.nativeOrExecutableArtifacts = true
-    return SOURCE_FILE.test(relativePath)
-  })
-  const runtimeFileCountWithinBounds = runtimeFiles.length > 0
-    && runtimeFiles.length <= policy.sourceBounds.maxRuntimeFiles
-  if (!runtimeFileCountWithinBounds) {
-    reasons.push(`runtime source file count is outside the automatic review bound: ${runtimeFiles.length} files (maximum ${policy.sourceBounds.maxRuntimeFiles})`)
-  }
-  const runtimeSizes = runtimeFiles.map(item => Number.isSafeInteger(item.size)
-    ? item.size
-    : policy.sourceBounds.maxFileBytes + 1)
-  const totalBytes = runtimeSizes.reduce((sum, size) => sum + size, 0)
-  const runtimeBytesWithinBounds = runtimeSizes.every(size => size <= policy.sourceBounds.maxFileBytes)
-    && totalBytes <= policy.sourceBounds.maxTotalRuntimeBytes
-  if (!runtimeBytesWithinBounds) {
-    reasons.push(`runtime source exceeds the automatic review byte bound: ${totalBytes} total bytes (maximum ${policy.sourceBounds.maxTotalRuntimeBytes}); largest file ${Math.max(0, ...runtimeSizes)} bytes (maximum ${policy.sourceBounds.maxFileBytes})`)
-  }
-  if (runtimeFileCountWithinBounds && runtimeBytesWithinBounds) {
-    for (let index = 0; index < runtimeFiles.length; index += 8) {
-      const batch = runtimeFiles.slice(index, index + 8)
-      const sources = await Promise.all(batch.map(item => github.raw(
-        candidate.repositoryUrl,
-        candidate.commit,
-        item.path,
-        { maxBytes: policy.sourceBounds.maxFileBytes },
-      )))
-      for (let sourceIndex = 0; sourceIndex < sources.length; sourceIndex++) {
-        mergeSignals(signals, permissionSignals(sources[sourceIndex], batch[sourceIndex].path))
-      }
-    }
-  }
-  for (const [signal, allowed] of Object.entries(policy.automaticApproval.permissionSignals)) {
-    if (!allowed && signals[signal]) reasons.push(`runtime source contains the ${signal} permission signal`)
-  }
+  const review = await reviewFixedSource(candidate, manifest, tree, policy, (path, maxBytes) =>
+    github.raw(candidate.repositoryUrl, candidate.commit, path, { maxBytes }))
+  reasons.push(...review.reasons)
   return {
+    ...review,
     approved: reasons.length === 0,
-    reasons: [...new Set(reasons)].slice(0, 20), signals,
+    reasons: [...new Set(reasons)].slice(0, 40),
     repositoryLicense: repositoryLicense ?? null,
     sourceUpdatedAt: metadata?.pushed_at ?? null,
     dependencies: Object.keys(dependencies).sort().slice(0, 50),
-    runtimeFiles: runtimeFiles.length,
-    runtimeBytes: totalBytes,
   }
 }
 

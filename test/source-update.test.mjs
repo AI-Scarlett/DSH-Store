@@ -179,3 +179,25 @@ test('numeric DOMException abort codes map to a stable source update timeout', a
       && error.message === 'GitHub 源更新检查超时。',
   )
 })
+
+
+test('source update distinguishes tool-view key review from protected mutations', async () => {
+  for (const [patch, status, protectedDsh] of [
+    ["+ctx.slots.register({ name: 'tool.call.toolview', key: KEYS[i] }, View)", 'user-review-required', false],
+    ["+ctx.slots.register({ name: 'tool.call.toolview', key: 'bash' }, View)", 'external-only', true],
+    ["+ctx.fiber.remove('official')", 'external-only', true],
+  ]) {
+    const service = createSourceUpdateService({ fetch: githubFetch({ patch }), sourceVerifier: async () => ({ status: 'verified' }) })
+    const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+    assert.equal(result.status, status)
+    assert.equal(result.diff.permissionSignals.protectedDsh, protectedDsh)
+  }
+})
+
+
+test('removing a protected mutation is not reported as adding that mutation', async () => {
+  const service = createSourceUpdateService({ fetch: githubFetch({ patch: "-ctx.fiber.remove('official')\n+export const repaired = true" }), sourceVerifier: async () => ({ status: 'verified' }) })
+  const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(result.diff.permissionSignals.protectedDsh, false)
+  assert.notEqual(result.status, 'external-only')
+})

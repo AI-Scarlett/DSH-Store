@@ -71,7 +71,7 @@ function blankNonCode(source, start, end, output) {
 // A deliberately small JavaScript/TypeScript lexer, not a parser. It retains
 // code positions (including `${...}` expressions) and blanks comments, quoted
 // strings, template raw text, and regex literals without changing offsets.
-function javascriptCode(source) {
+function javascriptCode(source, { keepStrings = false } = {}) {
   // Keep UTF-16 indexing aligned with RegExp match.index.
   const output = source.split('')
   const templates = []
@@ -89,7 +89,7 @@ function javascriptCode(source) {
         blankNonCode(source, index, Math.min(source.length, index + 2), output)
         index += 2
       } else if (char === '`') {
-        output[index] = ' '
+        if (!keepStrings) output[index] = ' '
         templates.pop()
         mode = 'code'
         canStartRegex = false
@@ -103,7 +103,7 @@ function javascriptCode(source) {
         previousWord = ''
         index += 2
       } else {
-        blankNonCode(source, index, index + 1, output)
+        if (!keepStrings) blankNonCode(source, index, index + 1, output)
         index++
       }
       continue
@@ -132,14 +132,14 @@ function javascriptCode(source) {
         end++
       }
       end = Math.min(source.length, end)
-      blankNonCode(source, index, end, output)
+      if (!keepStrings) blankNonCode(source, index, end, output)
       index = end
       canStartRegex = false
       previousWord = ''
       continue
     }
     if (char === '`') {
-      output[index] = ' '
+      if (!keepStrings) output[index] = ' '
       templates.push({ expressionDepth: null })
       mode = 'template'
       index++
@@ -252,8 +252,57 @@ export function permissionSignals(source, relativePath = '') {
     credentials: /process\s*\.\s*env/i.test(code)
       || /\b(?:keychain|credentials?|oauth)\b\s*(?:\.|\[|\()/i.test(code)
       || /\b(?:api[_-]?key|apiKey|access[_-]?token|accessToken|client[_-]?secret|clientSecret|password)\b/i.test(code),
-    protectedDsh: /(?:\b__ModuleLoader__\s*\.\s*(?:unload|remove)\s*\(|\b(?:ctx\s*\.\s*)?(?:loader|fiber|Loader|Fiber)\s*\.\s*(?:insert|remove|patch|enable|disable|write|mutate|replace)\s*\(|@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true|tool\.call\.toolview)/i.test(source),
+    protectedDsh: dshInterfaceSignals(text, relativePath).protectedDsh,
   }
+}
+
+// A supported tool-view slot is not a Loader/Fiber mutation. Static known
+// official keys remain protected; dynamic/third-party keys require review, not
+// automatic approval or a claim that the official inventory was overwritten.
+export function dshInterfaceSignals(source, relativePath = '') {
+  const text = String(source ?? '')
+  const js = !relativePath || JAVASCRIPT_SOURCE.test(relativePath)
+  const code = js ? javascriptCode(text) : text
+  const literals = js ? javascriptCode(text, { keepStrings: true }) : text
+  const directMutation = /\b(?:__ModuleLoader__|loader|fiber|Loader|Fiber)\s*(?:\?\.|\.)\s*(?:unload|insert|remove|patch|enable|disable|write|mutate|replace)\s*(?:\?\.)?\s*\(/i.test(code)
+  const computedMutation = /\b(?:__ModuleLoader__|loader|fiber|Loader|Fiber)\s*\[\s*['"](?:unload|insert|remove|patch|enable|disable|write|mutate|replace)['"]\s*\]\s*\(/i
+  // A live reference remains review-only even when registration is delegated
+  // through an alias/wrapper. It is not proof of a mutation or key ownership.
+  const toolViewExtension = /\btool\.call\.toolview\b/.test(literals)
+  const officialKey = /\bkey\s*:\s*['"](?:bash|read|edit|write|ask_user_question|ui-settings-plugin-inventory)['"]/i
+  const registrations = [...literals.matchAll(/\bslots\s*\.\s*register\s*\(\s*(\{[^{}]{0,1000}\})/g)]
+  const knownOfficialOverride = registrations.some(match => {
+    const start = match.index + match[0].indexOf('{')
+    const objectCode = code.slice(start, start + match[1].length)
+    if (code[match.index] === ' ' || objectCode.includes('...')
+      || [...objectCode.matchAll(/\bkey\s*:/g)].length !== 1
+      || [...objectCode.matchAll(/\bname\s*:/g)].length !== 1) return false
+    return hasCodeMatch(/\bname\s*:\s*['"]tool\.call\.toolview['"]/, match[1], objectCode)
+      && hasCodeMatch(officialKey, match[1], objectCode)
+  })
+  const protectedDsh = directMutation || hasCodeMatch(computedMutation, literals, code)
+    || (!js && /@deepseek-ai\/[^\n]{0,160}disabled\s*:\s*true/i.test(text))
+    || knownOfficialOverride
+  return { protectedDsh, toolViewExtension }
+}
+
+export function localModuleEvidence(source, relativePath) {
+  if (!JAVASCRIPT_SOURCE.test(relativePath)) return { references: [], dynamic: false }
+  const text = String(source)
+  const code = javascriptCode(text)
+  const pattern = /\b(?:from\s*|import\s*(?:\(\s*)?|require\s*\(\s*)['"]([^'"\r\n]+)['"]/g
+  const references = []
+  let match
+  while ((match = pattern.exec(text))) {
+    if (code[match.index] !== ' ') references.push(match[1])
+  }
+  const calls = /\b(?:import|require)\s*\(/g
+  let dynamic = false
+  while ((match = calls.exec(code))) {
+    if (!/^\s*['"][^'"\r\n]+['"]\s*\)/.test(text.slice(match.index + match[0].length))) dynamic = true
+  }
+  if (/\b(?:eval|Function)\s*\(/.test(code)) dynamic = true
+  return { references: [...new Set(references)], dynamic }
 }
 
 export function missingRuntimeEntryReasons(manifest, entries, prefix = '') {

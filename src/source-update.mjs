@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { compareVersions, verifyCatalogEntry } from './catalog.mjs'
-import { permissionSignals as scanPermissionSignals } from './automation-source-policy.mjs'
+import { dshInterfaceSignals, permissionSignals as scanPermissionSignals } from './automation-source-policy.mjs'
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const DEFAULT_TIMEOUT_MS = 10_000
@@ -276,11 +276,20 @@ export function createSourceUpdateService(options = {}) {
       if (sourceLike && !ignored && patch === null) blockers.push(`无法完整审核变更文件：${name}`)
       if (sourceLike && !ignored && patch && RISK_PATTERN.test(patch)) warnings.push(`变更出现新的权限行为信号：${name}`)
       for (const host of addedNetworkHosts(patch)) networkHosts.add(host)
-      const sourceSignals = patch ? scanPermissionSignals(patch, name) : null
+      // Removed lines are not candidate behavior. This is still a bounded diff
+      // review, not a substitute for the fixed-source verifier.
+      const candidateSource = patch?.split(/\r?\n/).filter(line => !/^(?:-|@@|\+\+\+)/.test(line))
+        .map(line => line.replace(/^[ +]/, '')).join('\n')
+      const sourceSignals = candidateSource ? scanPermissionSignals(candidateSource, name) : null
       if (sourceSignals?.files) permissionSignals.filesystem = true
       if (sourceSignals?.network) permissionSignals.network = true
       if (sourceSignals?.commands) permissionSignals.commandExecution = true
       if (sourceSignals?.credentials) permissionSignals.credentials = true
+      if (candidateSource && dshInterfaceSignals(candidateSource, name).toolViewExtension) warnings.push(`工具视图扩展需要核验注册键归属：${name}`)
+      if (sourceSignals?.protectedDsh) {
+        permissionSignals.protectedDsh = true
+        externalOnly.push(`变更包含受保护组件操作：${name}`)
+      }
       if ((DSH_NATIVE_MUTATION_PATTERN.test(name) || (patch && DSH_NATIVE_MUTATION_PATTERN.test(patch)))) {
         permissionSignals.protectedDsh = true
         externalOnly.push(`变更可能修改 DSH 原生代码或 @deepseek-ai 包：${name}`)

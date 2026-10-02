@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "type": "source-scanner-repair",
+  "planId": "DSH-STORE-SOURCE-SCAN-SCOPE-20261002",
+  "createdAt": "2026-10-02T01:51:23.184150+00:00",
+  "authorization": {
+    "request": "你先修复检测和扫描判断",
+    "scope": "Source fixes and CI-checked draft PR only; no author reply, third-party code execution, Catalog/Candidate admission, merge/deployment or real DSH Profile mutation."
+  },
+  "baseCommit": "43b0f16d6af696eeba0a16ebfcb252a1e7e78083",
+  "fileScope": {
+    "modify": [
+      "src/automation-source-policy.mjs",
+      "scripts/automate-catalog.mjs",
+      "scripts/check-plugin-submission.mjs",
+      "src/submission-security-scan.mjs",
+      "src/source-update.mjs",
+      "test/catalog-automation.test.mjs",
+      "test/plugin-submission.test.mjs",
+      "test/source-update.test.mjs"
+    ],
+    "add": [
+      "src/package-source-surface.mjs",
+      "src/fixed-source-review.mjs",
+      "test/package-source-surface.test.mjs",
+      "docs/ops/source-scan-scope-plan-20261002.json",
+      "docs/reviews/source-scan-scope-20261002.md"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "src/automation-source-policy.mjs": "6e02a42f4c6db7c9c6dc713890ed113bb7c562c2fe5642fe148e6dec40b0448a",
+      "scripts/automate-catalog.mjs": "7e1ae510286a8d18d7a3816c40212d36e78c1e4dc5404c3324ada3617594328f",
+      "scripts/check-plugin-submission.mjs": "746424e0261c45e3baf6aeb9b0a0d2f1dbf154eb224a7d164b7ab05fd76eb9f0",
+      "src/submission-security-scan.mjs": "86624179fc4f1a82b023176a4cd6dce02853683d6fbb8dcd7c2d896c1dced33c",
+      "src/source-update.mjs": "eb8ca5db560f8131283e34054182371f03cf1a83bf44b8861c84598d916189de",
+      "test/catalog-automation.test.mjs": "11bc1d7c2209cf4c46fb12809c3509b2e3005f364be0a5b801ed37901443ada9",
+      "test/plugin-submission.test.mjs": "cd621fd9bb47fe45e16293fe0b15064aba71b1282d87c5808efd771fe53839e4",
+      "test/source-update.test.mjs": "6bacaf381c40f110560f0b510e06614aeb98a33fed6b942bd1309fe07ac1cd82"
+    },
+    "absent": [
+      "src/package-source-surface.mjs",
+      "src/fixed-source-review.mjs",
+      "test/package-source-surface.test.mjs",
+      "docs/ops/source-scan-scope-plan-20261002.json",
+      "docs/reviews/source-scan-scope-20261002.md"
+    ]
+  },
+  "implementation": [
+    "Share a conservative fixed-Commit distributable source surface between manual submission scanning and automatic policy. Preserve bounded retrieval; unsupported package selectors and incomplete runtime entry evidence fail closed.",
+    "Scan shipped code even in test/docs/build paths; exclude genuinely unshipped repository scripts from package permission evidence.",
+    "Distinguish keyed UI extension review from destructive official component mutation, without automatic allowance of ambiguous keys.",
+    "Mark skipped/incomplete checks explicitly and prevent CLI success on incomplete scans."
+  ],
+  "gates": [
+    "Precondition hashes and exact scope",
+    "Focused regressions, adversarial fixtures, fixed-Commit read-only MisakaNet replay",
+    "npm run check",
+    "git diff --check",
+    "CI checked source PR; no author messaging"
+  ],
+  "rollback": {
+    "type": "git-revert",
+    "commit": "43b0f16d6af696eeba0a16ebfcb252a1e7e78083",
+    "description": "Restore exact scoped source from base or revert source PR. No contact ledger reset and no deployed state changes."
+  },
+  "status": "local_verified_pending_pr_ci",
+  "validationResults": {
+    "focusedTests": "63/63 passed",
+    "fullCheck": "npm run check passed; 356/356 tests; registry valid",
+    "fixedCommitReplay": {
+      "commit": "72439d758c8bb5da7e62934dc96e65b5878fa378",
+      "packageFiles": 18,
+      "runtimeFiles": 8,
+      "runtimeBytes": 122261,
+      "priorRuntimeFiles": 451,
+      "priorRuntimeBytes": 4986287,
+      "packSurfaceMatch": true,
+      "automaticAdmission": false
+    },
+    "scope": "No Catalog/Candidate, author contact, third-party source, production, or Profile changes."
+  }
+}
