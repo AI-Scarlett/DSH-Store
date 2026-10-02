@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c85f2645c22e76bd16986e7f7fbd4a35b043f545",
-  "version": "4.2.21",
+  "commit": "8489ed959ab54ed140f26902904c3df6d878db1c",
+  "version": "4.2.24",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T17:37:02.000Z",
-    "observedAt": "2026-10-02T04:30:43.000Z",
+    "updatedAt": "2026-10-02T11:19:25.000Z",
+    "observedAt": "2026-10-02T14:31:08.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-02T04:30:43.000Z",
-      "evidenceUrl": "https://github.com/anbanai/creator-harness/commit/c85f2645c22e76bd16986e7f7fbd4a35b043f545",
+      "checkedAt": "2026-10-02T14:31:08.000Z",
+      "evidenceUrl": "https://github.com/anbanai/creator-harness/commit/8489ed959ab54ed140f26902904c3df6d878db1c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "anban-preset-manager"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; package contains Git submodules; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/anban-mcp.d.ts; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/anban-mcp.js; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/preset-manager.d.ts; runtime artifact is missing fro",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./dsh/lib/anban-mcp.d.ts; runtime artifact is missing from the distributable surface: ./dsh/lib/anban-mcp.js; runtime artifact is missing from the distributable surface: ./dsh/lib/preset-manager.d.ts; runtime artifact is missing from the distributabl",
   "compatibility": {
     "dsh": "0.1.5-rc.3",
     "dshReleases": {

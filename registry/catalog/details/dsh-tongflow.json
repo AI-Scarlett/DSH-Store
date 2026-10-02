@@ -23,24 +23,24 @@
   "manifestPath": "packages/dsh-tongflow/package.json",
   "installPath": "packages/dsh-tongflow",
   "updatePolicy": "external-only",
-  "commit": "36e103c0ab6f6919c524051ab67448e1d057b339",
-  "version": "0.8.3",
+  "commit": "a00f0d374c75e1efe736ce5bf2b71c7311844564",
+  "version": "0.8.4",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-27T03:55:34.000Z",
-    "observedAt": "2026-09-27T04:08:59.000Z",
+    "updatedAt": "2026-10-02T14:27:45.000Z",
+    "observedAt": "2026-10-02T14:31:08.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-27T04:08:59.000Z",
-      "evidenceUrl": "https://github.com/tong-io/tongflow/commit/36e103c0ab6f6919c524051ab67448e1d057b339",
+      "checkedAt": "2026-10-02T14:31:08.000Z",
+      "evidenceUrl": "https://github.com/tong-io/tongflow/commit/a00f0d374c75e1efe736ce5bf2b71c7311844564",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,9 +81,9 @@
     "tongflow"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permis",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
-    "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0 || ^0.1.5-alpha.0 || ^0.1.7-alpha.0",
+    "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0 || ^0.1.5-alpha.0 || ^0.1.7-alpha.0 || ^0.2.0-rc.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -95,10 +95,8 @@
       "0.1.2-alpha.5": "unknown",
       "0.1.5-rc.2": "compatible",
       "0.1.7-rc.2": "compatible",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "compatible",
+      "0.2.0-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -161,25 +159,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
+      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

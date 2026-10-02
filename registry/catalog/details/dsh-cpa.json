@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e48139f4d64a2e4f7ff895050f1d7397d4241bce",
+  "commit": "a7eb9a002f27bf1b322c9fb0871b9df1bfb3b8dc",
   "version": "0.1.10",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T16:07:44.000Z",
-    "observedAt": "2026-09-29T20:28:57.000Z",
+    "updatedAt": "2026-10-02T06:31:45.000Z",
+    "observedAt": "2026-10-02T14:31:08.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T20:28:57.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/e48139f4d64a2e4f7ff895050f1d7397d4241bce",
+      "checkedAt": "2026-10-02T14:31:08.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/a7eb9a002f27bf1b322c9fb0871b9df1bfb3b8dc",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "dsh-cpa"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./src/*; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "0.2.0-rc.2",
     "dshReleases": {

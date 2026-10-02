@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-08-28T15:13:25.000Z",
-    "observedAt": "2026-09-04T05:32:32.000Z",
+    "observedAt": "2026-10-02T14:31:08.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-04T05:32:32.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-02T14:31:08.000Z",
       "evidenceUrl": "https://github.com/Nth-5620/dsh-readwrite-hub/commit/e78546174b838a65f7f33b1718ac928db7e811c3",
       "dshRelease": null,
       "systems": [],
@@ -80,7 +80,7 @@
     "readwrite-hub"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6",
     "dshReleases": {
@@ -92,18 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown"
@@ -152,78 +140,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
