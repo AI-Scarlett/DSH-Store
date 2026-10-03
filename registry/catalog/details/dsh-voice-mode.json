@@ -22,24 +22,24 @@
   "manifestPath": "plugin/dsh-voice-mode/package.json",
   "installPath": "plugin/dsh-voice-mode",
   "updatePolicy": "external-only",
-  "commit": "d1aaf05b82de690cf17786d28dfa66aedbea4f2e",
-  "version": "0.7.19",
+  "commit": "7333c97f040b3aa078e4484e66f60d26a895a1c1",
+  "version": "0.7.21",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-02T15:09:37.000Z",
-    "observedAt": "2026-10-02T20:24:31.000Z",
+    "updatedAt": "2026-10-03T09:39:51.000Z",
+    "observedAt": "2026-10-03T13:06:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-02T20:24:31.000Z",
-      "evidenceUrl": "https://github.com/qishuilalala/dsh-voice-mode/commit/d1aaf05b82de690cf17786d28dfa66aedbea4f2e",
+      "checkedAt": "2026-10-03T13:06:51.000Z",
+      "evidenceUrl": "https://github.com/qishuilalala/dsh-voice-mode/commit/7333c97f040b3aa078e4484e66f60d26a895a1c1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "voice-mode"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime source exceeds the automatic review byte bound: 1108999 total bytes (maximum 2097152); largest file 729659 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime source exceeds the automatic review byte bound: 1108895 total bytes (maximum 2097152); largest file 729659 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,12 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -158,6 +152,12 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

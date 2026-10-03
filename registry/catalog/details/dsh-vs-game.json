@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "7f995e90ef8a91c37cdaf61668b44644a6424c81",
-  "version": "0.1.74",
+  "commit": "4107f9c91fe086c98c6dce5524e5e80d81eea3f0",
+  "version": "0.1.76",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-02T11:47:33.000Z",
-    "observedAt": "2026-10-02T14:31:08.000Z",
+    "updatedAt": "2026-10-03T13:05:44.000Z",
+    "observedAt": "2026-10-03T13:06:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-02T14:31:08.000Z",
-      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/7f995e90ef8a91c37cdaf61668b44644a6424c81",
+      "checkedAt": "2026-10-03T13:06:51.000Z",
+      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/4107f9c91fe086c98c6dce5524e5e80d81eea3f0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "vs-game"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: assets/music/bgm/Billie Jean.mp3, assets/music/bgm/bad-apple-frames.bin, assets/music/bgm/bad-apple.mp3, assets/music/bgm/letmego-all.mp3, assets/music/bgm/letmego.mp3; runtime source exceeds the automatic review byte bound: 552683 total bytes (maximum 2097152); largest file 442157 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: assets/music/bgm/Billie Jean.mp3, assets/music/bgm/bad-apple-frames.bin, assets/music/bgm/bad-apple.mp3, assets/music/bgm/letmego-all.mp3, assets/music/bgm/letmego.mp3; runtime source exceeds the automatic review byte bound: 572959 total bytes (maximum 2097152); largest file 462309 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,12 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -158,6 +152,12 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
