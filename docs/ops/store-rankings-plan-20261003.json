@@ -30,7 +30,8 @@
       "package.json",
       "test/marketplace-static-build.test.mjs",
       "marketplace/pages-redesign.css",
-      "test/contracts.test.mjs"
+      "test/contracts.test.mjs",
+      "test/upgrade-matrix.test.mjs"
     ],
     "add": [
       "marketplace/rankings/index.html",
@@ -62,7 +63,8 @@
     "package.json": "6dcbd17f51daec6ed82963eefbfd7ace5208368c61522ef36434534363f6c9b1",
     "test/marketplace-static-build.test.mjs": "48246c6593c4ef8e85559c584c1014a4ccec8f4972da42f0b3510e2bf84cd84f",
     "marketplace/pages-redesign.css": "c248f998e50b50ce2d458554e9aff5a0fc2630fc8a9e072a700b17a9cf8e6cf3",
-    "test/contracts.test.mjs": "85c064e524479117e1ec78b34c1a4679b98bdefb6f769e9f38d5e0bd379aacd9"
+    "test/contracts.test.mjs": "85c064e524479117e1ec78b34c1a4679b98bdefb6f769e9f38d5e0bd379aacd9",
+    "test/upgrade-matrix.test.mjs": "494857978aa49d8234153251efa2d2581378907a5645a997bfa6d7698339f5df"
   },
   "absent": [
     "marketplace/rankings/index.html",
@@ -121,5 +123,17 @@
     "scope": "Local verification only so far. Public PR, merge, Pages and dual-site deployment remain pending their gates."
   },
   "verifiedAt": "2026-10-03T09:08:46.128265+00:00",
-  "releaseRequestedAt": "2026-10-03T09:07:11.459278+00:00"
+  "releaseRequestedAt": "2026-10-03T09:07:11.459278+00:00",
+  "releaseGateCorrection": {
+    "baseCommit": "39223be5cfc927ceb4765f2b1556475dbb17e45d",
+    "failedRun": 37123451623,
+    "reason": "Resolve exact-version peer rejection exposed by full DSH upgrade CI without skipping or weakening the official compatibility gate.",
+    "exactPeerVersion": "0.2.1-alpha.1",
+    "runtimeVerdict": "pending exact-head CI; no compatibility claims or exemptions",
+    "scope": [
+      "package.json",
+      "test/upgrade-matrix.test.mjs"
+    ],
+    "noCatalogOrProfileMutation": true
+  }
 }

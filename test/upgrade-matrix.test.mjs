@@ -3,6 +3,19 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolveDshUpgradeMatrix } from '../scripts/resolve-dsh-upgrade-matrix.mjs'
 
+test('client peer declarations include the exact 0.2.1 alpha runtime without relaxing existing bounds', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const clients = manifest.dsh.client.inject
+  assert.equal(clients.length, 4)
+  for (const name of clients) {
+    const alternatives = manifest.peerDependencies[name].split(' || ')
+    assert.ok(alternatives.includes('0.2.1-alpha.1'), `${name} must pass the new official pre-install peer check`)
+    assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
+    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 1)
+    assert.ok(!alternatives.includes('*'))
+  }
+})
+
 test('upgrade matrix uses the exact ordered official latest-three release window', async () => {
   const result = await resolveDshUpgradeMatrix(async options => {
     assert.equal(options.releaseCount, 3)
