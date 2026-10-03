@@ -1,51 +1,50 @@
 {
-  "id": "dsh-agents-in-the-loop",
-  "name": "任务与工作流自动化（DSH Agents In The Loop）",
-  "packageName": "dsh-agents-in-the-loop",
-  "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：DSH plugin: cross-session call center for agents. session_message delivers messages between DSH sessions (idle: visible full-text wake; busy: mid-turn-safe notice; plus runtime-context notes) and resolves targets by registered contact name (stale-id-proof). contacts is a named directory over session ids. v1.5.0 adds a send-only loopback HTTP API so external agents (Claude Code etc.) can message registered contacts.",
+  "id": "dsh-eva-magi-theme",
+  "name": "界面主题与美化（DSH Eva Magi Theme）",
+  "packageName": "dsh-eva-magi-theme",
+  "description": "EVA / MAGI 主题皮肤：把 NERV 中央教条区的界面语言装进 DSH Web GUI（--dsw-* 令牌层覆盖 + CRT 扫描线 / 硬边 / 等宽数字，明朝体汉字标题）",
   "searchTerms": [
-    "任务与工作流自动化",
-    "DSH Agents In The Loop",
-    "dsh-agents-in-the-loop",
-    "任务",
-    "工作流",
-    "自动化",
-    "定时",
+    "界面主题与美化",
+    "DSH Eva Magi Theme",
+    "dsh-eva-magi-theme",
+    "主题",
+    "皮肤",
+    "背景",
+    "界面美化",
     "实验功能",
     "新功能",
     "dsh",
-    "agents",
-    "in",
-    "the",
-    "loop"
+    "eva",
+    "magi",
+    "theme"
   ],
-  "repositoryUrl": "https://github.com/markelayan/agents-in-the-loop",
+  "repositoryUrl": "https://github.com/seaison/dsh-eva-ui",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a900512102053e8ae07087112c3f22b85d27ebaf",
-  "version": "1.6.0",
+  "commit": "b651e1cd98b363f7e5a52f7f7a75ae50eade8b82",
+  "version": "0.10.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-03T15:10:15.000Z",
+    "updatedAt": "2026-10-03T19:08:34.000Z",
     "observedAt": "2026-10-03T19:03:30.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-03T19:03:30.000Z",
-      "evidenceUrl": "https://github.com/markelayan/agents-in-the-loop/commit/a900512102053e8ae07087112c3f22b85d27ebaf",
+      "evidenceUrl": "https://github.com/seaison/dsh-eva-ui/commit/b651e1cd98b363f7e5a52f7f7a75ae50eade8b82",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,14 +74,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-agents-in-the-loop"
+    "eva-magi-theme"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -94,11 +93,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2": "compatible",
-      "0.1.6-alpha.1": "compatible",
-      "0.1.7-rc.2": "compatible",
-      "0.2.0-rc.2": "compatible",
       "0.2.0-rc.1": "unknown",
+      "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
@@ -150,31 +146,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -187,9 +165,11 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": "^22.19.0 || >=24",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",

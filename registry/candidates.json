@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-03T13:06:51.000Z",
+    "updatedAt": "2026-10-03T19:03:30.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2878,8 +2878,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "fda1583b6c17f7c3d4cd6c6e39415c95de8ce3f9",
-      "sourceUpdatedAt": "2026-10-03T10:25:23.000Z",
+      "latestCommit": "316dc44fe3d77e6aef8798a1ba5df7ca2746ecca",
+      "sourceUpdatedAt": "2026-10-03T14:21:55.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -15827,6 +15827,112 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-client-ui-mobile-comfort."
+    },
+    {
+      "id": "bcy2020-dsh-cc-ecosystem",
+      "name": "Bcy2020/dsh-cc-ecosystem",
+      "description": "让 DeepSeek Harness 用上 Claude Code 全家桶:技能、命令、规则、权限、子代理、hooks—— .claude/ 资产原样加载",
+      "repositoryUrl": "https://github.com/Bcy2020/dsh-cc-ecosystem",
+      "defaultBranch": "main",
+      "latestCommit": "58dee328a1fc2209f478dfdf3191d93eccfce3d4",
+      "sourceUpdatedAt": "2026-10-03T14:58:17.000Z",
+      "discoveredAt": "2026-10-03T19:03:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/Bcy2020__dsh-cc-ecosystem.yml:sha256=3cda05405360ca5866c8a233c1e4e95607a5edc65a4c1e3156e76356fc48a0da:at=2026-10-03T19:08:49.666Z:owner=92143929"
+      ],
+      "topics": [
+        "claude-code",
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "bay-zeddie-dsh-agent-instructions",
+      "name": "Bay-Zeddie/dsh-agent-instructions",
+      "description": "在 dsh Web 设置页里编辑原生 AGENTS.md 的面板：链上每层可点选编辑，三种生效范围，并可视化官方指令预算。",
+      "repositoryUrl": "https://github.com/Bay-Zeddie/dsh-agent-instructions",
+      "defaultBranch": "main",
+      "latestCommit": "41d51a77c8729ddd7b01205eb0431aa794e17a62",
+      "sourceUpdatedAt": "2026-10-01T17:56:18.000Z",
+      "discoveredAt": "2026-10-03T19:03:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/Bay-Zeddie__dsh-agent-instructions.yml:sha256=964eaa29adb792089ca8edf70ace073dfd4cb9aa206528a142f0d10c6c10fce3:at=2026-10-03T19:08:49.666Z:owner=157604721"
+      ],
+      "topics": [
+        "agents",
+        "cordis-plugin",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "bbqisbbq-dsh-tiddlywiki",
+      "name": "bbqisbbq/dsh-tiddlywiki",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/bbqisbbq/dsh-tiddlywiki",
+      "defaultBranch": "main",
+      "latestCommit": "3445c8938543843b6abe1b406c28c5f055b0aca2",
+      "sourceUpdatedAt": "2026-09-30T02:08:41.000Z",
+      "discoveredAt": "2026-10-03T19:03:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/bbqisbbq__dsh-tiddlywiki.yml:sha256=6e5f6b9f2619318594ed2c61c5f1c3cab96afc6092c67296a93ee673e8cc75f1:at=2026-10-03T19:08:49.666Z:owner=198869157"
+      ],
+      "topics": [
+        "agent",
+        "agent-tools",
+        "ai",
+        "dsh",
+        "dsh-plugin",
+        "git",
+        "git-sync",
+        "knowledge-base",
+        "knowledge-management",
+        "local-first",
+        "nodejs",
+        "note-taking",
+        "notes",
+        "plugin",
+        "productivity",
+        "publishing",
+        "second-brain",
+        "tiddlywiki",
+        "typescript",
+        "wiki",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "baqif2-dsh-plugin-precheck",
+      "name": "BaqiF2/dsh-plugin-precheck",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/BaqiF2/dsh-plugin-precheck",
+      "defaultBranch": "main",
+      "latestCommit": "a648be047d328646d3095fa09b3c44914b1422a3",
+      "sourceUpdatedAt": "2026-09-17T14:27:14.000Z",
+      "discoveredAt": "2026-10-03T19:03:30.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/BaqiF2__dsh-plugin-precheck.yml:sha256=04b820a1e7b7c88f996566c476cc11bb335d87e555c3c241915dea42696db8a2:at=2026-10-03T19:08:49.666Z:owner=50289404"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
