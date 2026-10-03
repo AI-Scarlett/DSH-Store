@@ -1,4 +1,5 @@
 const navigationLabels = {
+  rankings: { zh: '榜单', en: 'Charts' },
   scanHistory: { zh: '扫描记录', en: 'Scan history' },
   downloads: {
     zh: {
@@ -123,6 +124,10 @@ function updateNavigationLabels() {
   document.querySelectorAll('[data-scan-history-nav]').forEach(link => {
     link.textContent = navigationLabels.scanHistory[locale]
     link.setAttribute('aria-label', navigationLabels.scanHistory[locale])
+  })
+  document.querySelectorAll('[data-rankings-nav]').forEach(link => {
+    link.textContent = navigationLabels.rankings[locale]
+    link.setAttribute('aria-label', navigationLabels.rankings[locale])
   })
   const labels = navigationLabels.downloads[locale]
   document.querySelectorAll('[data-download-trigger-label]').forEach(node => {

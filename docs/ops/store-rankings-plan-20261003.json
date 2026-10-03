@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "type": "storefront-rankings-feature",
+  "createdAt": "2026-10-03T08:46:29.925466+00:00",
+  "baseCommit": "b8bebbbb618e95e53a6fbd1538667993b9388796",
+  "authorization": {
+    "request": "网站上加榜单tab：热门按星标，推荐榜，必装为每分类星标最多",
+    "scope": "Publish this reviewed rankings feature through CI-checked PR, GitHub Pages and both production storefronts. No author outreach, Catalog/admission mutation, real Profile writes or plugin installation.",
+    "publishRequest": "可以 上线吧"
+  },
+  "fileScope": {
+    "modify": [
+      "marketplace/about/deepseek-harness-guide/index.html",
+      "marketplace/about/index.html",
+      "marketplace/build/index.html",
+      "marketplace/community/index.html",
+      "marketplace/downloads/index.html",
+      "marketplace/dsh-plugins/index.html",
+      "marketplace/dsh-store-guide/index.html",
+      "marketplace/faq/index.html",
+      "marketplace/index.html",
+      "marketplace/plugins/index.html",
+      "marketplace/repair/index.html",
+      "marketplace/scans/index.html",
+      "marketplace/standards/index.html",
+      "marketplace/scan-history-nav.js",
+      "marketplace/sitemap.xml",
+      "marketplace/llms.txt",
+      "scripts/build-marketplace-static.mjs",
+      "package.json",
+      "test/marketplace-static-build.test.mjs",
+      "marketplace/pages-redesign.css",
+      "test/contracts.test.mjs"
+    ],
+    "add": [
+      "marketplace/rankings/index.html",
+      "marketplace/rankings/rankings.css",
+      "marketplace/rankings/rankings.js",
+      "marketplace/rankings/model.js",
+      "test/marketplace-rankings.test.mjs",
+      "docs/ops/store-rankings-plan-20261003.json"
+    ]
+  },
+  "preconditionSha256": {
+    "marketplace/about/deepseek-harness-guide/index.html": "5fdf9fedbdf0aa12d8dcb8a613fefdff189c54817b9a76f774b09dc74baffc59",
+    "marketplace/about/index.html": "be72a8aa89f34e3d86afe20816d0123c37016d16b5e278e1656126bffd172bcd",
+    "marketplace/build/index.html": "0f645588a8f1e498722d8f9da1428275d859a1396aa134aa7c84eca759f08d9f",
+    "marketplace/community/index.html": "73f11ceb0175aefba62300f12f1406d48b203173467021ab19468b26cc4dc090",
+    "marketplace/downloads/index.html": "0fc3c2f5ce238b5d4040579743380b15ad68f6759d89a54b5215bc8cd4607695",
+    "marketplace/dsh-plugins/index.html": "700d171a33372d40458b2a36e32a8fe0026ecffe7b081c0673cc5055bc2e7de3",
+    "marketplace/dsh-store-guide/index.html": "e464f7ae4247faa1c75794fff51fe1b3578d63ba418105c2c320fb49482d41f9",
+    "marketplace/faq/index.html": "7a1136fdd08873f4c6f832cfdf43b459659dd1c02a96b5ef621fe3148b23b4c2",
+    "marketplace/index.html": "16cd4d2b45bf46b656284876915eaf6f567ae4770611466e6585c749974d7ce1",
+    "marketplace/plugins/index.html": "e14d54952287762fea95ff1aaafb1c132270f2734c07b53b4d953f1a8fde717d",
+    "marketplace/repair/index.html": "41460299804e121af6834e45688938141444d0dd47ab7d66751aac9ff3323122",
+    "marketplace/scans/index.html": "82e7212f04f190012a346f5b00ab0efd6c0e965f5270b76951816bfecd4e0527",
+    "marketplace/standards/index.html": "c7de0f1f556c8273711b1f958689fd1d62205ff7486a7de74aeec5c812d42509",
+    "marketplace/scan-history-nav.js": "4204b5e6f0fc7e48dbe2732c6edbd7ef00a9f3ebae069ac241edd926a0bcda15",
+    "marketplace/sitemap.xml": "47ab8c8b17980449ede33b97c96347845119c6562aa61f3b9b839f7b7d52c9cf",
+    "marketplace/llms.txt": "5fd6a88c59bd31f3a4c039d09d619af6b5817cb8a0f1b3c4018c2218938219ae",
+    "scripts/build-marketplace-static.mjs": "033539a32876ea71c1ce689be2ec0989e9a8f4e73601a98dc0f165dcb4a64422",
+    "package.json": "6dcbd17f51daec6ed82963eefbfd7ace5208368c61522ef36434534363f6c9b1",
+    "test/marketplace-static-build.test.mjs": "48246c6593c4ef8e85559c584c1014a4ccec8f4972da42f0b3510e2bf84cd84f",
+    "marketplace/pages-redesign.css": "c248f998e50b50ce2d458554e9aff5a0fc2630fc8a9e072a700b17a9cf8e6cf3",
+    "test/contracts.test.mjs": "85c064e524479117e1ec78b34c1a4679b98bdefb6f769e9f38d5e0bd379aacd9"
+  },
+  "absent": [
+    "marketplace/rankings/index.html",
+    "marketplace/rankings/rankings.css",
+    "marketplace/rankings/rankings.js",
+    "marketplace/rankings/model.js",
+    "test/marketplace-rankings.test.mjs",
+    "docs/ops/store-rankings-plan-20261003.json"
+  ],
+  "rules": [
+    "Only approved fixed-Commit Catalog entries qualify; never promote candidates or unlisted entries",
+    "Popular: GitHub stars descending, stable id tie-break; unknown counters excluded, not zero",
+    "Recommended: existing featured flag and Catalog order; no fabricated recommendation",
+    "Essentials: star winner per Catalog category, deterministic tie-break, collapse multiple category wins per plugin",
+    "Small derived ranking snapshot only; no enlarged main Catalog; reuse build-time GitHub read-only enrichment; expose observation timestamp and coverage",
+    "Bilingual accessible tabs, 20 rows/page, compact responsive layout; no install controls"
+  ],
+  "gates": [
+    "scope/hash preconditions",
+    "ranking unit/adversarial cases",
+    "npm run check",
+    "international/domestic static builds",
+    "browser desktop/mobile interaction and visual checks",
+    "CI-checked PR before any merge",
+    "fresh main and exact scoped files",
+    "CI success at exact PR head",
+    "Pages artifact at exact merge SHA",
+    "two atomic site refreshes with preserved backups",
+    "public artifact digest and all three rankings UI readback"
+  ],
+  "rollback": {
+    "baseCommit": "b8bebbbb618e95e53a6fbd1538667993b9388796",
+    "method": "recover exact scoped files from Git base or revert feature PR; no other project state touched",
+    "production": "Existing reviewed refresh service retains complete previous release and file hashes; health failure restores previous symlink. Revert source through CI-checked PR; never reset contact ledger."
+  },
+  "status": "release_authorized_pending_ci_and_deployment",
+  "scopeAmendment": "Responsive browser verification exposed a pre-existing implicit third header column hiding navigation and overlapping the logo; correct shared mobile grid placement without changing desktop style.",
+  "validationResults": {
+    "fullCheck": "npm run check rerun for release: 366/366 passed",
+    "focusedTests": "15/15 passed",
+    "builds": {
+      "domestic": "passed with live GitHub enrichment; 30/30 approved entries have star counts",
+      "international": "passed with live GitHub enrichment; 30/30 approved entries have star counts"
+    },
+    "browser": {
+      "desktop1440": "passed; no horizontal overflow",
+      "mobile390": "passed; no horizontal overflow; header tools and logo do not overlap",
+      "tabs": "all three plus keyboard arrows/Home/End supported",
+      "pagination": "20 rows on page 1, 10 on page 2, numbering from 21, browser Back restores page 1",
+      "locale": "Chinese and English verified",
+      "failure": "corrupt snapshot rejected; no false empty success; manual retry recovers after fixture restore",
+      "pluginLink": "search link resolved to exactly one matching plugin"
+    },
+    "snapshotBytes": 14983,
+    "starsObservedAt": "2026-10-03T08:57:37.546Z",
+    "scope": "Local verification only so far. Public PR, merge, Pages and dual-site deployment remain pending their gates."
+  },
+  "verifiedAt": "2026-10-03T09:08:46.128265+00:00",
+  "releaseRequestedAt": "2026-10-03T09:07:11.459278+00:00"
+}
