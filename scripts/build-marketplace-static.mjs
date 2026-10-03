@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { buildAutomationStatus } from '../src/automation-status.mjs'
+import { createRankingSnapshot, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -155,6 +156,7 @@ async function mapLimit(items, limit, worker) {
 }
 
 let githubMetadataComplete = false
+let starsObservedAt = null
 if (enrichGitHub) {
   let githubMetadataRateLimited = false
   const repositoryRequests = new Map()
@@ -198,6 +200,7 @@ if (enrichGitHub) {
     process.stderr.write('GitHub repository metadata is rate-limited; publishing the fixed-Commit Catalog without mutable repository counters.\n')
   }
   githubMetadataComplete = !githubMetadataRateLimited
+  starsObservedAt = new Date().toISOString()
 }
 
 // A scheduled build may run even when neither the catalog nor its GitHub
@@ -416,6 +419,7 @@ const friendSisterSiteMarkup = `<a href="${htmlEscape(`${alternateOrigin}/`)}" t
 const canonicalPages = [
   { file: 'marketplace/index.html', route: '/' },
   { file: 'marketplace/plugins/index.html', route: '/plugins/' },
+  { file: 'marketplace/rankings/index.html', route: '/rankings/' },
   { file: 'marketplace/downloads/index.html', route: '/downloads/' },
   { file: 'marketplace/scans/index.html', route: '/scans/' },
   { file: 'marketplace/community/index.html', route: '/community/' },
@@ -451,8 +455,8 @@ const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/': '1.0', '/plugins/': '0.9', '/downloads/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
-const sitemapChangefreq = { '/': 'weekly', '/plugins/': 'daily', '/downloads/': 'weekly', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+const sitemapPriority = { '/rankings/': '0.9', '/': '1.0', '/plugins/': '0.9', '/downloads/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
+const sitemapChangefreq = { '/rankings/': 'daily', '/': 'weekly', '/plugins/': 'daily', '/downloads/': 'weekly', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
 if (isDomestic) {
   sitemapPriority['/dsh-store-guide/'] = '0.8'
   sitemapChangefreq['/dsh-store-guide/'] = 'monthly'
@@ -598,6 +602,19 @@ llms = replaceRequired(llms, domesticGuideMarker, isDomestic
   ? `Domestic product use and issue-boundary guide: ${siteOrigin}/dsh-store-guide/`
   : '', 'domestic llms guide marker')
 await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
+
+// Derive a compact, read-only ranking snapshot from the same approved Catalog and
+// the GitHub metadata already fetched above; never enlarge the main Catalog index.
+const rankings = validateRankingSnapshot(createRankingSnapshot(snapshot, catalogIndex, { sourceCommit: sourceSha, starsObservedAt }))
+const rankingsBytes = Buffer.from(JSON.stringify(rankings) + '\n')
+if (rankingsBytes.length > 1024 * 1024) throw new Error('Rankings snapshot exceeds the 1 MiB bound')
+await writeFile(resolve(outputRoot, 'marketplace/rankings/data.json'), rankingsBytes)
+const rankingsPath = resolve(outputRoot, 'marketplace/rankings/index.html')
+let rankingsHtml = await readFile(rankingsPath, 'utf8')
+rankingsHtml = replaceRequired(rankingsHtml, '</head>', `<meta name="dsh-rankings-sha256" content="${createHash('sha256').update(rankingsBytes).digest('hex')}">\n</head>`, 'rankings digest')
+rankingsHtml = replaceBetweenMarkers(rankingsHtml, '<!-- DSH_RANKINGS_START -->', '<!-- DSH_RANKINGS_END -->',
+  renderRankingRows(rankingPage(rankings, 'popular').entries, { locale: defaultLocale }), 'rankings first page')
+await writeFile(rankingsPath, rankingsHtml)
 
 // Do not publish a second monolithic catalog snapshot. The copied registry
 // contains the legacy bridge, small index, and independently cacheable detail records.

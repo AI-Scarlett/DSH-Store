@@ -241,9 +241,11 @@ body.repair-page .footer-main { grid-template-columns: auto minmax(160px,.7fr) m
 @media (max-width: 760px) {
   body:not(.home-page) { --shell: calc(100% - 32px); }
   body:not(.home-page) .site-header { grid-template-columns: minmax(0,1fr) auto !important; grid-template-rows: 58px 38px !important; gap: 0 10px !important; min-height: 96px !important; padding: 0 16px 2px !important; }
-  body:not(.home-page) .site-header .brand-wordmark-frame { width: 178px !important; height: 44px !important; }
-  body:not(.home-page) .site-header .brand-wordmark { left: -1px !important; width: 180px !important; }
+  body:not(.home-page) .site-header .brand-wordmark-frame { width: min(178px,calc(100vw - 232px)) !important; height: 44px !important; }
+  body:not(.home-page) .site-header .brand-wordmark { left: -1px !important; width: min(180px,calc(100vw - 230px)) !important; }
   body:not(.home-page) .site-nav { grid-column: 1 / -1 !important; grid-row: 2 !important; justify-self: stretch !important; gap: 3px !important; overflow-x: auto !important; scrollbar-width: none !important; }
+  /* Keep tools inside the two explicit columns; column 3 would create a hidden implicit track. */
+  body:not(.home-page) .header-tools { grid-column: 2 !important; grid-row: 1 !important; }
   body:not(.home-page) .site-nav::-webkit-scrollbar { display: none !important; }
   body:not(.home-page) .site-nav a { padding: 8px 6px !important; font-size: 10px !important; }
   body:not(.home-page) .site-nav a::after { display: none !important; }
