@@ -18,7 +18,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e61983b2af647d4860397d43a16f4d64ec79440c",
+  "commit": "e722bf530c199bb11791ac4ed6660248b95b5f98",
   "version": "0.1.3",
   "categories": [
     "experimental"
@@ -26,16 +26,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T14:12:13.000Z",
-    "observedAt": "2026-10-01T15:10:39.000Z",
+    "updatedAt": "2026-10-03T12:06:28.000Z",
+    "observedAt": "2026-10-03T13:06:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-01T15:10:39.000Z",
-      "evidenceUrl": "https://github.com/JularDepick/dsh-wakatime-plugin/commit/e61983b2af647d4860397d43a16f4d64ec79440c",
+      "checkedAt": "2026-10-03T13:06:51.000Z",
+      "evidenceUrl": "https://github.com/JularDepick/dsh-wakatime-plugin/commit/e722bf530c199bb11791ac4ed6660248b95b5f98",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,7 +76,7 @@
     "wakatime"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the fixed Git Commit: ./dist/index.mjs; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.mts; runtime artifact is missing from the fixed Git Commit: ./dist/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runt",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: ./dist/index.mjs; runtime artifact is missing from the distributable surface: ./dist/index.d.mts; runtime artifact is missing from the distributable surface: ./dist/client.js; package contains unsupported artifacts requiring review: COPYRIGHT; fixed-source scan is incomple",
   "compatibility": {
     "dsh": "^0.2.0-rc.2",
     "dshReleases": {
@@ -88,9 +88,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -141,12 +141,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -154,6 +148,12 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

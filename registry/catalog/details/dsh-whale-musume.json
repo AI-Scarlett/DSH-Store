@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "92d0903647e3b8106cee281a594a176589ad78d0",
+  "commit": "a596dda49f72a516c30b57c7134094d75d30c3a0",
   "version": "2.2.1",
   "categories": [
     "themes"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-02T18:18:54.000Z",
-    "observedAt": "2026-10-02T20:24:31.000Z",
+    "updatedAt": "2026-10-03T09:05:05.000Z",
+    "observedAt": "2026-10-03T13:06:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-02T20:24:31.000Z",
-      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/92d0903647e3b8106cee281a594a176589ad78d0",
+      "checkedAt": "2026-10-03T13:06:51.000Z",
+      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/a596dda49f72a516c30b57c7134094d75d30c3a0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -106,7 +106,8 @@
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.2.0-rc.1": "unknown"
+      "0.2.0-rc.1": "unknown",
+      "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -242,6 +243,12 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
