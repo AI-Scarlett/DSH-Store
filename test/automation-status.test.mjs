@@ -1,6 +1,30 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildAutomationStatus } from '../src/automation-status.mjs'
+import { posix, win32 } from 'node:path'
+import { automationReportRunId, buildAutomationStatus } from '../src/automation-status.mjs'
+
+test('automation report run IDs survive Windows relative paths', () => {
+  const relativePath = win32.relative('E:\\reports', 'E:\\reports\\40\\catalog-automation-report.json')
+  assert.equal(automationReportRunId(relativePath, win32.sep), 40)
+})
+
+test('automation report run IDs preserve POSIX relative paths', () => {
+  const relativePath = posix.relative('/reports', '/reports/40/catalog-automation-report.json')
+  assert.equal(automationReportRunId(relativePath, posix.sep), 40)
+})
+
+test('a literal backslash in a POSIX report directory cannot impersonate a run ID', () => {
+  const relativePath = posix.relative('/reports', '/reports/40\\other/catalog-automation-report.json')
+  assert.equal(automationReportRunId(relativePath, posix.sep), null)
+})
+
+test('automation report paths with no valid run ID cannot attach to scan runs', () => {
+  for (const path of [null, '', 'catalog-automation-report.json', '../40/report.json', '..\\40\\report.json', '0/report.json', '9007199254740992/report.json']) {
+    assert.equal(automationReportRunId(path, posix.sep), null)
+  }
+  assert.equal(automationReportRunId('40/report.json', ''), null)
+  assert.equal(automationReportRunId('40/report.json'), null)
+})
 
 const catalog = {
   registry: { updatedAt: '2026-08-22T00:00:00Z' },
