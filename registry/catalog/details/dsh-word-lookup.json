@@ -1,50 +1,45 @@
 {
-  "id": "dsh-blender-bundle",
-  "name": "三维设计工具（DSH Blender Bundle）",
-  "packageName": "@deepblend/dsh-blender-bundle",
-  "description": "为 DSH 提供三维设计工具能力。英文原始说明：DeepBlend Studio Host Bundle: composes the Blender runtime provider, host facade and UI host half, with default configuration.",
+  "id": "dsh-word-lookup",
+  "name": "实验功能插件（DSH Word Lookup）",
+  "packageName": "dsh-word-lookup",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Low-interruption local English-Chinese dictionary plugin for DSH (Phase 1 foundation build).",
   "searchTerms": [
-    "三维设计工具",
-    "DSH Blender Bundle",
-    "dsh-blender-bundle",
-    "@deepblend/dsh-blender-bundle",
-    "Blender",
-    "三维",
-    "建模",
-    "渲染",
+    "实验功能插件",
+    "DSH Word Lookup",
+    "dsh-word-lookup",
     "实验功能",
     "新功能",
     "dsh",
-    "blender",
-    "bundle"
+    "word",
+    "lookup"
   ],
-  "repositoryUrl": "https://github.com/pearjelly/deep-blend",
-  "defaultBranch": "main",
-  "manifestPath": "packages/deepblend/bundle/package.json",
-  "installPath": "packages/deepblend/bundle",
+  "repositoryUrl": "https://github.com/HaowenCang/dsh-word-lookup",
+  "defaultBranch": "master",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0b24f5883ff92903a62fe0f6986ae23e703fdb58",
-  "version": "0.2.20",
+  "commit": "7b475f1bdad92921f6280fb95829ff80d8a95a20",
+  "version": "0.1.0-dev.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-04T11:56:29.000Z",
+    "updatedAt": "2026-10-04T13:49:56.000Z",
     "observedAt": "2026-10-04T13:45:55.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-04T13:45:55.000Z",
-      "evidenceUrl": "https://github.com/pearjelly/deep-blend/commit/0b24f5883ff92903a62fe0f6986ae23e703fdb58",
+      "evidenceUrl": "https://github.com/HaowenCang/dsh-word-lookup/commit/7b475f1bdad92921f6280fb95829ff80d8a95a20",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,17 +69,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "deepblend-blender-runtime",
-    "deepblend-blender-host",
-    "deepblend-blender-ui",
-    "deepblend-blender-preset"
+    "dsh-word-lookup"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; local module is missing from the distributable surface: lib/types/client/card.d.ts -> ./store.js; local module is missing from the distributable surface: lib/types/client/index.d.ts -> ./contracts.js; local module is missing from the distributable surface: lib/types/client/index.d.ts -> ./gesture.js; local module is missing from the distributable surface: lib/types/client/index.d.ts",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -168,9 +160,11 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -185,14 +179,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepblend/dsh-blender-contracts",
-      "@deepblend/dsh-blender-host",
-      "@deepblend/dsh-blender-preset",
-      "@deepblend/dsh-blender-provider-local",
-      "@deepblend/dsh-blender-tool",
-      "@deepblend/dsh-blender-ui"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

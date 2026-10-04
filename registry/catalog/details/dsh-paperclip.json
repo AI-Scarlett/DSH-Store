@@ -1,50 +1,48 @@
 {
-  "id": "dsh-blender-bundle",
-  "name": "三维设计工具（DSH Blender Bundle）",
-  "packageName": "@deepblend/dsh-blender-bundle",
-  "description": "为 DSH 提供三维设计工具能力。英文原始说明：DeepBlend Studio Host Bundle: composes the Blender runtime provider, host facade and UI host half, with default configuration.",
+  "id": "dsh-paperclip",
+  "name": "文件与工作区工具（DSH Paperclip）",
+  "packageName": "dsh-paperclip",
+  "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：DSH Web GUI paperclip button: a single 📎 button in the composer that opens a file picker and drops file content into the textarea.",
   "searchTerms": [
-    "三维设计工具",
-    "DSH Blender Bundle",
-    "dsh-blender-bundle",
-    "@deepblend/dsh-blender-bundle",
-    "Blender",
-    "三维",
-    "建模",
-    "渲染",
+    "文件与工作区工具",
+    "DSH Paperclip",
+    "dsh-paperclip",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
     "实验功能",
     "新功能",
     "dsh",
-    "blender",
-    "bundle"
+    "paperclip"
   ],
-  "repositoryUrl": "https://github.com/pearjelly/deep-blend",
+  "repositoryUrl": "https://github.com/zmm863-commits/dsh-paperclip",
   "defaultBranch": "main",
-  "manifestPath": "packages/deepblend/bundle/package.json",
-  "installPath": "packages/deepblend/bundle",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0b24f5883ff92903a62fe0f6986ae23e703fdb58",
-  "version": "0.2.20",
+  "commit": "5d15e522bfa02b682d15b547f8e119abcf3d852e",
+  "version": "0.2.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-04T11:56:29.000Z",
+    "updatedAt": "2026-10-04T13:49:56.000Z",
     "observedAt": "2026-10-04T13:45:55.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-04T13:45:55.000Z",
-      "evidenceUrl": "https://github.com/pearjelly/deep-blend/commit/0b24f5883ff92903a62fe0f6986ae23e703fdb58",
+      "evidenceUrl": "https://github.com/zmm863-commits/dsh-paperclip/commit/5d15e522bfa02b682d15b547f8e119abcf3d852e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,19 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "deepblend-blender-runtime",
-    "deepblend-blender-host",
-    "deepblend-blender-ui",
-    "deepblend-blender-preset"
+    "paperclip"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.0-rc.6",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -170,7 +165,9 @@
     },
     "node": null,
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -185,14 +182,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepblend/dsh-blender-contracts",
-      "@deepblend/dsh-blender-host",
-      "@deepblend/dsh-blender-preset",
-      "@deepblend/dsh-blender-provider-local",
-      "@deepblend/dsh-blender-tool",
-      "@deepblend/dsh-blender-ui"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

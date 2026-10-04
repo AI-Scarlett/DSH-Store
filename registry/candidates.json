@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-04T04:45:06.000Z",
+    "updatedAt": "2026-10-04T13:45:55.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -1512,11 +1512,11 @@
     {
       "id": "esengine-deepseek-reasonix",
       "name": "esengine/DeepSeek-Reasonix",
-      "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability — leave it running.",
+      "description": "A reliable coding agent for complex software engineering tasks.",
       "repositoryUrl": "https://github.com/esengine/DeepSeek-Reasonix",
       "defaultBranch": "studio",
-      "latestCommit": "15aacdeb187036d5fcabaa42bffc313a89c8beac",
-      "sourceUpdatedAt": "2026-09-26T19:06:49.000Z",
+      "latestCommit": "692aecd6b7d3a477d55ae29e62f2d41b41f62dc8",
+      "sourceUpdatedAt": "2026-10-04T13:49:46.000Z",
       "discoveredAt": "2026-08-23T01:40:55.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -2878,8 +2878,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "3b7be0f158941d31e4a0ddf091bdaa52d7341fab",
-      "sourceUpdatedAt": "2026-10-03T20:18:20.000Z",
+      "latestCommit": "5c52b67dff152afecb8f5cce906dbaffbd81744a",
+      "sourceUpdatedAt": "2026-10-04T09:47:42.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9563,8 +9563,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Codex-style tick-rail and thinking-process fold for the DeepSeek Harness web GUI: per-turn dashes, hover preview, click-to-scroll, eager history load, and collapsed Think/tool rows.",
       "repositoryUrl": "https://github.com/biggerboy/dsh-conversation-anchors",
       "defaultBranch": "master",
-      "latestCommit": "6c4a47330489b43eba31cdb5163f95ee397083d3",
-      "sourceUpdatedAt": "2026-09-08T13:25:42.000Z",
+      "latestCommit": "9198d2e0ffd3265b4b134030743336ae1a56c7a8",
+      "sourceUpdatedAt": "2026-10-04T05:03:48.000Z",
       "discoveredAt": "2026-09-08T21:29:07.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16073,6 +16073,98 @@
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/boooooooer__dsh-balance-and-cost.yml:sha256=3e8338996d3ecb540ce372cb0daa0990e85e38ff596e01f4a3661fa9882f1c1f:at=2026-10-04T04:49:11.724Z:owner=105571680"
       ],
       "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "carvin94-dsh-router",
+      "name": "CARVIN94/dsh-router",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/CARVIN94/dsh-router",
+      "defaultBranch": "main",
+      "latestCommit": "06b5aea6e09a4f779c8b3ef86b29fcf4a03541b2",
+      "sourceUpdatedAt": "2026-10-03T14:13:49.000Z",
+      "discoveredAt": "2026-10-04T13:45:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/CARVIN94__dsh-router.yml:sha256=973ee66c6b51f4464bf7e9142c6ad6ec4880c47a2c50460fa360a3213d6f2c15:at=2026-10-04T13:50:06.007Z:owner=12838245"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "carvin94-dsh-router-traework",
+      "name": "CARVIN94/dsh-router-traework",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/CARVIN94/dsh-router-traework",
+      "defaultBranch": "main",
+      "latestCommit": "036b7ce731d0ce803bc3dc93a34c133eb510f5a7",
+      "sourceUpdatedAt": "2026-10-03T14:15:30.000Z",
+      "discoveredAt": "2026-10-04T13:45:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/CARVIN94__dsh-router-traework.yml:sha256=b65ffc79d29d61f4306ee4555849ee422a61949aaca2fd80dc238f4786333871:at=2026-10-04T13:50:06.007Z:owner=12838245"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "carvin94-dsh-router-ext-rtk",
+      "name": "CARVIN94/dsh-router-ext-rtk",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/CARVIN94/dsh-router-ext-rtk",
+      "defaultBranch": "main",
+      "latestCommit": "300facf532cd36a336c2c01feff85c71e3e9ac0f",
+      "sourceUpdatedAt": "2026-10-03T14:15:47.000Z",
+      "discoveredAt": "2026-10-04T13:45:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/CARVIN94__dsh-router-ext-rtk.yml:sha256=c674460f1d6629f26776031db36d603020f9adc7ae00052ff680073211f28612:at=2026-10-04T13:50:06.007Z:owner=12838245"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "carvin94-dsh-router-codebuddy",
+      "name": "CARVIN94/dsh-router-codebuddy",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/CARVIN94/dsh-router-codebuddy",
+      "defaultBranch": "main",
+      "latestCommit": "5d41ab9e33dfec2a1aca5943100b1a8ddf381b14",
+      "sourceUpdatedAt": "2026-10-03T14:15:16.000Z",
+      "discoveredAt": "2026-10-04T13:45:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/CARVIN94__dsh-router-codebuddy.yml:sha256=9232f1157c23b5c69205868fd04f3cdc438329feb9bfd581237802d34bace807:at=2026-10-04T13:50:06.007Z:owner=12838245"
+      ],
+      "topics": [
+        "deepseek",
         "deepseek-harness",
         "dsh",
         "dsh-plugin",
