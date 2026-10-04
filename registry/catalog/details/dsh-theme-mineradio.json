@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "424eb8aa681900b42966ba6f92dd8d64137b2d79",
-  "version": "3.0.2",
+  "commit": "1a41b23c372cc2e50df5920b036a30389722087c",
+  "version": "3.0.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T14:15:53.000Z",
-    "observedAt": "2026-09-30T14:41:31.000Z",
+    "updatedAt": "2026-10-04T06:57:38.000Z",
+    "observedAt": "2026-10-04T13:45:55.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T14:41:31.000Z",
-      "evidenceUrl": "https://github.com/dhicoc/dsh-theme-mineradio/commit/424eb8aa681900b42966ba6f92dd8d64137b2d79",
+      "checkedAt": "2026-10-04T13:45:55.000Z",
+      "evidenceUrl": "https://github.com/dhicoc/dsh-theme-mineradio/commit/1a41b23c372cc2e50df5920b036a30389722087c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "ui-mineradio"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime artifact pattern requires review: ./src/*; local module is missing from the distributable surface: lib/types/client/MineradioAppearanceRow.d.ts -> ./settings-store.ts; local module is missing from the distributable surface: lib/types/client/MineradioAppearanceRow.d.ts -> ./theme-layer.ts; local module is missing from the distributable surface: lib/types/client/MineradioPluginCard.d.ts -> ./settings-store.ts; local module is missing from the distributable surface: lib/types/client/fluid-interactions.d.t",
   "compatibility": {
     "dsh": null,
     "dshReleases": {

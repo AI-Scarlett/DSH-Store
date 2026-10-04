@@ -24,28 +24,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "6c4a47330489b43eba31cdb5163f95ee397083d3",
-  "version": "0.1.18",
+  "commit": "9198d2e0ffd3265b4b134030743336ae1a56c7a8",
+  "version": "0.1.19",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-08T13:25:42.000Z",
-    "observedAt": "2026-09-08T21:29:07.000Z",
+    "updatedAt": "2026-10-04T05:03:48.000Z",
+    "observedAt": "2026-10-04T13:45:55.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-08T21:29:07.000Z",
-      "evidenceUrl": "https://github.com/biggerboy/dsh-conversation-anchors/commit/6c4a47330489b43eba31cdb5163f95ee397083d3",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-04T13:45:55.000Z",
+      "evidenceUrl": "https://github.com/biggerboy/dsh-conversation-anchors/commit/9198d2e0ffd3265b4b134030743336ae1a56c7a8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "The newer fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -84,7 +84,7 @@
   "status": "unlisted",
   "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": ">=0.1.0-rc.6",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
