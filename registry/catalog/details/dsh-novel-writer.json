@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "38cde731a68a4f1d8d6ec205696efa554e20cdb6",
-  "version": "6.0.0",
+  "commit": "02bca092e7d580f3e2bb384e9cc75b8a6e623794",
+  "version": "6.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T09:26:22.000Z",
-    "observedAt": "2026-09-30T14:41:31.000Z",
+    "updatedAt": "2026-10-04T15:29:07.000Z",
+    "observedAt": "2026-10-04T19:16:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T14:41:31.000Z",
-      "evidenceUrl": "https://github.com/siweina/dsh-novel-writer/commit/38cde731a68a4f1d8d6ec205696efa554e20cdb6",
+      "checkedAt": "2026-10-04T19:16:06.000Z",
+      "evidenceUrl": "https://github.com/siweina/dsh-novel-writer/commit/02bca092e7d580f3e2bb384e9cc75b8a6e623794",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "novel-writer"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: lib/lexicons/dutir_seven.json.gz, lib/models/onnx/model_quantized.onnx, lib/models/tokenizer.json.gz; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials per",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,7 +91,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown"
@@ -140,12 +139,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
