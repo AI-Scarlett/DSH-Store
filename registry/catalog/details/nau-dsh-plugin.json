@@ -19,7 +19,7 @@
   "manifestPath": "integrations/dsh/package.json",
   "installPath": "integrations/dsh",
   "updatePolicy": "external-only",
-  "commit": "b455424f044483b4f5a76222a34c56d6e7a75137",
+  "commit": "e316982d5162fdc75e6ac52c652a41194cfadb21",
   "version": "3.4.5",
   "categories": [
     "experimental"
@@ -27,20 +27,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-03T19:08:43.000Z",
-    "observedAt": "2026-10-03T19:03:30.000Z",
+    "updatedAt": "2026-10-04T03:46:57.000Z",
+    "observedAt": "2026-10-04T04:45:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-03T19:03:30.000Z",
-      "evidenceUrl": "https://github.com/TwinsEarth/NewAgentUniverseByDeepSeek/commit/b455424f044483b4f5a76222a34c56d6e7a75137",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-04T04:45:06.000Z",
+      "evidenceUrl": "https://github.com/TwinsEarth/NewAgentUniverseByDeepSeek/commit/e316982d5162fdc75e6ac52c652a41194cfadb21",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -50,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -60,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -70,7 +70,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
