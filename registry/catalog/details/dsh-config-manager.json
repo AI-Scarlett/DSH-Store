@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1ff11e79c39052f490fd7b987ab74bf12499f5b0",
+  "commit": "4170af430d2e0af81643f1785cfe3488132a9983",
   "version": "0.1.68",
   "categories": [
     "import"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T00:40:57.000Z",
-    "observedAt": "2026-09-30T02:08:17.000Z",
+    "updatedAt": "2026-10-04T17:52:57.000Z",
+    "observedAt": "2026-10-04T19:16:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T02:08:17.000Z",
-      "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/1ff11e79c39052f490fd7b987ab74bf12499f5b0",
+      "checkedAt": "2026-10-04T19:16:06.000Z",
+      "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/4170af430d2e0af81643f1785cfe3488132a9983",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "config-manager"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/core/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/core/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/schema/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/schema/index.js; runtime artifact is missing from",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.js; runtime artifact is missing from the distributable surface: ./lib/schema/in",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6 <0.3.0-0",
     "dshReleases": {
@@ -92,7 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown"
@@ -141,12 +140,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

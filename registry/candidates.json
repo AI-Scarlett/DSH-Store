@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-04T13:45:55.000Z",
+    "updatedAt": "2026-10-04T19:16:06.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2186,8 +2186,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "fb7ff47d7dd6bf824d321c9ebd8b6bc180d37666",
-      "sourceUpdatedAt": "2026-09-24T18:59:44.000Z",
+      "latestCommit": "001fe00a77d822d1f769f1972035c864adbe6016",
+      "sourceUpdatedAt": "2026-10-04T17:13:16.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4295,8 +4295,8 @@
       "description": "Codex 官方插件一键移植为 DSH 技能（实测 186 插件/583 技能，移植 577 个 0 失败）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-codex-port",
       "defaultBranch": "master",
-      "latestCommit": "eaa61056afcbe0abe13bec039681e6658382eef4",
-      "sourceUpdatedAt": "2026-10-03T19:46:54.000Z",
+      "latestCommit": "abdeebd8d283c74dab6fbf5d0464a890b00f7b68",
+      "sourceUpdatedAt": "2026-10-04T17:16:50.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4335,8 +4335,8 @@
       "description": "语音双件套：edge-tts 免费微软神经语音合成 + OpenAI 兼容 ASR 转写。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-voice",
       "defaultBranch": "master",
-      "latestCommit": "f0894976c75abdf76d3c8f74a1b65f7b05ff1de9",
-      "sourceUpdatedAt": "2026-10-03T19:45:20.000Z",
+      "latestCommit": "35c875fb7d8548e7de2e09c2e0351d67f6bcc445",
+      "sourceUpdatedAt": "2026-10-04T17:17:44.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4355,8 +4355,8 @@
       "description": "测试稳定性工具：重复运行 vitest/jest/pytest/node:test，识别 flaky 用例，历史留档与隔离清单。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-flakefinder",
       "defaultBranch": "master",
-      "latestCommit": "174cd38be7fe63edb60c6f5411443c3920f55649",
-      "sourceUpdatedAt": "2026-10-03T19:46:00.000Z",
+      "latestCommit": "c2213a603c50a805906c733209cb8aadc1ae5917",
+      "sourceUpdatedAt": "2026-10-04T17:17:12.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4375,8 +4375,8 @@
       "description": "数据库工具：sql_list/query/exec/schema，SQLite/MySQL/PostgreSQL 三引擎，词法级只读保护、行数钳制与写审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-sql",
       "defaultBranch": "master",
-      "latestCommit": "4ace9cbe892b04e6abbd9d9337c4232ea9ab7506",
-      "sourceUpdatedAt": "2026-10-03T19:45:30.000Z",
+      "latestCommit": "405ea52669e45db6adb450e33664a015dfb4a087",
+      "sourceUpdatedAt": "2026-10-04T17:17:37.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4395,8 +4395,8 @@
       "description": "Docker 工具：ps/images/logs/inspect/exec/manage，JSON 输出、DSH_DOCKER_PATH 环境变量、exec 审批门、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-docker",
       "defaultBranch": "master",
-      "latestCommit": "3b4f56bb1145b5e5bb6fa384d70289b95029afe7",
-      "sourceUpdatedAt": "2026-10-03T19:46:44.000Z",
+      "latestCommit": "d76721c23f6ef64cd0e4b2755160547fee6c2897",
+      "sourceUpdatedAt": "2026-10-04T17:16:57.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4415,8 +4415,8 @@
       "description": "视频处理七工具（探测/剪辑/拼接/转码/字幕烧录/抽帧/GIF），官方 subprocess 服务、argv 无 shell 注入、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ffmpeg",
       "defaultBranch": "master",
-      "latestCommit": "ae5fbcfdb46b0e41a68c27c84c28e194fb6182b3",
-      "sourceUpdatedAt": "2026-10-03T19:46:34.000Z",
+      "latestCommit": "25021f4764ff502caa9ba2e2e2e6d0f3b282a078",
+      "sourceUpdatedAt": "2026-10-04T17:17:08.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4435,8 +4435,8 @@
       "description": "RSS/Atom 订阅管理 + 抓取解析（rss_list/add/remove/fetch/check），订阅持久化到 settings。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-rss",
       "defaultBranch": "master",
-      "latestCommit": "ae9773c71d2d391f76f9540c52117d40d113b67d",
-      "sourceUpdatedAt": "2026-10-04T03:48:39.000Z",
+      "latestCommit": "5ebfa2f0001b31631432b3615c3fc93f839337a0",
+      "sourceUpdatedAt": "2026-10-04T17:17:30.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4455,8 +4455,8 @@
       "description": "钉钉群机器人通知（webhook + 加签，零运行时依赖）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-dingtalk",
       "defaultBranch": "main",
-      "latestCommit": "49ada3f2347b259f8f02dd92a7d8ed4e019b1e8b",
-      "sourceUpdatedAt": "2026-10-03T20:32:15.000Z",
+      "latestCommit": "a7d017681f9bfec886148447e3e54546aa4e96d5",
+      "sourceUpdatedAt": "2026-10-04T17:16:53.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4475,8 +4475,8 @@
       "description": "Slack 双向通信（notify/channels/inbox/reply，Socket Mode 免公网回调）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-slack",
       "defaultBranch": "main",
-      "latestCommit": "e9f42aca1c1efc0251a88cd0d41c6bdbfc466152",
-      "sourceUpdatedAt": "2026-10-03T19:45:40.000Z",
+      "latestCommit": "691811306076cafe6a040b3b8279cca120c1be39",
+      "sourceUpdatedAt": "2026-10-04T17:17:33.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4495,8 +4495,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "8e0f7bdd58c5c5dd05b952d0fbd4bae60fe82c14",
-      "sourceUpdatedAt": "2026-10-04T03:48:14.000Z",
+      "latestCommit": "59d037762f786b0473c10ed8fd58e444f8424f33",
+      "sourceUpdatedAt": "2026-10-04T17:17:04.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5135,8 +5135,8 @@
       "description": "CalDAV 日历插件：查/建/改/删/搜日程，Google/iCloud/Nextcloud/自定义端点，RRULE 重复事件展开。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-calendar",
       "defaultBranch": "main",
-      "latestCommit": "9edb9c26b186f157f3a335bf8cb9a90bf54029b6",
-      "sourceUpdatedAt": "2026-10-03T19:44:37.000Z",
+      "latestCommit": "c6f2b47454b8c1db4cf02015a118618b265de13b",
+      "sourceUpdatedAt": "2026-10-04T17:16:39.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -8194,8 +8194,8 @@
       "description": "AI argues. Code settles. The losses stay on the page. A real HK + US brokerage account run by agents that must debate every call, settled by code the model never touches. Install the same decision workflow into your own agent: OpenClaw, Claude Code, Codex, or DeepSeek Harness.",
       "repositoryUrl": "https://github.com/KCNyu/clawock",
       "defaultBranch": "master",
-      "latestCommit": "76521a4f4f21df16e62b4234ba1c8b1294a4024d",
-      "sourceUpdatedAt": "2026-09-28T16:35:20.000Z",
+      "latestCommit": "e03de1fe7dbb42c665f2db7ae8942aaf7212b23c",
+      "sourceUpdatedAt": "2026-10-04T19:20:01.000Z",
       "discoveredAt": "2026-09-03T04:06:05.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -16168,6 +16168,110 @@
         "deepseek-harness",
         "dsh",
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "chen731215-dev-dsh-tavern-v2",
+      "name": "chen731215-dev/dsh-tavern-v2",
+      "description": "DeepSeek Harness Tavern Plugin - character card roleplay, worldbook management, preset switching, dark theme, memory summary, relationship graph, PolyForm-Noncommercial-Copyleft-1.0.0",
+      "repositoryUrl": "https://github.com/chen731215-dev/dsh-tavern-v2",
+      "defaultBranch": "main",
+      "latestCommit": "c5abb8c70f5c65e802dba93eefc8e14f3866464c",
+      "sourceUpdatedAt": "2026-10-04T10:08:11.000Z",
+      "discoveredAt": "2026-10-04T19:16:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/chen731215-dev__dsh-tavern-v2.yml:sha256=a5440edbb0acdf831589e58cd93c94006994c2731b9bc85db9e31fd144a069a0:at=2026-10-04T19:20:34.596Z:owner=295388113"
+      ],
+      "topics": [
+        "character-card",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "roleplay",
+        "tavern",
+        "worldbook",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "chendefine-dsh-web-fetch-playwright",
+      "name": "chendefine/dsh-web-fetch-playwright",
+      "description": "Playwright/CDP web-fetch provider for DeepSeek Harness: renders pages in a real browser, denoises them (Readability + DOMPurify), and returns markdown.",
+      "repositoryUrl": "https://github.com/chendefine/dsh-web-fetch-playwright",
+      "defaultBranch": "main",
+      "latestCommit": "a8de99b6255e9a17ecbf08f25cd7f02eb828ee88",
+      "sourceUpdatedAt": "2026-10-01T09:07:24.000Z",
+      "discoveredAt": "2026-10-04T19:16:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/chendefine__dsh-web-fetch-playwright.yml:sha256=165c8a42420b222252e9934d6cf472da1cc5c00baa3e5a02a90631251ed42f7e:at=2026-10-04T19:20:34.596Z:owner=4407281"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-bundle",
+        "dsh-plugin",
+        "fetch-provider",
+        "markdown",
+        "playwright",
+        "web-fetch",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "cheng-cheng9669-dsh-cache-precision",
+      "name": "Cheng-cheng9669/dsh-cache-precision",
+      "description": "DSH client plugin: render the built-in session cache-hit percentage with three decimal places.",
+      "repositoryUrl": "https://github.com/Cheng-cheng9669/dsh-cache-precision",
+      "defaultBranch": "main",
+      "latestCommit": "70ef04a27b50b4b48764e792a6e21ca58afc8bda",
+      "sourceUpdatedAt": "2026-08-15T16:00:43.000Z",
+      "discoveredAt": "2026-10-04T19:16:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/Cheng-cheng9669__dsh-cache-precision.yml:sha256=1b17961026c74a679103870533480f42996306b4ce7a66a4da052322542fb9dc:at=2026-10-04T19:20:34.596Z:owner=227115210"
+      ],
+      "topics": [
+        "cache-hit",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "token-usage",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "chendefine-dsh-web-search-aggregation",
+      "name": "chendefine/dsh-web-search-aggregation",
+      "description": "Aggregated web-search provider for DeepSeek Harness (DSH): one prioritized queue over AnySearch / TinyFish / Tavily with multi-key rotation and ordered fallback.",
+      "repositoryUrl": "https://github.com/chendefine/dsh-web-search-aggregation",
+      "defaultBranch": "main",
+      "latestCommit": "6db5788775d64abfeb045fc29ba1aad3a0706366",
+      "sourceUpdatedAt": "2026-09-27T13:35:55.000Z",
+      "discoveredAt": "2026-10-04T19:16:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@bb8496ec4cbb9217b33bf081ec4cdf06b51501e8:data/plugins/chendefine__dsh-web-search-aggregation.yml:sha256=3094869ef299bfa625265e4eb6d2e82b9215b71912cd85ac3acfd94715dd4d05:at=2026-10-04T19:20:34.596Z:owner=4407281"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "search-provider",
+        "tavily",
+        "web-search",
         "automatic-radar"
       ],
       "status": "reviewing",
