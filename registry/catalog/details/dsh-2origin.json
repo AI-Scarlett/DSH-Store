@@ -18,7 +18,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "bbb0414abc7462d574b45f067e29b8c82e610f13",
+  "commit": "9b27fb3b1c1d7fea28c637c8067c917f6fac08be",
   "version": "0.2.1",
   "categories": [
     "tools"
@@ -26,20 +26,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-06T12:47:17.000Z",
-    "observedAt": "2026-09-06T18:11:52.000Z",
+    "updatedAt": "2026-10-05T15:57:43.000Z",
+    "observedAt": "2026-10-05T16:52:54.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-06T18:11:52.000Z",
-      "evidenceUrl": "https://github.com/dongsheng123132/dsh-2origin/commit/bbb0414abc7462d574b45f067e29b8c82e610f13",
+      "checkedAt": "2026-10-05T16:52:54.000Z",
+      "evidenceUrl": "https://github.com/dongsheng123132/dsh-2origin/commit/9b27fb3b1c1d7fea28c637c8067c917f6fac08be",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -75,8 +75,8 @@
   "entryIds": [
     "dsh-2origin"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.2-alpha.4",
     "dshReleases": {
@@ -102,7 +102,7 @@
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
+      "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
