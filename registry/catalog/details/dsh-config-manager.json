@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4170af430d2e0af81643f1785cfe3488132a9983",
-  "version": "0.1.68",
+  "commit": "accfcccba68b3eeb55a778d47c1edacfb0e4c537",
+  "version": "0.1.69",
   "categories": [
     "import"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-04T17:52:57.000Z",
-    "observedAt": "2026-10-04T19:16:06.000Z",
+    "updatedAt": "2026-10-04T20:27:07.000Z",
+    "observedAt": "2026-10-05T04:33:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-04T19:16:06.000Z",
-      "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/4170af430d2e0af81643f1785cfe3488132a9983",
+      "checkedAt": "2026-10-05T04:33:09.000Z",
+      "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/accfcccba68b3eeb55a778d47c1edacfb0e4c537",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "config-manager"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.js; runtime artifact is missing from the distributable surface: ./lib/schema/in",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.js; runtime artifact is missing",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6 <0.3.0-0",
     "dshReleases": {
@@ -189,7 +189,9 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

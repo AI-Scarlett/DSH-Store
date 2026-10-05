@@ -1,51 +1,50 @@
 {
-  "id": "dsh-key-rotation",
-  "name": "余额与额度监控（DSH Key Rotation）",
-  "packageName": "@goodandready/dsh-key-rotation",
-  "description": "为 DSH 提供余额与额度监控能力。英文原始说明：Per-provider API key rotation for DeepSeek Harness: a key pool per provider, auto-created clone routes, and switching to the next key on quota/rate-limit errors. Includes a Settings section (Key Rotation) to edit the key pools, cooldown and switch codes.",
+  "id": "dsh-personal-workbench",
+  "name": "任务通知提醒（DSH Personal Workbench）",
+  "packageName": "@dely0/dsh-personal-workbench",
+  "description": "DSH 个人工作台：日历 + 层级任务 + AI 澄清/拆解/执行/复盘 + AI 智能排序/日报周报 + 桌面提醒",
   "searchTerms": [
-    "余额与额度监控",
-    "DSH Key Rotation",
-    "dsh-key-rotation",
-    "@goodandready/dsh-key-rotation",
-    "余额",
-    "额度",
-    "配额",
-    "钱包",
-    "新锐实验",
+    "任务通知提醒",
+    "DSH Personal Workbench",
+    "dsh-personal-workbench",
+    "@dely0/dsh-personal-workbench",
+    "任务完成",
+    "通知",
+    "提醒",
+    "消息推送",
     "实验功能",
     "新功能",
     "dsh",
-    "key",
-    "rotation"
+    "personal",
+    "workbench"
   ],
-  "repositoryUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation",
+  "repositoryUrl": "https://github.com/Dely0/dsh-personal-workbench",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "560317baf0b2da2288e6d1d2b45cd939b6235c94",
-  "version": "0.8.50",
+  "commit": "fb2b54802974f142472dba38758ec9d76690ac39",
+  "version": "1.16.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-04T22:20:14.000Z",
+    "updatedAt": "2026-10-05T04:36:44.000Z",
     "observedAt": "2026-10-05T04:33:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-05T04:33:09.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/560317baf0b2da2288e6d1d2b45cd939b6235c94",
+      "evidenceUrl": "https://github.com/Dely0/dsh-personal-workbench/commit/fb2b54802974f142472dba38758ec9d76690ac39",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-key-rotation"
+    "personal-workbench"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/types/client/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; package contains unsupported artifacts requiring review: LICENSE-K-Dense",
   "compatibility": {
-    "dsh": "^0.1.7-rc.2 || ^0.2.0-rc.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -166,7 +165,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=18",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -186,12 +185,14 @@
       ]
     },
     "externalDependencies": [
-      "undici"
+      "react"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [],
+    "installScripts": [
+      "prepare"
+    ],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
