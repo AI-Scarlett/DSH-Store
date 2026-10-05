@@ -19,7 +19,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "55811dc242d56ace15f21ee8500cdf556b5c93cb",
+  "commit": "fc70cf3534d620c017216964fe1d97e054cf8e4d",
   "version": "0.1.1",
   "categories": [
     "tools"
@@ -27,20 +27,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-07T13:32:16.000Z",
-    "observedAt": "2026-09-07T14:02:43.000Z",
+    "updatedAt": "2026-10-05T15:57:44.000Z",
+    "observedAt": "2026-10-05T16:52:54.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-07T14:02:43.000Z",
-      "evidenceUrl": "https://github.com/dongsheng123132/dsh-cache-stabilizer/commit/55811dc242d56ace15f21ee8500cdf556b5c93cb",
+      "checkedAt": "2026-10-05T16:52:54.000Z",
+      "evidenceUrl": "https://github.com/dongsheng123132/dsh-cache-stabilizer/commit/fc70cf3534d620c017216964fe1d97e054cf8e4d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -76,8 +76,8 @@
   "entryIds": [
     "dsh-cache-stabilizer"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.2-alpha.4",
     "dshReleases": {
@@ -103,7 +103,7 @@
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
+      "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {

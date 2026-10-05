@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-05T15:20:04.000Z",
+    "updatedAt": "2026-10-05T16:52:54.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,8 +926,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "28e0f4e9ec09ae35b26920e4c6925f48770bf5ed",
-      "sourceUpdatedAt": "2026-10-05T15:19:04.000Z",
+      "latestCommit": "9c25dc4ed2915a81fc83a1d4dc22e7ba814b8dff",
+      "sourceUpdatedAt": "2026-10-05T16:50:38.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2205,8 +2205,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "0d621503246842fca2e8d0ea171578c158d1f4d9",
-      "sourceUpdatedAt": "2026-10-05T14:19:35.000Z",
+      "latestCommit": "d82a21814380dcdd904e048bf1e3d947bf0aa917",
+      "sourceUpdatedAt": "2026-10-05T16:50:14.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9071,66 +9071,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-narrative-ledger."
     },
     {
-      "id": "dongsheng123132-dsh-switch",
-      "name": "模型提供商接入（DSH Switch）",
-      "description": "为 DSH 提供模型提供商接入能力。英文原始说明：Evidence-first model control plane for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-switch",
-      "defaultBranch": "main",
-      "latestCommit": "419323ec8cfa617039b972724201247a4e981ac7",
-      "sourceUpdatedAt": "2026-09-07T13:32:25.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "experimental",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-switch."
-    },
-    {
-      "id": "dongsheng123132-dsh-cad-review",
-      "name": "审查与验证助手（DSH Cad Review）",
-      "description": "为 DSH 提供审查与验证助手能力。英文原始说明：Evidence-first ASCII DXF inspection and rule-backed CAD review for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-cad-review",
-      "defaultBranch": "main",
-      "latestCommit": "d9e1d640c564997ce8f7825f56c593d31e7d5afe",
-      "sourceUpdatedAt": "2026-09-07T13:32:24.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-cad-review."
-    },
-    {
-      "id": "dongsheng123132-dsh-xiapan-media",
-      "name": "图像生成工具（DSH Xiapan Media）",
-      "description": "为 DSH 提供图像生成工具能力。英文原始说明：DeepSeek Harness native vision, gpt-image-2 image generation, and Seedance video generation via Xiapan Cloud.",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-xiapan-media",
-      "defaultBranch": "main",
-      "latestCommit": "d0b50f8eaadb2fa8e132411d120c94ac48d443d2",
-      "sourceUpdatedAt": "2026-09-07T13:32:23.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "experimental",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-xiapan-media."
-    },
-    {
       "id": "dongsheng123132-dsh-windows-readiness-proof",
       "name": "安全防护工具（DSH Windows Readiness Proof）",
       "description": "为 DSH 提供安全防护工具能力。英文原始说明：Content-addressed readiness proof for sanitized DeepSeek Harness observations on managed Windows hosts",
@@ -9251,106 +9191,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-lineage."
     },
     {
-      "id": "dongsheng123132-dsh-capability-receipt",
-      "name": "安全防护工具（DSH Capability Receipt）",
-      "description": "为 DSH 提供安全防护工具能力。英文原始说明：Content-addressed receipts for skills actually loaded by DeepSeek Harness",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-capability-receipt",
-      "defaultBranch": "main",
-      "latestCommit": "0ff716fa54cf9625b01d2f638fb65cec449b9eab",
-      "sourceUpdatedAt": "2026-09-07T13:32:17.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "experimental",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-capability-receipt."
-    },
-    {
-      "id": "dongsheng123132-dsh-cost",
-      "name": "费用与账单（DSH Cost）",
-      "description": "为 DSH 提供费用与账单能力。英文原始说明：Evidence-first token cost ledger and budget checks for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-cost",
-      "defaultBranch": "main",
-      "latestCommit": "bcc5b3e555be4db202cc661a0228b574356595cc",
-      "sourceUpdatedAt": "2026-09-07T13:32:17.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "experimental",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-cost."
-    },
-    {
-      "id": "dongsheng123132-dsh-cache-stabilizer",
-      "name": "实用工具（DSH Cache Stabilizer）",
-      "description": "为 DSH 提供实用工具能力。英文原始说明：Cache-prefix stabilization and evidence-based cache metrics for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-cache-stabilizer",
-      "defaultBranch": "main",
-      "latestCommit": "55811dc242d56ace15f21ee8500cdf556b5c93cb",
-      "sourceUpdatedAt": "2026-09-07T13:32:16.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-cache-stabilizer."
-    },
-    {
-      "id": "dongsheng123132-dsh-benchmark",
-      "name": "实用工具（DSH Benchmark）",
-      "description": "为 DSH 提供实用工具能力。英文原始说明：Reproducible deterministic benchmark evidence for DSH tools and plugins",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-benchmark",
-      "defaultBranch": "main",
-      "latestCommit": "3f48afaa5ad7bd4b1214e048bf1eae18f98b0cf0",
-      "sourceUpdatedAt": "2026-09-07T13:32:15.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-benchmark."
-    },
-    {
-      "id": "dongsheng123132-dsh-audit-bundle",
-      "name": "实用工具（DSH Audit Bundle）",
-      "description": "为 DSH 提供实用工具能力。英文原始说明：Content-addressed audit indexes across independent DeepSeek Harness evidence producers",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-audit-bundle",
-      "defaultBranch": "main",
-      "latestCommit": "afb35ee32a4c50a511d018553759504c86037bda",
-      "sourceUpdatedAt": "2026-09-07T13:32:14.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-audit-bundle."
-    },
-    {
       "id": "dongsheng123132-dsh-action-parity",
       "name": "实用工具（DSH Action Parity）",
       "description": "为 DSH 提供实用工具能力。英文原始说明：Evidence that CLI, MCP and GUI bindings reach the same DeepSeek Harness action core",
@@ -9392,26 +9232,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh."
-    },
-    {
-      "id": "dongsheng123132-dsh-2origin",
-      "name": "实用工具（DSH 2origin）",
-      "description": "为 DSH 提供实用工具能力。英文原始说明：Evidence-first 2Origin state projection, diff and immutable freeze for DeepSeek Harness",
-      "repositoryUrl": "https://github.com/dongsheng123132/dsh-2origin",
-      "defaultBranch": "main",
-      "latestCommit": "bbb0414abc7462d574b45f067e29b8c82e610f13",
-      "sourceUpdatedAt": "2026-09-06T12:47:17.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-2origin."
     },
     {
       "id": "deep-ios-dsh-humanizer",
@@ -16360,6 +16180,109 @@
       ],
       "topics": [
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "tisitan-dsh-live2d-companion",
+      "name": "Tisitan/dsh-live2d-companion",
+      "description": "Live2D 监控面板・看板娘桌宠 for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/Tisitan/dsh-live2d-companion",
+      "defaultBranch": "main",
+      "latestCommit": "f434346e13a42a2d1e9f063c1e837f577f268997",
+      "sourceUpdatedAt": "2026-09-24T14:09:28.000Z",
+      "discoveredAt": "2026-10-05T16:52:54.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/Tisitan__dsh-live2d-companion.yml:sha256=a1c02d808ecb9e27e1812c4ae1585f19ca437dce7e172b3531618ea818e5f865:at=2026-10-05T16:57:25.009Z:owner=74937392"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "desktop-pet",
+        "dsh-plugin",
+        "live2d",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "titanwings-dsh-automation",
+      "name": "titanwings/dsh-automation",
+      "description": "DSH 自动化插件：让 Coding 任务按计划在全新 Agent Session 中运行，并由用户或 Agent 创建和管理定时任务。 / Run coding tasks in fresh Agent sessions and manage schedules from DSH Web or an Agent.",
+      "repositoryUrl": "https://github.com/titanwings/dsh-automation",
+      "defaultBranch": "main",
+      "latestCommit": "0d73a4e03639d4f63d0771ae4490e2718b7e7aa0",
+      "sourceUpdatedAt": "2026-09-08T12:09:08.000Z",
+      "discoveredAt": "2026-10-05T16:52:54.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/titanwings__dsh-automation.yml:sha256=ecd724a0a7f13d1b623dd133a4df3100a956e1125095b98bde3002534d60b5e2:at=2026-10-05T16:57:25.009Z:owner=85022018"
+      ],
+      "topics": [
+        "automation",
+        "coding-agent",
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-bundle",
+        "dsh-plugin",
+        "scheduled-tasks",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "tindaloskorone-dsh-cheatengine",
+      "name": "TindalosKorone/dsh-cheatengine",
+      "description": "DSH plugin bridging DeepSeek Harness agents to Cheat Engine: dynamic debugging, memory scanning, pointer analysis, breakpoints, and game memory hacking via ce_* tools.",
+      "repositoryUrl": "https://github.com/TindalosKorone/dsh-cheatengine",
+      "defaultBranch": "main",
+      "latestCommit": "c3974454e310964dbd1cc2990267e8698741c2ea",
+      "sourceUpdatedAt": "2026-08-16T17:34:52.000Z",
+      "discoveredAt": "2026-10-05T16:52:54.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/TindalosKorone__dsh-cheatengine.yml:sha256=44724879972e74c49f5f6b8e86940ea6d582e5f81cef2d7ee6a806ef2d8fe132:at=2026-10-05T16:57:25.009Z:owner=64648600"
+      ],
+      "topics": [
+        "agent",
+        "bridge",
+        "cheat-engine",
+        "debugging",
+        "deepseek-harness",
+        "dsh-plugin",
+        "game-hacking",
+        "memory-scanner",
+        "reverse-engineering",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "tingfeng347-dsh-vscode-workbench",
+      "name": "tingfeng347/dsh-vscode-workbench",
+      "description": "DeepSeek Harness 的 VS Code 风格本地开发工作台：文件管理、Monaco 编辑、文档预览、搜索、Git、分屏终端与 DSH 对话一体化。",
+      "repositoryUrl": "https://github.com/tingfeng347/dsh-vscode-workbench",
+      "defaultBranch": "main",
+      "latestCommit": "c7b1fb208fa0ae18c53126b32855488aae2a9fd7",
+      "sourceUpdatedAt": "2026-09-01T09:40:31.000Z",
+      "discoveredAt": "2026-10-05T16:52:54.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/tingfeng347__dsh-vscode-workbench.yml:sha256=f64ad7b6567f2e2a55e1b76c7e35d57461fb75edf8a8b90743cceb99036a5498:at=2026-10-05T16:57:25.009Z:owner=135083299"
+      ],
+      "topics": [
+        "agent",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "vscode-theme",
         "automatic-radar"
       ],
       "status": "reviewing",

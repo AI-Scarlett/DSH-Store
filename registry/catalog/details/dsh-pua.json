@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "68ad88449ef8bc770f7f8d85d5cbe68e1f6b0983",
+  "commit": "8586fe4fe086b13a63bdf0f4c38295664b455f80",
   "version": "0.3.22",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T07:29:29.000Z",
-    "observedAt": "2026-10-05T15:20:04.000Z",
+    "updatedAt": "2026-10-05T15:58:31.000Z",
+    "observedAt": "2026-10-05T16:52:54.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-05T15:20:04.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/68ad88449ef8bc770f7f8d85d5cbe68e1f6b0983",
+      "checkedAt": "2026-10-05T16:52:54.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/8586fe4fe086b13a63bdf0f4c38295664b455f80",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "michengai-pua"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/remote.d.ts; runtime artifact is missing from the distributable surface: ./lib/remote.js; runtime artifact pattern requires review: ./locale/*.json; package contains unsupported artifacts req",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; package contains unsupported artifacts requiring review: NOTICE; runtime source exceeds the automatic review byte bound: 729053 total bytes (maximum 2097152); largest file 367151 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.5-rc.3 || 0.1.7-rc.1 || 0.1.7-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2",
     "dshReleases": {
