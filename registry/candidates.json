@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-05T04:33:09.000Z",
+    "updatedAt": "2026-10-05T15:20:04.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,20 +926,39 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "07888ec096f69753a1535703fb7b3c3070e786b7",
-      "sourceUpdatedAt": "2026-08-14T06:36:26.000Z",
+      "latestCommit": "28e0f4e9ec09ae35b26920e4c6925f48770bf5ed",
+      "sourceUpdatedAt": "2026-10-05T15:19:04.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "tools"
+        "agent-skills",
+        "ai-agent-tools",
+        "ai-agents",
+        "binary-analysis",
+        "cli",
+        "coding-agent",
+        "coding-agents",
+        "cordis",
+        "decompiler",
+        "disassembler",
+        "dsh",
+        "dsh-plugin",
+        "hopper-disassembler",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "reverse-engineering",
+        "reverse-engineering-tools",
+        "static-analysis",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "coding-chimera-chimera",
@@ -2186,8 +2205,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "001fe00a77d822d1f769f1972035c864adbe6016",
-      "sourceUpdatedAt": "2026-10-04T17:13:16.000Z",
+      "latestCommit": "0d621503246842fca2e8d0ea171578c158d1f4d9",
+      "sourceUpdatedAt": "2026-10-05T14:19:35.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5135,8 +5154,8 @@
       "description": "CalDAV 日历插件：查/建/改/删/搜日程，Google/iCloud/Nextcloud/自定义端点，RRULE 重复事件展开。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-calendar",
       "defaultBranch": "main",
-      "latestCommit": "6a643f8516795d4f2ec80db39f18ffd4c3a2f681",
-      "sourceUpdatedAt": "2026-10-05T04:02:37.000Z",
+      "latestCommit": "83fce6047ccb41cd90c0aaddabafd1254325a2ce",
+      "sourceUpdatedAt": "2026-10-05T04:51:10.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"

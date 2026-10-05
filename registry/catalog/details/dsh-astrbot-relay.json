@@ -1,45 +1,49 @@
 {
-  "id": "dsh-plugins-catalog",
-  "name": "实验功能插件（DSH Plugins Catalog）",
-  "packageName": "dsh-plugins-catalog",
-  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Star-ranked DeepSeek Harness plugin catalog. Search and install other dsh-plugin repos.",
+  "id": "dsh-astrbot-relay",
+  "name": "会话管理（DSH Astrbot Relay）",
+  "packageName": "dsh-astrbot-relay",
+  "description": "AstrDsh Relay (星驿) — IM bridge host plugin for DeepSeek Harness: authenticated HTTP + SSE transport that drives agent sessions on behalf of an IM front-end (e.g. AstrBot).",
   "searchTerms": [
-    "实验功能插件",
-    "DSH Plugins Catalog",
-    "dsh-plugins-catalog",
+    "会话管理",
+    "DSH Astrbot Relay",
+    "dsh-astrbot-relay",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
     "实验功能",
     "新功能",
     "dsh",
-    "plugins",
-    "catalog"
+    "astrbot",
+    "relay"
   ],
-  "repositoryUrl": "https://github.com/Sakana-yuyu/dsh-plugins",
+  "repositoryUrl": "https://github.com/NekoHome-Studio/astrdsh-relay",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "dsh-astrbot-relay/package.json",
+  "installPath": "dsh-astrbot-relay",
   "updatePolicy": "external-only",
-  "commit": "cf5ffc2b2b43742e9c9f8a77334d75e1f0e8512e",
-  "version": "0.2.15",
+  "commit": "cfdfc90d2b049f851b330844c735eb9d0958a167",
+  "version": "0.9.7",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T06:23:34.000Z",
+    "updatedAt": "2026-10-05T15:24:10.000Z",
     "observedAt": "2026-10-05T15:20:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-05T15:20:04.000Z",
-      "evidenceUrl": "https://github.com/Sakana-yuyu/dsh-plugins/commit/cf5ffc2b2b43742e9c9f8a77334d75e1f0e8512e",
+      "evidenceUrl": "https://github.com/NekoHome-Studio/astrdsh-relay/commit/cfdfc90d2b049f851b330844c735eb9d0958a167",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-plugins-catalog"
+    "dsh-astrbot-relay"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the c",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.1.5-rc.2 || ^0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -169,7 +173,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "AGPL-3.0-or-later",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -179,7 +183,10 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/dsh-brand",
+      "@deepseek-ai/schemastery"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

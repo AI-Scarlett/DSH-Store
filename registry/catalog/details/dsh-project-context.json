@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3ca2b9c1a2414fec64ae926c4e3633a91b502bff",
-  "version": "0.3.0",
+  "commit": "3a5ac7a98f196aac367a57e745fc99ea8302e747",
+  "version": "0.4.1",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T04:00:42.000Z",
-    "observedAt": "2026-10-05T04:33:09.000Z",
+    "updatedAt": "2026-10-05T12:40:56.000Z",
+    "observedAt": "2026-10-05T15:20:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-05T04:33:09.000Z",
-      "evidenceUrl": "https://github.com/P02-1010751281/dsh-project-context/commit/3ca2b9c1a2414fec64ae926c4e3633a91b502bff",
+      "checkedAt": "2026-10-05T15:20:04.000Z",
+      "evidenceUrl": "https://github.com/P02-1010751281/dsh-project-context/commit/3a5ac7a98f196aac367a57e745fc99ea8302e747",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -84,7 +84,7 @@
     "project-handoff"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime artifact is missing from the distributable surface: ./lib/project-context/index.js; runtime artifact is missing from the distributable surface: ./lib/project-context/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/project-memory/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/project-memory/index.js; runtime artifact is missing from the distributable surface: ./lib/project-handoff/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/project-handoff/index.js; runti",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": ">=0.1.7-rc.2",
     "dshReleases": {
