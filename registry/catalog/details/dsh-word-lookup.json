@@ -18,24 +18,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "2b435eb3825c8391cac6ff48c1d46594dc85533e",
-  "version": "0.1.0-dev.0",
+  "commit": "f3ae8d21adbd121b92e2e35cc1bbc99b18a3d61e",
+  "version": "0.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-04T15:57:49.000Z",
-    "observedAt": "2026-10-04T19:16:06.000Z",
+    "updatedAt": "2026-10-05T14:54:05.000Z",
+    "observedAt": "2026-10-05T15:20:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-04T19:16:06.000Z",
-      "evidenceUrl": "https://github.com/HaowenCang/dsh-word-lookup/commit/2b435eb3825c8391cac6ff48c1d46594dc85533e",
+      "checkedAt": "2026-10-05T15:20:04.000Z",
+      "evidenceUrl": "https://github.com/HaowenCang/dsh-word-lookup/commit/f3ae8d21adbd121b92e2e35cc1bbc99b18a3d61e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,9 +76,9 @@
     "dsh-word-lookup"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; local module is missing from the distributable surface: lib/types/client/card.d.ts -> ./store.js; local module is missing from the distributable surface: lib/types/client/index.d.ts -> ./contracts.js; local module is missing from the distributable surface: lib/types/client/index.d.ts -> ./gesture.js; local module is missing from the distributable surface: lib/types/client/index.d.ts",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -89,7 +89,7 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
+      "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
@@ -148,10 +148,10 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.2.1-alpha.1": {
         "install": "unknown",
@@ -167,7 +167,7 @@
     ]
   },
   "details": {
-    "pluginType": "unknown",
+    "pluginType": "feature",
     "installSource": "github",
     "license": "MIT",
     "permissions": {

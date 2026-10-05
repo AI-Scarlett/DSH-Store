@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9bcb973ed13a7dedf2f7c96b24792957b8921d32",
+  "commit": "68ad88449ef8bc770f7f8d85d5cbe68e1f6b0983",
   "version": "0.3.22",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T15:10:39.000Z",
-    "observedAt": "2026-09-30T20:36:43.000Z",
+    "updatedAt": "2026-10-05T07:29:29.000Z",
+    "observedAt": "2026-10-05T15:20:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T20:36:43.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/9bcb973ed13a7dedf2f7c96b24792957b8921d32",
+      "checkedAt": "2026-10-05T15:20:04.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/68ad88449ef8bc770f7f8d85d5cbe68e1f6b0983",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "michengai-pua"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is missing from the fixed Git Commit: ./lib/remote.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/remote.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source con",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/remote.d.ts; runtime artifact is missing from the distributable surface: ./lib/remote.js; runtime artifact pattern requires review: ./locale/*.json; package contains unsupported artifacts req",
   "compatibility": {
     "dsh": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.5-rc.3 || 0.1.7-rc.1 || 0.1.7-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2",
     "dshReleases": {
@@ -93,7 +93,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown"
@@ -142,12 +141,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

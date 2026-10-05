@@ -1,45 +1,47 @@
 {
-  "id": "dsh-plugins-catalog",
-  "name": "实验功能插件（DSH Plugins Catalog）",
-  "packageName": "dsh-plugins-catalog",
-  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Star-ranked DeepSeek Harness plugin catalog. Search and install other dsh-plugin repos.",
+  "id": "dsh-plugin-oma",
+  "name": "任务与工作流自动化（DSH Plugin Oma）",
+  "packageName": "dsh-plugin-oma",
+  "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：Use OMA project skills and tool validation hooks in DeepSeek Harness.",
   "searchTerms": [
-    "实验功能插件",
-    "DSH Plugins Catalog",
-    "dsh-plugins-catalog",
-    "实验功能",
-    "新功能",
+    "任务与工作流自动化",
+    "DSH Plugin Oma",
+    "dsh-plugin-oma",
+    "任务",
+    "工作流",
+    "自动化",
+    "定时",
     "dsh",
-    "plugins",
-    "catalog"
+    "plugin",
+    "oma"
   ],
-  "repositoryUrl": "https://github.com/Sakana-yuyu/dsh-plugins",
+  "repositoryUrl": "https://github.com/first-fluke/oh-my-agent",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "integrations/dsh/package.json",
+  "installPath": "integrations/dsh",
   "updatePolicy": "external-only",
-  "commit": "cf5ffc2b2b43742e9c9f8a77334d75e1f0e8512e",
-  "version": "0.2.15",
+  "commit": "65439de548891fbe9502da6e9b8b1a8a6a823396",
+  "version": "0.1.0",
   "categories": [
-    "experimental"
+    "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T06:23:34.000Z",
+    "updatedAt": "2026-10-05T15:24:18.000Z",
     "observedAt": "2026-10-05T15:20:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-05T15:20:04.000Z",
-      "evidenceUrl": "https://github.com/Sakana-yuyu/dsh-plugins/commit/cf5ffc2b2b43742e9c9f8a77334d75e1f0e8512e",
+      "evidenceUrl": "https://github.com/first-fluke/oh-my-agent/commit/65439de548891fbe9502da6e9b8b1a8a6a823396",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,16 +71,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-plugins-catalog"
+    "oma"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -160,11 +162,9 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
