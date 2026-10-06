@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-06T14:48:24.000Z",
+    "updatedAt": "2026-10-06T20:49:02.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,8 +926,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "d3f498ceec65e4f61f39036ab943ace7ef1b9de5",
-      "sourceUpdatedAt": "2026-10-06T14:27:57.000Z",
+      "latestCommit": "f9eaf056ef58215094513176a70fabae0740081f",
+      "sourceUpdatedAt": "2026-10-06T20:35:49.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2898,8 +2898,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "78998c31d8c3ef5ecf0c64a19adf8911c1ee66de",
-      "sourceUpdatedAt": "2026-10-06T14:48:17.000Z",
+      "latestCommit": "18dcf89b4a6a8ab67ed758778cfbf690bf5d50b4",
+      "sourceUpdatedAt": "2026-10-06T18:34:22.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3671,26 +3671,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-youmind-plugin."
-    },
-    {
-      "id": "tonydua-dsh-web-search-exa",
-      "name": "Exa 联网搜索（Tonydua Exa Search）",
-      "description": "为 DSH 提供Exa 联网搜索能力。英文原始说明：Zero-config Exa web search provider for DeepSeek Harness (dsh): keyless anonymous MCP fallback (mcp.exa.ai/mcp) plus keyed REST search — a drop-in WebSearchProvider for the ctx.web seam, no API key required.",
-      "repositoryUrl": "https://github.com/TonyDua/dsh-web-search-exa",
-      "defaultBranch": "main",
-      "latestCommit": "aa8bc17bfaa6734c23faaa6a6c507ca41ecc6ff7",
-      "sourceUpdatedAt": "2026-09-25T05:21:53.000Z",
-      "discoveredAt": "2026-08-24T14:17:00.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "search",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: tonydua-dsh-web-search-exa."
     },
     {
       "id": "tablerogue-dsh-message-navigator",
@@ -16497,6 +16477,117 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "weibaohui-dsh-matrix",
+      "name": "weibaohui/dsh-matrix",
+      "description": "dsh 插件 · 黑客帝国数字雨：对话窗口铺上经典字符雨背景，token 原文掺进雨里，雨势随 agent 活跃度起伏",
+      "repositoryUrl": "https://github.com/weibaohui/dsh-matrix",
+      "defaultBranch": "main",
+      "latestCommit": "708112dad6d997b7259e3a2df2a20ed7ae3aa965",
+      "sourceUpdatedAt": "2026-10-04T06:00:36.000Z",
+      "discoveredAt": "2026-10-06T20:49:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/weibaohui__dsh-matrix.yml:sha256=6a1b3d5c0a3933a8f0881d16370be703259217286eb3637c1c9df88948ce6077:at=2026-10-06T20:53:26.152Z:owner=27042034"
+      ],
+      "topics": [
+        "canvas",
+        "deepseek-harness",
+        "digital-rain",
+        "dsh",
+        "dsh-plugin",
+        "matrix",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "weibaohui-dsh-fireworks",
+      "name": "weibaohui/dsh-fireworks",
+      "description": "dsh 插件 · 烟花庆祝引擎：agent 编程时在对话窗口上空放烟花——六类事件 × 30 张属性卡 × 洗牌袋随机变种，token 用量决定大小/高度/绚烂度，WebGL2 GPU 累积拖尾渲染",
+      "repositoryUrl": "https://github.com/weibaohui/dsh-fireworks",
+      "defaultBranch": "main",
+      "latestCommit": "161e760057604e0d89b1f3692b91d72707a7a7a2",
+      "sourceUpdatedAt": "2026-09-28T22:48:51.000Z",
+      "discoveredAt": "2026-10-06T20:49:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/weibaohui__dsh-fireworks.yml:sha256=d430cf40c7561043f89ec09f5955a6fb13e9beaa43a6ccf90831efd86a2a39af:at=2026-10-06T20:53:26.152Z:owner=27042034"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "fireworks",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "weibaohui-dsh-kb",
+      "name": "weibaohui/dsh-kb",
+      "description": "dsh 插件 · 团队知识库：离线知识共享（FDE 盒子），浏览/全文检索/加工入口；写路径收口 agent，基于 Karpathy LLM Wiki 模式",
+      "repositoryUrl": "https://github.com/weibaohui/dsh-kb",
+      "defaultBranch": "main",
+      "latestCommit": "bbeb12ada921e0d943ee74d7e57c0da587bd864e",
+      "sourceUpdatedAt": "2026-09-27T23:01:19.000Z",
+      "discoveredAt": "2026-10-06T20:49:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/weibaohui__dsh-kb.yml:sha256=5d43e4022886212b8ffa05fd35419b68a217be997cc420886003b135021e7558:at=2026-10-06T20:53:26.152Z:owner=27042034"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "weibaohui-dsh-settings-ui",
+      "name": "weibaohui/dsh-settings-ui",
+      "description": "dsh 插件 · 设置界面自定义：调整原生设置窗口大小（全屏/预置/自定义）、背景不透明度与背景（亮暗各一色，实时跟随主题）",
+      "repositoryUrl": "https://github.com/weibaohui/dsh-settings-ui",
+      "defaultBranch": "main",
+      "latestCommit": "51180fdbe96829210bf60c2a1b35f0ccc3e4e4cd",
+      "sourceUpdatedAt": "2026-09-30T06:30:50.000Z",
+      "discoveredAt": "2026-10-06T20:49:02.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/weibaohui__dsh-settings-ui.yml:sha256=31dffb00c6e97745a7b83b59880e9d9a5b4e09f0cdd9b40816585e94c9b94567:at=2026-10-06T20:53:26.152Z:owner=27042034"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "cchifor-ailab",
+      "name": "cchifor/ailab",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/cchifor/ailab",
+      "defaultBranch": "main",
+      "latestCommit": "2faa61bc2d3e0c85c385dc2cdf95ee5925b0e8a2",
+      "sourceUpdatedAt": "2026-10-06T20:52:22.000Z",
+      "discoveredAt": "2026-10-06T20:49:02.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
