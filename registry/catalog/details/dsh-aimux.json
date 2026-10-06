@@ -1,49 +1,49 @@
 {
-  "id": "agentsight-dsh-plugin",
-  "name": "图像视觉工具（DSH Plugin）",
-  "packageName": "@agentsight/dsh-plugin",
-  "description": "为 DSH 提供图像视觉工具能力。英文原始说明：AgentSight observability plugin for DeepSeek Harness",
+  "id": "dsh-aimux",
+  "name": "模型提供商接入（DSH Aimux）",
+  "packageName": "@rutis/dsh-aimux",
+  "description": "为 DSH 提供模型提供商接入能力。英文原始说明：dsh bundle: dsh-llm provider routes served by aimux in the rutis host",
   "searchTerms": [
-    "图像视觉工具",
-    "DSH Plugin",
-    "agentsight-dsh-plugin",
-    "@agentsight/dsh-plugin",
-    "视觉",
-    "识图",
-    "图片",
-    "多模态",
+    "模型提供商接入",
+    "DSH Aimux",
+    "dsh-aimux",
+    "@rutis/dsh-aimux",
+    "模型",
+    "LLM",
+    "Provider",
+    "模型接入",
     "实验功能",
     "新功能",
     "dsh",
-    "plugin"
+    "aimux"
   ],
-  "repositoryUrl": "https://github.com/agentic-os-org/ANOLISA",
+  "repositoryUrl": "https://github.com/arcships/rutis",
   "defaultBranch": "main",
-  "manifestPath": "src/agentsight/dsh-plugin/package.json",
-  "installPath": "src/agentsight/dsh-plugin",
+  "manifestPath": "crates/rutis-dsh/dsh/aimux/package.json",
+  "installPath": "crates/rutis-dsh/dsh/aimux",
   "updatePolicy": "external-only",
-  "commit": "681fa8d600316a6fa096263ad2b28c0fb26f87ad",
-  "version": "0.1.0",
+  "commit": "404ea2efe87b0c5d438d77b4ab6ca3e0f136a133",
+  "version": "0.0.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-06T14:33:51.000Z",
+    "updatedAt": "2026-10-06T14:52:42.000Z",
     "observedAt": "2026-10-06T14:48:24.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-06T14:48:24.000Z",
-      "evidenceUrl": "https://github.com/agentic-os-org/ANOLISA/commit/681fa8d600316a6fa096263ad2b28c0fb26f87ad",
+      "evidenceUrl": "https://github.com/arcships/rutis/commit/404ea2efe87b0c5d438d77b4ab6ca3e0f136a133",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "agentsight"
+    "llm-aimux"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: lib/types/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; manifest does not declare an explicit distributable files list; Node.js compatibility is not explicitly declared; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.2 <0.2.0",
+    "dsh": "0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,14 +164,14 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.0.0",
+    "node": null,
     "systems": [],
     "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "Apache-2.0",
+    "license": "UNKNOWN",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -185,9 +185,7 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

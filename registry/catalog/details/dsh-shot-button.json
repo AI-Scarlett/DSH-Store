@@ -1,28 +1,28 @@
 {
-  "id": "agentsight-dsh-plugin",
-  "name": "图像视觉工具（DSH Plugin）",
-  "packageName": "@agentsight/dsh-plugin",
-  "description": "为 DSH 提供图像视觉工具能力。英文原始说明：AgentSight observability plugin for DeepSeek Harness",
+  "id": "dsh-shot-button",
+  "name": "文件与工作区工具（DSH Shot Button）",
+  "packageName": "dsh-shot-button",
+  "description": "DSH Web 聊天界面的截屏按钮：调用本机截屏服务，把截图贴成附件或插入 @ 引用",
   "searchTerms": [
-    "图像视觉工具",
-    "DSH Plugin",
-    "agentsight-dsh-plugin",
-    "@agentsight/dsh-plugin",
-    "视觉",
-    "识图",
-    "图片",
-    "多模态",
+    "文件与工作区工具",
+    "DSH Shot Button",
+    "dsh-shot-button",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
     "实验功能",
     "新功能",
     "dsh",
-    "plugin"
+    "shot",
+    "button"
   ],
-  "repositoryUrl": "https://github.com/agentic-os-org/ANOLISA",
+  "repositoryUrl": "https://github.com/cairrrr/dsh-screenshot",
   "defaultBranch": "main",
-  "manifestPath": "src/agentsight/dsh-plugin/package.json",
-  "installPath": "src/agentsight/dsh-plugin",
+  "manifestPath": "gui-plugin/package.json",
+  "installPath": "gui-plugin",
   "updatePolicy": "external-only",
-  "commit": "681fa8d600316a6fa096263ad2b28c0fb26f87ad",
+  "commit": "a2ac32553a05f39777f0cf195f19ac34e7d014c5",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-06T14:33:51.000Z",
+    "updatedAt": "2026-10-06T14:52:53.000Z",
     "observedAt": "2026-10-06T14:48:24.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-06T14:48:24.000Z",
-      "evidenceUrl": "https://github.com/agentic-os-org/ANOLISA/commit/681fa8d600316a6fa096263ad2b28c0fb26f87ad",
+      "evidenceUrl": "https://github.com/cairrrr/dsh-screenshot/commit/a2ac32553a05f39777f0cf195f19ac34e7d014c5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "agentsight"
+    "dsh-shot-button"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: lib/types/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.2 <0.2.0",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,14 +164,14 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.0.0",
+    "node": null,
     "systems": [],
     "profiles": []
   },
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -185,9 +185,7 @@
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
