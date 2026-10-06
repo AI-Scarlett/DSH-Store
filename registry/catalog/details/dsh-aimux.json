@@ -22,7 +22,7 @@
   "manifestPath": "crates/rutis-dsh/dsh/aimux/package.json",
   "installPath": "crates/rutis-dsh/dsh/aimux",
   "updatePolicy": "external-only",
-  "commit": "404ea2efe87b0c5d438d77b4ab6ca3e0f136a133",
+  "commit": "330ff51b65c0178ab205abb377f6d9dbcd7225fd",
   "version": "0.0.0",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-06T14:52:42.000Z",
-    "observedAt": "2026-10-06T14:48:24.000Z",
+    "updatedAt": "2026-10-06T15:26:35.000Z",
+    "observedAt": "2026-10-06T20:49:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-06T14:48:24.000Z",
-      "evidenceUrl": "https://github.com/arcships/rutis/commit/404ea2efe87b0c5d438d77b4ab6ca3e0f136a133",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-06T20:49:02.000Z",
+      "evidenceUrl": "https://github.com/arcships/rutis/commit/330ff51b65c0178ab205abb377f6d9dbcd7225fd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [

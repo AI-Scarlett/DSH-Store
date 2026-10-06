@@ -25,28 +25,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "aa8bc17bfaa6734c23faaa6a6c507ca41ecc6ff7",
-  "version": "0.1.5",
+  "commit": "7da507659e0e673bf6f732f2e408299b520e92f8",
+  "version": "0.2.2",
   "categories": [
     "search"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T05:21:53.000Z",
-    "observedAt": "2026-09-25T13:19:47.000Z",
+    "updatedAt": "2026-10-06T15:52:29.000Z",
+    "observedAt": "2026-10-06T20:49:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-25T13:19:47.000Z",
-      "evidenceUrl": "https://github.com/TonyDua/dsh-web-search-exa/commit/aa8bc17bfaa6734c23faaa6a6c507ca41ecc6ff7",
+      "checkedAt": "2026-10-06T20:49:02.000Z",
+      "evidenceUrl": "https://github.com/TonyDua/dsh-web-search-exa/commit/7da507659e0e673bf6f732f2e408299b520e92f8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -82,10 +82,10 @@
   "entryIds": [
     "web-search-exa"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.2-alpha.2 || >=0.1.3-alpha.2 || >=0.1.4-0 || >=0.1.5-alpha.1 || >=0.1.6-alpha.1 || >=0.1.7-alpha.1 || >=0.1.8",
+    "dsh": ">=0.1.2-alpha.2 || >=0.1.3-alpha.2 || >=0.1.4-0 || >=0.1.5-alpha.1 || >=0.1.6-alpha.1 || >=0.1.7-alpha.1 || >=0.1.8 || >",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -108,9 +108,9 @@
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown"
+      "0.2.0-rc.1": "compatible",
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
