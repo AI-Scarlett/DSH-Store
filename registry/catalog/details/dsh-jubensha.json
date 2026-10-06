@@ -1,50 +1,45 @@
 {
-  "id": "dsh-tongflow",
-  "name": "画板与设计工具（DSH Tongflow）",
-  "packageName": "dsh-tongflow",
-  "description": "为 DSH 提供画板与设计工具能力。英文原始说明：TongFlow studio plugin for DeepSeek Harness (dsh): agent-designed project folders, one TongFlow workflow per generated asset stored next to its outputs, deterministic media generation, embedded canvas.",
+  "id": "dsh-jubensha",
+  "name": "实验功能插件（DSH Jubensha）",
+  "packageName": "@max-null/dsh-jubensha",
+  "description": "剧本杀（jubensha）：一个人也能开局的推理本与情感本 —— AI 当 DM，AI 填满整张桌子",
   "searchTerms": [
-    "画板与设计工具",
-    "DSH Tongflow",
-    "dsh-tongflow",
-    "画板",
-    "画布",
-    "设计",
-    "原型",
-    "工作流与自动化",
-    "工作流",
-    "自动化",
-    "任务",
+    "实验功能插件",
+    "DSH Jubensha",
+    "dsh-jubensha",
+    "@max-null/dsh-jubensha",
+    "实验功能",
+    "新功能",
     "dsh",
-    "tongflow"
+    "jubensha"
   ],
-  "repositoryUrl": "https://github.com/tong-io/tongflow",
+  "repositoryUrl": "https://github.com/Max-Null/dsh-jubensha",
   "defaultBranch": "main",
-  "manifestPath": "packages/dsh-tongflow/package.json",
-  "installPath": "packages/dsh-tongflow",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dd0e38e9396a9841a2876e5fe8b612b59af1b6e5",
-  "version": "0.8.4",
+  "commit": "6fa204540bba17bb054c9692cd190b7a9238f62c",
+  "version": "0.1.0",
   "categories": [
-    "workflow"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-06T04:27:04.000Z",
+    "updatedAt": "2026-10-06T05:23:44.000Z",
     "observedAt": "2026-10-06T05:19:08.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-06T05:19:08.000Z",
-      "evidenceUrl": "https://github.com/tong-io/tongflow/commit/dd0e38e9396a9841a2876e5fe8b612b59af1b6e5",
+      "evidenceUrl": "https://github.com/Max-Null/dsh-jubensha/commit/6fa204540bba17bb054c9692cd190b7a9238f62c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +69,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "tongflow"
+    "jubensha"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0 || ^0.1.5-alpha.0 || ^0.1.7-alpha.0 || ^0.2.0-rc.0 || ^0.2.1-alpha.0",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,11 +88,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-rc.2": "compatible",
-      "0.1.7-rc.2": "compatible",
-      "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.1": "compatible",
-      "0.2.0-rc.1": "unknown"
+      "0.2.0-rc.1": "unknown",
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -148,13 +141,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -171,15 +158,9 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": null,
     "systems": [],
     "profiles": [
       "web"
@@ -188,7 +169,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "AGPL-3.0-only",
+    "license": "MIT",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -199,8 +180,8 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/schemastery",
-      "tongflow"
+      "yaml",
+      "zod"
     ],
     "reviewStatus": "automated-scan"
   },
