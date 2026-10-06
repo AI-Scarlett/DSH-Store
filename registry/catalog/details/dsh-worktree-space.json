@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b35e832fb94a5ed26a727afa535f26533eda9cbe",
-  "version": "1.2.0",
+  "commit": "50d2afa369e2eacabb6af29bedf4d73780f6a72c",
+  "version": "1.2.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-04T10:15:45.000Z",
-    "observedAt": "2026-10-04T13:45:55.000Z",
+    "updatedAt": "2026-10-06T12:09:14.000Z",
+    "observedAt": "2026-10-06T14:48:24.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-04T13:45:55.000Z",
-      "evidenceUrl": "https://github.com/kangtsang/dsh-worktree-space/commit/b35e832fb94a5ed26a727afa535f26533eda9cbe",
+      "checkedAt": "2026-10-06T14:48:24.000Z",
+      "evidenceUrl": "https://github.com/kangtsang/dsh-worktree-space/commit/50d2afa369e2eacabb6af29bedf4d73780f6a72c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "worktree-space"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source exceeds the automatic review byte bound: 418812 total bytes (maximum 2097152); largest file 262968 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": ">=0.1.7-rc.1 <0.3.0-0",
     "dshReleases": {

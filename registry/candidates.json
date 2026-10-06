@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-06T05:19:08.000Z",
+    "updatedAt": "2026-10-06T14:48:24.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,8 +926,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "9c25dc4ed2915a81fc83a1d4dc22e7ba814b8dff",
-      "sourceUpdatedAt": "2026-10-05T16:50:38.000Z",
+      "latestCommit": "d3f498ceec65e4f61f39036ab943ace7ef1b9de5",
+      "sourceUpdatedAt": "2026-10-06T14:27:57.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -940,14 +940,15 @@
         "ai-agents",
         "binary-analysis",
         "cli",
-        "coding-agent",
         "coding-agents",
         "cordis",
+        "ctf",
         "decompiler",
         "disassembler",
         "dsh",
         "dsh-plugin",
-        "hopper-disassembler",
+        "ghidra",
+        "hopper",
         "mcp",
         "mcp-server",
         "model-context-protocol",
@@ -2205,8 +2206,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "d82a21814380dcdd904e048bf1e3d947bf0aa917",
-      "sourceUpdatedAt": "2026-10-05T16:50:14.000Z",
+      "latestCommit": "0e91037b43e5def4f2efb0596a6349bafd43de2f",
+      "sourceUpdatedAt": "2026-10-06T09:48:24.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2897,8 +2898,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "8837d1e9fcb88818248e58ceb41806b05e07c38b",
-      "sourceUpdatedAt": "2026-10-05T19:13:39.000Z",
+      "latestCommit": "78998c31d8c3ef5ecf0c64a19adf8911c1ee66de",
+      "sourceUpdatedAt": "2026-10-06T14:48:17.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16410,6 +16411,92 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "wangcangxing-ai-eight-honors-eight-shames",
+      "name": "wangcangxing/ai-eight-honors-eight-shames",
+      "description": "面向 AI 编码代理的八荣八耻工作准则 — DSH 原生 Skill，含安装与配置指南",
+      "repositoryUrl": "https://github.com/wangcangxing/ai-eight-honors-eight-shames",
+      "defaultBranch": "main",
+      "latestCommit": "4b4b4761027c4661eae2fc54cbe23a9a259bd0df",
+      "sourceUpdatedAt": "2026-09-25T14:57:20.000Z",
+      "discoveredAt": "2026-10-06T14:48:24.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/wangcangxing__ai-eight-honors-eight-shames.yml:sha256=dc4140ea85510455874d43bcfaafafbaf8fe8355ca3f75623343d1d1f824f3da:at=2026-10-06T14:53:05.277Z:owner=256757901"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wangpaopaolab-dsh-font",
+      "name": "WangPaoPaoLab/dsh-font",
+      "description": "Font switcher for DeepSeek Harness Web GUI: 99 UI fonts + 31 code fonts with CJK-Latin pairing, instant apply, localStorage persistence",
+      "repositoryUrl": "https://github.com/WangPaoPaoLab/dsh-font",
+      "defaultBranch": "main",
+      "latestCommit": "d299f56bde1e10e7fef152848e74cff2eecd7917",
+      "sourceUpdatedAt": "2026-08-14T16:23:23.000Z",
+      "discoveredAt": "2026-10-06T14:48:24.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/WangPaoPaoLab__dsh-font.yml:sha256=0ab41d2969b54305e2103bebade0ad9273726a32f65539e35688d429b6fc7003:at=2026-10-06T14:53:05.277Z:owner=236396225"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wanderer-yk-dsh-xueqiu",
+      "name": "wanderer-yk/dsh-xueqiu",
+      "description": "雪球 mini 行情面板 — DeepSeek Harness 免登录 A股/港美股实时行情、K线、分时、热榜、7x24快讯。可拖拽悬浮面板，交易时段智能刷新。",
+      "repositoryUrl": "https://github.com/wanderer-yk/dsh-xueqiu",
+      "defaultBranch": "main",
+      "latestCommit": "3b468a49d10acc8cdc2ce51009c09ae97d1c1a46",
+      "sourceUpdatedAt": "2026-09-03T04:56:59.000Z",
+      "discoveredAt": "2026-10-06T14:48:24.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/wanderer-yk__dsh-xueqiu.yml:sha256=195ecd69536a76db17d7bbf680e9f85fb6792bcaf8ac866e3bd3a262ab5b39b1:at=2026-10-06T14:53:05.277Z:owner=34730988"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "finance",
+        "stock",
+        "xueqiu",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wanchunlian-dsh-plugin-sound-alert",
+      "name": "WanchunLian/dsh-plugin-sound-alert",
+      "description": "DSH Web 轻量提示音插件：回答完成 / 需要授权时响铃，提示音可替换为本机 WAV（纯客户端 · 零资源文件）",
+      "repositoryUrl": "https://github.com/WanchunLian/dsh-plugin-sound-alert",
+      "defaultBranch": "main",
+      "latestCommit": "c88c3c55e16797ce9c3c0e0b59654931f9cf938b",
+      "sourceUpdatedAt": "2026-09-16T09:27:46.000Z",
+      "discoveredAt": "2026-10-06T14:48:24.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/WanchunLian__dsh-plugin-sound-alert.yml:sha256=199eec684ce1d1ad34ced9450094cd7a96028ea1ac573939e8cf417536f15b50:at=2026-10-06T14:53:05.277Z:owner=186242592"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
