@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-05T16:52:54.000Z",
+    "updatedAt": "2026-10-06T05:19:08.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2040,8 +2040,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "3ac9a48697fe24c8cd2eb1e0d112b052e8f88ecd",
-      "sourceUpdatedAt": "2026-09-30T17:47:28.000Z",
+      "latestCommit": "43ee120575ec8ba2ff34ff663c6b8e447773d420",
+      "sourceUpdatedAt": "2026-10-06T00:11:37.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2897,8 +2897,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "5c52b67dff152afecb8f5cce906dbaffbd81744a",
-      "sourceUpdatedAt": "2026-10-04T09:47:42.000Z",
+      "latestCommit": "8837d1e9fcb88818248e58ceb41806b05e07c38b",
+      "sourceUpdatedAt": "2026-10-05T19:13:39.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16288,6 +16288,128 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "upjiang-dsh-cron-job",
+      "name": "upJiang/dsh-cron-job",
+      "description": "dsh 插件，定时任务+多渠道推送",
+      "repositoryUrl": "https://github.com/upJiang/dsh-cron-job",
+      "defaultBranch": "main",
+      "latestCommit": "2d9dab4c263967ba32de428d925120c640cb1b07",
+      "sourceUpdatedAt": "2026-09-01T06:27:25.000Z",
+      "discoveredAt": "2026-10-06T05:19:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/upJiang__dsh-cron-job.yml:sha256=1f1eb724285a7e1799417cead1eb2ab412032505bf0591bf931941117230a517:at=2026-10-06T05:24:04.095Z:owner=37369950"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "unknowcao-dsh-outlook",
+      "name": "UnknowCao/dsh-outlook",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/UnknowCao/dsh-outlook",
+      "defaultBranch": "main",
+      "latestCommit": "5a2ec7d6bbdcaed48a8b1dc04d18dc0bb0c64659",
+      "sourceUpdatedAt": "2026-09-14T02:14:49.000Z",
+      "discoveredAt": "2026-10-06T05:19:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/UnknowCao__dsh-outlook.yml:sha256=4a394ce4e7f1ea345308fb6a8bdead3184363585a9997d7774df90d4582f9cec:at=2026-10-06T05:24:04.095Z:owner=222538893"
+      ],
+      "topics": [
+        "calendar",
+        "com-automation",
+        "deepseek-harness",
+        "dsh-plugin",
+        "email",
+        "outlook",
+        "windows",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "unknowcao-dsh-dock",
+      "name": "UnknowCao/dsh-dock",
+      "description": "One-click desktop launcher for DSH Harness: desktop whale exe, tray residency with live status, one-click restart, and the Whale Bay menu (Surface/Migrate/To the Bay) - graceful full exit; a plugin, not another client.",
+      "repositoryUrl": "https://github.com/UnknowCao/dsh-dock",
+      "defaultBranch": "main",
+      "latestCommit": "1dffd8c74f45ed28bc8f8c8956143938efacaa5f",
+      "sourceUpdatedAt": "2026-09-14T10:55:17.000Z",
+      "discoveredAt": "2026-10-06T05:19:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/UnknowCao__dsh-dock.yml:sha256=b9bcb732b1a5a11eac8f5acbd4cb5f312050923f41f5932580ce392346bbd4a3:at=2026-10-06T05:24:04.095Z:owner=222538893"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "deepseek-harness-desktop",
+        "deepseek-harness-plugin",
+        "deepseek-harness-plugins",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "usersx-dsh-automation-center",
+      "name": "usersx/dsh-automation-center",
+      "description": "Root-level automation center for DeepSeek Harness: scheduled tasks, fresh Result Sessions, and cross-workspace run history.",
+      "repositoryUrl": "https://github.com/usersx/dsh-automation-center",
+      "defaultBranch": "main",
+      "latestCommit": "929f271aa40bd80b5b0906cf47ab151a57fd4525",
+      "sourceUpdatedAt": "2026-08-31T06:09:28.000Z",
+      "discoveredAt": "2026-10-06T05:19:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/usersx__dsh-automation-center.yml:sha256=2d9910137c13c8ea17bedc3ca1bf4417b3b58294a298b880c07acb7ce36c6871:at=2026-10-06T05:24:04.095Z:owner=128707710"
+      ],
+      "topics": [
+        "agentic-ai",
+        "ai-agent",
+        "automation",
+        "coding-agent",
+        "deepseek",
+        "deepseek-harness",
+        "desktop",
+        "dsh",
+        "dsh-plugin",
+        "react",
+        "scheduled-tasks",
+        "task-scheduler",
+        "typescript",
+        "workflow-automation",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "maxbry123-commits-router-universal-router-inteligente",
+      "name": "maxbry123-commits/router-universal-router-inteligente-",
+      "description": "Router universal para agentes NCT — nodos + conectores + sandbox + cost tracking",
+      "repositoryUrl": "https://github.com/maxbry123-commits/router-universal-router-inteligente-",
+      "defaultBranch": "main",
+      "latestCommit": "93673e6a36d2b08a62269e38a486a909f2f9912f",
+      "sourceUpdatedAt": "2026-10-06T05:23:17.000Z",
+      "discoveredAt": "2026-10-06T05:19:08.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
     }
   ]
 }

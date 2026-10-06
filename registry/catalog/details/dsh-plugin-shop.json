@@ -22,7 +22,7 @@
   "manifestPath": "packages/dsh-plugin-shop/package.json",
   "installPath": "packages/dsh-plugin-shop",
   "updatePolicy": "external-only",
-  "commit": "a8d94c46e66485c2dedc0c94b9491483b4a58a33",
+  "commit": "d7c59e2ecdc68f14a764eed4b303beb5092ea3cd",
   "version": "0.8.4",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T07:05:29.000Z",
-    "observedAt": "2026-10-05T15:20:04.000Z",
+    "updatedAt": "2026-10-06T04:09:58.000Z",
+    "observedAt": "2026-10-06T05:19:08.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-05T15:20:04.000Z",
-      "evidenceUrl": "https://github.com/LivXue/dsh-plugin-shop/commit/a8d94c46e66485c2dedc0c94b9491483b4a58a33",
+      "checkedAt": "2026-10-06T05:19:08.000Z",
+      "evidenceUrl": "https://github.com/LivXue/dsh-plugin-shop/commit/d7c59e2ecdc68f14a764eed4b303beb5092ea3cd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/client/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/typert.remote-client",
   "compatibility": {
-    "dsh": "^0.1.1-rc.2",
+    "dsh": ">=0.1.1-rc.2 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
