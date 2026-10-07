@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-06T20:49:02.000Z",
+    "updatedAt": "2026-10-07T04:47:55.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,8 +926,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "f9eaf056ef58215094513176a70fabae0740081f",
-      "sourceUpdatedAt": "2026-10-06T20:35:49.000Z",
+      "latestCommit": "166dcd21d06f687a9c480a6a6d36beb3b4954dd0",
+      "sourceUpdatedAt": "2026-10-07T04:46:13.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2206,8 +2206,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "0e91037b43e5def4f2efb0596a6349bafd43de2f",
-      "sourceUpdatedAt": "2026-10-06T09:48:24.000Z",
+      "latestCommit": "5dcc7fce51dd5beeaed313b4d49a8b07a41b0d8d",
+      "sourceUpdatedAt": "2026-10-07T04:33:52.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16588,6 +16588,145 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "winditer-dsh-prompt-optimizer",
+      "name": "winditer/dsh-prompt-optimizer",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/winditer/dsh-prompt-optimizer",
+      "defaultBranch": "main",
+      "latestCommit": "be0fb0a07380a20a81287dedb17a3400aa88b592",
+      "sourceUpdatedAt": "2026-09-07T02:47:19.000Z",
+      "discoveredAt": "2026-10-07T04:47:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/winditer__dsh-prompt-optimizer.yml:sha256=3e43ec39e5ba016302658dd614bc26db3c5b1b971169649d58865910cfb1824d:at=2026-10-07T04:52:47.523Z:owner=7998026"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-prompt-optimizer",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wine-red-dsh-codex-timeline",
+      "name": "Wine-Red/dsh-codex-timeline",
+      "description": "Codex-style turn timeline and local conversation search for DeepSeek Harness Web | Codex风格的对话节点时间线导航栏，提供会话内容搜索等增强",
+      "repositoryUrl": "https://github.com/Wine-Red/dsh-codex-timeline",
+      "defaultBranch": "main",
+      "latestCommit": "71343f97437fd3b7f1c80f91bfdb589b9c2136fe",
+      "sourceUpdatedAt": "2026-09-28T21:07:48.000Z",
+      "discoveredAt": "2026-10-07T04:47:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/Wine-Red__dsh-codex-timeline.yml:sha256=68313cf8a0308528d90b4222bc7023d56335638c3143215c1441395281ff0c60:at=2026-10-07T04:52:47.523Z:owner=112580858"
+      ],
+      "topics": [
+        "conversation",
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "timeline",
+        "web-ui",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ericwang1358-dsh-web-studyhub",
+      "name": "EricWang1358/dsh-web-studyhub",
+      "description": "StudyHub: a DeepSeek Harness (DSH) plugin that turns your own material into questions and spaced review · 把自己的资料变成题目与间隔复习的 DSH 学习插件",
+      "repositoryUrl": "https://github.com/EricWang1358/dsh-web-studyhub",
+      "defaultBranch": "main",
+      "latestCommit": "80b93f2f3cae537754182f389507ebf52dc8d6e6",
+      "sourceUpdatedAt": "2026-10-07T04:52:37.000Z",
+      "discoveredAt": "2026-10-07T04:47:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "education",
+        "flashcards",
+        "spaced-repetition",
+        "study",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: ., packages/studyhub-retrieval"
+    },
+    {
+      "id": "windypro-rourou-dsh-logcat",
+      "name": "WindyPro-rourou/dsh-logcat",
+      "description": "Android Logcat viewer for the DeepSeek Harness (DSH) Web GUI: auto-connect adb devices, live logcat stream with level/keyword filters, pause/clear/export, plus the logcat_recent agent tool.",
+      "repositoryUrl": "https://github.com/WindyPro-rourou/dsh-logcat",
+      "defaultBranch": "main",
+      "latestCommit": "3da9b700494caa33c886bab7401113cb671530cc",
+      "sourceUpdatedAt": "2026-10-01T19:09:44.000Z",
+      "discoveredAt": "2026-10-07T04:47:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/WindyPro-rourou__dsh-logcat.yml:sha256=d64c11791e2c30859548753ab40f76328bad60e4e31711d39258d653ed2c8582:at=2026-10-07T04:52:47.523Z:owner=318759800"
+      ],
+      "topics": [
+        "adb",
+        "android",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "logcat",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "dwjz-dsh-reflection",
+      "name": "DWJZ/dsh-reflection",
+      "description": "DeepSeek Harness 持久记忆插件：把用户与项目的长期记忆存在 $DSH_HOME/memory，并在每个新会话注入紧凑索引。 / Persistent user and project memory for DeepSeek Harness, stored under $DSH_HOME/memory and injected as a compact index.",
+      "repositoryUrl": "https://github.com/DWJZ/dsh-reflection",
+      "defaultBranch": "main",
+      "latestCommit": "145cdec34153b141c687f56624cf02e16b57540f",
+      "sourceUpdatedAt": "2026-10-07T04:52:27.000Z",
+      "discoveredAt": "2026-10-07T04:47:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
+    },
+    {
+      "id": "windypro-rourou-dsh-code-studio",
+      "name": "WindyPro-rourou/dsh-code-studio",
+      "description": "Code Studio for DSH Web GUI - VS Code + Cline hybrid: file tree, syntax-highlighted editor, Cline-style line diffs that auto-appear when the agent edits files.",
+      "repositoryUrl": "https://github.com/WindyPro-rourou/dsh-code-studio",
+      "defaultBranch": "main",
+      "latestCommit": "8b3711c7b376e27105075598aea4fabc0aaea5bd",
+      "sourceUpdatedAt": "2026-10-01T15:10:29.000Z",
+      "discoveredAt": "2026-10-07T04:47:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/WindyPro-rourou__dsh-code-studio.yml:sha256=11087b9e92f31d98829c07ba3dd170f6497dce5558562eb0b71f636a3f7c0a0d:at=2026-10-07T04:52:47.523Z:owner=318759800"
+      ],
+      "topics": [
+        "cline",
+        "code-studio",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
