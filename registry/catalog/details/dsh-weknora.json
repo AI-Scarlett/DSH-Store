@@ -18,7 +18,7 @@
   "manifestPath": "packages/dsh-weknora/package.json",
   "installPath": "packages/dsh-weknora",
   "updatePolicy": "external-only",
-  "commit": "bccb4b151bae403508da77fbb174efc79dc47c1a",
+  "commit": "e7aaf8ae02608d1d9e0f84aa864106a5f1ae78a3",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -26,16 +26,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-30T07:26:51.000Z",
-    "observedAt": "2026-09-30T14:41:31.000Z",
+    "updatedAt": "2026-10-07T17:31:48.000Z",
+    "observedAt": "2026-10-07T21:03:18.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T14:41:31.000Z",
-      "evidenceUrl": "https://github.com/Tencent/WeKnora/commit/bccb4b151bae403508da77fbb174efc79dc47c1a",
+      "checkedAt": "2026-10-07T21:03:18.000Z",
+      "evidenceUrl": "https://github.com/Tencent/WeKnora/commit/e7aaf8ae02608d1d9e0f84aa864106a5f1ae78a3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,7 +76,7 @@
     "weknora"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: ./dist/index.js; runtime artifact is missing from the distributable surface: ./dist/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -88,7 +88,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown"
@@ -137,12 +136,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
