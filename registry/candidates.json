@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-07T14:00:20.000Z",
+    "updatedAt": "2026-10-07T21:03:18.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,8 +926,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "33d4761cc7a96630b7c2fed890df83d433c45914",
-      "sourceUpdatedAt": "2026-10-07T13:56:58.000Z",
+      "latestCommit": "63cf28fd8f8acaf656e993300a2a24280b2fd692",
+      "sourceUpdatedAt": "2026-10-07T20:46:46.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -6640,8 +6640,8 @@
       "description": "工作区跨设备备份、恢复与扩展更新，经 uagent-sync CLI 桥接执行。",
       "repositoryUrl": "https://github.com/severin-ye/uagent-sync",
       "defaultBranch": "master",
-      "latestCommit": "36e610cd74803e92ad38ad918bfc9353872b1c4a",
-      "sourceUpdatedAt": "2026-10-07T11:32:46.000Z",
+      "latestCommit": "c1d73efc9f929929bd832efb897d4abcded2981a",
+      "sourceUpdatedAt": "2026-10-07T14:07:11.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16865,6 +16865,72 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wenzetan-dsh-llm-newapi",
+      "name": "wenzetan/dsh-llm-newapi",
+      "description": "NewAPI (OpenAI-compatible gateway) LLM provider plugin for DeepSeek Harness (dsh): chat-only model discovery + Web settings section. Zero dsh modifications.",
+      "repositoryUrl": "https://github.com/wenzetan/dsh-llm-newapi",
+      "defaultBranch": "main",
+      "latestCommit": "f5d31179b791f242426ceb826aa68fff5539dece",
+      "sourceUpdatedAt": "2026-10-01T15:40:09.000Z",
+      "discoveredAt": "2026-10-07T21:03:18.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e7711448613a77fbc95b9400a5123cb7beb8f88:data/plugins/wenzetan__dsh-llm-newapi.yml:sha256=4b7d7d64974b389077367811b2faa89db979938d6278214ec8894358769ea9fc:at=2026-10-07T21:08:19.345Z:owner=23396982"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "llm",
+        "newapi",
+        "openai-compatible",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wenzetan-dsh-quota-panel",
+      "name": "wenzetan/dsh-quota-panel",
+      "description": "Provider quota/balance widget for the dsh web surface: capsule + card + settings panel, dual-face (loopback RPC host half + shell.overlay client half), zero npm deps",
+      "repositoryUrl": "https://github.com/wenzetan/dsh-quota-panel",
+      "defaultBranch": "main",
+      "latestCommit": "63e01f61735b7a6b5be6488745ebd33730c2515d",
+      "sourceUpdatedAt": "2026-09-24T09:45:22.000Z",
+      "discoveredAt": "2026-10-07T21:03:18.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e7711448613a77fbc95b9400a5123cb7beb8f88:data/plugins/wenzetan__dsh-quota-panel.yml:sha256=c29ee20a2811e0e23bf2e5a8157021a08c0a4ba5d9bf862d985d2e1204bd1a3c:at=2026-10-07T21:08:19.345Z:owner=23396982"
+      ],
+      "topics": [
+        "balance",
+        "deepseek-harness",
+        "dsh-plugin",
+        "quota",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "weirlabs-weir",
+      "name": "WeirLabs/weir",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/WeirLabs/weir",
+      "defaultBranch": "main",
+      "latestCommit": "478b274e4ad1de8949fc9be78c2439221822ab66",
+      "sourceUpdatedAt": "2026-10-07T20:59:27.000Z",
+      "discoveredAt": "2026-10-07T21:03:18.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/weir-harness, plugins/weir-test-harness"
     }
   ]
 }
