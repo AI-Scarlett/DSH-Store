@@ -1,49 +1,45 @@
 {
-  "id": "dsh-desktop-companion",
-  "name": "桌面客户端（DSH Desktop Companion）",
-  "packageName": "dsh-desktop-companion",
-  "description": "DeepSeek Harness Desktop 的桌面伴生插件：外部链接接管系统浏览器等壳集成能力。Desktop shell companion for dotnet-deepseek-harness-desktop.",
+  "id": "dsh-plugin-music",
+  "name": "实验功能插件（DSH Plugin Music）",
+  "packageName": "dsh-plugin-music",
+  "description": "DSH Music — 内嵌 DeepSeek Harness 的独立音乐播放器插件(数据层与 UI 自包含,不依赖本机安装其他播放器)。数据来源为网易云音乐开放接口。",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Companion",
-    "dsh-desktop-companion",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
+    "实验功能插件",
+    "DSH Plugin Music",
+    "dsh-plugin-music",
     "实验功能",
     "新功能",
     "dsh",
-    "desktop",
-    "companion"
+    "plugin",
+    "music"
   ],
-  "repositoryUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop",
+  "repositoryUrl": "https://github.com/caimc21069065-prog/dsh-my-music",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-companion/package.json",
-  "installPath": "plugins/dsh-desktop-companion",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fcc995efae23df9da1f572329a83b2a7a3105b46",
-  "version": "0.0.21",
+  "commit": "9b1e5b15668edd7413df3754bd8a9197cccd16a3",
+  "version": "0.2.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-07T11:45:24.000Z",
+    "updatedAt": "2026-10-07T14:04:53.000Z",
     "observedAt": "2026-10-07T14:00:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-07T14:00:20.000Z",
-      "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/fcc995efae23df9da1f572329a83b2a7a3105b46",
+      "evidenceUrl": "https://github.com/caimc21069065-prog/dsh-my-music/commit/9b1e5b15668edd7413df3754bd8a9197cccd16a3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +69,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "dsh-desktop-companion"
+    "music"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.0-rc.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +160,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20",
     "systems": [],
     "profiles": [
       "web"
@@ -183,7 +179,11 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/schemastery",
+      "netease-cloud-music-api-alger",
+      "qrcode"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

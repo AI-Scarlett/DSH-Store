@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-07T04:47:55.000Z",
+    "updatedAt": "2026-10-07T14:00:20.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,8 +926,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "166dcd21d06f687a9c480a6a6d36beb3b4954dd0",
-      "sourceUpdatedAt": "2026-10-07T04:46:13.000Z",
+      "latestCommit": "33d4761cc7a96630b7c2fed890df83d433c45914",
+      "sourceUpdatedAt": "2026-10-07T13:56:58.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2206,8 +2206,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "5dcc7fce51dd5beeaed313b4d49a8b07a41b0d8d",
-      "sourceUpdatedAt": "2026-10-07T04:33:52.000Z",
+      "latestCommit": "380f82c6e16355d0394baabf385b48215c7f7a7e",
+      "sourceUpdatedAt": "2026-10-07T07:41:11.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2449,8 +2449,8 @@
       "description": "为 DSH 提供任务与工作流自动化能力。英文原始说明：A beginner-friendly configurable greet tool plugin for DeepSeek Harness.",
       "repositoryUrl": "https://github.com/0lidaxiang/dsh-plugin-greet",
       "defaultBranch": "master",
-      "latestCommit": "2bfd88c84af71deffb5822dc3efdc0c61b451ae3",
-      "sourceUpdatedAt": "2026-09-09T12:03:48.000Z",
+      "latestCommit": "96b18e0b09c477e17e49a31e5a6260c63e6bf6ed",
+      "sourceUpdatedAt": "2026-10-07T08:59:04.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -2898,8 +2898,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "18dcf89b4a6a8ab67ed758778cfbf690bf5d50b4",
-      "sourceUpdatedAt": "2026-10-06T18:34:22.000Z",
+      "latestCommit": "9c0e051539db4418a6c418e856b5216d50af167d",
+      "sourceUpdatedAt": "2026-10-07T11:06:52.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6640,8 +6640,8 @@
       "description": "工作区跨设备备份、恢复与扩展更新，经 uagent-sync CLI 桥接执行。",
       "repositoryUrl": "https://github.com/severin-ye/uagent-sync",
       "defaultBranch": "master",
-      "latestCommit": "b8bdd3a00b3122537b8f13638d167340f2cac158",
-      "sourceUpdatedAt": "2026-10-03T04:01:30.000Z",
+      "latestCommit": "36e610cd74803e92ad38ad918bfc9353872b1c4a",
+      "sourceUpdatedAt": "2026-10-07T11:32:46.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16722,6 +16722,144 @@
         "deepseek-harness",
         "dsh",
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wssfk12138-dsh-damage-pulse",
+      "name": "wssfk12138/dsh-damage-pulse",
+      "description": "DeepSeek Harness Token 余额监控插件：鲸鱼娘待机/扣费/复苏动画、峰谷计费、连续扣费飘字与会话费用统计。",
+      "repositoryUrl": "https://github.com/wssfk12138/dsh-damage-pulse",
+      "defaultBranch": "master",
+      "latestCommit": "472a1c17d69d8b842062b7143c761e695be6e766",
+      "sourceUpdatedAt": "2026-10-05T12:15:46.000Z",
+      "discoveredAt": "2026-10-07T14:00:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/wssfk12138__dsh-damage-pulse.yml:sha256=db82529d0d456400861a43f396a6c5becba76db1235a9b1c6bce841fec3beb41:at=2026-10-07T14:05:13.530Z:owner=79346097"
+      ],
+      "topics": [
+        "balance-monitor",
+        "damage-animation",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "token-monitor",
+        "token-usage",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wqy8593521-dsh-model-pro",
+      "name": "wqy8593521/dsh-model-pro",
+      "description": "Model Pro — DSH plugin for llm-pi-ai provider lifecycle management",
+      "repositoryUrl": "https://github.com/wqy8593521/dsh-model-pro",
+      "defaultBranch": "main",
+      "latestCommit": "92e75f73905eee783c60249c0ee1e1734a6b0064",
+      "sourceUpdatedAt": "2026-10-06T15:58:16.000Z",
+      "discoveredAt": "2026-10-07T14:00:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/wqy8593521__dsh-model-pro.yml:sha256=57e1b9cb6a93c9eb59f2c1751e8babcaf84335f802a8dfcb668d6e555b73b69e:at=2026-10-07T14:05:13.530Z:owner=75476247"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh-plugin",
+        "llm-pi-ai",
+        "model-provider",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wsl043-dsh-chat-manager",
+      "name": "WSL043/dsh-chat-manager",
+      "description": "DeepSeek Harness chat history and session management: search archives, restore conversations, and delete safely.",
+      "repositoryUrl": "https://github.com/WSL043/dsh-chat-manager",
+      "defaultBranch": "main",
+      "latestCommit": "7a0af0120fb62beb96c8ba0da1b43c42127029e0",
+      "sourceUpdatedAt": "2026-10-04T13:15:31.000Z",
+      "discoveredAt": "2026-10-07T14:00:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/WSL043__dsh-chat-manager.yml:sha256=7acd6a43da5ffde96b52c3380ccaac8cb28a8f6d0578a01f3e960dde5b19e67d:at=2026-10-07T14:05:13.530Z:owner=100819018"
+      ],
+      "topics": [
+        "archived-sessions",
+        "chat-history",
+        "conversation-history",
+        "conversation-search",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "npm-package",
+        "permanent-delete",
+        "privacy",
+        "restore",
+        "session-archive",
+        "session-delete",
+        "session-management",
+        "session-manager",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "haigepor-dsh-autoflow",
+      "name": "haigepor/dsh-AutoFlow",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/haigepor/dsh-AutoFlow",
+      "defaultBranch": "main",
+      "latestCommit": "c3ddc85d53fca790fd380efa5fb78dad12f2831d",
+      "sourceUpdatedAt": "2026-10-07T13:53:09.000Z",
+      "discoveredAt": "2026-10-07T14:00:20.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "wsl043-dsh-image-viewer",
+      "name": "WSL043/dsh-image-viewer",
+      "description": "DeepSeek Harness (DSH) image viewer / 图片查看器: zoom, gallery, original downloads and clear region annotations.",
+      "repositoryUrl": "https://github.com/WSL043/dsh-image-viewer",
+      "defaultBranch": "main",
+      "latestCommit": "d938bc35906784e253aca15903547068463907f0",
+      "sourceUpdatedAt": "2026-10-04T13:16:08.000Z",
+      "discoveredAt": "2026-10-07T14:00:20.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@08f3df46cca11abfc9293d3b2c64239ea8ce1e6f:data/plugins/WSL043__dsh-image-viewer.yml:sha256=568aa115f09b37a390ff59d3fda29d32c368524f43c90759c944ed23b1617508:at=2026-10-07T14:05:13.530Z:owner=100819018"
+      ],
+      "topics": [
+        "accessibility",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "image-annotation",
+        "image-gallery",
+        "image-viewer",
+        "image-zoom",
+        "keyboard-navigation",
+        "lightbox",
+        "npm-package",
+        "pan-and-zoom",
+        "react",
         "automatic-radar"
       ],
       "status": "reviewing",
