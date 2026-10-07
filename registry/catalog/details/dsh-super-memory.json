@@ -1,48 +1,47 @@
 {
-  "id": "inkweaver-dsh",
-  "name": "审查与验证助手（Inkweaver DSH）",
-  "packageName": "@shuishuipingan/inkweaver-dsh",
-  "description": "为 DSH 提供审查与验证助手能力。英文原始说明：The reviewed local-first InkWeaver novel workspace for DeepSeek Harness",
+  "id": "dsh-super-memory",
+  "name": "记忆与知识库（DSH Super Memory）",
+  "packageName": "dsh-super-memory",
+  "description": "跨压缩记忆：同一个超长会话被压缩多次后，早前问过/定过的事仍能被检索到并作为参考注入。压缩时入库（0 模型调用），提问时本地检索、命中才注入。",
   "searchTerms": [
-    "审查与验证助手",
-    "Inkweaver DSH",
-    "inkweaver-dsh",
-    "@shuishuipingan/inkweaver-dsh",
-    "审查",
-    "验证",
-    "质量检查",
-    "实验功能",
-    "新功能",
-    "inkweaver",
-    "dsh"
+    "记忆与知识库",
+    "DSH Super Memory",
+    "dsh-super-memory",
+    "记忆",
+    "知识库",
+    "召回",
+    "长期记忆",
+    "dsh",
+    "super",
+    "memory"
   ],
-  "repositoryUrl": "https://github.com/shuishuipingan/InkWeaver",
+  "repositoryUrl": "https://github.com/kkwings/dsh-super-memory",
   "defaultBranch": "main",
-  "manifestPath": "plugins/inkweaver-dsh/package.json",
-  "installPath": "plugins/inkweaver-dsh",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "668fa8612323e630ef61866c21bf955baa48f876",
-  "version": "1.2.0",
+  "commit": "04f31d94de68cb6a532adf2e11a2fcc3f6865cd9",
+  "version": "0.1.0",
   "categories": [
-    "experimental"
+    "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-07T04:32:06.000Z",
+    "updatedAt": "2026-10-07T04:52:46.000Z",
     "observedAt": "2026-10-07T04:47:55.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-07T04:47:55.000Z",
-      "evidenceUrl": "https://github.com/shuishuipingan/InkWeaver/commit/668fa8612323e630ef61866c21bf955baa48f876",
+      "evidenceUrl": "https://github.com/kkwings/dsh-super-memory/commit/04f31d94de68cb6a532adf2e11a2fcc3f6865cd9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +71,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "inkweaver"
+    "dsh-super-memory"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/agent.d.ts; runtime artifact is missing from the distributable surface: ./",
+  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.7-rc.2 <0.2.0 || >=0.2.0-rc.1 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -163,7 +162,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19 || >=24",
+    "node": ">=22.15",
     "systems": [],
     "profiles": [
       "web"
@@ -182,11 +181,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/dsh-atomic-write",
-      "@deepseek-ai/dsh-home-paths",
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
