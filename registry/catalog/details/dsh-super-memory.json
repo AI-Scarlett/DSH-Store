@@ -20,28 +20,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "04f31d94de68cb6a532adf2e11a2fcc3f6865cd9",
-  "version": "0.1.0",
+  "commit": "42d2205e21ac23e8ca0df6d5fe6304965acc58d0",
+  "version": "0.2.2",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-07T04:52:46.000Z",
-    "observedAt": "2026-10-07T04:47:55.000Z",
+    "updatedAt": "2026-10-07T10:17:16.000Z",
+    "observedAt": "2026-10-07T14:00:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-07T04:47:55.000Z",
-      "evidenceUrl": "https://github.com/kkwings/dsh-super-memory/commit/04f31d94de68cb6a532adf2e11a2fcc3f6865cd9",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-07T14:00:20.000Z",
+      "evidenceUrl": "https://github.com/kkwings/dsh-super-memory/commit/42d2205e21ac23e8ca0df6d5fe6304965acc58d0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,14 +71,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-super-memory"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.1.7-rc.2 <0.2.0 || >=0.2.0-rc.1 <0.3.0-0",
     "dshReleases": {
