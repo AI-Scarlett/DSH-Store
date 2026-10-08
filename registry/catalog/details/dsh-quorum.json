@@ -1,49 +1,48 @@
 {
-  "id": "dsh-config-manager",
-  "name": "配置导入迁移（DSH Config Manager）",
-  "packageName": "dsh-config-manager",
-  "description": "Backup, restore, export, import, migrate and sync your DeepSeek Harness (DSH) configuration: settings, plugins, MCP servers, skills, agent presets and workspaces. One-click migration to another machine. DSH 配置一键备份、恢复、导出、导入、迁移与同步插件。",
+  "id": "dsh-quorum",
+  "name": "费用与账单（DSH Quorum）",
+  "packageName": "dsh-quorum",
+  "description": "为 DSH 提供费用与账单能力。英文原始说明：Mechanism-enforced discipline layer for DeepSeek Harness agent teams: role cards, quorum termination, evidence-gated reports and cost budgets.",
   "searchTerms": [
-    "配置导入迁移",
-    "DSH Config Manager",
-    "dsh-config-manager",
-    "配置导入",
-    "配置迁移",
-    "搬家",
-    "导入迁移",
-    "导入",
-    "迁移",
+    "费用与账单",
+    "DSH Quorum",
+    "dsh-quorum",
+    "费用",
+    "计费",
+    "账单",
+    "成本",
+    "实验功能",
+    "新功能",
     "dsh",
-    "config",
-    "manager"
+    "quorum"
   ],
-  "repositoryUrl": "https://github.com/xiajiajun516/dsh-config-manager",
+  "repositoryUrl": "https://github.com/141w/dsh-quorum",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "821e7ccc595f12924e10f202a299e7019cf27fb2",
-  "version": "0.1.71",
+  "commit": "19c38f39d74d8d903c250d1dbba1a45b0093abf6",
+  "version": "0.3.0",
   "categories": [
-    "import"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-07T22:39:59.000Z",
+    "updatedAt": "2026-10-08T05:01:57.000Z",
     "observedAt": "2026-10-08T04:58:13.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-08T04:58:13.000Z",
-      "evidenceUrl": "https://github.com/xiajiajun516/dsh-config-manager/commit/821e7ccc595f12924e10f202a299e7019cf27fb2",
+      "evidenceUrl": "https://github.com/141w/dsh-quorum/commit/19c38f39d74d8d903c250d1dbba1a45b0093abf6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "config-manager"
+    "quorum"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/core/index.js; runtime artifact is missing",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.6 <0.3.0-0",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,7 +163,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=22.19.0",
     "systems": [],
     "profiles": [
       "web"
@@ -183,15 +182,11 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "js-yaml"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

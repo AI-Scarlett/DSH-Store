@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-07T21:03:18.000Z",
+    "updatedAt": "2026-10-08T04:58:13.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -926,8 +926,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "63cf28fd8f8acaf656e993300a2a24280b2fd692",
-      "sourceUpdatedAt": "2026-10-07T20:46:46.000Z",
+      "latestCommit": "53409ab1968d60c77f98feedefe237a08859a95c",
+      "sourceUpdatedAt": "2026-10-08T04:45:21.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -6640,8 +6640,8 @@
       "description": "工作区跨设备备份、恢复与扩展更新，经 uagent-sync CLI 桥接执行。",
       "repositoryUrl": "https://github.com/severin-ye/uagent-sync",
       "defaultBranch": "master",
-      "latestCommit": "c1d73efc9f929929bd832efb897d4abcded2981a",
-      "sourceUpdatedAt": "2026-10-07T14:07:11.000Z",
+      "latestCommit": "3400abc22b8381f9e1f5cb71925116c7b64f089c",
+      "sourceUpdatedAt": "2026-10-08T02:12:36.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -10217,8 +10217,8 @@
       "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：MCP server manager for DeepSeek Harness: OAuth/stdio servers, workspace isolation, and an opt-in on-demand tool broker",
       "repositoryUrl": "https://github.com/hyqhyq3/dsh-mcp-manager",
       "defaultBranch": "main",
-      "latestCommit": "b029407ca3d258e83abac6c06ff94f92e5687164",
-      "sourceUpdatedAt": "2026-09-11T08:07:41.000Z",
+      "latestCommit": "d1af71528683751b0b610035c9dcbd4a29d7414b",
+      "sourceUpdatedAt": "2026-10-08T04:14:39.000Z",
       "discoveredAt": "2026-09-18T13:50:17.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16931,6 +16931,107 @@
       "status": "rejected",
       "route": "monorepo-review",
       "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/weir-harness, plugins/weir-test-harness"
+    },
+    {
+      "id": "wloops-dsh-git-worktree",
+      "name": "wloops/dsh-git-worktree",
+      "description": "Git worktree Session Targets for DeepSeek Harness with isolated task sessions, reversible Local Preview, human-confirmed delivery, recovery, and same-session iteration.",
+      "repositoryUrl": "https://github.com/wloops/dsh-git-worktree",
+      "defaultBranch": "master",
+      "latestCommit": "cf57c3784da9e689f3b0850378d2ed74a02dec53",
+      "sourceUpdatedAt": "2026-10-07T06:28:27.000Z",
+      "discoveredAt": "2026-10-08T04:58:13.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e7711448613a77fbc95b9400a5123cb7beb8f88:data/plugins/wloops__dsh-git-worktree.yml:sha256=d448e3c45a63f67d4c6787acccbda1fea5a6c688c20797d8aa00ae9f1c9bec9a:at=2026-10-08T05:02:26.392Z:owner=28558522"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "git-worktree",
+        "worktree",
+        "worktree-manager",
+        "worktrees",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wly8691-jpg-dsh-office-com",
+      "name": "wly8691-jpg/dsh-office-com",
+      "description": "Windows-native real-Office automation plugin (DSH). Contract, task-level, fault-injection and process-leak regressions covered; real-Office tests must be run on the target machine.",
+      "repositoryUrl": "https://github.com/wly8691-jpg/dsh-office-com",
+      "defaultBranch": "main",
+      "latestCommit": "9082af8bf147983941bc855604e72fc2a06f8ede",
+      "sourceUpdatedAt": "2026-10-06T23:47:31.000Z",
+      "discoveredAt": "2026-10-08T04:58:13.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e7711448613a77fbc95b9400a5123cb7beb8f88:data/plugins/wly8691-jpg__dsh-office-com.yml:sha256=d5ae9598871f75cd52ee4019ebbc0e4407fb185a68d8082dd6a9c8b90cc9de2f:at=2026-10-08T05:02:26.392Z:owner=285393436"
+      ],
+      "topics": [
+        "com",
+        "deepseek-harness",
+        "dsh-plugin",
+        "excel",
+        "office",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wly8691-jpg-knowlp-rag",
+      "name": "wly8691-jpg/knowlp-rag",
+      "description": "KnowLP-RAG: dual knowledge-graph RAG for Markdown notes — dsh plugin add @eqman00003/knowlp-rag · MCP + native Cordis plugin for DeepSeek Harness (dsh) & Claude Code",
+      "repositoryUrl": "https://github.com/wly8691-jpg/knowlp-rag",
+      "defaultBranch": "main",
+      "latestCommit": "21a5e5778e4d3c0a0188445aac3a61a09d0f923f",
+      "sourceUpdatedAt": "2026-10-06T23:34:10.000Z",
+      "discoveredAt": "2026-10-08T04:58:13.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e7711448613a77fbc95b9400a5123cb7beb8f88:data/plugins/wly8691-jpg__knowlp-rag.yml:sha256=3d88b689314897953a9885cf1041af84ddbb327a84f7a806e51c8309c3afb18a:at=2026-10-08T05:02:26.392Z:owner=285393436"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "knowledge-graph",
+        "mcp",
+        "obsidian",
+        "rag",
+        "retrieval",
+        "second-brain",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wlv-zedd-dsh-chatgpt-web",
+      "name": "WLV-ZEDD/dsh-chatgpt-web",
+      "description": "DSH ChatGPT Free bridges standard ChatGPT Web directly into DeepSeek Harness",
+      "repositoryUrl": "https://github.com/WLV-ZEDD/dsh-chatgpt-web",
+      "defaultBranch": "main",
+      "latestCommit": "accff0b2ee7465a07ef90151275dafc8f2e957ce",
+      "sourceUpdatedAt": "2026-10-04T06:07:09.000Z",
+      "discoveredAt": "2026-10-08T04:58:13.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e7711448613a77fbc95b9400a5123cb7beb8f88:data/plugins/WLV-ZEDD__dsh-chatgpt-web.yml:sha256=a8ffd5f060d1c444936800ffabe989644f4448060bb11d486458ca1046c23499:at=2026-10-08T05:02:26.392Z:owner=219085926"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
