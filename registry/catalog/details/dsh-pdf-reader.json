@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e39262a3222f4932cb7d5f226e1f94100548e866",
-  "version": "0.1.1",
+  "commit": "ac5fa1e8dcd480465e986eee9fed5cbdeff0ebe1",
+  "version": "0.1.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-08T11:03:14.000Z",
-    "observedAt": "2026-10-08T10:57:44.000Z",
+    "updatedAt": "2026-10-08T11:58:45.000Z",
+    "observedAt": "2026-10-08T15:17:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-08T10:57:44.000Z",
-      "evidenceUrl": "https://github.com/SkanderBog/dsh-pdf-reader/commit/e39262a3222f4932cb7d5f226e1f94100548e866",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-08T15:17:06.000Z",
+      "evidenceUrl": "https://github.com/SkanderBog/dsh-pdf-reader/commit/ac5fa1e8dcd480465e986eee9fed5cbdeff0ebe1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-pdf-reader"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -91,9 +91,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown"
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.1": "compatible",
+      "0.2.0-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -144,19 +144,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -165,7 +165,11 @@
     },
     "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "custom",
+      "desktop",
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",

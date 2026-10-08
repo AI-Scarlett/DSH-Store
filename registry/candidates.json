@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-08T10:57:44.000Z",
+    "updatedAt": "2026-10-08T15:17:06.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "53409ab1968d60c77f98feedefe237a08859a95c",
-      "sourceUpdatedAt": "2026-10-08T04:45:21.000Z",
+      "latestCommit": "5f93b4b125e78f088a2349a178e60f8c0af3e1a2",
+      "sourceUpdatedAt": "2026-10-08T15:20:52.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -946,24 +946,24 @@
       ],
       "topics": [
         "agent-skills",
-        "ai-agent-tools",
         "ai-agents",
         "binary-analysis",
+        "claude-code",
         "cli",
-        "coding-agents",
+        "codex",
         "cordis",
         "ctf",
         "decompiler",
+        "developer-tools",
         "disassembler",
         "dsh",
         "dsh-plugin",
         "ghidra",
         "hopper",
+        "llm",
         "mcp",
-        "mcp-server",
         "model-context-protocol",
         "reverse-engineering",
-        "reverse-engineering-tools",
         "static-analysis",
         "automatic-radar"
       ],
@@ -2908,8 +2908,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "9c0e051539db4418a6c418e856b5216d50af167d",
-      "sourceUpdatedAt": "2026-10-07T11:06:52.000Z",
+      "latestCommit": "94712bc8e41283b2599e76c6dcfa737dabafca0f",
+      "sourceUpdatedAt": "2026-10-08T13:45:38.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4305,8 +4305,8 @@
       "description": "Codex 官方插件一键移植为 DSH 技能（实测 186 插件/583 技能，移植 577 个 0 失败）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-codex-port",
       "defaultBranch": "master",
-      "latestCommit": "9d6bf6651d4d145e8184be27c0908f247cf31f3b",
-      "sourceUpdatedAt": "2026-10-05T04:03:14.000Z",
+      "latestCommit": "9b144ccfa69479b6e979aa7adb04179ebbce2056",
+      "sourceUpdatedAt": "2026-10-08T12:00:12.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4345,8 +4345,8 @@
       "description": "语音双件套：edge-tts 免费微软神经语音合成 + OpenAI 兼容 ASR 转写。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-voice",
       "defaultBranch": "master",
-      "latestCommit": "cfc1667c9202b1891d0203aa3116451f7ca2bf7a",
-      "sourceUpdatedAt": "2026-10-05T04:02:56.000Z",
+      "latestCommit": "a1abe2247ab20ca51c70d039c9faa70f3a281e68",
+      "sourceUpdatedAt": "2026-10-08T11:59:49.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4365,8 +4365,8 @@
       "description": "测试稳定性工具：重复运行 vitest/jest/pytest/node:test，识别 flaky 用例，历史留档与隔离清单。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-flakefinder",
       "defaultBranch": "master",
-      "latestCommit": "f9d0947ea1b2ffa154d52dc8589cf400e5aca2eb",
-      "sourceUpdatedAt": "2026-10-05T04:03:18.000Z",
+      "latestCommit": "fdba1afd20f7c942302aea36b6164903dad5f070",
+      "sourceUpdatedAt": "2026-10-08T12:00:17.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4385,8 +4385,8 @@
       "description": "数据库工具：sql_list/query/exec/schema，SQLite/MySQL/PostgreSQL 三引擎，词法级只读保护、行数钳制与写审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-sql",
       "defaultBranch": "master",
-      "latestCommit": "8692d1f283af1122b96c8afb4ff0f413d8da3aba",
-      "sourceUpdatedAt": "2026-10-05T04:03:07.000Z",
+      "latestCommit": "6ed1199c77d5ff856088cd45a6cbfe32b445dc78",
+      "sourceUpdatedAt": "2026-10-08T12:00:01.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4405,8 +4405,8 @@
       "description": "Docker 工具：ps/images/logs/inspect/exec/manage，JSON 输出、DSH_DOCKER_PATH 环境变量、exec 审批门、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-docker",
       "defaultBranch": "master",
-      "latestCommit": "03a9e5d0f4c12d034347634a38ba75bf9c043281",
-      "sourceUpdatedAt": "2026-10-05T04:25:34.000Z",
+      "latestCommit": "dfd9b1fefcfff8735d59158e839ed0e2f550df20",
+      "sourceUpdatedAt": "2026-10-08T12:04:58.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4425,8 +4425,8 @@
       "description": "视频处理七工具（探测/剪辑/拼接/转码/字幕烧录/抽帧/GIF），官方 subprocess 服务、argv 无 shell 注入、零运行时依赖。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-ffmpeg",
       "defaultBranch": "master",
-      "latestCommit": "c26eec47ef88a378a54d45028e889db80c81830b",
-      "sourceUpdatedAt": "2026-10-05T04:02:52.000Z",
+      "latestCommit": "5523acb1e7b582cd0590971be90014150061fa0b",
+      "sourceUpdatedAt": "2026-10-08T11:59:32.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4445,8 +4445,8 @@
       "description": "RSS/Atom 订阅管理 + 抓取解析（rss_list/add/remove/fetch/check），订阅持久化到 settings。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-rss",
       "defaultBranch": "master",
-      "latestCommit": "1c22e597c5774d7d9cba6734950fef245512edf5",
-      "sourceUpdatedAt": "2026-10-05T04:03:03.000Z",
+      "latestCommit": "4e1470ff772057df250ba87de60de59951b07cc6",
+      "sourceUpdatedAt": "2026-10-08T11:59:53.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4465,8 +4465,8 @@
       "description": "钉钉群机器人通知（webhook + 加签，零运行时依赖）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-dingtalk",
       "defaultBranch": "main",
-      "latestCommit": "a7d017681f9bfec886148447e3e54546aa4e96d5",
-      "sourceUpdatedAt": "2026-10-04T17:16:53.000Z",
+      "latestCommit": "4145e163e52485fc0a28f78ebd81148f83ad8bbc",
+      "sourceUpdatedAt": "2026-10-08T12:00:25.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4485,8 +4485,8 @@
       "description": "Slack 双向通信（notify/channels/inbox/reply，Socket Mode 免公网回调）。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-slack",
       "defaultBranch": "main",
-      "latestCommit": "58d172c38e049b74f27b0d536c359e385a23f43b",
-      "sourceUpdatedAt": "2026-10-05T04:07:47.000Z",
+      "latestCommit": "8d5f743193b09aee71da8b857c1da2fae97f3ce2",
+      "sourceUpdatedAt": "2026-10-08T12:00:21.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -4505,8 +4505,8 @@
       "description": "邮件工具插件：IMAP/SMTP 收/发/搜/列文件夹/附件下载，内置 QQ/163/126/新浪/阿里/Gmail/Outlook/iCloud 预设，多账号、连接复用与发信审批门。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-email",
       "defaultBranch": "main",
-      "latestCommit": "d49ae7137013a8b0b1dce942986bb7b6d057379c",
-      "sourceUpdatedAt": "2026-10-05T04:02:41.000Z",
+      "latestCommit": "43dc6367de1ee17408769ba44a7ec4bd7199df79",
+      "sourceUpdatedAt": "2026-10-08T12:43:12.000Z",
       "discoveredAt": "2026-08-26T08:53:19.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -5145,8 +5145,8 @@
       "description": "CalDAV 日历插件：查/建/改/删/搜日程，Google/iCloud/Nextcloud/自定义端点，RRULE 重复事件展开。",
       "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-calendar",
       "defaultBranch": "main",
-      "latestCommit": "83fce6047ccb41cd90c0aaddabafd1254325a2ce",
-      "sourceUpdatedAt": "2026-10-05T04:51:10.000Z",
+      "latestCommit": "98efc5dd931eb9c6954b864ce371a28f31de35cd",
+      "sourceUpdatedAt": "2026-10-08T11:59:23.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -17073,6 +17073,125 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "vclike-dsh-github-companion",
+      "name": "vclike/dsh-github-companion",
+      "description": "DeepSeek Harness 插件：AI 操作 GitHub 的完整集成——33 个 REST/GraphQL 工具 + 进程内权限门 + 成本纪律 companion skill — DeepSeek Harness plugin: complete GitHub integration for AI agents, 33 tools, permission gate, companion skill.",
+      "repositoryUrl": "https://github.com/vclike/dsh-github-companion",
+      "defaultBranch": "main",
+      "latestCommit": "89917b88b2f5cb2e18d4c6f2067bdd223f0921b7",
+      "sourceUpdatedAt": "2026-10-03T20:40:24.000Z",
+      "discoveredAt": "2026-10-08T15:17:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@8b87d8d8aa01714b43277ff9c283b7d4e425a118:data/plugins/vclike__dsh-github-companion.yml:sha256=406bab024f0ffe56a5727a876fa1a0eb8c47e0b9dd9dc8363bc7a9348f921e41:at=2026-10-08T15:22:28.501Z:owner=26641731"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "vdnight89-infinitedsh",
+      "name": "vdnight89/InfiniteDSH",
+      "description": "一会话，一扇门，一界命数。诸天万界DSH：DeepSeek Harness 上的文字修罗场。十九扇门点封面启程，不助手不提纲只写正文；誊出来的，是你活过的天书。",
+      "repositoryUrl": "https://github.com/vdnight89/InfiniteDSH",
+      "defaultBranch": "main",
+      "latestCommit": "b9716a43e1d396b71baf2b270ba33c5e92b944db",
+      "sourceUpdatedAt": "2026-08-18T08:02:21.000Z",
+      "discoveredAt": "2026-10-08T15:17:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@8b87d8d8aa01714b43277ff9c283b7d4e425a118:data/plugins/vdnight89__InfiniteDSH.yml:sha256=40b9a9aa293164c2383d7442660c1d5ec69490e161e50f32dc46f4b80ba1898a:at=2026-10-08T15:22:28.501Z:owner=291329933"
+      ],
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-writing",
+        "chinese",
+        "cordis",
+        "cordis-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "interactive-fiction",
+        "novel",
+        "plugins",
+        "text-adventure",
+        "typescript",
+        "worldbook",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "vderr-dsh-echocat-skill-panel",
+      "name": "VDERR/dsh-echocat-skill-panel",
+      "description": "DSH 技能调用审计 + 应用内 skill 管理器",
+      "repositoryUrl": "https://github.com/VDERR/dsh-echocat-skill-panel",
+      "defaultBranch": "main",
+      "latestCommit": "1f98da64b72a222a7825cc5258dd9d5b88ee7881",
+      "sourceUpdatedAt": "2026-09-24T10:38:17.000Z",
+      "discoveredAt": "2026-10-08T15:17:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@8b87d8d8aa01714b43277ff9c283b7d4e425a118:data/plugins/VDERR__dsh-echocat-skill-panel.yml:sha256=d40515390e7bde42ae0636419cf36ad81d24f1201492a30ddb29ec403a11dea7:at=2026-10-08T15:22:28.501Z:owner=106128710"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "vergil-long-dsh-custom-font",
+      "name": "Vergil-long/dsh-custom-font",
+      "description": "DSH自定义界面字体插件",
+      "repositoryUrl": "https://github.com/Vergil-long/dsh-custom-font",
+      "defaultBranch": "main",
+      "latestCommit": "5ea9a4bd77002cad6cfae362a24e191543a43d40",
+      "sourceUpdatedAt": "2026-09-15T14:48:03.000Z",
+      "discoveredAt": "2026-10-08T15:17:06.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@8b87d8d8aa01714b43277ff9c283b7d4e425a118:data/plugins/Vergil-long__dsh-custom-font.yml:sha256=d4b68be1a57f3695353587a2b19c890d88e7e145b0f927dcff19437757278df6:at=2026-10-08T15:22:28.501Z:owner=317571649"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kaolabrother-kaola-project-runner",
+      "name": "KaolaBrother/kaola-project-runner",
+      "description": "One Agent can delegate multiple projects. Each project has one Project Runner that orchestrates its own authorized workers, and each worker can autonomously complete tasks through Kaola Workflow.",
+      "repositoryUrl": "https://github.com/KaolaBrother/kaola-project-runner",
+      "defaultBranch": "main",
+      "latestCommit": "106e360fc2809675fc5a5d2746a81c4ce4f6aa31",
+      "sourceUpdatedAt": "2026-10-08T15:22:37.000Z",
+      "discoveredAt": "2026-10-08T15:17:06.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
