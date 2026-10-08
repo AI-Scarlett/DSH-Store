@@ -23,8 +23,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0d9ec4f4ed8cf40f36e5ed4c38ad22ca4d1ab465",
-  "version": "0.2.68",
+  "commit": "fd1bc55b883dca30aa1e03cf06c24586603b4765",
+  "version": "0.2.70",
   "categories": [
     "marketplace",
     "tools"
@@ -32,16 +32,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-06T17:10:33.000Z",
-    "observedAt": "2026-10-06T20:49:02.000Z",
+    "updatedAt": "2026-10-08T10:08:03.000Z",
+    "observedAt": "2026-10-08T10:57:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-06T20:49:02.000Z",
-      "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/0d9ec4f4ed8cf40f36e5ed4c38ad22ca4d1ab465",
+      "checkedAt": "2026-10-08T10:57:44.000Z",
+      "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/fd1bc55b883dca30aa1e03cf06c24586603b4765",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
     "mcp-connector"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -185,7 +185,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "cross-spawn"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

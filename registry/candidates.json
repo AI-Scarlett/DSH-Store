@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-08T04:58:13.000Z",
+    "updatedAt": "2026-10-08T10:57:44.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -243,20 +243,30 @@
       "description": "A memory-first personal AI Agent that grows with your work.开源、开箱即用的 AI Agent。",
       "repositoryUrl": "https://github.com/gusibi/molibot",
       "defaultBranch": "master",
-      "latestCommit": "ed1a5e3ba67540579f4ffde6506e35985c9315bb",
-      "sourceUpdatedAt": "2026-08-20T16:49:45.000Z",
+      "latestCommit": "dc0f7c593e9e3f52f9df25bb11ee46c9bf44c4b0",
+      "sourceUpdatedAt": "2026-10-08T11:03:11.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
-        "github-live-fixed-source-review-2026-08-21"
+        "github-live-fixed-source-review-2026-08-21",
+        "github-automatic-radar-v1"
       ],
       "topics": [
-        "dsh-plugin-candidate",
-        "session"
+        "agent",
+        "ai",
+        "dsh-plugin",
+        "local-first",
+        "local-first-ai",
+        "miniapp",
+        "molibot",
+        "personal-ai",
+        "pi",
+        "pi-agent",
+        "automatic-radar"
       ],
       "status": "rejected",
       "route": "adapter-required",
-      "statusReason": "Rejected from the installable catalog after fixed-commit review: no unambiguous standard DSH Bundle was found at the fixed commit. Candidate records remain non-installable and may be re-reviewed after source changes."
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     },
     {
       "id": "zhnt-loushang",
@@ -2041,8 +2051,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "43ee120575ec8ba2ff34ff663c6b8e447773d420",
-      "sourceUpdatedAt": "2026-10-06T00:11:37.000Z",
+      "latestCommit": "e8ab17056266dad01bb2a3b9e1b39229228072e8",
+      "sourceUpdatedAt": "2026-10-08T08:13:59.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -3393,8 +3403,8 @@
       "description": "DeepSeek Harness 插件「墨言」：在 WebUI 侧边栏「设置」上方完整显示一句名言、诗词或游戏台词，语料可用 txt 直接编辑",
       "repositoryUrl": "https://github.com/elviszhang007/dsh-moyan",
       "defaultBranch": "main",
-      "latestCommit": "2799a4a313013bc974ce806d0e21a9712ae54102",
-      "sourceUpdatedAt": "2026-09-08T03:02:53.000Z",
+      "latestCommit": "58e4abc1622a3c572b47602ab2ee3fc8b035f3a5",
+      "sourceUpdatedAt": "2026-10-08T07:07:21.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -7937,8 +7947,8 @@
       "description": "为 DSH 提供模型提供商接入能力。英文原始说明：CodeBuddy OAuth, dynamic models, and reasoning controls for DeepSeek Harness",
       "repositoryUrl": "https://github.com/Lbryany/dsh-codebuddy",
       "defaultBranch": "main",
-      "latestCommit": "60bfe09a73793db531a23df4d57c1faf21b63a81",
-      "sourceUpdatedAt": "2026-09-20T03:18:29.000Z",
+      "latestCommit": "612ef93d096f8c6bfa28543791e5b697d7d67657",
+      "sourceUpdatedAt": "2026-10-08T08:55:56.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -9376,26 +9386,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-task-dag."
-    },
-    {
-      "id": "biggerboy-dsh-conversation-anchors",
-      "name": "会话管理（DSH Conversation Anchors）",
-      "description": "为 DSH 提供会话管理能力。英文原始说明：Codex-style tick-rail and thinking-process fold for the DeepSeek Harness web GUI: per-turn dashes, hover preview, click-to-scroll, eager history load, and collapsed Think/tool rows.",
-      "repositoryUrl": "https://github.com/biggerboy/dsh-conversation-anchors",
-      "defaultBranch": "master",
-      "latestCommit": "9198d2e0ffd3265b4b134030743336ae1a56c7a8",
-      "sourceUpdatedAt": "2026-10-04T05:03:48.000Z",
-      "discoveredAt": "2026-09-08T21:29:07.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "experimental",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-conversation-anchors."
     },
     {
       "id": "gou-gee-deepseek-vision",
@@ -17027,6 +17017,57 @@
         "dsh",
         "dsh-plugin",
         "dsh-plugin-market",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "inclusionai-avernet",
+      "name": "inclusionAI/Avernet",
+      "description": "Distributed agent coordination platform where agents live, connect, coordinate, execute, and evolve together — like an organization.",
+      "repositoryUrl": "https://github.com/inclusionAI/Avernet",
+      "defaultBranch": "dev",
+      "latestCommit": "991ea0c458892eb105f8912567443349f23c4419",
+      "sourceUpdatedAt": "2026-10-08T11:03:18.000Z",
+      "discoveredAt": "2026-10-08T10:57:44.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-coordination",
+        "agent-infrastructure",
+        "agent-organization",
+        "dsh-plugins",
+        "human-in-the-loop-ai",
+        "multi-agent-coordination",
+        "multi-agents",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "wpeng77-dsh-llm-trace",
+      "name": "wpeng77/dsh-llm-trace",
+      "description": "Wire-level LLM inspector for DeepSeek Harness: capture the raw HTTP request and response bodies of every model provider call, attributed per session, in a Conversation View tab and a loopback viewer page.",
+      "repositoryUrl": "https://github.com/wpeng77/dsh-llm-trace",
+      "defaultBranch": "main",
+      "latestCommit": "9fffd238f16e1ee7f96fd39a1b3a471a03ada2b6",
+      "sourceUpdatedAt": "2026-09-21T14:12:25.000Z",
+      "discoveredAt": "2026-10-08T10:57:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e5c9f341a35042d3a305e0e54ecfcbb507630e6:data/plugins/wpeng77__dsh-llm-trace.yml:sha256=cdb6a01f9ec15c09a51ec516ca1531dff303ef7274766c3b9d50b7e32146703a:at=2026-10-08T11:03:38.275Z:owner=2142183"
+      ],
+      "topics": [
+        "debugging",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "llm",
+        "observability",
         "automatic-radar"
       ],
       "status": "reviewing",

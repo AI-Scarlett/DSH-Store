@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "60bfe09a73793db531a23df4d57c1faf21b63a81",
-  "version": "0.1.3",
+  "commit": "612ef93d096f8c6bfa28543791e5b697d7d67657",
+  "version": "0.1.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-20T03:18:29.000Z",
-    "observedAt": "2026-09-20T03:51:15.000Z",
+    "updatedAt": "2026-10-08T08:55:56.000Z",
+    "observedAt": "2026-10-08T10:57:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-20T03:51:15.000Z",
-      "evidenceUrl": "https://github.com/Lbryany/dsh-codebuddy/commit/60bfe09a73793db531a23df4d57c1faf21b63a81",
+      "checkedAt": "2026-10-08T10:57:44.000Z",
+      "evidenceUrl": "https://github.com/Lbryany/dsh-codebuddy/commit/612ef93d096f8c6bfa28543791e5b697d7d67657",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   "status": "unlisted",
   "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.1, 0.2.0-rc.2, 0.2.1-alpha.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": "^0.1.6-alpha.2",
+    "dsh": "0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -258,7 +258,9 @@
     },
     "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "provider",
