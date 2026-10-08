@@ -1,49 +1,48 @@
 {
-  "id": "dsh-ui-tweaks",
-  "name": "任务通知提醒（DSH UI Tweaks）",
-  "packageName": "dsh-ui-tweaks",
-  "description": "为 DSH 提供任务通知提醒能力。英文原始说明：DSH web plugin: live-tune the conversation UI — code font size (px input), a timeline switch (DSH's native turn rail, or the classic v0.11 web rail: hover to preview, click to jump; native by default), a poster theme skin (neon poster, light/dark), a GitBar (branch chip in the session header with branch management, plus terminal and code-diff tabs in the native right sidebar with per-file diff and commit & push, and a real PTY terminal over a WebSocket to a persistent node-pty shell), task alerts that call you back via tab-title flash / system notification / chime when any session finishes its turn or starts waiting for your approval, plan review or answer, an /init slash command that submits an AGENTS.md bootstrap prompt (Chinese or English) into the current session, and a precise cache-hit readout that keeps two decimal places on the stats line's cache-hit figure under the input box — from the Settings panel. Requires DSH v0.1.5-alpha.2+ (the conversation timeline and dialog width are now native to DSH).",
+  "id": "dsh-pdf-reader",
+  "name": "OCR 文字识别（DSH Pdf Reader）",
+  "packageName": "dsh-pdf-reader",
+  "description": "为 DSH 提供OCR 文字识别能力。英文原始说明：Page-aware PDF reading, search, visual crops and selective local OCR for DeepSeek Harness.",
   "searchTerms": [
-    "任务通知提醒",
-    "DSH UI Tweaks",
-    "dsh-ui-tweaks",
-    "任务完成",
-    "通知",
-    "提醒",
-    "消息推送",
+    "OCR 文字识别",
+    "DSH Pdf Reader",
+    "dsh-pdf-reader",
+    "OCR",
+    "文字识别",
+    "文档解析",
     "实验功能",
     "新功能",
     "dsh",
-    "ui",
-    "tweaks"
+    "pdf",
+    "reader"
   ],
-  "repositoryUrl": "https://github.com/wlj521/dsh-ui-tweaks",
+  "repositoryUrl": "https://github.com/SkanderBog/dsh-pdf-reader",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e3b6cf9dffb904f9f340d65ab09bd159e6f769a6",
-  "version": "0.20.2",
+  "commit": "e39262a3222f4932cb7d5f226e1f94100548e866",
+  "version": "0.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-08T08:29:18.000Z",
+    "updatedAt": "2026-10-08T11:03:14.000Z",
     "observedAt": "2026-10-08T10:57:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-08T10:57:44.000Z",
-      "evidenceUrl": "https://github.com/wlj521/dsh-ui-tweaks/commit/e3b6cf9dffb904f9f340d65ab09bd159e6f769a6",
+      "evidenceUrl": "https://github.com/SkanderBog/dsh-pdf-reader/commit/e39262a3222f4932cb7d5f226e1f94100548e866",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "ui-tweaks"
+    "dsh-pdf-reader"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/client/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the d",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "^0.2.0-rc.2",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -164,11 +163,9 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": [
-      "web"
-    ]
+    "profiles": []
   },
   "details": {
     "pluginType": "unknown",
@@ -183,16 +180,11 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "semver",
-      "yaml"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

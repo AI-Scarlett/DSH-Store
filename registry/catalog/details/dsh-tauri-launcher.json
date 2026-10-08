@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9fffd937f1bba46b526148d4e8c26299eaf91d95",
+  "commit": "9a46eeb97c36605e3637ed4da48e72d3e7e12857",
   "version": "1.1.2",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-07T13:37:03.000Z",
-    "observedAt": "2026-10-07T14:00:20.000Z",
+    "updatedAt": "2026-10-08T06:23:12.000Z",
+    "observedAt": "2026-10-08T10:57:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-07T14:00:20.000Z",
-      "evidenceUrl": "https://github.com/cilis/dsh-tauri-launcher/commit/9fffd937f1bba46b526148d4e8c26299eaf91d95",
+      "checkedAt": "2026-10-08T10:57:44.000Z",
+      "evidenceUrl": "https://github.com/cilis/dsh-tauri-launcher/commit/9a46eeb97c36605e3637ed4da48e72d3e7e12857",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,9 +80,9 @@
     "desktop-launcher"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; package contains unsupported artifacts requiring review: launcher/bin/dsh-launcher.exe; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the network permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: launcher/bin/dsh-launcher.exe; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the network permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.5-rc.1 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,6 +92,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
+      "0.1.5-rc.1": "compatible",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown"
@@ -145,6 +146,12 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.1.5-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -164,7 +171,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.13.0",
     "systems": [],
     "profiles": [
       "web"
