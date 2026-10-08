@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-08T15:17:06.000Z",
+    "updatedAt": "2026-10-08T21:04:41.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "5f93b4b125e78f088a2349a178e60f8c0af3e1a2",
-      "sourceUpdatedAt": "2026-10-08T15:20:52.000Z",
+      "latestCommit": "2f59287f1a1794a68102a45c61cc657659fa5de6",
+      "sourceUpdatedAt": "2026-10-08T20:55:51.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -17192,6 +17192,119 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "openma-ai-deepseek-harness-acp",
+      "name": "openma-ai/deepseek-harness-acp",
+      "description": "ACP server implementation for DeepSeek harness. dsh-acp",
+      "repositoryUrl": "https://github.com/openma-ai/deepseek-harness-acp",
+      "defaultBranch": "main",
+      "latestCommit": "66394607bb3986c73e343f8b1e10a29e5e5329ee",
+      "sourceUpdatedAt": "2026-10-03T04:39:14.000Z",
+      "discoveredAt": "2026-10-08T21:04:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/openma-ai__deepseek-harness-acp.yml:sha256=9edb2303537e3ea6d9c67abfffa07aeff3e26a9c3db788a1c654f22ee9f9fd9f:at=2026-10-08T21:10:19.138Z:owner=275590287"
+      ],
+      "topics": [
+        "acp",
+        "agent-client-protocol",
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "orangeshinee-dsh-mem0",
+      "name": "orangeshinee/dsh-mem0",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/orangeshinee/dsh-mem0",
+      "defaultBranch": "main",
+      "latestCommit": "2d3cea31e82200fc80ca881190877c49d5478a21",
+      "sourceUpdatedAt": "2026-10-01T13:04:17.000Z",
+      "discoveredAt": "2026-10-08T21:04:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/orangeshinee__dsh-mem0.yml:sha256=8fa9822d2d7a135f00da106571e3892260dc8c7622084df8242450d0bd52e765:at=2026-10-08T21:10:19.138Z:owner=19700558"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "opentritium-dsh-codex-shim",
+      "name": "OpenTritium/dsh-codex-shim",
+      "description": "让 GPT 在 DSH 中宾至如归 Make GPT feel at home in DSH.",
+      "repositoryUrl": "https://github.com/OpenTritium/dsh-codex-shim",
+      "defaultBranch": "main",
+      "latestCommit": "a35d66378542e97cc862c8dee08007f08d586781",
+      "sourceUpdatedAt": "2026-08-16T16:09:49.000Z",
+      "discoveredAt": "2026-10-08T21:04:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/OpenTritium__dsh-codex-shim.yml:sha256=ed4f79a29f3603028c90a0d1abfec734bc669ed0bddd192603219e6874e9daa3:at=2026-10-08T21:10:19.138Z:owner=63573182"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "oscar-williams-dsh-deepatlas",
+      "name": "Oscar-Williams/dsh-deepatlas",
+      "description": "Local capability assurance and evidence-backed plugin navigation for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/Oscar-Williams/dsh-deepatlas",
+      "defaultBranch": "main",
+      "latestCommit": "6e8677b50ebdd0a9c9812ce44fd185f4dd60cb39",
+      "sourceUpdatedAt": "2026-09-09T09:47:07.000Z",
+      "discoveredAt": "2026-10-08T21:04:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/Oscar-Williams__dsh-deepatlas.yml:sha256=1196715e222eede1900e1722032de59ffdf2739f823d6371a38e2bde121c7a33:at=2026-10-08T21:10:19.138Z:owner=319719771"
+      ],
+      "topics": [
+        "deepatlas",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin-navigation",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "pbakaus-impeccable",
+      "name": "pbakaus/impeccable",
+      "description": "The design language that makes your AI harness better at design.",
+      "repositoryUrl": "https://github.com/pbakaus/impeccable",
+      "defaultBranch": "main",
+      "latestCommit": "1b6576e882258096eb0bb485482080169973b94b",
+      "sourceUpdatedAt": "2026-10-08T21:06:00.000Z",
+      "discoveredAt": "2026-10-08T21:04:41.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
     }
   ]
 }
