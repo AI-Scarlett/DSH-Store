@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-09T17:23:02.000Z",
+    "updatedAt": "2026-10-09T20:35:55.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "796b65e1cd15f3cf819396716320db007655ee3f",
-      "sourceUpdatedAt": "2026-10-09T05:00:26.000Z",
+      "latestCommit": "048b79878c70c594789909082499dc675472b63a",
+      "sourceUpdatedAt": "2026-10-09T20:39:17.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -8243,8 +8243,8 @@
       "description": "Toward Autonomous Scientific Discovery",
       "repositoryUrl": "https://github.com/ZJU-REAL/Polaris",
       "defaultBranch": "main",
-      "latestCommit": "17ee0fe777a433d53160f1255dde0fc9b7a2291b",
-      "sourceUpdatedAt": "2026-09-08T03:32:09.000Z",
+      "latestCommit": "69f78f7fe45332ed1ab05f2856c6aa5b358b761f",
+      "sourceUpdatedAt": "2026-10-09T20:41:48.000Z",
       "discoveredAt": "2026-09-03T19:14:41.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -17672,6 +17672,125 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "lesliewylie-dsh-session-search-pro",
+      "name": "LeslieWylie/dsh-session-search-pro",
+      "description": "Advanced cross-session full-text search for DeepSeek Harness — search past and current DSH sessions using the built-in sessionQuery service",
+      "repositoryUrl": "https://github.com/LeslieWylie/dsh-session-search-pro",
+      "defaultBranch": "main",
+      "latestCommit": "82787487d75f6af3d0e1b219a19dec49b93213cb",
+      "sourceUpdatedAt": "2026-08-18T03:24:13.000Z",
+      "discoveredAt": "2026-10-09T20:35:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dc8396d3c99e6f1c5de02570e1b3ddbb53856a4b:data/plugins/LeslieWylie__dsh-session-search-pro.yml:sha256=cf5ff6f60c8b0b62ccbbd66181564b5d2d5b6e620949a71a3c7d1054ecb22636:at=2026-10-09T20:42:07.363Z:owner=112309453"
+      ],
+      "topics": [
+        "agent-tools",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "session-search",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lesliewylie-review-workflow",
+      "name": "LeslieWylie/review-workflow",
+      "description": "A structured multi-panelist review workflow for the DeepSeek Harness: N panelists score in isolated subagents, blind to each other; a chair reconciles disagreement by anchor match then Δ-level adjudication; an independent critic audits the process. Works for design, code, paper or project review.",
+      "repositoryUrl": "https://github.com/LeslieWylie/review-workflow",
+      "defaultBranch": "main",
+      "latestCommit": "f423c032ce55694916d5e1edf6520722b1cd809b",
+      "sourceUpdatedAt": "2026-08-18T03:12:04.000Z",
+      "discoveredAt": "2026-10-09T20:35:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dc8396d3c99e6f1c5de02570e1b3ddbb53856a4b:data/plugins/LeslieWylie__review-workflow.yml:sha256=f3a8216b2bede2443e087b8080e4ef84e5e9f0e632a15d6014123223a29d66e5:at=2026-10-09T20:42:07.363Z:owner=112309453"
+      ],
+      "topics": [
+        "agents",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "multi-panelist",
+        "review",
+        "skill",
+        "subagents",
+        "workflow",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "let-mi-think-wechat-agent-router",
+      "name": "let-mi-think/wechat-agent-router",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/let-mi-think/wechat-agent-router",
+      "defaultBranch": "main",
+      "latestCommit": "9b2192ba6cf0ddfbe6db8f2ec83308696566c8bc",
+      "sourceUpdatedAt": "2026-09-18T06:35:38.000Z",
+      "discoveredAt": "2026-10-09T20:35:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dc8396d3c99e6f1c5de02570e1b3ddbb53856a4b:data/plugins/let-mi-think__wechat-agent-router.yml:sha256=cbc08e67bebe815c653dee8798cb04b50630a355dbba2165627d62252b9a3442:at=2026-10-09T20:42:07.363Z:owner=125197725"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "let-mi-think-agent-manager",
+      "name": "let-mi-think/agent-manager",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/let-mi-think/agent-manager",
+      "defaultBranch": "main",
+      "latestCommit": "4a692cbd1f97c5885b989967497f13842b294e60",
+      "sourceUpdatedAt": "2026-09-18T06:35:30.000Z",
+      "discoveredAt": "2026-10-09T20:35:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dc8396d3c99e6f1c5de02570e1b3ddbb53856a4b:data/plugins/let-mi-think__agent-manager.yml:sha256=de2ae8184624d6f88621723ba46bc8d700ce217e1f65d2a1d73a6bba03617305:at=2026-10-09T20:42:07.363Z:owner=125197725"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lesliewylie-dsh-md-preview",
+      "name": "LeslieWylie/dsh-md-preview",
+      "description": "Render Markdown to standalone, self-contained HTML in the DeepSeek Harness — an md_html_render tool that works headless, plus a preview/export drawer in the web GUI. One renderer behind both. Zero dependencies.",
+      "repositoryUrl": "https://github.com/LeslieWylie/dsh-md-preview",
+      "defaultBranch": "main",
+      "latestCommit": "94d1ba9ec39f46289852af242506ffdd8a80aa9d",
+      "sourceUpdatedAt": "2026-08-18T03:03:06.000Z",
+      "discoveredAt": "2026-10-09T20:35:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dc8396d3c99e6f1c5de02570e1b3ddbb53856a4b:data/plugins/LeslieWylie__dsh-md-preview.yml:sha256=51329c05f7a0ec1a42c71fb02b7c57d0a6ba19cb9724ae191b472beff1bcf17a:at=2026-10-09T20:42:07.363Z:owner=112309453"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "html-export",
+        "markdown",
+        "markdown-to-html",
+        "zero-dependency",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
