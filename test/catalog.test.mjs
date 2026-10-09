@@ -246,6 +246,37 @@ test('catalog v2 keeps the index bounded and maps every plugin id to one detail 
   assert.equal(trimmed.index.registry.detailsPath, 'catalog/details')
 })
 
+test('legacy bridge stays below 2 MiB when source updates grow the complete directory', async () => {
+  const source = await loadCatalogFromFiles()
+  const entries = source.entries.map(item => ({
+    ...item,
+    searchTerms: [
+      ...item.searchTerms,
+      `${item.id.slice(0, 12)}-${'x'.repeat(75)}-one`,
+      `${item.id.slice(0, 12)}-${'x'.repeat(75)}-two`,
+    ],
+    compatibility: {
+      ...item.compatibility,
+      dshReleases: { ...item.compatibility.dshReleases, '0.2.1-alpha.2': 'unknown' },
+    },
+  }))
+  const split = splitCatalogDocument({ ...source, sourceFormat: undefined, entries })
+  assert.ok(catalogBridgeBuffer(split.bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
+  assert.equal(split.bridge.entries.length, source.entries.length)
+  assert.deepEqual(split.bridge.entries.map(item => item.id), split.index.entries.map(item => item.id))
+  assert.ok(split.bridge.entries.some((item, index) => item.searchTerms.length < split.index.entries[index].searchTerms.length))
+  assert.ok(split.index.entries.every((item, index) => item.searchTerms.length === entries[index].searchTerms.length))
+  const manager = split.bridge.entries.find(item => item.id === 'dsh-safe-plugin-manager')
+  assert.equal(manager.version, source.entries.find(item => item.id === manager.id).version)
+  assert.equal(manager.commit, source.entries.find(item => item.id === manager.id).commit)
+  assert.equal(manager.assurance.installability, undefined)
+  for (const validate of [validateCatalog085, validateCatalog086, validateCatalog087]) {
+    const historical = validate(split.bridge)
+    assert.equal(historical.entries.length, entries.length)
+    assert.equal(historical.entries.find(item => item.id === manager.id).assurance.installability.status, 'unknown')
+  }
+})
+
 test('Catalog bridge fails closed when its index is missing or does not match the pinned digest', async () => {
   const bridge = await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8')
   const index = JSON.parse(await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8'))
