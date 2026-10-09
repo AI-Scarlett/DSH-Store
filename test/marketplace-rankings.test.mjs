@@ -69,7 +69,7 @@ test('missing, stale or unknown recommendation kinds never fall back to a Store 
     for (const locale of ['zh', 'en']) {
       const html = renderRankingRows([variant], { type: 'recommended', locale })
       assert.match(html, locale === 'zh' ? /暂无可核验的推荐依据/ : /Recommendation basis unavailable/)
-      assert.doesNotMatch(html, /商城精选|Store pick|<script>|Basis:|入榜依据：/)
+      assert.doesNotMatch(html, /商城精选|Store pick|<script>|Basis:|入榜依据：/i)
     }
   }
   const rows = rankingEntries(snapshot([item('plugin', 1200)]), 'recommended')
