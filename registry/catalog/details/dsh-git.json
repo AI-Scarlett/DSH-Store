@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dc43f3dbcf6f5becd7cc1470152b48eab1efee51",
+  "commit": "4c40d7355bfbac28eba43667b5144a4e4de7f1c5",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-08T21:10:06.000Z",
-    "observedAt": "2026-10-08T21:04:41.000Z",
+    "updatedAt": "2026-10-09T00:54:48.000Z",
+    "observedAt": "2026-10-09T05:01:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-08T21:04:41.000Z",
-      "evidenceUrl": "https://github.com/stansz/dsh-git/commit/dc43f3dbcf6f5becd7cc1470152b48eab1efee51",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-09T05:01:11.000Z",
+      "evidenceUrl": "https://github.com/stansz/dsh-git/commit/4c40d7355bfbac28eba43667b5144a4e4de7f1c5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,14 +72,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-git"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code eva",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
