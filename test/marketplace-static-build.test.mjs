@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
 import { catalogBridgeBuffer, compareVersions, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
+import { isDshDiscoveryCandidate } from '../marketplace/rankings/model.js'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const execFileAsync = promisify(execFile)
@@ -16,9 +17,11 @@ const rootPath = fileURLToPath(root)
 const staticBuilderPath = fileURLToPath(new URL('scripts/build-marketplace-static.mjs', root))
 const sha256 = value => createHash('sha256').update(value).digest('hex')
 
-test('GitHub enrichment skips non-approved sources that are intentionally unavailable', async () => {
+test('manifest validation stays approved-only; ranking metadata is independent and read-only', async () => {
   const builder = await readFile(new URL('scripts/build-marketplace-static.mjs', root), 'utf8')
   assert.match(builder, /mapLimit\(snapshot\.entries\.filter\(entry => entry\.status === 'approved'\), 5/)
+  assert.match(builder, /enrichRankingSnapshot\(rankings, \{ token \}\)/)
+  assert.match(builder, /candidates: candidateRegistry/)
   assert.match(builder, /response\.status === 403 && response\.headers\.get\('x-ratelimit-remaining'\) === '0'/)
   assert.match(builder, /if \(!repositoryResult\.error\.rateLimited\) throw repositoryResult\.error/)
   assert.match(builder, /if \(manifest\.version !== entry\.version\)/)
@@ -66,7 +69,12 @@ test('static marketplace derives manager identity and catalog cards without muta
     const rankingBytes = await readFile(join(output, 'marketplace/rankings/data.json'))
     const rankingData = JSON.parse(rankingBytes)
     assert.equal(rankingData.sourceCommit, 'test-source-sha')
-    assert.equal(rankingData.entries.length, catalog.entries.filter(entry => entry.status === 'approved').length)
+    const candidates = JSON.parse(await readFile(new URL('registry/candidates.json', root), 'utf8'))
+    const catalogRepos = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
+    assert.equal(rankingData.entries.length, catalog.entries.length + candidates.entries.filter(entry => isDshDiscoveryCandidate(entry) && !catalogRepos.has(entry.repositoryUrl.toLowerCase())).length)
+    assert.equal(rankingData.entries.filter(entry => entry.listingStatus === 'listed').length, catalog.entries.filter(entry => entry.status === 'approved').length)
+    assert.ok(rankingData.entries.some(entry => entry.listingStatus === 'not-listed'))
+    assert.ok(rankingData.entries.some(entry => entry.source === 'candidate'))
     assert.ok(rankingData.entries.every(entry => entry.stars === null), 'offline builds must not fabricate counters')
     assert.match(rankings, new RegExp(`name="dsh-rankings-sha256" content="${sha256(rankingBytes)}"`))
     assert.match(rankings, /role="tablist"/)
@@ -353,6 +361,7 @@ test('static marketplace publishes a compatibility-held manager without installa
       cp(join(rootPath, 'marketplace'), join(fixture, 'marketplace'), { recursive: true }),
       cp(join(rootPath, 'registry'), join(fixture, 'registry'), { recursive: true }),
       cp(staticBuilderPath, join(fixture, 'scripts/build-marketplace-static.mjs')),
+      cp(join(rootPath, 'scripts/ranking-github-metadata.mjs'), join(fixture, 'scripts/ranking-github-metadata.mjs')),
     ])
     const catalog = await loadCatalogFromFiles()
     const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')

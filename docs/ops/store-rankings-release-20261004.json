@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "id": "DSH-RANKINGS-30-RELEASE-20261004",
+  "baseCommit": "756dc428c4110a146a238799a7eea2386f8f440c",
+  "createdAt": "2026-10-04T14:37:09.114216+00:00",
+  "authorization": "User requests at least 30 rows per chart and publication of repaired content; manual source PR/merge and both storefronts, no real Profile mutations",
+  "scope": [
+    {
+      "path": ".github/workflows/pages.yml",
+      "baseSha256": "7995c7fca391b9af3c62fa1ee3a8fc70433073094a2fe34fb9dea4fe86177a9f",
+      "observedSha256": "c60af87c44723680d178d6ee36230f9d685ff14053f67161ca953e9c24ddfef2"
+    },
+    {
+      "path": "docs/ops/store-rankings-discovery-plan-20261004.json",
+      "baseSha256": null,
+      "observedSha256": "2a0d2c4af1aec677423530775c50749915fa92e5e11bee5b56116447401dcb9f"
+    },
+    {
+      "path": "marketplace/rankings/index.html",
+      "baseSha256": "b32d3f07662d937a092ced5b3cf077362665b422ae9bdb35a64df2aa0bdf409d",
+      "observedSha256": "0332d9fe485e093d4892db3c5253ff30250ab0f077af1a5630baa9dbcd044bab"
+    },
+    {
+      "path": "marketplace/rankings/model.js",
+      "baseSha256": "d64f0b573dfb42675522694db6f96f3a394fd008b48bc7da017b0cb8aaff90d7",
+      "observedSha256": "28e5c62fb445798860d43869048f13c0aa4b529f5c4bb8c11f3291b1ca218bda"
+    },
+    {
+      "path": "marketplace/rankings/rankings.css",
+      "baseSha256": "ca2499c758f674ade50c92788f7dd48833d35e7159afe2d67b33d5c72e490908",
+      "observedSha256": "d7169996b31cdc656b31fde6d3c72cee10a153582cb2fdc1e1a46b52a9508156"
+    },
+    {
+      "path": "marketplace/rankings/rankings.js",
+      "baseSha256": "b4d7e376ea6545dc28da303b3068c5dec470293e1a3f361bcaf2e032366faf23",
+      "observedSha256": "2db190a9cb30f240d15b91537263f20af3554d8bd19f065cf1913e5bbfa51f37"
+    },
+    {
+      "path": "scripts/build-marketplace-static.mjs",
+      "baseSha256": "3368a6c88fece943d526383a7aba08301ada36ef48cb280e1732680a9135d8ca",
+      "observedSha256": "9cc6ae37bcf3bd4b737ad3900e53e57148ebd3e9a7e13425a3ae4257c12dd3e0"
+    },
+    {
+      "path": "scripts/ranking-github-metadata.mjs",
+      "baseSha256": null,
+      "observedSha256": "05e9f2f0b79a5c62d52d5c085a82516432707b91b723863f4a62c4c3551f94b8"
+    },
+    {
+      "path": "test/deploy-refresh.test.mjs",
+      "baseSha256": "f192c15b913ec2a855bdb004c96ecdc2828f87b512ae8a18fb321a64a201af6d",
+      "observedSha256": "6942c1b9548fbb400047bbc3a68aaa0c48cac93302be23ba556ace71e9437d5b"
+    },
+    {
+      "path": "test/marketplace-rankings.test.mjs",
+      "baseSha256": "0cced507bf2e8dd6b68b2b155b229ed96bda31851694989685916f853d32c0fa",
+      "observedSha256": "c4590d2010b483aef86a4571d2fd79fbb2067951b921e17da3d911088e5d4303"
+    },
+    {
+      "path": "test/marketplace-static-build.test.mjs",
+      "baseSha256": "505488522f904e7e95443b73ee4a9913407ca364149573a6e4f63b19c1714c97",
+      "observedSha256": "ef2928baabccf09de1a273b849a31442c8206751f107c31f5066e96e96d2afda"
+    },
+    {
+      "path": "test/ranking-github-metadata.test.mjs",
+      "baseSha256": null,
+      "observedSha256": "efb9407e69c81fc4612ad6a63e8159a85cac3af9c8cf53958f2148b4e2dd526d"
+    },
+    {
+      "path": "docs/ops/store-rankings-release-20261004.json",
+      "baseSha256": null,
+      "observedSha256": null
+    }
+  ],
+  "rules": [
+    "30 rows per page; preserve curated recommendations, add clearly labelled community-star supplements to reach 30",
+    "Preserve category champions, add deduplicated category-star supplements with explicit observed rank; never label supplement a champion",
+    "Missing counters stay unknown; never fabricate entries or alter Catalog approval; unlisted links only GitHub",
+    "Keep partial Desktop adapter isolated/unreleased pending actual Desktop lifecycle acceptance"
+  ],
+  "gates": [
+    "npm run check",
+    "local enriched snapshot has >=30 distinct rows in each chart",
+    "scoped source PR exact-head CI and merge",
+    "Pages success and dual-site manifest/hash verification",
+    "public ranking row counts and interactions verified"
+  ],
+  "githubAuth": "Pending current-run credential gate: earlier CLI exception was single-use and will not be reused; scheduled automation retains short-lived workflow tokens",
+  "rollback": "Scoped Git revert PR plus each storefront release backup and atomic symlink restore; no contact ledger changes"
+}

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { buildAutomationStatus } from '../src/automation-status.mjs'
+import { enrichRankingSnapshot } from './ranking-github-metadata.mjs'
 import { createRankingSnapshot, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -603,9 +604,15 @@ llms = replaceRequired(llms, domesticGuideMarker, isDomestic
   : '', 'domestic llms guide marker')
 await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 
-// Derive a compact, read-only ranking snapshot from the same approved Catalog and
-// the GitHub metadata already fetched above; never enlarge the main Catalog index.
-const rankings = validateRankingSnapshot(createRankingSnapshot(snapshot, catalogIndex, { sourceCommit: sourceSha, starsObservedAt }))
+// Derive a compact, read-only ranking snapshot independently from admission.
+// Only bounded public repository counters are fetched for unlisted projects;
+// never fetch their manifests or enlarge the main Catalog index.
+let rankings = validateRankingSnapshot(createRankingSnapshot(snapshot, catalogIndex, { sourceCommit: sourceSha, candidates: candidateRegistry }))
+if (enrichGitHub) {
+  const enriched = await enrichRankingSnapshot(rankings, { token })
+  rankings = validateRankingSnapshot(enriched.snapshot)
+  console.log(`RANKING_METADATA ${JSON.stringify(enriched.summary)}`)
+}
 const rankingsBytes = Buffer.from(JSON.stringify(rankings) + '\n')
 if (rankingsBytes.length > 1024 * 1024) throw new Error('Rankings snapshot exceeds the 1 MiB bound')
 await writeFile(resolve(outputRoot, 'marketplace/rankings/data.json'), rankingsBytes)
