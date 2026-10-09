@@ -86,17 +86,10 @@ export function rankingEntries(data, type) {
   const known = data.entries.filter(entry => validStars(entry.stars)).slice().sort(compareStars)
   if (type === 'popular') return known
   if (type === 'recommended') {
-    const picks = data.entries.filter(entry => entry.featured).slice()
-      .sort((a, b) => a.order - b.order || compareId(a, b))
-      .map(entry => ({ ...entry, recommendationKind: 'editorial' }))
-    const selected = new Set(picks.map(entry => entry.id))
-    for (const entry of known) {
-      if (picks.length >= PAGE_SIZE) break
-      if (selected.has(entry.id) || entry.stars === 0 || ['rejected', 'blocked'].includes(entry.reviewStatus)) continue
-      selected.add(entry.id)
-      picks.push({ ...entry, recommendationKind: 'community-stars' })
-    }
-    return picks
+    // `featured` is a legacy display flag, not evidence of a recommendation or
+    // review. Until explicit editorial evidence exists, use only observed stars.
+    return known.filter(entry => entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus))
+      .slice(0, PAGE_SIZE).map(entry => ({ ...entry, recommendationKind: 'community-stars' }))
   }
   if (type !== 'essential') throw new Error('Unknown ranking type')
   const winners = new Map()
@@ -149,7 +142,9 @@ export function renderRankingRows(entries, { type = 'popular', locale = 'zh', of
     const reason = type === 'essential' ? `<div class="ranking-wins">${entry.categoryPick
       ? `<span>${escapeHtml(en ? entry.categoryPick.en : entry.categoryPick.zh)} · ${en ? 'Category supplement · observed #' : '分类高星补充 · 当前数据第 '}${entry.categoryPick.observedRank}${en ? '' : ' 名'}</span>`
       : entry.wins.map(win => `<span>${escapeHtml(en ? win.en : win.zh)}${win.tied ? (en ? ' · tied lead' : ' · 并列最高') : (en ? ' · #1' : ' · 星标第一')}</span>`).join('')}</div>`
-      : type === 'recommended' ? `<span class="ranking-pick">${entry.recommendationKind === 'community-stars' ? (en ? 'Community star pick · not an editorial review' : '社区高星推荐 · 非人工精选') : (en ? 'Store pick' : '商城精选')}</span>` : ''
+      : type === 'recommended' ? `<span class="ranking-pick">${entry.recommendationKind === 'community-stars' && validStars(entry.stars) && entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus)
+        ? (en ? `Basis: ${entry.stars.toLocaleString('en-US')} GitHub stars · selected by star count, not a Store review` : `入榜依据：GitHub ${entry.stars.toLocaleString('zh-CN')} 星 · 按星标排序，非商城评测推荐`)
+        : (en ? 'Recommendation basis unavailable' : '暂无可核验的推荐依据')}</span>` : ''
     const listed = entry.listingStatus === 'listed'
     const href = listed ? `../plugins/?q=${encodeURIComponent(entry.id)}` : entry.repositoryUrl
     const external = listed ? '' : ' target="_blank" rel="noopener noreferrer"'
