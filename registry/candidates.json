@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-09T17:00:39.000Z",
+    "updatedAt": "2026-10-09T17:23:02.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -17545,27 +17545,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "ai-scarlett-dsh-store",
-      "name": "安全插件商城（DSH-Store）",
-      "description": "DSH STORE 0.9.0：官方登录校验、持久化安装更新记录、真实回滚与生效状态、兼容筛选、本机收藏备注；固定提交审核和作者全局一次联系规则保持不变。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-      "defaultBranch": "main",
-      "latestCommit": "5cc4e71a00639c3660a6e6bfb75e32c3a0045504",
-      "sourceUpdatedAt": "2026-10-01T20:56:21.000Z",
-      "discoveredAt": "2026-10-09T17:00:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "marketplace",
-        "management",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-safe-plugin-manager."
-    },
-    {
       "id": "ai-scarlett-build-dsh-plugin",
       "name": "DSH 插件开发工作流（Build DSH Plugin）",
       "description": "把需求转为标准 DSH 插件与商城候选；0.5.0 增加管理类插件的登录校验、持久化操作与恢复边界审计，并区分源码检查和实际运行证据。",
@@ -17668,6 +17647,31 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-font-settings."
+    },
+    {
+      "id": "agentmaturity-agentmaturitycompass",
+      "name": "AgentMaturity/AgentMaturityCompass",
+      "description": "Evidence-based maturity framework for AI agents — 235 questions, 5 layers, CLI + SDK. Score, red-team, and ship with proof.",
+      "repositoryUrl": "https://github.com/AgentMaturity/AgentMaturityCompass",
+      "defaultBranch": "main",
+      "latestCommit": "b129a22e1787f13eb79a3a9303fee178465ef3e7",
+      "sourceUpdatedAt": "2026-10-09T17:25:50.000Z",
+      "discoveredAt": "2026-10-09T17:23:02.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "ai-safety",
+        "governance",
+        "llm-evaluation",
+        "maturity-model",
+        "red-teaming",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
