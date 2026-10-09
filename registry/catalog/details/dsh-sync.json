@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "468b21d43ce3d5ed6db62da7b06e73d80f1552bd",
+  "commit": "7349c8f9a15f5442391188407f5ddc0e07b2bf51",
   "version": "0.4.8",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-07T06:18:56.000Z",
-    "observedAt": "2026-10-07T14:00:20.000Z",
+    "updatedAt": "2026-10-09T09:12:07.000Z",
+    "observedAt": "2026-10-09T17:00:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-07T14:00:20.000Z",
-      "evidenceUrl": "https://github.com/weibaohui/dsh-sync/commit/468b21d43ce3d5ed6db62da7b06e73d80f1552bd",
+      "checkedAt": "2026-10-09T17:00:39.000Z",
+      "evidenceUrl": "https://github.com/weibaohui/dsh-sync/commit/7349c8f9a15f5442391188407f5ddc0e07b2bf51",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "dsh-sync"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,9 +91,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown"
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -144,12 +144,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -157,6 +151,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
