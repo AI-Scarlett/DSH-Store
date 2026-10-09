@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { promisify } from 'node:util'
-import { isGeneratedSelfManagerCatalogDetail, isNoCommonAncestorError, permissionSignals, dshInterfaceSignals } from '../src/automation-source-policy.mjs'
+import { isGeneratedSelfManagerRegistryData, isNoCommonAncestorError, permissionSignals, dshInterfaceSignals } from '../src/automation-source-policy.mjs'
 import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -97,12 +97,14 @@ test('JavaScript permission scan retains executable calls and template expressio
 
 test('self-manager generated Catalog details do not consume the executable source bound', () => {
   const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
-  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.json'), true)
-  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/example.js'), false)
-  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog/details/nested/example.json'), false)
-  assert.equal(isGeneratedSelfManagerCatalogDetail(manager, 'registry/catalog-index.json'), false)
-  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, id: 'another-plugin' }, 'registry/catalog/details/example.json'), false)
-  assert.equal(isGeneratedSelfManagerCatalogDetail({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog/details/example.json'), false)
+  for (const path of ['registry/catalog.json', 'registry/catalog-index.json', 'registry/candidates.json', 'registry/catalog/details/example.json']) {
+    assert.equal(isGeneratedSelfManagerRegistryData(manager, path), true)
+  }
+  assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/catalog/details/example.js'), false)
+  assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/catalog/details/nested/example.json'), false)
+  assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/automation-policy.json'), false)
+  assert.equal(isGeneratedSelfManagerRegistryData({ ...manager, id: 'another-plugin' }, 'registry/catalog.json'), false)
+  assert.equal(isGeneratedSelfManagerRegistryData({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog.json'), false)
 })
 
 test('author target resolution suppresses deterministically unavailable repositories', async () => {
@@ -248,7 +250,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
   assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES = 4 \* 1024 \* 1024/)
   assert.match(source, /SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
-  assert.match(reviewSource, /isGeneratedSelfManagerCatalogDetail\(candidate, relativePath\)/)
+  assert.match(reviewSource, /isGeneratedSelfManagerRegistryData\(candidate, relativePath\)/)
   assert.doesNotMatch(reviewSource, /isTestSourceFile\(relativePath\)/)
   assert.match(source, /isSelfManagerEntry\(entry\)\s*&&\s*isBoundedSourceLineage\(lineage, maxCommitSpan, \{ allowDiverged: true \}\)/)
   assert.match(source, /bounded-self-manager-history-divergence/)
@@ -524,4 +526,9 @@ test('tool views require key review rather than a blanket protected-component ac
   assert.equal(dshInterfaceSignals(`ctx.fiber?.remove('official')`).protectedDsh, true)
   assert.equal(dshInterfaceSignals(`ctx.loader.unwrapExports(module)`).protectedDsh, false)
   assert.equal(dshInterfaceSignals(`window.__ModuleLoader__.load({ id: 'demo', factory })`).protectedDsh, false)
+})
+
+test('the fixed-source reviewer does not flag its own diagnostic prose as a tool-view registration', async () => {
+  const reviewer = await read('src/fixed-source-review.mjs')
+  assert.equal(dshInterfaceSignals(reviewer, 'fixed-source-review.mjs').toolViewExtension, false)
 })
