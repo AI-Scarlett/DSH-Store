@@ -34,6 +34,27 @@ test('GitHub-only release is visible without offering an unpublished npm command
   } finally { await rm(root, { recursive: true, force: true }) }
 })
 
+test('official Desktop reads its bundled DSH manifest and never offers an npm upgrade command', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-desktop-version-'))
+  try {
+    const manifestPath = join(root, 'package.json')
+    await writeFile(manifestPath, JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.2.0-rc.2' }))
+    const service = createDshVersionService({
+      manifestPath,
+      fetch: async url => Response.json(url === DSH_RELEASES_URL ? [] : {
+        name: '@deepseek-ai/dsh',
+        'dist-tags': { latest: '0.2.0-rc.2', alpha: '0.2.1-alpha.1' },
+        versions: { '0.2.0-rc.2': {}, '0.2.1-alpha.1': {} },
+      }),
+    })
+    const value = await service.inspect()
+    assert.equal(value.currentVersion, '0.2.0-rc.2')
+    assert.equal(value.installationKind, 'official-desktop')
+    assert.deepEqual(value.upgrade.command, [])
+    assert.match(value.upgrade.reason, /应用内“检查更新”/)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
 test('DSH version check follows the official next channel when the release suffix changes', async () => {
   const { root, cliPath } = await fixture()
   let requests = 0

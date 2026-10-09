@@ -41,6 +41,16 @@ async function findCliManifest(cliPath) {
   throw versionError('DSH_VERSION_UNAVAILABLE', '无法从当前 DSH CLI 定位 @deepseek-ai/dsh 版本。')
 }
 
+async function findDesktopManifest(manifestPath) {
+  try {
+    const manifest = JSON.parse(await readFile(manifestPath, 'utf8'))
+    if (manifest?.name === PACKAGE_NAME && VERSION.test(manifest?.version ?? '')) {
+      return { version: manifest.version, installationKind: 'official-desktop' }
+    }
+  } catch { /* A missing or malformed application-owned manifest is unavailable. */ }
+  throw versionError('DSH_VERSION_UNAVAILABLE', '无法读取官方 Desktop 当前 DSH 版本。')
+}
+
 async function latestVersion(request, timeoutMs) {
   try {
     const { metadata, githubReleases } = await fetchOfficialDshMetadata({ fetch: request, timeoutMs })
@@ -52,6 +62,7 @@ async function latestVersion(request, timeoutMs) {
 
 export function createDshVersionService(options = {}) {
   const cliPath = options.cliPath
+  const manifestPath = options.manifestPath
   const request = options.fetch ?? globalThis.fetch
   const timeoutMs = options.timeoutMs ?? 8_000
   const cacheTtlMs = options.cacheTtlMs ?? 10 * 60_000
@@ -60,12 +71,13 @@ export function createDshVersionService(options = {}) {
 
   async function inspect({ force = false } = {}) {
     if (!force && cache && now() - cache.checkedAt < cacheTtlMs) return { ...cache.value, cacheStatus: 'hit' }
-    const current = await findCliManifest(cliPath)
+    const current = manifestPath ? await findDesktopManifest(manifestPath) : await findCliManifest(cliPath)
     const official = await latestVersion(request, timeoutMs)
     const latest = official.target
     const comparison = compareVersions(current.version, latest.version)
     const updateAvailable = comparison !== null && comparison < 0
-    const command = latest.npmAvailable ? ['npm', 'install', '--global', `${PACKAGE_NAME}@${latest.version}`] : []
+    const command = current.installationKind !== 'official-desktop' && latest.npmAvailable
+      ? ['npm', 'install', '--global', `${PACKAGE_NAME}@${latest.version}`] : []
     const preview = latest.kind === 'preview'
     const value = {
       schemaVersion: 1, packageName: PACKAGE_NAME,
@@ -78,7 +90,9 @@ export function createDshVersionService(options = {}) {
       updateAvailable, checkedAt: new Date(now()).toISOString(), releaseUrl: latest.releaseUrl ?? RELEASE_URL,
       upgrade: {
         executable: false, command, commandText: command.join(' '),
-        reason: !latest.npmAvailable
+        reason: current.installationKind === 'official-desktop'
+          ? '当前 DSH 由官方 Desktop 应用管理；请使用应用内“检查更新”。商城不会通过 npm 修改其内置运行时。'
+          : !latest.npmAvailable
           ? `官方 GitHub 已发布 ${latest.version}，npm 当前可用版本仍为 ${official.npmVersion}。请查看官方 Release；该版本尚无可复制的 npm 升级命令。`
           : current.installationKind === 'source-checkout'
           ? '当前 Host 来自 DSH 源码工作区；商城不会修改 DSH 源码。可查看官方 Release，或复制 npm 固定版本安装命令作为独立安装。'

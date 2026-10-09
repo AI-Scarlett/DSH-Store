@@ -826,7 +826,8 @@ window.__ModuleLoader__.load({
         }, '下一页'))
     }
 
-    function PluginActions({ entry, health, beginPlan, checkSource }) {
+    function PluginActions({ entry, health, beginPlan, checkSource, readOnly = false }) {
+      if (readOnly) return React.createElement('div', { style: styles.muted }, '官方 Desktop 中请使用内置“插件”页管理安装、更新与启停。')
       const allowed = new Set(entry.allowedActions || [])
       if (allowed.size === 0) return React.createElement('div', { style: styles.muted }, entry.managementBlockedReason || '当前没有可执行操作')
       const disabled = entry.entryIds.length > 0 && entry.entryIds.every(id => health?.disabledEntryIds?.includes(id))
@@ -897,8 +898,9 @@ window.__ModuleLoader__.load({
           React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub 证据')))
     }
 
-    function MarketCard({ entry, health, beginPlan, checkSource, openDetails, categoryLabels = {} }) {
-      const state = entry.sourceUpdate?.status === 'update-ready' ? '源更新审核通过'
+    function MarketCard({ entry, health, beginPlan, checkSource, openDetails, categoryLabels = {}, readOnly = false }) {
+      const state = readOnly ? (entry.installed ? `已安装 ${entry.installedVersion || ''}` : 'Desktop 中仅供查看')
+        : entry.sourceUpdate?.status === 'update-ready' ? '源更新审核通过'
         : entry.sourceUpdate?.status === 'user-review-required' ? '发现高风险更新 · 用户决定'
           : entry.sourceUpdate?.status === 'external-only' ? '商城禁止更新 · 仅外部入口'
             : entry.sourceUpdate?.status === 'update-blocked' ? '源更新无法验证'
@@ -947,14 +949,14 @@ window.__ModuleLoader__.load({
             : entry.sourceUpdate?.status === 'error'
               ? React.createElement('div', { style: styles.error }, `${entry.sourceUpdate.code}：${entry.sourceUpdate.message}`)
               : null,
-        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+        entry.manualSourceUpdate && !readOnly ? React.createElement('div', { style: styles.notice },
           React.createElement('div', null, entry.manualSourceUpdate.reason),
           React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
           React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, '手动更新不受商城计划、备份、健康检查和失败回滚保护。')) : null,
         React.createElement(SourceDiffSummary, { update: entry.sourceUpdate }),
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('div', { style: styles.actions },
-            React.createElement(PluginActions, { entry, health, beginPlan, checkSource }),
+            React.createElement(PluginActions, { entry, health, beginPlan, checkSource, readOnly }),
             entry.manualSourceUpdate
               ? React.createElement('a', { href: entry.manualSourceUpdate.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看同版本固定 Commit')
               : entry.status === 'blocked' || entry.sourceUpdate?.status === 'external-only'
@@ -1022,17 +1024,18 @@ window.__ModuleLoader__.load({
       return React.createElement('div', null, images.map(url => React.createElement('img', { key: url, src: url, alt: `${entry.name} 插件截图`, style: { maxWidth: '100%' } })))
     }
 
-    function PluginDetailsModal({ entry, categoryLabels, health, beginPlan, close }) {
+    function PluginDetailsModal({ entry, categoryLabels, health, beginPlan, close, readOnly = false }) {
       if (!entry) return null
       const permissions = entry.details.permissions
-      const status = entry.status === 'approved' ? '可安装' : entry.status === 'blocked' ? '商城不可安装' : '已下架'
+      const status = readOnly ? 'Desktop 中仅供查看'
+        : entry.status === 'approved' ? '可安装' : entry.status === 'blocked' ? '商城不可安装' : '已下架'
       const installed = entry.installed ? `已安装 ${entry.installedVersion || '版本未知'}` : '未安装'
       const beginDetailPlan = (action, selectedEntry) => {
         close()
         beginPlan(action, selectedEntry)
       }
       const footer = React.createElement('div', { style: styles.detailFooter },
-        React.createElement(PluginActions, { entry, health, beginPlan: beginDetailPlan }),
+        React.createElement(PluginActions, { entry, health, beginPlan: beginDetailPlan, readOnly }),
         React.createElement('div', { style: styles.detailFooterLinks },
           React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, entry.status === 'blocked' ? '前往 GitHub 手动安装' : '查看 GitHub 仓库'),
           React.createElement(Button, { onClick: close }, '关闭')))
@@ -1099,7 +1102,7 @@ window.__ModuleLoader__.load({
           ? React.createElement('div', { style: styles.notice }, '当前 GitHub Catalog 详情文件尚未提供完整字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
           : null,
         entry.statusReason ? React.createElement('div', { style: styles.error }, `策略说明：${entry.statusReason}`) : null,
-        entry.manualSourceUpdate ? React.createElement('div', { style: styles.notice },
+        entry.manualSourceUpdate && !readOnly ? React.createElement('div', { style: styles.notice },
           React.createElement('div', { style: styles.name }, '同版本源码更新：仅限 GitHub 手动操作'),
           React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, entry.manualSourceUpdate.reason),
           React.createElement('div', { style: { ...styles.code, marginTop: '6px', overflowWrap: 'anywhere' } }, entry.manualSourceUpdate.commandText),
@@ -1779,11 +1782,15 @@ window.__ModuleLoader__.load({
         `目标 ${pendingRestart.packageName}${pendingRestart.targetVersion ? ` ${pendingRestart.targetVersion}` : ''} 未在新实例中确认加载，请查看健康检查详情。`) : null,
       restartState.status !== 'pending' ? React.createElement(Button, { onClick: dismissRestart }, '完成') : null)
 
+      const desktopReadOnly = state.status === 'ready' && state.runtime?.desktopMode === true
       const guardianIsExternal = state.status === 'ready' && state.guardian.owner === 'external'
       const guardianHasPortConflict = state.status === 'ready' && state.guardian.errorCode === 'GUARDIAN_PORT_CONFLICT'
       const guardianNeedsUpgrade = state.status === 'ready' && state.guardian.upgradeRequired === true
       const guardianUnsupported = state.status === 'ready' && state.guardian.supported === false
-      const guardianBanner = state.status !== 'ready' ? null : React.createElement('div', {
+      const guardianBanner = desktopReadOnly ? React.createElement('div', { style: styles.notice, role: 'status' },
+        React.createElement('div', { style: styles.name }, '官方 Desktop · 当前 Profile 只读浏览'),
+        React.createElement('div', { style: styles.muted }, '商城展示 Desktop 的插件目录、已安装状态和诊断；安装、更新、启停及重启请使用 DSH 官方“插件”页和应用更新入口。'))
+        : state.status !== 'ready' ? null : React.createElement('div', {
         style: state.guardian.available || guardianUnsupported ? styles.notice : styles.error,
       }, React.createElement('div', { style: styles.name }, state.guardian.available
         ? `DSH Guardian：${state.guardian.state} · 唯一启动所有者`
@@ -1839,7 +1846,7 @@ window.__ModuleLoader__.load({
             uncataloguedInstalledAll.length > 0 ? ` · 另有 ${uncataloguedInstalledAll.length} 个目录外只读项` : ''),
           pageError,
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '已安装插件' }, entries.map(entry => React.createElement(MarketCard, {
-            key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry, categoryLabels,
+            key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry, categoryLabels, readOnly: desktopReadOnly,
           }))), pageControls,
           uncataloguedInstalled.length > 0
             ? React.createElement(React.Fragment, null,
@@ -1857,7 +1864,7 @@ window.__ModuleLoader__.load({
           pageError,
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry,
-            categoryLabels,
+            categoryLabels, readOnly: desktopReadOnly,
           }))), pageControls)
       }
 
@@ -1881,7 +1888,7 @@ window.__ModuleLoader__.load({
         }),
         React.createElement(PluginDetailsModal, {
           entry: detailEntry, categoryLabels: state.status === 'ready' ? state.market.registry.categories : {},
-          health: state.status === 'ready' ? state.health : null, beginPlan, close: closeDetails,
+          health: state.status === 'ready' ? state.health : null, beginPlan, close: closeDetails, readOnly: desktopReadOnly,
         }))
     }
 
