@@ -1,4 +1,4 @@
-import { isGeneratedSelfManagerCatalogDetail, permissionSignals, dshInterfaceSignals, localModuleEvidence } from './automation-source-policy.mjs'
+import { isGeneratedSelfManagerRegistryData, permissionSignals, dshInterfaceSignals, localModuleEvidence } from './automation-source-policy.mjs'
 import { packageSourceSurface, SCANNABLE_SOURCE, NATIVE_ARTIFACT, unsupportedPackageEntry, missingLocalModuleReasons } from './package-source-surface.mjs'
 
 // Pure read-only review: the caller supplies bounded fixed-Commit text reads.
@@ -16,8 +16,9 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
   signals.nativeOrExecutableArtifacts = surface.entries.some(item => item.mode === '100755' || NATIVE_ARTIFACT.test(item.relativePath))
   const runtimeFiles = surface.entries.filter(item => {
     const relativePath = item.relativePath
-    // Retain the existing canonical-manager-only schema-validated data exception.
-    if (isGeneratedSelfManagerCatalogDetail(candidate, relativePath)) return false
+    // These exact canonical-manager JSON paths are schema-validated by the
+    // repository gate before automation scans a fixed source Commit.
+    if (isGeneratedSelfManagerRegistryData(candidate, relativePath)) return false
     return item.type === 'blob' && item.mode !== '120000' && SCANNABLE_SOURCE.test(relativePath)
   })
   const runtimeSizes = runtimeFiles.map(item => Number.isSafeInteger(item.size) && item.size >= 0 ? item.size : policy.sourceBounds.maxFileBytes + 1)
@@ -56,7 +57,7 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
   for (const [signal, allowed] of Object.entries(policy.automaticApproval.permissionSignals)) {
     if (!allowed && signals[signal]) reasons.push(`runtime source contains the ${signal} permission signal`)
   }
-  if (reviewSignals.toolViewExtension) reasons.push('tool.call.toolview extension requires key ownership review; registration alone is not a protected component mutation')
+  if (reviewSignals.toolViewExtension) reasons.push('Tool-view extension requires key ownership review; registration alone is not a protected component mutation')
   if (reviewSignals.dynamicModuleLoading) reasons.push('dynamic module loading or code evaluation requires separate review')
   return {
     reasons: [...new Set(reasons)],

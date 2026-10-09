@@ -2,7 +2,7 @@ import { posix } from 'node:path'
 
 export const SCANNABLE_SOURCE = /\.(?:[cm]?[jt]sx?|json|ya?ml|sh|bash|zsh|fish|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|ps1|psm1|cmd|bat|html?|vue|svelte)$/i
 export const NATIVE_ARTIFACT = /\.(?:node|wasm|dll|dylib|so|exe|bin)$/i
-const STATIC_ASSET = /\.(?:md|txt|rst|png|jpe?g|webp|gif|ico|svg|css|woff2?|ttf|otf|map)$/i
+const STATIC_ASSET = /\.(?:md|txt|rst|png|jpe?g|webp|gif|ico|svg|css|woff2?|ttf|otf|map|webmanifest|xml)$/i
 const METADATA = /^(?:package\.json|npm-shrinkwrap\.json|readme(?:\..*)?|licen[cs]e(?:\..*)?|copying(?:\..*)?)$/i
 const ALWAYS_EXCLUDED = /(?:^|\/)(?:\.git|node_modules)(?:\/|$)|^(?:package-lock\.json|\.npmrc)$/i
 
@@ -108,7 +108,11 @@ export function unsupportedPackageEntry(item) {
 export function missingLocalModuleReasons(references, from, entries) {
   const paths = new Set(entries.filter(item => item.type === 'blob' && item.mode !== '120000').map(item => item.relativePath))
   return references.filter(ref => ref.startsWith('.')).flatMap(ref => {
-    const target = posix.normalize(posix.join(posix.dirname(from), ref))
+    // ESM query and fragment suffixes identify the same local file on disk.
+    // Keep validation on the path component before probing the selected tree.
+    const path = ref.split(/[?#]/, 1)[0]
+    if (!path || path.endsWith('/')) return [`local module path is invalid: ${from} -> ${ref}`]
+    const target = posix.normalize(posix.join(posix.dirname(from), path))
     if (!validPath(target)) return [`local module escapes the package: ${from}`]
     const alternatives = [target, ...['.js', '.mjs', '.cjs', '.json', '/index.js', '/index.mjs', '/index.cjs'].map(ext => target + ext)]
     return alternatives.some(path => paths.has(path)) ? [] : [`local module is missing from the distributable surface: ${from} -> ${ref}`]

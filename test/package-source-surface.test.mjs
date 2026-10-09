@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { packageSourceSurface, missingLocalModuleReasons } from '../src/package-source-surface.mjs'
+import { packageSourceSurface, missingLocalModuleReasons, unsupportedPackageEntry } from '../src/package-source-surface.mjs'
 import { reviewFixedSource } from '../src/fixed-source-review.mjs'
 import { localModuleEvidence } from '../src/automation-source-policy.mjs'
 
@@ -114,6 +114,44 @@ test('static local imports must exist in package and dynamic loading is not auto
   assert.deepEqual(evidence, { references: ['./lib/client.js'], dynamic: false })
   assert.deepEqual(missingLocalModuleReasons(evidence.references, 'index.js', packageSourceSurface(manifest, treeOf(sources)).entries), [])
   assert.match(missingLocalModuleReasons(['../../outside'], 'index.js', []).join(''), /escapes/)
+})
+
+test('browser module query suffixes resolve only to selected local files', () => {
+  const entries = packageSourceSurface(manifest, treeOf(sources)).entries
+  assert.deepEqual(missingLocalModuleReasons(['./lib/client.js?v=20261009-reasons', './lib/client.js#panel'], 'index.js', entries), [])
+  assert.match(missingLocalModuleReasons(['./lib/missing.js?v=1'], 'index.js', entries).join(''), /local module is missing/)
+  assert.match(missingLocalModuleReasons(['../../outside.js?v=1'], 'index.js', entries).join(''), /escapes/)
+  assert.match(missingLocalModuleReasons(['./?v=1'], 'index.js', entries).join(''), /path is invalid/)
+})
+
+test('bounded web metadata is static while executables and unknown artifacts stay blocked', () => {
+  for (const path of ['marketplace/site.webmanifest', 'marketplace/sitemap.xml']) {
+    assert.equal(unsupportedPackageEntry({ relativePath: path, type: 'blob', mode: '100644' }), false)
+  }
+  for (const path of ['marketplace/helper.exe', 'marketplace/unknown.dat']) {
+    assert.equal(unsupportedPackageEntry({ relativePath: path, type: 'blob', mode: '100644' }), true)
+  }
+})
+
+test('only the canonical Store excludes generated registry data from executable-source signals', async () => {
+  const files = {
+    ...sources,
+    'registry/catalog.json': JSON.stringify({ description: 'tool.call.toolview' }),
+    'registry/catalog-index.json': '{}',
+    'registry/candidates.json': '{}',
+    'registry/catalog/details/example.json': '{}',
+  }
+  const meta = { ...manifest, files: [...manifest.files, 'registry/'] }
+  const tree = treeOf(files)
+  const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store', installPath: null }
+  const scan = async identity => reviewFixedSource(identity, meta, tree, policy, async path => files[path])
+  const own = await scan(manager)
+  assert.equal(own.scanComplete, true)
+  assert.equal(own.runtimeFiles, 4)
+  assert.equal(own.reviewSignals.toolViewExtension, false)
+  const fork = await scan({ ...manager, repositoryUrl: 'https://github.com/example/fork' })
+  assert.equal(fork.reviewSignals.toolViewExtension, true)
+  assert.match(fork.reasons.join('\n'), /key ownership review/)
 })
 
 test('nested ignore rules and source/tree size mismatch are incomplete, not clean', async () => {

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "planId": "catalog-manager-fixed-source-scan-20261010",
+  "type": "source-automation-repair",
+  "status": "local-check-passed-ci-pending",
+  "baseCommit": "76183b44eb9c2764e1370fbc0ab4e4038285a244",
+  "trigger": "Catalog run 37963175346 merged PR 1351 but deferred DSH STORE 0.9.3: inert webmanifest/XML assets were rejected, a browser module query suffix was treated as a missing file, and generated Catalog data plus reviewer diagnostic text triggered tool-view review.",
+  "objective": "Make fixed-source inspection recognize bounded inert web assets, literal browser module query suffixes, and the canonical manager's separately validated generated registry JSON while retaining fail-closed checks for missing, escaping, executable, dynamic, or protected source; then let policy re-evaluate the self-managed Store entry.",
+  "fileScope": {
+    "modify": ["src/package-source-surface.mjs", "src/fixed-source-review.mjs", "src/automation-source-policy.mjs", "test/package-source-surface.test.mjs", "test/catalog-automation.test.mjs"],
+    "add": ["docs/ops/catalog-manager-fixed-source-scan-20261010.json"]
+  },
+  "preconditions": {
+    "sha256": {
+      "src/package-source-surface.mjs": "559dbc93fae89ab0c2e311545ce37f5f87d414b54af2063e0a8db222ae722a23",
+      "src/fixed-source-review.mjs": "23066818dd8a296bc4e59dd3383f5c1bc99a177e1a7d6a3651387770250013c7",
+      "src/automation-source-policy.mjs": "75c9258ca8eeae0fab2f93e847a2e7dd0f2140fed1adec494a34fe32f62d8f07",
+      "test/package-source-surface.test.mjs": "b5e36490e1e85cfbcad807325b194678296f593139f81499751ef16f12f1f58d",
+      "test/catalog-automation.test.mjs": "22271ba0cf45303a9c356c202ea65f2f7c2213f995cea04712095c919097ac85"
+    },
+    "absent": ["docs/ops/catalog-manager-fixed-source-scan-20261010.json"]
+  },
+  "gates": [
+    "The inert asset allowlist admits only .webmanifest and .xml in addition to existing static formats",
+    "A local module query or fragment resolves to the exact selected source file and still rejects missing or escaping paths",
+    "Tool-view registration remains review-only; diagnostic prose alone does not claim a registration",
+    "Only the canonical manager may exempt exact generated registry JSON paths already schema-validated by npm run validate:registry",
+    "No third-party install, build, test, prepare, or runtime code is executed",
+    "npm run check, PR CI, and fixed-source policy review pass before a new Catalog PR is merged",
+    "Catalog version 0.9.3 and complete source Commit are read back from GitHub, Pages, and both storefronts"
+  ],
+  "rollback": "Revert the exact source PR; retain immutable Catalog history and rerun policy only after source gates pass.",
+  "verification": {
+    "localCheck": "npm run check passed: REGISTRY_OK entries=782, 392/392 tests",
+    "fixedSourceReview": "read-only local source review complete: 80/80 runtime files scanned, 1,313,710 bytes, no hard reasons; existing elevated capability signals remain reviewable",
+    "baseHashes": "all scoped file SHA-256 preconditions matched base Commit",
+    "catalogAutomation": "pending source PR CI and policy rerun"
+  },
+  "stopConditions": [
+    "Any actual ToolView registration or missing local module is treated as harmless",
+    "The fixed-source scan remains incomplete or has an unresolved hard reason",
+    "The base Commit or file hashes change before merge"
+  ]
+}

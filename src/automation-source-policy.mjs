@@ -11,7 +11,7 @@ const COMMAND_MODULE = moduleImport('child_process')
 // so comments, help text, and template-literal prose are not treated as code.
 const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
-const GENERATED_CATALOG_DETAIL = /^registry\/catalog\/details\/[^/]+\.json$/i
+const GENERATED_REGISTRY_DATA = /^registry\/(?:catalog(?:-index)?|candidates)\.json$|^registry\/catalog\/details\/[^/]+\.json$/i
 const TEST_SOURCE_FILE = /^(?:test|spec)[-_.].*\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
 const SUFFIXED_TEST_SOURCE_FILE = /^.+\.(?:test|spec)\.(?:[cm]?[jt]sx?)$/i
 
@@ -46,13 +46,13 @@ export function isNoCommonAncestorError(error, baseCommit, candidateCommit) {
     || message === `No common ancestor between ${baseCommit} and ${candidateCommit}`
 }
 
-export function isGeneratedSelfManagerCatalogDetail(candidate, relativePath) {
+export function isGeneratedSelfManagerRegistryData(candidate, relativePath) {
   const repository = typeof candidate?.repositoryUrl === 'string'
     ? candidate.repositoryUrl.trim().replace(/\.git\/?$/i, '').replace(/\/$/, '').toLowerCase()
     : null
   return String(candidate?.id ?? '').trim().toLowerCase() === 'dsh-safe-plugin-manager'
     && repository === SELF_MANAGER_REPOSITORY.toLowerCase()
-    && GENERATED_CATALOG_DETAIL.test(String(relativePath ?? ''))
+    && GENERATED_REGISTRY_DATA.test(String(relativePath ?? ''))
 }
 
 const JAVASCRIPT_SOURCE = /\.(?:[cm]?[jt]sx?|[cm]?ts)$/i
