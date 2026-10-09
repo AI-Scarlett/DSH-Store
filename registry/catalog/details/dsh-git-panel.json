@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5d8647b38b67b716cebe5378dfcaf8faa183cc3d",
-  "version": "1.2.0",
+  "commit": "28a04f13d103dd4a38c5a5f2bf85be28737b67d8",
+  "version": "1.3.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-08T14:32:45.000Z",
-    "observedAt": "2026-10-08T15:17:06.000Z",
+    "updatedAt": "2026-10-09T15:23:25.000Z",
+    "observedAt": "2026-10-09T17:00:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-08T15:17:06.000Z",
-      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/5d8647b38b67b716cebe5378dfcaf8faa183cc3d",
+      "checkedAt": "2026-10-09T17:00:39.000Z",
+      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/28a04f13d103dd4a38c5a5f2bf85be28737b67d8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "git-panel"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./core.ts; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./validate.ts; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./types.ts; local module is missing from the distributable surface: lib/host/core.d.ts -> ./git.ts; local module is missing from the distributable surface: lib/host/core.d.ts -> ./types.ts; local module is missing from the distributa",
+  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./core.ts; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./validate.ts; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./types.ts; local module is missing from the distributable surface: lib/host/core.d.ts -> ./git.ts; local module is missing from the distributable surface: lib/host/core.d.ts -> ./llm-face.ts; local module is missing from the distrib",
   "compatibility": {
     "dsh": ">=0.1.2-rc.1",
     "dshReleases": {
@@ -93,9 +93,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown"
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,12 +146,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -159,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
