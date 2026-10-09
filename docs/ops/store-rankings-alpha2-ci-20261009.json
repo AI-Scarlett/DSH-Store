@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "DSH-RANKINGS-ALPHA2-CI-20261009",
+  "type": "bounded-plugin-compatibility-declaration",
+  "baseCommit": "6d2447e499313e21b447b8a75e0562af3bfc9574",
+  "createdAt": "2026-10-09T15:12:27.543835+00:00",
+  "authorization": "Prior user instruction to update Store for official DSH releases, together with current ranking publication request",
+  "reason": "PR 1347 exact-head CI: 0.2.1-alpha.2 install rejected on all 9 OS/pnpm cells; previous two versions pass. Official plugin-manager checks declared host client peer ranges before/after install; Store currently names alpha.1 only.",
+  "scope": [
+    {
+      "path": "package.json",
+      "baseSha256": "7c64fe595d557e1ff3d3ab6bb458152effd296afe434be3de435eebeb85acf9e"
+    },
+    {
+      "path": "test/contracts.test.mjs",
+      "baseSha256": "1a921d94b5b6228b9561904f13755a2d4635a4f239c60a73449f627c58284053"
+    },
+    {
+      "path": "test/upgrade-matrix.test.mjs",
+      "baseSha256": "068d4c35ad3628d9ef79d61992692867ac19ac7e68c8fa452ab9ea2ddd9b23d0"
+    },
+    {
+      "path": "docs/ops/store-rankings-alpha2-ci-20261009.json",
+      "baseSha256": null
+    }
+  ],
+  "constraints": [
+    "Add only exact 0.2.1-alpha.2 to four injected client peer ranges; retain all historical alternatives",
+    "No upstream files, installed packages, Profile, Catalog or Desktop changes",
+    "Keep all lifecycle scripts disabled and rerun the full matrix without exemptions"
+  ],
+  "evidence": {
+    "runId": 37948695899,
+    "officialPackage": "@deepseek-ai/dsh-plugin-manager@0.2.1-alpha.2",
+    "officialTarballIntegrity": "sha512-W7v2vSxD0sW364Y9s/0gJRkd+jWNqcrGcQNR7ARbKK+2qOuWILnN4P09BkcRTurr1QN21AMAevCqQDejtUayeA=="
+  },
+  "gates": [
+    "npm run check",
+    "unchanged strict declaration regression tests",
+    "exact-head latest-three matrix and CodeQL",
+    "Pages and both production readbacks"
+  ],
+  "rollback": "Revert this scoped commit through a PR; no real Profile touched"
+}
