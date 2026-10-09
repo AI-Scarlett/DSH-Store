@@ -1,48 +1,49 @@
 {
-  "id": "agint-restart",
-  "name": "插件更新与恢复（Agint Restart）",
-  "packageName": "agint-restart",
-  "description": "AGINT 插件：检测 DSH 重启后自动唤醒主 agent 并投递**纯状态**消息「DSH 已重启。」（v0.7.1；不含任何行动指令——2026-09-10 重启环复盘：指令性措辞会把状态消息变成工作指令，唤醒后的会话会把上下文里未完成的旧指令再执行一遍）。借鉴 dsh-resume-on-restart 思路，scope 1:1。优雅关闭走 cordis dispose 钩子（避免上游 SIGTERM 二次 kill bug）。v0.8.0 新增代码指纹：status().codeFingerprint / codeStale 一眼确认跑的是哪版代码、要不要重启；v0.8.1 把指纹带进 restart_status 的输出面。",
+  "id": "dsh-web-app",
+  "name": "GitHub 工程工具（DSH Web App）",
+  "packageName": "dsh-web-app",
+  "description": "为 DSH 提供GitHub 工程工具能力。英文原始说明：AI-delivered interactive artifacts for DeepSeek Harness: single-file HTML apps (tools, toys, dashboards) deployed per Git repo, opened inline via /webapp, with interaction outcomes returned as template-filled user messages.",
   "searchTerms": [
-    "插件更新与恢复",
-    "Agint Restart",
-    "agint-restart",
-    "更新",
-    "重启",
-    "热重载",
-    "恢复",
+    "GitHub 工程工具",
+    "DSH Web App",
+    "dsh-web-app",
+    "GitHub",
+    "Git",
+    "代码审查",
+    "PR",
     "实验功能",
     "新功能",
-    "agint",
-    "restart"
+    "dsh",
+    "web",
+    "app"
   ],
-  "repositoryUrl": "https://github.com/Anmulzhao/DSH-AGINT",
+  "repositoryUrl": "https://github.com/frankshi2024/dsh-web-app",
   "defaultBranch": "main",
-  "manifestPath": "plugins/agint-restart/package.json",
-  "installPath": "plugins/agint-restart",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "352f962b22edc367bb509887e30fc9e83e59e0ea",
-  "version": "0.9.0",
+  "commit": "a76fd128b1bb23eea5b3591c074b5171af0dfb1a",
+  "version": "0.0.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-09T04:07:51.000Z",
+    "updatedAt": "2026-10-09T05:05:16.000Z",
     "observedAt": "2026-10-09T05:01:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-09T05:01:11.000Z",
-      "evidenceUrl": "https://github.com/Anmulzhao/DSH-AGINT/commit/352f962b22edc367bb509887e30fc9e83e59e0ea",
+      "evidenceUrl": "https://github.com/frankshi2024/dsh-web-app/commit/a76fd128b1bb23eea5b3591c074b5171af0dfb1a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "agint-restart"
+    "dsh-web-app"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: the current fixed source 633fb4da7194 has no common ancestor with the prior Catalog pin 162ab7031fc1; independent source history remains external-only. manifest repository does not match the canonical GitHub repository DSH compatibility is not explicitly declared runtime source contains the files permission signal runtime source contains the network permission signal runtime source contains the commands permission signal runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime artifact pattern requires review: ./skills/*.md; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.0-0 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -91,7 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown"
@@ -145,12 +145,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -170,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=18",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -194,6 +188,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "disconnected-history-external-only"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

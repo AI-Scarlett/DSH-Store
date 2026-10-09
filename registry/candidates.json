@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-08T21:04:41.000Z",
+    "updatedAt": "2026-10-09T05:01:11.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "2f59287f1a1794a68102a45c61cc657659fa5de6",
-      "sourceUpdatedAt": "2026-10-08T20:55:51.000Z",
+      "latestCommit": "796b65e1cd15f3cf819396716320db007655ee3f",
+      "sourceUpdatedAt": "2026-10-09T05:00:26.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2216,8 +2216,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "380f82c6e16355d0394baabf385b48215c7f7a7e",
-      "sourceUpdatedAt": "2026-10-07T07:41:11.000Z",
+      "latestCommit": "34b1c8dcdf53fe8e4ba526819d6ab467da9ba0bf",
+      "sourceUpdatedAt": "2026-10-09T04:43:09.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -17305,6 +17305,154 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "perrylink-dsh-draw",
+      "name": "PerryLink/dsh-draw",
+      "description": "Unified static-image generation router for DeepSeek Harness: one image_generate tool with standard parameters, config-driven engine routing (OpenAI Images, Zhipu CogView, any compatible endpoint) with health-aware fallback, durable workspace attachments and per-session quota accounting. Maintenance status: FROZEN since 2026-10-05.",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-draw",
+      "defaultBranch": "main",
+      "latestCommit": "5383195a760c23718773dd05ad4c768eca1e10bb",
+      "sourceUpdatedAt": "2026-10-09T04:44:48.000Z",
+      "discoveredAt": "2026-10-09T05:01:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/PerryLink__dsh-draw.yml:sha256=3ae2c01a160ce60c93cab9676c2778e5a396dcc60cdc34bfd192c4feda0f5ca3:at=2026-10-09T05:05:22.592Z:owner=255665900"
+      ],
+      "topics": [
+        "ai-agent",
+        "ai-agents",
+        "cogview",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "image-generation",
+        "openai-images",
+        "text-to-image",
+        "zhipu",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "perrylink-dsh-doublecheck",
+      "name": "PerryLink/dsh-doublecheck",
+      "description": "Double-check before you ship: grill the requirements, test the implementation, prove the delivery. An engineering-discipline bundle for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-doublecheck",
+      "defaultBranch": "main",
+      "latestCommit": "cbc2ab625bda1f8edb5e1f408c6b3644622068e3",
+      "sourceUpdatedAt": "2026-10-09T04:43:21.000Z",
+      "discoveredAt": "2026-10-09T05:01:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/PerryLink__dsh-doublecheck.yml:sha256=2ab1fc21a6056286e6637561752677479ca2f511e768cc80a803e33c22e74ac5:at=2026-10-09T05:05:22.592Z:owner=255665900"
+      ],
+      "topics": [
+        "ai-agent",
+        "ai-agents",
+        "code-review",
+        "deepseek-harness",
+        "delivery-gate",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "engineering-discipline",
+        "guard",
+        "quality-gate",
+        "requirements",
+        "skill",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "perrylink-dsh-data-quality",
+      "name": "PerryLink/dsh-data-quality",
+      "description": "DeepSeek Harness plugin: deterministic data profiling, cleaning, and verification (dsh-data-quality)",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-data-quality",
+      "defaultBranch": "main",
+      "latestCommit": "de7deb9d5eb0f90f83f103bf7d536a6851d63b58",
+      "sourceUpdatedAt": "2026-10-09T04:43:18.000Z",
+      "discoveredAt": "2026-10-09T05:01:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/PerryLink__dsh-data-quality.yml:sha256=455a3058bb2107547eb97cea56c24e7b72ea539f374030d091498b212db8f826:at=2026-10-09T05:05:22.592Z:owner=255665900"
+      ],
+      "topics": [
+        "ai-agent",
+        "ai-agents",
+        "cordis",
+        "data-cleaning",
+        "data-profiling",
+        "data-quality",
+        "data-verification",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "qq1171910065-dsharness-mac-build",
+      "name": "qq1171910065/dsharness-mac-build",
+      "description": "macOS packaging for DSH Desktop (client fork subset)",
+      "repositoryUrl": "https://github.com/qq1171910065/dsharness-mac-build",
+      "defaultBranch": "main",
+      "latestCommit": "a40fd27964f392d4acf52c6e978edb394224b4b9",
+      "sourceUpdatedAt": "2026-10-09T05:04:36.000Z",
+      "discoveredAt": "2026-10-09T05:01:11.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "perrylink-dsh-composer-history",
+      "name": "PerryLink/dsh-composer-history",
+      "description": "Terminal-style input history for the DeepSeek Harness web composer: edge-first arrows with exact draft/caret restore, browser-local persisted history, Ctrl+R reverse search, workspace recall - and sliding-context awareness (compaction summaries in recall/search, compaction notice with one-click /compact fill).",
+      "repositoryUrl": "https://github.com/PerryLink/dsh-composer-history",
+      "defaultBranch": "main",
+      "latestCommit": "9cfa824aed538e5e9d8db00f7ba57070c0047184",
+      "sourceUpdatedAt": "2026-10-09T04:43:15.000Z",
+      "discoveredAt": "2026-10-09T05:01:11.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@17ae18761c0f8b1107f92714f50e633929d24c2e:data/plugins/PerryLink__dsh-composer-history.yml:sha256=5c2c1384218bfeb2ab3e932daf8b87cb2cb79f309c34e573becb2a17d5c6e0c6:at=2026-10-09T05:05:22.592Z:owner=255665900"
+      ],
+      "topics": [
+        "ai-agent",
+        "ai-agents",
+        "compaction",
+        "composer",
+        "context-window",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "input-history",
+        "keyboard-shortcuts",
+        "sliding-context",
+        "terminal",
+        "typescript",
+        "ui",
+        "web-gui",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
