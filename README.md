@@ -27,8 +27,7 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 
 ### 前置条件
 
-- DeepSeek Harness `0.1.0-rc.7`、`0.1.0-rc.8`、`0.1.1-rc.1`、`0.1.1-rc.2`
-  或当前官方 `0.1.5-alpha.1`、`0.1.5-alpha.2`、`0.1.5-rc.1` 最新三版预发布通道，并且官方 `dsh` CLI 可用；
+- 已在精确兼容记录中通过安装、启动、卸载与回滚的 DSH 版本；新发布版只有版本范围或 Peer 声明时仍视为待验证。Web Profile 的包操作需要官方 `dsh` CLI；
 - Node.js `^22.19.0` 或 `>=24.0.0`；
 - 一个启用了 Web 客户端的目标 Profile。下面以 `web` 为例，如果你的 Profile 名称不同，
   请替换命令中的 `web`。
@@ -69,11 +68,19 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 安装完成后，从商城发起的安装、更新、迁移、停用、启用和卸载才会进入一次性计划、
 精确确认、Profile 前置哈希、备份、健康检查和失败回滚流程。
 
+### 官方 Desktop
+
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。商城在该环境中绑定当前
+Desktop Profile，提供目录、已安装状态和只读诊断；安装、更新、启停、卸载与 Host 重启请使用
+DSH 官方“插件”页及应用更新入口。商城不会将 Desktop 操作误送到 `web` Profile，也不会让固定
+`3080` 端口的 Guardian 接管 Desktop。Desktop 打包应用中的可见界面仍需单独实测，不能由 Web
+Profile 的自动测试推定。
+
 ## 当前概况
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.2` |
+| 商城版本 | `0.9.3` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
@@ -81,7 +88,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 | 推荐 | 以实时 Catalog 中同时满足 `featured: true` 与 `status: approved` 的条目为准 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
-`0.9.2` 保留官方 Connection 登录校验、持久化操作记录、真实回滚结果、生效状态、脱敏诊断、兼容筛选、本机收藏/备注和固定来源截图；插件商城 Host Bundle 在 DSH `0.2.0-rc.1` 的临时 Profile 安装、启动、卸载和精确回滚已通过本地 smoke。CI 将动态验证官方 active 最新三个版本 `0.1.7-alpha.2`、`0.1.7-rc.1`、`0.1.7-rc.2`，并将 `next` 通道单独验证、不混淆两条发布线；`0.1.7-rc.2` 已在当前官方版本矩阵通过跨平台安装、启动、卸载和精确回滚测试，`0.2.0-rc.1` 也通过独立 next-channel 三平台验证。外部目录仍仅提供待审候选，作者全局一次联系规则保持不变。本地 Profile 仍需单独升级，源码 PR 和 CI 通过不代表本机已安装或公开 Catalog 已完成发布。
+`0.9.3` 将官方 Desktop 绑定到其实际 Profile，并在服务端拒绝不受支持的商城写入、Guardian 与重启操作；商城界面明确展示只读模式。版本面板从 Desktop 内置的官方 DSH 包读取当前版本，不提供修改桌面应用运行时的 npm 命令。`0.2.0-rc.1` 曾完成 Web 临时 Profile 的安装、启动、卸载和回滚验证；已在官方 npm 发布的 `0.2.0-rc.2`、`0.2.1-alpha.1`、`0.2.1-alpha.2` 在本版本的精确声明中保持 `unknown`，直到对应的本版本证据完成。源码、Catalog、生产站点和真实 Profile 各自需要独立验收。
 
 `0.8.14` 修复“开发者提交了新代码但没有提升插件版本号”时新用户无法安装新代码的问题：自动任务会把同版本的新 Commit 纳入与正常版本更新相同的固定源、身份、许可证、Bundle、权限和最新三个 DSH 版本兼容审查；通过后移动 Catalog 的完整 Commit 固定点，因此未安装用户会直接安装审核后的新 Commit。已经安装相同版本的用户不会在商城里收到覆盖式更新，商城只展示 Catalog 固定 Commit 与 GitHub 手动命令，并明确说明该操作不受商城备份、健康检查和失败回滚保护。真正提升 SemVer 的版本仍使用商城事务更新。
 
