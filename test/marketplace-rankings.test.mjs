@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { readFile } from 'node:fs/promises'
 import { createRankingSnapshot, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 const observed = '2026-10-03T05:00:00.000Z'
 const item = (id, stars, categories = ['tools'], extra = {}) => ({
@@ -28,9 +29,52 @@ test('popular sorts numerically, preserves zero, excludes unknown and uses a det
   assert.equal(data.entries.find(e => e.id === 'missing').stars, null)
 })
 
-test('recommendations preserve curated order and label community supplements', () => {
+test('legacy featured flags do not establish recommendations or outrank observed stars', () => {
   const data = snapshot([item('first-pick', 1, ['tools'], { featured: true }), item('not-featured', 999), item('second-pick', null, ['ui'], { featured: true })])
-  assert.deepEqual(rankingEntries(data, 'recommended').map(e => e.id), ['first-pick', 'second-pick', 'not-featured'])
+  assert.deepEqual(rankingEntries(data, 'recommended').map(e => e.id), ['not-featured', 'first-pick'])
+  assert.ok(rankingEntries(data, 'recommended').every(e => e.recommendationKind === 'community-stars'))
+  const changedFlags = structuredClone(data)
+  changedFlags.entries.forEach(e => { e.featured = !e.featured; e.order = 100 - e.order })
+  assert.deepEqual(rankingEntries(changedFlags, 'recommended').map(e => e.id), ['not-featured', 'first-pick'])
+})
+
+test('featured unlisted records need positive star evidence and blocked or rejected records cannot bypass filtering', () => {
+  const data = snapshot([
+    item('unlisted-featured', 179, ['tools'], { status: 'unlisted', featured: true }),
+    item('zero-featured', 0, ['tools'], { status: 'unlisted', featured: true }),
+    item('unknown-featured', null, ['tools'], { featured: true }),
+    item('blocked-featured', 999, ['tools'], { status: 'blocked', featured: true }),
+  ], { candidates: { entries: [candidate('rejected', { status: 'rejected' })] } })
+  data.entries.at(-1).stars = 1000
+  const rows = rankingEntries(data, 'recommended')
+  assert.deepEqual(rows.map(e => e.id), ['unlisted-featured'])
+  for (const locale of ['zh', 'en']) {
+    const html = renderRankingRows(rows, { type: 'recommended', locale })
+    assert.match(html, locale === 'zh' ? /入榜依据：GitHub 179 星/ : /Basis: 179 GitHub stars/)
+    assert.match(html, locale === 'zh' ? /未收录/ : /Not listed/)
+    assert.match(html, locale === 'zh' ? /非商城评测推荐/ : /not a Store review/)
+    assert.doesNotMatch(html, /商城精选|Store pick|\.\.\/plugins|data-copy-target/)
+  }
+  // A status change must remove the row, not preserve a former recommendation.
+  data.entries[0].reviewStatus = 'blocked'
+  assert.equal(rankingEntries(data, 'recommended').length, 0)
+})
+
+test('missing, stale or unknown recommendation kinds never fall back to a Store endorsement', () => {
+  const entry = snapshot([item('plugin', 1200, ['tools'], { featured: true })]).entries[0]
+  for (const variant of [entry, { ...entry, recommendationKind: 'editorial' },
+    { ...entry, recommendationKind: '<script>bad()</script>' },
+    ...[null, 0, '1200', -1].map(stars => ({ ...entry, stars, recommendationKind: 'community-stars' })),
+    { ...entry, reviewStatus: 'blocked', recommendationKind: 'community-stars' }]) {
+    for (const locale of ['zh', 'en']) {
+      const html = renderRankingRows([variant], { type: 'recommended', locale })
+      assert.match(html, locale === 'zh' ? /暂无可核验的推荐依据/ : /Recommendation basis unavailable/)
+      assert.doesNotMatch(html, /商城精选|Store pick|<script>|Basis:|入榜依据：/i)
+    }
+  }
+  const rows = rankingEntries(snapshot([item('plugin', 1200)]), 'recommended')
+  assert.match(renderRankingRows(rows, { type: 'recommended' }), /GitHub 1,200 星/)
+  assert.match(renderRankingRows(rows, { type: 'recommended', locale: 'en' }), /1,200 GitHub stars/)
 })
 
 test('must-haves selects each category star leader, collapses duplicate winners, and exposes ties', () => {
@@ -53,7 +97,7 @@ test('missing collection timestamp cannot misrepresent counters as fresh stars',
   assert.equal(data.entries[0].stars, null)
   assert.equal(rankingEntries(data, 'popular').length, 0)
   assert.equal(rankingEntries(data, 'essential').length, 0)
-  assert.equal(rankingEntries(data, 'recommended').length, 1)
+  assert.equal(rankingEntries(data, 'recommended').length, 0)
 })
 
 test('rankings paginate by thirty, normalize invalid/out-of-range pages and do not mutate their snapshot', () => {
@@ -160,9 +204,10 @@ test('all charts show thirty unique rows without granting admission or editorial
     assert.doesNotMatch(renderRankingRows(unlisted, { type }), /\.\.\/plugins|dsh plugin/)
   }
   const recommended = rankingEntries(data, 'recommended')
-  assert.equal(recommended.filter(e => e.recommendationKind === 'editorial').length, 2)
-  assert.equal(recommended.filter(e => e.recommendationKind === 'community-stars').length, 28)
-  assert.match(renderRankingRows(recommended.slice(2), { type: 'recommended' }), /非人工精选/)
+  assert.equal(recommended.filter(e => e.recommendationKind === 'editorial').length, 0)
+  assert.equal(recommended.filter(e => e.recommendationKind === 'community-stars').length, 30)
+  assert.match(renderRankingRows(recommended, { type: 'recommended' }), /入榜依据：GitHub 1,000 星/)
+  assert.doesNotMatch(renderRankingRows(recommended, { type: 'recommended' }), /商城精选/)
   const supplements = rankingEntries(data, 'essential').filter(e => e.categoryPick)
   assert.equal(supplements.length, 27)
   assert.match(renderRankingRows(supplements, { type: 'essential' }), /分类高星补充/)
@@ -177,4 +222,17 @@ test('small and incomplete populations stay honest; blocked projects are not aut
   assert.equal(rows.length, 1)
   assert.equal(rows[0].wins.length, 0)
   assert.equal(rows[0].categoryPick.observedRank, 2)
+})
+
+test('HTML metadata and bilingual chart copy do not advertise unsupported Store picks', async () => {
+  const html = await readFile(new URL('../marketplace/rankings/index.html', import.meta.url), 'utf8')
+  const client = await readFile(new URL('../marketplace/rankings/rankings.js', import.meta.url), 'utf8')
+  for (const source of [html, client]) {
+    assert.doesNotMatch(source, /商城精选|Store picks|Editorial picks first|保留人工精选|preserves editorial picks/)
+    assert.match(source, /旧的重点展示标记不作为推荐依据/)
+  }
+  assert.match(client, /automated selection, not a Store review or admission/)
+  const version = html.match(/rankings\.js\?v=([\w-]+)/)?.[1]
+  assert.ok(version)
+  assert.ok(client.includes(`model.js?v=${version}`))
 })

@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="applicable-device" content="pc,mobile">
   <!-- DSH_BAIDU_VERIFICATION -->
-  <meta name="description" content="探索 DSH 插件热门榜、推荐榜和必装榜：GitHub 星标排名、商城精选与各分类最高星标插件。">
+  <meta name="description" content="探索 DSH 插件热门榜、推荐榜和必装榜：GitHub 星标排名、可核验的入榜依据与分类榜单；入榜不代表商城评测或收录。">
   <meta name="robots" content="index,follow,max-snippet:-1">
   <meta name="theme-color" content="#f6f9ff">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DSH STORE">
   <meta property="og:title" content="插件榜单 | DSH STORE Charts">
-  <meta property="og:description" content="Discover popular plugins by GitHub stars, Store picks, and category leaders.">
+  <meta property="og:description" content="Explore GitHub star rankings with explicit selection criteria and listing status. Ranking is not a Store review or approval.">
   <meta property="og:url" content="https://dsh.store/rankings/">
   <title>插件榜单 | DSH STORE</title>
   <link rel="canonical" href="https://dsh.store/rankings/">
@@ -19,10 +19,10 @@
   <link rel="icon" type="image/png" href="../dsh-store-icon.png">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../pages-redesign.css?v=20261003-rankings-1">
-  <link rel="stylesheet" href="./rankings.css?v=20261004-30">
+  <link rel="stylesheet" href="./rankings.css?v=20261009-reasons">
   <script defer src="../motion.js"></script>
   <script defer src="../scan-history-nav.js?v=20261003-rankings-1"></script>
-  <script type="module" src="./rankings.js?v=20261004-30"></script>
+  <script type="module" src="./rankings.js?v=20261009-reasons"></script>
 </head>
 <body class="rankings-page">
   <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
@@ -52,7 +52,7 @@
     </header>
     <div class="ranking-tabs" role="tablist" aria-label="插件榜单" data-i18n-aria="tabs.label">
       <button id="tab-popular" type="button" role="tab" aria-selected="true" aria-controls="ranking-panel" tabindex="0" data-ranking-tab="popular"><span class="ranking-tab-icon" aria-hidden="true">↗</span><span><strong data-i18n="tab.popular">热门榜单</strong><small data-i18n="tab.popularHint">按 GitHub 星标排序</small></span><b data-count="popular">—</b></button>
-      <button id="tab-recommended" type="button" role="tab" aria-selected="false" aria-controls="ranking-panel" tabindex="-1" data-ranking-tab="recommended"><span class="ranking-tab-icon" aria-hidden="true">✦</span><span><strong data-i18n="tab.recommended">推荐榜单</strong><small data-i18n="tab.recommendedHint">精选 + 社区高星推荐</small></span><b data-count="recommended">—</b></button>
+      <button id="tab-recommended" type="button" role="tab" aria-selected="false" aria-controls="ranking-panel" tabindex="-1" data-ranking-tab="recommended"><span class="ranking-tab-icon" aria-hidden="true">✦</span><span><strong data-i18n="tab.recommended">推荐榜单</strong><small data-i18n="tab.recommendedHint">星标筛选 · 非商城评测</small></span><b data-count="recommended">—</b></button>
       <button id="tab-essential" type="button" role="tab" aria-selected="false" aria-controls="ranking-panel" tabindex="-1" data-ranking-tab="essential"><span class="ranking-tab-icon" aria-hidden="true">◇</span><span><strong data-i18n="tab.essential">必装榜单</strong><small data-i18n="tab.essentialHint">分类第一 + 高星补充</small></span><b data-count="essential">—</b></button>
     </div>
     <section id="ranking-panel" role="tabpanel" aria-labelledby="tab-popular" tabindex="0">
@@ -63,7 +63,7 @@
       <p id="ranking-empty" class="ranking-message" hidden></p>
       <nav class="ranking-pagination" aria-label="榜单分页" data-i18n-aria="pagination.label" hidden><button id="ranking-prev" type="button" data-i18n="previous">← 上一页</button><span id="ranking-page"></span><button id="ranking-next" type="button" data-i18n="next">下一页 →</button></nav>
     </section>
-    <aside class="ranking-method"><h2 data-i18n="method.title">榜单怎么算？</h2><p data-i18n="method.body">统计插件目录与有 DSH 关联的发现候选记录，包括未收录项目；每项标记已收录或未收录。候选项目不代表已经核验为标准 DSH 插件，未收录项目仅链接 GitHub，不提供商城安装入口。热门榜按仓库星标降序；推荐榜保留人工精选，并补充明确标注的社区高星推荐至 30 条；必装榜保留各分类第一，去重后轮选分类高星项目补充至 30 条，并注明当前已获取星标中的名次。没有可靠分类的项目不参加必装榜；分类星标缺失时不声明冠军。每页 30 条，数据不足如实展示，不复制或编造记录。星标是仓库热度，不是安装量或安全评分；必装不代表人人都需要安装。</p><p id="ranking-freshness"></p><a href="../standards/" data-i18n="method.standards">查看收录标准 ↗</a></aside>
+    <aside class="ranking-method"><h2 data-i18n="method.title">榜单怎么算？</h2><p data-i18n="method.body">统计插件目录与有 DSH 关联的发现候选记录，包括未收录项目；每项标记已收录或未收录。候选项目不代表已经核验为标准 DSH 插件，未收录项目仅链接 GitHub，不提供商城安装入口。热门榜按仓库星标降序；推荐榜当前仅按已获取的 GitHub 星标降序取前 30 项，排除零星、星标未知及被阻止或拒绝收录的项目；旧的重点展示标记不作为推荐依据，不宣称人工精选或商城评测。必装榜保留各分类第一，去重后轮选分类高星项目补充至 30 条，并注明当前已获取星标中的名次。没有可靠分类的项目不参加必装榜；分类星标缺失时不声明冠军。每页 30 条，数据不足如实展示，不复制或编造记录。星标是仓库热度，不是安装量或安全评分；必装不代表人人都需要安装。</p><p id="ranking-freshness"></p><a href="../standards/" data-i18n="method.standards">查看收录标准 ↗</a></aside>
     <noscript><p class="ranking-message">仅展示构建时可用的热门榜前 30 条。切换榜单、语言和分页需启用 JavaScript。 / Enable JavaScript to switch charts or pages.</p></noscript>
   </main>
   <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">发现适合自己的插件，先了解，再安装。</p><nav class="footer-nav" aria-label="Quick links / 快速导航"><section class="footer-nav-group"><strong data-i18n="footer.explore">快速导航</strong><a href="../plugins/" data-i18n="nav.plugins">插件目录</a><a href="../community/" data-i18n="nav.community">社区与开发者</a><a href="./" data-rankings-nav>榜单</a><a href="../scans/" data-scan-history-nav>扫描记录</a><a href="../standards/" data-i18n="nav.standards">收录标准</a><a href="../about/" data-i18n="nav.about">关于我们</a></section><section class="footer-nav-group"><strong data-i18n="footer.friends">友情链接</strong><!-- DSH_FRIEND_SISTER_SITE --><a href="https://aiaiai.help/" target="_blank" rel="noopener noreferrer">aiaiai.help · 模型百科 ↗</a><a href="https://tracefence.com/" target="_blank" rel="noopener noreferrer">TraceFence ↗</a></section></nav><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>DSH STORE · CHARTS</span><span data-i18n="footer.note">社区热度不是安全评分 · 按需选择插件</span><!-- DSH_ICP --></div></footer>
