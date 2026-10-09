@@ -19,9 +19,9 @@ test('package exposes a standard DSH bundle and client', async () => {
     install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
   })
   for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2']) {
-    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'unknown')
+    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
     assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
-      install: 'unknown', start: 'unknown', uninstall: 'unknown', rollback: 'unknown',
+      install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
     })
   }
   assert.equal(pkg.main, './src/index.mjs')
@@ -42,17 +42,18 @@ test('package exposes a standard DSH bundle and client', async () => {
   const legacyClientRange = '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2'
   const rcClientRange = `${legacyClientRange} || 0.1.5-rc.1`
   const nextClientRange = `${rcClientRange} || 0.2.0-rc.1`
-  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], `${legacyClientRange} || 0.2.1-alpha.1 || 0.2.1-alpha.2`)
+  const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2`
+  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], legacyClientRange)
   for (const dependency of [
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-settings',
     '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.equal(pkg.peerDependencies[dependency], `${nextClientRange} || 0.2.1-alpha.1 || 0.2.1-alpha.2`)
+  ]) assert.equal(pkg.peerDependencies[dependency], currentClientRange)
   for (const dependency of [
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-settings',
     '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2$/)
+  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.0-rc\.2 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2$/)
   assert.equal(pkg.private, true)
 })
 

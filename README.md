@@ -88,7 +88,7 @@ Profile 的自动测试推定。
 | 推荐 | 以实时 Catalog 中同时满足 `featured: true` 与 `status: approved` 的条目为准 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
-`0.9.3` 将官方 Desktop 绑定到其实际 Profile，并在服务端拒绝不受支持的商城写入、Guardian 与重启操作；商城界面明确展示只读模式。版本面板从 Desktop 内置的官方 DSH 包读取当前版本，不提供修改桌面应用运行时的 npm 命令。`0.2.0-rc.1` 曾完成 Web 临时 Profile 的安装、启动、卸载和回滚验证；已在官方 npm 发布的 `0.2.0-rc.2`、`0.2.1-alpha.1`、`0.2.1-alpha.2` 在本版本的精确声明中保持 `unknown`，直到对应的本版本证据完成。源码、Catalog、生产站点和真实 Profile 各自需要独立验收。
+`0.9.3` 将官方 Desktop 绑定到其实际 Profile，并在服务端拒绝不受支持的商城写入、Guardian 与重启操作；商城界面明确展示只读模式。版本面板从 Desktop 内置的官方 DSH 包读取当前版本，不提供修改桌面应用运行时的 npm 命令。`0.2.0-rc.2`、`0.2.1-alpha.1`、`0.2.1-alpha.2` 已在 PR 的一次性 Web Profile 中完成安装、启动、卸载和精确回滚验证，精确兼容声明以最终提交的 CI 通过为准。官方尚未发布 `@deepseek-ai/dsh-client-runtime` 的 0.2.x 包，Peer 声明保留实际已发布的版本。源码、Catalog、生产站点和真实 Desktop 界面各自需要独立验收。
 
 `0.8.14` 修复“开发者提交了新代码但没有提升插件版本号”时新用户无法安装新代码的问题：自动任务会把同版本的新 Commit 纳入与正常版本更新相同的固定源、身份、许可证、Bundle、权限和最新三个 DSH 版本兼容审查；通过后移动 Catalog 的完整 Commit 固定点，因此未安装用户会直接安装审核后的新 Commit。已经安装相同版本的用户不会在商城里收到覆盖式更新，商城只展示 Catalog 固定 Commit 与 GitHub 手动命令，并明确说明该操作不受商城备份、健康检查和失败回滚保护。真正提升 SemVer 的版本仍使用商城事务更新。
 

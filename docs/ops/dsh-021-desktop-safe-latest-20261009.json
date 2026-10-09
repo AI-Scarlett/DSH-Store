@@ -26,7 +26,8 @@
       "src/dsh-version.mjs",
       "test/dsh-version.test.mjs",
       "test/contracts.test.mjs",
-      "test/catalog.test.mjs"
+      "test/catalog.test.mjs",
+      "test/upgrade-matrix.test.mjs"
     ],
     "add": [
       "test/desktop-compat.test.mjs",
@@ -44,7 +45,8 @@
       "src/dsh-version.mjs": "1a5eb8cc4c6cf2385d9315c67a70edcc8b97e011615cc7c6ea643eb594248b98",
       "test/dsh-version.test.mjs": "73ff8316b2341309c4a629d898639b96aa518df37738f0ba8a2a151fa686dad4",
       "test/contracts.test.mjs": "29826f0998d091c213c1c87981acc980aabffd89d4fa6e39f3404275efc87991",
-      "test/catalog.test.mjs": "1430c1dc2a1b0f8a2ce9022f5bc7fdca488b3784b5c977d88aa7417c811996f8"
+      "test/catalog.test.mjs": "1430c1dc2a1b0f8a2ce9022f5bc7fdca488b3784b5c977d88aa7417c811996f8",
+      "test/upgrade-matrix.test.mjs": "9cd9397aad5c24dac098ffb849988f2b9d63534dc7c46962ef75d4761315b916"
     },
     "absent": [
       "test/desktop-compat.test.mjs",
@@ -73,10 +75,11 @@
     "CI fails or source identity drifts"
   ],
   "verification": {
-    "localCheck": "npm run check passed: REGISTRY_OK entries=782, 384/384 tests",
+    "localCheck": "npm run check passed: REGISTRY_OK entries=782, 387/387 tests; precondition hashes match base Commit",
     "desktopBoundary": "official profileContext contract and HTTP forwarding source inspected; disposable Host route tests passed",
-    "latestDshE3": "local npm install blocked by ENOSPC before completion; exact compatibility remains unknown pending PR CI",
-    "realDesktop": "not performed; no real Profile or packaged Desktop changed"
+    "latestDshE3": "PR #1349 initial CI passed: latest-three 0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2; alpha.2 macOS/Windows/Linux pnpm 10/11/12, previous releases Ubuntu. Final metadata update requires CI rerun.",
+    "realDesktop": "not performed; no real Profile or packaged Desktop changed",
+    "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/37958079929"
   },
   "rebasedFrom": "358b349a3b6d659dfd5ceda5f60bf6c0324a9e5f"
 }
