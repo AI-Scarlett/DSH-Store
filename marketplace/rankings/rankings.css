@@ -70,3 +70,9 @@
   .rankings-page .ranking-position { font-size: 14px; }
   .rankings-page .ranking-toolbar { align-items: flex-start; }
 }
+
+/* Listing is an independent trust label, not a popularity or installation verdict. */
+.rankings-page .ranking-listing { display: inline-flex; flex-shrink: 0; padding: 2px 7px; border: 1px solid; border-radius: 5px; font-size: 11px; line-height: 1.6; font-weight: 650; white-space: nowrap; }
+.rankings-page .ranking-listing.is-listed { color: #14624b; background: #ecf8f1; border-color: #bcdfcb; }
+.rankings-page .ranking-listing.is-not-listed { color: #815006; background: #fff7e9; border-color: #ecd4a5; }
+.rankings-page .ranking-boundary { margin: 5px 0 0; color: #786038; font-size: 11px; line-height: 1.6; }

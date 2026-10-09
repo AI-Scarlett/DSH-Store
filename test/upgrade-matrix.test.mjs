@@ -9,9 +9,10 @@ test('client peer declarations include the exact 0.2.1 alpha runtime without rel
   assert.equal(clients.length, 4)
   for (const name of clients) {
     const alternatives = manifest.peerDependencies[name].split(' || ')
+    assert.ok(alternatives.includes('0.2.1-alpha.2'), `${name} must explicitly support the current official alpha.2 pre-install peer check`)
     assert.ok(alternatives.includes('0.2.1-alpha.1'), `${name} must pass the new official pre-install peer check`)
     assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
-    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 1)
+    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 2)
     assert.ok(!alternatives.includes('*'))
   }
 })
