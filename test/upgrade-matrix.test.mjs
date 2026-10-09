@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolveDshUpgradeMatrix } from '../scripts/resolve-dsh-upgrade-matrix.mjs'
 
-test('client peer declarations match the published UI and runtime packages', async () => {
+test('client peer declarations match the official Host pre-install contract', async () => {
   const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
   const clients = manifest.dsh.client.inject
   assert.equal(clients.length, 4)
@@ -11,7 +11,9 @@ test('client peer declarations match the published UI and runtime packages', asy
   assert.ok(clients.includes(runtime))
   const runtimeAlternatives = manifest.peerDependencies[runtime].split(' || ')
   assert.ok(runtimeAlternatives.includes('>=0.1.0-rc.6 <0.2.0'))
-  assert.ok(!runtimeAlternatives.some(value => value.startsWith('0.2.')), 'unpublished runtime 0.2.x must not be declared')
+  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2']) {
+    assert.ok(runtimeAlternatives.includes(release), `Host pre-install check requires runtime ${release}`)
+  }
   for (const name of clients.filter(value => value !== runtime)) {
     const alternatives = manifest.peerDependencies[name].split(' || ')
     for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2']) {

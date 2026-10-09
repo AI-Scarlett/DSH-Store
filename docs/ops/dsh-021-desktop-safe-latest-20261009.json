@@ -77,9 +77,10 @@
   "verification": {
     "localCheck": "npm run check passed: REGISTRY_OK entries=782, 387/387 tests; precondition hashes match base Commit",
     "desktopBoundary": "official profileContext contract and HTTP forwarding source inspected; disposable Host route tests passed",
-    "latestDshE3": "PR #1349 initial CI passed: latest-three 0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2; alpha.2 macOS/Windows/Linux pnpm 10/11/12, previous releases Ubuntu. Final metadata update requires CI rerun.",
+    "latestDshE3": "PR #1349 initial CI passed: latest-three 0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2; alpha.2 macOS/Windows/Linux pnpm 10/11/12, previous releases Ubuntu. Removing unpublished dsh-client-runtime alpha Peer declarations caused all disposable CLI installs to fail on CI run 37959836471; restore the Host pre-install contract and require final CI rerun.",
     "realDesktop": "not performed; no real Profile or packaged Desktop changed",
-    "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/37958079929"
+    "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/37958079929",
+    "regressionUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/37959836471"
   },
   "rebasedFrom": "358b349a3b6d659dfd5ceda5f60bf6c0324a9e5f"
 }

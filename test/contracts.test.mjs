@@ -43,7 +43,7 @@ test('package exposes a standard DSH bundle and client', async () => {
   const rcClientRange = `${legacyClientRange} || 0.1.5-rc.1`
   const nextClientRange = `${rcClientRange} || 0.2.0-rc.1`
   const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2`
-  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], legacyClientRange)
+  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], `${legacyClientRange} || 0.2.1-alpha.1 || 0.2.1-alpha.2`)
   for (const dependency of [
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-settings',
