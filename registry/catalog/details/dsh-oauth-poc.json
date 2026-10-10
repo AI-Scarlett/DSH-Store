@@ -1,50 +1,46 @@
 {
-  "id": "dsh-partner",
-  "name": "会话管理（DSH Partner）",
-  "packageName": "@lemoncat7/dsh-partner",
-  "description": "为 DSH 提供会话管理能力。英文原始说明：Long-lived AI companions with WeChat channel routing for DeepSeek Harness",
+  "id": "dsh-oauth-poc",
+  "name": "实验功能插件（DSH OAuth Poc）",
+  "packageName": "@guilduo/dsh-oauth-poc",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：Guilduo MCP OAuth and native Settings UI for DeepSeek Harness",
   "searchTerms": [
-    "会话管理",
-    "DSH Partner",
-    "dsh-partner",
-    "@lemoncat7/dsh-partner",
-    "会话",
-    "对话",
-    "历史",
-    "消息",
-    "新锐实验",
+    "实验功能插件",
+    "DSH OAuth Poc",
+    "dsh-oauth-poc",
+    "@guilduo/dsh-oauth-poc",
     "实验功能",
     "新功能",
     "dsh",
-    "partner"
+    "oauth",
+    "poc"
   ],
-  "repositoryUrl": "https://github.com/lemoncat7/dsh-partner",
+  "repositoryUrl": "https://github.com/ELRdn/Guilduo",
   "defaultBranch": "main",
-  "manifestPath": "package.json",
-  "installPath": null,
+  "manifestPath": "plugins/guilduo-dsh/package.json",
+  "installPath": "plugins/guilduo-dsh",
   "updatePolicy": "external-only",
-  "commit": "2943580554fdbbdddd5591709a05e47103a94315",
-  "version": "2.8.1",
+  "commit": "9f0ae2696f06441323d82eac22977f26ab5d9f8c",
+  "version": "0.6.0-beta.17",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-10T10:24:14.000Z",
+    "updatedAt": "2026-10-10T14:21:40.000Z",
     "observedAt": "2026-10-10T14:17:40.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-10T14:17:40.000Z",
-      "evidenceUrl": "https://github.com/lemoncat7/dsh-partner/commit/2943580554fdbbdddd5591709a05e47103a94315",
+      "evidenceUrl": "https://github.com/ELRdn/Guilduo/commit/9f0ae2696f06441323d82eac22977f26ab5d9f8c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +70,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "partner"
+    "guilduo-dsh-oauth-poc"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; package contains unsupported artifacts requiring review: resources/skills/cinematic-director/upstream/LICENSE, resources/skills/director-skills/upstream/LICENSE, resources/skills/drama-production/upstream/LICE",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: NOTICE; local module is missing from the distributable surface: src/adapter.ts -> ./persistence.js; local module is missing from the distributable surface: src/index.ts -> ./adapter.js; local module is missing from the distributable surface: src/index.ts -> ./settings-gateway.js; local module is missing from the distributable surface: src/index.ts -> ./persistence.js",
   "compatibility": {
-    "dsh": "^0.2.0-rc.2",
+    "dsh": "0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -165,7 +161,7 @@
         "rollback": "unknown"
       }
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=22",
     "systems": [],
     "profiles": [
       "web"
@@ -174,7 +170,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "AGPL-3.0-only",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
@@ -185,19 +181,13 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/schemastery",
-      "@modelcontextprotocol/sdk",
-      "mdast-util-from-markdown",
-      "mdast-util-gfm",
-      "mdast-util-to-markdown",
-      "micromark-extension-gfm"
+      "@deepseek-ai/dsh-mcp-client",
+      "@modelcontextprotocol/client"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-10T04:46:57.000Z",
+    "updatedAt": "2026-10-10T14:17:40.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2908,8 +2908,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "0b122443597a9af7964e59e556541b27d71492fd",
-      "sourceUpdatedAt": "2026-10-09T10:23:26.000Z",
+      "latestCommit": "831c480c644e15b3f0df54144bc478421381fb54",
+      "sourceUpdatedAt": "2026-10-10T12:43:50.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -17588,26 +17588,6 @@
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-office-tools."
     },
     {
-      "id": "angeloszou-dsh-multi-folder",
-      "name": "会话管理（DSH Multi Folder）",
-      "description": "为 DSH 项目提供副工作目录：agent 保持主工作区为 cwd，同时对已配置的副目录获得同等读写/执行权限，可在会话头部与新会话页配置。",
-      "repositoryUrl": "https://github.com/AngelosZou/dsh-multi-folder",
-      "defaultBranch": "main",
-      "latestCommit": "552e0d3000b418f507cb18ac16e544cb7f555709",
-      "sourceUpdatedAt": "2026-10-09T05:24:07.000Z",
-      "discoveredAt": "2026-10-09T17:00:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-multi-folder."
-    },
-    {
       "id": "severuszh-dsh-notify-windows",
       "name": "任务通知提醒（DSH Notify Windows）",
       "description": "DeepSeek Harness (DSH) 插件：任务完成 / 等待审批 / 等待回答时发送 Windows 系统桌面通知",
@@ -17810,6 +17790,130 @@
         "dsh-plugin",
         "story-writing",
         "writing-assistant",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lucytrump-dsh-runninghub-api",
+      "name": "lucyTrump/dsh-runninghub-api",
+      "description": "A plugin that integrates runninghub cloud ComfyUI workflows: a settings card for your API key and workflow library, seven `runninghub_*` tools for agents, a sha256 media upload cache, a local concurrency gate with FIFO queueing and timeouts, background tasks with completion notifications, and a durable task ledger with automatic restart recovery.",
+      "repositoryUrl": "https://github.com/lucyTrump/dsh-runninghub-api",
+      "defaultBranch": "main",
+      "latestCommit": "bb3b4f20f970148599b891488893248d3e85cb88",
+      "sourceUpdatedAt": "2026-10-01T02:59:27.000Z",
+      "discoveredAt": "2026-10-10T14:17:40.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2a2173f8aa4038ed9204cfd8cb395f49cbec44e2:data/plugins/lucyTrump__dsh-runninghub-api.yml:sha256=a6d890debfc33211606b0346dcb47b444a8f640c095bc194727ac3a8db1185c5:at=2026-10-10T14:22:22.120Z:owner=137249723"
+      ],
+      "topics": [
+        "comfyui",
+        "deepseek-harness",
+        "dsh-plugin",
+        "runninghub",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lucky8197-dsh-doc-guard",
+      "name": "lucky8197/dsh-doc-guard",
+      "description": "DSH 插件：审计仓库的文档-代码一致性——版本号/更新记录表/结构树/模块清单/测试计数/文档间引用漂移检测，按严重度输出修复建议，全程只读。Document-Code Consistency Guard for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/lucky8197/dsh-doc-guard",
+      "defaultBranch": "main",
+      "latestCommit": "7f232e8c4b1253b47aeb78952195f07fa73af565",
+      "sourceUpdatedAt": "2026-08-15T06:17:48.000Z",
+      "discoveredAt": "2026-10-10T14:17:40.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2a2173f8aa4038ed9204cfd8cb395f49cbec44e2:data/plugins/lucky8197__dsh-doc-guard.yml:sha256=db0a8d7c608ebacb2d5e175feb1b2b822dd24940753aa7b150f688aa83f8b67c:at=2026-10-10T14:22:22.120Z:owner=40333639"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "botharness-deepseekbot",
+      "name": "BotHarness/DeepSeekBot",
+      "description": "DeepSeekBot: the open-source GrokBot alternative, built on DeepSeek Harness (DSH). PersonaBots with their own identity, persona and Git-backed memory you can share via GitHub; group chat, task delegation, and IM identities on Lark/Feishu, Slack, Discord and WeChat. Works with other DSH plugins. Bot marketplace: market.botharness.ai. MIT.",
+      "repositoryUrl": "https://github.com/BotHarness/DeepSeekBot",
+      "defaultBranch": "main",
+      "latestCommit": "c8bea71b3ed74f9295f823e8fd4c7eab2dc50025",
+      "sourceUpdatedAt": "2026-10-10T14:22:17.000Z",
+      "discoveredAt": "2026-10-10T14:17:40.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-memory",
+        "ai-agent",
+        "ai-bot",
+        "bot-marketplace",
+        "deepseek",
+        "deepseek-harness",
+        "deepseekbot",
+        "discord-bot",
+        "dsh",
+        "dsh-plugin",
+        "feishu",
+        "git-memory",
+        "grokbot-alternative",
+        "lark",
+        "multi-agent",
+        "open-source",
+        "persona",
+        "slack-bot",
+        "typescript",
+        "wechat-bot",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: packages/browser, packages/computer, packages/core, packages/deepseekbot"
+    },
+    {
+      "id": "luckvd-dsh-btw",
+      "name": "LuckVd/dsh-btw",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/LuckVd/dsh-btw",
+      "defaultBranch": "master",
+      "latestCommit": "01266d7e20765d9406624ebd9be803bca95125f2",
+      "sourceUpdatedAt": "2026-08-26T06:07:03.000Z",
+      "discoveredAt": "2026-10-10T14:17:40.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2a2173f8aa4038ed9204cfd8cb395f49cbec44e2:data/plugins/LuckVd__dsh-btw.yml:sha256=ad41a8e7ac1becde51885e39da29d03683f9b028d66d005e505bbdae75c7f188:at=2026-10-10T14:22:22.120Z:owner=37114923"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-client",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lucky8197-dsh-code-smell",
+      "name": "lucky8197/dsh-code-smell",
+      "description": "DSH 插件：代码气味雷达——静态扫描 TODO/FIXME 债务、未实现桩、超长行、大文件与重复代码块，按严重度输出修复建议，全程只读。Code Smell Radar for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/lucky8197/dsh-code-smell",
+      "defaultBranch": "main",
+      "latestCommit": "44cc94fcf40bdcdcd4cbff0a78806faa68355352",
+      "sourceUpdatedAt": "2026-08-15T14:56:50.000Z",
+      "discoveredAt": "2026-10-10T14:17:40.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@2a2173f8aa4038ed9204cfd8cb395f49cbec44e2:data/plugins/lucky8197__dsh-code-smell.yml:sha256=34822bc3e11a39bec5dd48974b179328c2f0ca5c373b477ebd4e4d322b65bb57:at=2026-10-10T14:22:22.120Z:owner=40333639"
+      ],
+      "topics": [
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "reviewing",
