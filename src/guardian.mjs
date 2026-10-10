@@ -3,7 +3,7 @@ import { execFile } from 'node:child_process'
 import { copyFile, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
-import { delimiter, isAbsolute, join } from 'node:path'
+import { basename, delimiter, isAbsolute, join } from 'node:path'
 
 function paths(dshHome) {
   const root = join(dshHome, 'dsh-safe-plugin-manager', 'guardian')
@@ -64,6 +64,23 @@ export function createGuardianService(options = {}) {
       if (error?.code === 'ENOENT') return null
       throw error
     }
+  }
+
+  // The DSH desktop host runs the manager inside an Electron process, so
+  // `runner.restartSpec()` adopts `process.execPath` — the Electron binary — as
+  // the runtime it relaunches. launchd does not inherit the host's environment,
+  // so a plist that invokes Electron without ELECTRON_RUN_AS_NODE launches the
+  // GUI application instead of running the daemon script: no heartbeat is ever
+  // written and every install fails with GUARDIAN_BOOTSTRAP_UNVERIFIED.
+  function isElectronRuntime(nodePath) {
+    if (typeof nodePath !== 'string' || nodePath === '') return false
+    const base = basename(nodePath).toLowerCase()
+    return base.includes('electron') || base.includes('deepseek harness')
+  }
+
+  function environmentBlock(nodePath) {
+    if (!isElectronRuntime(nodePath)) return ''
+    return '<key>EnvironmentVariables</key><dict><key>ELECTRON_RUN_AS_NODE</key><string>1</string></dict>\n'
   }
 
   function xml(value) {
@@ -312,7 +329,7 @@ export function createGuardianService(options = {}) {
   }
 
   function guardianPlist(restart, daemonPath = location.daemon, configPath = location.config) {
-    return `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${label}</string>\n<key>ProgramArguments</key><array><string>${xml(restart.nodePath)}</string><string>${xml(daemonPath)}</string><string>${xml(configPath)}</string></array>\n<key>RunAtLoad</key><true/><key>KeepAlive</key><true/><key>ThrottleInterval</key><integer>10</integer>\n<key>StandardOutPath</key><string>${xml(join(location.root, 'guardian.log'))}</string><key>StandardErrorPath</key><string>${xml(join(location.root, 'guardian.log'))}</string>\n</dict></plist>\n`
+    return `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${label}</string>\n<key>ProgramArguments</key><array><string>${xml(restart.nodePath)}</string><string>${xml(daemonPath)}</string><string>${xml(configPath)}</string></array>\n${environmentBlock(restart.nodePath)}<key>RunAtLoad</key><true/><key>KeepAlive</key><true/><key>ThrottleInterval</key><integer>10</integer>\n<key>StandardOutPath</key><string>${xml(join(location.root, 'guardian.log'))}</string><key>StandardErrorPath</key><string>${xml(join(location.root, 'guardian.log'))}</string>\n</dict></plist>\n`
   }
 
   async function stageActiveUpgrade(plan, restart, domain, activeGuardian) {
@@ -349,7 +366,7 @@ export function createGuardianService(options = {}) {
         launchctl,
       },
     })
-    const upgraderPlist = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${upgraderLabel}</string>\n<key>ProgramArguments</key><array><string>${xml(restart.nodePath)}</string><string>${xml(stagedUpgrader)}</string><string>${xml(handoffPlanPath)}</string></array>\n<key>RunAtLoad</key><true/><key>ProcessType</key><string>Interactive</string>\n<key>StandardOutPath</key><string>${xml(join(location.root, 'guardian-upgrade.log'))}</string><key>StandardErrorPath</key><string>${xml(join(location.root, 'guardian-upgrade.log'))}</string>\n</dict></plist>\n`
+    const upgraderPlist = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${upgraderLabel}</string>\n<key>ProgramArguments</key><array><string>${xml(restart.nodePath)}</string><string>${xml(stagedUpgrader)}</string><string>${xml(handoffPlanPath)}</string></array>\n${environmentBlock(restart.nodePath)}<key>RunAtLoad</key><true/><key>ProcessType</key><string>Interactive</string>\n<key>StandardOutPath</key><string>${xml(join(location.root, 'guardian-upgrade.log'))}</string><key>StandardErrorPath</key><string>${xml(join(location.root, 'guardian-upgrade.log'))}</string>\n</dict></plist>\n`
     await writeFile(`${upgraderPlistPath}.tmp`, upgraderPlist, { mode: 0o600 })
     await rename(`${upgraderPlistPath}.tmp`, upgraderPlistPath)
     await rm(location.upgradeReceipt, { force: true })
@@ -475,7 +492,7 @@ export function createGuardianService(options = {}) {
         probeRetentionMs: 86_400_000, probeLogMaxBytes: 4_194_304,
         healthyProbeLogIntervalMs: 60_000, probePruneIntervalMs: 300_000,
       })
-      const plist = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${label}</string>\n<key>ProgramArguments</key><array><string>${xml(restart.nodePath)}</string><string>${xml(location.daemon)}</string><string>${xml(location.config)}</string></array>\n<key>RunAtLoad</key><true/><key>KeepAlive</key><true/><key>ThrottleInterval</key><integer>10</integer>\n<key>StandardOutPath</key><string>${xml(join(location.root, 'guardian.log'))}</string><key>StandardErrorPath</key><string>${xml(join(location.root, 'guardian.log'))}</string>\n</dict></plist>\n`
+      const plist = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${label}</string>\n<key>ProgramArguments</key><array><string>${xml(restart.nodePath)}</string><string>${xml(location.daemon)}</string><string>${xml(location.config)}</string></array>\n${environmentBlock(restart.nodePath)}<key>RunAtLoad</key><true/><key>KeepAlive</key><true/><key>ThrottleInterval</key><integer>10</integer>\n<key>StandardOutPath</key><string>${xml(join(location.root, 'guardian.log'))}</string><key>StandardErrorPath</key><string>${xml(join(location.root, 'guardian.log'))}</string>\n</dict></plist>\n`
       await writeFile(`${plistPath}.tmp`, plist, { mode: 0o600 }); await rename(`${plistPath}.tmp`, plistPath)
       const previousHeartbeatAt = Date.parse(existingDocument?.heartbeatAt)
       const bootstrapStartedAt = currentTime()
