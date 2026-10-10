@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9c2fde140bbafbb244e0481eac6eaaeb277b0c29",
+  "commit": "8ca36512868d345b5b303b770d81bf60e5e70162",
   "version": "0.1.0",
   "categories": [
     "memory"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-07T06:15:45.000Z",
-    "observedAt": "2026-10-07T14:00:20.000Z",
+    "updatedAt": "2026-10-10T00:12:47.000Z",
+    "observedAt": "2026-10-10T04:46:57.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-07T14:00:20.000Z",
-      "evidenceUrl": "https://github.com/DWJZ/dsh-memory/commit/9c2fde140bbafbb244e0481eac6eaaeb277b0c29",
+      "checkedAt": "2026-10-10T04:46:57.000Z",
+      "evidenceUrl": "https://github.com/DWJZ/dsh-memory/commit/8ca36512868d345b5b303b770d81bf60e5e70162",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,9 +80,9 @@
     "dsh-reflection"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.mjs; runtime artifact is missing from the distributable surface: ./lib/index.mjs; local module is missing from the distributable surface: src/actions.ts -> ./jsonstore.js; local module is missing from the distributable surface: src/actions.ts -> ./lock.js; local module is missing from the distributable surface: src/actions.ts -",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.mjs; runtime artifact is missing from the distributable surface: ./lib/index.mjs; local module is missing from the distributable surface: src/actions.ts -> ./jsonstore.js; local module is missing from the distributable surface: src/actions.ts -> ./lock.js; local module is missing from the distributable surface: src/actions.ts -> ./views.js; local module is missing from the",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.2.1-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,7 +93,6 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.2.0-rc.1": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown"
     },
@@ -147,12 +146,6 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-09T20:35:55.000Z",
+    "updatedAt": "2026-10-10T04:46:57.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "048b79878c70c594789909082499dc675472b63a",
-      "sourceUpdatedAt": "2026-10-09T20:39:17.000Z",
+      "latestCommit": "dc5af6d68f74155d32a0be957c88afb0ee4be699",
+      "sourceUpdatedAt": "2026-10-10T04:49:09.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2216,8 +2216,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "34b1c8dcdf53fe8e4ba526819d6ab467da9ba0bf",
-      "sourceUpdatedAt": "2026-10-09T04:43:09.000Z",
+      "latestCommit": "97de9aa6c8524a4b58133a9dc2f8c71420703d19",
+      "sourceUpdatedAt": "2026-10-10T00:55:42.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -17786,6 +17786,30 @@
         "markdown",
         "markdown-to-html",
         "zero-dependency",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lipu-jpg-openwrite",
+      "name": "LiPu-jpg/Openwrite",
+      "description": "dsh-Openwrite：OpenWrite 的 DeepSeek Harness 小说创作插件，含统一创作 Agent、90 个小说工具、原生工作台与标准审稿 DAG",
+      "repositoryUrl": "https://github.com/LiPu-jpg/Openwrite",
+      "defaultBranch": "main",
+      "latestCommit": "60d40780947699b4240a32bb7191a8212d54e7e4",
+      "sourceUpdatedAt": "2026-10-09T05:26:56.000Z",
+      "discoveredAt": "2026-10-10T04:46:57.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@dc8396d3c99e6f1c5de02570e1b3ddbb53856a4b:data/plugins/LiPu-jpg__Openwrite.yml:sha256=a5a9b7f7b48f9b1d8637dcb4c990e0e5778992be0c25a91bea74fca4988f166d:at=2026-10-10T04:51:10.756Z:owner=189805528"
+      ],
+      "topics": [
+        "ai-novel",
+        "deepseek-harness",
+        "dsh-plugin",
+        "story-writing",
+        "writing-assistant",
         "automatic-radar"
       ],
       "status": "reviewing",
