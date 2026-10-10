@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a900512102053e8ae07087112c3f22b85d27ebaf",
-  "version": "1.6.0",
+  "commit": "7a75588fa8c5a224e48b78a30ea88d38061de5e8",
+  "version": "2.0.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-03T15:10:15.000Z",
-    "observedAt": "2026-10-03T19:03:30.000Z",
+    "updatedAt": "2026-10-10T12:34:23.000Z",
+    "observedAt": "2026-10-10T14:17:40.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-03T19:03:30.000Z",
-      "evidenceUrl": "https://github.com/markelayan/agents-in-the-loop/commit/a900512102053e8ae07087112c3f22b85d27ebaf",
+      "checkedAt": "2026-10-10T14:17:40.000Z",
+      "evidenceUrl": "https://github.com/markelayan/agents-in-the-loop/commit/7a75588fa8c5a224e48b78a30ea88d38061de5e8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
     "dsh-agents-in-the-loop"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -94,11 +94,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2": "compatible",
-      "0.1.6-alpha.1": "compatible",
-      "0.1.7-rc.2": "compatible",
       "0.2.0-rc.2": "compatible",
-      "0.2.0-rc.1": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown"
     },
@@ -151,31 +147,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -194,9 +166,11 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": "^22.13.0 || >=23.4.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
