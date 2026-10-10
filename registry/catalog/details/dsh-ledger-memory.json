@@ -1,49 +1,47 @@
 {
-  "id": "dsh-desktop-controls",
-  "name": "桌面客户端（DSH Desktop Controls）",
-  "packageName": "dsh-desktop-controls",
-  "description": "为 DSH 提供桌面客户端能力。英文原始说明：Small in-app controls surface for the dsh-desktop shell",
+  "id": "dsh-ledger-memory",
+  "name": "记忆与知识库（DSH Ledger Memory）",
+  "packageName": "dsh-ledger-memory",
+  "description": "台账记忆（Ledger Memory）：为 DSH 提供工程化的项目记忆 —— 台账的检测/注入/归档/Git 配合，活动日志（L0–L4），三层上下文压缩与逐字胶囊落盘，两种压缩模式（正常推进 / 反复追究），把对话锁定到某个项目目录（跨重启保持），以及跨会话的交接单闭环。可回溯、可追查。",
   "searchTerms": [
-    "桌面客户端",
-    "DSH Desktop Controls",
-    "dsh-desktop-controls",
-    "桌面",
-    "托盘",
-    "快捷启动",
-    "新锐实验",
-    "实验功能",
-    "新功能",
+    "记忆与知识库",
+    "DSH Ledger Memory",
+    "dsh-ledger-memory",
+    "记忆",
+    "知识库",
+    "召回",
+    "长期记忆",
     "dsh",
-    "desktop",
-    "controls"
+    "ledger",
+    "memory"
   ],
-  "repositoryUrl": "https://github.com/citrusli2026/dsh-electron-shell",
+  "repositoryUrl": "https://github.com/18477514055/dsh-ledger-memory",
   "defaultBranch": "main",
-  "manifestPath": "plugins/dsh-desktop-controls/package.json",
-  "installPath": "plugins/dsh-desktop-controls",
+  "manifestPath": "package.json",
+  "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1823d3066202f2bc0b2bfd0eb52dea7a586c52e9",
-  "version": "0.1.0",
+  "commit": "81ff044ababdf85c6ad2131f73d047a663b158c3",
+  "version": "1.1.0",
   "categories": [
-    "experimental"
+    "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-10T18:37:56.000Z",
+    "updatedAt": "2026-10-10T19:55:03.000Z",
     "observedAt": "2026-10-10T19:51:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
+      "method": "automated-fixed-source-policy-v1",
       "checkedAt": "2026-10-10T19:51:04.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/1823d3066202f2bc0b2bfd0eb52dea7a586c52e9",
+      "evidenceUrl": "https://github.com/18477514055/dsh-ledger-memory/commit/81ff044ababdf85c6ad2131f73d047a663b158c3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation or build code was executed by the automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "No DSH runtime acceptance was inferred from static automation."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +71,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Automated source policy is not an independent security audit."
     }
   },
   "entryIds": [
-    "desktop-controls"
+    "dsh-ledger-memory"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 950915 total bytes (maximum 2097152); largest file 528066 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -164,7 +162,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.19.0",
     "systems": [],
     "profiles": [
       "web"

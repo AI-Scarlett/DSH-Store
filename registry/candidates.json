@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-10T14:17:40.000Z",
+    "updatedAt": "2026-10-10T19:51:04.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "dc5af6d68f74155d32a0be957c88afb0ee4be699",
-      "sourceUpdatedAt": "2026-10-10T04:49:09.000Z",
+      "latestCommit": "39da0b150bfae83fa071857d28c8ef4ab322fc08",
+      "sourceUpdatedAt": "2026-10-10T19:53:50.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -16631,8 +16631,8 @@
       "description": "StudyHub: a DeepSeek Harness (DSH) plugin that turns your own material into questions and spaced review · 把自己的资料变成题目与间隔复习的 DSH 学习插件",
       "repositoryUrl": "https://github.com/EricWang1358/dsh-web-studyhub",
       "defaultBranch": "main",
-      "latestCommit": "80b93f2f3cae537754182f389507ebf52dc8d6e6",
-      "sourceUpdatedAt": "2026-10-07T04:52:37.000Z",
+      "latestCommit": "ae61a4c9a8fdc5cc0e2cc1c30665ec2e1ee0d5a3",
+      "sourceUpdatedAt": "2026-10-10T19:54:52.000Z",
       "discoveredAt": "2026-10-07T04:47:55.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -17914,6 +17914,113 @@
       ],
       "topics": [
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "yuezengwu-dsh-explain",
+      "name": "yuezengwu/dsh-explain",
+      "description": "Private, local-first continuous learning for DeepSeek Harness: capture, review, and correct what Explain learns.",
+      "repositoryUrl": "https://github.com/yuezengwu/dsh-explain",
+      "defaultBranch": "main",
+      "latestCommit": "74f3812daba1bd8a3e7bdb4126d0474ca97b26d0",
+      "sourceUpdatedAt": "2026-10-10T01:20:51.000Z",
+      "discoveredAt": "2026-10-10T19:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/yuezengwu__dsh-explain.yml:sha256=ce2db2655c5166a0a9bffe22484a0c4a1273117f0ce35ba511520d7f8f4d81a9:at=2026-10-10T19:55:11.515Z:owner=44976125"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "learning",
+        "local-first",
+        "spaced-repetition",
+        "sqlite",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "yuioi666-dsh-plugin-model-capability",
+      "name": "yuioi666/dsh-plugin-model-capability",
+      "description": "Model Capability Manager for DSH Web: thinking levels, context window, output caps, input modalities, gateway compat presets, EN/中文 UI. | DSH 网页端模型能力管理插件。",
+      "repositoryUrl": "https://github.com/yuioi666/dsh-plugin-model-capability",
+      "defaultBranch": "main",
+      "latestCommit": "227fe048692f557e4c83dfd9149199bb3eddb42d",
+      "sourceUpdatedAt": "2026-09-27T08:34:37.000Z",
+      "discoveredAt": "2026-10-10T19:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/yuioi666__dsh-plugin-model-capability.yml:sha256=060d9a470f6c158f8c44f85f696194dcc2712612323cc368b831bf7331a0f0bb:at=2026-10-10T19:55:11.515Z:owner=238792145"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "yueyuexys-dsh-think-ultra",
+      "name": "YUEYUEXYS/dsh-think-ultra",
+      "description": "Reasoning layer for the official DeepSeek Harness: every request stays on native max effort, with isolated Flash/Vision/Pro depth controls, stability axes and reasoning toolboxes built above it. Delivered build only; commercial use open, reverse/modify/extract closed.",
+      "repositoryUrl": "https://github.com/YUEYUEXYS/dsh-think-ultra",
+      "defaultBranch": "main",
+      "latestCommit": "f406136bddbbf13635975e57f3cd99d49e244cec",
+      "sourceUpdatedAt": "2026-09-20T07:25:13.000Z",
+      "discoveredAt": "2026-10-10T19:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/YUEYUEXYS__dsh-think-ultra.yml:sha256=e23f41b234fa0b1c068c9a6b4bfa42f45b7d3455d2964c8557058b87f6d44381:at=2026-10-10T19:55:11.515Z:owner=317537208"
+      ],
+      "topics": [
+        "agent-framework",
+        "ai-agent",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "effort",
+        "llm",
+        "model-routing",
+        "progressive-disclosure",
+        "prompt-engineering",
+        "reasoning",
+        "reverse-engineered",
+        "thinking",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "yuanzhenqi-dsh-mobile-ui",
+      "name": "yuanzhenqi/dsh-mobile-ui",
+      "description": "为手掌重做 DeepSeek Harness · A mobile shell for DSH — not a scaled-down desktop.",
+      "repositoryUrl": "https://github.com/yuanzhenqi/dsh-mobile-ui",
+      "defaultBranch": "main",
+      "latestCommit": "df802a3422b6d0dbc7d4c25b0581cbe27b0102de",
+      "sourceUpdatedAt": "2026-08-21T00:52:48.000Z",
+      "discoveredAt": "2026-10-10T19:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/yuanzhenqi__dsh-mobile-ui.yml:sha256=1fc05f1c7e020709fde724782dd3511567bf3a87ccf3eb58fc288d5b04a704ff:at=2026-10-10T19:55:11.515Z:owner=35216409"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "mobile",
         "automatic-radar"
       ],
       "status": "reviewing",
