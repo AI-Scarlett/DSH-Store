@@ -22,7 +22,7 @@
   "manifestPath": "plugins/dsh-desktop-controls/package.json",
   "installPath": "plugins/dsh-desktop-controls",
   "updatePolicy": "external-only",
-  "commit": "1823d3066202f2bc0b2bfd0eb52dea7a586c52e9",
+  "commit": "72a6b91543a43c43e52520f0387faa9c64b96d3d",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-10T18:37:56.000Z",
-    "observedAt": "2026-10-10T19:51:04.000Z",
+    "updatedAt": "2026-10-11T04:22:25.000Z",
+    "observedAt": "2026-10-11T04:32:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-10T19:51:04.000Z",
-      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/1823d3066202f2bc0b2bfd0eb52dea7a586c52e9",
+      "checkedAt": "2026-10-11T04:32:14.000Z",
+      "evidenceUrl": "https://github.com/citrusli2026/dsh-electron-shell/commit/72a6b91543a43c43e52520f0387faa9c64b96d3d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "desktop-controls"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; local module is missing from the distributable surface: lib/index.js -> ./trash-host.js; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
