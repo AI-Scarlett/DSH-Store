@@ -18,7 +18,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a6220f0a12a2747eeda9094875641854f6d942ed",
+  "commit": "d9ba1f3a3d28a1762d6c20165b413584c5cf1217",
   "version": "0.2.0",
   "categories": [
     "experimental"
@@ -26,20 +26,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-11T04:36:00.000Z",
-    "observedAt": "2026-10-11T04:32:14.000Z",
+    "updatedAt": "2026-10-11T05:35:43.000Z",
+    "observedAt": "2026-10-11T13:35:18.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-11T04:32:14.000Z",
-      "evidenceUrl": "https://github.com/rlaope/deepseek-bot/commit/a6220f0a12a2747eeda9094875641854f6d942ed",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-11T13:35:18.000Z",
+      "evidenceUrl": "https://github.com/rlaope/deepseek-bot/commit/d9ba1f3a3d28a1762d6c20165b413584c5cf1217",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,7 +69,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [

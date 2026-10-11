@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-11T04:32:14.000Z",
+    "updatedAt": "2026-10-11T13:35:18.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "4353089c670070ef918f88f7b131ed240feb83dd",
-      "sourceUpdatedAt": "2026-10-11T04:32:32.000Z",
+      "latestCommit": "0b4ce83618bb800627264ae6221e2e35140417b5",
+      "sourceUpdatedAt": "2026-10-11T13:33:25.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2908,8 +2908,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "831c480c644e15b3f0df54144bc478421381fb54",
-      "sourceUpdatedAt": "2026-10-10T12:43:50.000Z",
+      "latestCommit": "ef24fc5895acba194aff6262bfc459c15e620e9b",
+      "sourceUpdatedAt": "2026-10-11T09:45:31.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -15540,26 +15540,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "rezon-aki-dsh-streamfold",
-      "name": "会话管理（DSH Streamfold）",
-      "description": "流式折叠：一个更好的会话窗口——运行时自动展开最新思考小窗、旧窗自动折叠，跑完把思考与工具调用折起，全程水流般的动效。",
-      "repositoryUrl": "https://github.com/rezon-aki/dsh-streamfold",
-      "defaultBranch": "main",
-      "latestCommit": "113fdda256cb079d31043c23aeb2ac58d8d69d77",
-      "sourceUpdatedAt": "2026-09-30T03:54:02.000Z",
-      "discoveredAt": "2026-10-03T13:06:51.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "ui",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-streamfold."
-    },
-    {
       "id": "yeqingtang-dsh-session-flow",
       "name": "会话管理（DSH Session Flow）",
       "description": "跨会话档案柜：总览工作台、折叠时间线、子代理血缘、内容检索、规则+LLM 双模式摘要、ZIP 导出、实时跟踪。",
@@ -18118,6 +18098,97 @@
       ],
       "topics": [
         "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zhiwuli0228-dsh-image-router",
+      "name": "zhiwuli0228/dsh-image-router",
+      "description": "DeepSeek Harness plugin: digest prompt images through a vision model and expose a describe_image tool — without ever changing the session's model.",
+      "repositoryUrl": "https://github.com/zhiwuli0228/dsh-image-router",
+      "defaultBranch": "main",
+      "latestCommit": "584189f7900d0c14919f587f87fdf96d5fad2dae",
+      "sourceUpdatedAt": "2026-10-11T11:12:26.000Z",
+      "discoveredAt": "2026-10-11T13:35:18.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/zhiwuli0228__dsh-image-router.yml:sha256=05814088ffdbd8bfbbcf0804ef3ef00a94735d45d03051b54daa096c71dce969:at=2026-10-11T13:39:51.324Z:owner=132126949"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "image-router",
+        "vision",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zhou1736948757-cpu-dsh-auto-continue",
+      "name": "zhou1736948757-cpu/dsh-auto-continue",
+      "description": "Automatically resumes replies cut off at the output token limit — built for self-hosted Ollama users with small output caps. · 回答被输出上限截断时自动续写，面向自部署 Ollama 用户。",
+      "repositoryUrl": "https://github.com/zhou1736948757-cpu/dsh-auto-continue",
+      "defaultBranch": "main",
+      "latestCommit": "3e2730dea6f0fa1cbf05c1bf353a1982d3326276",
+      "sourceUpdatedAt": "2026-08-25T08:32:47.000Z",
+      "discoveredAt": "2026-10-11T13:35:18.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/zhou1736948757-cpu__dsh-auto-continue.yml:sha256=865397443d3f91ada431b4486e94dd0e5cc581f9fe7b6bd6bdc9677303748451:at=2026-10-11T13:39:51.324Z:owner=286324179"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zhijun-dai-dsh-fonts",
+      "name": "zhijun-dai/dsh-Fonts",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/zhijun-dai/dsh-Fonts",
+      "defaultBranch": "main",
+      "latestCommit": "60b3e6a56b213c294d4a3acd6e865712ae7b497e",
+      "sourceUpdatedAt": "2026-09-26T03:42:49.000Z",
+      "discoveredAt": "2026-10-11T13:35:18.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/zhijun-dai__dsh-Fonts.yml:sha256=1be392e28f3a940e9dbea585ff35aa4352ae4319854e26a73a343d78e92048c6:at=2026-10-11T13:39:51.324Z:owner=235817214"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "fonts",
+        "typography",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zhijun-dai-solarized-dsh-theme",
+      "name": "zhijun-dai/Solarized-dsh-theme",
+      "description": "Solarized + Selenized themes for DeepSeek Harness (dsh): four faithful palettes registered into the theme runtime, with a Settings picker row and canonical code-block syntax colors",
+      "repositoryUrl": "https://github.com/zhijun-dai/Solarized-dsh-theme",
+      "defaultBranch": "main",
+      "latestCommit": "4eb4458d9c98220383dfc588a61cddb08c36fe6f",
+      "sourceUpdatedAt": "2026-09-24T04:48:45.000Z",
+      "discoveredAt": "2026-10-11T13:35:18.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/zhijun-dai__Solarized-dsh-theme.yml:sha256=c9919d22d8f7246dcc228d2013ced9a3525ececc6ed04208dcfa465e8d55d31a:at=2026-10-11T13:39:51.324Z:owner=235817214"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "plugin",
+        "selenized",
+        "solarized",
+        "theme",
         "automatic-radar"
       ],
       "status": "reviewing",
