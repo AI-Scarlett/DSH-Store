@@ -21,25 +21,25 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "70f264eb2302ed961f174bb252748daf42f7d60d",
-  "version": "0.1.2",
+  "updatePolicy": "source-verified",
+  "commit": "c6342397e2a8e3621841381a5af69a9187214c53",
+  "version": "0.1.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-10T04:35:44.000Z",
-    "observedAt": "2026-10-10T04:46:57.000Z",
+    "updatedAt": "2026-10-11T04:07:03.000Z",
+    "observedAt": "2026-10-11T04:32:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-10T04:46:57.000Z",
-      "evidenceUrl": "https://github.com/sixzjd/dsh-folder-attach/commit/70f264eb2302ed961f174bb252748daf42f7d60d",
+      "checkedAt": "2026-10-11T04:32:14.000Z",
+      "evidenceUrl": "https://github.com/sixzjd/dsh-folder-attach/commit/c6342397e2a8e3621841381a5af69a9187214c53",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,10 +79,10 @@
   "entryIds": [
     "ui-folder-attach"
   ],
-  "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -175,12 +175,12 @@
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
     "externalDependencies": [],
@@ -188,6 +188,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "automated-fixed-source-policy-v1"
   }
 }

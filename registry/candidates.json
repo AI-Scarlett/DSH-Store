@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-10T19:51:04.000Z",
+    "updatedAt": "2026-10-11T04:32:14.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "39da0b150bfae83fa071857d28c8ef4ab322fc08",
-      "sourceUpdatedAt": "2026-10-10T19:53:50.000Z",
+      "latestCommit": "4353089c670070ef918f88f7b131ed240feb83dd",
+      "sourceUpdatedAt": "2026-10-11T04:32:32.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -10207,8 +10207,8 @@
       "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：MCP server manager for DeepSeek Harness: OAuth/stdio servers, workspace isolation, and an opt-in on-demand tool broker",
       "repositoryUrl": "https://github.com/hyqhyq3/dsh-mcp-manager",
       "defaultBranch": "main",
-      "latestCommit": "d1af71528683751b0b610035c9dcbd4a29d7414b",
-      "sourceUpdatedAt": "2026-10-08T04:14:39.000Z",
+      "latestCommit": "ac6e43089aba96b693a84829c3b7199f6eed63b5",
+      "sourceUpdatedAt": "2026-10-11T02:15:44.000Z",
       "discoveredAt": "2026-09-18T13:50:17.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -16369,8 +16369,8 @@
       "description": "Router universal para agentes NCT — nodos + conectores + sandbox + cost tracking",
       "repositoryUrl": "https://github.com/maxbry123-commits/router-universal-router-inteligente-",
       "defaultBranch": "main",
-      "latestCommit": "93673e6a36d2b08a62269e38a486a909f2f9912f",
-      "sourceUpdatedAt": "2026-10-06T05:23:17.000Z",
+      "latestCommit": "3aaa183ddf92111dc0336de504d940a99d12d118",
+      "sourceUpdatedAt": "2026-10-11T04:35:53.000Z",
       "discoveredAt": "2026-10-06T05:19:08.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -18021,6 +18021,103 @@
         "dsh",
         "dsh-plugin",
         "mobile",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zekaishi-evo-subagent",
+      "name": "ZekaiShi/evo-subagent",
+      "description": "Unified DeepSeek Harness plugin: role-based subagent routing + per-agent evolution (prefercmd/memory as knowledge allow/deny lists), so repeated tasks start from proven commands and save tokens. Unified subagent routing and evolution: prefercmd/memory serve as knowledge allow/deny lists, saving tokens.",
+      "repositoryUrl": "https://github.com/ZekaiShi/evo-subagent",
+      "defaultBranch": "main",
+      "latestCommit": "ba9a304d0095b767271c76d00b05c11a460ab406",
+      "sourceUpdatedAt": "2026-10-10T08:30:50.000Z",
+      "discoveredAt": "2026-10-11T04:32:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/ZekaiShi__evo-subagent.yml:sha256=21f89e23a782af6237996ba85837c13ce63cb6a59b07d9b5fe7a7e9541627173:at=2026-10-11T04:36:09.243Z:owner=131342408"
+      ],
+      "topics": [
+        "agent-plugin",
+        "ai-agent",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "llm-agent",
+        "model-routing",
+        "plugin",
+        "subagent",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zeng6125-rgb-dsh-llm-retry-settings",
+      "name": "zeng6125-rgb/dsh-llm-retry-settings",
+      "description": "DSH 插件：LLM 自动重试设置卡片——重试次数/退避/抖动与 25 个错误码可勾选（也能自己输入），可按 provider/model 单独设策略、回答被输出 token 上限截断时自动续写且提示词可改，内置重试观测面板，改完实时生效。",
+      "repositoryUrl": "https://github.com/zeng6125-rgb/dsh-llm-retry-settings",
+      "defaultBranch": "main",
+      "latestCommit": "1e4790ce67910a3805ab8cff85e37241f0648fcc",
+      "sourceUpdatedAt": "2026-10-05T10:16:27.000Z",
+      "discoveredAt": "2026-10-11T04:32:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/zeng6125-rgb__dsh-llm-retry-settings.yml:sha256=69da45f7dd4ae3c04f8d617202cab8fc4c659125d535327cf5901c318bb89e95:at=2026-10-11T04:36:09.243Z:owner=227113030"
+      ],
+      "topics": [
+        "auto-continue",
+        "auto-retry",
+        "cordis-plugin",
+        "deepseek",
+        "dsh",
+        "dsh-plugin",
+        "llm-retry",
+        "max-tokens",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zealot00-dsh-pet",
+      "name": "zealot00/dsh-pet",
+      "description": "Desktop pet for DeepSeek Harness Web UI: sprite animation, agent state linkage, drag, alarm & pomodoro widgets, skin separation",
+      "repositoryUrl": "https://github.com/zealot00/dsh-pet",
+      "defaultBranch": "main",
+      "latestCommit": "cb31dd4474f655e1caa87ed10d4403ba46a3f8b5",
+      "sourceUpdatedAt": "2026-08-14T09:35:54.000Z",
+      "discoveredAt": "2026-10-11T04:32:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/zealot00__dsh-pet.yml:sha256=ce0d13e8edc72de3b2f0b5c9b8351a455f624f1879de330498deb5042a710d6c:at=2026-10-11T04:36:09.243Z:owner=5056784"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "pet",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "zelinw1-dsh-cosplay",
+      "name": "ZelinW1/dsh-cosplay",
+      "description": "A cosplay plugin for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/ZelinW1/dsh-cosplay",
+      "defaultBranch": "main",
+      "latestCommit": "11a7245e801d5f5b4b5b0d7fbfff3c29fcccf2bd",
+      "sourceUpdatedAt": "2026-10-06T05:48:14.000Z",
+      "discoveredAt": "2026-10-11T04:32:14.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4693e5a83212154bb065abb63221a23a1dd8750a:data/plugins/ZelinW1__dsh-cosplay.yml:sha256=8fb9fded75a4befc18b1ba1a2614c4ad756bc4a9ad1c98741805ad7747bfa25d:at=2026-10-11T04:36:09.243Z:owner=125450134"
+      ],
+      "topics": [
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "reviewing",
