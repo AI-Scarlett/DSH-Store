@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "afce37f38185b890b544c354ded857a1dcf8ed82",
-  "version": "0.0.1",
+  "commit": "87b963295c62a5dd3dde3811aebcd201c09d86a9",
+  "version": "0.1.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-09T05:16:41.000Z",
-    "observedAt": "2026-10-09T17:00:39.000Z",
+    "updatedAt": "2026-10-11T13:18:55.000Z",
+    "observedAt": "2026-10-11T13:35:18.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-09T17:00:39.000Z",
-      "evidenceUrl": "https://github.com/frankshi2024/dsh-web-app/commit/afce37f38185b890b544c354ded857a1dcf8ed82",
+      "checkedAt": "2026-10-11T13:35:18.000Z",
+      "evidenceUrl": "https://github.com/frankshi2024/dsh-web-app/commit/87b963295c62a5dd3dde3811aebcd201c09d86a9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "dsh-web-app"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./skills/*.md; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./skills/*.md; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; Tool-view extension requires key ownership review; registration alone is not a protected component mutation",
   "compatibility": {
     "dsh": ">=0.1.0-0 <0.3.0-0",
     "dshReleases": {
