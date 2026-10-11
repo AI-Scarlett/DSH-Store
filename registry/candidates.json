@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-11T13:35:18.000Z",
+    "updatedAt": "2026-10-11T14:43:05.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "0b4ce83618bb800627264ae6221e2e35140417b5",
-      "sourceUpdatedAt": "2026-10-11T13:33:25.000Z",
+      "latestCommit": "1f531fc257f71731624cbd6b595208adacf59108",
+      "sourceUpdatedAt": "2026-10-11T14:43:48.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -9434,8 +9434,8 @@
       "description": "Plan, build, and deliver with an open-source, self-hostable AI workspace for coding, collaboration, and automation.",
       "repositoryUrl": "https://github.com/wecode-ai/Wegent",
       "defaultBranch": "main",
-      "latestCommit": "08bb6338fddad0c4da882c5f1f25e06d3a1a5b42",
-      "sourceUpdatedAt": "2026-09-10T12:26:28.000Z",
+      "latestCommit": "e3af58b82769366906c9fae35ff1b9aa98b7ac47",
+      "sourceUpdatedAt": "2026-10-11T14:32:38.000Z",
       "discoveredAt": "2026-09-10T12:45:09.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -9452,7 +9452,7 @@
       ],
       "status": "rejected",
       "route": "monorepo-review",
-      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: wework/dsh/app-wework, wework/dsh/browser-runtime, wework/dsh/conversation-export, wework/dsh/electron-host, wework/dsh/executor-runtime, wework/dsh/plugin-developer, wework/dsh/plugin-runtime, wework/dsh/secure-storage, wework/dsh/terminal-runtime, wework/dsh/transcript-sync, wework/dsh/ui-applications, wework/dsh/ui-automations, wework/dsh/ui-cloud-work, wework/dsh/ui-core-apps, wework/dsh/ui-core-settings, wework/dsh/ui-git, wework/dsh/ui-home-developer, wework/dsh/ui-home-focus, wework/dsh/ui-plugin-c"
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: wework/dsh/app-wework, wework/dsh/browser-runtime, wework/dsh/conversation-export, wework/dsh/electron-host, wework/dsh/executor-runtime, wework/dsh/plugin-developer, wework/dsh/plugin-runtime, wework/dsh/secure-storage, wework/dsh/terminal-runtime, wework/dsh/transcript-sync, wework/dsh/ui-applications, wework/dsh/ui-automations, wework/dsh/ui-cloud-work, wework/dsh/ui-core-apps, wework/dsh/ui-core-settings, wework/dsh/ui-git, wework/dsh/ui-home-developer, wework/dsh/ui-home-focus, wework/dsh/ui-outputs,"
     },
     {
       "id": "oliver-kriska-claude-elixir-phoenix",
@@ -18189,6 +18189,114 @@
         "selenized",
         "solarized",
         "theme",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "tyeclipse-dsh-units",
+      "name": "TYEclipse/dsh-units",
+      "description": "Unit conversion toolbox for DeepSeek Harness (dsh): 22 categories — flow rate (CFM, gpm), density (kg/m³, lb/ft³), data transfer rate (Mbps vs MB/s), g-force, illumination, 3 horsepower definitions, force, torque, typography, fuel economy, MB vs MiB — plus unit-price comparison; zero runtime dependencies",
+      "repositoryUrl": "https://github.com/TYEclipse/dsh-units",
+      "defaultBranch": "main",
+      "latestCommit": "dc917ae6f838c4979eb2279c6782a999e5a78b31",
+      "sourceUpdatedAt": "2026-10-07T21:55:29.000Z",
+      "discoveredAt": "2026-10-11T14:43:05.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@46154ad55fa9a89bbd16f464cb58c8683a8ea79b:data/plugins/TYEclipse__dsh-units.yml:sha256=526d27593b8ccb2e2e271a85ab95aba70de0a885491857d8a1e36ff2855d48bf:at=2026-10-11T14:46:54.831Z:owner=13147384"
+      ],
+      "topics": [
+        "acceleration",
+        "css-units",
+        "data-transfer-rate",
+        "deepseek-harness",
+        "density",
+        "dsh-plugin",
+        "force",
+        "fuel-economy",
+        "horsepower",
+        "illumination",
+        "measurement",
+        "power",
+        "price-comparison",
+        "torque",
+        "typography",
+        "unit-conversion",
+        "unit-price",
+        "volumetric-flow-rate",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "txlznbzsdj-collab-dsh-deepseek-pet",
+      "name": "txlznbzsdj-collab/dsh-deepseek-pet",
+      "description": "DeepSeek 小蓝鲸桌宠 DSH 插件：模型可调用 pet_say 命令桌宠说话，桌宠同步对话开始/结束（思考/庆祝）",
+      "repositoryUrl": "https://github.com/txlznbzsdj-collab/dsh-deepseek-pet",
+      "defaultBranch": "main",
+      "latestCommit": "62d041fc10272ed96c10ffb305074e91c9c7736a",
+      "sourceUpdatedAt": "2026-08-18T04:17:08.000Z",
+      "discoveredAt": "2026-10-11T14:43:05.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@46154ad55fa9a89bbd16f464cb58c8683a8ea79b:data/plugins/txlznbzsdj-collab__dsh-deepseek-pet.yml:sha256=3fc6146bc8513c546e06e831f92a576fa73356272433850f6de358aeea95e846:at=2026-10-11T14:46:54.831Z:owner=246930922"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ssheleg-sshlg-skills",
+      "name": "ssheleg/sshlg-skills",
+      "description": "Install and update nine Agent Skills packs for UX, delivery, design, integrations, SEO, agent systems, Telegram, coordination, and skill authoring.",
+      "repositoryUrl": "https://github.com/ssheleg/sshlg-skills",
+      "defaultBranch": "main",
+      "latestCommit": "504ce41b46f7ad0933885e1b370b0f7fc53679f6",
+      "sourceUpdatedAt": "2026-10-11T14:46:33.000Z",
+      "discoveredAt": "2026-10-11T14:43:05.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "automation",
+        "claude-code",
+        "codex",
+        "cursor",
+        "developer-tools",
+        "npm",
+        "skills-marketplace",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "txlznbzsdj-collab-dsh-session-delete",
+      "name": "txlznbzsdj-collab/dsh-session-delete",
+      "description": "DSH plugin: add a \"Delete\" item to the sidebar session menu with a confirmation dialog.",
+      "repositoryUrl": "https://github.com/txlznbzsdj-collab/dsh-session-delete",
+      "defaultBranch": "main",
+      "latestCommit": "869cb0ab6b452b79269dd9f9e841c6892cddaa51",
+      "sourceUpdatedAt": "2026-08-18T15:34:47.000Z",
+      "discoveredAt": "2026-10-11T14:43:05.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@46154ad55fa9a89bbd16f464cb58c8683a8ea79b:data/plugins/txlznbzsdj-collab__dsh-session-delete.yml:sha256=83e7a1735a3abecb49b5b3e877fdb8241d90acc6d0bd72c49c99933063538733:at=2026-10-11T14:46:54.831Z:owner=246930922"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
         "automatic-radar"
       ],
       "status": "reviewing",
