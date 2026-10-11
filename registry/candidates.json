@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-11T14:43:05.000Z",
+    "updatedAt": "2026-10-11T19:57:39.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "1f531fc257f71731624cbd6b595208adacf59108",
-      "sourceUpdatedAt": "2026-10-11T14:43:48.000Z",
+      "latestCommit": "0d8b728d2470a9b51239d61986944bacaf9a8708",
+      "sourceUpdatedAt": "2026-10-11T19:58:24.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2908,8 +2908,8 @@
       "description": "为 DSH 提供自由联网搜索能力。英文原始说明：Free web search for DeepSeek Harness: 8 engines (Bing/DuckDuckGo/AnySearch/SearXNG/Exa keyless) + platform search + web_fetch, with web settings UI.",
       "repositoryUrl": "https://github.com/DDDMUC/dsh-free-search",
       "defaultBranch": "master",
-      "latestCommit": "ef24fc5895acba194aff6262bfc459c15e620e9b",
-      "sourceUpdatedAt": "2026-10-11T09:45:31.000Z",
+      "latestCommit": "9bf4a3b84381f53917cc26bb5cb0bfd0a60c8c65",
+      "sourceUpdatedAt": "2026-10-11T19:01:23.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -18302,6 +18302,181 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "everclear077-dsh-progressive-tools",
+      "name": "everclear077/dsh-progressive-tools",
+      "description": "Progressive tool discovery for DeepSeek Harness — tiny stable surface, searchable catalog, real pipeline execution, context cache intact.",
+      "repositoryUrl": "https://github.com/everclear077/dsh-progressive-tools",
+      "defaultBranch": "main",
+      "latestCommit": "f929e86fb442bf289d56e268562b31d8fb8a390b",
+      "sourceUpdatedAt": "2026-09-29T01:58:20.000Z",
+      "discoveredAt": "2026-10-11T19:57:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/everclear077__dsh-progressive-tools.yml:sha256=e030cd764c0733815bb930a3323587e59b011de766b28922ae76b4bd3e4734b0:at=2026-10-11T20:02:45.294Z:owner=129674099"
+      ],
+      "topics": [
+        "ai-agents",
+        "context-cache",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "function-calling",
+        "llm-tools",
+        "plugin",
+        "progressive-disclosure",
+        "tool-calling",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "clanker25-deepseek-harness",
+      "name": "clanker25/deepseek-harness",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/clanker25/deepseek-harness",
+      "defaultBranch": "main",
+      "latestCommit": "e717a2f9bf595fea8658cb40a170318e9b82b3ea",
+      "sourceUpdatedAt": "2026-10-11T20:01:18.000Z",
+      "discoveredAt": "2026-10-11T19:57:39.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_SOURCE_TOO_LARGE: GitHub source metadata exceeds the static precheck limit"
+    },
+    {
+      "id": "exoticknight-dsh-just-chat",
+      "name": "exoticknight/dsh-just-chat",
+      "description": "One-click native conversations with independent workspaces for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/exoticknight/dsh-just-chat",
+      "defaultBranch": "main",
+      "latestCommit": "906ac8faec71bcf6ff1b974a368e6b2798232012",
+      "sourceUpdatedAt": "2026-10-06T13:41:03.000Z",
+      "discoveredAt": "2026-10-11T19:57:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/exoticknight__dsh-just-chat.yml:sha256=de8636083b41c02088c7d74e8b0626ea0370e0ae444b1494db7d638e2b42a31c:at=2026-10-11T20:02:45.294Z:owner=1171407"
+      ],
+      "topics": [
+        "chat",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh",
+        "dsh-bundle",
+        "dsh-plugin",
+        "workspace",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "evhye38496-dsh-perfscope",
+      "name": "Evhye38496/dsh-perfscope",
+      "description": "One-click health check & score for your DeepSeek Harness plugins. Scan -> Score -> Fix -> Share. PerfScope for dsh.",
+      "repositoryUrl": "https://github.com/Evhye38496/dsh-perfscope",
+      "defaultBranch": "master",
+      "latestCommit": "aee2b9a15dcfa0c0b4de19bae2ea47a1af6e5c0a",
+      "sourceUpdatedAt": "2026-08-29T14:41:00.000Z",
+      "discoveredAt": "2026-10-11T19:57:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/Evhye38496__dsh-perfscope.yml:sha256=5355ae38f44170866c42077f587fa42cd2d2064f9cb711c1ee85946886c82989:at=2026-10-11T20:02:45.294Z:owner=283550953"
+      ],
+      "topics": [
+        "audit",
+        "deepseek-harness",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "health",
+        "performance",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "mas-bandwidth-nova-sprint",
+      "name": "mas-bandwidth/nova-sprint",
+      "description": "Coordinate AI sprints across different models, harnesses and providers",
+      "repositoryUrl": "https://github.com/mas-bandwidth/nova-sprint",
+      "defaultBranch": "main",
+      "latestCommit": "af21db3b4c85cd2adbd5cdc42d62a579b5e2f518",
+      "sourceUpdatedAt": "2026-10-11T20:01:51.000Z",
+      "discoveredAt": "2026-10-11T19:57:39.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-coding",
+        "ai-coding-agent",
+        "ai-coding-agents",
+        "ai-coding-tool",
+        "ai-coding-tools",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "deepseek",
+        "deepseek-harness",
+        "gemini",
+        "grok",
+        "mercury",
+        "opencode",
+        "openrouter",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "eve1329-dsh-shared-handoff",
+      "name": "eve1329/dsh-shared-handoff",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/eve1329/dsh-shared-handoff",
+      "defaultBranch": "main",
+      "latestCommit": "94553fd5826e323e6bed2e13550e9bb1ac7b8707",
+      "sourceUpdatedAt": "2026-09-01T07:34:15.000Z",
+      "discoveredAt": "2026-10-11T19:57:39.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/eve1329__dsh-shared-handoff.yml:sha256=54d125f504007bd142480b137502c818026f92eba94fe7ff56161368798b83cf:at=2026-10-11T20:02:45.294Z:owner=258385212"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "little-red-cre-org-redsparkharness",
+      "name": "Little-Red-Cre-Org/RedSparkHarness",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Little-Red-Cre-Org/RedSparkHarness",
+      "defaultBranch": "main",
+      "latestCommit": "28011d72046bca2cf5258ece2810fd0b0362a03d",
+      "sourceUpdatedAt": "2026-10-11T20:01:24.000Z",
+      "discoveredAt": "2026-10-11T19:57:39.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
     }
   ]
 }
