@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-12T04:47:28.000Z",
+    "updatedAt": "2026-10-12T16:11:46.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "83a4445f440fab978ad9376b4260acae3f5fb189",
-      "sourceUpdatedAt": "2026-10-12T04:44:58.000Z",
+      "latestCommit": "85c5477930d504cfd8b72334b48255d8e746a85e",
+      "sourceUpdatedAt": "2026-10-12T16:15:54.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2216,8 +2216,8 @@
       "description": "DeepSeek Harness 的 Claude Code /rewind 等价能力：每次变更型工具执行前捕获 git 优先的工作区文件快照，轮次边界 fork 会话，一条 /rewind 命令恢复文件并把会话回退到检查点。",
       "repositoryUrl": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "defaultBranch": "main",
-      "latestCommit": "97de9aa6c8524a4b58133a9dc2f8c71420703d19",
-      "sourceUpdatedAt": "2026-10-10T00:55:42.000Z",
+      "latestCommit": "a9ecd64da0c5c77298b9a8e7406a435d2249e039",
+      "sourceUpdatedAt": "2026-10-12T13:49:57.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -6486,8 +6486,8 @@
       "description": "注册 SpecWorkflow 技能包，覆盖需求澄清、实施规格、代码执行、交付检查、修复规划、bug 诊断和带来源调研。",
       "repositoryUrl": "https://github.com/MoonCoder-HAPPY/SpecWorkflow",
       "defaultBranch": "main",
-      "latestCommit": "af366bbc55a6066541afadf34988690414a187da",
-      "sourceUpdatedAt": "2026-08-16T08:20:17.000Z",
+      "latestCommit": "e4ae8e02b927caaf0b97324bde795e90495e3384",
+      "sourceUpdatedAt": "2026-10-12T06:26:46.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -15540,26 +15540,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "yeqingtang-dsh-session-flow",
-      "name": "会话管理（DSH Session Flow）",
-      "description": "跨会话档案柜：总览工作台、折叠时间线、子代理血缘、内容检索、规则+LLM 双模式摘要、ZIP 导出、实时跟踪。",
-      "repositoryUrl": "https://github.com/YeqingTang/dsh-session-flow",
-      "defaultBranch": "main",
-      "latestCommit": "bb30d191be42d8895af649a113a382dc07dd5e55",
-      "sourceUpdatedAt": "2026-09-29T12:06:28.000Z",
-      "discoveredAt": "2026-10-03T13:06:51.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "sessions",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-session-flow."
-    },
-    {
       "id": "soarguo-dsh-auto-vision",
       "name": "图像视觉工具（DSH Auto Image）",
       "description": "为 DSH 提供图像视觉工具能力。英文原始说明：Bridges images into text for DeepSeek Harness: when the session's selected model cannot see images, a configured vision model describes them and the descriptions enter the durable session history as folded context rows — your message stays untouched.",
@@ -18588,6 +18568,137 @@
       "status": "rejected",
       "route": "adapter-required",
       "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "gezi-wen-dsh-skill-authoring",
+      "name": "gezi-wen/dsh-skill-authoring",
+      "description": "DSH plugin that ships a skill for writing, reviewing and verifying DSH skills: SKILL.md frontmatter, trigger surface, length rules, and an A/B check.",
+      "repositoryUrl": "https://github.com/gezi-wen/dsh-skill-authoring",
+      "defaultBranch": "main",
+      "latestCommit": "9ad56782d0a6959d47b30c61458942a70d4b7984",
+      "sourceUpdatedAt": "2026-09-20T06:55:45.000Z",
+      "discoveredAt": "2026-10-12T16:11:46.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/gezi-wen__dsh-skill-authoring.yml:sha256=ef3f3c9b9f9ee73b14c7c69dab123fa8d275d5cc05c552ac32728dc18c071c1e:at=2026-10-12T16:16:05.520Z:owner=282876895"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "skill",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "gezi-wen-dsh-subagent-delegation",
+      "name": "gezi-wen/dsh-subagent-delegation",
+      "description": "DSH plugin that ships a skill on when to delegate to subagents, how many to fan out in parallel, and how to verify what they returned.",
+      "repositoryUrl": "https://github.com/gezi-wen/dsh-subagent-delegation",
+      "defaultBranch": "main",
+      "latestCommit": "4b935e3ee3c80adbf99d1f8444745de39c740151",
+      "sourceUpdatedAt": "2026-09-20T06:56:06.000Z",
+      "discoveredAt": "2026-10-12T16:11:46.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/gezi-wen__dsh-subagent-delegation.yml:sha256=b970fb892439948de46347d3ff9b291c8b3722124dda1435a7005cd05014255f:at=2026-10-12T16:16:05.520Z:owner=282876895"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "skill",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ranxianglei-billion-context",
+      "name": "ranxianglei/billion-context",
+      "description": "A context-compression plugin for small context windows (a 100K context is enough), token savings (5x fewer tokens), and month-long single sessions (billions of tokens).上下文压缩插件，兼顾小窗口(100k上下文足矣)省token(省5倍token)和超长会话(数月级别几十亿token单会话)。billion-context is all you need",
+      "repositoryUrl": "https://github.com/ranxianglei/billion-context",
+      "defaultBranch": "master",
+      "latestCommit": "1149bd8dc049d826766dcc174dabc516bd90c2ca",
+      "sourceUpdatedAt": "2026-10-12T15:58:49.000Z",
+      "discoveredAt": "2026-10-12T16:11:46.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID compaction-basic is already owned by dsh-fabric"
+    },
+    {
+      "id": "gezi-wen-dsh-plugin-development",
+      "name": "gezi-wen/dsh-plugin-development",
+      "description": "DSH plugin that ships a skill documenting how to build, debug and publish DSH plugins. Installing the plugin registers the skill.",
+      "repositoryUrl": "https://github.com/gezi-wen/dsh-plugin-development",
+      "defaultBranch": "main",
+      "latestCommit": "43dd8780a7cc3676389f0526a6a80e9a10cffeee",
+      "sourceUpdatedAt": "2026-09-20T06:55:40.000Z",
+      "discoveredAt": "2026-10-12T16:11:46.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/gezi-wen__dsh-plugin-development.yml:sha256=00ea8010efbcea130769a94df998c347d546bfefc37f718f3c554ef5a5225711:at=2026-10-12T16:16:05.520Z:owner=282876895"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "plugin-development",
+        "skill",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "anbanai-anban-creator",
+      "name": "anbanai/anban-creator",
+      "description": "Anban Creator Studio, server, and managed agent runtime",
+      "repositoryUrl": "https://github.com/anbanai/anban-creator",
+      "defaultBranch": "main",
+      "latestCommit": "eb676f74c7b74cd2b4227743a777fac3e09c0b86",
+      "sourceUpdatedAt": "2026-10-12T15:57:24.000Z",
+      "discoveredAt": "2026-10-12T16:11:46.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "gezi-wen-dsh-repair",
+      "name": "gezi-wen/dsh-repair",
+      "description": "DSH plugin that ships a skill for diagnosing and repairing a broken DeepSeek Harness install: boot failures, dead plugins, broken dependency bridges, upgrades.",
+      "repositoryUrl": "https://github.com/gezi-wen/dsh-repair",
+      "defaultBranch": "main",
+      "latestCommit": "2b8a4c44354c5f385fe7f73f2ea7f4530d1ced1a",
+      "sourceUpdatedAt": "2026-09-13T14:04:06.000Z",
+      "discoveredAt": "2026-10-12T16:11:46.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4726e1de45885d27e526b027d04c465155d26fbc:data/plugins/gezi-wen__dsh-repair.yml:sha256=e27102402faab3732d9f31d42998f617e4300c37a50b5446922458ed3eaa2a4d:at=2026-10-12T16:16:05.520Z:owner=282876895"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "skill",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }

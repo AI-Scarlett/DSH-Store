@@ -22,7 +22,7 @@
   "manifestPath": "autotest/dsh-autotest/package.json",
   "installPath": "autotest/dsh-autotest",
   "updatePolicy": "external-only",
-  "commit": "4fcbfc15efbc41f27ca89c7cffc3568081e0e765",
+  "commit": "613a81dfc4cd95a9499e19a09575129343128aa4",
   "version": "1.0.0-rc.1",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T05:29:03.000Z",
-    "observedAt": "2026-10-01T13:57:52.000Z",
+    "updatedAt": "2026-10-12T15:29:12.000Z",
+    "observedAt": "2026-10-12T16:11:46.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-01T13:57:52.000Z",
-      "evidenceUrl": "https://github.com/summer-hub/AutoTestAgent/commit/4fcbfc15efbc41f27ca89c7cffc3568081e0e765",
+      "checkedAt": "2026-10-12T16:11:46.000Z",
+      "evidenceUrl": "https://github.com/summer-hub/AutoTestAgent/commit/613a81dfc4cd95a9499e19a09575129343128aa4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "dsh-autotest"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 2697063 total bytes (maximum 2097152); largest file 378877 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1452060 total bytes (maximum 2097152); largest file 378877 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "^0.2.0-rc.2",
     "dshReleases": {
@@ -92,8 +92,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown"
@@ -142,18 +140,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
