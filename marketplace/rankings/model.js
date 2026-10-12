@@ -1,13 +1,39 @@
 // Shared by the static builder and browser. Rankings never change Catalog approval.
 export const PAGE_SIZE = 30
 export const POPULAR_LIMIT = 100
-export const RANKING_TYPES = ['popular', 'recommended', 'essential']
+export const RANKING_TYPES = ['popular', 'listed', 'recommended', 'essential']
 export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const validStars = value => Number.isSafeInteger(value) && value >= 0
 const validRepository = value => typeof value === 'string' && /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(value)
 const compareId = (a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0
 const compareStars = (a, b) => b.stars - a.stars || compareId(a, b)
 const categoryNamesEn = { marketplace: 'Marketplace', management: 'Management', sessions: 'Sessions', import: 'Import', models: 'Models', routing: 'Routing', ui: 'Interface', themes: 'Themes', memory: 'Memory', tools: 'Tools', workflow: 'Workflow', notifications: 'Notifications', development: 'Development', fun: 'Fun', files: 'Files', visualization: 'Visualization', design: 'Design', search: 'Search', suites: 'Suites', clients: 'Clients', security: 'Security', experimental: 'Experimental' }
+
+function getListingReason(entry, source, listingStatus) {
+  if (listingStatus === 'listed') return null
+  const reason = typeof entry.statusReason === 'string' ? entry.statusReason.trim() : ''
+  if (reason) return reason
+  if (source === 'candidate') {
+    if (entry.status === 'rejected') return 'Fixed-Commit review rejected this candidate; no detailed reason is available in the public record.'
+    if (entry.status === 'reviewing') return 'This discovery candidate is still under review and has not been approved for Catalog listing.'
+    return 'This discovery candidate has not completed fixed-Commit review.'
+  }
+  if (entry.status === 'blocked') return 'Blocked by Catalog admission policy; no detailed reason is available in the public record.'
+  if (entry.status === 'unlisted') return 'Not approved for Store listing; no detailed reason is available in the public record.'
+  return 'A full fixed Git Commit is not pinned, so Store listing cannot be verified.'
+}
+
+function legacyListingReason(entry) {
+  if (entry.listingStatus === 'listed') return null
+  if (entry.source === 'candidate') {
+    if (entry.reviewStatus === 'rejected') return 'Rejected after fixed-Commit review; the older ranking snapshot does not contain the detailed reason.'
+    if (entry.reviewStatus === 'reviewing') return 'Discovery candidate is under review; the older ranking snapshot does not contain the detailed reason.'
+    return 'Discovery candidate has not completed fixed-Commit review.'
+  }
+  if (entry.reviewStatus === 'blocked') return 'Blocked by Catalog admission policy; the older ranking snapshot does not contain the detailed reason.'
+  if (entry.reviewStatus === 'unlisted') return 'Not approved for Store listing; the older ranking snapshot does not contain the detailed reason.'
+  return 'A full fixed Git Commit is not pinned, so Store listing cannot be verified.'
+}
 
 export function isDshDiscoveryCandidate(entry) {
   return (entry.topics || []).some(topic => ['dsh', 'dsh-plugin', 'deepseek-harness', 'deepseek-harness-plugin'].includes(topic.toLowerCase()))
@@ -25,12 +51,13 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
     if (!light || light.status !== entry.status || light.version !== entry.version || light.repositoryUrl !== entry.repositoryUrl) throw new Error(`Ranking index identity mismatch: ${entry.id}`)
     if (!validRepository(entry.repositoryUrl)) throw new Error('Ranking repository must be canonical GitHub')
     repositories.add(entry.repositoryUrl.toLowerCase())
+    const listingStatus = entry.status === 'approved' && /^[a-f0-9]{40}$/.test(entry.commit || '') ? 'listed' : 'not-listed'
     return {
       id: entry.id, nameZh: light.nameZh || entry.name, nameEn: light.nameEn || entry.name,
       version: entry.version, repositoryUrl: entry.repositoryUrl, description: (entry.description || '').slice(0, 280),
       categories: [...new Set((entry.categories || []).filter(id => knownCategories.has(id)))],
       featured: entry.featured === true, order: Number.isSafeInteger(light.order) ? light.order : Number.MAX_SAFE_INTEGER,
-      listingStatus: entry.status === 'approved' && /^[a-f0-9]{40}$/.test(entry.commit || '') ? 'listed' : 'not-listed',
+      listingStatus, listingReason: getListingReason(entry, 'catalog', listingStatus),
       source: 'catalog', reviewStatus: entry.status,
       stars: starsObservedAt && validStars(entry.github?.stars) ? entry.github.stars : null,
       weeklyStars: starsObservedAt && validStars(entry.github?.stars) ? entry.github.stars : null,
@@ -53,10 +80,11 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
       categories: [...new Set((entry.topics || []).filter(id => knownCategories.has(id)))],
       featured: false, order: Number.MAX_SAFE_INTEGER,
       listingStatus: 'not-listed', source: 'candidate', reviewStatus: entry.status, stars: null, weeklyStars: null,
+      listingReason: getListingReason(entry, 'candidate', 'not-listed'),
       weeklySnapshotMember: false, weeklyCategories: [],
     })
   }
-  return { schemaVersion: 3, sourceCommit, catalogUpdatedAt: catalog.registry.updatedAt,
+  return { schemaVersion: 4, sourceCommit, catalogUpdatedAt: catalog.registry.updatedAt,
     candidatesUpdatedAt: candidates.registry?.updatedAt || null, starsObservedAt,
     weeklyStarsObservedAt: starsObservedAt, categories, entries }
 }
@@ -73,7 +101,14 @@ export function validateRankingSnapshot(data) {
         weeklySnapshotMember: true, weeklyCategories: [...(entry.categories || [])] })),
     }
   }
-  if (data?.schemaVersion !== 3 || !Array.isArray(data.entries) || data.entries.length > 10000 || !Array.isArray(data.categories)) throw new Error('Invalid rankings snapshot')
+  if (data?.schemaVersion === 3 && Array.isArray(data.entries)) {
+    data = {
+      ...data,
+      schemaVersion: 4,
+      entries: data.entries.map(entry => ({ ...entry, listingReason: entry.listingReason ?? legacyListingReason(entry) })),
+    }
+  }
+  if (data?.schemaVersion !== 4 || !Array.isArray(data.entries) || data.entries.length > 10000 || !Array.isArray(data.categories)) throw new Error('Invalid rankings snapshot')
   if (typeof data.catalogUpdatedAt !== 'string' || !Number.isFinite(Date.parse(data.catalogUpdatedAt))) throw new Error('Invalid Catalog date')
   for (const key of ['starsObservedAt', 'weeklyStarsObservedAt', 'candidatesUpdatedAt']) {
     if (data[key] !== null && (typeof data[key] !== 'string' || !Number.isFinite(Date.parse(data[key])))) throw new Error('Invalid rankings date')
@@ -89,6 +124,7 @@ export function validateRankingSnapshot(data) {
       || !['nameZh', 'nameEn', 'description', 'version'].every(key => typeof entry[key] === 'string')
       || typeof entry.featured !== 'boolean' || !Number.isSafeInteger(entry.order) || entry.order < 0
       || !['listed', 'not-listed'].includes(entry.listingStatus) || !['catalog', 'candidate'].includes(entry.source)
+      || (entry.listingStatus === 'listed' ? entry.listingReason !== null : typeof entry.listingReason !== 'string' || !entry.listingReason.trim() || entry.listingReason.length > 600)
       || !(entry.source === 'catalog' ? ['approved', 'blocked', 'unlisted'] : ['discovered', 'reviewing', 'rejected']).includes(entry.reviewStatus)
       || (entry.listingStatus === 'listed' && (entry.source !== 'catalog' || entry.reviewStatus !== 'approved'))
       || (entry.source === 'candidate' && entry.featured)
@@ -159,10 +195,11 @@ export function applyRankingRefreshState(input, previousInput, mode = 'reuse') {
 
 export function rankingEntries(data, type) {
   if (!RANKING_TYPES.includes(type)) throw new Error('Unknown ranking type')
-  const scoreField = type === 'popular' ? 'stars' : 'weeklyStars'
+  const scoreField = type === 'popular' || type === 'listed' ? 'stars' : 'weeklyStars'
   const known = data.entries.filter(entry => validStars(entry[scoreField]))
     .map(entry => ({ ...entry, stars: entry[scoreField] })).sort(compareStars)
   if (type === 'popular') return known.slice(0, POPULAR_LIMIT)
+  if (type === 'listed') return known.filter(entry => entry.listingStatus === 'listed').slice(0, PAGE_SIZE)
   if (type === 'recommended') {
     // `featured` is a legacy display flag, not evidence of a recommendation or
     // review. Until explicit editorial evidence exists, use only observed stars.
@@ -230,7 +267,11 @@ export function renderRankingRows(entries, { type = 'popular', locale = 'zh', of
     const href = listed ? `../plugins/?q=${encodeURIComponent(entry.id)}` : entry.repositoryUrl
     const external = listed ? '' : ' target="_blank" rel="noopener noreferrer"'
     const badge = `<span class="ranking-listing ${listed ? 'is-listed' : 'is-not-listed'}">${en ? (listed ? 'Listed' : 'Not listed') : (listed ? '已收录' : '未收录')}</span>`
-    const boundary = listed ? '' : `<p class="ranking-boundary">${en ? (entry.source === 'candidate' ? 'Discovery candidate · DSH plugin compatibility unverified · GitHub only' : 'Not available through the Store · View source on GitHub') : (entry.source === 'candidate' ? '发现候选 · 尚未核验为标准 DSH 插件 · 仅查看 GitHub' : '暂未获准商城安装 · 前往 GitHub 了解项目')}</p>`
+    const listingReason = listed ? null : (entry.listingReason || legacyListingReason(entry))
+    const reasonCharacters = listingReason ? Array.from(listingReason) : []
+    const reasonPreview = reasonCharacters.length > 200 ? `${reasonCharacters.slice(0, 200).join('')}…` : (listingReason || '')
+    const fullReason = listingReason && listingReason !== reasonPreview ? `<details class="ranking-reason-details"><summary>${en ? 'Full review reason' : '查看完整审核原因'}</summary><p>${escapeHtml(listingReason)}</p></details>` : ''
+    const boundary = listed ? '' : `<div class="ranking-boundary"><p><strong>${en ? 'Not listed because: ' : '未收录原因：'}</strong>${escapeHtml(reasonPreview)}</p>${fullReason}<p class="ranking-boundary-note">${en ? (entry.source === 'candidate' ? 'Discovery candidate · DSH plugin compatibility unverified · GitHub only' : 'Not available through the Store · View source on GitHub') : (entry.source === 'candidate' ? '发现候选 · 尚未核验为标准 DSH 插件 · 仅查看 GitHub' : '暂未获准商城安装 · 仅查看 GitHub')}</p></div>`
     return `<li class="ranking-row${rank <= 3 ? ' ranking-podium' : ''}" data-ranking-id="${escapeHtml(entry.id)}" data-listing-status="${listed ? 'listed' : 'not-listed'}">
       <span class="ranking-position">${String(rank).padStart(2, '0')}</span>
       <span class="ranking-icon" aria-hidden="true">${escapeHtml(name.replace(/^DSH[\s-]*/i, '').slice(0, 2).toUpperCase())}</span>
