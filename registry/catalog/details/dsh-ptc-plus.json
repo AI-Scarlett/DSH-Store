@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "eddd4780c76fde116de4989aae21bfe0c5047d66",
+  "commit": "41c685d2089313d1776d6e9e2a8ce7b49f5e2f98",
   "version": "0.4.11",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-11T13:39:22.000Z",
-    "observedAt": "2026-10-11T13:35:18.000Z",
+    "updatedAt": "2026-10-11T19:46:00.000Z",
+    "observedAt": "2026-10-12T04:47:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-11T13:35:18.000Z",
-      "evidenceUrl": "https://github.com/muyuanjin/dsh-ptc-plus/commit/eddd4780c76fde116de4989aae21bfe0c5047d66",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-12T04:47:28.000Z",
+      "evidenceUrl": "https://github.com/muyuanjin/dsh-ptc-plus/commit/41c685d2089313d1776d6e9e2a8ce7b49f5e2f98",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
@@ -82,7 +82,7 @@
     "ptc-plus"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime source exceeds the automatic review byte bound: 9843368 total bytes (maximum 2097152); largest file 3777185 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime source exceeds the automatic review byte bound: 9854946 total bytes (maximum 2097152); largest file 3777185 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -187,31 +187,11 @@
     },
     "externalDependencies": [
       "@babel/code-frame",
-      "@babel/core",
-      "@babel/generator",
-      "@babel/helper-create-class-features-plugin",
       "@babel/parser",
-      "@babel/plugin-proposal-decorators",
-      "@babel/plugin-transform-explicit-resource-management",
-      "@babel/plugin-transform-optional-chaining",
-      "@babel/plugin-transform-typescript",
-      "@babel/traverse",
-      "@codemirror/lang-javascript",
-      "@codemirror/language",
-      "@codemirror/state",
-      "@codemirror/view",
       "@deepseek-ai/dsh-util-values",
       "@deepseek-ai/schemastery",
       "@jridgewell/trace-mapping",
-      "@lezer/highlight",
-      "acorn",
-      "amaro",
-      "codemirror",
-      "fflate",
-      "pathe",
-      "react-is",
-      "tslib",
-      "typescript"
+      "acorn"
     ],
     "reviewStatus": "automated-scan"
   },
