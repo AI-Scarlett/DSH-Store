@@ -63,7 +63,7 @@ test('daily refresh and routine builds preserve weekly chart scores until weekly
   assert.equal(weekly.weeklyStarsObservedAt, current.starsObservedAt)
 })
 
-test('weekly refresh seeds the first baseline and schema v2 migrates without losing scores', () => {
+test('weekly refresh seeds the first baseline and legacy snapshot schemas migrate without losing scores', () => {
   const initial = snapshot([item('alpha', 8), item('beta', 0)])
   const baseline = applyRankingRefreshState(initial, null, 'weekly')
   assert.equal(baseline.weeklyStarsObservedAt, initial.starsObservedAt)
@@ -74,9 +74,34 @@ test('weekly refresh seeds the first baseline and schema v2 migrates without los
   delete legacy.weeklyStarsObservedAt
   legacy.entries.forEach(entry => { delete entry.weeklyStars })
   const migrated = validateRankingSnapshot(legacy)
-  assert.equal(migrated.schemaVersion, 3)
+  assert.equal(migrated.schemaVersion, 4)
   assert.equal(migrated.weeklyStarsObservedAt, legacy.starsObservedAt)
   assert.deepEqual(migrated.entries.map(entry => entry.weeklyStars), [8, 0])
+  assert.ok(migrated.entries.every(entry => typeof entry.listingReason === 'string' || entry.listingStatus === 'listed'))
+
+  const schema3 = structuredClone(initial)
+  schema3.schemaVersion = 3
+  schema3.entries.forEach(entry => { delete entry.listingReason })
+  const migrated3 = validateRankingSnapshot(schema3)
+  assert.equal(migrated3.schemaVersion, 4)
+  assert.equal(migrated3.entries[0].listingReason, null)
+})
+
+test('listed chart ranks only approved full-Commit entries by daily GitHub stars and stops at 30', () => {
+  const data = snapshot([
+    item('unlisted-hot', 10000, ['tools'], { status: 'unlisted', statusReason: 'not reviewed' }),
+    item('blocked-hot', 9000, ['tools'], { status: 'blocked', statusReason: 'blocked by policy' }),
+    ...Array.from({ length: 35 }, (_, i) => item(`listed-${String(i).padStart(2, '0')}`, 100 - i)),
+    item('listed-unknown', null),
+    item('approved-unpinned', 200, ['tools'], { commit: 'main' }),
+  ])
+  const rows = rankingEntries(data, 'listed')
+  assert.equal(rows.length, 30)
+  assert.deepEqual(rows.slice(0, 3).map(entry => [entry.id, entry.stars]), [['listed-00', 100], ['listed-01', 99], ['listed-02', 98]])
+  assert.ok(rows.every(entry => entry.listingStatus === 'listed'))
+  assert.ok(!rows.some(entry => ['unlisted-hot', 'blocked-hot', 'approved-unpinned', 'listed-unknown'].includes(entry.id)))
+  assert.equal(rankingPage(data, 'listed').total, 30)
+  assert.equal(rankingPage(data, 'listed', 2).page, 1)
 })
 
 test('legacy featured flags do not establish recommendations or outrank observed stars', () => {
@@ -164,19 +189,22 @@ test('rankings paginate by thirty, normalize invalid/out-of-range pages and do n
 
 test('malformed snapshots, duplicate IDs and executable repository links fail closed', () => {
   const data = snapshot([item('plugin', 2)])
-  for (const mutate of [d => { d.entries[0].repositoryUrl = 'javascript:alert(1)' }, d => d.entries.push(d.entries[0]), d => { d.entries[0].stars = -1 }, d => { d.entries[0].featured = 'true' }, d => { d.entries[0].categories = ['unknown'] }, d => { d.starsObservedAt = 'not-a-date' }, d => { d.catalogUpdatedAt = null }]) {
+  for (const mutate of [d => { d.entries[0].repositoryUrl = 'javascript:alert(1)' }, d => d.entries.push(d.entries[0]), d => { d.entries[0].stars = -1 }, d => { d.entries[0].featured = 'true' }, d => { d.entries[0].categories = ['unknown'] }, d => { d.entries[0].listingReason = 'x'.repeat(601) }, d => { d.starsObservedAt = 'not-a-date' }, d => { d.catalogUpdatedAt = null }]) {
     const broken = structuredClone(data); mutate(broken); assert.throws(() => validateRankingSnapshot(broken))
   }
 })
 
 test('ranking markup escapes repository metadata, stays read-only, and supports both languages', () => {
-  const data = snapshot([item('plugin', 5, ['tools'], { name: '<img src=x onerror=alert(1)>', description: '<script>bad()</script>' })])
-  const rows = rankingEntries(data, 'essential')
-  const html = renderRankingRows(rows, { type: 'essential', locale: 'zh' })
+  const data = snapshot([
+    item('plugin', 5, ['tools'], { name: '<img src=x onerror=alert(1)>', description: '<script>bad()</script>' }),
+    item('blocked', 4, ['tools'], { status: 'blocked', statusReason: '<script>bad()</script>' }),
+  ])
+  const html = renderRankingRows(data.entries, { type: 'popular', locale: 'zh' })
   assert.match(html, /&lt;img/); assert.doesNotMatch(html, /<img|<script|dsh plugin|data-copy-target/)
-  assert.match(html, /工具 · 星标第一/)
+  assert.match(html, /&lt;script&gt;bad\(\)&lt;\/script&gt;/)
+  assert.match(html, /GitHub Stars/)
   assert.match(html, /\.\.\/plugins\/\?q=plugin/)
-  assert.match(renderRankingRows(rows, { type: 'essential', locale: 'en' }), /Tools · #1/)
+  assert.match(renderRankingRows([data.entries[0]], { type: 'popular', locale: 'en' }), /GitHub Stars/)
 })
 
 test('ranking builder rejects mismatched Catalog index status rather than publishing a stale listing label', () => {
@@ -214,10 +242,13 @@ test('candidate repository duplicates do not shadow Catalog status; ID collision
 })
 
 test('unlisted rows never link to Store details or install actions and both locales show status', () => {
-  const data = snapshot([item('blocked', 500, ['tools'], { status: 'blocked' })], { candidates: { entries: [candidate('external')] } })
+  const data = snapshot([item('blocked', 500, ['tools'], { status: 'blocked', statusReason: 'Automatic policy blocked installation: review runtime permissions.' })], { candidates: { entries: [candidate('external', { statusReason: 'Fixed-Commit review is pending.' })] } })
   for (const locale of ['zh', 'en']) {
     const html = renderRankingRows(data.entries, { locale })
     assert.match(html, locale === 'zh' ? /未收录/ : /Not listed/)
+    assert.match(html, locale === 'zh' ? /未收录原因：/ : /Not listed because:/)
+    assert.match(html, /Fixed-Commit review is pending\./)
+    assert.match(html, /Automatic policy blocked installation: review runtime permissions\./)
     assert.match(html, locale === 'zh' ? /尚未核验为标准 DSH 插件/ : /compatibility unverified/)
     assert.doesNotMatch(html, /\.\.\/plugins|installCommand|dsh plugin|data-copy-target/)
     assert.match(html, /href="https:\/\/github.com\/example\/external" target="_blank" rel="noopener noreferrer"/)
@@ -225,6 +256,7 @@ test('unlisted rows never link to Store details or install actions and both loca
   }
   const listed = renderRankingRows(snapshot([item('listed', 2)]).entries)
   assert.match(listed, /已收录/); assert.match(listed, /\.\.\/plugins\/\?q=listed/)
+  assert.doesNotMatch(listed, /未收录原因：|Not listed because:/)
 })
 
 test('snapshot validation rejects missing or contradictory status and candidate recommendations', () => {
@@ -254,8 +286,10 @@ test('all charts show thirty unique rows without granting admission or editorial
     assert.equal(new Set(rows.map(e => e.id)).size, 30)
     const unlisted = rows.filter(e => e.listingStatus === 'not-listed')
     assert.ok(unlisted.length > 0)
+    assert.match(renderRankingRows(unlisted, { type }), /未收录原因：/)
     assert.doesNotMatch(renderRankingRows(unlisted, { type }), /\.\.\/plugins|dsh plugin/)
   }
+  assert.equal(rankingEntries(data, 'listed').length, 2)
   const recommended = rankingEntries(data, 'recommended')
   assert.equal(recommended.filter(e => e.recommendationKind === 'editorial').length, 0)
   assert.equal(recommended.filter(e => e.recommendationKind === 'community-stars').length, 30)
@@ -286,6 +320,7 @@ test('HTML metadata and bilingual chart copy do not advertise unsupported Store 
   }
   assert.match(client, /automated selection, not a Store review or admission/)
   assert.match(client, /Daily · Top 100/)
+  assert.match(client, /tab\.listed/)
   assert.match(client, /Updated weekly/)
   assert.match(client, /常规网站构建不会刷新榜单分数/)
   assert.match(client, /weeklyStarsObservedAt/)

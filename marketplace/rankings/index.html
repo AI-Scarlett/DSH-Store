@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="applicable-device" content="pc,mobile">
   <!-- DSH_BAIDU_VERIFICATION -->
-  <meta name="description" content="探索 DSH 插件热门榜、推荐榜和必装榜：GitHub 星标排名、可核验的入榜依据与分类榜单；入榜不代表商城评测或收录。">
+  <meta name="description" content="探索 DSH 插件热门榜、收录榜、推荐榜和必装榜：按 GitHub 星标排名，明确展示收录状态与未收录原因。">
   <meta name="robots" content="index,follow,max-snippet:-1">
   <meta name="theme-color" content="#f6f9ff">
   <meta property="og:type" content="website">
@@ -19,10 +19,10 @@
   <link rel="icon" type="image/png" href="../dsh-store-icon.png">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../pages-redesign.css?v=20261003-rankings-1">
-  <link rel="stylesheet" href="./rankings.css?v=20261009-reasons">
+  <link rel="stylesheet" href="./rankings.css?v=20261012-listed-reasons">
   <script defer src="../motion.js"></script>
   <script defer src="../scan-history-nav.js?v=20261003-rankings-1"></script>
-  <script type="module" src="./rankings.js?v=20261012-cadence"></script>
+  <script type="module" src="./rankings.js?v=20261012-listed-reasons"></script>
 </head>
 <body class="rankings-page">
   <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
@@ -52,6 +52,7 @@
     </header>
     <div class="ranking-tabs" role="tablist" aria-label="插件榜单" data-i18n-aria="tabs.label">
       <button id="tab-popular" type="button" role="tab" aria-selected="true" aria-controls="ranking-panel" tabindex="0" data-ranking-tab="popular"><span class="ranking-tab-icon" aria-hidden="true">↗</span><span><strong data-i18n="tab.popular">热门榜单</strong><small data-i18n="tab.popularHint">每日更新 · 前 100 项</small></span><b data-count="popular">—</b></button>
+      <button id="tab-listed" type="button" role="tab" aria-selected="false" aria-controls="ranking-panel" tabindex="-1" data-ranking-tab="listed"><span class="ranking-tab-icon" aria-hidden="true">✓</span><span><strong data-i18n="tab.listed">收录榜单</strong><small data-i18n="tab.listedHint">每日更新 · 收录前 30 项</small></span><b data-count="listed">—</b></button>
       <button id="tab-recommended" type="button" role="tab" aria-selected="false" aria-controls="ranking-panel" tabindex="-1" data-ranking-tab="recommended"><span class="ranking-tab-icon" aria-hidden="true">✦</span><span><strong data-i18n="tab.recommended">推荐榜单</strong><small data-i18n="tab.recommendedHint">每周更新 · 非商城评测</small></span><b data-count="recommended">—</b></button>
       <button id="tab-essential" type="button" role="tab" aria-selected="false" aria-controls="ranking-panel" tabindex="-1" data-ranking-tab="essential"><span class="ranking-tab-icon" aria-hidden="true">◇</span><span><strong data-i18n="tab.essential">必装榜单</strong><small data-i18n="tab.essentialHint">每周更新 · 分类第一 + 高星补充</small></span><b data-count="essential">—</b></button>
     </div>

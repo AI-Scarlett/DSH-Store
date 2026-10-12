@@ -6,7 +6,7 @@
 .rankings-page .ranking-heading h1 { margin: 0 0 10px; font-size: clamp(28px, 3vw, 40px); line-height: 1.2; letter-spacing: -.04em; }
 .rankings-page .ranking-heading p { margin: 0; color: #607089; font-size: 14px; line-height: 1.65; }
 .rankings-page .ranking-catalog-link { flex-shrink: 0; color: #2464d6; font-size: 13px; font-weight: 650; }
-.rankings-page .ranking-tabs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-bottom: 26px; }
+.rankings-page .ranking-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-bottom: 26px; }
 .rankings-page .ranking-tabs button { display: flex; align-items: center; gap: 12px; text-align: left; padding: 17px 20px; background: #fff; color: #253650; border: 1px solid #dce4ef; border-radius: 14px; cursor: pointer; }
 .rankings-page .ranking-tabs button[aria-selected="true"] { color: #fff; border-color: #245bd8; background: linear-gradient(115deg,#145bc8,#3f47c1); box-shadow: 0 5px 14px #1e50b51a; }
 .rankings-page .ranking-tabs strong { display: block; font-size: 16px; line-height: 1.4; }
@@ -54,7 +54,7 @@
   .rankings-page .ranking-main { padding-top: 24px; }
   .rankings-page .ranking-heading { display: block; }
   .rankings-page .ranking-catalog-link { display: inline-block; margin-top: 12px; }
-  .rankings-page .ranking-tabs { gap: 6px; margin-bottom: 20px; }
+  .rankings-page .ranking-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-bottom: 20px; }
   .rankings-page .ranking-tabs button { display: block; padding: 12px 8px; text-align: center; }
   .rankings-page .ranking-tabs strong { font-size: 13px; }
   .rankings-page .ranking-tabs small { font-size: 10px; line-height: 1.5; }
@@ -75,4 +75,10 @@
 .rankings-page .ranking-listing { display: inline-flex; flex-shrink: 0; padding: 2px 7px; border: 1px solid; border-radius: 5px; font-size: 11px; line-height: 1.6; font-weight: 650; white-space: nowrap; }
 .rankings-page .ranking-listing.is-listed { color: #14624b; background: #ecf8f1; border-color: #bcdfcb; }
 .rankings-page .ranking-listing.is-not-listed { color: #815006; background: #fff7e9; border-color: #ecd4a5; }
-.rankings-page .ranking-boundary { margin: 5px 0 0; color: #786038; font-size: 11px; line-height: 1.6; }
+.rankings-page .ranking-boundary { margin: 5px 0 0; color: #786038; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+.rankings-page .ranking-boundary p { margin: 0; white-space: pre-wrap; }
+.rankings-page .ranking-boundary strong { color: #60430f; }
+.rankings-page .ranking-boundary-note { margin-top: 3px !important; color: #7c6b4d; }
+.rankings-page .ranking-reason-details { margin-top: 3px; }
+.rankings-page .ranking-reason-details summary { width: fit-content; color: #315ab2; cursor: pointer; }
+.rankings-page .ranking-reason-details p { margin-top: 4px; padding: 7px 9px; border-left: 2px solid #d7e2f2; background: #f8faff; }
