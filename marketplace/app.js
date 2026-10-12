@@ -2,6 +2,7 @@ const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.jso
 const CANDIDATES_URL = document.body.dataset.candidatesUrl || '../registry/candidates.json'
 const AUTOMATION_STATUS_URL = document.body.dataset.automationStatusUrl || null
 const IS_DIRECTORY = document.body.classList.contains('plugins-page')
+const pluginDirectoryModule = IS_DIRECTORY ? import('./lib/plugin-directory.js') : null
 
 const initialSearchQuery = (() => {
   try {
@@ -65,10 +66,12 @@ const translations = {
     'automation.noUpdates': '最近可读取的运行中没有通过固定源审查的版本更新。', 'automation.loading': '正在读取最近运行记录…', 'automation.evidence': '查看 GitHub 运行证据 ↗',
     'catalog.gatewayKicker': '探索更多能力', 'catalog.gatewayTitle': '查看全部 DSH 插件、权限与兼容性',
     'sort.recommended': '官方最新 DSH 兼容与更新优先', 'sort.name': '名称 A–Z', 'sort.recent': '最近更新', 'sort.risk': '权限由低到高',
-    'view.trusted': '可信安装库', 'view.candidates': '候选发现库', 'stats.candidates': '候选项目',
+    'listing.all': '全部已知', 'listing.listed': '已收录', 'listing.unlisted': '未收录', 'stats.candidates': '候选项目',
     'assurance.discovered': '已发现', 'assurance.installable': '可安装验证', 'assurance.runtime': '运行验证', 'assurance.security': '安全审查',
-    'candidate.notice': '候选库只用于发现；没有安装按钮，也不会进入 DSH 操作计划。通过固定 Commit 与安全契约审核后才能晋级可信安装库。',
+    'candidate.notice': '候选发现仅用于目录展示，不代表 DSH 兼容、安全审查或可安装；候选项目没有安装操作。',
     'candidate.search': '搜索候选项目、Topic、来源或 GitHub 仓库', 'candidate.emptyTitle': '没有匹配的候选项目', 'candidate.emptyBody': '候选注册表没有匹配当前关键词的记录；可信安装库不受影响。',
+    'directory.loading': '正在读取 Catalog 与候选发现记录…', 'directory.detailsLoading': '正在读取当前页插件详情与未收录原因…', 'directory.partial': '候选发现记录暂时不可用；当前仅显示商城 Catalog，列表可能不完整。', 'directory.detailPartial': '部分插件详情暂时无法读取；对应条目的具体未收录原因可能暂缺。', 'directory.reasonTitle': '未收录原因', 'directory.reasonUnavailable': '公开详情暂时无法读取；当前无法确认更具体的未收录原因。', 'directory.noDescription': '暂时没有可展示的公开说明。', 'directory.noAction': '仅展示 · 无安装操作',
+    'directory.statusBlocked': '目录策略未通过', 'directory.statusUnlisted': '当前未上架', 'directory.statusRejected': '候选审核未通过', 'directory.statusReviewing': '候选审核中', 'directory.statusDiscovered': '候选已发现',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
     'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
     'safety.title': '信任不是口号，是四个可检查的状态。', 'safety.lead': '收录从不等于安全审计。我们把来源、权限、变更与恢复分开显示，未知事实保持未知。',
@@ -85,8 +88,8 @@ const translations = {
     'relation.card3.title': '浏览与变更分离', 'relation.card3.body': '在官网浏览不会改写 Profile。真实安装必须使用 DSH 官方 CLI，并经过计划、确认、备份、检查与回滚。',
     'faq.title': '安装之前，先把边界说清楚。', 'faq.q1': '官网会直接安装插件吗？', 'faq.a1': '不会。官网只负责发现与详情展示；生命周期操作需要在 DSH 内生成计划并确认。',
     'faq.q2': '“可安装”等于完成安全审计吗？', 'faq.a2': '不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。', 'faq.q3': '如何选择适合自己的插件？', 'faq.a3': '先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。',
-    'directory.title1': '发现插件，', 'directory.title2': '扩展 DSH 能力。', 'directory.lead': '按能力、名称、权限或仓库快速查找。每个条目都提供可追溯来源、版本、权限与兼容性信息。',
-    'directory.capacity': '搜索关键词留在你的浏览器里', 'directory.capacityNote': '筛选和排序不会上传关键词；目录数据来自可追溯的 GitHub catalog.json。',
+    'directory.title1': '发现插件，', 'directory.title2': '扩展 DSH 能力。', 'directory.lead': '汇总商城已收录项目与已知 DSH 扫描候选。按名称、能力或仓库筛选，并查看每个未收录项目的公开原因；候选发现不等于兼容或安全验证。',
+    'directory.capacity': '搜索关键词留在你的浏览器里', 'directory.capacityNote': '筛选和排序不会上传你的查询；目录合并 GitHub Catalog 与已知 DSH 候选发现记录。', 'directory.listingNote': '“已收录”仅表示进入商城目录，不等于安全审计、兼容性或运行验证；未收录项目展示公开记录中的原因，且不会提供安装操作。',
     'footer.lead': '科技感来自清晰的系统，信任来自可检查的边界。', 'footer.catalogLead': '发现插件、看清权限，再决定是否接入。', 'footer.note': '收录不等于安全审计 · 浏览不会改写 Profile', 'footer.navTitle': '快速导航', 'footer.friendsTitle': '友情链接', 'footer.catalog': '插件目录', 'footer.community': '社区与开发者', 'footer.build': '开发插件', 'footer.standards': '收录标准', 'footer.faq': '常见问题', 'footer.about': '关于我们', 'dialog.title': '插件详情',
     'value.unknown': '未知', 'value.undeclared': '未声明', 'value.none': '无', 'value.noStats': '未启用统计', 'filter.all': '全部',
     'catalog.failed': '目录加载失败', 'catalog.offline': '本地目录未连接', 'catalog.meta': '显示 {shown} / {total} 个插件',
@@ -135,10 +138,12 @@ const translations = {
     'automation.noUpdates': 'No fixed-source version update passed review in the available recent runs.', 'automation.loading': 'Reading recent workflow evidence…', 'automation.evidence': 'View GitHub run evidence ↗',
     'catalog.gatewayKicker': 'Explore more capabilities', 'catalog.gatewayTitle': 'View every DSH plugin, permission, and compatibility detail',
     'sort.recommended': 'Latest official DSH compatibility and freshness', 'sort.name': 'Name A–Z', 'sort.recent': 'Recently updated', 'sort.risk': 'Lowest permission first',
-    'view.trusted': 'Trusted install catalog', 'view.candidates': 'Candidate discovery', 'stats.candidates': 'candidates',
+    'listing.all': 'All known', 'listing.listed': 'Listed', 'listing.unlisted': 'Not listed', 'stats.candidates': 'candidates',
     'assurance.discovered': 'Discovered', 'assurance.installable': 'Installability', 'assurance.runtime': 'Runtime', 'assurance.security': 'Security review',
-    'candidate.notice': 'Candidates are discovery-only: they have no install action and never enter a DSH operation plan. Promotion requires a pinned commit and the trusted catalog contract.',
+    'candidate.notice': 'Discovery candidates are shown for reference only; this does not verify DSH compatibility, security, or installability. They have no install action.',
     'candidate.search': 'Search candidate projects, topics, sources, or GitHub repositories', 'candidate.emptyTitle': 'No matching candidate projects', 'candidate.emptyBody': 'The candidate registry has no record matching this query; the trusted install catalog is unaffected.',
+    'directory.loading': 'Loading Catalog and discovery records…', 'directory.detailsLoading': 'Loading current-page details and unlisted reasons…', 'directory.partial': 'Discovery records are temporarily unavailable; only Store Catalog entries are shown, so this list may be incomplete.', 'directory.detailPartial': 'Some plugin details are temporarily unavailable; a specific unlisted reason may be missing for those entries.', 'directory.reasonTitle': 'Why it is not listed', 'directory.reasonUnavailable': 'Public details are temporarily unavailable, so a more specific reason cannot be confirmed.', 'directory.noDescription': 'No public description is currently available.', 'directory.noAction': 'Display only · no install action',
+    'directory.statusBlocked': 'Catalog policy blocked', 'directory.statusUnlisted': 'Not currently listed', 'directory.statusRejected': 'Candidate review rejected', 'directory.statusReviewing': 'Candidate under review', 'directory.statusDiscovered': 'Candidate discovered',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
     'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
     'safety.title': 'Trust is four inspectable states, not a slogan.', 'safety.lead': 'Listing is never a security audit. Source, permissions, change, and recovery stay separate, and unknown facts stay unknown.',
@@ -155,8 +160,8 @@ const translations = {
     'relation.card3.title': 'Browsing is separate from change', 'relation.card3.body': 'Browsing the site never writes to a Profile. Real installation uses the official DSH CLI with a plan, confirmation, backup, checks, and rollback.',
     'faq.title': 'Make the boundary clear before installing.', 'faq.q1': 'Does the website install plugins directly?', 'faq.a1': 'No. The site is for discovery and details only. Lifecycle actions require a confirmed plan inside DSH.',
     'faq.q2': 'Does “Available” mean security-audited?', 'faq.a2': 'No. It means the entry passes the current fixed-source, standard-bundle, and policy checks.', 'faq.q3': 'How should I choose a plugin?', 'faq.a3': 'Confirm the capability first, then review source, permissions, compatibility, and maintenance. Treat unknown information with caution.',
-    'directory.title1': 'Discover plugins.', 'directory.title2': 'Extend DSH.', 'directory.lead': 'Find plugins by capability, name, permission, or repository. Every entry includes traceable source, version, permission, and compatibility details.',
-    'directory.capacity': 'Your search terms stay in your browser', 'directory.capacityNote': 'Filtering and sorting never upload your query; catalog data comes from the traceable GitHub catalog.json.',
+    'directory.title1': 'Discover plugins.', 'directory.title2': 'Extend DSH.', 'directory.lead': 'Browse listed Store plugins and known DSH discovery candidates. Filter by name, capability, or repository and see why each unlisted entry is not listed; discovery is not compatibility or security verification.',
+    'directory.capacity': 'Your search terms stay in your browser', 'directory.capacityNote': 'Filtering and sorting never upload your query; the directory combines the GitHub Catalog with known DSH discovery records.', 'directory.listingNote': '“Listed” means only that an item is in the Store Catalog; it does not mean security-audited, compatible, or runtime-verified. Unlisted entries show their public reason and have no install action.',
     'footer.lead': 'Technology feels clear when the system is clear; trust comes from inspectable boundaries.', 'footer.catalogLead': 'Discover plugins, review permissions, then decide whether to connect.', 'footer.note': 'Listing is not a security audit · Browsing never writes to your Profile', 'footer.navTitle': 'Explore DSH STORE', 'footer.friendsTitle': 'Friends & ecosystem', 'footer.catalog': 'Plugin catalog', 'footer.community': 'Community & developers', 'footer.build': 'Build plugins', 'footer.standards': 'Listing standards', 'footer.faq': 'FAQ', 'footer.about': 'About us', 'dialog.title': 'Plugin details',
     'value.unknown': 'Unknown', 'value.undeclared': 'Not declared', 'value.none': 'None', 'value.noStats': 'Stats disabled', 'filter.all': 'All',
     'catalog.failed': 'Catalog load failed', 'catalog.offline': 'Local catalog unavailable', 'catalog.meta': 'Showing {shown} / {total} plugins',
@@ -175,6 +180,7 @@ const state = {
   indexEntries: [],
   entries: [],
   pageEntries: [],
+  pageDetailErrors: new Set(),
   pageIndexIds: [],
   pageLoading: false,
   detailCache: new Map(),
@@ -182,8 +188,11 @@ const state = {
   catalogUrl: null,
   detailRequestId: 0,
   candidates: [],
+  directoryEntries: [],
+  directoryFilterer: null,
   candidateSummary: { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 },
-  catalogView: 'trusted',
+  listingFilter: 'all',
+  candidateLoadError: false,
   query: initialSearchQuery,
   category: initialCategory,
   sort: 'recommended',
@@ -467,21 +476,6 @@ function searchValues(entry) {
   ].map(value => String(value || '').toLowerCase())
 }
 
-function visibleCandidates() {
-  const query = state.query.trim().toLowerCase()
-  return state.candidates
-    .filter(entry => !query || [entry.id, entry.name, entry.description, entry.repositoryUrl, entry.route, ...(entry.discoverySources || []), ...(entry.topics || [])]
-      .some(value => String(value || '').toLowerCase().includes(query)))
-    .sort((a, b) => (Date.parse(b.sourceUpdatedAt || b.discoveredAt) || 0) - (Date.parse(a.sourceUpdatedAt || a.discoveredAt) || 0)
-      || String(a.name).localeCompare(String(b.name), state.locale === 'en' ? 'en' : 'zh-CN'))
-}
-
-function candidateSummaryText() {
-  const reviewable = state.candidateSummary.reviewable || 0
-  const rejected = state.candidateSummary.rejected || 0
-  return state.locale === 'en' ? `${reviewable} reviewable · ${rejected} rejected/quarantined` : `${reviewable} 待审 · ${rejected} 已拒绝/隔离`
-}
-
 function indexName(entry) {
   if (entry?.nameZh || entry?.nameEn) return `${entry.nameZh || entry.nameEn}（${entry.nameEn || entry.nameZh}）`
   return entry?.name || entry?.packageName || entry?.id || 'DSH Plugin'
@@ -539,6 +533,27 @@ function visibleIndexEntries() {
     if (state.sort === 'recent') return String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.order - b.order
     if (state.sort === 'risk') return a.order - b.order
     return a.order - b.order || String(a.nameZh || a.nameEn).localeCompare(String(b.nameZh || b.nameEn), locale)
+  })
+}
+
+function visibleDirectoryEntries() {
+  if (!state.directoryFilterer) return []
+  return state.directoryFilterer(state.directoryEntries, {
+    listingFilter: state.listingFilter, query: state.query, category: state.category,
+    sort: state.sort, locale: state.locale,
+  })
+}
+
+function renderListingFilterCounts() {
+  if (!els.viewTabs) return
+  const listed = state.directoryEntries.filter(entry => entry.listingStatus === 'listed').length
+  const counts = { all: state.directoryEntries.length, listed, unlisted: state.directoryEntries.length - listed }
+  Object.entries(counts).forEach(([filter, count]) => {
+    const node = els.viewTabs.querySelector(`[data-filter-count="${filter}"]`)
+    if (node) node.textContent = String(count)
+  })
+  els.viewTabs.querySelectorAll('[data-listing-filter]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.listingFilter === state.listingFilter))
   })
 }
 
@@ -638,13 +653,13 @@ function renderFeatured() {
 function renderCategories() {
   if (!els.categories) return
   const counts = new Map()
-  catalogIndexEntries().filter(entry => entry.status !== 'unlisted').forEach(entry => entry.categories.forEach(id => counts.set(id, (counts.get(id) || 0) + 1)))
+  state.directoryEntries.forEach(entry => entry.categories.forEach(id => counts.set(id, (counts.get(id) || 0) + 1)))
   const ids = [...counts].sort((a, b) => b[1] - a[1]).map(([id]) => id)
   els.categories.innerHTML = [
-    `<button class="category-pill${state.category ? '' : ' active'}" type="button" data-category="" aria-pressed="${state.category ? 'false' : 'true'}">${escape(t('filter.all'))} <span>${catalogIndexEntries().filter(entry => entry.status !== 'unlisted').length}</span></button>`,
+    `<button class="category-pill${state.category ? '' : ' active'}" type="button" data-category="" aria-pressed="${state.category ? 'false' : 'true'}">${escape(t('filter.all'))} <span>${state.directoryEntries.length}</span></button>`,
     ...ids.map(id => `<button class="category-pill${state.category === id ? ' active' : ''}" type="button" data-category="${escape(id)}" aria-pressed="${state.category === id ? 'true' : 'false'}">${escape(categoryLabel(id))} <span>${counts.get(id)}</span></button>`),
   ].join('')
-  if (els.clear) els.clear.hidden = !state.category && !state.query
+  if (els.clear) els.clear.hidden = !state.category && !state.query && state.listingFilter === 'all'
 }
 
 function anchorId(value) {
@@ -658,6 +673,7 @@ function cardTemplate(entry) {
   return `<article id="plugin-${anchorId(entry.id)}" class="plugin-card" style="--plugin-color:${pluginColor(entry.id)}">
     <div class="plugin-card-top">
       <span class="plugin-card-icon" aria-hidden="true">${escape(initials(entry.name))}</span>
+      <span class="catalog-listing-tag listed">${escape(t('listing.listed'))}</span>
       <span class="status-tag${entry.status === 'approved' ? '' : ' blocked'}">${statusLabel(entry)}</span>
     </div>
     <h3>${escape(entry.name)}</h3>
@@ -679,51 +695,74 @@ function cardTemplate(entry) {
 function candidateCardTemplate(entry) {
   const updated = entry.sourceUpdatedAt || entry.discoveredAt
   const date = updated ? new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(updated)) : t('value.unknown')
-  const statusLabel = entry.status === 'rejected' ? (state.locale === 'en' ? 'Rejected / quarantined' : '已拒绝 / 已隔离')
-    : entry.status === 'reviewing' ? (state.locale === 'en' ? 'Under review' : '审核中')
-      : (state.locale === 'en' ? 'Discovered' : '已发现')
-  const statusClass = entry.status === 'rejected' ? 'blocked' : 'available'
+  const statusText = entry.status === 'rejected' ? t('directory.statusRejected')
+    : entry.status === 'reviewing' ? t('directory.statusReviewing') : t('directory.statusDiscovered')
+  const name = state.locale === 'en' ? entry.nameEn : entry.nameZh
   return `<article class="plugin-card candidate-card" style="--plugin-color:${pluginColor(entry.id)}">
-    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(entry.name))}</span><span class="status-tag ${statusClass}">${escape(statusLabel)}</span></div>
-    <h3>${escape(entry.name)}</h3><span class="package-line">${escape(entry.route)} · ${escape(date)}</span>
-    <p class="plugin-description">${escape(entry.description)}</p>
-    ${entry.statusReason ? `<p class="candidate-reason">${escape(entry.statusReason)}</p>` : ''}
-    <div class="assurance-rail"><span class="assurance-item assurance-verified"><b>${escape(t('assurance.discovered'))}</b><em>${escape(evidenceStatusLabel('verified'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.installable'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.runtime'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span><span class="assurance-item assurance-unknown"><b>${escape(t('assurance.security'))}</b><em>${escape(evidenceStatusLabel('unknown'))}</em></span></div>
-    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(state.locale === 'en' ? 'No install action' : '无安装操作')}</span><a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" data-repo-id="${escape(entry.id)}">↗</a></footer>
+    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(name))}</span><span class="catalog-listing-tag unlisted">${escape(t('listing.unlisted'))}</span></div>
+    <h3>${escape(name)}</h3><span class="package-line">${escape(statusText)} · ${escape(date)}</span>
+    <p class="plugin-description">${escape(entry.description || t('directory.noDescription'))}</p>
+    <p class="catalog-listing-reason"><b>${escape(t('directory.reasonTitle'))}</b>${escape(entry.statusReason || entry.listingReason || t('directory.reasonUnavailable'))}</p>
+    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(t('directory.noAction'))}</span><a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(name)}" data-repo-id="${escape(entry.id)}">↗</a></footer>
+  </article>`
+}
+
+function unlistedCatalogCardTemplate(entry, detail) {
+  const name = state.locale === 'en' ? entry.nameEn : entry.nameZh
+  const reason = detail?.statusReason || entry.statusReason
+    || (state.pageDetailErrors?.has(entry.id) ? t('directory.reasonUnavailable') : entry.listingReason)
+    || t('directory.reasonUnavailable')
+  const statusText = entry.status === 'blocked' ? t('directory.statusBlocked') : t('directory.statusUnlisted')
+  const description = detail?.description || entry.description || t('directory.noDescription')
+  const categories = entry.categories.map(id => `<span class="plugin-badge">${escape(categoryLabel(id))}</span>`).join('')
+  return `<article id="plugin-${anchorId(entry.id)}" class="plugin-card candidate-card" style="--plugin-color:${pluginColor(entry.id)}">
+    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(name))}</span><span class="catalog-listing-tag unlisted">${escape(t('listing.unlisted'))}</span></div>
+    <h3>${escape(name)}</h3><span class="package-line">${escape(entry.packageName)}${entry.version ? ` · v${escape(entry.version)}` : ''} · ${escape(statusText)}</span>
+    <p class="plugin-description">${escape(description)}</p>
+    <p class="catalog-listing-reason"><b>${escape(t('directory.reasonTitle'))}</b>${escape(reason)}</p>
+    ${categories ? `<div class="plugin-badges">${categories}</div>` : ''}
+    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(t('directory.noAction'))}</span><a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(name)}" data-repo-id="${escape(entry.id)}">↗</a></footer>
+  </article>`
+}
+
+function listedCatalogFallbackTemplate(entry) {
+  const name = state.locale === 'en' ? entry.nameEn : entry.nameZh
+  return `<article id="plugin-${anchorId(entry.id)}" class="plugin-card" style="--plugin-color:${pluginColor(entry.id)}">
+    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(name))}</span><span class="catalog-listing-tag listed">${escape(t('listing.listed'))}</span></div>
+    <h3>${escape(name)}</h3><span class="package-line">${escape(entry.packageName)} · v${escape(entry.version)}</span>
+    <p class="plugin-description">${escape(t('directory.noDescription'))}</p>
+    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(t('directory.reasonUnavailable'))}</span><a class="repo-link" href="${escape(entry.repositoryUrl)}" target="_blank" rel="noreferrer" data-repo-id="${escape(entry.id)}">↗</a></footer>
   </article>`
 }
 
 function renderCatalog() {
   if (!state.catalog || !els.grid || !els.meta || !els.empty) return
-  const candidateView = state.catalogView === 'candidates'
-  if (candidateView && state.candidatesLoading) {
-    els.grid.hidden = true
+  if (!state.candidatesLoaded || state.candidatesLoading) {
+    const hasStaticCards = Boolean(els.grid.querySelector('[data-static-plugin-id]'))
+    els.grid.hidden = !hasStaticCards
     els.empty.hidden = true
-    els.meta.textContent = t('catalog.loading')
+    els.meta.textContent = t('directory.loading')
     if (els.pagination) els.pagination.hidden = true
     return
   }
-  if (!candidateView && state.pageLoading) {
-    els.grid.hidden = true
-    els.empty.hidden = true
-    els.meta.textContent = t('catalog.loading')
-    if (els.pagination) els.pagination.hidden = true
-    return
-  }
-  const matchingEntries = candidateView ? visibleCandidates() : visibleIndexEntries()
+  const matchingEntries = visibleDirectoryEntries()
   const total = matchingEntries.length
   const pageCount = Math.max(1, Math.ceil(total / state.pageSize))
   state.page = Math.min(state.page, pageCount)
   const start = (state.page - 1) * state.pageSize
-  const entries = candidateView
-    ? matchingEntries.slice(start, start + state.pageSize)
-    : state.pageEntries
-  els.grid.innerHTML = entries.map(candidateView ? candidateCardTemplate : cardTemplate).join('')
+  const entries = matchingEntries.slice(start, start + state.pageSize)
+  const details = new Map(state.pageEntries.map(entry => [entry.id, entry]))
+  els.grid.innerHTML = entries.map(entry => {
+    if (entry.source === 'candidate') return candidateCardTemplate(entry)
+    const detail = details.get(entry.id) || state.detailCache.get(entry.id)
+    return entry.listingStatus === 'listed'
+      ? (detail ? cardTemplate(detail) : listedCatalogFallbackTemplate(entry))
+      : unlistedCatalogCardTemplate(entry, detail)
+  }).join('')
   els.grid.hidden = entries.length === 0
   els.empty.hidden = entries.length !== 0
-  els.meta.innerHTML = candidateView
-    ? `<b>${entries.length}</b> / ${matchingEntries.length} · ${escape(candidateSummaryText())} · ${escape(t('candidate.notice'))}`
-    : `${state.pageLoading ? escape(t('catalog.loading')) : escape(t('catalog.meta', { shown: entries.length, total }))}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}`.replace(String(entries.length), `<b>${entries.length}</b>`)
+  const partialNotices = [state.pageLoading ? t('directory.detailsLoading') : '', state.candidateLoadError ? t('directory.partial') : '', state.pageDetailErrors?.size ? t('directory.detailPartial') : ''].filter(Boolean)
+  els.meta.innerHTML = `<b>${entries.length}</b> / ${total} · ${escape(t('listing.listed'))} ${state.directoryEntries.filter(entry => entry.listingStatus === 'listed').length} · ${escape(t('listing.unlisted'))} ${state.directoryEntries.filter(entry => entry.listingStatus === 'unlisted').length}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}${partialNotices.map(note => `<br><span class="directory-partial-notice">${escape(note)}</span>`).join('')}`
   if (els.pagination) els.pagination.hidden = total <= state.pageSize
   if (els.previousPage) {
     els.previousPage.disabled = state.page <= 1
@@ -743,18 +782,15 @@ function renderCatalog() {
     for (let page = first; page <= last; page += 1) pages.push(page)
     els.pageButtons.innerHTML = pages.map(page => `<button type="button" data-page="${page}"${page === state.page ? ' class="active" aria-current="page"' : ''}>${page}</button>`).join('')
   }
-  if (els.categories?.parentElement) els.categories.parentElement.hidden = candidateView
-  if (els.sort?.parentElement) els.sort.parentElement.hidden = candidateView
-  if (els.legend) els.legend.hidden = candidateView
-  if (els.search) els.search.setAttribute('placeholder', t(candidateView ? 'candidate.search' : 'catalog.search'))
-  if (els.emptyTitle) els.emptyTitle.textContent = t(candidateView ? 'candidate.emptyTitle' : 'empty.title')
-  if (els.emptyBody) els.emptyBody.textContent = candidateView && state.candidateSummary.total > 0
-    ? state.locale === 'en'
-      ? `${state.candidateSummary.total} candidate records: ${state.candidateSummary.rejected} rejected/quarantined and ${state.candidateSummary.reviewable} reviewable; no record matches this query. The trusted install catalog is unaffected.`
-      : `候选注册表共 ${state.candidateSummary.total} 条，其中 ${state.candidateSummary.rejected} 条已拒绝/隔离、${state.candidateSummary.reviewable} 条待审；当前关键词没有匹配记录。可信安装库不受影响。`
-    : t(candidateView ? 'candidate.emptyBody' : 'empty.body')
-  if (els.emptyClear) els.emptyClear.hidden = candidateView ? !state.query : false
-  if (!candidateView) renderCategories()
+  if (els.categories?.parentElement) els.categories.parentElement.hidden = false
+  if (els.sort?.parentElement) els.sort.parentElement.hidden = false
+  if (els.legend) els.legend.hidden = false
+  if (els.search) els.search.setAttribute('placeholder', t('catalog.search'))
+  if (els.emptyTitle) els.emptyTitle.textContent = t('empty.title')
+  if (els.emptyBody) els.emptyBody.textContent = t('empty.body')
+  if (els.emptyClear) els.emptyClear.hidden = !state.query && !state.category
+  renderCategories()
+  renderListingFilterCounts()
 }
 
 function detailItem(name, value, code = false) {
@@ -811,9 +847,11 @@ function showDetails(entry) {
 function clearFilters() {
   state.query = ''
   state.category = ''
+  state.listingFilter = 'all'
   state.page = 1
   if (els.search) els.search.value = ''
   refreshTrustedPage()
+  renderListingFilterCounts()
 }
 
 let toastTimer
@@ -840,6 +878,7 @@ function applyLocale() {
   })
   els.search?.setAttribute('aria-label', t('catalog.search'))
   els.categories?.setAttribute('aria-label', state.locale === 'en' ? 'Filter by category' : '按分类筛选')
+  els.viewTabs?.setAttribute('aria-label', state.locale === 'en' ? 'Filter by Store listing status' : '按商城收录状态筛选')
   document.querySelector('#dialog-close')?.setAttribute('aria-label', state.locale === 'en' ? 'Close plugin details' : '关闭插件详情')
   if (document.querySelector('[data-automation-overall]')) renderAutomationStatus()
 
@@ -862,6 +901,17 @@ function setLocale(locale) {
   state.locale = locale
   localStorage.setItem('dsh-marketplace-locale', locale)
   applyLocale()
+  if (IS_DIRECTORY && state.candidatesLoaded) void rebuildKnownDirectory()
+}
+
+async function rebuildKnownDirectory() {
+  if (!IS_DIRECTORY || !state.candidatesLoaded) return
+  const directory = await pluginDirectoryModule
+  state.directoryFilterer = directory.filterPluginDirectory
+  state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), state.candidates, { locale: state.locale })
+  renderCategories()
+  renderListingFilterCounts()
+  refreshTrustedPage()
 }
 
 async function copyText(text) {
@@ -1119,25 +1169,49 @@ async function mapDetails(entries) {
   return results
 }
 
+async function mapDetailsSettled(entries) {
+  const results = new Array(entries.length)
+  let next = 0
+  const worker = async () => {
+    while (next < entries.length) {
+      const index = next++
+      try {
+        results[index] = { entry: entries[index], detail: await fetchCatalogDetail(entries[index]), error: null }
+      } catch (error) {
+        results[index] = { entry: entries[index], detail: null, error }
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(6, entries.length) }, worker))
+  return results
+}
+
 async function loadCurrentPageDetails() {
-  if (!state.catalog || state.catalogView === 'candidates') return
-  const matching = visibleIndexEntries()
+  if (!state.catalog || !state.candidatesLoaded) return
+  const matching = visibleDirectoryEntries()
   const pageCount = Math.max(1, Math.ceil(matching.length / state.pageSize))
   state.page = Math.min(state.page, pageCount)
   const pageEntries = matching.slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
-  state.pageIndexIds = pageEntries.map(entry => entry.id)
-  state.pageLoading = true
+  const catalogPageEntries = pageEntries.filter(entry => entry.source === 'catalog')
+  state.pageIndexIds = catalogPageEntries.map(entry => entry.id)
+  state.pageLoading = catalogPageEntries.length > 0
   state.pageEntries = []
+  state.pageDetailErrors = new Set()
   renderCatalog()
   const requestId = ++state.detailRequestId
+  if (catalogPageEntries.length === 0) return
   try {
-    const details = await mapDetails(pageEntries)
+    const indexEntries = catalogPageEntries
+      .map(entry => catalogIndexEntries().find(indexEntry => indexEntry.id === entry.id))
+      .filter(Boolean)
+    const results = await mapDetailsSettled(indexEntries)
     if (requestId !== state.detailRequestId) return
-    state.pageEntries = details.map(entry => normalizeEntry(entry, state.dshReleaseContext))
+    state.pageEntries = results.filter(result => result.detail).map(result => normalizeEntry(result.detail, state.dshReleaseContext))
+    state.pageDetailErrors = new Set(results.filter(result => result.error).map(result => result.entry.id))
   } catch (error) {
     if (requestId === state.detailRequestId) {
       console.error('Failed to load marketplace detail records:', error)
-      if (els.meta) els.meta.textContent = t('catalog.failed')
+      state.pageDetailErrors = new Set(catalogPageEntries.map(entry => entry.id))
     }
   } finally {
     if (requestId === state.detailRequestId) {
@@ -1167,7 +1241,7 @@ function rehydrateLoadedDetails() {
 
 function refreshTrustedPage() {
   renderCatalog()
-  if (state.catalogView === 'trusted' && state.catalog) void loadCurrentPageDetails()
+  if (state.catalog && state.candidatesLoaded) void loadCurrentPageDetails()
 }
 
 async function loadFeaturedDetails() {
@@ -1197,20 +1271,29 @@ async function fetchLatestDshVersion() {
 }
 
 async function fetchCandidateRegistry(catalog) {
-  if (catalog?.discovery && Array.isArray(catalog.discovery.entries)) return catalog.discovery
+  const validate = payload => {
+    if (payload?.schemaVersion !== 1 || payload.registry?.trustBoundary?.installActionsDisabled !== true
+      || payload.registry?.trustBoundary?.catalogPromotionRequired !== true
+      || payload.registry?.trustBoundary?.unknownIsNotVerified !== true
+      || !Array.isArray(payload.entries) || payload.entries.length > 20_000) {
+      throw new Error('Invalid or unsupported candidate registry')
+    }
+    return payload
+  }
+  if (catalog?.discovery && Array.isArray(catalog.discovery.entries)) return validate(catalog.discovery)
+  const failures = []
   for (const url of candidateRegistryUrls()) {
     try {
-      const response = await fetch(url, { cache: 'no-store' })
+      const response = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(12_000) })
       if (!response.ok) continue
-      const payload = await response.json()
-      if (payload?.registry?.trustBoundary?.installActionsDisabled !== true || !Array.isArray(payload.entries)) continue
-      return payload
-    } catch {}
+      const length = Number(response.headers.get('content-length'))
+      if (Number.isFinite(length) && length > 5 * 1024 * 1024) throw new Error('candidate registry exceeds the byte bound')
+      const text = await response.text()
+      if (new TextEncoder().encode(text).byteLength > 5 * 1024 * 1024) throw new Error('candidate registry exceeds the byte bound')
+      return validate(JSON.parse(text))
+    } catch (error) { failures.push(`${url}: ${error.message}`) }
   }
-  return {
-    registry: { trustBoundary: { installActionsDisabled: true, catalogPromotionRequired: true, unknownIsNotVerified: true } },
-    entries: [],
-  }
+  throw new Error(failures.join(' | ') || 'Candidate registry is unavailable')
 }
 
 async function loadCatalog() {
@@ -1234,10 +1317,14 @@ async function loadCatalog() {
       : state.catalog.entries.map(entry => normalizeEntry(entry, state.dshReleaseContext))
     state.pageEntries = []
     state.pageIndexIds = []
-    state.pageLoading = state.indexEntries.length > 0
+    state.pageLoading = false
+    state.pageDetailErrors = new Set()
     state.candidates = []
+    state.directoryEntries = []
+    state.directoryFilterer = null
     state.candidateSummary = { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 }
     state.candidatesLoaded = false
+    state.candidateLoadError = false
     state.page = 1
     renderStats()
     renderManagerMetadata()
@@ -1247,12 +1334,11 @@ async function loadCatalog() {
     renderCatalog()
     loadInstallCounts()
     if (state.indexEntries.length > 0) {
-      if (els.grid) void loadCurrentPageDetails()
       void loadFeaturedDetails()
-    } else {
+    } else if (!IS_DIRECTORY) {
       refreshTrustedPage()
     }
-    if (state.catalogView === 'candidates') void loadCandidates()
+    if (IS_DIRECTORY) void loadCandidates()
     void latestPromise.then(latestResult => {
       if (!state.catalog || requestId !== state.catalogRequestId) return
       state.dshReleaseContext = createDshReleaseContext(state.indexEntries.length ? state.indexEntries : state.catalog.entries, latestResult)
@@ -1358,16 +1444,31 @@ async function loadCandidates() {
       return summary
     }, { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0 })
     state.candidateSummary.reviewable = state.candidateSummary.discovered + state.candidateSummary.reviewing
+    const directory = await pluginDirectoryModule
+    state.directoryFilterer = directory.filterPluginDirectory
+    state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), state.candidates, { locale: state.locale })
     state.candidatesLoaded = true
     renderStats()
   } catch (error) {
     console.error('Failed to load marketplace candidates:', error)
     state.candidates = []
     state.candidateSummary = { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 }
+    state.candidateLoadError = true
+    try {
+      const directory = await pluginDirectoryModule
+      state.directoryFilterer = directory.filterPluginDirectory
+      state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), [], { locale: state.locale })
+    } catch (directoryError) {
+      console.error('Failed to prepare the DSH plugin directory:', directoryError)
+      state.directoryEntries = []
+    }
     state.candidatesLoaded = true
   } finally {
     state.candidatesLoading = false
     renderCatalog()
+    renderCategories()
+    renderListingFilterCounts()
+    if (state.candidatesLoaded) void loadCurrentPageDetails()
   }
 }
 
@@ -1398,15 +1499,13 @@ els.sort?.addEventListener('change', event => {
   sendDshEvent('catalog_sort', { item: state.sort })
 })
 els.viewTabs?.addEventListener('click', event => {
-  const button = event.target.closest('[data-catalog-view]')
-  if (!button || !['trusted', 'candidates'].includes(button.dataset.catalogView)) return
-  state.catalogView = button.dataset.catalogView
-  state.category = ''
+  const button = event.target.closest('[data-listing-filter]')
+  if (!button || !['all', 'listed', 'unlisted'].includes(button.dataset.listingFilter)) return
+  state.listingFilter = button.dataset.listingFilter
   state.page = 1
-  els.viewTabs.querySelectorAll('[data-catalog-view]').forEach(item => item.setAttribute('aria-pressed', String(item === button)))
   refreshTrustedPage()
-  if (state.catalogView === 'candidates') void loadCandidates()
-  sendDshEvent('catalog_view', { item: state.catalogView })
+  renderListingFilterCounts()
+  sendDshEvent('catalog_listing_filter', { item: state.listingFilter })
 })
 els.categories?.addEventListener('click', event => {
   const button = event.target.closest('[data-category]')
