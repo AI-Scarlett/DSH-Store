@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1627013f1db42768515c2924e51b9010351358c9",
-  "version": "0.1.5",
+  "commit": "945a82a3795b3f2440f96c15ed3f178b3f59ff90",
+  "version": "0.16.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-12T04:52:05.000Z",
-    "observedAt": "2026-10-12T04:47:28.000Z",
+    "updatedAt": "2026-10-12T16:09:40.000Z",
+    "observedAt": "2026-10-12T16:11:46.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-12T04:47:28.000Z",
-      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/1627013f1db42768515c2924e51b9010351358c9",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-12T16:11:46.000Z",
+      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/945a82a3795b3f2440f96c15ed3f178b3f59ff90",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "qwen-paint"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 591246 total bytes (maximum 2097152); largest file 364166 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: repository tree contains an invalid or duplicate path; runtime source exceeds the automatic review byte bound: 728605 total bytes (maximum 2097152); largest file 262535 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -92,7 +92,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
+      "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown"
     },
@@ -164,7 +164,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18.0.0",
     "systems": [],
     "profiles": [
       "web"
