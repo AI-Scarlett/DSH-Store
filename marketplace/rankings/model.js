@@ -1,5 +1,6 @@
 // Shared by the static builder and browser. Rankings never change Catalog approval.
 export const PAGE_SIZE = 30
+export const POPULAR_LIMIT = 100
 export const RANKING_TYPES = ['popular', 'recommended', 'essential']
 export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const validStars = value => Number.isSafeInteger(value) && value >= 0
@@ -32,6 +33,9 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
       listingStatus: entry.status === 'approved' && /^[a-f0-9]{40}$/.test(entry.commit || '') ? 'listed' : 'not-listed',
       source: 'catalog', reviewStatus: entry.status,
       stars: starsObservedAt && validStars(entry.github?.stars) ? entry.github.stars : null,
+      weeklyStars: starsObservedAt && validStars(entry.github?.stars) ? entry.github.stars : null,
+      weeklySnapshotMember: Boolean(starsObservedAt),
+      weeklyCategories: starsObservedAt ? [...new Set((entry.categories || []).filter(id => knownCategories.has(id)))] : [],
     }
   })
   // A candidate must never shadow a Catalog identity or create a second repository entry.
@@ -48,17 +52,30 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
       // Only explicit category IDs are usable evidence. Do not guess from descriptions.
       categories: [...new Set((entry.topics || []).filter(id => knownCategories.has(id)))],
       featured: false, order: Number.MAX_SAFE_INTEGER,
-      listingStatus: 'not-listed', source: 'candidate', reviewStatus: entry.status, stars: null,
+      listingStatus: 'not-listed', source: 'candidate', reviewStatus: entry.status, stars: null, weeklyStars: null,
+      weeklySnapshotMember: false, weeklyCategories: [],
     })
   }
-  return { schemaVersion: 2, sourceCommit, catalogUpdatedAt: catalog.registry.updatedAt,
-    candidatesUpdatedAt: candidates.registry?.updatedAt || null, starsObservedAt, categories, entries }
+  return { schemaVersion: 3, sourceCommit, catalogUpdatedAt: catalog.registry.updatedAt,
+    candidatesUpdatedAt: candidates.registry?.updatedAt || null, starsObservedAt,
+    weeklyStarsObservedAt: starsObservedAt, categories, entries }
 }
 
 export function validateRankingSnapshot(data) {
-  if (data?.schemaVersion !== 2 || !Array.isArray(data.entries) || data.entries.length > 10000 || !Array.isArray(data.categories)) throw new Error('Invalid rankings snapshot')
+  // One-time migration from the public v2 snapshot: its single observed score
+  // is the safest available baseline for both the daily and weekly charts.
+  if (data?.schemaVersion === 2 && Array.isArray(data.entries)) {
+    data = {
+      ...data,
+      schemaVersion: 3,
+      weeklyStarsObservedAt: data.starsObservedAt ?? null,
+      entries: data.entries.map(entry => ({ ...entry, weeklyStars: entry.stars,
+        weeklySnapshotMember: true, weeklyCategories: [...(entry.categories || [])] })),
+    }
+  }
+  if (data?.schemaVersion !== 3 || !Array.isArray(data.entries) || data.entries.length > 10000 || !Array.isArray(data.categories)) throw new Error('Invalid rankings snapshot')
   if (typeof data.catalogUpdatedAt !== 'string' || !Number.isFinite(Date.parse(data.catalogUpdatedAt))) throw new Error('Invalid Catalog date')
-  for (const key of ['starsObservedAt', 'candidatesUpdatedAt']) {
+  for (const key of ['starsObservedAt', 'weeklyStarsObservedAt', 'candidatesUpdatedAt']) {
     if (data[key] !== null && (typeof data[key] !== 'string' || !Number.isFinite(Date.parse(data[key])))) throw new Error('Invalid rankings date')
   }
   const categories = new Set()
@@ -76,15 +93,76 @@ export function validateRankingSnapshot(data) {
       || (entry.listingStatus === 'listed' && (entry.source !== 'catalog' || entry.reviewStatus !== 'approved'))
       || (entry.source === 'candidate' && entry.featured)
       || (entry.stars !== null && (!data.starsObservedAt || !validStars(entry.stars)))
+      || (entry.weeklyStars !== null && (!data.weeklyStarsObservedAt || !validStars(entry.weeklyStars)))
+      || typeof entry.weeklySnapshotMember !== 'boolean'
+      || !Array.isArray(entry.weeklyCategories)
+      || entry.weeklyCategories.some(id => !categories.has(id))
+      || (!entry.weeklySnapshotMember && (entry.weeklyStars !== null || entry.weeklyCategories.length > 0))
       || !Array.isArray(entry.categories) || entry.categories.some(id => !categories.has(id))) throw new Error('Invalid ranking entry')
     ids.add(entry.id)
   }
   return data
 }
 
+function matchingPreviousEntry(entry, previousById) {
+  const previous = previousById.get(entry.id)
+  return previous && previous.repositoryUrl.toLowerCase() === entry.repositoryUrl.toLowerCase() ? previous : null
+}
+
+// Rebuild metadata on every site build without silently refreshing chart scores.
+// Repository identity must still match before any historical score is carried.
+export function applyRankingRefreshState(input, previousInput, mode = 'reuse') {
+  if (!['reuse', 'daily', 'weekly', 'baseline'].includes(mode)) throw new Error('Unknown ranking refresh mode')
+  const output = structuredClone(input)
+  const previous = previousInput ? validateRankingSnapshot(previousInput) : null
+  const previousById = new Map((previous?.entries || []).map(entry => [entry.id, entry]))
+  if (mode === 'reuse') {
+    output.starsObservedAt = previous?.starsObservedAt ?? null
+    output.weeklyStarsObservedAt = previous?.weeklyStarsObservedAt ?? null
+    for (const entry of output.entries) {
+      const old = matchingPreviousEntry(entry, previousById)
+      entry.stars = old?.stars ?? null
+      entry.weeklySnapshotMember = old?.weeklySnapshotMember === true
+      entry.weeklyStars = entry.weeklySnapshotMember ? (old.weeklyStars ?? old.stars ?? null) : null
+      entry.weeklyCategories = old?.weeklySnapshotMember === true ? [...old.weeklyCategories] : []
+    }
+    return validateRankingSnapshot(output)
+  }
+
+  if (!output.starsObservedAt || !output.entries.some(entry => validStars(entry.stars))) {
+    throw new Error('Ranking refresh did not produce any verified GitHub star observations')
+  }
+  if (mode === 'weekly' || mode === 'baseline') {
+    output.weeklyStarsObservedAt = output.starsObservedAt
+    for (const entry of output.entries) {
+      entry.weeklyStars = entry.stars
+      entry.weeklySnapshotMember = true
+      entry.weeklyCategories = [...entry.categories]
+    }
+    return validateRankingSnapshot(output)
+  }
+
+  // Daily refresh changes only Popular. If there is no weekly baseline yet,
+  // seed one once; new entries after that stay out of weekly charts until Sunday.
+  const hasWeeklyBaseline = Boolean(previous?.weeklyStarsObservedAt || previous?.starsObservedAt)
+  output.weeklyStarsObservedAt = previous?.weeklyStarsObservedAt ?? previous?.starsObservedAt ?? output.starsObservedAt
+  for (const entry of output.entries) {
+    const old = matchingPreviousEntry(entry, previousById)
+    entry.weeklyStars = hasWeeklyBaseline
+      ? (old ? old.weeklyStars : null)
+      : (old?.weeklyStars ?? old?.stars ?? entry.stars)
+    entry.weeklySnapshotMember = hasWeeklyBaseline ? old?.weeklySnapshotMember === true : true
+    entry.weeklyCategories = entry.weeklySnapshotMember ? [...(old?.weeklyCategories || entry.categories)] : []
+  }
+  return validateRankingSnapshot(output)
+}
+
 export function rankingEntries(data, type) {
-  const known = data.entries.filter(entry => validStars(entry.stars)).slice().sort(compareStars)
-  if (type === 'popular') return known
+  if (!RANKING_TYPES.includes(type)) throw new Error('Unknown ranking type')
+  const scoreField = type === 'popular' ? 'stars' : 'weeklyStars'
+  const known = data.entries.filter(entry => validStars(entry[scoreField]))
+    .map(entry => ({ ...entry, stars: entry[scoreField] })).sort(compareStars)
+  if (type === 'popular') return known.slice(0, POPULAR_LIMIT)
   if (type === 'recommended') {
     // `featured` is a legacy display flag, not evidence of a recommendation or
     // review. Until explicit editorial evidence exists, use only observed stars.
@@ -94,10 +172,12 @@ export function rankingEntries(data, type) {
   if (type !== 'essential') throw new Error('Unknown ranking type')
   const winners = new Map()
   for (const category of data.categories) {
-    const members = data.entries.filter(entry => entry.categories.includes(category.id))
+    const members = data.entries.filter(entry => entry.weeklySnapshotMember
+      && entry.weeklyCategories.includes(category.id) && !['rejected', 'blocked'].includes(entry.reviewStatus))
     // A missing counter could belong to the true leader. Do not invent a winner.
-    if (!members.length || members.some(entry => !validStars(entry.stars))) continue
-    const eligible = known.filter(entry => entry.categories.includes(category.id))
+    if (!members.length || members.some(entry => !validStars(entry.weeklyStars))) continue
+    const eligible = known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+      && !['rejected', 'blocked'].includes(entry.reviewStatus))
     const winner = eligible[0]
     if (!winners.has(winner.id)) winners.set(winner.id, { ...winner, wins: [] })
     winners.get(winner.id).wins.push({ ...category, tied: eligible.filter(entry => entry.stars === winner.stars).length > 1 })
@@ -105,7 +185,8 @@ export function rankingEntries(data, type) {
   const result = [...winners.values()].sort(compareStars)
   const selected = new Set(result.map(entry => entry.id))
   const categories = data.categories.map(category => ({
-    category, members: known.filter(entry => entry.categories.includes(category.id)),
+    category, members: known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+      && !['rejected', 'blocked'].includes(entry.reviewStatus)),
   }))
   // Leaders retain their original rule. Fill the rest with round-robin
   // category picks, explicitly labelled observed ranks rather than champions.

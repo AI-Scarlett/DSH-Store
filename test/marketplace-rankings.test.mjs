@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFile } from 'node:fs/promises'
-import { createRankingSnapshot, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
+import { POPULAR_LIMIT, applyRankingRefreshState, createRankingSnapshot, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 const observed = '2026-10-03T05:00:00.000Z'
 const item = (id, stars, categories = ['tools'], extra = {}) => ({
   id, name: id, description: `About ${id}`, version: '1.0.0', repositoryUrl: `https://github.com/example/${id}`,
@@ -27,6 +27,56 @@ test('popular sorts numerically, preserves zero, excludes unknown and uses a det
   const data = snapshot([item('b', 10), item('zero', 0), item('c', 100), item('a', 10), item('missing', undefined), item('text', '200'), item('negative', -1), item('fraction', 1.1)])
   assert.deepEqual(rankingEntries(data, 'popular').map(e => [e.id, e.stars]), [['c', 100], ['a', 10], ['b', 10], ['zero', 0]])
   assert.equal(data.entries.find(e => e.id === 'missing').stars, null)
+})
+
+test('popular is capped at 100 entries while preserving thirty-row pagination', () => {
+  const data = snapshot(Array.from({ length: 137 }, (_, i) => item(`entry-${String(i).padStart(3, '0')}`, 1000 - i)))
+  assert.equal(rankingEntries(data, 'popular').length, POPULAR_LIMIT)
+  assert.equal(rankingPage(data, 'popular').entries.length, 30)
+  assert.equal(rankingPage(data, 'popular', 4).entries.length, 10)
+  assert.equal(rankingPage(data, 'popular', 4).total, 100)
+})
+
+test('daily refresh and routine builds preserve weekly chart scores until weekly refresh', () => {
+  const previous = snapshot([item('alpha', 10), item('beta', 5)])
+  const current = snapshot([item('alpha', 40), item('beta', 2), item('new-plugin', 25)], { starsObservedAt: '2026-10-04T05:00:00.000Z' })
+
+  const daily = applyRankingRefreshState(current, previous, 'daily')
+  assert.deepEqual(rankingEntries(daily, 'popular').map(entry => [entry.id, entry.stars]), [['alpha', 40], ['new-plugin', 25], ['beta', 2]])
+  assert.deepEqual(rankingEntries(daily, 'recommended').map(entry => [entry.id, entry.stars]), [['alpha', 10], ['beta', 5]])
+  assert.equal(rankingEntries(daily, 'essential')[0].id, 'alpha', 'new projects must not disrupt weekly category leaders')
+  assert.equal(daily.weeklyStarsObservedAt, previous.weeklyStarsObservedAt)
+  assert.equal(daily.entries.find(entry => entry.id === 'new-plugin').weeklyStars, null)
+
+  const rebuilt = applyRankingRefreshState(current, daily, 'reuse')
+  assert.deepEqual(rebuilt.entries.map(entry => [entry.id, entry.stars, entry.weeklyStars]), daily.entries.map(entry => [entry.id, entry.stars, entry.weeklyStars]))
+  assert.equal(rebuilt.starsObservedAt, daily.starsObservedAt)
+
+  const nextDay = snapshot([item('alpha', 60), item('beta', 1), item('new-plugin', 30)], { starsObservedAt: '2026-10-05T05:00:00.000Z' })
+  const nextDaily = applyRankingRefreshState(nextDay, daily, 'daily')
+  assert.equal(nextDaily.entries.find(entry => entry.id === 'new-plugin').weeklyStars, null)
+  assert.equal(nextDaily.entries.find(entry => entry.id === 'new-plugin').weeklySnapshotMember, false)
+  assert.equal(rankingEntries(nextDaily, 'essential')[0].id, 'alpha')
+
+  const weekly = applyRankingRefreshState(current, daily, 'weekly')
+  assert.deepEqual(rankingEntries(weekly, 'recommended').map(entry => [entry.id, entry.stars]), [['alpha', 40], ['new-plugin', 25], ['beta', 2]])
+  assert.equal(weekly.weeklyStarsObservedAt, current.starsObservedAt)
+})
+
+test('weekly refresh seeds the first baseline and schema v2 migrates without losing scores', () => {
+  const initial = snapshot([item('alpha', 8), item('beta', 0)])
+  const baseline = applyRankingRefreshState(initial, null, 'weekly')
+  assert.equal(baseline.weeklyStarsObservedAt, initial.starsObservedAt)
+  assert.deepEqual(baseline.entries.map(entry => entry.weeklyStars), [8, 0])
+
+  const legacy = structuredClone(initial)
+  legacy.schemaVersion = 2
+  delete legacy.weeklyStarsObservedAt
+  legacy.entries.forEach(entry => { delete entry.weeklyStars })
+  const migrated = validateRankingSnapshot(legacy)
+  assert.equal(migrated.schemaVersion, 3)
+  assert.equal(migrated.weeklyStarsObservedAt, legacy.starsObservedAt)
+  assert.deepEqual(migrated.entries.map(entry => entry.weeklyStars), [8, 0])
 })
 
 test('legacy featured flags do not establish recommendations or outrank observed stars', () => {
@@ -147,6 +197,9 @@ test('candidate-only projects join without a version, featured flag or fabricate
   assert.deepEqual(external.categories, ['tools']); assert.deepEqual(data.entries[2].categories, [])
   assert.equal(external.stars, null); assert.deepEqual(candidates, before)
   external.stars = 100
+  external.weeklyStars = 100
+  external.weeklySnapshotMember = true
+  external.weeklyCategories = [...external.categories]
   assert.equal(rankingEntries(data, 'popular')[0].id, external.id)
   assert.equal(rankingEntries(data, 'essential')[0].id, external.id)
   assert.equal(rankingEntries(data, 'recommended').find(e => e.id === external.id).recommendationKind, 'community-stars')
@@ -221,7 +274,7 @@ test('small and incomplete populations stay honest; blocked projects are not aut
   const rows = rankingEntries(data, 'essential')
   assert.equal(rows.length, 1)
   assert.equal(rows[0].wins.length, 0)
-  assert.equal(rows[0].categoryPick.observedRank, 2)
+  assert.equal(rows[0].categoryPick.observedRank, 1)
 })
 
 test('HTML metadata and bilingual chart copy do not advertise unsupported Store picks', async () => {
@@ -232,6 +285,10 @@ test('HTML metadata and bilingual chart copy do not advertise unsupported Store 
     assert.match(source, /旧的重点展示标记不作为推荐依据/)
   }
   assert.match(client, /automated selection, not a Store review or admission/)
+  assert.match(client, /Daily · Top 100/)
+  assert.match(client, /Updated weekly/)
+  assert.match(client, /常规网站构建不会刷新榜单分数/)
+  assert.match(client, /weeklyStarsObservedAt/)
   const version = html.match(/rankings\.js\?v=([\w-]+)/)?.[1]
   assert.ok(version)
   assert.ok(client.includes(`model.js?v=${version}`))

@@ -12,9 +12,14 @@ on:
       - "scripts/submit-indexnow.mjs"
       - "package.json"
       - "test/marketplace-static-build.test.mjs"
+      - "test/marketplace-rankings.test.mjs"
       - ".github/workflows/pages.yml"
   schedule:
     - cron: "25 */3 * * *"
+    # 10:15 China Standard Time: refresh only the daily Popular score snapshot.
+    - cron: "15 2 * * *"
+    # Sunday 10:30 China Standard Time: refresh all three charts, including the weekly baseline.
+    - cron: "30 2 * * 0"
   workflow_dispatch:
 
 permissions:
@@ -25,7 +30,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -55,15 +60,79 @@ jobs:
             mkdir -p "$RUNNER_TEMP/catalog-automation-reports/$run_id"
             gh run download "$run_id" --dir "$RUNNER_TEMP/catalog-automation-reports/$run_id" || true
           done
+      - name: Load the last published ranking snapshot
+        id: ranking_state
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          case "$EVENT_NAME:$EVENT_SCHEDULE" in
+            "schedule:15 2 * * *") mode=daily ;;
+            "schedule:30 2 * * 0") mode=weekly ;;
+            *) mode=auto ;;
+          esac
+          previous="$RUNNER_TEMP/previous-rankings.json"
+          valid=false
+          for origin in https://dsh-store.cn https://dsh.store; do
+            candidate="$RUNNER_TEMP/rankings-candidate.json"
+            if ! curl --fail --silent --show-error --location --max-redirs 2 --max-time 60 --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache' "$origin/rankings/data.json" -o "$candidate"; then
+              continue
+            fi
+            bytes=$(wc -c < "$candidate")
+            if [ "$bytes" -le 0 ] || [ "$bytes" -gt 1048576 ]; then
+              echo "Ranking snapshot from $origin is outside the 1 MiB bound" >&2
+              continue
+            fi
+            if RANKING_FILE="$candidate" node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises'
+          import { validateRankingSnapshot } from './marketplace/rankings/model.js'
+          const bytes = await readFile(process.env.RANKING_FILE)
+          validateRankingSnapshot(JSON.parse(bytes.toString('utf8')))
+          NODE
+            then
+              cp "$candidate" "$previous"
+              echo "Loaded prior rankings from $origin ($bytes bytes)"
+              valid=true
+              break
+            fi
+          done
+          if [ "$valid" != true ]; then
+            echo "No valid public ranking snapshot was available; refusing to reset chart history" >&2
+            exit 1
+          fi
+          if [ "$mode" = auto ]; then
+            mode=$(RANKING_FILE="$previous" node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises'
+          import { validateRankingSnapshot } from './marketplace/rankings/model.js'
+          const data = validateRankingSnapshot(JSON.parse((await readFile(process.env.RANKING_FILE)).toString('utf8')))
+          const age = value => value ? Date.now() - Date.parse(value) : Infinity
+          if (age(data.weeklyStarsObservedAt) >= 7 * 24 * 60 * 60 * 1000) console.log('weekly')
+          else if (age(data.starsObservedAt) >= 24 * 60 * 60 * 1000) console.log('daily')
+          else console.log('reuse')
+          NODE
+          )
+          fi
+          echo "Ranking refresh mode: $mode"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "previous=$previous" >> "$GITHUB_OUTPUT"
       - name: Build public marketplace artifact
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: npm run build:marketplace -- --enrich-github --source-sha "$GITHUB_SHA" --automation-runs "$RUNNER_TEMP/automation-runs.json" --automation-reports "$RUNNER_TEMP/catalog-automation-reports"
+        run: |
+          npm run build:marketplace -- --enrich-github --ranking-refresh-mode "${{ steps.ranking_state.outputs.mode }}" \
+            --previous-ranking-snapshot "${{ steps.ranking_state.outputs.previous }}" --source-sha "$GITHUB_SHA" \
+            --automation-runs "$RUNNER_TEMP/automation-runs.json" --automation-reports "$RUNNER_TEMP/catalog-automation-reports"
+          cp _site/marketplace/rankings/data.json "$RUNNER_TEMP/current-rankings.json"
       - name: Build domestic marketplace artifact
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npm run build:marketplace -- --enrich-github --source-sha "$GITHUB_SHA" --site-origin https://dsh-store.cn --alternate-origin https://dsh.store --icp 鄂ICP备2026010180号-2 --baidu-verification codeva-gZjUUScijx --out _site-domestic --automation-runs "$RUNNER_TEMP/automation-runs.json" --automation-reports "$RUNNER_TEMP/catalog-automation-reports"
+          npm run build:marketplace -- --enrich-github --ranking-refresh-mode reuse \
+            --previous-ranking-snapshot "$RUNNER_TEMP/current-rankings.json" --source-sha "$GITHUB_SHA" \
+            --site-origin https://dsh-store.cn --alternate-origin https://dsh.store --icp 鄂ICP备2026010180号-2 \
+            --baidu-verification codeva-gZjUUScijx --out _site-domestic \
+            --automation-runs "$RUNNER_TEMP/automation-runs.json" --automation-reports "$RUNNER_TEMP/catalog-automation-reports"
           mkdir -p _site/domestic
           cp -a _site-domestic/. _site/domestic/
       - uses: actions/upload-pages-artifact@v3
