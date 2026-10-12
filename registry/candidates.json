@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-12T16:11:46.000Z",
+    "updatedAt": "2026-10-12T17:28:23.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -8445,11 +8445,11 @@
     {
       "id": "prism-shadow-penguin-harness",
       "name": "Prism-Shadow/penguin-harness",
-      "description": "🐧 Harness for RSI. Let AI Build AI. Multi-Agent Auto-Dev Platform. Everything is Transparent.",
+      "description": "🐧 Unified and Stable RSI Platform",
       "repositoryUrl": "https://github.com/Prism-Shadow/penguin-harness",
       "defaultBranch": "main",
-      "latestCommit": "15defbb6714df055874472094512857c36dee489",
-      "sourceUpdatedAt": "2026-09-22T03:49:13.000Z",
+      "latestCommit": "0067f37cfc1d3117f232d7ae9faf3e6d7e6f9004",
+      "sourceUpdatedAt": "2026-10-12T17:32:47.000Z",
       "discoveredAt": "2026-09-04T12:39:30.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -18694,6 +18694,130 @@
         "dsh",
         "dsh-plugin",
         "skill",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "bowluna-dsh-custom-mode",
+      "name": "BOWLUNA/dsh-custom-mode",
+      "description": "Edit a DeepSeek Harness (dsh) custom mode: system prompt, base mode, and plugin switches.",
+      "repositoryUrl": "https://github.com/BOWLUNA/dsh-custom-mode",
+      "defaultBranch": "main",
+      "latestCommit": "cd04b97d0b36144860b5cbfb7d2984ca6decc15d",
+      "sourceUpdatedAt": "2026-10-09T19:51:16.000Z",
+      "discoveredAt": "2026-10-12T17:28:23.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@118a929a22790eb6b5447019a27d2ff3ba420c4c:data/plugins/BOWLUNA__dsh-custom-mode.yml:sha256=a9fd706b3e5a53f44cae19568bebeb7c12c9125aed6787f89b7611704a3077e2:at=2026-10-12T17:33:38.597Z:owner=295634528"
+      ],
+      "topics": [
+        "agent",
+        "agent-preset",
+        "ai-agent",
+        "assistant",
+        "coding-agent",
+        "custom-mode",
+        "deepseek",
+        "deepseek-ai",
+        "deepseek-harness",
+        "deepseek-plugin",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "harness",
+        "llm",
+        "plugin",
+        "prompt",
+        "prompt-editor",
+        "settings",
+        "system-prompt",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "bpc-oss-dsh-routed-subagent",
+      "name": "bpc-oss/dsh-routed-subagent",
+      "description": "DeepSeek Harness plugin: subagent_routed — run a one-shot subagent fully mounted on ANY agent preset from ANY session, with per-call model/provider override and a model-availability pre-check.",
+      "repositoryUrl": "https://github.com/bpc-oss/dsh-routed-subagent",
+      "defaultBranch": "master",
+      "latestCommit": "7ade57240e1049751b70bf04bba112ca5dcc820d",
+      "sourceUpdatedAt": "2026-10-08T16:11:27.000Z",
+      "discoveredAt": "2026-10-12T17:28:23.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@118a929a22790eb6b5447019a27d2ff3ba420c4c:data/plugins/bpc-oss__dsh-routed-subagent.yml:sha256=825f7d6ab3d9bfb6dc919d4b615bf2d8dd6772a3e7ce0462f4d3fafdf828ae49:at=2026-10-12T17:33:38.597Z:owner=222539262"
+      ],
+      "topics": [
+        "agent-preset",
+        "deepseek-harness",
+        "dsh-plugin",
+        "multi-agent",
+        "subagent",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "bowluna-dsh-zcode-rewind",
+      "name": "BOWLUNA/dsh-zcode-rewind",
+      "description": "Per-tool-call workspace checkpoints for DeepSeek Harness: captures every file mutation including shell commands, stores content-addressed blobs, previews line-level diffs, and every restore is itself undoable.",
+      "repositoryUrl": "https://github.com/BOWLUNA/dsh-zcode-rewind",
+      "defaultBranch": "main",
+      "latestCommit": "7c5d090c2027799120d536bbd3415ea0988f8a31",
+      "sourceUpdatedAt": "2026-09-23T10:13:20.000Z",
+      "discoveredAt": "2026-10-12T17:28:23.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@118a929a22790eb6b5447019a27d2ff3ba420c4c:data/plugins/BOWLUNA__dsh-zcode-rewind.yml:sha256=c145d124438fe87617bb6de18c02e60fef007604a8d0588d0f6c9a1bda694c2e:at=2026-10-12T17:33:38.597Z:owner=295634528"
+      ],
+      "topics": [
+        "checkpoint",
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "rewind",
+        "rollback",
+        "snapshot",
+        "undo",
+        "workspace",
+        "zcode",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "bowluna-dsh-zcode-git",
+      "name": "BOWLUNA/dsh-zcode-git",
+      "description": "Structured git tools for DeepSeek Harness agents: status, diff, log, branch, commit and stash - pinned output, no shell involved, approval-gated writes.",
+      "repositoryUrl": "https://github.com/BOWLUNA/dsh-zcode-git",
+      "defaultBranch": "main",
+      "latestCommit": "8ed7ae8b022cc8b8975d0c496abff249b5e5f90a",
+      "sourceUpdatedAt": "2026-09-24T07:59:00.000Z",
+      "discoveredAt": "2026-10-12T17:28:23.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@118a929a22790eb6b5447019a27d2ff3ba420c4c:data/plugins/BOWLUNA__dsh-zcode-git.yml:sha256=80df965048763f301cc384574f07ebbc09926d2a2eaa7f8cfe5d48a149f9484c:at=2026-10-12T17:33:38.597Z:owner=295634528"
+      ],
+      "topics": [
+        "agent-tools",
+        "commit",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "diff",
+        "dsh",
+        "dsh-plugin",
+        "git",
+        "vcs",
+        "version-control",
+        "zcode",
         "automatic-radar"
       ],
       "status": "reviewing",
