@@ -765,6 +765,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .catalog-view-tabs { display: inline-flex; gap: 4px; margin: 14px 0 4px; padding: 4px; border: 1px solid var(--line); background: rgba(255, 255, 255, .56); }
 .catalog-view-tabs button { min-height: 34px; padding: 0 13px; border: 0; color: var(--muted); background: transparent; cursor: pointer; font-size: 8px; font-weight: 800; }
 .catalog-view-tabs button[aria-pressed="true"] { color: #fff; background: var(--green); }
+.catalog-view-tabs button [data-filter-count] { margin-left: auto; color: inherit; font: 800 10px ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .78; }
+.plugins-page .catalog-sidebar .catalog-view-tabs button { display: flex; align-items: center; gap: 12px; }
+.plugins-page .plugin-card-top { flex-wrap: wrap !important; }
+.catalog-listing-tag { display: inline-flex; align-items: center; gap: 6px; width: fit-content; margin-left: auto; padding: 6px 8px; border: 1px solid rgba(21, 148, 104, .32); color: #087c59; background: rgba(21, 148, 104, .07); font-size: 8px; font-weight: 850; }
+.catalog-listing-tag::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.catalog-listing-tag.unlisted { border-color: rgba(201, 77, 81, .28); color: #b04048; background: rgba(201, 77, 81, .06); }
+.catalog-listing-reason { display: grid; gap: 4px; margin: 12px 0 16px; padding: 11px 12px; border-left: 2px solid var(--danger); background: rgba(201, 77, 81, .06); color: var(--muted); font-size: 9px; line-height: 1.6; }
+.catalog-listing-reason b { color: var(--danger); font-size: 8px; }
+.directory-partial-notice { margin: 0 0 12px; color: var(--danger); font-size: 10px; line-height: 1.6; }
 .candidate-card { border-style: dashed; }
 .candidate-reason { margin: 0; padding: 9px 10px; border-left: 2px solid var(--danger); background: rgba(201, 77, 81, .06); color: var(--muted); font-size: 10px; line-height: 1.55; }
 .candidate-no-install { color: var(--muted); font: 750 7px ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
