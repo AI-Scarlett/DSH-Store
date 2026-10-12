@@ -6,7 +6,7 @@ import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PA
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { buildAutomationStatus } from '../src/automation-status.mjs'
 import { enrichRankingSnapshot } from './ranking-github-metadata.mjs'
-import { createRankingSnapshot, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
+import { applyRankingRefreshState, createRankingSnapshot, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -15,6 +15,16 @@ const argValue = name => {
   return index >= 0 ? args[index + 1] : undefined
 }
 const enrichGitHub = args.includes('--enrich-github')
+const rankingRefreshMode = argValue('--ranking-refresh-mode') || 'reuse'
+if (!['reuse', 'daily', 'weekly', 'baseline'].includes(rankingRefreshMode)) throw new Error('Unknown ranking refresh mode')
+const previousRankingsPath = argValue('--previous-ranking-snapshot')
+let previousRankings = null
+if (previousRankingsPath) {
+  const bytes = await readFile(resolve(projectRoot, previousRankingsPath))
+  if (bytes.length > 1024 * 1024) throw new Error('Previous rankings snapshot exceeds the 1 MiB bound')
+  previousRankings = validateRankingSnapshot(JSON.parse(bytes.toString('utf8')))
+}
+const refreshRankingStars = ['daily', 'weekly', 'baseline'].includes(rankingRefreshMode)
 const outputRoot = resolve(projectRoot, argValue('--out') || '_site')
 const sourceSha = argValue('--source-sha') || process.env.GITHUB_SHA || 'local-worktree'
 const automationRunsPath = argValue('--automation-runs')
@@ -97,7 +107,7 @@ const automationReports = await readAutomationReports(automationReportsPath)
 
 const snapshot = structuredClone(catalog)
 const token = process.env.GITHUB_TOKEN || ''
-if (enrichGitHub && !token) {
+if ((enrichGitHub || refreshRankingStars) && !token) {
   throw new Error('GITHUB_TOKEN is required for scheduled GitHub metadata enrichment')
 }
 
@@ -608,11 +618,12 @@ await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 // Only bounded public repository counters are fetched for unlisted projects;
 // never fetch their manifests or enlarge the main Catalog index.
 let rankings = validateRankingSnapshot(createRankingSnapshot(snapshot, catalogIndex, { sourceCommit: sourceSha, candidates: candidateRegistry }))
-if (enrichGitHub) {
+if (refreshRankingStars) {
   const enriched = await enrichRankingSnapshot(rankings, { token })
   rankings = validateRankingSnapshot(enriched.snapshot)
   console.log(`RANKING_METADATA ${JSON.stringify(enriched.summary)}`)
 }
+rankings = applyRankingRefreshState(rankings, previousRankings, rankingRefreshMode)
 const rankingsBytes = Buffer.from(JSON.stringify(rankings) + '\n')
 if (rankingsBytes.length > 1024 * 1024) throw new Error('Rankings snapshot exceeds the 1 MiB bound')
 await writeFile(resolve(outputRoot, 'marketplace/rankings/data.json'), rankingsBytes)
