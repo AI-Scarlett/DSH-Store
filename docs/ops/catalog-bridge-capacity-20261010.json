@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "planId": "catalog-bridge-capacity-20261010",
+  "type": "source-automation-repair",
+  "status": "local-check-passed-ci-pending",
+  "baseCommit": "91166e2754ca769cfe387359e2041e95469f9f87",
+  "trigger": "Catalog automation run 37960978499 scanned the latest-three window but stopped before writing because the legacy bridge exceeded 2 MiB.",
+  "objective": "Keep every Catalog identity and the old-client safety fields while making the legacy bridge fit its existing response bound; retain complete search terms in v2 index and details.",
+  "fileScope": {
+    "modify": ["src/catalog.mjs", "test/catalog.test.mjs", "README.md"],
+    "add": ["docs/ops/catalog-bridge-capacity-20261010.json"]
+  },
+  "preconditions": {
+    "sha256": {
+      "src/catalog.mjs": "0daad9c938e80629cc98fea18d2150b56255c5db4314f1cf12da187c103e7541",
+      "test/catalog.test.mjs": "9242dc3663749bfcd591c947889b362ce5165198150e54b54c73c2fb7864cef1",
+      "README.md": "8301ce58ff6494605a688dab3a766ea7eaad0435a34cf2a06ade99cc31d93433"
+    },
+    "absent": ["docs/ops/catalog-bridge-capacity-20261010.json"]
+  },
+  "gates": [
+    "Only omit empty unknown assurance records that historical validators reconstruct as unknown",
+    "Keep every entry, full fixed Commit, status, status reason, permissions, and compatibility evidence in the bridge",
+    "Bounded deterministic search-term reduction is used only if the bridge otherwise exceeds 2 MiB; v2 records keep all terms",
+    "Historical 0.8.5–0.8.7 parsers and current Registry validation pass",
+    "npm run check and CI pass before audited PR merge",
+    "Rerun Catalog policy workflow, then verify GitHub, Pages, and both production storefronts"
+  ],
+  "rollback": "Revert the exact source PR; Catalog writes remain gated by the policy workflow and the prior published bridge remains active until a checked replacement is merged.",
+  "verification": {
+    "localCheck": "npm run check passed: REGISTRY_OK entries=782, 388/388 tests",
+    "historicalClients": "0.8.5, 0.8.6, and 0.8.7 fixture validators accepted the bounded full-directory bridge",
+    "baseHashes": "all file-scope SHA-256 preconditions matched base Commit",
+    "catalogAutomation": "pending source PR CI and rerun"
+  },
+  "stopConditions": [
+    "Bridge still exceeds 2 MiB after bounded compaction",
+    "Historical client validator or safety field check fails",
+    "Catalog source or base Commit drifts before PR merge"
+  ]
+}

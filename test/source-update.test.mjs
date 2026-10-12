@@ -101,6 +101,23 @@ test('source update risk scan ignores a regex member exec while retaining comman
   assert.equal(result.diff.permissionSignals.commandExecution, false)
 })
 
+test('source update risk scan ignores inert CLI help and preserves executable permission evidence', async () => {
+  const helpService = createSourceUpdateService({
+    fetch: githubFetch({ patch: '+const help = "94 fork(s); default: $DSH_HOME, ~/.dsh/profiles"\n' }),
+    sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const help = await helpService.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(help.diff.permissionSignals.commandExecution, false)
+  assert.equal(help.diff.permissionSignals.filesystem, false)
+
+  const executableService = createSourceUpdateService({
+    fetch: githubFetch({ patch: '+spawn(command)\n' }),
+    sourceVerifier: async () => ({ status: 'verified' }),
+  })
+  const executable = await executableService.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(executable.diff.permissionSignals.commandExecution, true)
+})
+
 test('protected DSH mutations remain external-only and cannot produce a marketplace plan', async () => {
   const service = createSourceUpdateService({
     fetch: githubFetch({ patch: '+await writeFile("node_modules/@deepseek-ai/dsh-core/index.js", source)' }),
@@ -161,4 +178,26 @@ test('numeric DOMException abort codes map to a stable source update timeout', a
     error => error.code === 'SOURCE_UPDATE_TIMEOUT'
       && error.message === 'GitHub 源更新检查超时。',
   )
+})
+
+
+test('source update distinguishes tool-view key review from protected mutations', async () => {
+  for (const [patch, status, protectedDsh] of [
+    ["+ctx.slots.register({ name: 'tool.call.toolview', key: KEYS[i] }, View)", 'user-review-required', false],
+    ["+ctx.slots.register({ name: 'tool.call.toolview', key: 'bash' }, View)", 'external-only', true],
+    ["+ctx.fiber.remove('official')", 'external-only', true],
+  ]) {
+    const service = createSourceUpdateService({ fetch: githubFetch({ patch }), sourceVerifier: async () => ({ status: 'verified' }) })
+    const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+    assert.equal(result.status, status)
+    assert.equal(result.diff.permissionSignals.protectedDsh, protectedDsh)
+  }
+})
+
+
+test('removing a protected mutation is not reported as adding that mutation', async () => {
+  const service = createSourceUpdateService({ fetch: githubFetch({ patch: "-ctx.fiber.remove('official')\n+export const repaired = true" }), sourceVerifier: async () => ({ status: 'verified' }) })
+  const result = await service.inspect(entry(), { version: '1.0.0', source: 'git', declaredSpecifier: `git#${catalogCommit}` })
+  assert.equal(result.diff.permissionSignals.protectedDsh, false)
+  assert.notEqual(result.status, 'external-only')
 })

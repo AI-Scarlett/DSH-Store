@@ -24,6 +24,7 @@ test('production candidate gate accepts a held manager but rejects an exposed in
         cp(join(root, 'marketplace'), join(fixture, 'marketplace'), { recursive: true }),
         cp(join(root, 'registry'), join(fixture, 'registry'), { recursive: true }),
         cp(join(root, 'scripts/build-marketplace-static.mjs'), join(fixture, 'scripts/build-marketplace-static.mjs')),
+        cp(join(root, 'scripts/ranking-github-metadata.mjs'), join(fixture, 'scripts/ranking-github-metadata.mjs')),
       ])
       const catalog = await loadCatalogFromFiles()
       const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')

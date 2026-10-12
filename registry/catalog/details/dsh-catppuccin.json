@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "205b645d4685c59c08b6070722a48f89a2fe44e1",
-  "version": "0.5.8",
+  "commit": "ac8d3cefcd0f630e9ab07931928119b2c3163c8c",
+  "version": "0.6.2-beta.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T05:36:39.000Z",
-    "observedAt": "2026-09-28T14:34:52.000Z",
+    "updatedAt": "2026-10-11T07:50:08.000Z",
+    "observedAt": "2026-10-11T13:35:18.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-28T14:34:52.000Z",
-      "evidenceUrl": "https://github.com/NoNameLeGo/dsh-catppuccin-theme/commit/205b645d4685c59c08b6070722a48f89a2fe44e1",
+      "checkedAt": "2026-10-11T13:35:18.000Z",
+      "evidenceUrl": "https://github.com/NoNameLeGo/dsh-catppuccin-theme/commit/ac8d3cefcd0f630e9ab07931928119b2c3163c8c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "dsh-catppuccin-tui-themes"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is missing from the fixed Git Commit: ./lib/tui-themes.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/tui-themes.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": ">=0.1.5-rc.1",
     "dshReleases": {
@@ -97,9 +97,9 @@
       "0.1.7-alpha.1": "compatible",
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -174,19 +174,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -196,6 +196,7 @@
     "node": ">=20",
     "systems": [],
     "profiles": [
+      "desktop",
       "web"
     ]
   },

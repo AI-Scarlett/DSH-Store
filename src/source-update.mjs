@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto'
 import { compareVersions, verifyCatalogEntry } from './catalog.mjs'
+import { dshInterfaceSignals, permissionSignals as scanPermissionSignals } from './automation-source-policy.mjs'
 
 const COMMIT_SHA = /^[0-9a-f]{40}$/
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 10 * 60_000
 const MAX_COMPARE_FILES = 100
-const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
 const RISK_PATTERN = /(?:node:)?child_process|shell\s*:\s*true|(?:node:)?(?:fs|fs\/promises)|\b(?:fetch|WebSocket)\s*\(|process\.env|keychain|__ModuleLoader__.*(?:unload|remove)|\bFiber\b|@deepseek-ai\/.*disabled\s*:\s*true/i
 const DSH_NATIVE_MUTATION_PATTERN = /(?:^|[/\\])(?:node_modules|packages|vendor)[/\\]@deepseek-ai[/\\]|(?:writeFile|appendFile|rename|unlink|rm)\s*\([^\n]{0,240}(?:node_modules|packages)[/\\]@deepseek-ai|(?:git\s+(?:apply|checkout)|patch\s+)[^\n]{0,240}(?:deepseek|@deepseek-ai)/i
 
@@ -276,10 +276,20 @@ export function createSourceUpdateService(options = {}) {
       if (sourceLike && !ignored && patch === null) blockers.push(`无法完整审核变更文件：${name}`)
       if (sourceLike && !ignored && patch && RISK_PATTERN.test(patch)) warnings.push(`变更出现新的权限行为信号：${name}`)
       for (const host of addedNetworkHosts(patch)) networkHosts.add(host)
-      if (patch && /(?:node:)?(?:fs|fs\/promises)|\b(?:writeFile|appendFile|rename|unlink|rm)\s*\(/i.test(patch)) permissionSignals.filesystem = true
-      if (patch && /\b(?:fetch|WebSocket)\s*\(|https?:\/\//i.test(patch)) permissionSignals.network = true
-      if (patch && (/(?:node:)?child_process|shell\s*:\s*true/i.test(patch) || COMMAND_CALL.test(patch))) permissionSignals.commandExecution = true
-      if (patch && /process\.env|keychain|api[_-]?key|oauth|credential/i.test(patch)) permissionSignals.credentials = true
+      // Removed lines are not candidate behavior. This is still a bounded diff
+      // review, not a substitute for the fixed-source verifier.
+      const candidateSource = patch?.split(/\r?\n/).filter(line => !/^(?:-|@@|\+\+\+)/.test(line))
+        .map(line => line.replace(/^[ +]/, '')).join('\n')
+      const sourceSignals = candidateSource ? scanPermissionSignals(candidateSource, name) : null
+      if (sourceSignals?.files) permissionSignals.filesystem = true
+      if (sourceSignals?.network) permissionSignals.network = true
+      if (sourceSignals?.commands) permissionSignals.commandExecution = true
+      if (sourceSignals?.credentials) permissionSignals.credentials = true
+      if (candidateSource && dshInterfaceSignals(candidateSource, name).toolViewExtension) warnings.push(`工具视图扩展需要核验注册键归属：${name}`)
+      if (sourceSignals?.protectedDsh) {
+        permissionSignals.protectedDsh = true
+        externalOnly.push(`变更包含受保护组件操作：${name}`)
+      }
       if ((DSH_NATIVE_MUTATION_PATTERN.test(name) || (patch && DSH_NATIVE_MUTATION_PATTERN.test(patch)))) {
         permissionSignals.protectedDsh = true
         externalOnly.push(`变更可能修改 DSH 原生代码或 @deepseek-ai 包：${name}`)

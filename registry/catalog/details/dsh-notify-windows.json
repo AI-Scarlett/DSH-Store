@@ -25,7 +25,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "aeb1a30b80257dacf5588543cbe9e48d6d985823",
+  "commit": "e096601886e4718088f89c50612e9df70df23b4c",
   "version": "0.7.8",
   "categories": [
     "tools",
@@ -34,20 +34,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T02:18:39.000Z",
-    "observedAt": "2026-09-29T04:42:38.000Z",
+    "updatedAt": "2026-10-12T02:54:11.000Z",
+    "observedAt": "2026-10-12T04:47:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-29T04:42:38.000Z",
-      "evidenceUrl": "https://github.com/SeverusZh/dsh-notify-windows/commit/aeb1a30b80257dacf5588543cbe9e48d6d985823",
+      "checkedAt": "2026-10-12T04:47:28.000Z",
+      "evidenceUrl": "https://github.com/SeverusZh/dsh-notify-windows/commit/e096601886e4718088f89c50612e9df70df23b4c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -83,8 +83,8 @@
   "entryIds": [
     "dsh-notify"
   ],
-  "status": "approved",
-  "statusReason": null,
+  "status": "unlisted",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -110,7 +110,9 @@
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.1": "compatible",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -246,6 +248,18 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

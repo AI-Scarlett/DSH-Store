@@ -31,8 +31,8 @@
   "manifestPath": "plugins/dsh-browser-desktop/package.json",
   "installPath": "plugins/dsh-browser-desktop",
   "updatePolicy": "user-reviewed",
-  "commit": "f907123ec5f17dd0ce4a1579dca1569e7fc96365",
-  "version": "0.1.3",
+  "commit": "99844081051ee6a18b9ec7cbe69d8c8eaa2edb4f",
+  "version": "0.1.5",
   "categories": [
     "tools",
     "ui",
@@ -41,16 +41,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T23:33:20.000Z",
-    "observedAt": "2026-09-25T03:52:28.000Z",
+    "updatedAt": "2026-10-09T12:00:48.000Z",
+    "observedAt": "2026-10-09T17:00:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-25T03:52:28.000Z",
-      "evidenceUrl": "https://github.com/runzhliu/deepseek-harness-docker/commit/f907123ec5f17dd0ce4a1579dca1569e7fc96365",
+      "checkedAt": "2026-10-09T17:00:39.000Z",
+      "evidenceUrl": "https://github.com/runzhliu/deepseek-harness-docker/commit/99844081051ee6a18b9ec7cbe69d8c8eaa2edb4f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -91,9 +91,9 @@
     "browser-desktop"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.1.7-rc.2, 0.2.0-rc.1, 0.2.0-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": "^0.1.2-alpha.3",
+    "dsh": "^0.1.2-alpha.3 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -117,7 +117,9 @@
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -253,6 +255,18 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

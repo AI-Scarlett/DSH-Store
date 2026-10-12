@@ -11,6 +11,7 @@ import { createGuardianService } from './guardian.mjs'
 import { createTelemetryClient } from './telemetry.mjs'
 import { createSourceUpdateService } from './source-update.mjs'
 import { createDshVersionService } from './dsh-version.mjs'
+import { isAbsolute } from 'node:path'
 
 export const name = 'dsh-safe-plugin-manager'
 export const inject = []
@@ -31,25 +32,40 @@ function normalizeConfig(config = {}) {
   }
 }
 
-export function apply(ctx, config = {}) {
+export function resolveHostOptions(ctx, config = {}) {
   const options = normalizeConfig(config)
+  if (ctx?.profileContext?.name !== 'desktop') return { ...options, desktopMode: false }
+  const { home, installAnchor } = ctx.profileContext
+  if (typeof home !== 'string' || !isAbsolute(home)
+    || typeof installAnchor !== 'string' || !isAbsolute(installAnchor)) {
+    throw Object.assign(new Error('Desktop Profile context is incomplete'), { code: 'DESKTOP_PROFILE_CONTEXT_INVALID' })
+  }
+  return {
+    ...options, defaultProfile: 'desktop', dshHome: home, dshCliPath: null,
+    dshManifestPath: installAnchor, mutationsEnabled: false, desktopMode: true,
+  }
+}
+
+export function apply(ctx, config = {}) {
+  const options = resolveHostOptions(ctx, config)
   const catalogService = createCatalogService({ catalogUrl: options.catalogUrl, installCountsUrl: options.installCountsUrl })
   const candidateService = createCandidateService({ candidateUrl: options.candidateUrl })
-  const runner = createDshRunner({ cliPath: options.dshCliPath, environment: { ...process.env, DSH_HOME: options.dshHome } })
-  const launchSpec = runner.restartSpec(options.defaultProfile)
+  const runner = options.desktopMode ? null : createDshRunner({ cliPath: options.dshCliPath, environment: { ...process.env, DSH_HOME: options.dshHome } })
+  const launchSpec = runner?.restartSpec(options.defaultProfile)
   const launchProfileArgs = options.defaultProfile === 'web' ? ['web'] : ['--profile', options.defaultProfile]
   const runtimeStatus = createRuntimeStatus({
     profile: options.defaultProfile,
-    restartCommand: [launchSpec.nodePath, ...launchSpec.runtimeArgs, launchSpec.cliPath, ...launchProfileArgs],
-    restartWorkingDirectory: launchSpec.cwd,
+    desktopMode: options.desktopMode,
+    restartCommand: launchSpec ? [launchSpec.nodePath, ...launchSpec.runtimeArgs, launchSpec.cliPath, ...launchProfileArgs] : [],
+    restartWorkingDirectory: launchSpec?.cwd ?? null,
   })
   const guardianService = createGuardianService({
-    dshHome: options.dshHome, restartSpec: profile => runner.restartSpec(profile),
+    dshHome: options.dshHome, restartSpec: profile => runner?.restartSpec(profile),
   })
   const restartService = createRestartService({ runtimeStatus, guardianService })
   const telemetryClient = createTelemetryClient({ endpoint: options.telemetryUrl, enabled: options.telemetryEnabled })
   const sourceUpdateService = createSourceUpdateService()
-  const dshVersionService = createDshVersionService({ cliPath: options.dshCliPath })
+  const dshVersionService = createDshVersionService({ cliPath: options.dshCliPath, manifestPath: options.dshManifestPath })
   const operationService = createOperationService({
     dshHome: options.dshHome,
     defaultProfile: options.defaultProfile,

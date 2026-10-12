@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5191f618c27bc5c54409cad271339beb2b690e9c",
-  "version": "0.9.0",
+  "commit": "7b6932fa5f88722575f8d5b7cf176578245088f7",
+  "version": "0.13.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T10:32:38.000Z",
-    "observedAt": "2026-09-29T14:40:34.000Z",
+    "updatedAt": "2026-10-02T16:48:38.000Z",
+    "observedAt": "2026-10-02T20:24:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T14:40:34.000Z",
-      "evidenceUrl": "https://github.com/maci0/dsh-quota-check/commit/5191f618c27bc5c54409cad271339beb2b690e9c",
+      "checkedAt": "2026-10-02T20:24:31.000Z",
+      "evidenceUrl": "https://github.com/maci0/dsh-quota-check/commit/7b6932fa5f88722575f8d5b7cf176578245088f7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "quota-check"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; local module is missing from the distributable surface: lib/types/index.d.ts -> ./host.ts; local module is missing from the distributable surface: lib/types/probes.d.ts -> ./local-usage.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission sign",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
@@ -94,7 +94,9 @@
       "0.1.2-alpha.5": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -158,6 +160,18 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

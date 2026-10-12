@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "type": "read-only-ranking-population-expansion",
+  "createdAt": "2026-10-04T02:40:13.768117+00:00",
+  "baseCommit": "9927ab2931e705a7c5adda28f3a527165d181311",
+  "authorization": "用户要求榜单允许未收录项目并标记是否收录。This plan covers local source implementation and preview, not production deployment, Profile mutations or outreach.",
+  "fileScope": {
+    "modify": [
+      "marketplace/rankings/model.js",
+      "marketplace/rankings/rankings.js",
+      "marketplace/rankings/rankings.css",
+      "marketplace/rankings/index.html",
+      "scripts/build-marketplace-static.mjs",
+      "test/marketplace-rankings.test.mjs",
+      "test/marketplace-static-build.test.mjs",
+      ".github/workflows/pages.yml",
+      "test/deploy-refresh.test.mjs"
+    ],
+    "add": [
+      "scripts/ranking-github-metadata.mjs",
+      "test/ranking-github-metadata.test.mjs",
+      "docs/ops/store-rankings-discovery-plan-20261004.json"
+    ]
+  },
+  "preconditionSha256": {
+    "marketplace/rankings/model.js": "d64f0b573dfb42675522694db6f96f3a394fd008b48bc7da017b0cb8aaff90d7",
+    "marketplace/rankings/rankings.js": "b4d7e376ea6545dc28da303b3068c5dec470293e1a3f361bcaf2e032366faf23",
+    "marketplace/rankings/rankings.css": "ca2499c758f674ade50c92788f7dd48833d35e7159afe2d67b33d5c72e490908",
+    "marketplace/rankings/index.html": "b32d3f07662d937a092ced5b3cf077362665b422ae9bdb35a64df2aa0bdf409d",
+    "scripts/build-marketplace-static.mjs": "3368a6c88fece943d526383a7aba08301ada36ef48cb280e1732680a9135d8ca",
+    "test/marketplace-rankings.test.mjs": "0cced507bf2e8dd6b68b2b155b229ed96bda31851694989685916f853d32c0fa",
+    "test/marketplace-static-build.test.mjs": "505488522f904e7e95443b73ee4a9913407ca364149573a6e4f63b19c1714c97",
+    ".github/workflows/pages.yml": "7995c7fca391b9af3c62fa1ee3a8fc70433073094a2fe34fb9dea4fe86177a9f",
+    "test/deploy-refresh.test.mjs": "f192c15b913ec2a855bdb004c96ecdc2828f87b512ae8a18fb321a64a201af6d"
+  },
+  "rules": [
+    "Catalog and discovery candidates may rank independently of admission. Approved pinned entries are labelled listed; all others not listed.",
+    "No Catalog/candidate status, pins, eligibility or install paths change. Unlisted rows only link to GitHub.",
+    "Existing featured flags remain recommendation authority; candidates are not auto-featured.",
+    "Candidate-only projects are labelled unverified DSH candidates; only explicit known category topics participate in category leaders.",
+    "Read-only batched public GitHub metadata; no third-party code execution. Missing stars remain null.",
+    "Keep snapshot size/hash gate, deterministic sorting, 20-row pagination, bilingual status and mobile layout.",
+    "Candidate-only records require explicit DSH topic/name/description relevance; generic AI discovery hits without DSH evidence are not plugin ranking entries. Relevance never implies admission or verified compatibility."
+  ],
+  "gates": [
+    "unit tests including deduplication/status/link safety and partial metadata",
+    "npm run check",
+    "dual-origin static builds",
+    "browser listed/unlisted/tab/pagination/mobile acceptance"
+  ],
+  "rollback": {
+    "method": "recover exact scoped files from base Git commit; preserve unrelated files",
+    "baseCommit": "9927ab2931e705a7c5adda28f3a527165d181311"
+  },
+  "status": "local_verified_not_published",
+  "verifiedAt": "2026-10-04T02:48:32.483254+00:00",
+  "verification": {
+    "npmRunCheck": {
+      "passed": 377,
+      "failed": 0
+    },
+    "domesticLiveBuild": {
+      "status": "passed",
+      "repositories": 1043,
+      "metadataFetched": 970,
+      "metadataUnavailable": 73,
+      "requests": 27,
+      "snapshotEntries": 1054,
+      "popular": 981,
+      "recommended": 4,
+      "essential": 8,
+      "listed": 25,
+      "notListed": 1029,
+      "snapshotBytes": 537459
+    },
+    "internationalStaticBuild": "passed offline; missing stars remain null",
+    "browser": {
+      "desktopWidth": 1280,
+      "mobileWidth": 390,
+      "horizontalOverflow": false,
+      "bilingualLabels": "passed",
+      "recommendedRows": 4,
+      "recommendedListed": 2,
+      "recommendedNotListed": 2,
+      "unlistedNameLinks": "GitHub only",
+      "essentialRows": 8,
+      "essentialCategoryCoverage": 9,
+      "popularPage2Rows": 20,
+      "popularPage2FirstRank": 21,
+      "errorVisible": false,
+      "viewportReset": true
+    },
+    "previewUrl": "http://127.0.0.1:4178/marketplace/rankings/?list=recommended",
+    "published": false,
+    "remoteWrites": false,
+    "catalogChanged": false,
+    "profileChanged": false,
+    "authorContacted": false
+  },
+  "outputSha256": {
+    "marketplace/rankings/model.js": "28e5c62fb445798860d43869048f13c0aa4b529f5c4bb8c11f3291b1ca218bda",
+    "marketplace/rankings/rankings.js": "2db190a9cb30f240d15b91537263f20af3554d8bd19f065cf1913e5bbfa51f37",
+    "marketplace/rankings/rankings.css": "d7169996b31cdc656b31fde6d3c72cee10a153582cb2fdc1e1a46b52a9508156",
+    "marketplace/rankings/index.html": "0332d9fe485e093d4892db3c5253ff30250ab0f077af1a5630baa9dbcd044bab",
+    "scripts/build-marketplace-static.mjs": "9cc6ae37bcf3bd4b737ad3900e53e57148ebd3e9a7e13425a3ae4257c12dd3e0",
+    "test/marketplace-rankings.test.mjs": "c4590d2010b483aef86a4571d2fd79fbb2067951b921e17da3d911088e5d4303",
+    "test/marketplace-static-build.test.mjs": "ef2928baabccf09de1a273b849a31442c8206751f107c31f5066e96e96d2afda",
+    ".github/workflows/pages.yml": "c60af87c44723680d178d6ee36230f9d685ff14053f67161ca953e9c24ddfef2",
+    "test/deploy-refresh.test.mjs": "6942c1b9548fbb400047bbc3a68aaa0c48cac93302be23ba556ace71e9437d5b",
+    "scripts/ranking-github-metadata.mjs": "05e9f2f0b79a5c62d52d5c085a82516432707b91b723863f4a62c4c3551f94b8",
+    "test/ranking-github-metadata.test.mjs": "efb9407e69c81fc4612ad6a63e8159a85cac3af9c8cf53958f2148b4e2dd526d"
+  }
+}

@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.2')
+  assert.equal(pkg.version, '0.9.3')
   for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
     assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
     assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
@@ -18,6 +18,12 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.deepEqual(pkg.dsh.compatibility.dshOperations['0.2.0-rc.1'], {
     install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
   })
+  for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2']) {
+    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
+    assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
+      install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
+    })
+  }
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
@@ -36,17 +42,18 @@ test('package exposes a standard DSH bundle and client', async () => {
   const legacyClientRange = '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2'
   const rcClientRange = `${legacyClientRange} || 0.1.5-rc.1`
   const nextClientRange = `${rcClientRange} || 0.2.0-rc.1`
-  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], legacyClientRange)
+  const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2`
+  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], `${legacyClientRange} || 0.2.1-alpha.1 || 0.2.1-alpha.2`)
   for (const dependency of [
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-settings',
     '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.equal(pkg.peerDependencies[dependency], nextClientRange)
+  ]) assert.equal(pkg.peerDependencies[dependency], currentClientRange)
   for (const dependency of [
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-settings',
     '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1$/)
+  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.0-rc\.2 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2$/)
   assert.equal(pkg.private, true)
 })
 
@@ -110,9 +117,9 @@ test('community has a standalone route and the inner pages share the redesign st
   assert.match(community, /<body class="community-page">/)
   assert.match(community, /href="\.\/" aria-current="page" data-i18n="nav\.community"/)
   assert.match(community, /class="community-flow-list"/)
-  assert.match(community, /pages-redesign\.css\?v=20260924-inner-store-2/)
+  assert.match(community, /pages-redesign\.css\?v=20261003-rankings-1/)
   assert.match(builder, /href="\.\.\/community\/" data-i18n="nav\.community"/)
-  assert.match(builder, /pages-redesign\.css\?v=20260924-inner-store-2/)
+  assert.match(builder, /pages-redesign\.css\?v=20261003-rankings-1/)
   assert.match(staticBuilder, /route: '\/community\/'/)
   assert.match(staticBuilder, /'\/community\/': '0\.8'/)
   assert.match(redesignStyles, /body\.community-page \.community-grid/)

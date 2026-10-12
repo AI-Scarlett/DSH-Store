@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d266470204020a181bc07684a38ea0a2bbb73c27",
-  "version": "4.2.16",
+  "commit": "cc3766fb101e6281f6a3c30b713b0704cc093b2a",
+  "version": "4.2.40",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T12:19:15.000Z",
-    "observedAt": "2026-09-29T14:40:34.000Z",
+    "updatedAt": "2026-10-11T14:03:16.000Z",
+    "observedAt": "2026-10-11T14:43:05.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T14:40:34.000Z",
-      "evidenceUrl": "https://github.com/anbanai/creator-harness/commit/d266470204020a181bc07684a38ea0a2bbb73c27",
+      "checkedAt": "2026-10-11T14:43:05.000Z",
+      "evidenceUrl": "https://github.com/anbanai/creator-harness/commit/cc3766fb101e6281f6a3c30b713b0704cc093b2a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "anban-preset-manager"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; package contains Git submodules; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/anban-mcp.d.ts; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/anban-mcp.js; runtime artifact is missing from the fixed Git Commit: ./dsh/lib/preset-manager.d.ts; runtime artifact is missing fro",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./dsh/lib/anban-mcp.d.ts; runtime artifact is missing from the distributable surface: ./dsh/lib/anban-mcp.js; runtime artifact is missing from the distributable surface: ./dsh/lib/preset-manager.d.ts; runtime artifact is missing from the distributabl",
   "compatibility": {
     "dsh": "0.1.5-rc.3",
     "dshReleases": {
@@ -92,9 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,19 +145,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -187,9 +187,11 @@
       "@deepseek-ai/dsh-commands",
       "@deepseek-ai/dsh-credentials",
       "@deepseek-ai/dsh-home-paths",
+      "@deepseek-ai/dsh-llm",
       "@deepseek-ai/dsh-mcp-client",
       "@deepseek-ai/dsh-persona",
       "@deepseek-ai/dsh-skill-filesystem",
+      "@deepseek-ai/dsh-tool-ask-user",
       "@deepseek-ai/dsh-tool-bash",
       "@deepseek-ai/dsh-tool-fs",
       "@deepseek-ai/dsh-tool-fs-search",

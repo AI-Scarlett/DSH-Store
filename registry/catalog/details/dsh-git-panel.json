@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "36a4566a53cccf5227564fc3c851db18992ff487",
-  "version": "1.1.0",
+  "commit": "18f4ef1f1cb13947785c477262a14ac77577810b",
+  "version": "1.5.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T11:13:37.000Z",
-    "observedAt": "2026-09-28T14:34:52.000Z",
+    "updatedAt": "2026-10-11T15:04:02.000Z",
+    "observedAt": "2026-10-11T19:57:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-28T14:34:52.000Z",
-      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/36a4566a53cccf5227564fc3c851db18992ff487",
+      "checkedAt": "2026-10-11T19:57:39.000Z",
+      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/18f4ef1f1cb13947785c477262a14ac77577810b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "git-panel"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./core.ts; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./validate.ts; local module is missing from the distributable surface: lib/host/actions.d.ts -> ./types.ts; local module is missing from the distributable surface: lib/host/core.d.ts -> ./git.ts; local module is missing from the distributable surface: lib/host/core.d.ts -> ./llm-face.ts; local module is missing from the distrib",
   "compatibility": {
     "dsh": ">=0.1.2-rc.1",
     "dshReleases": {
@@ -93,11 +93,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -148,31 +146,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

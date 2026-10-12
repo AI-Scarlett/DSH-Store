@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "573cb62222329bb952f588769a9801b59e73025f",
-  "version": "0.0.6-alpha.2",
+  "commit": "73b4c7023f9252d85e538f3554445d3566cb478a",
+  "version": "0.0.7-alpha.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T15:05:01.000Z",
-    "observedAt": "2026-09-29T20:28:57.000Z",
+    "updatedAt": "2026-10-03T07:09:12.000Z",
+    "observedAt": "2026-10-03T13:06:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T20:28:57.000Z",
-      "evidenceUrl": "https://github.com/Yuer6327/ModelTester/commit/573cb62222329bb952f588769a9801b59e73025f",
+      "checkedAt": "2026-10-03T13:06:51.000Z",
+      "evidenceUrl": "https://github.com/Yuer6327/ModelTester/commit/73b4c7023f9252d85e538f3554445d3566cb478a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "modeltester"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": ">=0.1.0-rc.7 <0.3.0",
     "dshReleases": {
@@ -97,7 +97,9 @@
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.1": "compatible",
-      "0.2.0-rc.2": "compatible"
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.1": "compatible",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -185,6 +187,18 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

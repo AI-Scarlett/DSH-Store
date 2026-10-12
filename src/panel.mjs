@@ -84,6 +84,24 @@ function sendJson(res, status, payload, extraHeaders = {}) {
   res.end(JSON.stringify(payload))
 }
 
+function requestedProfile(body, options) {
+  const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+  if (options.desktopMode === true && profile !== 'desktop') {
+    throw Object.assign(new Error('Desktop 商城只能读取当前 Desktop Profile。'), {
+      code: 'DESKTOP_PROFILE_MISMATCH', status: 409,
+    })
+  }
+  return profile
+}
+
+function rejectDesktopMutation(options) {
+  if (options.desktopMode === true) {
+    throw Object.assign(new Error('官方 Desktop 的插件安装和重启由应用自身管理；请使用官方“插件”页。'), {
+      code: 'DESKTOP_MUTATION_UNSUPPORTED', status: 409,
+    })
+  }
+}
+
 export async function handleInventoryRequest(req, res, options = {}) {
   try {
     if (req.method !== 'POST') {
@@ -92,7 +110,7 @@ export async function handleInventoryRequest(req, res, options = {}) {
     }
     assertSameOrigin(req)
     const body = await readJsonBody(req)
-    const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+    const profile = requestedProfile(body, options)
     const value = await readProfileInventory({ dshHome: options.dshHome, profile })
     sendJson(res, 200, { ok: true, value })
   } catch (error) {
@@ -128,7 +146,7 @@ async function handleJsonRequest(req, res, callback, intent = null) {
 
 export function handleMarketRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, async body => {
-    const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+    const profile = requestedProfile(body, options)
     const inventory = await readProfileInventory({ dshHome: options.dshHome, profile })
     const view = body.view ?? 'market'
     // Load the small index first. With the split Catalog format only the
@@ -197,12 +215,12 @@ export function handleMarketRequest(req, res, options = {}) {
 
 export function handleHealthRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, async body => {
-    const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+    const profile = requestedProfile(body, options)
     const catalog = await options.catalogService.load({ force: body.refresh === true })
     return checkProfileHealth({
       dshHome: options.dshHome,
       profile,
-      runner: options.runner,
+      runner: options.desktopMode === true ? null : options.runner,
       catalog,
       permissionDecisions: body.permissionDecisions,
     })
@@ -211,7 +229,7 @@ export function handleHealthRequest(req, res, options = {}) {
 
 export function handleSourceUpdateRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, async body => {
-    const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+    const profile = requestedProfile(body, options)
     const inventory = await readProfileInventory({ dshHome: options.dshHome, profile })
     const catalog = await options.catalogService.load({ force: body.refresh === true })
     const entry = catalog.entries.find(item => item.id === body.pluginId) ?? null
@@ -226,16 +244,16 @@ export function handleDshVersionRequest(req, res, options = {}) {
 }
 
 export function handlePlanRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, body => options.operationService.createPlan(body), 'plan')
+  return handleJsonRequest(req, res, body => { rejectDesktopMutation(options); return options.operationService.createPlan(body) }, 'plan')
 }
 
 export function handleExecuteRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, body => options.operationService.start(body), 'execute')
+  return handleJsonRequest(req, res, body => { rejectDesktopMutation(options); return options.operationService.start(body) }, 'execute')
 }
 
 export function handleRuntimeRequest(req, res, options = {}) {
   return handleJsonRequest(req, res, async body => {
-    const profile = validateProfileName(body.profile ?? options.defaultProfile ?? 'web')
+    const profile = requestedProfile(body, options)
     if (!options.runtimeStatus || options.runtimeStatus.profile !== profile) {
       throw Object.assign(new Error('runtime status is unavailable for this Profile'), { code: 'RUNTIME_STATUS_UNAVAILABLE' })
     }
@@ -244,23 +262,26 @@ export function handleRuntimeRequest(req, res, options = {}) {
 }
 
 export function handleRestartPlanRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, body => options.restartService.createPlan(body), 'restart-plan')
+  return handleJsonRequest(req, res, body => { rejectDesktopMutation(options); return options.restartService.createPlan(body) }, 'restart-plan')
 }
 
 export function handleRestartExecuteRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, body => options.restartService.execute(body), 'restart-execute')
+  return handleJsonRequest(req, res, body => { rejectDesktopMutation(options); return options.restartService.execute(body) }, 'restart-execute')
 }
 
 export function handleGuardianRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, () => options.guardianService.status())
+  return handleJsonRequest(req, res, () => options.desktopMode === true
+    ? { supported: false, available: false, errorCode: 'OFFICIAL_DESKTOP_OWNS_HOST',
+      message: '官方 Desktop 自行管理 Host；商城 Guardian 不适用于 Desktop。' }
+    : options.guardianService.status())
 }
 
 export function handleGuardianPlanRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, body => options.guardianService.createInstallPlan(body), 'guardian-plan')
+  return handleJsonRequest(req, res, body => { rejectDesktopMutation(options); return options.guardianService.createInstallPlan(body) }, 'guardian-plan')
 }
 
 export function handleGuardianExecuteRequest(req, res, options = {}) {
-  return handleJsonRequest(req, res, body => options.guardianService.executeInstall(body), 'guardian-execute')
+  return handleJsonRequest(req, res, body => { rejectDesktopMutation(options); return options.guardianService.executeInstall(body) }, 'guardian-execute')
 }
 
 export function registerInventoryRoute(webServer, options = {}) {

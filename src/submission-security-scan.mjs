@@ -112,7 +112,7 @@ export function scanSubmissionSources(files, options = {}) {
     .sort((left, right) => left.path.localeCompare(right.path, 'en'))
 
   for (const file of sortedFiles) {
-    const reviewOnly = REVIEW_ONLY_PATH.test(file.path)
+    const reviewOnly = options.packaged !== true && REVIEW_ONLY_PATH.test(file.path)
     const lines = file.source.split(/\r?\n/)
     for (let index = 0; index < lines.length; index += 1) {
       const line = lines[index].slice(0, SUBMISSION_SCAN_BOUNDS.maxFileBytes)
@@ -136,7 +136,8 @@ export function scanSubmissionSources(files, options = {}) {
   const skippedOversize = boundedInteger(options.skippedOversize, 0)
   const skippedUnsupported = boundedInteger(options.skippedUnsupported, 0)
   const capped = options.capped === true || eligibleFiles > sortedFiles.length
-  const complete = !capped && skippedOversize === 0 && skippedUnsupported === 0
+  const scopeReasons = Array.isArray(options.scopeReasons) ? [...new Set(options.scopeReasons)] : []
+  const complete = !capped && skippedOversize === 0 && skippedUnsupported === 0 && scopeReasons.length === 0
   const counts = findings.reduce((summary, finding) => {
     summary[finding.severity] += 1
     return summary
@@ -152,6 +153,7 @@ export function scanSubmissionSources(files, options = {}) {
     policy: 'high-risk-block-cli-capability-warn-v1',
     verdict,
     complete,
+    scopeReasons,
     filesScanned: sortedFiles.length,
     eligibleFiles,
     skippedOversize,

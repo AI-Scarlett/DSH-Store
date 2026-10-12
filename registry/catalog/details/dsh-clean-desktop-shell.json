@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5a1866f5de43b37f05140a03cbf6b02709e87962",
+  "commit": "b44f25d14e69cdf0ff7c84c4c8bc7fa577a3b921",
   "version": "0.1.14",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T21:57:57.000Z",
-    "observedAt": "2026-09-30T02:08:17.000Z",
+    "updatedAt": "2026-10-11T21:35:02.000Z",
+    "observedAt": "2026-10-12T04:47:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T02:08:17.000Z",
-      "evidenceUrl": "https://github.com/Icather/dsh-clean-desktop-shell/commit/5a1866f5de43b37f05140a03cbf6b02709e87962",
+      "checkedAt": "2026-10-12T04:47:28.000Z",
+      "evidenceUrl": "https://github.com/Icather/dsh-clean-desktop-shell/commit/b44f25d14e69cdf0ff7c84c4c8bc7fa577a3b921",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "clean-desktop-shell"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.1 <0.2.0",
     "dshReleases": {
@@ -96,9 +96,9 @@
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "unknown",
       "0.1.5-rc.3": "compatible",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -173,19 +173,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

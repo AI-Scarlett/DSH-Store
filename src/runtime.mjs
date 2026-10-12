@@ -10,6 +10,7 @@ function shellQuote(value) {
 
 export function createRuntimeStatus(options = {}) {
   const profile = options.profile
+  const desktopMode = options.desktopMode === true
   const bootId = options.bootId ?? randomUUID()
   const startedAt = options.startedAt ?? new Date().toISOString()
   const command = Array.isArray(options.restartCommand) ? [...options.restartCommand] : restartCommand(profile)
@@ -18,11 +19,14 @@ export function createRuntimeStatus(options = {}) {
     bootId,
     startedAt,
     profile,
+    desktopMode,
     restartCommand: command,
     restartCommandText: command.map(shellQuote).join(' '),
     restartWorkingDirectory: options.restartWorkingDirectory ?? null,
-    restartSupported: true,
-    restartMode: 'external-guardian',
-    restartReason: 'Restart is accepted only by the marketplace-bundled Guardian running outside the DSH process.',
+    restartSupported: !desktopMode,
+    restartMode: desktopMode ? 'official-desktop' : 'external-guardian',
+    restartReason: desktopMode
+      ? 'The official Desktop application owns its Host and restart lifecycle.'
+      : 'Restart is accepted only by the marketplace-bundled Guardian running outside the DSH process.',
   })
 }

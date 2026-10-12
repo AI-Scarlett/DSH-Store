@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "239d7bbe885d8bf07ae6068ecb5cccaf9cbfa291",
-  "version": "5.5.0",
+  "commit": "6322a73d67d70aed68d510eccfd4d4cef6f5db41",
+  "version": "6.5.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T20:07:39.000Z",
-    "observedAt": "2026-09-29T20:28:57.000Z",
+    "updatedAt": "2026-10-11T02:29:20.000Z",
+    "observedAt": "2026-10-11T04:32:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T20:28:57.000Z",
-      "evidenceUrl": "https://github.com/siweina/dsh-novel-writer/commit/239d7bbe885d8bf07ae6068ecb5cccaf9cbfa291",
+      "checkedAt": "2026-10-11T04:32:14.000Z",
+      "evidenceUrl": "https://github.com/siweina/dsh-novel-writer/commit/6322a73d67d70aed68d510eccfd4d4cef6f5db41",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
     "novel-writer"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: lib/lexicons/dutir_seven.json.gz, lib/models/onnx/model_quantized.onnx, lib/models/tokenizer.json.gz; runtime source exceeds the automatic review byte bound: 1420599 total bytes (maximum 2097152); largest file 314748 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,9 +91,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -144,19 +144,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

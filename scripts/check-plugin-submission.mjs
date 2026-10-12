@@ -2,6 +2,8 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { posix } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { canonicalGithubRepository, loadCatalogFromFiles, validateCatalog, verifyCatalogEntry } from '../src/catalog.mjs'
+import { packageSourceSurface, SCANNABLE_SOURCE, unsupportedPackageEntry, missingLocalModuleReasons } from '../src/package-source-surface.mjs'
+import { localModuleEvidence } from '../src/automation-source-policy.mjs'
 import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
 
 export const SUBMISSION_REPORT_MARKER = '<!-- dsh-plugin-submission-check -->'
@@ -17,9 +19,6 @@ const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare']
 const MAX_MANIFEST_CANDIDATES = 48
 const DEFAULT_TIMEOUT_MS = 10_000
 const SECURITY_SCAN_TREE_BYTES = 8 * 1024 * 1024
-const SECURITY_SCAN_SOURCE = /\.(?:[cm]?[jt]sx?|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|sh|bash|zsh|fish|ps1|psm1|cmd|bat|ya?ml|json)$/i
-const SECURITY_SCAN_EXCLUDED_DIRECTORY = /(?:^|\/)(?:node_modules|vendor|dist|build|coverage|target|\.git|\.next|\.nuxt|out)(?:\/|$)/i
-const SECURITY_SCAN_EXCLUDED_FILE = /(?:^|\/)(?:package-lock\.json|npm-shrinkwrap\.json|pnpm-lock\.ya?ml|yarn\.lock|bun\.lockb?|composer\.lock|Cargo\.lock|go\.sum|.*\.min\.js|.*\.map)$/i
 
 function submissionError(code, message) {
   return Object.assign(new Error(message), { code })
@@ -410,12 +409,6 @@ function scanFilePriority(path) {
   return 3
 }
 
-function repositoryPathWithinPackage(path, installPath) {
-  const prefix = installPath ? `${installPath.replace(/\/$/, '')}/` : ''
-  if (prefix && !path.startsWith(prefix)) return null
-  return prefix ? path.slice(prefix.length) : path
-}
-
 export async function scanSubmissionRepository(result, options = {}) {
   if (result?.status !== 'passed' || !result.candidate) {
     throw submissionError('SUBMISSION_SCAN_INPUT_INVALID', 'Security scan requires a passed fixed-source precheck')
@@ -429,26 +422,19 @@ export async function scanSubmissionRepository(result, options = {}) {
   const tree = await fetchJson(`${apiRoot}/git/trees/${entry.commit}?recursive=1`, {
     ...fetchOptions, code: 'SUBMISSION_SCAN_TREE_HTTP', maxBytes: SECURITY_SCAN_TREE_BYTES,
   })
-  const treeEntries = Array.isArray(tree?.tree) ? tree.tree : []
-  const packageEntries = treeEntries
-    .map(item => ({ item, relativePath: typeof item?.path === 'string'
-      ? repositoryPathWithinPackage(item.path, entry.installPath) : null }))
-    .filter(record => record.relativePath !== null)
-  const skippedUnsupported = packageEntries.filter(({ item, relativePath }) =>
-    (item?.mode === '120000' || item?.mode === '160000' || item?.type === 'commit')
-    && (SECURITY_SCAN_SOURCE.test(relativePath) || relativePath === 'package.json')).length
-  const eligible = packageEntries
-    .filter(({ item, relativePath }) => item?.type === 'blob'
-      && item?.mode !== '120000'
-      && !SECURITY_SCAN_EXCLUDED_DIRECTORY.test(relativePath)
-      && !SECURITY_SCAN_EXCLUDED_FILE.test(relativePath)
-      && (relativePath === 'package.json' || SECURITY_SCAN_SOURCE.test(relativePath)))
+  const manifest = JSON.parse(await readPinnedText(entry.repositoryUrl, entry.commit, entry.manifestPath,
+    { ...fetchOptions, maxBytes: SUBMISSION_SCAN_BOUNDS.maxFileBytes }))
+  const surface = packageSourceSurface(manifest, tree, entry.installPath)
+  const skippedUnsupported = surface.entries.filter(unsupportedPackageEntry).length
+  const eligible = surface.entries
+    .filter(item => item.type === 'blob' && item.mode !== '120000' && SCANNABLE_SOURCE.test(item.relativePath))
+    .map(item => ({ item, relativePath: item.relativePath }))
     .sort((left, right) => scanFilePriority(left.relativePath) - scanFilePriority(right.relativePath)
       || left.relativePath.localeCompare(right.relativePath, 'en'))
   const oversized = eligible.filter(({ item }) => !Number.isSafeInteger(item?.size)
-    || item.size > SUBMISSION_SCAN_BOUNDS.maxFileBytes)
+    || item.size < 0 || item.size > SUBMISSION_SCAN_BOUNDS.maxFileBytes)
   const selected = eligible.filter(({ item }) => Number.isSafeInteger(item?.size)
-      && item.size <= SUBMISSION_SCAN_BOUNDS.maxFileBytes)
+      && item.size >= 0 && item.size <= SUBMISSION_SCAN_BOUNDS.maxFileBytes)
     .slice(0, SUBMISSION_SCAN_BOUNDS.maxFiles)
   const sources = []
   for (let index = 0; index < selected.length; index += 8) {
@@ -461,13 +447,23 @@ export async function scanSubmissionRepository(result, options = {}) {
       sources.push({ path: batch[offset].relativePath, source: texts[offset] })
     }
   }
-  return scanSubmissionSources(sources, {
+  const scopeReasons = [...surface.reasons]
+  for (const file of sources) {
+    const item = surface.entries.find(item => item.relativePath === file.path)
+    if (Buffer.byteLength(file.source) !== item.size) scopeReasons.push(`fixed source byte size does not match tree: ${file.path}`)
+    const modules = localModuleEvidence(file.source, file.path)
+    scopeReasons.push(...missingLocalModuleReasons(modules.references, file.path, surface.entries))
+    if (modules.dynamic) scopeReasons.push(`dynamic module loading or code evaluation requires review: ${file.path}`)
+  }
+  return { ...scanSubmissionSources(sources, {
+    scopeReasons,
+    packaged: true,
     eligibleFiles: eligible.length,
     skippedOversize: oversized.length,
     skippedUnsupported,
     capped: tree?.truncated === true || eligible.length === 0
       || eligible.length - oversized.length > SUBMISSION_SCAN_BOUNDS.maxFiles,
-  })
+  }), scope: { kind: surface.kind, repositoryEntries: surface.repositoryEntries, files: surface.entries.length } }
 }
 
 function safeCode(value) {
@@ -489,6 +485,7 @@ function renderSecurityScan(scan) {
     `\`${safeCode(finding.file)}:${finding.line}\`：${safeCode(finding.message)}`)
   return `- 安全启发式扫描：**${verdict}**；已扫 ${scan.filesScanned}/${scan.eligibleFiles} 个文件；` +
     `Critical ${scan.counts.critical}、Warning ${scan.counts.warning}、Info ${scan.counts.info}；${boundary}\n` +
+    ((scan.scopeReasons?.length ?? 0) > 0 ? `- 扫描范围需复核：${scan.scopeReasons.slice(0, 8).map(safeCode).join('；')}\n` : '') +
     (findings.length > 0 ? `- 扫描发现：\n${findings.join('\n')}\n` : '')
 }
 
@@ -537,6 +534,10 @@ export async function runCli(argv = process.argv.slice(2), options = {}) {
     result = await checkSubmission(event?.issue?.body, options)
     const scanRepository = options.scanRepository ?? scanSubmissionRepository
     result.securityScan = await scanRepository(result, options)
+    if (!result.securityScan.complete && result.securityScan.verdict !== 'fail') {
+      result = { ...result, status: 'failed', code: 'SUBMISSION_SCAN_INCOMPLETE',
+        message: '固定源码读取通过，但扫描范围未完成核验；不可视为完整预检通过或自动上架依据' }
+    }
     if (result.securityScan.verdict === 'fail') {
       result = {
         ...result,

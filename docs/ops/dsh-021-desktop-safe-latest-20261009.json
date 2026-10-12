@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-021-desktop-safe-latest-20261009",
+  "type": "source-compatibility-release",
+  "status": "local-check-passed-ci-pending",
+  "createdAt": "2026-10-09T15:23:53.934692+00:00",
+  "baseCommit": "7cc9bcd03335536d34f5f700a59cd42a66f155ab",
+  "objective": "Bind DSH STORE to the running Desktop profile for safe read-only discovery, reject unsupported Desktop lifecycle and Guardian operations, and refresh only evidence-backed DSH compatibility; publish by CI-checked PR.",
+  "authority": {
+    "userRequest": "Check latest DSH and official Desktop, adapt where needed, then publish.",
+    "sourceWorkflow": "CI-checked pull request; deterministic checks; no real Profile or Desktop mutation.",
+    "latestDsh": {
+      "githubRelease": "0.2.1-alpha.2",
+      "npmPublished": "0.2.1-alpha.2",
+      "releaseUrl": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2"
+    }
+  },
+  "fileScope": {
+    "modify": [
+      "src/index.mjs",
+      "src/runtime.mjs",
+      "src/panel.mjs",
+      "src/client.js",
+      "package.json",
+      "README.md",
+      "src/dsh-version.mjs",
+      "test/dsh-version.test.mjs",
+      "test/contracts.test.mjs",
+      "test/catalog.test.mjs",
+      "test/upgrade-matrix.test.mjs"
+    ],
+    "add": [
+      "test/desktop-compat.test.mjs",
+      "docs/ops/dsh-021-desktop-safe-latest-20261009.json"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "src/index.mjs": "5012dbabe9c99f4edd62627c6c6eed22f71fac0173f3f664c63282ddfb917e97",
+      "src/runtime.mjs": "4ed401ac438e424de514b259645a90b9060a8ec7d18ac9b267c60504e8f247d6",
+      "src/panel.mjs": "25fa19f3bec04ba7413b35aa59a1412c95835573ecbbbb8440e5518ed9ad89b2",
+      "src/client.js": "3235d532952fcd5a5787ff4e84f2e3682688ad8b6a674bb4e4e91ab905a13c93",
+      "package.json": "0636f2f1b532bb0e792a162506e9286f53c51399b5390b9c74c14824c44cdf89",
+      "README.md": "3cc7a5456617e95cad8bf31e9386e1c32c2fae190f6ba747131fdc0e6e1753c7",
+      "src/dsh-version.mjs": "1a5eb8cc4c6cf2385d9315c67a70edcc8b97e011615cc7c6ea643eb594248b98",
+      "test/dsh-version.test.mjs": "73ff8316b2341309c4a629d898639b96aa518df37738f0ba8a2a151fa686dad4",
+      "test/contracts.test.mjs": "29826f0998d091c213c1c87981acc980aabffd89d4fa6e39f3404275efc87991",
+      "test/catalog.test.mjs": "1430c1dc2a1b0f8a2ce9022f5bc7fdca488b3784b5c977d88aa7417c811996f8",
+      "test/upgrade-matrix.test.mjs": "9cd9397aad5c24dac098ffb849988f2b9d63534dc7c46962ef75d4761315b916"
+    },
+    "absent": [
+      "test/desktop-compat.test.mjs",
+      "docs/ops/dsh-021-desktop-safe-latest-20261009.json"
+    ]
+  },
+  "gates": [
+    "Current official GitHub and npm DSH release evidence recorded",
+    "Desktop host mode derives from official ctx.profileContext",
+    "Desktop mutation, restart, and Guardian HTTP endpoints fail closed even for forged profile inputs",
+    "Desktop UI suppresses unsupported controls and points to official Plugins page",
+    "Web mode remains unchanged",
+    "npm run check",
+    "Disposable official DSH install/start/uninstall/rollback for each release marked compatible",
+    "PR CI and merged commit verified before public Catalog pin"
+  ],
+  "rollback": {
+    "source": "revert exact PR merge commit",
+    "catalog": "separate fixed-Commit policy PR if publication is allowed",
+    "profile": "no real Profile changed"
+  },
+  "stopConditions": [
+    "No compatible published official DSH package for exact claimed release",
+    "Desktop write path requires reserved CLI profile or unsupported private APIs",
+    "Any test writes real ~/.dsh",
+    "CI fails or source identity drifts"
+  ],
+  "verification": {
+    "localCheck": "npm run check passed: REGISTRY_OK entries=782, 387/387 tests; precondition hashes match base Commit",
+    "desktopBoundary": "official profileContext contract and HTTP forwarding source inspected; disposable Host route tests passed",
+    "latestDshE3": "PR #1349 initial CI passed: latest-three 0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2; alpha.2 macOS/Windows/Linux pnpm 10/11/12, previous releases Ubuntu. Removing unpublished dsh-client-runtime alpha Peer declarations caused all disposable CLI installs to fail on CI run 37959836471; restore the Host pre-install contract and require final CI rerun.",
+    "realDesktop": "not performed; no real Profile or packaged Desktop changed",
+    "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/37958079929",
+    "regressionUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/37959836471"
+  },
+  "rebasedFrom": "358b349a3b6d659dfd5ceda5f60bf6c0324a9e5f"
+}

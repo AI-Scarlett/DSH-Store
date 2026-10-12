@@ -22,24 +22,24 @@
   "manifestPath": "plugin/dsh-voice-mode/package.json",
   "installPath": "plugin/dsh-voice-mode",
   "updatePolicy": "external-only",
-  "commit": "4575aac07b689e669c890b17164a7f360dc0ff8e",
-  "version": "0.7.15",
+  "commit": "2552b18d8e25c9001ae2e75db7dee4081949816c",
+  "version": "0.7.23",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-24T08:53:04.000Z",
-    "observedAt": "2026-09-24T12:20:28.000Z",
+    "updatedAt": "2026-10-10T02:36:38.000Z",
+    "observedAt": "2026-10-10T04:46:57.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-24T12:20:28.000Z",
-      "evidenceUrl": "https://github.com/qishuilalala/dsh-voice-mode/commit/4575aac07b689e669c890b17164a7f360dc0ff8e",
+      "checkedAt": "2026-10-10T04:46:57.000Z",
+      "evidenceUrl": "https://github.com/qishuilalala/dsh-voice-mode/commit/2552b18d8e25c9001ae2e75db7dee4081949816c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "voice-mode"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime source exceeds the automatic review byte bound: 1123660 total bytes (maximum 2097152); largest file 743141 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -92,12 +92,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown"
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -148,37 +145,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -206,7 +185,6 @@
     },
     "externalDependencies": [
       "@deepseek-ai/schemastery",
-      "msedge-tts",
       "sherpa-onnx",
       "sherpa-onnx-node"
     ],

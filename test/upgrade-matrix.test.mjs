@@ -3,6 +3,28 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { resolveDshUpgradeMatrix } from '../scripts/resolve-dsh-upgrade-matrix.mjs'
 
+test('client peer declarations match the official Host pre-install contract', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const clients = manifest.dsh.client.inject
+  assert.equal(clients.length, 4)
+  const runtime = '@deepseek-ai/dsh-client-runtime'
+  assert.ok(clients.includes(runtime))
+  const runtimeAlternatives = manifest.peerDependencies[runtime].split(' || ')
+  assert.ok(runtimeAlternatives.includes('>=0.1.0-rc.6 <0.2.0'))
+  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2']) {
+    assert.ok(runtimeAlternatives.includes(release), `Host pre-install check requires runtime ${release}`)
+  }
+  for (const name of clients.filter(value => value !== runtime)) {
+    const alternatives = manifest.peerDependencies[name].split(' || ')
+    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2']) {
+      assert.ok(alternatives.includes(release), `${name} must explicitly support published ${release}`)
+    }
+    assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
+    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 2)
+    assert.ok(!alternatives.includes('*'))
+  }
+})
+
 test('upgrade matrix uses the exact ordered official latest-three release window', async () => {
   const result = await resolveDshUpgradeMatrix(async options => {
     assert.equal(options.releaseCount, 3)

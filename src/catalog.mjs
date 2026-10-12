@@ -789,23 +789,25 @@ export function validateScreenshots(value) {
 }
 
 function legacyAssurance(assurance) {
-  return Object.fromEntries(Object.entries(assurance ?? {}).map(([gate, record]) => {
+  return Object.fromEntries(Object.entries(assurance ?? {}).flatMap(([gate, record]) => {
     const value = { status: record?.status === 'partial' ? 'unknown' : record?.status ?? 'unknown' }
     if (record?.status === 'partial') value.evidenceStatus = 'partial'
     for (const field of ['method', 'checkedAt', 'evidenceUrl', 'dshRelease']) {
       if (record?.[field] != null) value[field] = record[field]
     }
-    return [gate, value]
+    // Historical validators reconstruct this exact default. The v2 detail
+    // retains the full evidence record independently of the legacy bridge.
+    return value.status === 'unknown' && Object.keys(value).length === 1 ? [] : [[gate, value]]
   }))
 }
 
-function legacyWireEntry(entry) {
+function legacyWireEntry(entry, searchTermLimit = 40) {
   return {
     id: entry.id,
     name: entry.name,
     packageName: entry.packageName,
     description: entry.description,
-    searchTerms: entry.searchTerms,
+    searchTerms: entry.searchTerms.slice(0, searchTermLimit),
     repositoryUrl: entry.repositoryUrl,
     defaultBranch: entry.defaultBranch,
     manifestPath: entry.manifestPath,
@@ -896,7 +898,15 @@ export function splitCatalogDocument(document, options = {}) {
       indexBytes: indexBuffer.length,
       indexEntryCount: validatedIndex.entries.length,
     },
-    entries: catalog.entries.map(legacyWireEntry),
+    entries: catalog.entries.map(entry => legacyWireEntry(entry)),
+  }
+  if (catalogBridgeBuffer(bridge).length > MAX_CATALOG_BRIDGE_RESPONSE_BYTES) {
+    // Preserve every historical entry and safety field. Search remains full in
+    // the v2 index/detail; old clients retain as many leading terms as fit.
+    for (const limit of [20, 12, 8, 5, 3]) {
+      bridge.entries = catalog.entries.map(entry => legacyWireEntry(entry, limit))
+      if (catalogBridgeBuffer(bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES) break
+    }
   }
   validateLegacyCatalog(bridge)
   assertLegacyCatalogCompatibility(bridge)
