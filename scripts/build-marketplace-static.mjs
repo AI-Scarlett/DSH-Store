@@ -7,6 +7,7 @@ import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { buildAutomationStatus } from '../src/automation-status.mjs'
 import { enrichRankingSnapshot } from './ranking-github-metadata.mjs'
 import { applyRankingRefreshState, createRankingSnapshot, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
+import { createKnownPluginDirectory, filterPluginDirectory } from '../marketplace/lib/plugin-directory.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -73,6 +74,26 @@ if (catalogIndex.schemaVersion !== 2 || !Array.isArray(catalogIndex.entries)
   throw new Error('The static build catalog index does not match the validated Catalog bridge')
 }
 const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(resolve(projectRoot, 'registry/candidates.json'), 'utf8')))
+const discoveryIndexBytes = await readFile(resolve(projectRoot, 'registry/discovery-index.json'))
+if (discoveryIndexBytes.byteLength > 12 * 1024 * 1024) throw new Error('Public discovery index exceeds the static-build byte bound')
+const discoveryIndex = JSON.parse(discoveryIndexBytes.toString('utf8'))
+if (discoveryIndex?.schemaVersion !== 1 || discoveryIndex.source?.url !== 'https://www.dsh.so/plugins-index.json'
+  || discoveryIndex.source?.license?.spdx !== 'CC-BY-4.0'
+  || discoveryIndex.source?.license?.attribution !== 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
+  || !Number.isInteger(discoveryIndex.source?.recordCount)
+  || discoveryIndex.source.recordCount !== discoveryIndex.entries?.length
+  || !Number.isFinite(Date.parse(discoveryIndex.source?.generatedAt))) {
+  throw new Error('Public discovery index metadata or source attribution is invalid')
+}
+const knownDirectoryEntries = createKnownPluginDirectory(catalogIndex.entries, candidateRegistry.entries, { discoveryIndex })
+const directoryStats = {
+  total: knownDirectoryEntries.length,
+  listed: knownDirectoryEntries.filter(entry => entry.listingStatus === 'listed').length,
+  categories: new Set(knownDirectoryEntries.flatMap(entry => entry.categories)).size,
+}
+directoryStats.unlisted = directoryStats.total - directoryStats.listed
+const directoryPageEntries = filterPluginDirectory(knownDirectoryEntries).slice(0, MARKET_PAGE_SIZE)
+const discoveryIndexSha256 = createHash('sha256').update(discoveryIndexBytes).digest('hex')
 
 async function readAutomationRuns(path) {
   if (!path) return {}
@@ -289,6 +310,46 @@ function pluginCard(entry) {
   </article>`
 }
 
+const directoryUi = defaultLocale === 'en'
+  ? { listed: 'Listed', unlisted: 'Not listed', reason: 'No matching DSH STORE Catalog record was found.', noAction: 'Directory record only · no install action', github: 'GitHub repository' }
+  : { listed: '已收录', unlisted: '未收录', reason: '尚未匹配到 DSH STORE Catalog 记录。', noAction: '仅展示目录记录 · 不提供安装', github: 'GitHub 仓库' }
+const publicDiscoveryAttribution = 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
+const directoryCategoryLabels = {
+  ai: ['AI 与智能体', 'AI & agents'], audio: ['音频', 'Audio'], automation: ['自动化', 'Automation'],
+  browser: ['浏览器', 'Browser'], 'code-review': ['代码审查', 'Code review'], content: ['内容创作', 'Content'],
+  creator: ['创作工具', 'Creator tools'], data: ['数据', 'Data'], database: ['数据库', 'Database'],
+  desktop: ['桌面端', 'Desktop'], developer: ['开发工具', 'Developer tools'], file: ['文件处理', 'Files'],
+  finance: ['金融', 'Finance'], game: ['游戏与娱乐', 'Games'], git: ['Git 工具', 'Git'], github: ['GitHub 集成', 'GitHub'],
+  knowledge: ['知识管理', 'Knowledge'], launcher: ['启动器', 'Launcher'], markdown: ['Markdown', 'Markdown'],
+  mcp: ['MCP 集成', 'MCP'], media: ['媒体', 'Media'], memory: ['记忆', 'Memory'], network: ['网络', 'Network'],
+  notification: ['通知', 'Notifications'], notify: ['通知', 'Notifications'], ocr: ['OCR', 'OCR'], office: ['办公', 'Office'],
+  pdf: ['PDF', 'PDF'], productivity: ['效率工具', 'Productivity'], proxy: ['代理', 'Proxy'], scheduler: ['定时任务', 'Scheduler'],
+  search: ['搜索', 'Search'], security: ['安全与隐私', 'Security & privacy'], 'skin-theme': ['主题外观', 'Themes'],
+  spreadsheet: ['表格', 'Spreadsheets'], storage: ['存储', 'Storage'], telegram: ['Telegram 集成', 'Telegram'],
+  terminal: ['终端', 'Terminal'], ui: ['界面增强', 'UI'], uncategorized: ['未分类', 'Uncategorized'],
+  video: ['视频', 'Video'], vision: ['视觉', 'Vision'], web: ['Web', 'Web'], 'web-search': ['网络搜索', 'Web search'],
+  agent: ['智能体', 'Agents'], 'agent-orchestration': ['智能体编排', 'Agent orchestration'],
+}
+const directoryCategoryLabel = id => directoryCategoryLabels[id]?.[defaultLocale === 'en' ? 1 : 0] || id
+
+function directoryCard(entry) {
+  const name = defaultLocale === 'en' ? entry.nameEn : entry.nameZh
+  const listed = entry.listingStatus === 'listed'
+  const categories = entry.categories.slice(0, 3)
+  const repoLink = entry.repositoryUrl
+    ? `<a class="repo-link" href="${htmlEscape(entry.repositoryUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${htmlEscape(directoryUi.github)}: ${htmlEscape(name)}">GH ↗</a>` : ''
+  const detailLink = entry.detailUrl
+    ? `<a class="repo-link" href="${htmlEscape(entry.detailUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${htmlEscape(publicDiscoveryAttribution)}: ${htmlEscape(name)}">↗</a>` : ''
+  return `<article id="plugin-${htmlEscape(anchorId(entry.id))}" class="plugin-card directory-entry-card" style="--plugin-color:${pluginColor(entry.id)}" data-static-plugin-id="${htmlEscape(entry.id)}">
+    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${htmlEscape(initials(name))}</span><span class="catalog-listing-tag ${listed ? 'listed' : 'unlisted'}">${listed ? directoryUi.listed : directoryUi.unlisted}</span></div>
+    <h3>${htmlEscape(name)}</h3><span class="package-line">${htmlEscape(entry.alias || entry.sourceId || entry.id)}</span>
+    <p class="plugin-description">${htmlEscape(entry.description || (defaultLocale === 'en' ? 'No public description.' : '暂无公开简介。'))}</p>
+    <div class="plugin-badges">${categories.map(id => `<span class="plugin-badge">${htmlEscape(directoryCategoryLabel(id))}</span>`).join('')}${entry.stars ? `<span class="plugin-badge directory-stars">★ ${new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN', { notation: 'compact', maximumFractionDigits: 1 }).format(entry.stars)} Stars</span>` : ''}</div>
+    ${listed ? '' : `<p class="catalog-listing-reason"><b>${defaultLocale === 'en' ? 'Listing status' : '收录状态'}</b>${directoryUi.reason}</p>`}
+    <footer class="plugin-card-footer"><span class="candidate-no-install">${directoryUi.noAction}</span><span class="directory-entry-links">${repoLink}${detailLink}</span></footer>
+  </article>`
+}
+
 function featuredCard(entry, index) {
   return `<article class="featured-card reveal visible" style="--plugin-color:${pluginColor(entry.id)}" data-static-featured-id="${htmlEscape(entry.id)}">
     <div class="featured-top"><span class="feature-number">PICK / 0${index + 1}</span><span class="dialog-badge">${htmlEscape(categoryLabel(entry.categories?.[0] || 'tools'))}</span></div>
@@ -352,6 +413,9 @@ const externalCatalogMarker = `<meta name="dsh-catalog-delivery" content="extern
   <meta name="dsh-catalog-index-sha256" content="${catalogIndexSha256}">
   <meta name="dsh-catalog-index-bytes" content="${catalogIndexBytes.byteLength}">
   <meta name="dsh-catalog-index-count" content="${catalogIndex.entries.length}">`
+const externalDiscoveryMarker = `<meta name="dsh-discovery-index-sha256" content="${discoveryIndexSha256}">
+  <meta name="dsh-discovery-index-bytes" content="${discoveryIndexBytes.byteLength}">
+  <meta name="dsh-discovery-index-count" content="${discoveryIndex.entries.length}">`
 const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = managerInstallable
@@ -582,15 +646,26 @@ await writeFile(resolve(outputRoot, 'marketplace/repair/repair-manifest.json'), 
 
 let plugins = await readFile(resolve(outputRoot, 'marketplace/plugins/index.html'), 'utf8')
 plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'plugins external catalog marker')
-const staticCards = staticCatalogEntries.map(pluginCard).join('')
+plugins = replaceRequired(plugins, '<!-- DSH_STATIC_DISCOVERY_INDEX -->', externalDiscoveryMarker, 'plugins discovery index marker')
+const categoryCounts = new Map()
+knownDirectoryEntries.forEach(entry => categoryCounts.set(entry.primaryCategory, (categoryCounts.get(entry.primaryCategory) || 0) + 1))
+let previousDirectoryCategory = null
+const staticCards = directoryPageEntries.map(entry => {
+  const category = entry.primaryCategory || 'uncategorized'
+  const heading = category === previousDirectoryCategory ? ''
+    : `<div class="directory-category-heading"><span>${htmlEscape(directoryCategoryLabel(category))}</span><b>${categoryCounts.get(category) || 0}</b></div>`
+  previousDirectoryCategory = category
+  return `${heading}${directoryCard(entry)}`
+}).join('')
 plugins = plugins.replace(/<!-- DSH_STATIC_PLUGIN_CARDS_BEGIN -->[\s\S]*?<!-- DSH_STATIC_PLUGIN_CARDS_END -->/, `<!-- DSH_STATIC_PLUGIN_CARDS_BEGIN -->${staticCards}<!-- DSH_STATIC_PLUGIN_CARDS_END -->`)
 plugins = replaceRequired(plugins, '<!-- DSH_STATIC_CATALOG_ITEMLIST -->', `<script type="application/ld+json">${JSON.stringify(catalogItemList, null, 2)}</script>`, 'plugins catalog ItemList marker')
-plugins = replaceElementText(plugins, 'stat-total', String(visibleEntries.length).padStart(2, '0'))
-plugins = replaceElementText(plugins, 'stat-approved', String(visibleEntries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
-plugins = replaceElementText(plugins, 'stat-categories', String(categoryCount).padStart(2, '0'))
-plugins = replaceElementText(plugins, 'stat-candidates', String(candidateRegistry.entries.length).padStart(2, '0'))
+plugins = replaceElementText(plugins, 'stat-total', new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN').format(directoryStats.total))
+plugins = replaceElementText(plugins, 'stat-approved', new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN').format(directoryStats.listed))
+plugins = replaceElementText(plugins, 'stat-categories', String(directoryStats.categories))
+plugins = replaceElementText(plugins, 'stat-candidates', new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN').format(directoryStats.unlisted))
 plugins = replaceElementText(plugins, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
-plugins = replaceElementText(plugins, 'catalog-meta', `静态目录已生成 · 首屏 ${Math.min(MARKET_PAGE_SIZE, visibleEntries.length)} / ${visibleEntries.length}`)
+plugins = replaceElementText(plugins, 'catalog-meta', `公开插件目录 · ${discoveryIndex.source.recordCount.toLocaleString(defaultLocale === 'en' ? 'en' : 'zh-CN')} 条来源记录`)
+plugins = replaceRequired(plugins, '<!-- DSH_STATIC_DISCOVERY_NOTE -->', `<span>${new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN').format(discoveryIndex.source.recordCount)} ${defaultLocale === 'en' ? 'public records' : '条公开记录'}</span><span>${defaultLocale === 'en' ? 'Index generated' : '索引生成时间'} · ${htmlEscape(discoveryIndex.source.generatedAt)}</span><a href="https://www.dsh.so/">${htmlEscape(publicDiscoveryAttribution)}</a><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>`, 'discovery source attribution')
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
 
 const catalogUpdatedAt = typeof snapshot.registry?.updatedAt === 'string' && snapshot.registry.updatedAt

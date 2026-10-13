@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "planId": "plugin-directory-full-population-20261013",
+  "status": "validated",
+  "createdAt": "2026-10-13T04:10:00Z",
+  "objective": "Replace the compliance-filtered 1,216-row plugin directory with a category-first, listing-state view over every record in the current dsh.so public index, while preserving existing DSH STORE Catalog/candidate records not present in that snapshot.",
+  "baseCommit": "cc1eeb290ee91ae5be431cad8122a8d4d2fbfeac",
+  "dataSource": {
+    "url": "https://www.dsh.so/plugins-index.json",
+    "generatedAt": "2026-10-13T00:19:35.310Z",
+    "recordCount": 19345,
+    "license": "CC-BY-4.0",
+    "attribution": "dsh.so — DSH Developer Hub (https://www.dsh.so)",
+    "scope": "Read-only public index metadata. No third-party code execution, security/compatibility/compliance screening, Catalog admission, or install action."
+  },
+  "mutation": {
+    "exactFileScope": true,
+    "files": [
+      {
+        "path": "docs/ops/plugin-directory-full-population-plan-20261013.json",
+        "stateBefore": "absent",
+        "sha256Before": null
+      },
+      {
+        "path": "registry/discovery-index.json",
+        "stateBefore": "absent",
+        "sha256Before": null
+      },
+      {
+        "path": "registry/discovery-index.json.gz",
+        "stateBefore": "absent",
+        "sha256Before": null
+      },
+      {
+        "path": "scripts/build-plugin-discovery-index.mjs",
+        "stateBefore": "absent",
+        "sha256Before": null
+      },
+      {
+        "path": "marketplace/lib/plugin-directory.js",
+        "stateBefore": "present",
+        "sha256Before": "0f6c24baf6e869dab0770387a55d89565f368098f81197f4e1732bbda67ad1c6"
+      },
+      {
+        "path": "marketplace/app.js",
+        "stateBefore": "present",
+        "sha256Before": "8a3d89eb9beab2043721acf657ae1aacf1e57c2914615d215323b551e8e94668"
+      },
+      {
+        "path": "marketplace/plugins/index.html",
+        "stateBefore": "present",
+        "sha256Before": "3e4d10e9214d09a9278c9b178d7461c76a46a89876142f58e5f1733ed2c8879a"
+      },
+      {
+        "path": "marketplace/store-layout.css",
+        "stateBefore": "present",
+        "sha256Before": "e4f131cfa68bc69ae81b3b6e182af8f8a2fec289bfc6043533c8a3256c7bdcce"
+      },
+      {
+        "path": "scripts/build-marketplace-static.mjs",
+        "stateBefore": "present",
+        "sha256Before": "6e18780d6e87fc0c178f5711477f229c2a115cced2d93d1404bb7434ff868aca"
+      },
+      {
+        "path": "package.json",
+        "stateBefore": "present",
+        "sha256Before": "ccf3c5bb9530e41ce33f2fe2eb6c121d7c069f2939c47943b699aedb63295f81"
+      },
+      {
+        "path": "test/plugin-directory.test.mjs",
+        "stateBefore": "present",
+        "sha256Before": "f1e99b08f8be5e7f15b0b0847408dcdec319cc0386ab72c106bc157e4dcb1b33"
+      },
+      {
+        "path": "test/marketplace-static-build.test.mjs",
+        "stateBefore": "present",
+        "sha256Before": "c0642f73c7c5303db4b8d35cdb294299081781a46d77630253ab45844c80749e"
+      },
+      {
+        "path": "test/contracts.test.mjs",
+        "stateBefore": "present",
+        "sha256Before": "757d5c547266f188c3dc1b676055ab344ebdf7128b8bfddd882d6f37e681dad5"
+      }
+    ],
+    "rollback": "Revert the feature commit; the prior Catalog and candidate registries remain untouched and Git history retains the previous directory."
+  },
+  "deterministicGates": [
+    "Source index JSON count equals its plugins array length and all 19,345 source rows are preserved exactly once in the generated snapshot; malformed rows receive safe fallbacks rather than being screened out.",
+    "Directory includes all source snapshot rows plus unmatched Catalog and Candidate Registry records; no DSH-topic or compliance predicate removes rows.",
+    "Categories derive only from public topic/capability tags with an explicit Uncategorized bucket; categories are the primary navigation dimension and collected/uncollected is a separate filter.",
+    "Collected means a matching record exists in the DSH STORE Catalog; this is not an installability, compatibility, security, or policy verdict. The directory renders no installation command/action.",
+    "Attribution and source generatedAt are preserved in data and displayed on the site; no claim that the snapshot is live is made.",
+    "A disposable fixture with at least 12,000 records verifies lossless population, category filtering, collection-state filtering, deduplication behavior, pagination, and no install actions.",
+    "Update the storefront contract assertion to require the category-directory loader, rather than the retired candidate-only loader.",
+    "Run npm run check and static-build verification; inspect a local browser route with the full snapshot and confirm loading always resolves or shows a bounded error/retry state."
+  ],
+  "externalEffects": {
+    "catalogMutation": false,
+    "authorContact": false,
+    "profileOrDshMutation": false,
+    "productionDeployment": false
+  },
+  "execution": {
+    "completedAt": "2026-10-13T04:31:05Z",
+    "baseCommit": "cc1eeb290ee91ae5be431cad8122a8d4d2fbfeac",
+    "checks": {
+      "npm run check": "passed; registry validation passed; 401/401 tests passed",
+      "static marketplace build": "passed; STATIC_MARKETPLACE_OK",
+      "local browser preview": "passed; full directory loaded with category-first filters and pagination",
+      "git diff --check": "passed"
+    },
+    "directoryReadback": {
+      "snapshotRecords": 19345,
+      "finalRecords": 19968,
+      "catalogListed": 1048,
+      "notListed": 18920,
+      "categoryCount": 46,
+      "generatedAt": "2026-10-13T00:19:35.310Z"
+    },
+    "outputSha256": {
+      "registry/discovery-index.json": "61a0d4291a25d6140acb7507315233cadcb245d938cf64ea388f5657d0b722a6",
+      "registry/discovery-index.json.gz": "14b13ca979fa3ebb6526335e030bd815d270281a984e5638e853f1d4f8ff1196",
+      "scripts/build-plugin-discovery-index.mjs": "1bc8807f81e317c8f3a37c7ac74a52449c222c35990181d234b9191319d9f08e",
+      "marketplace/lib/plugin-directory.js": "cc24e795716e611bb5643a00c6e4d5ae82b40318d8c24d108206b289537d8196",
+      "marketplace/app.js": "19df02fddf353dd633fca13487f67140f4fe5a90a70ec9a80ea733293ca624f0",
+      "marketplace/plugins/index.html": "8f8e123431cedebea3ec5b07f2ed33952739c1c7e3b1e53415d74097a9ac9aaf",
+      "marketplace/store-layout.css": "e58719a12e60da6cd476028e0cb23a789fb77c7b30fac5dd41ef748a92224716",
+      "scripts/build-marketplace-static.mjs": "2d970fdc8524da6a305b1ebb8f1493cad18a4bd28ae8b731bf7d34e817f29efe",
+      "package.json": "9801cc3cef3f77f9f09ce1b12628d25b01fc5e1d07313626d6e91ab1faa59fec",
+      "test/plugin-directory.test.mjs": "b9a538e0f4ba1e79beb1e9a820be31df9fa0e1cb93ecdab932c354288e5c8f90",
+      "test/marketplace-static-build.test.mjs": "17a99582b01645bf7dbacb273794235b5e1d560e2cc820ec1cc636669c8920b3",
+      "test/contracts.test.mjs": "3f8523434f67a16ff309f6d5960024732beb14b0fbd2d84c746e791ae415b879"
+    },
+    "externalEffects": {
+      "catalogMutation": false,
+      "authorContact": false,
+      "profileOrDshMutation": false,
+      "productionDeployment": false
+    }
+  }
+}

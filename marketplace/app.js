@@ -1,5 +1,6 @@
 const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.json'
 const CANDIDATES_URL = document.body.dataset.candidatesUrl || '../registry/candidates.json'
+const DISCOVERY_INDEX_URL = document.body.dataset.discoveryIndexUrl || '../../registry/discovery-index.json'
 const AUTOMATION_STATUS_URL = document.body.dataset.automationStatusUrl || null
 const IS_DIRECTORY = document.body.classList.contains('plugins-page')
 const pluginDirectoryModule = IS_DIRECTORY ? import('./lib/plugin-directory.js') : null
@@ -29,7 +30,7 @@ const translations = {
     'meta.title': 'DSH STORE｜DeepSeek Harness（DSH）插件商城',
     'meta.description': 'DSH STORE（dsh.store）是面向 DeepSeek Harness（DSH）的第三方插件商城，提供插件发现、权限与来源核对、安全接入说明及插件开发工具。',
     'directory.meta.title': '全部 DSH 插件｜DSH STORE',
-    'directory.meta.description': '浏览 DSH STORE 完整插件目录，按名称、能力、权限与兼容性搜索和筛选。',
+    'directory.meta.description': '浏览公开发现索引中的全部 DSH 插件记录，先按分类浏览，再按商城收录状态筛选。',
     'a11y.skip': '跳到主要内容', 'a11y.skipCatalog': '跳到插件目录',
     'nav.home': '首页', 'nav.discover': '插件目录', 'nav.community': '社区与开发者', 'nav.standards': '收录标准', 'nav.safety': '信任机制', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
     'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': '让 DSH，', 'hero.title2': '拥有更多可能。',
@@ -70,7 +71,7 @@ const translations = {
     'assurance.discovered': '已发现', 'assurance.installable': '可安装验证', 'assurance.runtime': '运行验证', 'assurance.security': '安全审查',
     'candidate.notice': '候选发现仅用于目录展示，不代表 DSH 兼容、安全审查或可安装；候选项目没有安装操作。',
     'candidate.search': '搜索候选项目、Topic、来源或 GitHub 仓库', 'candidate.emptyTitle': '没有匹配的候选项目', 'candidate.emptyBody': '候选注册表没有匹配当前关键词的记录；可信安装库不受影响。',
-    'directory.loading': '正在读取 Catalog 与候选发现记录…', 'directory.detailsLoading': '正在读取当前页插件详情与未收录原因…', 'directory.partial': '候选发现记录暂时不可用；当前仅显示商城 Catalog，列表可能不完整。', 'directory.detailPartial': '部分插件详情暂时无法读取；对应条目的具体未收录原因可能暂缺。', 'directory.reasonTitle': '未收录原因', 'directory.reasonUnavailable': '公开详情暂时无法读取；当前无法确认更具体的未收录原因。', 'directory.noDescription': '暂时没有可展示的公开说明。', 'directory.noAction': '仅展示 · 无安装操作',
+    'directory.loading': '正在读取公开插件发现索引…', 'directory.detailsLoading': '正在读取插件详情…', 'directory.partial': '公开发现索引暂时无法读取；当前只显示商城及候选仓库记录，数量不完整。', 'directory.candidatePartial': '商城候选补充记录暂时不可用；公开发现索引仍可浏览。', 'directory.detailPartial': '部分插件详情暂时无法读取。', 'directory.reasonTitle': '收录状态', 'directory.reasonUnavailable': '公开详情暂时无法读取。', 'directory.noDescription': '暂无公开简介，打开来源查看详情。', 'directory.noAction': '仅展示目录记录 · 不提供安装', 'directory.categoryTitle': '按分类浏览', 'directory.statusTitle': '再按收录状态筛选', 'directory.snapshot': '公开索引记录', 'directory.sourceLink': 'dsh.so 来源', 'directory.githubLink': 'GitHub 仓库', 'directory.ecosystemApp': '生态应用', 'directory.stars': 'Stars', 'directory.uncategorized': '未分类', 'directory.notCollected': '该记录尚未匹配到 DSH STORE Catalog 条目。此处仅展示是否收录，不作合规、安全或兼容性筛选。', 'directory.sourceAttribution': 'dsh.so — DSH Developer Hub (https://www.dsh.so) · CC BY 4.0', 'directory.sourceGenerated': '索引生成时间：{date}', 'directory.sourceEntries': '{count} 条公开记录', 'directory.stats.total': '全部公开记录', 'directory.stats.listed': '商城已收录', 'directory.stats.categories': '插件分类', 'directory.stats.unlisted': '商城未收录', 'directory.catalogTitle': '全部已知 DSH 插件', 'directory.catalogLead': '先按公开记录的分类浏览，再单独筛选商城已收录或未收录；此目录不做合规或兼容性筛选。', 'directory.sort.recommended': '分类内：已收录与 Stars 优先', 'directory.sort.stars': 'Stars 由高到低',
     'directory.statusBlocked': '目录策略未通过', 'directory.statusUnlisted': '当前未上架', 'directory.statusRejected': '候选审核未通过', 'directory.statusReviewing': '候选审核中', 'directory.statusDiscovered': '候选已发现',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
     'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
@@ -88,8 +89,8 @@ const translations = {
     'relation.card3.title': '浏览与变更分离', 'relation.card3.body': '在官网浏览不会改写 Profile。真实安装必须使用 DSH 官方 CLI，并经过计划、确认、备份、检查与回滚。',
     'faq.title': '安装之前，先把边界说清楚。', 'faq.q1': '官网会直接安装插件吗？', 'faq.a1': '不会。官网只负责发现与详情展示；生命周期操作需要在 DSH 内生成计划并确认。',
     'faq.q2': '“可安装”等于完成安全审计吗？', 'faq.a2': '不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。', 'faq.q3': '如何选择适合自己的插件？', 'faq.a3': '先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。',
-    'directory.title1': '发现插件，', 'directory.title2': '扩展 DSH 能力。', 'directory.lead': '汇总商城已收录项目与已知 DSH 扫描候选。按名称、能力或仓库筛选，并查看每个未收录项目的公开原因；候选发现不等于兼容或安全验证。',
-    'directory.capacity': '搜索关键词留在你的浏览器里', 'directory.capacityNote': '筛选和排序不会上传你的查询；目录合并 GitHub Catalog 与已知 DSH 候选发现记录。', 'directory.listingNote': '“已收录”仅表示进入商城目录，不等于安全审计、兼容性或运行验证；未收录项目展示公开记录中的原因，且不会提供安装操作。',
+    'directory.title1': '按分类发现，', 'directory.title2': '浏览全部已知插件。', 'directory.lead': '完整展示公开插件发现索引中的所有记录，并补入商城目录与候选仓库中独有的条目。分类与商城收录状态分开筛选；这里不做合规审查，也不提供安装操作。',
+    'directory.capacity': '展示目录，不替用户做审核', 'directory.capacityNote': '每条公开发现记录都会保留；按分类浏览后，可单独筛选已收录或未收录。', 'directory.listingNote': '“已收录”只表示在 DSH STORE Catalog 中找到对应记录；未收录原因仅为“尚未匹配到商城目录”。目录展示不代表兼容、安全或合规结论。',
     'footer.lead': '科技感来自清晰的系统，信任来自可检查的边界。', 'footer.catalogLead': '发现插件、看清权限，再决定是否接入。', 'footer.note': '收录不等于安全审计 · 浏览不会改写 Profile', 'footer.navTitle': '快速导航', 'footer.friendsTitle': '友情链接', 'footer.catalog': '插件目录', 'footer.community': '社区与开发者', 'footer.build': '开发插件', 'footer.standards': '收录标准', 'footer.faq': '常见问题', 'footer.about': '关于我们', 'dialog.title': '插件详情',
     'value.unknown': '未知', 'value.undeclared': '未声明', 'value.none': '无', 'value.noStats': '未启用统计', 'filter.all': '全部',
     'catalog.failed': '目录加载失败', 'catalog.offline': '本地目录未连接', 'catalog.meta': '显示 {shown} / {total} 个插件',
@@ -101,7 +102,7 @@ const translations = {
     'meta.title': 'DSH STORE | DeepSeek Harness Plugin Marketplace',
     'meta.description': 'DSH STORE is a third-party marketplace for discovering, evaluating, building, and safely connecting DeepSeek Harness plugins.',
     'directory.meta.title': 'All DSH Plugins | DSH STORE',
-    'directory.meta.description': 'Browse the complete DSH STORE catalog and filter by name, capability, permission, or compatibility.',
+    'directory.meta.description': 'Browse every record in the public DSH plugin discovery index, grouped by category and filterable by Store listing status.',
     'a11y.skip': 'Skip to main content', 'a11y.skipCatalog': 'Skip to plugin catalog',
     'nav.home': 'Home', 'nav.discover': 'Plugin catalog', 'nav.community': 'Community & creators', 'nav.standards': 'Listing standards', 'nav.safety': 'Trust protocol', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
     'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': 'Make DSH', 'hero.title2': 'more capable.',
@@ -142,7 +143,7 @@ const translations = {
     'assurance.discovered': 'Discovered', 'assurance.installable': 'Installability', 'assurance.runtime': 'Runtime', 'assurance.security': 'Security review',
     'candidate.notice': 'Discovery candidates are shown for reference only; this does not verify DSH compatibility, security, or installability. They have no install action.',
     'candidate.search': 'Search candidate projects, topics, sources, or GitHub repositories', 'candidate.emptyTitle': 'No matching candidate projects', 'candidate.emptyBody': 'The candidate registry has no record matching this query; the trusted install catalog is unaffected.',
-    'directory.loading': 'Loading Catalog and discovery records…', 'directory.detailsLoading': 'Loading current-page details and unlisted reasons…', 'directory.partial': 'Discovery records are temporarily unavailable; only Store Catalog entries are shown, so this list may be incomplete.', 'directory.detailPartial': 'Some plugin details are temporarily unavailable; a specific unlisted reason may be missing for those entries.', 'directory.reasonTitle': 'Why it is not listed', 'directory.reasonUnavailable': 'Public details are temporarily unavailable, so a more specific reason cannot be confirmed.', 'directory.noDescription': 'No public description is currently available.', 'directory.noAction': 'Display only · no install action',
+    'directory.loading': 'Loading the public plugin discovery index…', 'directory.detailsLoading': 'Loading plugin details…', 'directory.partial': 'The public discovery index is temporarily unavailable; only Store Catalog and candidate repository records are shown, so the count is incomplete.', 'directory.candidatePartial': 'Store candidate supplements are temporarily unavailable; the public discovery index remains available.', 'directory.detailPartial': 'Some plugin details are temporarily unavailable.', 'directory.reasonTitle': 'Listing status', 'directory.reasonUnavailable': 'Public details are temporarily unavailable.', 'directory.noDescription': 'No public summary; open the source record for details.', 'directory.noAction': 'Directory record only · no install action', 'directory.categoryTitle': 'Browse by category', 'directory.statusTitle': 'Then filter by Store listing', 'directory.snapshot': 'Public index records', 'directory.sourceLink': 'dsh.so source', 'directory.githubLink': 'GitHub repository', 'directory.ecosystemApp': 'Ecosystem app', 'directory.stars': 'Stars', 'directory.uncategorized': 'Uncategorized', 'directory.notCollected': 'No matching DSH STORE Catalog entry was found. This directory only marks listing status; it does not screen for compliance, safety, or compatibility.', 'directory.sourceAttribution': 'dsh.so — DSH Developer Hub (https://www.dsh.so) · CC BY 4.0', 'directory.sourceGenerated': 'Index generated: {date}', 'directory.sourceEntries': '{count} public records', 'directory.stats.total': 'Public records', 'directory.stats.listed': 'In DSH STORE', 'directory.stats.categories': 'Categories', 'directory.stats.unlisted': 'Not in DSH STORE', 'directory.catalogTitle': 'All known DSH plugins', 'directory.catalogLead': 'Browse public categories first, then filter independently by Store listing status. This directory does not screen for compliance or compatibility.', 'directory.sort.recommended': 'Category, then listed and stars', 'directory.sort.stars': 'Stars: high to low',
     'directory.statusBlocked': 'Catalog policy blocked', 'directory.statusUnlisted': 'Not currently listed', 'directory.statusRejected': 'Candidate review rejected', 'directory.statusReviewing': 'Candidate under review', 'directory.statusDiscovered': 'Candidate discovered',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
     'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
@@ -160,8 +161,8 @@ const translations = {
     'relation.card3.title': 'Browsing is separate from change', 'relation.card3.body': 'Browsing the site never writes to a Profile. Real installation uses the official DSH CLI with a plan, confirmation, backup, checks, and rollback.',
     'faq.title': 'Make the boundary clear before installing.', 'faq.q1': 'Does the website install plugins directly?', 'faq.a1': 'No. The site is for discovery and details only. Lifecycle actions require a confirmed plan inside DSH.',
     'faq.q2': 'Does “Available” mean security-audited?', 'faq.a2': 'No. It means the entry passes the current fixed-source, standard-bundle, and policy checks.', 'faq.q3': 'How should I choose a plugin?', 'faq.a3': 'Confirm the capability first, then review source, permissions, compatibility, and maintenance. Treat unknown information with caution.',
-    'directory.title1': 'Discover plugins.', 'directory.title2': 'Extend DSH.', 'directory.lead': 'Browse listed Store plugins and known DSH discovery candidates. Filter by name, capability, or repository and see why each unlisted entry is not listed; discovery is not compatibility or security verification.',
-    'directory.capacity': 'Your search terms stay in your browser', 'directory.capacityNote': 'Filtering and sorting never upload your query; the directory combines the GitHub Catalog with known DSH discovery records.', 'directory.listingNote': '“Listed” means only that an item is in the Store Catalog; it does not mean security-audited, compatible, or runtime-verified. Unlisted entries show their public reason and have no install action.',
+    'directory.title1': 'Browse by category.', 'directory.title2': 'See every known record.', 'directory.lead': 'Show every record in the public plugin discovery index, plus records found only in the Store Catalog or candidate registry. Categories and Store listing status are separate filters; this directory does not screen for compliance or provide installation.',
+    'directory.capacity': 'A directory, not an admission review', 'directory.capacityNote': 'Every public discovery record is retained. Browse by category first, then filter independently by Store listing status.', 'directory.listingNote': '“Listed” means only that a matching DSH STORE Catalog record exists. “Not listed” means no match was found. This directory does not make compatibility, safety, or compliance claims.',
     'footer.lead': 'Technology feels clear when the system is clear; trust comes from inspectable boundaries.', 'footer.catalogLead': 'Discover plugins, review permissions, then decide whether to connect.', 'footer.note': 'Listing is not a security audit · Browsing never writes to your Profile', 'footer.navTitle': 'Explore DSH STORE', 'footer.friendsTitle': 'Friends & ecosystem', 'footer.catalog': 'Plugin catalog', 'footer.community': 'Community & developers', 'footer.build': 'Build plugins', 'footer.standards': 'Listing standards', 'footer.faq': 'FAQ', 'footer.about': 'About us', 'dialog.title': 'Plugin details',
     'value.unknown': 'Unknown', 'value.undeclared': 'Not declared', 'value.none': 'None', 'value.noStats': 'Stats disabled', 'filter.all': 'All',
     'catalog.failed': 'Catalog load failed', 'catalog.offline': 'Local catalog unavailable', 'catalog.meta': 'Showing {shown} / {total} plugins',
@@ -188,8 +189,13 @@ const state = {
   catalogUrl: null,
   detailRequestId: 0,
   candidates: [],
+  discoveryIndex: null,
   directoryEntries: [],
   directoryFilterer: null,
+  directoryLoaded: false,
+  directoryLoading: false,
+  directoryLoadError: false,
+  directoryRequestId: 0,
   candidateSummary: { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 },
   listingFilter: 'all',
   candidateLoadError: false,
@@ -236,6 +242,7 @@ const els = {
   toast: document.querySelector('#toast'),
   viewTabs: document.querySelector('#catalog-view-tabs'),
   legend: document.querySelector('.result-row .legend'),
+  sourceNote: document.querySelector('#directory-source-note'),
   emptyTitle: document.querySelector('#empty-state h3'),
   emptyBody: document.querySelector('#empty-state p'),
 }
@@ -270,12 +277,31 @@ const englishCategories = {
   suites: 'Suites', clients: 'Clients & ecosystem', security: 'Security & privacy', experimental: 'Experimental',
 }
 
+const discoveryCategoryLabels = {
+  ai: ['AI 与智能体', 'AI & agents'], audio: ['音频', 'Audio'], automation: ['自动化', 'Automation'],
+  browser: ['浏览器', 'Browser'], 'code-review': ['代码审查', 'Code review'], content: ['内容创作', 'Content'],
+  creator: ['创作工具', 'Creator tools'], data: ['数据', 'Data'], database: ['数据库', 'Database'],
+  desktop: ['桌面端', 'Desktop'], developer: ['开发工具', 'Developer tools'], file: ['文件处理', 'Files'],
+  finance: ['金融', 'Finance'], game: ['游戏与娱乐', 'Games'], git: ['Git 工具', 'Git'], github: ['GitHub 集成', 'GitHub'],
+  knowledge: ['知识管理', 'Knowledge'], launcher: ['启动器', 'Launcher'], markdown: ['Markdown', 'Markdown'],
+  mcp: ['MCP 集成', 'MCP'], media: ['媒体', 'Media'], memory: ['记忆', 'Memory'], network: ['网络', 'Network'],
+  notification: ['通知', 'Notifications'], notify: ['通知', 'Notifications'], ocr: ['OCR', 'OCR'], office: ['办公', 'Office'],
+  pdf: ['PDF', 'PDF'], productivity: ['效率工具', 'Productivity'], proxy: ['代理', 'Proxy'], scheduler: ['定时任务', 'Scheduler'],
+  search: ['搜索', 'Search'], security: ['安全与隐私', 'Security & privacy'], 'skin-theme': ['主题外观', 'Themes'],
+  spreadsheet: ['表格', 'Spreadsheets'], storage: ['存储', 'Storage'], telegram: ['Telegram 集成', 'Telegram'],
+  terminal: ['终端', 'Terminal'], ui: ['界面增强', 'UI'], uncategorized: ['未分类', 'Uncategorized'],
+  video: ['视频', 'Video'], vision: ['视觉', 'Vision'], web: ['Web', 'Web'], 'web-search': ['网络搜索', 'Web search'],
+  agent: ['智能体', 'Agents'], 'agent-orchestration': ['智能体编排', 'Agent orchestration'],
+}
+
 const palette = ['#6f83ff', '#ff6c4a', '#8c6ce8', '#00a991', '#e0568c', '#4385c6', '#a36c45', '#6a9f39']
 const riskOrder = { low: 0, medium: 1, high: 2, unknown: 3 }
 const analyticsToken = value => String(value ?? '').toLowerCase().replace(/[^a-z0-9._-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80)
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character])
 const detailLabel = (group, value) => labels[state.locale]?.[group]?.[value] || String(value || t('value.unknown'))
-const categoryLabel = id => state.locale === 'en' ? englishCategories[id] || id : state.catalog?.registry?.categories?.[id] || id
+const categoryLabel = id => state.locale === 'en'
+  ? englishCategories[id] || discoveryCategoryLabels[id]?.[1] || id
+  : state.catalog?.registry?.categories?.[id] || discoveryCategoryLabels[id]?.[0] || id
 const initials = name => String(name || 'DSH').replace(/^DSH\s*/i, '').split(/[\s_-]+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase() || 'D'
 const pluginColor = id => palette[[...String(id)].reduce((total, character) => total + character.charCodeAt(0), 0) % palette.length]
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
@@ -562,12 +588,23 @@ function visibleEntries() {
 }
 
 function renderStats() {
-  const entries = catalogIndexEntries().filter(entry => entry.status !== 'unlisted')
-  const categoryCount = new Set(entries.flatMap(entry => entry.categories)).size
   const setText = (selector, value) => {
     const element = document.querySelector(selector)
     if (element) element.textContent = value
   }
+  if (IS_DIRECTORY) {
+    if (!state.directoryLoaded) return
+    const known = state.directoryEntries
+    const listed = known.filter(entry => entry.listingStatus === 'listed').length
+    const categories = new Set(known.flatMap(entry => entry.categories)).size
+    setText('#stat-total', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(known.length))
+    setText('#stat-approved', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(listed))
+    setText('#stat-categories', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(categories))
+    setText('#stat-candidates', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(known.length - listed))
+    return
+  }
+  const entries = catalogIndexEntries().filter(entry => entry.status !== 'unlisted')
+  const categoryCount = new Set(entries.flatMap(entry => entry.categories)).size
   setText('#stat-total', String(entries.length).padStart(2, '0'))
   setText('#stat-approved', String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
   setText('#stat-categories', String(categoryCount).padStart(2, '0'))
@@ -735,9 +772,58 @@ function listedCatalogFallbackTemplate(entry) {
   </article>`
 }
 
+function safeDirectoryUrl(value) {
+  if (typeof value !== 'string') return null
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' && ['github.com', 'www.dsh.so'].includes(url.hostname.toLowerCase())
+      && !url.username && !url.password ? url.href : null
+  } catch {
+    return null
+  }
+}
+
+function knownDirectoryCardTemplate(entry) {
+  const name = state.locale === 'en' ? entry.nameEn : entry.nameZh
+  const categoryBadges = entry.categories.slice(0, 3)
+    .map(category => `<span class="plugin-badge">${escape(categoryLabel(category))}</span>`).join('')
+  const githubUrl = safeDirectoryUrl(entry.repositoryUrl)
+  const sourceUrl = safeDirectoryUrl(entry.detailUrl)
+  const stars = Number.isSafeInteger(entry.stars) && entry.stars > 0
+    ? new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN', { notation: 'compact', maximumFractionDigits: 1 }).format(entry.stars)
+    : ''
+  const type = entry.kind === 'ecosystem-app' ? t('directory.ecosystemApp') : ''
+  const summary = entry.description || t('directory.noDescription')
+  return `<article id="plugin-${anchorId(entry.id)}" class="plugin-card directory-entry-card" style="--plugin-color:${pluginColor(entry.id)}">
+    <div class="plugin-card-top"><span class="plugin-card-icon" aria-hidden="true">${escape(initials(name))}</span><span class="catalog-listing-tag ${entry.listingStatus === 'listed' ? 'listed' : 'unlisted'}">${escape(entry.listingStatus === 'listed' ? t('listing.listed') : t('listing.unlisted'))}</span></div>
+    <h3>${escape(name)}</h3><span class="package-line">${escape(entry.alias || entry.sourceId || entry.id)}${type ? ` · ${escape(type)}` : ''}</span>
+    <p class="plugin-description">${escape(summary)}</p>
+    <div class="plugin-badges">${categoryBadges}${stars ? `<span class="plugin-badge directory-stars">★ ${escape(stars)} ${escape(t('directory.stars'))}</span>` : ''}</div>
+    ${entry.listingStatus === 'unlisted' ? `<p class="catalog-listing-reason"><b>${escape(t('directory.reasonTitle'))}</b>${escape(t('directory.notCollected'))}</p>` : ''}
+    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(t('directory.noAction'))}</span><span class="directory-entry-links">${githubUrl ? `<a class="repo-link" href="${escape(githubUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escape(t('directory.githubLink'))}: ${escape(name)}" data-repo-id="${escape(entry.id)}">GH ↗</a>` : ''}${sourceUrl ? `<a class="repo-link" href="${escape(sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escape(t('directory.sourceLink'))}: ${escape(name)}">↗</a>` : ''}</span></footer>
+  </article>`
+}
+
+function renderDirectoryCards(entries, matchingEntries) {
+  const categoryFor = entry => state.category || entry.primaryCategory || 'uncategorized'
+  const counts = new Map()
+  matchingEntries.forEach(entry => {
+    const category = categoryFor(entry)
+    counts.set(category, (counts.get(category) || 0) + 1)
+  })
+  let previousCategory = null
+  return entries.map(entry => {
+    const category = categoryFor(entry)
+    const heading = category === previousCategory ? ''
+      : `<div class="directory-category-heading"><span>${escape(categoryLabel(category))}</span><b>${counts.get(category) || 0}</b></div>`
+    previousCategory = category
+    return `${heading}${knownDirectoryCardTemplate(entry)}`
+  }).join('')
+}
+
 function renderCatalog() {
   if (!state.catalog || !els.grid || !els.meta || !els.empty) return
-  if (!state.candidatesLoaded || state.candidatesLoading) {
+  if (!state.directoryLoaded || state.directoryLoading) {
     const hasStaticCards = Boolean(els.grid.querySelector('[data-static-plugin-id]'))
     els.grid.hidden = !hasStaticCards
     els.empty.hidden = true
@@ -751,18 +837,13 @@ function renderCatalog() {
   state.page = Math.min(state.page, pageCount)
   const start = (state.page - 1) * state.pageSize
   const entries = matchingEntries.slice(start, start + state.pageSize)
-  const details = new Map(state.pageEntries.map(entry => [entry.id, entry]))
-  els.grid.innerHTML = entries.map(entry => {
-    if (entry.source === 'candidate') return candidateCardTemplate(entry)
-    const detail = details.get(entry.id) || state.detailCache.get(entry.id)
-    return entry.listingStatus === 'listed'
-      ? (detail ? cardTemplate(detail) : listedCatalogFallbackTemplate(entry))
-      : unlistedCatalogCardTemplate(entry, detail)
-  }).join('')
+  els.grid.innerHTML = renderDirectoryCards(entries, matchingEntries)
   els.grid.hidden = entries.length === 0
   els.empty.hidden = entries.length !== 0
-  const partialNotices = [state.pageLoading ? t('directory.detailsLoading') : '', state.candidateLoadError ? t('directory.partial') : '', state.pageDetailErrors?.size ? t('directory.detailPartial') : ''].filter(Boolean)
-  els.meta.innerHTML = `<b>${entries.length}</b> / ${total} · ${escape(t('listing.listed'))} ${state.directoryEntries.filter(entry => entry.listingStatus === 'listed').length} · ${escape(t('listing.unlisted'))} ${state.directoryEntries.filter(entry => entry.listingStatus === 'unlisted').length}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}${partialNotices.map(note => `<br><span class="directory-partial-notice">${escape(note)}</span>`).join('')}`
+  const partialNotices = [state.directoryLoadError ? t('directory.partial') : '', state.candidateLoadError ? t('directory.candidatePartial') : ''].filter(Boolean)
+  const sourceCount = state.discoveryIndex?.source?.recordCount
+  renderDirectorySourceNote()
+  els.meta.innerHTML = `<b>${entries.length}</b> / ${total} · ${escape(t('listing.listed'))} ${state.directoryEntries.filter(entry => entry.listingStatus === 'listed').length} · ${escape(t('listing.unlisted'))} ${state.directoryEntries.filter(entry => entry.listingStatus === 'unlisted').length}${sourceCount ? ` · ${escape(t('directory.snapshot'))} ${sourceCount.toLocaleString(state.locale === 'en' ? 'en' : 'zh-CN')}` : ''}${state.category ? ` · ${escape(categoryLabel(state.category))}` : ''}${partialNotices.map(note => `<br><span class="directory-partial-notice">${escape(note)}</span>`).join('')}`
   if (els.pagination) els.pagination.hidden = total <= state.pageSize
   if (els.previousPage) {
     els.previousPage.disabled = state.page <= 1
@@ -791,6 +872,22 @@ function renderCatalog() {
   if (els.emptyClear) els.emptyClear.hidden = !state.query && !state.category
   renderCategories()
   renderListingFilterCounts()
+}
+
+function renderDirectorySourceNote() {
+  if (!els.sourceNote) return
+  const source = state.discoveryIndex?.source
+  if (!source) {
+    els.sourceNote.hidden = true
+    return
+  }
+  const date = new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', {
+    dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC',
+  }).format(new Date(source.generatedAt))
+  const count = new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(source.recordCount)
+  const url = safeDirectoryUrl(source.url) || 'https://www.dsh.so/'
+  els.sourceNote.innerHTML = `<span>${escape(t('directory.sourceEntries', { count }))}</span><span>${escape(t('directory.sourceGenerated', { date }))}</span><a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(t('directory.sourceAttribution'))}</a>`
+  els.sourceNote.hidden = false
 }
 
 function detailItem(name, value, code = false) {
@@ -901,14 +998,17 @@ function setLocale(locale) {
   state.locale = locale
   localStorage.setItem('dsh-marketplace-locale', locale)
   applyLocale()
-  if (IS_DIRECTORY && state.candidatesLoaded) void rebuildKnownDirectory()
+  if (IS_DIRECTORY && state.directoryLoaded) void rebuildKnownDirectory()
 }
 
 async function rebuildKnownDirectory() {
-  if (!IS_DIRECTORY || !state.candidatesLoaded) return
+  if (!IS_DIRECTORY || !state.directoryLoaded) return
   const directory = await pluginDirectoryModule
   state.directoryFilterer = directory.filterPluginDirectory
-  state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), state.candidates, { locale: state.locale })
+  state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), state.candidates, {
+    discoveryIndex: state.discoveryIndex,
+    locale: state.locale,
+  })
   renderCategories()
   renderListingFilterCounts()
   refreshTrustedPage()
@@ -1022,7 +1122,7 @@ async function fetchCatalog() {
   for (const url of catalogCandidates()) {
     try {
       const readDocument = async (target, maximum) => {
-        const response = await fetch(target, { cache: 'no-store' })
+        const response = await fetch(target, { cache: 'no-store', signal: AbortSignal.timeout(12_000) })
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
         const declared = Number(response.headers.get('content-length'))
         if (Number.isFinite(declared) && declared > maximum) throw new Error('catalog response is too large')
@@ -1296,6 +1396,58 @@ async function fetchCandidateRegistry(catalog) {
   throw new Error(failures.join(' | ') || 'Candidate registry is unavailable')
 }
 
+async function fetchDiscoveryIndex() {
+  const integrity = (() => {
+    const sha256 = document.querySelector('meta[name="dsh-discovery-index-sha256"]')?.content || ''
+    const bytes = Number(document.querySelector('meta[name="dsh-discovery-index-bytes"]')?.content)
+    const count = Number(document.querySelector('meta[name="dsh-discovery-index-count"]')?.content)
+    if (!/^[0-9a-f]{64}$/.test(sha256) || !Number.isInteger(bytes) || bytes < 1 || bytes > 12 * 1024 * 1024
+      || !Number.isInteger(count) || count < 1 || count > 50_000) return null
+    return { sha256, bytes, count }
+  })()
+  const plainUrl = new URL(DISCOVERY_INDEX_URL, window.location.href).href
+  const failures = []
+  for (const target of [`${plainUrl}.gz`, plainUrl]) {
+    try {
+      const response = await fetch(target, { cache: 'no-store', signal: AbortSignal.timeout(15_000) })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const declared = Number(response.headers.get('content-length'))
+      const compressed = target.endsWith('.gz') && !response.headers.get('content-encoding')?.toLowerCase().includes('gzip')
+      const maximum = compressed ? 4 * 1024 * 1024 : 12 * 1024 * 1024
+      if (Number.isFinite(declared) && declared > maximum) throw new Error('discovery index response exceeds the byte bound')
+      let bytes = new Uint8Array(await response.arrayBuffer())
+      if (bytes.byteLength > maximum) throw new Error('discovery index response exceeds the byte bound')
+      if (compressed) {
+        if (typeof DecompressionStream !== 'function') throw new Error('gzip decompression is unavailable')
+        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))
+        bytes = new Uint8Array(await new Response(stream).arrayBuffer())
+      }
+      if (bytes.byteLength > 12 * 1024 * 1024) throw new Error('expanded discovery index exceeds the byte bound')
+      if (integrity) {
+        if (bytes.byteLength !== integrity.bytes) throw new Error('discovery index byte length does not match the build')
+        if (!globalThis.crypto?.subtle) throw new Error('discovery index integrity verification is unavailable')
+        const digest = [...new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes))]
+          .map(value => value.toString(16).padStart(2, '0')).join('')
+        if (digest !== integrity.sha256) throw new Error('discovery index SHA-256 does not match the build')
+      }
+      const payload = JSON.parse(new TextDecoder().decode(bytes))
+      if (payload?.schemaVersion !== 1 || !Array.isArray(payload.entries) || !payload.source
+        || payload.source.url !== 'https://www.dsh.so/plugins-index.json'
+        || payload.source.license?.spdx !== 'CC-BY-4.0'
+        || payload.source.license?.attribution !== 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
+        || !Number.isInteger(payload.source.recordCount) || payload.source.recordCount !== payload.entries.length
+        || payload.entries.length > 50_000 || !Number.isFinite(Date.parse(payload.source.generatedAt))) {
+        throw new Error('discovery index schema, attribution, timestamp, or row count is invalid')
+      }
+      if (integrity && payload.entries.length !== integrity.count) throw new Error('discovery index row count does not match the build')
+      return payload
+    } catch (error) {
+      failures.push(`${target}: ${error.message}`)
+    }
+  }
+  throw new Error(failures.join(' | '))
+}
+
 async function loadCatalog() {
   if (els.meta) els.meta.textContent = t('catalog.loading')
   if (els.error) els.error.hidden = true
@@ -1320,8 +1472,13 @@ async function loadCatalog() {
     state.pageLoading = false
     state.pageDetailErrors = new Set()
     state.candidates = []
+    state.discoveryIndex = null
     state.directoryEntries = []
     state.directoryFilterer = null
+    state.directoryLoaded = false
+    state.directoryLoading = false
+    state.directoryLoadError = false
+    state.candidateLoadError = false
     state.candidateSummary = { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 }
     state.candidatesLoaded = false
     state.candidateLoadError = false
@@ -1338,7 +1495,7 @@ async function loadCatalog() {
     } else if (!IS_DIRECTORY) {
       refreshTrustedPage()
     }
-    if (IS_DIRECTORY) void loadCandidates()
+    if (IS_DIRECTORY) void loadKnownDirectory()
     void latestPromise.then(latestResult => {
       if (!state.catalog || requestId !== state.catalogRequestId) return
       state.dshReleaseContext = createDshReleaseContext(state.indexEntries.length ? state.indexEntries : state.catalog.entries, latestResult)
@@ -1430,13 +1587,52 @@ async function loadAutomationStatus() {
   renderAutomationStatus()
 }
 
-async function loadCandidates() {
-  if (state.candidatesLoaded || state.candidatesLoading || !state.catalog) return
-  state.candidatesLoading = true
+async function loadKnownDirectory() {
+  if (!IS_DIRECTORY || state.directoryLoaded || state.directoryLoading || !state.catalog) return
+  const requestId = ++state.directoryRequestId
+  state.directoryLoading = true
+  state.directoryLoadError = false
+  state.candidateLoadError = false
   renderCatalog()
+
+  let directory
+  try {
+    directory = await pluginDirectoryModule
+  } catch (error) {
+    console.error('Failed to load the plugin directory module:', error)
+    state.directoryLoadError = true
+    state.directoryLoading = false
+    state.directoryLoaded = true
+    renderCatalog()
+    return
+  }
+
+  try {
+    state.discoveryIndex = await fetchDiscoveryIndex()
+  } catch (error) {
+    console.error('Failed to load the public discovery index:', error)
+    state.discoveryIndex = null
+    state.directoryLoadError = true
+  }
+  if (requestId !== state.directoryRequestId) return
+
+  state.directoryFilterer = directory.filterPluginDirectory
+  state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), [], {
+    discoveryIndex: state.discoveryIndex,
+    locale: state.locale,
+  })
+  state.directoryLoaded = true
+  state.directoryLoading = false
+  renderStats()
+  renderCatalog()
+  renderCategories()
+  renderListingFilterCounts()
+
+  state.candidatesLoading = true
   try {
     const candidateRegistry = await fetchCandidateRegistry(state.catalog)
-    state.candidates = candidateRegistry.entries.map(entry => ({ ...entry, installable: false, allowedActions: [] }))
+    if (requestId !== state.directoryRequestId) return
+    state.candidates = candidateRegistry.entries
     state.candidateSummary = state.candidates.reduce((summary, entry) => {
       const status = ['discovered', 'reviewing', 'rejected'].includes(entry.status) ? entry.status : 'unknown'
       summary.total += 1
@@ -1444,31 +1640,24 @@ async function loadCandidates() {
       return summary
     }, { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0 })
     state.candidateSummary.reviewable = state.candidateSummary.discovered + state.candidateSummary.reviewing
-    const directory = await pluginDirectoryModule
-    state.directoryFilterer = directory.filterPluginDirectory
-    state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), state.candidates, { locale: state.locale })
-    state.candidatesLoaded = true
-    renderStats()
   } catch (error) {
-    console.error('Failed to load marketplace candidates:', error)
+    console.error('Failed to load supplemental candidate records:', error)
     state.candidates = []
     state.candidateSummary = { total: 0, discovered: 0, reviewing: 0, rejected: 0, unknown: 0, reviewable: 0 }
     state.candidateLoadError = true
-    try {
-      const directory = await pluginDirectoryModule
-      state.directoryFilterer = directory.filterPluginDirectory
-      state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), [], { locale: state.locale })
-    } catch (directoryError) {
-      console.error('Failed to prepare the DSH plugin directory:', directoryError)
-      state.directoryEntries = []
-    }
-    state.candidatesLoaded = true
   } finally {
-    state.candidatesLoading = false
-    renderCatalog()
-    renderCategories()
-    renderListingFilterCounts()
-    if (state.candidatesLoaded) void loadCurrentPageDetails()
+    if (requestId === state.directoryRequestId) {
+      state.candidatesLoading = false
+      state.candidatesLoaded = true
+      state.directoryEntries = directory.createKnownPluginDirectory(catalogIndexEntries(), state.candidates, {
+        discoveryIndex: state.discoveryIndex,
+        locale: state.locale,
+      })
+      renderStats()
+      renderCatalog()
+      renderCategories()
+      renderListingFilterCounts()
+    }
   }
 }
 
