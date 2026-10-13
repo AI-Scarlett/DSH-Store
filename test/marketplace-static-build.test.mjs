@@ -75,6 +75,12 @@ test('static marketplace derives manager identity and catalog cards without muta
 
     const home = await readFile(join(output, 'marketplace/index.html'), 'utf8')
     const plugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
+    const runtimeApp = await readFile(join(output, 'marketplace/app.js'), 'utf8')
+    const runtimeVersion = sha256(Buffer.concat([
+      await readFile(new URL('marketplace/app.js', root)),
+      await readFile(new URL('marketplace/lib/plugin-directory.js', root)),
+      await readFile(new URL('marketplace/lib/dsh-release-policy.js', root)),
+    ])).slice(0, 12)
     const standards = await readFile(join(output, 'marketplace/standards/index.html'), 'utf8')
     const article = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
     const about = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
@@ -172,6 +178,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
     assert.match(home, /href="\.\/scans\/" data-scan-history-nav/)
     assert.match(home, /src="\.\/scan-history-nav\.js\?v=20261003-rankings-1"/)
+    assert.match(home, new RegExp(`src="\\.\\/app\\.js\\?v=${runtimeVersion}"`))
     assert.match(navigationScript, /data-desktop-download-menu/)
     assert.match(navigationScript, /headerTools\.insertBefore\(wrapper, localeSwitch\)/)
     assert.match(navigationScript, /new URL\('\.\.\/downloads\/', scanLink\.href\)/)
@@ -206,6 +213,9 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(plugins, /name="dsh-discovery-index-sha256" content="[a-f0-9]{64}"/)
     assert.match(plugins, /name="dsh-discovery-index-count" content="19345"/)
     assert.match(plugins, /data-discovery-index-url="\.\.\/\.\.\/registry\/discovery-index\.json"/)
+    assert.match(plugins, new RegExp(`src="\\.\\.\\/app\\.js\\?v=${runtimeVersion}"`))
+    assert.match(runtimeApp, new RegExp(`import\\('./lib/plugin-directory\\.js\\?v=${runtimeVersion}'\\)`))
+    assert.match(runtimeApp, new RegExp(`import\\('./lib/dsh-release-policy\\.js\\?v=${runtimeVersion}'\\)`))
     assert.match(plugins, /dsh\.so — DSH Developer Hub \(https:\/\/www\.dsh\.so\)/)
     assert.match(plugins, /CC BY 4\.0/)
     assert.match(plugins, /按分类浏览/)
@@ -220,6 +230,25 @@ test('static marketplace derives manager identity and catalog cards without muta
     const compressedDiscoveryOutput = await readFile(join(output, 'registry/discovery-index.json.gz'))
     assert.equal(JSON.parse(discoveryOutput).entries.length, 19_345)
     assert.deepEqual(gunzipSync(compressedDiscoveryOutput), discoveryOutput)
+    const versionedOutput = await mkdtemp(new URL('.tmp-marketplace-versioned-assets-', root))
+    try {
+      const productionCommit = 'a'.repeat(40)
+      await execFileAsync(process.execPath, [
+        staticBuilderPath,
+        '--out', relative(rootPath, versionedOutput),
+        '--source-sha', productionCommit,
+      ], { cwd: rootPath })
+      const versionedHome = await readFile(join(versionedOutput, 'marketplace/index.html'), 'utf8')
+      const versionedPlugins = await readFile(join(versionedOutput, 'marketplace/plugins/index.html'), 'utf8')
+      const versionedApp = await readFile(join(versionedOutput, 'marketplace/app.js'), 'utf8')
+      for (const page of [versionedHome, versionedPlugins]) {
+        assert.match(page, new RegExp(`app\\.js\\?v=${productionCommit.slice(0, 12)}`))
+      }
+      assert.match(versionedApp, new RegExp(`plugin-directory\\.js\\?v=${productionCommit.slice(0, 12)}`))
+      assert.match(versionedApp, new RegExp(`dsh-release-policy\\.js\\?v=${productionCommit.slice(0, 12)}`))
+    } finally {
+      await rm(versionedOutput, { recursive: true, force: true })
+    }
     assert.match(plugins, /搜索中文名、用途、别名或英文包名/)
     assert.doesNotMatch(plugins, /id="catalog-snapshot"/)
     assert.ok(Buffer.byteLength(home) < 300_000, 'home HTML must not embed the complete catalog')

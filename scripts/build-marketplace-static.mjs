@@ -28,6 +28,12 @@ if (previousRankingsPath) {
 const refreshRankingStars = ['daily', 'weekly', 'baseline'].includes(rankingRefreshMode)
 const outputRoot = resolve(projectRoot, argValue('--out') || '_site')
 const sourceSha = argValue('--source-sha') || process.env.GITHUB_SHA || 'local-worktree'
+const runtimeAssetVersion = /^[a-f0-9]{40}$/i.test(sourceSha)
+  ? sourceSha.slice(0, 12)
+  : createHash('sha256').update(await readFile(resolve(projectRoot, 'marketplace/app.js')))
+    .update(await readFile(resolve(projectRoot, 'marketplace/lib/plugin-directory.js')))
+    .update(await readFile(resolve(projectRoot, 'marketplace/lib/dsh-release-policy.js')))
+    .digest('hex').slice(0, 12)
 const automationRunsPath = argValue('--automation-runs')
 const automationReportsPath = argValue('--automation-reports')
 const siteOriginInput = argValue('--site-origin') || process.env.SITE_ORIGIN || 'https://dsh.store'
@@ -404,7 +410,12 @@ async function rewriteSiteReferences(directory) {
     }
     if (!entry.isFile() || !siteTextExtensions.has(entry.name.slice(entry.name.lastIndexOf('.')).toLowerCase())) continue
     const source = await readFile(absolutePath, 'utf8')
-    const rewritten = source.replaceAll('https://dsh.store', siteOrigin).replaceAll('dsh.store', siteHost)
+    let rewritten = source.replaceAll('https://dsh.store', siteOrigin).replaceAll('dsh.store', siteHost)
+    rewritten = rewritten
+      .replaceAll('src="../app.js"', `src="../app.js?v=${runtimeAssetVersion}"`)
+      .replaceAll('src="./app.js"', `src="./app.js?v=${runtimeAssetVersion}"`)
+      .replaceAll("import('./lib/plugin-directory.js')", `import('./lib/plugin-directory.js?v=${runtimeAssetVersion}')`)
+      .replaceAll("import('./lib/dsh-release-policy.js')", `import('./lib/dsh-release-policy.js?v=${runtimeAssetVersion}')`)
     if (rewritten !== source) await writeFile(absolutePath, rewritten)
   }
 }
