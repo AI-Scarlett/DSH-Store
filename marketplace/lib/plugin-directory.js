@@ -1,101 +1,248 @@
 const VALID_CATALOG_STATUSES = new Set(['approved', 'blocked', 'unlisted'])
-const VALID_CANDIDATE_STATUSES = new Set(['discovered', 'reviewing', 'rejected'])
-const validRepository = value => typeof value === 'string'
-  && /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(value.replace(/\/$/, ''))
-
-export function isDshDiscoveryCandidate(entry) {
-  const topics = Array.isArray(entry?.topics) ? entry.topics : []
-  return topics.some(topic => typeof topic === 'string'
-      && ['dsh', 'dsh-plugin', 'dsh-plugins', 'dsh-plugin-candidate', 'dsh-compatibility-review', 'deepseek-harness', 'deepseek-harness-plugin'].includes(topic.toLowerCase()))
-    || /(?:\bdsh(?:\b|插件)|deepseek[- ]harness)/i.test(`${entry?.name || ''} ${entry?.description || ''}`)
-}
-
-function listingReason(entry, source, locale) {
-  if (typeof entry.statusReason === 'string' && entry.statusReason.trim()) return entry.statusReason.trim()
-  const en = locale === 'en'
-  if (source === 'candidate') {
-    if (entry.status === 'rejected') return en
-      ? 'Fixed-Commit review did not pass; the public record has no more specific reason.'
-      : '固定 Commit 审查未通过；公开记录没有提供更具体的原因。'
-    if (entry.status === 'reviewing') return en
-      ? 'This discovery candidate is still under review and is not approved for the Store Catalog.'
-      : '该发现候选仍在审核中，尚未获准进入商城目录。'
-    return en ? 'This discovery candidate has not completed fixed-Commit review.' : '该发现候选尚未完成固定 Commit 审查。'
-  }
-  if (entry.status === 'blocked') return en
-    ? 'This plugin did not pass the current Store listing policy; the public record has no more specific reason.'
-    : '该插件未通过当前商城收录策略；公开记录没有提供更具体的原因。'
-  return en ? 'This plugin is not currently listed in the Store Catalog.' : '该插件当前未在商城目录中上架。'
-}
+const UNCATEGORIZED = 'uncategorized'
 
 function isRecord(value) {
   return value && typeof value === 'object' && !Array.isArray(value)
 }
 
-export function createKnownPluginDirectory(catalogEntries, candidateEntries, { locale = 'zh' } = {}) {
-  const catalog = (Array.isArray(catalogEntries) ? catalogEntries : [])
-    .filter(entry => isRecord(entry)
-      && typeof entry.id === 'string' && entry.id.trim()
-      && validRepository(entry.repositoryUrl)
-      && VALID_CATALOG_STATUSES.has(entry.status))
-    .map(entry => ({
-      source: 'catalog',
-      id: entry.id,
-      nameZh: entry.nameZh || entry.name || entry.packageName || entry.id,
-      nameEn: entry.nameEn || entry.name || entry.packageName || entry.id,
-      packageName: entry.packageName || '',
-      version: entry.version || '',
-      repositoryUrl: entry.repositoryUrl.replace(/\/$/, ''),
-      categories: Array.isArray(entry.categories) ? entry.categories.filter(value => typeof value === 'string') : [],
+function cleanText(value, fallback = '', limit = 2_000) {
+  return typeof value === 'string' && value.trim() ? value.trim().slice(0, limit) : fallback
+}
+
+function repositoryUrl(value) {
+  if (typeof value !== 'string') return null
+  try {
+    const url = new URL(value)
+    if (url.protocol !== 'https:' || url.hostname.toLowerCase() !== 'github.com'
+      || url.username || url.password || url.search || url.hash) return null
+    const parts = url.pathname.split('/').filter(Boolean)
+    if (parts.length !== 2) return null
+    const repo = parts[1].replace(/\.git$/i, '')
+    if (!/^[A-Za-z0-9_.-]+$/.test(parts[0]) || !/^[A-Za-z0-9_.-]+$/.test(repo)) return null
+    return `https://github.com/${parts[0]}/${repo}`
+  } catch {
+    return null
+  }
+}
+
+function publicDetailUrl(value) {
+  if (typeof value !== 'string') return null
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' && url.hostname.toLowerCase() === 'www.dsh.so'
+      && url.pathname.startsWith('/artifact/') && !url.username && !url.password
+      ? url.href : null
+  } catch {
+    return null
+  }
+}
+
+function categoriesFor(values, allowedCategories = null) {
+  const categories = [...new Set((Array.isArray(values) ? values : [])
+    .map(value => typeof value === 'string'
+      ? value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48)
+      : '')
+    .filter(value => value && (!allowedCategories || allowedCategories.has(value))))]
+  return categories.length ? categories : [UNCATEGORIZED]
+}
+
+function collectionMatch(row, indexes) {
+  const keys = [
+    row.sourceId && indexes.byId.get(row.sourceId.toLowerCase()),
+    row.alias && indexes.byPackage.get(row.alias.toLowerCase()),
+    row.packageName && indexes.byPackage.get(row.packageName.toLowerCase()),
+    row.repositoryUrl && indexes.byRepository.get(row.repositoryUrl.toLowerCase()),
+  ]
+  return keys.find(Boolean) || null
+}
+
+function createCatalogIndexes(entries, allowedCategories) {
+  const catalog = (Array.isArray(entries) ? entries : []).filter(isRecord)
+    .map((entry, index) => ({
+      id: cleanText(entry.id, `catalog-record-${index + 1}`, 240),
+      nameZh: cleanText(entry.nameZh || entry.name, entry.packageName || entry.id || `插件记录 ${index + 1}`, 240),
+      nameEn: cleanText(entry.nameEn || entry.name, entry.packageName || entry.id || `Plugin record ${index + 1}`, 240),
+      packageName: cleanText(entry.packageName, '', 500),
+      version: cleanText(entry.version, '', 120),
+      repositoryUrl: repositoryUrl(entry.repositoryUrl),
+      categories: categoriesFor(entry.categories, allowedCategories),
       searchTerms: Array.isArray(entry.searchTerms) ? entry.searchTerms.filter(value => typeof value === 'string') : [],
-      detailPath: entry.detailPath || '',
-      catalogStatus: entry.status,
-      status: entry.status,
-      statusReason: typeof entry.statusReason === 'string' ? entry.statusReason : null,
-      listingStatus: entry.status === 'approved' ? 'listed' : 'unlisted',
-      listingReason: entry.status === 'approved' ? null : listingReason(entry, 'catalog', locale),
-      featured: entry.featured === true,
-      order: Number.isSafeInteger(entry.order) ? entry.order : Number.MAX_SAFE_INTEGER,
-      description: typeof entry.description === 'string' ? entry.description : '',
+      description: cleanText(entry.description, '', 2_000),
+      detailPath: cleanText(entry.detailPath, '', 500),
+      status: VALID_CATALOG_STATUSES.has(entry.status) ? entry.status : 'unlisted',
+      source: 'catalog',
+      sourceId: cleanText(entry.id, `catalog-record-${index + 1}`, 240),
+      alias: '',
+      stars: Number.isSafeInteger(entry.stars) && entry.stars >= 0 ? entry.stars : null,
+      kind: 'store-catalog',
+      detailUrl: null,
     }))
 
-  // A Catalog record is authoritative for its repository. Preserve distinct
-  // Catalog IDs in monorepos, but do not show a second candidate card for them.
-  const catalogRepositories = new Set(catalog.map(entry => entry.repositoryUrl.toLowerCase()))
-  const candidates = (Array.isArray(candidateEntries) ? candidateEntries : [])
-    .filter(entry => isRecord(entry)
-      && typeof entry.id === 'string' && entry.id.trim()
-      && typeof entry.name === 'string' && entry.name.trim()
-      && validRepository(entry.repositoryUrl)
-      && VALID_CANDIDATE_STATUSES.has(entry.status)
-      && isDshDiscoveryCandidate(entry)
-      && !catalogRepositories.has(entry.repositoryUrl.replace(/\/$/, '').toLowerCase()))
-    .map(entry => ({
-      source: 'candidate',
-      id: `candidate:${entry.id}`,
-      nameZh: entry.name,
-      nameEn: entry.name,
-      packageName: '',
+  const indexes = { byId: new Map(), byPackage: new Map(), byRepository: new Map() }
+  for (const entry of catalog) {
+    indexes.byId.set(entry.id.toLowerCase(), entry)
+    if (entry.packageName) indexes.byPackage.set(entry.packageName.toLowerCase(), entry)
+    if (entry.repositoryUrl) {
+      if (!indexes.byRepository.has(entry.repositoryUrl.toLowerCase())) {
+        indexes.byRepository.set(entry.repositoryUrl.toLowerCase(), entry)
+      }
+    }
+  }
+  return { catalog, indexes }
+}
+
+export function createKnownPluginDirectory(catalogEntries, candidateEntries, { discoveryIndex = null, locale = 'zh' } = {}) {
+  const discoveryRows = Array.isArray(discoveryIndex?.entries) ? discoveryIndex.entries : []
+  const allowedCategories = discoveryRows.length
+    ? new Set(discoveryRows.flatMap(entry => isRecord(entry) && Array.isArray(entry.categories) ? entry.categories : []))
+    : null
+  const { catalog, indexes } = createCatalogIndexes(catalogEntries, allowedCategories)
+  const entries = []
+  const bySourceId = new Map()
+  const byAlias = new Map()
+  const byPackage = new Map()
+  const byRepository = new Map()
+  const add = (row, mapSource = true) => {
+    const categories = categoriesFor(row.categories)
+    const item = {
+      ...row,
+      categories,
+      listingStatus: row.collected ? 'listed' : 'unlisted',
+      listingReason: row.collected ? null : (locale === 'en'
+        ? 'No matching DSH STORE Catalog record was found. This is only a listing state.'
+        : '尚未匹配到 DSH STORE Catalog 条目；此状态只表示目录是否收录。'),
+      searchTerms: Array.isArray(row.searchTerms) ? row.searchTerms.filter(value => typeof value === 'string') : [],
+    }
+    entries.push(item)
+    if (mapSource) {
+      if (item.sourceId) bySourceId.set(item.sourceId.toLowerCase(), item)
+      if (item.alias) byAlias.set(item.alias.toLowerCase(), item)
+      if (item.packageName) byPackage.set(item.packageName.toLowerCase(), item)
+      if (item.repositoryUrl) {
+        const matches = byRepository.get(item.repositoryUrl.toLowerCase()) || []
+        matches.push(item)
+        byRepository.set(item.repositoryUrl.toLowerCase(), matches)
+      }
+    }
+    return item
+  }
+
+  const findExisting = row => bySourceId.get(row.sourceId?.toLowerCase())
+    || byAlias.get(row.alias?.toLowerCase())
+    || byPackage.get(row.packageName?.toLowerCase())
+    || (row.repositoryUrl ? byRepository.get(row.repositoryUrl.toLowerCase())?.[0] : null)
+    || null
+
+  discoveryRows.forEach((raw, index) => {
+    const entry = isRecord(raw) ? raw : {}
+    const sourceId = cleanText(entry.sourceId || entry.id, `source-record-${index + 1}`, 240)
+    const alias = cleanText(entry.alias, '', 500)
+    const name = cleanText(entry.name, alias || sourceId, 240)
+    const repository = repositoryUrl(entry.repositoryUrl || entry.sourceUrl)
+    const lookup = { sourceId, alias, packageName: alias, repositoryUrl: repository }
+    const matchedCatalog = collectionMatch(lookup, indexes)
+    const sourceIndex = Number.isSafeInteger(entry.sourceIndex) && entry.sourceIndex >= 0 ? entry.sourceIndex : index
+    add({
+      id: `dshso:${sourceIndex}:${sourceId}`,
+      source: 'discovery',
+      sourceId,
+      sourceIndex,
+      nameZh: name,
+      nameEn: name,
+      alias,
+      packageName: alias,
       version: '',
-      repositoryUrl: entry.repositoryUrl.replace(/\/$/, ''),
-      categories: [],
-      searchTerms: [],
-      detailPath: '',
-      catalogStatus: entry.status,
-      status: entry.status,
-      statusReason: typeof entry.statusReason === 'string' ? entry.statusReason : null,
-      listingStatus: 'unlisted',
-      listingReason: listingReason(entry, 'candidate', locale),
-      featured: false,
-      order: Number.MAX_SAFE_INTEGER,
-      description: typeof entry.description === 'string' ? entry.description : '',
-      route: typeof entry.route === 'string' ? entry.route : '',
-      topics: Array.isArray(entry.topics) ? entry.topics.filter(value => typeof value === 'string') : [],
-      sourceUpdatedAt: entry.sourceUpdatedAt || null,
-      discoveredAt: entry.discoveredAt || null,
-    }))
+      repositoryUrl: repository,
+      categories: categoriesFor(entry.categories, allowedCategories),
+      searchTerms: [sourceId, alias, ...(Array.isArray(entry.categories) ? entry.categories : [])],
+      description: cleanText(entry.description, '', 2_000),
+      detailUrl: publicDetailUrl(entry.detailUrl || entry.url),
+      sourceUrl: repository,
+      stars: Number.isSafeInteger(entry.stars) && entry.stars >= 0 ? entry.stars : 0,
+      kind: cleanText(entry.kind, 'dsh-plugin', 80),
+      collected: Boolean(matchedCatalog),
+      collectedBy: matchedCatalog?.id || null,
+      order: sourceIndex,
+    })
+  })
 
-  return [...catalog, ...candidates]
+  for (const entry of catalog) {
+    const lookup = { sourceId: entry.id, alias: '', packageName: entry.packageName, repositoryUrl: entry.repositoryUrl }
+    const existing = findExisting(lookup)
+    if (existing) {
+      existing.collected = true
+      existing.collectedBy = entry.id
+      existing.listingStatus = 'listed'
+      existing.listingReason = null
+      continue
+    }
+    const item = add({
+      ...entry,
+      id: `catalog:${entry.id}`,
+      collected: true,
+      collectedBy: entry.id,
+      order: Number.MAX_SAFE_INTEGER,
+    })
+    item.listingStatus = 'listed'
+    item.listingReason = null
+  }
+
+  const candidateRows = Array.isArray(candidateEntries) ? candidateEntries : []
+  candidateRows.forEach((raw, index) => {
+    if (!isRecord(raw)) return
+    const sourceId = cleanText(raw.id, `candidate-record-${index + 1}`, 240)
+    const alias = cleanText(raw.packageName || raw.name, sourceId, 500)
+    const repository = repositoryUrl(raw.repositoryUrl)
+    const lookup = { sourceId, alias, packageName: alias, repositoryUrl: repository }
+    const existing = findExisting(lookup)
+    const matchedCatalog = collectionMatch(lookup, indexes)
+    if (existing) {
+      if (matchedCatalog) {
+        existing.collected = true
+        existing.collectedBy = matchedCatalog.id
+        existing.listingStatus = 'listed'
+        existing.listingReason = null
+      }
+      return
+    }
+    const item = add({
+      id: `candidate:${sourceId}`,
+      source: 'candidate',
+      sourceId,
+      sourceIndex: null,
+      nameZh: cleanText(raw.name, sourceId, 240),
+      nameEn: cleanText(raw.name, sourceId, 240),
+      alias,
+      packageName: alias,
+      version: '',
+      repositoryUrl: repository,
+      categories: categoriesFor(raw.topics, allowedCategories),
+      searchTerms: [sourceId, alias, ...(Array.isArray(raw.topics) ? raw.topics : [])],
+      description: cleanText(raw.description, '', 2_000),
+      detailUrl: null,
+      sourceUrl: repository,
+      stars: null,
+      kind: 'store-discovery',
+      collected: Boolean(matchedCatalog),
+      collectedBy: matchedCatalog?.id || null,
+      order: Number.MAX_SAFE_INTEGER,
+    })
+    if (item.collected) {
+      item.listingStatus = 'listed'
+      item.listingReason = null
+    }
+  })
+
+  const categoryCounts = new Map()
+  for (const entry of entries) {
+    for (const category of entry.categories) categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1)
+  }
+  for (const entry of entries) {
+    entry.categories.sort((a, b) => (categoryCounts.get(b) || 0) - (categoryCounts.get(a) || 0) || a.localeCompare(b))
+    entry.primaryCategory = entry.categories[0] || UNCATEGORIZED
+  }
+
+  return entries
 }
 
 export function filterPluginDirectory(entries, {
@@ -105,9 +252,9 @@ export function filterPluginDirectory(entries, {
   const filtered = (Array.isArray(entries) ? entries : [])
     .filter(entry => listingFilter === 'all' || entry.listingStatus === listingFilter)
     .filter(entry => !category || entry.categories.includes(category))
-    .filter(entry => !needle || [entry.id, entry.nameZh, entry.nameEn, entry.packageName,
-      entry.version, entry.repositoryUrl, entry.description, entry.route, entry.statusReason, entry.listingReason,
-      ...(entry.searchTerms || []), ...(entry.topics || []),
+    .filter(entry => !needle || [entry.id, entry.sourceId, entry.nameZh, entry.nameEn, entry.alias,
+      entry.packageName, entry.version, entry.repositoryUrl, entry.description, entry.listingReason,
+      ...(entry.searchTerms || []), ...(entry.categories || []),
     ].some(value => String(value || '').toLowerCase().includes(needle)))
 
   return filtered.sort((a, b) => {
@@ -116,14 +263,13 @@ export function filterPluginDirectory(entries, {
       const second = locale === 'en' ? b.nameEn : b.nameZh
       return String(first).localeCompare(String(second), locale === 'en' ? 'en' : 'zh-CN')
     }
-    if (sort === 'recent') {
-      const aDate = Date.parse(a.sourceUpdatedAt || a.version) || 0
-      const bDate = Date.parse(b.sourceUpdatedAt || b.version) || 0
-      return bDate - aDate || a.order - b.order
-    }
+    if (sort === 'stars') return (b.stars || 0) - (a.stars || 0) || a.order - b.order
+    if (sort === 'recent') return a.order - b.order
     if (sort === 'risk') return a.order - b.order
-    return Number(b.listingStatus === 'listed') - Number(a.listingStatus === 'listed')
-      || a.order - b.order
+    return String(a.primaryCategory || UNCATEGORIZED).localeCompare(String(b.primaryCategory || UNCATEGORIZED), 'en')
+      || Number(b.listingStatus === 'listed') - Number(a.listingStatus === 'listed')
+      || (b.stars || 0) - (a.stars || 0)
       || String(a.nameZh).localeCompare(String(b.nameZh), 'zh-CN')
+      || a.order - b.order
   })
 }

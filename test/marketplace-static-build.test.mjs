@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { gunzipSync } from 'node:zlib'
 import { execFile } from 'node:child_process'
 import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
@@ -200,17 +201,25 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
     assert.doesNotMatch(home, /DSH_ALTERNATE_SITE/)
     assert.doesNotMatch(home, /id="catalog-snapshot"/)
-    assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, Math.min(20, catalog.entries.filter(entry => entry.status !== 'unlisted').length))
+    assert.equal((plugins.match(/data-static-plugin-id=/g) || []).length, 20)
     assert.match(plugins, /name="dsh-catalog-delivery" content="external-json"/)
+    assert.match(plugins, /name="dsh-discovery-index-sha256" content="[a-f0-9]{64}"/)
+    assert.match(plugins, /name="dsh-discovery-index-count" content="19345"/)
+    assert.match(plugins, /data-discovery-index-url="\.\.\/\.\.\/registry\/discovery-index\.json"/)
+    assert.match(plugins, /dsh\.so — DSH Developer Hub \(https:\/\/www\.dsh\.so\)/)
+    assert.match(plugins, /CC BY 4\.0/)
+    assert.match(plugins, /按分类浏览/)
+    assert.match(plugins, /再按收录状态筛选/)
+    const knownCount = Number(plugins.match(/id="stat-total">([0-9,]+)</)?.[1]?.replaceAll(',', ''))
+    assert.ok(knownCount > 19_345, 'known directory count includes the complete source plus Store-only records')
     assert.match(plugins, /type="application\/json" href="https:\/\/dsh\.store\/registry\/catalog\.json"/)
     assert.match(plugins, /"@type": "SearchAction"/)
     assert.match(plugins, /"@type": "Dataset"/)
     assert.match(plugins, /"@type": "ItemList"/)
-    if (manager.status === 'approved') {
-      assert.match(plugins, /id="plugin-dsh-safe-plugin-manager"[^>]*data-static-plugin-id="dsh-safe-plugin-manager"/)
-    } else {
-      assert.doesNotMatch(plugins, /data-static-plugin-id="dsh-safe-plugin-manager"/)
-    }
+    const discoveryOutput = await readFile(join(output, 'registry/discovery-index.json'))
+    const compressedDiscoveryOutput = await readFile(join(output, 'registry/discovery-index.json.gz'))
+    assert.equal(JSON.parse(discoveryOutput).entries.length, 19_345)
+    assert.deepEqual(gunzipSync(compressedDiscoveryOutput), discoveryOutput)
     assert.match(plugins, /搜索中文名、用途、别名或英文包名/)
     assert.doesNotMatch(plugins, /id="catalog-snapshot"/)
     assert.ok(Buffer.byteLength(home) < 300_000, 'home HTML must not embed the complete catalog')

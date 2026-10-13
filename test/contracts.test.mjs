@@ -230,8 +230,8 @@ test('homepage uses a Raycast-inspired catalog-first storefront with a transpare
   assert.match(storefrontApp, /function renderHomeDirectoryPreview\(\)/)
   assert.match(storefrontApp, /const entries = visibleIndexEntries\(\)\.slice\(0, 6\)/)
   assert.match(storefrontApp, /void fetchCatalogDetail\(indexEntry\)/)
-  assert.match(storefrontApp, /if \(IS_DIRECTORY\) void loadCandidates\(\)/)
-  assert.match(storefrontApp, /if \(state\.candidatesLoaded\) void loadCurrentPageDetails\(\)/)
+  assert.match(storefrontApp, /if \(IS_DIRECTORY\) void loadKnownDirectory\(\)/)
+  assert.doesNotMatch(storefrontApp, /if \(state\.candidatesLoaded\) void loadCurrentPageDetails\(\)/)
 })
 
 test('featured DeepSeek Harness article preserves source attribution and long-form structure', async () => {
