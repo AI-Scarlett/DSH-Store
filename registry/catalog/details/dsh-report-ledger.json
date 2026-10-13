@@ -20,7 +20,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "07614d12e7319057d450f4ca1738e7e99e20e802",
+  "commit": "db6741c854723577416cabe2d166bf45ac32f8eb",
   "version": "0.2.0",
   "categories": [
     "experimental"
@@ -28,16 +28,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-12T13:59:26.000Z",
-    "observedAt": "2026-10-12T16:11:46.000Z",
+    "updatedAt": "2026-10-12T14:26:38.000Z",
+    "observedAt": "2026-10-13T05:51:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-12T16:11:46.000Z",
-      "evidenceUrl": "https://github.com/stone-brick/dsh-report-ledger/commit/07614d12e7319057d450f4ca1738e7e99e20e802",
+      "checkedAt": "2026-10-13T05:51:04.000Z",
+      "evidenceUrl": "https://github.com/stone-brick/dsh-report-ledger/commit/db6741c854723577416cabe2d166bf45ac32f8eb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,9 +78,9 @@
     "report-ledger"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact pattern requires review: ./src/*; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -90,7 +90,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
+      "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown"
     },
@@ -162,7 +162,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20.0.0",
     "systems": [],
     "profiles": [
       "web"
@@ -181,13 +181,13 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "yaml"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }

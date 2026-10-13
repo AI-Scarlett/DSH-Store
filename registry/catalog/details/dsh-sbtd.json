@@ -23,7 +23,7 @@
   "manifestPath": "packages/dsh-sbtd/package.json",
   "installPath": "packages/dsh-sbtd",
   "updatePolicy": "external-only",
-  "commit": "7a2cc6737e189d71c74eb3d36d068edb15f173f3",
+  "commit": "3564386e50fdcc4aaa46d964fdce96a292075bed",
   "version": "0.1.0-rc.3",
   "categories": [
     "workflow"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-19T02:09:48.000Z",
-    "observedAt": "2026-09-19T03:35:43.000Z",
+    "updatedAt": "2026-10-12T23:22:07.000Z",
+    "observedAt": "2026-10-13T05:51:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-19T03:35:43.000Z",
-      "evidenceUrl": "https://github.com/KunoLu/sbtd-plugins/commit/7a2cc6737e189d71c74eb3d36d068edb15f173f3",
+      "checkedAt": "2026-10-13T05:51:04.000Z",
+      "evidenceUrl": "https://github.com/KunoLu/sbtd-plugins/commit/3564386e50fdcc4aaa46d964fdce96a292075bed",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "sbtd"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; repository tree exceeds the automatic review bound; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: ./dist/index.js; runtime artifact is missing from the distributable surface: ./dist/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,14 +93,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.5-rc.2": "unknown",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown"
@@ -149,54 +141,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
