@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 31788)
-Total output lines: 1784
-
 const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.json'
 const CANDIDATES_URL = document.body.dataset.candidatesUrl || '../registry/candidates.json'
 const DISCOVERY_INDEX_URL = document.body.dataset.discoveryIndexUrl || '../../registry/discovery-index.json'
@@ -530,7 +527,132 @@ function homePluginCardTemplate(indexEntry) {
     ? indexEntry.description
     : t('home.catalogDetailsDeferred')
   return `<article class="home-plugin-card">
-    <div class="home-plugin-card-top"><span class="home-plugin-icon" aria-hidden="true" style="--plugin-color:${plugin…1788 tokens truncated…{escape(categoryLabel(entry.categories[0] || 'tools'))} · v${escape(entry.version)}</small></span>
+    <div class="home-plugin-card-top"><span class="home-plugin-icon" aria-hidden="true" style="--plugin-color:${pluginColor(indexEntry.id)}">${escape(initials(primaryName))}</span><span class="status-tag${statusClass}">${escape(statusLabel(indexEntry))}</span></div>
+    <h3>${escape(primaryName)}</h3>${alternateName && alternateName !== primaryName ? `<p class="home-plugin-alt">${escape(alternateName)}</p>` : ''}
+    ${categories.length ? `<p class="home-plugin-category">${escape(categoryLabel(categories[0]))}</p>` : ''}
+    <p class="home-plugin-description">${escape(description)}</p>
+    <div class="home-plugin-package"><code>${escape(indexEntry.packageName)}</code><span>v${escape(indexEntry.version)}</span></div>
+    <footer class="home-plugin-card-footer"><button class="home-plugin-detail details-button" type="button" data-details-id="${escape(indexEntry.id)}">${escape(t('action.details'))} →</button><a class="home-plugin-repo" href="${escape(indexEntry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(primaryName)}" data-repo-id="${escape(indexEntry.id)}">↗</a></footer>
+  </article>`
+}
+
+function renderHomeDirectoryPreview() {
+  if (!els.homeGrid || !state.catalog) return
+  const entries = visibleIndexEntries().slice(0, 6)
+  if (entries.length === 0) {
+    els.homeGrid.innerHTML = `<p class="home-plugin-empty">${escape(t('empty.title'))}</p>`
+    return
+  }
+  els.homeGrid.innerHTML = entries.map(homePluginCardTemplate).join('')
+}
+
+function visibleIndexEntries() {
+  const query = state.query.trim().toLowerCase()
+  const entries = catalogIndexEntries()
+    .filter(entry => entry.status !== 'unlisted')
+    .filter(entry => !state.category || entry.categories.includes(state.category))
+    .filter(entry => !query || indexSearchValues(entry).some(value => value.includes(query)))
+
+  return entries.sort((a, b) => {
+    const locale = state.locale === 'en' ? 'en' : 'zh-CN'
+    if (state.sort === 'name') return String(a.nameZh || a.nameEn).localeCompare(String(b.nameZh || b.nameEn), locale)
+    if (state.sort === 'recent') return String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.order - b.order
+    if (state.sort === 'risk') return a.order - b.order
+    return a.order - b.order || String(a.nameZh || a.nameEn).localeCompare(String(b.nameZh || b.nameEn), locale)
+  })
+}
+
+function visibleDirectoryEntries() {
+  if (!state.directoryFilterer) return []
+  return state.directoryFilterer(state.directoryEntries, {
+    listingFilter: state.listingFilter, query: state.query, category: state.category,
+    sort: state.sort, locale: state.locale,
+  })
+}
+
+function renderListingFilterCounts() {
+  if (!els.viewTabs) return
+  const listed = state.directoryEntries.filter(entry => entry.listingStatus === 'listed').length
+  const counts = { all: state.directoryEntries.length, listed, unlisted: state.directoryEntries.length - listed }
+  Object.entries(counts).forEach(([filter, count]) => {
+    const node = els.viewTabs.querySelector(`[data-filter-count="${filter}"]`)
+    if (node) node.textContent = String(count)
+  })
+  els.viewTabs.querySelectorAll('[data-listing-filter]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.listingFilter === state.listingFilter))
+  })
+}
+
+function visibleEntries() {
+  return state.pageEntries.length ? state.pageEntries : state.entries
+}
+
+function renderStats() {
+  const setText = (selector, value) => {
+    const element = document.querySelector(selector)
+    if (element) element.textContent = value
+  }
+  if (IS_DIRECTORY) {
+    if (!state.directoryLoaded) return
+    const known = state.directoryEntries
+    const listed = known.filter(entry => entry.listingStatus === 'listed').length
+    const categories = new Set(known.flatMap(entry => entry.categories)).size
+    setText('#stat-total', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(known.length))
+    setText('#stat-approved', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(listed))
+    setText('#stat-categories', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(categories))
+    setText('#stat-candidates', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(known.length - listed))
+    return
+  }
+  const entries = catalogIndexEntries().filter(entry => entry.status !== 'unlisted')
+  const categoryCount = new Set(entries.flatMap(entry => entry.categories)).size
+  setText('#stat-total', String(entries.length).padStart(2, '0'))
+  setText('#stat-approved', String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
+  setText('#stat-categories', String(categoryCount).padStart(2, '0'))
+  if (state.candidatesLoaded) setText('#stat-candidates', String(state.candidateSummary.total ?? state.candidates.length).padStart(2, '0'))
+  setText('#float-count', String(entries.length))
+  const updatedAt = state.catalog?.registry?.updatedAt
+  setText('#catalog-date', updatedAt
+    ? `catalog.json · ${new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(updatedAt))}`
+    : 'GitHub catalog.json')
+}
+
+function renderManagerMetadata() {
+  const manager = state.detailCache.get('dsh-safe-plugin-manager') || catalogIndexEntries().find(entry => entry.id === 'dsh-safe-plugin-manager')
+  if (!manager) return
+  const approved = manager.status === 'approved'
+  const installable = approved && /^[0-9a-f]{40}$/.test(manager.commit || '')
+  const installCommand = installable
+    ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
+    : approved
+      ? (state.locale === 'en' ? 'Loading verified manager details…' : '正在读取管理器详情…')
+      : (state.locale === 'en' ? 'Compatibility review pending; installation is unavailable.' : '兼容性待核验，暂不提供安装命令。')
+  const values = {
+    '#install-version': approved ? `v${manager.version} · SHA PINNED`
+      : (state.locale === 'en' ? `v${manager.version} · COMPATIBILITY REVIEW` : `v${manager.version} · 兼容性待核验`),
+    '#install-command': installCommand,
+    '#manager-protocol': `STANDARD BUNDLE / v${manager.version}`,
+    '#manager-commit-short': manager.commit ? manager.commit.slice(0, 7) : 'DETAIL',
+  }
+  Object.entries(values).forEach(([selector, value]) => {
+    const element = document.querySelector(selector)
+    if (element) element.textContent = value
+  })
+  const copyButton = document.querySelector('[data-copy-target="install-command"]')
+  if (copyButton) {
+    copyButton.disabled = !installable
+    copyButton.setAttribute('aria-disabled', String(!installable))
+  }
+}
+
+function renderHeroPreview() {
+  if (!els.preview) return
+  const featured = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 3)
+  els.preview.innerHTML = featured.map((entry, index) => {
+    const name = state.detailCache.get(entry.id)?.name || indexName(entry)
+    return `
+    <article class="preview-plugin" style="--plugin-color:${pluginColor(entry.id)}">
+      <span class="preview-icon">${escape(initials(name))}</span>
+      <span><b>${escape(name)}</b><small>${escape(categoryLabel(entry.categories[0] || 'tools'))} · v${escape(entry.version)}</small></span>
       <em>${index === 0 ? 'FEATURED' : 'FIXED'}</em>
     </article>`
   }).join('')
