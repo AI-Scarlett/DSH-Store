@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "planId": "runtime-asset-versioning-20261013",
+  "status": "validated",
+  "createdAt": "2026-10-13T07:00:00Z",
+  "objective": "Give the marketplace runtime JavaScript and its dynamically imported modules a deterministic source-build URL so existing browsers cannot continue using cached pre-deployment code after the full-discovery directory is published.",
+  "baseCommit": "244a52e7f3908c9f84450b8cb1e517c2f1fe8f01",
+  "evidence": {
+    "publicSourceCommit": "244a52e7f3908c9f84450b8cb1e517c2f1fe8f01",
+    "publicDiscoveryIndexRecords": 19345,
+    "publicDiscoveryIndexSha256": "61a0d4291a25d6140acb7507315233cadcb245d938cf64ea388f5657d0b722a6",
+    "browserObservedPartialDirectoryAfterStaticFullIndex": true,
+    "rootCauseStatus": "unconfirmed; stale browser runtime cache is a plausible hypothesis",
+    "runtimeUrlVersioningRationale": "The live browser showed a partial directory (429 rows) while the source snapshot and data endpoints independently validated; stale client runtime cache is plausible but not proven. Versioned URLs are an explicit cache invalidation safeguard, with post-deploy browser verification required to determine whether the display issue is resolved."
+  },
+  "mutation": {
+    "exactFileScope": true,
+    "files": [
+      {
+        "path": "docs/ops/runtime-asset-versioning-plan-20261013.json",
+        "stateBefore": "absent",
+        "sha256Before": null
+      },
+      {
+        "path": "scripts/build-marketplace-static.mjs",
+        "stateBefore": "present",
+        "sha256Before": "2d970fdc8524da6a305b1ebb8f1493cad18a4bd28ae8b731bf7d34e817f29efe"
+      },
+      {
+        "path": "test/marketplace-static-build.test.mjs",
+        "stateBefore": "present",
+        "sha256Before": "17a99582b01645bf7dbacb273794235b5e1d560e2cc820ec1cc636669c8920b3"
+      }
+    ],
+    "externalEffects": {
+      "catalogMutation": false,
+      "authorContact": false,
+      "profileOrDshMutation": false,
+      "productionDeployment": false
+    },
+    "rollback": "Revert the dedicated source commit through Git; remove cache-version query suffixes from generated runtime references. Prior storefront releases remain recoverable from their deployment backups."
+  },
+  "deterministicGates": [
+    "Static build emits a 12-hex source-build version on the homepage and plugin directory app.js references.",
+    "Static build emits the same version on both marketplace dynamic imports used for directory and DSH release-policy loading.",
+    "The version is derived from the immutable source Commit in production builds; non-Commit local fixtures use deterministic content-derived versions.",
+    "Run npm run check and focused static-build tests; verify the release manifest records the generated HTML and runtime module bytes.",
+    "After merge, refresh both storefronts from the exact source Commit, then verify the public script URLs and live directory totals/categories in a clean browser context."
+  ],
+  "execution": {
+    "status": "source-validated-pending-pr-and-deployment",
+    "completedAt": "2026-10-13T07:00:18Z",
+    "baseCommit": "244a52e7f3908c9f84450b8cb1e517c2f1fe8f01",
+    "pullRequest": null,
+    "sourceCommit": null,
+    "checks": {
+      "focused static build tests": "passed; 6/6; verifies fallback-hash and commit-derived versions on page entrypoints and dynamic imports",
+      "npm run check": "passed; registry validation plus 401/401 tests",
+      "git diff --check": "passed"
+    },
+    "deployment": {
+      "status": "pending",
+      "required": "merge CI-checked PR, refresh both origins from exact merged source, verify current asset URLs and browser-loaded directory totals"
+    }
+  }
+}
