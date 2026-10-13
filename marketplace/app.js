@@ -1397,6 +1397,7 @@ async function fetchCandidateRegistry(catalog) {
 }
 
 async function fetchDiscoveryIndex() {
+  const directory = await pluginDirectoryModule
   const integrity = (() => {
     const sha256 = document.querySelector('meta[name="dsh-discovery-index-sha256"]')?.content || ''
     const bytes = Number(document.querySelector('meta[name="dsh-discovery-index-bytes"]')?.content)
@@ -1405,47 +1406,10 @@ async function fetchDiscoveryIndex() {
       || !Number.isInteger(count) || count < 1 || count > 50_000) return null
     return { sha256, bytes, count }
   })()
-  const plainUrl = new URL(DISCOVERY_INDEX_URL, window.location.href).href
-  const failures = []
-  for (const target of [`${plainUrl}.gz`, plainUrl]) {
-    try {
-      const response = await fetch(target, { cache: 'no-store', signal: AbortSignal.timeout(15_000) })
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const declared = Number(response.headers.get('content-length'))
-      const compressed = target.endsWith('.gz') && !response.headers.get('content-encoding')?.toLowerCase().includes('gzip')
-      const maximum = compressed ? 4 * 1024 * 1024 : 12 * 1024 * 1024
-      if (Number.isFinite(declared) && declared > maximum) throw new Error('discovery index response exceeds the byte bound')
-      let bytes = new Uint8Array(await response.arrayBuffer())
-      if (bytes.byteLength > maximum) throw new Error('discovery index response exceeds the byte bound')
-      if (compressed) {
-        if (typeof DecompressionStream !== 'function') throw new Error('gzip decompression is unavailable')
-        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))
-        bytes = new Uint8Array(await new Response(stream).arrayBuffer())
-      }
-      if (bytes.byteLength > 12 * 1024 * 1024) throw new Error('expanded discovery index exceeds the byte bound')
-      if (integrity) {
-        if (bytes.byteLength !== integrity.bytes) throw new Error('discovery index byte length does not match the build')
-        if (!globalThis.crypto?.subtle) throw new Error('discovery index integrity verification is unavailable')
-        const digest = [...new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes))]
-          .map(value => value.toString(16).padStart(2, '0')).join('')
-        if (digest !== integrity.sha256) throw new Error('discovery index SHA-256 does not match the build')
-      }
-      const payload = JSON.parse(new TextDecoder().decode(bytes))
-      if (payload?.schemaVersion !== 1 || !Array.isArray(payload.entries) || !payload.source
-        || payload.source.url !== 'https://www.dsh.so/plugins-index.json'
-        || payload.source.license?.spdx !== 'CC-BY-4.0'
-        || payload.source.license?.attribution !== 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
-        || !Number.isInteger(payload.source.recordCount) || payload.source.recordCount !== payload.entries.length
-        || payload.entries.length > 50_000 || !Number.isFinite(Date.parse(payload.source.generatedAt))) {
-        throw new Error('discovery index schema, attribution, timestamp, or row count is invalid')
-      }
-      if (integrity && payload.entries.length !== integrity.count) throw new Error('discovery index row count does not match the build')
-      return payload
-    } catch (error) {
-      failures.push(`${target}: ${error.message}`)
-    }
-  }
-  throw new Error(failures.join(' | '))
+  return directory.fetchPublicDiscoveryIndex({
+    url: new URL(DISCOVERY_INDEX_URL, window.location.href).href,
+    integrity,
+  })
 }
 
 async function loadCatalog() {

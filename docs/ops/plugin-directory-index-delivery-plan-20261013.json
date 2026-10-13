@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "planId": "plugin-directory-index-delivery-20261013",
+  "status": "planned",
+  "createdAt": "2026-10-13T07:20:00Z",
+  "objective": "Repair the international plugin directory's incomplete fallback by retaining the full discovery payload and adding a bounded, integrity-checked GitHub Pages CDN fallback when the same-origin transfer exceeds its deadline.",
+  "authorization": {
+    "source": "User explicitly requested deployment of the all-known-plugin directory; live two-site acceptance exposed an international-only index delivery failure, so the minimal repair and redeployment are within scope.",
+    "scope": "Repository source through a CI-checked PR, GitHub Pages build, and serial refresh of both production storefronts. No Catalog admission, author outreach, DSH Profile mutation, or DSH core modification."
+  },
+  "baseCommit": "ad22dcdc68d89b0f003a8b8cc941a276223fc0ba",
+  "evidence": {
+    "international": {
+      "url": "https://dsh.store/plugins/",
+      "observed": "The published page reports 20 / 786 and says the public discovery index is temporarily unavailable; this is the Catalog/candidate fallback, not the full directory.",
+      "indexRoute": "https://dsh.store/registry/discovery-index.json.gz",
+      "httpStatus": 200,
+      "contentLengthBytes": 2026761,
+      "transferObservation": "A bounded 30-second GET delivered only 327131 bytes before timeout; the page loader currently aborts each index request after 15000 ms."
+    },
+    "domestic": {
+      "url": "https://dsh-store.cn/plugins/",
+      "observed": "The full directory loaded with 19973 records, 1048 listed, 18925 not listed, and 46 categories."
+    },
+    "cdnFallback": {
+      "url": "https://ai-scarlett.github.io/DSH-Store/registry/discovery-index.json.gz",
+      "httpStatus": 200,
+      "accessControlAllowOrigin": "*",
+      "contentLengthBytes": 2026761
+    },
+    "rootCause": "Confirmed bounded-fetch failure at the international storefront: its 2026761-byte gzip transfer does not complete within the existing 15-second client deadline. The directory correctly fails closed to the partial Catalog/candidate list. GitHub Pages serves the same artifact with Access-Control-Allow-Origin: * and provides a usable cross-origin fallback."
+  },
+  "mutation": {
+    "exactFileScope": true,
+    "files": [
+      {
+        "path": "docs/ops/plugin-directory-index-delivery-plan-20261013.json",
+        "stateBefore": "absent",
+        "sha256Before": null
+      },
+      {
+        "path": "marketplace/app.js",
+        "stateBefore": "present",
+        "sha256Before": "19df02fddf353dd633fca13487f67140f4fe5a90a70ec9a80ea733293ca624f0"
+      },
+      {
+        "path": "marketplace/lib/plugin-directory.js",
+        "stateBefore": "present",
+        "sha256Before": "cc24e795716e611bb5643a00c6e4d5ae82b40318d8c24d108206b289537d8196"
+      },
+      {
+        "path": "test/plugin-directory.test.mjs",
+        "stateBefore": "present",
+        "sha256Before": "b9a538e0f4ba1e79beb1e9a820be31df9fa0e1cb93ecdab932c354288e5c8f90"
+      }
+    ],
+    "externalEffects": {
+      "catalogMutation": false,
+      "authorContact": false,
+      "profileOrDshMutation": false,
+      "productionDeployment": true
+    },
+    "rollback": "Revert the dedicated CI-checked source PR and refresh both storefronts from the prior Pages manifest. Keep each pre-switch release backup; rollback never edits Catalog state or author-contact history."
+  },
+  "deterministicGates": [
+    "The browser retains all 19345 source records and their descriptions, original order/IDs, category tags, stars, repository links, source attribution, and generatedAt; no screening or Catalog admission occurs.",
+    "The fetcher tries the same-origin gzip URL first, then the versioned CORS-enabled GitHub Pages gzip artifact within a bounded deadline, then the same-origin plain JSON compatibility path.",
+    "The browser verifies raw payload byte count, SHA-256, schema, attribution, and record count identically for same-origin and GitHub Pages sources; bad or partial data remains non-installable and visibly incomplete.",
+    "Deterministic tests cover fallback selection, integrity/schema rejection, full source-row preservation, and unchanged category/listing totals.",
+    "Run npm run check, static marketplace builds for both origins, git diff --check, and all CI checks before merge.",
+    "After merge, publish Pages from the exact main Commit, serially refresh international then domestic origins with manifest/hash checks, backups and atomic switches, and verify both in fresh browser contexts at 19973 known records, 1048 listed, 18925 unlisted, and 46 categories."
+  ],
+  "execution": {
+    "status": "source-validated-pending-pr-and-deployment",
+    "baseCommit": "ad22dcdc68d89b0f003a8b8cc941a276223fc0ba",
+    "pullRequest": null,
+    "sourceCommit": null,
+    "checks": {
+      "focused tests": "passed; test/plugin-directory.test.mjs 6/6 including Pages fallback and digest rejection",
+      "npm run check": "passed; registry validation and 403/403 tests",
+      "static marketplace builds": "passed for https://dsh.store and https://dsh-store.cn",
+      "git diff --check": "passed"
+    },
+    "deployment": {
+      "status": "pending",
+      "required": "Complete all deterministic gates, merge the CI-checked PR, deploy Pages, refresh both storefronts serially, then verify the full directory in both production browsers."
+    }
+  }
+}

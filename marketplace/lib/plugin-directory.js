@@ -1,8 +1,78 @@
 const VALID_CATALOG_STATUSES = new Set(['approved', 'blocked', 'unlisted'])
 const UNCATEGORIZED = 'uncategorized'
+const PUBLIC_DISCOVERY_CDN_URL = 'https://ai-scarlett.github.io/DSH-Store/registry/discovery-index.json'
 
 function isRecord(value) {
   return value && typeof value === 'object' && !Array.isArray(value)
+}
+
+function appendVersion(url, sha256) {
+  const versioned = new URL(url)
+  if (/^[0-9a-f]{64}$/.test(sha256 || '')) versioned.searchParams.set('v', sha256.slice(0, 12))
+  return versioned.href
+}
+
+function gzipUrl(url) {
+  const compressed = new URL(url)
+  compressed.pathname += '.gz'
+  return compressed.href
+}
+
+function validateDiscoveryPayload(payload, integrity) {
+  if (payload?.schemaVersion !== 1 || !Array.isArray(payload.entries) || !payload.source
+    || payload.source.url !== 'https://www.dsh.so/plugins-index.json'
+    || payload.source.license?.spdx !== 'CC-BY-4.0'
+    || payload.source.license?.attribution !== 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
+    || !Number.isInteger(payload.source.recordCount) || payload.source.recordCount !== payload.entries.length
+    || payload.entries.length > 50_000 || !Number.isFinite(Date.parse(payload.source.generatedAt))) {
+    throw new Error('discovery index schema, attribution, timestamp, or row count is invalid')
+  }
+  if (integrity && payload.entries.length !== integrity.count) throw new Error('discovery index row count does not match the build')
+  return payload
+}
+
+export async function fetchPublicDiscoveryIndex({ url, integrity = null, fetchImpl = globalThis.fetch } = {}) {
+  if (typeof url !== 'string' || typeof fetchImpl !== 'function') throw new Error('discovery index URL or fetch implementation is unavailable')
+  const version = integrity?.sha256 || ''
+  const primaryUrl = appendVersion(url, version)
+  const fallbackUrl = appendVersion(PUBLIC_DISCOVERY_CDN_URL, version)
+  const targets = [
+    { url: gzipUrl(primaryUrl), timeoutMs: 15_000 },
+    { url: gzipUrl(fallbackUrl), timeoutMs: 120_000 },
+    { url: primaryUrl, timeoutMs: 20_000 },
+  ]
+  const failures = []
+  for (const target of targets) {
+    try {
+      const response = await fetchImpl(target.url, { cache: 'default', signal: AbortSignal.timeout(target.timeoutMs) })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const contentLength = Number(response.headers.get('content-length'))
+      const contentEncoding = response.headers.get('content-encoding')?.toLowerCase() || ''
+      const gzipTransport = new URL(target.url).pathname.endsWith('.gz')
+      const needsGzipDecompression = gzipTransport && !contentEncoding
+      const maximum = needsGzipDecompression ? 4 * 1024 * 1024 : 12 * 1024 * 1024
+      if (Number.isFinite(contentLength) && contentLength > maximum) throw new Error('discovery index response exceeds the byte bound')
+      let bytes = new Uint8Array(await response.arrayBuffer())
+      if (bytes.byteLength > maximum) throw new Error('discovery index response exceeds the byte bound')
+      if (needsGzipDecompression) {
+        if (typeof DecompressionStream !== 'function') throw new Error('gzip decompression is unavailable')
+        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))
+        bytes = new Uint8Array(await new Response(stream).arrayBuffer())
+      }
+      if (bytes.byteLength > 12 * 1024 * 1024) throw new Error('expanded discovery index exceeds the byte bound')
+      if (integrity) {
+        if (bytes.byteLength !== integrity.bytes) throw new Error('discovery index byte length does not match the build')
+        if (!globalThis.crypto?.subtle) throw new Error('discovery index integrity verification is unavailable')
+        const digest = [...new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes))]
+          .map(value => value.toString(16).padStart(2, '0')).join('')
+        if (digest !== integrity.sha256) throw new Error('discovery index SHA-256 does not match the build')
+      }
+      return validateDiscoveryPayload(JSON.parse(new TextDecoder().decode(bytes)), integrity)
+    } catch (error) {
+      failures.push(`${target.url}: ${error.message}`)
+    }
+  }
+  throw new Error(failures.join(' | ') || 'Public discovery index is unavailable')
 }
 
 function cleanText(value, fallback = '', limit = 2_000) {

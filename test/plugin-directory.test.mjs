@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
-import { gunzipSync } from 'node:zlib'
+import { createHash } from 'node:crypto'
+import { gunzipSync, gzipSync } from 'node:zlib'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
-import { createKnownPluginDirectory, filterPluginDirectory } from '../marketplace/lib/plugin-directory.js'
+import { createKnownPluginDirectory, fetchPublicDiscoveryIndex, filterPluginDirectory } from '../marketplace/lib/plugin-directory.js'
 import { projectDiscoveryIndex } from '../scripts/build-plugin-discovery-index.mjs'
 
 const catalog = [
@@ -94,6 +95,58 @@ test('discovery snapshot builder preserves source count, source order, attributi
   assert.ok(!('install' in projected.entries[0]))
   assert.equal(projected.source.license.attribution, 'dsh.so — DSH Developer Hub (https://www.dsh.so)')
   assert.throws(() => projectDiscoveryIndex({ generatedAt: '2026-10-13T00:19:35Z', count: 1, plugins: [] }), /count/)
+})
+
+test('directory index falls back to GitHub Pages and verifies the complete payload', async () => {
+  const payload = publicIndex(1)
+  const bytes = Buffer.from(JSON.stringify(payload))
+  const sha256 = createHash('sha256').update(bytes).digest('hex')
+  const compressed = gzipSync(bytes, { level: 9, mtime: 0 })
+  const requests = []
+  const index = await fetchPublicDiscoveryIndex({
+    url: 'https://dsh.store/registry/discovery-index.json',
+    integrity: { sha256, bytes: bytes.byteLength, count: 1 },
+    fetchImpl: async (url, options) => {
+      requests.push({ url, options })
+      if (url.startsWith('https://dsh.store/')) return new Response('temporarily slow', { status: 503 })
+      return new Response(compressed, {
+        status: 200,
+        headers: { 'content-type': 'application/gzip', 'content-length': String(compressed.byteLength) },
+      })
+    },
+  })
+
+  assert.equal(index.entries.length, 1)
+  assert.equal(index.entries[0].description, 'Public directory metadata only')
+  assert.equal(requests.length, 2)
+  assert.match(requests[0].url, /^https:\/\/dsh\.store\/registry\/discovery-index\.json\.gz\?v=/)
+  assert.match(requests[1].url, /^https:\/\/ai-scarlett\.github\.io\/DSH-Store\/registry\/discovery-index\.json\.gz\?v=/)
+  assert.ok(requests.every(request => request.options.signal instanceof AbortSignal))
+})
+
+test('directory index rejects a CDN payload that does not match the published digest', async () => {
+  const expected = publicIndex(1)
+  const modified = publicIndex(1)
+  modified.entries[0].description = 'Public directory metadata onlY'
+  const expectedBytes = Buffer.from(JSON.stringify(expected))
+  const modifiedBytes = Buffer.from(JSON.stringify(modified))
+  const requests = []
+
+  await assert.rejects(fetchPublicDiscoveryIndex({
+    url: 'https://dsh.store/registry/discovery-index.json',
+    integrity: {
+      sha256: createHash('sha256').update(expectedBytes).digest('hex'),
+      bytes: expectedBytes.byteLength,
+      count: 1,
+    },
+    fetchImpl: async (url) => {
+      requests.push(url)
+      if (url.startsWith('https://dsh.store/') && new URL(url).pathname.endsWith('.gz')) return new Response('', { status: 503 })
+      if (url.startsWith('https://ai-scarlett.github.io/')) return new Response(gzipSync(modifiedBytes), { status: 200 })
+      return new Response(modifiedBytes, { status: 200, headers: { 'content-type': 'application/json' } })
+    },
+  }), /SHA-256 does not match/)
+  assert.equal(requests.length, 3)
 })
 
 test('checked-in public snapshot contains every source row and gzip is an exact transport copy', async () => {
