@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-12T17:28:23.000Z",
+    "updatedAt": "2026-10-13T05:51:04.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "85c5477930d504cfd8b72334b48255d8e746a85e",
-      "sourceUpdatedAt": "2026-10-12T16:15:54.000Z",
+      "latestCommit": "3ae826ceba6f25b08bce50bcb51001209bc16b57",
+      "sourceUpdatedAt": "2026-10-13T05:48:24.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -1725,8 +1725,8 @@
       "description": "A curated list of plugins for DeepSeek Harness (dsh) · DeepSeek Harness 插件精选列表",
       "repositoryUrl": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
       "defaultBranch": "main",
-      "latestCommit": "47c0dba36146d5899715bbc445c10d86cde22251",
-      "sourceUpdatedAt": "2026-09-01T13:15:56.000Z",
+      "latestCommit": "40d0a01d7ea67c48b9e1c663a07dac5ad6a27318",
+      "sourceUpdatedAt": "2026-10-13T05:55:45.000Z",
       "discoveredAt": "2026-08-23T15:32:29.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -5676,8 +5676,8 @@
       "description": "秘塔AI搜索 providers for ctx.web：web_search 返回网页摘要，web_fetch 读取网页全文 markdown，多范围搜索（网页/文库/论文/图片/视频/播客）。",
       "repositoryUrl": "https://github.com/TZHR-invest/dsh-plugins",
       "defaultBranch": "main",
-      "latestCommit": "a1cfb655f3116fa93361d1550eaa65a1c9c8769c",
-      "sourceUpdatedAt": "2026-09-27T20:44:34.000Z",
+      "latestCommit": "0785cde8eef20aabd7f7528513cbdab1856fb315",
+      "sourceUpdatedAt": "2026-10-13T02:15:24.000Z",
       "discoveredAt": "2026-09-01T18:01:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -18818,6 +18818,127 @@
         "vcs",
         "version-control",
         "zcode",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kaixxrua-dsh-aigc-radar",
+      "name": "Kaixxrua/dsh-aigc-radar",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Kaixxrua/dsh-aigc-radar",
+      "defaultBranch": "main",
+      "latestCommit": "8a61deea1c5bc7acb0d42743b2b743bcfb3a3a3b",
+      "sourceUpdatedAt": "2026-10-11T05:07:59.000Z",
+      "discoveredAt": "2026-10-13T05:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@40d0a01d7ea67c48b9e1c663a07dac5ad6a27318:data/plugins/Kaixxrua__dsh-aigc-radar.yml:sha256=b80d7bbe6d6894eea6b7c9dca8379712ee8ef0732f0957af19415bba1b338fcb:at=2026-10-13T05:55:50.076Z:owner=191820097"
+      ],
+      "topics": [
+        "aigc",
+        "deepseek-harness",
+        "dsh-plugin",
+        "mcp",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "eternalnight996-memory-eternal",
+      "name": "EternalNight996/memory-eternal",
+      "description": "DeepSeek Harness 插件：对话自动沉淀为知识卡，配可检索知识库 + 知识图谱 + 审核中心；SQLite/纯 Markdown 存储，零第三方依赖。",
+      "repositoryUrl": "https://github.com/EternalNight996/memory-eternal",
+      "defaultBranch": "main",
+      "latestCommit": "d4ff3c4cefc2694ade2b8e4477ccd4c16a81763c",
+      "sourceUpdatedAt": "2026-10-13T05:55:41.000Z",
+      "discoveredAt": "2026-10-13T05:51:04.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-memory",
+        "claude-plugin",
+        "codex-plugin",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "knowledge-base",
+        "knowledge-graph",
+        "knowledge-graphs",
+        "markdown-vault",
+        "memory",
+        "plugin",
+        "second-brain",
+        "sqlite",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID memory-eternal is already owned by dsh-memory-eternal"
+    },
+    {
+      "id": "kakajun-dsh-web-recorder",
+      "name": "kakajun/dsh-web-recorder",
+      "description": "Browser-recording tools for DSH: records real browser operations and network requests, then exports a Markdown timeline report for the model to analyze and reproduce. 🥇DSH 的浏览器录制工具：记录真实浏览器操作和网络请求，然后导出 Markdown 时间线报告供模型分析和重现。",
+      "repositoryUrl": "https://github.com/kakajun/dsh-web-recorder",
+      "defaultBranch": "main",
+      "latestCommit": "2fad0b2e689d201da2c7b7fbf509c3a2473c12de",
+      "sourceUpdatedAt": "2026-09-30T01:10:49.000Z",
+      "discoveredAt": "2026-10-13T05:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@40d0a01d7ea67c48b9e1c663a07dac5ad6a27318:data/plugins/kakajun__dsh-web-recorder.yml:sha256=be1c5520ac7600f6cc8a5dcfbae8b9917e81210289c57a153704e67600c2ba24:at=2026-10-13T05:55:50.076Z:owner=38216933"
+      ],
+      "topics": [
+        "browser",
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "recorder",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kalospacer-dsh-model-capabilities",
+      "name": "Kalospacer/dsh-model-capabilities",
+      "description": "给 DSH 的设置里加一页：模型能力。 解决一件事：你接的自定义模型，DSH 不认它的思考档位和视觉能力。",
+      "repositoryUrl": "https://github.com/Kalospacer/dsh-model-capabilities",
+      "defaultBranch": "main",
+      "latestCommit": "374140b455edbd4b98ece5a25032108f1587674e",
+      "sourceUpdatedAt": "2026-10-01T17:58:10.000Z",
+      "discoveredAt": "2026-10-13T05:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@40d0a01d7ea67c48b9e1c663a07dac5ad6a27318:data/plugins/Kalospacer__dsh-model-capabilities.yml:sha256=37a15dffdcb8b7670e25470e0c8abda8c2173e1017a24d0d01f51ec7824e6958:at=2026-10-13T05:55:50.076Z:owner=58320568"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "kaixinbaba-dsh-complete-notify",
+      "name": "kaixinbaba/dsh-complete-notify",
+      "description": "任务完成时播放提示音并弹出小通知（页面内 toast + 后台时系统通知）。纯浏览器方案，零系统依赖，跨 Windows/macOS/Linux。",
+      "repositoryUrl": "https://github.com/kaixinbaba/dsh-complete-notify",
+      "defaultBranch": "main",
+      "latestCommit": "da84f4284dd06bcf2fe7800169d3a89063db462e",
+      "sourceUpdatedAt": "2026-08-23T06:32:05.000Z",
+      "discoveredAt": "2026-10-13T05:51:04.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@40d0a01d7ea67c48b9e1c663a07dac5ad6a27318:data/plugins/kaixinbaba__dsh-complete-notify.yml:sha256=453b3a4f847ad86774d19f7e4e5a2aae9d613047371613148d16d03a79481816:at=2026-10-13T05:55:50.076Z:owner=22809336"
+      ],
+      "topics": [
+        "dsh-plugin",
         "automatic-radar"
       ],
       "status": "reviewing",
