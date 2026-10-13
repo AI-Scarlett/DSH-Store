@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-13T05:51:04.000Z",
+    "updatedAt": "2026-10-13T15:38:44.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "3ae826ceba6f25b08bce50bcb51001209bc16b57",
-      "sourceUpdatedAt": "2026-10-13T05:48:24.000Z",
+      "latestCommit": "c580ba940a1a29c586db47ad7df5234d51e0cc4a",
+      "sourceUpdatedAt": "2026-10-13T15:43:11.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -9310,8 +9310,8 @@
       "description": "Codex 风格推理等级滑块，内嵌于模型选择器，拖动切换推理档位。",
       "repositoryUrl": "https://github.com/qjcnmd/dsh-reasoning-slider",
       "defaultBranch": "main",
-      "latestCommit": "aa963e2c81e237665331b53083cecba097fc6b9b",
-      "sourceUpdatedAt": "2026-09-04T05:52:50.000Z",
+      "latestCommit": "e9403cf686b8fe93299cb7971b86f1cf303a1303",
+      "sourceUpdatedAt": "2026-10-13T12:45:01.000Z",
       "discoveredAt": "2026-09-08T21:29:07.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -18936,6 +18936,117 @@
       "discoveredAt": "2026-10-13T05:51:04.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@40d0a01d7ea67c48b9e1c663a07dac5ad6a27318:data/plugins/kaixinbaba__dsh-complete-notify.yml:sha256=453b3a4f847ad86774d19f7e4e5a2aae9d613047371613148d16d03a79481816:at=2026-10-13T05:55:50.076Z:owner=22809336"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "severuszh-dsh-plugin-subagent-director",
+      "name": "SeverusZh/dsh-plugin-subagent-director",
+      "description": "Subagent Director: per-subagent LLM provider/model selection with role templates for DeepSeek Harness (dsh plugin)",
+      "repositoryUrl": "https://github.com/SeverusZh/dsh-plugin-subagent-director",
+      "defaultBranch": "main",
+      "latestCommit": "8be3fe615d70fdf16d674a1fd52af385ce9586a6",
+      "sourceUpdatedAt": "2026-10-12T03:14:13.000Z",
+      "discoveredAt": "2026-10-13T15:38:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@10017bb151bd0d06e66dcf1d9d2e67debbc8337b:data/plugins/SeverusZh__dsh-plugin-subagent-director.yml:sha256=9dfb706c72a00aa9ec0f3107c35e9830853acb400f821184c2842d3826f5b92a:at=2026-10-13T15:44:09.892Z:owner=108643279"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "subagent",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "severuszh-dsh-skills-mcp-group-manager",
+      "name": "SeverusZh/dsh-skills-mcp-group-manager",
+      "description": "DeepSeek Harness Skills & MCPs 分组管理器 — 分组管理 Skills、过滤模型技能目录、独立开关 MCP 服务器、左侧面板一键管理 / Group skills, filter the model skill catalog, toggle MCP servers, left panel UI",
+      "repositoryUrl": "https://github.com/SeverusZh/dsh-skills-mcp-group-manager",
+      "defaultBranch": "main",
+      "latestCommit": "ca66735d41f27516bd1ce293cf12da83f070893d",
+      "sourceUpdatedAt": "2026-10-12T02:54:14.000Z",
+      "discoveredAt": "2026-10-13T15:38:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@10017bb151bd0d06e66dcf1d9d2e67debbc8337b:data/plugins/SeverusZh__dsh-skills-mcp-group-manager.yml:sha256=bb13639b09f14f1bc3a9496e036c53cfec55112138c1ac060c49e82065a447d8:at=2026-10-13T15:44:09.892Z:owner=108643279"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-bundle",
+        "dsh-plugin",
+        "dsh-plugins",
+        "mcp",
+        "skill",
+        "skills",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "seriousz158-dsh-memory",
+      "name": "seriousz158/dsh-memory",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/seriousz158/dsh-memory",
+      "defaultBranch": "main",
+      "latestCommit": "f7b03757f8bf546d3c007f8e9a074a847b681d3d",
+      "sourceUpdatedAt": "2026-10-10T15:56:39.000Z",
+      "discoveredAt": "2026-10-13T15:38:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@10017bb151bd0d06e66dcf1d9d2e67debbc8337b:data/plugins/seriousz158__dsh-memory.yml:sha256=6fe99bb30060d129c0ec2dc17594d4d744e522fe4209ae06b9086358786741ec:at=2026-10-13T15:44:09.892Z:owner=275876067"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-bundle",
+        "dsh-plugin",
+        "memory",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "xiaotian-linli-dsh-ios-ipa",
+      "name": "xiaotian-linli/dsh-ios-ipa",
+      "description": "DSH-iOS unsigned IPA builder",
+      "repositoryUrl": "https://github.com/xiaotian-linli/dsh-ios-ipa",
+      "defaultBranch": "main",
+      "latestCommit": "d788c7a70e3d4f727ec97e6d33ec99af4260d9fe",
+      "sourceUpdatedAt": "2026-10-13T15:43:39.000Z",
+      "discoveredAt": "2026-10-13T15:38:44.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "sev7een-dsh-plugin-automations",
+      "name": "Sev7een/dsh-plugin-automations",
+      "description": "Scheduled tasks plugin for DeepSeek Harness Web Profile",
+      "repositoryUrl": "https://github.com/Sev7een/dsh-plugin-automations",
+      "defaultBranch": "main",
+      "latestCommit": "28829d3121032e3f0731ceca1718af3f233a1554",
+      "sourceUpdatedAt": "2026-09-08T14:35:01.000Z",
+      "discoveredAt": "2026-10-13T15:38:44.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@10017bb151bd0d06e66dcf1d9d2e67debbc8337b:data/plugins/Sev7een__dsh-plugin-automations.yml:sha256=0d280ec10340a919f4bd7733f8817591cd9fc2c27a47724b3993cb6f4bb0e229:at=2026-10-13T15:44:09.892Z:owner=217913825"
       ],
       "topics": [
         "dsh-plugin",
