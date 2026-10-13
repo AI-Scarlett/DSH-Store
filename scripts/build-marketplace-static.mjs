@@ -28,12 +28,26 @@ if (previousRankingsPath) {
 const refreshRankingStars = ['daily', 'weekly', 'baseline'].includes(rankingRefreshMode)
 const outputRoot = resolve(projectRoot, argValue('--out') || '_site')
 const sourceSha = argValue('--source-sha') || process.env.GITHUB_SHA || 'local-worktree'
+async function collectRuntimeAssets(directory, prefix = '') {
+  const files = []
+  for (const entry of (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
+    const path = prefix ? `${prefix}/${entry.name}` : entry.name
+    const absolute = resolve(directory, entry.name)
+    if (entry.isDirectory()) files.push(...await collectRuntimeAssets(absolute, path))
+    else if (entry.isFile() && /\.(?:js|css)$/i.test(entry.name)) files.push({ path, absolute })
+  }
+  return files
+}
+async function localRuntimeAssetDigest() {
+  const digest = createHash('sha256')
+  for (const file of await collectRuntimeAssets(resolve(projectRoot, 'marketplace'))) {
+    digest.update(file.path).update('\0').update(await readFile(file.absolute)).update('\0')
+  }
+  return digest.digest('hex')
+}
 const runtimeAssetVersion = /^[a-f0-9]{40}$/i.test(sourceSha)
   ? sourceSha.slice(0, 12)
-  : createHash('sha256').update(await readFile(resolve(projectRoot, 'marketplace/app.js')))
-    .update(await readFile(resolve(projectRoot, 'marketplace/lib/plugin-directory.js')))
-    .update(await readFile(resolve(projectRoot, 'marketplace/lib/dsh-release-policy.js')))
-    .digest('hex').slice(0, 12)
+  : (await localRuntimeAssetDigest()).slice(0, 12)
 const automationRunsPath = argValue('--automation-runs')
 const automationReportsPath = argValue('--automation-reports')
 const siteOriginInput = argValue('--site-origin') || process.env.SITE_ORIGIN || 'https://dsh.store'
@@ -269,6 +283,95 @@ const managerInstallable = manager.status === 'approved'
 const htmlEscape = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[character])
+const jsonLdScript = value => JSON.stringify(value).replace(/</g, '\\u003c')
+function renderArticleInline(markdown) {
+  const held = []
+  const hold = html => {
+    const token = '@@DSH_ARTICLE_TOKEN_' + held.length + '@@'
+    held.push(html)
+    return token
+  }
+  let text = String(markdown)
+  text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (match, label, href) => {
+    let safeHref
+    try {
+      const url = new URL(href)
+      if (url.protocol === 'https:' || url.protocol === 'http:') safeHref = url.href
+    } catch {}
+    return safeHref
+      ? hold('<a href="' + htmlEscape(safeHref) + '" target="_blank" rel="noopener noreferrer">' + htmlEscape(label) + '</a>')
+      : label
+  })
+  text = text.replace(/\x60([^\x60]+)\x60/g, (match, value) => hold('<code>' + htmlEscape(value) + '</code>'))
+  text = text.replace(/\*\*(.+?)\*\*/g, (match, value) => hold('<strong>' + htmlEscape(value) + '</strong>'))
+  text = text.replace(/\*([^*]+)\*/g, (match, value) => hold('<em>' + htmlEscape(value) + '</em>'))
+  text = htmlEscape(text).replace(/\n/g, '<br>')
+  held.forEach((html, index) => { text = text.replaceAll('@@DSH_ARTICLE_TOKEN_' + index + '@@', html) })
+  return text
+}
+function renderArticleMarkdown(markdown) {
+  const lines = String(markdown).replace(/\r\n?/g, '\n').split('\n')
+  const output = []
+  let paragraph = []
+  let listType = null
+  let quote = []
+  let fenced = false
+  let code = []
+  let skipFirstHeading = true
+  const flushParagraph = () => {
+    if (paragraph.length) output.push('<p>' + renderArticleInline(paragraph.join('\n')) + '</p>')
+    paragraph = []
+  }
+  const closeList = () => {
+    if (listType) output.push('</' + listType + '>')
+    listType = null
+  }
+  const flushQuote = () => {
+    if (quote.length) output.push('<blockquote><p>' + renderArticleInline(quote.join('\n')) + '</p></blockquote>')
+    quote = []
+  }
+  for (const rawLine of lines) {
+    const line = rawLine.trim()
+    if (line.startsWith('\x60\x60\x60')) {
+      flushParagraph(); closeList(); flushQuote()
+      if (!fenced) { code = []; fenced = true }
+      else { output.push('<pre><code>' + htmlEscape(code.join('\n')) + '</code></pre>'); fenced = false }
+      continue
+    }
+    if (fenced) { code.push(rawLine); continue }
+    if (!line) { flushParagraph(); closeList(); flushQuote(); continue }
+    const heading = /^(#{1,6})\s+(.+)$/.exec(line)
+    if (heading) {
+      flushParagraph(); closeList(); flushQuote()
+      if (heading[1].length === 1 && skipFirstHeading) { skipFirstHeading = false; continue }
+      skipFirstHeading = false
+      const level = Math.min(3, Math.max(2, heading[1].length))
+      output.push('<h' + level + '>' + renderArticleInline(heading[2]) + '</h' + level + '>')
+      continue
+    }
+    if (/^(---+|\*\*\*+)$/.test(line)) {
+      flushParagraph(); closeList(); flushQuote(); output.push('<hr>')
+      continue
+    }
+    if (line.startsWith('>')) {
+      flushParagraph(); closeList()
+      quote.push(line.replace(/^>\s?/, ''))
+      continue
+    }
+    const item = /^(?:([-*+])|(\d+)[.)])\s+(.+)$/.exec(line)
+    if (item) {
+      flushParagraph(); flushQuote()
+      const nextType = item[2] ? 'ol' : 'ul'
+      if (listType !== nextType) { closeList(); output.push('<' + nextType + '>'); listType = nextType }
+      output.push('<li>' + renderArticleInline(item[3]) + '</li>')
+      continue
+    }
+    closeList(); flushQuote(); paragraph.push(line)
+  }
+  flushParagraph(); closeList(); flushQuote()
+  if (fenced && code.length) output.push('<pre><code>' + htmlEscape(code.join('\n')) + '</code></pre>')
+  return output.join('\n')
+}
 const palette = ['#6f83ff', '#ff6c4a', '#8c6ce8', '#00a991', '#e0568c', '#4385c6', '#a36c45', '#6a9f39']
 const pluginColor = id => palette[[...String(id)].reduce((total, character) => total + character.charCodeAt(0), 0) % palette.length]
 const initials = name => String(name || 'DSH').replace(/^DSH\s*/i, '').split(/[\s_-]+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase() || 'D'
@@ -343,7 +446,7 @@ function directoryCard(entry) {
   const listed = entry.listingStatus === 'listed'
   const categories = entry.categories.slice(0, 3)
   const repoLink = entry.repositoryUrl
-    ? `<a class="repo-link" href="${htmlEscape(entry.repositoryUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${htmlEscape(directoryUi.github)}: ${htmlEscape(name)}">GH ↗</a>` : ''
+    ? `<a class="repo-link" href="${htmlEscape(entry.repositoryUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${htmlEscape(directoryUi.github)}: ${htmlEscape(name)}">GitHub ↗</a>` : ''
   const detailLink = entry.detailUrl
     ? `<a class="repo-link" href="${htmlEscape(entry.detailUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${htmlEscape(publicDiscoveryAttribution)}: ${htmlEscape(name)}">↗</a>` : ''
   return `<article id="plugin-${htmlEscape(anchorId(entry.id))}" class="plugin-card directory-entry-card" style="--plugin-color:${pluginColor(entry.id)}" data-static-plugin-id="${htmlEscape(entry.id)}">
@@ -412,6 +515,7 @@ async function rewriteSiteReferences(directory) {
     const source = await readFile(absolutePath, 'utf8')
     let rewritten = source.replaceAll('https://dsh.store', siteOrigin).replaceAll('dsh.store', siteHost)
     rewritten = rewritten
+      .replace(/(<link\b[^>]*\bhref=")(?!https?:\/\/)([^"?]+\.css)(?:\?[^"]*)?(")/gi, `$1$2?v=${runtimeAssetVersion}$3`)
       .replaceAll('src="../app.js"', `src="../app.js?v=${runtimeAssetVersion}"`)
       .replaceAll('src="./app.js"', `src="./app.js?v=${runtimeAssetVersion}"`)
       .replaceAll("import('./lib/plugin-directory.js')", `import('./lib/plugin-directory.js?v=${runtimeAssetVersion}')`)
@@ -502,6 +606,105 @@ const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international
 const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
 const friendSisterSiteMarkup = `<a href="${htmlEscape(`${alternateOrigin}/`)}" target="_blank" rel="noopener noreferrer">DSH STORE · ${alternateIsDomestic ? '国内站' : 'International'} ↗</a>`
 
+const articleCollection = JSON.parse(await readFile(resolve(projectRoot, 'marketplace/articles/articles.json'), 'utf8'))
+if (articleCollection.schemaVersion !== 1 || !Array.isArray(articleCollection.articles)
+  || articleCollection.articles.length < 1 || articleCollection.articles.length > 100) {
+  throw new Error('The article collection schema or size is invalid')
+}
+const articleSlugs = new Set()
+for (const article of articleCollection.articles) {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.slug || '')
+    || articleSlugs.has(article.slug)
+    || typeof article.title !== 'string' || article.title.length < 8 || article.title.length > 180
+    || typeof article.summary !== 'string' || article.summary.length < 30 || article.summary.length > 420
+    || !/^\d{4}-\d{2}-\d{2}$/.test(article.datePublished || '')
+    || new Date(article.datePublished).toISOString().slice(0, 10) !== article.datePublished
+    || article.language !== 'zh-CN'
+    || typeof article.contentMarkdown !== 'string' || article.contentMarkdown.length < 500 || article.contentMarkdown.length > 50000) {
+    throw new Error('An article entry is malformed or exceeds its bound')
+  }
+  articleSlugs.add(article.slug)
+}
+const articleRoute = article => '/articles/' + article.slug + '/'
+const articleListMarkup = articleCollection.articles.map(article => {
+  const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+    .format(new Date(article.datePublished + 'T00:00:00Z'))
+  return '<article class="article-card">'
+    + '<div class="article-card-meta"><time datetime="' + htmlEscape(article.datePublished) + '">' + htmlEscape(date) + '</time><span>' + htmlEscape(article.category) + '</span></div>'
+    + '<h3><a href="./' + htmlEscape(article.slug) + '/">' + htmlEscape(article.title) + '</a></h3>'
+    + '<p>' + htmlEscape(article.summary) + '</p>'
+    + '<a href="./' + htmlEscape(article.slug) + '/">阅读文章 <span aria-hidden="true">↗</span></a>'
+    + '</article>'
+}).join('\n')
+const articleCollectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': siteOrigin + '/articles/#collection',
+  url: siteOrigin + '/articles/',
+  name: articleCollection.collectionTitle,
+  description: articleCollection.collectionDescription,
+  inLanguage: 'zh-CN',
+  isPartOf: { '@type': 'WebSite', '@id': siteOrigin + '/#website', name: 'DSH STORE', url: siteOrigin + '/' },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderDescending',
+    numberOfItems: articleCollection.articles.length,
+    itemListElement: articleCollection.articles.map((article, index) => ({
+      '@type': 'ListItem', position: index + 1, url: siteOrigin + articleRoute(article),
+      name: article.title, description: article.summary,
+    })),
+  },
+}
+const articleIndexPath = resolve(outputRoot, 'marketplace/articles/index.html')
+let articleIndexHtml = await readFile(articleIndexPath, 'utf8')
+articleIndexHtml = replaceRequired(articleIndexHtml, '<!-- DSH_ARTICLE_COLLECTION_SCHEMA -->',
+  '<script type="application/ld+json">' + jsonLdScript(articleCollectionJsonLd) + '</script>', 'article collection schema')
+articleIndexHtml = replaceRequired(articleIndexHtml, '<!-- DSH_STATIC_ARTICLE_LIST -->', articleListMarkup, 'article list')
+articleIndexHtml = replaceElementText(articleIndexHtml, 'article-count', String(articleCollection.articles.length))
+await writeFile(articleIndexPath, articleIndexHtml)
+
+const articleTemplate = await readFile(resolve(projectRoot, 'scripts/templates/dsh-article-page.html'), 'utf8')
+const articleDetailPages = []
+for (const article of articleCollection.articles) {
+  const route = articleRoute(article)
+  const url = siteOrigin + route
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': url + '#article',
+    headline: article.title,
+    description: article.summary,
+    datePublished: article.datePublished,
+    inLanguage: article.language,
+    articleSection: article.category,
+    keywords: ['DeepSeek Harness', 'DSH', 'DSH 插件', article.category],
+    isAccessibleForFree: true,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    publisher: { '@type': 'Organization', name: 'DSH STORE', url: siteOrigin + '/' },
+  }
+  let page = articleTemplate
+  const replacements = [
+    ['<!-- ARTICLE_DESCRIPTION -->', htmlEscape(article.summary)],
+    ['<!-- ARTICLE_DATE -->', htmlEscape(article.datePublished)],
+    ['<!-- ARTICLE_TITLE -->', htmlEscape(article.title)],
+    ['<!-- ARTICLE_URL -->', htmlEscape(url)],
+    ['<!-- ARTICLE_IMAGE -->', htmlEscape(siteOrigin + '/dsh-store-icon.png')],
+    ['<!-- ARTICLE_CATEGORY -->', htmlEscape(article.category)],
+    ['<!-- ARTICLE_SCHEMA -->', '<script type="application/ld+json">' + jsonLdScript(articleSchema) + '</script>'],
+    ['<!-- ARTICLE_CONTENT -->', renderArticleMarkdown(article.contentMarkdown)],
+    ['<!-- ASSET_VERSION -->', runtimeAssetVersion],
+  ]
+  for (const [marker, value] of replacements) {
+    if (!page.includes(marker)) throw new Error('Article template marker is missing: ' + marker)
+    page = page.replaceAll(marker, value)
+  }
+  const file = 'marketplace/articles/' + article.slug + '/index.html'
+  const target = resolve(outputRoot, file)
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, page)
+  articleDetailPages.push({ file, route })
+}
+
 const canonicalPages = [
   { file: 'marketplace/index.html', route: '/' },
   { file: 'marketplace/plugins/index.html', route: '/plugins/' },
@@ -514,6 +717,8 @@ const canonicalPages = [
   { file: 'marketplace/faq/index.html', route: '/faq/' },
   { file: 'marketplace/about/index.html', route: '/about/' },
   { file: 'marketplace/repair/index.html', route: '/repair/' },
+  { file: 'marketplace/articles/index.html', route: '/articles/', fixedLocale: 'zh-CN', domesticOnly: true },
+  ...articleDetailPages.map(({ file, route }) => ({ file, route, fixedLocale: 'zh-CN', domesticOnly: true })),
   {
     file: 'marketplace/about/deepseek-harness-guide/index.html',
     route: '/about/deepseek-harness-guide/',
@@ -541,8 +746,12 @@ const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/rankings/': '0.9', '/': '1.0', '/plugins/': '0.9', '/downloads/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
-const sitemapChangefreq = { '/rankings/': 'daily', '/': 'weekly', '/plugins/': 'daily', '/downloads/': 'weekly', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
+const sitemapPriority = { '/rankings/': '0.9', '/': '1.0', '/plugins/': '0.9', '/downloads/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8', '/articles/': '0.8' }
+const sitemapChangefreq = { '/rankings/': 'daily', '/': 'weekly', '/plugins/': 'daily', '/downloads/': 'weekly', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly', '/articles/': 'weekly' }
+for (const { route } of articleDetailPages) {
+  sitemapPriority[route] = '0.7'
+  sitemapChangefreq[route] = 'monthly'
+}
 if (isDomestic) {
   sitemapPriority['/dsh-store-guide/'] = '0.8'
   sitemapChangefreq['/dsh-store-guide/'] = 'monthly'
@@ -593,7 +802,12 @@ const umamiMarkup = `<script>
 for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
-  const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', alternateMarkup, `${pagePath} alternate site marker`)
+  const articlesHref = relative(dirname(pagePath), 'marketplace/articles') || '.'
+  const articlesLinkPath = articlesHref === '.' ? './' : articlesHref.replace(/\\/g, '/') + '/'
+  const articleNavLabel = (fixedLocale === 'zh-CN' || defaultLocale === 'zh') ? 'DSH 实战与观察' : 'DSH Field Notes'
+  const articleNavCurrent = route.startsWith('/articles/') ? ' aria-current="page"' : ''
+  const articleNavMarkup = `<a href="${htmlEscape(articlesLinkPath)}" data-i18n="nav.articles"${articleNavCurrent}>${articleNavLabel}</a>`
+  const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', `${articleNavMarkup}${alternateMarkup}`, `${pagePath} alternate site marker`)
   const withFriendLinks = replaceRequired(withAlternate, '<!-- DSH_FRIEND_SISTER_SITE -->', friendSisterSiteMarkup, `${pagePath} friend sister site marker`)
   const withHreflang = replaceRequired(withFriendLinks, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
   const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
@@ -676,7 +890,7 @@ plugins = replaceElementText(plugins, 'stat-categories', String(directoryStats.c
 plugins = replaceElementText(plugins, 'stat-candidates', new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN').format(directoryStats.unlisted))
 plugins = replaceElementText(plugins, 'catalog-date', `catalog-index.json · ${snapshot.registry.updatedAt}`)
 plugins = replaceElementText(plugins, 'catalog-meta', `公开插件目录 · ${discoveryIndex.source.recordCount.toLocaleString(defaultLocale === 'en' ? 'en' : 'zh-CN')} 条来源记录`)
-plugins = replaceRequired(plugins, '<!-- DSH_STATIC_DISCOVERY_NOTE -->', `<span>${new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN').format(discoveryIndex.source.recordCount)} ${defaultLocale === 'en' ? 'public records' : '条公开记录'}</span><span>${defaultLocale === 'en' ? 'Index generated' : '索引生成时间'} · ${htmlEscape(discoveryIndex.source.generatedAt)}</span><a href="https://www.dsh.so/">${htmlEscape(publicDiscoveryAttribution)}</a><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>`, 'discovery source attribution')
+plugins = replaceRequired(plugins, '<!-- DSH_STATIC_DISCOVERY_NOTE -->', `<span>${new Intl.NumberFormat(defaultLocale === 'en' ? 'en' : 'zh-CN').format(discoveryIndex.source.recordCount)} ${defaultLocale === 'en' ? 'public records' : '条公开记录'}</span><span>${defaultLocale === 'en' ? 'Index generated' : '索引生成时间'} · ${htmlEscape(discoveryIndex.source.generatedAt)}</span><span>${defaultLocale === 'en' ? 'From public third-party records' : '来自第三方公开记录'}</span>`, 'discovery source attribution')
 await writeFile(resolve(outputRoot, 'marketplace/plugins/index.html'), plugins)
 
 const catalogUpdatedAt = typeof snapshot.registry?.updatedAt === 'string' && snapshot.registry.updatedAt

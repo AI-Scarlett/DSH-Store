@@ -979,7 +979,7 @@ body.home-page::before, body.plugins-page::before {
 /* Plugin Grid & Cards */
 .plugins-page .plugin-grid {
   display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 16px !important;
   border: 0 !important;
   margin-top: 16px !important;
@@ -996,9 +996,11 @@ body.home-page::before, body.plugins-page::before {
   color: var(--store-text) !important;
   font-size: 14px !important;
   font-weight: 850 !important;
+  gap: 12px !important;
 }
 
 .plugins-page .directory-category-heading b {
+  margin-left: auto !important;
   color: var(--store-text-faint) !important;
   font: 700 11px ui-monospace, SFMono-Regular, Menlo, monospace !important;
 }
@@ -1035,6 +1037,31 @@ body.home-page::before, body.plugins-page::before {
 }
 
 .plugins-page .directory-source-note a {
+  color: var(--store-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.plugins-page .directory-source-disclosure {
+  margin: -8px 0 18px !important;
+  color: var(--store-text-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.65 !important;
+}
+
+.plugins-page .directory-source-disclosure summary {
+  width: fit-content;
+  color: var(--store-text-faint);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.plugins-page .directory-source-disclosure p {
+  margin: 8px 0 0;
+}
+
+.plugins-page .directory-source-disclosure a {
   color: var(--store-primary);
   text-decoration: underline;
   text-underline-offset: 2px;

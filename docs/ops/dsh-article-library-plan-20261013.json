@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "planType": "StaticMarketplaceContentAndUXChange",
+  "planId": "dsh-article-library-20261013",
+  "status": "validated-pending-pull-request",
+  "base": {
+    "repository": "AI-Scarlett/DSH-Store",
+    "branch": "main",
+    "commit": "571d9b7a33a65f73a8456f40744d9e2f22efc9d2"
+  },
+  "exactFileScope": [
+    "docs/ops/dsh-article-library-plan-20261013.json",
+    "marketplace/app.js",
+    "marketplace/articles/articles.css",
+    "marketplace/articles/articles.json",
+    "marketplace/articles/index.html",
+    "marketplace/llms.txt",
+    "marketplace/plugins/index.html",
+    "marketplace/store-layout.css",
+    "scripts/build-marketplace-static.mjs",
+    "scripts/templates/dsh-article-page.html",
+    "test/deploy-refresh.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-article-library-plan-20261013.json": {
+      "exists": false
+    },
+    "marketplace/app.js": {
+      "exists": true,
+      "sha256": "3815dba5e2c256f1cad1cd2ba84b16c5bc4dc81828fd1652da5f17bb8b1e611c"
+    },
+    "marketplace/articles/articles.css": {
+      "exists": false
+    },
+    "marketplace/articles/articles.json": {
+      "exists": false
+    },
+    "marketplace/articles/index.html": {
+      "exists": false
+    },
+    "marketplace/llms.txt": {
+      "exists": true,
+      "sha256": "20dc0dc4a50b29c1fbf8d2bc3a7b4a99218711d0960948767187ff9f09bc64d4"
+    },
+    "marketplace/plugins/index.html": {
+      "exists": true,
+      "sha256": "8f8e123431cedebea3ec5b07f2ed33952739c1c7e3b1e53415d74097a9ac9aaf"
+    },
+    "marketplace/store-layout.css": {
+      "exists": true,
+      "sha256": "e58719a12e60da6cd476028e0cb23a789fb77c7b30fac5dd41ef748a92224716"
+    },
+    "scripts/build-marketplace-static.mjs": {
+      "exists": true,
+      "sha256": "122d5bf6feb41018132611db146c75663f9334af4c2c491c644f13ed4be9034a"
+    },
+    "scripts/templates/dsh-article-page.html": {
+      "exists": false
+    },
+    "test/deploy-refresh.test.mjs": {
+      "exists": true,
+      "sha256": "6942c1b9548fbb400047bbc3a68aaa0c48cac93302be23ba556ace71e9437d5b"
+    },
+    "test/marketplace-static-build.test.mjs": {
+      "exists": true,
+      "sha256": "09985017ad9193b2b0941b75915d0e6b4109bd37d725504e1cf5553365c12c40"
+    }
+  },
+  "requirements": [
+    "Add a Chinese DSH articles collection with static, crawlable article detail pages, Article/CollectionPage JSON-LD, canonical metadata, and sitemap entries.",
+    "Import only first-party Obsidian DSH topical originals; exclude external clippings, promotional callouts, and private vault paths.",
+    "Keep current-version and historical observations clearly dated and non-authoritative for present compatibility.",
+    "Render the plugin discovery attribution line as generic public-third-party-record wording; keep license-required attribution in a separate expandable disclosure.",
+    "Use GitHub as the explicit repository-link label, not GH.",
+    "Fix stale category layout by content-versioning local stylesheet links and include CSS inputs in the local runtime asset digest.",
+    "Expose the DSH article collection in the global header navigation and generate crawlable static article detail routes on both storefront builds."
+  ],
+  "deterministicGates": [
+    "npm run check",
+    "static marketplace build for https://dsh.store and https://dsh-store.cn using disposable output directories",
+    "assert article content, canonical/hreflang, JSON-LD, sitemap routes, CSS cache keys, generic discovery attribution, preserved license disclosure, and GitHub link labels in both built outputs",
+    "git diff --check and exact file-scope verification"
+  ],
+  "mutationPolicy": {
+    "noDshProfileMutation": true,
+    "noDshCoreMutation": true,
+    "noThirdPartyCodeExecution": true,
+    "commitViaCiCheckedPullRequest": true
+  },
+  "execution": {
+    "completedAt": "2026-10-13T10:17:30Z",
+    "basePreconditions": "PASS: current HEAD matches pinned base; all existing file SHA-256 values and absent-path preconditions verified.",
+    "changedPaths": "PASS: working-tree paths exactly equal exactFileScope.",
+    "checks": {
+      "npmRunCheck": "PASS: registry validation and 403/403 tests.",
+      "focusedStaticBuilds": "PASS: international and domestic builds; each emits the article collection plus 8 article detail pages (9 article index.html files total).",
+      "focusedTests": "PASS: static builder, deploy fixture, and public plugin-directory tests.",
+      "diffCheck": "PASS: git diff --check."
+    },
+    "externalEffects": {
+      "dshProfileMutation": false,
+      "dshCoreMutation": false,
+      "authorOutreach": false,
+      "productionDeployment": false
+    },
+    "deployment": "NOT_DEPLOYED: public storefront refresh and browser acceptance are outside this source PR."
+  }
+}

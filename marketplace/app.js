@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 31788)
+Total output lines: 1784
+
 const CATALOG_URL = document.body.dataset.catalogUrl || '../registry/catalog.json'
 const CANDIDATES_URL = document.body.dataset.candidatesUrl || '../registry/candidates.json'
 const DISCOVERY_INDEX_URL = document.body.dataset.discoveryIndexUrl || '../../registry/discovery-index.json'
@@ -32,7 +35,7 @@ const translations = {
     'directory.meta.title': '全部 DSH 插件｜DSH STORE',
     'directory.meta.description': '浏览公开发现索引中的全部 DSH 插件记录，先按分类浏览，再按商城收录状态筛选。',
     'a11y.skip': '跳到主要内容', 'a11y.skipCatalog': '跳到插件目录',
-    'nav.home': '首页', 'nav.discover': '插件目录', 'nav.community': '社区与开发者', 'nav.standards': '收录标准', 'nav.safety': '信任机制', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
+    'nav.home': '首页', 'nav.discover': '插件目录', 'nav.articles': 'DSH 实战与观察', 'nav.community': '社区与开发者', 'nav.standards': '收录标准', 'nav.safety': '信任机制', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
     'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': '让 DSH，', 'hero.title2': '拥有更多可能。',
     'hero.lead': '发现插件、看清来源与权限，与开发者一起扩展工作流。所有真实接入仍通过清楚、可恢复的路径完成。',
     'home.search': '搜索插件名称、用途或英文包名', 'home.searchTitle': '按分类浏览插件', 'home.searchLabel': '搜索插件', 'home.searchAction': '搜索插件 ↗', 'home.catalogTitle': '从插件目录开始探索', 'home.catalogLead': '首页展示当前目录前六项；点击详情时再单独加载插件信息。列表展示不等于推荐、安全审计或安装验证。', 'home.catalogAction': '浏览完整插件目录', 'home.catalogDetailsDeferred': '打开详情后查看来源、权限与兼容性。', 'home.catalogOffline': '目录暂时未能加载，请稍后重试。', 'home.category.development': '开发工具', 'home.category.workflow': '工作流', 'home.category.files': '文件处理', 'home.category.sessions': '会话管理', 'home.category.search': '搜索发现', 'home.category.all': '更多分类',
@@ -71,7 +74,7 @@ const translations = {
     'assurance.discovered': '已发现', 'assurance.installable': '可安装验证', 'assurance.runtime': '运行验证', 'assurance.security': '安全审查',
     'candidate.notice': '候选发现仅用于目录展示，不代表 DSH 兼容、安全审查或可安装；候选项目没有安装操作。',
     'candidate.search': '搜索候选项目、Topic、来源或 GitHub 仓库', 'candidate.emptyTitle': '没有匹配的候选项目', 'candidate.emptyBody': '候选注册表没有匹配当前关键词的记录；可信安装库不受影响。',
-    'directory.loading': '正在读取公开插件发现索引…', 'directory.detailsLoading': '正在读取插件详情…', 'directory.partial': '公开发现索引暂时无法读取；当前只显示商城及候选仓库记录，数量不完整。', 'directory.candidatePartial': '商城候选补充记录暂时不可用；公开发现索引仍可浏览。', 'directory.detailPartial': '部分插件详情暂时无法读取。', 'directory.reasonTitle': '收录状态', 'directory.reasonUnavailable': '公开详情暂时无法读取。', 'directory.noDescription': '暂无公开简介，打开来源查看详情。', 'directory.noAction': '仅展示目录记录 · 不提供安装', 'directory.categoryTitle': '按分类浏览', 'directory.statusTitle': '再按收录状态筛选', 'directory.snapshot': '公开索引记录', 'directory.sourceLink': 'dsh.so 来源', 'directory.githubLink': 'GitHub 仓库', 'directory.ecosystemApp': '生态应用', 'directory.stars': 'Stars', 'directory.uncategorized': '未分类', 'directory.notCollected': '该记录尚未匹配到 DSH STORE Catalog 条目。此处仅展示是否收录，不作合规、安全或兼容性筛选。', 'directory.sourceAttribution': 'dsh.so — DSH Developer Hub (https://www.dsh.so) · CC BY 4.0', 'directory.sourceGenerated': '索引生成时间：{date}', 'directory.sourceEntries': '{count} 条公开记录', 'directory.stats.total': '全部公开记录', 'directory.stats.listed': '商城已收录', 'directory.stats.categories': '插件分类', 'directory.stats.unlisted': '商城未收录', 'directory.catalogTitle': '全部已知 DSH 插件', 'directory.catalogLead': '先按公开记录的分类浏览，再单独筛选商城已收录或未收录；此目录不做合规或兼容性筛选。', 'directory.sort.recommended': '分类内：已收录与 Stars 优先', 'directory.sort.stars': 'Stars 由高到低',
+    'directory.loading': '正在读取公开插件发现索引…', 'directory.detailsLoading': '正在读取插件详情…', 'directory.partial': '公开发现索引暂时无法读取；当前只显示商城及候选仓库记录，数量不完整。', 'directory.candidatePartial': '商城候选补充记录暂时不可用；公开发现索引仍可浏览。', 'directory.detailPartial': '部分插件详情暂时无法读取。', 'directory.reasonTitle': '收录状态', 'directory.reasonUnavailable': '公开详情暂时无法读取。', 'directory.noDescription': '暂无公开简介，打开来源查看详情。', 'directory.noAction': '仅展示目录记录 · 不提供安装', 'directory.categoryTitle': '按分类浏览', 'directory.statusTitle': '再按收录状态筛选', 'directory.snapshot': '公开索引记录', 'directory.sourceLink': '第三方来源', 'directory.githubLink': 'GitHub 仓库', 'directory.ecosystemApp': '生态应用', 'directory.stars': 'Stars', 'directory.uncategorized': '未分类', 'directory.notCollected': '该记录尚未匹配到 DSH STORE Catalog 条目。此处仅展示是否收录，不作合规、安全或兼容性筛选。', 'directory.sourceAttribution': '来自第三方公开记录', 'directory.sourceDisclosureTitle': '关于来源与许可', 'directory.sourceDisclosureBody': '公开记录索引来自第三方公开数据；具体来源与许可信息见此处。', 'directory.sourceGenerated': '索引生成时间：{date}', 'directory.sourceEntries': '{count} 条公开记录', 'directory.stats.total': '全部公开记录', 'directory.stats.listed': '商城已收录', 'directory.stats.categories': '插件分类', 'directory.stats.unlisted': '商城未收录', 'directory.catalogTitle': '全部已知 DSH 插件', 'directory.catalogLead': '先按公开记录的分类浏览，再单独筛选商城已收录或未收录；此目录不做合规或兼容性筛选。', 'directory.sort.recommended': '分类内：已收录与 Stars 优先', 'directory.sort.stars': 'Stars 由高到低',
     'directory.statusBlocked': '目录策略未通过', 'directory.statusUnlisted': '当前未上架', 'directory.statusRejected': '候选审核未通过', 'directory.statusReviewing': '候选审核中', 'directory.statusDiscovered': '候选已发现',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
     'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
@@ -104,7 +107,7 @@ const translations = {
     'directory.meta.title': 'All DSH Plugins | DSH STORE',
     'directory.meta.description': 'Browse every record in the public DSH plugin discovery index, grouped by category and filterable by Store listing status.',
     'a11y.skip': 'Skip to main content', 'a11y.skipCatalog': 'Skip to plugin catalog',
-    'nav.home': 'Home', 'nav.discover': 'Plugin catalog', 'nav.community': 'Community & creators', 'nav.standards': 'Listing standards', 'nav.safety': 'Trust protocol', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
+    'nav.home': 'Home', 'nav.discover': 'Plugin catalog', 'nav.articles': 'DSH Field Notes', 'nav.community': 'Community & creators', 'nav.standards': 'Listing standards', 'nav.safety': 'Trust protocol', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
     'hero.eyebrow': 'DSH TRUSTED EXTENSION LAYER', 'hero.title1': 'Make DSH', 'hero.title2': 'more capable.',
     'hero.lead': 'Discover plugins, inspect sources and permissions, and build better workflows with creators. Real changes still follow a clear, recoverable path.',
     'home.search': 'Search plugin names, uses, or package names', 'home.searchTitle': 'Browse plugins by category', 'home.searchLabel': 'Search plugins', 'home.searchAction': 'Search plugins ↗', 'home.catalogTitle': 'Explore the plugin catalog', 'home.catalogLead': 'The homepage shows the first six live catalog entries; each plugin detail loads only when opened. Listing does not imply endorsement, security audit, or install verification.', 'home.catalogAction': 'Browse the full plugin catalog', 'home.catalogDetailsDeferred': 'Open details to inspect source, permissions, and compatibility.', 'home.catalogOffline': 'Catalog could not be loaded. Please try again later.', 'home.category.development': 'Development', 'home.category.workflow': 'Workflow', 'home.category.files': 'Files', 'home.category.sessions': 'Sessions', 'home.category.search': 'Search', 'home.category.all': 'All categories',
@@ -143,7 +146,7 @@ const translations = {
     'assurance.discovered': 'Discovered', 'assurance.installable': 'Installability', 'assurance.runtime': 'Runtime', 'assurance.security': 'Security review',
     'candidate.notice': 'Discovery candidates are shown for reference only; this does not verify DSH compatibility, security, or installability. They have no install action.',
     'candidate.search': 'Search candidate projects, topics, sources, or GitHub repositories', 'candidate.emptyTitle': 'No matching candidate projects', 'candidate.emptyBody': 'The candidate registry has no record matching this query; the trusted install catalog is unaffected.',
-    'directory.loading': 'Loading the public plugin discovery index…', 'directory.detailsLoading': 'Loading plugin details…', 'directory.partial': 'The public discovery index is temporarily unavailable; only Store Catalog and candidate repository records are shown, so the count is incomplete.', 'directory.candidatePartial': 'Store candidate supplements are temporarily unavailable; the public discovery index remains available.', 'directory.detailPartial': 'Some plugin details are temporarily unavailable.', 'directory.reasonTitle': 'Listing status', 'directory.reasonUnavailable': 'Public details are temporarily unavailable.', 'directory.noDescription': 'No public summary; open the source record for details.', 'directory.noAction': 'Directory record only · no install action', 'directory.categoryTitle': 'Browse by category', 'directory.statusTitle': 'Then filter by Store listing', 'directory.snapshot': 'Public index records', 'directory.sourceLink': 'dsh.so source', 'directory.githubLink': 'GitHub repository', 'directory.ecosystemApp': 'Ecosystem app', 'directory.stars': 'Stars', 'directory.uncategorized': 'Uncategorized', 'directory.notCollected': 'No matching DSH STORE Catalog entry was found. This directory only marks listing status; it does not screen for compliance, safety, or compatibility.', 'directory.sourceAttribution': 'dsh.so — DSH Developer Hub (https://www.dsh.so) · CC BY 4.0', 'directory.sourceGenerated': 'Index generated: {date}', 'directory.sourceEntries': '{count} public records', 'directory.stats.total': 'Public records', 'directory.stats.listed': 'In DSH STORE', 'directory.stats.categories': 'Categories', 'directory.stats.unlisted': 'Not in DSH STORE', 'directory.catalogTitle': 'All known DSH plugins', 'directory.catalogLead': 'Browse public categories first, then filter independently by Store listing status. This directory does not screen for compliance or compatibility.', 'directory.sort.recommended': 'Category, then listed and stars', 'directory.sort.stars': 'Stars: high to low',
+    'directory.loading': 'Loading the public plugin discovery index…', 'directory.detailsLoading': 'Loading plugin details…', 'directory.partial': 'The public discovery index is temporarily unavailable; only Store Catalog and candidate repository records are shown, so the count is incomplete.', 'directory.candidatePartial': 'Store candidate supplements are temporarily unavailable; the public discovery index remains available.', 'directory.detailPartial': 'Some plugin details are temporarily unavailable.', 'directory.reasonTitle': 'Listing status', 'directory.reasonUnavailable': 'Public details are temporarily unavailable.', 'directory.noDescription': 'No public summary; open the source record for details.', 'directory.noAction': 'Directory record only · no install action', 'directory.categoryTitle': 'Browse by category', 'directory.statusTitle': 'Then filter by Store listing', 'directory.snapshot': 'Public index records', 'directory.sourceLink': 'Third-party source', 'directory.githubLink': 'GitHub repository', 'directory.ecosystemApp': 'Ecosystem app', 'directory.stars': 'Stars', 'directory.uncategorized': 'Uncategorized', 'directory.notCollected': 'No matching DSH STORE Catalog entry was found. This directory only marks listing status; it does not screen for compliance, safety, or compatibility.', 'directory.sourceAttribution': 'From public third-party records', 'directory.sourceDisclosureTitle': 'Source and license', 'directory.sourceDisclosureBody': 'The public-record index comes from third-party public data; its specific source and license are disclosed here.', 'directory.sourceGenerated': 'Index generated: {date}', 'directory.sourceEntries': '{count} public records', 'directory.stats.total': 'Public records', 'directory.stats.listed': 'In DSH STORE', 'directory.stats.categories': 'Categories', 'directory.stats.unlisted': 'Not in DSH STORE', 'directory.catalogTitle': 'All known DSH plugins', 'directory.catalogLead': 'Browse public categories first, then filter independently by Store listing status. This directory does not screen for compliance or compatibility.', 'directory.sort.recommended': 'Category, then listed and stars', 'directory.sort.stars': 'Stars: high to low',
     'directory.statusBlocked': 'Catalog policy blocked', 'directory.statusUnlisted': 'Not currently listed', 'directory.statusRejected': 'Candidate review rejected', 'directory.statusReviewing': 'Candidate under review', 'directory.statusDiscovered': 'Candidate discovered',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
     'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
@@ -527,132 +530,7 @@ function homePluginCardTemplate(indexEntry) {
     ? indexEntry.description
     : t('home.catalogDetailsDeferred')
   return `<article class="home-plugin-card">
-    <div class="home-plugin-card-top"><span class="home-plugin-icon" aria-hidden="true" style="--plugin-color:${pluginColor(indexEntry.id)}">${escape(initials(primaryName))}</span><span class="status-tag${statusClass}">${escape(statusLabel(indexEntry))}</span></div>
-    <h3>${escape(primaryName)}</h3>${alternateName && alternateName !== primaryName ? `<p class="home-plugin-alt">${escape(alternateName)}</p>` : ''}
-    ${categories.length ? `<p class="home-plugin-category">${escape(categoryLabel(categories[0]))}</p>` : ''}
-    <p class="home-plugin-description">${escape(description)}</p>
-    <div class="home-plugin-package"><code>${escape(indexEntry.packageName)}</code><span>v${escape(indexEntry.version)}</span></div>
-    <footer class="home-plugin-card-footer"><button class="home-plugin-detail details-button" type="button" data-details-id="${escape(indexEntry.id)}">${escape(t('action.details'))} →</button><a class="home-plugin-repo" href="${escape(indexEntry.repositoryUrl)}" target="_blank" rel="noreferrer" aria-label="${escape(t('action.repo'))}: ${escape(primaryName)}" data-repo-id="${escape(indexEntry.id)}">↗</a></footer>
-  </article>`
-}
-
-function renderHomeDirectoryPreview() {
-  if (!els.homeGrid || !state.catalog) return
-  const entries = visibleIndexEntries().slice(0, 6)
-  if (entries.length === 0) {
-    els.homeGrid.innerHTML = `<p class="home-plugin-empty">${escape(t('empty.title'))}</p>`
-    return
-  }
-  els.homeGrid.innerHTML = entries.map(homePluginCardTemplate).join('')
-}
-
-function visibleIndexEntries() {
-  const query = state.query.trim().toLowerCase()
-  const entries = catalogIndexEntries()
-    .filter(entry => entry.status !== 'unlisted')
-    .filter(entry => !state.category || entry.categories.includes(state.category))
-    .filter(entry => !query || indexSearchValues(entry).some(value => value.includes(query)))
-
-  return entries.sort((a, b) => {
-    const locale = state.locale === 'en' ? 'en' : 'zh-CN'
-    if (state.sort === 'name') return String(a.nameZh || a.nameEn).localeCompare(String(b.nameZh || b.nameEn), locale)
-    if (state.sort === 'recent') return String(b.version).localeCompare(String(a.version), undefined, { numeric: true }) || a.order - b.order
-    if (state.sort === 'risk') return a.order - b.order
-    return a.order - b.order || String(a.nameZh || a.nameEn).localeCompare(String(b.nameZh || b.nameEn), locale)
-  })
-}
-
-function visibleDirectoryEntries() {
-  if (!state.directoryFilterer) return []
-  return state.directoryFilterer(state.directoryEntries, {
-    listingFilter: state.listingFilter, query: state.query, category: state.category,
-    sort: state.sort, locale: state.locale,
-  })
-}
-
-function renderListingFilterCounts() {
-  if (!els.viewTabs) return
-  const listed = state.directoryEntries.filter(entry => entry.listingStatus === 'listed').length
-  const counts = { all: state.directoryEntries.length, listed, unlisted: state.directoryEntries.length - listed }
-  Object.entries(counts).forEach(([filter, count]) => {
-    const node = els.viewTabs.querySelector(`[data-filter-count="${filter}"]`)
-    if (node) node.textContent = String(count)
-  })
-  els.viewTabs.querySelectorAll('[data-listing-filter]').forEach(button => {
-    button.setAttribute('aria-pressed', String(button.dataset.listingFilter === state.listingFilter))
-  })
-}
-
-function visibleEntries() {
-  return state.pageEntries.length ? state.pageEntries : state.entries
-}
-
-function renderStats() {
-  const setText = (selector, value) => {
-    const element = document.querySelector(selector)
-    if (element) element.textContent = value
-  }
-  if (IS_DIRECTORY) {
-    if (!state.directoryLoaded) return
-    const known = state.directoryEntries
-    const listed = known.filter(entry => entry.listingStatus === 'listed').length
-    const categories = new Set(known.flatMap(entry => entry.categories)).size
-    setText('#stat-total', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(known.length))
-    setText('#stat-approved', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(listed))
-    setText('#stat-categories', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(categories))
-    setText('#stat-candidates', new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(known.length - listed))
-    return
-  }
-  const entries = catalogIndexEntries().filter(entry => entry.status !== 'unlisted')
-  const categoryCount = new Set(entries.flatMap(entry => entry.categories)).size
-  setText('#stat-total', String(entries.length).padStart(2, '0'))
-  setText('#stat-approved', String(entries.filter(entry => entry.status === 'approved').length).padStart(2, '0'))
-  setText('#stat-categories', String(categoryCount).padStart(2, '0'))
-  if (state.candidatesLoaded) setText('#stat-candidates', String(state.candidateSummary.total ?? state.candidates.length).padStart(2, '0'))
-  setText('#float-count', String(entries.length))
-  const updatedAt = state.catalog?.registry?.updatedAt
-  setText('#catalog-date', updatedAt
-    ? `catalog.json · ${new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(updatedAt))}`
-    : 'GitHub catalog.json')
-}
-
-function renderManagerMetadata() {
-  const manager = state.detailCache.get('dsh-safe-plugin-manager') || catalogIndexEntries().find(entry => entry.id === 'dsh-safe-plugin-manager')
-  if (!manager) return
-  const approved = manager.status === 'approved'
-  const installable = approved && /^[0-9a-f]{40}$/.test(manager.commit || '')
-  const installCommand = installable
-    ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
-    : approved
-      ? (state.locale === 'en' ? 'Loading verified manager details…' : '正在读取管理器详情…')
-      : (state.locale === 'en' ? 'Compatibility review pending; installation is unavailable.' : '兼容性待核验，暂不提供安装命令。')
-  const values = {
-    '#install-version': approved ? `v${manager.version} · SHA PINNED`
-      : (state.locale === 'en' ? `v${manager.version} · COMPATIBILITY REVIEW` : `v${manager.version} · 兼容性待核验`),
-    '#install-command': installCommand,
-    '#manager-protocol': `STANDARD BUNDLE / v${manager.version}`,
-    '#manager-commit-short': manager.commit ? manager.commit.slice(0, 7) : 'DETAIL',
-  }
-  Object.entries(values).forEach(([selector, value]) => {
-    const element = document.querySelector(selector)
-    if (element) element.textContent = value
-  })
-  const copyButton = document.querySelector('[data-copy-target="install-command"]')
-  if (copyButton) {
-    copyButton.disabled = !installable
-    copyButton.setAttribute('aria-disabled', String(!installable))
-  }
-}
-
-function renderHeroPreview() {
-  if (!els.preview) return
-  const featured = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 3)
-  els.preview.innerHTML = featured.map((entry, index) => {
-    const name = state.detailCache.get(entry.id)?.name || indexName(entry)
-    return `
-    <article class="preview-plugin" style="--plugin-color:${pluginColor(entry.id)}">
-      <span class="preview-icon">${escape(initials(name))}</span>
-      <span><b>${escape(name)}</b><small>${escape(categoryLabel(entry.categories[0] || 'tools'))} · v${escape(entry.version)}</small></span>
+    <div class="home-plugin-card-top"><span class="home-plugin-icon" aria-hidden="true" style="--plugin-color:${plugin…1788 tokens truncated…{escape(categoryLabel(entry.categories[0] || 'tools'))} · v${escape(entry.version)}</small></span>
       <em>${index === 0 ? 'FEATURED' : 'FIXED'}</em>
     </article>`
   }).join('')
@@ -800,7 +678,7 @@ function knownDirectoryCardTemplate(entry) {
     <p class="plugin-description">${escape(summary)}</p>
     <div class="plugin-badges">${categoryBadges}${stars ? `<span class="plugin-badge directory-stars">★ ${escape(stars)} ${escape(t('directory.stars'))}</span>` : ''}</div>
     ${entry.listingStatus === 'unlisted' ? `<p class="catalog-listing-reason"><b>${escape(t('directory.reasonTitle'))}</b>${escape(t('directory.notCollected'))}</p>` : ''}
-    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(t('directory.noAction'))}</span><span class="directory-entry-links">${githubUrl ? `<a class="repo-link" href="${escape(githubUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escape(t('directory.githubLink'))}: ${escape(name)}" data-repo-id="${escape(entry.id)}">GH ↗</a>` : ''}${sourceUrl ? `<a class="repo-link" href="${escape(sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escape(t('directory.sourceLink'))}: ${escape(name)}">↗</a>` : ''}</span></footer>
+    <footer class="plugin-card-footer"><span class="candidate-no-install">${escape(t('directory.noAction'))}</span><span class="directory-entry-links">${githubUrl ? `<a class="repo-link" href="${escape(githubUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escape(t('directory.githubLink'))}: ${escape(name)}" data-repo-id="${escape(entry.id)}">GitHub ↗</a>` : ''}${sourceUrl ? `<a class="repo-link" href="${escape(sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escape(t('directory.sourceLink'))}: ${escape(name)}">↗</a>` : ''}</span></footer>
   </article>`
 }
 
@@ -885,8 +763,7 @@ function renderDirectorySourceNote() {
     dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC',
   }).format(new Date(source.generatedAt))
   const count = new Intl.NumberFormat(state.locale === 'en' ? 'en' : 'zh-CN').format(source.recordCount)
-  const url = safeDirectoryUrl(source.url) || 'https://www.dsh.so/'
-  els.sourceNote.innerHTML = `<span>${escape(t('directory.sourceEntries', { count }))}</span><span>${escape(t('directory.sourceGenerated', { date }))}</span><a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(t('directory.sourceAttribution'))}</a>`
+  els.sourceNote.innerHTML = `<span>${escape(t('directory.sourceEntries', { count }))}</span><span>${escape(t('directory.sourceGenerated', { date }))}</span><span>${escape(t('directory.sourceAttribution'))}</span>`
   els.sourceNote.hidden = false
 }
 

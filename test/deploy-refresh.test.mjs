@@ -17,7 +17,7 @@ test('production candidate gate accepts a held manager but rejects an exposed in
   { skip: process.platform === 'win32' }, async () => {
     const fixture = await mkdtemp(join(tmpdir(), 'dsh-store-refresh-fixture-'))
     try {
-      await mkdir(join(fixture, 'scripts'))
+      await mkdir(join(fixture, 'scripts/templates'), { recursive: true })
       await Promise.all([
         cp(join(root, 'package.json'), join(fixture, 'package.json')),
         cp(join(root, 'src'), join(fixture, 'src'), { recursive: true }),
@@ -25,6 +25,7 @@ test('production candidate gate accepts a held manager but rejects an exposed in
         cp(join(root, 'registry'), join(fixture, 'registry'), { recursive: true }),
         cp(join(root, 'scripts/build-marketplace-static.mjs'), join(fixture, 'scripts/build-marketplace-static.mjs')),
         cp(join(root, 'scripts/ranking-github-metadata.mjs'), join(fixture, 'scripts/ranking-github-metadata.mjs')),
+        cp(join(root, 'scripts/templates/dsh-article-page.html'), join(fixture, 'scripts/templates/dsh-article-page.html')),
       ])
       const catalog = await loadCatalogFromFiles()
       const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')

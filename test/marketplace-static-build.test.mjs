@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { gunzipSync } from 'node:zlib'
 import { execFile } from 'node:child_process'
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join, relative } from 'node:path'
@@ -17,6 +17,21 @@ const root = new URL('../', import.meta.url)
 const rootPath = fileURLToPath(root)
 const staticBuilderPath = fileURLToPath(new URL('scripts/build-marketplace-static.mjs', root))
 const sha256 = value => createHash('sha256').update(value).digest('hex')
+async function runtimeAssetDigest(directory, prefix = '') {
+  const digest = createHash('sha256')
+  async function visit(folder, currentPrefix) {
+    for (const entry of (await readdir(folder, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
+      const relativePath = currentPrefix ? `${currentPrefix}/${entry.name}` : entry.name
+      const absolutePath = join(folder, entry.name)
+      if (entry.isDirectory()) await visit(absolutePath, relativePath)
+      else if (entry.isFile() && /\.(?:js|css)$/i.test(entry.name)) {
+        digest.update(relativePath).update('\0').update(await readFile(absolutePath)).update('\0')
+      }
+    }
+  }
+  await visit(directory, prefix)
+  return digest.digest('hex').slice(0, 12)
+}
 
 test('GitHub Pages schedules distinct daily and weekly ranking refreshes while reusing scores on routine builds', async () => {
   const workflow = await readFile(new URL('.github/workflows/pages.yml', root), 'utf8')
@@ -76,13 +91,13 @@ test('static marketplace derives manager identity and catalog cards without muta
     const home = await readFile(join(output, 'marketplace/index.html'), 'utf8')
     const plugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
     const runtimeApp = await readFile(join(output, 'marketplace/app.js'), 'utf8')
-    const runtimeVersion = sha256(Buffer.concat([
-      await readFile(new URL('marketplace/app.js', root)),
-      await readFile(new URL('marketplace/lib/plugin-directory.js', root)),
-      await readFile(new URL('marketplace/lib/dsh-release-policy.js', root)),
-    ])).slice(0, 12)
+    const runtimeVersion = await runtimeAssetDigest(join(rootPath, 'marketplace'))
     const standards = await readFile(join(output, 'marketplace/standards/index.html'), 'utf8')
     const article = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
+    const articles = await readFile(join(output, 'marketplace/articles/index.html'), 'utf8')
+    const articleSource = JSON.parse(await readFile(new URL('marketplace/articles/articles.json', root), 'utf8'))
+    const firstArticle = articleSource.articles[0]
+    const articleDetail = await readFile(join(output, 'marketplace/articles', firstArticle.slug, 'index.html'), 'utf8')
     const about = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const guide = await readFile(join(output, 'marketplace/dsh-plugins/index.html'), 'utf8')
     const faq = await readFile(join(output, 'marketplace/faq/index.html'), 'utf8')
@@ -110,8 +125,34 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(rankings, /aria-current="page" data-rankings-nav/)
     assert.match(rankings, /https:\/\/dsh\.store\/rankings\//)
     assert.ok(rankingBytes.length < 1024 * 1024)
-    for (const page of [home, plugins, standards, article, about, guide, faq, repair, scans]) {
+    for (const page of [home, plugins, standards, article, articles, articleDetail, about, guide, faq, repair, scans]) {
       assert.match(page, /data-rankings-nav>榜单/)
+      assert.match(page, /data-i18n="nav\.articles"/)
+    }
+    assert.match(home, new RegExp(`href="articles/" data-i18n="nav\\.articles"`))
+    assert.match(articles, /<html lang="zh-CN" data-default-locale="zh" data-fixed-locale="zh-CN">/)
+    assert.match(articles, /<link rel="canonical" href="https:\/\/dsh\.store\/articles\/">/)
+    assert.match(articles, /"@type":"CollectionPage"/)
+    assert.match(articles, new RegExp(`href="\\./${firstArticle.slug}/"`))
+    assert.match(articles, new RegExp(firstArticle.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+    assert.match(articleDetail, /"@type":"Article"/)
+    assert.match(articleDetail, new RegExp(`<h1>${firstArticle.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</h1>`))
+    assert.match(articleDetail, /本文保留原文发布时的产品版本、统计数据与观察结论/)
+    assert.match(articleDetail, /<link rel="canonical" href="https:\/\/dsh\.store\/articles\//)
+    assert.match(articleDetail, /href="\.\.\/" data-i18n="nav\.articles" aria-current="page"/)
+    assert.doesNotMatch(articleDetail, /\/Users\/zhouxiaoming\/Documents\/JadeName/)
+    assert.match(articles, new RegExp(`articles\\/${firstArticle.slug}\\/`))
+    assert.equal(Number(articles.match(/<b id="article-count">(\d+)<\/b>/)?.[1]), articleSource.articles.length)
+    const articleSitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
+    for (const item of articleSource.articles) {
+      const detail = await readFile(join(output, 'marketplace/articles', item.slug, 'index.html'), 'utf8')
+      const schemaJson = detail.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1]
+      assert.ok(schemaJson, `Article JSON-LD exists for ${item.slug}`)
+      assert.equal(JSON.parse(schemaJson)['@type'], 'Article')
+      assert.equal(JSON.parse(schemaJson).headline, item.title)
+      assert.ok(detail.includes('<article class="article-prose">'))
+      assert.ok(articleSitemap.includes(`https://dsh.store/articles/${item.slug}/`))
+      assert.doesNotMatch(detail, /\/Users\/zhouxiaoming\/Documents\/JadeName/)
     }
 
     const downloads = await readFile(join(output, 'marketplace/downloads/index.html'), 'utf8')
@@ -124,6 +165,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     const markdown = await readFile(join(output, 'marketplace/index.md'), 'utf8')
     const sitemap = await readFile(join(output, 'marketplace/sitemap.xml'), 'utf8')
     const styles = await readFile(join(output, 'marketplace/styles.css'), 'utf8')
+    const storeLayoutStyles = await readFile(join(output, 'marketplace/store-layout.css'), 'utf8')
     const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
     const automationStatus = JSON.parse(await readFile(join(output, 'automation-status.json'), 'utf8'))
@@ -214,10 +256,20 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(plugins, /name="dsh-discovery-index-count" content="19345"/)
     assert.match(plugins, /data-discovery-index-url="\.\.\/\.\.\/registry\/discovery-index\.json"/)
     assert.match(plugins, new RegExp(`src="\\.\\.\\/app\\.js\\?v=${runtimeVersion}"`))
+    assert.match(plugins, new RegExp(`href="\\.\\.\\/store-layout\\.css\\?v=${runtimeVersion}"`))
+    assert.match(articleDetail, new RegExp(`href="\\.\\.\\/articles\\.css\\?v=${runtimeVersion}"`))
     assert.match(runtimeApp, new RegExp(`import\\('./lib/plugin-directory\\.js\\?v=${runtimeVersion}'\\)`))
     assert.match(runtimeApp, new RegExp(`import\\('./lib/dsh-release-policy\\.js\\?v=${runtimeVersion}'\\)`))
-    assert.match(plugins, /dsh\.so — DSH Developer Hub \(https:\/\/www\.dsh\.so\)/)
+    const sourceNote = plugins.match(/<p id="directory-source-note"[^>]*>([\s\S]*?)<\/p>/)?.[1] || ''
+    assert.match(sourceNote, /From public third-party records/)
+    assert.doesNotMatch(sourceNote, /dsh\.so|dsh-store\.cn|href=|CC BY/i)
+    assert.match(plugins, /<summary data-i18n="directory\.sourceDisclosureTitle">关于来源与许可<\/summary>/)
+    assert.match(plugins, /https:\/\/www\.dsh\.so\/plugins-index\.json/)
     assert.match(plugins, /CC BY 4\.0/)
+    assert.match(plugins, />GitHub ↗<\/a>/)
+    assert.doesNotMatch(plugins, />GH ↗<\/a>/)
+    assert.match(plugins, /class="directory-category-heading"/)
+    assert.match(storeLayoutStyles, /\.plugins-page \.directory-category-heading\s*\{[^}]*grid-column:\s*1 \/ -1/s)
     assert.match(plugins, /按分类浏览/)
     assert.match(plugins, /再按收录状态筛选/)
     const knownCount = Number(plugins.match(/id="stat-total">([0-9,]+)</)?.[1]?.replaceAll(',', ''))
@@ -297,6 +349,8 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(sitemap, /https:\/\/dsh\.store\/scans\//)
     assert.match(sitemap, /https:\/\/dsh\.store\/rankings\//)
     assert.match(sitemap, /https:\/\/dsh\.store\/downloads\//)
+    assert.match(sitemap, /https:\/\/dsh\.store\/articles\//)
+    for (const item of articleSource.articles) assert.ok(sitemap.includes(`https://dsh.store/articles/${item.slug}/`))
     assert.doesNotMatch(sitemap, /dsh-store-guide/)
     assert.match(sitemap, /xmlns:mobile="http:\/\/www\.baidu\.com\/schemas\/sitemap-mobile\/1\//)
     assert.match(sitemap, /<mobile:mobile type="pc,mobile" \/>/)
@@ -413,7 +467,7 @@ test('static build serializes only available automated scan evidence into the pu
 test('static marketplace publishes a compatibility-held manager without installation or repair commands', async () => {
   const fixture = await mkdtemp(join(tmpdir(), 'dsh-store-unlisted-manager-'))
   try {
-    await mkdir(join(fixture, 'scripts'))
+    await mkdir(join(fixture, 'scripts/templates'), { recursive: true })
     await Promise.all([
       cp(join(rootPath, 'package.json'), join(fixture, 'package.json')),
       cp(join(rootPath, 'src'), join(fixture, 'src'), { recursive: true }),
@@ -421,6 +475,7 @@ test('static marketplace publishes a compatibility-held manager without installa
       cp(join(rootPath, 'registry'), join(fixture, 'registry'), { recursive: true }),
       cp(staticBuilderPath, join(fixture, 'scripts/build-marketplace-static.mjs')),
       cp(join(rootPath, 'scripts/ranking-github-metadata.mjs'), join(fixture, 'scripts/ranking-github-metadata.mjs')),
+      cp(join(rootPath, 'scripts/templates/dsh-article-page.html'), join(fixture, 'scripts/templates/dsh-article-page.html')),
     ])
     const catalog = await loadCatalogFromFiles()
     const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
@@ -512,6 +567,9 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
     const domesticAbout = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const domesticArticle = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
+    const domesticPlugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
+    const domesticArticles = await readFile(join(output, 'marketplace/articles/index.html'), 'utf8')
+    const domesticFieldNote = await readFile(join(output, 'marketplace/articles/session-flow-agent-session-archive/index.html'), 'utf8')
     const googleSiteVerification = await readFile(join(output, 'marketplace/googled542dac4f5a6c169.html'), 'utf8')
     assert.equal(googleSiteVerification, 'google-site-verification: googled542dac4f5a6c169.html')
     assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)
@@ -543,6 +601,15 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.match(domesticGuide, /https:\/\/raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/main\/registry\/catalog\.json/)
     assert.match(domesticFaq, /href="\.\.\/dsh-store-guide\/"/)
     assert.match(domesticLlms, /Domestic product use and issue-boundary guide: https:\/\/dsh-store\.cn\/dsh-store-guide\//)
+    const domesticSourceNote = domesticPlugins.match(/<p id="directory-source-note"[^>]*>([\s\S]*?)<\/p>/)?.[1] || ''
+    assert.match(domesticSourceNote, /来自第三方公开记录/)
+    assert.doesNotMatch(domesticSourceNote, /dsh\.so|dsh-store\.cn|href=|CC BY/i)
+    assert.match(domesticPlugins, /https:\/\/www\.dsh\.so\/plugins-index\.json/)
+    assert.match(domesticPlugins, />GitHub ↗<\/a>/)
+    assert.match(domesticArticles, /"@type":"CollectionPage"/)
+    assert.match(domesticFieldNote, /"@type":"Article"/)
+    assert.match(domesticFieldNote, /<link rel="canonical" href="https:\/\/dsh-store\.cn\/articles\/session-flow-agent-session-archive\/">/)
+    assert.match(sitemap, /https:\/\/dsh-store\.cn\/articles\/session-flow-agent-session-archive\//)
     assert.match(domesticArticle, /<html lang="zh-CN" data-default-locale="zh" data-fixed-locale="zh-CN">/)
     assert.match(domesticArticle, /<link rel="canonical" href="https:\/\/dsh-store\.cn\/about\/deepseek-harness-guide\/">/)
     assert.match(domesticArticle, /hreflang="en"[^>]*https:\/\/dsh\.store\/about\/deepseek-harness-guide\//)
