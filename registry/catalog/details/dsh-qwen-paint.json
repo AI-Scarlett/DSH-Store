@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "945a82a3795b3f2440f96c15ed3f178b3f59ff90",
-  "version": "0.16.0",
+  "commit": "f16196fc8811af7ef3ef1d974e1c5c284811c156",
+  "version": "0.16.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-12T16:09:40.000Z",
-    "observedAt": "2026-10-12T16:11:46.000Z",
+    "updatedAt": "2026-10-13T07:23:49.000Z",
+    "observedAt": "2026-10-13T15:38:44.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-12T16:11:46.000Z",
-      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/945a82a3795b3f2440f96c15ed3f178b3f59ff90",
+      "checkedAt": "2026-10-13T15:38:44.000Z",
+      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/f16196fc8811af7ef3ef1d974e1c5c284811c156",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "qwen-paint"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: repository tree contains an invalid or duplicate path; runtime source exceeds the automatic review byte bound: 728605 total bytes (maximum 2097152); largest file 262535 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; Tool-view extension requires key ownership review; registration alone is not a protected component mutation",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2",
     "dshReleases": {
