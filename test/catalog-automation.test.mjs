@@ -97,12 +97,15 @@ test('JavaScript permission scan retains executable calls and template expressio
 
 test('self-manager generated Catalog details do not consume the executable source bound', () => {
   const manager = { id: 'dsh-safe-plugin-manager', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }
-  for (const path of ['registry/catalog.json', 'registry/catalog-index.json', 'registry/candidates.json', 'registry/catalog/details/example.json']) {
+  for (const path of ['registry/catalog.json', 'registry/catalog-index.json', 'registry/candidates.json', 'registry/catalog/details/example.json', 'registry/discovery-index.json', 'registry/discovery-index.json.gz']) {
     assert.equal(isGeneratedSelfManagerRegistryData(manager, path), true)
   }
   assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/catalog/details/example.js'), false)
   assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/catalog/details/nested/example.json'), false)
   assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/automation-policy.json'), false)
+  assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/discovery-index-old.json'), false)
+  assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/discovery-index.json.gz/extra'), false)
+  assert.equal(isGeneratedSelfManagerRegistryData(manager, 'registry/Discovery-index.json'), false)
   assert.equal(isGeneratedSelfManagerRegistryData({ ...manager, id: 'another-plugin' }, 'registry/catalog.json'), false)
   assert.equal(isGeneratedSelfManagerRegistryData({ ...manager, repositoryUrl: 'https://github.com/example/fork' }, 'registry/catalog.json'), false)
 })

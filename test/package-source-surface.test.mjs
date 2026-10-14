@@ -131,6 +131,15 @@ test('bounded web metadata is static while executables and unknown artifacts sta
   for (const path of ['marketplace/helper.exe', 'marketplace/unknown.dat']) {
     assert.equal(unsupportedPackageEntry({ relativePath: path, type: 'blob', mode: '100644' }), true)
   }
+  for (const path of ['build-dsh-plugin/LICENSE', 'docs/README.md', 'packages/plugin/COPYING']) {
+    assert.equal(unsupportedPackageEntry({ relativePath: path, type: 'blob', mode: '100644' }), false)
+  }
+  const metadata = packageSourceSurface({ files: ['src/**'] }, treeOf({
+    'src/entry.js': 'export {}', 'src/LICENSE': 'MIT', 'src/README.md': '# package',
+  }))
+  assert.ok(metadata.entries.some(item => item.relativePath === 'src/LICENSE'))
+  assert.ok(metadata.entries.some(item => item.relativePath === 'src/README.md'))
+  assert.equal(unsupportedPackageEntry({ relativePath: 'packages/plugin/addon.node', type: 'blob', mode: '100644' }), true)
 })
 
 test('only the canonical Store excludes generated registry data from executable-source signals', async () => {
@@ -140,6 +149,8 @@ test('only the canonical Store excludes generated registry data from executable-
     'registry/catalog-index.json': '{}',
     'registry/candidates.json': '{}',
     'registry/catalog/details/example.json': '{}',
+    'registry/discovery-index.json': 'x'.repeat(9 * 1024 * 1024),
+    'registry/discovery-index.json.gz': 'gzip transport bytes',
   }
   const meta = { ...manifest, files: [...manifest.files, 'registry/'] }
   const tree = treeOf(files)
@@ -150,8 +161,17 @@ test('only the canonical Store excludes generated registry data from executable-
   assert.equal(own.runtimeFiles, 4)
   assert.equal(own.reviewSignals.toolViewExtension, false)
   const fork = await scan({ ...manager, repositoryUrl: 'https://github.com/example/fork' })
-  assert.equal(fork.reviewSignals.toolViewExtension, true)
-  assert.match(fork.reasons.join('\n'), /key ownership review/)
+  assert.equal(fork.scanComplete, false)
+  assert.match(fork.reasons.join('\n'), /discovery-index\.json\.gz/)
+  const forkSmallData = await reviewFixedSource(
+    { ...manager, repositoryUrl: 'https://github.com/example/fork' },
+    meta,
+    treeOf({ ...files, 'registry/discovery-index.json': '{}', 'registry/discovery-index.json.gz': 'gzip' }),
+    policy,
+    async path => files[path] ?? '{}',
+  )
+  assert.equal(forkSmallData.reviewSignals.toolViewExtension, true)
+  assert.match(forkSmallData.reasons.join('\n'), /key ownership review/)
 })
 
 test('nested ignore rules and source/tree size mismatch are incomplete, not clean', async () => {

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "planId": "catalog-generated-discovery-policy-20261014",
+  "type": "bounded-self-manager-source-scan-policy-repair",
+  "status": "prepared",
+  "createdAt": "2026-10-14T12:00:00Z",
+  "baseCommit": "673f41e559a519ecdc206608a0062b778ea5d1c3",
+  "scope": [
+    "docs/ops/catalog-generated-discovery-policy-plan-20261014.json",
+    "package.json",
+    "scripts/validate-registry.mjs",
+    "src/automation-source-policy.mjs",
+    "src/fixed-source-review.mjs",
+    "src/package-source-surface.mjs",
+    "src/discovery-index-validation.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/package-source-surface.test.mjs",
+    "test/discovery-index-validation.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/catalog-generated-discovery-policy-plan-20261014.json": null,
+    "package.json": "741203b49e4d7ab79306c7a2701750cdc519b2bd328a6a03c38cc08f11456bfe",
+    "scripts/validate-registry.mjs": "9b9ee90bb7f80f0a3ae669cde8ae14135925656b14e4c3cade0e9e535f6eb851",
+    "src/automation-source-policy.mjs": "0f0a8afffa34fbced109e83b82d4e00b4ff03c639860cebaaa110e5dfe9eef2d",
+    "src/fixed-source-review.mjs": "f46743d03ba48a62e6fcff5aa17a1d782377633f511e47c58cb6371ea16c945d",
+    "src/package-source-surface.mjs": "b8829571d02b68c5adb8f26d70bd083684ac7b7a2d165f6bdf2d28c570757201",
+    "src/discovery-index-validation.mjs": null,
+    "test/catalog-automation.test.mjs": "a64308de4e2ab90639318c29ed93093fe4a8b034db9e4076ea11afbf10112270",
+    "test/package-source-surface.test.mjs": "2917228e0721c8e1141eb7b8a33557f0ae88f4e6d3b50e1d6cb75583be98c0ea",
+    "test/discovery-index-validation.test.mjs": null
+  },
+  "intent": "Allow only canonical AI-Scarlett/DSH-Store fixed-source review to treat its exact generated discovery index JSON and gzip transport copy as validated non-executable data; keep all other repository/package candidates fail-closed. Recognize nested LICENSE/README/COPYING names as metadata so the published build-dsh-plugin LICENSE is not misclassified as an unsupported runtime artifact.",
+  "gates": [
+    "Validate discovery index schema, 50,000-record bound, source metadata, every entry shape and index ordering, plus gzip decompression byte-for-byte equality before Catalog scanning.",
+    "Run npm run check; tests must prove exact self-manager-only paths, reject forks/lookalike paths and keep native, executable, unknown, oversized, malformed and mismatched-gzip cases blocked.",
+    "Commit the exact reviewed source tree through a required-signature, auditable PR; do not bypass rulesets or modify Catalog by hand.",
+    "Rerun catalog-automation.yml after merge. Catalog entries may update only when its fresh deterministic policy verdict approves them; otherwise preserve blockers.",
+    "Verify merged source PR, Catalog policy PR, Pages, GitHub Raw, dsh.store and dsh-store.cn independently. Do not infer real DSH Desktop/Profile acceptance from tests."
+  ],
+  "rollback": {
+    "source": "Revert the exact policy repair through a new signed, CI-checked PR; this restores fail-closed unsupported-artifact behavior.",
+    "catalog": "Use only the forward catalog-automation.yml policy run; never directly edit Catalog entries or deploy files."
+  },
+  "nonGoals": [
+    "No DSH core or @deepseek-ai package changes.",
+    "No third-party code execution.",
+    "No author outreach or contact-ledger writes outside the authorized workflow.",
+    "No real DSH installation, Profile, Desktop, or restart mutation."
+  ],
+  "verification": {
+    "npmRunCheck": "passed: 409/409 tests; npm run validate:registry validates 801 Catalog entries and 19,345 discovery rows plus gzip byte identity.",
+    "sourcePullRequest": "pending signed required-checks PR",
+    "catalogAutomation": "pending fresh run after policy PR merge",
+    "publicSurfaces": "pending after policy-run Catalog publication"
+  }
+}

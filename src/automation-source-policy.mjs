@@ -11,7 +11,7 @@ const COMMAND_MODULE = moduleImport('child_process')
 // so comments, help text, and template-literal prose are not treated as code.
 const COMMAND_CALL = /(?:^|[^\w$.'"`])(?:exec|execFile|spawn|fork)\s*\(/im
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
-const GENERATED_REGISTRY_DATA = /^registry\/(?:catalog(?:-index)?|candidates)\.json$|^registry\/catalog\/details\/[^/]+\.json$/i
+const GENERATED_REGISTRY_DATA = /^registry\/(?:catalog(?:-index)?|candidates)\.json$|^registry\/discovery-index\.json(?:\.gz)?$|^registry\/catalog\/details\/[^/]+\.json$/
 const TEST_SOURCE_FILE = /^(?:test|spec)[-_.].*\.(?:[cm]?[jt]sx?|json|ya?ml|sh|py|rb|go|rs)$/i
 const SUFFIXED_TEST_SOURCE_FILE = /^.+\.(?:test|spec)\.(?:[cm]?[jt]sx?)$/i
 
