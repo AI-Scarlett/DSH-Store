@@ -20,7 +20,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fd281411c2cbcb8b9e2ca7ca727b8c2a4866857e",
+  "commit": "09a8e4ea829e6a83c593cba2fcc07e1bcca85d61",
   "version": "0.4.131",
   "categories": [
     "experimental"
@@ -28,16 +28,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T13:03:16.000Z",
-    "observedAt": "2026-10-14T17:38:48.000Z",
+    "updatedAt": "2026-10-14T17:49:40.000Z",
+    "observedAt": "2026-10-14T20:01:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T17:38:48.000Z",
-      "evidenceUrl": "https://github.com/yamingmou/dsh-retrace/commit/fd281411c2cbcb8b9e2ca7ca727b8c2a4866857e",
+      "checkedAt": "2026-10-14T20:01:17.000Z",
+      "evidenceUrl": "https://github.com/yamingmou/dsh-retrace/commit/09a8e4ea829e6a83c593cba2fcc07e1bcca85d61",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,9 +78,9 @@
     "dsh-retrace"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1693900 total bytes (maximum 2097152); largest file 310478 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": "^0.1.7-rc.2",
+    "dsh": ">=0.1.5 <0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -162,7 +162,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=20.0.0",
     "systems": [],
     "profiles": [
       "web"
