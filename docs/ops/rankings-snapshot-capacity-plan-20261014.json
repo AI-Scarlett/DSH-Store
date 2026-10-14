@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "id": "DSH-RANKINGS-SNAPSHOT-CAPACITY-20261014",
+  "type": "manual-source-release-recovery-plan",
+  "createdAt": "2026-10-14T02:51:18Z",
+  "baseCommit": "ad74e3b9514c1ad4dabc2f00c7c62dacb0ae6391",
+  "authorization": {
+    "userRequest": "改完直接上线",
+    "scope": "Recover the authorized ranking release after the first Pages build failed at the existing 1 MiB rankings snapshot bound. Remove only unused ranking snapshot fields, preserve validation compatibility for old snapshots, update disposable-fixture tests and the original release receipt, then merge through a CI-checked PR and verify Pages plus both public storefronts.",
+    "publicationRequest": {
+      "userRequest": "改完直接上线",
+      "receivedAt": "2026-10-14T02:40:58Z",
+      "deploymentScope": [
+        "merge after exact-head CI",
+        "GitHub Pages workflow",
+        "public readback at dsh.store and dsh-store.cn"
+      ]
+    },
+    "priorSourcePR": "https://github.com/AI-Scarlett/DSH-Store/pull/1408"
+  },
+  "rootCause": {
+    "pagesRunId": 38502679001,
+    "pagesRunUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38502679001",
+    "symptom": "The current generated ranking snapshot exceeded 1 MiB and the Pages job stopped before artifact upload/deployment.",
+    "reproduction": "The merged source and current public ranking snapshot reproduced a 1,050,413-byte snapshot, above the 1,048,576-byte limit.",
+    "impact": "No Pages artifact was uploaded or deployed; neither production storefront was changed by the failed run."
+  },
+  "fileScope": {
+    "modify": [
+      "marketplace/rankings/model.js",
+      "test/marketplace-rankings.test.mjs",
+      "docs/ops/rankings-official-tools-top10-plan-20261014.json"
+    ],
+    "add": [
+      "docs/ops/rankings-snapshot-capacity-plan-20261014.json"
+    ]
+  },
+  "preconditionSha256": {
+    "marketplace/rankings/model.js": "3610af184aef04965c170ae9b442c05b059c7aa9ee3e005e69f4f72cee5e29c7",
+    "test/marketplace-rankings.test.mjs": "3dfc25029153bd2db74a60f5c4142b6b6c1aaf201e73ed5e3ca61f4edbc6a3db",
+    "docs/ops/rankings-official-tools-top10-plan-20261014.json": "09d3120fb61369e55bc391ce4e0334d4b97814e5c8568de13a72d9eb57140360",
+    "docs/ops/rankings-snapshot-capacity-plan-20261014.json": null
+  },
+  "constraints": [
+    "Omit only Catalog order and the legacy featured flag from newly built ranking snapshots; neither field participates in ranking or rendering.",
+    "Continue accepting valid optional order/featured fields in older public snapshots; do not change the snapshot schema version or ranking semantics.",
+    "Keep the existing 1 MiB bound unchanged in both builder and browser client; do not truncate candidate records or relax response limits.",
+    "Preserve exact official-tool top-ten placements, star logic, 30-row display cap, labels, listing status/reasons, admission, installability, and weekly stability.",
+    "Tests use disposable in-memory fixtures only; no writes to ~/.dsh, real profiles, Catalog, or DSH runtime."
+  ],
+  "gates": [
+    "Verify base Commit ad74e3b9514c1ad4dabc2f00c7c62dacb0ae6391 and all file-scope SHA-256 preconditions.",
+    "Focused tests cover compact new snapshots, legacy snapshot compatibility, ranking placement and unchanged admission boundaries.",
+    "Run npm run check and git diff --check.",
+    "Build the full marketplace from the current Catalog/candidate data and current public ranking snapshot; require generated rankings/data.json <= 1 MiB without weakening the bound.",
+    "Create an auditable PR; require all checks on the exact PR head to pass before merge.",
+    "After merge, verify Pages deployment succeeded for the merge SHA, then read both https://dsh.store/rankings/ and https://dsh-store.cn/rankings/ and confirm both charts contain both official tools in distinct randomized top-ten positions."
+  ],
+  "rollback": {
+    "method": "Revert only this recovery PR through a CI-checked PR.",
+    "production": "If the recovered deployment fails public acceptance, revert through a checked PR, allow Pages to deploy the reverted build, and verify both domains. Do not alter Catalog state or ranking snapshot history."
+  },
+  "status": "locally_verified_pending_recovery_pr_ci_merge_and_public_readback",
+  "verification": {
+    "baseCommitVerified": "ad74e3b9514c1ad4dabc2f00c7c62dacb0ae6391",
+    "initialOverLimitBytes": 1050413,
+    "limitBytes": 1048576,
+    "recoveryBuildBytes": 1009787,
+    "recoveryBuildHeadroomBytes": 38789,
+    "recoveryBuild": "Static marketplace build completed from current local repository data and prior public snapshot without GitHub enrichment; registry entries=798; output is a local disposable build only.",
+    "focusedTests": "26/26 passed.",
+    "npmRunCheck": "REGISTRY_OK entries=798; npm test passed 405/405.",
+    "diffCheck": "git diff --check passed.",
+    "prHead": "pending",
+    "pagesDeployment": "pending",
+    "publicReadback": "pending",
+    "outputSha256": {
+      "marketplace/rankings/model.js": "a69c28863b8d23891ce06e2bafd37fc394495808c92c154e452552ddee8f4ce0",
+      "test/marketplace-rankings.test.mjs": "91b06a21b8ba773ab5ca856d0aeab5e1d5be64541f4729be9c78afe7eea886ec",
+      "docs/ops/rankings-official-tools-top10-plan-20261014.json": "e98b027b3a4906b2ae3dfa3b191a1c3e79de6230a2a5b9ad21dd4d1968326597"
+    }
+  }
+}
