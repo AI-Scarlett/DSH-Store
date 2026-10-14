@@ -117,7 +117,8 @@
       "0.2.0-rc.1": "compatible",
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "compatible",
-      "0.2.1-alpha.2": "compatible"
+      "0.2.1-alpha.2": "compatible",
+      "0.2.1-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -269,6 +270,12 @@
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
+      },
+      "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "node": ">=22.13.0",

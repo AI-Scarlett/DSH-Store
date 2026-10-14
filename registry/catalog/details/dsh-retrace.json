@@ -20,28 +20,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4f2872cd905e1753b990d7b5f3e44df811dd8cf1",
-  "version": "0.4.130",
+  "commit": "fd281411c2cbcb8b9e2ca7ca727b8c2a4866857e",
+  "version": "0.4.131",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T12:33:22.000Z",
-    "observedAt": "2026-10-14T12:30:15.000Z",
+    "updatedAt": "2026-10-14T13:03:16.000Z",
+    "observedAt": "2026-10-14T17:38:48.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-14T12:30:15.000Z",
-      "evidenceUrl": "https://github.com/yamingmou/dsh-retrace/commit/4f2872cd905e1753b990d7b5f3e44df811dd8cf1",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-14T17:38:48.000Z",
+      "evidenceUrl": "https://github.com/yamingmou/dsh-retrace/commit/fd281411c2cbcb8b9e2ca7ca727b8c2a4866857e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,14 +71,14 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "entryIds": [
     "dsh-retrace"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1589681 total bytes (maximum 2097152); largest file 295928 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1693900 total bytes (maximum 2097152); largest file 310478 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "^0.1.7-rc.2",
     "dshReleases": {
@@ -90,9 +90,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown"
+      "0.2.1-alpha.2": "unknown",
+      "0.2.1-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -143,12 +143,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
@@ -156,6 +150,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

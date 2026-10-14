@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0c16540c520f75d706d6c2ec58bc399396e5c6fc",
-  "version": "0.3.27",
+  "commit": "1d2e60988673c8f289903181914c5e91aae391dc",
+  "version": "0.3.28",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-13T02:47:03.000Z",
-    "observedAt": "2026-10-13T05:51:04.000Z",
+    "updatedAt": "2026-10-14T16:29:19.000Z",
+    "observedAt": "2026-10-14T17:38:48.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-13T05:51:04.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/0c16540c520f75d706d6c2ec58bc399396e5c6fc",
+      "checkedAt": "2026-10-14T17:38:48.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/1d2e60988673c8f289903181914c5e91aae391dc",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -81,7 +81,7 @@
     "michengai-pua"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime artifact pattern requires review: ./locale/remote/*.json; package contains unsupported artifacts requiring review: NOTICE; runtime source exceeds the automatic review byte bound: 767963 total bytes (maximum 2097152); largest file 391288 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime artifact pattern requires review: ./locale/remote/*.json; package contains unsupported artifacts requiring review: NOTICE; runtime source exceeds the automatic review byte bound: 768338 total bytes (maximum 2097152); largest file 391288 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.5-rc.3 || 0.1.7-rc.1 || 0.1.7-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-al",
     "dshReleases": {
@@ -93,9 +93,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown"
+      "0.2.1-alpha.2": "unknown",
+      "0.2.1-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,12 +146,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
@@ -159,6 +153,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
