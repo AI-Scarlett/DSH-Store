@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "55f2b8f15d0b8d6d9106b481fa724a4135c96891",
+  "commit": "f7e1ce10791450c22ede0322a1c0558cde42a033",
   "version": "0.5.6",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T17:25:02.000Z",
-    "observedAt": "2026-10-01T20:51:02.000Z",
+    "updatedAt": "2026-10-13T15:52:52.000Z",
+    "observedAt": "2026-10-14T03:54:27.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-01T20:51:02.000Z",
-      "evidenceUrl": "https://github.com/taxueseek/dsh-files/commit/55f2b8f15d0b8d6d9106b481fa724a4135c96891",
+      "checkedAt": "2026-10-14T03:54:27.000Z",
+      "evidenceUrl": "https://github.com/taxueseek/dsh-files/commit/f7e1ce10791450c22ede0322a1c0558cde42a033",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
     "files-toolkit"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "^0.1.0-rc.6 || ^0.1.1-rc.2 || ^0.2.0-rc.1",
     "dshReleases": {
@@ -93,8 +93,6 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown"
     },
@@ -153,18 +151,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
@@ -198,10 +184,6 @@
       ]
     },
     "externalDependencies": [
-      "@deepseek-ai/cordis",
-      "@deepseek-ai/dsh-client-ui-primitives",
-      "@deepseek-ai/dsh-fs",
-      "@deepseek-ai/schemastery",
       "mammoth",
       "pdfjs-dist",
       "read-excel-file",

@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-13T15:38:44.000Z",
+    "updatedAt": "2026-10-14T03:54:27.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "c580ba940a1a29c586db47ad7df5234d51e0cc4a",
-      "sourceUpdatedAt": "2026-10-13T15:43:11.000Z",
+      "latestCommit": "58300885207133422af235e0f2b10658cf958b03",
+      "sourceUpdatedAt": "2026-10-14T03:18:21.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -955,7 +955,6 @@
         "ctf",
         "decompiler",
         "developer-tools",
-        "disassembler",
         "dsh",
         "dsh-plugin",
         "ghidra",
@@ -963,6 +962,7 @@
         "llm",
         "mcp",
         "model-context-protocol",
+        "rea",
         "reverse-engineering",
         "static-analysis",
         "automatic-radar"
@@ -11621,8 +11621,8 @@
       "description": "A control plane with a durable state kernel for long-horizon agents and teams. Keep work moving and improving across sessions, with less human attention.",
       "repositoryUrl": "https://github.com/loopx-project/loopx",
       "defaultBranch": "main",
-      "latestCommit": "608fe3b0e902bd392dbd752e3b02a5655b60848a",
-      "sourceUpdatedAt": "2026-10-05T04:36:40.000Z",
+      "latestCommit": "5a192b1f5fcdfb6b1b23c1971b648bcf758c9296",
+      "sourceUpdatedAt": "2026-10-14T03:57:54.000Z",
       "discoveredAt": "2026-09-24T01:36:44.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -11645,7 +11645,7 @@
       ],
       "status": "rejected",
       "route": "blocked",
-      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
     },
     {
       "id": "norman-else-dsh-claude",
@@ -17553,8 +17553,8 @@
       "description": "DeepSeek Harness (DSH) 插件：任务完成 / 等待审批 / 等待回答时发送 Windows 系统桌面通知",
       "repositoryUrl": "https://github.com/SeverusZh/dsh-notify-windows",
       "defaultBranch": "main",
-      "latestCommit": "e096601886e4718088f89c50612e9df70df23b4c",
-      "sourceUpdatedAt": "2026-10-12T02:54:11.000Z",
+      "latestCommit": "d1602cb8c711fc5d2b2d36ad899d0b9211c0e72c",
+      "sourceUpdatedAt": "2026-10-14T03:06:11.000Z",
       "discoveredAt": "2026-10-09T17:00:39.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -19047,6 +19047,81 @@
       "discoveredAt": "2026-10-13T15:38:44.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@10017bb151bd0d06e66dcf1d9d2e67debbc8337b:data/plugins/Sev7een__dsh-plugin-automations.yml:sha256=0d280ec10340a919f4bd7733f8817591cd9fc2c27a47724b3993cb6f4bb0e229:at=2026-10-13T15:44:09.892Z:owner=217913825"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "hellogit2021-avoid-ai-writing-cn",
+      "name": "hellogit2021/avoid-ai-writing-cn",
+      "description": "知乎\"去AI味写作技巧\"社区免费提供：中文写作去 AI 味插件。说\"去掉AI味\"即重写，说\"写的不错\"自动学习新 AI 词。",
+      "repositoryUrl": "https://github.com/hellogit2021/avoid-ai-writing-cn",
+      "defaultBranch": "main",
+      "latestCommit": "f910e9f75e92935e957053a9aa9dd9f9de1aa2b3",
+      "sourceUpdatedAt": "2026-10-07T15:38:22.000Z",
+      "discoveredAt": "2026-10-14T03:54:27.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@97280eab9beb98b12ebe9a658639d58bfd345813:data/plugins/hellogit2021__avoid-ai-writing-cn.yml:sha256=a1f8b1e744cf129646fc20aea21876843b424acf0c5012e2754ea29a4b0b7070:at=2026-10-14T03:58:06.593Z:owner=88391197"
+      ],
+      "topics": [
+        "ai-isms",
+        "ai-writing",
+        "ai-writing-assistant",
+        "chinese-writing",
+        "deepseek-harness",
+        "dsh-plugin",
+        "humanize",
+        "humanize-ai",
+        "humanize-ai-text",
+        "humanize-ai-writing",
+        "humanize-text",
+        "humanizer",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "hellosky983-dsh-fabric",
+      "name": "hellosky983/dsh-fabric",
+      "description": "Fabric — the everything-is-a-plugin primitive for DeepSeek Harness (dsh): unify every extensibility seam behind one declarative DSL.",
+      "repositoryUrl": "https://github.com/hellosky983/dsh-fabric",
+      "defaultBranch": "main",
+      "latestCommit": "a08426e038869e2c63f4aec5173c2250402a6aee",
+      "sourceUpdatedAt": "2026-09-29T23:42:05.000Z",
+      "discoveredAt": "2026-10-14T03:54:27.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@97280eab9beb98b12ebe9a658639d58bfd345813:data/plugins/hellosky983__dsh-fabric.yml:sha256=4793c04447b54eb487784c44d29c00469098fd7cefd556210d6f3e9145f7f9fd:at=2026-10-14T03:58:06.593Z:owner=312105356"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "extensibility",
+        "fabric",
+        "meta-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "hellofuture2068-dsh-simple-view",
+      "name": "hellofuture2068/dsh-simple-view",
+      "description": "Declutter DeepSeek Harness chat: hide agent execution-log rows, tighten spacing & fonts, bubble messages, and set a \"reply concisely\" system-prompt instruction.",
+      "repositoryUrl": "https://github.com/hellofuture2068/dsh-simple-view",
+      "defaultBranch": "main",
+      "latestCommit": "72d7cd257e1d68462dadb69a542a8a2279618baf",
+      "sourceUpdatedAt": "2026-09-05T03:08:46.000Z",
+      "discoveredAt": "2026-10-14T03:54:27.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@97280eab9beb98b12ebe9a658639d58bfd345813:data/plugins/hellofuture2068__dsh-simple-view.yml:sha256=6ca6492bdc9f12d0ee611725cca449dd011736b88a20c94ec6dee6e8322ab0a8:at=2026-10-14T03:58:06.593Z:owner=76032352"
       ],
       "topics": [
         "dsh-plugin",
