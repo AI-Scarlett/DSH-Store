@@ -113,6 +113,80 @@ test('legacy featured flags do not establish recommendations or outrank observed
   assert.deepEqual(rankingEntries(changedFlags, 'recommended').map(e => e.id), ['not-featured', 'first-pick'])
 })
 
+test('official DSH tools occupy distinct weekly-random top-ten slots in both charts without changing listing status', () => {
+  const entries = [
+    item('dsh-safe-plugin-manager', 3, ['marketplace', 'management'], {
+      repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+    }),
+    item('build-dsh-plugin', null, ['development', 'workflow', 'tools'], {
+      repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin', status: 'unlisted',
+      statusReason: 'Held for the latest-three compatibility review.',
+    }),
+    ...Array.from({ length: 45 }, (_, index) => item(`ranked-${String(index).padStart(2, '0')}`, 500 - index, ['tools'])),
+    item('lookalike', 9000, ['tools'], { repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store-fork' }),
+  ]
+  const data = snapshot(entries)
+  const original = structuredClone(data)
+  const officialRepos = [
+    'https://github.com/AI-Scarlett/DSH-Store',
+    'https://github.com/AI-Scarlett/build-dsh-plugin',
+  ]
+  for (const type of ['recommended', 'essential']) {
+    const rows = rankingEntries(data, type)
+    assert.equal(rows.length, 30)
+    assert.equal(new Set(rows.map(entry => entry.id)).size, rows.length)
+    const selected = officialRepos.map(repositoryUrl => {
+      const matches = rows.map((entry, index) => ({ entry, rank: index + 1 }))
+        .filter(({ entry }) => entry.repositoryUrl === repositoryUrl)
+      assert.equal(matches.length, 1, `${type} should include ${repositoryUrl} exactly once`)
+      assert.ok(matches[0].rank <= 10, `${type} should place official tools in the top ten`)
+      assert.equal(matches[0].entry.officialToolPick, true)
+      return matches[0]
+    })
+    assert.notEqual(selected[0].rank, selected[1].rank, 'official placements must be distinct')
+    assert.equal(selected[0].entry.listingStatus, 'listed')
+    assert.equal(selected[1].entry.listingStatus, 'not-listed')
+    assert.equal(selected[1].entry.stars, null, 'weekly charts must not substitute a newer daily star count')
+    const html = renderRankingRows(rows, { type, locale: 'zh' })
+    const english = renderRankingRows(rows, { type, locale: 'en' })
+    assert.match(html, /DSH 官方工具展示位 · 周榜随机置入前十/)
+    assert.match(english, /Official DSH tool · randomized weekly top-10 placement/)
+    assert.match(html, /未收录原因：<\/strong>Held for the latest-three compatibility review\./)
+    assert.equal(rows.find(entry => entry.id === 'lookalike').officialToolPick, undefined,
+      'a repository whose name merely contains DSH-Store must not receive an official slot')
+  }
+
+  const stable = Object.fromEntries(['recommended', 'essential'].map(type => [type, rankingEntries(data, type).map(entry => entry.id)]))
+  assert.deepEqual(Object.fromEntries(['recommended', 'essential'].map(type => [type, rankingEntries(data, type).map(entry => entry.id)])), stable,
+    'a repeated build from the same weekly snapshot must not reshuffle rows')
+  const today = snapshot(entries.map(entry => ({
+    ...entry,
+    github: { stars: entry.github.stars === null ? 80 : entry.github.stars + 100 },
+  })), { starsObservedAt: '2026-10-04T05:00:00.000Z' })
+  const dailyRefresh = applyRankingRefreshState(today, data, 'daily')
+  for (const type of ['recommended', 'essential']) {
+    const beforeRows = rankingEntries(data, type)
+    const beforeRanks = beforeRows.map((entry, index) => entry.officialToolPick ? [entry.id, index] : null).filter(Boolean)
+    const afterRows = rankingEntries(dailyRefresh, type)
+    assert.deepEqual(afterRows.map((entry, index) => entry.officialToolPick ? [entry.id, index] : null).filter(Boolean), beforeRanks,
+      'daily star refreshes must not rotate weekly official placements')
+  }
+  const weeklyArrangements = new Set(['2026-10-03T05:00:00.000Z', '2026-10-10T05:00:00.000Z', '2026-10-17T05:00:00.000Z', '2026-10-24T05:00:00.000Z'].map(date => {
+    const nextWeek = { ...data, weeklyStarsObservedAt: date }
+    return ['recommended', 'essential'].map(type => {
+      const rows = rankingEntries(nextWeek, type)
+      return `${type}:${rows.map((entry, index) => entry.officialToolPick ? `${entry.id}@${index + 1}` : null).filter(Boolean).join(',')}`
+    }).join('|')
+  }))
+  assert.ok(weeklyArrangements.size > 1, 'weekly snapshots should rotate the official placements')
+  assert.deepEqual(data, original, 'ranking generation must not mutate the snapshot')
+
+  const blocked = structuredClone(data)
+  blocked.entries.find(entry => entry.id === 'build-dsh-plugin').reviewStatus = 'blocked'
+  assert.equal(rankingEntries(blocked, 'recommended').some(entry => entry.id === 'build-dsh-plugin'), false)
+  assert.equal(rankingEntries(blocked, 'essential').some(entry => entry.id === 'build-dsh-plugin'), false)
+})
+
 test('featured unlisted records need positive star evidence and blocked or rejected records cannot bypass filtering', () => {
   const data = snapshot([
     item('unlisted-featured', 179, ['tools'], { status: 'unlisted', featured: true }),
@@ -314,11 +388,14 @@ test('small and incomplete populations stay honest; blocked projects are not aut
 test('HTML metadata and bilingual chart copy do not advertise unsupported Store picks', async () => {
   const html = await readFile(new URL('../marketplace/rankings/index.html', import.meta.url), 'utf8')
   const client = await readFile(new URL('../marketplace/rankings/rankings.js', import.meta.url), 'utf8')
+  const model = await readFile(new URL('../marketplace/rankings/model.js', import.meta.url), 'utf8')
   for (const source of [html, client]) {
     assert.doesNotMatch(source, /商城精选|Store picks|Editorial picks first|保留人工精选|preserves editorial picks/)
-    assert.match(source, /旧的重点展示标记不作为推荐依据/)
+    assert.match(source, /旧的重点展示标记不作为(?:推荐)?依据/)
   }
-  assert.match(client, /automated selection, not a Store review or admission/)
+  assert.match(client, /clearly labelled official-tool slots are display placements, not star ranks or Store reviews/)
+  assert.match(client, /DSH Store 与 DSH 插件开发放入前十随机位置/)
+  assert.match(model, /DSH 官方工具展示位 · 周榜随机置入前十/)
   assert.match(client, /Daily · Top 100/)
   assert.match(client, /tab\.listed/)
   assert.match(client, /Updated weekly/)
