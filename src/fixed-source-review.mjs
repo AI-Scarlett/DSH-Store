@@ -11,7 +11,8 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
   if (surface.packageEntries > policy.sourceBounds.maxTreeEntries) reasons.push('distributable package tree exceeds the automatic review bound')
   if (!policy.automaticApproval.allowSymlinks && surface.entries.some(item => item.mode === '120000')) reasons.push('package contains symbolic links')
   if (!policy.automaticApproval.allowSubmodules && surface.entries.some(item => item.mode === '160000' || item.type === 'commit')) reasons.push('package contains Git submodules')
-  const unsupported = surface.entries.filter(unsupportedPackageEntry)
+  const unsupported = surface.entries.filter(item => unsupportedPackageEntry(item)
+    && !isGeneratedSelfManagerRegistryData(candidate, item.relativePath))
   if (unsupported.length) reasons.push(`package contains unsupported artifacts requiring review: ${unsupported.slice(0, 5).map(item => item.relativePath).join(', ')}`)
   signals.nativeOrExecutableArtifacts = surface.entries.some(item => item.mode === '100755' || NATIVE_ARTIFACT.test(item.relativePath))
   const runtimeFiles = surface.entries.filter(item => {

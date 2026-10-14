@@ -1,6 +1,7 @@
 import { readFile, readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validateDiscoveryIndexSnapshot } from '../src/discovery-index-validation.mjs'
 import { assertCatalogLocalization } from '../src/catalog-localization.mjs'
 import {
   assertLegacyCatalogCompatibility, loadCatalogFromFiles, MAX_CATALOG_DETAIL_RESPONSE_BYTES,
@@ -8,6 +9,9 @@ import {
 } from '../src/catalog.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
+const discoveryBytes = await readFile(resolve(root, 'registry/discovery-index.json'))
+const discoveryGzipBytes = await readFile(resolve(root, 'registry/discovery-index.json.gz'))
+const discovery = validateDiscoveryIndexSnapshot(discoveryBytes, discoveryGzipBytes)
 const bridgeBytes = await readFile(resolve(root, 'registry/catalog.json'))
 const indexBytes = await readFile(resolve(root, 'registry/catalog-index.json'))
 if (bridgeBytes.length >= MAX_CATALOG_INDEX_RESPONSE_BYTES) throw new Error('legacy Catalog bridge exceeds the historical 2 MiB ceiling')
@@ -24,4 +28,4 @@ for (const name of detailNames) {
 const catalog = await loadCatalogFromFiles()
 assertCatalogLocalization(catalog)
 assertLegacyCatalogCompatibility(catalog)
-process.stdout.write(`REGISTRY_OK entries=${catalog.entries.length} bridgeBytes=${bridgeBytes.length} indexBytes=${indexBytes.length} details=${detailNames.length}\n`)
+process.stdout.write(`REGISTRY_OK entries=${catalog.entries.length} bridgeBytes=${bridgeBytes.length} indexBytes=${indexBytes.length} details=${detailNames.length} discoveryEntries=${discovery.recordCount} discoveryBytes=${discovery.rawBytes} discoveryGzipBytes=${discovery.gzipBytes}\n`)
