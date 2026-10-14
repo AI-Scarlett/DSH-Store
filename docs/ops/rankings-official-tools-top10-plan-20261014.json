@@ -1,3 +1,4 @@
+/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 {
   "schemaVersion": 1,
   "id": "DSH-RANKINGS-OFFICIAL-TOOLS-TOP10-20261014",
@@ -6,8 +7,17 @@
   "baseCommit": "ccd4ca4984b9694ac384ce1f15f9bd5bb766fa53",
   "authorization": {
     "userRequest": "推荐榜和必装榜都要包含 DSH Store 与 DSH 插件开发，并随机放在前10名内",
-    "scope": "Update ranking generation/display copy and disposable-fixture tests only; submit through a CI-checked PR. No Catalog/admission mutation, author outreach, Profile/package changes, or production deployment.",
-    "placementPolicy": "Place the two exact official repository identities at two distinct pseudo-random positions within ranks 1-10, seeded by the weekly snapshot timestamp and chart type. This keeps positions stable for repeated site builds and changes them only with a weekly snapshot refresh."
+    "scope": "Update ranking generation/display copy and disposable-fixture tests only; submit through a CI-checked PR. After the user's subsequent explicit request to publish, merge only after exact-head CI passes, allow the Pages workflow to deploy, and verify public readback on both https://dsh.store/rankings/ and https://dsh-store.cn/rankings/. No Catalog/admission mutation, author outreach, Profile/package changes, or DSH runtime mutation.",
+    "placementPolicy": "Place the two exact official repository identities at two distinct pseudo-random positions within ranks 1-10, seeded by the weekly snapshot timestamp and chart type. This keeps positions stable for repeated site builds and changes them only with a weekly snapshot refresh.",
+    "publicationRequest": {
+      "userRequest": "改完直接上线",
+      "receivedAt": "2026-10-14T02:40:58Z",
+      "deploymentScope": [
+        "merge after exact-head CI",
+        "GitHub Pages workflow",
+        "public readback at dsh.store and dsh-store.cn"
+      ]
+    }
   },
   "fileScope": {
     "modify": [
@@ -40,13 +50,13 @@
     "npm run check",
     "git diff --check and exact-scope review",
     "create an auditable PR with the connected short-lived GitHub App authorization; require exact-head CI before merge",
-    "production deployment is not authorized by this plan; wait for a separate explicit launch request"
+    "Following the subsequent explicit user request, require exact-head CI success before merge; then verify the Pages deployment and both production storefronts by public readback."
   ],
   "rollback": {
     "method": "Revert only this PR through a new CI-checked PR, or restore the scoped source files from baseCommit.",
-    "production": "No production mutation occurs in this plan; existing ranking snapshot and storefront releases remain untouched."
+    "production": "If public verification fails, revert only this release through a CI-checked PR; let the Pages workflow redeploy the prior ranking logic, then verify both domains. Do not modify Catalog state or ranking snapshot history."
   },
-  "status": "local_verified_pending_pull_request_ci",
+  "status": "amended_local_verified_pending_ci_merge_and_dual_site_readback",
   "verification": {
     "baseCommitVerified": "ccd4ca4984b9694ac384ce1f15f9bd5bb766fa53",
     "focusedRankingTests": "25/25 passed",
@@ -62,6 +72,8 @@
       "marketplace/rankings/rankings.js": "0a98e317b6b1caabd7d16a83a21efd02b840257c7263e3e8f31353ec6e00e383",
       "test/marketplace-rankings.test.mjs": "3dfc25029153bd2db74a60f5c4142b6b6c1aaf201e73ed5e3ca61f4edbc6a3db"
     },
-    "productionDeployment": "not requested and not performed"
+    "productionDeployment": "authorized; not yet performed",
+    "publicationAuthorization": "User explicitly requested direct publication on 2026-10-14; merge/deploy remains pending exact-head CI.",
+    "publicReadback": "pending on https://dsh.store/rankings/ and https://dsh-store.cn/rankings/"
   }
 }
