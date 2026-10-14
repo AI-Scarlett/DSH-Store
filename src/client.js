@@ -5,6 +5,7 @@ window.__ModuleLoader__.load({
     const React = require('react')
     const { Modal } = require('@deepseek-ai/dsh-client-ui-primitives')
     const { useCallback, useEffect, useMemo, useRef, useState } = React
+    const OFFICIAL_DESKTOP_RENDERER = window.location?.protocol === 'dsh-app:'
     const ROUTES = {
       operations: '/api2/dsh-safe-plugin-manager/operations',
       inventory: '/api2/dsh-safe-plugin-manager/inventory',
@@ -1404,7 +1405,7 @@ window.__ModuleLoader__.load({
       const [category, setCategory] = useState('')
       const [featuredOnly, setFeaturedOnly] = useState(false)
       const [page, setPage] = useState(1)
-      const [state, setState] = useState({ status: 'loading' })
+      const [state, setState] = useState({ status: OFFICIAL_DESKTOP_RENDERER ? 'desktop-readonly' : 'loading' })
       const [activations, setActivations] = useState({})
       const [compatibleWith, setCompatibleWith] = useState('')
       const [marketLoading, setMarketLoading] = useState(false)
@@ -1470,7 +1471,7 @@ window.__ModuleLoader__.load({
           setState({ status: 'error', message: String(error?.message || error) })
         }
       }, [])
-      useEffect(() => { void refresh(false) }, [refresh])
+      useEffect(() => { if (!OFFICIAL_DESKTOP_RENDERER) void refresh(false) }, [refresh])
       useEffect(() => {
         const timer = window.setTimeout(() => setDebouncedQuery(query.trim()), 250)
         return () => window.clearTimeout(timer)
@@ -1702,6 +1703,23 @@ window.__ModuleLoader__.load({
         }
       }, [restartConfirmation, restartOperation])
       const closeDetails = useCallback(() => setDetailEntry(null), [])
+      if (OFFICIAL_DESKTOP_RENDERER) return React.createElement('section', {
+        style: styles.root, 'aria-label': 'DSH-Store 桌面端兼容说明',
+      },
+      React.createElement('h3', { style: styles.title }, 'DSH Store · 桌面端只读入口'),
+      React.createElement('div', { style: styles.notice, role: 'status' },
+        React.createElement('p', { style: { ...styles.muted, margin: 0 } },
+          '当前页面运行在 DSH 官方桌面端（dsh-app://）中。该环境没有提供 DSH Store 所依赖的 Web Host 管理接口，因此此处不能读取插件目录、已安装清单或执行商城管理操作。'),
+        React.createElement('p', { style: { ...styles.muted, margin: '8px 0 0' } },
+          '浏览商城目录请打开 DSH Store 网页；在桌面端安装、更新、启用或停用插件，请使用 DSH 内置的“插件”页面。这里不会访问或修改 Web Profile。')),
+      React.createElement('div', { style: styles.actions },
+        React.createElement('a', {
+          href: 'https://dsh.store/marketplace/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link,
+        }, '浏览 DSH Store 插件目录 ↗'),
+        React.createElement('a', {
+          href: 'https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md',
+          target: '_blank', rel: 'noreferrer', style: styles.link,
+        }, '查看 DSH 桌面端插件说明 ↗')))
       const dshVersion = state.status === 'ready' ? state.dshVersion : null
       const versionLabel = dshVersion?.currentVersion
         ? `DSH ${dshVersion.currentVersion}${dshVersion.updateAvailable ? ` → ${dshVersion.latestVersion}${dshVersion.releaseChannel === 'preview' ? '（预发布）' : ''}` : dshVersion.status === 'current' ? dshVersion.releaseChannel === 'preview' ? ' · 已是当前预发布' : ' · 稳定版已是最新' : ''}`
@@ -1895,9 +1913,11 @@ window.__ModuleLoader__.load({
     const name = 'dsh-safe-plugin-manager'
     const inject = ['slots']
     function apply(ctx) {
-      if (typeof ctx.effect === 'function') {
-        ctx.effect(() => installBootRecovery(ctx), 'dsh-safe-plugin-manager: boot recovery')
-      } else installBootRecovery(ctx)
+      if (!OFFICIAL_DESKTOP_RENDERER) {
+        if (typeof ctx.effect === 'function') {
+          ctx.effect(() => installBootRecovery(ctx), 'dsh-safe-plugin-manager: boot recovery')
+        } else installBootRecovery(ctx)
+      }
       ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
         name: 'settings.plugins.tab', id: 'safe-plugin-manager', order: -10,
         label: () => '插件商城', inject: () => ({}),

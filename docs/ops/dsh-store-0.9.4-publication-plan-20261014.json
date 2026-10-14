@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-store-0.9.4-publication-20261014",
+  "type": "fixed-commit-storefront-release",
+  "status": "prepared",
+  "createdAt": "2026-10-14T11:19:00Z",
+  "baseCommit": "7a6134b1ddd34402d78e16ab1b66004fb4e6dcbb",
+  "sourcePullRequest": "https://github.com/AI-Scarlett/DSH-Store/pull/1413",
+  "targetVersion": "0.9.4",
+  "scope": [
+    "README.md",
+    "docs/ops/dsh-store-0.9.4-publication-plan-20261014.json",
+    "docs/ops/dsh-store-desktop-readonly-panel-20261014.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs"
+  ],
+  "preconditions": {
+    "README.md": "844337bf9d55ea362c4632fcaf89a5931b9628934b144579f31a659535591e58",
+    "docs/ops/dsh-store-desktop-readonly-panel-20261014.json": null,
+    "package.json": "9801cc3cef3f77f9f09ce1b12628d25b01fc5e1d07313626d6e91ab1faa59fec",
+    "src/client.js": "c6a620930163a4a5478e6f0974bac95b379525bc6b38b6c2a7e0068896821816",
+    "test/catalog.test.mjs": "0a101c8789169b3f34d762f579f8e227d4240d62898dba0d6657bc9e01e937e2",
+    "test/contracts.test.mjs": "3f8523434f67a16ff309f6d5960024732beb14b0fbd2d84c746e791ae415b879",
+    "test/desktop-compat.test.mjs": "f61216586616582be6a2ba976e6df61dc4c2a4e598274b0b7d0139272a8985b5"
+  },
+  "gates": [
+    "Merge the exact source PR head only after every required CI, CodeQL, compatibility-matrix, and npm run check gate succeeds; package version must be 0.9.4.",
+    "Run Catalog mutation only through catalog-automation.yml after merge; retain full-Commit pinning and all current DSH latest-three evidence.",
+    "The Store remains web-only in Catalog. Do not claim packaged Desktop UI or real Desktop Profile acceptance.",
+    "Honor the central immutable author-contact ledger and its single-contact policy; never bypass or reset it. Do not manually contact authors.",
+    "Require Pages and public readback for GitHub, dsh.store, and dsh-store.cn to resolve to the same Catalog source Commit and show version 0.9.4.",
+    "Do not modify DSH core, @deepseek-ai packages, a real Profile, or a real Desktop installation."
+  ],
+  "rollback": {
+    "source": "Revert only the exact source change through a new auditable PR.",
+    "catalog": "If publication is incorrect, use a forward Catalog policy PR restoring the previous approved fixed Commit; never rewrite history or directly edit deployed files.",
+    "sites": "Retain Pages/deployment backups and rerun the public verifier after recovery."
+  },
+  "verification": {
+    "npmRunCheck": "passed: 406/406 tests, registry 800 entries",
+    "sourcePullRequestChecks": "All checks passed on the identical source tree at unsigned draft head 520c9cfac04023a9e02924c9cd3044c6fe80af56; rerun required after signed-history rewrite.",
+    "catalogWorkflow": "pending",
+    "publicStorefronts": "pending",
+    "desktopUiAcceptance": "unverified",
+    "mergePolicy": "Active required-signatures ruleset; preserve policy by replacing unsigned draft history with one GitHub API signed commit. No bypass."
+  },
+  "sourcePullRequestHeadBeforeSignatureRewrite": "520c9cfac04023a9e02924c9cd3044c6fe80af56",
+  "signaturePolicy": {
+    "ruleset": "AI-Scarlett/DSH-Store ruleset 20904616 requires verified signatures and linear history; bypass actors are not configured.",
+    "method": "GitHub GraphQL createCommitOnBranch; verify the resulting commit signature and exact tree before moving the existing PR ref.",
+    "sourceHeadRewrite": true,
+    "preserveTree": true,
+    "bypass": false
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-store-desktop-readonly-panel-20261014",
+  "type": "desktop-client-fail-closed-fallback",
+  "status": "in_progress",
+  "createdAt": "2026-10-14T08:43:00Z",
+  "baseCommit": "7a6134b1ddd34402d78e16ab1b66004fb4e6dcbb",
+  "objective": "Safely hand off from the official dsh-app:// Desktop renderer without unavailable Web Host calls, preserve ordinary Web behavior, and release as Store 0.9.4 so installed users can receive this fix rather than being blocked by a same-version Catalog entry.",
+  "authority": {
+    "officialDesktopDocument": "https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md",
+    "desktopDocumentEvidence": "The official Desktop loads dsh-app://app/ and owns a separate desktop Profile; its packaged client cannot be inferred to expose Store webServer routes.",
+    "sourceBoundary": "Do not change DSH core or @deepseek-ai packages. Catalog profile remains web-only until actual Desktop E4 is established."
+  },
+  "scope": [
+    "README.md",
+    "docs/ops/dsh-store-0.9.4-publication-plan-20261014.json",
+    "docs/ops/dsh-store-desktop-readonly-panel-20261014.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs"
+  ],
+  "preconditions": {
+    "README.md": "844337bf9d55ea362c4632fcaf89a5931b9628934b144579f31a659535591e58",
+    "package.json": "9801cc3cef3f77f9f09ce1b12628d25b01fc5e1d07313626d6e91ab1faa59fec",
+    "src/client.js": "c6a620930163a4a5478e6f0974bac95b379525bc6b38b6c2a7e0068896821816",
+    "test/catalog.test.mjs": "0a101c8789169b3f34d762f579f8e227d4240d62898dba0d6657bc9e01e937e2",
+    "test/contracts.test.mjs": "3f8523434f67a16ff309f6d5960024732beb14b0fbd2d84c746e791ae415b879",
+    "test/desktop-compat.test.mjs": "f61216586616582be6a2ba976e6df61dc4c2a4e598274b0b7d0139272a8985b5"
+  },
+  "gates": [
+    "Detect only the official dsh-app: renderer scheme; do not infer Desktop mode from caller-supplied profile fields.",
+    "The Desktop fallback must make zero same-origin management API requests and offer no install/update/enable/disable/uninstall/restart/Guardian actions.",
+    "Show explicit links to the public DSH Store catalog and the official Desktop Plugins page guidance.",
+    "Keep browser/Web behavior unchanged.",
+    "Bump the package version to 0.9.4 so installed users can receive this source change; update the Catalog only via the dedicated policy workflow after merge.",
+    "Run the focused desktop-client regression test plus npm run check and CI; do not modify catalog compatibility profiles or claim a full Desktop marketplace integration.",
+    "No DSH source, @deepseek-ai package, real Desktop/Profile, or author outreach."
+  ],
+  "rollback": {
+    "source": "Revert the exact source PR commit; no runtime/profile mutation."
+  },
+  "verification": {
+    "local": {
+      "focusedDesktopTest": "passed",
+      "focusedDesktopTests": 5,
+      "npmRunCheck": "passed",
+      "fullSuiteTests": 406,
+      "registryEntries": 800,
+      "sourceVersion": "0.9.4",
+      "desktopUiAcceptance": "unverified; no real packaged Desktop/Profile was changed or launched"
+    },
+    "npmRunCheck": "passed after 0.9.4 version bump and release test assertions; 406/406 tests, registry 800 entries",
+    "fullSuiteTests": 406,
+    "sourceVersion": "0.9.4",
+    "sourcePullRequestChecks": "All checks passed on pre-rewrite source tree; rerun on signed commit required.",
+    "signatureRewrite": "Required-signatures ruleset preserved; signed GitHub API commit planned without bypass."
+  },
+  "downstream": {
+    "catalog": "pending dedicated policy workflow after source PR merge; retain web-only Profile and exact fixed-Commit evidence.",
+    "profile": "not touched",
+    "desktopUi": "not verified on a real packaged Desktop"
+  }
+}
