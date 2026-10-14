@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-14T17:38:48.000Z",
+    "updatedAt": "2026-10-14T20:01:17.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "3b79af28e80785afce9f5998d8f03289402a1847",
-      "sourceUpdatedAt": "2026-10-14T12:31:45.000Z",
+      "latestCommit": "d9cd239c5ed7b078ac07e1bad633723fb49d8f80",
+      "sourceUpdatedAt": "2026-10-14T19:50:50.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -8201,11 +8201,11 @@
     {
       "id": "kcnyu-clawock",
       "name": "KCNyu/clawock",
-      "description": "AI argues. Code settles. The losses stay on the page. A real HK + US brokerage account run by agents that must debate every call, settled by code the model never touches. Install the same decision workflow into your own agent: OpenClaw, Claude Code, Codex, or DeepSeek Harness.",
+      "description": "Investment workflows for AI agents: evidence, opposing cases, and outcomes checked by Python.",
       "repositoryUrl": "https://github.com/KCNyu/clawock",
       "defaultBranch": "master",
-      "latestCommit": "e03de1fe7dbb42c665f2db7ae8942aaf7212b23c",
-      "sourceUpdatedAt": "2026-10-04T19:20:01.000Z",
+      "latestCommit": "fdb39a2eb6a3ffc5fc96a937ae0503a93388392a",
+      "sourceUpdatedAt": "2026-10-14T20:04:48.000Z",
       "discoveredAt": "2026-09-03T04:06:05.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -20043,6 +20043,98 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-stream-rules."
+    },
+    {
+      "id": "mengqi1436-dsh-db-tool",
+      "name": "mengqi1436/dsh-db-tool",
+      "description": "DSH plugin: chat-driven database admin tool (8 databases, per-project grants, danger confirmation, sidebar console)",
+      "repositoryUrl": "https://github.com/mengqi1436/dsh-db-tool",
+      "defaultBranch": "master",
+      "latestCommit": "9e3c22abdf30a4652759ce536f12522b37915f9b",
+      "sourceUpdatedAt": "2026-10-14T07:09:51.000Z",
+      "discoveredAt": "2026-10-14T20:01:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/mengqi1436__dsh-db-tool.yml:sha256=f9834efdd6285c2080c9166cb53c36f3e490a80119859833ba3eccb82249d0f4:at=2026-10-14T20:05:48.691Z:owner=64037033"
+      ],
+      "topics": [
+        "database",
+        "dsh",
+        "dsh-plugin",
+        "mysql",
+        "postgresql",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "mengqi1436-dsh-rtk-rewrite",
+      "name": "mengqi1436/DSH-Rtk-rewrite",
+      "description": "DSH中通过Rtk进行改写",
+      "repositoryUrl": "https://github.com/mengqi1436/DSH-Rtk-rewrite",
+      "defaultBranch": "main",
+      "latestCommit": "2b58abed6a8197ccea906b9ae22f53416bcd5776",
+      "sourceUpdatedAt": "2026-10-03T15:43:10.000Z",
+      "discoveredAt": "2026-10-14T20:01:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/mengqi1436__DSH-Rtk-rewrite.yml:sha256=752606668ac8582f80f01a43eff668f94f66c2c8f6ddc98bede5152f55596466:at=2026-10-14T20:05:48.691Z:owner=64037033"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "mengnanxyyyy-dsh-markdown-xyy",
+      "name": "mengnanxyyyy/dsh-markdown-xyy",
+      "description": "dsh markdown 主题插件",
+      "repositoryUrl": "https://github.com/mengnanxyyyy/dsh-markdown-xyy",
+      "defaultBranch": "main",
+      "latestCommit": "12b67b8557cbdc5e4a1fad87064fabc25a3c1351",
+      "sourceUpdatedAt": "2026-09-27T05:05:42.000Z",
+      "discoveredAt": "2026-10-14T20:01:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/mengnanxyyyy__dsh-markdown-xyy.yml:sha256=b5e18c091c9c72b276ac576577cc57849b2f2f27ef6789cf1c04db36beca9c1d:at=2026-10-14T20:05:48.691Z:owner=308822704"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-harness",
+        "dsh-plugin",
+        "dsh-web",
+        "dsh-web-ui",
+        "markdown",
+        "themes",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "mengshang-spec-dsh-third-party-api-balance-wallet",
+      "name": "Mengshang-spec/dsh-third-party-api-balance-wallet",
+      "description": "第三方 API 接入 DSH 查询余额插件",
+      "repositoryUrl": "https://github.com/Mengshang-spec/dsh-third-party-api-balance-wallet",
+      "defaultBranch": "main",
+      "latestCommit": "aaf6df7dac9e80d3f104bcfcbba34d34b5fc4249",
+      "sourceUpdatedAt": "2026-09-22T11:06:53.000Z",
+      "discoveredAt": "2026-10-14T20:01:17.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/Mengshang-spec__dsh-third-party-api-balance-wallet.yml:sha256=d7d20648c7677327fa37954659c5473b30b6e6845e5304f0485784ddd30a54de:at=2026-10-14T20:05:48.691Z:owner=212853838"
+      ],
+      "topics": [
+        "balance",
+        "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
