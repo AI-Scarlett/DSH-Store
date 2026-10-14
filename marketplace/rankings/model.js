@@ -7,7 +7,68 @@ const validStars = value => Number.isSafeInteger(value) && value >= 0
 const validRepository = value => typeof value === 'string' && /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(value)
 const compareId = (a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0
 const compareStars = (a, b) => b.stars - a.stars || compareId(a, b)
+const OFFICIAL_DSH_TOOL_REPOSITORIES = [
+  'https://github.com/AI-Scarlett/DSH-Store',
+  'https://github.com/AI-Scarlett/build-dsh-plugin',
+]
 const categoryNamesEn = { marketplace: 'Marketplace', management: 'Management', sessions: 'Sessions', import: 'Import', models: 'Models', routing: 'Routing', ui: 'Interface', themes: 'Themes', memory: 'Memory', tools: 'Tools', workflow: 'Workflow', notifications: 'Notifications', development: 'Development', fun: 'Fun', files: 'Files', visualization: 'Visualization', design: 'Design', search: 'Search', suites: 'Suites', clients: 'Clients', security: 'Security', experimental: 'Experimental' }
+
+function createPlacementRandom(seed) {
+  let state = 2166136261
+  for (const character of seed) state = Math.imul(state ^ character.charCodeAt(0), 16777619)
+  if (state === 0) state = 0x6d2b79f5
+  return () => {
+    state = (state + 0x6d2b79f5) | 0
+    let value = state
+    value = Math.imul(value ^ (value >>> 15), value | 1)
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61)
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+function withOfficialDshToolSlots(rows, snapshot, type) {
+  const isOfficial = entry => OFFICIAL_DSH_TOOL_REPOSITORIES.includes(entry.repositoryUrl.toLowerCase())
+  const seen = new Set()
+  const official = []
+  for (const repositoryUrl of OFFICIAL_DSH_TOOL_REPOSITORIES) {
+    const repositoryKey = repositoryUrl.toLowerCase()
+    const existing = rows.find(entry => entry.repositoryUrl.toLowerCase() === repositoryKey)
+    const source = existing || snapshot.entries.find(entry => entry.repositoryUrl.toLowerCase() === repositoryKey)
+    if (!source || ['blocked', 'rejected'].includes(source.reviewStatus)) continue
+    if (seen.has(source.id)) continue
+    seen.add(source.id)
+    const entry = { ...source, officialToolPick: true }
+    if (type === 'recommended') {
+      entry.recommendationKind = 'official-tool'
+      entry.stars = validStars(source.weeklyStars) ? source.weeklyStars : null
+    } else {
+      entry.stars = validStars(source.weeklyStars) ? source.weeklyStars : null
+      entry.wins = Array.isArray(source.wins) ? source.wins : []
+    }
+    official.push(entry)
+  }
+  if (!official.length) return rows.slice(0, PAGE_SIZE)
+
+  // The seed changes only when the weekly score snapshot changes. Repeated
+  // three-hour storefront rebuilds therefore keep the same two top-ten slots.
+  const seedDate = snapshot.weeklyStarsObservedAt || 'weekly-snapshot-unavailable'
+  const random = createPlacementRandom(`${seedDate}:${type}:official-dsh-tools`)
+  const ordinary = rows.filter(entry => !isOfficial(entry)).slice(0, PAGE_SIZE - official.length)
+  const total = ordinary.length + official.length
+  const windowSize = Math.min(10, total)
+  const slots = Array.from({ length: windowSize }, (_, index) => index)
+  for (let index = slots.length - 1; index > 0; index--) {
+    const other = Math.floor(random() * (index + 1))
+    ;[slots[index], slots[other]] = [slots[other], slots[index]]
+  }
+  const output = new Array(windowSize)
+  official.forEach((entry, index) => { output[slots[index]] = entry })
+  let nextOrdinary = 0
+  for (let index = 0; index < output.length; index++) {
+    if (!output[index]) output[index] = ordinary[nextOrdinary++]
+  }
+  return [...output, ...ordinary.slice(nextOrdinary)]
+}
 
 function getListingReason(entry, source, listingStatus) {
   if (listingStatus === 'listed') return null
@@ -203,8 +264,9 @@ export function rankingEntries(data, type) {
   if (type === 'recommended') {
     // `featured` is a legacy display flag, not evidence of a recommendation or
     // review. Until explicit editorial evidence exists, use only observed stars.
-    return known.filter(entry => entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus))
-      .slice(0, PAGE_SIZE).map(entry => ({ ...entry, recommendationKind: 'community-stars' }))
+    const communityPicks = known.filter(entry => entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus))
+      .map(entry => ({ ...entry, recommendationKind: 'community-stars' }))
+    return withOfficialDshToolSlots(communityPicks, data, type)
   }
   if (type !== 'essential') throw new Error('Unknown ranking type')
   const winners = new Map()
@@ -240,7 +302,7 @@ export function rankingEntries(data, type) {
     }
     if (!any) break
   }
-  return result
+  return withOfficialDshToolSlots(result, data, type)
 }
 
 export function rankingPage(data, type, requestedPage = 1) {
@@ -257,12 +319,14 @@ export function renderRankingRows(entries, { type = 'popular', locale = 'zh', of
     const alternate = en ? entry.nameZh : entry.nameEn
     const rank = offset + index + 1
     const sourceName = entry.repositoryUrl.replace('https://github.com/', '')
-    const reason = type === 'essential' ? `<div class="ranking-wins">${entry.categoryPick
+    const officialToolNote = entry.officialToolPick
+      ? `<span class="ranking-pick">${en ? 'Official DSH tool · randomized weekly top-10 placement; not a star rank or Store review' : 'DSH 官方工具展示位 · 周榜随机置入前十，非星标排名或商城评测'}</span>` : ''
+    const reason = type === 'essential' ? `<div class="ranking-wins">${officialToolNote}${entry.categoryPick
       ? `<span>${escapeHtml(en ? entry.categoryPick.en : entry.categoryPick.zh)} · ${en ? 'Category supplement · observed #' : '分类高星补充 · 当前数据第 '}${entry.categoryPick.observedRank}${en ? '' : ' 名'}</span>`
       : entry.wins.map(win => `<span>${escapeHtml(en ? win.en : win.zh)}${win.tied ? (en ? ' · tied lead' : ' · 并列最高') : (en ? ' · #1' : ' · 星标第一')}</span>`).join('')}</div>`
-      : type === 'recommended' ? `<span class="ranking-pick">${entry.recommendationKind === 'community-stars' && validStars(entry.stars) && entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus)
+      : type === 'recommended' ? (entry.officialToolPick ? officialToolNote : `<span class="ranking-pick">${entry.recommendationKind === 'community-stars' && validStars(entry.stars) && entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus)
         ? (en ? `Basis: ${entry.stars.toLocaleString('en-US')} GitHub stars · selected by star count, not a Store review` : `入榜依据：GitHub ${entry.stars.toLocaleString('zh-CN')} 星 · 按星标排序，非商城评测推荐`)
-        : (en ? 'Recommendation basis unavailable' : '暂无可核验的推荐依据')}</span>` : ''
+        : (en ? 'Recommendation basis unavailable' : '暂无可核验的推荐依据')}</span>`) : ''
     const listed = entry.listingStatus === 'listed'
     const href = listed ? `../plugins/?q=${encodeURIComponent(entry.id)}` : entry.repositoryUrl
     const external = listed ? '' : ' target="_blank" rel="noopener noreferrer"'

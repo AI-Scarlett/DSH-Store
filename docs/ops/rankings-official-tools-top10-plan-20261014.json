@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "DSH-RANKINGS-OFFICIAL-TOOLS-TOP10-20261014",
+  "type": "manual-source-feature-plan",
+  "createdAt": "2026-10-14T02:31:03Z",
+  "baseCommit": "ccd4ca4984b9694ac384ce1f15f9bd5bb766fa53",
+  "authorization": {
+    "userRequest": "推荐榜和必装榜都要包含 DSH Store 与 DSH 插件开发，并随机放在前10名内",
+    "scope": "Update ranking generation/display copy and disposable-fixture tests only; submit through a CI-checked PR. No Catalog/admission mutation, author outreach, Profile/package changes, or production deployment.",
+    "placementPolicy": "Place the two exact official repository identities at two distinct pseudo-random positions within ranks 1-10, seeded by the weekly snapshot timestamp and chart type. This keeps positions stable for repeated site builds and changes them only with a weekly snapshot refresh."
+  },
+  "fileScope": {
+    "modify": [
+      "marketplace/rankings/model.js",
+      "marketplace/rankings/rankings.js",
+      "test/marketplace-rankings.test.mjs"
+    ],
+    "add": [
+      "docs/ops/rankings-official-tools-top10-plan-20261014.json"
+    ]
+  },
+  "preconditionSha256": {
+    "marketplace/rankings/model.js": "8b34b58886e8349f1f98f9dce0d55a24759c78bb98354ed2470a28aad660e54c",
+    "marketplace/rankings/rankings.js": "55a4608da18ab1b38b5b2c3c189a3c834bddd7fa481f9d3dc24e7472622346f5",
+    "test/marketplace-rankings.test.mjs": "1865c44f4ed78712e0c4c5824c611a79626d7f0fd8d99d1167cc783082b47113",
+    "docs/ops/rankings-official-tools-top10-plan-20261014.json": null
+  },
+  "constraints": [
+    "Match only the exact canonical GitHub repositories AI-Scarlett/DSH-Store and AI-Scarlett/build-dsh-plugin; no fuzzy name matching.",
+    "Both official entries must appear once in Recommended and Must-have whenever their ranking snapshot records are not blocked or rejected; assign distinct ranks within the first ten.",
+    "Use deterministic pseudo-random placement seeded by weeklyStarsObservedAt and chart type so three-hour rebuilds do not cause rank flicker; change placement only after weekly snapshot refresh.",
+    "Label official placements transparently; never claim they were selected by GitHub star count, editorial review, category leadership, or security assessment unless that evidence independently applies.",
+    "Preserve Catalog listing status and unlisted reasons; this ranking exception never changes admission, installability, repository pinning, or plugin lifecycle behavior.",
+    "Preserve existing 30-row caps, pagination, other entries' relative ordering, blocked/rejected exclusions, bilingual interface, and no-install-control behavior.",
+    "Tests use disposable in-memory fixtures only; no writes to ~/.dsh, real profiles, Catalog, or production sites."
+  ],
+  "gates": [
+    "verify current base Commit and all file-scope SHA-256 preconditions",
+    "focused ranking tests: exact repo matching, two unique top-10 positions, snapshot stability/weekly rotation, labels, listing-state preservation, blocked/rejected exclusion, row caps and no install/admission changes",
+    "npm run check",
+    "git diff --check and exact-scope review",
+    "create an auditable PR with the connected short-lived GitHub App authorization; require exact-head CI before merge",
+    "production deployment is not authorized by this plan; wait for a separate explicit launch request"
+  ],
+  "rollback": {
+    "method": "Revert only this PR through a new CI-checked PR, or restore the scoped source files from baseCommit.",
+    "production": "No production mutation occurs in this plan; existing ranking snapshot and storefront releases remain untouched."
+  },
+  "status": "local_verified_pending_pull_request_ci",
+  "verification": {
+    "baseCommitVerified": "ccd4ca4984b9694ac384ce1f15f9bd5bb766fa53",
+    "focusedRankingTests": "25/25 passed",
+    "npmRunCheck": "registry validation passed; 404/404 tests passed",
+    "diffCheck": "git diff --check passed",
+    "scopeReview": "Only the two ranking runtime files, their focused fixture tests, and this plan are changed.",
+    "currentCatalogBoundary": {
+      "dshStore": "approved and listed",
+      "buildDshPlugin": "unlisted; current compatibility hold and review reason preserved"
+    },
+    "outputSha256": {
+      "marketplace/rankings/model.js": "3610af184aef04965c170ae9b442c05b059c7aa9ee3e005e69f4f72cee5e29c7",
+      "marketplace/rankings/rankings.js": "0a98e317b6b1caabd7d16a83a21efd02b840257c7263e3e8f31353ec6e00e383",
+      "test/marketplace-rankings.test.mjs": "3dfc25029153bd2db74a60f5c4142b6b6c1aaf201e73ed5e3ca61f4edbc6a3db"
+    },
+    "productionDeployment": "not requested and not performed"
+  }
+}
