@@ -117,7 +117,6 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
       id: entry.id, nameZh: light.nameZh || entry.name, nameEn: light.nameEn || entry.name,
       version: entry.version, repositoryUrl: entry.repositoryUrl, description: (entry.description || '').slice(0, 280),
       categories: [...new Set((entry.categories || []).filter(id => knownCategories.has(id)))],
-      featured: entry.featured === true, order: Number.isSafeInteger(light.order) ? light.order : Number.MAX_SAFE_INTEGER,
       listingStatus, listingReason: getListingReason(entry, 'catalog', listingStatus),
       source: 'catalog', reviewStatus: entry.status,
       stars: starsObservedAt && validStars(entry.github?.stars) ? entry.github.stars : null,
@@ -139,7 +138,6 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
       repositoryUrl: entry.repositoryUrl, description: (entry.description || '').slice(0, 280),
       // Only explicit category IDs are usable evidence. Do not guess from descriptions.
       categories: [...new Set((entry.topics || []).filter(id => knownCategories.has(id)))],
-      featured: false, order: Number.MAX_SAFE_INTEGER,
       listingStatus: 'not-listed', source: 'candidate', reviewStatus: entry.status, stars: null, weeklyStars: null,
       listingReason: getListingReason(entry, 'candidate', 'not-listed'),
       weeklySnapshotMember: false, weeklyCategories: [],
@@ -183,7 +181,10 @@ export function validateRankingSnapshot(data) {
   for (const entry of data.entries) {
     if (!entry || typeof entry.id !== 'string' || !entry.id || ids.has(entry.id) || !validRepository(entry.repositoryUrl)
       || !['nameZh', 'nameEn', 'description', 'version'].every(key => typeof entry[key] === 'string')
-      || typeof entry.featured !== 'boolean' || !Number.isSafeInteger(entry.order) || entry.order < 0
+      // Older public snapshots may still carry these fields; new snapshots omit
+      // them because ranking never uses Catalog presentation order or legacy picks.
+      || (entry.featured !== undefined && typeof entry.featured !== 'boolean')
+      || (entry.order !== undefined && (!Number.isSafeInteger(entry.order) || entry.order < 0))
       || !['listed', 'not-listed'].includes(entry.listingStatus) || !['catalog', 'candidate'].includes(entry.source)
       || (entry.listingStatus === 'listed' ? entry.listingReason !== null : typeof entry.listingReason !== 'string' || !entry.listingReason.trim() || entry.listingReason.length > 600)
       || !(entry.source === 'catalog' ? ['approved', 'blocked', 'unlisted'] : ['discovered', 'reviewing', 'rejected']).includes(entry.reviewStatus)

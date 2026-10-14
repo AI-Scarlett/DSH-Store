@@ -23,6 +23,16 @@ test('rankings include all Catalog statuses but only approved pinned entries are
   assert.deepEqual(entries, before)
 })
 
+test('new ranking snapshots omit unused Catalog presentation fields while legacy snapshots remain valid', () => {
+  const data = snapshot([item('first', 20, ['tools'], { featured: true }), item('second', 10)])
+  assert.ok(data.entries.every(entry => !Object.hasOwn(entry, 'featured') && !Object.hasOwn(entry, 'order')))
+
+  const legacy = structuredClone(data)
+  legacy.entries.forEach((entry, index) => { entry.featured = index === 0; entry.order = index })
+  assert.equal(validateRankingSnapshot(legacy).entries.length, 2)
+  assert.deepEqual(rankingEntries(legacy, 'recommended').map(entry => entry.id), ['first', 'second'])
+})
+
 test('popular sorts numerically, preserves zero, excludes unknown and uses a deterministic ID tie break', () => {
   const data = snapshot([item('b', 10), item('zero', 0), item('c', 100), item('a', 10), item('missing', undefined), item('text', '200'), item('negative', -1), item('fraction', 1.1)])
   assert.deepEqual(rankingEntries(data, 'popular').map(e => [e.id, e.stars]), [['c', 100], ['a', 10], ['b', 10], ['zero', 0]])
@@ -295,7 +305,7 @@ test('candidate-only projects join without a version, featured flag or fabricate
   const data = snapshot([item('listed', 5)], { candidates })
   assert.deepEqual(data.entries.map(e => e.id), ['listed', 'candidate:external', 'candidate:rejected'])
   const external = data.entries[1]
-  assert.equal(external.listingStatus, 'not-listed'); assert.equal(external.version, ''); assert.equal(external.featured, false)
+  assert.equal(external.listingStatus, 'not-listed'); assert.equal(external.version, ''); assert.equal(Object.hasOwn(external, 'featured'), false)
   assert.deepEqual(external.categories, ['tools']); assert.deepEqual(data.entries[2].categories, [])
   assert.equal(external.stars, null); assert.deepEqual(candidates, before)
   external.stars = 100

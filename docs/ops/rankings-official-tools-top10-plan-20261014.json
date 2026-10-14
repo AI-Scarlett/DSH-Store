@@ -1,4 +1,3 @@
-/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 {
   "schemaVersion": 1,
   "id": "DSH-RANKINGS-OFFICIAL-TOOLS-TOP10-20261014",
@@ -56,7 +55,7 @@
     "method": "Revert only this PR through a new CI-checked PR, or restore the scoped source files from baseCommit.",
     "production": "If public verification fails, revert only this release through a CI-checked PR; let the Pages workflow redeploy the prior ranking logic, then verify both domains. Do not modify Catalog state or ranking snapshot history."
   },
-  "status": "amended_local_verified_pending_ci_merge_and_dual_site_readback",
+  "status": "merged_source_pages_deploy_failed_capacity_recovery_pending",
   "verification": {
     "baseCommitVerified": "ccd4ca4984b9694ac384ce1f15f9bd5bb766fa53",
     "focusedRankingTests": "25/25 passed",
@@ -72,8 +71,18 @@
       "marketplace/rankings/rankings.js": "0a98e317b6b1caabd7d16a83a21efd02b840257c7263e3e8f31353ec6e00e383",
       "test/marketplace-rankings.test.mjs": "3dfc25029153bd2db74a60f5c4142b6b6c1aaf201e73ed5e3ca61f4edbc6a3db"
     },
-    "productionDeployment": "authorized; not yet performed",
+    "productionDeployment": "Not deployed: the exact-merge Pages workflow failed before artifact upload; capacity recovery is recorded in docs/ops/rankings-snapshot-capacity-plan-20261014.json.",
     "publicationAuthorization": "User explicitly requested direct publication on 2026-10-14; merge/deploy remains pending exact-head CI.",
-    "publicReadback": "pending on https://dsh.store/rankings/ and https://dsh-store.cn/rankings/"
+    "publicReadback": "Not performed because Pages deployment did not complete.",
+    "sourcePR": {
+      "url": "https://github.com/AI-Scarlett/DSH-Store/pull/1408",
+      "mergedCommit": "ad74e3b9514c1ad4dabc2f00c7c62dacb0ae6391"
+    },
+    "initialPagesRun": {
+      "runId": 38502679001,
+      "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38502679001",
+      "conclusion": "failure",
+      "failure": "The generated ranking snapshot exceeded the existing 1 MiB bound; deploy/upload did not run, so production was not changed."
+    }
   }
 }
