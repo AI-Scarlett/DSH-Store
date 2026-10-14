@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
+import { runInNewContext } from 'node:vm'
 import test from 'node:test'
 import { resolveHostOptions } from '../src/index.mjs'
 import { createRuntimeStatus } from '../src/runtime.mjs'
@@ -98,4 +99,63 @@ test('Desktop Guardian status reports official ownership without probing launchd
   await handleGuardianRequest(request(), res, { desktopMode: true, guardianService: { status: () => { throw new Error('must not probe') } } })
   assert.equal(res.status, 200)
   assert.equal(JSON.parse(res.body).value.errorCode, 'OFFICIAL_DESKTOP_OWNS_HOST')
+})
+
+test('official dsh-app renderer shows a read-only handoff and makes no Host API requests', async () => {
+  const source = await readFile(new URL('../src/client.js', import.meta.url), 'utf8')
+  const requests = []
+  const effects = []
+  const timers = []
+  let ManagerPanel
+  const React = {
+    Fragment: Symbol('Fragment'),
+    createElement(type, props, ...children) { return { type, props: props || {}, children } },
+    useCallback(callback) { return callback },
+    useEffect(effect) { effects.push(effect) },
+    useMemo(factory) { return factory() },
+    useRef(current) { return { current } },
+    useState(initial) { return [typeof initial === 'function' ? initial() : initial, () => {}] },
+  }
+  const window = {
+    location: { protocol: 'dsh-app:', origin: 'dsh-app://app', href: 'dsh-app://app/settings/plugins' },
+    localStorage: { getItem: () => null, setItem: () => {} },
+    setTimeout: (...args) => { timers.push(args); return timers.length },
+    clearTimeout: () => {},
+    __ModuleLoader__: { load({ factory }) {
+      const plugin = factory(name => name === 'react' ? React : ({ Modal: 'Modal' }))
+      plugin.apply({ slots: {
+        inject(_slot, register) { register() },
+        register(_metadata, component) { ManagerPanel = component },
+      } })
+    } },
+  }
+  runInNewContext(source, {
+    window,
+    fetch: (...args) => { requests.push(args); return Promise.reject(new Error('unexpected fetch')) },
+    URL,
+    AbortController,
+  })
+  assert.equal(typeof ManagerPanel, 'function')
+  const tree = ManagerPanel()
+  for (const effect of effects) effect()
+  await Promise.resolve()
+  assert.equal(requests.length, 0)
+  assert.equal(timers.length, 1, 'Desktop must not install the Host boot-recovery poller')
+
+  const nodes = []
+  const visit = value => {
+    if (Array.isArray(value)) { value.forEach(visit); return }
+    if (!value || typeof value !== 'object') return
+    nodes.push(value)
+    visit(value.children)
+  }
+  visit(tree)
+  const text = nodes.flatMap(node => node.children || []).filter(value => typeof value === 'string').join(' ')
+  assert.match(text, /dsh-app:\/\//)
+  assert.match(text, /内置的“插件”页面/)
+  assert.deepEqual(nodes.filter(node => node.type === 'a').map(node => node.props.href), [
+    'https://dsh.store/marketplace/plugins/',
+    'https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md',
+  ])
+  assert.equal(nodes.some(node => node.type === 'button'), false)
 })
