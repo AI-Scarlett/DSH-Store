@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-14T11:34:43.000Z",
+    "updatedAt": "2026-10-14T12:30:15.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "58300885207133422af235e0f2b10658cf958b03",
-      "sourceUpdatedAt": "2026-10-14T03:18:21.000Z",
+      "latestCommit": "3b79af28e80785afce9f5998d8f03289402a1847",
+      "sourceUpdatedAt": "2026-10-14T12:31:45.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -952,7 +952,6 @@
         "cli",
         "codex",
         "cordis",
-        "ctf",
         "decompiler",
         "developer-tools",
         "dsh",
@@ -965,6 +964,7 @@
         "rea",
         "reverse-engineering",
         "static-analysis",
+        "touhou",
         "automatic-radar"
       ],
       "status": "rejected",
@@ -2115,8 +2115,8 @@
       "description": "手机远程访问 DSH Web 界面：扫码即用局域网或公网（cloudflared 隧道）访问，实时同屏、移动端适配布局，带设置页管理。",
       "repositoryUrl": "https://github.com/shaobeichen/dsh-pocket",
       "defaultBranch": "main",
-      "latestCommit": "d2e0b4680b7c1e3d6ef5ef84fcae5980d935a03f",
-      "sourceUpdatedAt": "2026-09-16T16:08:57.000Z",
+      "latestCommit": "e6424c3a2c7912075acb9f3746c584b2bcf422c2",
+      "sourceUpdatedAt": "2026-10-12T14:42:51.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -17505,28 +17505,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "ai-scarlett-build-dsh-plugin",
-      "name": "DSH 插件开发工作流（Build DSH Plugin）",
-      "description": "把需求转为标准 DSH 插件与商城候选；0.5.0 增加管理类插件的登录校验、持久化操作与恢复边界审计，并区分源码检查和实际运行证据。",
-      "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
-      "defaultBranch": "main",
-      "latestCommit": "5039626d229309f76b3c934b1a420e7f9d7ccb4e",
-      "sourceUpdatedAt": "2026-09-29T06:08:24.000Z",
-      "discoveredAt": "2026-10-09T17:00:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "development",
-        "workflow",
-        "tools",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: build-dsh-plugin."
-    },
-    {
       "id": "kw78-dsh-office-tools",
       "name": "Office 文档工具（DSH Office Tools）",
       "description": "面向 agent 的工作区安全 Office 工具集：创建/读取 Word、创建/读取/更新 Excel、创建/读取 PowerPoint，并支持 PNG/JPG/GIF 图片排版。",
@@ -19248,6 +19226,110 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "liu-za-81-dsh-theme-firefly",
+      "name": "Liu-ZA-81/dsh-theme-firefly",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Liu-ZA-81/dsh-theme-firefly",
+      "defaultBranch": "main",
+      "latestCommit": "22a172cde2b8f4f55c4267c55d969e770d11d911",
+      "sourceUpdatedAt": "2026-09-21T04:34:36.000Z",
+      "discoveredAt": "2026-10-14T12:30:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@3268a6c876660f3c57eac248c22139a1059f90ea:data/plugins/Liu-ZA-81__dsh-theme-firefly.yml:sha256=4003049788aaf78635d4f3e9f91805354e5835ef9911995f7c76343335265c67:at=2026-10-14T12:33:59.893Z:owner=81818664"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "littleblacktong-dsh-plugin-memory",
+      "name": "LittleBlackTong/dsh-plugin-memory",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/LittleBlackTong/dsh-plugin-memory",
+      "defaultBranch": "main",
+      "latestCommit": "ff5409658580b15e151e1867e11e74aac50a9aa8",
+      "sourceUpdatedAt": "2026-10-08T08:11:29.000Z",
+      "discoveredAt": "2026-10-14T12:30:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@3268a6c876660f3c57eac248c22139a1059f90ea:data/plugins/LittleBlackTong__dsh-plugin-memory.yml:sha256=20578d8c2c55d230a897f1604ee2d9353ba7a4bf99b6774db5bf768b4a25a15c:at=2026-10-14T12:33:59.893Z:owner=34862784"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "littleblacktong-dsh-plugin-cron",
+      "name": "LittleBlackTong/dsh-plugin-cron",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/LittleBlackTong/dsh-plugin-cron",
+      "defaultBranch": "main",
+      "latestCommit": "13b29dad344ecc77c21582b06cb1e6a786fc2de9",
+      "sourceUpdatedAt": "2026-09-28T02:00:40.000Z",
+      "discoveredAt": "2026-10-14T12:30:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@3268a6c876660f3c57eac248c22139a1059f90ea:data/plugins/LittleBlackTong__dsh-plugin-cron.yml:sha256=37079860213c7bdae4ce219f40a5b8cd5062bd25b6d3182de34c902f48d6017e:at=2026-10-14T12:33:59.893Z:owner=34862784"
+      ],
+      "topics": [
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "littleblacktong-dsh-plugin-superpowers",
+      "name": "LittleBlackTong/dsh-plugin-superpowers",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/LittleBlackTong/dsh-plugin-superpowers",
+      "defaultBranch": "main",
+      "latestCommit": "2c0eae33da1dc6fb1ca7b3adb995af73d4a01efe",
+      "sourceUpdatedAt": "2026-09-29T05:55:49.000Z",
+      "discoveredAt": "2026-10-14T12:30:15.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@3268a6c876660f3c57eac248c22139a1059f90ea:data/plugins/LittleBlackTong__dsh-plugin-superpowers.yml:sha256=1df42608e6e23d2edc61922ce43388d846517fe43617e12c93ec55ebd40826c5:at=2026-10-14T12:33:59.893Z:owner=34862784"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "yetone-magpie",
+      "name": "yetone/magpie",
+      "description": "Every agent's model. One place. Codex on DeepSeek, Claude Code on Kimi, from the menu bar.",
+      "repositoryUrl": "https://github.com/yetone/magpie",
+      "defaultBranch": "main",
+      "latestCommit": "6855218884153e18882ee04b2c719bd707162ebe",
+      "sourceUpdatedAt": "2026-10-14T12:33:22.000Z",
+      "discoveredAt": "2026-10-14T12:30:15.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "claude-code",
+        "codex",
+        "deepseek",
+        "gemini-cli",
+        "llm",
+        "macos",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }

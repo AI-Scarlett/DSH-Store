@@ -29,8 +29,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "5039626d229309f76b3c934b1a420e7f9d7ccb4e",
-  "version": "0.5.2",
+  "commit": "153ac8c77a492c7a69f280325b68f35004b79640",
+  "version": "0.5.3",
   "categories": [
     "development",
     "workflow",
@@ -39,16 +39,16 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T06:08:24.000Z",
-    "observedAt": "2026-09-29T06:14:10.000Z",
+    "updatedAt": "2026-10-14T11:23:35.000Z",
+    "observedAt": "2026-10-14T12:30:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-29T06:14:10.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/5039626d229309f76b3c934b1a420e7f9d7ccb4e",
+      "checkedAt": "2026-10-14T12:30:15.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/153ac8c77a492c7a69f280325b68f35004b79640",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -88,10 +88,10 @@
   "entryIds": [
     "dsh-build-plugin-skill-provider"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.0-rc.2, 0.2.1-alpha.1, 0.2.1-alpha.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-a",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -115,9 +115,9 @@
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.1": "compatible",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown"
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.1": "compatible",
+      "0.2.1-alpha.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -253,22 +253,22 @@
         "rollback": "passed"
       },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       }
     },
     "node": ">=22.13.0",
