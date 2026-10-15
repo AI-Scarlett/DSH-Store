@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6141e654859d6dc09519a187c2f3d450e6b0098f",
-  "version": "10.14.3",
+  "commit": "6c5b3c7b4390bf2ba867d6ded90e0ba4d30d5fb2",
+  "version": "10.15.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T19:47:44.000Z",
-    "observedAt": "2026-10-14T20:01:17.000Z",
+    "updatedAt": "2026-10-15T08:15:29.000Z",
+    "observedAt": "2026-10-15T13:06:31.398Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T20:01:17.000Z",
-      "evidenceUrl": "https://github.com/RevolutionLA/dsh-dream-skin/commit/6141e654859d6dc09519a187c2f3d450e6b0098f",
+      "method": "author-feedback-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-15T13:06:31.398Z",
+      "evidenceUrl": "https://github.com/RevolutionLA/dsh-dream-skin/commit/6c5b3c7b4390bf2ba867d6ded90e0ba4d30d5fb2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation, package scripts, or builds were executed."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "Author runtime reports were not independently reproduced."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +73,25 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "This bounded capability review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "de8d4362a01d3aa495eb5dc3027dbc9f6aab11167a003c628941430d9ae5b183",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
   },
   "entryIds": [
     "dream-skin"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; runtime source exceeds the automatic review byte bound: 474749 total bytes (maximum 2097152); largest file 442975 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Fixed-source recheck blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6 <0.3.0-0",
     "dshReleases": {

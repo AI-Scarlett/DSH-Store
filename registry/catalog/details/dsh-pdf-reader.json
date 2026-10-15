@@ -10,8 +10,11 @@
     "OCR",
     "文字识别",
     "文档解析",
-    "实验功能",
-    "新功能",
+    "文件",
+    "工作区",
+    "附件",
+    "工具",
+    "能力",
     "dsh",
     "pdf",
     "reader"
@@ -24,25 +27,26 @@
   "commit": "8b91187472ede1eb4b02ac4d03b86dad530cc2df",
   "version": "0.1.3",
   "categories": [
-    "experimental"
+    "files",
+    "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-13T03:25:38.000Z",
-    "observedAt": "2026-10-13T05:51:04.000Z",
+    "observedAt": "2026-10-15T13:06:31.398Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-13T05:51:04.000Z",
+      "method": "author-feedback-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-15T13:06:31.398Z",
       "evidenceUrl": "https://github.com/SkanderBog/dsh-pdf-reader/commit/8b91187472ede1eb4b02ac4d03b86dad530cc2df",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +56,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation, package scripts, or builds were executed."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +66,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "Author runtime reports were not independently reproduced."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,14 +76,25 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "This bounded capability review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "290714fb2d8336b007b3b41985b10f4ad49b168fb2ca490c9821a1f8699d0572",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
   },
   "entryIds": [
     "dsh-pdf-reader"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Fixed-source recheck blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2",
     "dshReleases": {

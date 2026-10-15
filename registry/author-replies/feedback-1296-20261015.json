@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1296,
+  "userId": 264477940,
+  "requestCommentId": 5973496845,
+  "requestBodySha256": "529fecaca1350cb05a3f3ce5638f3612bee6c03fa40335af37f1df099b142f4f",
+  "requestUpdatedAt": "2026-10-03T21:08:27Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "We are asking for a catalog-identity decision that only you can make.",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "The Catalog identity decision is **rebind to the stable repository**, preserving the preview record's history and the existing entry ID/package name. The migration binds immutable GitHub repository IDs **1394649825 → 1400550796** and the same owner user ID **264477940**. The new pin is `d4a9dd8f440f89a48b4450ce31cb6f754c6e9fa3` (1.0.76) in `Noob-stupid/dsh-connection-card-host`; the preview source no longer owns this package's Catalog mapping.\n\nThis removes the stale preview identity collision, without granting installation. Declaration imports now resolve packaged declaration siblings rather than requiring nonexistent runtime JavaScript beside every `.d.ts`. Current bounded coverage is complete, while file/network/command capability warnings and dynamic module loading still require review; the entry remains blocked / external-only. We did not execute a build, install, or host. [Fixed source](https://github.com/Noob-stupid/dsh-connection-card-host/commit/d4a9dd8f440f89a48b4450ce31cb6f754c6e9fa3)."
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1173,
+  "userId": 59762173,
+  "requestCommentId": 6073307603,
+  "requestBodySha256": "f2cb5569a9cbbb2b82fbb29fa5dcad72d72b01be255f136ba465a0bed68ff960",
+  "requestUpdatedAt": "2026-10-09T02:56:04Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "因此请求：把该条目的 `packageName` 迁移为",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "已保留旧身份历史，并将 `dsh-cc-studio` 的包名迁移为 `@xia-sc/dsh-cc-studio`。复检读到的当前默认分支已是 **0.8.2 / `ae1aa755886385f2e211a755a4864a0540c0050a`**，因此没有再拿 0.3.0 的旧包名阻止读取新清单。\n\n当前新阻塞与 0.3.8 时不同：`dsh.bundle.patch` 现在是 `cordis.patch.yml` 与 `presets/cc.patch.yml` 两层数组，包含 `preset-cc` 的宿主预设声明。Store 当前单 Patch 契约尚不能证明这个多层安装面，所以目录迁移后仍 blocked / external-only，source contract 未验证；这不等于认定原生多层 Bundle 是上游缺陷，也不要求退回旧版本。文件/环境能力会另外受审，不能仅因包名迁移就转为 user-reviewed。未执行安装或宿主验收。[固定源](https://github.com/xia-sc/dsh-cc-studio/commit/ae1aa755886385f2e211a755a4864a0540c0050a)。"
+}

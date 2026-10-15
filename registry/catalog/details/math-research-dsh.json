@@ -1,16 +1,16 @@
 {
   "id": "math-research-dsh",
-  "name": "同步与备份工具（Math Research DSH）",
+  "name": "会话管理（Math Research DSH）",
   "packageName": "math-research-dsh",
-  "description": "为 DSH 提供同步与备份工具能力。英文原始说明：Rigorous open mathematics research suite for DeepSeek Harness: four agent skills (rigorous-open-math-research, manage-math-research-program, math-research-workflow, lean-verify) with CI-verified tests, mechanical upstream sync, and a DSH environment doctor.",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Long-term mathematics research guidance for DeepSeek Harness: literature and annotatable tools, reusable research experience, session continuity, and optional Lean verification, synced from four parent plugins.",
   "searchTerms": [
-    "同步与备份工具",
+    "会话管理",
     "Math Research DSH",
     "math-research-dsh",
-    "同步",
-    "备份",
-    "恢复",
-    "新锐实验",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
     "实验功能",
     "新功能",
     "math",
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-03T16:51:51.000Z",
-    "observedAt": "2026-10-03T19:03:30.000Z",
+    "updatedAt": "2026-10-03T17:02:03.000Z",
+    "observedAt": "2026-10-15T13:06:31.398Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-03T19:03:30.000Z",
+      "method": "author-feedback-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-15T13:06:31.398Z",
       "evidenceUrl": "https://github.com/xsoc1/math-research-dsh/commit/ab5d04d27bb68196e1aa6ff74d787c17248b5935",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation, package scripts, or builds were executed."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "Author runtime reports were not independently reproduced."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +73,25 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "This bounded capability review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "be9b6c8530ed0b72cc5b0af5974ca7b87ee8d5081441e98670ba93158d4392fa",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "verified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
   },
   "entryIds": [
     "math-research-dsh"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: skills/lean-verify/assets/lean-scaffold.template.lean, skills/lean-verify/scripts/LeanVerifyProbe.lean.template, skills/manage-math-research-program/MANIFEST.sha256, skills/manage-math-research-program/assets/blueprint-accepted-knowledge/backups/.gitkeep, skills/manage-math-research-program/assets/blueprint-accepted-knowledge/dependency_graph.mmd; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains t",
+  "statusReason": "Fixed-source recheck blocked installation: package contains unsupported artifacts requiring review: skills/lean-verify/assets/lean-scaffold.template.lean, skills/lean-verify/scripts/LeanVerifyProbe.lean.template, skills/manage-math-research-program/MANIFEST.sha256, skills/manage-math-research-program/assets/blueprint-accepted-knowledge/backups/.gitkeep, skills/manage-math-research-program/assets/blueprint-accepted-knowledge/dependency_graph.mmd; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contai",
   "compatibility": {
     "dsh": ">=0.1.7-rc.2 <0.2.0 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1",
     "dshReleases": {

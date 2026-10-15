@@ -145,7 +145,7 @@ test('GitHub submission scan reads bounded files from the same fixed commit', as
   assert.equal(scan.complete, true)
   assert.equal(scan.filesScanned, 3)
   assert.equal(scan.eligibleFiles, 3)
-  assert.equal(scan.engine, 'bounded-source-v2')
+  assert.equal(scan.engine, 'bounded-source-v3')
 })
 
 test('security scan warns for common CLI process capability but blocks high-risk secrets', () => {

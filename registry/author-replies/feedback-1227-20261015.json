@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1227,
+  "userId": 196662205,
+  "requestCommentId": 5968849788,
+  "requestBodySha256": "6085e3f0c73f82b1b41c4dec1463a98cc2bbdcdf7a7e88241a6782790f5430a8",
+  "requestUpdatedAt": "2026-10-03T11:46:12Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "这是一条**明确的继续沟通请求**",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "已复核 `fba02ce70aafc26a6312b0280a9f3b284a8fd998`（0.2.1）：客户端 fetch 确实指向同源 `/dsh-message-recall`，不是因为出现 fetch 就禁止受审收录。\n\n本轮仍拒绝准入的具体原因在 `lib/main.js:461-483`：`handleRecallRequest` 校验 method/content-type 后，直接按请求提供的 sessionId 读取会话或调用 `runUnderMaintenance`；该路由自身没有先验证调用者。`webServer.register` 注册在 569-573 行。同源客户端请求不能单独证明服务器读写接口已经受宿主认证保护。\n\n需要该固定宿主版本确实覆盖此路由的访问控制证据，或在 handler 最前面使用已核验的官方调用者拒绝接口并在无法核验时拒绝访问；再提供未认证/错误 Host/合法会话请求的针对性结果。此项未确认前保持 blocked，不能用“同类插件曾上架”替代审阅。本次只读代码，没有执行删除、修改会话或启动宿主。[固定源](https://github.com/kyle123740/dsh-message-recall/commit/fba02ce70aafc26a6312b0280a9f3b284a8fd998)。"
+}

@@ -47,8 +47,8 @@ export function bundlePatchContract(source) {
   }
   function value(raw, parentIndent, depth, line) {
     if (raw) return { value: scalar(raw), line }
-    if (!tokens[cursor] || tokens[cursor].indent <= parentIndent) fail('Patch field has no explicit value')
-    return node(tokens[cursor].indent, depth + 1)
+    if (!tokens[cursor] || tokens[cursor].indent < parentIndent || (tokens[cursor].indent === parentIndent && !tokens[cursor].body.startsWith('- '))) fail('Patch field has no explicit value')
+    return node(tokens[cursor].indent, depth + 1, tokens[cursor].indent === parentIndent)
   }
   function mapping(indent, depth, initial = null) {
     const result = Object.create(null), line = initial?.line ?? tokens[cursor]?.line
@@ -65,13 +65,16 @@ export function bundlePatchContract(source) {
     if (tokens[cursor]?.indent > indent) fail('Ambiguous Patch indentation')
     return { value: result, line }
   }
-  function node(indent, depth) {
+  function node(indent, depth, indentless = false) {
     if (depth > 32) fail('Patch nesting exceeds the parser bound')
     if (!tokens[cursor].body.startsWith('- ')) return mapping(indent, depth)
     const list = [], line = tokens[cursor].line
     while (tokens[cursor]?.indent === indent) {
       const row = tokens[cursor++]
-      if (!row.body.startsWith('- ')) fail('Patch sequence mixes mappings and rows')
+      if (!row.body.startsWith('- ')) {
+        if (indentless) { cursor--; break }
+        fail('Patch sequence mixes mappings and rows')
+      }
       const body = row.body.slice(2)
       if (/^[A-Za-z0-9_.-]+:(?:\s|$)/.test(body)) list.push(mapping(indent + 2, depth + 1, { body, line: row.line }))
       else list.push(value(body, indent, depth + 1, row.line))

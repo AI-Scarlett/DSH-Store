@@ -55,7 +55,7 @@ export function isGeneratedSelfManagerRegistryData(candidate, relativePath) {
     && GENERATED_REGISTRY_DATA.test(String(relativePath ?? ''))
 }
 
-const JAVASCRIPT_SOURCE = /\.(?:[cm]?[jt]sx?|[cm]?ts)$/i
+const JAVASCRIPT_SOURCE = /\.(?:[cm]?[jt]sx?|[cm]?ts)$|(?:^|\/)(?:NOTICE|UPSTREAM_LICENSE)(?:\.[^/]*)?$/i
 const EXPRESSION_PREFIX_KEYWORDS = new Set([
   'await', 'case', 'delete', 'do', 'else', 'in', 'instanceof', 'new',
   'of', 'return', 'throw', 'typeof', 'void', 'yield',

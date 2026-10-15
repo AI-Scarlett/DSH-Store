@@ -15,6 +15,16 @@
         "repositoryUrl": "https://github.com/mengxingGG/dsh-desktop",
         "reason": "Author confirmed this is a complete DSH downstream distribution, not an installable plugin.",
         "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/issues/230#issuecomment-5426569042"
+      },
+      {
+        "repositoryUrl": "https://github.com/DDDFXYqiming/Agent_Extensions",
+        "reason": "Author requested exclusion: repository now contains generic Skills/Hermes extensions and DSH plugins were split into separate repositories.",
+        "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/issues/709#issuecomment-5648018280"
+      },
+      {
+        "repositoryUrl": "https://github.com/Einskyle/dsh-llm-vision-bridge",
+        "reason": "Author requested permanent EOL/unlisted status. Do not rediscover, re-list, recheck for admission, or prompt for compatibility updates.",
+        "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/issues/574#issuecomment-6081916659"
       }
     ]
   },
@@ -109,7 +119,7 @@
   },
   "admissionReview": {
     "path": "registry/admission-reviews.json",
-    "engine": "bounded-source-v2",
+    "engine": "bounded-source-v3",
     "unknownBlocksInstallation": true
   }
 }

@@ -131,6 +131,11 @@ test('identity migration binds old identity, exact pair and new source; migratio
   assert.equal(result.applied, true)
   assert.equal(result.entry.status, undefined)
   assert.equal(result.entry.packageName, '@scope/dsh-demo')
+  registry.migrations[0].to.entryIds = ['renamed-demo']
+  assert.deepEqual(migrateCatalogIdentity(entry, snapshot, { name: '@scope/dsh-demo', license: 'MIT' }, registry).entry.entryIds, ['renamed-demo'])
+  registry.migrations[0].to.entryIds = ['bad/id']
+  assert.throws(() => validateCatalogMigrations(registry))
+  delete registry.migrations[0].to.entryIds
   assert.equal(migrateCatalogIdentity({ ...entry, version: '2.0.0' }, { commit: 'c'.repeat(40) }, {}, registry).applied, false)
   assert.throws(() => migrateCatalogIdentity(entry, snapshot, { name: 'wrong', license: 'MIT' }, registry), /preconditions/)
   registry.migrations[0].to.manifestPath = '../outside'
@@ -148,4 +153,61 @@ test('latest-three is a recheck window while exact historical host evidence cont
   const census = reassessCatalog({ entries: [entry] })
   assert.equal(census.sourceReview, 'not-performed')
   assert.equal(census.records[0].installabilityChanged, false)
+})
+
+test('declaration imports resolve declaration siblings without hiding missing runtime JS (#1411, #1296)', async () => {
+  const { missingLocalModuleReasons, unsupportedPackageEntry } = await import('../src/package-source-surface.mjs')
+  const entries = [{ type: 'blob', mode: '100644', relativePath: 'lib/types/index.d.ts' }]
+  assert.deepEqual(missingLocalModuleReasons(['../index.js'], 'lib/types/client/index.d.ts', entries), [])
+  assert.deepEqual(missingLocalModuleReasons(['../index.ts'], 'lib/types/client/index.d.ts', entries), [])
+  assert.equal(missingLocalModuleReasons(['../index.ts'], 'lib/types/client/index.js', entries).length, 1)
+  assert.equal(missingLocalModuleReasons(['../index.js'], 'lib/types/client/index.js', entries).length, 1)
+  assert.equal(missingLocalModuleReasons(['../../../../outside.js'], 'lib/types/client/index.d.ts', entries).length, 1)
+  for (const name of ['NOTICE', 'skills/example/UPSTREAM_LICENSE']) assert.equal(unsupportedPackageEntry({ type: 'blob', mode: '100644', relativePath: name }), false)
+  assert.equal(unsupportedPackageEntry({ type: 'blob', mode: '100644', relativePath: 'unknown-artifact' }), true)
+})
+
+test('repository rebind requires immutable source and owner identities and remains exact-Commit scoped', async () => {
+  const { catalogMigrationSource, verifyMigrationRepositories } = await import('../src/catalog-migration.mjs')
+  const entry = { ...candidate, defaultBranch: 'main', details: { license: 'MIT' } }
+  const r = { id: entry.id, repositoryUrl: entry.repositoryUrl, fromCommit: entry.commit, toCommit: 'b'.repeat(40),
+    previousIdentityHash: catalogIdentityHash(entry), reviewer: 'fixture-reviewer', reviewedAt: '2026-10-15T00:00:00Z',
+    rationale: 'Author explicitly requested the stable repository identity for this same package.', evidenceUrls: ['https://github.com/example/demo/issues/1'],
+    from: { packageName: entry.packageName, manifestPath: entry.manifestPath, license: 'MIT' },
+    to: { repositoryUrl: 'https://github.com/example/stable', defaultBranch: 'master', packageName: entry.packageName, manifestPath: 'package.json', license: 'MIT' },
+    repositoryIdentity: { fromId: 101, toId: 102, ownerUserId: 42 } }
+  const registry = { schemaVersion: 1, migrations: [r] }
+  const from = { id: 101, owner: { id: 42 } }, to = { id: 102, owner: { id: 42 }, html_url: r.to.repositoryUrl, default_branch: 'master' }
+  assert.equal(catalogMigrationSource(entry, registry).repositoryUrl, r.to.repositoryUrl)
+  verifyMigrationRepositories(r, from, to)
+  assert.throws(() => verifyMigrationRepositories(r, from, { ...to, owner: { id: 43 } }), /identity/)
+  assert.throws(() => verifyMigrationRepositories(r, from, { ...to, id: 999 }), /identity/)
+  const snapshot = { commit: r.toCommit, repositoryUrl: r.to.repositoryUrl }
+  assert.equal(migrateCatalogIdentity(entry, snapshot, { name: entry.packageName, license: 'MIT' }, registry).entry.repositoryUrl, r.to.repositoryUrl)
+  assert.equal(migrateCatalogIdentity(entry, { ...snapshot, repositoryUrl: entry.repositoryUrl }, {}, registry).applied, false)
+  assert.throws(() => catalogMigrationSource(entry, { ...registry, migrations: [r, { ...r, toCommit: 'c'.repeat(40) }] }), /ambiguous/)
+})
+
+test('missing literal runtime dependencies make coverage incomplete even when every visible file was read', async () => {
+  const input = { ...files, 'index.js': "import './absent.js'" }
+  const result = await scan(input)
+  assert.equal(result.filesScanned, 5)
+  assert.equal(result.scanComplete, false)
+  assert.match(result.reasons.join('\n'), /local module is missing/)
+})
+
+test('literal indentless YAML insertion sequence is valid while selectors, mixed roots and tags remain blocked (#1279)', () => {
+  assert.deepEqual(bundlePatchContract("- insert:\n  - id: dsh-tavily\n    name: '@moguiyu/dsh-tavily'\n").entryIds, ['dsh-tavily'])
+  assert.deepEqual(bundlePatchContract('- insert:\n  - id: demo\n    name: dsh-demo\n    config:\n      tags:\n      - one\n      - two\n      mode: literal\n').entryIds, ['demo'])
+  for (const patch of ['- insert:\n  - id: x\n    name: dsh-x\n  config: {}', '- insert: []\nother: value', '- insert:\n  - id: x\n    name: dsh-x\n    config:\n      path: !!js anything()']) assert.throws(() => bundlePatchContract(patch))
+})
+
+test('recognized notice filenames are scanned as potential code rather than granting an unobserved runtime escape', async () => {
+  const result = await scan({ ...files, NOTICE: "fetch('https://example.test')" })
+  assert.equal(result.scanComplete, true)
+  assert.equal(result.filesScanned, 6)
+  assert.equal(result.signals.network, true)
+  const missing = await scan({ ...files, NOTICE: "require('./hidden-code')" })
+  assert.equal(missing.scanComplete, false)
+  assert.match(missing.reasons.join('\n'), /NOTICE -> .\/hidden-code/)
 })

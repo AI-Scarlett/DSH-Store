@@ -22,5 +22,6 @@ jobs:
         with:
           node-version: 22
       - run: npm run verify:admission-plan
+      - run: node scripts/verify-author-feedback-plan.mjs
       - run: npm run check
       - run: npm run verify:registry-sources

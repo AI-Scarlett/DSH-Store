@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1390,
+  "userId": 283827478,
+  "requestCommentId": 6167195146,
+  "requestBodySha256": "a5746fd8f80b446983b373b04c9e44ad88b7d08c38bf93b7f3df0589aab8efa7",
+  "requestUpdatedAt": "2026-10-14T11:22:12Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "我在此明确请求复检并继续沟通",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "已重新读取 `cad07287799b9c3fd5f48f875e6c516d45b2344e`（0.17.1）：7 个打包源码文件，覆盖完整，未触发文件或总体积预算。旧的体积与 unknown 来源说明已刷新；本轮仍未批准安装，也没有把静态覆盖当成宿主验收。\n\n继续受审的具体位置是 `lib/client.js:58-59,3137` 的 `tool.call.toolview` / `draw_image` 键归属、`lib/config.js` 的可配置 `cfg.comfyUrl` 请求，以及 `lib/hipfire-img.js:177-243` 的可执行路径选择和子进程。默认 localhost 不构成端点只能为 localhost 的证明；spawn 未显式设置 env 时会继承宿主环境。credentials 静态信号也不等同于发现了 API 密钥，不能据此要求你虚构凭据配置。\n\n本轮拒绝准入的具体原因是：当前 README 仍将网络能力声明为“仅本机回环、不访问外部地址”，但 `lib/index.js:3216` 直接合并 rawConfig，随后使用可配置 comfyUrl 发起请求，未证明回环约束及重定向边界。请在请求前落实该限制并处理重定向，或如实披露可配置的外部端点与子进程环境；不用删除功能，也不要将真实能力声明为 false。本次没有复现作者运行报告或执行第三方代码。[固定源](https://github.com/yanfei0725/dsh-qwen-paint/commit/cad07287799b9c3fd5f48f875e6c516d45b2344e)。"
+}

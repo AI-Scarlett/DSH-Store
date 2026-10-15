@@ -26,7 +26,7 @@
   "defaultBranch": "master",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
+  "updatePolicy": "external-only",
   "commit": "5a8e31788f4b2b11c4d2122ed5f138235d9ae55e",
   "version": "0.1.2",
   "categories": [
@@ -86,7 +86,7 @@
     "llm-vision-bridge"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "AUTHOR_EOL: permanently unlisted at the author request in #574; excluded from discovery and future admission rechecks.",
   "compatibility": {
     "dsh": ">=0.1.0-rc.7",
     "dshReleases": {
