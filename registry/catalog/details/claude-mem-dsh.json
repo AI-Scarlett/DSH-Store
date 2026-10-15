@@ -21,7 +21,7 @@
   "manifestPath": "dsh/package.json",
   "installPath": "dsh",
   "updatePolicy": "external-only",
-  "commit": "fef3402e674bebbf72a23aeb735e91c92cd34afd",
+  "commit": "2791bda77ecf593a300381a5cc3d77fe2387533d",
   "version": "13.39.0",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-13T21:31:45.000Z",
-    "observedAt": "2026-10-14T03:54:27.000Z",
+    "updatedAt": "2026-10-15T19:45:15.000Z",
+    "observedAt": "2026-10-15T19:44:12.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T03:54:27.000Z",
-      "evidenceUrl": "https://github.com/thedotmack/claude-mem/commit/fef3402e674bebbf72a23aeb735e91c92cd34afd",
+      "checkedAt": "2026-10-15T19:44:12.000Z",
+      "evidenceUrl": "https://github.com/thedotmack/claude-mem/commit/2791bda77ecf593a300381a5cc3d77fe2387533d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -75,11 +75,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "e147a153d99151b1b2e67fbfab15b56a0be340b6bf27275f0422a3621b2d4753",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
+  },
   "entryIds": [
     "claude-mem"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: ./lib/index.js; package contains unsupported artifacts requiring review: NOTICE; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: ./lib/index.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,10 +103,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,18 +156,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -164,6 +163,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
