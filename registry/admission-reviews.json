@@ -1,5 +1,54 @@
 {
   "schemaVersion": 1,
-  "policyVersion": "bounded-source-v2",
-  "reviews": []
+  "policyVersion": "bounded-source-v3",
+  "reviews": [
+    {
+      "repositoryUrl": "https://github.com/itchenshi/dsh-keys-setting",
+      "commit": "3fd631e8ca928dabf1f28b8e7471e9252efb4434",
+      "binding": "e2ec90f23685552ac22d080d8c9ccc64ca4e7e4b1dfbf2fe78bfbd1cbd6790e7",
+      "verdict": "approved",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "Reviewed the complete immutable package. Client fetch targets the own same-origin /composer-keys route; host rejects untrusted callers through connection.requestRejection before any read/write, sanitizes three enum fields, and updates only its own revision-bound settings namespace. No third-party code was executed; runtime acceptance remains unknown.",
+      "evidenceUrls": [
+        "https://github.com/itchenshi/dsh-keys-setting/commit/3fd631e8ca928dabf1f28b8e7471e9252efb4434",
+        "https://github.com/itchenshi/dsh-keys-setting/blob/3fd631e8ca928dabf1f28b8e7471e9252efb4434/lib/index.js"
+      ],
+      "permissions": {
+        "level": "medium",
+        "files": "none",
+        "network": "specified-services",
+        "commands": "none",
+        "credentials": [
+          "none"
+        ]
+      }
+    },
+    {
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "commit": "cad07287799b9c3fd5f48f875e6c516d45b2344e",
+      "binding": "9ddc94ed1fe098cc21b8d139e40b378730bcc9f81c4b79831f86cb913d617639",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "The current README asserts localhost-only networking. lib/index.js:3216 merges rawConfig without a loopback restriction, while cfg.comfyUrl is passed to fetch in lib/config.js:1895 and lib/index.js:1729-1889. The hipfire child at lib/hipfire-img.js:243 inherits the host environment. The disclosed endpoint/environment boundary is not proved by this fixed source; require enforcement or an accurate broader disclosure before admission.",
+      "evidenceUrls": [
+        "https://github.com/yanfei0725/dsh-qwen-paint/commit/cad07287799b9c3fd5f48f875e6c516d45b2344e",
+        "https://github.com/yanfei0725/dsh-qwen-paint/blob/cad07287799b9c3fd5f48f875e6c516d45b2344e/lib/index.js"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/kyle123740/dsh-message-recall",
+      "commit": "fba02ce70aafc26a6312b0280a9f3b284a8fd998",
+      "binding": "ff35afddca14738bb3911b86cc86a30f5fd3c3f841e49f36bc44a0a7a5116676",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "The complete fixed Host source registers a session inspection/deletion route. handleRecallRequest validates method/content type but does not establish caller authorization before reading the requested Session or invoking runUnderMaintenance. A same-origin browser fetch is not server-side authorization evidence; admission remains blocked pending a verified host trust boundary or fail-closed route check.",
+      "evidenceUrls": [
+        "https://github.com/kyle123740/dsh-message-recall/commit/fba02ce70aafc26a6312b0280a9f3b284a8fd998",
+        "https://github.com/kyle123740/dsh-message-recall/blob/fba02ce70aafc26a6312b0280a9f3b284a8fd998/lib/main.js"
+      ]
+    }
+  ]
 }

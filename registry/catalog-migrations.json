@@ -1,4 +1,175 @@
 {
   "schemaVersion": 1,
-  "migrations": []
+  "migrations": [
+    {
+      "id": "dsh-cc-studio",
+      "repositoryUrl": "https://github.com/xia-sc/dsh-cc-studio",
+      "fromCommit": "9d7f2a6387bda079907057861d111c476abcd722",
+      "toCommit": "ae1aa755886385f2e211a755a4864a0540c0050a",
+      "previousIdentityHash": "224365e88db27f2d445338b852974bde33c0cf668c9601f7ab937f0d9479f737",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "Resolve the author-reported historical Catalog identity against the bounded fixed source. This migration preserves the previous identity and does not grant installation or runtime acceptance.",
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1173",
+        "https://github.com/xia-sc/dsh-cc-studio/commit/ae1aa755886385f2e211a755a4864a0540c0050a"
+      ],
+      "from": {
+        "packageName": "@dsh-plugins/dsh-cc-studio",
+        "manifestPath": "package.json",
+        "license": "MIT",
+        "entryIds": [
+          "dsh-cc-studio"
+        ]
+      },
+      "to": {
+        "packageName": "@xia-sc/dsh-cc-studio",
+        "manifestPath": "package.json",
+        "installPath": null,
+        "license": "MIT",
+        "entryIds": [
+          "dsh-cc-studio",
+          "preset-cc"
+        ]
+      }
+    },
+    {
+      "id": "dsh-portable-tavern",
+      "repositoryUrl": "https://github.com/XCNXNXNX/dsh-portable-tavern",
+      "fromCommit": "113199e9b690dd5bde0d4c4424e945eb14270188",
+      "toCommit": "b1b319b60680f8d16acd3499775b57ded8096304",
+      "previousIdentityHash": "8c2c602d72981af49bc70eea52c6a5268649c95df0e79045a51e2b90cde74f79",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "Resolve the author-reported historical Catalog identity against the bounded fixed source. This migration preserves the previous identity and does not grant installation or runtime acceptance.",
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1071",
+        "https://github.com/XCNXNXNX/dsh-portable-tavern/commit/b1b319b60680f8d16acd3499775b57ded8096304"
+      ],
+      "from": {
+        "packageName": "dsh-portable-tavern",
+        "manifestPath": "package.json",
+        "license": "BSD-3-Clause",
+        "entryIds": [
+          "portable-tavern"
+        ]
+      },
+      "to": {
+        "packageName": "dsh-portable-tavern",
+        "manifestPath": "package.json",
+        "installPath": null,
+        "license": "MIT",
+        "entryIds": [
+          "portable-tavern"
+        ]
+      }
+    },
+    {
+      "id": "dsh-connection-card-host",
+      "repositoryUrl": "https://github.com/Noob-stupid/dsh-connection-card-host-preview",
+      "fromCommit": "b6fe05c0786c1fda6d94e3d11b5e829f53ca6b92",
+      "toCommit": "d4a9dd8f440f89a48b4450ce31cb6f754c6e9fa3",
+      "previousIdentityHash": "c1471f6a405859f2816b751058e1426ec014afe42a84796b5a1b0aafd7a67ab3",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "Resolve the author-reported historical Catalog identity against the bounded fixed source. This migration preserves the previous identity and does not grant installation or runtime acceptance.",
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1296",
+        "https://github.com/Noob-stupid/dsh-connection-card-host/commit/d4a9dd8f440f89a48b4450ce31cb6f754c6e9fa3"
+      ],
+      "from": {
+        "packageName": "@noob-stupid/dsh-connection-card-host",
+        "manifestPath": "package.json",
+        "license": "BSD-3-Clause",
+        "entryIds": [
+          "connection-card-host"
+        ]
+      },
+      "to": {
+        "packageName": "@noob-stupid/dsh-connection-card-host",
+        "manifestPath": "package.json",
+        "installPath": null,
+        "license": "MIT",
+        "entryIds": [
+          "connection-card-host"
+        ],
+        "repositoryUrl": "https://github.com/Noob-stupid/dsh-connection-card-host",
+        "defaultBranch": "main"
+      },
+      "repositoryIdentity": {
+        "fromId": 1394649825,
+        "toId": 1400550796,
+        "ownerUserId": 264477940
+      }
+    },
+    {
+      "id": "dsh-client-ui-skin-air",
+      "repositoryUrl": "https://github.com/qq2992254255-oss/dsh-air-theme",
+      "fromCommit": "499c75fc4e45bedbbe1f615415400ef004601393",
+      "toCommit": "bb0465efb5faa79582117fd857b4209486aa4fa5",
+      "previousIdentityHash": "9fe6c3b16fcbc333898067b509e3072dcd0ae1907f08a413fff15a3ff6581474",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "Resolve the author-reported historical Catalog identity against the bounded fixed source. This migration preserves the previous identity and does not grant installation or runtime acceptance.",
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1013",
+        "https://github.com/Okazaki01/dsh-air-theme/commit/bb0465efb5faa79582117fd857b4209486aa4fa5"
+      ],
+      "from": {
+        "packageName": "@dsh-external/dsh-client-ui-skin-air",
+        "manifestPath": "package.json",
+        "license": "CC-BY-NC-SA-4.0",
+        "entryIds": [
+          "ui-skin-air"
+        ]
+      },
+      "to": {
+        "packageName": "@dsh-external/dsh-client-ui-skin-air",
+        "manifestPath": "package.json",
+        "installPath": null,
+        "license": "CC-BY-SA-4.0",
+        "entryIds": [
+          "ui-skin-air"
+        ],
+        "repositoryUrl": "https://github.com/Okazaki01/dsh-air-theme",
+        "defaultBranch": "main"
+      },
+      "repositoryIdentity": {
+        "fromId": 1379839824,
+        "toId": 1379839824,
+        "ownerUserId": 233597646
+      }
+    },
+    {
+      "id": "moguiyu-dsh-tool-tavily-search",
+      "repositoryUrl": "https://github.com/moguiyu/dsh-tavily",
+      "fromCommit": "e40b1101fc6114d622db6daf2d27048ff92a046c",
+      "toCommit": "dd46e42fce0a421ac118c45e7d9e36a4a385a62b",
+      "previousIdentityHash": "3d46f488518d63b7fdae7b828dbab69b464ada5bbcf7a8055c82a2e33861c34e",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-15T13:06:31.398Z",
+      "rationale": "Resolve the author-reported historical Catalog identity against the bounded fixed source. This migration preserves the previous identity and does not grant installation or runtime acceptance.",
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1279",
+        "https://github.com/moguiyu/dsh-tavily/commit/dd46e42fce0a421ac118c45e7d9e36a4a385a62b"
+      ],
+      "from": {
+        "packageName": "@moguiyu/dsh-tool-tavily-search",
+        "manifestPath": "packages/dsh-tool-tavily-search/package.json",
+        "license": "MIT",
+        "entryIds": [
+          "tool-tavily-search"
+        ]
+      },
+      "to": {
+        "packageName": "@moguiyu/dsh-tavily",
+        "manifestPath": "packages/dsh-tavily/package.json",
+        "installPath": "packages/dsh-tavily",
+        "license": "MIT",
+        "entryIds": [
+          "dsh-tavily"
+        ]
+      }
+    }
+  ]
 }

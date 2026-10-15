@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1415,
+  "userId": 132990250,
+  "requestCommentId": 6168384347,
+  "requestBodySha256": "d211ee19bd10a8922a275f3947956849921d6e0044b3853de2094ef5ec541016",
+  "requestUpdatedAt": "2026-10-14T12:30:37Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请区分“插入入口 ID”和“已有配置目标 ID”",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "已修正 Store 的入口分类：`web` 是配置覆盖目标，新增入口只有 `web-search-fetch`，不再让它们共享“独占入口冲突”的判断。配置覆盖会替换对应配置层的整个 config，仍需按该操作单独审阅。\n\n本次复检的是 `b132710b09cc74164187d4d2b3686d2a1f3e0fd3`（0.2.10）。真实剩余阻塞是 Git 固定树中缺少声明的 `lib/index.js` 与 `lib/index.d.ts`，以及运行依赖的独立供应链审阅（`@deepseek-ai/schemastery`、`@joplin/turndown-plugin-gfm`、`fast-xml-parser`、`turndown`、`undici`）。NOTICE 文件的误分类也已修正。缺少入口使覆盖仍不完整，因此本轮不能批准；不是再次要求消除合法 provider 配置覆盖。精确兼容只需保留已验证版本，其余继续 unknown。未执行安装、构建或宿主测试。[固定源](https://github.com/qikairo7/dsh-web-search-fetch/commit/b132710b09cc74164187d4d2b3686d2a1f3e0fd3)。"
+}

@@ -1,0 +1,51 @@
+name: Requested author feedback resolution
+on:
+  workflow_dispatch:
+    inputs:
+      plan:
+        description: Exact main-reviewed reply or closure plan path
+        required: true
+        type: string
+      expected_main:
+        description: Full main Commit reviewed by the caller
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: author-notifications-global-contact
+  cancel-in-progress: false
+jobs:
+  resolve-request:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact authority and execute one reviewed request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          EXPECTED_MAIN: ${{ inputs.expected_main }}
+          FEEDBACK_PLAN: ${{ inputs.plan }}
+        run: |
+          [[ "$EXPECTED_MAIN" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_MAIN"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)" = "$EXPECTED_MAIN"
+          if [[ "$FEEDBACK_PLAN" =~ ^registry/author-replies/[a-z0-9-]+\.json$ ]]; then
+            node scripts/reply-author-contact.mjs --plan "$FEEDBACK_PLAN"
+          elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-closures/[a-z0-9-]+\.json$ ]]; then
+            node scripts/close-author-contact.mjs --plan "$FEEDBACK_PLAN"
+          else
+            echo 'Unsupported feedback plan path' >&2
+            exit 1
+          fi

@@ -1,6 +1,6 @@
 // Shared resource limits for submission and Catalog review. These are scanner
 // budgets, never a requirement to minify or restructure a plugin.
-export const SCAN_POLICY_VERSION = 'bounded-source-v2'
+export const SCAN_POLICY_VERSION = 'bounded-source-v3'
 export const SOURCE_SCAN_BOUNDS = Object.freeze({
   maxTreeEntries: 1200, maxRuntimeFiles: 512,
   maxFileBytes: 4 * 1024 * 1024, maxTotalRuntimeBytes: 8 * 1024 * 1024,

@@ -1,27 +1,18 @@
 {
   "id": "dsh-blender",
-  "name": "Blender 三维工具（DSH Blender）",
+  "name": "三维设计工具（DSH Blender）",
   "packageName": "dsh-blender",
-  "description": "为 DSH 提供 Blender 三维建模、重建、渲染、验证和导出工具及配套技能。",
+  "description": "为 DSH 提供三维设计工具能力。英文原始说明：DeepSeek Harness Blender production, reconstruction, validation, and export plugin",
   "searchTerms": [
-    "Blender 三维工具",
+    "三维设计工具",
     "DSH Blender",
     "dsh-blender",
     "Blender",
     "三维",
     "建模",
     "渲染",
-    "设计与原型",
-    "设计",
-    "画布",
-    "原型",
-    "工具能力",
-    "工具",
-    "能力",
-    "工作流与自动化",
-    "工作流",
-    "自动化",
-    "任务",
+    "实验功能",
+    "新功能",
     "dsh",
     "blender"
   ],
@@ -29,31 +20,29 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": null,
-  "commit": "19dec3cdd48368dd0d9865ac2072ea6f5f65cc02",
-  "version": "0.2.2",
+  "updatePolicy": "external-only",
+  "commit": "9bd95e97a61096cfae1edb0f88fcd2be54b0adee",
+  "version": "0.2.3",
   "categories": [
-    "design",
-    "tools",
-    "workflow"
+    "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-16T07:01:26.000Z",
-    "observedAt": "2026-09-18T13:50:17.000Z",
+    "updatedAt": "2026-10-12T03:44:59.000Z",
+    "observedAt": "2026-10-15T13:06:31.398Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-18T13:50:17.000Z",
-      "evidenceUrl": "https://github.com/CheshireJCat/blender/commit/19dec3cdd48368dd0d9865ac2072ea6f5f65cc02",
+      "method": "author-feedback-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-15T13:06:31.398Z",
+      "evidenceUrl": "https://github.com/CheshireJCat/blender/commit/9bd95e97a61096cfae1edb0f88fcd2be54b0adee",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
     },
     "installability": {
       "status": "unknown",
@@ -63,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation, package scripts, or builds were executed."
     },
     "runtime": {
       "status": "unknown",
@@ -73,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "Author runtime reports were not independently reproduced."
     },
     "securityReview": {
       "status": "unknown",
@@ -83,16 +72,27 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "This bounded capability review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "93103d1ba19fec3e5349fedeb238456886a1fba1204ccd374de98e9e98744bb5",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
   },
   "entryIds": [
     "blender-modeling"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "blocked",
+  "statusReason": "Fixed-source recheck blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6",
+    "dsh": "0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -116,9 +116,9 @@
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.1": "compatible",
+      "0.2.1-alpha.2": "compatible",
       "0.2.1-alpha.3": "unknown"
     },
     "dshOperations": {
@@ -255,21 +255,21 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
@@ -279,31 +279,28 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
+    "node": ">=22.12.0",
     "systems": [],
     "profiles": []
   },
   "details": {
-    "pluginType": "suite",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "none",
-      "commands": "shell",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "none"
+        "unknown"
       ]
     },
-    "externalDependencies": [
-      "Blender",
-      "Python（可选分析与辅助功能）"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "community-tool-execution-not-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

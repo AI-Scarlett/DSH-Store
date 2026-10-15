@@ -16,6 +16,7 @@ export function validateReplyGrant(plan) {
     || !Number.isSafeInteger(plan.issueNumber) || plan.issueNumber < 1
     || !Number.isSafeInteger(plan.requestCommentId) || plan.requestCommentId < 1
     || !/^[0-9a-f]{64}$/.test(plan.requestBodySha256)
+    || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || typeof plan.responseBody !== 'string' || !plan.responseBody.trim()) throw new Error('explicit reviewed continuation request required')
   requireRepository(plan.repository)
   const quote = plan.review.requestQuote.trim()
@@ -30,6 +31,7 @@ export async function verifyReplyRequest(github, plan) {
     .sort((a, b) => Date.parse(a.updated_at ?? a.created_at) - Date.parse(b.updated_at ?? b.created_at) || a.id - b.id)
   const request = authorComments.at(-1)
   if (request?.id !== plan.requestCommentId || digest(request.body) !== plan.requestBodySha256
+    || request.updated_at !== plan.requestUpdatedAt
     || !request.body.includes(plan.review.requestQuote)) throw new Error('request changed, withdrawn, superseded or belongs to another person')
   const person = humanIdentity(await github.request('GET', `/user/${plan.userId}`))
   if (!person || person.node_id !== request.user.node_id) throw new Error('request author identity mismatch')

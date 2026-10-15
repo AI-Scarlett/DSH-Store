@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1321,
+  "userId": 23634926,
+  "requestCommentId": 6010281057,
+  "requestBodySha256": "4ef617e0d19773171711b025df6b4192ce82b5c28dda080b119eac932942aa5e",
+  "requestUpdatedAt": "2026-10-06T05:54:02Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "这里**明确提出一次继续沟通的请求**，请针对下面三点回复。",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "针对你请求的三点，本轮结论如下。当前 `6d2ede7b067eefff144e5b7b8a4ec59bac0bfbd9`（0.1.41）的 33 个打包源码文件覆盖完整，但还不能转为 user-reviewed：除文件/网络/命令/凭据边界外，分发面包含可执行入口和脚本，如 `bin/dsh-wechat.mjs`、`scripts/restart-dsh.sh`、`scripts/verify-profile-boot.sh` 与 `scripts/verify-profile-install.sh`。当前能力审阅通道不自动放行这些可执行面的语义，用户接受风险不能代替完整审阅。\n\ninstall/start/uninstall 证据应逐个精确宿主版本绑定固定 Commit、CLI 版本、临时 DSH_HOME/Profile、脱敏命令及退出状态，并保存组合基线与卸载后的差异。你提出的“空闲端口 + 临时目录 + 真实启动 + 探活 + 卸载恢复”适合作为 start 证据，但必须真实执行后再记 passed；本评论已有材料不含真实启动，start 继续 unknown。此次 Store 没有启动 host 或修改真实 Profile。\n\n不要求把未测版本填成 compatible；已有精确声明会保留。剩余是上述可执行面、服务/凭据/环境边界的源代码审阅及独立验收，目录本轮保持 blocked。[固定源](https://github.com/zgat/dsh-wechat/commit/6d2ede7b067eefff144e5b7b8a4ec59bac0bfbd9)。"
+}

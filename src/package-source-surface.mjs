@@ -1,9 +1,9 @@
 import { posix } from 'node:path'
 
-export const SCANNABLE_SOURCE = /\.(?:[cm]?[jt]sx?|json|ya?ml|sh|bash|zsh|fish|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|ps1|psm1|cmd|bat|html?|vue|svelte)$/i
+export const SCANNABLE_SOURCE = /\.(?:[cm]?[jt]sx?|jsonl?|ya?ml|sh|bash|zsh|fish|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|ps1|psm1|cmd|bat|html?|vue|svelte)$|(?:^|\/)(?:NOTICE|UPSTREAM_LICENSE)(?:\.[^/]*)?$/i
 export const NATIVE_ARTIFACT = /\.(?:node|wasm|dll|dylib|so|exe|bin)$/i
 const STATIC_ASSET = /\.(?:md|txt|rst|png|jpe?g|webp|gif|ico|svg|css|woff2?|ttf|otf|map|webmanifest|xml)$/i
-const METADATA = /^(?:package\.json|npm-shrinkwrap\.json|readme(?:\..*)?|licen[cs]e(?:\..*)?|copying(?:\..*)?)$/i
+const METADATA = /^(?:package\.json|npm-shrinkwrap\.json|readme(?:\..*)?|licen[cs]e(?:\..*)?|copying(?:\..*)?|notice(?:\..*)?|upstream_license(?:\..*)?)$/i
 const ALWAYS_EXCLUDED = /(?:^|\/)(?:\.git|node_modules)(?:\/|$)|^(?:package-lock\.json|\.npmrc)$/i
 
 function validPath(path) {
@@ -130,6 +130,12 @@ export function missingLocalModuleReasons(references, from, entries) {
     const target = posix.normalize(posix.join(posix.dirname(from), path))
     if (!validPath(target)) return [`local module escapes the package: ${from}`]
     const alternatives = [target, ...['.js', '.mjs', '.cjs', '.json', '/index.js', '/index.mjs', '/index.cjs'].map(ext => target + ext)]
+    // Declaration imports use TypeScript's extension substitution. This never
+    // satisfies a missing JavaScript runtime import with a declaration file.
+    if (/\.d\.(?:ts|mts|cts)$/.test(from)) {
+      const declaration = target.replace(/\.(js|mjs|cjs|ts|mts|cts)$/, (_, ext) => ({ js: '.d.ts', mjs: '.d.mts', cjs: '.d.cts', ts: '.d.ts', mts: '.d.mts', cts: '.d.cts' })[ext])
+      alternatives.push(declaration, target + '.d.ts', target + '/index.d.ts')
+    }
     return alternatives.some(path => paths.has(path)) ? [] : [`local module is missing from the distributable surface: ${from} -> ${ref}`]
   })
 }

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1195,
+  "userId": 196662264,
+  "requestCommentId": 5966136476,
+  "requestBodySha256": "dfbc39fad68060be4bca2658d9833f5d02fa4aa1732e3cd8df54e42022aa90f3",
+  "requestUpdatedAt": "2026-10-03T05:56:25Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "我明确请求继续沟通",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "已按 `5173509ca8249141f6a64e2449d2b46bf813f8d1`（3.2.2）重读完整打包源码，并保留精确兼容声明。当前仍 **blocked**；确定的剩余项是 manifest 的运行依赖 `@deepseek-ai/schemastery@3.18.4` 的独立供应链审阅，以及文件/同源资源路由能力的受审记录。固定版本及 lockfile 不会自动完成传递依赖、制品来源与完整性的审核。\n\n没有再把“manifest repository 不匹配”当作当前问题，也不要求将真实 files/network 能力改为 false。依赖审阅需覆盖实际分发依赖树、精确版本与制品完整性/来源；现有 STORE-REVIEW 和兼容说明可作作者材料，不能标成 Store 已完成的审计。本次没有执行第三方代码或复现 Profile，runtime/security audit 继续 unknown。[固定源](https://github.com/Yyyyyylor/dsh-asuka-school-theme/commit/5173509ca8249141f6a64e2449d2b46bf813f8d1)。"
+}

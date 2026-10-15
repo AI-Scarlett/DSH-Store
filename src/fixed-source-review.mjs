@@ -78,6 +78,7 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
     }
   }
   const scanComplete = canScan && filesScanned === runtimeFiles.length && surface.complete && unsupported.length === 0
+    && !reasons.some(reason => reason.startsWith('local module'))
   if (!scanComplete) reasons.push('fixed-source scan is incomplete; unobserved capability signals are unknown')
   const securityScan = scanSubmissionSources(securitySources, { packaged: true, eligibleFiles: runtimeFiles.length, capped: !scanComplete })
   if (securityScan.verdict === 'fail') reasons.push('fixed-source security findings require quarantine')

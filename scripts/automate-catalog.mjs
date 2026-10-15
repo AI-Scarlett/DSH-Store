@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { admissionDecision, validateAdmissionReviews } from '../src/admission-review.mjs'
-import { validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget } from '../src/catalog-migration.mjs'
+import { validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget, catalogMigrationSource, verifyMigrationRepositories } from '../src/catalog-migration.mjs'
 import { SOURCE_SCAN_BOUNDS, SCAN_POLICY_VERSION, MANIFEST_MAX_BYTES } from '../src/source-scan-policy.mjs'
 
 import { reviewFixedSource } from '../src/fixed-source-review.mjs'
@@ -389,11 +389,19 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
 
 
   function sourceSnapshot(entry) {
-    const key = entry.repositoryUrl.toLowerCase()
+    const target = catalogMigrationSource(entry, catalogMigrations)
+    const key = `${entry.repositoryUrl}:${target.repositoryUrl}`.toLowerCase()
     if (!repositorySnapshots.has(key)) {
       repositorySnapshots.set(key, retryInfrastructure(async () => {
-        const { owner, repository } = repositoryParts(entry.repositoryUrl)
-        const defaultBranch = entry.defaultBranch || 'main'
+        const { owner, repository } = repositoryParts(target.repositoryUrl)
+        const defaultBranch = target.defaultBranch || 'main'
+        if (target.record?.to.repositoryUrl) {
+          const original = repositoryParts(entry.repositoryUrl)
+          const [from, to] = await Promise.all([
+            github.api(`repos/${original.owner}/${original.repository}`), github.api(`repos/${owner}/${repository}`),
+          ])
+          verifyMigrationRepositories(target.record, from, to)
+        }
         let head
         try {
           head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(defaultBranch)}`)
@@ -416,6 +424,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
             }
             return {
               commit: head.sha,
+              repositoryUrl: target.repositoryUrl,
               defaultBranch: resolvedBranch,
               sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? metadata?.pushed_at ?? null,
             }
@@ -430,6 +439,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         if (head.sha === entry.commit) {
           return {
             commit: head.sha,
+            repositoryUrl: target.repositoryUrl,
             defaultBranch,
             sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? null,
           }
@@ -442,6 +452,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         }
         return {
           commit: head.sha,
+          repositoryUrl: target.repositoryUrl,
           defaultBranch: typeof metadata?.default_branch === 'string' && metadata.default_branch
             ? metadata.default_branch
             : defaultBranch,
@@ -457,12 +468,14 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     let versionAssessment = null
     let changeContract = null
     try {
+      if (excludedRepositoryKeys(policy).has(entry.repositoryUrl.toLowerCase())) return { index, entry, kind: 'current' }
       snapshot = await sourceSnapshot(entry)
-      const recheckCurrent = snapshot.commit === entry.commit && (entry.status === 'approved' || isAutomaticPolicyBlocked(entry) || String(entry.statusReason ?? '').startsWith('DSH_LATEST_THREE_COMPATIBILITY_HOLD:')) && (entry.admission?.engine !== SCAN_POLICY_VERSION || entry.admission?.reviewRegistryDigest !== admissionReviewDigest || entry.admission?.policyDigest !== sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })))
+      const pendingMigration = catalogMigrationTarget(entry, snapshot, catalogMigrations).record
+      const recheckCurrent = snapshot.commit === entry.commit && (pendingMigration !== null || ((entry.status === 'approved' || isAutomaticPolicyBlocked(entry) || String(entry.statusReason ?? '').startsWith('DSH_LATEST_THREE_COMPATIBILITY_HOLD:')) && (entry.admission?.engine !== SCAN_POLICY_VERSION || entry.admission?.reviewRegistryDigest !== admissionReviewDigest || entry.admission?.policyDigest !== sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })))))
       if (snapshot.commit === entry.commit && !recheckCurrent) return { index, entry, kind: 'current' }
       let manifest
       try {
-        manifest = JSON.parse(await github.raw(entry.repositoryUrl, snapshot.commit, catalogMigrationTarget(entry, snapshot, catalogMigrations).manifestPath, {
+        manifest = JSON.parse(await github.raw(snapshot.repositoryUrl ?? entry.repositoryUrl, snapshot.commit, catalogMigrationTarget(entry, snapshot, catalogMigrations).manifestPath, {
           maxBytes: MANIFEST_MAX_BYTES,
         }))
       } catch (error) {

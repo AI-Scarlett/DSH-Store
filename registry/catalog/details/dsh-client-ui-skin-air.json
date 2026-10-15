@@ -2,7 +2,7 @@
   "id": "dsh-client-ui-skin-air",
   "name": "界面主题与美化（DSH Client UI Skin Air）",
   "packageName": "@dsh-external/dsh-client-ui-skin-air",
-  "description": "《AIR》夏日青空 — 高定制动漫主题皮肤 for the DeepSeek Harness web GUI. Full-viewport 神尾观铃 (Misuzu) sky backdrop, Q版 mascot sidebar, feather-fall / cloud-drift ambience, magic-circle thinking hook, hot-swappable via dsh-skin-switch.",
+  "description": "《AIR》夏日青空 — 高定制动漫主题皮肤 for the DeepSeek Harness web GUI. Full-viewport 神尾观铃 (Misuzu) sky backdrop, Q版 mascot sidebar, feather-fall / cloud-drift ambience, magic-circle thinking hook, hot-swappable via dsh-skin-switch. Self-contained: every ornament and photo ships inside this package's own client chunks, so the skin registers no host route, reads no files and makes no network request of its own.",
   "searchTerms": [
     "界面主题与美化",
     "DSH Client UI Skin Air",
@@ -12,41 +12,42 @@
     "皮肤",
     "背景",
     "界面美化",
-    "实验功能",
-    "新功能",
+    "界面",
+    "交互",
+    "侧栏",
     "dsh",
     "client",
     "ui",
     "skin",
     "air"
   ],
-  "repositoryUrl": "https://github.com/qq2992254255-oss/dsh-air-theme",
+  "repositoryUrl": "https://github.com/Okazaki01/dsh-air-theme",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "499c75fc4e45bedbbe1f615415400ef004601393",
-  "version": "0.2.5",
+  "updatePolicy": "source-verified",
+  "commit": "bb0465efb5faa79582117fd857b4209486aa4fa5",
+  "version": "0.2.6",
   "categories": [
-    "experimental"
+    "ui"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-21T15:52:44.000Z",
-    "observedAt": "2026-09-21T20:17:30.000Z",
+    "updatedAt": "2026-10-03T09:36:33.000Z",
+    "observedAt": "2026-10-15T13:06:31.398Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-21T20:17:30.000Z",
-      "evidenceUrl": "https://github.com/qq2992254255-oss/dsh-air-theme/commit/499c75fc4e45bedbbe1f615415400ef004601393",
+      "method": "author-feedback-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-15T13:06:31.398Z",
+      "evidenceUrl": "https://github.com/Okazaki01/dsh-air-theme/commit/bb0465efb5faa79582117fd857b4209486aa4fa5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
     },
     "installability": {
       "status": "unknown",
@@ -56,7 +57,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation, package scripts, or builds were executed."
     },
     "runtime": {
       "status": "unknown",
@@ -66,7 +67,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "Author runtime reports were not independently reproduced."
     },
     "securityReview": {
       "status": "unknown",
@@ -76,16 +77,27 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "This bounded capability review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "cf435fe9b2956de08a793a0ba698b8ad9addbdf077c41d7a7fc2c42678f05412",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "source-verified",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "low-risk-static",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
   },
   "entryIds": [
     "ui-skin-air"
   ],
-  "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.5-alpha.1 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -230,7 +242,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"
@@ -239,14 +251,14 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "CC-BY-NC-SA-4.0",
+    "license": "CC-BY-SA-4.0",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
     "externalDependencies": [],
@@ -254,6 +266,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "automated-fixed-source-policy-v1"
   }
 }

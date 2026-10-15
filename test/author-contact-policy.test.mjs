@@ -226,6 +226,7 @@ const requestBody = 'Please recheck this exact source and explain the remaining 
 const grant = () => ({
   schemaVersion: 1, operation: 'requested-author-reply', repository: 'alice/one',
   issueNumber: 10, userId: 101, requestCommentId: 123, requestBodySha256: digest(requestBody),
+  requestUpdatedAt: '2026-09-07T01:00:00Z',
   review: { decision: 'explicit-request-to-continue', requestQuote: requestBody, scope: 'Explain the remaining source issue' },
   responseBody: 'Here is the requested result.',
 })
@@ -250,6 +251,7 @@ test('withdrawal, edited requests, another author and global stops invalidate ol
   for (const change of [
     api => api.comments.push({ ...incoming('Do not contact me again.', 124), updated_at: '2026-09-07T02:00:00Z' }),
     api => { api.comments[0].body = 'Thanks' },
+    api => { api.comments[0].updated_at = '2026-09-07T02:00:00Z' },
     api => { api.comments[0].user = bob },
   ]) {
     const api = mock(prior()); api.comments.push(incoming()); change(api)

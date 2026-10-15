@@ -20,6 +20,12 @@ export function validateCatalogMigrations(document) {
     const key = `${r.id}:${r.fromCommit}:${r.toCommit}`
     if (seen.has(key)) throw new Error('duplicate Catalog identity migration')
     seen.add(key)
+    if (r.to.entryIds !== undefined && (!Array.isArray(r.to.entryIds) || !r.to.entryIds.length
+      || new Set(r.to.entryIds).size !== r.to.entryIds.length
+      || r.to.entryIds.some(id => !/^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/.test(id)))) throw new Error('invalid migrated Bundle identity')
+    if (r.to.repositoryUrl !== undefined && (!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(r.to.repositoryUrl)
+      || !/^[A-Za-z0-9._/-]+$/.test(r.to.defaultBranch ?? '')
+      || ![r.repositoryIdentity?.fromId, r.repositoryIdentity?.toId, r.repositoryIdentity?.ownerUserId].every(id => Number.isSafeInteger(id) && id > 0))) throw new Error('repository migration needs immutable repository and owner identities')
   }
   return document
 }
@@ -33,8 +39,27 @@ export function catalogIdentityHash(entry) {
 export function catalogMigrationTarget(entry, snapshot, document) {
   validateCatalogMigrations(document)
   const record = document.migrations.find(r => r.id === entry.id && r.repositoryUrl === entry.repositoryUrl
-    && r.fromCommit === entry.commit && r.toCommit === snapshot.commit && r.previousIdentityHash === catalogIdentityHash(entry))
+    && r.fromCommit === entry.commit && r.toCommit === snapshot.commit && r.previousIdentityHash === catalogIdentityHash(entry)
+    && (r.to.repositoryUrl ?? entry.repositoryUrl) === (snapshot.repositoryUrl ?? entry.repositoryUrl))
   return record ? { manifestPath: record.to.manifestPath, record } : { manifestPath: entry.manifestPath, record: null }
+}
+
+export function catalogMigrationSource(entry, document) {
+  validateCatalogMigrations(document)
+  const matches = document.migrations.filter(r => r.id === entry.id && r.repositoryUrl === entry.repositoryUrl
+    && r.fromCommit === entry.commit && r.previousIdentityHash === catalogIdentityHash(entry))
+  if (matches.length > 1) throw new Error('ambiguous Catalog identity migration')
+  const record = matches[0]
+  return { repositoryUrl: record?.to.repositoryUrl ?? entry.repositoryUrl,
+    defaultBranch: record?.to.defaultBranch ?? entry.defaultBranch, record }
+}
+
+export function verifyMigrationRepositories(record, from, to) {
+  if (!record?.to.repositoryUrl) return
+  const identity = record.repositoryIdentity
+  if (from?.id !== identity.fromId || to?.id !== identity.toId || from.owner?.id !== identity.ownerUserId
+    || to.owner?.id !== identity.ownerUserId || to.html_url !== record.to.repositoryUrl
+    || to.default_branch !== record.to.defaultBranch || to.private || to.archived || to.disabled) throw new Error('repository migration ownership or canonical identity changed')
 }
 
 export function migrateCatalogIdentity(entry, snapshot, manifest, document) {
@@ -44,6 +69,8 @@ export function migrateCatalogIdentity(entry, snapshot, manifest, document) {
   if (r.from.packageName !== entry.packageName || r.from.manifestPath !== entry.manifestPath || r.from.license !== entry.details.license
     || r.to.packageName !== manifest.name || r.to.license !== manifest.license) throw new Error('Catalog migration preconditions changed')
   return { applied: true, entry: { ...entry, packageName: r.to.packageName,
+    repositoryUrl: r.to.repositoryUrl ?? entry.repositoryUrl, defaultBranch: r.to.defaultBranch ?? entry.defaultBranch,
+    ...(r.to.entryIds ? { entryIds: [...r.to.entryIds] } : {}),
     manifestPath: r.to.manifestPath, installPath: r.to.installPath ?? null,
     details: { ...entry.details, license: r.to.license } } }
 }

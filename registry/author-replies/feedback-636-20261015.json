@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 636,
+  "userId": 269385000,
+  "requestCommentId": 6117228426,
+  "requestBodySha256": "b3aaaf7ec7eedb9bf3d6fb9dce46d8d840fbfc4d82a83361c79d9307ebe29e80",
+  "requestUpdatedAt": "2026-10-12T03:30:36Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请把该条目的固定 Commit 重新指向",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "已将目录的复审对象从 0.12.0 更新为 **0.13.2 / `48575611506b5e9b96becf0402213c17dce25492`**，读取了新的精确兼容声明，不再用旧 pin 的 latest-three 结论代替新源码复审。latest-three 是复检窗口，不要求把未验证的全部版本写成 compatible。\n\n仍不能恢复安装：当前 `cordis.patch.yml:8` 有 `!!js dshHomePath(...)`，超出 Store 的无求值 Patch 契约；manifest 还包含运行依赖 `@deepseek-ai/schemastery`（`^3.18.1`），需独立供应链审阅。JSONL 合成数据现在会被按有界文本扫描，未通过整目录忽略排除测试。新的源码覆盖和兼容声明不替代上述门禁，所以更新 pin 后状态为 blocked，而非上架成功。未执行 `npm run verify` 或真实 Profile。[固定源](https://github.com/GIT121995/dsh-memory-gate/commit/48575611506b5e9b96becf0402213c17dce25492)。"
+}

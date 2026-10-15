@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 934,
+  "userId": 51282470,
+  "requestCommentId": 6071637554,
+  "requestBodySha256": "04629f3e6f0aa9449687559dd88c04bf322f7353b19f3bdff68573e8876e6c70",
+  "requestUpdatedAt": "2026-10-09T00:18:06Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "Otherwise please correct both fields",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "已纠正两处权限元数据。针对当前固定源 `5fab0ff99b6c202caf86cda73ba6e0429558d29b`（0.2.4）的完整有界复检，未观测到网络、命令或凭据能力；目录现在是 `credentials: [\"none\"]`，并删除“用户配置的外部服务凭据”。文件写入能力继续如实保留。此前 `api-key` 标签没有足以保留到当前固定源的具体凭据证据。\n\n本轮仍不能上架：当前 manifest 新增运行依赖 `zod`（`^4.4.3`），需要单独供应链审阅。它与“外部服务凭据”是两件事，不能混为一个阻塞。兼容性采用当前 manifest 的逐版本声明，未执行的版本与真实运行验收继续 unknown。本次没有安装或执行第三方代码。[固定源](https://github.com/sakuraqqq/dsh-auto-paste/commit/5fab0ff99b6c202caf86cda73ba6e0429558d29b)。"
+}

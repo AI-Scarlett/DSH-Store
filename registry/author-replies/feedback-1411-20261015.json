@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1411,
+  "userId": 40736295,
+  "requestCommentId": 6185731087,
+  "requestBodySha256": "87c00fc220218447c5e65355a4ba691aae48d92f9e2360589e1a65a87486f4a9",
+  "requestUpdatedAt": "2026-10-15T06:11:02Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "we would rather you tell us which bound actually fired",
+    "scope": "Respond once to this verified specific request using the fixed-source review and the merged Catalog decision; no generic outreach or runtime acceptance claim."
+  },
+  "responseBody": "We rechecked **10.15.0 at `6c5b3c7b4390bf2ba867d6ded90e0ba4d30d5fb2`**. The old report conflated a per-file limit with the total: the former scanner's 262,144-byte file limit was exceeded; 467,678 bytes did not exceed a 2,097,152-byte total limit. That diagnostic was incorrect. The current bounds are **4 MiB per file, 8 MiB total, 512 source files**. This fixed source has complete coverage (11 files, 474,793 runtime bytes), with no budget findings. Your 442,975-byte client needs no minification or splitting, and the two explicit locale exports need no further pattern change.\n\nWe also corrected declaration-module resolution, including `lib/types/client/index.d.ts` → `../index.js` resolving to the packaged `lib/types/index.d.ts`. The remaining review includes real file/network capabilities and the dynamic `require(name)` helper in `lib/client.js:70` (`requireSeed`). The scanner does not prove its finite caller set; that remains a Store-side review boundary, not a claim that your host reproduction failed. The refreshed Catalog remains blocked, with runtime acceptance unknown. We did not execute your tests or a host. [Fixed source](https://github.com/RevolutionLA/dsh-dream-skin/commit/6c5b3c7b4390bf2ba867d6ded90e0ba4d30d5fb2)."
+}

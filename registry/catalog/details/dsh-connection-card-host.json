@@ -19,33 +19,33 @@
     "card",
     "host"
   ],
-  "repositoryUrl": "https://github.com/Noob-stupid/dsh-connection-card-host-preview",
-  "defaultBranch": "master",
+  "repositoryUrl": "https://github.com/Noob-stupid/dsh-connection-card-host",
+  "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b6fe05c0786c1fda6d94e3d11b5e829f53ca6b92",
-  "version": "1.0.68",
+  "commit": "d4a9dd8f440f89a48b4450ce31cb6f754c6e9fa3",
+  "version": "1.0.76",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T20:09:07.000Z",
-    "observedAt": "2026-10-06T05:19:08.000Z",
+    "updatedAt": "2026-10-12T09:17:33.000Z",
+    "observedAt": "2026-10-15T13:06:31.398Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-06T05:19:08.000Z",
-      "evidenceUrl": "https://github.com/Noob-stupid/dsh-connection-card-host-preview/commit/b6fe05c0786c1fda6d94e3d11b5e829f53ca6b92",
+      "method": "author-feedback-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-15T13:06:31.398Z",
+      "evidenceUrl": "https://github.com/Noob-stupid/dsh-connection-card-host/commit/d4a9dd8f440f89a48b4450ce31cb6f754c6e9fa3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "No third-party installation, package scripts, or builds were executed."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "Author runtime reports were not independently reproduced."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,14 +75,25 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "This bounded capability review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "150cdf0b28142e9c94fcebfb3bd838db90bd9a3d9680accbb56f2cd4ba1b476f",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
   },
   "entryIds": [
     "connection-card-host"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; package contains unsupported artifacts requiring review: docs/assets/demo-drag-anchor.mp4, docs/assets/demo-drag-rail.mp4; local module is missing from the distributable surface: lib/types/adapter/assemble.d.ts -> ./tool-bridge.js; local module is missing from the distributable surface: lib/types/adapter/card-adapter.d.ts -> ./tool-bridge.js; local module is missing from the distributable surface: lib/types/adapter/card-adapter.d.ts -> ../types/index.js; local module is missing from the d",
+  "statusReason": "Fixed-source recheck blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.2.0-rc.1 <0.3.0",
     "dshReleases": {
@@ -189,7 +200,7 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "permissions": {
       "level": "unknown",
       "files": "unknown",
