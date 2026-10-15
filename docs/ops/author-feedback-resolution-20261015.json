@@ -63,7 +63,9 @@
     "test/author-close-policy.test.mjs",
     "test/author-contact-policy.test.mjs",
     "test/author-feedback-plan.test.mjs",
-    "test/plugin-submission.test.mjs"
+    "test/contracts.test.mjs",
+    "test/plugin-submission.test.mjs",
+    "test/upgrade-matrix.test.mjs"
   ],
   "preconditions": {
     ".github/workflows/author-feedback-resolution.yml": null,
@@ -125,14 +127,16 @@
     "test/author-close-policy.test.mjs": null,
     "test/author-contact-policy.test.mjs": "c3b4359a7699fa9d34333e100a1bb905a9327cb8783015141283dc012238786f",
     "test/author-feedback-plan.test.mjs": null,
-    "test/plugin-submission.test.mjs": "7d3c54af152b857217cc47f2a521dc4d34b32f1f56728c3b8e33cab4a3201366"
+    "test/plugin-submission.test.mjs": "7d3c54af152b857217cc47f2a521dc4d34b32f1f56728c3b8e33cab4a3201366",
+    "test/upgrade-matrix.test.mjs": "eac4c7abd1d1cc342f191c016bea6f1dbdc4a03146b893260cda771cbbbea670",
+    "test/contracts.test.mjs": "ec2479289de167a3bfb07c21e2fb8d0d77ba3d3ceecb27a586140a3b947f4586"
   },
   "postconditions": {
     ".github/workflows/author-feedback-resolution.yml": "85e7cf3925dbcfedaab55a2942d497071c7071ed27dda41e01dfbcb5a44819b5",
     ".github/workflows/registry.yml": "2432ce6d392ce9e594e7d7d9bdaa16f05de1cc3a8c9e8836c9039f2ba6de5c42",
-    "docs/reviews/author-feedback-resolution-20261015.json": "85d4fbb8c53109504be2b31f73daf2824c346cc5adcadc59732d5ac2989eef7f",
-    "docs/reviews/author-feedback-resolution-20261015.md": "072f8d8675445509f18ab06536109d90987201bc76dfc85914b92c48d56ed7a0",
-    "package.json": "581c1bf44d0c5fd7e2a8598d981e9fdd178917af44ff25b0538cbabb2fd6e8b3",
+    "docs/reviews/author-feedback-resolution-20261015.json": "48620406706bcd900af84c77ebc330021ff0dc33b7d0e5091a1f7b50a58e6914",
+    "docs/reviews/author-feedback-resolution-20261015.md": "e38dd5dff7384cce6e87e636616b149bd428011532e9f3451574430ba73ac868",
+    "package.json": "ea2196ec0b2139255ae5acb8039df7dc2874fce38b2eb91954b94a4fe122db7d",
     "registry/admission-reviews.json": "1d1e6fa07c3f290093800c8f27723432fb62d4b78490a65037f1a6343159fa4a",
     "registry/author-closures/feedback-1338-20261015.json": "9dfe81dd6d2f03a2bb2a8e82d63e3bdbada4d85ff37bafb693b552a45ca199cb",
     "registry/author-closures/feedback-709-20261015.json": "18cdd5d1fc3bbf5469348556036e6821ec9b262527aaa0cffd062838e8080d6a",
@@ -186,7 +190,9 @@
     "test/author-close-policy.test.mjs": "cd7fb032aa73660154fcb2fb4339c16732490460b99c8a650cbd968b8b58aa49",
     "test/author-contact-policy.test.mjs": "40b187d58189a5fc47cfb8cba0f81e0e511a295e3712e3a08fe31e59b6cbe2bb",
     "test/author-feedback-plan.test.mjs": "0c5a39866652ce1bd738adaf97cf38cc382664a17233c94a3e22bb06b09cf799",
-    "test/plugin-submission.test.mjs": "a693ca425b761c64e91fcac3afe5b63e2bedaa4f13849930b0200243e9ab2eb7"
+    "test/contracts.test.mjs": "1eb469d2f4ba45b5c9582485c78fd8f579954568ac62044a3add3c059c0b8e90",
+    "test/plugin-submission.test.mjs": "a693ca425b761c64e91fcac3afe5b63e2bedaa4f13849930b0200243e9ab2eb7",
+    "test/upgrade-matrix.test.mjs": "26663ff1d575c3365ae37c71064886b6a9463644e1ad643db9ded99dac8ef7f5"
   },
   "authorization": {
     "source": "user-request",
@@ -211,5 +217,15 @@
     "source": "recoverable Git history; revert via policy PR",
     "contacts": "disable sender; never delete or release reservations"
   },
-  "runtimeAcceptance": "not-performed"
+  "runtimeAcceptance": "not-performed",
+  "publicationCompatibilityFollowup": {
+    "trigger": "PR #1429 CI on official 0.2.1-alpha.4 fails pre-install; alpha.2 and alpha.3 pass",
+    "scope": [
+      "package.json",
+      "test/upgrade-matrix.test.mjs",
+      "test/contracts.test.mjs"
+    ],
+    "runtimeAcceptance": "pending-CI-disposable-Profile",
+    "realProfile": "unchanged"
+  }
 }

@@ -11027,15 +11027,16 @@
     }
   ],
   "publication": {
-    "state": "authorized-ready-for-pull-request",
+    "state": "pull-request-CI-in-progress",
     "credentialType": "oauth",
     "shortLivedCredentialConfirmed": false,
-    "pullRequestCreated": false,
-    "remoteMutations": 0,
+    "pullRequestCreated": true,
+    "remoteMutations": 2,
     "contactReservationsCreated": 0,
     "pendingReplies": 12,
     "pendingClosures": 2,
-    "credentialAuthorization": "direct-user-exception-for-existing-credential"
+    "credentialAuthorization": "direct-user-exception-for-existing-credential",
+    "pullRequestUrl": "https://github.com/AI-Scarlett/DSH-Store/pull/1429"
   },
   "verification": {
     "npmCheck": {
@@ -11165,5 +11166,12 @@
         "eligible": true
       }
     ]
+  },
+  "publicationCompatibilityFollowup": {
+    "version": "0.2.1-alpha.4",
+    "finding": "four injected client peers exclude the exact new prerelease required by official compatibility checks",
+    "change": "add only the exact alpha.4 alternatives; retain unknown runtime/operation metadata until evidence is recorded",
+    "officialSource": "npm @deepseek-ai/dsh-plugin-manager@0.2.1-alpha.4 lib/types/operations.js:350-370",
+    "CI": "pending-new-head"
   }
 }

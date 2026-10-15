@@ -1,6 +1,6 @@
 # GitHub 作者反馈处理记录（2026-10-15）
 
-本次处理用户明确授权的“该回复的回复，该修复的修复，该关闭的关闭”。所有修复、目录更新及联系计划均为**本地结果**。尚未创建 PR、推送、合并、部署、发送回复、预约联系名额或关闭 Issue。
+本次处理用户明确授权的“该回复的回复，该修复的修复，该关闭的关闭”。所有修复、目录更新及联系计划均为**本地结果**。分支已推送并创建 [PR #1429](https://github.com/AI-Scarlett/DSH-Store/pull/1429)，尚未合并、部署、发送回复、预约联系名额或关闭 Issue。
 
 基线：`9f0da97f2a8f4feda8f050616199f97cb37a3582`；分支：`codex/resolve-author-feedback-20261015`。最新只读预检仍须在实际发送前重新执行；每次发送以中央 ledger CAS 和 main 上精确计划为准。
 
@@ -67,3 +67,5 @@
 继续执行顺序为：刷新 main 并重建任何失效的计划；创建审计 PR；等待 CI 并合并精确受检头；验证 Raw、Pages 及两站；按 main-reviewed 计划逐条调度回复/关闭流程，执行前重新核验请求并中央 CAS 预约；逐条读回。任何投递不确定性都永久消耗该次预约，不重试消息。
 
 机器记录：`docs/reviews/author-feedback-resolution-20261015.json`。精确文件计划：`docs/ops/author-feedback-resolution-20261015.json`。回滚源码通过新 PR；联系 ledger 永远不恢复旧版或删除预约。
+
+发布 CI 发现官方最新 0.2.1-alpha.4 被本项目四个 client peer 的精确预发布范围排除。已对照官方 plugin-manager 的安装兼容检查，补入仅此精确版本；未使用风险豁免。新版本的 dshReleases/operations 保持 unknown；CI 中的临时 Profile 实测结果单独记录，真实 Profile 不变。
