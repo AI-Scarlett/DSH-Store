@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-14T20:01:17.000Z",
+    "updatedAt": "2026-10-15T03:36:12.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -936,8 +936,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "d9cd239c5ed7b078ac07e1bad633723fb49d8f80",
-      "sourceUpdatedAt": "2026-10-14T19:50:50.000Z",
+      "latestCommit": "4135c911d3a3414b17fcd8954a15f6c7ec6ae8f4",
+      "sourceUpdatedAt": "2026-10-15T03:22:16.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -2051,8 +2051,8 @@
       "description": "为 DSH 提供桌面客户端能力。英文原始说明：Movable, resizable Chromium desktop embedded in the DeepSeek Harness Web UI through noVNC.",
       "repositoryUrl": "https://github.com/runzhliu/deepseek-harness-docker",
       "defaultBranch": "main",
-      "latestCommit": "99844081051ee6a18b9ec7cbe69d8c8eaa2edb4f",
-      "sourceUpdatedAt": "2026-10-09T12:00:48.000Z",
+      "latestCommit": "64104392540ce7363af96bf00cec891741a07d84",
+      "sourceUpdatedAt": "2026-10-15T01:10:23.000Z",
       "discoveredAt": "2026-08-24T14:17:00.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -20129,6 +20129,98 @@
       "topics": [
         "balance",
         "deepseek-harness",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "mikugui-dsh-session-eater",
+      "name": "mikugui/dsh-session-eater",
+      "description": "把不要的会话拖到侧栏底部的小胖鱼嘴边，它张嘴吃掉（移入回收站，可撤销）。删除前确认、点图标直达设置、17 段界面文案可自定义 —— DSH Web 插件",
+      "repositoryUrl": "https://github.com/mikugui/dsh-session-eater",
+      "defaultBranch": "main",
+      "latestCommit": "c49ae0bc24f5e7a628947ab24c8c3e7845f99530",
+      "sourceUpdatedAt": "2026-10-07T14:14:15.000Z",
+      "discoveredAt": "2026-10-15T03:36:12.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/mikugui__dsh-session-eater.yml:sha256=c3efc1ac37ec53b083f07aafd6f8f7668854a3e5dfa4e5a6fde84b57b6d3315e:at=2026-10-15T03:40:06.121Z:owner=331555351"
+      ],
+      "topics": [
+        "cleanup",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "session",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "mimateinn-dsh-i18n",
+      "name": "mimateinn/dsh-i18n",
+      "description": "20-locale internationalization with automatic translation for the DeepSeek Harness Web UI",
+      "repositoryUrl": "https://github.com/mimateinn/dsh-i18n",
+      "defaultBranch": "master",
+      "latestCommit": "ffafacab7cf60dc0b1a25c8ba7b0d95259d43ee2",
+      "sourceUpdatedAt": "2026-10-01T20:27:15.000Z",
+      "discoveredAt": "2026-10-15T03:36:12.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/mimateinn__dsh-i18n.yml:sha256=8ae83c347188f409b7f80a468e59e913f192241bd1a027c7fd7cda0f231ad16a:at=2026-10-15T03:40:06.121Z:owner=26105572"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "i18n",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "miku00039-01-dsh-whale-pet",
+      "name": "miku00039-01/dsh-whale-pet",
+      "description": "🐋 DSH 桌宠:DeepSeek Harness 的 Windows 桌面宠物,一键启动/停止/监测服务,双击唤起 GUI,零依赖单文件 exe",
+      "repositoryUrl": "https://github.com/miku00039-01/dsh-whale-pet",
+      "defaultBranch": "master",
+      "latestCommit": "fff54331c0068f2a10164e425235dbbc6232e88d",
+      "sourceUpdatedAt": "2026-10-01T14:22:57.000Z",
+      "discoveredAt": "2026-10-15T03:36:12.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/miku00039-01__dsh-whale-pet.yml:sha256=fd1b05b51d853d1693b4b90c548cc717dbe00e5537ddc3513e83ffa8882fd2fb:at=2026-10-15T03:40:06.121Z:owner=260321865"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "desktop-pet",
+        "desktop-tools",
+        "dsh-plugin",
+        "dsh-plugin-pet",
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "mike-lee0120-dsh-cost-dashboard",
+      "name": "mike-lee0120/dsh-cost-dashboard",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/mike-lee0120/dsh-cost-dashboard",
+      "defaultBranch": "main",
+      "latestCommit": "4aabf4aeb619443e01d36e73b2bf15203decfbdf",
+      "sourceUpdatedAt": "2026-09-25T03:09:31.000Z",
+      "discoveredAt": "2026-10-15T03:36:12.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@575ea0b82e612880fd65d5bf65fbecc49f1485e6:data/plugins/mike-lee0120__dsh-cost-dashboard.yml:sha256=facd8509b173847680e3e2ba272fd3a993c0206fad4ca59586b3f9cdcd96ff11:at=2026-10-15T03:40:06.121Z:owner=11990161"
+      ],
+      "topics": [
         "dsh-plugin",
         "automatic-radar"
       ],
