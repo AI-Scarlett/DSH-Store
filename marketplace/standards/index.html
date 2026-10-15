@@ -140,9 +140,9 @@
         <div class="standards-bounds-copy reveal"><span>04 / BOUNDED STATIC AUDIT</span><h2 id="bounds-title" data-i18n="bounds.title">自动化只读固定源码，并且检查面有硬上限。</h2><p data-i18n="bounds.lead">上限用于保证“读全”和确定性，不是大插件不安全的结论。超限、截断或暂时无法读取时，结果是检查不完整并失败关闭。</p></div>
         <div class="standards-bounds-grid reveal">
           <article><strong>1,200</strong><span data-i18n="bounds.tree">最多仓库树条目</span></article>
-          <article><strong>240</strong><span data-i18n="bounds.files">最多运行时文件</span></article>
-          <article><strong>256 KiB</strong><span data-i18n="bounds.single">单文件上限</span></article>
-          <article><strong>2 MiB</strong><span data-i18n="bounds.total">运行时源码总上限</span></article>
+          <article><strong>512</strong><span data-i18n="bounds.files">最多运行时文件</span></article>
+          <article><strong>4096 KiB</strong><span data-i18n="bounds.single">单文件上限</span></article>
+          <article><strong>8 MiB</strong><span data-i18n="bounds.total">运行时源码总上限</span></article>
         </div>
       </div>
       <div class="section-shell standards-no-exec reveal"><b>NO THIRD-PARTY EXECUTION</b><p data-i18n="bounds.noexec">自动化不会运行第三方 install、prepare、build、test 或运行时代码，也不会下载依赖来补足结论。</p></div>

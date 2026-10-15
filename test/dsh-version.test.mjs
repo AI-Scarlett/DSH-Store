@@ -153,3 +153,15 @@ test('DSH version check resolves a global launcher symlink before locating the p
     await rm(root, { recursive: true, force: true })
   }
 })
+
+test('current host version reads local metadata afresh without network access', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'dsh-host-local-'))
+  const manifestPath = join(directory, 'package.json')
+  try {
+    await writeFile(manifestPath, JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.2.0-rc.2' }))
+    const service = createDshVersionService({ manifestPath, fetch: async () => { throw new Error('network must not run') } })
+    assert.equal((await service.current()).currentVersion, '0.2.0-rc.2')
+    await writeFile(manifestPath, JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.2.1-alpha.1' }))
+    assert.equal((await service.current()).currentVersion, '0.2.1-alpha.1')
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})

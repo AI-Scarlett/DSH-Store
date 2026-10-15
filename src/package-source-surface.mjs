@@ -81,7 +81,18 @@ export function packageSourceSurface(manifest, tree, installPath = '') {
   for (const raw of required) {
     const target = raw.replace(/^\.\//, '')
     if (!validPath(target)) reasons.push(`runtime artifact path is invalid: ${raw}`)
-    else if (target.includes('*')) reasons.push(`runtime artifact pattern requires review: ${raw}`)
+    else if (target.includes('*')) {
+      // Node export targets have literal prefixes/suffixes and one substitution.
+      // Expand against the complete pinned tree, never against the filesystem.
+      if (target.split('*').length !== 2 || /[!{}()[\]?#]/.test(target)) {
+        reasons.push(`runtime artifact pattern requires review: ${raw}`)
+      } else {
+        const [before, after] = target.split('*')
+        const matches = records.filter(item => item.type === 'blob' && item.relativePath.startsWith(before) && item.relativePath.endsWith(after))
+        if (!matches.length) reasons.push(`runtime artifact pattern has no fixed-tree targets: ${raw}`)
+        else if (matches.some(item => item.mode === '120000' || !paths.has(item.relativePath))) reasons.push(`runtime artifact pattern has targets outside the distributable surface: ${raw}`)
+      }
+    }
     else if (!paths.has(target)) reasons.push(`runtime artifact is missing from the distributable surface: ${raw}`)
   }
   // Nested ignore files can remove entrypoints; do not assert a complete

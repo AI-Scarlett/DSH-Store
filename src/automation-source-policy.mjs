@@ -249,7 +249,7 @@ export function permissionSignals(source, relativePath = '') {
     commands: moduleSignal(COMMAND_MODULE)
       || COMMAND_CALL.test(code)
       || /shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(code),
-    credentials: /process\s*\.\s*env/i.test(code)
+    credentials: /process\s*\.\s*env(?!\s*(?:\.\s*(?:DSH_HOME|HOME|USERPROFILE|PATH|NODE_ENV|LANG)\b|\[\s*['\"](?:DSH_HOME|HOME|USERPROFILE|PATH|NODE_ENV|LANG)['\"]\s*\]))/i.test(code)
       || /\b(?:keychain|credentials?|oauth)\b\s*(?:\.|\[|\()/i.test(code)
       || /\b(?:api[_-]?key|apiKey|access[_-]?token|accessToken|client[_-]?secret|clientSecret|password)\b/i.test(code),
     protectedDsh: dshInterfaceSignals(text, relativePath).protectedDsh,

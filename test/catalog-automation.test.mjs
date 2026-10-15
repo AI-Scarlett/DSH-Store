@@ -129,7 +129,7 @@ test('automatic policy runs every eight hours and fails closed on permission or 
     registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh',
     latestReleaseCount: 3,
     requiredCompatibleReleases: 1,
-    unsupportedCatalogStatus: 'unlisted',
+    unsupportedCatalogStatus: 'blocked',
     candidateStatus: 'reviewing',
     failClosedOnAuthorityError: true,
   })
@@ -220,7 +220,7 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /captureNoCommonAncestor === true/)
   assert.match(source, /No common ancestor between \[0-9a-f\]/)
   assert.match(source, /retryInfrastructure/)
-  assert.match(reviewSource, /runtimeFiles\.slice\(index, index \+ 8\)/)
+  assert.match(reviewSource, /selected\.slice\(index, index \+ 8\)/)
   assert.match(reviewSource, /Promise\.all\(batch\.map/)
   assert.match(source, /catalog\.entries\.sort\(compareCatalogEntries\)/)
   assert.match(source, /baselineCatalog\.entries\.slice/)
@@ -241,18 +241,16 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(source, /candidateRetention\.registryRemovals/)
   assert.match(source, /candidatesChanged = !prospectiveCandidatesBuffer\.equals\(originalCandidates\)/)
   assert.match(source, /Candidate Registry serialization changed without a write decision/)
-  assert.match(reviewSource, /maximum \$\{policy\.sourceBounds\.maxTotalRuntimeBytes\}/)
+  assert.match(reviewSource, /sourceBudgetFindings/)
   assert.match(source, /CATALOG_AUTOMATION_UPDATE_REVIEW/)
   assert.match(source, /entry\.installPath \?\? ['"]\.['"]/)
   assert.match(source, /catalogUpdateIdentityMatches/)
   assert.match(source, /buildCatalogVersionUpdate/)
   assert.match(source, /sourcePolicy === 'external-only'\s*&&\s*isNoCommonAncestorError/)
   assert.match(source, /holdExternalOnlyAfterDisconnectedHistory\(reviewed, entry\.commit, candidate\.commit, analysis\.reasons\)/)
-  assert.match(source, /isSafeSelfManagerUpdate/)
-  assert.match(source, /SELF_MANAGER_PROTECTED_ENTRY_REASON/)
-  assert.match(source, /SELF_MANAGER_PROTECTED_DSH_REASON/)
-  assert.match(source, /SELF_MANAGER_MAX_FILE_BYTES = 4 \* 1024 \* 1024/)
-  assert.match(source, /SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
+  assert.doesNotMatch(source, /isSafeSelfManagerUpdate|SELF_MANAGER_MAX_FILE_BYTES|SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES/)
+  assert.match(source, /admissionDecision/)
+  assert.match(source, /admissionReviewDigest/)
   assert.match(reviewSource, /isGeneratedSelfManagerRegistryData\(candidate, relativePath\)/)
   assert.doesNotMatch(reviewSource, /isTestSourceFile\(relativePath\)/)
   assert.match(source, /isSelfManagerEntry\(entry\)\s*&&\s*isBoundedSourceLineage\(lineage, maxCommitSpan, \{ allowDiverged: true \}\)/)

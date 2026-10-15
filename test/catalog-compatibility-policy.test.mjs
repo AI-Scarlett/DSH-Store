@@ -35,7 +35,7 @@ function entry(overrides = {}) {
     compatibility: {
       dsh: '>=0.1.0-rc.7',
       dshReleases: {
-        'rc.7': 'compatible',
+        'rc.7': 'unknown',
         'rc.8': 'incompatible',
         '0.1.1-rc.1': 'unknown',
         '0.1.1-rc.2': 'unknown',
@@ -87,10 +87,10 @@ test('official registry errors fail closed instead of using Catalog fallback rel
   }, 0), /window count is invalid/)
 })
 
-test('old-only or unknown compatibility is unlisted and moved to a non-installable reviewing candidate', () => {
+test('unknown compatibility stays visibly blocked and moved to a non-installable reviewing candidate', () => {
   const { catalog, candidates } = documents()
   const report = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, observedAt)
-  assert.equal(catalog.entries[0].status, 'unlisted')
+  assert.equal(catalog.entries[0].status, 'blocked')
   assert.match(catalog.entries[0].statusReason, new RegExp(`^${COMPATIBILITY_HOLD_PREFIX}`))
   assert.equal(candidates.entries.length, 1)
   assert.equal(candidates.entries[0].status, 'reviewing')
@@ -223,7 +223,7 @@ test('multiple held plugins from one repository share one candidate and partial 
   first.compatibility.dshReleases['0.1.2-alpha.5'] = 'compatible'
   const followUp = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, '2026-08-25T00:00:00.000Z')
   assert.equal(first.status, 'approved')
-  assert.equal(second.status, 'unlisted')
+  assert.equal(second.status, 'blocked')
   assert.equal(followUp.restored.length, 1)
   assert.equal(candidates.entries.length, 1)
   assert.equal(candidates.entries[0].latestCommit, second.commit)

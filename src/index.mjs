@@ -74,6 +74,7 @@ export function apply(ctx, config = {}) {
     mutationsEnabled: options.mutationsEnabled,
     telemetryClient,
     sourceUpdateService,
+    dshVersionService,
     runtimeInstanceId: runtimeStatus.bootId,
   })
   const activationService = createActivationService({ dshHome: options.dshHome, profile: options.defaultProfile, bootId: runtimeStatus.bootId,

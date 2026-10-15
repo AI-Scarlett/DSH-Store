@@ -53,7 +53,7 @@ function sourceFetch(options = {}) {
   const packages = options.packages ?? { 'package.json': manifest(options.manifest) }
   const patches = options.patches ?? Object.fromEntries(Object.keys(packages).map(path => {
     const directory = path === 'package.json' ? '' : `${path.slice(0, -'package.json'.length)}`
-    return [`${directory}cordis.patch.yml`, options.patch ?? '- insert:\n    - id: demo\n      name: dsh-demo\n']
+    return [`${directory}cordis.patch.yml`, options.patch ?? `- insert:\n    - id: demo\n      name: ${packages[path].name}\n`]
   }))
   const sources = options.sources ?? {}
   const blobPaths = [...new Set([...Object.keys(packages), ...Object.keys(patches), ...Object.keys(sources)])]
@@ -145,7 +145,7 @@ test('GitHub submission scan reads bounded files from the same fixed commit', as
   assert.equal(scan.complete, true)
   assert.equal(scan.filesScanned, 3)
   assert.equal(scan.eligibleFiles, 3)
-  assert.equal(scan.engine, 'dsh-store-submission-static-v1')
+  assert.equal(scan.engine, 'bounded-source-v2')
 })
 
 test('security scan warns for common CLI process capability but blocks high-risk secrets', () => {
@@ -387,4 +387,11 @@ test('CLI cannot call an incomplete scan a passed precheck', async t => {
   assert.equal(code, 1)
   assert.equal(JSON.parse(await readFile(result, 'utf8')).code, 'SUBMISSION_SCAN_INCOMPLETE')
   assert.match(await readFile(report, 'utf8'), /扫描面不完整/)
+})
+
+
+test('Bundle implementations cannot silently resolve to an unreviewed package', async () => {
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '.', {
+    catalogDocument: catalog(), fetch: sourceFetch({ patch: '- insert:\n    - id: demo\n      name: unrelated-package\n' }), retryDelaysMs: [],
+  }), { code: 'SUBMISSION_PATCH_IDENTITY' })
 })

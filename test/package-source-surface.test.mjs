@@ -67,12 +67,12 @@ test('exports and Bundle resources must be inside the distributable surface', ()
   assert.match(surface.reasons.join('\n'), /cordis.patch.yml/)
 })
 
-test('fixed tree truncation and malformed paths remain unknown instead of negative capability evidence', async () => {
+test('truncated tree retains bounded partial observations but never negative capability evidence', async () => {
   const result = await review(sources, manifest, { ...treeOf(sources), truncated: true })
   assert.equal(result.scanComplete, false)
-  assert.equal(result.filesScanned, 0)
+  assert.equal(result.filesScanned, 4)
   assert.equal(result.signals.network, null)
-  assert.deepEqual(result.reads, [])
+  assert.equal(result.reads.length, 4)
   const invalid = packageSourceSurface(manifest, { truncated: false, tree: [...treeOf(sources).tree, { path: '../outside', type: 'blob' }] })
   assert.equal(invalid.complete, false)
 })
@@ -80,9 +80,9 @@ test('fixed tree truncation and malformed paths remain unknown instead of negati
 test('scan bounds remain enforced against the entire selected source surface', async () => {
   const result = await review(sources, manifest, treeOf(sources), { ...policy, sourceBounds: { ...policy.sourceBounds, maxRuntimeFiles: 2 } })
   assert.equal(result.scanComplete, false)
-  assert.equal(result.filesScanned, 0)
+  assert.equal(result.filesScanned, 2)
   assert.equal(result.signals.files, null)
-  assert.match(result.reasons.join('\n'), /file count/)
+  assert.match(result.reasons.join('\n'), /source-file-count/)
 })
 
 test('shipped native/executable, unknown artifacts, symlinks and submodules fail closed', async () => {
@@ -208,6 +208,6 @@ test('per-file and total byte limits block reads without reporting absent capabi
     assert.equal(result.scanComplete, false)
     assert.equal(result.filesScanned, 0)
     assert.equal(result.signals.commands, null)
-    assert.match(result.reasons.join('\n'), /byte bound/)
+    assert.match(result.reasons.join('\n'), /source-(?:file|total)-bytes/)
   }
 })

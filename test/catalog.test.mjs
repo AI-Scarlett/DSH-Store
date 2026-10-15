@@ -680,21 +680,22 @@ test('catalog overlays live marketplace install counts without changing catalog 
 })
 
 test('marketplace offers explicit migration for local links and reports version updates', () => {
-  const catalog = { ...validateCatalog(document()), source: { kind: 'fixture' } }
+  const host = { dshVersion: { currentVersion: '0.1.0' } }
+  const catalog = { ...validateCatalog(document([{ ...entry, compatibility: { ...entry.compatibility, dshReleases: { '0.1.0': 'compatible' } } }])), source: { kind: 'fixture' } }
   const local = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'link', version: '1.0.0' }],
-  })
+  }, '', host)
   assert.equal(local.entries[0].updateAvailable, true)
   assert.equal(local.entries[0].migrationAvailable, true)
   assert.deepEqual(local.entries[0].allowedActions, ['migrate'])
   assert.equal(local.entries[0].manageable, true)
   const npm = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'npm', version: '1.0.0' }],
-  })
+  }, '', host)
   assert.equal(npm.entries[0].manageable, true)
   const git = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '1.2.0', declaredSpecifier: 'github:example/dsh-demo#main' }],
-  })
+  }, '', host)
   assert.equal(git.entries[0].updateAvailable, false)
   assert.equal(git.entries[0].commitMatched, false)
   assert.equal(git.entries[0].sourceDrift, true)
@@ -705,13 +706,13 @@ test('marketplace offers explicit migration for local links and reports version 
     'dsh', 'plugin', '--profile', 'web', 'add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${entry.commit}`,
   ])
   assert.deepEqual(git.entries[0].allowedActions, ['disable', 'enable', 'uninstall'])
-  const uninstalled = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] })
+  const uninstalled = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] }, '', host)
   assert.equal(uninstalled.entries[0].installed, false)
   assert.equal(uninstalled.entries[0].manualSourceUpdate, null)
   assert.deepEqual(uninstalled.entries[0].allowedActions, ['install'], 'new users install the current audited Catalog Commit')
   const sourceNewer = buildMarketplaceSnapshot(catalog, {
     profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '2.0.0', declaredSpecifier: 'github:example/dsh-demo#newer' }],
-  })
+  }, '', host)
   assert.equal(sourceNewer.entries[0].versionState, 'ahead')
   assert.equal(sourceNewer.entries[0].sourceDrift, true)
   assert.equal(sourceNewer.entries[0].updateAvailable, false, 'a newer source-verified install must not be offered a catalog downgrade')
@@ -770,7 +771,7 @@ test('source verification distinguishes timeout, HTTP, manifest, and patch failu
   )
   await assert.rejects(
     () => verifyCatalogEntry(catalogEntry, {
-      fetch: async url => new Response(url.endsWith('/package.json') ? manifest : '- insert:\n    - id: wrong\n'),
+      fetch: async url => new Response(url.endsWith('/package.json') ? manifest : '- insert:\n    - id: wrong\n      name: dsh-demo\n'),
       retryDelaysMs: [],
     }),
     error => error.code === 'SOURCE_PATCH_MISMATCH',

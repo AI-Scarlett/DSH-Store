@@ -1,3 +1,7 @@
+import { bundlePatchContract } from './bundle-patch-contract.mjs'
+import { reviewFixedSource } from './fixed-source-review.mjs'
+import { SOURCE_SCAN_BOUNDS } from './source-scan-policy.mjs'
+import { sourceDeclaredCompatibility } from './catalog-update-review.mjs'
 import { createHash } from 'node:crypto'
 import { compareVersions, verifyCatalogEntry } from './catalog.mjs'
 import { dshInterfaceSignals, permissionSignals as scanPermissionSignals } from './automation-source-policy.mjs'
@@ -28,7 +32,9 @@ async function fetchJson(url, request, timeoutMs) {
       signal: controller.signal,
     })
     if (!response.ok) throw updateError('SOURCE_UPDATE_GITHUB_HTTP', `GitHub 返回 HTTP ${response.status}。`)
-    return await response.json()
+    const text = await response.text()
+    if (Buffer.byteLength(text) > 8 * 1024 * 1024) throw updateError('SOURCE_UPDATE_TOO_LARGE', 'GitHub 元数据超过审核预算。')
+    return JSON.parse(text)
   } catch (error) {
     // DOMException AbortError exposes the legacy numeric `code` 20. Only our
     // own string codes are safe to pass through to the HTTP boundary.
@@ -80,10 +86,6 @@ function effectivePolicy(entry) {
 
 function lifecycleScripts(manifest) {
   return ['preinstall', 'install', 'postinstall', 'prepare'].filter(name => typeof manifest?.scripts?.[name] === 'string')
-}
-
-function patchEntryIds(patch) {
-  return [...patch.matchAll(/(?:^|\n)\s*- id:\s*['"]?([A-Za-z0-9][A-Za-z0-9._-]{0,95})['"]?\s*(?:\n|$)/g)].map(match => match[1])
 }
 
 function publicCandidate(entry) {
@@ -194,7 +196,8 @@ export function createSourceUpdateService(options = {}) {
     const candidateLifecycle = lifecycleScripts(manifest)
     const candidateLicense = typeof manifest?.license === 'string' && manifest.license.trim() ? manifest.license.trim() : entry.details.license
     const candidate = {
-      ...entry, commit, version: candidateVersion, updatePolicy: policy,
+      ...entry, commit, version: candidateVersion, updatePolicy: policy, admission: undefined,
+      compatibility: sourceDeclaredCompatibility(entry, { compatibility: { ...manifest?.dsh?.compatibility, node: manifest?.engines?.node } }),
       details: { ...entry.details, license: candidateLicense },
       risk: { ...entry.risk, installScripts: candidateLifecycle },
     }
@@ -242,7 +245,10 @@ export function createSourceUpdateService(options = {}) {
         fetchText(`${catalogRawBase}${patchPath}`, request, timeoutMs),
       ])
       if (candidatePatch !== catalogPatch) warnings.push('候选 Bundle Patch 内容发生变化')
-      const candidateIds = [...new Set(patchEntryIds(candidatePatch))].sort()
+      let contract
+      try { contract = bundlePatchContract(candidatePatch) } catch { blockers.push('候选 Patch 语义不明确，需要单独复核') }
+      const candidateIds = [...(contract?.entryIds ?? [])].sort()
+      candidate.configOverrides = contract?.configOverrides.map(r => r.id) ?? []
       const catalogIds = [...entry.entryIds].sort()
       if (JSON.stringify(candidateIds) !== JSON.stringify(catalogIds)) {
         blockers.push('候选 Bundle 入口 ID 与商城登记身份不一致')
@@ -302,6 +308,24 @@ export function createSourceUpdateService(options = {}) {
       })
     }
 
+    if (blockers.length === 0 && externalOnly.length === 0) {
+      const tree = await fetchJson(`https://api.github.com/repos/${owner}/${repo}/git/trees/${commit}?recursive=1`, request, timeoutMs)
+      const review = await reviewFixedSource(candidate, manifest, tree, {
+        sourceBounds: SOURCE_SCAN_BOUNDS,
+        automaticApproval: { allowSymlinks: false, allowSubmodules: false, permissionSignals: {} },
+      }, (path, maxBytes) => fetchText(`${rawBase}${path}`, request, timeoutMs, maxBytes))
+      if (!review.scanComplete) blockers.push('候选完整源码扫描未覆盖全部分发文件，接受风险不能跳过此门禁')
+      if (review.securityScan.findingsTruncated || review.securityScan.findings.some(f => f.severity === 'warning' && !['child-process', 'shell-mode'].includes(f.rule))) blockers.push('候选含有未解决的代码执行或混淆信号')
+      if (review.securityScan.verdict === 'fail') blockers.push('候选安全命中项缺少固定文件哈希审阅')
+      if (review.signals.protectedDsh) externalOnly.push('候选完整源码触及受保护 DSH 组件')
+      if (review.reviewSignals.dynamicModuleLoading) blockers.push('候选动态加载或执行面无法完整证明')
+      if (Object.keys({ ...manifest.dependencies, ...manifest.optionalDependencies }).length || manifest.bundledDependencies?.length) blockers.push('候选依赖源码未纳入完整审阅')
+      if (candidateLifecycle.length) blockers.push('候选安装期执行需要固定源码专项审阅')
+      if (candidate.configOverrides?.length) blockers.push('配置覆盖需要固定 Commit 专项审阅')
+      for (const signal of ['files', 'network', 'commands', 'credentials']) if (review.signals[signal]) warnings.push(`完整源码权限需审阅：${signal}`)
+      candidate.sourceReview = { coverage: review.scanComplete ? 'complete' : 'incomplete', engine: review.engine, sourceDigest: review.sourceDigest }
+    }
+
     const uniqueWarnings = [...new Set(warnings)]
     const uniqueBlockers = [...new Set(blockers)]
     const uniqueExternalOnly = [...new Set(externalOnly)]
@@ -337,7 +361,7 @@ export function createSourceUpdateService(options = {}) {
     if (value.status === 'user-review-required' && options.userAcceptedRisk !== true) {
       throw updateError('SOURCE_UPDATE_RISK_NOT_ACCEPTED', '该候选包含高风险变化，必须先在本机查看并接受风险提示。')
     }
-    return { ...value.candidate, sourceReview: { status: value.status, warnings: [...value.warnings] } }
+    return { ...value.candidate, sourceReview: { ...value.candidate.sourceReview, status: value.status, warnings: [...value.warnings] } }
   }
 
   return { inspect, approvedCandidate, effectivePolicy }
