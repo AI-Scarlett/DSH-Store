@@ -5,7 +5,7 @@ import {
   appendFile, chmod, copyFile, mkdir, readFile, rename, rm, writeFile,
 } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { buildMarketplaceSnapshot, compareVersions, githubInstallSpecifier, verifyCatalogEntry } from './catalog.mjs'
+import { buildMarketplaceSnapshot, exactHostCompatibility, compareVersions, githubInstallSpecifier, verifyCatalogEntry } from './catalog.mjs'
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, resolveProfileDirectory, validateProfileName } from './inventory.mjs'
 import { readManagedDisabledIds, setManagedDisabled } from './managed-patch.mjs'
@@ -42,6 +42,7 @@ function sourceVerificationKey(entry) {
     version: entry.version,
     license: entry.details?.license ?? null,
     entryIds: [...entry.entryIds].sort(),
+    configOverrides: [...(entry.configOverrides ?? [])].sort(),
     installScripts: [...entry.risk.installScripts].sort(),
   }))
 }
@@ -220,6 +221,14 @@ export function createOperationService(options = {}) {
   const catalogService = options.catalogService
   const runner = options.runner
   const mutationsEnabled = options.mutationsEnabled === true
+  const dshVersionService = options.dshVersionService
+  async function requireHost(entry, expectedVersion = null) {
+    const { currentVersion } = await dshVersionService?.current?.() ?? {}
+    if (exactHostCompatibility(entry, currentVersion).status !== 'compatible' || (expectedVersion && expectedVersion !== currentVersion)) {
+      throw Object.assign(new Error('当前 DSH 版本缺少精确兼容记录，或在计划后发生变化。'), { code: 'DSH_COMPATIBILITY_REQUIRED' })
+    }
+    return currentVersion
+  }
   const sourceVerifier = options.sourceVerifier ?? verifyCatalogEntry
   const sourceUpdateService = options.sourceUpdateService ?? null
   const telemetryClient = options.telemetryClient ?? { recordInstall: async () => ({ status: 'disabled' }) }
@@ -284,11 +293,14 @@ export function createOperationService(options = {}) {
     if (action === 'migrate' && !['link', 'file', 'workspace'].includes(installed.source)) {
       throw Object.assign(new Error('only local development links can be migrated to the marketplace source'), { code: 'MIGRATION_NOT_REQUIRED' })
     }
+    let hostVersion = null
     let sourceVerification = { status: 'not-required', verifiedAt: null }
     if (['install', 'update', 'migrate'].includes(action)) {
       try {
+        hostVersion = await requireHost(targetEntry)
         sourceVerification = await verifySource(targetEntry)
       } catch (error) {
+        if (error.code === 'DSH_COMPATIBILITY_REQUIRED') throw error
         throw publicSourceVerificationError(error)
       }
     }
@@ -330,6 +342,7 @@ export function createOperationService(options = {}) {
       confirmation,
       impact: planImpact(action, targetEntry),
       sourceVerification,
+      hostVersion,
       preconditions,
       privateData: { entry: targetEntry, profileDir },
     }
@@ -352,6 +365,7 @@ export function createOperationService(options = {}) {
     let packageCommandMayHaveMutated = false
     try {
       await verifyPreconditions(plan.privateData.profileDir, plan.preconditions)
+      if (['install', 'update', 'migrate'].includes(plan.action)) await requireHost(plan.privateData.entry, plan.hostVersion)
       backupDir = await backupProfile(dshHome, plan.privateData.profileDir, transactionId, plan.preconditions)
       const { action } = plan
       const { entry } = plan.privateData

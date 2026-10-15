@@ -471,6 +471,7 @@ function normalizeEntry(entry, releaseContext) {
       dshReleases,
       dshOperations,
       dshReleaseViews,
+      latestWindow: compatibility.latestWindow ?? null,
       node: compatibility.node || 'unknown',
       systems: Array.isArray(compatibility.systems) ? compatibility.systems : [],
       profiles: Array.isArray(compatibility.profiles) ? compatibility.profiles : [],
@@ -923,6 +924,9 @@ function showDetails(entry) {
     <section class="dialog-section"><h3>${escape(t('dialog.review'))}</h3><dl class="dialog-grid">
       ${detailItem(state.locale === 'en' ? 'Credential access' : '凭据访问', listLabel(permissions.credentials.map(value => detailLabel('credentials', value)), t('value.unknown')))}
       ${detailItem(state.locale === 'en' ? 'Review status' : '审核状态', detailLabel('reviewStatus', entry.details.reviewStatus))}
+      ${entry.admission ? detailItem(state.locale === 'en' ? 'Admission evidence' : '收录证据', [({ 'source-verified': ['源码检查通过', 'Source checks passed'], reviewed: ['专项审阅通过', 'Reviewed'], 'review-required': ['待专项审阅', 'Review required'], incomplete: ['扫描未完成', 'Incomplete scan'], rejected: ['禁止安装', 'Installation blocked'] }[entry.admission.state] ?? ['待复核', 'Review required'])[state.locale === 'en' ? 1 : 0], entry.admission.coverage === 'complete' ? (state.locale === 'en' ? 'Complete coverage' : '完整覆盖') : (state.locale === 'en' ? 'Incomplete coverage' : '覆盖不完整')].join(' · ')) : ''}
+      ${entry.configOverrides?.length ? detailItem(state.locale === 'en' ? 'Config override targets (not owned IDs)' : '配置覆盖目标（不占有入口 ID）', entry.configOverrides.join(', ')) : ''}
+      ${compatibility.latestWindow?.state === 'recheck-required' ? detailItem(state.locale === 'en' ? 'Compatibility recheck' : '兼容性待复核', state.locale === 'en' ? 'Historical records retained. Installation requires an exact match for your DSH version.' : '历史记录保留；安装需匹配实际 DSH 版本的精确兼容声明。') : ''}
       ${detailItem(state.locale === 'en' ? 'DSH public version compatibility' : 'DSH 公开版本兼容性', compatibility.dshReleaseViews.map(view => `${view.version}${view.latest ? (state.locale === 'en' ? ' (latest)' : '（最新）') : ''}: ${compatibilityViewLabel(view)}`).join(' · '))}${detailItem('Node.js', compatibility.node === 'unknown' ? t('value.undeclared') : compatibility.node)}
       ${detailItem(state.locale === 'en' ? 'Lifecycle evidence' : '安装/启动/卸载/回滚证据', operationEvidenceText(entry))}
       ${detailItem(t('assurance.installable'), evidenceStatusLabel(entry.assurance.installability.status))}${detailItem(t('assurance.runtime'), evidenceStatusLabel(entry.assurance.runtime.status))}

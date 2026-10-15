@@ -1,3 +1,6 @@
+import { bundlePatchContract } from '../src/bundle-patch-contract.mjs'
+import { reviewFixedSource } from '../src/fixed-source-review.mjs'
+import { SOURCE_SCAN_BOUNDS } from '../src/source-scan-policy.mjs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { posix } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -173,13 +176,15 @@ function patchEntryIds(patch, options = {}) {
   if (/@deepseek-ai\//.test(patch) && /disabled:\s*true/i.test(patch)) {
     throw submissionError('SUBMISSION_PATCH_PROTECTED', 'Bundle Patch appears to disable an official component')
   }
-  const ids = [...new Set([...patch.matchAll(/(?:^|\n)\s*- id:\s*['"]?([A-Za-z0-9][A-Za-z0-9._-]{0,95})['"]?\s*(?:\n|$)/g)]
-    .map(match => match[1]))]
+  let contract
+  try { contract = bundlePatchContract(patch) } catch (error) { throw submissionError('SUBMISSION_PATCH_AMBIGUOUS', error.message) }
+  const ids = contract.entryIds
   if (ids.length === 0) throw submissionError('SUBMISSION_ENTRY_MISSING', 'Bundle Patch does not declare a DSH entry ID')
-  const protectedIds = ids.filter(id => PROTECTED_ENTRY_IDS.has(id))
+  const protectedIds = [...ids, ...contract.configOverrides.map(row => row.id)].filter(id => PROTECTED_ENTRY_IDS.has(id))
   const allowProtectedManager = options.allowProtectedManager === true
     && ids.length === 1
     && ids[0] === 'dsh-safe-plugin-manager'
+    && !contract.configOverrides.some(row => PROTECTED_ENTRY_IDS.has(row.id))
   if (protectedIds.length > 0 && !allowProtectedManager) {
     throw submissionError('SUBMISSION_ENTRY_PROTECTED', 'Bundle Patch uses a protected DSH entry ID')
   }
@@ -351,6 +356,9 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
     && repositoryInput.repositoryUrl === 'https://github.com/AI-Scarlett/DSH-Store'
     && manifest.name === 'dsh-safe-plugin-manager'
   const entryIds = patchEntryIds(patch, { allowProtectedManager })
+  const contract = bundlePatchContract(patch)
+  if (contract.insertedEntries.some(row => row.name !== manifest.name)) throw submissionError('SUBMISSION_PATCH_IDENTITY', 'Inserted implementations must resolve to the reviewed package identity')
+  const configOverrides = contract.configOverrides.map(row => row.id)
   const readme = await optionalReadme(repositoryInput.repositoryUrl, snapshot.commit, discovered.manifestPath, fetchOptions)
   const pluginType = ['feature', 'theme', 'suite', 'client', 'provider'].includes(manifest?.dsh?.pluginType)
     ? manifest.dsh.pluginType
@@ -373,6 +381,7 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
     categories: inferredCategories(manifest, catalog, pluginType),
     featured: false,
     entryIds,
+    ...(configOverrides.length ? { configOverrides } : {}),
     status: 'approved',
     compatibility: inferredCompatibility(manifest),
     details: {
@@ -424,46 +433,22 @@ export async function scanSubmissionRepository(result, options = {}) {
   })
   const manifest = JSON.parse(await readPinnedText(entry.repositoryUrl, entry.commit, entry.manifestPath,
     { ...fetchOptions, maxBytes: SUBMISSION_SCAN_BOUNDS.maxFileBytes }))
-  const surface = packageSourceSurface(manifest, tree, entry.installPath)
-  const skippedUnsupported = surface.entries.filter(unsupportedPackageEntry).length
-  const eligible = surface.entries
-    .filter(item => item.type === 'blob' && item.mode !== '120000' && SCANNABLE_SOURCE.test(item.relativePath))
-    .map(item => ({ item, relativePath: item.relativePath }))
-    .sort((left, right) => scanFilePriority(left.relativePath) - scanFilePriority(right.relativePath)
-      || left.relativePath.localeCompare(right.relativePath, 'en'))
-  const oversized = eligible.filter(({ item }) => !Number.isSafeInteger(item?.size)
-    || item.size < 0 || item.size > SUBMISSION_SCAN_BOUNDS.maxFileBytes)
-  const selected = eligible.filter(({ item }) => Number.isSafeInteger(item?.size)
-      && item.size >= 0 && item.size <= SUBMISSION_SCAN_BOUNDS.maxFileBytes)
-    .slice(0, SUBMISSION_SCAN_BOUNDS.maxFiles)
   const sources = []
-  for (let index = 0; index < selected.length; index += 8) {
-    const batch = selected.slice(index, index + 8)
-    const texts = await Promise.all(batch.map(({ item }) => readPinnedText(
-      entry.repositoryUrl, entry.commit, item.path,
-      { ...fetchOptions, maxBytes: SUBMISSION_SCAN_BOUNDS.maxFileBytes },
-    )))
-    for (let offset = 0; offset < batch.length; offset += 1) {
-      sources.push({ path: batch[offset].relativePath, source: texts[offset] })
-    }
-  }
-  const scopeReasons = [...surface.reasons]
-  for (const file of sources) {
-    const item = surface.entries.find(item => item.relativePath === file.path)
-    if (Buffer.byteLength(file.source) !== item.size) scopeReasons.push(`fixed source byte size does not match tree: ${file.path}`)
-    const modules = localModuleEvidence(file.source, file.path)
-    scopeReasons.push(...missingLocalModuleReasons(modules.references, file.path, surface.entries))
-    if (modules.dynamic) scopeReasons.push(`dynamic module loading or code evaluation requires review: ${file.path}`)
-  }
+  const review = await reviewFixedSource(entry, manifest, tree, {
+    sourceBounds: SOURCE_SCAN_BOUNDS,
+    automaticApproval: { allowSymlinks: false, allowSubmodules: false, permissionSignals: {} },
+  }, (path, maxBytes) => readPinnedText(entry.repositoryUrl, entry.commit, path, { ...fetchOptions, maxBytes }), {
+    onSource: file => sources.push(file),
+  })
+  const scopeReasons = review.scanComplete ? [] : review.reasons.filter(reason => !reason.startsWith('runtime source contains'))
   return { ...scanSubmissionSources(sources, {
-    scopeReasons,
-    packaged: true,
-    eligibleFiles: eligible.length,
-    skippedOversize: oversized.length,
-    skippedUnsupported,
-    capped: tree?.truncated === true || eligible.length === 0
-      || eligible.length - oversized.length > SUBMISSION_SCAN_BOUNDS.maxFiles,
-  }), scope: { kind: surface.kind, repositoryEntries: surface.repositoryEntries, files: surface.entries.length } }
+    scopeReasons, packaged: true, eligibleFiles: review.runtimeFiles,
+    skippedOversize: review.budgetFindings.filter(f => f.rule === 'source-file-bytes').length,
+    skippedUnsupported: review.unsupportedFiles,
+    capped: !review.scanComplete,
+  }), engine: review.engine, sourceDigest: review.sourceDigest, sourceEvidence: review.sourceEvidence,
+    budgetFindings: review.budgetFindings, capabilityEvidence: review.capabilityEvidence, scope: review.scope }
+
 }
 
 function safeCode(value) {

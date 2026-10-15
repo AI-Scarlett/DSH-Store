@@ -1,3 +1,4 @@
+import { bundlePatchContract } from './bundle-patch-contract.mjs'
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 
@@ -439,12 +440,16 @@ export async function verifyCatalogEntry(entry, options = {}) {
   if (/@deepseek-ai\//.test(patch) && /disabled:\s*true/.test(patch)) {
     throw sourceError('SOURCE_PATCH_REJECTED', 'GitHub Bundle Patch appears to disable an official package')
   }
-  for (const id of entry.entryIds) {
-    const pattern = new RegExp(`(?:^|\\n)\\s*- id: ['\"]?${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['\"]?\\s*(?:\\n|$)`)
-    if (!pattern.test(patch)) {
-      throw sourceError('SOURCE_PATCH_MISMATCH', `GitHub Bundle Patch does not declare registry entry id ${id}`)
-    }
+  let patchContract
+  try { patchContract = bundlePatchContract(patch) } catch (error) { throw sourceError('SOURCE_PATCH_REJECTED', error.message) }
+  if (patchContract.insertedEntries.some(row => row.name.startsWith('@deepseek-ai/'))) throw sourceError('SOURCE_PATCH_REJECTED', 'Bundle references protected package implementation')
+  if (JSON.stringify([...patchContract.entryIds].sort()) !== JSON.stringify([...entry.entryIds].sort())
+    || JSON.stringify(patchContract.configOverrides.map(r => r.id).sort()) !== JSON.stringify([...(entry.configOverrides ?? [])].sort())) {
+    throw sourceError('SOURCE_PATCH_MISMATCH', 'GitHub Bundle operations do not match the registry')
   }
+  if (patchContract.insertedEntries.some(row => row.name !== entry.packageName)) throw sourceError('SOURCE_PATCH_REJECTED', 'Bundle implementation is outside the reviewed package')
+  const protectedIds = new Set(['ui-settings-plugin-inventory', 'dsh-safe-plugin-manager'])
+  if (patchContract.configOverrides.some(r => protectedIds.has(r.id))) throw sourceError('SOURCE_PATCH_REJECTED', 'Protected DSH config override')
   return {
     status: 'verified', verifiedAt: new Date().toISOString(), manifestUrl, patchUrl,
     packageName: manifest.name, version: manifest.version,
@@ -526,6 +531,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
   if (status === 'approved' && entryIds.length === 0) {
     throw new TypeError(`entries[${index}] approved plugins must declare at least one DSH entry id`)
   }
+  if (value.admission && (!/^[a-f0-9]{64}$/.test(value.admission.binding ?? '') || (value.admission.reviewRegistryDigest && !/^[a-f0-9]{64}$/.test(value.admission.reviewRegistryDigest)))) throw new TypeError('admission digests must be SHA256')
   const installScripts = stringArray(value.risk?.installScripts ?? [], `entries[${index}].risk.installScripts`, { simple: true })
   const allowedScripts = new Set(['preinstall', 'install', 'postinstall', 'prepare'])
   if (installScripts.some(script => !allowedScripts.has(script))) {
@@ -551,7 +557,19 @@ function validateEntry(value, index, catalogUpdatedAt) {
     installCount: Number.isSafeInteger(value.installCount) && value.installCount >= 0 ? value.installCount : null,
     source: sourceMetadata(value.source, `entries[${index}]`),
     assurance: assuranceEvidence(value.assurance, `entries[${index}]`, catalogUpdatedAt),
+    ...(value.admission ? { admission: {
+      engine: nonEmptyString(value.admission.engine, 'admission.engine', 80),
+      binding: nonEmptyString(value.admission.binding, 'admission.binding', 64),
+      ...(value.admission.policyDigest ? { policyDigest: nonEmptyString(value.admission.policyDigest, 'admission.policyDigest', 64) } : {}),
+      state: enumValue(value.admission.state, 'admission.state', ['source-verified', 'reviewed', 'review-required', 'incomplete', 'rejected']),
+      sourceContract: enumValue(value.admission.sourceContract, 'admission.sourceContract', ['verified', 'unverified']),
+      coverage: enumValue(value.admission.coverage, 'admission.coverage', ['complete', 'incomplete']),
+      capabilities: enumValue(value.admission.capabilities, 'admission.capabilities', ['prohibited', 'low-risk-static', 'reviewed', 'review-required']),
+      compatibility: 'per-version-declaration',
+      ...(value.admission.reviewRegistryDigest ? { reviewRegistryDigest: nonEmptyString(value.admission.reviewRegistryDigest, 'admission.reviewRegistryDigest', 64) } : {}),
+    } } : {}),
     entryIds,
+    ...(value.configOverrides ? { configOverrides: stringArray(value.configOverrides, `entries[${index}].configOverrides`, { simple: true }) } : {}),
     status,
     statusReason: status === 'blocked' || status === 'unlisted'
       ? nonEmptyString(value.statusReason, `entries[${index}].statusReason`, 600)
@@ -560,6 +578,10 @@ function validateEntry(value, index, catalogUpdatedAt) {
       dsh: typeof value.compatibility?.dsh === 'string' ? value.compatibility.dsh.slice(0, 120) : null,
       dshReleases: declaredDshReleaseCompatibility(value.compatibility?.dshReleases, value.compatibility?.dsh, `entries[${index}].compatibility`),
       dshOperations: declaredDshOperations(value.compatibility?.dshOperations, `entries[${index}].compatibility`),
+      ...(value.compatibility.latestWindow ? { latestWindow: {
+        state: enumValue(value.compatibility.latestWindow.state, 'compatibility.latestWindow.state', ['current', 'recheck-required']),
+        releases: stringArray(value.compatibility.latestWindow.releases, 'compatibility.latestWindow.releases'),
+      } } : {}),
       node: typeof value.compatibility?.node === 'string' ? value.compatibility.node.slice(0, 120) : null,
       systems: stringArray(value.compatibility?.systems ?? [], `entries[${index}].compatibility.systems`),
       profiles: stringArray(value.compatibility?.profiles ?? [], `entries[${index}].compatibility.profiles`),
@@ -821,11 +843,14 @@ function legacyWireEntry(entry, searchTermLimit = 40) {
     source: entry.source,
     assurance: legacyAssurance(entry.assurance),
     entryIds: entry.entryIds,
+    ...(entry.admission ? { admission: entry.admission } : {}),
+    ...(entry.configOverrides?.length ? { configOverrides: entry.configOverrides } : {}),
     status: entry.status,
     ...(entry.statusReason ? { statusReason: entry.statusReason } : {}),
     compatibility: {
       dsh: entry.compatibility.dsh,
       dshReleases: entry.compatibility.dshReleases,
+      ...(entry.compatibility.latestWindow ? { latestWindow: entry.compatibility.latestWindow } : {}),
       node: entry.compatibility.node,
       systems: entry.compatibility.systems,
       profiles: entry.compatibility.profiles,
@@ -1236,6 +1261,14 @@ export function selectMarketplaceIndexEntries(index, options = {}) {
   }
 }
 
+export function exactHostCompatibility(entry, version) {
+  if (typeof version !== 'string' || !VERSION.test(version)) return { status: 'unknown', currentVersion: null }
+  const statuses = Object.entries(entry?.compatibility?.dshReleases ?? {})
+    .filter(([key]) => dshReleaseVersion(key) === version).map(([, value]) => value)
+  return { status: statuses.length > 0 && statuses.every(s => s === 'compatible') ? 'compatible'
+    : statuses.includes('incompatible') ? 'incompatible' : 'unknown', currentVersion: version }
+}
+
 export function buildMarketplaceSnapshot(catalog, inventory, query = '', options = {}) {
   const installedByName = new Map(inventory.plugins.map(plugin => [plugin.packageName, plugin]))
   const managedPackages = options.managedPackages instanceof Set ? options.managedPackages : new Set()
@@ -1266,7 +1299,9 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
       commandText: `dsh plugin --profile ${inventory.profile} add ${manualLifecycleArgument} '${githubInstallSpecifier(entry)}'`,
       reason: 'Catalog 已固定同版本的新 Commit；新安装会直接使用该 Commit，已安装副本不在商城内执行同版本覆盖。',
     } : null
-    const migrationAvailable = localProtected && entry.status === 'approved' && !installed?.official
+    const hostCompatibility = exactHostCompatibility(entry, options.dshVersion?.currentVersion)
+    const packageAllowed = hostCompatibility.status === 'compatible'
+    const migrationAvailable = packageAllowed && localProtected && entry.status === 'approved' && !installed?.official
     const self = entry.packageName === 'dsh-safe-plugin-manager'
     let managementBlockedReason = null
     if (entry.status === 'blocked') managementBlockedReason = entry.statusReason
@@ -1276,8 +1311,8 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
     if (managementBlockedReason === null) {
       if (migrationAvailable) allowedActions.push('migrate')
       else {
-        if (installed === null && entry.status === 'approved' && !self) allowedActions.push('install')
-        if (installed !== null && entry.status === 'approved' && updateAvailable) allowedActions.push('update')
+        if (installed === null && entry.status === 'approved' && packageAllowed && !self) allowedActions.push('install')
+        if (installed !== null && entry.status === 'approved' && packageAllowed && updateAvailable) allowedActions.push('update')
         if (installed !== null && !self) allowedActions.push('disable', 'enable', 'uninstall')
       }
     }
@@ -1292,6 +1327,8 @@ export function buildMarketplaceSnapshot(catalog, inventory, query = '', options
     return {
       ...entry,
       listed: entry.status !== 'unlisted',
+      hostCompatibility,
+      packageBlockedReason: packageAllowed ? null : '当前 DSH 版本没有精确兼容记录，安装、更新和迁移暂不可用。',
       installed: installed !== null,
       installedVersion: installed?.version ?? null,
       installedSource: installed?.source ?? null,

@@ -141,25 +141,28 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
 - 每轮从官方 npm Registry 完整元数据读取 `@deepseek-ai/dsh` 的 `latest` 标签及其之前最近两个
   未弃用发行版，组成最新三个版本窗口；权威源不可用、元数据异常或不足三个版本时整轮失败关闭，
   不使用 Catalog 推测值执行上下架；
-- `approved` 条目在三个版本中至少需要一个精确 `dshReleases: compatible` 记录；三者均为
-  `incompatible`、`unknown` 或缺失时自动转为 `unlisted`，并在 Candidate Registry 新建
-  `reviewing` 记录。后续固定 Commit 补齐兼容记录后自动恢复 `approved` 并只删除本策略创建的候选；
-- 原项目通过 `package.json` 的 `dsh.compatibility.dshReleases` 提供逐版本声明，例如
-  `{"0.1.1-rc.2":"compatible"}`；插件提升自身 SemVer 后，扫描会从新固定 Commit 读取该矩阵。
-  未声明的版本写为 `unknown`，声明值只接受 `compatible`、`incompatible` 或 `unknown`；
-- 自动低风险源码面仍有硬上限：最多 240 个运行时文件、单文件 262144 字节（256 KiB）、合计
-  2097152 字节（2 MiB）。超过上限时报告会写出实际文件数、总字节和最大文件字节并失败关闭。
-  这些是保证完整读取、限制 API/时间消耗并抵御超大输入的审核边界，不是插件运行时内存限制；
-  不得通过取消上限或跳过未读源码来获得自动批准；
-- 商城自身仍使用 512 个运行文件、单文件 4 MiB、合计 8 MiB 的有界审查；分表生成的
-  `registry/catalog/details/<插件编号>.json` 已由 Registry schema、摘要和完整性门禁负责，且不是
-  可执行插件源码，因此不占用商城自身的运行源码文件计数。该例外只匹配官方商城仓库的一层
-  `.json` 详情文件；脚本、索引、其他 JSON、嵌套文件和任何其他仓库仍进入源码审查；
+- 最新三个官方版本是复核窗口。`compatibility.latestWindow` 标记 `current` 或
+  `recheck-required`，保留同一固定 Commit 的历史精确记录和项目页面。所有版本均无精确兼容记录时
+  转为可见 `blocked`，不再因窗口滚动直接隐藏项目；只恢复本策略产生的 hold，不恢复作者下架。
+- 安装、更新、迁移必须匹配本机实际 DSH 完整版本的 `dshReleases: compatible`，宽泛范围和其他版本
+  的成功记录均不能授权操作。计划和执行阶段分别只读本机官方 manifest；宿主改变时计划失效。
+- 作者在新固定 Commit 的 `dsh.compatibility.dshReleases` 补充声明无需升级 SemVer。源变更后不沿用
+  旧 Commit 的验收或兼容结论，未声明版本仍是 `unknown`。
+- 提交预检和自动收录共用 `bounded-source-v2`：最多 512 个运行源码文件，单文件 4194304 字节
+  （4 MiB），总量 8388608 字节（8 MiB），包内树条目上限 1200。此前商城自身已有这组预算，现统一应用。
+  超限按文件、总量、数量分别返回 rule、file、actual、limit 和责任方 `store-scanner`；不要求作者拆包、
+  压缩或删除功能。继续扫描预算内文件，负面能力在覆盖不完整时保持未知，不能据此批准安装。
+- 商城分表生成的 `registry/catalog/details/<插件编号>.json` 等已验证静态数据保留原有精确路径例外；
+  不扩展到第三方，也不扩展到脚本、嵌套文件或未知 JSON。
+- `exports` 单星号目标只在固定完整 Git 树中展开，检查每个命中文件已分发、非符号链接且不越界；
+  未命中、复杂模式、截断和歧义保持阻止。
+- Bundle 使用有界、不执行的 YAML 子集解析器。新增入口 ID 参与所有权冲突；`id + config` 是配置覆盖
+  目标，不占有该 ID，必须单独审阅整段 config 替换影响。嵌套 config 内的 ID 不成为入口。
+  删除、停用、未知选择器、别名、标签、重复键和歧义语法不能自动通过。
 - 原项目 SemVer 高于商城版本，或版本相同但默认分支出现新 Commit 时，候选 Commit 都必须是
   旧 Commit 的有界直接后继，并在包名、仓库、manifest 路径、安装路径、Bundle 入口和许可证
   保持一致后进入同一套固定源更新审查；
-- `source-verified` 更新必须继续满足完整低风险自动策略；`user-reviewed` 条目可以自动刷新
-  商城中的固定 Commit 和版本号，但真实安装仍逐次执行本机风险审查；`external-only`、blocked
+- `source-verified` 更新必须继续满足完整低风险自动策略；`user-reviewed` 必须有新 Commit 的专项审阅记录才能更新安装目标，历史风险许可不会继承；`external-only`、blocked
   和 unlisted 条目只刷新可追溯的项目元数据，不会因此获得安装资格；
 - 版本或固定 Commit 写入后，旧来源的安装、运行、安全和精确兼容证据全部重置为 `unknown`，
   不把历史验收沿用到新来源；同版本源码变化通过完整审查后移动 Catalog 固定 Commit，使未安装
@@ -246,3 +249,24 @@ SemVer 键，例如 `0.1.1-rc.2`，避免不同发布线的 `rc.1` 混淆。商�
 
 目录收录不等于完成安全审计。插件代码会以 DSH 进程权限运行，使用者必须在安装计划
 中再次查看仓库、Commit、生命周期脚本和影响范围。
+
+
+### 固定源码专项审阅与身份迁移
+
+`registry/admission-reviews.json` 通过 CI PR 维护。每条记录绑定 canonical repository、完整 Commit、
+scanner/policy、manifest 与包身份、入口与覆盖目标、全部已读源码摘要、能力信号和安全命中项。
+有完整已知文件/网络/命令/凭据能力的项目可给出明确权限和理由，得到 `reviewed`；未知依赖、安装脚本、
+动态加载、缺失源码或受保护 DSH 操作均不能靠“接受风险”跳过。拒绝与审阅要求独立于覆盖和源契约。
+扫描器普通环境目录值（如 `DSH_HOME`）不再直接归类为凭据，动态环境访问仍需复核。
+
+合成密钥样本没有按 tests/docs 路径忽略的规则。只有匹配当前完整源码的 rule + file + line + SHA256
+专项 disposition 才可排除该项；记录必须给出理由与证据链接。报告只保留位置和摘要，不输出密钥或源码片段。
+这套记录不代表独立安全审计或真实运行验收。初始审阅表为空，不能凭本次策略升级批量批准旧条目。
+
+`registry/catalog-migrations.json` 是明确的元数据迁移通道：绑定旧身份哈希、旧/新 Commit、from/to 包名、
+manifest/install 路径与许可证、审阅人和证据；先解析批准的新 manifest 路径，再重跑全部收录门禁。
+迁移不赋予安装资格；旧身份由 Git 历史和机器计划保留。没有记录时包名、路径和许可证变化继续阻止。
+
+`npm run reassess:admission` 是覆盖完整 Catalog 的只读元数据排查，明确标记 sourceReview=not-performed，
+不重新执行第三方代码、不改 Catalog，也不推断安装或安全结论。实际重新收录只能通过新鲜的策略工作流。
+`npm run verify:admission-plan` 校验这次源变更的 base、scope 和文件哈希；回滚使用新的 CI PR，联系台账不回滚。

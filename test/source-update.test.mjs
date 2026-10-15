@@ -30,7 +30,14 @@ function githubFetch({ patch = '+export const version = 2', commit = candidateCo
       const version = url.includes(`/${catalogCommit}/`) ? '1.0.0' : candidateVersion
       return response(JSON.stringify({ name: 'dsh-demo', version, license: 'MIT', main: 'lib/index.js', dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {} }))
     }
-    if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/cordis.patch.yml')) return response('- id: demo\n')
+    if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/cordis.patch.yml')) return response('- insert:\n    - id: demo\n      name: dsh-demo\n')
+    if (url.includes('/git/trees/')) {
+      const paths = ['package.json', 'cordis.patch.yml', 'lib/index.js']
+      const reader = githubFetch({ patch, commit, candidateVersion })
+      const tree = await Promise.all(paths.map(async path => ({ path, type: 'blob', mode: '100644', size: Buffer.byteLength(await (await reader(`https://raw.githubusercontent.com/example/dsh-demo/${commit}/${path}`)).text()) })))
+      return response({ truncated: false, tree })
+    }
+    if (parsedUrl.hostname === 'raw.githubusercontent.com' && url.endsWith('/lib/index.js')) return response(patch?.split(/\r?\n/).filter(line => !/^(?:-|@@|\+\+\+)/.test(line)).map(line => line.replace(/^[ +]/, '')).join('\n') ?? '')
     if (url.includes('/compare/')) return response({
       status: 'ahead', total_commits: 1,
       files: [{ filename: 'lib/index.js', status: 'modified', additions: 2, deletions: 1, changes: 3, patch }],

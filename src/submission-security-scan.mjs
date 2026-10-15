@@ -1,6 +1,7 @@
+import { SOURCE_SCAN_BOUNDS } from './source-scan-policy.mjs'
 export const SUBMISSION_SCAN_BOUNDS = Object.freeze({
-  maxFiles: 150,
-  maxFileBytes: 400_000,
+  maxFiles: SOURCE_SCAN_BOUNDS.maxRuntimeFiles,
+  maxFileBytes: SOURCE_SCAN_BOUNDS.maxFileBytes,
   maxFindings: 50,
 })
 

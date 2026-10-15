@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+import { admissionDecision, validateAdmissionReviews } from '../src/admission-review.mjs'
+import { validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget } from '../src/catalog-migration.mjs'
+import { SOURCE_SCAN_BOUNDS, SCAN_POLICY_VERSION, MANIFEST_MAX_BYTES } from '../src/source-scan-policy.mjs'
 
 import { reviewFixedSource } from '../src/fixed-source-review.mjs'
 import { discoverFeedCandidates, orderDiscoveryCandidates } from '../src/discovery-feeds.mjs'
@@ -50,6 +53,9 @@ const catalogPath = resolve(root, 'registry/catalog.json')
 const catalogIndexPath = resolve(root, 'registry/catalog-index.json')
 const candidatesPath = resolve(root, 'registry/candidates.json')
 const policyPath = resolve(root, 'registry/automation-policy.json')
+const admissionReviews = validateAdmissionReviews(JSON.parse(await readFile(resolve(root, 'registry/admission-reviews.json'), 'utf8')))
+const admissionReviewDigest = sha256(JSON.stringify(admissionReviews))
+const catalogMigrations = validateCatalogMigrations(JSON.parse(await readFile(resolve(root, 'registry/catalog-migrations.json'), 'utf8')))
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare']
 const INFRASTRUCTURE_CODES = new Set([
   'SUBMISSION_FETCH_UNAVAILABLE', 'SUBMISSION_GITHUB_HTTP', 'SUBMISSION_GITHUB_TIMEOUT',
@@ -57,11 +63,6 @@ const INFRASTRUCTURE_CODES = new Set([
   'SUBMISSION_TREE_HTTP', 'SUBMISSION_SOURCE_HTTP',
 ])
 const SELF_MANAGER_REPOSITORY = 'https://github.com/AI-Scarlett/DSH-Store'
-const SELF_MANAGER_PROTECTED_ENTRY_REASON = 'Bundle Patch uses a protected DSH entry ID'
-const SELF_MANAGER_PROTECTED_DSH_REASON = 'runtime source contains the protectedDsh permission signal'
-const SELF_MANAGER_MAX_RUNTIME_FILES = 512
-const SELF_MANAGER_MAX_FILE_BYTES = 4 * 1024 * 1024
-const SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES = 8 * 1024 * 1024
 
 function sha256(value) {
   return createHash('sha256').update(value).digest('hex')
@@ -123,16 +124,6 @@ function routeForFailure(code) {
   if (code === 'SUBMISSION_PACKAGE_AMBIGUOUS') return 'monorepo-review'
   if (code === 'SUBMISSION_BUNDLE_MISSING') return 'adapter-required'
   return 'blocked'
-}
-
-function isSafeSelfManagerUpdate(entry, hardReasons) {
-  const repository = isSelfManagerEntry(entry) ? SELF_MANAGER_REPOSITORY.toLowerCase() : null
-  const reason = hardReasons?.length === 1 ? String(hardReasons[0]).trim() : null
-  return repository === SELF_MANAGER_REPOSITORY.toLowerCase()
-    && Array.isArray(hardReasons)
-    && hardReasons.length === 1
-    && (reason.includes(SELF_MANAGER_PROTECTED_ENTRY_REASON)
-      || reason === SELF_MANAGER_PROTECTED_DSH_REASON)
 }
 
 function isSelfManagerEntry(entry) {
@@ -250,7 +241,7 @@ async function analyzeFixedSource(candidate, policy, github) {
   const reasons = []
   const { owner, repository } = repositoryParts(candidate.repositoryUrl)
   const metadata = await github.api(`repos/${owner}/${repository}`)
-  const manifest = JSON.parse(await github.raw(candidate.repositoryUrl, candidate.commit, candidate.manifestPath, { maxBytes: policy.sourceBounds.maxFileBytes }))
+  const manifest = JSON.parse(await github.raw(candidate.repositoryUrl, candidate.commit, candidate.manifestPath, { maxBytes: MANIFEST_MAX_BYTES }))
   const manifestRepository = canonicalManifestRepository(manifest.repository)
   const repositoryLicense = metadata?.license?.spdx_id
   if (policy.automaticApproval.requireManifestRepositoryMatch && manifestRepository !== candidate.repositoryUrl) {
@@ -266,6 +257,7 @@ async function analyzeFixedSource(candidate, policy, github) {
   }
   if (policy.automaticApproval.requireDshCompatibility && !candidate.compatibility.dsh) reasons.push('DSH compatibility is not explicitly declared')
   if (policy.automaticApproval.requireNodeCompatibility && !candidate.compatibility.node) reasons.push('Node.js compatibility is not explicitly declared')
+  const contractVerified = reasons.length === 0
   if (!policy.automaticApproval.allowLifecycleScripts && candidate.risk.installScripts.length > 0) {
     reasons.push(`install lifecycle scripts are present: ${candidate.risk.installScripts.join(', ')}`)
   }
@@ -285,8 +277,11 @@ async function analyzeFixedSource(candidate, policy, github) {
   const review = await reviewFixedSource(candidate, manifest, tree, policy, (path, maxBytes) =>
     github.raw(candidate.repositoryUrl, candidate.commit, path, { maxBytes }))
   reasons.push(...review.reasons)
+  if (candidate.configOverrides?.length) reasons.push(`Bundle configuration overrides require review: ${candidate.configOverrides.join(', ')}; later layers replace the entire config`)
   return {
     ...review,
+    contractVerified,
+    policyDigest: sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })),
     approved: reasons.length === 0,
     reasons: [...new Set(reasons)].slice(0, 40),
     repositoryLicense: repositoryLicense ?? null,
@@ -296,16 +291,18 @@ async function analyzeFixedSource(candidate, policy, github) {
 }
 
 function automatedEntry(candidate, analysis, observedAt) {
-  const approved = analysis.approved
-  const permissions = approved
+  const admission = admissionDecision(candidate, analysis, admissionReviews)
+  const approved = ['source-verified', 'reviewed'].includes(admission.state)
+  const permissions = admission.state === 'reviewed' ? admission.permissions : analysis.approved
     ? { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] }
     : { level: 'unknown', files: 'unknown', network: 'unknown', commands: 'unknown', credentials: ['unknown'] }
   return localizeCatalogEntry({
     ...candidate,
+    admission: { ...admission, reviewRegistryDigest: admissionReviewDigest },
     compatibility: sourceDeclaredCompatibility({ compatibility: {} }, candidate),
     status: approved ? 'approved' : 'blocked',
     ...(approved ? {} : { statusReason: boundedText(`Automatic policy blocked installation: ${analysis.reasons.join('; ')}`, 'Automatic policy could not prove safe installation.') }),
-    updatePolicy: approved ? 'source-verified' : 'external-only',
+    updatePolicy: admission.state === 'reviewed' ? 'user-reviewed' : admission.state === 'source-verified' ? 'source-verified' : 'external-only',
     assurance: {
       discovery: {
         status: 'verified', method: 'automated-fixed-source-policy-v1', checkedAt: observedAt,
@@ -321,7 +318,7 @@ function automatedEntry(candidate, analysis, observedAt) {
     details: {
       ...candidate.details, permissions,
       externalDependencies: approved ? [] : analysis.dependencies,
-      reviewStatus: 'automated-scan',
+      reviewStatus: admission.state === 'reviewed' ? 'manual-review' : 'automated-scan',
     },
     risk: {
       ...candidate.risk,
@@ -389,18 +386,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
   const updatePolicy = policy.updates ?? {}
   const concurrency = Number.isInteger(updatePolicy.concurrency) ? updatePolicy.concurrency : 8
   const maxCommitSpan = Number.isInteger(updatePolicy.maxCommitSpan) ? updatePolicy.maxCommitSpan : 200
-  const reviewableReasons = [
-    'DSH compatibility is not explicitly declared',
-    'Node.js compatibility is not explicitly declared',
-    'install lifecycle scripts are present:',
-    'runtime or optional dependencies require a separate supply-chain review',
-    'bundled dependencies are not eligible for automatic approval',
-    'runtime source contains the files permission signal',
-    'runtime source contains the network permission signal',
-    'runtime source contains the commands permission signal',
-    'runtime source contains the credentials permission signal',
-    'runtime source contains the nativeOrExecutableArtifacts permission signal',
-  ]
+
 
   function sourceSnapshot(entry) {
     const key = entry.repositoryUrl.toLowerCase()
@@ -472,17 +458,19 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     let changeContract = null
     try {
       snapshot = await sourceSnapshot(entry)
-      const recheckCurrent = snapshot.commit === entry.commit && isAutomaticPolicyBlocked(entry) && entry.assurance?.discovery?.method !== 'automated-fixed-source-recheck-v1'
+      const recheckCurrent = snapshot.commit === entry.commit && (entry.status === 'approved' || isAutomaticPolicyBlocked(entry) || String(entry.statusReason ?? '').startsWith('DSH_LATEST_THREE_COMPATIBILITY_HOLD:')) && (entry.admission?.engine !== SCAN_POLICY_VERSION || entry.admission?.reviewRegistryDigest !== admissionReviewDigest || entry.admission?.policyDigest !== sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })))
       if (snapshot.commit === entry.commit && !recheckCurrent) return { index, entry, kind: 'current' }
       let manifest
       try {
-        manifest = JSON.parse(await github.raw(entry.repositoryUrl, snapshot.commit, entry.manifestPath, {
-          maxBytes: policy.sourceBounds.maxFileBytes,
+        manifest = JSON.parse(await github.raw(entry.repositoryUrl, snapshot.commit, catalogMigrationTarget(entry, snapshot, catalogMigrations).manifestPath, {
+          maxBytes: MANIFEST_MAX_BYTES,
         }))
       } catch (error) {
         if (String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')) throw error
         return { index, entry, kind: 'deferred', snapshot, reason: 'the fixed-Commit manifest is not valid JSON' }
       }
+      const migration = migrateCatalogIdentity(entry, snapshot, manifest, catalogMigrations)
+      if (migration.applied) entry = migration.entry
       versionAssessment = assessUpstreamVersion(entry, { commit: snapshot.commit, manifest })
       changeContract = recheckCurrent
         ? { reviewable: true, expectedVersionComparison: 0, changeKind: 'automatic-policy-recheck' }
@@ -540,29 +528,15 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       if (!lineageReview) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, reason: 'the candidate is not a bounded direct descendant of the Catalog Commit' }
       }
-      const analysisPolicy = isSelfManagerEntry(entry)
-        ? {
-          ...policy,
-          sourceBounds: {
-            ...policy.sourceBounds,
-            maxRuntimeFiles: Math.max(policy.sourceBounds.maxRuntimeFiles, SELF_MANAGER_MAX_RUNTIME_FILES),
-            maxFileBytes: Math.max(policy.sourceBounds.maxFileBytes, SELF_MANAGER_MAX_FILE_BYTES),
-            maxTotalRuntimeBytes: Math.max(policy.sourceBounds.maxTotalRuntimeBytes, SELF_MANAGER_MAX_TOTAL_RUNTIME_BYTES),
-          },
-        }
-        : policy
+      const analysisPolicy = policy
       const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, analysisPolicy, github))
-      const hardReasons = analysis.reasons.filter(reason => !reviewableReasons.some(prefix => reason.startsWith(prefix)))
-      const safeSelfManagerUpdate = isSafeSelfManagerUpdate(entry, hardReasons)
-      if (sourcePolicy === 'source-verified' && !analysis.approved && !safeSelfManagerUpdate) {
+      const decision = automatedEntry(candidate, analysis, observedAt)
+      // Source approval and human review are both immutable-Commit decisions.
+      // Preserve the last approved pin when a newer candidate is not admitted.
+      if (entry.status === 'approved' && decision.status !== 'approved' && !recheckCurrent) {
         return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: analysis.reasons.join('; ') }
       }
-      if (sourcePolicy === 'user-reviewed') {
-        if (hardReasons.length > 0 && !safeSelfManagerUpdate) {
-          return { index, entry, kind: 'deferred', snapshot, versionAssessment, sourcePolicy, reason: hardReasons.join('; ') }
-        }
-      }
-      let reviewed = refreshAutomaticPolicyReview(entry, automatedEntry(candidate, analysis, observedAt))
+      let reviewed = refreshAutomaticPolicyReview(entry, decision)
       if (disconnectedExternalOnly) {
         reviewed = holdExternalOnlyAfterDisconnectedHistory(reviewed, entry.commit, candidate.commit, analysis.reasons)
       }
@@ -572,7 +546,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const updated = buildCatalogVersionUpdate(reviewed, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,
-      }, observedAt, sourcePolicy)
+      }, observedAt, reviewed.updatePolicy)
       if (isAutomaticPolicyBlocked(entry)) updated.assurance.discovery.method = 'automated-fixed-source-recheck-v1'
       return {
         index, entry, kind: 'updated', snapshot, versionAssessment, changeContract, sourcePolicy, updated,
@@ -928,12 +902,13 @@ const observedAt = iso(options.observedAt ?? new Date().toISOString(), '--observ
 failureContext.observedAt = observedAt
 failureContext.stage = 'validate-policy'
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
+if (JSON.stringify(policy.sourceBounds) !== JSON.stringify(SOURCE_SCAN_BOUNDS)) throw new Error('submission and automation scan budgets diverged')
 if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
 if (policy.compatibility?.authority !== DSH_RELEASE_WINDOW_AUTHORITY
   || policy.compatibility?.registryUrl !== DSH_REGISTRY_URL
   || policy.compatibility?.latestReleaseCount !== 3
   || policy.compatibility?.requiredCompatibleReleases !== 1
-  || policy.compatibility?.unsupportedCatalogStatus !== 'unlisted'
+  || policy.compatibility?.unsupportedCatalogStatus !== 'blocked'
   || policy.compatibility?.candidateStatus !== 'reviewing'
   || policy.compatibility?.failClosedOnAuthorityError !== true) {
   throw new Error('unsupported DSH compatibility policy')
@@ -945,7 +920,7 @@ if (policy.candidateRetention?.authority !== REJECTED_CANDIDATE_RETENTION_AUTHOR
   || policy.candidateRetention?.maxCandidatesPerRun !== 96
   || policy.candidateRetention?.maxTreeEntries !== policy.sourceBounds.maxTreeEntries
   || policy.candidateRetention?.maxManifestCandidates !== 48
-  || policy.candidateRetention?.maxManifestBytes !== policy.sourceBounds.maxFileBytes
+  || policy.candidateRetention?.maxManifestBytes !== MANIFEST_MAX_BYTES
   || policy.candidateRetention?.concurrency !== 8) {
   throw new Error('unsupported rejected Candidate Registry retention policy')
 }
@@ -984,6 +959,9 @@ const report = {
     catalogIndexSha256: catalogIndexSha,
     candidatesSha256: candidatesSha,
     dshReleaseWindowSha256: dshReleaseWindowSha,
+    sourcePolicySha256: sha256(JSON.stringify(policy)),
+    admissionReviewsSha256: sha256(JSON.stringify(admissionReviews)),
+    catalogMigrationsSha256: sha256(JSON.stringify(catalogMigrations)),
   },
   policy: 'registry/automation-policy.json',
   sourceVersionChecks: {

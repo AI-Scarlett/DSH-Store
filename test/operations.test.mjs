@@ -10,7 +10,7 @@ const demoEntry = {
   id: 'demo', name: 'Demo', packageName: 'dsh-demo', description: 'demo plugin',
   repositoryUrl: 'https://github.com/example/dsh-demo', defaultBranch: 'main', manifestPath: 'package.json',
   commit: 'b'.repeat(40), version: '2.0.0', categories: ['tools'], entryIds: ['demo-entry'], status: 'approved',
-  compatibility: { dsh: '>=0.1.0', node: '>=22', systems: ['Linux'], profiles: ['web'] },
+  compatibility: { dsh: '>=0.1.0', dshReleases: { '0.1.0': 'compatible' }, node: '>=22', systems: ['Linux'], profiles: ['web'] },
   details: {
     pluginType: 'feature', installSource: 'github', license: 'MIT',
     permissions: { level: 'medium', files: 'read-only', network: 'none', commands: 'none', credentials: ['none'] },
@@ -54,6 +54,7 @@ function service(root, runner, options = {}) {
   return createOperationService({
     dshHome: root, defaultProfile: 'web', catalogService: { load: async () => catalog(options.entry) },
     runner, mutationsEnabled: true,
+    dshVersionService: options.dshVersionService ?? { current: async () => ({ currentVersion: '0.1.0' }) },
     sourceVerifier: options.sourceVerifier ?? (async entry => ({ status: 'verified', packageName: entry.packageName })),
     sourceVerificationCacheTtlMs: options.sourceVerificationCacheTtlMs,
     sourceUpdateService: options.sourceUpdateService,
@@ -477,4 +478,26 @@ test('failed dependency rollback is recovery-required and never offers restart',
     const result = await operations.execute({planId:plan.planId,confirmation:plan.confirmation})
     assert.equal(result.status,'recovery-required'); assert.equal(result.rollback,'failed'); assert.equal(result.restartRequired,false)
   } finally { await rm(root,{recursive:true,force:true}) }
+})
+
+test('host compatibility is exact, cannot be inferred from a range, and is rechecked before writes', async () => {
+  const { root, profile } = await fixture({ installed: false })
+  let version = '0.1.0'
+  const calls = []
+  const runner = { plugin: async () => { calls.push('mutation'); return { ok: true, exitCode: 0 } } }
+  const current = { current: async () => ({ currentVersion: version }) }
+  try {
+    const operations = service(root, runner, { dshVersionService: current })
+    const before = await readFile(join(profile, 'package.json'), 'utf8')
+    version = '0.2.0'
+    await assert.rejects(operations.createPlan({ action: 'install', pluginId: 'demo' }), { code: 'DSH_COMPATIBILITY_REQUIRED' })
+    version = '0.1.0'
+    const plan = await operations.createPlan({ action: 'install', pluginId: 'demo' })
+    assert.equal(plan.hostVersion, '0.1.0')
+    version = '0.2.0'
+    const result = await operations.execute({ planId: plan.planId, confirmation: plan.confirmation })
+    assert.equal(result.error.code, 'DSH_COMPATIBILITY_REQUIRED')
+    assert.equal(calls.length, 0)
+    assert.equal(await readFile(join(profile, 'package.json'), 'utf8'), before)
+  } finally { await rm(root, { recursive: true, force: true }) }
 })

@@ -123,7 +123,7 @@ export function catalogUpdatePolicy(entry) {
   // next fixed Commit must still receive the same bounded review an approved
   // entry would receive.
   const installableScope = entry.status === 'approved'
-    || (entry.status === 'unlisted' && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX))
+    || (['blocked', 'unlisted'].includes(entry.status) && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX))
   const lowRisk = installableScope
     && (entry.risk?.installScripts?.length ?? 0) === 0
     && ['none', 'read-only'].includes(permissions.files)
@@ -181,7 +181,9 @@ export function catalogUpdateIdentityMatches(entry, candidate) {
     && candidate?.repositoryUrl === entry.repositoryUrl
     && candidate?.manifestPath === entry.manifestPath
     && normalizedPath(candidate?.installPath) === normalizedPath(entry.installPath)
-    && JSON.stringify(sorted(candidate?.entryIds)) === JSON.stringify(sorted(entry.entryIds))
+    && (JSON.stringify(sorted(candidate?.entryIds)) === JSON.stringify(sorted(entry.entryIds))
+      || (entry.entryIds.every(id => candidate.entryIds.includes(id) || candidate.configOverrides?.includes(id))
+        && candidate.entryIds.every(id => entry.entryIds.includes(id))))
 }
 
 export function buildCatalogVersionUpdate(
@@ -200,6 +202,8 @@ export function buildCatalogVersionUpdate(
       : 'The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred.'
   return {
     ...entry,
+    entryIds: [...candidate.entryIds],
+    configOverrides: [...(candidate.configOverrides ?? [])],
     defaultBranch: candidate.defaultBranch,
     commit: candidate.commit,
     version: candidate.version,
@@ -239,7 +243,7 @@ export function isAutomaticPolicyBlocked(entry) {
 }
 
 export function refreshAutomaticPolicyReview(entry, reviewed) {
-  if (!isAutomaticPolicyBlocked(entry)) return entry
+  if (entry.status !== 'approved' && !isAutomaticPolicyBlocked(entry) && !String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX)) return entry
   if (!reviewed || reviewed.commit !== entry.commit && !/^[0-9a-f]{40}$/.test(reviewed.commit ?? '')) throw new Error('reviewed fixed Commit is required')
   if (reviewed.assurance?.discovery?.method !== 'automated-fixed-source-policy-v1') throw new Error('complete automatic source review is required')
   return { ...reviewed, id: entry.id, name: entry.name, description: entry.description,

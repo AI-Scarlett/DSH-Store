@@ -11,16 +11,16 @@ test('client peer declarations match the official Host pre-install contract', as
   assert.ok(clients.includes(runtime))
   const runtimeAlternatives = manifest.peerDependencies[runtime].split(' || ')
   assert.ok(runtimeAlternatives.includes('>=0.1.0-rc.6 <0.2.0'))
-  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2']) {
+  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3']) {
     assert.ok(runtimeAlternatives.includes(release), `Host pre-install check requires runtime ${release}`)
   }
   for (const name of clients.filter(value => value !== runtime)) {
     const alternatives = manifest.peerDependencies[name].split(' || ')
-    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2']) {
+    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3']) {
       assert.ok(alternatives.includes(release), `${name} must explicitly support published ${release}`)
     }
     assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
-    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 2)
+    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 3)
     assert.ok(!alternatives.includes('*'))
   }
 })

@@ -20,9 +20,9 @@
   },
   "sourceBounds": {
     "maxTreeEntries": 1200,
-    "maxRuntimeFiles": 240,
-    "maxFileBytes": 262144,
-    "maxTotalRuntimeBytes": 2097152
+    "maxRuntimeFiles": 512,
+    "maxFileBytes": 4194304,
+    "maxTotalRuntimeBytes": 8388608
   },
   "updates": {
     "checkAllCatalogEntries": true,
@@ -48,7 +48,7 @@
     "registryUrl": "https://registry.npmjs.org/@deepseek-ai%2Fdsh",
     "latestReleaseCount": 3,
     "requiredCompatibleReleases": 1,
-    "unsupportedCatalogStatus": "unlisted",
+    "unsupportedCatalogStatus": "blocked",
     "candidateStatus": "reviewing",
     "failClosedOnAuthorityError": true
   },
@@ -106,5 +106,10 @@
     "admission": "candidate-only",
     "maxRecordsPerRun": 8,
     "contactAuthors": false
+  },
+  "admissionReview": {
+    "path": "registry/admission-reviews.json",
+    "engine": "bounded-source-v2",
+    "unknownBlocksInstallation": true
   }
 }

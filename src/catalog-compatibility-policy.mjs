@@ -59,11 +59,11 @@ export function supportsDshReleaseWindow(entry, releases) {
 }
 
 export function compatibilityHoldReason(releases) {
-  return boundedText(`${COMPATIBILITY_HOLD_PREFIX} Temporarily unlisted because the Catalog has no compatible result for any of the official latest ${releases.length} DSH releases (${releases.join(', ')}). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.`)
+  return boundedText(`${COMPATIBILITY_HOLD_PREFIX} Installation held because the Catalog has no compatible result for any declared DSH release; the official latest ${releases.length} releases need rechecking (${releases.join(', ')}). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.`)
 }
 
 function isManagedHold(entry) {
-  return entry?.status === 'unlisted' && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX)
+  return ['blocked', 'unlisted'].includes(entry?.status) && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX)
 }
 
 function isManagedCandidate(candidate) {
@@ -87,7 +87,7 @@ function managedCandidate(entries, candidates, releases, observedAt, previous = 
     name: entries.length === 1 ? entry.name : `兼容性复核：${repositoryName}（${entries.length} 个 Catalog 条目）`,
     description: entries.length === 1
       ? entry.description
-      : `该仓库中的 ${entries.length} 个 DSH STORE 条目因最新三个 DSH 版本兼容记录不足而暂时下架：${affected.join('、')}。`,
+      : `该仓库中的 ${entries.length} 个 DSH STORE 条目需要补充精确 DSH 版本兼容记录：${affected.join('、')}。`,
     repositoryUrl: entry.repositoryUrl,
     defaultBranch: entry.defaultBranch,
     latestCommit: commits.length === 1 ? commits[0] : null,
@@ -160,7 +160,8 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
     compatibilityEntriesUpdated: [],
     catalogChanged: false,
     candidatesChanged: false,
-    unlisted: [],
+    unlisted: [], // Historical report key: now visible blocked entries, never hidden.
+    stale: [],
     restored: [],
     refreshed: [],
   }
@@ -176,7 +177,14 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
     if (entry.status !== 'approved' && !managedHold) continue
     if (entry.status === 'approved') report.checkedApprovedEntries += 1
     const supported = supportsDshReleaseWindow(entry, window.releases)
-    if (supported) {
+    const historicallySupported = Object.values(entry.compatibility.dshReleases).includes('compatible')
+    const latestWindow = { state: supported ? 'current' : 'recheck-required', releases: [...window.releases] }
+    if (JSON.stringify(entry.compatibility.latestWindow) !== JSON.stringify(latestWindow)) {
+      entry.compatibility.latestWindow = latestWindow
+      report.catalogChanged = true
+    }
+    if (!supported) report.stale.push(transitionRecord(entry, window.releases, null))
+    if (historicallySupported) {
       if (!managedHold) continue
       entry.status = 'approved'
       delete entry.statusReason
@@ -187,7 +195,7 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
 
     const reason = compatibilityHoldReason(window.releases)
     if (entry.status === 'approved') {
-      entry.status = 'unlisted'
+      entry.status = 'blocked'
       entry.statusReason = reason
       report.catalogChanged = true
       report.unlisted.push(transitionRecord(entry, window.releases, null))

@@ -109,5 +109,11 @@ export function createDshVersionService(options = {}) {
     return cache ? { ...cache.value, cacheStatus: 'peek' } : null
   }
 
-  return { inspect, peek }
+  // Local package metadata only: no registry request and no cached host version.
+  async function current() {
+    const result = manifestPath ? await findDesktopManifest(manifestPath) : await findCliManifest(cliPath)
+    return { currentVersion: result.version, installationKind: result.installationKind }
+  }
+
+  return { inspect, peek, current }
 }
