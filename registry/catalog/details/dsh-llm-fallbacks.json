@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-29T11:13:05.000Z",
-    "observedAt": "2026-09-29T14:40:34.000Z",
+    "observedAt": "2026-10-15T13:08:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "checkedAt": "2026-10-15T13:08:43.000Z",
       "evidenceUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks/commit/2980e52847f1a4f1a3f6e0d4d64b51d44a787d1b",
       "dshRelease": null,
       "systems": [],
@@ -77,11 +77,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v2",
+    "binding": "7f2cf6d0b82891b835a9acb3c6e0e1cd27e359b5d1db0391847d6d45d59f8da8",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "e9f4103f955aeefdc4f06d34943f0a5b50e07a8eec80e5784df71ad4576b093d"
+  },
   "entryIds": [
     "llm-fallbacks"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: ./dist/index.js; runtime artifact is missing from the fixed Git Commit: ./dist/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/client/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./dist/client/index.js; runtime source contains the files permission signal; runtime source cont",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./dist/index.js; runtime artifact is missing from the distributable surface: ./dist/index.d.ts; runtime artifact is missing from the distributable surface: ./dist/client/index.d.ts; runtime artifact is missing from the distributable surface: ./dist/client/index.js; fixed-source scan is incomplete; unobserved capabili",
   "compatibility": {
     "dsh": "^0.2.0-rc.2",
     "dshReleases": {
@@ -93,12 +105,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -149,30 +158,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -180,6 +165,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

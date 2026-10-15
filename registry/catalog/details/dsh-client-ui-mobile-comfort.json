@@ -35,19 +35,19 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-24T19:19:02.000Z",
-    "observedAt": "2026-09-24T19:50:51.000Z",
+    "observedAt": "2026-10-15T13:08:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-24T19:50:51.000Z",
+      "checkedAt": "2026-10-15T13:08:43.000Z",
       "evidenceUrl": "https://github.com/oksure/dsh-mobile-comfort/commit/6a17e2fbb3fd7dab6436db67addcd2b2b9d0b079",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed the complete automatic low-risk source policy."
+      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -80,11 +80,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v2",
+    "binding": "a682a525726b300094a7afac713568bac444702d4cc36d0587cea9a50c230a58",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "source-verified",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "low-risk-static",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "e9f4103f955aeefdc4f06d34943f0a5b50e07a8eec80e5784df71ad4576b093d"
+  },
   "entryIds": [
     "ui-mobile-comfort"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "configOverrides": [],
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": "0.1.5-rc.2 || 0.1.7-rc.2",
     "dshReleases": {
@@ -97,15 +109,10 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.1.5-rc.2": "compatible",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "compatible",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -162,46 +169,10 @@
         "uninstall": "passed",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.7-rc.2": {
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.1-alpha.2": {
@@ -215,7 +186,21 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
+    },
+    "latestWindow": {
+      "state": "recheck-required",
+      "releases": [
+        "0.2.1-alpha.2",
+        "0.2.1-alpha.3",
+        "0.2.1-alpha.4"
+      ]
     },
     "node": ">=22.0.0",
     "systems": [],

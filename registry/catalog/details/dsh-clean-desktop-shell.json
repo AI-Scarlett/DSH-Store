@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-14T21:20:33.000Z",
-    "observedAt": "2026-10-15T03:36:12.000Z",
+    "observedAt": "2026-10-15T13:08:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T03:36:12.000Z",
+      "checkedAt": "2026-10-15T13:08:43.000Z",
       "evidenceUrl": "https://github.com/Icather/dsh-clean-desktop-shell/commit/f9e03ccf909e66fdd55b85c099db7e33b06dfa45",
       "dshRelease": null,
       "systems": [],
@@ -76,11 +76,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v2",
+    "binding": "2812e0e1153695c6067fe86c210fba6c2fbe186380e947a638ffe26df614689b",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "e9f4103f955aeefdc4f06d34943f0a5b50e07a8eec80e5784df71ad4576b093d"
+  },
   "entryIds": [
     "clean-desktop-shell"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.1 <0.2.0",
     "dshReleases": {
@@ -96,9 +108,9 @@
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "unknown",
       "0.1.5-rc.3": "compatible",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -173,12 +185,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -186,6 +192,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

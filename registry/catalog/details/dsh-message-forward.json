@@ -21,29 +21,29 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "f72108868a71515ceda62ca2f3c6bb8bcab0cb77",
-  "version": "0.2.3",
+  "updatePolicy": "source-verified",
+  "commit": "55b339f2c20491c5bbe6edc2cd438403f207b9bf",
+  "version": "0.2.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T03:39:56.000Z",
-    "observedAt": "2026-10-15T03:36:12.000Z",
+    "updatedAt": "2026-10-15T06:36:22.000Z",
+    "observedAt": "2026-10-15T13:08:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-15T03:36:12.000Z",
-      "evidenceUrl": "https://github.com/Domaki-co/dsh-message-forward/commit/f72108868a71515ceda62ca2f3c6bb8bcab0cb77",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-15T13:08:43.000Z",
+      "evidenceUrl": "https://github.com/Domaki-co/dsh-message-forward/commit/55b339f2c20491c5bbe6edc2cd438403f207b9bf",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,14 +73,26 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v2",
+    "binding": "0cb9b339a00d93cfeeaec3be23fcf8c93e090031602e4d5fe3a9738e822ba392",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "source-verified",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "low-risk-static",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "e9f4103f955aeefdc4f06d34943f0a5b50e07a8eec80e5784df71ad4576b093d"
   },
   "entryIds": [
     "dsh-message-forward"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime artifact pattern requires review: ./locale/*.json; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the network permission signal",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.1-alpha.2, 0.2.1-alpha.3, 0.2.1-alpha.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": ">=0.2.0-rc.1 <0.2.1-0 || >=0.2.1-0 <0.3.0-0",
     "dshReleases": {
@@ -92,9 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,12 +157,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -162,7 +168,21 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
+    },
+    "latestWindow": {
+      "state": "recheck-required",
+      "releases": [
+        "0.2.1-alpha.2",
+        "0.2.1-alpha.3",
+        "0.2.1-alpha.4"
+      ]
     },
     "node": ">=20",
     "systems": [],
@@ -175,12 +195,12 @@
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "low",
+      "files": "none",
+      "network": "none",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
     "externalDependencies": [],
@@ -188,6 +208,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "automated-fixed-source-policy-v1"
   }
 }

@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6322a73d67d70aed68d510eccfd4d4cef6f5db41",
-  "version": "6.5.5",
+  "commit": "0408091c6a189d965b55bbb22a156523cd3cb189",
+  "version": "6.6.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-11T02:29:20.000Z",
-    "observedAt": "2026-10-11T04:32:14.000Z",
+    "updatedAt": "2026-10-15T11:52:15.000Z",
+    "observedAt": "2026-10-15T13:08:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-11T04:32:14.000Z",
-      "evidenceUrl": "https://github.com/siweina/dsh-novel-writer/commit/6322a73d67d70aed68d510eccfd4d4cef6f5db41",
+      "checkedAt": "2026-10-15T13:08:43.000Z",
+      "evidenceUrl": "https://github.com/siweina/dsh-novel-writer/commit/0408091c6a189d965b55bbb22a156523cd3cb189",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -75,11 +75,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v2",
+    "binding": "978a74e4acf24035192fc721410ce1d21d8180451cd0193e3c73aed4b649d685",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "e9f4103f955aeefdc4f06d34943f0a5b50e07a8eec80e5784df71ad4576b093d"
+  },
   "entryIds": [
     "novel-writer"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: lib/lexicons/dutir_seven.json.gz, lib/models/onnx/model_quantized.onnx, lib/models/tokenizer.json.gz; runtime source exceeds the automatic review byte bound: 1420599 total bytes (maximum 2097152); largest file 314748 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: lib/lexicons/dutir_seven.json.gz, lib/models/onnx/model_quantized.onnx, lib/models/tokenizer.json.gz; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission sign",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -91,10 +103,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,18 +156,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -164,6 +163,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
