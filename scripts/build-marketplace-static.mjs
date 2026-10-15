@@ -126,14 +126,23 @@ async function readAutomationReports(directory) {
   if (!directory) return []
   const root = resolve(directory)
   const reports = []
+  const maximumReportBytes = 4 * 1024 * 1024
+  const maximumTotalBytes = 16 * 1024 * 1024
+  let totalBytes = 0
   async function visit(current, depth = 0) {
     if (depth > 4 || reports.length >= 32) return
     for (const entry of await readdir(current, { withFileTypes: true })) {
+      if (reports.length >= 32) break
       const absolute = resolve(current, entry.name)
       if (entry.isDirectory()) await visit(absolute, depth + 1)
       else if (entry.isFile() && entry.name === 'catalog-automation-report.json') {
+        const metadata = await stat(absolute)
+        if (metadata.size > maximumReportBytes) throw new Error('automation report exceeds the 4 MiB byte bound')
+        if (totalBytes + metadata.size > maximumTotalBytes) throw new Error('automation reports exceed the 16 MiB aggregate byte bound')
         const bytes = await readFile(absolute)
-        if (bytes.length > 1_000_000) throw new Error('automation report exceeds the byte bound')
+        if (bytes.length > maximumReportBytes) throw new Error('automation report exceeds the 4 MiB byte bound')
+        if (totalBytes + bytes.length > maximumTotalBytes) throw new Error('automation reports exceed the 16 MiB aggregate byte bound')
+        totalBytes += bytes.length
         const firstSegment = relative(root, absolute).split('/')[0]
         reports.push({ runId: /^\d+$/.test(firstSegment) ? Number(firstSegment) : null, report: JSON.parse(bytes.toString('utf8')) })
       }

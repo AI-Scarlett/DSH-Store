@@ -436,6 +436,9 @@ test('static build serializes only available automated scan evidence into the pu
       deferredUpdates: [],
       transientFailures: [],
       sourceVersionChecks: { checkedEntries: 25, sameVersionCatalogUpdates: 0 },
+      // Real scanner reports now exceed 1 MB. Internal evidence stays out of
+      // the public summary while its small, available statistics are retained.
+      internalSourceEvidence: 'x'.repeat(1_100_000),
     }))
 
     const { stdout } = await execFileAsync(process.execPath, [
@@ -458,6 +461,11 @@ test('static build serializes only available automated scan evidence into the pu
     assert.equal(status.recentScanRuns[1].statisticsAvailable, true)
     assert.equal(status.recentScanRuns[1].added, 0)
     assert.equal(status.recentScanRuns[1].sourceVersionChecks.checkedEntries, 25)
+    assert.ok((await readFile(join(output, 'automation-status.json'))).length < 64 * 1024)
+    await writeFile(join(reportDir, 'catalog-automation-report.json'), ' '.repeat(4 * 1024 * 1024 + 1))
+    await assert.rejects(execFileAsync(process.execPath, [
+      staticBuilderPath, '--out', relative(rootPath, output), '--automation-reports', fixture,
+    ], { cwd: rootPath }), /automation report exceeds the 4 MiB byte bound/)
   } finally {
     await rm(output, { recursive: true, force: true })
     await rm(fixture, { recursive: true, force: true })
