@@ -20,7 +20,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a0274500cc46237f269483efe02078f35cd16ae8",
+  "commit": "801da8501adf0e240f1a23b8c63dbf95d6d94ae4",
   "version": "0.8.1",
   "categories": [
     "memory"
@@ -28,16 +28,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T02:46:06.000Z",
-    "observedAt": "2026-10-15T03:36:12.000Z",
+    "updatedAt": "2026-10-15T16:38:02.000Z",
+    "observedAt": "2026-10-15T17:24:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T03:36:12.000Z",
-      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/a0274500cc46237f269483efe02078f35cd16ae8",
+      "checkedAt": "2026-10-15T17:24:39.000Z",
+      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/801da8501adf0e240f1a23b8c63dbf95d6d94ae4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,9 +74,21 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "cffd4328eacaf3b248d6e9e595d12a69f3992422dd35caca380f3076b4b2cf0b",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "verified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
+  },
   "entryIds": [
     "furongjun1999-dsh-memory"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/cli.js; runtime artifact is missing from the distributable surface: ./lib/init.js; runtime artifact is missing from the distributable surface: lib/index.d.ts; package ignore rules require artifact review; distributable",
   "compatibility": {
@@ -90,9 +102,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -143,12 +155,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -156,6 +162,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

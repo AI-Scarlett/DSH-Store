@@ -32,19 +32,19 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-28T14:04:10.000Z",
-    "observedAt": "2026-09-28T14:34:52.000Z",
+    "observedAt": "2026-10-15T17:24:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-09-28T14:34:52.000Z",
+      "checkedAt": "2026-10-15T17:24:39.000Z",
       "evidenceUrl": "https://github.com/fuzz1og/dsh-font-settings/commit/f8d6dd09e0d477031754e6499d70700ae0e4500a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed the complete automatic low-risk source policy."
+      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -77,11 +77,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "5b4281ebf4d649bb3941ba95b610ad9d32ca315ccd7972420df894ce0bee8ece",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "source-verified",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "low-risk-static",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
+  },
   "entryIds": [
     "font-settings"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "configOverrides": [],
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.1.7-alpha.1 <0.3.0",
     "dshReleases": {
@@ -96,13 +108,10 @@
       "0.1.6-alpha.2": "incompatible",
       "0.1.7-alpha.1": "compatible",
       "0.1.7-alpha.2": "compatible",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "compatible",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -171,31 +180,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -212,7 +197,21 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
+    },
+    "latestWindow": {
+      "state": "recheck-required",
+      "releases": [
+        "0.2.1-alpha.2",
+        "0.2.1-alpha.3",
+        "0.2.1-alpha.4"
+      ]
     },
     "node": ">=18.17.0",
     "systems": [],
