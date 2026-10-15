@@ -7,11 +7,18 @@ import { fileURLToPath } from 'node:url'
 export const planPath = 'docs/ops/author-feedback-resolution-20261015.json'
 const hash = bytes => bytes === null ? null : createHash('sha256').update(bytes).digest('hex')
 export function validateResolutionPlan(plan, changes, readBase, readCurrent) {
+  const authority = plan?.authorization
+  const exception = authority?.credentialException
+  const credentialAuthorized = authority?.githubWriteCredential === 'short-lived-token-required'
+    || (authority?.githubWriteCredential === 'existing-credential-explicitly-authorized'
+      && exception?.source === 'direct-user-request'
+      && exception.request === '你直接上线啊 不要用短期的'
+      && exception.scope === 'this-feedback-publication-only')
   if (plan?.schemaVersion !== 1 || plan.type !== 'author-feedback-resolution' || !/^[a-f0-9]{40}$/.test(plan.baseCommit ?? '')
     || !Array.isArray(plan.scope) || new Set(plan.scope).size !== plan.scope.length
     || JSON.stringify([...plan.scope].sort()) !== JSON.stringify(Object.keys(plan.preconditions ?? {}).sort())
     || plan.scope.some(p => typeof p !== 'string' || !/^[a-zA-Z0-9._/-]+$/.test(p) || p.startsWith('/') || p.includes('..'))
-    || plan.authorization?.githubWriteCredential !== 'short-lived-token-required') throw new Error('invalid author-feedback policy plan')
+    || !credentialAuthorized) throw new Error('invalid author-feedback policy plan')
   for (const path of plan.scope) if (hash(readBase(path)) !== plan.preconditions[path]) throw new Error(`base file hash changed: ${path}`)
   for (const path of changes) {
     if (!plan.scope.includes(path)) throw new Error(`outside resolution scope: ${path}`)

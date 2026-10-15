@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "type": "author-feedback-resolution",
   "baseCommit": "9f0da97f2a8f4feda8f050616199f97cb37a3582",
-  "createdAt": "2026-10-15T12:15:00Z",
+  "createdAt": "2026-10-15T13:48:51Z",
   "scope": [
     ".github/workflows/author-feedback-resolution.yml",
     ".github/workflows/registry.yml",
@@ -130,8 +130,8 @@
   "postconditions": {
     ".github/workflows/author-feedback-resolution.yml": "85e7cf3925dbcfedaab55a2942d497071c7071ed27dda41e01dfbcb5a44819b5",
     ".github/workflows/registry.yml": "2432ce6d392ce9e594e7d7d9bdaa16f05de1cc3a8c9e8836c9039f2ba6de5c42",
-    "docs/reviews/author-feedback-resolution-20261015.json": "16e714ace97050506ac2058b5206cb4ccb860c9e4b3e54fcdde8d7a8981fd57d",
-    "docs/reviews/author-feedback-resolution-20261015.md": "5630cbc1a6b54ecd28ef677cfeaf5faf6bcd84ae81ccc2ea87ba0521ff2f1981",
+    "docs/reviews/author-feedback-resolution-20261015.json": "85d4fbb8c53109504be2b31f73daf2824c346cc5adcadc59732d5ac2989eef7f",
+    "docs/reviews/author-feedback-resolution-20261015.md": "072f8d8675445509f18ab06536109d90987201bc76dfc85914b92c48d56ed7a0",
     "package.json": "581c1bf44d0c5fd7e2a8598d981e9fdd178917af44ff25b0538cbabb2fd6e8b3",
     "registry/admission-reviews.json": "1d1e6fa07c3f290093800c8f27723432fb62d4b78490a65037f1a6343159fa4a",
     "registry/author-closures/feedback-1338-20261015.json": "9dfe81dd6d2f03a2bb2a8e82d63e3bdbada4d85ff37bafb693b552a45ca199cb",
@@ -175,7 +175,7 @@
     "scripts/automate-catalog.mjs": "e66f23e48a031b886df01dda4f0063a170f75f349f1e522cf1b9e75b8924977d",
     "scripts/close-author-contact.mjs": "36d0e6054aac772368396a1ac4ccadd31a696dc70514bf0b7c6dd1eed6fafd51",
     "scripts/reply-author-contact.mjs": "449eac7a462ed431b64e902f226ef2e90fdf8f6300a1e5030e0aa0a5aacabb3f",
-    "scripts/verify-author-feedback-plan.mjs": "e7e4ee62f58270bf4cc9818591b00a201a05d450d2550b85f0bce3d8e2ec9414",
+    "scripts/verify-author-feedback-plan.mjs": "96b88bf39127c86caedea958c4f93924db1d73ca9540d5a7863cb332695992fc",
     "src/automation-source-policy.mjs": "470262759b83a68aa997a06d38429f2a28787b0becbd9c27c836e5a4561552c9",
     "src/bundle-patch-contract.mjs": "32577053656174e08d2ab84eb60f1311e2c504a3934825b7ef215f184e6c228d",
     "src/catalog-migration.mjs": "99611afff5a81d8f8c1a54697c5cfaeb259990a6a4a1b7c6ceb28587c635b8eb",
@@ -185,14 +185,19 @@
     "test/admission-policy-v2.test.mjs": "f1ae1b330da434345526c21453346800d07d3e5b69e6f45f4ad5592136fd4c22",
     "test/author-close-policy.test.mjs": "cd7fb032aa73660154fcb2fb4339c16732490460b99c8a650cbd968b8b58aa49",
     "test/author-contact-policy.test.mjs": "40b187d58189a5fc47cfb8cba0f81e0e511a295e3712e3a08fe31e59b6cbe2bb",
-    "test/author-feedback-plan.test.mjs": "4bae28f673fbc919e4a0958825dbd947041def1e1f34a9db90d3c087d7386ba5",
+    "test/author-feedback-plan.test.mjs": "0c5a39866652ce1bd738adaf97cf38cc382664a17233c94a3e22bb06b09cf799",
     "test/plugin-submission.test.mjs": "a693ca425b761c64e91fcac3afe5b63e2bedaa4f13849930b0200243e9ab2eb7"
   },
   "authorization": {
     "source": "user-request",
     "request": "该回复的回复，该修复的修复，该关闭的关闭",
-    "githubWriteCredential": "short-lived-token-required",
-    "outreach": "main-reviewed-request-specific-plan-and-central-CAS-only"
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "outreach": "main-reviewed-request-specific-plan-and-central-CAS-only",
+    "credentialException": {
+      "source": "direct-user-request",
+      "request": "你直接上线啊 不要用短期的",
+      "scope": "this-feedback-publication-only"
+    }
   },
   "gates": [
     "exact-base-and-file-hashes",

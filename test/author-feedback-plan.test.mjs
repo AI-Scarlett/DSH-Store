@@ -15,3 +15,15 @@ test('policy binds base bytes, reviewed output and complete exact scope', () => 
   assert.throws(() => validateResolutionPlan(plan, ['src/demo.mjs'], readBase, () => Buffer.from('drift')), /content/)
   assert.throws(() => validateResolutionPlan({ ...plan, postconditions: {} }, ['src/demo.mjs'], readBase, readCurrent), /missing/)
 })
+
+test('existing credential exception requires this direct user request and exact publication scope', () => {
+  const authorization = { githubWriteCredential: 'existing-credential-explicitly-authorized',
+    credentialException: { source: 'direct-user-request', request: '你直接上线啊 不要用短期的', scope: 'this-feedback-publication-only' } }
+  const reviewed = { ...plan, authorization }
+  validateResolutionPlan(reviewed, [planPath, 'src/demo.mjs'], readBase, readCurrent)
+  for (const credentialException of [undefined, { ...authorization.credentialException, scope: 'all-future-writes' },
+    { ...authorization.credentialException, request: 'inferred permission' }]) {
+    assert.throws(() => validateResolutionPlan({ ...reviewed, authorization: { ...authorization, credentialException } },
+      [planPath, 'src/demo.mjs'], readBase, readCurrent), /policy plan/)
+  }
+})
