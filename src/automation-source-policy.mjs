@@ -239,7 +239,9 @@ function hasCodeMatch(pattern, source, code) {
 export function browserScriptSignals(source, relativePath = '') {
   const text = String(source ?? '')
   if (/\.html?$/i.test(relativePath)) {
-    const markup = text.replace(/<!--[\s\S]*?-->/g, '')
+    // Mask rather than delete: joining surrounding fragments could invent a
+    // script tag that never existed in the reviewed source.
+    const markup = text.replace(/<!--[\s\S]*?-->/g, comment => comment.replace(/[^\r\n]/g, ' '))
     const external = /<script\b[^>]*\bsrc\s*=\s*(?:["']\s*)?(?:https?:|\/\/|data:|blob:)/i.test(markup)
     return { dynamic: external, network: external }
   }

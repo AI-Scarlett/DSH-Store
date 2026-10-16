@@ -51,12 +51,12 @@
     "registry/README.md": "5c72eace4fe64ed1c08a26e9dccdbed639528ba42e61eb36a1cb56bbd6230db2",
     "README.md": "771322ba9e0cdd18287ae5617b18934cec2727ce5279e7a7744bbd6b1087ec4a",
     "docs/reviews/author-feedback-followup-20261016.md": "5cb409d973340e6df00887650c5f40e335b16de27915e2298050ca94567b44f5",
-    "docs/reviews/author-feedback-followup-20261016.json": "af8ddfae430e5eedac521582fe19ae900318d4e4c7a901fbaa7b07699c32c9cb",
+    "docs/reviews/author-feedback-followup-20261016.json": "c75c220a1cab698d93ff6524a30ce36ec3e8e9aaa9942628dca33a2004d9985b",
     "registry/author-replies/feedback-1390-20261016-v0173.json": "c8f95f6210b802315d5078e72dad4ca764fa0c40e977b05f1f46fefba152505f",
     "registry/author-replies/feedback-1415-20261016-v0211.json": "6c54ed4e1c26cb61f9e309e44b7ca22bcf81a12c0377f635f75634e4ffe152ea",
     ".github/workflows/registry.yml": "6d676da3ac5add9d071b5d02fb355e0ecf999ab59713618b403b1f44ed163f55",
-    "src/automation-source-policy.mjs": "d10d1a44e6a5e0f1bed5aa0bed16c97f2281a1bfdd4676762bc746b73ec5b748",
-    "test/automation-source-policy.test.mjs": "a77e80aed120cf726a8392ec63fbdb9c4ed318d7226327c4db6537fb4c24d625",
+    "src/automation-source-policy.mjs": "c52fe934206ad5ccbf91a903d8da01c4707d717bd144531d114097d812ed4f30",
+    "test/automation-source-policy.test.mjs": "31825edf641fdf1468e5caa815cf0aa674bc3302948857114d23748ed6f2fab9",
     "test/admission-policy-v2.test.mjs": "c302d5bbab0b8788d3f4f52ab8869cf7226b645328a3239a151d6974330fe085"
   },
   "reason": "Synchronize public bilingual listing standards with the current bounded-source-v3 policy and Alpha.4 compatibility contract; inspect new author replies at fixed Commits and prepare only request-specific eligible follow-ups. Read-only inspection of Mermaid 0.3.1 exposed an external-script false negative; extend the shared lexical scanner and add admission regressions without promoting any Catalog entry.",
@@ -82,10 +82,10 @@
   ],
   "verdict": {
     "status": "passed",
-    "checkedAt": "2026-10-16T06:25:55.646727+00:00",
+    "checkedAt": "2026-10-16T06:31:38.477785+00:00",
     "localChecks": 443,
     "failed": 0,
-    "logSha256": "b4cfee2a4737c377b45fd814c4f9e7716254c5c246488b18e606a6f06796a772",
+    "logSha256": "e03ef42d44cd31270ade90233f3d283aac7d43da2f4aa0daec231d97d14c2165",
     "sourceRegressionTests": 22,
     "fixedSourcesReviewed": 4,
     "thirdPartyCodeExecuted": false,
@@ -97,6 +97,7 @@
     "repliesSent": 0,
     "closuresPerformed": 0,
     "visualAcceptance": "not-performed-browser-interaction-tool-unavailable",
-    "ciAndPublication": "required-after-commit"
+    "ciAndPublication": "required-after-commit",
+    "commentMasking": "length-preserving whitespace; no joining fragments into synthetic script tags"
   }
 }

@@ -19,7 +19,7 @@ test('external HTML script sources require review while comments and local scrip
     assert.equal(permissionSignals(source, 'demo/index.html').network, true)
     assert.equal(localModuleEvidence(source, 'demo/index.html').dynamic, true)
   }
-  for (const source of ['<!-- <script src="https://cdn.example.test/sdk.js"></script> -->', '<script src="./packaged-client.js"></script>']) {
+  for (const source of ['<!-- <script src="https://cdn.example.test/sdk.js"></script> -->', '<script src="./packaged-client.js"></script>', '<scr<!-- explanation -->ipt src="https://cdn.example.test/sdk.js"></script>']) {
     assert.deepEqual(browserScriptSignals(source, 'demo/index.html'), { dynamic: false, network: false })
   }
 })
