@@ -32,8 +32,9 @@ export async function runFeedbackBatch({ batch, readPlan, executePlan, report = 
       const receipt = await executePlan(scriptFor(item.path), item.path)
       const result = { path: item.path, status: 'completed', receipt }
       results.push(result); report(result)
-    } catch {
-      const result = { path: item.path, status: 'failed-or-uncertain-do-not-retry' }
+    } catch (error) {
+      const diagnostic = /GitHub (GET|POST|PATCH|PUT) failed: HTTP ([0-9]{3})/.exec(String(error.stderr ?? error.message ?? ''))
+      const result = { path: item.path, status: 'failed-or-uncertain-do-not-retry', ...(diagnostic ? { method: diagnostic[1], httpStatus: Number(diagnostic[2]) } : {}) }
       results.push(result); report(result)
       if (item.path.startsWith('registry/author-stops/')) break
     }

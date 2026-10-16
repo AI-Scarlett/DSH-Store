@@ -29,6 +29,10 @@ test('Store release gate rejects scope, source and output drift using disposable
     authorization: { source: 'direct-user-request', githubWriteCredential: 'existing-credential-explicitly-authorized', credentialExceptionRequest: '你直接上线啊 不要用短期的' } }
   const run = (paths = Object.keys(current), source = path => sources[path], readCurrent = path => current[path]) => validateStoreRelease(plan, paths, path => base[path], readCurrent, source)
   run()
+  const shortLived = structuredClone(plan)
+  shortLived.authorization = { source: 'direct-user-request', githubWriteCredential: 'short-lived-token-required' }
+  validateStoreRelease(shortLived, Object.keys(current), path => base[path], path => current[path], path => sources[path])
+  assert.throws(() => validateStoreRelease({ ...shortLived, version: '0.9.6' }, Object.keys(current), path => base[path], path => current[path], path => sources[path]), /Incomplete/ )
   assert.throws(() => run(['registry/other.json']), /Outside/)
   assert.throws(() => run(undefined, () => Buffer.from('changed')), /Fixed source/)
   assert.throws(() => run(undefined, undefined, path => path === 'registry/catalog.json' ? Buffer.from('changed') : current[path]), /Reviewed content/)

@@ -415,3 +415,13 @@ test('HTML metadata and bilingual chart copy do not advertise unsupported Store 
   assert.ok(version)
   assert.ok(client.includes(`model.js?v=${version}`))
 })
+
+test('official placements appear once when community interaction and weekly star picks overlap', () => {
+  const entries = [item('store', 999, ['tools'], { repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }), item('build', 998, ['tools'], { repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin' }), item('interactive', 0)]
+  const registry = { schemaVersion: 1, updatedAt: observed, entries: [{ id: 'interactive', catalogId: 'interactive', name: 'Interactive', repositoryUrl: 'https://github.com/example/interactive', manifestPath: 'package.json', categories: ['tools'], basis: 'author-interaction', userId: 1, occurredAt: observed, evidenceUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/1' }] }
+  const data = snapshot(entries, { communityRecommendations: registry })
+  const rows = rankingEntries(data, 'recommended')
+  assert.equal(rows.length, 3)
+  assert.equal(new Set(rows.map(entry => entry.id)).size, 3)
+  assert.equal(rows.filter(entry => entry.officialToolPick).length, 2)
+})

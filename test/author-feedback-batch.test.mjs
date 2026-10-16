@@ -10,8 +10,10 @@ const batch = paths => ({ schemaVersion: 1, operation: 'reviewed-feedback-batch'
 test('the reviewed batch applies stops first, never retries uncertain messages, and continues other requests', async () => {
   const calls = []
   const results = await runFeedbackBatch({ batch: batch([stop, first, second]), readPlan: async path => path,
-    executePlan: async (script, path) => { calls.push(path); if (path === first) throw new Error('uncertain send'); return 'verified' } })
+    executePlan: async (script, path) => { calls.push(path); if (path === first) throw Object.assign(new Error('uncertain send'), { stderr: 'GitHub POST failed: HTTP 403' }); return 'verified' } })
   assert.deepEqual(calls, [stop, first, second])
+  assert.equal(results[1].httpStatus, 403)
+  assert.equal(results[1].method, 'POST')
   assert.deepEqual(results.map(row => row.status), ['completed', 'failed-or-uncertain-do-not-retry', 'completed'])
 })
 
