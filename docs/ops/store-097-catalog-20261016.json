@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "version": "0.9.7",
+  "planPath": "docs/ops/store-097-catalog-20261016.json",
+  "sourceReviewPath": "docs/reviews/store-097-source-review-20261016.json",
+  "baseCommit": "c706e4e0abe4b9aa2a8a60f96abef1f5119218ee",
+  "sourceCommit": "c706e4e0abe4b9aa2a8a60f96abef1f5119218ee",
+  "sourceHead": "0a437fe8dfcc5b8af0216323f87102916517ff77",
+  "sourceTree": "7789dd540da6ea3ffb95774516e909c44892faae",
+  "scope": [
+    "docs/ops/store-097-catalog-20261016.json",
+    "docs/reviews/store-097-source-review-20261016.json",
+    "registry/catalog.json",
+    "registry/catalog-index.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    ".github/workflows/registry.yml"
+  ],
+  "preconditions": {
+    "docs/ops/store-097-catalog-20261016.json": null,
+    "docs/reviews/store-097-source-review-20261016.json": null,
+    "registry/catalog.json": "433c685cc809f12fcab9e8749b8b78f64199d7cdc9316557e8e17e2d85f98749",
+    "registry/catalog-index.json": "aa77d25c2d275e3c4db368d76a49bba192e5d70d3a7669e90f55db4f924ab989",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "7b89f8a190eb5e407b6a3ec3d9ec33dc66648953e1e14091bb13b942891f0b67",
+    ".github/workflows/registry.yml": "4f42f855fd414bd518319db0715f3a1968591c4fcf2b835fac95cc4caae97b97"
+  },
+  "postconditions": {
+    "docs/reviews/store-097-source-review-20261016.json": "1315056504095d0878204e42b4829770d315696f9e8489fe73faa5a9a83a2b62",
+    "registry/catalog.json": "ab9756a59a6f61ad38ba32ddc3a02c320243681d64164fb42977f166c7fe03ae",
+    "registry/catalog-index.json": "519ed771530f96c35feaa4e559c9891e5a7417782baa04953a9968ccf54b5bc6",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "3dcafd068d2786c0fea60edc5e8204afd5bd56cd745221ae281ee605959b117a",
+    ".github/workflows/registry.yml": "b1975a87536416afe536c15804debe65894d1f79755121059878b7c1c4e129ca"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "完成作者整改复核、官方更新适配并正式上线",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "gates": [
+    "complete bounded fixed-source review",
+    "exact source/tree and file hashes",
+    "npm run check",
+    "CI-checked PR",
+    "raw GitHub Pages and both storefronts readback"
+  ],
+  "rollback": "CI-checked revert to previous fixed source; existing production atomic switch with health-check rollback; never remove contact claims or stops.",
+  "healthCheck": "0.9.7 exact source visible in Catalog/native index/repair; terminal blocked decisions and standards on four public surfaces.",
+  "verdict": {
+    "status": "approved-for-ci-checked-first-party-catalog-release",
+    "tests": 469,
+    "sourceHeadChecks": "all source checks pass, one inapplicable channel skipped",
+    "genericThirdPartyAdmissionUnchanged": true,
+    "realProfileChanged": false
+  }
+}

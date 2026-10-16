@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 0.9.0：官方登录校验、持久化安装更新记录、真实回滚与生效状态、兼容筛选、本机收藏备注；固定提交审核和作者全局一次联系规则保持不变。",
+  "description": "DSH STORE 0.9.7：支持官方 alpha.5；作者整改复检必须形成明确收录结论和验收条件，保留固定提交审核与联系去重。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "5c6adaac44db4df8c3bde1abe974e542bf2304e6",
-  "version": "0.9.6",
+  "commit": "c706e4e0abe4b9aa2a8a60f96abef1f5119218ee",
+  "version": "0.9.7",
   "categories": [
     "marketplace",
     "management"
@@ -39,27 +39,27 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T10:17:25.868Z",
-    "observedAt": "2026-10-16T10:17:25.868Z",
+    "updatedAt": "2026-10-16T14:19:28.112Z",
+    "observedAt": "2026-10-16T14:19:28.112Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-10-16T02:00:42.440Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/503ed0df8df0492ec24247c10b4c93644688d371",
+      "checkedAt": "2026-10-16T14:19:28.112Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/c706e4e0abe4b9aa2a8a60f96abef1f5119218ee",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Owner-reviewed Store 0.9.5 release; complete fixed-source coverage, reviewed findings and exact-head CI."
+      "summary": "Owner-reviewed Store 0.9.7; complete bounded fixed-source coverage and exact-head CI."
     },
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-10-16T02:00:42.440Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850",
-      "dshRelease": "0.2.1-alpha.4",
+      "checkedAt": "2026-10-16T14:19:28.112Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38914258029",
+      "dshRelease": "0.2.1-alpha.5",
       "systems": [
         "Linux",
         "macOS",
@@ -68,7 +68,7 @@
       "profiles": [
         "web"
       ],
-      "summary": "Official CLI install/start/authenticated API/uninstall/restore passed on pnpm 10/11/12. Disposable Profiles only; Desktop and real Profile acceptance remain unverified."
+      "summary": "Official CLI install/start/authenticated API/uninstall/restore passed on Linux/macOS/Windows with pnpm 10/11/12; previous alpha.3/alpha.4 passed. Disposable Profiles only. Desktop GUI, real Profile and rollback acceptance remain unverified."
     },
     "runtime": {
       "status": "unknown",
@@ -97,7 +97,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-r",
+    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5",
     "dshReleases": {
       "rc.7": "compatible",
       "rc.8": "compatible",
@@ -123,7 +123,8 @@
       "0.2.1-alpha.1": "compatible",
       "0.2.1-alpha.2": "compatible",
       "0.2.1-alpha.3": "compatible",
-      "0.2.1-alpha.4": "compatible"
+      "0.2.1-alpha.4": "compatible",
+      "0.2.1-alpha.5": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -229,6 +230,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
