@@ -27,7 +27,7 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
   })
   const { findings: budgetFindings, total: totalBytes } = sourceBudgetFindings(runtimeFiles, policy.sourceBounds)
   for (const finding of budgetFindings) reasons.push(`scanner budget ${finding.rule}: ${finding.file ?? 'package'} actual=${finding.actual ?? 'unknown'} maximum=${finding.limit}; store scanner review required`)
-  const sourceEvidence = [], capabilityEvidence = [], securitySources = []
+  const sourceEvidence = [], capabilityEvidence = [], toolViewEvidence = [], securitySources = []
   let filesScanned = 0
   const canScan = budgetFindings.length === 0 && tree?.truncated === false
     && surface.packageEntries <= policy.sourceBounds.maxTreeEntries
@@ -70,7 +70,9 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
               responsibility: 'reviewer', line: found < 0 ? null : found + 1, location: found < 0 ? 'file' : 'line' })
           }
         }
-        reviewSignals.toolViewExtension ||= dshInterfaceSignals(source, item.relativePath).toolViewExtension
+        const toolView = dshInterfaceSignals(source, item.relativePath).toolViewExtension
+        reviewSignals.toolViewExtension ||= toolView
+        if (toolView) toolViewEvidence.push({ file: item.relativePath, sha256 })
         const modules = localModuleEvidence(source, item.relativePath)
         reviewSignals.dynamicModuleLoading ||= modules.dynamic
         reasons.push(...missingLocalModuleReasons(modules.references, item.relativePath, surface.entries))
@@ -95,7 +97,7 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
     securityScan,
     engine: SCAN_POLICY_VERSION,
     sourceDigest: createHash('sha256').update(JSON.stringify(sourceEvidence)).digest('hex'),
-    sourceEvidence, capabilityEvidence, budgetFindings,
+    sourceEvidence, capabilityEvidence, toolViewEvidence, budgetFindings,
     reviewSignals, scanComplete, filesScanned, unsupportedFiles: unsupported.length,
     scope: { kind: surface.kind, repositoryEntries: surface.repositoryEntries, packageEntries: surface.packageEntries, files: surface.entries.length },
     runtimeFiles: runtimeFiles.length, runtimeBytes: totalBytes,

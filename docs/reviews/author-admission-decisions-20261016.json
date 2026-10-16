@@ -1,0 +1,1634 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-16T13:35:38.808Z",
+  "mode": "independent-bounded-static-admission-review",
+  "outcomes": [
+    {
+      "issueNumber": 1390,
+      "requestCommentId": 6213375613,
+      "userId": 283827478,
+      "requestBodySha256": "159fa3ed188899c9841a22d94ea1210909c5d60a7741d9ba078c884bddf49296",
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "version": "0.17.6",
+      "commit": "3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+      "binding": "d0753aaed9e14c6f630db743097f68adb9dc6e5fb0d7725bbf7c8cd43d42f061",
+      "catalogId": "dsh-qwen-paint",
+      "decision": "rejected",
+      "summary": "AUTH001: default-value disclosure and outbound endpoint corrections are verified; admission rejected for the remaining raw local HTTP write/trust boundary.",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 1688,
+          "finding": "isLocalRequest validates only Host and socket loopback (and accepts missing values). The registered raw status handler changes settings and persists UI state on GET; repair and preference handlers also rely only on this loopback check. There is no Origin / Sec-Fetch-Site or authenticated caller gate before these mutations.",
+          "requiredChange": "Keep status GET read-only. Move settings changes to explicit POST JSON routes and reject wrong methods/content types. Before any private read or write, use the supported host request-trust/authentication seam, or implement equivalent Host, Origin, Sec-Fetch-Site and caller checks. Missing required request context must fail closed; loopback alone is insufficient. Apply the same gate to repair, wizard, memory and preference endpoints.",
+          "acceptance": "In disposable fixtures, a loopback request marked Origin=https://untrusted.example or Sec-Fetch-Site=cross-site is rejected before reads/writes/commands. GET requests never modify settings. A trusted supported-host request still succeeds; unavailable trust service or required context rejects. No need to remove drawing, accelerator or Tool-view features."
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md",
+      "decidedAt": "2026-10-16T13:35:38.808Z"
+    },
+    {
+      "issueNumber": 1415,
+      "requestCommentId": 6213790736,
+      "userId": 132990250,
+      "requestBodySha256": "b0547a90c89c73fefcefd5a21bdd893f6df5c4640c2ad371f433d54d79b766e7",
+      "repositoryUrl": "https://github.com/qikairo7/dsh-web-search-fetch",
+      "version": "0.2.13",
+      "commit": "46a3b4d31565df1dd03adff77607391a03805cf1",
+      "binding": "f01689e3961267f344c7a7ea826e6eff60c492e5ccd9e06a2c6c1563bbcd1c81",
+      "catalogId": "dsh-web-search-fetch",
+      "decision": "rejected",
+      "summary": "SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable.",
+      "blockers": [
+        {
+          "code": "SUPPLY001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 100,
+          "finding": "The fixed Git distribution declares five npm runtime dependencies but contains no independently verifiable, installation-enforced mapping from the actual runtime dependency closure to bounded immutable source. docs/dependency-inventory.json identifies itself as author-provided 0.2.11 metadata and lists transitive version ranges. The npm installation resolves these outside the first-party Git tree; the inventory and pnpm lock do not prove which source the DSH install path will execute.",
+          "requiredChange": "Supply a reproducible runtime distribution: either include the licensed dependency runtime files in a self-contained fixed-Commit distribution, or supply a complete dependency closure with exact versions, canonical source Commits, bounded distributed-file hashes, license/install-hook evidence and a source-verifiable mechanism that makes the actual DSH install use that reviewed closure. A version list or advisory lookup alone cannot complete this gate. Normal dependencies and web provider features need not be deleted.",
+          "acceptance": "The Store can independently read every runtime dependency at its immutable source, verify the complete dependency graph and source hashes within declared bounds, and bind an installation-resolution proof to this plugin Commit. All nodes have known licenses and no unreviewed install hooks; no unresolved node or floating resolution remains."
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md",
+      "decidedAt": "2026-10-16T13:35:38.808Z"
+    }
+  ],
+  "snapshots": [
+    {
+      "issue": 1390,
+      "candidate": {
+        "id": "dsh-qwen-paint",
+        "name": "dsh-qwen-paint",
+        "packageName": "dsh-qwen-paint",
+        "description": "(绘图)千问 · 优化版 —— 面向 DeepSeek Harness 的本地图像生成插件。经由本机 ComfyUI 调用 Qwen-Image 2.1 完成文生图与图生图，图像落盘保存并在会话中直接呈现；出图数据流默认仅本机回环 127.0.0.1（代码层强制，非本机地址拒绝启动），无需 API 密钥。可选加速包下载（accelAutoInstall，默认开启）会访问 pip 源与 GitHub 但不发送提示词或图片。本优化版在推理链路性能、显卡厂商适配（NVIDIA / Intel Arc / AMD RDNA2·3·4）与操作系统兼容（Windows / Linux）三方面进行了系统性增强。原作者 @奇迹与你，优化版 @yanfei0725。",
+        "searchTerms": [],
+        "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+        "defaultBranch": "main",
+        "manifestPath": "package.json",
+        "installPath": null,
+        "updatePolicy": null,
+        "commit": "3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+        "version": "0.17.6",
+        "categories": [
+          "experimental"
+        ],
+        "featured": false,
+        "installCount": null,
+        "source": {
+          "updatedAt": null,
+          "observedAt": null,
+          "provenance": "unknown"
+        },
+        "assurance": {
+          "discovery": {
+            "status": "verified",
+            "method": "catalog-presence",
+            "checkedAt": "2026-10-16T10:17:25.868Z",
+            "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": "Present in the trusted GitHub catalog."
+          },
+          "installability": {
+            "status": "unknown",
+            "method": null,
+            "checkedAt": null,
+            "evidenceUrl": null,
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": null
+          },
+          "runtime": {
+            "status": "unknown",
+            "method": null,
+            "checkedAt": null,
+            "evidenceUrl": null,
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": null
+          },
+          "securityReview": {
+            "status": "unknown",
+            "method": null,
+            "checkedAt": null,
+            "evidenceUrl": null,
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": null
+          }
+        },
+        "entryIds": [
+          "qwen-paint"
+        ],
+        "status": "approved",
+        "statusReason": null,
+        "compatibility": {
+          "dsh": ">=0.2.0-rc.2",
+          "dshReleases": {
+            "0.2.0-rc.2": "compatible"
+          },
+          "dshOperations": {
+            "rc.7": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "rc.8": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            }
+          },
+          "node": ">=18.0.0",
+          "systems": [],
+          "profiles": [
+            "web"
+          ]
+        },
+        "details": {
+          "pluginType": "unknown",
+          "installSource": "github",
+          "license": "MIT",
+          "permissions": {
+            "level": "unknown",
+            "files": "unknown",
+            "network": "unknown",
+            "commands": "unknown",
+            "credentials": [
+              "unknown"
+            ]
+          },
+          "externalDependencies": [],
+          "reviewStatus": "automated-scan"
+        },
+        "risk": {
+          "installScripts": [],
+          "review": "submission-static-precheck-not-security-audited"
+        }
+      },
+      "analysis": {
+        "reasons": [
+          "fixed-source security warnings require review",
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal",
+          "runtime source contains the commands permission signal",
+          "runtime source contains the credentials permission signal",
+          "Tool-view extension requires key ownership review; registration alone is not a protected component mutation"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "warn",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 8,
+          "eligibleFiles": 8,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 3,
+            "info": 0
+          },
+          "findings": [
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/config.js",
+              "line": 14
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/hipfire-img.js",
+              "line": 49
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/index.js",
+              "line": 46
+            }
+          ],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "593fb242f1dc90a6061258fd3d8348251dd5b5f589727f34b42b394618b48221",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 19492,
+            "blob": "03574cc7bb85e2851e237798b4b8f4f855547122",
+            "sha256": "d6d6e146b889e15040554d91abf9ba4f708761a7e8b160bde6285157e4ecd951"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 191443,
+            "blob": "6a66a3a72d8d51e1f54045c5255797927e1a13e1",
+            "sha256": "ee539fee2715c5c5d4eb23b80ac907e12079a21255bce9c3ab69717ff6a271f3"
+          },
+          {
+            "file": "lib/config.js",
+            "bytes": 239656,
+            "blob": "d85875ce512a520e939b1805edc779e98d0a3638",
+            "sha256": "c8b8fd02e09a3c250e678708dca1d4915ffd61bd131eb4c763504e833074554f"
+          },
+          {
+            "file": "lib/describe.js",
+            "bytes": 69481,
+            "blob": "a763b8501eaf194cd734ac9f0b907e4f684f7a61",
+            "sha256": "6f7d3ae24d5ca391a812df28dafef54a08997f5c67554bdcb70ee6f1bef5bbcd"
+          },
+          {
+            "file": "lib/hipfire-img.js",
+            "bytes": 40993,
+            "blob": "5541e0ab01942dcf6c5ed86d03204d2b002a4ae9",
+            "sha256": "00b40a35e40dadefa4971cbeca3e6d5cf7d9be165ed0428283ee211d856a9a6d"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 253729,
+            "blob": "78c9bf7ac49cca676486cb4907f9168609ba6274",
+            "sha256": "cb71c2071b858f4caf113c04d17813151b87765860701a7f7c22f4a5a2ecd332"
+          },
+          {
+            "file": "lib/net-guard.js",
+            "bytes": 11086,
+            "blob": "8f22f61ada420e781c64fd4c6f2776c590b7a75b",
+            "sha256": "bb9a7f99bb6e2b707588a14ba28e7b5bb9e3f6c19bcbfe70863687a93ae2b3b3"
+          },
+          {
+            "file": "package.json",
+            "bytes": 2494,
+            "blob": "fcea6780c77b9e4bf117804ccc6786424f0c37f2",
+            "sha256": "44c42404f6da3257554037a2b79f7cb9c0171bb2bbfa12bef8e640aa2eb639a5"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1643,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/config.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 11,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/config.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 14,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/config.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 35,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/hipfire-img.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 47,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/hipfire-img.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 49,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/hipfire-img.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 182,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 43,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/index.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 46,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/net-guard.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 172,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/net-guard.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 189,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": true,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 8,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 84,
+          "packageEntries": 14,
+          "files": 12
+        },
+        "runtimeFiles": 8,
+        "runtimeBytes": 828374,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T10:22:08Z",
+        "dependencies": [],
+        "runtimeDependencies": {},
+        "toolViewEvidence": [
+          {
+            "file": "lib/client.js",
+            "sha256": "ee539fee2715c5c5d4eb23b80ac907e12079a21255bce9c3ab69717ff6a271f3"
+          }
+        ]
+      },
+      "review": {
+        "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+        "commit": "3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+        "binding": "d0753aaed9e14c6f630db743097f68adb9dc6e5fb0d7725bbf7c8cd43d42f061",
+        "verdict": "rejected",
+        "reviewer": "Codex on behalf of AI-Scarlett",
+        "reviewedAt": "2026-10-16T13:35:38.808Z",
+        "rationale": "AUTH001: default-value disclosure and outbound endpoint corrections are verified; admission rejected for the remaining raw local HTTP write/trust boundary. isLocalRequest validates only Host and socket loopback (and accepts missing values). The registered raw status handler changes settings and persists UI state on GET; repair and preference handlers also rely only on this loopback check. There is no Origin / Sec-Fetch-Site or authenticated caller gate before these mutations.",
+        "evidenceUrls": [
+          "https://github.com/yanfei0725/dsh-qwen-paint/commit/3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+          "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md"
+        ],
+        "toolViewOwnership": [
+          {
+            "key": "draw_image",
+            "owner": "dsh-qwen-paint",
+            "registration": {
+              "file": "lib/client.js",
+              "sha256": "ee539fee2715c5c5d4eb23b80ac907e12079a21255bce9c3ab69717ff6a271f3",
+              "line": 3177
+            },
+            "tool": {
+              "file": "lib/index.js",
+              "sha256": "cb71c2071b858f4caf113c04d17813151b87765860701a7f7c22f4a5a2ecd332",
+              "line": 2127
+            },
+            "rationale": "The fixed client resolves SLOT_KEY to tool.call.toolview and TOOL_KEY to draw_image, matching this package own makeDrawTool definition. No protected official tool key or inventory mutation is present."
+          }
+        ]
+      },
+      "decision": "rejected",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 1688,
+          "finding": "isLocalRequest validates only Host and socket loopback (and accepts missing values). The registered raw status handler changes settings and persists UI state on GET; repair and preference handlers also rely only on this loopback check. There is no Origin / Sec-Fetch-Site or authenticated caller gate before these mutations.",
+          "requiredChange": "Keep status GET read-only. Move settings changes to explicit POST JSON routes and reject wrong methods/content types. Before any private read or write, use the supported host request-trust/authentication seam, or implement equivalent Host, Origin, Sec-Fetch-Site and caller checks. Missing required request context must fail closed; loopback alone is insufficient. Apply the same gate to repair, wizard, memory and preference endpoints.",
+          "acceptance": "In disposable fixtures, a loopback request marked Origin=https://untrusted.example or Sec-Fetch-Site=cross-site is rejected before reads/writes/commands. GET requests never modify settings. A trusted supported-host request still succeeds; unavailable trust service or required context rejects. No need to remove drawing, accelerator or Tool-view features."
+        }
+      ],
+      "thirdPartyCodeExecuted": false,
+      "realProfileChanged": false
+    },
+    {
+      "issue": 1415,
+      "candidate": {
+        "id": "dsh-web-search-fetch",
+        "name": "dsh-web-search-fetch",
+        "packageName": "dsh-web-search-fetch",
+        "description": "DeepSeek Harness 多来源网络搜索与网页提取插件",
+        "searchTerms": [],
+        "repositoryUrl": "https://github.com/qikairo7/dsh-web-search-fetch",
+        "defaultBranch": "main",
+        "manifestPath": "package.json",
+        "installPath": null,
+        "updatePolicy": null,
+        "commit": "46a3b4d31565df1dd03adff77607391a03805cf1",
+        "version": "0.2.13",
+        "categories": [
+          "experimental"
+        ],
+        "featured": false,
+        "installCount": null,
+        "source": {
+          "updatedAt": null,
+          "observedAt": null,
+          "provenance": "unknown"
+        },
+        "assurance": {
+          "discovery": {
+            "status": "verified",
+            "method": "catalog-presence",
+            "checkedAt": "2026-10-16T10:17:25.868Z",
+            "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": "Present in the trusted GitHub catalog."
+          },
+          "installability": {
+            "status": "unknown",
+            "method": null,
+            "checkedAt": null,
+            "evidenceUrl": null,
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": null
+          },
+          "runtime": {
+            "status": "unknown",
+            "method": null,
+            "checkedAt": null,
+            "evidenceUrl": null,
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": null
+          },
+          "securityReview": {
+            "status": "unknown",
+            "method": null,
+            "checkedAt": null,
+            "evidenceUrl": null,
+            "dshRelease": null,
+            "systems": [],
+            "profiles": [],
+            "summary": null
+          }
+        },
+        "entryIds": [
+          "web-search-fetch"
+        ],
+        "configOverrides": [
+          "web"
+        ],
+        "status": "approved",
+        "statusReason": null,
+        "compatibility": {
+          "dsh": "0.2.1-alpha.3",
+          "dshReleases": {
+            "0.2.0-rc.2": "unknown",
+            "0.2.1-alpha.1": "unknown",
+            "0.2.1-alpha.2": "unknown",
+            "0.2.1-alpha.3": "unknown"
+          },
+          "dshOperations": {
+            "rc.7": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "rc.8": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            }
+          },
+          "node": "^22.19.0 || >=24.0.0",
+          "systems": [],
+          "profiles": [
+            "web"
+          ]
+        },
+        "details": {
+          "pluginType": "unknown",
+          "installSource": "github",
+          "license": "MIT",
+          "permissions": {
+            "level": "unknown",
+            "files": "unknown",
+            "network": "unknown",
+            "commands": "unknown",
+            "credentials": [
+              "unknown"
+            ]
+          },
+          "externalDependencies": [],
+          "reviewStatus": "automated-scan"
+        },
+        "risk": {
+          "installScripts": [],
+          "review": "submission-static-precheck-not-security-audited"
+        }
+      },
+      "analysis": {
+        "reasons": [
+          "runtime or optional dependencies require a separate supply-chain review",
+          "runtime source contains the network permission signal",
+          "runtime source contains the credentials permission signal",
+          "Bundle configuration overrides require review: web; later layers replace the entire config"
+        ],
+        "signals": {
+          "files": false,
+          "network": true,
+          "commands": false,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "pass",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 110,
+          "eligibleFiles": 110,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 0,
+            "info": 0
+          },
+          "findings": [],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "96c1ada65428f0c46de45c8b54f7802e3eb2a27c0010f7944625137c2a1eff02",
+        "sourceEvidence": [
+          {
+            "file": "NOTICE",
+            "bytes": 4425,
+            "blob": "1ca4892fbe01f35191a76c63113d1febf7448c65",
+            "sha256": "47a9f823579d3d853a168f79f08729d37187ba2339752b5a0d3469b138d24ce3"
+          },
+          {
+            "file": "client/index.js",
+            "bytes": 85331,
+            "blob": "5c9a9e2be984b311cdb110c8dba901f4349b52d2",
+            "sha256": "dca9f5e82da600cb40bfeac7270e0caa335f394474c3b5dba1e2026e68e29744"
+          },
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 1052,
+            "blob": "76c7a035298eb5c95a840dcb5e96cbad4621d410",
+            "sha256": "6f712aa1b98edf691ce4e050ab023e6115ee0ff3e87644a636f1509342b75b42"
+          },
+          {
+            "file": "docs/assets/content-demo.html",
+            "bytes": 31554,
+            "blob": "79a4bd8e5ca8daf546ad4130d7f70d95a9aadd00",
+            "sha256": "23d001e5e2e51b0f71d875da939a8ccc14c3d789fb73897da7546d9030c81ffe"
+          },
+          {
+            "file": "docs/assets/content-demo.json",
+            "bytes": 28134,
+            "blob": "0546b25e949c9250aea35c8e0278f00ea5d84c01",
+            "sha256": "1bb2a7446756757c543e4eb6266a31f573de2ec3398cb7de05ad28bc13acd791"
+          },
+          {
+            "file": "docs/assets/modsearch-comparison.json",
+            "bytes": 30647,
+            "blob": "69fe743422863d32ab7ed6ae256aea92165e57a0",
+            "sha256": "e3f9f20018024b730439f2c54b211f9eca2879b89fe1583b2d93f0968d1287e6"
+          },
+          {
+            "file": "docs/dependency-inventory.json",
+            "bytes": 12458,
+            "blob": "d98f4404aa0faf43df7e3ef69dc47b95d644c58e",
+            "sha256": "c9d837300f94985ff3b5fbdd791d5ee7bdbc8a777f7b1e2106a4bea6d46b2e4a"
+          },
+          {
+            "file": "lib/breaker/breaker.d.ts",
+            "bytes": 3527,
+            "blob": "9f6014e1edda5076fb5121b133ebfcf25b26e754",
+            "sha256": "6b3ad8508ee9c32fdaf891fc9e33fadf280e2f6a8240d547ad048673dc34798a"
+          },
+          {
+            "file": "lib/breaker/breaker.js",
+            "bytes": 5722,
+            "blob": "b2d4ea5a929735668dcd13547928e74e85327c40",
+            "sha256": "25c39fd2c67fcbf9eb0fbff85d4e0bc3f4f197eeb96ee468182653e8835f6b97"
+          },
+          {
+            "file": "lib/breaker/index.d.ts",
+            "bytes": 716,
+            "blob": "11d0bb0e6d8f6047c00de9c7dfe88aaf35a585fe",
+            "sha256": "cbd47c7a135b32e954970990efb99acd806f07696a0f60a17f689e79da6f1305"
+          },
+          {
+            "file": "lib/breaker/index.js",
+            "bytes": 599,
+            "blob": "33b0b5b35880231c41be05397ddb930d28ab2039",
+            "sha256": "c2ac6bc9afadcc82e68b35b9d0e11eed37db63f111a24d71fc625d45b8324c6d"
+          },
+          {
+            "file": "lib/breaker/types.d.ts",
+            "bytes": 2462,
+            "blob": "344ae6ff1a6b9c8981afdf9f178116c5a6dc17f0",
+            "sha256": "e2adece8ea1202b54ce9cf8f5dca6e14741a584019e0133ec20518f3b261d93a"
+          },
+          {
+            "file": "lib/breaker/types.js",
+            "bytes": 206,
+            "blob": "9a07f552b2d838229b473ed428d0cb3b23307b25",
+            "sha256": "fac70132049e4aa3e309be86c05a4e1c6a63cbcd02a46bef193252e3cf71dfc0"
+          },
+          {
+            "file": "lib/credential-ref.d.ts",
+            "bytes": 1344,
+            "blob": "54f8284d13f951ea9e863bf90579e2c7468f2ea0",
+            "sha256": "ba8d682a9ecc815f221e521bd5e6b7b030b91e348d560f44f2db5835a8c26f94"
+          },
+          {
+            "file": "lib/credential-ref.js",
+            "bytes": 1443,
+            "blob": "4615cdc2f64c1672bf795428a8fee6b02c885c84",
+            "sha256": "7c7c66a9eba6483c503d12717ef0d552d1a02b214575f2558037fc930405ba7e"
+          },
+          {
+            "file": "lib/engines/additional/adapters.d.ts",
+            "bytes": 399,
+            "blob": "7c717f5c8334bf05adde6707fe74aa4538094f94",
+            "sha256": "6ff18abd14ef4cd35f39804bba8b0acbd1a4f5155518a60de73a5c9b2d15805b"
+          },
+          {
+            "file": "lib/engines/additional/adapters.js",
+            "bytes": 16534,
+            "blob": "ec8bc3ad7a1fa37ea48ce93328bb2abf248e60f2",
+            "sha256": "18c64ec1018476ff0294897b82a8cb970147ff1f3d33c53743aaea8954d1bd5f"
+          },
+          {
+            "file": "lib/engines/additional/aihot.d.ts",
+            "bytes": 336,
+            "blob": "ffd41c4f09b6c06e5163c42e8333222f313226ee",
+            "sha256": "52f8f1ee2eaa99f49953d8fdbd6661f9a087b4ce6031547091c35c3762047553"
+          },
+          {
+            "file": "lib/engines/additional/aihot.js",
+            "bytes": 2257,
+            "blob": "620b9de0dfeb5a891a19a75efc9a9a7d971029b9",
+            "sha256": "ba5f50ac326d5a0a29a5350aa591262f136a9600f0c4b5f9aa5f62a397744e86"
+          },
+          {
+            "file": "lib/engines/additional/http.d.ts",
+            "bytes": 1588,
+            "blob": "203a5cbf649f443d29ab9444e5c8f5bccfc3d0dd",
+            "sha256": "f5b532864e25b874295e34e9b1459efdca2912ab452f0094da3e493c40d8d40e"
+          },
+          {
+            "file": "lib/engines/additional/http.js",
+            "bytes": 9736,
+            "blob": "94c68ffcc557591b09a402326835bbaeef792ac0",
+            "sha256": "c4a7037b9c51c6c82c4fc6a0a2955f4c65b5c8f7b1e20634d00fb626fca2ec91"
+          },
+          {
+            "file": "lib/engines/additional/index.d.ts",
+            "bytes": 3798,
+            "blob": "ed1d9c7f977874952bcc094f9e44640caf18a2bc",
+            "sha256": "025c17adf6cf5356b982d972a6eb790efbf96ba771bd50ccb412fed46d8eaf4b"
+          },
+          {
+            "file": "lib/engines/additional/index.js",
+            "bytes": 3254,
+            "blob": "b7f0c96b9c64ccd32ad5adc5462ef5dac9f340ed",
+            "sha256": "9e0a90d05e3c4847a571da2d1ef22af2881740a9581e343e54a3759a7c03f468"
+          },
+          {
+            "file": "lib/engines/anysearch/client.d.ts",
+            "bytes": 3166,
+            "blob": "c409de7d537754a18f3141b28423abcc65645499",
+            "sha256": "a35c6dab4b265eb4c799b71edb37a6455366a43245d2c021397bda68a762399a"
+          },
+          {
+            "file": "lib/engines/anysearch/client.js",
+            "bytes": 15119,
+            "blob": "0548414a329350ab53b8f345a4cf2b8711188356",
+            "sha256": "bfced7956b64172e4729d19f07609b737548a0e920626cd1f564bbdb5347db3d"
+          },
+          {
+            "file": "lib/engines/anysearch/engine.d.ts",
+            "bytes": 3333,
+            "blob": "26e4d0fd8aac01aac558f2a83a93eb3721a21e4d",
+            "sha256": "146d4927c972e557b83deb694eba7047695df32e518ef8814e698cc8d7eb5630"
+          },
+          {
+            "file": "lib/engines/anysearch/engine.js",
+            "bytes": 4430,
+            "blob": "dce51eb78fbea6f0ebd057148ba5deda140d369c",
+            "sha256": "419ae3d7577b36b906d12fc7a4de4cc5faf05ec3b67ee2e54c18a6fc8f64e06b"
+          },
+          {
+            "file": "lib/engines/anysearch/error.d.ts",
+            "bytes": 7768,
+            "blob": "9c2b7a1aaa9661319ee8a5c29563aa5f2820e0c5",
+            "sha256": "a161ba4b7b8f6a4e72d34a2f6845f65d088f355ad6405799a889779cc445b536"
+          },
+          {
+            "file": "lib/engines/anysearch/error.js",
+            "bytes": 8486,
+            "blob": "f629d478bfd4733a8d3bb33f4de499c2f5faf930",
+            "sha256": "75d38af6ee66dff7bb872a6b68ecadc35de6a159d9ebb127b8471605a1979302"
+          },
+          {
+            "file": "lib/engines/anysearch/index.d.ts",
+            "bytes": 1587,
+            "blob": "267abe64f6f885dacfefb06d29816c710daf528e",
+            "sha256": "69c354af4aad3e79f0e12c93b8989119679c183c640f651d1cca1daf94211618"
+          },
+          {
+            "file": "lib/engines/anysearch/index.js",
+            "bytes": 1108,
+            "blob": "5b1e8ef7a79b0af74b9a386ed63c5e4eaa26c914",
+            "sha256": "023a4473e795445f568ecd90d86a08e62809d5f97922a334e016bf02d13a3f01"
+          },
+          {
+            "file": "lib/engines/anysearch/limits.d.ts",
+            "bytes": 2326,
+            "blob": "ea1b85c5270968d5b077f2c30297d27ff8e30741",
+            "sha256": "af6640909cbd39eb4634a76cae703756e5a60cf41d5e8391195e4ec3e7d09e14"
+          },
+          {
+            "file": "lib/engines/anysearch/limits.js",
+            "bytes": 2275,
+            "blob": "b1eb004f563db251670ccdc1339acee7de0825b0",
+            "sha256": "5a2faeb7c62d6ba9d23c59083dd0bb31c76022ee2bce55cff23ceef71f587bac"
+          },
+          {
+            "file": "lib/engines/anysearch/types.d.ts",
+            "bytes": 996,
+            "blob": "1c5ae3eeca35962e4db14d25427f88ef92f5a03a",
+            "sha256": "aa6fdd08e3bf6b6f1f6be8e468ec2a8a98079df85df6ba172f031c87fca77490"
+          },
+          {
+            "file": "lib/engines/anysearch/types.js",
+            "bytes": 11,
+            "blob": "cb0ff5c3b541f646105198ee23ac0fc3d805023e",
+            "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+          },
+          {
+            "file": "lib/engines/anysearch/wire.d.ts",
+            "bytes": 6263,
+            "blob": "9ae7b3cd78ce25cd2f4d2c83fed949cd81ad7d39",
+            "sha256": "c54ac92aee4f880b9cd7e63d5388e9d374af4dfd0667a2fe5e809b6f7b48c27b"
+          },
+          {
+            "file": "lib/engines/anysearch/wire.js",
+            "bytes": 12411,
+            "blob": "5d377d06dcebc7c165ce03eed961eef0e6b21ac1",
+            "sha256": "58d93a6ee66a3e7cbbfabff6da43e786312f3a6001f9b3699e26d97544db9f9d"
+          },
+          {
+            "file": "lib/engines/decision/client.d.ts",
+            "bytes": 1202,
+            "blob": "ff531f7800761662dfe1939675cabf189132774e",
+            "sha256": "af34ad7f8ed021a714c8e053b29ed1f357edb48096a5732b962c640acf60a07a"
+          },
+          {
+            "file": "lib/engines/decision/client.js",
+            "bytes": 4715,
+            "blob": "7b459988bfff65b27fbe2f0f2c0cdabaad8a7f31",
+            "sha256": "0e079bda7976991618eb800527d41381508834b2a7a8e0171aea4434b7a6cba9"
+          },
+          {
+            "file": "lib/engines/decision/limits.d.ts",
+            "bytes": 407,
+            "blob": "6906782a8c3287c571de1aec5a606f6cdf1c5181",
+            "sha256": "23c6840557687445a5f89edd4cc28f21a436ea15c9f06c928f41264d6051c902"
+          },
+          {
+            "file": "lib/engines/decision/limits.js",
+            "bytes": 368,
+            "blob": "8db440e84eeb19c81b51cde878cb1d8015afd8be",
+            "sha256": "3d0e375b204ef8e3bb5df46ce117a56570a6487cf6b2cd483af96b1c35b53a85"
+          },
+          {
+            "file": "lib/engines/decision/types.d.ts",
+            "bytes": 501,
+            "blob": "1db984b904aa7665e811e26758e9ae851f1908b1",
+            "sha256": "0b7803fbad115274fbae3f9af11ae719306bf2efd3e61e7b7fedc18fda615498"
+          },
+          {
+            "file": "lib/engines/decision/types.js",
+            "bytes": 11,
+            "blob": "cb0ff5c3b541f646105198ee23ac0fc3d805023e",
+            "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+          },
+          {
+            "file": "lib/engines/decision/wire.d.ts",
+            "bytes": 429,
+            "blob": "da84c732698c31a49aaff0b1147c4c1809fbb88f",
+            "sha256": "69a734651e37a289487318793c9272c924a29c7160d52182ff5d2b80a89e239f"
+          },
+          {
+            "file": "lib/engines/decision/wire.js",
+            "bytes": 1792,
+            "blob": "118bcb4db113c7a218f66422218ffba07c2c5850",
+            "sha256": "3848a2c05dedb96f8303c49dc6f325f9771b468f7f55adc5df42f5e3c3456e27"
+          },
+          {
+            "file": "lib/engines/firecrawl/client.d.ts",
+            "bytes": 2993,
+            "blob": "8244aae2835ba8086a2700cd55d02936718133ca",
+            "sha256": "0c5a51d7f714ed3543471374beba43c49981983636d71fc905845e44774756f6"
+          },
+          {
+            "file": "lib/engines/firecrawl/client.js",
+            "bytes": 6122,
+            "blob": "f77a47a81264d8efefeed889758674873020d50d",
+            "sha256": "c9d1d61a9ba62623af01dd36c9c4564de20eb9c6266dca3796098f762c16a980"
+          },
+          {
+            "file": "lib/engines/firecrawl/wire.d.ts",
+            "bytes": 6452,
+            "blob": "3f96fca4db807b51a442472cdbbeb14c4f7213a8",
+            "sha256": "8346bde07e6178804f41ad5e311cecd8318b54696064a93c6c03780389367a3c"
+          },
+          {
+            "file": "lib/engines/firecrawl/wire.js",
+            "bytes": 8099,
+            "blob": "52cfb194132edbdafc7dbe4a3cb8de4b4d476e02",
+            "sha256": "e6512010638d0b597d004ef304fb0b202edff6659e37e3052279dd98f0bd37ae"
+          },
+          {
+            "file": "lib/engines/rerank/client.d.ts",
+            "bytes": 2035,
+            "blob": "3b6ea66e480da3ff82ef7b8ca98eecf0e9c4092e",
+            "sha256": "a9e6e5c9e9246db2a05be91d6dce34c030fe794d43c29f9c5169356c958af38a"
+          },
+          {
+            "file": "lib/engines/rerank/client.js",
+            "bytes": 6602,
+            "blob": "895b5d93b835ba8f7c604689a371a3f92de01f9f",
+            "sha256": "bce2f9893175afa18eda6ae64a02623d7abdc96ee1dd7ca4e6088c9f634e8b37"
+          },
+          {
+            "file": "lib/engines/rerank/limits.d.ts",
+            "bytes": 861,
+            "blob": "324fb1fbb785799fca21aa326a616ff3b9ba2220",
+            "sha256": "34f5cc92506ee3a7ff0dea670f24789523b46c419ff68e3c641fc6ce4ee65857"
+          },
+          {
+            "file": "lib/engines/rerank/limits.js",
+            "bytes": 830,
+            "blob": "bc8820cdf912a57dfc2b696828fe0c6c1ffe14a1",
+            "sha256": "bf7b108e4abb3c7d8da2e1f6366de0a38124f93feba132ca155d1fbed0662296"
+          },
+          {
+            "file": "lib/engines/rerank/types.d.ts",
+            "bytes": 1646,
+            "blob": "261e3124de17bc33b9ca081a2ddcd2e2fef7c0b1",
+            "sha256": "7da710fa9787625cd2a343b99ca74534ecff0b4519b38e9a4bf6f1e930aa67c4"
+          },
+          {
+            "file": "lib/engines/rerank/types.js",
+            "bytes": 266,
+            "blob": "264d2cefff350b70aac226844f15a09daa38db38",
+            "sha256": "0f61574a1f820760fb8f5d0a94ebd85317d576a4a1d37e109f404cb11612ae61"
+          },
+          {
+            "file": "lib/engines/rerank/wire.d.ts",
+            "bytes": 1897,
+            "blob": "4a7a12e1aaad468265c710a35c6777b9d8afaa98",
+            "sha256": "02530c8301cc5ba2162b6265668550bfc4184e54e68af0193823fa5e3656e1d5"
+          },
+          {
+            "file": "lib/engines/rerank/wire.js",
+            "bytes": 2981,
+            "blob": "01fa0ede732e102d371a2d3aecbf3f1dc047e5a4",
+            "sha256": "18bca039a19be60e0c9757d60fbd62d3373b4a685e9df42a183d283e638b533b"
+          },
+          {
+            "file": "lib/engines/zhihu/adapter.d.ts",
+            "bytes": 983,
+            "blob": "6168f5c1924a601164b41a5b2ab74ca4f38fbb5f",
+            "sha256": "b4c1da6208561bc1c04c4fc20ab5e8572c5bb660de0f38b86b465675f11fa10e"
+          },
+          {
+            "file": "lib/engines/zhihu/adapter.js",
+            "bytes": 1998,
+            "blob": "d8aab009c25253b0d43390f29c9da259f6b733c7",
+            "sha256": "b59b8493c73ea2d33bdb47f44afc2f24d64dc299e1ef761223f66037b6cb3c11"
+          },
+          {
+            "file": "lib/engines/zhihu/client.d.ts",
+            "bytes": 4619,
+            "blob": "90f7f7181e879678f091c524072b67b62dcc962d",
+            "sha256": "8ccdbd1d2aed5545906ee88b80eaaa4573f8f5af3b2909516245bf824313bde9"
+          },
+          {
+            "file": "lib/engines/zhihu/client.js",
+            "bytes": 9991,
+            "blob": "6b3a52327bb090ca7487781944831b789f05a890",
+            "sha256": "74a20b7ea75ad8ccc9b06366911dddf00401ceb6ded0d9f1fb49b2934f805551"
+          },
+          {
+            "file": "lib/engines/zhihu/index.d.ts",
+            "bytes": 1509,
+            "blob": "b224de7fa04d4df2aa59ba4bbb1c3036dc4c3e79",
+            "sha256": "d21df446bb239cb6fd5a27563e1d5d501f915b52f5f9401ba89b6821f5d025dc"
+          },
+          {
+            "file": "lib/engines/zhihu/index.js",
+            "bytes": 1191,
+            "blob": "0ff4d948fa55b4928945d9327e732ca1365531bc",
+            "sha256": "0f4761eb219d57792de0d92805ba5f70c4e6f608ef705478c982ac7610917fd4"
+          },
+          {
+            "file": "lib/engines/zhihu/limits.d.ts",
+            "bytes": 1776,
+            "blob": "163c35d41a69307220a4a9f1b8a65b05a8421d6f",
+            "sha256": "68b11ae4fe8a8bea80b7e62c430aa997167024d3d6c006ee903122b166931321"
+          },
+          {
+            "file": "lib/engines/zhihu/limits.js",
+            "bytes": 1713,
+            "blob": "ba5864de6819e4cd469e1750e8a6735814f98020",
+            "sha256": "a50bca397068d6ef27db0523312302b561b3f266bd250ba193c740173c1b98ba"
+          },
+          {
+            "file": "lib/engines/zhihu/options.d.ts",
+            "bytes": 1287,
+            "blob": "ee3d1cba72d9a603da1f48e0c4dfad7dc415505d",
+            "sha256": "3f614765f940f7d3b9bd0575245182ab249855c644fd78153623fc65672b98ec"
+          },
+          {
+            "file": "lib/engines/zhihu/options.js",
+            "bytes": 1899,
+            "blob": "ee965845ddd344a639fd6c6f40d09d46466531a3",
+            "sha256": "c4ada0a1b434253b0debb41ee0ef4ad26767b872b3693500a3b83e885e841374"
+          },
+          {
+            "file": "lib/engines/zhihu/types.d.ts",
+            "bytes": 2235,
+            "blob": "3acc7d504709afbb9706943405aa3f39e2fe826a",
+            "sha256": "e7ef727d29c34c5fea93a2d36e48a70b1d1da51122628136edb6d4a9051b5c48"
+          },
+          {
+            "file": "lib/engines/zhihu/types.js",
+            "bytes": 254,
+            "blob": "139ded4340dfd9b5d93e43b6a8d01e12318cd02b",
+            "sha256": "58298e4c218fe19a2f9274d404a43b9a4bc7f51ed3643ae1b03bb1f74062d2fe"
+          },
+          {
+            "file": "lib/engines/zhihu/wire.d.ts",
+            "bytes": 4868,
+            "blob": "59e8e441fbdf6034cf3515aa6e543d08d2f65d28",
+            "sha256": "aca0e10d11c5fae5f42764af007db45f1f89bf93f377aa1780b4a3c0f84119be"
+          },
+          {
+            "file": "lib/engines/zhihu/wire.js",
+            "bytes": 8140,
+            "blob": "57bfcbc15c1a131f0f76a8ed973e0e7fd9d2c220",
+            "sha256": "3530e98d399848e0565901c7a82f191809ba87ac4f59d9c1121e2f827faa7a2d"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-stream.d.ts",
+            "bytes": 2445,
+            "blob": "65662b391edabd71d2d73f8b1f0c07f8ae2e777c",
+            "sha256": "1035fcde5d74bc0b080c67da5f07600c1e632fad26b1bd616c9aa14392909986"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-stream.js",
+            "bytes": 10769,
+            "blob": "90812c57b7347374661fd6969f5d484e0ba8135b",
+            "sha256": "0e19582d9bb5b66e32a3673c3390ae06698d9c6aafeaf896eba8dcfd4cc6767e"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-wire.d.ts",
+            "bytes": 6605,
+            "blob": "0c7e87ba7a5cff1d7f655a4f2c1286ee5821d1e7",
+            "sha256": "04043451efabb5d424b11eb37a09d11d3afccd2b91648d4ef56a9de3df405c49"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-wire.js",
+            "bytes": 13537,
+            "blob": "61301f22293cd5cc3f7ef22fa2670ce0a5dafbc2",
+            "sha256": "d1df3c5a3f70708bef7a95271c146595efc8214df7b40e23b79bd23be44a0b03"
+          },
+          {
+            "file": "lib/engines/zhipu/client.d.ts",
+            "bytes": 9450,
+            "blob": "82a13f681819fcdd7bd252d4036527f6a64a62fd",
+            "sha256": "73dd086039f78b4efdd3b786992379a91a0c996d32ade0585e35d365ed3bbb27"
+          },
+          {
+            "file": "lib/engines/zhipu/client.js",
+            "bytes": 16567,
+            "blob": "520c771f950031a9ecf6130b176c16dce08f5f0d",
+            "sha256": "3ffafc75024dc0122bd101c3b77cb8ae6f7767d5b8de74387d848bb90afc8703"
+          },
+          {
+            "file": "lib/engines/zhipu/transport.d.ts",
+            "bytes": 4021,
+            "blob": "5d47d2af794f114184d90763cfd70b0d343658fd",
+            "sha256": "eb253b40a776e0a204c763bda6bea366ffec6caaa4c2d33bdc6e67a317a7e2b6"
+          },
+          {
+            "file": "lib/engines/zhipu/transport.js",
+            "bytes": 5893,
+            "blob": "8e9771dbe7245be83a4f8410a8ff2f84935816d4",
+            "sha256": "3b26bfb68dbed832d2aa477f626304c3e77cea672ec3ed0c44006186529a2009"
+          },
+          {
+            "file": "lib/engines/zhipu/wire.d.ts",
+            "bytes": 2700,
+            "blob": "0e1725815357e686fd9772953a09e1e55876aef3",
+            "sha256": "09e1e635cf7b3407211b14fdf122e0952d4b8b3ca35bd83a194c17b32fcb30cd"
+          },
+          {
+            "file": "lib/engines/zhipu/wire.js",
+            "bytes": 3789,
+            "blob": "21fb9c7af564f1b47ed23fab559b873387077640",
+            "sha256": "926d340d6fe4ce6a294c2feeee88c7657cbea759cb6552eb95b4612f6694bd37"
+          },
+          {
+            "file": "lib/fetch-aggregate.d.ts",
+            "bytes": 7344,
+            "blob": "f8c3deffe9d2eb8baa1c7c000f539519cd32fd0e",
+            "sha256": "978b94d47d49125e5b9c86b8a053d72e807904825c869ee41039886b8843a18e"
+          },
+          {
+            "file": "lib/fetch-aggregate.js",
+            "bytes": 20997,
+            "blob": "11ba3748e75883d1678c72b9d91a058748885ad1",
+            "sha256": "3e824206046db43a5b49d767a46bc9b086262f820a101042373ac1fef02c801f"
+          },
+          {
+            "file": "lib/fetch-document/blocks.d.ts",
+            "bytes": 832,
+            "blob": "cf3e0fb07e522b690624a58c7820981a376ac251",
+            "sha256": "9d3737faaf85c23677601c497f8406d5e24014cfc115592602aa9b0e0adbabfc"
+          },
+          {
+            "file": "lib/fetch-document/blocks.js",
+            "bytes": 5335,
+            "blob": "5b7a4486bf69082bdc87fb80e2212510cda02680",
+            "sha256": "9f648b5d12fc91e1bab8355078405e4cca50fa959b7e90f668dd0bb4ba9fec4a"
+          },
+          {
+            "file": "lib/fetch-document/organize.d.ts",
+            "bytes": 369,
+            "blob": "fe3e6d46549bb867a2d16d181c05b998b90f19c9",
+            "sha256": "71066608c77fc6f8690b00f9aa808923ab72edbb75199e9afa33b86b8e9de9b0"
+          },
+          {
+            "file": "lib/fetch-document/organize.js",
+            "bytes": 17586,
+            "blob": "eeb386b7df56c9c6c3d8af8bb39e4e6545662b84",
+            "sha256": "34e962603d2384861383265bb908dcc5c59bdcb003a85bd2965d9c7fe1cd2275"
+          },
+          {
+            "file": "lib/fetch-pipeline.d.ts",
+            "bytes": 3474,
+            "blob": "69483bcb34193e0370fad92ad375cac82b9172f0",
+            "sha256": "0ec1079ed5f233979801ebf3db18db96dc9f4e5cd636165b0ad241cb883b72a9"
+          },
+          {
+            "file": "lib/fetch-pipeline.js",
+            "bytes": 6379,
+            "blob": "cd30819272c74c7237f49ad24f8da78422684495",
+            "sha256": "9543fbc10795a37a4a3a6b6869bf55d6cbf3ebc7517f9cb6d1a8dc6d571921ee"
+          },
+          {
+            "file": "lib/index.d.ts",
+            "bytes": 24223,
+            "blob": "fe218144927a1415164cfd2c07d0e6aed140f10d",
+            "sha256": "5d2abb53ec69898c9d2bd9c9f8c232154cb929a49cda6b8f908f3cc91a42cb52"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 26168,
+            "blob": "485b8e89a213e72ed55147071c17c9a9f42f2ef5",
+            "sha256": "cbf140bc84c59eb3161546543ccbc0dc8b66e512988eb75426a794c9091222c5"
+          },
+          {
+            "file": "lib/keyless.d.ts",
+            "bytes": 220,
+            "blob": "8af841a245e6a93ba0013e6730583f20bf54ad99",
+            "sha256": "104ad4b813a2e0b904e3621796a893f15d8b9800a58c18f91604e1a9e02d677a"
+          },
+          {
+            "file": "lib/keyless.js",
+            "bytes": 608,
+            "blob": "2ddfa825bc8d19d4d9841f24edad3b04ba6a4d8b",
+            "sha256": "859b652a7a6a01642f1f1131b10af622bcd79912fe741adeafb2da720894df8b"
+          },
+          {
+            "file": "lib/limits.d.ts",
+            "bytes": 3245,
+            "blob": "27367ecf8c840e0bf8998c2fb2a04fde66952fed",
+            "sha256": "bdaf4b98d68f0756d2fd66a022b87ef70ae71acda2b5c05fc03c41c64a63b4ff"
+          },
+          {
+            "file": "lib/limits.js",
+            "bytes": 3088,
+            "blob": "890aa6d37a166089567135f5ed27eec14c76010d",
+            "sha256": "1f2a887300870b04fca00387b794e07b4a1138011228e7775d10ab6460bc43cb"
+          },
+          {
+            "file": "lib/request-budget.d.ts",
+            "bytes": 3095,
+            "blob": "adf30b4b49e9b61a22b84acc9576ac594d8b9a3a",
+            "sha256": "0c6da78e1006299e2cc923a86e7fbcabf631e0549fd921da1695164fc7918b1a"
+          },
+          {
+            "file": "lib/request-budget.js",
+            "bytes": 9364,
+            "blob": "321cb639ffa435c8aac6557c069372a0ea63c996",
+            "sha256": "b9eebfb53c735c819d9cedc6da8e9468b04d3d08d98253399c43024b35adc25e"
+          },
+          {
+            "file": "lib/search-aggregate.d.ts",
+            "bytes": 8864,
+            "blob": "5b30d8c58776634daa9ee774173e653427d45564",
+            "sha256": "8fded454a5077cb34159439d71e9fc7e87eabe1308fd5e2507f5829e884fd12b"
+          },
+          {
+            "file": "lib/search-aggregate.js",
+            "bytes": 28046,
+            "blob": "dcd1d7ab8518e348a5065fcd14587e928a1d72ed",
+            "sha256": "890d122b0fe7a7bc989eecd41c849bb595224831ecfe462f2323762a48724ea7"
+          },
+          {
+            "file": "lib/search-pipeline.d.ts",
+            "bytes": 6146,
+            "blob": "f3893994e1d4f9338ff57a8bef234f05ba3d3d48",
+            "sha256": "f42e709cd960e46d47a1234117bddd3db18c5280d46dee6220e17cee5d2099b5"
+          },
+          {
+            "file": "lib/search-pipeline.js",
+            "bytes": 11699,
+            "blob": "29a334c4d41247f1f695f3190fcd9970829ac4bb",
+            "sha256": "276853518d0a695728748dace8cd9a5556deb587f352e46cbe3e2f1d1d307d0d"
+          },
+          {
+            "file": "lib/search-quality.d.ts",
+            "bytes": 770,
+            "blob": "5f8d56d41b798036d6f475e1ae0e313b7297e785",
+            "sha256": "6edf1efe9bc2b91d403e0a740ba1762c86763e1569cc9f3a319795dd5786d4f5"
+          },
+          {
+            "file": "lib/search-quality.js",
+            "bytes": 3489,
+            "blob": "117eb4a3b7d43ce66aefb5bb1c0a7a0a0ad9189f",
+            "sha256": "1a09a47a61c1fd7923a052d8ef66f4073208ba49b6dfc168d68770ffb261b245"
+          },
+          {
+            "file": "lib/settings-surface.d.ts",
+            "bytes": 8169,
+            "blob": "c0de6c9c71bda931044dcd16eef57b0d204fcb45",
+            "sha256": "2b2dc888cf11fc99d3dbd71b555042c7a424763d754f62abd05302c6701dceac"
+          },
+          {
+            "file": "lib/settings-surface.js",
+            "bytes": 8124,
+            "blob": "bd465ca486edbb19c25b039e57bc7c78c67a177c",
+            "sha256": "a4b45a7fe69e7ad9293ddac7ea9e3cfbdff3035ecdc8c93466a358de8a3596f4"
+          },
+          {
+            "file": "lib/settlement-window.d.ts",
+            "bytes": 416,
+            "blob": "114945640fdd382705f0641054b20cf6432101f6",
+            "sha256": "943a4451a2f59b438e3902e266bec63ad7de853858589156a9f42e31997a4a52"
+          },
+          {
+            "file": "lib/settlement-window.js",
+            "bytes": 907,
+            "blob": "4fd98acf31a68052034e8357c2f6911cc206afa5",
+            "sha256": "a643b2e7311443a2bcb2347213b1adfbaf7b5b5713e2794636adf53b702b86f3"
+          },
+          {
+            "file": "lib/types.d.ts",
+            "bytes": 4511,
+            "blob": "b3fecf76008825d414f7b3d109d527af773a38a4",
+            "sha256": "b50b6c56b3ed989f734473dadfa0cea255623cf10466db0bf238035bce2a5355"
+          },
+          {
+            "file": "lib/types.js",
+            "bytes": 354,
+            "blob": "83ac796712c0bafa61450098d04e99b13c2c07ce",
+            "sha256": "13bb99a00045f7cc802c7dcccbc63a4dcda7d5d9a869ad6306ac43d2d04eb639"
+          },
+          {
+            "file": "package.json",
+            "bytes": 4039,
+            "blob": "0b0003e31e3879e1e44a2fbc6807754c7a1e0e03",
+            "sha256": "7b0dd4b26fa0304c1c7a07270cca9fc804f7c682150201b2fb936f9b2e824642"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-credentials",
+            "file": "client/index.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 265,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "docs/dependency-inventory.json",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 114,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/additional/adapters.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 261,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/additional/aihot.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 16,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/additional/http.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 61,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/anysearch/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 35,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/anysearch/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 110,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/decision/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 9,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/decision/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 26,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/firecrawl/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 40,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/firecrawl/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 47,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/rerank/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 30,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/rerank/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 48,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/zhihu/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 43,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/zhipu/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 61,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/zhipu/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 138,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/zhipu/transport.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 38,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/fetch-document/organize.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 51,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/fetch-pipeline.d.ts",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 63,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/fetch-pipeline.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 73,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/index.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 207,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/keyless.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 11,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 110,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 311,
+          "packageEntries": 129,
+          "files": 129
+        },
+        "runtimeFiles": 110,
+        "runtimeBytes": 703110,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T10:41:04Z",
+        "dependencies": [
+          "@deepseek-ai/schemastery",
+          "@joplin/turndown-plugin-gfm",
+          "fast-xml-parser",
+          "turndown",
+          "undici"
+        ],
+        "runtimeDependencies": {
+          "@deepseek-ai/schemastery": "3.18.5-alpha.2",
+          "@joplin/turndown-plugin-gfm": "1.0.68",
+          "fast-xml-parser": "5.11.2",
+          "turndown": "7.2.4",
+          "undici": "8.11.2"
+        },
+        "toolViewEvidence": []
+      },
+      "review": {
+        "repositoryUrl": "https://github.com/qikairo7/dsh-web-search-fetch",
+        "commit": "46a3b4d31565df1dd03adff77607391a03805cf1",
+        "binding": "f01689e3961267f344c7a7ea826e6eff60c492e5ccd9e06a2c6c1563bbcd1c81",
+        "verdict": "rejected",
+        "reviewer": "Codex on behalf of AI-Scarlett",
+        "reviewedAt": "2026-10-16T13:35:38.808Z",
+        "rationale": "SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable. The fixed Git distribution declares five npm runtime dependencies but contains no independently verifiable, installation-enforced mapping from the actual runtime dependency closure to bounded immutable source. docs/dependency-inventory.json identifies itself as author-provided 0.2.11 metadata and lists transitive version ranges. The npm installation resolves these outside the first-party Git tree; the inventory and pnpm lock do not prove which source the DSH install path will execute.",
+        "evidenceUrls": [
+          "https://github.com/qikairo7/dsh-web-search-fetch/commit/46a3b4d31565df1dd03adff77607391a03805cf1",
+          "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md"
+        ]
+      },
+      "decision": "rejected",
+      "blockers": [
+        {
+          "code": "SUPPLY001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 100,
+          "finding": "The fixed Git distribution declares five npm runtime dependencies but contains no independently verifiable, installation-enforced mapping from the actual runtime dependency closure to bounded immutable source. docs/dependency-inventory.json identifies itself as author-provided 0.2.11 metadata and lists transitive version ranges. The npm installation resolves these outside the first-party Git tree; the inventory and pnpm lock do not prove which source the DSH install path will execute.",
+          "requiredChange": "Supply a reproducible runtime distribution: either include the licensed dependency runtime files in a self-contained fixed-Commit distribution, or supply a complete dependency closure with exact versions, canonical source Commits, bounded distributed-file hashes, license/install-hook evidence and a source-verifiable mechanism that makes the actual DSH install use that reviewed closure. A version list or advisory lookup alone cannot complete this gate. Normal dependencies and web provider features need not be deleted.",
+          "acceptance": "The Store can independently read every runtime dependency at its immutable source, verify the complete dependency graph and source hashes within declared bounds, and bind an installation-resolution proof to this plugin Commit. All nodes have known licenses and no unreviewed install hooks; no unresolved node or floating resolution remains."
+        }
+      ],
+      "thirdPartyCodeExecuted": false,
+      "realProfileChanged": false
+    }
+  ],
+  "officialSourceEvidence": [
+    {
+      "path": "packages/bundle/web-app/src/index.ts",
+      "file": "/tmp/dsh-admission-closure-20261016/official-web-app-index.ts",
+      "bytes": 11300,
+      "sha256": "3f0afba1922c1dc25fbb5528a29e83639956846f8b9f054b90fd4f7a6b37ab51",
+      "commit": "2fbf4359b82fb94c03dcce0b831660d87f12ea5c",
+      "blob": "b93b559620fe9a064b6ff24e0b2ed3bf22b3f6dd"
+    },
+    {
+      "path": "packages/client/connection/src/index.ts",
+      "file": "/tmp/dsh-admission-closure-20261016/official-connection-index.ts",
+      "bytes": 6978,
+      "sha256": "33a14e80298e0a0bc7bafef515d853d13584cd2433844b3dc2a89d4980d315e1",
+      "commit": "2fbf4359b82fb94c03dcce0b831660d87f12ea5c",
+      "blob": "d563cd40e83f6048dd993f297650f821f6921d62"
+    },
+    {
+      "path": "packages/client/connection/src/api-request-trust.ts",
+      "file": "/tmp/dsh-admission-closure-20261016/official-connection-api-request-trust.ts",
+      "bytes": 8787,
+      "sha256": "879a4f497ad41355771303a5956851da04661be24b08435fe7bf13d42e1e3b9b",
+      "commit": "2fbf4359b82fb94c03dcce0b831660d87f12ea5c",
+      "blob": "a2fb78ec6cf56bf56a3b0ae8e39e066b7fb69578"
+    },
+    {
+      "path": "packages/host/webserver/src/index.ts",
+      "commit": "2fbf4359b82fb94c03dcce0b831660d87f12ea5c",
+      "blob": "73139550d373cd42939e25ea78eeb0fd204c3940",
+      "sha256": "f173728841d6edce03148383657bfa2200b956e1453e3cc5033d77271d84d511",
+      "bytes": 24650
+    }
+  ],
+  "thirdPartyCodeExecuted": false,
+  "realProfileChanged": false,
+  "communication": {
+    "priorRequestsAlreadyConsumed": true,
+    "repeatMessagesSent": 0,
+    "finalReplyDraftsPrepared": true
+  }
+}

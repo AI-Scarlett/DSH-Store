@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { authorFeedbackText, collectAuthorFeedback, isDshStoreProblem, parseArgs, sha256, validateAuthorFeedback } from '../scripts/collect-author-feedback.mjs'
+import { authorFeedbackText, collectAuthorFeedback, isDshStoreProblem, isAdmissionRecheckRequest, parseArgs, sha256, validateAuthorFeedback } from '../scripts/collect-author-feedback.mjs'
 
 const issue = {
   number: 434,
@@ -29,6 +29,23 @@ test('author feedback classifier only routes explicit DSH Store problems', () =>
   assert.equal(isDshStoreProblem('感谢核查，当前固定 Commit 已更新。'), false)
   assert.equal(isDshStoreProblem('感谢 DSH STORE 的自动检查与修复建议，已完成整改，请安排复检。'), false)
   assert.equal(isDshStoreProblem('DSH STORE 的自动复检已完成，当前版本请按固定 Commit 重新入库。'), false)
+})
+
+test('an author remediation recheck is actionable even when it reports no Store bug, and stops win', async () => {
+  const body = '已修复并发布 1.2.3，请按新的固定 Commit 复检。'
+  assert.equal(isDshStoreProblem(body), false)
+  assert.equal(isAdmissionRecheckRequest(body), true)
+  assert.equal(isAdmissionRecheckRequest('请复检，但不要再发消息给我。'), false)
+  assert.equal(isAdmissionRecheckRequest('谢谢\n> 请复核新版本'), false)
+  const request = { id: 21, body, user: author, created_at: '2026-10-16T10:00:00Z', html_url: 'https://github.com/AI-Scarlett/DSH-Store/issues/434#issuecomment-21' }
+  const args = { github: mock([request]), issues: [issue], observedAt: '2026-10-16T11:00:00Z' }
+  const result = await collectAuthorFeedback(args)
+  assert.equal(result.summary.admissionRechecks, 1)
+  assert.equal(result.items[0].requiresTerminalDecision, true)
+  const resolved = await collectAuthorFeedback({ ...args, resolutions: [{ requestCommentId: 21, userId: author.id, requestBodySha256: sha256(body) }] })
+  assert.equal(resolved.items.length, 0)
+  const changed = await collectAuthorFeedback({ ...args, resolutions: [{ requestCommentId: 21, userId: author.id, requestBodySha256: '0'.repeat(64) }] })
+  assert.equal(changed.items.length, 1)
 })
 
 test('author feedback classifier ignores quoted bot notifications in email replies', () => {

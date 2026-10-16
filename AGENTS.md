@@ -71,3 +71,11 @@ every change:
 
 Run `npm run check` before committing. Real DSH installation and UI verification
 are separate acceptance gates and must never be inferred from unit tests.
+
+17. 作者整改后的复核必须完成正式准入判定，不能以“已读源码/已回复/仍需审查”结案。
+    对同一固定 Commit 完整审阅后，符合条件就更新受审记录和 Catalog 并完成公网回读；
+    不符合则一次列清具体文件、行号、原因、最小修改办法和验收条件。
+    商城扫描器误报、缺失审阅通道、过时 Catalog 记录由商城修复，不转嫁给作者。
+    用 registry/author-resolutions.json 将请求、身份、源码绑定和最终 Catalog 状态一致保存。
+    新增专属回复计划必须引用该记录的 SHA-256，CI 拒绝只有复核回执、没有最终判定的计划。
+    作者感谢、单纯改代码、重复任务不增加联系名额；以上流程不放宽第 13–16 条。

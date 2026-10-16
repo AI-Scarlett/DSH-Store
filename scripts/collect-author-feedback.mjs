@@ -62,6 +62,12 @@ export function isDshStoreProblem(body) {
     && EXPLICIT_STORE_PROBLEM_PATTERNS.some(pattern => pattern.test(text))
 }
 
+export function isAdmissionRecheckRequest(body) {
+  const text = authorFeedbackText(body)
+  if (/不要再|停止联系|撤回|do not contact|stop contacting|withdraw/i.test(text)) return false
+  return /请.{0,40}(?:复核|复检|重新审核|重新入库|重新收录)|(?:please|could you).{0,40}(?:recheck|re-review|review.{0,20}(?:commit|version|release))|请安排复检/iu.test(text)
+}
+
 function safeUrl(value) {
   requiredString(value, 'URL', 2_000)
   if (!/^https:\/\/github\.com\/[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+(?:\/|#|$)/.test(value)) throw new Error('GitHub URL is invalid')
@@ -137,18 +143,20 @@ export function validateAuthorFeedback(value) {
     integer(item.author?.id, 'feedback author id')
     requiredString(item.author?.login, 'feedback author login', 40)
     requiredString(item.author?.nodeId, 'feedback author node id', 256)
-    if (item.category !== 'dsh-store-problem' || item.needsManualReview !== true) throw new Error('feedback category is invalid')
+    if (!['dsh-store-problem', 'admission-recheck'].includes(item.category) || item.needsManualReview !== true) throw new Error('feedback category is invalid')
+    if (item.category === 'admission-recheck' && item.requiresTerminalDecision !== true) throw new Error('admission recheck requires a final decision')
     requiredString(item.bodySha256, 'feedback body hash', 64)
     if (!/^[0-9a-f]{64}$/.test(item.bodySha256)) throw new Error('feedback body hash is invalid')
     requiredString(item.excerpt, 'feedback excerpt', 400)
   }
-  if (value.summary?.storeProblems !== value.items.length || value.summary?.manualReview !== value.items.length) {
+  if (value.summary?.storeProblems !== value.items.filter(i => i.category === 'dsh-store-problem').length || value.summary?.manualReview !== value.items.length
+    || value.summary?.admissionRechecks !== undefined && value.summary.admissionRechecks !== value.items.filter(i => i.category === 'admission-recheck').length) {
     throw new Error('author feedback summary is invalid')
   }
   return value
 }
 
-export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/DSH-Store', issues, observedAt, notificationTargets = null }) {
+export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/DSH-Store', issues, observedAt, notificationTargets = null, resolutions = [] }) {
   if (repository.toLowerCase() !== 'ai-scarlett/dsh-store') throw new Error('feedback authority must be AI-Scarlett/DSH-Store')
   if (!Array.isArray(issues) || issues.length > MAX_ISSUES) throw new Error('managed issue snapshot is invalid')
   const items = []
@@ -163,7 +171,10 @@ export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/
       .filter(comment => isHumanAuthorComment(comment, recipient) && String(comment.body ?? '').trim())
       .sort((left, right) => commentTime(left) - commentTime(right) || Number(left.id) - Number(right.id))
       .at(-1)
-    if (!latest || !isDshStoreProblem(latest.body)) continue
+    if (!latest) continue
+    const recheck = isAdmissionRecheckRequest(latest.body)
+    if (!recheck && !isDshStoreProblem(latest.body)) continue
+    if (resolutions.some(r => r.requestCommentId === latest.id && r.userId === recipient.id && r.requestBodySha256 === sha256(latest.body))) continue
     const author = latest.user
     const body = String(latest.body)
     items.push({
@@ -175,7 +186,8 @@ export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/
       commentUrl: safeUrl(latest.html_url),
       createdAt: requiredString(latest.updated_at ?? latest.created_at, 'feedback timestamp', 64),
       bodySha256: sha256(body),
-      category: 'dsh-store-problem',
+      category: recheck ? 'admission-recheck' : 'dsh-store-problem',
+      ...(recheck ? { requiresTerminalDecision: true } : {}),
       needsManualReview: true,
       excerpt: excerpt(body),
     })
@@ -186,7 +198,7 @@ export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/
     observedAt: requiredString(observedAt ?? new Date().toISOString(), 'observedAt', 64),
     source: { repository, managedLabel: 'author-action-required', identity: 'issue-author-immutable-user-id' },
     items,
-    summary: { storeProblems: items.length, manualReview: items.length },
+    summary: { storeProblems: items.filter(i => i.category === 'dsh-store-problem').length, admissionRechecks: items.filter(i => i.category === 'admission-recheck').length, manualReview: items.length },
   }
   return validateAuthorFeedback(result)
 }
@@ -218,6 +230,7 @@ async function main() {
     issues,
     observedAt: args['observed-at'],
     notificationTargets,
+    resolutions: JSON.parse(await readFile(resolve('registry/author-resolutions.json'), 'utf8')).resolutions,
   })
   await writeFile(resolve(args.output), `${JSON.stringify(feedback, null, 2)}\n`, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
   process.stdout.write(`AUTHOR_FEEDBACK_OK store_problems=${feedback.summary.storeProblems} manual_review=${feedback.summary.manualReview}\n`)

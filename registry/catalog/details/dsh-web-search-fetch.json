@@ -1,0 +1,220 @@
+{
+  "id": "dsh-web-search-fetch",
+  "name": "联网搜索工具（DSH Web Search Fetch）",
+  "packageName": "dsh-web-search-fetch",
+  "description": "DeepSeek Harness 多来源网络搜索与网页提取插件",
+  "searchTerms": [
+    "联网搜索工具",
+    "DSH Web Search Fetch",
+    "dsh-web-search-fetch",
+    "联网搜索",
+    "网页搜索",
+    "Web",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "web",
+    "search",
+    "fetch"
+  ],
+  "repositoryUrl": "https://github.com/qikairo7/dsh-web-search-fetch",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "46a3b4d31565df1dd03adff77607391a03805cf1",
+  "version": "0.2.13",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": null,
+    "observedAt": null,
+    "provenance": "unknown"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "author-remediation-terminal-review-v1",
+      "checkedAt": "2026-10-16T13:35:38.808Z",
+      "evidenceUrl": "https://github.com/qikairo7/dsh-web-search-fetch/commit/46a3b4d31565df1dd03adff77607391a03805cf1",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Pinned source and package identity reviewed; see the exact terminal admission decision."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party code was installed or executed by the Store."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Author runtime reports are not independent Store execution."
+    },
+    "securityReview": {
+      "status": "partial",
+      "method": "independent-bounded-static-admission-review",
+      "checkedAt": "2026-10-16T13:35:38.808Z",
+      "evidenceUrl": "https://github.com/qikairo7/dsh-web-search-fetch/commit/46a3b4d31565df1dd03adff77607391a03805cf1",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable."
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "f01689e3961267f344c7a7ea826e6eff60c492e5ccd9e06a2c6c1563bbcd1c81",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "rejected",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "04c7bdb22aa2ddf7e6381ec4f05f7a94f9d0d15a895c9eec6de5f4a16cd12e22"
+  },
+  "entryIds": [
+    "web-search-fetch"
+  ],
+  "configOverrides": [
+    "web"
+  ],
+  "status": "blocked",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable.",
+  "compatibility": {
+    "dsh": "0.2.1-alpha.3",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.2.0-rc.2": "unknown",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown",
+      "0.2.1-alpha.3": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": "^22.19.0 || >=24.0.0",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "@deepseek-ai/schemastery",
+      "@joplin/turndown-plugin-gfm",
+      "fast-xml-parser",
+      "turndown",
+      "undici"
+    ],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "manual-fixed-source-rejected-not-installable"
+  }
+}

@@ -97,9 +97,14 @@
       <div class="standards-update-grid">
         <article class="reveal"><b>FULL COVERAGE</b><h3 data-i18n="policy.bounds.title">扫描预算由商城负责</h3><p data-i18n="policy.bounds.body">统一检查预算为单文件 4 MiB、总运行源码 8 MiB、512 个运行文件和 1,200 个树条目。超限说明商城尚未读全，不代表插件不安全；补足有界审阅前保持不可安装。</p></article>
         <article class="reveal"><b>BUNDLE STRUCTURE</b><h3 data-i18n="policy.bundle.title">新增入口与配置覆盖分开</h3><p data-i18n="policy.bundle.body">只有新增入口 ID 参与独占冲突检查；id + config 是已有配置目标，需单独审阅整段 config 替换影响。单星号 exports 仅在固定完整 Git 树中展开并核对已分发文件，歧义、越界和截断仍阻止准入。</p></article>
-        <article class="reveal"><b>FIXED-SOURCE REVIEW</b><h3 data-i18n="policy.review.title">已知权限可专项审阅，误报需精确取证</h3><p data-i18n="policy.review.body">文件、网络、命令或凭据能力不必声明为 false。完整固定源码上的已知权限与配置覆盖可申请专项审阅；运行依赖须另做供应链审阅，安装脚本、未界定动态加载和缺失源码不能靠权限确认绕过。外部 CDN 脚本属于运行代码，动态加载仍阻止自动准入。误报处置绑定规则、文件、行号和 SHA-256，不使用全局字符串白名单。</p></article>
+        <article class="reveal"><b>FIXED-SOURCE REVIEW</b><h3 data-i18n="policy.review.title">已知权限可专项审阅，误报需精确取证</h3><p data-i18n="policy.review.body">文件、网络、命令或凭据能力不必声明为 false。完整固定源码上的已知权限与配置覆盖可申请专项审阅；Tool-view 须核验自有工具键与分发文件摘要；运行依赖专项审阅须覆盖精确依赖图、完整固定源码、许可证、安装钩子及实际安装解析约束。安装脚本、未界定动态加载和缺失源码不能靠权限确认绕过。外部 CDN 脚本属于运行代码，动态加载仍阻止自动准入。误报处置绑定规则、文件、行号和 SHA-256，不使用全局字符串白名单。</p></article>
         <article class="reveal"><b>EXACT HOST</b><h3 data-i18n="policy.compatibility.title">兼容性对齐实际宿主</h3><p data-i18n="policy.compatibility.body">最新三个官方版本用于触发复核，历史精确记录继续保留；安装、更新和迁移必须命中本机完整 DSH 版本的 compatible 记录。Alpha.4 优先读取 engines.dsh，缺少时才回退检查所有 DSH peer；范围声明不等于真实运行验收。</p></article>
       </div>
+      <article class="standards-native-note reveal" id="author-resolution">
+        <h3 data-i18n="resolution.title">整改复检必须给出正式结论</h3>
+        <p data-i18n="resolution.body">作者明确提交新版本并请求复检后，我们按固定提交完成完整准入判断：通过即更新 Catalog 并核验公开页面；不通过一次列清具体位置、修改办法与验收条件。商城自身误报和审阅缺口由商城处理，不能用一条已复核回执代替结论。</p>
+        <a href="https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md" data-i18n="resolution.link">查看本轮正式判定与整改清单 →</a>
+      </article>
       <p class="standards-native-note"><a href="../faq/#native-market" data-i18n="policy.native">原生 Discover 索引仅投影已批准且有精确兼容记录的条目；查看接入说明 →</a></p>
     </section>
 

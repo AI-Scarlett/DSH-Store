@@ -1,5 +1,6 @@
 import { validateAdmissionReviews } from '../src/admission-review.mjs'
 import { validateCatalogMigrations } from '../src/catalog-migration.mjs'
+import { validateAuthorResolutions } from '../src/author-resolution.mjs'
 import { readFile, readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -34,3 +35,4 @@ process.stdout.write(`REGISTRY_OK entries=${catalog.entries.length} bridgeBytes=
 
 validateAdmissionReviews(JSON.parse(await readFile(resolve(root, 'registry/admission-reviews.json'), 'utf8')))
 validateCatalogMigrations(JSON.parse(await readFile(resolve(root, 'registry/catalog-migrations.json'), 'utf8')))
+validateAuthorResolutions(JSON.parse(await readFile(resolve(root, 'registry/author-resolutions.json'), 'utf8')), catalog.entries)

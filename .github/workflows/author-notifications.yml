@@ -129,7 +129,7 @@ jobs:
             --issues "$RUNNER_TEMP/author-notice-issues.json" \
             --contact-state "$RUNNER_TEMP/author-contact-state.json" \
             --output "$RUNNER_TEMP/author-notice-targets.json"
-      - name: Collect DSH Store problems from author replies
+      - name: Collect Store problems and requests requiring terminal admission decisions
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |

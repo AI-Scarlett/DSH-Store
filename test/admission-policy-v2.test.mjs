@@ -158,6 +158,53 @@ test('synthetic secret findings need an exact reviewed rule, line and source has
   assert.equal(admissionDecision(candidate, protectedAnalysis, reviewed(protectedAnalysis)).state, 'rejected')
 })
 
+test('a complete Tool-view ownership review can finish the known-capability lane without permitting official keys', () => {
+  const file = { file: 'lib/client.js', sha256: '4'.repeat(64) }
+  const tool = { file: 'lib/index.js', sha256: '5'.repeat(64), line: 10 }
+  const analysis = { ...clean, sourceEvidence: [file, tool], toolViewEvidence: [file], reasons: [...clean.reasons,
+    'Tool-view extension requires key ownership review; registration alone is not a protected component mutation'] }
+  const ownership = { key: 'draw_image', owner: candidate.packageName, registration: { ...file, line: 12 }, tool,
+    rationale: 'The registered view key belongs to a tool declared in this same fixed package, not an official tool.' }
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis)).state, 'review-required')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { toolViewOwnership: [ownership] })).state, 'reviewed')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { toolViewOwnership: [{ ...ownership, owner: 'another-package' }] })).state, 'review-required')
+  assert.equal(admissionDecision(candidate, { ...analysis, toolViewEvidence: [...analysis.toolViewEvidence, { file: 'other.js', sha256: '6'.repeat(64) }] }, reviewed(analysis, { toolViewOwnership: [ownership] })).state, 'review-required')
+  assert.throws(() => validateAdmissionReviews(reviewed(analysis, { toolViewOwnership: [{ ...ownership, key: 'bash' }] })), /ownership/)
+})
+
+test('a credential false positive needs exact evidence for every observed file and cannot mask another source', () => {
+  const f = { file: 'lib/paths.js', sha256: '6'.repeat(64), line: 4 }
+  const analysis = { ...clean, signals: { ...clean.signals, credentials: true }, sourceEvidence: [f], capabilityEvidence: [{ ...f, signal: 'credentials' }],
+    reasons: [...clean.reasons, 'runtime source contains the credentials permission signal'] }
+  const d = { ...f, signal: 'credentials', kind: 'false-positive', rationale: 'This exact module reads only executable and home directory paths, not credentials.' }
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis)).state, 'review-required')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { capabilityDispositions: [d] })).state, 'reviewed')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { capabilityDispositions: [{ ...d, sha256: '9'.repeat(64) }] })).state, 'review-required')
+  const other = { ...analysis, capabilityEvidence: [...analysis.capabilityEvidence, { file: 'secret.js', line: 1, signal: 'credentials' }] }
+  assert.equal(admissionDecision(candidate, other, reviewed(other, { capabilityDispositions: [d] })).state, 'review-required')
+})
+
+test('dependencies require an independently reviewed complete source closure and an installation resolution bound to source', () => {
+  const proof = { file: 'package.json', sha256: '7'.repeat(64), line: 1, rationale: 'Reviewed installed dependency resolution is constrained to this exact immutable package closure.' }
+  const files = [{ file: 'index.js', sha256: '8'.repeat(64), bytes: 12 }]
+  const node = { name: 'dependency', version: '1.2.3', repositoryUrl: 'https://github.com/example/dependency', commit: 'd'.repeat(40),
+    sourceDigest: createHash('sha256').update(JSON.stringify(files)).digest('hex'), license: 'MIT', installScriptsReviewed: 'none', files, dependencies: [],
+    coverage: 'complete', securityVerdict: 'pass', moduleLoading: 'static', signals: { files: false, network: false, commands: false, credentials: false, protectedDsh: false, nativeOrExecutableArtifacts: false },
+    rationale: 'Complete pinned dependency distribution inspected without executing any package code.' }
+  const analysis = { ...clean, runtimeDependencies: { dependency: '1.2.3' }, sourceEvidence: [proof], reasons: [...clean.reasons, 'runtime or optional dependencies require a separate supply-chain review'] }
+  const supplyChain = { complete: true, direct: { dependency: '1.2.3' }, installResolution: proof, packages: [node] }
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis)).state, 'review-required')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain })).state, 'reviewed')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, direct: { dependency: '1.2.4' } } })).state, 'review-required')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, packages: [{ ...node, dependencies: ['missing@2.0.0'] }] } })).state, 'review-required')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, installResolution: { ...proof, sha256: 'f'.repeat(64) } } })).state, 'review-required')
+  assert.throws(() => validateAdmissionReviews(reviewed(analysis, { supplyChain: { ...supplyChain, packages: [{ ...node, sourceDigest: '0'.repeat(64) }] } })), /supply-chain/)
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, packages: [{ ...node, signals: { ...node.signals, protectedDsh: true } }] } })).state, 'review-required')
+  assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, packages: [{ ...node, signals: { ...node.signals, network: true } }] } })).state, 'review-required')
+  const dynamic = { ...analysis, reasons: [...analysis.reasons, 'dynamic module loading or code evaluation requires separate review'] }
+  assert.equal(admissionDecision(candidate, dynamic, reviewed(dynamic, { supplyChain })).state, 'review-required')
+})
+
 test('identity migration binds old identity, exact pair and new source; migration never grants admission', () => {
   const entry = { ...candidate, details: { license: 'MIT' } }
   const snapshot = { commit: 'b'.repeat(40) }
