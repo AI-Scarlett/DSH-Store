@@ -23,5 +23,10 @@ jobs:
           node-version: 22
       - run: npm run verify:admission-plan
       - run: node scripts/verify-author-feedback-plan.mjs
+      - run: node scripts/verify-dsh-upgrade-plan.mjs
       - run: npm run check
+      - name: Validate native index with the pinned official parser
+        run: |
+          npm install --prefix "$RUNNER_TEMP/native-validator" --ignore-scripts --no-audit --no-fund @deepseek-ai/dsh-plugin-market-index@0.2.1-alpha.4
+          node scripts/verify-native-market-official.mjs "$RUNNER_TEMP/native-validator/node_modules/@deepseek-ai/dsh-plugin-market-index/lib/index.js"
       - run: npm run verify:registry-sources

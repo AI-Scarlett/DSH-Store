@@ -4,7 +4,7 @@ import { SOURCE_SCAN_BOUNDS } from '../src/source-scan-policy.mjs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { posix } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { canonicalGithubRepository, loadCatalogFromFiles, validateCatalog, verifyCatalogEntry } from '../src/catalog.mjs'
+import { canonicalGithubRepository, dshReleaseVersion, dshVersionCompatibility, loadCatalogFromFiles, validateCatalog, verifyCatalogEntry } from '../src/catalog.mjs'
 import { packageSourceSurface, SCANNABLE_SOURCE, unsupportedPackageEntry, missingLocalModuleReasons } from '../src/package-source-surface.mjs'
 import { localModuleEvidence } from '../src/automation-source-policy.mjs'
 import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
@@ -218,12 +218,23 @@ function inferredCategories(manifest, catalog, pluginType) {
   return [Object.hasOwn(catalog.registry.categories, 'experimental') ? 'experimental' : Object.keys(catalog.registry.categories)[0]]
 }
 
-function inferredCompatibility(manifest) {
+export function inferredCompatibility(manifest) {
+  if (Object.hasOwn(manifest, 'engines') && (!manifest.engines || typeof manifest.engines !== 'object' || Array.isArray(manifest.engines))) {
+    throw submissionError('SUBMISSION_COMPATIBILITY_INVALID', 'package.json engines must be an object')
+  }
+  const hasDshEngine = Object.hasOwn(manifest.engines ?? {}, 'dsh')
+  if (hasDshEngine && (typeof manifest.engines.dsh !== 'string' || !manifest.engines.dsh.trim() || manifest.engines.dsh.startsWith('workspace:'))) {
+    throw submissionError('SUBMISSION_COMPATIBILITY_INVALID', 'engines.dsh must be a non-empty semantic version range, without workspace:')
+  }
   const declared = manifest?.dsh?.compatibility && typeof manifest.dsh.compatibility === 'object'
     ? manifest.dsh.compatibility
     : {}
-  const peerRanges = Object.entries(manifest.peerDependencies ?? {})
-    .filter(([name, range]) => name.startsWith('@deepseek-ai/dsh-') && typeof range === 'string')
+  if (!hasDshEngine && Object.hasOwn(manifest, 'peerDependencies') && (!manifest.peerDependencies || typeof manifest.peerDependencies !== 'object' || Array.isArray(manifest.peerDependencies)
+    || Object.values(manifest.peerDependencies).some(range => typeof range !== 'string'))) {
+    throw submissionError('SUBMISSION_COMPATIBILITY_INVALID', 'peerDependencies must be an object of strings')
+  }
+  const peerRanges = Object.entries(hasDshEngine ? {} : manifest.peerDependencies ?? {})
+    .filter(([name, range]) => (name === '@deepseek-ai/dsh' || name.startsWith('@deepseek-ai/dsh-')) && typeof range === 'string')
     .map(([, range]) => range)
   const uniquePeerRanges = [...new Set(peerRanges)]
   const os = Array.isArray(manifest.os) ? manifest.os : []
@@ -231,8 +242,12 @@ function inferredCompatibility(manifest) {
   const declaredProfiles = Array.isArray(declared.profiles) ? declared.profiles.filter(value => typeof value === 'string') : []
   const platform = manifest?.dsh?.client?.platform
   return {
-    dsh: typeof declared.dsh === 'string' ? declared.dsh : uniquePeerRanges.length === 1 ? uniquePeerRanges[0] : null,
-    dshReleases: Object.hasOwn(declared, 'dshReleases') ? declared.dshReleases : {},
+    dsh: hasDshEngine ? manifest.engines.dsh : typeof declared.dsh === 'string' ? declared.dsh : uniquePeerRanges.length === 1 ? uniquePeerRanges[0] : null,
+    dshReleases: Object.fromEntries(Object.entries(declared.dshReleases ?? {}).map(([release, status]) => {
+      const requirements = hasDshEngine ? [manifest.engines.dsh] : peerRanges
+      const matches = requirements.map(range => dshVersionCompatibility(range, dshReleaseVersion(release)))
+      return [release, matches.includes('incompatible') ? 'incompatible' : matches.includes('unknown') ? 'unknown' : status]
+    })),
     dshOperations: Object.hasOwn(declared, 'dshOperations') ? declared.dshOperations : {},
     node: typeof manifest.engines?.node === 'string' ? manifest.engines.node : null,
     systems: [...new Set(systems)],

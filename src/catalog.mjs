@@ -113,7 +113,7 @@ export function dshVersionCompatibility(value, version) {
       const candidate = parseVersion(version)
       if (!target || !candidate || comparison < 0) return false
       return target.major === 0
-        ? candidate.major === 0 && candidate.minor === target.minor
+        ? candidate.major === 0 && candidate.minor === target.minor && (target.minor !== 0 || candidate.patch === target.patch)
         : candidate.major === target.major
     }
     if (token.operator === '~') {

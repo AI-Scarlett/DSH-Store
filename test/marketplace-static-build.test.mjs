@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createNativeMarketIndex } from '../src/native-market-index.mjs'
 import { gunzipSync } from 'node:zlib'
 import { execFile } from 'node:child_process'
 import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
@@ -168,6 +169,12 @@ test('static marketplace derives manager identity and catalog cards without muta
     const storeLayoutStyles = await readFile(join(output, 'marketplace/store-layout.css'), 'utf8')
     const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
+    const nativeBytes = await readFile(join(output, 'marketplace/plugin-market.json'))
+    assert.deepEqual(JSON.parse(nativeBytes), createNativeMarketIndex(await loadCatalogFromFiles()))
+    assert.equal(release.files['marketplace/plugin-market.json'].sha256, sha256(nativeBytes))
+    assert.match(faq, /id="native-market"/)
+    assert.match(faq, /https:\/\/dsh\.store\/plugin-market\.json/)
+
     const automationStatus = JSON.parse(await readFile(join(output, 'automation-status.json'), 'utf8'))
 
     await assert.rejects(
@@ -573,6 +580,12 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const domesticLlms = await readFile(join(output, 'marketplace/llms.txt'), 'utf8')
     const manifest = JSON.parse(await readFile(join(output, 'build-manifest.json'), 'utf8'))
     const release = JSON.parse(await readFile(join(output, 'release-manifest.json'), 'utf8'))
+    const nativeBytes = await readFile(join(output, 'marketplace/plugin-market.json'))
+    assert.deepEqual(JSON.parse(nativeBytes), createNativeMarketIndex(await loadCatalogFromFiles()))
+    assert.equal(release.files['marketplace/plugin-market.json'].sha256, sha256(nativeBytes))
+    assert.match(domesticFaq, /id="native-market"/)
+    assert.match(domesticFaq, /https:\/\/dsh-store\.cn\/plugin-market\.json/)
+
     const domesticAbout = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const domesticArticle = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
     const domesticPlugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')

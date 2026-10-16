@@ -23,6 +23,18 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
+## 在 DSH 原生「发现」中添加商城
+
+DSH `0.2.1-alpha.4` 新增实验性「自定义插件市场」。在 **插件 → 实验性插件 → 更多** 中打开它，再进入 **发现 → 添加索引源**，填入：
+
+- 国际站：`https://dsh.store/plugin-market.json`
+- 国内站：`https://dsh-store.cn/plugin-market.json`
+- GitHub Pages：`https://ai-scarlett.github.io/DSH-Store/marketplace/plugin-market.json`
+
+原生索引按官方 `format: 1` 生成，仅包含已批准条目，来源锁定完整 Git Commit；兼容范围只包含 Catalog 明确声明兼容的版本。未知版本不会自动扩大支持范围。发布时间取该固定 Commit 的公开时间。索引会随正式站点每三小时刷新；添加索引源属于当前 Profile，安装仍需核对 DSH 确认框中的来源。关闭实验性市场或删除索引源可撤销接入。
+
+DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所有 DSH peer。Store 保留逐版本声明与隔离运行证据；范围声明、源码检查和真实 Desktop 验收分别记录。
+
 ## 安装插件商城
 
 ### 前置条件
@@ -80,7 +92,7 @@ Profile 的自动测试推定。
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.4` |
+| 商城版本 | `0.9.5` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
