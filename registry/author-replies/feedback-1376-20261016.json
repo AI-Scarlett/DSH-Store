@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1376,
+  "userId": 325868576,
+  "requestCommentId": 6191648513,
+  "requestBodySha256": "3bebcd7149bcfbccc680721f07c0f4f5bc51ce9db2d88344fee56ce991ea2f45",
+  "requestUpdatedAt": "2026-10-15T12:06:34Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请复核。",
+    "scope": "Reply once only to this exact fixed-source recheck/manual-review request, after publication; retain the actual admission blockers and runtime unknowns."
+  },
+  "responseBody": "已按请求人工复核当前默认分支 **1.2.1 / `c65d4be3efc617dff53365bc221c2cbc659edb4f`**，并更新目录固定提交。10 个打包文本文件覆盖完整，原来的兼容声明缺失、体积超限和覆盖 unknown 已不再作为当前结论。`user-reviewed` 可以承载经审阅的真实能力，不要求把文件读写或 Git 功能删掉；`DSH_HOME` 与诊断变量也不等于发现了 API 密钥。\n\n本轮暂不能批准，具体阻塞在 `lib/part2.js:2171-2305`：`/dsh-ledger-memory-settings/config.json` 的 POST 直接进入 `saveSettings`，最终调用 `configEditor.edit`；`/broadcast.json` 也会修改广播状态。注册包装和 handler 中未建立调用者授权边界。客户端的 `credentials: \"same-origin\"`、包名前缀及 JSON 校验，均不能单独证明服务端授权。\n\n请使用经核验的宿主请求授权机制，在读取/写入设置和广播前拒绝未授权调用，并补充未授权/缺少授权上下文时拒绝、已授权时正常工作的证据；若依赖宿主在 handler 之前统一授权，请给出精确宿主版本与该契约的源码证据。Git 固定参数数组已读到；本次没有运行第三方测试或真实 Profile，作者提供的 install/start/uninstall/rollback 记录继续与独立验收区分。[完整复核记录](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-20261016.md)。"
+}

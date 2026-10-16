@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1390,
+  "userId": 283827478,
+  "requestCommentId": 6196381251,
+  "requestBodySha256": "4c121a469cd7af3581b35cfa129953df01c2832b895711dd67715ac8f3c4a158",
+  "requestUpdatedAt": "2026-10-15T15:57:16Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请重新复核。谢谢！",
+    "scope": "Reply once only to this exact fixed-source recheck/manual-review request, after publication; retain the actual admission blockers and runtime unknowns."
+  },
+  "responseBody": "已按新的请求复核 **0.17.2 / `04292b6c4f5388bd638ff72a7eb5e694248e1b9f`**。8 个打包文本文件已完整覆盖。ComfyUI 的启动校验、三处 HTTP helper 的 `redirect: 'error'` 和子进程环境过滤均已读到，旧的“完全没有拦截 comfyUrl”结论已撤换。\n\n本轮仍暂不能准入，剩余两项有具体位置：\n\n1. `lib/hipfire-img.js:456-548` 的 `probeHipfireHttp` / `generateViaHttp` 直接使用可配置 `cfg.hipfireUrl`，没有调用回环校验，也不受 `allowRemoteComfy` 控制；`guardedFetch` 目前只有定义、没有调用。只禁止重定向无法拦住首次请求就指向远端。请把这条链路也接入对应的默认拒绝与远端 opt-in，或准确披露其独立的外部端点边界。\n2. README 权限表仍写“不装包”，但 `lib/index.js:247-265` 的 `runInstallSource` 会经 `runShell` 执行 `pip install --upgrade`；`lib/config.js:1348-1367` 使用 PowerShell / `sh -c`。请对齐网络、装包及 Shell 能力的披露和实际确认边界，无需删掉正常功能或把真实信号标为 false。\n\n目录已更新到本次固定提交，保留 blocked；没有执行作者测试、安装或宿主代码，也未验证真实 Profile。[完整复核记录](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-20261016.md)。"
+}

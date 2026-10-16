@@ -49,6 +49,66 @@
         "https://github.com/kyle123740/dsh-message-recall/commit/fba02ce70aafc26a6312b0280a9f3b284a8fd998",
         "https://github.com/kyle123740/dsh-message-recall/blob/fba02ce70aafc26a6312b0280a9f3b284a8fd998/lib/main.js"
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/18477514055/dsh-ledger-memory",
+      "commit": "c65d4be3efc617dff53365bc221c2cbc659edb4f",
+      "binding": "752d47ca7de865c629d56881803d769483bf830167afa50b128b7dd2900a1d4e",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-16T00:55:34.250Z",
+      "rationale": "Complete fixed-source coverage is verified. Manual admission is rejected because lib/part2.js:2171-2305 registers configuration read/write and broadcast handlers without establishing caller authorization before saveSettings invokes configEditor.edit or before bumpSettingsBroadcast. Same-origin credentials in the client do not establish a server-side trust boundary. A verified host authorization contract or a fail-closed request check is required; capabilities need not be removed.",
+      "evidenceUrls": [
+        "https://github.com/18477514055/dsh-ledger-memory/commit/c65d4be3efc617dff53365bc221c2cbc659edb4f",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1376",
+        "https://github.com/18477514055/dsh-ledger-memory/blob/c65d4be3efc617dff53365bc221c2cbc659edb4f/lib/part2.js"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "commit": "04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
+      "binding": "22ade6395d28450d447a067af4a2a8e5054f8a53fc5c8407c1ff44a8e664cfeb",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-16T00:55:34.250Z",
+      "rationale": "The ComfyUI startup guard, redirect:error on the three HTTP helpers, and filtered child environment are present. Manual admission remains rejected because lib/hipfire-img.js:456-548 reads configurable cfg.hipfireUrl and issues health/generation/edit requests without assertLocalUrl or the opt-in; guardedFetch has no callers. README:847 also declares no package installation while lib/index.js:247-265 runs pip install via runShell. Enforce or accurately disclose all endpoint and command boundaries; no third-party code was executed.",
+      "evidenceUrls": [
+        "https://github.com/yanfei0725/dsh-qwen-paint/commit/04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1390",
+        "https://github.com/yanfei0725/dsh-qwen-paint/blob/04292b6c4f5388bd638ff72a7eb5e694248e1b9f/lib/hipfire-img.js"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/drliuhuan/dsh-plugin-vrmpet3d",
+      "commit": "85562e842b1d9c4a6d4381c6daa0710c5995e79c",
+      "binding": "b3c36b28618e5e55c0ef9282869b95063a04dbd7d2025c49aaa964fd7bd7e90f",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-16T00:55:34.250Z",
+      "rationale": "The destructive-root-delete findings are exact false positives: lib/core.js:2573 and lib/client.core.js:2581 are the same comment before the speech table; the adjacent command literals feed speechLines/pickSpeechLine and textContent sinks in lib/client.js:4080 and lib/desktop-page.js:1175. Their bytes are bound by the dispositions below. This does not grant admission: the packaged asset/ignore surface remains incomplete, license metadata is unresolved, and explicit DSH compatibility is missing.",
+      "evidenceUrls": [
+        "https://github.com/drliuhuan/dsh-plugin-vrmpet3d/commit/85562e842b1d9c4a6d4381c6daa0710c5995e79c",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1430",
+        "https://github.com/drliuhuan/dsh-plugin-vrmpet3d/blob/85562e842b1d9c4a6d4381c6daa0710c5995e79c/lib/core.js"
+      ],
+      "dispositions": [
+        {
+          "kind": "false-positive",
+          "file": "lib/client.core.js",
+          "rule": "destructive-root-delete",
+          "line": 2581,
+          "sha256": "c63da29b58380c40b2513fbd352e10d6b50a75fee11bfbd85bc75e9f08e98235",
+          "rationale": "This exact source file contains the command text only in the speech-table comment and UI speech literals. Readers select strings for textContent; the literals are not child-process arguments or evaluated code."
+        },
+        {
+          "kind": "false-positive",
+          "file": "lib/core.js",
+          "rule": "destructive-root-delete",
+          "line": 2573,
+          "sha256": "9df30f47d5314ff0c4a62a7caf62762afd3b1844fe57acd9b089e3b661c83276",
+          "rationale": "This exact source file contains the command text only in the speech-table comment and UI speech literals. Readers select strings for textContent; the literals are not child-process arguments or evaluated code."
+        }
+      ]
     }
   ]
 }
