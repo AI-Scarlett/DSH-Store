@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-fixture-20261016",
+  "planFile": "docs/ops/dsh-native-market-fixture-20261016.json",
+  "baseCommit": "116d3481c5df3ae0327e65a48895c04b641c5903",
+  "createdAt": "2026-10-16T02:09:20.888763+00:00",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "DSH 官方更新了，所以我们也要更新",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "你直接上线啊 不要用短期的"
+  },
+  "scope": [
+    "docs/ops/dsh-native-market-fixture-20261016.json",
+    "scripts/verify-dsh-upgrade-plan.mjs",
+    "test/store-release-plan.test.mjs",
+    ".github/workflows/registry.yml"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-native-market-fixture-20261016.json": null,
+    "scripts/verify-dsh-upgrade-plan.mjs": "52132b73c32c7fd2d92bda0dc9afe36864e03beea2608cf5ea4e65c5ba110eee",
+    "test/store-release-plan.test.mjs": "df52d7a170b3d960c068d6014b2bcac19d775bcea9198399b4fad783a8f8993c",
+    ".github/workflows/registry.yml": "c34116afab8b57ceb4c5fdf64ee81b5bcb30734cfb4755c4270009fb2bb2ec12"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "8967dc98d6c149add0cfeb6e85ff4f8c99fb99735559df97f160b801fe70b6d8",
+    "scripts/verify-dsh-upgrade-plan.mjs": "d8c1a9f6e861c35e4d3b69a6e553288c5a0fd8436f6789fd0b9f67b04b21c26e",
+    "test/store-release-plan.test.mjs": "71fd02543f55fea823c296f3bce5bb53908c99fae7852c2e0758168979ae0c61"
+  },
+  "reason": "Pages shallow checkout lacks historical Git objects referenced by the newly added source-release regression test. Replace test IO with isolated fixtures and support explicit fresh follow-up plan validation. Production source, Catalog pins and admission gates remain unchanged.",
+  "gates": [
+    "scope/base/output hashes",
+    "disposable release-gate fixture tests including source drift rejection",
+    "npm run check before commit",
+    "CI checked PR",
+    "Pages and permanent production readback"
+  ],
+  "healthCheck": "Complete checks in a shallow checkout and successful Pages build",
+  "rollback": "CI-checked revert of this test-only follow-up; no deployed source, Catalog or contact rollback needed",
+  "boundaries": [
+    "No runtime source changes",
+    "No Catalog changes",
+    "No real Profile changes",
+    "No author contact"
+  ],
+  "verdict": {
+    "status": "passed",
+    "checkedAt": "2026-10-16T02:10:39.143679+00:00",
+    "shallowClone": true,
+    "tests": 439,
+    "failed": 0,
+    "logSha256": "d6ce78a0811b1aeef3c05260a083ec13b5d168768689f300aec2045c30a15dbd",
+    "fixtureIO": "in-memory only; no Git history or real Profile dependency"
+  }
+}
