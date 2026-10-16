@@ -18,7 +18,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4e0fae02b02a87012f0d7ee5722b9314bf7dec65",
+  "commit": "7312929dfaee90569032ddafe39d27a6342f6b51",
   "version": "0.2.0",
   "categories": [
     "experimental"
@@ -26,16 +26,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T15:11:30.000Z",
-    "observedAt": "2026-10-14T17:38:48.000Z",
+    "updatedAt": "2026-10-16T10:45:50.000Z",
+    "observedAt": "2026-10-16T11:57:03.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T17:38:48.000Z",
-      "evidenceUrl": "https://github.com/HaowenCang/dsh-word-lookup/commit/4e0fae02b02a87012f0d7ee5722b9314bf7dec65",
+      "checkedAt": "2026-10-16T11:57:03.000Z",
+      "evidenceUrl": "https://github.com/HaowenCang/dsh-word-lookup/commit/7312929dfaee90569032ddafe39d27a6342f6b51",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -72,9 +72,21 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "6e8bfa8726da7296ee483e36d9da14114d6d58b89d3de0ba34bedeb28e0b9bec",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "0e8cba5bcc59d2b6f7e07e39fb972703560a0f654261772757e34e570d4ccd92"
+  },
   "entryIds": [
     "dsh-word-lookup"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
@@ -92,7 +104,8 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -168,6 +181,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

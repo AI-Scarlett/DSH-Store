@@ -22,7 +22,7 @@
   "manifestPath": "crates/rutis-dsh/dsh/aimux/package.json",
   "installPath": "crates/rutis-dsh/dsh/aimux",
   "updatePolicy": "external-only",
-  "commit": "27f12aee96c2b18235d9714632f02d0b388c0897",
+  "commit": "9d2cb3405db0d2bd78dbc11bddeba2ec2ea333d3",
   "version": "0.0.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T03:16:09.000Z",
-    "observedAt": "2026-10-15T03:36:12.000Z",
+    "updatedAt": "2026-10-16T09:36:46.000Z",
+    "observedAt": "2026-10-16T11:57:03.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T03:36:12.000Z",
-      "evidenceUrl": "https://github.com/arcships/rutis/commit/27f12aee96c2b18235d9714632f02d0b388c0897",
+      "checkedAt": "2026-10-16T11:57:03.000Z",
+      "evidenceUrl": "https://github.com/arcships/rutis/commit/9d2cb3405db0d2bd78dbc11bddeba2ec2ea333d3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,9 +76,21 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "fd6771b715f899e4ef44e2061d260ab9a474d5133afc912f0c8818f68b2569d7",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "0e8cba5bcc59d2b6f7e07e39fb972703560a0f654261772757e34e570d4ccd92"
+  },
   "entryIds": [
     "llm-aimux"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; manifest does not declare an explicit distributable files list; Node.js compatibility is not explicitly declared; runtime source contains the credentials permission signal",
   "compatibility": {
@@ -92,9 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,12 +157,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -158,6 +164,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
