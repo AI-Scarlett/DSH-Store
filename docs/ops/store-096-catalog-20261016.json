@@ -19,7 +19,9 @@
     ".github/workflows/registry.yml",
     ".github/workflows/author-feedback-resolution.yml",
     "scripts/run-author-feedback-batch.mjs",
-    "test/author-feedback-batch.test.mjs"
+    "test/author-feedback-batch.test.mjs",
+    "marketplace/rankings/model.js",
+    "test/marketplace-rankings.test.mjs"
   ],
   "preconditions": {
     "docs/ops/store-096-catalog-20261016.json": null,
@@ -32,18 +34,22 @@
     ".github/workflows/registry.yml": "6d676da3ac5add9d071b5d02fb355e0ecf999ab59713618b403b1f44ed163f55",
     ".github/workflows/author-feedback-resolution.yml": "3298b81c8c6cabb8200bd8a0edab762edaca416c50eeadcd44bd07174a490288",
     "scripts/run-author-feedback-batch.mjs": "971ea77ba4de95cab347cf43d46a2d6588c2c4ec9022c36d7ce0c3c6ea96bd52",
-    "test/author-feedback-batch.test.mjs": "34221792a1deb36cbc9cbb70542b72eceab30d6539740b005eb3d991670567b1"
+    "test/author-feedback-batch.test.mjs": "34221792a1deb36cbc9cbb70542b72eceab30d6539740b005eb3d991670567b1",
+    "marketplace/rankings/model.js": "046e926597a76870ea14d58210d755fa3196442ad5e57807d208fe8082187f5c",
+    "test/marketplace-rankings.test.mjs": "91b06a21b8ba773ab5ca856d0aeab5e1d5be64541f4729be9c78afe7eea886ec"
   },
   "postconditions": {
     ".github/workflows/author-feedback-resolution.yml": "26b249a7a4b2687861b06db0ffbd850d41fe440df708ceda04cf81fe55b44b23",
     ".github/workflows/registry.yml": "4f42f855fd414bd518319db0715f3a1968591c4fcf2b835fac95cc4caae97b97",
     "docs/reviews/store-096-source-review-20261016.json": "3daa9bd71b338667ad563ddf0b38f228e0fd8eba74c1994d4e83c15b3c210e63",
+    "marketplace/rankings/model.js": "93c3d01eaf9477bbbc039ad0ac530d3996e70fcda689e84f5b52ce23bdda3767",
     "registry/catalog-index.json": "a69cd861e41cd068cbd8c832f517ec2a87dc0dd1078582e2cd59fffe92b6f5dd",
     "registry/catalog.json": "ca9180c41e546604b005bf5d363231bd6ac2c22613f17b45012e4721d48aef5a",
     "registry/catalog/details/dsh-safe-plugin-manager.json": "7b89f8a190eb5e407b6a3ec3d9ec33dc66648953e1e14091bb13b942891f0b67",
     "scripts/run-author-feedback-batch.mjs": "796dcd30f84cd6d04f22859600c6e5bff5cba8b34fb1c54beaafb158d222a70b",
     "scripts/verify-store-release-plan.mjs": "7ccde989cf674bb8f88034b304697e8fcc2d8352c52d1731eecffa0823a319ab",
     "test/author-feedback-batch.test.mjs": "ea417b2c9d5be25dd20f55c4eed3292c9e1a58dc1d8cb4fc13af215637100aa3",
+    "test/marketplace-rankings.test.mjs": "1efdada796eb8f9b97eb19c1b7776f6e20e2d95a4f31b6646f47745f9c6a2815",
     "test/store-release-plan.test.mjs": "fce8112bb45317401a4190a54d985c71e42732b0043615eca629c1bd86b8af1f"
   },
   "authorization": {
@@ -64,9 +70,10 @@
   "healthCheck": "0.9.6 fixed source on raw Catalog, Pages, both production storefronts, repair and native index.",
   "verdict": {
     "status": "approved-for-ci-checked-first-party-catalog-release",
-    "tests": 456,
+    "tests": 457,
     "genericThirdPartyAdmissionUnchanged": true,
     "sourceHeadChecks": "all nine runtime matrix jobs and registry/CodeQL success",
-    "realProfileChanged": false
+    "realProfileChanged": false,
+    "storefrontRepair": "Normalize official-tool repository identities so weekly star picks cannot duplicate official placements."
   }
 }

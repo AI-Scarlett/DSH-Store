@@ -28,7 +28,8 @@ function createPlacementRandom(seed) {
 }
 
 function withOfficialDshToolSlots(rows, snapshot, type, limit = PAGE_SIZE) {
-  const isOfficial = entry => OFFICIAL_DSH_TOOL_REPOSITORIES.includes(entry.repositoryUrl.toLowerCase())
+  const officialRepositories = new Set(OFFICIAL_DSH_TOOL_REPOSITORIES.map(url => url.toLowerCase()))
+  const isOfficial = entry => officialRepositories.has(entry.repositoryUrl.toLowerCase())
   const seen = new Set()
   const official = []
   for (const repositoryUrl of OFFICIAL_DSH_TOOL_REPOSITORIES) {
