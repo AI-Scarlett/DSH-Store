@@ -73,7 +73,10 @@
     "test/author-feedback-batch.test.mjs",
     "registry/author-batches/backlog-20261016.json",
     "registry/author-replies/backlog-1345-20261016.json",
-    "README.md"
+    "README.md",
+    ".github/workflows/upgrade-matrix.yml",
+    "scripts/resolve-dsh-upgrade-matrix.mjs",
+    "test/upgrade-matrix.test.mjs"
   ],
   "preconditions": {
     "docs/ops/author-feedback-resolution-20261015.json": "336e16673edf12b3d775c64664106b673e700f3c00e3b815447019ad9819a85f",
@@ -144,10 +147,14 @@
     "test/author-feedback-batch.test.mjs": null,
     "registry/author-batches/backlog-20261016.json": null,
     "registry/author-replies/backlog-1345-20261016.json": null,
-    "README.md": "771322ba9e0cdd18287ae5617b18934cec2727ce5279e7a7744bbd6b1087ec4a"
+    "README.md": "771322ba9e0cdd18287ae5617b18934cec2727ce5279e7a7744bbd6b1087ec4a",
+    ".github/workflows/upgrade-matrix.yml": "9fda0812b96c2b25604ea3303fc8954121cb4ff4d36f8eba877c63a0b050745f",
+    "scripts/resolve-dsh-upgrade-matrix.mjs": "15f60e2e187c42431089082763728252d453450426b4252d48e17a93ee97563b",
+    "test/upgrade-matrix.test.mjs": "26663ff1d575c3365ae37c71064886b6a9463644e1ad643db9ded99dac8ef7f5"
   },
   "postconditions": {
     ".github/workflows/author-feedback-resolution.yml": "3298b81c8c6cabb8200bd8a0edab762edaca416c50eeadcd44bd07174a490288",
+    ".github/workflows/upgrade-matrix.yml": "243feb54f4b5fc0e87726704b2ebfc8b268f03a00960ea491e9b30087ef25723",
     "README.md": "96777d407ebe4c5cabf1cfdc53e1dc04ade29f1c54954112ffe9cca8536f73d6",
     "docs/reviews/github-backlog-20261016.json": "8afba9acf088e3e2fab63adae048ea30b55d53c3e1f4e8dfc63e658a68dc3f4e",
     "docs/reviews/github-backlog-20261016.md": "5ae6138c87bf06d4f6efa9748e818c68ae245498818eec675683f52bcb8a8fc4",
@@ -198,6 +205,7 @@
     "scripts/check-plugin-submission.mjs": "c5391a1aff732a9ff267dce5f7a0be43d3ed7612d2bad091b035436f1f26f78a",
     "scripts/close-author-contact.mjs": "2909c59fe3ac32894e161a8acbd13d427f958d2f9969429972af5adfc6278b0b",
     "scripts/record-author-contact-stop.mjs": "eb5a419c6979a0081f3d140e7b9a4445efda8463f625b2c8dd4b483e1338bb93",
+    "scripts/resolve-dsh-upgrade-matrix.mjs": "74e583c0f4c75f5f9e4d676ce0715452ec64475b1d1827f5140b2161dcbcf347",
     "scripts/run-author-feedback-batch.mjs": "971ea77ba4de95cab347cf43d46a2d6588c2c4ec9022c36d7ce0c3c6ea96bd52",
     "src/automation-status.mjs": "264a83616e437467b775c5a13ebe2d139996fad8d8c33e5f3ec39d623a4ec104",
     "src/bundle-patch-contract.mjs": "0342484c94cb2228671f63fd48c8b399dbddde58cf9f8ad59c6d932e4ff6f02e",
@@ -212,7 +220,8 @@
     "test/contracts.test.mjs": "850a7b789638921d5200e42aa3aff9ce23dc31cf04659d601df01fe319d8e8de",
     "test/marketplace-static-build.test.mjs": "22d3c51ac09b3cc71568ce927fb2ea033cd9c65d35ed90c8dc2541d89f935d70",
     "test/panel.test.mjs": "3ae194d26cb042789173b2425bd1829679d2b445b02c1745fa9f3b0b39852446",
-    "test/plugin-submission.test.mjs": "43270978b6ab1d6fe3b421014d87317fcebf235435ab2fba98b392ad51b9118d"
+    "test/plugin-submission.test.mjs": "43270978b6ab1d6fe3b421014d87317fcebf235435ab2fba98b392ad51b9118d",
+    "test/upgrade-matrix.test.mjs": "2b4a60914b6a6a3bc7a15a63541952c3d0c6675fde2e0749f20334705e0c57e3"
   },
   "authorization": {
     "source": "direct-user-request",
@@ -245,12 +254,13 @@
       "base and exact scope hashes",
       "complete comment and review classification",
       "fixed-source review",
-      "npm run check: 455/455",
+      "npm run check: 456/456",
       "shared recommendation pagination and installation boundaries",
       "one-shot reviewed batch with stop-first and central CAS"
     ],
     "outreachSent": 0,
     "thirdPartyCodeExecuted": false,
-    "realProfileChanged": false
+    "realProfileChanged": false,
+    "ciRepair": "Pass the read-only short-lived GitHub Actions token to official releases authority; never expose it to npm or outputs."
   }
 }

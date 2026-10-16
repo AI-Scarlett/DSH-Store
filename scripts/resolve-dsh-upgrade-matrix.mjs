@@ -5,8 +5,8 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compareDshVersions, fetchOfficialDshReleaseWindow } from '../src/dsh-release-policy.mjs'
 
-export async function resolveDshUpgradeMatrix(fetchWindow = fetchOfficialDshReleaseWindow) {
-  const window = await fetchWindow({ releaseCount: 3 })
+export async function resolveDshUpgradeMatrix(fetchWindow = fetchOfficialDshReleaseWindow, options = {}) {
+  const window = await fetchWindow({ githubToken: options.githubToken, releaseCount: 3 })
   if (window?.authority !== 'official-github-releases-and-npm-published-versions'
     || window?.releaseCount !== 3
     || !Array.isArray(window.releases)
@@ -33,7 +33,7 @@ export async function resolveDshUpgradeMatrix(fetchWindow = fetchOfficialDshRele
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const matrix = await resolveDshUpgradeMatrix()
+  const matrix = await resolveDshUpgradeMatrix(undefined, { githubToken: process.env.GITHUB_TOKEN })
   if (process.env.GITHUB_OUTPUT) {
     await appendFile(process.env.GITHUB_OUTPUT, [
       `latest_version=${matrix.latestVersion}`,
