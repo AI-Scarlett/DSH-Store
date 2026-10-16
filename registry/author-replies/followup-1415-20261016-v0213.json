@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1415,
+  "userId": 132990250,
+  "requestCommentId": 6213790736,
+  "requestBodySha256": "b0547a90c89c73fefcefd5a21bdd893f6df5c4640c2ad371f433d54d79b766e7",
+  "requestUpdatedAt": "2026-10-16T10:46:16Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请以新的默认分支固定提交复检，不请求放宽准入标准。",
+    "scope": "Answer only this new fixed-Commit recheck request on #1415 once. Preserve resolved findings, static versus author/runtime evidence, unresolved independent review, and existing stops. No ongoing communication grant."
+  },
+  "responseBody": "已按这次请求复核 **0.2.13 / `46a3b4d31565df1dd03adff77607391a03805cf1`**：110 个有界分发文本、703,110 字节完整读取并核验 Git blob，基础预检通过。已读回 tag 指向该提交、Release 非草稿且非预发布；安装包元数据为 398,880 字节，GitHub digest 与你提供的 SHA-256 一致。这确认正式发布状态；本轮未下载或安装执行该包。\n\n首次使用改进也有静态依据：匿名入口选择无已配置／待存密钥的可用服务，保留自定义端点与既有密钥，配置仍需保存；客户端与 `lib/keyless.js` 对匿名官方端点限制 origin／路径，并排除 userinfo、query、hash。GUI、键盘、质量及历史生命周期结果均按作者证据保留，不改写为 Store 已独立运行验收。manifest 对 alpha.2／alpha.3 有精确兼容声明，alpha.4 仍没有精确记录。\n\n旧的 `web` 独占 ID 冲突误报不再作为阻塞；5 个直接运行依赖的供应链、网络／凭据能力，以及整段 `web` config 替换影响的独立审查仍待完成，本轮不放宽标准或新增可安装条目，也不要求为消除提示删除正常依赖。原 HTTPS 输入历史故障继续按你的决定暂停，没有继续探针或外部调用，也不把 HTTP → HTTPS 修复算作原故障已解决。\n\n[固定源码与本轮复核记录](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-new-replies-20261016-1121.md)"
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1390,
+  "userId": 283827478,
+  "requestCommentId": 6213375613,
+  "requestBodySha256": "159fa3ed188899c9841a22d94ea1210909c5d60a7741d9ba078c884bddf49296",
+  "requestUpdatedAt": "2026-10-16T10:22:26Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请复核 `3955b4f` / `v0.17.6`。谢谢！",
+    "scope": "Answer only this new fixed-Commit recheck request on #1390 once. Preserve resolved findings, static versus author/runtime evidence, unresolved independent review, and existing stops. No ongoing communication grant."
+  },
+  "responseBody": "已按这次请求复核 **0.17.6 / `3955b4f91ddb817d7bb0357da82cffd5d02fe4cb`**：8 个有界分发文本、828,374 字节完整读取并核验 Git blob，基础预检通过。与上次 0.17.5 对比，分发文本只变更了版本号和 `lib/config.js` 注释；新注释已准确说明默认 `accelAutoInstall: true`、加载后自动检测／安装白名单加速包，以及显式设置 false 的关闭方式。**此前指出的注释与实际默认值矛盾已修复，这一具体问题结案。**\n\n也确认 README／manifest 已区分回环出图数据流与 pip／GitHub 加速包下载，不再将“未披露外部网络”列为问题。剩余的是 Store 对现有命令／网络等能力边界、Tool-view key 归属和宿主运行的独立审查，不是要求你重复修复已经改正的披露。作者的回归测试与真实用户证据继续作为审查材料；本轮未执行第三方代码或真实 Profile 验收，未新增可安装条目。\n\n[固定源码与本轮复核记录](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-new-replies-20261016-1121.md)"
+}
