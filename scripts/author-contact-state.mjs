@@ -124,8 +124,9 @@ export async function reserveContact({ github, repository, recipient, key, claim
     const decision = contactDecision(snapshot.state, person, key)
     const existing = snapshot.state.contacts[String(person.id)]
     if (ownerCorrection) {
+      // Repository quarantine blocks new outreach to unresolved historical targets.
+      // It does not revoke this exact known person's already-verified request.
       if (!existing || existing.stopped || existing.nodeId !== person.node_id
-        || snapshot.state.blockedRepositories.some(value => value.toLowerCase() === key.toLowerCase())
         || snapshot.state.blockedLogins.some(value => value.toLowerCase() === person.login.toLowerCase())) return { allowed: false, reason: 'no-correction-permission' }
       const history = Object.values(existing.reservations)
       if (history.some(item => item.kind === 'owner-authorized-admission-correction' && item.commentId === ownerCorrection.commentId)) return { allowed: false, reason: 'correction-already-consumed' }

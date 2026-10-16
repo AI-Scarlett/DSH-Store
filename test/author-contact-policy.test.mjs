@@ -330,12 +330,11 @@ test('correction refuses other people, requests, repositories, grant IDs and req
     await assert.rejects(reserveCorrection(mock(correctionState()), correction, extra))
   }
 })
-test('finite correction never overrides stops, quarantine, missing or mismatched original evidence', async () => {
+test('finite correction never overrides stops, unresolved aliases, missing or mismatched original evidence', async () => {
   for (const mutate of [
     state => { state.contacts[correctionPerson.id].stopped = true },
     state => { state.contacts[correctionPerson.id].reservations = {} },
     state => { state.contacts[correctionPerson.id].reservations.original.requestHash = 'b'.repeat(64) },
-    state => { state.blockedRepositories.push('AI-Scarlett/DSH-Store') },
     state => { state.blockedLogins.push(correctionPerson.login) },
   ]) {
     const state = correctionState(); mutate(state); const api = mock(state)
@@ -364,4 +363,13 @@ test('main-reviewed finite plans retain exact terminal decision bindings and own
     assert.throws(() => validateReplyGrant({ ...p, userId: 101 }), /finite owner/)
     assert.throws(() => validateReplyGrant({ ...p, ownerAuthorization: { ...p.ownerAuthorization, quote: 'Thanks' } }), /approval/)
   }
+})
+
+test('historical repository quarantine still blocks first contact but not a finite verified same-person request', async () => {
+  const state = correctionState(); state.blockedRepositories.push('AI-Scarlett/DSH-Store')
+  assert.equal(contactDecision(state, bob, 'AI-Scarlett/DSH-Store'), 'historical-repository')
+  const api = mock(state)
+  assert.equal((await reserveCorrection(api)).allowed, true)
+  verifyHistoryPreserved(api.state, state)
+  assert.deepEqual(api.state.blockedRepositories, state.blockedRepositories)
 })

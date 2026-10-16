@@ -14,7 +14,9 @@
     "registry/catalog.json",
     "registry/catalog-index.json",
     "registry/catalog/details/dsh-safe-plugin-manager.json",
-    ".github/workflows/registry.yml"
+    ".github/workflows/registry.yml",
+    "scripts/author-contact-state.mjs",
+    "test/author-contact-policy.test.mjs"
   ],
   "preconditions": {
     "docs/ops/store-097-catalog-20261016.json": null,
@@ -22,19 +24,27 @@
     "registry/catalog.json": "433c685cc809f12fcab9e8749b8b78f64199d7cdc9316557e8e17e2d85f98749",
     "registry/catalog-index.json": "aa77d25c2d275e3c4db368d76a49bba192e5d70d3a7669e90f55db4f924ab989",
     "registry/catalog/details/dsh-safe-plugin-manager.json": "7b89f8a190eb5e407b6a3ec3d9ec33dc66648953e1e14091bb13b942891f0b67",
-    ".github/workflows/registry.yml": "4f42f855fd414bd518319db0715f3a1968591c4fcf2b835fac95cc4caae97b97"
+    ".github/workflows/registry.yml": "4f42f855fd414bd518319db0715f3a1968591c4fcf2b835fac95cc4caae97b97",
+    "scripts/author-contact-state.mjs": "450ac95f3c810c93a4be37acaabffe4a3c3881b8c12d8bba2244d066b0f35559",
+    "test/author-contact-policy.test.mjs": "95a645b1c7085b7a6a063d9939008461cf4c5c52fc8b074a60aa75a68f99fa5d"
   },
   "postconditions": {
     "docs/reviews/store-097-source-review-20261016.json": "1315056504095d0878204e42b4829770d315696f9e8489fe73faa5a9a83a2b62",
     "registry/catalog.json": "ab9756a59a6f61ad38ba32ddc3a02c320243681d64164fb42977f166c7fe03ae",
     "registry/catalog-index.json": "519ed771530f96c35feaa4e559c9891e5a7417782baa04953a9968ccf54b5bc6",
     "registry/catalog/details/dsh-safe-plugin-manager.json": "3dcafd068d2786c0fea60edc5e8204afd5bd56cd745221ae281ee605959b117a",
-    ".github/workflows/registry.yml": "b1975a87536416afe536c15804debe65894d1f79755121059878b7c1c4e129ca"
+    ".github/workflows/registry.yml": "b1975a87536416afe536c15804debe65894d1f79755121059878b7c1c4e129ca",
+    "scripts/author-contact-state.mjs": "f80e8b597c1ecfa77e339715b9a158334889e76c2f9e7dc56b6cabecc7675d8a",
+    "test/author-contact-policy.test.mjs": "c563830b7c06b1b84ed11a41ce86f9e1c87207b2e51795332a2616bbeb6c7eec"
   },
   "authorization": {
     "source": "direct-user-request",
     "request": "完成作者整改复核、官方更新适配并正式上线",
-    "githubWriteCredential": "short-lived-token-required"
+    "githubWriteCredential": "short-lived-token-required",
+    "ownerCorrection": {
+      "quote": "允许本次各补发一条最终结论",
+      "grantId": "author-admission-final-20261016"
+    }
   },
   "gates": [
     "complete bounded fixed-source review",
@@ -47,9 +57,10 @@
   "healthCheck": "0.9.7 exact source visible in Catalog/native index/repair; terminal blocked decisions and standards on four public surfaces.",
   "verdict": {
     "status": "approved-for-ci-checked-first-party-catalog-release",
-    "tests": 469,
+    "tests": 470,
     "sourceHeadChecks": "all source checks pass, one inapplicable channel skipped",
     "genericThirdPartyAdmissionUnchanged": true,
-    "realProfileChanged": false
+    "realProfileChanged": false,
+    "contactGateRepair": "Preserve historical repository quarantine while allowing only the two finite known-person grants with original exact request reservations. The earlier dispatch returned sent=false before CAS; no correction claims or notification requests occurred."
   }
 }
