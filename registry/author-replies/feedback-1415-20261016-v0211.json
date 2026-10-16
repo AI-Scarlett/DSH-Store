@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1415,
+  "userId": 132990250,
+  "requestCommentId": 6208933842,
+  "requestBodySha256": "f2ff60015f9e86bf7f9c0f2941657507e8b65680732acf89dae535cae09441b7",
+  "requestUpdatedAt": "2026-10-16T05:44:11Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请按上述 40 位固定提交复检分发文件",
+    "scope": "Answer this exact fixed-Commit recheck request once; distinguish verified fixes from outstanding independent review and runtime evidence. No general continuation permission."
+  },
+  "responseBody": "已按你给出的 **0.2.11 / `ab6387f04a85debff70e89f07925703cdb933cb1`** 复核固定 Git 树。`lib/index.js`、`lib/index.d.ts` 及分发模块现已存在，106 个分发文本文件、678,915 字节完整读取，预检通过；旧的“Git 中缺少编译入口”阻塞已排除。新增入口与 `web` 配置覆盖仍分开处理，没有重新把合法覆盖判为独占 ID 冲突。\n\n依赖审阅说明和机器清单确已提供，但它们是审阅输入，不等于 Store 已独立审完供应链。当前 manifest 仍有 5 个直接运行依赖，完整供应链审阅、整段 `web` config 替换影响，以及网络/凭据能力的专项审阅尚未完成。现有已知权限审阅通道不能仅凭锁文件 integrity、作者测试或“公告查询为空”绕过运行依赖门禁，因此本轮不新增可安装条目。\n\n没有执行第三方依赖、构建、自测或真实 Profile 操作；兼容性声明、静态检查和安装/运行验收继续分开记录。不要求你为了消除提示而删除正常依赖或配置覆盖功能。\n\n[本轮独立复核记录](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-followup-20261016.md) · [公开收录规则](https://dsh.store/standards/#policy-updates)"
+}

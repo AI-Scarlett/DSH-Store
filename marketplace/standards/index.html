@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="applicable-device" content="pc,mobile">
   <!-- DSH_BAIDU_VERIFICATION -->
-  <meta name="description" content="DSH STORE 收录标准：公开插件候选门槛、固定 Commit 检查项、自动准入边界、拒绝条件和持续复查流程。">
+  <meta name="description" content="DSH STORE 收录标准：候选发现、低风险自动准入、固定源码专项审阅、精确版本兼容性与可追溯的误报复核。">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
   <meta name="author" content="DSH STORE">
   <meta name="application-name" content="DSH STORE">
@@ -43,6 +43,7 @@
   }
   </script>
   <link rel="stylesheet" href="../pages-redesign.css?v=20261003-rankings-1">
+  <link rel="stylesheet" href="./standards.css?v=20261016-policy-v3">
   <script defer src="../scan-history-nav.js?v=20261003-rankings-1"></script>
 </head>
 <body class="standards-page">
@@ -80,7 +81,7 @@
         <div class="system-status"><span></span><b>LISTING POLICY / PUBLIC CONTRACT</b><em>FAIL CLOSED</em></div>
         <h1><span data-i18n="hero.title1">收录前，</span><br><em data-i18n="hero.title2">先把标准公开。</em></h1>
         <p data-i18n="hero.lead">DSH STORE 从公开 GitHub 项目中发现候选，但“被发现”不等于“已收录”。只有固定来源、结构、权限、兼容性与证据门槛逐项成立，插件才可能进入受保护的 Catalog。</p>
-        <div class="standards-hero-actions"><a class="button button-primary" href="#checks" data-i18n="action.checks">查看检查清单</a><a class="button button-secondary" href="#candidate" data-i18n="action.candidate">了解候选标准</a></div>
+        <div class="standards-hero-actions"><a class="button button-primary" href="#checks" data-i18n="action.checks">查看检查清单</a><a class="button button-secondary" href="#candidate" data-i18n="action.candidate">了解候选标准</a><a class="button button-secondary" href="#policy-updates" data-i18n="action.updates">查看最新规则调整</a></div>
       </div>
       <aside class="standards-hero-signal reveal" aria-label="Candidate and Catalog trust boundary">
         <span>DISCOVERY ≠ LISTING</span>
@@ -88,6 +89,18 @@
         <p data-i18n="hero.signal">候选库没有安装动作；未晋级 Catalog 前，任何条目都不能进入商城受保护安装通道。</p>
         <small>installActionsDisabled = true</small>
       </aside>
+    </section>
+
+    <section class="standards-updates section-shell" id="policy-updates" aria-labelledby="policy-updates-title">
+      <div class="section-heading reveal"><div><span class="section-index">POLICY UPDATE / 2026-10-16</span><h2 id="policy-updates-title" data-i18n="policy.title">收录规则已优化，审核依据更准确。</h2></div><p data-i18n="policy.lead">纠正扫描器误报和过时判断，不要求作者删功能、压缩或拆包来适应扫描预算；来源、完整覆盖、权限与宿主边界仍需逐项成立。</p></div>
+      <p class="standards-policy-meta" data-i18n="policy.version">当前规则：bounded-source-v3 · 更新于 2026-10-16</p>
+      <div class="standards-update-grid">
+        <article class="reveal"><b>FULL COVERAGE</b><h3 data-i18n="policy.bounds.title">扫描预算由商城负责</h3><p data-i18n="policy.bounds.body">统一检查预算为单文件 4 MiB、总运行源码 8 MiB、512 个运行文件和 1,200 个树条目。超限说明商城尚未读全，不代表插件不安全；补足有界审阅前保持不可安装。</p></article>
+        <article class="reveal"><b>BUNDLE STRUCTURE</b><h3 data-i18n="policy.bundle.title">新增入口与配置覆盖分开</h3><p data-i18n="policy.bundle.body">只有新增入口 ID 参与独占冲突检查；id + config 是已有配置目标，需单独审阅整段 config 替换影响。单星号 exports 仅在固定完整 Git 树中展开并核对已分发文件，歧义、越界和截断仍阻止准入。</p></article>
+        <article class="reveal"><b>FIXED-SOURCE REVIEW</b><h3 data-i18n="policy.review.title">已知权限可专项审阅，误报需精确取证</h3><p data-i18n="policy.review.body">文件、网络、命令或凭据能力不必声明为 false。完整固定源码上的已知权限与配置覆盖可申请专项审阅；运行依赖须另做供应链审阅，安装脚本、未界定动态加载和缺失源码不能靠权限确认绕过。外部 CDN 脚本属于运行代码，动态加载仍阻止自动准入。误报处置绑定规则、文件、行号和 SHA-256，不使用全局字符串白名单。</p></article>
+        <article class="reveal"><b>EXACT HOST</b><h3 data-i18n="policy.compatibility.title">兼容性对齐实际宿主</h3><p data-i18n="policy.compatibility.body">最新三个官方版本用于触发复核，历史精确记录继续保留；安装、更新和迁移必须命中本机完整 DSH 版本的 compatible 记录。Alpha.4 优先读取 engines.dsh，缺少时才回退检查所有 DSH peer；范围声明不等于真实运行验收。</p></article>
+      </div>
+      <p class="standards-native-note"><a href="../faq/#native-market" data-i18n="policy.native">原生 Discover 索引仅投影已批准且有精确兼容记录的条目；查看接入说明 →</a></p>
     </section>
 
     <section class="standards-principles section-shell" aria-labelledby="principles-title">
@@ -124,11 +137,11 @@
           <tbody>
             <tr><th data-i18n="check.source.title">仓库与固定身份</th><td data-i18n="check.source.body">canonical HTTPS GitHub 地址、完整 Commit、默认分支来源、包路径与重复身份</td><td data-i18n="check.source.gate">拒绝或暂缓</td></tr>
             <tr><th data-i18n="check.manifest.title">Manifest 一致性</th><td data-i18n="check.manifest.body">包名、语义化版本、repository、license、files、Node.js 与 DSH 声明</td><td data-i18n="check.manifest.gate">身份不一致即阻止</td></tr>
-            <tr><th data-i18n="check.bundle.title">Bundle 与入口</th><td data-i18n="check.bundle.body">dsh.bundle.patch 路径、Patch 内容、唯一 entryIds，以及是否触碰受保护组件</td><td data-i18n="check.bundle.gate">非标准或冲突即阻止</td></tr>
-            <tr><th data-i18n="check.build.title">构建与安装契约</th><td data-i18n="check.build.body">运行文件是否存在；preinstall、install、postinstall、prepare 是否精确披露；依赖是否自包含</td><td data-i18n="check.build.gate">隐藏脚本或缺产物即阻止</td></tr>
-            <tr><th data-i18n="check.permission.title">权限与数据边界</th><td data-i18n="check.permission.body">文件、网络、命令、凭据、Profile、会话、原生制品与外部服务信号</td><td data-i18n="check.permission.gate">保守标级；自动准入失败</td></tr>
-            <tr><th data-i18n="check.security.title">安全与失败行为</th><td data-i18n="check.security.body">硬编码密钥、临时外传端点、破坏性命令、挖矿、敏感日志、动态执行与越界路径</td><td data-i18n="check.security.gate">硬信号阻止；风险信号警告</td></tr>
-            <tr><th data-i18n="check.compatibility.title">兼容性与证据</th><td data-i18n="check.compatibility.body">精确 DSH 版本、Node.js、系统、Profile 范围，以及安装、运行、安全证据状态</td><td data-i18n="check.compatibility.gate">未知保持 unknown</td></tr>
+            <tr><th data-i18n="check.bundle.title">Bundle 与入口</th><td data-i18n="check.bundle.body">新增入口 ID 核对独占冲突；已有 id + config 覆盖单独审阅整段替换影响，并检查受保护组件边界</td><td data-i18n="check.bundle.gate">非标准或冲突即阻止</td></tr>
+            <tr><th data-i18n="check.build.title">构建与安装契约</th><td data-i18n="check.build.body">运行文件必须已分发；单星号 exports 按固定 Git 树核实；安装脚本、运行依赖与缺失产物保持独立门禁</td><td data-i18n="check.build.gate">隐藏脚本或缺产物即阻止</td></tr>
+            <tr><th data-i18n="check.permission.title">权限与数据边界</th><td data-i18n="check.permission.body">文件、网络、命令、凭据、Profile、会话、原生制品与外部服务信号</td><td data-i18n="check.permission.gate">低风险自动通道不通过；已知能力可专项审阅</td></tr>
+            <tr><th data-i18n="check.security.title">安全与失败行为</th><td data-i18n="check.security.body">硬编码密钥、临时外传端点、破坏性命令、挖矿、敏感日志、动态执行与越界路径</td><td data-i18n="check.security.gate">真实硬信号阻止；误报按精确哈希绑定审阅</td></tr>
+            <tr><th data-i18n="check.compatibility.title">兼容性与证据</th><td data-i18n="check.compatibility.body">安装必须匹配本机实际完整 DSH 版本；最新三版只触发复核，保留历史记录；范围声明、安装、运行与安全证据分别记录</td><td data-i18n="check.compatibility.gate">未知保持 unknown</td></tr>
             <tr><th data-i18n="check.catalog.title">Catalog 合约</th><td data-i18n="check.catalog.body">分类、中文名、用途、搜索词、状态、更新策略、当前目录重复项与 schema</td><td data-i18n="check.catalog.gate">Registry 校验失败关闭</td></tr>
           </tbody>
         </table>
@@ -137,12 +150,12 @@
 
     <section class="standards-bounds" aria-labelledby="bounds-title">
       <div class="section-shell standards-bounds-layout">
-        <div class="standards-bounds-copy reveal"><span>04 / BOUNDED STATIC AUDIT</span><h2 id="bounds-title" data-i18n="bounds.title">自动化只读固定源码，并且检查面有硬上限。</h2><p data-i18n="bounds.lead">上限用于保证“读全”和确定性，不是大插件不安全的结论。超限、截断或暂时无法读取时，结果是检查不完整并失败关闭。</p></div>
+        <div class="standards-bounds-copy reveal"><span>04 / BOUNDED STATIC AUDIT</span><h2 id="bounds-title" data-i18n="bounds.title">自动化只读固定源码，并且检查面有硬上限。</h2><p data-i18n="bounds.lead">上限用于保证“读全”和确定性，不是大插件不安全的结论。超限属于商城资源限制，不要求作者压缩或拆包。预算内文件继续扫描，未覆盖部分明确标记，补足审阅前不开放安装。</p></div>
         <div class="standards-bounds-grid reveal">
           <article><strong>1,200</strong><span data-i18n="bounds.tree">最多仓库树条目</span></article>
           <article><strong>512</strong><span data-i18n="bounds.files">最多运行时文件</span></article>
-          <article><strong>4096 KiB</strong><span data-i18n="bounds.single">单文件上限</span></article>
-          <article><strong>8 MiB</strong><span data-i18n="bounds.total">运行时源码总上限</span></article>
+          <article><strong>4096 KiB</strong><span data-i18n="bounds.single">单文件扫描预算</span></article>
+          <article><strong>8 MiB</strong><span data-i18n="bounds.total">运行时源码总预算</span></article>
         </div>
       </div>
       <div class="section-shell standards-no-exec reveal"><b>NO THIRD-PARTY EXECUTION</b><p data-i18n="bounds.noexec">自动化不会运行第三方 install、prepare、build、test 或运行时代码，也不会下载依赖来补足结论。</p></div>
@@ -154,7 +167,7 @@
         <article class="reveal"><span>MKT001</span><h3 data-i18n="blocker.source.title">来源不可固定</h3><p data-i18n="blocker.source.body">非 GitHub、浮动分支/标签、仓库归属不明、路径歧义或许可证权威不可验证。</p></article>
         <article class="reveal"><span>MKT002–006</span><h3 data-i18n="blocker.contract.title">安装契约不完整</h3><p data-i18n="blocker.contract.body">缺 manifest、Bundle Patch、唯一入口、运行产物，或生命周期脚本与实际源码不一致。</p></article>
         <article class="reveal"><span>MKT007</span><h3 data-i18n="blocker.official.title">越过 DSH 边界</h3><p data-i18n="blocker.official.body">修改 DSH 核心或 @deepseek-ai/*，停用、替换、遮蔽官方清单或受保护组件。</p></article>
-        <article class="reveal"><span>FAIL CLOSED</span><h3 data-i18n="blocker.unknown.title">证据未知或检查不完整</h3><p data-i18n="blocker.unknown.body">源码漂移、接口失败、超限、截断、敏感泄露或破坏性行为信号存在时停止晋级。</p></article>
+        <article class="reveal"><span>FAIL CLOSED</span><h3 data-i18n="blocker.unknown.title">证据未知或检查不完整</h3><p data-i18n="blocker.unknown.body">源码漂移、接口失败、超限或截断时暂缓；真实泄露、破坏性行为和受保护宿主操作不能靠接受风险放行。</p></article>
       </div>
     </section>
 
@@ -165,7 +178,7 @@
           <li class="reveal"><b>01</b><div><h3 data-i18n="flow.one.title">发现与去重</h3><p data-i18n="flow.one.body">从提交表单、GitHub 主题和检索中发现，按 canonical 仓库去重。</p></div></li>
           <li class="reveal"><b>02</b><div><h3 data-i18n="flow.two.title">固定完整 Commit</h3><p data-i18n="flow.two.body">把候选身份、manifest、Patch 与运行面固定在同一份不可变源码上。</p></div></li>
           <li class="reveal"><b>03</b><div><h3 data-i18n="flow.three.title">有界静态检查</h3><p data-i18n="flow.three.body">完成结构、安全、权限、依赖、兼容性与 Catalog 合约核对。</p></div></li>
-          <li class="reveal"><b>04</b><div><h3 data-i18n="flow.four.title">策略判定</h3><p data-i18n="flow.four.body">符合自动低风险门槛才可 source-verified；其他结果进入复核、整改、blocked 或 rejected。</p></div></li>
+          <li class="reveal"><b>04</b><div><h3 data-i18n="flow.four.title">策略判定</h3><p data-i18n="flow.four.body">低风险自动审查通过可标 source-verified；完整已知权限或配置覆盖，经该固定 Commit 专项审阅通过后可按 user-reviewed 处理。未知或硬阻塞仍保持 blocked / rejected。</p></div></li>
           <li class="reveal"><b>05</b><div><h3 data-i18n="flow.five.title">哈希绑定 PR 与 CI</h3><p data-i18n="flow.five.body">计划绑定 base Commit 和输入哈希，经 Registry 检查、测试与 CodeQL 后才可合并。</p></div></li>
           <li class="reveal"><b>06</b><div><h3 data-i18n="flow.six.title">远端与公开面读回</h3><p data-i18n="flow.six.body">分别确认 GitHub Catalog、Pages、国际站和国内站；真实 Profile 安装与运行仍是独立验收。</p></div></li>
         </ol>
@@ -179,6 +192,6 @@
   </main>
 
   <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="../" aria-label="DSH STORE"><span class="brand-wordmark-frame" aria-hidden="true"><img class="brand-wordmark" src="../dsh-store-wordmark.png" alt="" width="1448" height="1086"></span></a><p data-i18n="footer.lead">标准公开，证据分层，未知保持未知。</p><nav class="footer-nav" aria-label="Quick links / 快速导航"><section class="footer-nav-group"><strong>快速导航 / Explore</strong><a href="../community/">社区与开发者</a><a href="../plugins/">插件目录</a><a href="../rankings/" data-rankings-nav>榜单</a><a href="../build/">开发插件</a><a href="../standards/">收录标准</a><a href="../faq/">常见问题</a><a href="../about/">关于我们</a></section><section class="footer-nav-group"><strong>友情链接 / Friends</strong><!-- DSH_FRIEND_SISTER_SITE --><a href="https://aiaiai.help/" target="_blank" rel="noopener noreferrer">aiaiai.help · 模型百科 ↗</a><a href="https://tracefence.com/" target="_blank" rel="noopener noreferrer">TraceFence ↗</a></section></nav><a class="footer-top" href="#top" data-i18n="action.top">回到顶部 ↑</a></div><div class="footer-bottom"><span>DSH.STORE · LISTING POLICY</span><span data-i18n="footer.note">候选不等于收录 · 收录不等于安全审计</span><!-- DSH_ICP --></div></footer>
-  <script defer src="./standards.js"></script>
+  <script defer src="./standards.js?v=20261016-policy-v3"></script>
 </body>
 </html>
