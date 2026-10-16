@@ -1,0 +1,1254 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "baseCommit": "c28d5dc2858c632345ac13cb5ee54918e3978d39",
+  "observedAt": "2026-10-16T00:55:34.250Z",
+  "coverage": {
+    "issueCommentsSince": "2026-10-14T00:00:00Z",
+    "issueComments": 40,
+    "reviewCommentsSince": "2026-10-15T15:20:00Z",
+    "reviewComments": 0
+  },
+  "thirdPartyCodeExecuted": false,
+  "runtimeAcceptance": "not-performed",
+  "published": false,
+  "repliesSent": 0,
+  "issuesClosed": 0,
+  "changes": [
+    {
+      "issue": 1376,
+      "id": "dsh-ledger-memory",
+      "from": {
+        "commit": "fd17c48e70185372aa3ae718e7f38c3ba3d14ced",
+        "version": "1.1.1",
+        "status": "blocked"
+      },
+      "to": {
+        "commit": "c65d4be3efc617dff53365bc221c2cbc659edb4f",
+        "version": "1.2.1",
+        "status": "blocked"
+      },
+      "coverage": "complete",
+      "admission": {
+        "engine": "bounded-source-v3",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "binding": "752d47ca7de865c629d56881803d769483bf830167afa50b128b7dd2900a1d4e",
+        "state": "rejected",
+        "sourceContract": "verified",
+        "coverage": "complete",
+        "capabilities": "review-required",
+        "compatibility": "per-version-declaration",
+        "reviewRegistryDigest": "51eb3a970882344902c5d5815624363dbea18ab6563d1b44909c2e4e9e335495"
+      }
+    },
+    {
+      "issue": 1390,
+      "id": "dsh-qwen-paint",
+      "from": {
+        "commit": "cad07287799b9c3fd5f48f875e6c516d45b2344e",
+        "version": "0.17.1",
+        "status": "blocked"
+      },
+      "to": {
+        "commit": "04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
+        "version": "0.17.2",
+        "status": "blocked"
+      },
+      "coverage": "complete",
+      "admission": {
+        "engine": "bounded-source-v3",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "binding": "22ade6395d28450d447a067af4a2a8e5054f8a53fc5c8407c1ff44a8e664cfeb",
+        "state": "rejected",
+        "sourceContract": "verified",
+        "coverage": "complete",
+        "capabilities": "review-required",
+        "compatibility": "per-version-declaration",
+        "reviewRegistryDigest": "51eb3a970882344902c5d5815624363dbea18ab6563d1b44909c2e4e9e335495"
+      }
+    }
+  ],
+  "appeal": {
+    "issue": 1430,
+    "commit": "85562e842b1d9c4a6d4381c6daa0710c5995e79c",
+    "state": "two-exact-false-positives-confirmed-other-gates-remain",
+    "dispositions": [
+      {
+        "kind": "false-positive",
+        "file": "lib/client.core.js",
+        "rule": "destructive-root-delete",
+        "line": 2581,
+        "sha256": "c63da29b58380c40b2513fbd352e10d6b50a75fee11bfbd85bc75e9f08e98235",
+        "rationale": "This exact source file contains the command text only in the speech-table comment and UI speech literals. Readers select strings for textContent; the literals are not child-process arguments or evaluated code."
+      },
+      {
+        "kind": "false-positive",
+        "file": "lib/core.js",
+        "rule": "destructive-root-delete",
+        "line": 2573,
+        "sha256": "9df30f47d5314ff0c4a62a7caf62762afd3b1844fe57acd9b089e3b661c83276",
+        "rationale": "This exact source file contains the command text only in the speech-table comment and UI speech literals. Readers select strings for textContent; the literals are not child-process arguments or evaluated code."
+      }
+    ],
+    "contact": "no-send-unrecorded-person-central-continuation-gate"
+  },
+  "otherItems": [
+    {
+      "issue": 148,
+      "commentId": 6198375074,
+      "state": "generic-bounty-message-no-patch-or-reproduction-evidence; no code change or outreach justified"
+    },
+    {
+      "issue": 1427,
+      "state": "previous exclusion already published; no new request grants notification-producing closure"
+    },
+    {
+      "issue": 1296,
+      "state": "old failed request remains permanently consumed; no retry"
+    }
+  ],
+  "scans": [
+    {
+      "revision": "final",
+      "issue": 1376,
+      "repositoryUrl": "https://github.com/18477514055/dsh-ledger-memory",
+      "commit": "c65d4be3efc617dff53365bc221c2cbc659edb4f",
+      "metadata": {
+        "id": 1412857520,
+        "owner": {
+          "login": "18477514055",
+          "id": 325868576,
+          "node_id": "U_kgDOE2xcIA",
+          "avatar_url": "https://avatars.githubusercontent.com/u/325868576?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/18477514055",
+          "html_url": "https://github.com/18477514055",
+          "followers_url": "https://api.github.com/users/18477514055/followers",
+          "following_url": "https://api.github.com/users/18477514055/following{/other_user}",
+          "gists_url": "https://api.github.com/users/18477514055/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/18477514055/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/18477514055/subscriptions",
+          "organizations_url": "https://api.github.com/users/18477514055/orgs",
+          "repos_url": "https://api.github.com/users/18477514055/repos",
+          "events_url": "https://api.github.com/users/18477514055/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/18477514055/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "license": "MIT",
+        "defaultBranch": "main"
+      },
+      "oldId": "dsh-ledger-memory",
+      "precheck": "passed",
+      "analysis": {
+        "reasons": [
+          "fixed-source security warnings require review",
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal",
+          "runtime source contains the commands permission signal",
+          "runtime source contains the credentials permission signal"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "warn",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 10,
+          "eligibleFiles": 10,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 2,
+            "info": 0
+          },
+          "findings": [
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/index.js",
+              "line": 91
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/part2.js",
+              "line": 3
+            }
+          ],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "28ba6696c467e4b322aa0372170f4795109b67f40b5a75fdbcfd05e47b4f579f",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 546,
+            "blob": "06e067d61746bbc6f3d0878be939f23a07f0c5fa",
+            "sha256": "86f2b41e17c1ce46378ef8a3a339c81668711fdcfd9c81f50ba4109a91c8164a"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 45333,
+            "blob": "0153386091f913f2cdf38b7eead1a7187268cbf7",
+            "sha256": "c108cbef995a1c15b3d185120a8b665ab11d123836599622b1226beb4694c8cc"
+          },
+          {
+            "file": "lib/defs.js",
+            "bytes": 181467,
+            "blob": "8489a0dd217d66716c2bb7358b6b61c46dcf4993",
+            "sha256": "6d1d9bd5b103e82e42c8170880a5e635fab0ec4c88298e295183c7f593a3d5d7"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 120735,
+            "blob": "f91c6db2ce9fe13ad9251f2e3f7eaa2a75dc4f85",
+            "sha256": "4213220a0e8bcebdf9a01337f02d6068386fa01ced0262a73081bba84d24fc65"
+          },
+          {
+            "file": "lib/part1.js",
+            "bytes": 191067,
+            "blob": "51c726c053a3553417b74f6be1f18b4276198485",
+            "sha256": "5127c6eee81340a73cc8bcfd8854506b89bb258edbbcba057ececf45b46eddb1"
+          },
+          {
+            "file": "lib/part2.js",
+            "bytes": 192184,
+            "blob": "0bd2af23f8924969966b7b6893c361bb5664a9dd",
+            "sha256": "3af5fea16b30ee740febf6bb9cce85b5907c246999ce29771c134c8d3ec5cb99"
+          },
+          {
+            "file": "lib/part3.js",
+            "bytes": 186398,
+            "blob": "7124ebe07988e9887afc2cdb32836ae98c85d1ff",
+            "sha256": "5ee4820351d8626e6f98965eae7e5a0833ac234daf1daf6be2bf651bbb8acd31"
+          },
+          {
+            "file": "lib/part4.js",
+            "bytes": 189037,
+            "blob": "40d43d908cf23973316a3251b220b9f63a12f319",
+            "sha256": "d5c14e810b2f68eda9a818da4ffac2c8e4d800187710faf0677e96f707059101"
+          },
+          {
+            "file": "lib/part5.js",
+            "bytes": 154490,
+            "blob": "7934bd98649f7eaf8a7a72a89a27753a5e49e6c0",
+            "sha256": "41d731b085f2d1df0992848290d125fca67961461754f4620e80dc26c7b131a8"
+          },
+          {
+            "file": "package.json",
+            "bytes": 3123,
+            "blob": "8c87de7510b45c007bd47a7a7023e11ed50594cd",
+            "sha256": "2cabeb0841832370c18d9942a38e752acb3a38d8d1f12a38eef0e6e07d73f875"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 228,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/defs.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 1,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 88,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/index.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 91,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/index.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 682,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/part1.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 1,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/part2.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 1,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/part2.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 3,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/part3.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 1,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/part4.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 1,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/part5.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 1,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 10,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 199,
+          "packageEntries": 13,
+          "files": 12
+        },
+        "runtimeFiles": 10,
+        "runtimeBytes": 1264380,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-15T13:36:59Z",
+        "dependencies": []
+      },
+      "binding": "752d47ca7de865c629d56881803d769483bf830167afa50b128b7dd2900a1d4e",
+      "candidate": {
+        "id": "dsh-ledger-memory",
+        "repositoryUrl": "https://github.com/18477514055/dsh-ledger-memory",
+        "commit": "c65d4be3efc617dff53365bc221c2cbc659edb4f",
+        "manifestPath": "package.json",
+        "packageName": "dsh-ledger-memory",
+        "version": "1.2.1",
+        "entryIds": [
+          "dsh-ledger-memory"
+        ]
+      }
+    },
+    {
+      "revision": "final",
+      "issue": 1390,
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "commit": "04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
+      "metadata": {
+        "id": 1413286533,
+        "owner": {
+          "login": "yanfei0725",
+          "id": 283827478,
+          "node_id": "U_kgDOEOrdFg",
+          "avatar_url": "https://avatars.githubusercontent.com/u/283827478?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/yanfei0725",
+          "html_url": "https://github.com/yanfei0725",
+          "followers_url": "https://api.github.com/users/yanfei0725/followers",
+          "following_url": "https://api.github.com/users/yanfei0725/following{/other_user}",
+          "gists_url": "https://api.github.com/users/yanfei0725/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/yanfei0725/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/yanfei0725/subscriptions",
+          "organizations_url": "https://api.github.com/users/yanfei0725/orgs",
+          "repos_url": "https://api.github.com/users/yanfei0725/repos",
+          "events_url": "https://api.github.com/users/yanfei0725/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/yanfei0725/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "license": "MIT",
+        "defaultBranch": "main"
+      },
+      "oldId": "dsh-qwen-paint",
+      "precheck": "passed",
+      "analysis": {
+        "reasons": [
+          "fixed-source security warnings require review",
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal",
+          "runtime source contains the commands permission signal",
+          "runtime source contains the credentials permission signal",
+          "Tool-view extension requires key ownership review; registration alone is not a protected component mutation"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "warn",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 8,
+          "eligibleFiles": 8,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 3,
+            "info": 0
+          },
+          "findings": [
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/config.js",
+              "line": 14
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/hipfire-img.js",
+              "line": 49
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/index.js",
+              "line": 46
+            }
+          ],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "84f674fc045004cd14c232b5e9b3d6878f0734a802d87b2b0c29d093aece268d",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 19492,
+            "blob": "03574cc7bb85e2851e237798b4b8f4f855547122",
+            "sha256": "d6d6e146b889e15040554d91abf9ba4f708761a7e8b160bde6285157e4ecd951"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 188959,
+            "blob": "5737833d39256be823d09f8d49cc74cfcf8d6b9b",
+            "sha256": "007a1d3c16832a68af60866453cfd3ae5be4fb8ebac1ab56b8c5043fab5b98ea"
+          },
+          {
+            "file": "lib/config.js",
+            "bytes": 235235,
+            "blob": "599b7d1ab035f0d5d0b414e2e7278c02f83c793e",
+            "sha256": "8fd8d4ab0244ae37724f2058f358216d3fb5e3bb044029edeb930af956aaa5d1"
+          },
+          {
+            "file": "lib/describe.js",
+            "bytes": 69481,
+            "blob": "a763b8501eaf194cd734ac9f0b907e4f684f7a61",
+            "sha256": "6f7d3ae24d5ca391a812df28dafef54a08997f5c67554bdcb70ee6f1bef5bbcd"
+          },
+          {
+            "file": "lib/hipfire-img.js",
+            "bytes": 37576,
+            "blob": "ca2b2a4753e80491d5686a0b80b9c784807c3923",
+            "sha256": "4a6b117a6ada5bf0547ec524e4e4f91e115b6c46f03fe9913c7218f4e6351afc"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 247784,
+            "blob": "ea44993e23b35c2227887048d1b54c8ea4588ec5",
+            "sha256": "c57bde3aa9d79975b642f78f7dd2093d981e3b7a7d391233fd0f099939bb7031"
+          },
+          {
+            "file": "lib/net-guard.js",
+            "bytes": 9394,
+            "blob": "43f16ca5a2e07043ee00ca0230709b929833ce79",
+            "sha256": "349588a1bd8ee56da68f694ae66c62182aaed722ab0535daaa500f5cf2ed2b2a"
+          },
+          {
+            "file": "package.json",
+            "bytes": 2370,
+            "blob": "4ca39ee4ae57b00d3e6f4178db96cb98bad98a4f",
+            "sha256": "c02e8790646f0de319a881bb5b769204db919f674e2b84ace3a2bb07bbdc1ecd"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1643,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/config.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 11,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/config.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1114,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/config.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 14,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/config.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 34,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/hipfire-img.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 47,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/hipfire-img.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 448,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/hipfire-img.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 49,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/hipfire-img.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 180,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 43,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/index.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1735,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/index.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 46,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/net-guard.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 140,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/net-guard.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 157,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": true,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 8,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 81,
+          "packageEntries": 14,
+          "files": 12
+        },
+        "runtimeFiles": 8,
+        "runtimeBytes": 810291,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-15T15:56:25Z",
+        "dependencies": []
+      },
+      "binding": "22ade6395d28450d447a067af4a2a8e5054f8a53fc5c8407c1ff44a8e664cfeb",
+      "candidate": {
+        "id": "dsh-qwen-paint",
+        "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+        "commit": "04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
+        "manifestPath": "package.json",
+        "packageName": "dsh-qwen-paint",
+        "version": "0.17.2",
+        "entryIds": [
+          "qwen-paint"
+        ]
+      }
+    },
+    {
+      "revision": "final",
+      "issue": 1430,
+      "repositoryUrl": "https://github.com/drliuhuan/dsh-plugin-vrmpet3d",
+      "commit": "85562e842b1d9c4a6d4381c6daa0710c5995e79c",
+      "metadata": {
+        "id": 1413302663,
+        "owner": {
+          "login": "drliuhuan",
+          "id": 26193937,
+          "node_id": "MDQ6VXNlcjI2MTkzOTM3",
+          "avatar_url": "https://avatars.githubusercontent.com/u/26193937?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/drliuhuan",
+          "html_url": "https://github.com/drliuhuan",
+          "followers_url": "https://api.github.com/users/drliuhuan/followers",
+          "following_url": "https://api.github.com/users/drliuhuan/following{/other_user}",
+          "gists_url": "https://api.github.com/users/drliuhuan/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/drliuhuan/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/drliuhuan/subscriptions",
+          "organizations_url": "https://api.github.com/users/drliuhuan/orgs",
+          "repos_url": "https://api.github.com/users/drliuhuan/repos",
+          "events_url": "https://api.github.com/users/drliuhuan/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/drliuhuan/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "license": "NOASSERTION",
+        "defaultBranch": "main"
+      },
+      "precheck": "passed",
+      "analysis": {
+        "reasons": [
+          "manifest and GitHub repository license metadata do not match",
+          "DSH compatibility is not explicitly declared",
+          "manifest files selectors are unsupported or ambiguous; whole-package fallback requires review",
+          "package ignore rules require artifact review",
+          "package contains unsupported artifacts requiring review: .gitattributes, .gitignore, assets/models/BlueFatFish.vrm.br, assets/models/SampleModel.vrm.br, assets/motions/attention/wave hand 1.vrma.br",
+          "fixed-source scan is incomplete; unobserved capability signals are unknown",
+          "fixed-source security findings require quarantine",
+          "fixed-source security warnings require review",
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal",
+          "runtime source contains the commands permission signal",
+          "runtime source contains the credentials permission signal"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": null,
+          "nativeOrExecutableArtifacts": null
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "fail",
+          "complete": false,
+          "scopeReasons": [],
+          "filesScanned": 41,
+          "eligibleFiles": 41,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": true,
+          "counts": {
+            "critical": 2,
+            "warning": 1,
+            "info": 0
+          },
+          "findings": [
+            {
+              "rule": "destructive-root-delete",
+              "category": "destructive",
+              "severity": "critical",
+              "message": "发现针对根目录或用户目录的递归强制删除命令。",
+              "file": "lib/client.core.js",
+              "line": 2581
+            },
+            {
+              "rule": "destructive-root-delete",
+              "category": "destructive",
+              "severity": "critical",
+              "message": "发现针对根目录或用户目录的递归强制删除命令。",
+              "file": "lib/core.js",
+              "line": 2573
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/desktop.js",
+              "line": 21
+            }
+          ],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "092916c6b26d746bb3c3a1d7c375b997b55ccf7b62e62248c2598f4ba701cacd",
+        "sourceEvidence": [
+          {
+            "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+            "bytes": 1304,
+            "blob": "8fbb6585229548002bddf3c942c73d0d15f0031e",
+            "sha256": "9ef228bf2617b8962a5a48f77bc5dfefc819e9f3251ac6993248524dd7aad0bd"
+          },
+          {
+            "file": ".github/workflows/publish.yml",
+            "bytes": 1626,
+            "blob": "f35fdc0ef43772ea38e2dbcbdae1b92f39d94191",
+            "sha256": "bbfadb10a0622801c0438175f6c9d72c2f1f7636a314c3dced8f4f1b926a9ed5"
+          },
+          {
+            "file": "assets/models/vrmpet3d-models.json",
+            "bytes": 2456,
+            "blob": "3ad42ef2e6635778c374d9e8541d67aa22163458",
+            "sha256": "4bf4c746115682be05195e8d9b20c8e1bf9d7b6a7410ce95bb9df200a4012df9"
+          },
+          {
+            "file": "assets/motions/vrmpet3d-motions.json",
+            "bytes": 5932,
+            "blob": "8fbc938ae8d6a6fc95eccd035aa9c458c2a98cd5",
+            "sha256": "874d2faa1d4d2b1322b012f7b7653c5289e102f7ab4d5139bcc329aa97b8cdd8"
+          },
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 284,
+            "blob": "9304833e5d72dbcaf54ba88e88b7f00fe7b7499c",
+            "sha256": "4dbc350f18fe8adf04f484704957c33d935bc6cc0b80e43780bf540bded90701"
+          },
+          {
+            "file": "desktop/main.js",
+            "bytes": 94657,
+            "blob": "ed3755b24d920e7bc51f5a48f8ed2916bdc0683a",
+            "sha256": "6f51146a3ac4d410009210f693c5081e717a095f1dcfef2a47155794f4ef3323"
+          },
+          {
+            "file": "desktop/package.json",
+            "bytes": 208,
+            "blob": "8b0711aa5a031022a4a08ec9f143424e7d0999fb",
+            "sha256": "f077ba54feefc7d3d94e256dfebc098c51ab1a536c8e8fa3fa6f8b78c5e7cb58"
+          },
+          {
+            "file": "desktop/preload.js",
+            "bytes": 3636,
+            "blob": "5cc90c5483956e5d677b7cf2c5f9c15f985ce70b",
+            "sha256": "fc9dd07cb98f2196fe66c14cc118cefe629ab4e0657fb06d51892e9c741a36bc"
+          },
+          {
+            "file": "desktop/probe-motion-picker.js",
+            "bytes": 7110,
+            "blob": "2bf64edac1632e90c87d3215980fd664eb277bf6",
+            "sha256": "8b78094ef878aabee8e7048dfdddfdd36f41f8137e6819b2340e12c2d9771204"
+          },
+          {
+            "file": "desktop/probe-parts-editor.js",
+            "bytes": 14242,
+            "blob": "c2df269d4a889c398d4b66f6147c1cf48d0a0419",
+            "sha256": "2d07eecca47f8c652b82568684a2bb6d3ce814dd374b190e3aae63a2b9e46789"
+          },
+          {
+            "file": "initial-config/motion-catalog.json",
+            "bytes": 3318,
+            "blob": "eb3b7c1cbbba96065356d63282106d7ab5e6b84f",
+            "sha256": "da1b18ed9d1569bd4d6cfeacc4d1d143918d6dec2a3ffd9b3becfabe6d7698b8"
+          },
+          {
+            "file": "initial-config/vrmpet3d-model-dirs.json",
+            "bytes": 22,
+            "blob": "fae6b20b8861bed8d44969090855aeeff73fd60f",
+            "sha256": "b5d162e312778c2c49145d7e5e25e282305f8a3b2c395572fff5b0ce3a5b234b"
+          },
+          {
+            "file": "initial-config/vrmpet3d-model-files.json",
+            "bytes": 292,
+            "blob": "a5b305c17488480b07469b06dfdfcc26e67841b1",
+            "sha256": "bc107b434beea5f768e95b277a7385ac6cf50146076b6b44166bce3755c01eeb"
+          },
+          {
+            "file": "initial-config/vrmpet3d-settings.json",
+            "bytes": 7351,
+            "blob": "0479b0074360da8a1af00e728eed8604343f18f3",
+            "sha256": "219079e67b91a919fd2849f3dd38a4d2dd4c96ce284b0c425196e954ca7a411b"
+          },
+          {
+            "file": "lib/brotli.js",
+            "bytes": 3962,
+            "blob": "332c777b8c394646b080852d391db052259481b2",
+            "sha256": "118fd429b048d97c39be4cef5ffbabff7aef2147ab082b0dffa980d33d7f8261"
+          },
+          {
+            "file": "lib/client.core.js",
+            "bytes": 439002,
+            "blob": "c60406ed2b06cf384e50222ec73c932218fa42ba",
+            "sha256": "c63da29b58380c40b2513fbd352e10d6b50a75fee11bfbd85bc75e9f08e98235"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 272223,
+            "blob": "48c7d111b785106405deeff0acdd7525c049676e",
+            "sha256": "04257b1e31a276bbfc7c915b293a80eef2a0d28af5a60f7656fe54e9155ed729"
+          },
+          {
+            "file": "lib/client.menu.js",
+            "bytes": 24141,
+            "blob": "9778856d16c76aeb2f79688ed7f716d07d5277c3",
+            "sha256": "f2b02968a2303ebd12cdb0b375ccf35ec65774744849dae392a7b156950e75fd"
+          },
+          {
+            "file": "lib/client.scene.js",
+            "bytes": 259229,
+            "blob": "75b54d58de5fdc7b6c5a505b9c2e14511119cada",
+            "sha256": "4d4982b28983e70161e533623bb04599b79b5f5164496b15d41c43a5b53c1e84"
+          },
+          {
+            "file": "lib/client.vendor.js",
+            "bytes": 2278218,
+            "blob": "e5829aad8817406ad20816b3c478ce9af9b56de2",
+            "sha256": "1002f3fb6490f10e8d71cc7787efb2e7df31b2600323dcf302dcf2f18b8f6632"
+          },
+          {
+            "file": "lib/config-page.html",
+            "bytes": 9774,
+            "blob": "be9dae9be3fdb2e58ffc16d554a52c035a5ec2e8",
+            "sha256": "b1524633940cf55fcadb5e21ca35c4591ad50d7982ea79fc7dd372e080ff7d5c"
+          },
+          {
+            "file": "lib/config-page.js",
+            "bytes": 244700,
+            "blob": "9aa5bbc9b55289f243d6d13dc916167857d44d91",
+            "sha256": "a16a64f33e12ee398c2ea08b32f7381c071598d54085312ee3b7b95dbc06571d"
+          },
+          {
+            "file": "lib/core.js",
+            "bytes": 438069,
+            "blob": "b7a3f09be158cbe8cd7cf931a9c9d1e203c0117c",
+            "sha256": "9df30f47d5314ff0c4a62a7caf62762afd3b1844fe57acd9b089e3b661c83276"
+          },
+          {
+            "file": "lib/desktop-page.html",
+            "bytes": 5859,
+            "blob": "a0172d9fc7bc9e70ab1250a479bf78683712feb4",
+            "sha256": "c1910cb5608500bea7f9c3f1821b61044d5edc197545fdf22e4cce89d27aee4b"
+          },
+          {
+            "file": "lib/desktop-page.js",
+            "bytes": 212477,
+            "blob": "f6351e103b8225121441b44812b7e8913b927d9e",
+            "sha256": "827e0f67f745563adc9a944feaa48862888f1712ffbbd58cb9f555a7041cebd6"
+          },
+          {
+            "file": "lib/desktop.js",
+            "bytes": 22851,
+            "blob": "80e2627ce3088dea2478d3aeb96dbfd907ec3c7a",
+            "sha256": "f0e8a384d1a4f29430b84d1d94f63f2913c46242e179bbc8155913ec5581bcdb"
+          },
+          {
+            "file": "lib/env.js",
+            "bytes": 1112,
+            "blob": "3cb8783fb715c5a90955aa49c7f33ce5c0ff6a08",
+            "sha256": "2b9dc17360af67ef0b6bde51343fa2f1ac78968537c3f8c4f80f1578ca842492"
+          },
+          {
+            "file": "lib/global-page.html",
+            "bytes": 15983,
+            "blob": "d3ce7fc192dc90a61296f81661e7cb97b0f09e0e",
+            "sha256": "33ee6f7075e7baa28be43aac557e7678efe450eb121207b3db19ecfa4377124f"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 201492,
+            "blob": "88c66fd5962e90c08184365645186cc9d61d2473",
+            "sha256": "64061599ad5ae4d8451ff31ed9459f416be1aca1460b879a4e57f3978daf1906"
+          },
+          {
+            "file": "lib/menu.js",
+            "bytes": 23208,
+            "blob": "71e3216951b63d77f3caafbb1523c1ec51b970b5",
+            "sha256": "c7ce71417756074d4648a8ed5e4fd3e0746b57516b59e45b5ba6232b26ea0fd9"
+          },
+          {
+            "file": "lib/model-picker.js",
+            "bytes": 38183,
+            "blob": "415dabc5dcf8da1c0cc778d5f6f6653115c02437",
+            "sha256": "3a1284f4c14fbea56729561fbc0740d22f5e006b1ac3986e049772b38c8dd08f"
+          },
+          {
+            "file": "lib/picker-page.html",
+            "bytes": 2835,
+            "blob": "e6e07917d077fdfdacb8cf6091791887149144b4",
+            "sha256": "1d1433a89b7e7daaa4a37a90c5a0961060775e495471f39610c6d327845d8565"
+          },
+          {
+            "file": "lib/picker-page.js",
+            "bytes": 6205,
+            "blob": "462218dda4ec9720ebb02a6ec4c34f41558fe2f1",
+            "sha256": "f6c9bba2a1ed60bc3954ad35aba77b34332577aa604ced869fdf73408dc69b11"
+          },
+          {
+            "file": "lib/placeholder.js",
+            "bytes": 21636,
+            "blob": "8ea864de1d512688756f4e610737363c6cb4bc5f",
+            "sha256": "06b3273e2fdab366f89bc0ab5070da994f936978a0a213247cfb7e9775f00909"
+          },
+          {
+            "file": "lib/scene.js",
+            "bytes": 258292,
+            "blob": "d43a37461e63fcb4ac70d001b6fbd04f0dedc4d2",
+            "sha256": "0c120d0c0dea9bcd48200aed930f631ea6857aa469d297a0003af637f773d4c7"
+          },
+          {
+            "file": "lib/settings.js",
+            "bytes": 13622,
+            "blob": "ba7b5a2152fc8b230a36e335423068d607d79af9",
+            "sha256": "bb3ce3f4993b45de1e130905492a9d9e5f6b2d1aec14bde05bc2d1da2dd6706e"
+          },
+          {
+            "file": "lib/setup-page.html",
+            "bytes": 14804,
+            "blob": "9c7a120d0cbd00d4167de0790b58d7099b083b2d",
+            "sha256": "02e597870b77d0dc3761df125d21d11120ce7412d0a9e75f7ff043e8736f0888"
+          },
+          {
+            "file": "lib/setup-page.js",
+            "bytes": 32263,
+            "blob": "4e8db284f418c88ccf979dd95605b33078c6e892",
+            "sha256": "2e3dbbcb9f7576e3115ed6befff165041d1776bfacbab5966525303300b0ded5"
+          },
+          {
+            "file": "lib/vrm-info.js",
+            "bytes": 41975,
+            "blob": "07c80ac34e78f6c5cc59f4c5dfdbdad973e64c5c",
+            "sha256": "d17ea01c229687af5b3c72d7620757ef14182c6608f3d0aaa37da32ed079ee6f"
+          },
+          {
+            "file": "package.json",
+            "bytes": 1297,
+            "blob": "32cd9d50ba2d1e0de7bbbd7c2c873cbfc9f613f0",
+            "sha256": "5a37e405c85766a90e132143080db9495db9d2ce8968f2e8e537cc1d2dee3f9e"
+          },
+          {
+            "file": "screenshots.json",
+            "bytes": 185,
+            "blob": "b5cb214840efe0bb566ab4070a700ec9693fd1fe",
+            "sha256": "5464e7e723c45a7b2ae6183cef3e589be396814fe61ec520f9c644a6f1a9fdb6"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-files",
+            "file": "desktop/main.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 12,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "initial-config/vrmpet3d-settings.json",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 50,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/client.core.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 2857,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1516,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/client.scene.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1983,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/client.vendor.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 24230,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/config-page.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 300,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/config-page.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 3132,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/core.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 2849,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/desktop-page.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1080,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/desktop.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 24,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/desktop.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 21,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/desktop.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 289,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/env.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 16,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/global-page.html",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 226,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 20,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/index.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 3501,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/index.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 362,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/scene.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1975,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/settings.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 22,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/settings.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 99,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/setup-page.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 69,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/vrm-info.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 21,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": false,
+        "filesScanned": 41,
+        "unsupportedFiles": 30,
+        "scope": {
+          "kind": "whole-package-conservative-superset",
+          "repositoryEntries": 100,
+          "packageEntries": 100,
+          "files": 83
+        },
+        "runtimeFiles": 41,
+        "runtimeBytes": 5026035,
+        "contractVerified": false,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "NOASSERTION",
+        "sourceUpdatedAt": "2026-10-15T15:44:30Z",
+        "dependencies": []
+      },
+      "binding": "b3c36b28618e5e55c0ef9282869b95063a04dbd7d2025c49aaa964fd7bd7e90f",
+      "candidate": {
+        "id": "dsh-plugin-vrmpet3d",
+        "repositoryUrl": "https://github.com/drliuhuan/dsh-plugin-vrmpet3d",
+        "commit": "85562e842b1d9c4a6d4381c6daa0710c5995e79c",
+        "manifestPath": "package.json",
+        "packageName": "dsh-plugin-vrmpet3d",
+        "version": "0.1.0",
+        "entryIds": [
+          "vrmpet3d"
+        ]
+      }
+    }
+  ]
+}
