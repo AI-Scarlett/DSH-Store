@@ -84,6 +84,19 @@ test('fixed tree bytes and blob identity must both match before evidence is acce
   assert.match(result.reasons.join('\n'), /blob hash does not match/)
 })
 
+test('complete fixed source cannot authorize an unreviewed CDN script through the permission-review lane (#910)', async () => {
+  const input = { ...files, 'index.js': "const src='https://cdn.example.test/sdk.min.js'; const s=document.createElement('script'); s.src=src; document.head.append(s)" }
+  const result = await scan(input)
+  assert.equal(result.scanComplete, true)
+  assert.equal(result.signals.network, true)
+  assert.equal(result.reviewSignals.dynamicModuleLoading, true)
+  assert.ok(result.reasons.includes('dynamic module loading or code evaluation requires separate review'))
+  const analysis = { ...result, approved: result.reasons.length === 0, contractVerified: true }
+  assert.equal(admissionDecision(candidate, analysis).state, 'review-required')
+  const registry = reviewed(analysis, { permissions: { level: 'medium', files: 'none', network: 'specified-services', commands: 'none', credentials: ['none'] } })
+  assert.equal(admissionDecision(candidate, analysis, registry).state, 'review-required')
+})
+
 test('known noncredential environment keys are distinguished from unknown or secret access', () => {
   assert.equal(permissionSignals('const home = process.env.DSH_HOME', 'index.js').credentials, false)
   assert.equal(permissionSignals('const home = process.env.DSH_HOME', 'index.js').files, true)

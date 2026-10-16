@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1390,
+  "userId": 283827478,
+  "requestCommentId": 6207040756,
+  "requestBodySha256": "7ca1f0f0a262cec18efbf0497141d7fd6da572b88e94947f9d1ec939d8222faf",
+  "requestUpdatedAt": "2026-10-16T03:00:15Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请复核 `63bbf1a` / `v0.17.3`。",
+    "scope": "Answer this exact fixed-Commit recheck request once; distinguish verified fixes from outstanding independent review and runtime evidence. No general continuation permission."
+  },
+  "responseBody": "已按这条新请求，只读复核 **0.17.3 / `63bbf1a860cc8f9e2eac31000c21314fcb4e07eb`**。8 个分发文本文件、817,359 字节完整读取，没有运行你的测试、安装脚本或宿主。\n\n上一轮两项问题已有源码依据可撤换：`lib/config.js:1120`、`lib/hipfire-img.js:471` 和 `lib/index.js:1735` 均接入 `guardedFetch`；`lib/net-guard.js:170-172` 先校验地址，再强制 `redirect: 'error'`。Hipfire HTTP 路径传入对应的远端 opt-in。README 也已分别披露 Hipfire 端点、默认开启的 `accelAutoInstall`、pip/GitHub 下载和 PowerShell / `sh -c`，不再把这部分描述为“不装包”。\n\n这次确认修复，不等于准入通过：仍有真实文件、网络、命令、凭据能力和 Tool-view 扩展的 key 归属审阅要求。通用 Shell 与默认装包行为需按该固定 Commit 的完整权限、确认边界和供应链继续专项审阅；目前没有可据此放行的新审阅记录。现有 Catalog 仍保留 blocked，不把目录安装目标切到未经批准的新来源，也不把作者侧测试记为 Store 的运行验收。无需删除正常功能或把真实能力改成 false。\n\n[本轮独立复核记录](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-followup-20261016.md) · [公开收录规则](https://dsh.store/standards/#policy-updates)"
+}

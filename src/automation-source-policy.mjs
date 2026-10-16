@@ -232,6 +232,32 @@ function hasCodeMatch(pattern, source, code) {
   return false
 }
 
+// A browser script is executable source even when it is loaded without fetch(),
+// import() or require(). Keep the lexical guard: examples and comments are not
+// live calls. Creating a script still needs review when its destination is not
+// statically known; a source assignment also exposes a network capability.
+export function browserScriptSignals(source, relativePath = '') {
+  const text = String(source ?? '')
+  if (/\.html?$/i.test(relativePath)) {
+    // Mask rather than delete: joining surrounding fragments could invent a
+    // script tag that never existed in the reviewed source.
+    const markup = text.replace(/<!--[\s\S]*?-->/g, comment => comment.replace(/[^\r\n]/g, ' '))
+    const external = /<script\b[^>]*\bsrc\s*=\s*(?:["']\s*)?(?:https?:|\/\/|data:|blob:)/i.test(markup)
+    return { dynamic: external, network: external }
+  }
+  if (relativePath && !JAVASCRIPT_SOURCE.test(relativePath)) return { dynamic: false, network: false }
+  const code = javascriptCode(text)
+  const creation = [
+    /\bcreateElement\s*(?:\?\.)?\s*\(\s*(?<quote>['"`])script\k<quote>\s*[,)]/gi,
+    /\[\s*(?<method>['"])createElement\k<method>\s*\]\s*(?:\?\.)?\s*\(\s*(?<quote>['"`])script\k<quote>\s*[,)]/gi,
+    /\bcreateElementNS\s*\(\s*(?:'[^'\r\n]*'|"[^"\r\n]*")\s*,\s*(?<quote>['"`])script\k<quote>\s*[,)]/gi,
+  ].some(pattern => hasCodeMatch(pattern, text, code))
+  const assignsSource = /\.\s*src\s*=(?!=|>)/i.test(code)
+    || hasCodeMatch(/\[\s*(['"])src\1\s*\]\s*=(?!=|>)/gi, text, code)
+    || hasCodeMatch(/\bsetAttribute\s*\(\s*(['"])src\1\s*,/gi, text, code)
+  return { dynamic: creation, network: creation && assignsSource }
+}
+
 export function permissionSignals(source, relativePath = '') {
   const text = String(source ?? '')
   const useJavaScriptLexer = !relativePath || JAVASCRIPT_SOURCE.test(relativePath)
@@ -245,7 +271,8 @@ export function permissionSignals(source, relativePath = '') {
       || /\bprocess\s*\.\s*env\s*\.\s*DSH_HOME\b/i.test(code),
     network: moduleSignal(NETWORK_MODULE)
       || /\b(?:fetch|WebSocket|EventSource)\s*\(/i.test(code)
-      || /\b(?:axios|got|undici)\s*(?:\.|\()/i.test(code),
+      || /\b(?:axios|got|undici)\s*(?:\.|\()/i.test(code)
+      || browserScriptSignals(text, relativePath).network,
     commands: moduleSignal(COMMAND_MODULE)
       || COMMAND_CALL.test(code)
       || /shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(code),
@@ -287,7 +314,7 @@ export function dshInterfaceSignals(source, relativePath = '') {
 }
 
 export function localModuleEvidence(source, relativePath) {
-  if (!JAVASCRIPT_SOURCE.test(relativePath)) return { references: [], dynamic: false }
+  if (!JAVASCRIPT_SOURCE.test(relativePath)) return { references: [], dynamic: browserScriptSignals(source, relativePath).dynamic }
   const text = String(source)
   const code = javascriptCode(text)
   const pattern = /\b(?:from\s*|import\s*(?:\(\s*)?|require\s*\(\s*)['"]([^'"\r\n]+)['"]/g
@@ -301,7 +328,7 @@ export function localModuleEvidence(source, relativePath) {
   while ((match = calls.exec(code))) {
     if (!/^\s*['"][^'"\r\n]+['"]\s*\)/.test(text.slice(match.index + match[0].length))) dynamic = true
   }
-  if (/\b(?:eval|Function)\s*\(/.test(code)) dynamic = true
+  if (/\b(?:eval|Function)\s*\(/.test(code) || browserScriptSignals(text, relativePath).dynamic) dynamic = true
   return { references: [...new Set(references)], dynamic }
 }
 

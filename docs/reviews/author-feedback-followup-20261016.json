@@ -1,0 +1,1522 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-followup-and-public-standards",
+  "baseCommit": "e5e7f0c568a5c3c120997a1b0367ae3e93311221",
+  "observedAt": "2026-10-16T06:30:54.655757+00:00",
+  "publicationState": "pre-publication-review-not-send-or-deployment-receipt",
+  "coverage": {
+    "issueCommentsSince": "2026-10-14T00:00:00Z",
+    "issueComments": 50,
+    "inlineReviewComments": 0,
+    "notifications": 40,
+    "updatedIssuesAndPRs": 49,
+    "newHumanCommentsSincePreviousReview": 5
+  },
+  "thirdPartyCodeExecuted": false,
+  "catalogChanged": false,
+  "runtimeAcceptance": "not-performed",
+  "sourceReviews": [
+    {
+      "issue": 1390,
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "commit": "63bbf1a860cc8f9e2eac31000c21314fcb4e07eb",
+      "version": "0.17.3",
+      "ownerId": 283827478,
+      "precheck": "passed",
+      "precheckNote": null,
+      "analysis": {
+        "reasons": [
+          "fixed-source security warnings require review",
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal",
+          "runtime source contains the commands permission signal",
+          "runtime source contains the credentials permission signal",
+          "Tool-view extension requires key ownership review; registration alone is not a protected component mutation"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "warn",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 8,
+          "eligibleFiles": 8,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 3,
+            "info": 0
+          },
+          "findings": [
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/config.js",
+              "line": 14
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/hipfire-img.js",
+              "line": 49
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/index.js",
+              "line": 46
+            }
+          ],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "f94dba991be8f28d66993c6093e1f6ec113f9ae0470f56f0ac6655d3edf943c9",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 19492,
+            "blob": "03574cc7bb85e2851e237798b4b8f4f855547122",
+            "sha256": "d6d6e146b889e15040554d91abf9ba4f708761a7e8b160bde6285157e4ecd951"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 188959,
+            "blob": "5737833d39256be823d09f8d49cc74cfcf8d6b9b",
+            "sha256": "007a1d3c16832a68af60866453cfd3ae5be4fb8ebac1ab56b8c5043fab5b98ea"
+          },
+          {
+            "file": "lib/config.js",
+            "bytes": 235293,
+            "blob": "0bf5739dc3146d3b59b66d6dd66e4ba073b6f863",
+            "sha256": "263dcc45dc026425866e71636b1f6bf1642b82b3ab300c56e3e36eec92699a47"
+          },
+          {
+            "file": "lib/describe.js",
+            "bytes": 69481,
+            "blob": "a763b8501eaf194cd734ac9f0b907e4f684f7a61",
+            "sha256": "6f7d3ae24d5ca391a812df28dafef54a08997f5c67554bdcb70ee6f1bef5bbcd"
+          },
+          {
+            "file": "lib/hipfire-img.js",
+            "bytes": 40993,
+            "blob": "5541e0ab01942dcf6c5ed86d03204d2b002a4ae9",
+            "sha256": "00b40a35e40dadefa4971cbeca3e6d5cf7d9be165ed0428283ee211d856a9a6d"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 249561,
+            "blob": "6f726f3977fd81eabc25103334fe2b4b4959a82e",
+            "sha256": "fe98f1be9ed4ff30eef9272be722a2a20d0ca4cf55bd498421f3dbf6511a8145"
+          },
+          {
+            "file": "lib/net-guard.js",
+            "bytes": 11086,
+            "blob": "8f22f61ada420e781c64fd4c6f2776c590b7a75b",
+            "sha256": "bb9a7f99bb6e2b707588a14ba28e7b5bb9e3f6c19bcbfe70863687a93ae2b3b3"
+          },
+          {
+            "file": "package.json",
+            "bytes": 2494,
+            "blob": "22672bfc656ecdd33e476a948d67da3c1c7f966e",
+            "sha256": "e8ff007751c41facc02ebf5b25a74ffe5351f9c6fdb8955a0f0041bf41bf851a"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1643,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/config.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 11,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/config.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 14,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/config.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 35,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/hipfire-img.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 47,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/hipfire-img.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 49,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/hipfire-img.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 182,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 43,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/index.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 46,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/net-guard.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 172,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/net-guard.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 189,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": true,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 8,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 81,
+          "packageEntries": 14,
+          "files": 12
+        },
+        "runtimeFiles": 8,
+        "runtimeBytes": 817359,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T02:59:51Z",
+        "dependencies": []
+      },
+      "binding": "38ffc9f3cf8979545fe2897044c4d7d96b529d6fe56995030317b963716ee3ab",
+      "runtimeAcceptance": "not-performed"
+    },
+    {
+      "issue": 1415,
+      "repositoryUrl": "https://github.com/qikairo7/dsh-web-search-fetch",
+      "commit": "ab6387f04a85debff70e89f07925703cdb933cb1",
+      "version": "0.2.11",
+      "ownerId": 132990250,
+      "precheck": "passed",
+      "precheckNote": null,
+      "analysis": {
+        "reasons": [
+          "runtime or optional dependencies require a separate supply-chain review",
+          "Bundle configuration overrides require review: web; later layers replace the entire config",
+          "runtime source contains the network permission signal",
+          "runtime source contains the credentials permission signal"
+        ],
+        "signals": {
+          "files": false,
+          "network": true,
+          "commands": false,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "pass",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 106,
+          "eligibleFiles": 106,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 0,
+            "info": 0
+          },
+          "findings": [],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "69687fcc56451d993f50c8dcdef250e2807cc42fbc4ba95f12b5d2cf8872d01f",
+        "sourceEvidence": [
+          {
+            "file": "NOTICE",
+            "bytes": 4425,
+            "blob": "1ca4892fbe01f35191a76c63113d1febf7448c65",
+            "sha256": "47a9f823579d3d853a168f79f08729d37187ba2339752b5a0d3469b138d24ce3"
+          },
+          {
+            "file": "client/index.js",
+            "bytes": 78713,
+            "blob": "cf83111685648ae1166444cf93903532a9dabc5a",
+            "sha256": "da14ec6f37f25c655d54896541a65cf5b81c7f7084d536ee225f2e93c5f386a8"
+          },
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 1052,
+            "blob": "76c7a035298eb5c95a840dcb5e96cbad4621d410",
+            "sha256": "6f712aa1b98edf691ce4e050ab023e6115ee0ff3e87644a636f1509342b75b42"
+          },
+          {
+            "file": "docs/assets/content-demo.html",
+            "bytes": 31727,
+            "blob": "427af8b8ed82c0ce05395526bb21bb25c53f6dee",
+            "sha256": "4c0027274e08290fa43fea4817f59a992f4b3d7ec638061d43539ecdd138ae51"
+          },
+          {
+            "file": "docs/assets/content-demo.json",
+            "bytes": 28307,
+            "blob": "c2d31f6fea3fba9ca68986444f09c1b6acbf0521",
+            "sha256": "04bcd192cdbd8a3135787f800b74c6a7d4fe2ee5873ba211d97943566065e86a"
+          },
+          {
+            "file": "docs/assets/modsearch-comparison.json",
+            "bytes": 30647,
+            "blob": "69fe743422863d32ab7ed6ae256aea92165e57a0",
+            "sha256": "e3f9f20018024b730439f2c54b211f9eca2879b89fe1583b2d93f0968d1287e6"
+          },
+          {
+            "file": "docs/dependency-inventory.json",
+            "bytes": 12458,
+            "blob": "d98f4404aa0faf43df7e3ef69dc47b95d644c58e",
+            "sha256": "c9d837300f94985ff3b5fbdd791d5ee7bdbc8a777f7b1e2106a4bea6d46b2e4a"
+          },
+          {
+            "file": "lib/breaker/breaker.d.ts",
+            "bytes": 3527,
+            "blob": "9f6014e1edda5076fb5121b133ebfcf25b26e754",
+            "sha256": "6b3ad8508ee9c32fdaf891fc9e33fadf280e2f6a8240d547ad048673dc34798a"
+          },
+          {
+            "file": "lib/breaker/breaker.js",
+            "bytes": 5722,
+            "blob": "b2d4ea5a929735668dcd13547928e74e85327c40",
+            "sha256": "25c39fd2c67fcbf9eb0fbff85d4e0bc3f4f197eeb96ee468182653e8835f6b97"
+          },
+          {
+            "file": "lib/breaker/index.d.ts",
+            "bytes": 716,
+            "blob": "11d0bb0e6d8f6047c00de9c7dfe88aaf35a585fe",
+            "sha256": "cbd47c7a135b32e954970990efb99acd806f07696a0f60a17f689e79da6f1305"
+          },
+          {
+            "file": "lib/breaker/index.js",
+            "bytes": 599,
+            "blob": "33b0b5b35880231c41be05397ddb930d28ab2039",
+            "sha256": "c2ac6bc9afadcc82e68b35b9d0e11eed37db63f111a24d71fc625d45b8324c6d"
+          },
+          {
+            "file": "lib/breaker/types.d.ts",
+            "bytes": 2462,
+            "blob": "344ae6ff1a6b9c8981afdf9f178116c5a6dc17f0",
+            "sha256": "e2adece8ea1202b54ce9cf8f5dca6e14741a584019e0133ec20518f3b261d93a"
+          },
+          {
+            "file": "lib/breaker/types.js",
+            "bytes": 206,
+            "blob": "9a07f552b2d838229b473ed428d0cb3b23307b25",
+            "sha256": "fac70132049e4aa3e309be86c05a4e1c6a63cbcd02a46bef193252e3cf71dfc0"
+          },
+          {
+            "file": "lib/credential-ref.d.ts",
+            "bytes": 1344,
+            "blob": "54f8284d13f951ea9e863bf90579e2c7468f2ea0",
+            "sha256": "ba8d682a9ecc815f221e521bd5e6b7b030b91e348d560f44f2db5835a8c26f94"
+          },
+          {
+            "file": "lib/credential-ref.js",
+            "bytes": 1443,
+            "blob": "4615cdc2f64c1672bf795428a8fee6b02c885c84",
+            "sha256": "7c7c66a9eba6483c503d12717ef0d552d1a02b214575f2558037fc930405ba7e"
+          },
+          {
+            "file": "lib/engines/additional/adapters.d.ts",
+            "bytes": 399,
+            "blob": "7c717f5c8334bf05adde6707fe74aa4538094f94",
+            "sha256": "6ff18abd14ef4cd35f39804bba8b0acbd1a4f5155518a60de73a5c9b2d15805b"
+          },
+          {
+            "file": "lib/engines/additional/adapters.js",
+            "bytes": 15965,
+            "blob": "a9115f40c1c2275e5165321fde9b46a5685ab5a5",
+            "sha256": "8eba5309b434cd090f44b908cb96afd9a40255828f9d27dbc80ad37cd6035e34"
+          },
+          {
+            "file": "lib/engines/additional/aihot.d.ts",
+            "bytes": 336,
+            "blob": "ffd41c4f09b6c06e5163c42e8333222f313226ee",
+            "sha256": "52f8f1ee2eaa99f49953d8fdbd6661f9a087b4ce6031547091c35c3762047553"
+          },
+          {
+            "file": "lib/engines/additional/aihot.js",
+            "bytes": 2257,
+            "blob": "620b9de0dfeb5a891a19a75efc9a9a7d971029b9",
+            "sha256": "ba5f50ac326d5a0a29a5350aa591262f136a9600f0c4b5f9aa5f62a397744e86"
+          },
+          {
+            "file": "lib/engines/additional/http.d.ts",
+            "bytes": 1588,
+            "blob": "203a5cbf649f443d29ab9444e5c8f5bccfc3d0dd",
+            "sha256": "f5b532864e25b874295e34e9b1459efdca2912ab452f0094da3e493c40d8d40e"
+          },
+          {
+            "file": "lib/engines/additional/http.js",
+            "bytes": 9736,
+            "blob": "94c68ffcc557591b09a402326835bbaeef792ac0",
+            "sha256": "c4a7037b9c51c6c82c4fc6a0a2955f4c65b5c8f7b1e20634d00fb626fca2ec91"
+          },
+          {
+            "file": "lib/engines/additional/index.d.ts",
+            "bytes": 3798,
+            "blob": "ed1d9c7f977874952bcc094f9e44640caf18a2bc",
+            "sha256": "025c17adf6cf5356b982d972a6eb790efbf96ba771bd50ccb412fed46d8eaf4b"
+          },
+          {
+            "file": "lib/engines/additional/index.js",
+            "bytes": 3254,
+            "blob": "b7f0c96b9c64ccd32ad5adc5462ef5dac9f340ed",
+            "sha256": "9e0a90d05e3c4847a571da2d1ef22af2881740a9581e343e54a3759a7c03f468"
+          },
+          {
+            "file": "lib/engines/anysearch/client.d.ts",
+            "bytes": 3166,
+            "blob": "c409de7d537754a18f3141b28423abcc65645499",
+            "sha256": "a35c6dab4b265eb4c799b71edb37a6455366a43245d2c021397bda68a762399a"
+          },
+          {
+            "file": "lib/engines/anysearch/client.js",
+            "bytes": 15119,
+            "blob": "0548414a329350ab53b8f345a4cf2b8711188356",
+            "sha256": "bfced7956b64172e4729d19f07609b737548a0e920626cd1f564bbdb5347db3d"
+          },
+          {
+            "file": "lib/engines/anysearch/engine.d.ts",
+            "bytes": 3333,
+            "blob": "26e4d0fd8aac01aac558f2a83a93eb3721a21e4d",
+            "sha256": "146d4927c972e557b83deb694eba7047695df32e518ef8814e698cc8d7eb5630"
+          },
+          {
+            "file": "lib/engines/anysearch/engine.js",
+            "bytes": 4430,
+            "blob": "dce51eb78fbea6f0ebd057148ba5deda140d369c",
+            "sha256": "419ae3d7577b36b906d12fc7a4de4cc5faf05ec3b67ee2e54c18a6fc8f64e06b"
+          },
+          {
+            "file": "lib/engines/anysearch/error.d.ts",
+            "bytes": 7768,
+            "blob": "9c2b7a1aaa9661319ee8a5c29563aa5f2820e0c5",
+            "sha256": "a161ba4b7b8f6a4e72d34a2f6845f65d088f355ad6405799a889779cc445b536"
+          },
+          {
+            "file": "lib/engines/anysearch/error.js",
+            "bytes": 8486,
+            "blob": "f629d478bfd4733a8d3bb33f4de499c2f5faf930",
+            "sha256": "75d38af6ee66dff7bb872a6b68ecadc35de6a159d9ebb127b8471605a1979302"
+          },
+          {
+            "file": "lib/engines/anysearch/index.d.ts",
+            "bytes": 1587,
+            "blob": "267abe64f6f885dacfefb06d29816c710daf528e",
+            "sha256": "69c354af4aad3e79f0e12c93b8989119679c183c640f651d1cca1daf94211618"
+          },
+          {
+            "file": "lib/engines/anysearch/index.js",
+            "bytes": 1108,
+            "blob": "5b1e8ef7a79b0af74b9a386ed63c5e4eaa26c914",
+            "sha256": "023a4473e795445f568ecd90d86a08e62809d5f97922a334e016bf02d13a3f01"
+          },
+          {
+            "file": "lib/engines/anysearch/limits.d.ts",
+            "bytes": 2326,
+            "blob": "ea1b85c5270968d5b077f2c30297d27ff8e30741",
+            "sha256": "af6640909cbd39eb4634a76cae703756e5a60cf41d5e8391195e4ec3e7d09e14"
+          },
+          {
+            "file": "lib/engines/anysearch/limits.js",
+            "bytes": 2275,
+            "blob": "b1eb004f563db251670ccdc1339acee7de0825b0",
+            "sha256": "5a2faeb7c62d6ba9d23c59083dd0bb31c76022ee2bce55cff23ceef71f587bac"
+          },
+          {
+            "file": "lib/engines/anysearch/types.d.ts",
+            "bytes": 996,
+            "blob": "1c5ae3eeca35962e4db14d25427f88ef92f5a03a",
+            "sha256": "aa6fdd08e3bf6b6f1f6be8e468ec2a8a98079df85df6ba172f031c87fca77490"
+          },
+          {
+            "file": "lib/engines/anysearch/types.js",
+            "bytes": 11,
+            "blob": "cb0ff5c3b541f646105198ee23ac0fc3d805023e",
+            "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+          },
+          {
+            "file": "lib/engines/anysearch/wire.d.ts",
+            "bytes": 6263,
+            "blob": "9ae7b3cd78ce25cd2f4d2c83fed949cd81ad7d39",
+            "sha256": "c54ac92aee4f880b9cd7e63d5388e9d374af4dfd0667a2fe5e809b6f7b48c27b"
+          },
+          {
+            "file": "lib/engines/anysearch/wire.js",
+            "bytes": 12411,
+            "blob": "5d377d06dcebc7c165ce03eed961eef0e6b21ac1",
+            "sha256": "58d93a6ee66a3e7cbbfabff6da43e786312f3a6001f9b3699e26d97544db9f9d"
+          },
+          {
+            "file": "lib/engines/decision/client.d.ts",
+            "bytes": 1202,
+            "blob": "ff531f7800761662dfe1939675cabf189132774e",
+            "sha256": "af34ad7f8ed021a714c8e053b29ed1f357edb48096a5732b962c640acf60a07a"
+          },
+          {
+            "file": "lib/engines/decision/client.js",
+            "bytes": 4715,
+            "blob": "7b459988bfff65b27fbe2f0f2c0cdabaad8a7f31",
+            "sha256": "0e079bda7976991618eb800527d41381508834b2a7a8e0171aea4434b7a6cba9"
+          },
+          {
+            "file": "lib/engines/decision/limits.d.ts",
+            "bytes": 407,
+            "blob": "6906782a8c3287c571de1aec5a606f6cdf1c5181",
+            "sha256": "23c6840557687445a5f89edd4cc28f21a436ea15c9f06c928f41264d6051c902"
+          },
+          {
+            "file": "lib/engines/decision/limits.js",
+            "bytes": 368,
+            "blob": "8db440e84eeb19c81b51cde878cb1d8015afd8be",
+            "sha256": "3d0e375b204ef8e3bb5df46ce117a56570a6487cf6b2cd483af96b1c35b53a85"
+          },
+          {
+            "file": "lib/engines/decision/types.d.ts",
+            "bytes": 501,
+            "blob": "1db984b904aa7665e811e26758e9ae851f1908b1",
+            "sha256": "0b7803fbad115274fbae3f9af11ae719306bf2efd3e61e7b7fedc18fda615498"
+          },
+          {
+            "file": "lib/engines/decision/types.js",
+            "bytes": 11,
+            "blob": "cb0ff5c3b541f646105198ee23ac0fc3d805023e",
+            "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+          },
+          {
+            "file": "lib/engines/decision/wire.d.ts",
+            "bytes": 429,
+            "blob": "da84c732698c31a49aaff0b1147c4c1809fbb88f",
+            "sha256": "69a734651e37a289487318793c9272c924a29c7160d52182ff5d2b80a89e239f"
+          },
+          {
+            "file": "lib/engines/decision/wire.js",
+            "bytes": 1792,
+            "blob": "118bcb4db113c7a218f66422218ffba07c2c5850",
+            "sha256": "3848a2c05dedb96f8303c49dc6f325f9771b468f7f55adc5df42f5e3c3456e27"
+          },
+          {
+            "file": "lib/engines/firecrawl/client.d.ts",
+            "bytes": 2993,
+            "blob": "8244aae2835ba8086a2700cd55d02936718133ca",
+            "sha256": "0c5a51d7f714ed3543471374beba43c49981983636d71fc905845e44774756f6"
+          },
+          {
+            "file": "lib/engines/firecrawl/client.js",
+            "bytes": 6122,
+            "blob": "f77a47a81264d8efefeed889758674873020d50d",
+            "sha256": "c9d1d61a9ba62623af01dd36c9c4564de20eb9c6266dca3796098f762c16a980"
+          },
+          {
+            "file": "lib/engines/firecrawl/wire.d.ts",
+            "bytes": 6452,
+            "blob": "3f96fca4db807b51a442472cdbbeb14c4f7213a8",
+            "sha256": "8346bde07e6178804f41ad5e311cecd8318b54696064a93c6c03780389367a3c"
+          },
+          {
+            "file": "lib/engines/firecrawl/wire.js",
+            "bytes": 8099,
+            "blob": "52cfb194132edbdafc7dbe4a3cb8de4b4d476e02",
+            "sha256": "e6512010638d0b597d004ef304fb0b202edff6659e37e3052279dd98f0bd37ae"
+          },
+          {
+            "file": "lib/engines/rerank/client.d.ts",
+            "bytes": 2035,
+            "blob": "3b6ea66e480da3ff82ef7b8ca98eecf0e9c4092e",
+            "sha256": "a9e6e5c9e9246db2a05be91d6dce34c030fe794d43c29f9c5169356c958af38a"
+          },
+          {
+            "file": "lib/engines/rerank/client.js",
+            "bytes": 6602,
+            "blob": "895b5d93b835ba8f7c604689a371a3f92de01f9f",
+            "sha256": "bce2f9893175afa18eda6ae64a02623d7abdc96ee1dd7ca4e6088c9f634e8b37"
+          },
+          {
+            "file": "lib/engines/rerank/limits.d.ts",
+            "bytes": 861,
+            "blob": "324fb1fbb785799fca21aa326a616ff3b9ba2220",
+            "sha256": "34f5cc92506ee3a7ff0dea670f24789523b46c419ff68e3c641fc6ce4ee65857"
+          },
+          {
+            "file": "lib/engines/rerank/limits.js",
+            "bytes": 830,
+            "blob": "bc8820cdf912a57dfc2b696828fe0c6c1ffe14a1",
+            "sha256": "bf7b108e4abb3c7d8da2e1f6366de0a38124f93feba132ca155d1fbed0662296"
+          },
+          {
+            "file": "lib/engines/rerank/types.d.ts",
+            "bytes": 1646,
+            "blob": "261e3124de17bc33b9ca081a2ddcd2e2fef7c0b1",
+            "sha256": "7da710fa9787625cd2a343b99ca74534ecff0b4519b38e9a4bf6f1e930aa67c4"
+          },
+          {
+            "file": "lib/engines/rerank/types.js",
+            "bytes": 266,
+            "blob": "264d2cefff350b70aac226844f15a09daa38db38",
+            "sha256": "0f61574a1f820760fb8f5d0a94ebd85317d576a4a1d37e109f404cb11612ae61"
+          },
+          {
+            "file": "lib/engines/rerank/wire.d.ts",
+            "bytes": 1897,
+            "blob": "4a7a12e1aaad468265c710a35c6777b9d8afaa98",
+            "sha256": "02530c8301cc5ba2162b6265668550bfc4184e54e68af0193823fa5e3656e1d5"
+          },
+          {
+            "file": "lib/engines/rerank/wire.js",
+            "bytes": 2981,
+            "blob": "01fa0ede732e102d371a2d3aecbf3f1dc047e5a4",
+            "sha256": "18bca039a19be60e0c9757d60fbd62d3373b4a685e9df42a183d283e638b533b"
+          },
+          {
+            "file": "lib/engines/zhihu/adapter.d.ts",
+            "bytes": 983,
+            "blob": "6168f5c1924a601164b41a5b2ab74ca4f38fbb5f",
+            "sha256": "b4c1da6208561bc1c04c4fc20ab5e8572c5bb660de0f38b86b465675f11fa10e"
+          },
+          {
+            "file": "lib/engines/zhihu/adapter.js",
+            "bytes": 1998,
+            "blob": "d8aab009c25253b0d43390f29c9da259f6b733c7",
+            "sha256": "b59b8493c73ea2d33bdb47f44afc2f24d64dc299e1ef761223f66037b6cb3c11"
+          },
+          {
+            "file": "lib/engines/zhihu/client.d.ts",
+            "bytes": 4619,
+            "blob": "90f7f7181e879678f091c524072b67b62dcc962d",
+            "sha256": "8ccdbd1d2aed5545906ee88b80eaaa4573f8f5af3b2909516245bf824313bde9"
+          },
+          {
+            "file": "lib/engines/zhihu/client.js",
+            "bytes": 9991,
+            "blob": "6b3a52327bb090ca7487781944831b789f05a890",
+            "sha256": "74a20b7ea75ad8ccc9b06366911dddf00401ceb6ded0d9f1fb49b2934f805551"
+          },
+          {
+            "file": "lib/engines/zhihu/index.d.ts",
+            "bytes": 1509,
+            "blob": "b224de7fa04d4df2aa59ba4bbb1c3036dc4c3e79",
+            "sha256": "d21df446bb239cb6fd5a27563e1d5d501f915b52f5f9401ba89b6821f5d025dc"
+          },
+          {
+            "file": "lib/engines/zhihu/index.js",
+            "bytes": 1191,
+            "blob": "0ff4d948fa55b4928945d9327e732ca1365531bc",
+            "sha256": "0f4761eb219d57792de0d92805ba5f70c4e6f608ef705478c982ac7610917fd4"
+          },
+          {
+            "file": "lib/engines/zhihu/limits.d.ts",
+            "bytes": 1776,
+            "blob": "163c35d41a69307220a4a9f1b8a65b05a8421d6f",
+            "sha256": "68b11ae4fe8a8bea80b7e62c430aa997167024d3d6c006ee903122b166931321"
+          },
+          {
+            "file": "lib/engines/zhihu/limits.js",
+            "bytes": 1713,
+            "blob": "ba5864de6819e4cd469e1750e8a6735814f98020",
+            "sha256": "a50bca397068d6ef27db0523312302b561b3f266bd250ba193c740173c1b98ba"
+          },
+          {
+            "file": "lib/engines/zhihu/options.d.ts",
+            "bytes": 1287,
+            "blob": "ee3d1cba72d9a603da1f48e0c4dfad7dc415505d",
+            "sha256": "3f614765f940f7d3b9bd0575245182ab249855c644fd78153623fc65672b98ec"
+          },
+          {
+            "file": "lib/engines/zhihu/options.js",
+            "bytes": 1899,
+            "blob": "ee965845ddd344a639fd6c6f40d09d46466531a3",
+            "sha256": "c4ada0a1b434253b0debb41ee0ef4ad26767b872b3693500a3b83e885e841374"
+          },
+          {
+            "file": "lib/engines/zhihu/types.d.ts",
+            "bytes": 2235,
+            "blob": "3acc7d504709afbb9706943405aa3f39e2fe826a",
+            "sha256": "e7ef727d29c34c5fea93a2d36e48a70b1d1da51122628136edb6d4a9051b5c48"
+          },
+          {
+            "file": "lib/engines/zhihu/types.js",
+            "bytes": 254,
+            "blob": "139ded4340dfd9b5d93e43b6a8d01e12318cd02b",
+            "sha256": "58298e4c218fe19a2f9274d404a43b9a4bc7f51ed3643ae1b03bb1f74062d2fe"
+          },
+          {
+            "file": "lib/engines/zhihu/wire.d.ts",
+            "bytes": 4868,
+            "blob": "59e8e441fbdf6034cf3515aa6e543d08d2f65d28",
+            "sha256": "aca0e10d11c5fae5f42764af007db45f1f89bf93f377aa1780b4a3c0f84119be"
+          },
+          {
+            "file": "lib/engines/zhihu/wire.js",
+            "bytes": 8140,
+            "blob": "57bfcbc15c1a131f0f76a8ed973e0e7fd9d2c220",
+            "sha256": "3530e98d399848e0565901c7a82f191809ba87ac4f59d9c1121e2f827faa7a2d"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-stream.d.ts",
+            "bytes": 2445,
+            "blob": "65662b391edabd71d2d73f8b1f0c07f8ae2e777c",
+            "sha256": "1035fcde5d74bc0b080c67da5f07600c1e632fad26b1bd616c9aa14392909986"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-stream.js",
+            "bytes": 10769,
+            "blob": "90812c57b7347374661fd6969f5d484e0ba8135b",
+            "sha256": "0e19582d9bb5b66e32a3673c3390ae06698d9c6aafeaf896eba8dcfd4cc6767e"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-wire.d.ts",
+            "bytes": 6605,
+            "blob": "0c7e87ba7a5cff1d7f655a4f2c1286ee5821d1e7",
+            "sha256": "04043451efabb5d424b11eb37a09d11d3afccd2b91648d4ef56a9de3df405c49"
+          },
+          {
+            "file": "lib/engines/zhipu/anthropic-wire.js",
+            "bytes": 13537,
+            "blob": "61301f22293cd5cc3f7ef22fa2670ce0a5dafbc2",
+            "sha256": "d1df3c5a3f70708bef7a95271c146595efc8214df7b40e23b79bd23be44a0b03"
+          },
+          {
+            "file": "lib/engines/zhipu/client.d.ts",
+            "bytes": 9450,
+            "blob": "82a13f681819fcdd7bd252d4036527f6a64a62fd",
+            "sha256": "73dd086039f78b4efdd3b786992379a91a0c996d32ade0585e35d365ed3bbb27"
+          },
+          {
+            "file": "lib/engines/zhipu/client.js",
+            "bytes": 16567,
+            "blob": "520c771f950031a9ecf6130b176c16dce08f5f0d",
+            "sha256": "3ffafc75024dc0122bd101c3b77cb8ae6f7767d5b8de74387d848bb90afc8703"
+          },
+          {
+            "file": "lib/engines/zhipu/transport.d.ts",
+            "bytes": 4021,
+            "blob": "5d47d2af794f114184d90763cfd70b0d343658fd",
+            "sha256": "eb253b40a776e0a204c763bda6bea366ffec6caaa4c2d33bdc6e67a317a7e2b6"
+          },
+          {
+            "file": "lib/engines/zhipu/transport.js",
+            "bytes": 5893,
+            "blob": "8e9771dbe7245be83a4f8410a8ff2f84935816d4",
+            "sha256": "3b26bfb68dbed832d2aa477f626304c3e77cea672ec3ed0c44006186529a2009"
+          },
+          {
+            "file": "lib/engines/zhipu/wire.d.ts",
+            "bytes": 2700,
+            "blob": "0e1725815357e686fd9772953a09e1e55876aef3",
+            "sha256": "09e1e635cf7b3407211b14fdf122e0952d4b8b3ca35bd83a194c17b32fcb30cd"
+          },
+          {
+            "file": "lib/engines/zhipu/wire.js",
+            "bytes": 3789,
+            "blob": "21fb9c7af564f1b47ed23fab559b873387077640",
+            "sha256": "926d340d6fe4ce6a294c2feeee88c7657cbea759cb6552eb95b4612f6694bd37"
+          },
+          {
+            "file": "lib/fetch-aggregate.d.ts",
+            "bytes": 7308,
+            "blob": "c2def4be24a6986b296374dc4d78aadfca33fe57",
+            "sha256": "7dff9336eedde1a272cf5129a110f012c3273c538ce2f7208ee2d710b6e96eb6"
+          },
+          {
+            "file": "lib/fetch-aggregate.js",
+            "bytes": 18936,
+            "blob": "f2ba50a70dc63744419520365c0bb588584a4b27",
+            "sha256": "f9b7b38e1efce34fb5dab77a091d9ec72521c08c6ebeabe154d6810698eec0ed"
+          },
+          {
+            "file": "lib/fetch-document/blocks.d.ts",
+            "bytes": 574,
+            "blob": "a63e0a924889537d617f33548f1338d10a62244a",
+            "sha256": "308dfb9269a733cc23eea11d91c7e32bd459be93b74deb25f92ac1b57c74d459"
+          },
+          {
+            "file": "lib/fetch-document/blocks.js",
+            "bytes": 2819,
+            "blob": "216f8901f9436c90136a91164f1fd9ae9d2bfcbd",
+            "sha256": "c6cf3dd5354716a9644face80d462008022702db430bc6c9d0a92d948c46d89c"
+          },
+          {
+            "file": "lib/fetch-document/organize.d.ts",
+            "bytes": 369,
+            "blob": "fe3e6d46549bb867a2d16d181c05b998b90f19c9",
+            "sha256": "71066608c77fc6f8690b00f9aa808923ab72edbb75199e9afa33b86b8e9de9b0"
+          },
+          {
+            "file": "lib/fetch-document/organize.js",
+            "bytes": 15240,
+            "blob": "283ffdc84d07e8ec540c8fc720cb5ec1491bb25a",
+            "sha256": "a8bb388b6df888522c6ca51869b9b3f0e080725d9c29901d6200403ddab3bb45"
+          },
+          {
+            "file": "lib/fetch-pipeline.d.ts",
+            "bytes": 3474,
+            "blob": "69483bcb34193e0370fad92ad375cac82b9172f0",
+            "sha256": "0ec1079ed5f233979801ebf3db18db96dc9f4e5cd636165b0ad241cb883b72a9"
+          },
+          {
+            "file": "lib/fetch-pipeline.js",
+            "bytes": 5608,
+            "blob": "c7152c0dd744b06f490879768e1eaae853634c53",
+            "sha256": "0de68e5992b2e9e7319355a90988b9bb1126d63acce05103855f73dbe21efe69"
+          },
+          {
+            "file": "lib/index.d.ts",
+            "bytes": 24223,
+            "blob": "28f22ee074c52fb33bb0ee5539dfb46c9f297149",
+            "sha256": "c7a72f749a2d8e866664ffff5456d9870c4d1e53c825405a43de8b18c396d909"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 26168,
+            "blob": "485b8e89a213e72ed55147071c17c9a9f42f2ef5",
+            "sha256": "cbf140bc84c59eb3161546543ccbc0dc8b66e512988eb75426a794c9091222c5"
+          },
+          {
+            "file": "lib/keyless.d.ts",
+            "bytes": 220,
+            "blob": "8af841a245e6a93ba0013e6730583f20bf54ad99",
+            "sha256": "104ad4b813a2e0b904e3621796a893f15d8b9800a58c18f91604e1a9e02d677a"
+          },
+          {
+            "file": "lib/keyless.js",
+            "bytes": 608,
+            "blob": "2ddfa825bc8d19d4d9841f24edad3b04ba6a4d8b",
+            "sha256": "859b652a7a6a01642f1f1131b10af622bcd79912fe741adeafb2da720894df8b"
+          },
+          {
+            "file": "lib/limits.d.ts",
+            "bytes": 3245,
+            "blob": "27367ecf8c840e0bf8998c2fb2a04fde66952fed",
+            "sha256": "bdaf4b98d68f0756d2fd66a022b87ef70ae71acda2b5c05fc03c41c64a63b4ff"
+          },
+          {
+            "file": "lib/limits.js",
+            "bytes": 3088,
+            "blob": "890aa6d37a166089567135f5ed27eec14c76010d",
+            "sha256": "1f2a887300870b04fca00387b794e07b4a1138011228e7775d10ab6460bc43cb"
+          },
+          {
+            "file": "lib/request-budget.d.ts",
+            "bytes": 3005,
+            "blob": "dced9500d63ccc2b5767e0c8d205e30cd35fc9a0",
+            "sha256": "a4802604790c3c06eaa739c3c86c336e34ca47cef5b4b1e75b722e086e584118"
+          },
+          {
+            "file": "lib/request-budget.js",
+            "bytes": 9036,
+            "blob": "c7b1328a0250b94d5aee1e7627214410d3516512",
+            "sha256": "af92fa14dac048ce0ff6d37a02ac1feb522280fdcc96e5d03b226f7f3cb8b1ca"
+          },
+          {
+            "file": "lib/search-aggregate.d.ts",
+            "bytes": 8916,
+            "blob": "ae448fb39d74cea5df424fa3c7fc1abf141f7f2a",
+            "sha256": "f7ad820cb5dd1eb7904c195f8e6e59434125624b8ee864cdce510b4f072d2e7c"
+          },
+          {
+            "file": "lib/search-aggregate.js",
+            "bytes": 24709,
+            "blob": "2fdbffc61ecc67e70c8d29a1de98cdaf56e22c76",
+            "sha256": "866b71d23ca4ca068abb53cd10eafbe561400b881c8c28c180429ee6e1b4b5b9"
+          },
+          {
+            "file": "lib/search-pipeline.d.ts",
+            "bytes": 6146,
+            "blob": "f3893994e1d4f9338ff57a8bef234f05ba3d3d48",
+            "sha256": "f42e709cd960e46d47a1234117bddd3db18c5280d46dee6220e17cee5d2099b5"
+          },
+          {
+            "file": "lib/search-pipeline.js",
+            "bytes": 11699,
+            "blob": "29a334c4d41247f1f695f3190fcd9970829ac4bb",
+            "sha256": "276853518d0a695728748dace8cd9a5556deb587f352e46cbe3e2f1d1d307d0d"
+          },
+          {
+            "file": "lib/settings-surface.d.ts",
+            "bytes": 8169,
+            "blob": "c0de6c9c71bda931044dcd16eef57b0d204fcb45",
+            "sha256": "2b2dc888cf11fc99d3dbd71b555042c7a424763d754f62abd05302c6701dceac"
+          },
+          {
+            "file": "lib/settings-surface.js",
+            "bytes": 8124,
+            "blob": "bd465ca486edbb19c25b039e57bc7c78c67a177c",
+            "sha256": "a4b45a7fe69e7ad9293ddac7ea9e3cfbdff3035ecdc8c93466a358de8a3596f4"
+          },
+          {
+            "file": "lib/types.d.ts",
+            "bytes": 4511,
+            "blob": "b3fecf76008825d414f7b3d109d527af773a38a4",
+            "sha256": "b50b6c56b3ed989f734473dadfa0cea255623cf10466db0bf238035bce2a5355"
+          },
+          {
+            "file": "lib/types.js",
+            "bytes": 354,
+            "blob": "83ac796712c0bafa61450098d04e99b13c2c07ce",
+            "sha256": "13bb99a00045f7cc802c7dcccbc63a4dcda7d5d9a869ad6306ac43d2d04eb639"
+          },
+          {
+            "file": "package.json",
+            "bytes": 3958,
+            "blob": "f43d70e03fa1a820cddb4ac5fd7dbc836f1bf265",
+            "sha256": "47062505acb0ff1cf307a330db2595a212fbe584528d19b2a30454ac08966db4"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-credentials",
+            "file": "client/index.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 350,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "docs/dependency-inventory.json",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 114,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/additional/adapters.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 255,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/additional/aihot.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 16,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/additional/http.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 61,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/anysearch/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 35,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/anysearch/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 110,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/decision/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 9,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/decision/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 26,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/firecrawl/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 40,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/firecrawl/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 47,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/rerank/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 30,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/rerank/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 48,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/zhihu/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 43,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/engines/zhipu/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 61,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/zhipu/client.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 138,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/engines/zhipu/transport.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 38,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/fetch-pipeline.d.ts",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 63,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/fetch-pipeline.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 73,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/index.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 207,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/keyless.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 11,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 106,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 275,
+          "packageEntries": 119,
+          "files": 119
+        },
+        "runtimeFiles": 106,
+        "runtimeBytes": 678915,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T05:42:32Z",
+        "dependencies": [
+          "@deepseek-ai/schemastery",
+          "@joplin/turndown-plugin-gfm",
+          "fast-xml-parser",
+          "turndown",
+          "undici"
+        ]
+      },
+      "binding": "3a9d339fbd742b3f8ee550d250376e94dbcc40b1f22ac8d85a91211899faae1e",
+      "runtimeAcceptance": "not-performed"
+    },
+    {
+      "issue": 1411,
+      "repositoryUrl": "https://github.com/RevolutionLA/dsh-dream-skin",
+      "commit": "f8cc0704b5062365214c72f58aa5ad6f7746aeaf",
+      "version": "10.16.0",
+      "ownerId": 40736295,
+      "precheck": "blocked",
+      "precheckNote": {
+        "code": null,
+        "message": "head moved"
+      },
+      "analysis": {
+        "reasons": [
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": false,
+          "credentials": false,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "pass",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 11,
+          "eligibleFiles": 11,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 0,
+            "info": 0
+          },
+          "findings": [],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "00cb01ed51a9270286c03014fbc4def20003330fec490ed089d157fea6568949",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 356,
+            "blob": "65b6c6a47c0cf43f44b7965d4be04c9185608717",
+            "sha256": "cd64473da5428bba261dfa9709d4134711d3cb62bf319bb11bbf195fc9aaf089"
+          },
+          {
+            "file": "docs/examples/sample-theme-pack.json",
+            "bytes": 590,
+            "blob": "c2ddf48974ff604aafc92d862aaba18001a94606",
+            "sha256": "cbdf69f5d2e5e622266ab2c96bef50047debd57192f204088b91ff3fa97475b6"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 443779,
+            "blob": "2f329f3d89732b105b0733134f9edef3ec28d1c8",
+            "sha256": "2ddef5b3f660d5d4bc9a816fdcd97030d6284d6674d68ea623aca9beaa109e2d"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 15186,
+            "blob": "2691700e06396095bb0969223a39d6983d5369e1",
+            "sha256": "5642faa4f38c101e3412ce852e0e0e526ce90c095bd3c4b2dfd2e364385aa68a"
+          },
+          {
+            "file": "lib/types/client/index.d.ts",
+            "bytes": 2201,
+            "blob": "90b7b444c82cec18f985ee7c1bb818c79fa76ee1",
+            "sha256": "ebf3495997fe4c466dea7c081c6ac9276c626fd847e1dc10ec34c76a47a03e2e"
+          },
+          {
+            "file": "lib/types/index.d.ts",
+            "bytes": 2055,
+            "blob": "364c4d732b36b0d607d079e617c0d7abceb5bf70",
+            "sha256": "84e6fe63ab6750ff7a107ffbc928e87332267145833f1981885e58af413e750b"
+          },
+          {
+            "file": "locale/en.json",
+            "bytes": 218,
+            "blob": "937820e59024b9a188fb657cb74ec4f11f3e5026",
+            "sha256": "2f5f5bc36e003050b76d2b7237ad69cea0a0d2c8e21a1716cb43b5c9bec77fc1"
+          },
+          {
+            "file": "locale/zh.json",
+            "bytes": 197,
+            "blob": "26bbbd561cafd1392a9fe5860c1fa3672859e5a9",
+            "sha256": "291d37ffd33675e12071fa6c77cdd5957b659b79ef0a29fe1bd9d45c49aa0bc9"
+          },
+          {
+            "file": "package.json",
+            "bytes": 4001,
+            "blob": "ea761d3f4cef609dbda5f162719ba3976aa6640e",
+            "sha256": "f50424c8629ca9755f325261fd950dc2847cf98db302cd8c95d5b77fdea2da82"
+          },
+          {
+            "file": "scripts/chart/package.json",
+            "bytes": 651,
+            "blob": "58342525e12a58266d260bb34b9bb751d0ef3ff9",
+            "sha256": "814e342380a8c79f549d136c3576c512941d8865738b854903121ceed895303c"
+          },
+          {
+            "file": "tests/readme.roadmap.test.cjs",
+            "bytes": 6420,
+            "blob": "442817af5bb9b7463e6f76c320f5c33f641812eb",
+            "sha256": "6491d9454bf3e55efe6442f2dc9098ed56756ece9742f2092078a617c0f15e18"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 1713,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 41,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "tests/readme.roadmap.test.cjs",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 21,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "tests/readme.roadmap.test.cjs",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 87,
+            "location": "line"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 11,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 172,
+          "packageEntries": 35,
+          "files": 30
+        },
+        "runtimeFiles": 11,
+        "runtimeBytes": 475654,
+        "contractVerified": false,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T05:50:23Z",
+        "dependencies": []
+      },
+      "binding": "b29718780c25da38128ac7cd1451a3ea058ba6d9381d32660e319b5d59919e42",
+      "runtimeAcceptance": "not-performed"
+    },
+    {
+      "issue": 910,
+      "repositoryUrl": "https://github.com/realguan/dsh-mermaid-preview",
+      "commit": "f62d9e61c24ce04edb78fd122a90068d3864c16c",
+      "version": "0.3.1",
+      "ownerId": 27861635,
+      "precheck": "passed",
+      "precheckNote": null,
+      "analysis": {
+        "reasons": [
+          "runtime source contains the network permission signal",
+          "dynamic module loading or code evaluation requires separate review"
+        ],
+        "signals": {
+          "files": false,
+          "network": true,
+          "commands": false,
+          "credentials": false,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "pass",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 10,
+          "eligibleFiles": 10,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 0,
+            "info": 0
+          },
+          "findings": [],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "613f39434a333409eae7535fed082fd00be7845b1db1a90fca08c87dda16d168",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 603,
+            "blob": "e0063a2dea30b7d58282dd44be67db98b3fd2e10",
+            "sha256": "bfe102615f21f247e46e5a49bfdb74d283144e422bf2ef7bee39674baaaba0af"
+          },
+          {
+            "file": "demo/demo.js",
+            "bytes": 7000,
+            "blob": "0778d19889b83ec55754bf2ea0a49f6af33c12ed",
+            "sha256": "1f2db7bf22970b63e9f9dcadb3c2e94c0557cd587df2271afc729ac8b9712843"
+          },
+          {
+            "file": "demo/index.html",
+            "bytes": 2440,
+            "blob": "b9a12c626969fd583b469be622f78760bfd837b8",
+            "sha256": "67735d8953ff1e6383d3df494b224de27569c206a93e2f5bdcd18d142448fe26"
+          },
+          {
+            "file": "dist/client.js",
+            "bytes": 18270,
+            "blob": "33776329c590b90077c628422b11ab6de11f451e",
+            "sha256": "ef6e803bac2241efd75e693131349b711f2702a40c17822ce428200640b32e22"
+          },
+          {
+            "file": "dist/dsh-mermaid-preview.client.js",
+            "bytes": 18024,
+            "blob": "712bf74756f7bc22132239cdbd24ab9ad5f0f095",
+            "sha256": "042576a1b456cdea50a2a6ba886b135dad7443b4cb41cf96caa16c529feb3b2d"
+          },
+          {
+            "file": "index.js",
+            "bytes": 425,
+            "blob": "95d0027d34c27f38bfaa81fccb11fa23efcaf460",
+            "sha256": "47a15915f3946ccf5bbfe74f51208eb899db873a05ad50afa314803058bb74f2"
+          },
+          {
+            "file": "locale/en.json",
+            "bytes": 146,
+            "blob": "90e877de189a471c3c43e2b580e296b037cc634b",
+            "sha256": "0bd050adfbea47f56f7a4ac6de1e8f7600843523445e1ff46e9f01cd705ff758"
+          },
+          {
+            "file": "locale/zh.json",
+            "bytes": 168,
+            "blob": "412e19af94776b164e97e86e08d46ded96bab294",
+            "sha256": "54a9c645732b352a3cbd27641c735ef490bdb53eaa3b1219d123aecae9e9484b"
+          },
+          {
+            "file": "package.json",
+            "bytes": 1802,
+            "blob": "797f2d24e90d4348d834466b9642931948eb060f",
+            "sha256": "004d57fe9631685bdba84bdd0a6f33490105323e4eb2896522d29f9b946315ea"
+          },
+          {
+            "file": "src/client.js",
+            "bytes": 18347,
+            "blob": "924c17a2187b03dc4765751e74622ea032ef2971",
+            "sha256": "3ad96243414d784b94a26d6e204b258ea0b1cc212adcdbbdb64e965bd42c1466"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "demo/demo.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": null,
+            "location": "file"
+          },
+          {
+            "rule": "capability-network",
+            "file": "dist/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": null,
+            "location": "file"
+          },
+          {
+            "rule": "capability-network",
+            "file": "dist/dsh-mermaid-preview.client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": null,
+            "location": "file"
+          },
+          {
+            "rule": "capability-network",
+            "file": "src/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": null,
+            "location": "file"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": true
+        },
+        "scanComplete": true,
+        "filesScanned": 10,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 39,
+          "packageEntries": 26,
+          "files": 20
+        },
+        "runtimeFiles": 10,
+        "runtimeBytes": 67225,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T05:45:08Z",
+        "dependencies": []
+      },
+      "binding": "c4fb52d515d3d6c9a11eb52b7b30e3a9c5186454858b7a94c2733f8bf4c9ea5b",
+      "runtimeAcceptance": "not-performed"
+    }
+  ],
+  "scannerFix": {
+    "responsibility": "store-scanner",
+    "issue": 910,
+    "finding": "External browser script loading without fetch/import/require escaped the previous permission and dynamic-code rules.",
+    "evidenceUrl": "https://github.com/realguan/dsh-mermaid-preview/blob/f62d9e61c24ce04edb78fd122a90068d3864c16c/dist/client.js#L206-L223",
+    "before": {
+      "packagedCoverage": "complete",
+      "reasons": []
+    },
+    "after": {
+      "packagedCoverage": "complete",
+      "networkSignal": true,
+      "dynamicModuleLoading": true,
+      "admission": "review-required-not-installable"
+    },
+    "sourceHashes": {
+      "src/automation-source-policy.mjs": "c52fe934206ad5ccbf91a903d8da01c4707d717bd144531d114097d812ed4f30",
+      "src/fixed-source-review.mjs": "7b549392925c4f62cd2a6163c46d1cc1e41fbaff658ae58aa2cb0fa01ecfa871",
+      "registry/automation-policy.json": "ef0bd0310a61725c8e9117719377eb16ea96b4847c880e65f88918dc6c9bb390"
+    }
+  },
+  "contactReview": {
+    "centralHistoryComplete": true,
+    "historyPeople": 843,
+    "ledgerBlobSha": "a6a26bcd4a1811ce84ee0fb3731d7442095fb894",
+    "replyPlans": 2,
+    "repliesSent": 0,
+    "closuresPerformed": 0,
+    "noMessage": [
+      {
+        "issue": 1411,
+        "reason": "Progress and acknowledgement; no new explicit request to continue."
+      },
+      {
+        "issue": 910,
+        "reason": "Author explicitly says no reply is needed; read-only source review only."
+      },
+      {
+        "issue": 1427,
+        "reason": "PR already closed; no duplicate closure or closure notice."
+      }
+    ],
+    "withdrawnRepository": "DDDFXYqiming/Agent_Extensions remains excluded; no rediscovery or unsolicited follow-up."
+  }
+}
