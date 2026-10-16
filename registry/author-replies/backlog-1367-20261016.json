@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1367,
+  "userId": 199237158,
+  "requestCommentId": 6097491705,
+  "requestBodySha256": "ef319bd5e5926dff4ea79cb0c233f75d5f05352ac7873a29a63b18314fcc920d",
+  "requestUpdatedAt": "2026-10-10T12:28:02Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请求重新预检",
+    "scope": "Answer only the verified specific request on #1367; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已重新冻结并预检 **@akasha-book/sleep@1.6.5 / `6630950a654116928c2cb23294f8e8309b5cc295`**，基础预检通过，有界运行/契约文本读取完整。 本固定源中已核对移除原宿主动态 import；不再沿用旧的动态加载拒绝理由。文件与环境读取边界仍需受审。 manifest 的 DSH peer 范围是 `^0.2.0-rc.2`，不等于提供当前最新宿主各版本的精确运行证据。当前不自动批准安装；此前作者自测与一次性 Profile 记录仍是作者证据。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

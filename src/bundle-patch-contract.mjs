@@ -2,10 +2,34 @@
 // multiline scalars. Unsupported syntax is a review blocker, never guessed.
 const ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/
 function fail(message) { throw Object.assign(new Error(message), { code: 'BUNDLE_PATCH_AMBIGUOUS' }) }
+function quotedSequence(text) {
+  const result = []
+  let cursor = 1
+  const end = text.length - 1
+  while (cursor < end) {
+    while (/\s/.test(text[cursor] ?? '') && cursor < end) cursor++
+    const start = cursor, quote = text[cursor]
+    if (!['"', "'"].includes(quote) || result.length >= 64) fail('Unsupported Patch inline sequence requires review')
+    cursor++
+    let closed = false
+    while (cursor < end) {
+      if (quote === '"' && text[cursor] === '\\') { cursor += 2; continue }
+      if (quote === "'" && text[cursor] === "'" && text[cursor + 1] === "'") { cursor += 2; continue }
+      if (text[cursor++] === quote) { closed = true; break }
+    }
+    if (!closed) fail('Unterminated Patch inline string')
+    result.push(scalar(text.slice(start, cursor)))
+    while (/\s/.test(text[cursor] ?? '') && cursor < end) cursor++
+    if (cursor === end) break
+    if (text[cursor++] !== ',' || !text.slice(cursor, end).trim()) fail('Malformed Patch inline sequence')
+  }
+  return result
+}
 function scalar(raw) {
   const text = raw.trim()
   if (text === '{}') return Object.create(null)
   if (text === '[]') return []
+  if (text.startsWith('[') && text.endsWith(']')) return quotedSequence(text)
   if (text.startsWith('"')) {
     try { const v = JSON.parse(text); if (typeof v === 'string') return v } catch {}
     fail('Invalid quoted Patch scalar')
@@ -95,14 +119,26 @@ export function bundlePatchContract(source) {
     }
     const id = fields.id?.value
     if (typeof id !== 'string' || !ID.test(id)) fail('Patch entry ID must be explicit and unambiguous')
-    if (keys.some(key => !['id', 'name', 'config'].includes(key))) fail('Patch removal, disable or unknown operation requires review')
+    if (keys.some(key => !['id', 'name', 'config', 'inject'].includes(key))) fail('Patch removal, disable or unknown operation requires review')
     if (fields.config && !object(fields.config)) fail('Patch config must be a mapping')
+    // Official include 1.0.10-alpha.2 permits inject metadata. Support only
+    // the independently verified commands-service form on additive entries;
+    // arbitrary injection shapes and unknown services still require review.
+    let inject
+    if (fields.inject) {
+      if (!inserted || !fields.name || !Array.isArray(fields.inject.value)
+        || fields.inject.value.length !== 1 || (typeof fields.inject.value[0] === 'string'
+          ? fields.inject.value[0] : fields.inject.value[0]?.value) !== 'commands') {
+        fail('Patch service injection requires an explicit supported additive contract')
+      }
+      inject = ['commands']
+    }
     if (fields.name) {
       if (!inserted) fail('Name-qualified override is not an inserted entry; separate implementation review is required')
       const name = fields.name.value
       if (typeof name !== 'string' || !/^(?:@[a-z0-9._-]+\/)?[a-z0-9._-]+$/.test(name)) fail('Patch package identity requires review')
       if (ids.has(id) || overrideIds.has(id)) fail('Conflicting Patch entry ID')
-      ids.add(id); insertedEntries.push({ id, name, line: row.line })
+      ids.add(id); insertedEntries.push({ id, name, line: row.line, ...(inject ? { inject } : {}) })
     } else {
       if (inserted || !fields.config || ids.has(id) || overrideIds.has(id)) fail('Unsupported or conflicting Patch config override')
       overrideIds.add(id); configOverrides.push({ id, line: row.line, replacesEntireConfig: true })

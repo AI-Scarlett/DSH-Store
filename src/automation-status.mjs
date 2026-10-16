@@ -2,6 +2,15 @@ const RUN_STATUS = new Set(['queued', 'in_progress', 'completed', 'waiting', 're
 const RUN_CONCLUSION = new Set(['success', 'failure', 'cancelled', 'timed_out', 'action_required', 'neutral', 'skipped', 'stale', 'startup_failure'])
 const RUN_EVENT = new Set(['schedule', 'workflow_dispatch', 'push', 'workflow_run', 'repository_dispatch', 'workflow_call', 'pull_request', 'release'])
 
+export function automationReportRunId(relativePath, separator) {
+  if (typeof relativePath !== 'string' || !['/', '\\'].includes(separator)) return null
+  // Native separators preserve literal backslashes in POSIX directory names.
+  const firstSegment = relativePath.split(separator)[0]
+  if (!/^\d+$/.test(firstSegment)) return null
+  const runId = Number(firstSegment)
+  return Number.isSafeInteger(runId) && runId > 0 ? runId : null
+}
+
 function text(value, maximum = 240) {
   return typeof value === 'string' && value.trim() ? value.trim().slice(0, maximum) : null
 }

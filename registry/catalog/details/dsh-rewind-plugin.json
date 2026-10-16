@@ -22,7 +22,7 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
+  "updatePolicy": "external-only",
   "commit": "f3ba5e56a642d2894302e9f9cbc7386fa4d2cc77",
   "version": "0.9.0-alpha.1",
   "categories": [
@@ -81,7 +81,7 @@
     "dsh-rewind-plugin"
   ],
   "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "AUTHOR_WITHDRAWAL: Store listing/rechecks are outside the author's distribution scope in #590; excluded from discovery and admission rechecks. This is not a security or quality finding.",
   "compatibility": {
     "dsh": "^0.1.2-rc.1",
     "dshReleases": {

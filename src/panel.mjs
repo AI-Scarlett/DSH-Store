@@ -2,6 +2,8 @@ import { buildMarketplaceSnapshot, paginateMarketplaceSnapshot, selectMarketplac
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, validateProfileName } from './inventory.mjs'
 import { readMarketplaceProvenance } from './provenance.mjs'
+import { readFile } from 'node:fs/promises'
+import { communityRecommendationEntries, communityRecommendationPage } from '../marketplace/lib/community-recommendations.js'
 
 export const ROUTE_PATH = '/api2/dsh-safe-plugin-manager/inventory'
 export const MARKET_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/market'
@@ -155,11 +157,67 @@ export function handleMarketRequest(req, res, options = {}) {
     const catalogIndex = typeof options.catalogService.loadIndex === 'function'
       ? await options.catalogService.loadIndex({ force: body.refresh === true })
       : await options.catalogService.load({ force: body.refresh === true })
-    const candidateRegistry = view === 'candidates'
+    const candidateRegistry = view === 'candidates' || (view === 'market' && body.featuredOnly === true)
       ? await (options.candidateService?.load({ force: body.refresh === true }) ?? Promise.resolve(null))
       : null
     const managedPackages = await readMarketplaceProvenance(options.dshHome, profile)
     const dshVersion = options.dshVersionService?.peek?.() ?? null
+    if (view === 'market' && body.featuredOnly === true) {
+      const [recommendations, policy] = await Promise.all([
+        options.communityRecommendations ?? readFile(new URL('../registry/community-recommendations.json', import.meta.url), 'utf8').then(JSON.parse),
+        options.automationPolicy ?? readFile(new URL('../registry/automation-policy.json', import.meta.url), 'utf8').then(JSON.parse),
+      ])
+      let source = catalogIndex
+      if (body.compatibleWith) {
+        if (typeof body.compatibleWith !== 'string' || !/^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?$/.test(body.compatibleWith)) throw new HttpError(400, 'invalid compatibility filter')
+        source = await options.catalogService.load()
+      }
+      const select = current => {
+        let records = communityRecommendationEntries(recommendations, current.entries, policy.search?.excludedRepositories)
+        if (body.compatibleWith) {
+          const compatible = new Set(current.entries.filter(entry => entry.compatibility?.dshReleases?.[body.compatibleWith] === 'compatible').map(entry => entry.id))
+          records = records.filter(record => compatible.has(record.catalogId))
+        }
+        return communityRecommendationPage(records, body)
+      }
+      let selection = select(source)
+      let details
+      if (source.schemaVersion === 2) {
+        try {
+          details = await options.catalogService.loadDetails(selection.entries.filter(entry => entry.catalogId).map(entry => entry.catalogId), { index: source })
+        } catch (error) {
+          const fallback = await options.catalogService.load()
+          if (fallback.source?.kind !== 'bundled') throw error
+          source = fallback
+          selection = select(source)
+        }
+      }
+      details ??= source.entries.filter(entry => selection.entries.some(record => record.catalogId === entry.id))
+      const snapshot = buildMarketplaceSnapshot({ ...source, schemaVersion: 1, entries: details }, inventory, '', {
+        managedPackages, dshVersion, catalogPackageNames: source.entries.map(entry => entry.packageName),
+      })
+      const byId = new Map(snapshot.entries.map(entry => [entry.id, entry]))
+      const rows = selection.entries.map(record => {
+        if (record.catalogId) {
+          if (!byId.has(record.catalogId)) throw new Error('Recommendation Catalog detail is unavailable')
+          return { kind: 'catalog', entry: { ...byId.get(record.catalogId), recommendation: record.recommendation } }
+        }
+        const candidate = candidateRegistry?.entries?.find(entry => entry.repositoryUrl.toLowerCase() === record.repositoryUrl.toLowerCase())
+        return { kind: 'candidate', entry: {
+          id: record.id, name: record.name, repositoryUrl: record.repositoryUrl,
+          description: '作者通过公开提交或回复参与 DSH 社区交流；尚未通过商城收录审核。',
+          status: 'discovered', statusReason: '尚未通过固定 Commit 收录审核；作者互动推荐不授予安装资格。',
+          discoverySources: ['author-interaction'], discoveredAt: record.occurredAt,
+          ...(candidate ?? {}), id: record.id, name: record.name,
+          recommendation: record.recommendation,
+        } }
+      })
+      return { ...snapshot, entries: rows.filter(row => row.kind === 'catalog').map(row => row.entry),
+        candidates: rows.filter(row => row.kind === 'candidate').map(row => row.entry), recommendations: rows,
+        catalogPackageNames: source.entries.map(entry => entry.packageName),
+        filters: { categoryIds: selection.categoryIds, featuredOnly: true },
+        pagination: { ...selection.pagination, ...(body.compatibleWith ? { compatibleWith: body.compatibleWith } : {}) } }
+    }
     if (catalogIndex.schemaVersion === 2 && view !== 'candidates') {
       const selection = selectMarketplaceIndexEntries(catalogIndex, {
         view, compatibleWith: body.compatibleWith, query: body.query, category: body.category, featuredOnly: body.featuredOnly === true,

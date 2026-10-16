@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 636,
+  "userId": 269385000,
+  "requestCommentId": 6210153670,
+  "requestBodySha256": "1637a904c771ea0b48b276cb26d8723d1d95293b896a382d901ac72d62ba4219",
+  "requestUpdatedAt": "2026-10-16T07:12:02Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请按流程继续专项审阅",
+    "scope": "Answer only the verified specific request on #636; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已继续审阅 **0.14.0 / `1d49af750e68ee86677f74b6c95f0991a87a6c5b`**。Store 已按官方 include 的 PatchOptions 修复 additive entry 的 `inject: [commands]` 解析，当前预检通过，不再要求删除该合法注入。34 个文本文件、131,427 字节的有界源码读取完整。\n\n专项审阅仍有两个具体问题：`lib/mine.js` 的 `scanSessionLogs` 先调用 `readLogText(file)`，再用 `accept(plaintext)` 判断 workspace，因此“只持久化匹配项”不能当作“只读取匹配日志”；`readFileSync` / `zstdDecompressSync` 没有文件与解压后字节上限。请在读取前限制可处理文件/大小并对解压设置上限；若必须先读日志确定 workspace，也请准确披露会读取候选日志，而不是只读当前 workspace。\n\nCatalog 审阅固定点已刷新为该 0.14.0，保留 blocked/rejected，不授予安装资格。SQLite、WAL 和日志访问是实际能力，不要求为了自动通道删除功能。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

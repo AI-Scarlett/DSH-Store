@@ -14,9 +14,9 @@ export function validateCloseGrant(plan) {
     || !/^[a-f0-9]{64}$/.test(plan.requestBodySha256 ?? '')
     || plan.review?.decision !== 'explicit-request-to-close'
     || typeof plan.review.scope !== 'string' || !plan.review.scope.trim()
-    || typeof plan.review.requestQuote !== 'string' || !/close|关闭/i.test(plan.review.requestQuote)
+    || typeof plan.review.requestQuote !== 'string' || !/close|closing|关闭|关掉/i.test(plan.review.requestQuote)
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
-    || plan.stateReason !== 'not_planned') throw new Error('reviewed explicit issue-closure request required')
+    || !['not_planned', 'completed'].includes(plan.stateReason)) throw new Error('reviewed explicit issue-closure request required')
   requireRepository(plan.subjectRepository)
 }
 export async function verifyCloseRequest(github, plan) {

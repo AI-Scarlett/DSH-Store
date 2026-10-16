@@ -18,6 +18,8 @@ jobs:
           node-version: 24
       - name: Resolve official latest-three release window
         id: window
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/resolve-dsh-upgrade-matrix.mjs
 
   runtime:

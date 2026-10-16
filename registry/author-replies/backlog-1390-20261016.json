@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1390,
+  "userId": 283827478,
+  "requestCommentId": 6212018211,
+  "requestBodySha256": "c8534428ecf1881afd3f2be5b7d1c64db777d84edeb7d7f9282f967aa6131947",
+  "requestUpdatedAt": "2026-10-16T09:04:33Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "期待您的复核。",
+    "scope": "Answer only the verified specific request on #1390; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已按本次新请求冻结 **0.17.5 / `6d9e23e488f37f02e63c236eda49aee5e0b617a3`** 复核，基础预检与有界文本读取完整。`lib/net-guard.js` 的回环地址检查及 `redirect: error` 有源码依据；同时 `lib/config.js` 的 `ACCEL_SOURCES` 与 `lib/index.js` 的 `runInstallSource` 确认加速包安装会通过 pip/git 访问外部供应链，不能概括成“全部网络只有回环”。\n\n另有一处可具体修正的披露不一致：`lib/config.js:293` 的实际默认 `accelAutoInstall: true`，而约 3080 行注释写默认 false，请与 README/设置提示统一。保留该能力可以走受审路径，但须把自动触发、白名单包/来源、子进程参数与环境、用户关闭路径和 Tool-view key 作用域一并核验。当前仍未自动批准；作者新增测试与真实用户修复不替代 Store 的独立运行验收。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

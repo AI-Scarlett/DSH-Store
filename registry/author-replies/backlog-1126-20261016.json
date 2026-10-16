@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1126,
+  "userId": 53111492,
+  "requestCommentId": 5825603345,
+  "requestBodySha256": "5956bb70dddcf1d13358e03a1c35c01e09040d8422f806496467e4b9b8e25364",
+  "requestUpdatedAt": "2026-09-25T02:18:52Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请在下一次复检时按新 commit 重新评估",
+    "scope": "Answer only the verified specific request on #1126; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已将 #715 的较早请求与本次请求合并核对，冻结 **1.3.2 / `2394dd62624549465133efa5b73ea2f6f2b892f8`**：基础预检通过，有界读取 24 个文件、121,552 字节完整，原 `fengge-check.mjs` 的 child_process 问题在该分发面内已消失。\n\n仍需说明 `scripts/verify-provider.mjs:129` 的 `await import(moduleUrl)` 如何约束加载目标，以及实际文件、网络与凭据边界。动态加载不自动等于恶意，也不能直接按零能力放行。当前不将该修复等同于 Store 已批准；后续结论必须继续绑定准确来源。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

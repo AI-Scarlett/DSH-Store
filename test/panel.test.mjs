@@ -179,6 +179,12 @@ test('market endpoint reads only the cached DSH version and never blocks on npm'
           risk: { installScripts: [], review: 'fixture' },
         }],
       }) },
+      communityRecommendations: { schemaVersion: 1, updatedAt: '2026-10-16T00:00:00Z', entries: [{
+        id: 'demo', catalogId: 'demo', repositoryUrl: 'https://github.com/example/demo', manifestPath: 'package.json',
+        name: 'Demo', categories: [], basis: 'author-interaction', userId: 1,
+        evidenceUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/1', occurredAt: '2026-10-16T00:00:00Z',
+      }] },
+      automationPolicy: { search: { excludedRepositories: [] } },
       dshVersionService: {
         inspect: async () => { inspections += 1; throw new Error('must not run') },
         peek: () => ({ latestVersion: '0.1.1-rc.2', checkedAt: '2026-08-21T13:00:00.000Z', registryUrl: 'https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest' }),

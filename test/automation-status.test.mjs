@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildAutomationStatus } from '../src/automation-status.mjs'
+import { posix, win32 } from 'node:path'
+import { automationReportRunId, buildAutomationStatus } from '../src/automation-status.mjs'
+
+test('scan reports associate safe run IDs using the actual platform separator (PR #1178)', () => {
+  assert.equal(automationReportRunId(win32.relative('E:\\reports', 'E:\\reports\\40\\catalog-automation-report.json'), win32.sep), 40)
+  assert.equal(automationReportRunId(posix.relative('/reports', '/reports/40/catalog-automation-report.json'), posix.sep), 40)
+  assert.equal(automationReportRunId('40\\other/catalog-automation-report.json', posix.sep), null)
+  for (const path of [null, '', '../40/report.json', '..\\40\\report.json', '0/report.json', '9007199254740992/report.json']) {
+    assert.equal(automationReportRunId(path, posix.sep), null)
+  }
+  assert.equal(automationReportRunId('40/report.json'), null)
+})
 
 const catalog = {
   registry: { updatedAt: '2026-08-22T00:00:00Z' },

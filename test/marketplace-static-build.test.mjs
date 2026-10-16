@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
 import { catalogBridgeBuffer, compareVersions, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
-import { isDshDiscoveryCandidate } from '../marketplace/rankings/model.js'
+import { createRankingSnapshot, isDshDiscoveryCandidate } from '../marketplace/rankings/model.js'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const execFileAsync = promisify(execFile)
@@ -112,7 +112,10 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(rankingData.sourceCommit, 'test-source-sha')
     const candidates = JSON.parse(await readFile(new URL('registry/candidates.json', root), 'utf8'))
     const catalogRepos = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
-    assert.equal(rankingData.entries.length, catalog.entries.length + candidates.entries.filter(entry => isDshDiscoveryCandidate(entry) && !catalogRepos.has(entry.repositoryUrl.toLowerCase())).length)
+    const communityRecommendations = JSON.parse(await readFile(new URL('registry/community-recommendations.json', root), 'utf8'))
+    const policy = JSON.parse(await readFile(new URL('registry/automation-policy.json', root), 'utf8'))
+    const expectedRankings = createRankingSnapshot(catalog, JSON.parse(catalogIndexBefore), { candidates, communityRecommendations, excludedRepositories: policy.search.excludedRepositories })
+    assert.deepEqual(new Set(rankingData.entries.map(entry => entry.id)), new Set(expectedRankings.entries.map(entry => entry.id)))
     assert.equal(rankingData.entries.filter(entry => entry.listingStatus === 'listed').length, catalog.entries.filter(entry => entry.status === 'approved' && /^[a-f0-9]{40}$/.test(entry.commit || '')).length)
     assert.ok(rankingData.entries.some(entry => entry.listingStatus === 'not-listed'))
     assert.ok(rankingData.entries.filter(entry => entry.listingStatus === 'not-listed').every(entry => typeof entry.listingReason === 'string' && entry.listingReason.length > 0))

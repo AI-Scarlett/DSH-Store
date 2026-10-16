@@ -103,3 +103,13 @@ test('next channel must be a well-formed preview and newer than the active lates
     { tag: 'next', kind: 'preview', version: '0.2.0-rc.2' },
   ]), /duplicate next channels/)
 })
+
+test('matrix resolver passes the short-lived credential only to authority fetch and never outputs it', async () => {
+  const result = await resolveDshUpgradeMatrix(async options => {
+    assert.equal(options.githubToken, 'fixture-short-lived-token')
+    assert.equal(options.releaseCount, 3)
+    return { authority: 'official-github-releases-and-npm-published-versions', releaseCount: 3,
+      releases: ['0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4'], latestVersion: '0.2.1-alpha.4', channels: [] }
+  }, { githubToken: 'fixture-short-lived-token' })
+  assert.doesNotMatch(JSON.stringify(result), /fixture-short-lived-token/)
+})

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 987,
+  "userId": 19186111,
+  "requestCommentId": 5895952527,
+  "requestBodySha256": "28353d6ee4c030afd06c4cfba4b9313c5628bd2f1264920abb62b28bd98913e2",
+  "requestUpdatedAt": "2026-09-29T18:12:44Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "做一次人工策展审查",
+    "scope": "Answer only the verified specific request on #987; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已按 **0.6.8 / `5333623871cf90c5bac214ca88823054723fe513`** 进行只读人工复核，基础预检通过。当前阻断不只是权限信号：`engine/models/yolov8n.pt` 等模型/二进制工件仍需来源、许可证、摘要及用途核验，有界源码覆盖因此不完整。请补齐这些工件的可核验清单，以及 Python 子进程固定参数/输入边界、外部端点与凭据流向。不会要求移除视频分析所需能力，但在完整分发面、供应链和能力边界审查完成前保持 blocked；不能仅把 updatePolicy 改为 user-reviewed 就跳过这些门。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}
