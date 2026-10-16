@@ -23,6 +23,7 @@ import { pathToFileURL } from 'node:url'
 const root = process.env.DSH_VERIFIER_FIXTURE_ROOT
 const sourceCommit = '${sourceCommit}'
 const { catalogBridgeBuffer, loadCatalogFromFiles, splitCatalogDocument } = await import(pathToFileURL(join(root, 'src/catalog.mjs')).href)
+const { createNativeMarketIndex } = await import(pathToFileURL(join(root, 'src/native-market-index.mjs')).href)
 const catalog = await loadCatalogFromFiles()
 const manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
 const active = process.env.DSH_VERIFIER_MANAGER_STATUS === 'approved'
@@ -48,6 +49,7 @@ globalThis.fetch = async input => {
   if (path.endsWith('/release-manifest.json')) return new Response(JSON.stringify({ sourceCommit }))
   if (path.endsWith('/repair/repair-manifest.json')) return new Response(repairManifest)
   if (path.endsWith('/repair/')) return new Response('<main data-repair-state="' + (active ? 'active' : 'catalog-pending') + '">' + (active ? manager.commit : 'Compatibility review pending') + '</main>')
+  if (path.endsWith('/plugin-market.json')) return new Response(JSON.stringify(createNativeMarketIndex(catalog)))
   if (path.endsWith('/registry/catalog.json')) return new Response(bridge)
   if (path.endsWith('/registry/catalog-index.json')) return new Response(index)
   if (path.endsWith('/registry/candidates.json')) return new Response(candidates)
@@ -66,7 +68,7 @@ globalThis.fetch = async input => {
         env: { ...process.env, DSH_VERIFIER_FIXTURE_ROOT: root, DSH_VERIFIER_MANAGER_STATUS: status },
         maxBuffer: 4 * 1024 * 1024,
       })
-      assert.match(stdout, /MARKETPLACE_PUBLIC_OK catalogs=4\/4 candidates=4\/4 repairs=3\/3 failures=0/)
+      assert.match(stdout, /MARKETPLACE_PUBLIC_OK catalogs=4\/4 candidates=4\/4 native=3\/3 repairs=3\/3 failures=0/)
     }
   } finally {
     await rm(temporary, { recursive: true, force: true })

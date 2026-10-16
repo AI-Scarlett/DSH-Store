@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from 'node:crypto'
+import { createNativeMarketIndex } from '../src/native-market-index.mjs'
 import { readFile, rename, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -26,7 +27,7 @@ function parseArgs(argv) {
 
 const delay = milliseconds => new Promise(resolveDelay => setTimeout(resolveDelay, milliseconds))
 
-async function fetchText(url, maximum = 4 * 1024 * 1024) {
+async function fetchText(url, maximum = 4 * 1024 * 1024, redirect = 'follow') {
   let lastError
   for (let attempt = 1; attempt <= options.attempts; attempt += 1) {
     const controller = new AbortController()
@@ -34,7 +35,7 @@ async function fetchText(url, maximum = 4 * 1024 * 1024) {
     try {
       const response = await fetch(url, {
         headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager-public-watchdog' },
-        signal: controller.signal,
+        signal: controller.signal, redirect,
       })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const text = await response.text()
@@ -58,16 +59,19 @@ async function verifyDetails(index, catalogUrl) {
   const entries = index.entries
   let next = 0
   let manager = null
+  const fullEntries = new Array(entries.length)
   const worker = async () => {
     while (next < entries.length) {
-      const entry = entries[next++]
+      const position = next++
+      const entry = entries[position]
       const text = await fetchText(new URL(entry.detailPath, catalogUrl).href, 512 * 1024)
       const detail = validateCatalogDetail(JSON.parse(text), entry, index.registry)
+      fullEntries[position] = detail
       if (detail.id === 'dsh-safe-plugin-manager') manager = detail
     }
   }
   await Promise.all(Array.from({ length: Math.min(12, entries.length) }, worker))
-  return { count: entries.length, manager }
+  return { count: entries.length, manager, nativeMarket: createNativeMarketIndex({ entries: fullEntries }) }
 }
 
 async function semanticCatalog(text, catalogUrl) {
@@ -93,9 +97,11 @@ async function semanticCatalog(text, catalogUrl) {
   }
   let manager = catalog.entries.find(entry => entry.id === 'dsh-safe-plugin-manager') ?? null
   let details = catalog.entries.length
+  let nativeMarket = catalog.schemaVersion === 2 ? null : createNativeMarketIndex(catalog)
   if (catalog.schemaVersion === 2) {
     const verified = await verifyDetails(catalog, detailBaseUrl)
     details = verified.count
+    nativeMarket = verified.nativeMarket
     manager = verified.manager ?? manager
   }
   return {
@@ -105,6 +111,7 @@ async function semanticCatalog(text, catalogUrl) {
     registryUpdatedAt: catalog.registry.updatedAt,
     fingerprint: sha256(JSON.stringify(catalog.entries)),
     manager,
+    nativeMarket,
   }
 }
 
@@ -148,6 +155,7 @@ const report = {
   surfaces: [],
   candidateSurfaces: [],
   repairSurfaces: [],
+  nativeMarketSurfaces: [],
   pages: null,
   failures: [],
 }
@@ -183,6 +191,23 @@ for (const url of candidateUrls) {
   } catch (error) {
     report.failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`)
     report.candidateSurfaces.push({ url, status: 'failed' })
+  }
+}
+
+const nativeUrls = [
+  'https://ai-scarlett.github.io/DSH-Store/marketplace/plugin-market.json',
+  'https://dsh.store/plugin-market.json',
+  'https://dsh-store.cn/plugin-market.json',
+]
+for (const url of nativeUrls) {
+  try {
+    const text = await fetchText(url, 2 * 1024 * 1024, 'error')
+    const value = JSON.parse(text)
+    if (!report.authority?.nativeMarket || JSON.stringify(value) !== JSON.stringify(report.authority.nativeMarket)) throw new Error('Native index differs from the approved GitHub Catalog authority')
+    report.nativeMarketSurfaces.push({ url, status: 'passed', plugins: value.plugins.length, sha256: sha256(text) })
+  } catch (error) {
+    report.failures.push(`${url}: ${error.message}`)
+    report.nativeMarketSurfaces.push({ url, status: 'failed' })
   }
 }
 
@@ -243,5 +268,5 @@ try {
 
 if (report.failures.length > 0) report.status = 'failed'
 if (options.report) await atomicReport(options.report, report)
-process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} catalogs=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} candidates=${report.candidateSurfaces.filter(item => item.status === 'passed').length}/${candidateUrls.length} repairs=${report.repairSurfaces.filter(item => item.status === 'passed').length}/${repairUrls?.length ?? 0} failures=${report.failures.length}\n`)
+process.stdout.write(`MARKETPLACE_PUBLIC_${report.status === 'passed' ? 'OK' : 'FAILED'} catalogs=${report.surfaces.filter(item => item.status === 'passed').length}/${urls.length} candidates=${report.candidateSurfaces.filter(item => item.status === 'passed').length}/${candidateUrls.length} native=${report.nativeMarketSurfaces.filter(item => item.status === 'passed').length}/${nativeUrls.length} repairs=${report.repairSurfaces.filter(item => item.status === 'passed').length}/${repairUrls?.length ?? 0} failures=${report.failures.length}\n`)
 if (report.status !== 'passed') process.exitCode = 1

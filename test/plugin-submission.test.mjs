@@ -6,6 +6,7 @@ import test from 'node:test'
 import {
   SUBMISSION_REPORT_MARKER,
   checkRepository,
+  inferredCompatibility,
   checkSubmission,
   parseIssueForm,
   parseRepositoryInput,
@@ -394,4 +395,27 @@ test('Bundle implementations cannot silently resolve to an unreviewed package', 
   await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '.', {
     catalogDocument: catalog(), fetch: sourceFetch({ patch: '- insert:\n    - id: demo\n      name: unrelated-package\n' }), retryDelaysMs: [],
   }), { code: 'SUBMISSION_PATCH_IDENTITY' })
+})
+
+
+test('official engines.dsh wins over peers and legacy declarations without inventing runtime evidence', () => {
+  const value = inferredCompatibility({
+    engines: { dsh: '0.2.1-alpha.4' },
+    peerDependencies: { '@deepseek-ai/dsh': '0.1.0' },
+    dsh: { compatibility: { dsh: '0.1.0', dshReleases: { '0.2.1-alpha.4': 'compatible', '0.2.1-alpha.3': 'compatible' } } },
+  })
+  const narrow = inferredCompatibility({ engines: { dsh: '^0.0.2' }, dsh: { compatibility: { dshReleases: { '0.0.3': 'compatible' } } } })
+  assert.equal(narrow.dshReleases['0.0.3'], 'incompatible')
+  assert.equal(value.dsh, '0.2.1-alpha.4')
+  assert.deepEqual(value.dshReleases, { '0.2.1-alpha.4': 'compatible', '0.2.1-alpha.3': 'incompatible' })
+  assert.deepEqual(value.dshOperations, {})
+  const peers = inferredCompatibility({ peerDependencies: { '@deepseek-ai/dsh': '0.2.1-alpha.4', '@deepseek-ai/dsh-client-runtime': '0.2.1-alpha.3' },
+    dsh: { compatibility: { dshReleases: { '0.2.1-alpha.4': 'compatible' } } } })
+  assert.equal(peers.dshReleases['0.2.1-alpha.4'], 'incompatible')
+  assert.equal(inferredCompatibility({ peerDependencies: { '@deepseek-ai/dsh': '0.2.1-alpha.4' } }).dsh, '0.2.1-alpha.4')
+  for (const engines of [null, [], 'any', { dsh: null }, { dsh: '' }, { dsh: 'workspace:*' }]) {
+    assert.throws(() => inferredCompatibility({ engines }), /engines/)
+  }
+  assert.throws(() => inferredCompatibility({ peerDependencies: { '@deepseek-ai/dsh': null } }), /peerDependencies/)
+  assert.equal(inferredCompatibility({ engines: { dsh: '0.2.1-alpha.4' }, peerDependencies: null }).dsh, '0.2.1-alpha.4')
 })

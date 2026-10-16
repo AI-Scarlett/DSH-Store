@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { createNativeMarketIndex } from '../src/native-market-index.mjs'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -582,6 +583,7 @@ const copyFilter = source => !/(^|\/)\._|(^|\/)\.DS_Store$/.test(source)
 await cp(resolve(projectRoot, 'marketplace'), resolve(outputRoot, 'marketplace'), { recursive: true, filter: copyFilter })
 await cp(resolve(projectRoot, 'registry'), resolve(outputRoot, 'registry'), { recursive: true, filter: copyFilter })
 await rewriteSiteReferences(resolve(outputRoot, 'marketplace'))
+await writeFile(resolve(outputRoot, 'marketplace/plugin-market.json'), `${JSON.stringify(createNativeMarketIndex(catalog), null, 2)}\n`)
 
 const isDomestic = siteOriginUrl.host === 'dsh-store.cn'
 if (!isDomestic) {
