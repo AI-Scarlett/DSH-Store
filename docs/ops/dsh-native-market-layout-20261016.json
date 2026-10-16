@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-layout-20261016",
+  "planFile": "docs/ops/dsh-native-market-layout-20261016.json",
+  "baseCommit": "97d12e8e28bf1286165cb051aaa698aa209f0bb7",
+  "createdAt": "2026-10-16T02:33:27.808031+00:00",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "这个页面怎么大片空白",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "你直接上线啊 不要用短期的"
+  },
+  "scope": [
+    "docs/ops/dsh-native-market-layout-20261016.json",
+    "marketplace/index.html",
+    ".github/workflows/registry.yml"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-native-market-layout-20261016.json": null,
+    "marketplace/index.html": "9061f450f7058feac74230478442767572514ac84cd6aa31a7d69cf5c6338951",
+    ".github/workflows/registry.yml": "8967dc98d6c149add0cfeb6e85ff4f8c99fb99735559df97f160b801fe70b6d8"
+  },
+  "postconditions": {
+    "marketplace/index.html": "241d67bf19df64a786aa52f34eba4e1cfa7789d833db92d6a7302fb8f3689896",
+    ".github/workflows/registry.yml": "e83d30b6821691f8cb8d3962599af281ec2c7400691d5d619cdfa6aaf8d7b984"
+  },
+  "reason": "The native-market guide link became a third direct child of a two-column installation grid, moving the terminal to the next row and leaving the right side empty. Move it inside the explanatory header.",
+  "gates": [
+    "Exact base, scope and reviewed hashes",
+    "Desktop and mobile browser layout inspection",
+    "npm run check before commit",
+    "CI-checked pull request",
+    "Pages and permanent production readback"
+  ],
+  "healthCheck": "Desktop grid has two direct children side by side; mobile layout stacks without horizontal overflow; native-market guide remains linked and translated.",
+  "rollback": "CI-checked revert of the HTML and plan gate; permanent production refresh retains its previous release and rollback.",
+  "boundaries": [
+    "Homepage markup and plan CI only",
+    "Catalog and installable source Commit unchanged",
+    "No Profile changes",
+    "No author outreach"
+  ],
+  "verdict": {
+    "status": "passed",
+    "checkedAt": "2026-10-16T02:42:43.398675+00:00",
+    "checks": 439,
+    "failed": 0,
+    "logSha256": "11d5ad0b8d2b0274fc5477cea841bb4ff9ae239421f5336be80e278d80aab5ee",
+    "browser": {
+      "desktopWidth": 1440,
+      "mobileWidth": 375,
+      "desktop": "two columns with overlapping vertical range",
+      "mobile": "single column, terminal after heading",
+      "horizontalOverflow": false,
+      "nativeLinkInsideHeading": true,
+      "evidenceSha256": {
+        "local-desktop.json": "f8297710f64392eab5d61a5c5af9bae42ae925d9d974545a9ad4e5bbdf7b0ff3",
+        "local-mobile.json": "c210a97ce2673d66bba9985a3619aa6f942458bdb5c867c5f3c9296bf5f9666f"
+      }
+    }
+  }
+}
