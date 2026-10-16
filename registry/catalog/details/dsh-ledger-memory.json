@@ -20,28 +20,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c65d4be3efc617dff53365bc221c2cbc659edb4f",
-  "version": "1.2.1",
+  "commit": "62a28d0d9ec0999f513916a81b175900b63193c4",
+  "version": "1.2.2",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T13:36:59.000Z",
-    "observedAt": "2026-10-16T00:55:34.250Z",
+    "updatedAt": "2026-10-16T03:57:39.000Z",
+    "observedAt": "2026-10-16T05:10:40.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-16T00:55:34.250Z",
-      "evidenceUrl": "https://github.com/18477514055/dsh-ledger-memory/commit/c65d4be3efc617dff53365bc221c2cbc659edb4f",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-16T05:10:40.000Z",
+      "evidenceUrl": "https://github.com/18477514055/dsh-ledger-memory/commit/62a28d0d9ec0999f513916a81b175900b63193c4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest, Bundle identity and complete bounded source coverage verified; manual admission was separately rejected."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party package installation, build or scripts were executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime evidence was not independently reproduced."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,7 +71,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "A bounded source review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -88,6 +88,7 @@
   "entryIds": [
     "dsh-ledger-memory"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: Complete fixed-source coverage is verified. Manual admission is rejected because lib/part2.js:2171-2305 registers configuration read/write and broadcast handlers without establishing caller authorization before saveSettings invokes configEditor.edit or before bumpSettingsBroadcast. Same-origin credentials in the client do not establish a server-side trust boundary. A verified host authorization contract or a fail-closed request check is required; capabilities need not be removed.",
   "compatibility": {
@@ -119,7 +120,8 @@
       "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "unknown",
       "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "compatible"
+      "0.2.0-rc.1": "compatible",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -279,6 +281,12 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
