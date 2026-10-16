@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 714,
+  "userId": 149435110,
+  "requestCommentId": 5613653840,
+  "requestBodySha256": "eb051c6ac35c8cd9d86b1a64eebc66c459ad80415de94f7c6a276072a981e469",
+  "requestUpdatedAt": "2026-09-10T05:28:11Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请复检时一并确认",
+    "scope": "Answer only the verified specific request on #714; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已核实指定 **0.4.0 / `aaf30fc0c603c018b883331e37ae33bc27149a35`** 的 manifest 与 GitHub 许可证均为 MIT，读取 29 个文本文件、75,252 字节完整。该固定源的 Patch 仍包含当前有界解析器不支持的操作，预检尚未通过。\n\n当前 Catalog 固定的是另一提交 `188862d3883507b66a2ff0adc48f94e1beb65571`，其 manifest 仍为 SEE LICENSE，不能把旧固定源的许可修复直接套给不同源码。我们记录 MIT 修复事实，同时保留当前不可安装状态；需对最终目标 Commit 的许可与 Patch 重新一致核验。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

@@ -136,6 +136,31 @@ test('repository automation reuses the same fixed-source gate without an Issue f
   assert.equal(result.candidate.details.permissions.level, 'unknown')
 })
 
+test('an explicit author review stays at its full Commit while default HEAD has moved', async () => {
+  const original = sourceFetch()
+  const seen = []
+  const fetch = async (url, options) => {
+    seen.push(String(url))
+    if (String(url).endsWith('/commits/' + SHA)) return new Response(JSON.stringify({ sha: SHA }))
+    if (String(url).endsWith('/commits/main')) throw new Error('the newer HEAD is outside the requested review')
+    return original(url, options)
+  }
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    fixedCommit: SHA, catalogDocument: catalog(), fetch, retryDelaysMs: [],
+  })
+  assert.equal(result.candidate.commit, SHA)
+  assert.equal(result.discovery.reviewTarget, 'explicit-fixed-commit')
+  assert.ok(seen.some(url => url.endsWith('/commits/' + SHA)))
+  assert.ok(!seen.some(url => url.endsWith('/commits/main')))
+  for (const fixedCommit of ['main', 'v1.0.0', SHA.slice(0, 7)]) {
+    await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '', { fixedCommit, fetch }), { code: 'SUBMISSION_COMMIT_INVALID' })
+  }
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '', {
+    fixedCommit: SHA, catalogDocument: catalog(), fetch: async url => String(url).endsWith('/commits/' + SHA)
+      ? new Response(JSON.stringify({ sha: 'b'.repeat(40) })) : original(url), retryDelaysMs: [],
+  }), { code: 'SUBMISSION_COMMIT_INVALID' })
+})
+
 test('GitHub submission scan reads bounded files from the same fixed commit', async () => {
   const fetch = sourceFetch({ sources: { 'src/index.mjs': 'export function activate() { return true }\n' } })
   const result = await checkRepository('https://github.com/example/dsh-demo', '', {

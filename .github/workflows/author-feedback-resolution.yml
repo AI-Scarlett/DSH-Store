@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       plan:
-        description: Exact main-reviewed reply or closure plan path
+        description: Exact main-reviewed reply, closure or contact-stop plan path
         required: true
         type: string
       expected_main:
@@ -19,7 +19,7 @@ jobs:
   resolve-request:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     permissions:
       contents: write
       issues: write
@@ -45,6 +45,10 @@ jobs:
             node scripts/reply-author-contact.mjs --plan "$FEEDBACK_PLAN"
           elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-closures/[a-z0-9-]+\.json$ ]]; then
             node scripts/close-author-contact.mjs --plan "$FEEDBACK_PLAN"
+          elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-stops/[a-z0-9-]+\.json$ ]]; then
+            node scripts/record-author-contact-stop.mjs --plan "$FEEDBACK_PLAN"
+          elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-batches/[a-z0-9-]+\.json$ ]]; then
+            node scripts/run-author-feedback-batch.mjs --plan "$FEEDBACK_PLAN"
           else
             echo 'Unsupported feedback plan path' >&2
             exit 1

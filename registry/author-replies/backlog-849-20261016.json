@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 849,
+  "userId": 27914426,
+  "requestCommentId": 5693177856,
+  "requestBodySha256": "60c34cee6f2a916401860554ab9cd99ad9cb2eb56d03606f4695f5ded15b6d8f",
+  "requestUpdatedAt": "2026-09-16T06:41:16Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "申请人工核实处理并回复",
+    "scope": "Answer only the verified specific request on #849; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已核实你指出的历史断链问题：当前 Catalog 的审阅固定点已经由原孤儿 pin 前移到 **`1ed2ec313fd3e94baff76d444b6b6d80b9313e89`**，并明确保留历史无共同祖先来源为 external-only/blocked；不会再把“推送即可自动恢复”当作确定承诺。\n\n本轮另冻结默认分支 **1.6.0 / `8330609a4a61700120f6441134703db307263bd0`**，插件位于 `packages/dsh-palm`。基础预检通过，但声明的 `lib/index.js`、客户端与类型产物未在固定源分发面中闭合，另有依赖和 ignore/files 边界待审。最终状态仍是不可通过商城安装，保留 GitHub 入口。精简构建产物入库后可重新做完整来源与能力审查；仅把 installSource 标为 npm、或把 updatePolicy 标为 user-reviewed，都不会建立带完整性验证的 npm/Release 安装通道。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

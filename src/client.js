@@ -888,6 +888,7 @@ window.__ModuleLoader__.load({
           React.createElement('div', { id: titleId, style: styles.name }, entry.name),
           React.createElement(StatusPill, { label: `${status} · 不可安装`, tone: entry.status === 'rejected' ? 'var(--dsw-alias-state-error-primary)' : undefined })),
         React.createElement('div', { style: styles.cardDescription }, entry.description),
+        entry.recommendation ? React.createElement('a', { href: entry.recommendation.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '作者互动推荐 · 查看公开交流') : null,
         React.createElement('div', { style: styles.cardTags },
           React.createElement('span', { style: styles.badge }, `发现来源 ${(entry.discoverySources || []).join(' / ') || '未知'}`),
           React.createElement('span', { style: styles.badge }, `审核路径 ${entry.route || '未知'}`)),
@@ -905,7 +906,7 @@ window.__ModuleLoader__.load({
         : entry.sourceUpdate?.status === 'user-review-required' ? '发现高风险更新 · 用户决定'
           : entry.sourceUpdate?.status === 'external-only' ? '商城禁止更新 · 仅外部入口'
             : entry.sourceUpdate?.status === 'update-blocked' ? '源更新无法验证'
-          : entry.status === 'blocked' ? '商城不可安装'
+          : ['blocked', 'unlisted'].includes(entry.status) ? '商城不可安装'
         : entry.migrationAvailable ? (entry.updateAvailable ? '可迁移并更新' : '可迁移到商城')
           : entry.manualSourceUpdate ? '同版本源码已更新 · GitHub 手动更新'
           : entry.installed ? (entry.updateAvailable ? '有更新' : `已安装 ${entry.installedVersion || ''}`) : '可安装'
@@ -926,6 +927,7 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
         React.createElement('div', { style: styles.cardDescription }, entry.description),
         React.createElement('div', { style: styles.muted }, `Commit ${entry.commit.slice(0, 12)} · ${entry.categories.map(id => categoryLabels[id] || id).join(' / ')}`),
+        entry.recommendation ? React.createElement('a', { href: entry.recommendation.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '作者互动推荐 · 查看公开交流') : null,
         entry.source.updatedAt ? React.createElement('div', { style: styles.muted },
           `固定提交时间 ${new Date(entry.source.updatedAt).toLocaleDateString()} · ${entry.source.provenance}`) : null,
         React.createElement('div', { style: styles.cardTags },
@@ -1877,10 +1879,15 @@ window.__ModuleLoader__.load({
         content = React.createElement(React.Fragment, null,
           filters,
           React.createElement('div', { style: styles.notice },
-            `${state.market.source.kind === 'github' ? 'GitHub 可信安装目录' : '内置可信目录回退'} · 当前页 ${entries.length} / ${pagination?.total || 0} 个在架条目 · 未知不等于已验证`,
+            featuredOnly ? `作者互动推荐 · 当前页 ${state.market.recommendations?.length || 0} / ${pagination?.total || 0} 项 · 推荐展示不改变审核、兼容性或安装资格`
+              : `${state.market.source.kind === 'github' ? 'GitHub 可信安装目录' : '内置可信目录回退'} · 当前页 ${entries.length} / ${pagination?.total || 0} 个在架条目 · 未知不等于已验证`,
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
           pageError,
-          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, entries.map(entry => React.createElement(MarketCard, {
+          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, featuredOnly && state.market.recommendations
+            ? state.market.recommendations.map(row => row.kind === 'candidate'
+              ? React.createElement(CandidateCard, { key: row.entry.id, entry: row.entry })
+              : React.createElement(MarketCard, { key: row.entry.id, entry: row.entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry, categoryLabels, readOnly: desktopReadOnly }))
+            : entries.map(entry => React.createElement(MarketCard, {
             key: entry.id, entry, health: state.health, beginPlan, checkSource, openDetails: setDetailEntry,
             categoryLabels, readOnly: desktopReadOnly,
           }))), pageControls)

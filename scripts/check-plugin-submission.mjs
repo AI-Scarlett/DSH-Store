@@ -279,7 +279,7 @@ function checkCatalogCollisions(entry, catalog) {
   }
 }
 
-async function repositorySnapshot(repositoryUrl, options) {
+async function repositorySnapshot(repositoryUrl, options, fixedCommit) {
   const { owner, repository } = githubParts(repositoryUrl)
   const apiRoot = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repository)}`
   const metadata = await fetchJson(apiRoot, { ...options, code: 'SUBMISSION_REPOSITORY_HTTP' })
@@ -288,12 +288,13 @@ async function repositorySnapshot(repositoryUrl, options) {
   if (typeof metadata.default_branch !== 'string' || metadata.default_branch === '') {
     throw submissionError('SUBMISSION_DEFAULT_BRANCH_MISSING', 'Repository does not expose a default branch')
   }
-  const commit = await fetchJson(`${apiRoot}/commits/${encodeURIComponent(metadata.default_branch)}`, {
+  const commit = await fetchJson(`${apiRoot}/commits/${encodeURIComponent(fixedCommit ?? metadata.default_branch)}`, {
     ...options, code: 'SUBMISSION_COMMIT_HTTP',
   })
   if (!/^[0-9a-f]{40}$/.test(commit.sha ?? '')) {
     throw submissionError('SUBMISSION_COMMIT_INVALID', 'GitHub did not return a full immutable commit SHA')
   }
+  if (fixedCommit && commit.sha !== fixedCommit) throw submissionError('SUBMISSION_COMMIT_INVALID', 'GitHub returned a different Commit from the explicit review target')
   return { defaultBranch: metadata.default_branch, commit: commit.sha, apiRoot }
 }
 
@@ -343,6 +344,9 @@ async function optionalReadme(repositoryUrl, commit, manifestPath, options) {
 }
 
 export async function checkRepository(repositoryValue, pluginPath = '', options = {}) {
+  if (options.fixedCommit !== undefined && !/^[0-9a-f]{40}$/.test(options.fixedCommit)) {
+    throw submissionError('SUBMISSION_COMMIT_INVALID', 'An explicit review target must be a full immutable Commit')
+  }
   const request = options.fetch ?? globalThis.fetch
   if (typeof request !== 'function') throw submissionError('SUBMISSION_FETCH_UNAVAILABLE', 'Public GitHub source verification is unavailable')
   const catalogDocument = options.catalogDocument ?? await loadCatalogFromFiles()
@@ -353,7 +357,7 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
   const submittedPath = cleanValue(pluginPath)
   const requestedPath = safeRelativeDirectory(submittedPath) ?? repositoryInput.linkedPath
   const fetchOptions = { request, token: options.token ?? process.env.GITHUB_TOKEN, timeoutMs: options.timeoutMs }
-  const snapshot = await repositorySnapshot(repositoryInput.repositoryUrl, fetchOptions)
+  const snapshot = await repositorySnapshot(repositoryInput.repositoryUrl, fetchOptions, options.fixedCommit)
   const discovered = await discoverManifest(repositoryInput.repositoryUrl, snapshot, requestedPath, fetchOptions)
   const manifest = discovered.manifest
   if (typeof manifest.name !== 'string' || !/^(?:@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/.test(manifest.name)) {
@@ -414,7 +418,8 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
   const source = await verifyCatalogEntry(candidate, { fetch: request, retryDelaysMs: options.retryDelaysMs ?? [300, 900] })
   return {
     status: 'passed', candidate, source,
-    discovery: { publisher: githubParts(repositoryInput.repositoryUrl).owner, readmePath: readme.path, patchPath },
+    discovery: { publisher: githubParts(repositoryInput.repositoryUrl).owner, readmePath: readme.path, patchPath,
+      ...(options.fixedCommit ? { reviewTarget: 'explicit-fixed-commit' } : {}) },
   }
 }
 

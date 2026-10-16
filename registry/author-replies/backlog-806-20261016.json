@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 806,
+  "userId": 105955691,
+  "requestCommentId": 5732356823,
+  "requestBodySha256": "48cc519f3c9b4599afcc04a33e1f2fd9b62e085d4ec1b6310ceebc8625e02994",
+  "requestUpdatedAt": "2026-09-18T15:38:14Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请求按 `user-reviewed` 人工评估本条目",
+    "scope": "Answer only the verified specific request on #806; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已检查本请求的来源可达性：GitHub 对请求短 ref `37e6a30` 和当前 Catalog 固定点 `26bbbda37a0e1281a83b65a427c68bff81b8bf74` 均返回 422 / No commit found。现有源码不能按这两个身份重新读取，因此本轮不能确认你列出的修复，也不会把当前 HEAD 当作原请求固定源。\n\n读本地日志与同源回环路由并非天然排除受审路径；请给出目前可达的完整 40 位 Commit，并绑定实际分发文件、回环鉴权/来源边界、索引写入备份与恢复证据。该来源修复前保持不可安装；npm 或本地运行不受 Store Catalog 结论影响。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

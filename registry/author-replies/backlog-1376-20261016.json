@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1376,
+  "userId": 325868576,
+  "requestCommentId": 6211797370,
+  "requestBodySha256": "527dcc09beccbd50f4197fc10c4570c4ae7732d4bb18533ec6d67489dc1a599e",
+  "requestUpdatedAt": "2026-10-16T08:51:15Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请复核；若有其他整改要求，请告知。",
+    "scope": "Answer only the verified specific request on #1376; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已只读复核 **1.2.3 / `d51747065a4fe27bf699be5108c51fce1a23792c`**，基础预检通过，有界文本读取完整。鉴权整改有源码依据：`lib/part2.js:2246-2298` 统一把路由 handler 包入 `settingsGate`，通过 `connection.requestRejection(req)` 检查；缺少服务返回 503，检查异常返回 403，只有无拒绝结果才调用业务 handler，`config.json` 与 `broadcast.json` 共用此注册出口。不能再把旧“仅 same-origin fetch”作为当前修复未做的依据。\n\n作者的 HTTP/mock ctx 与反向验证证据按作者侧记录保留，真实 Desktop 点击、精确宿主集成和 Store 运行验收仍未知。文件、网络、命令、凭据及静态警告还需完整能力审查，当前不据此自动授予安装资格。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}

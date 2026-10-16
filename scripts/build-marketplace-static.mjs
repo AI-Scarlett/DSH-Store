@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto'
 import { createNativeMarketIndex } from '../src/native-market-index.mjs'
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
-import { dirname, relative, resolve } from 'node:path'
+import { dirname, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PAGE_SIZE } from '../src/catalog.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
-import { buildAutomationStatus } from '../src/automation-status.mjs'
+import { automationReportRunId, buildAutomationStatus } from '../src/automation-status.mjs'
 import { enrichRankingSnapshot } from './ranking-github-metadata.mjs'
 import { applyRankingRefreshState, createRankingSnapshot, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 import { createKnownPluginDirectory, filterPluginDirectory } from '../marketplace/lib/plugin-directory.js'
@@ -144,8 +144,7 @@ async function readAutomationReports(directory) {
         if (bytes.length > maximumReportBytes) throw new Error('automation report exceeds the 4 MiB byte bound')
         if (totalBytes + bytes.length > maximumTotalBytes) throw new Error('automation reports exceed the 16 MiB aggregate byte bound')
         totalBytes += bytes.length
-        const firstSegment = relative(root, absolute).split('/')[0]
-        reports.push({ runId: /^\d+$/.test(firstSegment) ? Number(firstSegment) : null, report: JSON.parse(bytes.toString('utf8')) })
+        reports.push({ runId: automationReportRunId(relative(root, absolute), sep), report: JSON.parse(bytes.toString('utf8')) })
       }
     }
   }
@@ -928,7 +927,12 @@ await writeFile(resolve(outputRoot, 'marketplace/llms.txt'), llms)
 // Derive a compact, read-only ranking snapshot independently from admission.
 // Only bounded public repository counters are fetched for unlisted projects;
 // never fetch their manifests or enlarge the main Catalog index.
-let rankings = validateRankingSnapshot(createRankingSnapshot(snapshot, catalogIndex, { sourceCommit: sourceSha, candidates: candidateRegistry }))
+const communityRecommendations = JSON.parse(await readFile(resolve(projectRoot, 'registry/community-recommendations.json'), 'utf8'))
+const recommendationPolicy = JSON.parse(await readFile(resolve(projectRoot, 'registry/automation-policy.json'), 'utf8'))
+let rankings = validateRankingSnapshot(createRankingSnapshot(snapshot, catalogIndex, {
+  sourceCommit: sourceSha, candidates: candidateRegistry, communityRecommendations,
+  excludedRepositories: recommendationPolicy.search.excludedRepositories,
+}))
 if (refreshRankingStars) {
   const enriched = await enrichRankingSnapshot(rankings, { token })
   rankings = validateRankingSnapshot(enriched.snapshot)

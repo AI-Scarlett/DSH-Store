@@ -92,12 +92,12 @@ Profile 的自动测试推定。
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.5` |
+| 商城版本 | `0.9.6` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
 | 分类 | 22 个 |
-| 推荐 | 以实时 Catalog 中同时满足 `featured: true` 与 `status: approved` 的条目为准 |
+| 推荐 | 商城“只看推荐”与官网推荐榜共享公开作者互动名单，完整分页；推荐不改变审核或安装资格 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
 `0.9.4` 在官方 `dsh-app://` 渲染器中停用依赖 Web Host 的商城请求和 Guardian 轮询；如果商城面板被桌面端加载，会显示只读说明并引导至 DSH Store 网页目录和桌面端内置“插件”页面。它不访问或修改 Web Profile。此安全交接不代表商城已能在桌面端内嵌浏览或安装插件；Catalog 仍只声明 `web` Profile，真实打包桌面端 UI 尚未验收。版本号同步提升至 `0.9.4`，避免已安装用户因同版本修复无法收到商城更新。
@@ -247,10 +247,12 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 
 ### 上下架、推荐与安装计数
 
+`0.9.6` 的作者互动推荐由 `registry/community-recommendations.json` 提供公开提交/回复链接、不变用户 ID 和时间，覆盖全部互动插件；商城每页 20 项，官网推荐榜每页 30 项。已退出、停止展示或不是插件的项目排除。待审、blocked、unlisted 和 rejected 项目可按各自审核状态展示，不授予安装资格。官网另保留星标推荐和明确标注的工具展示位。
+
 - `approved`：正常上架并允许生成安装计划；
 - `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
-- `featured: true`：在全部视图和所属分类中优先显示；可信安装还可以切换“只看推荐”，但不会提高任何可信证据；当前推荐 DSH-Store、
+- `featured: true`：在全部视图和所属分类中优先显示；旧展示标记不会提高任何可信证据；“只看推荐”现在使用上面的作者互动名单；当前推荐 DSH-Store、
   Build DSH Plugin、Agent Workflow 和 Settings Hub；
 - 可选安装回执只发送插件 ID 和版本，不发送设备、Profile 或用户标识；默认关闭；
 - GitHub Pages 不能直接写回 `catalog.json`，真实计数需要独立匿名聚合服务。

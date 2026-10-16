@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 422,
+  "userId": 30807177,
+  "requestCommentId": 5857660564,
+  "requestBodySha256": "5a2999b84a9bd92e3c2aa0925cb4e997246e763ee3acea11777b0b2a3d10dac9",
+  "requestUpdatedAt": "2026-09-27T16:27:10Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "Please approve those runs when you are ready for the upstream checks to execute.",
+    "scope": "Answer only the verified specific request on #422; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "Reviewed both #422 and #1178 against current main. The Tool-view ownership review gate is already enforced independently of self-declared package/key prefixes. We also integrated the missing Windows scan-report path fix into the current builder, with POSIX/Windows regression coverage.\n\nBoth PR heads currently conflict with main. Their old action_required runs have not been represented as passing CI, and the obsolete conflicting heads were not enabled to run privileged workflows. The integrated change is going through current-main CI instead. This reply covers the two exact PRs named in your request; it does not claim those historical runs were approved.\n\n[Reviewed source and disposition record](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md). Read-only review; no third-party scripts, installation, or real Profile acceptance performed."
+}

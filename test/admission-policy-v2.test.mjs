@@ -48,6 +48,31 @@ test('ambiguous, duplicate, disabled, tagged and malformed operations cannot be 
   ]) assert.throws(() => bundlePatchContract(source), { code: 'BUNDLE_PATCH_AMBIGUOUS' }, source)
 })
 
+test('literal commands-service injection is additive metadata, while unknown injection remains blocked (#636)', () => {
+  const patch = '- insert:\n    - id: memory-gate\n      name: dsh-memory-gate\n      inject:\n        - commands\n      config:\n        mode: assist\n'
+  const result = bundlePatchContract(patch)
+  assert.deepEqual(result.entryIds, ['memory-gate'])
+  assert.deepEqual(result.insertedEntries[0].inject, ['commands'])
+  assert.deepEqual(result.configOverrides, [])
+  for (const invalid of [
+    patch.replace('- commands', '- unknown-service'),
+    patch.replace('- commands', '- commands\n        - commands'),
+    patch.replace('inject:\n        - commands', 'inject: commands'),
+    patch.replace('inject:\n        - commands', 'inject: !!js anything()'),
+    '- id: web\n  inject:\n    - commands\n  config: {}',
+    patch.replace('mode: assist', 'mode: assist\n      disabled: true'),
+  ]) assert.throws(() => bundlePatchContract(invalid), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+})
+
+test('bounded quoted argument sequences are literal configuration data, never evaluated (#1368)', () => {
+  const patch = "- insert:\n    - id: mcp-akasha\n      name: '@akasha-book/mcp'\n      config:\n        command: node\n        args: ['<AKASHA_DIR>/mcp.mjs', \"--stdio\"]\n"
+  assert.deepEqual(bundlePatchContract(patch).entryIds, ['mcp-akasha'])
+  assert.deepEqual(bundlePatchContract("- insert:\n    - id: memory-gate\n      name: dsh-memory-gate\n      inject: ['commands']\n").insertedEntries[0].inject, ['commands'])
+  for (const value of ['[!!js run()]', '[*alias]', '[unquoted]', '[{x: y}]', "['a',]", "['a' 'b']", "['unterminated]", "['a', ['b']]"]) {
+    assert.throws(() => bundlePatchContract(patch.replace("['<AKASHA_DIR>/mcp.mjs', \"--stdio\"]", value)), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+  }
+})
+
 test('bounded locale exports and 442975-byte bundle are fully scanned without source restructuring (#1411)', async () => {
   assert.equal(Buffer.byteLength(files['lib/client.js']), 442975)
   const result = await scan()

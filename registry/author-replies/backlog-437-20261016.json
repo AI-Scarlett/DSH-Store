@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 437,
+  "userId": 13325067,
+  "requestCommentId": 5763879873,
+  "requestBodySha256": "3d19570e1f6261af251a29513c04493f0476bdb6ef09eafb5751e2b74d640ddc",
+  "requestUpdatedAt": "2026-09-21T16:26:07Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "please re-baseline against **`6137362`**",
+    "scope": "Answer only the verified specific request on #437; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "Re-baselined the reviewed Catalog record to **0.24.4 / `61373623c84befe2f9ec581d494367e97d72614e`**. The obsolete source-span gate is no longer the only outcome. The current bounded read covered 287 text files / 2,588,996 bytes but remains incomplete: distributable files/ignore rules, requirements and executable wrapper surfaces need artifact review, and GitHub license metadata reports NOASSERTION while the manifest says MIT. The precheck also cannot establish the full declared installation contract. The record stays blocked; this review does not ask you to remove the suite simply to fit the old byte limit.\n\n[Reviewed source and disposition record](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md). Read-only review; no third-party scripts, installation, or real Profile acceptance performed."
+}

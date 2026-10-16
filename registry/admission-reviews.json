@@ -109,6 +109,32 @@
           "rationale": "This exact source file contains the command text only in the speech-table comment and UI speech literals. Readers select strings for textContent; the literals are not child-process arguments or evaluated code."
         }
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/GIT121995/dsh-memory-gate",
+      "commit": "1d49af750e68ee86677f74b6c95f0991a87a6c5b",
+      "binding": "0c1454749d19bdc8d0c94bbb38d5a7f1ce224e05fdb15a62d85212079b7fc479",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-16T09:35:48.598Z",
+      "rationale": "The complete 0.14.0 source reads each candidate session log synchronously before applying the workspace predicate in lib/mine.js scanSessionLogs. The documented read boundary therefore exceeds matching-workspace logs, and readFileSync plus zstdDecompressSync have no per-file or decompressed-byte limit. Scope the read before opening or accurately disclose the broader read, and bound synchronous input/decompression before admission. This review does not require removing the legitimate memory feature.",
+      "evidenceUrls": [
+        "https://github.com/GIT121995/dsh-memory-gate/commit/1d49af750e68ee86677f74b6c95f0991a87a6c5b",
+        "https://github.com/GIT121995/dsh-memory-gate/blob/1d49af750e68ee86677f74b6c95f0991a87a6c5b/lib/mine.js"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/snailium/dsh-command-context-trim",
+      "commit": "a93a984f6e7743a8144989072ea81fcea31eb9a1",
+      "binding": "ae7aca7cb1bdd76ac90d807b6e44a1bea53c0ad29819bbbd7d29ed873f2a0081",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-16T09:35:48.598Z",
+      "rationale": "The complete requested 0.3.0 source writes a real Profile patch in lib/preset-tune.js:225-245. Backup failure is swallowed and persistence continues; the temporary path is shared by every concurrent invocation in the same process, and no precondition check protects edits made after readFile. Atomic rename alone does not provide recoverable concurrent edits. The same persistence structure is independently present at current Catalog 0.5.0, whose single-file evidence is recorded separately, without claiming a full current-package review.",
+      "evidenceUrls": [
+        "https://github.com/snailium/dsh-command-context-trim/commit/a93a984f6e7743a8144989072ea81fcea31eb9a1",
+        "https://github.com/snailium/dsh-command-context-trim/blob/a93a984f6e7743a8144989072ea81fcea31eb9a1/lib/preset-tune.js"
+      ]
     }
   ]
 }

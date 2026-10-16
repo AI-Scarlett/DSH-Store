@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 524,
+  "userId": 200345812,
+  "requestCommentId": 5582221364,
+  "requestBodySha256": "7979b1415cb881579641f141ef9bbbcf11eac1a841933a5fe4220d5e1fa0397b",
+  "requestUpdatedAt": "2026-09-08T08:59:38Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请在独立仓库 FuRongJun-1999/dsh-memory 上重新检查",
+    "scope": "Answer only the verified specific request on #524; report exact source, remediation, remaining admission and runtime limits. No general future communication permission."
+  },
+  "responseBody": "已按正确的独立仓库 **FuRongJun-1999/dsh-memory** 复查，不再把 CommonTrustProtocol 中已移除的副本作为上架目标。请求的 **0.4.3 / `394e51bc43d415cbc2d1528f26213ce6978bbd93`** 基础预检通过，唯一 entry ID 已记录。当前 Catalog 也已使用独立仓库，固定 **0.8.1 / `a0274500cc46237f269483efe02078f35cd16ae8`**，不会回退到旧版本。\n\n仍保留 blocked：prepare、运行依赖、分发产物与动态加载边界需完整审查。仓库迁移与冲突整改是已核实的进展，不等同于新版本安装契约和运行验收已经完成。\n\n复核记录：[固定源码与处理结果](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/github-backlog-20261016.md)。以上为只读源码结论，未执行第三方脚本、安装或真实 Profile 验收。"
+}
