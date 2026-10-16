@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-095-catalog-20261016",
+  "createdAt": "2026-10-16T01:59:07.218173+00:00",
+  "baseCommit": "503ed0df8df0492ec24247c10b4c93644688d371",
+  "sourceCommit": "503ed0df8df0492ec24247c10b4c93644688d371",
+  "sourceHead": "89b9b887241ae53bc2d8cc9c60470a03379d9de2",
+  "scope": [
+    "docs/ops/store-095-catalog-20261016.json",
+    "docs/reviews/store-095-source-review-20261016.json",
+    "docs/reviews/store-095-release-20261016.md",
+    "registry/catalog.json",
+    "registry/catalog-index.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    "scripts/verify-store-release-plan.mjs",
+    "test/store-release-plan.test.mjs",
+    ".github/workflows/registry.yml",
+    "test/catalog.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/store-095-catalog-20261016.json": null,
+    "docs/reviews/store-095-source-review-20261016.json": null,
+    "docs/reviews/store-095-release-20261016.md": null,
+    "registry/catalog.json": "88abf941b0d2003b5fc0a6a656b0fc3d2917c321b736ae9ac3af3895756894d4",
+    "registry/catalog-index.json": "985aae2e0309225ce1db9b514709c2690e9b9602eb254c5ec71b41e7f5700364",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "114cf698572d6a79131170bfa39033d07d0e7ff4e3c2247cdcdfb6882d38952f",
+    "scripts/verify-store-release-plan.mjs": null,
+    "test/store-release-plan.test.mjs": null,
+    ".github/workflows/registry.yml": "035bace58ef281d06cd4bfd6b6702a14a7303a05300303100062ce0d79411c06",
+    "test/catalog.test.mjs": "b1591081204ec1537a1108a3fc9b8ec22965e3e09b8a24feca19b85dabc4752b"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "DSH 官方更新了，所以我们也要更新",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "你直接上线啊 不要用短期的"
+  },
+  "lane": "first-party-owner-reviewed-release; generic automated third-party admission remains blocked on the recorded findings",
+  "gates": [
+    "full bounded fixed-source review and exact scanner-rule false-positive disposition",
+    "all source PR checks passed and identical merged source tree",
+    "only the existing first-party Catalog identity may change",
+    "base and output hashes",
+    "npm run check before commit",
+    "CI checked PR",
+    "production manifest and public native-index readback"
+  ],
+  "rollback": "CI-checked revert Catalog PR to the previous 0.9.4 Commit; production restores prior artifact on failed health check. Never change contacts or real Profiles.",
+  "healthCheck": "Catalog/index/detail hashes; generated native index; install command and repair identity; Pages and both production storefronts",
+  "postconditions": {
+    ".github/workflows/registry.yml": "c34116afab8b57ceb4c5fdf64ee81b5bcb30734cfb4755c4270009fb2bb2ec12",
+    "docs/reviews/store-095-release-20261016.md": "ee072fa4da4fa74f556bfe7ae3e63b21548e3347d089dcce544b32a348cb78c4",
+    "docs/reviews/store-095-source-review-20261016.json": "630d1180625371ebb17c33d716b9a89a7d105c21c29b0480a2c18cefe1134b71",
+    "registry/catalog-index.json": "1fd5c19ef23beb59346f0e0bfc4bb323ca37e5c36c7fd6a93b14f2f5b3d07946",
+    "registry/catalog.json": "a828fa604467b7cf69ddcd527820c2e323d5340bb1f45ab7a00bdc42e582c14a",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "0d9dd11f2fc1ef41a0c572b6a0c435eccb48dbd84e34d66b4a2f377553d4db96",
+    "scripts/verify-store-release-plan.mjs": "c2603ba88237069b0e4723cfe50d9aa5888f21b30b644037bc010a9d8d8b687a",
+    "test/catalog.test.mjs": "28f15e3a28f336afbbf00822bc889e5e7c1987169d3ec983ce8d1ee3e5df931f",
+    "test/store-release-plan.test.mjs": "df52d7a170b3d960c068d6014b2bcac19d775bcea9198399b4fad783a8f8993c"
+  },
+  "verdict": {
+    "status": "local-gates-passed",
+    "checkedAt": "2026-10-16T02:03:07.950845+00:00",
+    "tests": 439,
+    "failed": 0,
+    "checkLogSha256": "22176cc51fb540b6c6d297851c39bd837d149ab985363a3389ed11d2475d3378",
+    "sourceCoverage": "107/107; 1534248 bytes; all 12 findings reviewed",
+    "catalogEntriesChanged": 1,
+    "thirdPartyEntriesChanged": 0,
+    "officialParser": "0.2.1-alpha.4 passed; 7 plugins",
+    "realProfile": "unchanged"
+  },
+  "sourceTree": "7e5579d762a314e1933f40ccd2aef89d3b360e07"
+}

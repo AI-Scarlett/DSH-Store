@@ -269,11 +269,13 @@ test('legacy bridge stays below 2 MiB when source updates grow the complete dire
   const manager = split.bridge.entries.find(item => item.id === 'dsh-safe-plugin-manager')
   assert.equal(manager.version, source.entries.find(item => item.id === manager.id).version)
   assert.equal(manager.commit, source.entries.find(item => item.id === manager.id).commit)
-  assert.equal(manager.assurance.installability, undefined)
+  const expectedInstallability = source.entries.find(item => item.id === manager.id).assurance.installability.status
+  if (expectedInstallability === 'unknown') assert.equal(manager.assurance.installability, undefined)
+  else assert.equal(manager.assurance.installability.status, expectedInstallability)
   for (const validate of [validateCatalog085, validateCatalog086, validateCatalog087]) {
     const historical = validate(split.bridge)
     assert.equal(historical.entries.length, entries.length)
-    assert.equal(historical.entries.find(item => item.id === manager.id).assurance.installability.status, 'unknown')
+    assert.equal(historical.entries.find(item => item.id === manager.id).assurance.installability.status, expectedInstallability)
   }
 })
 
