@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-28T15:31:33.000Z",
-    "observedAt": "2026-09-28T16:31:47.000Z",
+    "observedAt": "2026-10-16T03:32:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-28T16:31:47.000Z",
+      "checkedAt": "2026-10-16T03:32:11.000Z",
       "evidenceUrl": "https://github.com/WizisCool/dsh-ears/commit/21775e002f1dc179219f9f0d1bc2c864a5ad53b4",
       "dshRelease": null,
       "systems": [],
@@ -76,11 +76,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "7c767ed249c2f6caa0867ba9209b58504e5dc3e9de181bfb984d7e2e0abf54dc",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "verified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "51eb3a970882344902c5d5815624363dbea18ab6563d1b44909c2e4e9e335495"
+  },
   "entryIds": [
     "dsh-ears"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the fixed Git Commit: lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/index.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/index.js; runtime artifact is missing from the fixed Git Commit: ./lib/client.d.ts; runtime artifact is missing from the fixed Git Commit: ./lib/client.js; runtime artifact is missing from the fixed Git Commit: ./lib/typert.d.ts; runtime artifact is missing from the fixed Git Commit:",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/typert.d.ts; runtime artifact is missi",
   "compatibility": {
     "dsh": ">=0.2.0-rc.1",
     "dshReleases": {
@@ -92,14 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-alpha.2": "unknown",
-      "0.1.7-rc.1": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -150,42 +157,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -193,6 +164,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

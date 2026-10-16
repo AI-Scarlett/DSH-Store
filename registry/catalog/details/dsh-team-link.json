@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "87d215d43076e3bdffb25fa162ef3773bc299191",
+  "commit": "88b96944ae38e097c68fbfb4792d73c41d5899bb",
   "version": "0.5.2",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T16:46:40.000Z",
-    "observedAt": "2026-10-14T17:38:48.000Z",
+    "updatedAt": "2026-10-15T17:20:23.000Z",
+    "observedAt": "2026-10-16T03:32:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T17:38:48.000Z",
-      "evidenceUrl": "https://github.com/shenhuanageshei/dsh-team-link/commit/87d215d43076e3bdffb25fa162ef3773bc299191",
+      "checkedAt": "2026-10-16T03:32:11.000Z",
+      "evidenceUrl": "https://github.com/shenhuanageshei/dsh-team-link/commit/88b96944ae38e097c68fbfb4792d73c41d5899bb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,11 +76,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "4acb9d3183aea9d528095acedf9733baca648f915d6d755bb125be8792b3b382",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "51eb3a970882344902c5d5815624363dbea18ab6563d1b44909c2e4e9e335495"
+  },
   "entryIds": [
     "team-link"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source exceeds the automatic review byte bound: 1250815 total bytes (maximum 2097152); largest file 1076365 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal; Tool-view extension requires key ownership review; registration alone is not a protected component mutation",
   "compatibility": {
     "dsh": "^0.1.0-rc.6 || ^0.1.5-rc.1 || ^0.2.0-rc.1",
     "dshReleases": {
@@ -92,9 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,12 +157,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -162,9 +168,15 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22",
     "systems": [],
     "profiles": [
       "web"

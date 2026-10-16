@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-29T07:38:41.000Z",
-    "observedAt": "2026-09-29T14:40:34.000Z",
+    "observedAt": "2026-10-16T03:32:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-29T14:40:34.000Z",
+      "checkedAt": "2026-10-16T03:32:11.000Z",
       "evidenceUrl": "https://github.com/Yifffan/dsh-plugin-whale-pet/commit/6efec117faa6b677cc9e1f5305bc547352c54065",
       "dshRelease": null,
       "systems": [],
@@ -77,11 +77,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "52ffa454395338c745be0db575c4ff7d693dddbc42240bee0736226c5c192a9a",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "51eb3a970882344902c5d5815624363dbea18ab6563d1b44909c2e4e9e335495"
+  },
   "entryIds": [
     "whale-pet"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 426609 total bytes (maximum 2097152); largest file 272689 bytes (maximum 262144)",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -93,12 +105,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.7-rc.2": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -149,30 +158,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.7-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.2": {
         "install": "unknown",
         "start": "unknown",
@@ -180,6 +165,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

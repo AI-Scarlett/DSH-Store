@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-07T16:54:57.000Z",
-    "observedAt": "2026-10-07T21:03:18.000Z",
+    "observedAt": "2026-10-16T03:32:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-07T21:03:18.000Z",
+      "checkedAt": "2026-10-16T03:32:11.000Z",
       "evidenceUrl": "https://github.com/XialerMoies/dsh-prompt-easymanager/commit/aed0c6b856a6459f752084ac0bedab8d2230e559",
       "dshRelease": null,
       "systems": [],
@@ -76,13 +76,25 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "5084687e364a822ed3f4fbd81b084b40058fca4cb1adb8eff1fc2f96585f8806",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "51eb3a970882344902c5d5815624363dbea18ab6563d1b44909c2e4e9e335495"
+  },
   "entryIds": [
     "dsh-prompt-easymanager"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.7-rc.2 <0.2.0-0 || >=0.2.0-rc.1 <0.2.1-0 || >=0.2.1-alpha.1 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -97,7 +109,8 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "compatible",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -179,6 +192,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

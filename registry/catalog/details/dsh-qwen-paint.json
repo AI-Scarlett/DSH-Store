@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
-  "version": "0.17.2",
+  "commit": "63bbf1a860cc8f9e2eac31000c21314fcb4e07eb",
+  "version": "0.17.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T15:56:25.000Z",
-    "observedAt": "2026-10-16T00:55:34.250Z",
+    "updatedAt": "2026-10-16T02:59:37.000Z",
+    "observedAt": "2026-10-16T03:32:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-16T00:55:34.250Z",
-      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-16T03:32:11.000Z",
+      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/63bbf1a860cc8f9e2eac31000c21314fcb4e07eb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest, Bundle identity and complete bounded source coverage verified; manual admission was separately rejected."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party package installation, build or scripts were executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime evidence was not independently reproduced."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "A bounded source review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -90,6 +90,7 @@
   "entryIds": [
     "qwen-paint"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: The ComfyUI startup guard, redirect:error on the three HTTP helpers, and filtered child environment are present. Manual admission remains rejected because lib/hipfire-img.js:456-548 reads configurable cfg.hipfireUrl and issues health/generation/edit requests without assertLocalUrl or the opt-in; guardedFetch has no callers. README:847 also declares no package installation while lib/index.js:247-265 runs pip install via runShell. Enforce or accurately disclose all endpoint and command boundaries; no third-party code was executed.",
   "compatibility": {
@@ -106,7 +107,8 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -176,6 +178,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
