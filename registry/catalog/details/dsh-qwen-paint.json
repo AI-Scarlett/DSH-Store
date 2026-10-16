@@ -2,7 +2,7 @@
   "id": "dsh-qwen-paint",
   "name": "会话管理（DSH Qwen Paint）",
   "packageName": "dsh-qwen-paint",
-  "description": "(绘图)千问 · 优化版 —— 面向 DeepSeek Harness 的本地图像生成插件。经由本机 ComfyUI 调用 Qwen-Image 2.1 完成文生图与图生图，图像落盘保存并在会话中直接呈现；网络默认仅本机回环 127.0.0.1（代码层强制，非本机地址拒绝启动），无需联网与 API 密钥。本优化版在推理链路性能、显卡厂商适配（NVIDIA / Intel Arc / AMD RDNA2·3·4）与操作系统兼容（Windows / Linux）三方面进行了系统性增强。原作者 @奇迹与你，优化版 @yanfei0725。",
+  "description": "(绘图)千问 · 优化版 —— 面向 DeepSeek Harness 的本地图像生成插件。经由本机 ComfyUI 调用 Qwen-Image 2.1 完成文生图与图生图，图像落盘保存并在会话中直接呈现；出图数据流默认仅本机回环 127.0.0.1（代码层强制，非本机地址拒绝启动），无需 API 密钥。可选加速包下载（accelAutoInstall，默认开启）会访问 pip 源与 GitHub 但不发送提示词或图片。本优化版在推理链路性能、显卡厂商适配（NVIDIA / Intel Arc / AMD RDNA2·3·4）与操作系统兼容（Windows / Linux）三方面进行了系统性增强。原作者 @奇迹与你，优化版 @yanfei0725。",
   "searchTerms": [
     "会话管理",
     "DSH Qwen Paint",
@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
-  "version": "0.17.2",
+  "commit": "3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+  "version": "0.17.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T15:56:25.000Z",
-    "observedAt": "2026-10-16T00:55:34.250Z",
-    "provenance": "github-commit"
+    "updatedAt": null,
+    "observedAt": null,
+    "provenance": "unknown"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-16T00:55:34.250Z",
-      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/04292b6c4f5388bd638ff72a7eb5e694248e1b9f",
+      "method": "author-remediation-terminal-review-v1",
+      "checkedAt": "2026-10-16T13:35:38.808Z",
+      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest, Bundle identity and complete bounded source coverage verified; manual admission was separately rejected."
+      "summary": "Pinned source and package identity reviewed; see the exact terminal admission decision."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party package installation, build or scripts were executed."
+      "summary": "No third-party code was installed or executed by the Store."
     },
     "runtime": {
       "status": "unknown",
@@ -63,35 +63,35 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime evidence was not independently reproduced."
+      "summary": "Author runtime reports are not independent Store execution."
     },
     "securityReview": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
+      "status": "partial",
+      "method": "independent-bounded-static-admission-review",
+      "checkedAt": "2026-10-16T13:35:38.808Z",
+      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "A bounded source review is not an independent security audit."
+      "summary": "AUTH001: default-value disclosure and outbound endpoint corrections are verified; admission rejected for the remaining raw local HTTP write/trust boundary."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "22ade6395d28450d447a067af4a2a8e5054f8a53fc5c8407c1ff44a8e664cfeb",
+    "binding": "d0753aaed9e14c6f630db743097f68adb9dc6e5fb0d7725bbf7c8cd43d42f061",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "51eb3a970882344902c5d5815624363dbea18ab6563d1b44909c2e4e9e335495"
+    "reviewRegistryDigest": "04c7bdb22aa2ddf7e6381ec4f05f7a94f9d0d15a895c9eec6de5f4a16cd12e22"
   },
   "entryIds": [
     "qwen-paint"
   ],
   "status": "blocked",
-  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: The ComfyUI startup guard, redirect:error on the three HTTP helpers, and filtered child environment are present. Manual admission remains rejected because lib/hipfire-img.js:456-548 reads configurable cfg.hipfireUrl and issues health/generation/edit requests without assertLocalUrl or the opt-in; guardedFetch has no callers. README:847 also declares no package installation while lib/index.js:247-265 runs pip install via runShell. Enforce or accurately disclose all endpoint and command boundaries; no third-party code was executed.",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: default-value disclosure and outbound endpoint corrections are verified; admission rejected for the remaining raw local HTTP write/trust boundary.",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2",
     "dshReleases": {
@@ -103,10 +103,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -162,24 +159,6 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
       }
     },
     "node": ">=18.0.0",
@@ -206,6 +185,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "fixed-source-review-rejected-not-installable"
+    "review": "manual-fixed-source-rejected-not-installable"
   }
 }

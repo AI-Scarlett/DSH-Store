@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "operation": "owner-authorized-admission-correction",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1415,
+  "userId": 132990250,
+  "requestCommentId": 6213790736,
+  "requestBodySha256": "b0547a90c89c73fefcefd5a21bdd893f6df5c4640c2ad371f433d54d79b766e7",
+  "requestUpdatedAt": "2026-10-16T10:46:16Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请以新的默认分支固定提交复检，不请求放宽准入标准。",
+    "scope": "Deliver the completed exact-source admission decision and actionable acceptance criteria once under the finite owner correction grant.",
+    "kind": "admission-recheck"
+  },
+  "responseBody": "本次完整准入结论：0.2.13 / 46a3b4d31565df1dd03adff77607391a03805cf1 暂不准入，剩余具体项为 SUPPLY001。第一方分发、正式发布、首次使用改进、web 覆盖语义已核对，不再重复以入口冲突或泛泛权限提示阻塞。\n\npackage.json:100 的直接依赖虽为精确版本，但当前 Git 分发没有这些依赖实际安装的完整固定源码；15 包清单和 pnpm 锁记录也未证明 DSH 安装严格使用该闭包。请提供可独立读取的完整运行依赖来源/文件摘要、许可证和安装钩子证据，以及实际安装的固定解析约束；也可提供保留许可证的自包含固定 Git 分发。我们负责独立核验，无需删除正常功能或把作者自测当安全背书。验收要求是所有运行节点来源可复核、图无缺口、实际安装不跳出受审闭包。原 HTTPS 故障继续暂停，没有新增外部调用。\n\n完整证据及验收条件：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md",
+  "ownerAuthorization": {
+    "source": "direct-user-request",
+    "grantId": "author-admission-final-20261016",
+    "quote": "允许本次各补发一条最终结论",
+    "scope": "One final admission correction for this exact already-consumed request only; all history, stops and no-retry rules preserved."
+  },
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "123e3c7f990f712d2f2046e8cd8f7a0391a6dd7353652cec63ee2d02303959b9"
+  }
+}

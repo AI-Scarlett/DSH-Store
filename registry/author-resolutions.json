@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "resolutions": [
+    {
+      "issueNumber": 1390,
+      "requestCommentId": 6213375613,
+      "userId": 283827478,
+      "requestBodySha256": "159fa3ed188899c9841a22d94ea1210909c5d60a7741d9ba078c884bddf49296",
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "version": "0.17.6",
+      "commit": "3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+      "binding": "d0753aaed9e14c6f630db743097f68adb9dc6e5fb0d7725bbf7c8cd43d42f061",
+      "catalogId": "dsh-qwen-paint",
+      "decision": "rejected",
+      "summary": "AUTH001: default-value disclosure and outbound endpoint corrections are verified; admission rejected for the remaining raw local HTTP write/trust boundary.",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 1688,
+          "finding": "isLocalRequest validates only Host and socket loopback (and accepts missing values). The registered raw status handler changes settings and persists UI state on GET; repair and preference handlers also rely only on this loopback check. There is no Origin / Sec-Fetch-Site or authenticated caller gate before these mutations.",
+          "requiredChange": "Keep status GET read-only. Move settings changes to explicit POST JSON routes and reject wrong methods/content types. Before any private read or write, use the supported host request-trust/authentication seam, or implement equivalent Host, Origin, Sec-Fetch-Site and caller checks. Missing required request context must fail closed; loopback alone is insufficient. Apply the same gate to repair, wizard, memory and preference endpoints.",
+          "acceptance": "In disposable fixtures, a loopback request marked Origin=https://untrusted.example or Sec-Fetch-Site=cross-site is rejected before reads/writes/commands. GET requests never modify settings. A trusted supported-host request still succeeds; unavailable trust service or required context rejects. No need to remove drawing, accelerator or Tool-view features."
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md",
+      "decidedAt": "2026-10-16T13:35:38.808Z"
+    },
+    {
+      "issueNumber": 1415,
+      "requestCommentId": 6213790736,
+      "userId": 132990250,
+      "requestBodySha256": "b0547a90c89c73fefcefd5a21bdd893f6df5c4640c2ad371f433d54d79b766e7",
+      "repositoryUrl": "https://github.com/qikairo7/dsh-web-search-fetch",
+      "version": "0.2.13",
+      "commit": "46a3b4d31565df1dd03adff77607391a03805cf1",
+      "binding": "f01689e3961267f344c7a7ea826e6eff60c492e5ccd9e06a2c6c1563bbcd1c81",
+      "catalogId": "dsh-web-search-fetch",
+      "decision": "rejected",
+      "summary": "SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable.",
+      "blockers": [
+        {
+          "code": "SUPPLY001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 100,
+          "finding": "The fixed Git distribution declares five npm runtime dependencies but contains no independently verifiable, installation-enforced mapping from the actual runtime dependency closure to bounded immutable source. docs/dependency-inventory.json identifies itself as author-provided 0.2.11 metadata and lists transitive version ranges. The npm installation resolves these outside the first-party Git tree; the inventory and pnpm lock do not prove which source the DSH install path will execute.",
+          "requiredChange": "Supply a reproducible runtime distribution: either include the licensed dependency runtime files in a self-contained fixed-Commit distribution, or supply a complete dependency closure with exact versions, canonical source Commits, bounded distributed-file hashes, license/install-hook evidence and a source-verifiable mechanism that makes the actual DSH install use that reviewed closure. A version list or advisory lookup alone cannot complete this gate. Normal dependencies and web provider features need not be deleted.",
+          "acceptance": "The Store can independently read every runtime dependency at its immutable source, verify the complete dependency graph and source hashes within declared bounds, and bind an installation-resolution proof to this plugin Commit. All nodes have known licenses and no unreviewed install hooks; no unresolved node or floating resolution remains."
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md",
+      "decidedAt": "2026-10-16T13:35:38.808Z"
+    }
+  ]
+}

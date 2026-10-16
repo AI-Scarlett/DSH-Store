@@ -135,6 +135,49 @@
         "https://github.com/snailium/dsh-command-context-trim/commit/a93a984f6e7743a8144989072ea81fcea31eb9a1",
         "https://github.com/snailium/dsh-command-context-trim/blob/a93a984f6e7743a8144989072ea81fcea31eb9a1/lib/preset-tune.js"
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "commit": "3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+      "binding": "d0753aaed9e14c6f630db743097f68adb9dc6e5fb0d7725bbf7c8cd43d42f061",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-16T13:35:38.808Z",
+      "rationale": "AUTH001: default-value disclosure and outbound endpoint corrections are verified; admission rejected for the remaining raw local HTTP write/trust boundary. isLocalRequest validates only Host and socket loopback (and accepts missing values). The registered raw status handler changes settings and persists UI state on GET; repair and preference handlers also rely only on this loopback check. There is no Origin / Sec-Fetch-Site or authenticated caller gate before these mutations.",
+      "evidenceUrls": [
+        "https://github.com/yanfei0725/dsh-qwen-paint/commit/3955b4f91ddb817d7bb0357da82cffd5d02fe4cb",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md"
+      ],
+      "toolViewOwnership": [
+        {
+          "key": "draw_image",
+          "owner": "dsh-qwen-paint",
+          "registration": {
+            "file": "lib/client.js",
+            "sha256": "ee539fee2715c5c5d4eb23b80ac907e12079a21255bce9c3ab69717ff6a271f3",
+            "line": 3177
+          },
+          "tool": {
+            "file": "lib/index.js",
+            "sha256": "cb71c2071b858f4caf113c04d17813151b87765860701a7f7c22f4a5a2ecd332",
+            "line": 2127
+          },
+          "rationale": "The fixed client resolves SLOT_KEY to tool.call.toolview and TOOL_KEY to draw_image, matching this package own makeDrawTool definition. No protected official tool key or inventory mutation is present."
+        }
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/qikairo7/dsh-web-search-fetch",
+      "commit": "46a3b4d31565df1dd03adff77607391a03805cf1",
+      "binding": "f01689e3961267f344c7a7ea826e6eff60c492e5ccd9e06a2c6c1563bbcd1c81",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-16T13:35:38.808Z",
+      "rationale": "SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable. The fixed Git distribution declares five npm runtime dependencies but contains no independently verifiable, installation-enforced mapping from the actual runtime dependency closure to bounded immutable source. docs/dependency-inventory.json identifies itself as author-provided 0.2.11 metadata and lists transitive version ranges. The npm installation resolves these outside the first-party Git tree; the inventory and pnpm lock do not prove which source the DSH install path will execute.",
+      "evidenceUrls": [
+        "https://github.com/qikairo7/dsh-web-search-fetch/commit/46a3b4d31565df1dd03adff77607391a03805cf1",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md"
+      ]
     }
   ]
 }

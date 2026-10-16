@@ -5,10 +5,13 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { githubClient } from './author-contact-http.mjs'
-import { humanIdentity, contactBody, digest, reserveContact, requireRepository } from './author-contact-state.mjs'
+import { humanIdentity, contactBody, digest, reserveContact, requireRepository, validateOwnerCorrection, CORRECTION_GRANT, CORRECTION_QUOTE } from './author-contact-state.mjs'
+import { verifyReplyResolution } from '../src/author-resolution.mjs'
+import { loadCatalogFromFiles } from '../src/catalog.mjs'
+import { isAdmissionRecheckRequest } from './collect-author-feedback.mjs'
 
 export function validateReplyGrant(plan) {
-  if (plan?.schemaVersion !== 1 || plan.operation !== 'requested-author-reply'
+  if (plan?.schemaVersion !== 1 || !['requested-author-reply', 'owner-authorized-admission-correction'].includes(plan.operation)
     || plan.review?.decision !== 'explicit-request-to-continue'
     || typeof plan.review.scope !== 'string' || !plan.review.scope.trim()
     || typeof plan.review.requestQuote !== 'string' || !plan.review.requestQuote.trim()
@@ -19,10 +22,18 @@ export function validateReplyGrant(plan) {
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || typeof plan.responseBody !== 'string' || !plan.responseBody.trim()) throw new Error('explicit reviewed continuation request required')
   requireRepository(plan.repository)
+  if (plan.operation === 'owner-authorized-admission-correction') {
+    if (plan.ownerAuthorization?.source !== 'direct-user-request' || plan.ownerAuthorization.quote !== CORRECTION_QUOTE
+      || plan.ownerAuthorization.grantId !== CORRECTION_GRANT || plan.review.kind !== 'admission-recheck') throw new Error('finite owner correction approval required')
+    validateOwnerCorrection(plan.userId, plan.repository, correctionEvidence(plan))
+  }
   const quote = plan.review.requestQuote.trim()
   if (/^(?:thanks?\W*|thank you\W*|谢谢\W*|感谢\W*|好的\W*|ok\W*|[\p{Extended_Pictographic}\p{Emoji_Modifier}\s\uFE0F]+)$/iu.test(quote)) {
     throw new Error('acknowledgement is not continuation consent')
   }
+}
+function correctionEvidence(plan) {
+  return { grantId: plan.ownerAuthorization?.grantId, issueNumber: plan.issueNumber, commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 }
 }
 export async function verifyReplyRequest(github, plan) {
   validateReplyGrant(plan)
@@ -33,6 +44,7 @@ export async function verifyReplyRequest(github, plan) {
   if (request?.id !== plan.requestCommentId || digest(request.body) !== plan.requestBodySha256
     || request.updated_at !== plan.requestUpdatedAt
     || !request.body.includes(plan.review.requestQuote)) throw new Error('request changed, withdrawn, superseded or belongs to another person')
+  if (plan.review.kind === 'other-request' && isAdmissionRecheckRequest(request.body)) throw new Error('an admission recheck cannot bypass the terminal decision gate')
   const person = humanIdentity(await github.request('GET', `/user/${plan.userId}`))
   if (!person || person.node_id !== request.user.node_id) throw new Error('request author identity mismatch')
   return person
@@ -43,7 +55,9 @@ export async function sendReviewedReply({ github, plan, seed }) {
   const claim = await reserveContact({
     github, repository: 'AI-Scarlett/DSH-Store', key: plan.repository,
     recipient: person, claimId: digest(JSON.stringify(plan)), seed,
-    continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 },
+    ...(plan.operation === 'owner-authorized-admission-correction'
+      ? { ownerCorrection: correctionEvidence(plan) }
+      : { continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 } }),
   })
   if (!claim.allowed) return { sent: false, reason: claim.reason }
   // Recheck the request after the CAS; cancellation never returns the slot.
@@ -61,6 +75,12 @@ async function main() {
   const github = githubClient(process.env.GITHUB_TOKEN)
   const remote = await github.request('GET', `/repos/AI-Scarlett/DSH-Store/contents/${path}?ref=main`)
   if (remote.encoding !== 'base64' || digest(Buffer.from(remote.content, 'base64')) !== digest(bytes)) throw new Error('reply plan has not been published on main')
+  if (plan.review.kind === 'admission-recheck') {
+    const resolutionBytes = await readFile('registry/author-resolutions.json')
+    const remoteResolution = await github.request('GET', '/repos/AI-Scarlett/DSH-Store/contents/registry/author-resolutions.json?ref=main')
+    if (remoteResolution.encoding !== 'base64' || digest(Buffer.from(remoteResolution.content, 'base64')) !== digest(resolutionBytes)) throw new Error('resolution is not the reviewed main authority')
+    verifyReplyResolution(plan, resolutionBytes, (await loadCatalogFromFiles()).entries)
+  }
   process.stdout.write(`REQUESTED_REPLY ${JSON.stringify(await sendReviewedReply({ github, plan }))}\n`)
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) await main()

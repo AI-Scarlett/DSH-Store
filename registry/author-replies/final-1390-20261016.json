@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "operation": "owner-authorized-admission-correction",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1390,
+  "userId": 283827478,
+  "requestCommentId": 6213375613,
+  "requestBodySha256": "159fa3ed188899c9841a22d94ea1210909c5d60a7741d9ba078c884bddf49296",
+  "requestUpdatedAt": "2026-10-16T10:22:26Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请复核 `3955b4f` / `v0.17.6`。谢谢！",
+    "scope": "Deliver the completed exact-source admission decision and actionable acceptance criteria once under the finite owner correction grant.",
+    "kind": "admission-recheck"
+  },
+  "responseBody": "本次完整准入结论：0.17.6 / 3955b4f91ddb817d7bb0357da82cffd5d02fe4cb 暂不准入，剩余具体项为 AUTH001。你修复的默认值注释、出站守卫、加速下载披露已通过，draw_image Tool-view 归属也已审清。此前我们只回复整改核对，未完成整体判定，现补齐。\n\nlib/index.js:1688 的 isLocalRequest 仅检查本机 Host/socket，未校验调用方/Origin/跨站标记；3715 之后的状态 GET 还会改配置，4213 修复、4321 偏好接口同样依赖这一判断。请让 GET 只读、写入改为显式 POST JSON，并在私有操作前接入宿主请求信任/认证检查，缺失必需上下文时拒绝。验收要求：本机请求携带不可信 Origin 或 cross-site 标记时，在任何读写/命令前拒绝；可信请求正常。无需删绘图、加速和卡片功能。\n\n完整证据及验收条件：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md",
+  "ownerAuthorization": {
+    "source": "direct-user-request",
+    "grantId": "author-admission-final-20261016",
+    "quote": "允许本次各补发一条最终结论",
+    "scope": "One final admission correction for this exact already-consumed request only; all history, stops and no-retry rules preserved."
+  },
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "123e3c7f990f712d2f2046e8cd8f7a0391a6dd7353652cec63ee2d02303959b9"
+  }
+}

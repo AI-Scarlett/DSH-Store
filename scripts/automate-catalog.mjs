@@ -287,6 +287,7 @@ async function analyzeFixedSource(candidate, policy, github) {
     repositoryLicense: repositoryLicense ?? null,
     sourceUpdatedAt: metadata?.pushed_at ?? null,
     dependencies: Object.keys(dependencies).sort().slice(0, 50),
+    runtimeDependencies: dependencies,
   }
 }
 

@@ -129,7 +129,7 @@ function feedbackNotificationBody(items, catalogRunId) {
     '',
     `Catalog Run：#${feedbackText(catalogRunId)}`,
     '',
-    '以下作者评论明确涉及 DSH Store 自动化、扫描或通知问题，请人工核查并决定是否修复：',
+    '以下作者评论涉及商城问题或整改复检请求。复检必须产出固定 Commit 的正式准入结论：通过则更新 Catalog 并验证公网；不通过则列出具体位置、修改办法和验收条件。商城自身待办不算作者缺陷。',
     '',
     '| Issue | 作者 | 作者评论 | 摘要 |',
     '|---|---|---|---|',
@@ -137,7 +137,7 @@ function feedbackNotificationBody(items, catalogRunId) {
   for (const item of items) {
     lines.push(`| [#${item.issueNumber}](${item.issueUrl}) | ${feedbackText(item.author.login)} | [查看评论](${item.commentUrl}) | ${feedbackText(item.excerpt)} |`)
   }
-  lines.push('', '这条通知只表示已发现待人工处理的 DSH Store 问题，不会自动回复作者或授予继续联系权限。')
+  lines.push('', '发现请求、读取源码或发送回执均不等于处理完成；正式结论保存在 registry/author-resolutions.json。通知不自动授予继续联系权限，停止联系和中央去重规则继续有效。')
   const body = `${lines.join('\n')}\n`
   if (Buffer.byteLength(body) > 65_000) throw new Error('author feedback notification body exceeds the GitHub Issue bound')
   return body
