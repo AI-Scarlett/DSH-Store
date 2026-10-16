@@ -301,3 +301,67 @@ test('candidate coverage stays complete when a paused author also has a public-o
   assert.equal(p.summary.candidatePublicRegistryOnly, 1)
   validatePlan(p)
 })
+
+const correctionPerson = { id: 283827478, node_id: 'U_correction', login: 'yanfei0725', type: 'User' }
+const correction = { grantId: 'author-admission-final-20261016', issueNumber: 1390, commentId: 6213375613, requestHash: '159fa3ed188899c9841a22d94ea1210909c5d60a7741d9ba078c884bddf49296' }
+function correctionState() {
+  return { ...empty(), contacts: { [correctionPerson.id]: {
+    userId: correctionPerson.id, nodeId: correctionPerson.node_id, logins: [correctionPerson.login], stopped: false,
+    firstContact: { kind: 'historical', evidence: ['original'] },
+    reservations: { original: { kind: 'requested-reply', commentId: correction.commentId, requestHash: correction.requestHash } },
+  } } }
+}
+const reserveCorrection = (api, evidence = correction, extra = {}) => reserveContact({ github: api,
+  repository: 'AI-Scarlett/DSH-Store', key: 'AI-Scarlett/DSH-Store', recipient: correctionPerson,
+  claimId: 'a'.repeat(64), seed: empty(), ownerCorrection: evidence, ...extra })
+test('finite correction appends once and preserves the consumed request and original history', async () => {
+  const before = correctionState(), api = mock(before)
+  assert.equal((await reserveCorrection(api)).allowed, true)
+  verifyHistoryPreserved(api.state, before)
+  assert.equal((await reserveCorrection(api, correction, { claimId: 'b'.repeat(64) })).reason, 'correction-already-consumed')
+  assert.equal((await reserve(api, correctionPerson, 'c'.repeat(64))).allowed, false)
+  assert.equal(Object.keys(api.state.contacts[correctionPerson.id].reservations).length, 2)
+})
+test('correction refuses other people, requests, repositories, grant IDs and request hashes', async () => {
+  for (const evidence of [{ ...correction, commentId: 2 }, { ...correction, grantId: 'renewed' }, { ...correction, requestHash: 'b'.repeat(64) }, { ...correction, issueNumber: 1415 }]) {
+    await assert.rejects(reserveCorrection(mock(correctionState()), evidence), /finite owner/)
+  }
+  for (const extra of [{ recipient: bob }, { key: 'alice/one' }, { continuation: { commentId: 1 } }]) {
+    await assert.rejects(reserveCorrection(mock(correctionState()), correction, extra))
+  }
+})
+test('finite correction never overrides stops, quarantine, missing or mismatched original evidence', async () => {
+  for (const mutate of [
+    state => { state.contacts[correctionPerson.id].stopped = true },
+    state => { state.contacts[correctionPerson.id].reservations = {} },
+    state => { state.contacts[correctionPerson.id].reservations.original.requestHash = 'b'.repeat(64) },
+    state => { state.blockedRepositories.push('AI-Scarlett/DSH-Store') },
+    state => { state.blockedLogins.push(correctionPerson.login) },
+  ]) {
+    const state = correctionState(); mutate(state); const api = mock(state)
+    assert.equal((await reserveCorrection(api)).allowed, false); assert.equal(api.posts.length, 0)
+  }
+})
+test('uncertain correction CAS and failed outbound attempts consume the finite grant permanently', async () => {
+  const api = mock(correctionState()); api.failPutAfterCommit()
+  await assert.rejects(reserveCorrection(api), /uncertain PUT/)
+  assert.equal((await reserveCorrection(api)).reason, 'correction-already-consumed')
+  const second = mock(correctionState()); await reserveCorrection(second); second.failMessage()
+  await assert.rejects(second.request('POST', '/repos/AI-Scarlett/DSH-Store/issues/1390/comments', { body: 'final' }), /uncertain delivery/)
+  assert.equal((await reserveCorrection(second, correction, { claimId: 'e'.repeat(64) })).allowed, false)
+  assert.equal(second.posts.length, 1)
+})
+test('correction request is consumed once under concurrent reservations', async () => {
+  const api = mock(correctionState())
+  const result = await Promise.all([reserveCorrection(api), reserveCorrection(api, correction, { claimId: 'b'.repeat(64) })])
+  assert.equal(result.filter(r => r.allowed).length, 1)
+})
+test('main-reviewed finite plans retain exact terminal decision bindings and owner approval', async () => {
+  for (const number of [1390, 1415]) {
+    const p = JSON.parse(await readFile(new URL(`../registry/author-replies/final-${number}-20261016.json`, import.meta.url)))
+    validateReplyGrant(p)
+    assert.equal(p.review.kind, 'admission-recheck')
+    assert.throws(() => validateReplyGrant({ ...p, userId: 101 }), /finite owner/)
+    assert.throws(() => validateReplyGrant({ ...p, ownerAuthorization: { ...p.ownerAuthorization, quote: 'Thanks' } }), /approval/)
+  }
+})

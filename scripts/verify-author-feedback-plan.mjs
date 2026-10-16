@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validateReplyGrant } from './reply-author-contact.mjs'
 import { verifyReplyResolution } from '../src/author-resolution.mjs'
 export const planPath = 'docs/ops/author-feedback-resolution-20261015.json'
 const hash = bytes => bytes === null ? null : createHash('sha256').update(bytes).digest('hex')
@@ -41,6 +42,7 @@ function main() {
       const added = git('diff', '--name-only', '--diff-filter=A', from, to, '--', 'registry/author-replies').split('\n').filter(Boolean)
       for (const path of added) {
         const reply = JSON.parse(readFileSync(path))
+        validateReplyGrant(reply)
         if (!['admission-recheck', 'other-request'].includes(reply.review?.kind)) throw new Error('new reply must classify the verified request')
         if (reply.review.kind === 'admission-recheck') verifyReplyResolution(reply, readFileSync('registry/author-resolutions.json'))
       }

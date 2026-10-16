@@ -79,3 +79,10 @@ are separate acceptance gates and must never be inferred from unit tests.
     用 registry/author-resolutions.json 将请求、身份、源码绑定和最终 Catalog 状态一致保存。
     新增专属回复计划必须引用该记录的 SHA-256，CI 拒绝只有复核回执、没有最终判定的计划。
     作者感谢、单纯改代码、重复任务不增加联系名额；以上流程不放宽第 13–16 条。
+
+18. 2026-10-16 用户逐项授权的有限补正例外：仅对 #1390 / 用户 ID 283827478 /
+    请求 6213375613 和 #1415 / 用户 ID 132990250 / 请求 6213790736 各补发一次
+    最终准入结论。授权原文：“允许本次各补发一条最终结论”。仅允许 main-reviewed
+    final-1390-20261016.json、final-1415-20261016.json，经同一中央账本新增
+    owner-authorized-admission-correction 预留；保留原请求占用、历史、停止联系和
+    不重试规则。修改正文、计划摘要、claim 或重新调度都不能恢复名额。不适用于其他请求。

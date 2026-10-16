@@ -29,7 +29,17 @@
     "docs/reviews/author-admission-decisions-20261016.json",
     "docs/reviews/author-admission-decisions-20261016.md",
     ".github/workflows/author-notifications.yml",
-    "scripts/reply-author-contact.mjs"
+    "scripts/reply-author-contact.mjs",
+    "package.json",
+    "test/contracts.test.mjs",
+    "test/upgrade-matrix.test.mjs",
+    "test/catalog.test.mjs",
+    "README.md",
+    "scripts/author-contact-state.mjs",
+    "registry/author-batches/final-20261016.json",
+    "registry/author-replies/final-1390-20261016.json",
+    "registry/author-replies/final-1415-20261016.json",
+    "test/author-contact-policy.test.mjs"
   ],
   "preconditions": {
     "docs/ops/author-feedback-resolution-20261015.json": "7eb6c65bc768d488852c682aaf853edd7b6d194d1d8d82d2268141f4247da588",
@@ -56,17 +66,27 @@
     "docs/reviews/author-admission-decisions-20261016.json": null,
     "docs/reviews/author-admission-decisions-20261016.md": null,
     ".github/workflows/author-notifications.yml": "b358439799d84cb2bf4438626f442ebb89f023096344167b1d1cf59a9a055217",
-    "scripts/reply-author-contact.mjs": "449eac7a462ed431b64e902f226ef2e90fdf8f6300a1e5030e0aa0a5aacabb3f"
+    "scripts/reply-author-contact.mjs": "449eac7a462ed431b64e902f226ef2e90fdf8f6300a1e5030e0aa0a5aacabb3f",
+    "package.json": "46ae38f185996f7fcebcdae11b7c458d07712741f1e8a5636735c105af14a094",
+    "test/contracts.test.mjs": "850a7b789638921d5200e42aa3aff9ce23dc31cf04659d601df01fe319d8e8de",
+    "test/upgrade-matrix.test.mjs": "2b4a60914b6a6a3bc7a15a63541952c3d0c6675fde2e0749f20334705e0c57e3",
+    "test/catalog.test.mjs": "2193cb39d35a477dbdc16b28fda6a103148ece7fc93d386fbebb11ef222e52bf",
+    "README.md": "96777d407ebe4c5cabf1cfdc53e1dc04ade29f1c54954112ffe9cca8536f73d6",
+    "scripts/author-contact-state.mjs": "c78f5811d8953f4fb7b933028a788b46d25abb5331176711f3b67fbeeb7cc5c0",
+    "registry/author-batches/final-20261016.json": null,
+    "registry/author-replies/final-1390-20261016.json": null,
+    "registry/author-replies/final-1415-20261016.json": null,
+    "test/author-contact-policy.test.mjs": "40b187d58189a5fc47cfb8cba0f81e0e511a295e3712e3a08fe31e59b6cbe2bb"
   },
   "postconditions": {
-    "AGENTS.md": "d35126fe132d2884e28d2ea4dc08f3e5a9e827e1600149d98c78803b65758e66",
+    "AGENTS.md": "7098311eeb893df1d3fd1a34600a2abeea39ae93959751b2dfbf094dff1750af",
     "src/admission-review.mjs": "1317b2f6b98a368bb45e167c077007e53dde5bfb92c064a74064c7ad32b5606c",
     "src/fixed-source-review.mjs": "2ba4c4078d9d7f358dff208914d15cb8bf9001bad6a63c037f3430e5460609c1",
     "src/author-resolution.mjs": "75cd09c8774aaebcb4ac9feafdf131fe69f7b653bd77f58b2461b534452d8405",
     "scripts/collect-author-feedback.mjs": "59c7ba0b000b222e7596aafc31def0f69739e6bdb7e3cacf56203a7a7857a71f",
     "scripts/catalog-report-delivery.mjs": "0c8eb9d40038fac8cf81714f65ae8f6df7801b3c31b0244a33acc73c2371963e",
     "scripts/validate-registry.mjs": "e0fa7b2bbf9192f875ad3e8489ce6d1c5c578b17c3912d737cb3b66b6ce27579",
-    "scripts/verify-author-feedback-plan.mjs": "de55223f4d0aaf2bee3ea458a1250daa954d12a8be4aca392ae6a9388ae38cf4",
+    "scripts/verify-author-feedback-plan.mjs": "52b8aef49dcd5dbee7eaff8296a2bdad6172ea83da4faaa1d8a3a05c7b9e2e52",
     "scripts/automate-catalog.mjs": "30061efcf46e13ee01c03b92a8890eaae7577c8a0bdac020874166a9388d8432",
     "test/admission-policy-v2.test.mjs": "76a88c91033f75f3611667a6383de8bd80bc1b01a5536391abecd7bc107ea51b",
     "test/author-feedback.test.mjs": "0331539979b1827f7f1bcbc66fca1a6e82b1a00b624bf7ab37ff439a3ee74361",
@@ -79,15 +99,33 @@
     "registry/catalog/details/dsh-web-search-fetch.json": "6a1125b1e3429773648b29c0ccd3d483d6214b2de39e13537ea5a08f14ab4685",
     "marketplace/standards/index.html": "718737802151ed3fdbe371da3a488c66a7522f2138da82d1471125d873db59b0",
     "marketplace/standards/standards.js": "8fd6cea48911f809eecdab5d9eba5262c8ab697fa51db8c85874450a4e277be4",
-    "docs/reviews/author-admission-decisions-20261016.json": "44baec08812446387b9ccc2898a857f95c606e144cbde7390012c48f9a9183f0",
-    "docs/reviews/author-admission-decisions-20261016.md": "62874faa9728907fba0c3b922dc37c61dd83afd89c704129cd82bd7fe190969d",
+    "docs/reviews/author-admission-decisions-20261016.json": "6ef06ad3b3c65998bed914be40d34db117a9e5104da0221b857a900b0292767f",
+    "docs/reviews/author-admission-decisions-20261016.md": "29d74ca8b7443187727b4f53bc354c95cc747df9c1440723cad8a26521362008",
     ".github/workflows/author-notifications.yml": "3e1dae466cf93e978119b6e4a4beea49249f8dfb206559e6977c4a2f81ce773b",
-    "scripts/reply-author-contact.mjs": "450f94b46c2d4afa999f94cfa9d98dfbdb38ee4960c8d38287ae46f362912e15"
+    "scripts/reply-author-contact.mjs": "1349a188ef1c2f60fb2b40dc59103e7ecdd5ba3c36f33a95547ed31f6fdf9539",
+    "package.json": "8d662f5268d8c57c123dc5faae6b4ba571837b15cbc35a121bcc124f832ae670",
+    "test/contracts.test.mjs": "ac39a019b41f628bb89db5e03c9f8799e586b2b2281e84befaba6819ff610b77",
+    "test/upgrade-matrix.test.mjs": "d894d0dc12994aede15c216880b4bc954859179fd34e247456c30e7cdc1b1420",
+    "test/catalog.test.mjs": "3494500b1cdd76f7e300869e8ce5a08de7217ac7ccd442363d79b69d9bd3a5ed",
+    "README.md": "a69193445549ca2b05faecdbaba87286a3194d3e1d8f341f54c3052a9726931c",
+    "scripts/author-contact-state.mjs": "450ac95f3c810c93a4be37acaabffe4a3c3881b8c12d8bba2244d066b0f35559",
+    "registry/author-batches/final-20261016.json": "3d45dcae87ca8fea67fca32d35fd68ba89a098de1761b6f7803869dd2f989e1d",
+    "registry/author-replies/final-1390-20261016.json": "103ea398c4aa74ccec3e80bcea7865768f6e16759e50c2dea53a1e55aeffdf9b",
+    "registry/author-replies/final-1415-20261016.json": "fab8a0d8e5bf5953655e63eeb6313bb63c411f0b47bc0b88337a4b97dbea64be",
+    "test/author-contact-policy.test.mjs": "95a645b1c7085b7a6a063d9939008461cf4c5c52fc8b074a60aa75a68f99fa5d"
   },
   "authorization": {
     "source": "direct-user-request",
     "request": "作者修改后直接判断是否达到收录条件，达到了就收录，未达到就告诉作者应该怎么处理；以后同类问题全部闭环",
-    "githubWriteCredential": "short-lived-token-required"
+    "githubWriteCredential": "short-lived-token-required",
+    "ownerCorrection": {
+      "grantId": "author-admission-final-20261016",
+      "quote": "允许本次各补发一条最终结论",
+      "requests": [
+        6213375613,
+        6213790736
+      ]
+    }
   },
   "gates": [
     "complete fixed-Commit source review",
@@ -96,7 +134,8 @@
     "npm run check",
     "base and exact file hashes",
     "CI-checked PR",
-    "public readback of Catalog and decisions on all four surfaces"
+    "public readback of Catalog and decisions on all four surfaces",
+    "official alpha.5 isolated install/start/uninstall and cross-platform CI before any publication"
   ],
   "rollback": {
     "source": "CI-checked revert through recoverable Git history",
@@ -109,10 +148,11 @@
       "1390": "rejected-AUTH001",
       "1415": "rejected-SUPPLY001"
     },
-    "checksPassed": 463,
+    "checksPassed": 469,
     "outreachSent": 0,
-    "outreachState": "prior-requests-consumed; one-time-correction-authorization-pending",
+    "outreachState": "finite-owner-corrections-authorized-not-yet-sent",
     "thirdPartyCodeExecuted": false,
-    "realProfileChanged": false
+    "realProfileChanged": false,
+    "officialAlpha5": "proposed declaration; real runtime CI must pass before merge"
   }
 }

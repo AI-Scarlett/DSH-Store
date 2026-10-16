@@ -5,13 +5,13 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { githubClient } from './author-contact-http.mjs'
-import { humanIdentity, contactBody, digest, reserveContact, requireRepository } from './author-contact-state.mjs'
+import { humanIdentity, contactBody, digest, reserveContact, requireRepository, validateOwnerCorrection, CORRECTION_GRANT, CORRECTION_QUOTE } from './author-contact-state.mjs'
 import { verifyReplyResolution } from '../src/author-resolution.mjs'
 import { loadCatalogFromFiles } from '../src/catalog.mjs'
 import { isAdmissionRecheckRequest } from './collect-author-feedback.mjs'
 
 export function validateReplyGrant(plan) {
-  if (plan?.schemaVersion !== 1 || plan.operation !== 'requested-author-reply'
+  if (plan?.schemaVersion !== 1 || !['requested-author-reply', 'owner-authorized-admission-correction'].includes(plan.operation)
     || plan.review?.decision !== 'explicit-request-to-continue'
     || typeof plan.review.scope !== 'string' || !plan.review.scope.trim()
     || typeof plan.review.requestQuote !== 'string' || !plan.review.requestQuote.trim()
@@ -22,10 +22,18 @@ export function validateReplyGrant(plan) {
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || typeof plan.responseBody !== 'string' || !plan.responseBody.trim()) throw new Error('explicit reviewed continuation request required')
   requireRepository(plan.repository)
+  if (plan.operation === 'owner-authorized-admission-correction') {
+    if (plan.ownerAuthorization?.source !== 'direct-user-request' || plan.ownerAuthorization.quote !== CORRECTION_QUOTE
+      || plan.ownerAuthorization.grantId !== CORRECTION_GRANT || plan.review.kind !== 'admission-recheck') throw new Error('finite owner correction approval required')
+    validateOwnerCorrection(plan.userId, plan.repository, correctionEvidence(plan))
+  }
   const quote = plan.review.requestQuote.trim()
   if (/^(?:thanks?\W*|thank you\W*|谢谢\W*|感谢\W*|好的\W*|ok\W*|[\p{Extended_Pictographic}\p{Emoji_Modifier}\s\uFE0F]+)$/iu.test(quote)) {
     throw new Error('acknowledgement is not continuation consent')
   }
+}
+function correctionEvidence(plan) {
+  return { grantId: plan.ownerAuthorization?.grantId, issueNumber: plan.issueNumber, commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 }
 }
 export async function verifyReplyRequest(github, plan) {
   validateReplyGrant(plan)
@@ -47,7 +55,9 @@ export async function sendReviewedReply({ github, plan, seed }) {
   const claim = await reserveContact({
     github, repository: 'AI-Scarlett/DSH-Store', key: plan.repository,
     recipient: person, claimId: digest(JSON.stringify(plan)), seed,
-    continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 },
+    ...(plan.operation === 'owner-authorized-admission-correction'
+      ? { ownerCorrection: correctionEvidence(plan) }
+      : { continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 } }),
   })
   if (!claim.allowed) return { sent: false, reason: claim.reason }
   // Recheck the request after the CAS; cancellation never returns the slot.

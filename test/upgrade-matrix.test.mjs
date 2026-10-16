@@ -11,16 +11,16 @@ test('client peer declarations match the official Host pre-install contract', as
   assert.ok(clients.includes(runtime))
   const runtimeAlternatives = manifest.peerDependencies[runtime].split(' || ')
   assert.ok(runtimeAlternatives.includes('>=0.1.0-rc.6 <0.2.0'))
-  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4']) {
+  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5']) {
     assert.ok(runtimeAlternatives.includes(release), `Host pre-install check requires runtime ${release}`)
   }
   for (const name of clients.filter(value => value !== runtime)) {
     const alternatives = manifest.peerDependencies[name].split(' || ')
-    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4']) {
+    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5']) {
       assert.ok(alternatives.includes(release), `${name} must explicitly support published ${release}`)
     }
     assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
-    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 4)
+    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 5)
     assert.ok(!alternatives.includes('*'))
   }
 })
@@ -109,7 +109,7 @@ test('matrix resolver passes the short-lived credential only to authority fetch 
     assert.equal(options.githubToken, 'fixture-short-lived-token')
     assert.equal(options.releaseCount, 3)
     return { authority: 'official-github-releases-and-npm-published-versions', releaseCount: 3,
-      releases: ['0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4'], latestVersion: '0.2.1-alpha.4', channels: [] }
+      releases: ['0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5'], latestVersion: '0.2.1-alpha.5', channels: [] }
   }, { githubToken: 'fixture-short-lived-token' })
   assert.doesNotMatch(JSON.stringify(result), /fixture-short-lived-token/)
 })

@@ -98,15 +98,39 @@ export async function readContactState(github, repository, seed) {
 }
 // This is the only permission-consuming writer. A reservation is never undone,
 // including on timeout or failed readback. CAS conflicts are re-evaluated, not sent.
-export async function reserveContact({ github, repository, recipient, key, claimId, seed, continuation = null }) {
+// Finite owner grant: these two already-consumed requests only. It never renews
+// ordinary consent, permits another channel, or overrides a stop.
+export const CORRECTION_GRANT = 'author-admission-final-20261016'
+export const CORRECTION_QUOTE = '允许本次各补发一条最终结论'
+const corrections = new Map([
+  [283827478, { issueNumber: 1390, commentId: 6213375613, requestHash: '159fa3ed188899c9841a22d94ea1210909c5d60a7741d9ba078c884bddf49296' }],
+  [132990250, { issueNumber: 1415, commentId: 6213790736, requestHash: 'b0547a90c89c73fefcefd5a21bdd893f6df5c4640c2ad371f433d54d79b766e7' }],
+])
+export function validateOwnerCorrection(userId, key, correction) {
+  const approved = corrections.get(userId)
+  if (!approved || key !== 'AI-Scarlett/DSH-Store' || correction?.grantId !== CORRECTION_GRANT
+    || Object.entries(approved).some(([field, value]) => correction[field] !== value)) throw new Error('outside finite owner correction grant')
+}
+export async function reserveContact({ github, repository, recipient, key, claimId, seed, continuation = null, ownerCorrection = null }) {
   const person = humanIdentity(recipient)
   if (!person || !/^[0-9a-f]{24,64}$/.test(claimId)) throw new Error('invalid contact reservation')
   requireRepository(key)
+  if (ownerCorrection) {
+    if (continuation) throw new Error('ambiguous contact reservation')
+    validateOwnerCorrection(person.id, key, ownerCorrection)
+  }
   for (let attempt = 0; attempt < 5; attempt++) {
     const snapshot = await readContactState(github, repository, seed)
     const decision = contactDecision(snapshot.state, person, key)
     const existing = snapshot.state.contacts[String(person.id)]
-    if (continuation) {
+    if (ownerCorrection) {
+      if (!existing || existing.stopped || existing.nodeId !== person.node_id
+        || snapshot.state.blockedRepositories.some(value => value.toLowerCase() === key.toLowerCase())
+        || snapshot.state.blockedLogins.some(value => value.toLowerCase() === person.login.toLowerCase())) return { allowed: false, reason: 'no-correction-permission' }
+      const history = Object.values(existing.reservations)
+      if (history.some(item => item.kind === 'owner-authorized-admission-correction' && item.commentId === ownerCorrection.commentId)) return { allowed: false, reason: 'correction-already-consumed' }
+      if (!history.some(item => item.kind === 'requested-reply' && item.commentId === ownerCorrection.commentId && item.requestHash === ownerCorrection.requestHash)) return { allowed: false, reason: 'missing-original-request-reservation' }
+    } else if (continuation) {
       // Only the separately reviewed, live-verified reply command supplies this.
       if (!existing || existing.stopped || existing.nodeId !== person.node_id) return { allowed: false, reason: 'no-continuation-permission' }
       if (!/^[1-9][0-9]*$/.test(String(continuation.commentId))
@@ -116,7 +140,7 @@ export async function reserveContact({ github, repository, recipient, key, claim
       }
     } else if (decision !== 'first-contact') return { allowed: false, reason: decision }
     const state = structuredClone(snapshot.state)
-    const reservation = { kind: continuation ? 'requested-reply' : 'first-contact', key: key.toLowerCase(), reservedAt: new Date().toISOString(), ...(continuation ?? {}) }
+    const reservation = { kind: ownerCorrection ? 'owner-authorized-admission-correction' : continuation ? 'requested-reply' : 'first-contact', key: key.toLowerCase(), reservedAt: new Date().toISOString(), ...(ownerCorrection ?? continuation ?? {}) }
     const record = state.contacts[String(person.id)] ?? {
       userId: person.id, nodeId: person.node_id, logins: [person.login],
       stopped: false, firstContact: { kind: 'reserved', claimId }, reservations: {},
@@ -142,8 +166,9 @@ export async function reserveContact({ github, repository, recipient, key, claim
     for (let readbackAttempt = 0; readbackAttempt < RESERVATION_READBACK_ATTEMPTS; readbackAttempt += 1) {
       const confirmed = await readContactState(github, repository, seed)
       const committed = confirmed.state.contacts[String(person.id)]
-      if (committed) {
-        if (committed.stopped || JSON.stringify(committed.reservations[claimId]) !== JSON.stringify(reservation)) {
+      if (committed?.stopped) throw new Error('contact stopped after reservation; do not send')
+      if (committed?.reservations[claimId]) {
+        if (JSON.stringify(committed.reservations[claimId]) !== JSON.stringify(reservation)) {
           throw new Error('contact reservation readback failed; do not send')
         }
         return { allowed: true, claimId }
