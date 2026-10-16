@@ -1,0 +1,1779 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-fixed-source-review",
+  "commit": "503ed0df8df0492ec24247c10b4c93644688d371",
+  "canonicalPublicRepository": true,
+  "manifest": {
+    "name": "dsh-safe-plugin-manager",
+    "version": "0.9.5",
+    "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/AI-Scarlett/DSH-Store.git"
+    },
+    "homepage": "https://dsh.store/",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.mjs",
+    "bin": {
+      "dsh-store-repair": "./bin/dsh-store-repair.mjs"
+    },
+    "exports": {
+      ".": "./src/index.mjs",
+      "./client": "./src/client.js",
+      "./catalog": "./src/catalog.mjs",
+      "./candidates": "./src/candidates.mjs",
+      "./cordis.patch.yml": "./cordis.patch.yml",
+      "./package.json": "./package.json"
+    },
+    "files": [
+      "bin",
+      "src",
+      "registry",
+      "marketplace",
+      "cordis.patch.yml",
+      "README.md",
+      "SECURITY.md",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "dsh": {
+      "bundle": {
+        "patch": "./cordis.patch.yml"
+      },
+      "client": {
+        "inject": [
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-client-ui-primitives",
+          "@deepseek-ai/dsh-client-ui-slots",
+          "@deepseek-ai/dsh-client-ui-settings"
+        ],
+        "platform": "web"
+      },
+      "compatibility": {
+        "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4",
+        "dshReleases": {
+          "rc.7": "compatible",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible",
+          "0.1.1-rc.2": "compatible",
+          "0.1.2-alpha.2": "compatible",
+          "0.1.2-alpha.3": "compatible",
+          "0.1.2-alpha.4": "compatible",
+          "0.1.2-alpha.5": "compatible",
+          "0.1.3-alpha.1": "compatible",
+          "0.1.3-alpha.2": "unknown",
+          "0.1.5-alpha.1": "compatible",
+          "0.1.5-alpha.2": "compatible",
+          "0.1.5-rc.1": "compatible",
+          "0.1.5-rc.2": "compatible",
+          "0.1.6-alpha.1": "unknown",
+          "0.1.7-alpha.1": "compatible",
+          "0.1.7-alpha.2": "compatible",
+          "0.1.7-rc.1": "compatible",
+          "0.1.7-rc.2": "compatible",
+          "0.2.0-rc.1": "compatible",
+          "0.2.0-rc.2": "compatible",
+          "0.2.1-alpha.1": "compatible",
+          "0.2.1-alpha.2": "compatible",
+          "0.2.1-alpha.3": "compatible",
+          "0.2.1-alpha.4": "compatible"
+        },
+        "dshOperations": {
+          "0.1.7-alpha.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-alpha.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.0-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.0-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.3": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        }
+      }
+    },
+    "engines": {
+      "node": "^22.19.0 || >=24.0.0",
+      "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4"
+    },
+    "scripts": {
+      "check": "node --check src/native-market-index.mjs && node --check scripts/verify-dsh-upgrade-plan.mjs && node --check scripts/verify-native-market-official.mjs && node --check scripts/close-author-contact.mjs && node --check scripts/verify-author-feedback-plan.mjs && node --check src/index.mjs && node --check src/inventory.mjs && node --check src/catalog.mjs && node --check src/dsh-release-policy.mjs && node --check marketplace/lib/dsh-release-policy.js && node --check src/catalog-compatibility-policy.mjs && node --check src/candidate-retention-policy.mjs && node --check src/catalog-localization.mjs && node --check src/catalog-update-review.mjs && node --check src/candidates.mjs && node --check src/source-update.mjs && node --check src/submission-security-scan.mjs && node --check src/discovery-index-validation.mjs && node --check src/dsh-version.mjs && node --check src/cold-start.mjs && node --check src/dsh.mjs && node --check src/guardian.mjs && node --check src/guardian-daemon.mjs && node --check src/guardian-upgrader.mjs && node --check src/health.mjs && node --check src/legacy-repair.mjs && node --check src/managed-patch.mjs && node --check src/operations.mjs && node --check src/panel.mjs && node --check src/provenance.mjs && node --check src/restart.mjs && node --check src/runtime.mjs && node --check src/telemetry.mjs && node --check src/client.js && node --check bin/dsh-store-repair.mjs && node --check install-counter/src/worker.mjs && node --check marketplace/app.js && node --check marketplace/scan-history-nav.js && node --check marketplace/downloads/downloads.js && node --check marketplace/rankings/model.js && node --check marketplace/rankings/rankings.js && node --check marketplace/scans/scans.js && node --check marketplace/build/build.js && node --check marketplace/about/about.js && node --check marketplace/community/community.js && node --check marketplace/faq/faq.js && node --check marketplace/repair/repair.js && node --check marketplace/standards/standards.js && node --check scripts/apply-author-notice-plan.mjs && node --check scripts/automate-catalog.mjs && node --check scripts/build-marketplace-static.mjs && node --check scripts/build-plugin-discovery-index.mjs && node --check scripts/catalog-report-delivery.mjs && node --check scripts/collect-author-feedback.mjs && node --check scripts/check-plugin-submission.mjs && node --check scripts/localize-catalog.mjs && node --check scripts/plan-author-notices.mjs && node --check scripts/render-catalog-automation-notification.mjs && node --check scripts/resolve-author-notice-targets.mjs && node --check scripts/serve-marketplace.mjs && node --check scripts/submit-indexnow.mjs && node --check scripts/sync-catalog-source-metadata.mjs && node --check scripts/verify-marketplace-public.mjs && node --check src/source-scan-policy.mjs && node --check src/bundle-patch-contract.mjs && node --check src/admission-review.mjs && node --check src/catalog-migration.mjs && node --check src/fixed-source-review.mjs && node --check scripts/reassess-admission.mjs && node --check scripts/verify-admission-plan.mjs && npm run validate:registry && npm test",
+      "build:marketplace": "node scripts/build-marketplace-static.mjs",
+      "dev:marketplace": "node scripts/serve-marketplace.mjs",
+      "test": "node --test \"test/*.test.mjs\"",
+      "automate:catalog": "node scripts/automate-catalog.mjs",
+      "localize:catalog": "node scripts/localize-catalog.mjs",
+      "validate:registry": "node scripts/validate-registry.mjs",
+      "verify:marketplace-public": "node scripts/verify-marketplace-public.mjs",
+      "verify:registry-sources": "node scripts/verify-registry-sources.mjs",
+      "build:discovery-index": "node scripts/build-plugin-discovery-index.mjs",
+      "verify:admission-plan": "node scripts/verify-admission-plan.mjs",
+      "reassess:admission": "node scripts/reassess-admission.mjs"
+    },
+    "peerDependencies": {
+      "@deepseek-ai/dsh-client-runtime": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4",
+      "@deepseek-ai/dsh-client-ui-primitives": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4",
+      "@deepseek-ai/dsh-client-ui-settings": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4",
+      "@deepseek-ai/dsh-client-ui-slots": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4",
+      "react": ">=18.2.0"
+    },
+    "license": "MIT"
+  },
+  "candidate": {
+    "id": "dsh-safe-plugin-manager",
+    "name": "安全插件商城（DSH-Store）",
+    "packageName": "dsh-safe-plugin-manager",
+    "description": "DSH STORE 0.9.0：官方登录校验、持久化安装更新记录、真实回滚与生效状态、兼容筛选、本机收藏备注；固定提交审核和作者全局一次联系规则保持不变。",
+    "searchTerms": [
+      "安全插件商城",
+      "DSH-Store",
+      "dsh-safe-plugin-manager",
+      "安全",
+      "审计",
+      "验证",
+      "防护",
+      "插件市场",
+      "商城",
+      "插件发现",
+      "管理工具",
+      "插件管理",
+      "管理",
+      "dsh",
+      "safe",
+      "plugin",
+      "manager",
+      "ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED",
+      "安全修复",
+      "repair"
+    ],
+    "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+    "defaultBranch": "main",
+    "manifestPath": "package.json",
+    "installPath": null,
+    "updatePolicy": null,
+    "commit": "503ed0df8df0492ec24247c10b4c93644688d371",
+    "version": "0.9.5",
+    "categories": [
+      "marketplace",
+      "management"
+    ],
+    "featured": true,
+    "installCount": null,
+    "source": {
+      "updatedAt": "2026-10-14T20:07:37.000Z",
+      "observedAt": "2026-10-15T03:36:12.000Z",
+      "provenance": "github-commit"
+    },
+    "assurance": {
+      "discovery": {
+        "status": "verified",
+        "method": "automated-fixed-source-update-v3",
+        "checkedAt": "2026-10-15T03:36:12.000Z",
+        "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7dd8b5a3c20ebe8ead7bd586e05c72acf95bc30a",
+        "dshRelease": null,
+        "systems": [],
+        "profiles": [],
+        "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      },
+      "installability": {
+        "status": "unknown",
+        "method": null,
+        "checkedAt": null,
+        "evidenceUrl": null,
+        "dshRelease": null,
+        "systems": [],
+        "profiles": [],
+        "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      },
+      "runtime": {
+        "status": "unknown",
+        "method": null,
+        "checkedAt": null,
+        "evidenceUrl": null,
+        "dshRelease": null,
+        "systems": [],
+        "profiles": [],
+        "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      },
+      "securityReview": {
+        "status": "unknown",
+        "method": null,
+        "checkedAt": null,
+        "evidenceUrl": null,
+        "dshRelease": null,
+        "systems": [],
+        "profiles": [],
+        "summary": "Automated fixed-source review is not an independent security audit."
+      }
+    },
+    "entryIds": [
+      "dsh-safe-plugin-manager"
+    ],
+    "status": "approved",
+    "statusReason": null,
+    "compatibility": {
+      "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4",
+      "dshReleases": {
+        "rc.7": "compatible",
+        "rc.8": "compatible",
+        "0.1.1-rc.1": "compatible",
+        "0.1.1-rc.2": "compatible",
+        "0.1.2-alpha.2": "compatible",
+        "0.1.2-alpha.3": "compatible",
+        "0.1.2-alpha.4": "compatible",
+        "0.1.2-alpha.5": "compatible",
+        "0.1.3-alpha.1": "compatible",
+        "0.1.3-alpha.2": "unknown",
+        "0.1.5-alpha.1": "compatible",
+        "0.1.5-alpha.2": "compatible",
+        "0.1.5-rc.1": "compatible",
+        "0.1.5-rc.2": "compatible",
+        "0.1.6-alpha.1": "unknown",
+        "0.1.7-alpha.1": "compatible",
+        "0.1.7-alpha.2": "compatible",
+        "0.1.7-rc.1": "compatible",
+        "0.1.7-rc.2": "compatible",
+        "0.2.0-rc.1": "compatible",
+        "0.2.0-rc.2": "compatible",
+        "0.2.1-alpha.1": "compatible",
+        "0.2.1-alpha.2": "compatible",
+        "0.2.1-alpha.3": "compatible",
+        "0.2.1-alpha.4": "compatible"
+      },
+      "dshOperations": {
+        "0.1.7-alpha.1": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.1.7-alpha.2": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.1.7-rc.1": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.1.7-rc.2": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.2.0-rc.1": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.2.0-rc.2": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.2.1-alpha.1": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.2.1-alpha.2": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "passed"
+        },
+        "0.2.1-alpha.3": {
+          "install": "passed",
+          "start": "passed",
+          "uninstall": "passed",
+          "rollback": "unknown"
+        },
+        "0.2.1-alpha.4": {
+          "install": "unknown",
+          "start": "unknown",
+          "uninstall": "unknown",
+          "rollback": "unknown"
+        }
+      },
+      "node": "^22.19.0 || >=24.0.0",
+      "systems": [],
+      "profiles": [
+        "web"
+      ]
+    },
+    "details": {
+      "pluginType": "feature",
+      "installSource": "github",
+      "license": "MIT",
+      "permissions": {
+        "level": "high",
+        "files": "write",
+        "network": "specified-services",
+        "commands": "restricted",
+        "credentials": [
+          "none"
+        ]
+      },
+      "externalDependencies": [
+        "GitHub Raw/API",
+        "macOS launchd (optional bundled Guardian)"
+      ],
+      "reviewStatus": "author-verified"
+    },
+    "risk": {
+      "installScripts": [],
+      "review": "owner-curated-not-security-audited"
+    }
+  },
+  "analysis": {
+    "reasons": [
+      "fixed-source security findings require quarantine",
+      "fixed-source security warnings require review",
+      "runtime source contains the files permission signal",
+      "runtime source contains the network permission signal",
+      "runtime source contains the commands permission signal",
+      "runtime source contains the credentials permission signal",
+      "runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "Tool-view extension requires key ownership review; registration alone is not a protected component mutation"
+    ],
+    "signals": {
+      "files": true,
+      "network": true,
+      "commands": true,
+      "credentials": true,
+      "protectedDsh": false,
+      "nativeOrExecutableArtifacts": true
+    },
+    "securityScan": {
+      "engine": "dsh-store-submission-static-v1",
+      "policy": "high-risk-block-cli-capability-warn-v1",
+      "verdict": "fail",
+      "complete": true,
+      "scopeReasons": [],
+      "filesScanned": 107,
+      "eligibleFiles": 107,
+      "skippedOversize": 0,
+      "skippedUnsupported": 0,
+      "capped": false,
+      "counts": {
+        "critical": 1,
+        "warning": 11,
+        "info": 0
+      },
+      "findings": [
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "marketplace/articles/articles.json",
+          "line": 58
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "registry/author-replies/255.json",
+          "line": 11
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/automation-source-policy.mjs",
+          "line": 8
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/dsh.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian-daemon.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian-upgrader.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian.mjs",
+          "line": 2
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/legacy-repair.mjs",
+          "line": 2
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/source-update.mjs",
+          "line": 13
+        },
+        {
+          "rule": "crypto-miner",
+          "category": "mining",
+          "severity": "critical",
+          "message": "发现加密货币挖矿特征。",
+          "file": "src/submission-security-scan.mjs",
+          "line": 58
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/submission-security-scan.mjs",
+          "line": 68
+        },
+        {
+          "rule": "download-and-execute",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现下载后直接交给 Shell 或 PowerShell 执行的链路。",
+          "file": "src/submission-security-scan.mjs",
+          "line": 78
+        }
+      ],
+      "findingsTruncated": false
+    },
+    "engine": "bounded-source-v3",
+    "sourceDigest": "b6eb8ef652060abb6d9dc9bef4c37aa23bad294aff378466680e91691f262404",
+    "sourceEvidence": [
+      {
+        "file": "bin/dsh-store-repair.mjs",
+        "bytes": 4721,
+        "blob": "a9d5ca84caf8479391f14120140d29f9acdcbdd2",
+        "sha256": "4af01934d3c110950eb20d26246b61e376f3d777c7e82bd7e50c24492933b0f3"
+      },
+      {
+        "file": "cordis.patch.yml",
+        "bytes": 415,
+        "blob": "1257c40cf96a55902711a57ac43a5c15aef0125e",
+        "sha256": "5262cac893356db84aaf1c8a2a4af1dc8f0fc9f20efb982d102b3fa6724ce083"
+      },
+      {
+        "file": "marketplace/about/about.js",
+        "bytes": 16107,
+        "blob": "71b26ee6391d15aa7a97a91c4518fee85ef25cbc",
+        "sha256": "b37de8e73b370d1fad3267fca1be342d27b9c1ced163cd6d45e04b90e90bec99"
+      },
+      {
+        "file": "marketplace/about/deepseek-harness-guide/index.html",
+        "bytes": 60580,
+        "blob": "fa39f8aba1f48d67d5a575485b37861995a935f1",
+        "sha256": "ac7673fb18ebce32a2d9986be02c233bc169b9013d7d1797c98e856cda7283e0"
+      },
+      {
+        "file": "marketplace/about/index.html",
+        "bytes": 19052,
+        "blob": "d3c1d0cd7f57ca7c7cd2425551609321172f2245",
+        "sha256": "2e0fd549fa4b47d01484cbd7b1f18f1ab9f8332ef9d3a44a666d3c040f16bd1a"
+      },
+      {
+        "file": "marketplace/app.js",
+        "bytes": 128614,
+        "blob": "71da67354fb0ea472337ff836e7fc6f2c73cdd1a",
+        "sha256": "232d1f2e8b6ed331119aac90a985d12f435e0e74d70545c7fb61748a2f0183cf"
+      },
+      {
+        "file": "marketplace/articles/articles.json",
+        "bytes": 74799,
+        "blob": "ed64124d3e3f4a55849b9d99fc1c7963b1187c34",
+        "sha256": "cac597629bbcda4c1a73875eb389b229f34f81278a9dfc0e12e08eb7f3de25f4"
+      },
+      {
+        "file": "marketplace/articles/index.html",
+        "bytes": 6611,
+        "blob": "08fea3c8e6a0c7b960cb59fc86027824ea12589b",
+        "sha256": "82349db9be3c3504e15d2c16e18a3fc70e11703eccf29af16c743d3f90e97302"
+      },
+      {
+        "file": "marketplace/build/build.js",
+        "bytes": 33194,
+        "blob": "1f83cebea9a58b6d0d939f175a074e6dd3aaf2b4",
+        "sha256": "0bdb8b775c60a27756a3d30ae36e3a2df984f9e08891929fa1cd7f83435c6041"
+      },
+      {
+        "file": "marketplace/build/index.html",
+        "bytes": 21306,
+        "blob": "b5aec56295a7c522b5a6fe028a9fef8c42f5c602",
+        "sha256": "da033171f384d3357bb7a67724d94760395634ad023009acc39efa9a6e908e1e"
+      },
+      {
+        "file": "marketplace/community/community.js",
+        "bytes": 7642,
+        "blob": "a4381974f5b6cb3e7d51cb15d035855911bb0af1",
+        "sha256": "69ae89ce2619148a9324fb74db40f811b695bb339ef12fff97ba60c1fa160e18"
+      },
+      {
+        "file": "marketplace/community/index.html",
+        "bytes": 10272,
+        "blob": "5696c44b2b01e9ce1fc9fa9a24771846eabcf395",
+        "sha256": "3f7e45e2e0b20d0375d615515c6a7f1b61f2a85ae2cb543a193f8fec4bf807d4"
+      },
+      {
+        "file": "marketplace/downloads/downloads.js",
+        "bytes": 6317,
+        "blob": "2cffc55b141e8a81ab3df53eb0184e8c0aaf0306",
+        "sha256": "0df43119e559990714ea00b0c84b5b9cf7013dd04684e2efc58695193a515cb4"
+      },
+      {
+        "file": "marketplace/downloads/index.html",
+        "bytes": 9869,
+        "blob": "997e15bea2312ad0744e80ebd5be187e1e498f0c",
+        "sha256": "0cc189684e1b4a0816c8acbaf08884725765e9984f82219ed8742266fd48238a"
+      },
+      {
+        "file": "marketplace/dsh-plugins/index.html",
+        "bytes": 12725,
+        "blob": "fb16f1fb2864d92e1eb3cd1382971f57ba25178c",
+        "sha256": "8e2eec434c60f866831d361ef33780d01763d1cbe2f386869c2d56f8a2f72a59"
+      },
+      {
+        "file": "marketplace/dsh-store-guide/index.html",
+        "bytes": 12472,
+        "blob": "3a78c3614a14fcb6bae5c12996401738a6102872",
+        "sha256": "37e55e9ec586a66884ede3cc4508ac8b2bb46de9f9b281c9b813fad76b20029f"
+      },
+      {
+        "file": "marketplace/faq/faq.js",
+        "bytes": 14479,
+        "blob": "eff72f5f5ff9ed98b7d891d4d1c7eab56fc8a89c",
+        "sha256": "e773fad920eb87cdc35c10c918194bcd168a07f2ac88113d61d94ea6790d4207"
+      },
+      {
+        "file": "marketplace/faq/index.html",
+        "bytes": 19257,
+        "blob": "e75e48fb6f1f9147a4421bccde67206ff24905b7",
+        "sha256": "185046267cacaa2313d9017f25bce72e0562449d8ef1471cf0d92fcdef5b9a35"
+      },
+      {
+        "file": "marketplace/googled542dac4f5a6c169.html",
+        "bytes": 53,
+        "blob": "6a5a5a5c5cbc784fcca97f808218c387829fc2d3",
+        "sha256": "e8d992c6f2a48dfc40f7a8163d86e6a9786d252e6adfe5ec934d765fce8c1621"
+      },
+      {
+        "file": "marketplace/index.html",
+        "bytes": 30297,
+        "blob": "3f015c5ad978ff84b7c242768063a9f7d5f36486",
+        "sha256": "9061f450f7058feac74230478442767572514ac84cd6aa31a7d69cf5c6338951"
+      },
+      {
+        "file": "marketplace/lib/dsh-release-policy.js",
+        "bytes": 12660,
+        "blob": "01229eb7ebab1a71621946c87f6e0d9e9ac5cf14",
+        "sha256": "d6086c7714f079291d638d3bd6e6886cd8dff963324fab796c236793e1a53b66"
+      },
+      {
+        "file": "marketplace/lib/plugin-directory.js",
+        "bytes": 15690,
+        "blob": "2edcc89476ce4c8d4bec8c507fb5ac9b5b6a27ad",
+        "sha256": "4e1c9ea60c9ac736180a4d7bb2960030da37dc691937ea2bdb4b04c752a9687e"
+      },
+      {
+        "file": "marketplace/motion.js",
+        "bytes": 2559,
+        "blob": "859d6e8c97f3effd0d7fbca79ae2b4019c81f4eb",
+        "sha256": "80c5dd5ff884fe6fcd704d1fa715ef0cd99cb9efa440c0eda2001ea82b11bf79"
+      },
+      {
+        "file": "marketplace/plugins/index.html",
+        "bytes": 18973,
+        "blob": "2513e62aa3db040aca6dfc5f90e3e830458fd881",
+        "sha256": "6d079b498f9b24537ac1fb63a9718165d5d47a1435440de61039ebabb30b5cf4"
+      },
+      {
+        "file": "marketplace/rankings/index.html",
+        "bytes": 9784,
+        "blob": "51b103e04b5cfe5cd1ab3b6d0db2ac6c15902475",
+        "sha256": "5c1c3c539a72e4e87d4f75e9a760be297f82184705901ee66bb6bc6a83351c06"
+      },
+      {
+        "file": "marketplace/rankings/model.js",
+        "bytes": 24035,
+        "blob": "87c83f7b027019949fc6244988cafd34526923a0",
+        "sha256": "a69c28863b8d23891ce06e2bafd37fc394495808c92c154e452552ddee8f4ce0"
+      },
+      {
+        "file": "marketplace/rankings/rankings.js",
+        "bytes": 16267,
+        "blob": "cf4cf0641772788d4e112a552a8383ff1484ec5a",
+        "sha256": "0a98e317b6b1caabd7d16a83a21efd02b840257c7263e3e8f31353ec6e00e383"
+      },
+      {
+        "file": "marketplace/repair/index.html",
+        "bytes": 8038,
+        "blob": "dd454418d38715119fcffd260539dd6fd57b99f0",
+        "sha256": "9586a9a6b4d356f50ac3b641c02df5b0baf09a478ed0150c0de874dd7032ed51"
+      },
+      {
+        "file": "marketplace/repair/repair.js",
+        "bytes": 912,
+        "blob": "05d51274c15f2852137270abb5850c9ccfba3a3c",
+        "sha256": "7146a320d9629b31e76361a1a1797ff891eddf0217b8b591d2e1093dd2798cc2"
+      },
+      {
+        "file": "marketplace/scan-history-nav.js",
+        "bytes": 5746,
+        "blob": "44c6f2a4f131abdd96b6afa64da3c7d0309723e3",
+        "sha256": "3622a3210f84dccffa76fc311a6f02d483e32425a4de8a17ebed1e2a2174ce0b"
+      },
+      {
+        "file": "marketplace/scans/data/manual-baseline-20260925.json",
+        "bytes": 2937,
+        "blob": "52c803f9fd0a87df7aabc997d9bf0755a94fb1d6",
+        "sha256": "294b2405d6cc58bc03dead8e776ba9f479d709300b970914314c8af369f2ebbb"
+      },
+      {
+        "file": "marketplace/scans/index.html",
+        "bytes": 7055,
+        "blob": "e3f8e784da2a568132919a18851ccc408b65ee4f",
+        "sha256": "18c4c84816dcc11affbd35bfad9bab3d23c51f450119e69a1ee5e562b17dcdcb"
+      },
+      {
+        "file": "marketplace/scans/scans.js",
+        "bytes": 25600,
+        "blob": "f27c4c97d9554bc0357e95c5041fcfcec455c4ce",
+        "sha256": "05b862e45b732c2253b38a9c40fd1b8ee102359a7d6cd388deff90bfa5a4e454"
+      },
+      {
+        "file": "marketplace/standards/index.html",
+        "bytes": 21262,
+        "blob": "4af627ea730ef3a711e48fd73f6fa7571774e7f0",
+        "sha256": "50b56741ad824c7ca2b4aa538071e3b98cbae97a3ebabeab15dd65815816ca7e"
+      },
+      {
+        "file": "marketplace/standards/standards.js",
+        "bytes": 23017,
+        "blob": "70bf4d8b1207f124684401a32de8bac4cb09d66a",
+        "sha256": "beb011d8510aef2e0a6419edbf98a7d59285e496631d03825f37ce88f79463ad"
+      },
+      {
+        "file": "package.json",
+        "bytes": 9113,
+        "blob": "78726e79e0789bd5cb603763fc9810e287772351",
+        "sha256": "04c32cd4b963cd7900ec3633aff1ad878ff3dd8edbf931e771c282bd9a7522d7"
+      },
+      {
+        "file": "registry/admission-reviews.json",
+        "bytes": 8022,
+        "blob": "de3d4236452a5db538d9f7385d12cb449cad46cc",
+        "sha256": "3f92373953650c6b86863f3aecc8d3edf9c750bf3786a165ba5ecfdd47b1a491"
+      },
+      {
+        "file": "registry/author-closures/feedback-1338-20261015.json",
+        "bytes": 613,
+        "blob": "54f95522a6e4c26728c2aa30a706c2b639a256b4",
+        "sha256": "9dfe81dd6d2f03a2bb2a8e82d63e3bdbada4d85ff37bafb693b552a45ca199cb"
+      },
+      {
+        "file": "registry/author-closures/feedback-709-20261015.json",
+        "bytes": 647,
+        "blob": "1276e611864a1f7e3eb8cb47c805f0e70d37848d",
+        "sha256": "18cdd5d1fc3bbf5469348556036e6821ec9b262527aaa0cffd062838e8080d6a"
+      },
+      {
+        "file": "registry/author-contact-history.json",
+        "bytes": 181562,
+        "blob": "a485f42551ec031887f0cd7285c6c7432d123587",
+        "sha256": "1e29fb7a597c109cf635740eb10f9965f0f3e97bb0346f1973318438c95c85f0"
+      },
+      {
+        "file": "registry/author-contact-policy.json",
+        "bytes": 470,
+        "blob": "6893dacfe836e9d211214961d3726602d6d5b031",
+        "sha256": "c7fa37346d91187a8990d4ad8c72b477e0cbdba44f0093c33545eb5603c5bfcf"
+      },
+      {
+        "file": "registry/author-replies/255.json",
+        "bytes": 4469,
+        "blob": "6e05e55625fb50fc04cea4dfb84635ced88286fc",
+        "sha256": "a9756bd9d12062e27a7a25500ce953ec30ae389cd2938a37b6510d7bfd0fbee9"
+      },
+      {
+        "file": "registry/author-replies/390.json",
+        "bytes": 2876,
+        "blob": "410b0f4b1ad294925efb02ef6b0b3848779b1166",
+        "sha256": "1d46afd0aa02827ef225a45a9fdd4295b0c75d87cd07f0d8c964feb269ea0381"
+      },
+      {
+        "file": "registry/author-replies/422-toolview-owner-mapping-30807177.json",
+        "bytes": 1433,
+        "blob": "4b3c6e3c190b249a40b083d4a9bfd438611fd5bc",
+        "sha256": "b55842d5ad0bc28583c1e1ac24495d412f2315cf50ec8958f7a22c10db52ab14"
+      },
+      {
+        "file": "registry/author-replies/434.json",
+        "bytes": 3054,
+        "blob": "a3b6b56ad345a5d0de5bf34d0f74789977ba5c7b",
+        "sha256": "631c920ec5d661edfe954c69bbdc6308a3156943f95df7c5156b167d774408b5"
+      },
+      {
+        "file": "registry/author-replies/feedback-1013-20261015.json",
+        "bytes": 1529,
+        "blob": "99ff141e0cb41ed25fcecdb5f9fbd229632cf6f0",
+        "sha256": "cc7da3bfbc64c0e2cae712362a36087b6ff8b209b8c05f67420b08a0c5663e91"
+      },
+      {
+        "file": "registry/author-replies/feedback-1173-20261015.json",
+        "bytes": 1546,
+        "blob": "cd766882f536c93282a5f54055c2009b14c5de21",
+        "sha256": "c42ca7f9213bfc9eac220a61db1cf269cd87abcba998d28a4c76d2a4d33b86fe"
+      },
+      {
+        "file": "registry/author-replies/feedback-1195-20261015.json",
+        "bytes": 1554,
+        "blob": "f1f82a09a03ce2b3053dee04f43296aa8b03bfbf",
+        "sha256": "4032d937f5a62f527038ba02531dc7276ed368430655c2818256cf2724be5e93"
+      },
+      {
+        "file": "registry/author-replies/feedback-1227-20261015.json",
+        "bytes": 1730,
+        "blob": "cfb470897121b81adc2048842baabe82a0dd2e69",
+        "sha256": "b7a76ba5d6753f91be6abe6d4f70908f669e49d6edb0bfc5aa10666c846cbdcc"
+      },
+      {
+        "file": "registry/author-replies/feedback-1296-20261015.json",
+        "bytes": 1695,
+        "blob": "535f6df63c222161769de45afb4149643324769c",
+        "sha256": "0ccc2aae5e3815b0071b17739a3262c21c2fb677801198e393aafee92e28d509"
+      },
+      {
+        "file": "registry/author-replies/feedback-1321-20261015.json",
+        "bytes": 1974,
+        "blob": "087424b9a1914ec35b779157dd4d9c12ec399385",
+        "sha256": "32f6204b50025f2a461e820a749d7877be8581dd28fc9322fae20027313f61b5"
+      },
+      {
+        "file": "registry/author-replies/feedback-1336-20261015.json",
+        "bytes": 1755,
+        "blob": "8c986b8d97337e3d6ac14329992282c4c0b30799",
+        "sha256": "cb192bb84790e33ef434a814c49ad8b2dcea89d80acc72de270847aa69125275"
+      },
+      {
+        "file": "registry/author-replies/feedback-1376-20261016.json",
+        "bytes": 2036,
+        "blob": "85e355217937dddc08dea9bba5a1ac4c31c3098d",
+        "sha256": "8fd5268a438837278260358aa5befa37d34f0570fa341b645da6dad06fb4efd0"
+      },
+      {
+        "file": "registry/author-replies/feedback-1390-20261015.json",
+        "bytes": 2000,
+        "blob": "ba4254db59758ad7262476f0262f0638b34193e5",
+        "sha256": "34da3d1e805a30c87be9caa1e13424508946c34f4055385d18b7a8191ec56e48"
+      },
+      {
+        "file": "registry/author-replies/feedback-1390-20261016.json",
+        "bytes": 1980,
+        "blob": "40197f43bf2e6b372dccb767aa41a0cc4a47d5a1",
+        "sha256": "b9de760d87c5a41f48e08869dce23603075d77d3b08e5ecee615fc5b08453cff"
+      },
+      {
+        "file": "registry/author-replies/feedback-1411-20261015.json",
+        "bytes": 1910,
+        "blob": "dc435e853f7984cc68c43f5021dd7a6bbc421f19",
+        "sha256": "bb07bb3d1f8a4715cbfd4247b1aa9d87d0f12174ca9dac05bc7743203be8115a"
+      },
+      {
+        "file": "registry/author-replies/feedback-1415-20261015.json",
+        "bytes": 1622,
+        "blob": "90262b2dbb54e0818955c0ae5346c0343adb2b74",
+        "sha256": "3e52f1b4f5fac0267b7110c88036cdb2170f77af8f0b5c0d43eb749bd198dd56"
+      },
+      {
+        "file": "registry/author-replies/feedback-636-20261015.json",
+        "bytes": 1542,
+        "blob": "79549b3d9fe4cd55a78b6faf8f7d7b6e80c0d8ed",
+        "sha256": "15c93376c1f67db8efc1b96ab6ff0d92033b8dabe153b311443f6ab526f36a65"
+      },
+      {
+        "file": "registry/author-replies/feedback-934-20261015.json",
+        "bytes": 1486,
+        "blob": "c4120b3e4aa2452f47830db712835021155692d7",
+        "sha256": "5e102f3ba1bc645958700272fafa38669e825c10e87e42da2a9cf170f8377c06"
+      },
+      {
+        "file": "registry/automation-policy.json",
+        "bytes": 4489,
+        "blob": "a2154ec94a903a07ef69590a28dc61762c1f76fd",
+        "sha256": "ef0bd0310a61725c8e9117719377eb16ea96b4847c880e65f88918dc6c9bb390"
+      },
+      {
+        "file": "registry/candidates.schema.json",
+        "bytes": 2587,
+        "blob": "fef153884c523ee7abae91a2c1217bd1aa634e79",
+        "sha256": "6a16c6d3baee3fd1a571b0686683063fd787bfdb1d9345bb8b56ca5059fd641e"
+      },
+      {
+        "file": "registry/catalog-detail.schema.json",
+        "bytes": 11767,
+        "blob": "1bba4268cee2c4a6f6b7fb17fe3ddc8000a7d7f1",
+        "sha256": "c5eaf58ffe0d9ccddb0c91de09242ea48d1ff7ed1d746a125a75e50fc61ce9ae"
+      },
+      {
+        "file": "registry/catalog-index.schema.json",
+        "bytes": 7365,
+        "blob": "4f739dfefd376d2e3cd740adaf9ef3a06ffb4fc6",
+        "sha256": "b41b5cdbbabce17f4cdcfad45eabd34e7baa17028224ba0ee4b28c6abe72e075"
+      },
+      {
+        "file": "registry/catalog-migrations.json",
+        "bytes": 7159,
+        "blob": "4a3f9db24e959bb15718f70e018d77ad0e9aa469",
+        "sha256": "bcfa86c2269d7303ffd3cc2939c63bb59947a7699b1e64927a4284475d541a5e"
+      },
+      {
+        "file": "registry/catalog.schema.json",
+        "bytes": 15705,
+        "blob": "9a6f5d397d6ee1bc7a71b2d43e566c355705f0a7",
+        "sha256": "047295025901bdbf644cbe4ebea30d66186e82b91cf15f1f5f421a86b465ec70"
+      },
+      {
+        "file": "src/activation.mjs",
+        "bytes": 2289,
+        "blob": "e30230f755e915fbf7c0aefafd24d0bd6361339a",
+        "sha256": "36ffe66332cd11673eea572b5c992d5eb937e0f74bac3e703c5645a71ab2f67d"
+      },
+      {
+        "file": "src/admission-review.mjs",
+        "bytes": 6030,
+        "blob": "4bb303ee8422463a5c784e50452cf3e91b111d21",
+        "sha256": "05c8fd5e2df0496989b8a382223e922e679612595c68ae0dd906101ca9514f60"
+      },
+      {
+        "file": "src/automation-source-policy.mjs",
+        "bytes": 13919,
+        "blob": "c703382c48cbabc0fd03f79e1ef4ba6e2b3ef4de",
+        "sha256": "470262759b83a68aa997a06d38429f2a28787b0becbd9c27c836e5a4561552c9"
+      },
+      {
+        "file": "src/automation-status.mjs",
+        "bytes": 14334,
+        "blob": "403cb6bac1622b5c0db8e9a05be8ebf3392f3730",
+        "sha256": "3abcac8d18ae8a4e6ce816d030ef74da8ae21852ea2343c6372033159f63867b"
+      },
+      {
+        "file": "src/bundle-patch-contract.mjs",
+        "bytes": 6228,
+        "blob": "e408c184fd0c8d1bf47c4a6d1176cc53707f1c34",
+        "sha256": "32577053656174e08d2ab84eb60f1311e2c504a3934825b7ef215f184e6c228d"
+      },
+      {
+        "file": "src/candidate-retention-policy.mjs",
+        "bytes": 6785,
+        "blob": "7d4ceb619f6107baef8213bd8e9bf711321dbf7d",
+        "sha256": "3d949eec8af08df14c0f1681c9d2edc82019dc4e062fb5b3f08b876a4174c36f"
+      },
+      {
+        "file": "src/candidates.mjs",
+        "bytes": 8328,
+        "blob": "26b59cd89448c909fcd4cce10469e4cde4acb87b",
+        "sha256": "12bdf5302d4bca133f4c54ecffd4fc1a8d53675e4d0e9ba1dc8b3971b97faa6c"
+      },
+      {
+        "file": "src/catalog-compatibility-policy.mjs",
+        "bytes": 12473,
+        "blob": "23b49859c33a9452f0b374a28114267590c17d0a",
+        "sha256": "8c212afdd432c1e8bf4e2454b87c07d0d4ce017386bd5e22249c8376d45d41bd"
+      },
+      {
+        "file": "src/catalog-localization.mjs",
+        "bytes": 15310,
+        "blob": "f449ab2946a1c696e2123223558f5fc9e7730d01",
+        "sha256": "71e4321cd58e4397389419a581939947bf72c367f54f319b1cf3819e1278a59e"
+      },
+      {
+        "file": "src/catalog-migration.mjs",
+        "bytes": 5259,
+        "blob": "345c2eea24367ca4c23cbe27f023584a68b726f5",
+        "sha256": "99611afff5a81d8f8c1a54697c5cfaeb259990a6a4a1b7c6ceb28587c635b8eb"
+      },
+      {
+        "file": "src/catalog-update-review.mjs",
+        "bytes": 12272,
+        "blob": "b3f73ed2485074a445c64e84cbe205170914a6d4",
+        "sha256": "12cfda508bf447550e017f3d10f3e3e71370289d51a1079fa7ea9b9d7007747f"
+      },
+      {
+        "file": "src/catalog.mjs",
+        "bytes": 86155,
+        "blob": "cc15050a4d9e961a92e477f869d2bde1750d9879",
+        "sha256": "1ddc43883530b0e8c9cbafc4e15a99730c83c3bede8edaf648e8a350884aaf49"
+      },
+      {
+        "file": "src/client.js",
+        "bytes": 134621,
+        "blob": "961a3c4e10d89aa316a74f359f4f0cb595229538",
+        "sha256": "9fc598e22ceb30ce684a5aba62e9e76a61aace412ebaa2eabbc8fe532cd4a2f7"
+      },
+      {
+        "file": "src/cold-start.mjs",
+        "bytes": 2366,
+        "blob": "3d9f89a9e57da1b9e62996bf61062aab449a66b5",
+        "sha256": "99abdbb4dce3dd20efe360ca865bdfa4813e69996b9cd243d1768c75834f2ec8"
+      },
+      {
+        "file": "src/diagnostics.mjs",
+        "bytes": 1872,
+        "blob": "e1517c8526c26b5bad1b38671ebd918067cc8541",
+        "sha256": "f3a7346850febf7a55c0f804093e36259a14f16e1a780f0741ac704ece7ba5ab"
+      },
+      {
+        "file": "src/discovery-feeds.mjs",
+        "bytes": 2738,
+        "blob": "96658e642e072a0f42c86f2f0cf45d59d2b72ada",
+        "sha256": "446cf89b8441344ace9853773f5c814dcf79b27108b4b68c82a98926c78940fc"
+      },
+      {
+        "file": "src/discovery-index-validation.mjs",
+        "bytes": 4878,
+        "blob": "02a5b08c39ada1a7bd24b21212ab716b707d50b0",
+        "sha256": "1d33c6011582b21b1184f3e41c12264d9570c778306d7e45c1e8dbe75d3daffe"
+      },
+      {
+        "file": "src/dsh-release-policy.mjs",
+        "bytes": 125,
+        "blob": "46645ed1c6bf0948805e30abb2351920c173ab47",
+        "sha256": "899ee2db50205274283a232b935732c2b0d59365b31e81d94521501d274a10c9"
+      },
+      {
+        "file": "src/dsh-version.mjs",
+        "bytes": 5973,
+        "blob": "70e72e8d602beb77d0961fd483117bb553fd71ef",
+        "sha256": "f7333ab7e0808866882912c7c5b00ac49d863c26d2925beb55213c9236effb8c"
+      },
+      {
+        "file": "src/dsh.mjs",
+        "bytes": 4434,
+        "blob": "6efe60b7755413675c5d63889d88fc5a0e677c31",
+        "sha256": "35b33a7ccf3c8c60cbac0bf471c95d1a485e0946983c8e58277e002456e7c0e8"
+      },
+      {
+        "file": "src/fixed-source-review.mjs",
+        "bytes": 7677,
+        "blob": "20eebddf9e18d55161023f295d06af41f1e6341d",
+        "sha256": "7b549392925c4f62cd2a6163c46d1cc1e41fbaff658ae58aa2cb0fa01ecfa871"
+      },
+      {
+        "file": "src/guardian-daemon.mjs",
+        "bytes": 22488,
+        "blob": "7ceedefc239d1fbcd7264119aec6ef2f0423b5df",
+        "sha256": "d7d9871ce92014580377891782ca54cd7ef6dbfd9c747866c6dd5d737f991f88"
+      },
+      {
+        "file": "src/guardian-upgrader.mjs",
+        "bytes": 12777,
+        "blob": "c77385cbfb3d9050fb388962ef95532cdb2e3db3",
+        "sha256": "57deef267d4a76a71d934d5c58c2535e269c832a7e5a9c8dceb8aa58f31b0c14"
+      },
+      {
+        "file": "src/guardian.mjs",
+        "bytes": 28803,
+        "blob": "0f1df951eda31c8661ebcea36d88687f607df63b",
+        "sha256": "2db3f93448b52b99e25f0a1e15a1c9fd45939f75a66438eb91ac61e8d056c5d5"
+      },
+      {
+        "file": "src/health.mjs",
+        "bytes": 11777,
+        "blob": "848b8b7c9b453cbc9766bbc97efa1176d05a3cba",
+        "sha256": "d0fe8d05bab55def1c7f20d9a609721d6b7a30f35bbb655952773a297b7c0134"
+      },
+      {
+        "file": "src/index.mjs",
+        "bytes": 5256,
+        "blob": "6e656819550bc07f641ef3b9d671071e47e71182",
+        "sha256": "cb667d90f2cbc5cae3282685c4fe8485675043bbc32766de500006addce17525"
+      },
+      {
+        "file": "src/inventory.mjs",
+        "bytes": 5488,
+        "blob": "af6963379f7059db87603831992c94a0c420d3a4",
+        "sha256": "7cd714e2cdc793e5022f76b96673c65f8f839b2e1ecaed2c615f03ef76b0b410"
+      },
+      {
+        "file": "src/legacy-repair.mjs",
+        "bytes": 26175,
+        "blob": "3a89885d6c3992d0514c52fbbede4c5b1c98ed5b",
+        "sha256": "e6142a520a26c3b6f6df957c1d528098c565b4b577886a153a3395b79df6f61e"
+      },
+      {
+        "file": "src/managed-patch.mjs",
+        "bytes": 3069,
+        "blob": "55a0b9c9dbba92da1e912087feb8d41467449ff0",
+        "sha256": "af8e835326a0365ef8d58e719fdbccdb01742632bb9c54e71a462f6ec16aec9e"
+      },
+      {
+        "file": "src/native-market-index.mjs",
+        "bytes": 3136,
+        "blob": "7aa66ec3d7831db539b4eeb33a4730eadd61253a",
+        "sha256": "0b77131fc20bdb2b38d007db6e9e2a1e5d7f3c653d8ae08b854ce60ebebbcac6"
+      },
+      {
+        "file": "src/operation-journal.mjs",
+        "bytes": 4730,
+        "blob": "29fe5f0b33dd76c8c03160df36733bae0cbba1aa",
+        "sha256": "b1b5c48dbfa97b9ba25b5a55d02e0fa86745e8b268ab679910b7c4860f440344"
+      },
+      {
+        "file": "src/operations.mjs",
+        "bytes": 23702,
+        "blob": "e507b193c32d538e37a6b5d985c040af803ecb69",
+        "sha256": "85d32ced80d581504a9bb1b8052542a916ff49c7cd3310cc0d58cdd070ceacdc"
+      },
+      {
+        "file": "src/package-source-surface.mjs",
+        "bytes": 8732,
+        "blob": "9545272795deff17ea117aaa985aa082ba855ac8",
+        "sha256": "986328186bc73a648d62e3fb063804d3f527b1f9019e041b793221989abb8fc7"
+      },
+      {
+        "file": "src/panel.mjs",
+        "bytes": 16528,
+        "blob": "7b291166a364d69d769093710a77f89c9f06f678",
+        "sha256": "29d68610c03fc6b47fa0e3ee4b58e2891997850a3ef25c48cc431b06eab656d8"
+      },
+      {
+        "file": "src/provenance.mjs",
+        "bytes": 862,
+        "blob": "cd1fbe28fbe43e44972532b91efb71146e762534",
+        "sha256": "1ffccb22b01b986acf86a084c81dec6dbb42e1dbebb9d6494669f6d81d27b909"
+      },
+      {
+        "file": "src/repository-exclusions.mjs",
+        "bytes": 1072,
+        "blob": "daf37c46c0d1d2a286d551fc637eaaf497584fe9",
+        "sha256": "d8e8b4d56d240be181337234b0461e4c16183601495df907511a0dba82f85696"
+      },
+      {
+        "file": "src/restart.mjs",
+        "bytes": 2843,
+        "blob": "ca7d3d243a7183fbdb171c7ef27134baac1f9e61",
+        "sha256": "c48f7fd857ad2826ffb46ec4dcdbc6a8e472f6cd9e28508a8b2b513ac6931593"
+      },
+      {
+        "file": "src/runtime.mjs",
+        "bytes": 1245,
+        "blob": "bca47ac33b7bad17fca7584376b4f04645e43455",
+        "sha256": "9394f6bb208717fb4a1a9ebd7a83722b4c8171075bdb0c9172d356f89c505ce4"
+      },
+      {
+        "file": "src/source-scan-policy.mjs",
+        "bytes": 1389,
+        "blob": "a489a49dbb3d2365bf1923da37ac94a6219ac5ab",
+        "sha256": "32c4c0ad2e4925f55925b4537af5c553412675d2fd8fe6399c6c99e38f527d08"
+      },
+      {
+        "file": "src/source-update.mjs",
+        "bytes": 22198,
+        "blob": "171f4acff6ab32c4cbc507f48cbe0e2e5ac7f5e6",
+        "sha256": "f5ebad4620769fc62228a633aa37d2008d6716d01039f50bb87e28c6ea81e403"
+      },
+      {
+        "file": "src/submission-security-scan.mjs",
+        "bytes": 7401,
+        "blob": "6697b9547423289a2d44389688822438503367a0",
+        "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371"
+      },
+      {
+        "file": "src/telemetry.mjs",
+        "bytes": 1504,
+        "blob": "8460d76f4d44ba3341d694a35fb3292593be4c2c",
+        "sha256": "4fdf005a73ed1d66fb5ec1e7a84b7d8f3ced71cac7718cd7c9eaa2378fdcd46d"
+      }
+    ],
+    "capabilityEvidence": [
+      {
+        "rule": "capability-network",
+        "file": "marketplace/about/about.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 105,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/app.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 1055,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "marketplace/app.js",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 468,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "marketplace/articles/articles.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 58,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/build/build.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 204,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/community/community.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 56,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/faq/faq.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 126,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "marketplace/lib/plugin-directory.js",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 87,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/rankings/rankings.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 88,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/scans/scans.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 243,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/standards/standards.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 130,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/author-replies/feedback-1336-20261015.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 15,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/author-replies/feedback-934-20261015.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 15,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/catalog-detail.schema.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 483,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/catalog.schema.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 540,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/activation.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/admission-review.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 32,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/candidates.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/catalog-update-review.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 132,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/catalog.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "src/client.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 44,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/client.js",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 743,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/cold-start.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/discovery-index-validation.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 27,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/dsh-version.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/dsh.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/dsh.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/dsh.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 70,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 4,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 243,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/guardian-upgrader.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/guardian-upgrader.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/guardian.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/guardian.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/health.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/index.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 53,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/inventory.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/legacy-repair.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 5,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/legacy-repair.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/legacy-repair.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 204,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/operation-journal.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/operations.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 6,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/provenance.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/source-update.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 83,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/telemetry.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 8,
+        "location": "line"
+      }
+    ],
+    "budgetFindings": [],
+    "reviewSignals": {
+      "toolViewExtension": true,
+      "dynamicModuleLoading": false
+    },
+    "scanComplete": true,
+    "filesScanned": 107,
+    "unsupportedFiles": 0,
+    "scope": {
+      "kind": "explicit-files-conservative-superset",
+      "repositoryEntries": 1152,
+      "packageEntries": 943,
+      "files": 943
+    },
+    "runtimeFiles": 107,
+    "runtimeBytes": 1534248,
+    "contractVerified": true,
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "approved": false
+  },
+  "binding": "49b1e93356659d3588d07f42fa4dbecc3dec2061134cae3e0fe45c0aff21051f",
+  "sourceTree": "7e5579d762a314e1933f40ccd2aef89d3b360e07",
+  "sourceHead": "89b9b887241ae53bc2d8cc9c60470a03379d9de2",
+  "sourcePR": "https://github.com/AI-Scarlett/DSH-Store/pull/1437",
+  "sourceChecks": [
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/runs/116770619361",
+      "name": "CodeQL",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483798",
+      "name": "runtime (macos-latest, 10)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483880",
+      "name": "runtime (macos-latest, 12)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483848",
+      "name": "runtime (macos-latest, 11)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483931",
+      "name": "runtime (windows-latest, 10)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483768",
+      "name": "previous-latest-three (0.2.1-alpha.2)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483887",
+      "name": "runtime (ubuntu-latest, 11)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483867",
+      "name": "runtime (ubuntu-latest, 12)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483897",
+      "name": "runtime (ubuntu-latest, 10)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483862",
+      "name": "runtime (windows-latest, 11)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483939",
+      "name": "runtime (windows-latest, 12)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770483726",
+      "name": "previous-latest-three (0.2.1-alpha.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770484950",
+      "name": "next-channel",
+      "state": "SKIPPED"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713837/job/116770447449",
+      "name": "validate",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837711352/job/116770443876",
+      "name": "Analyze (actions)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837711352/job/116770444225",
+      "name": "Analyze (javascript-typescript)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837711352/job/116770444669",
+      "name": "Analyze (python)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38837713850/job/116770447387",
+      "name": "resolve",
+      "state": "SUCCESS"
+    }
+  ],
+  "firstPartyRuntime": {
+    "status": "passed",
+    "cliVersion": "0.2.1-alpha.4",
+    "install": true,
+    "dumpConfig": true,
+    "startup": true,
+    "unauthenticated": 401,
+    "authenticated": 200,
+    "crossOrigin": 403,
+    "journal": true,
+    "activation": true,
+    "uninstall": true,
+    "buildBundle": false,
+    "realProfile": "unchanged"
+  },
+  "disposition": {
+    "kind": "scanner-rule-literal",
+    "file": "src/submission-security-scan.mjs",
+    "line": 58,
+    "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+    "rationale": "The reviewed crypto-miner signature is a RegExp literal inside the security scanner rule table. It neither invokes a miner nor installs one. This disposition is bound to this exact first-party source only; generic scanner results remain unchanged."
+  },
+  "findingReviews": [
+    {
+      "file": "marketplace/articles/articles.json",
+      "line": 58,
+      "rule": "child-process",
+      "sha256": "cac597629bbcda4c1a73875eb389b229f34f81278a9dfc0e12e08eb7f3de25f4",
+      "rationale": "This file contains published article or reviewed reply text. Command examples are data, not imported runtime code or automatically executed scripts."
+    },
+    {
+      "file": "registry/author-replies/255.json",
+      "line": 11,
+      "rule": "child-process",
+      "sha256": "a9756bd9d12062e27a7a25500ce953ec30ae389cd2938a37b6510d7bfd0fbee9",
+      "rationale": "This file contains published article or reviewed reply text. Command examples are data, not imported runtime code or automatically executed scripts."
+    },
+    {
+      "file": "src/automation-source-policy.mjs",
+      "line": 8,
+      "rule": "child-process",
+      "sha256": "470262759b83a68aa997a06d38429f2a28787b0becbd9c27c836e5a4561552c9",
+      "rationale": "The module detects command-execution permission signals in inspected source strings; the flagged import name is a detector literal, not a subprocess invocation."
+    },
+    {
+      "file": "src/dsh.mjs",
+      "line": 1,
+      "rule": "child-process",
+      "sha256": "35b33a7ccf3c8c60cbac0bf471c95d1a485e0946983c8e58277e002456e7c0e8",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "file": "src/guardian-daemon.mjs",
+      "line": 1,
+      "rule": "child-process",
+      "sha256": "d7d9871ce92014580377891782ca54cd7ef6dbfd9c747866c6dd5d737f991f88",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "file": "src/guardian-upgrader.mjs",
+      "line": 1,
+      "rule": "child-process",
+      "sha256": "57deef267d4a76a71d934d5c58c2535e269c832a7e5a9c8dceb8aa58f31b0c14",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "file": "src/guardian.mjs",
+      "line": 2,
+      "rule": "child-process",
+      "sha256": "2db3f93448b52b99e25f0a1e15a1c9fd45939f75a66438eb91ac61e8d056c5d5",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "file": "src/legacy-repair.mjs",
+      "line": 2,
+      "rule": "child-process",
+      "sha256": "e6142a520a26c3b6f6df957c1d528098c565b4b577886a153a3395b79df6f61e",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "file": "src/source-update.mjs",
+      "line": 13,
+      "rule": "child-process",
+      "sha256": "f5ebad4620769fc62228a633aa37d2008d6716d01039f50bb87e28c6ea81e403",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "file": "src/submission-security-scan.mjs",
+      "line": 58,
+      "rule": "crypto-miner",
+      "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+      "rationale": "Scanner rule definitions are inert RegExp/signature data used to reject dangerous third-party sources; this exact literal is not an executed shell or miner."
+    },
+    {
+      "file": "src/submission-security-scan.mjs",
+      "line": 68,
+      "rule": "child-process",
+      "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+      "rationale": "Scanner rule definitions are inert RegExp/signature data used to reject dangerous third-party sources; this exact literal is not an executed shell or miner."
+    },
+    {
+      "file": "src/submission-security-scan.mjs",
+      "line": 78,
+      "rule": "download-and-execute",
+      "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+      "rationale": "Scanner rule definitions are inert RegExp/signature data used to reject dangerous third-party sources; this exact literal is not an executed shell or miner."
+    }
+  ],
+  "capabilityReview": {
+    "classification": "first-party-owner-reviewed-control-plane",
+    "files": "planned manager-owned writes with hash/backup/rollback",
+    "network": "GitHub/Store allowlisted metadata; no new arbitrary runtime endpoint",
+    "commands": "official CLI and system service management with fixed argument arrays",
+    "credentials": "host authentication and redacted inherited environment; no user API-key requirement",
+    "executable": "the existing Node CLI entrypoint; no binary/native third-party artifact",
+    "toolView": "detector signature in automation-source-policy; no protected tool-view ownership change",
+    "realProfile": "not mutated",
+    "genericAutomationAdmission": "still rejected/review-required; no rule or global permission allowance changed"
+  }
+}
