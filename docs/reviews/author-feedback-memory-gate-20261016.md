@@ -1,0 +1,11 @@
+# Memory Gate 0.14.0 fixed-source follow-up
+
+Observed request: [#636 comment 6209483939](https://github.com/AI-Scarlett/DSH-Store/issues/636#issuecomment-6209483939), immutable GitHub user ID `269385000`, updated `2026-10-16T06:24:36Z`. This explicit request authorizes one scoped reply after the plan is merged to main and the central history/current-request gates pass. This document is not a send receipt.
+
+Fixed source: [`GIT121995/dsh-memory-gate@1d49af750e68ee86677f74b6c95f0991a87a6c5b`](https://github.com/GIT121995/dsh-memory-gate/commit/1d49af750e68ee86677f74b6c95f0991a87a6c5b); manifest version 0.14.0, canonical repository and MIT license agree. The bounded reader covered 34 runtime/contract text files and 131,427 bytes, with Git blob integrity and complete coverage; no third-party code ran. Source digest: `339b76f1ceff5086fb260109e732aacab9bf8e09352dc4d03d8c3e7a3e3ed56d`.
+
+The Patch no longer contains `!!js`. The runtime dependencies and optionalDependencies maps are empty, and schemastery is a peer. `files` excludes backtest and synthetic fixture directories; no backtest or fixture file appears in the reviewed runtime surface. The previously observed command-execution finding is absent. File access remains a real capability. `lib/config.js` resolves the default SQLite location from DSH_HOME or ~/.dsh; this is source evidence and does not prove migration or runtime behavior.
+
+Precheck still reports `SUBMISSION_PATCH_AMBIGUOUS`: the Store parser permits id/name/config at an inserted entry, and the explicit `inject` metadata falls outside that subset. This is an unsupported contract requiring Store-side review, not an instruction to remove a legitimate feature. No parser bypass, admission grant or Catalog pin change was made. Peer resolution for each actual host version, SQLite/session/workspace access boundaries and runtime acceptance remain independently unverified.
+
+The only scoped outgoing response is in `registry/author-replies/feedback-636-20261016-v0140.json`. Sending must use the main-reviewed plan with the first-party sender, short-lived workflow token, immutable-person global ledger and Contents API CAS. A failed or uncertain send permanently consumes the request; no retry or closure is authorized by this review.

@@ -1,79 +1,52 @@
 {
   "schemaVersion": 1,
   "type": "author-feedback-resolution",
-  "phase": "fresh-fixed-source-feedback-20261016",
-  "baseCommit": "c28d5dc2858c632345ac13cb5ee54918e3978d39",
+  "phase": "memory-gate-v0140-explicit-request",
+  "createdAt": "2026-10-16T06:59:31.375461+00:00",
+  "baseCommit": "4b4869c6d344435c75f89916e7b521f886cd5f35",
   "scope": [
     "docs/ops/author-feedback-resolution-20261015.json",
-    "docs/reviews/author-feedback-20261016.json",
-    "docs/reviews/author-feedback-20261016.md",
-    "registry/catalog.json",
-    "registry/catalog-index.json",
-    "registry/catalog/details/dsh-qwen-paint.json",
-    "registry/catalog/details/dsh-ledger-memory.json",
-    "registry/admission-reviews.json",
-    "registry/author-replies/feedback-1390-20261016.json",
-    "registry/author-replies/feedback-1376-20261016.json"
+    "docs/reviews/author-feedback-memory-gate-20261016.md",
+    "registry/author-replies/feedback-636-20261016-v0140.json"
   ],
   "preconditions": {
-    "docs/ops/author-feedback-resolution-20261015.json": "74901ee1a9f21ce51a5b1b47ff587f8f2c043612be311a7408909a8f55708e9d",
-    "docs/reviews/author-feedback-20261016.json": null,
-    "docs/reviews/author-feedback-20261016.md": null,
-    "registry/catalog.json": "9e1e5a6371ea8658b54f2ed07866aeaadf9a161a8e5d54e6e050e4f9aee96161",
-    "registry/catalog-index.json": "0b682e43cd3426be189b3c8b6b75d73bb94c13b91507bcff8bbf06a571e14a59",
-    "registry/catalog/details/dsh-qwen-paint.json": "014fb43e53827919e6d838260bc63dc64b9cb5ee9f5adc24b7c3b1cbee803c86",
-    "registry/catalog/details/dsh-ledger-memory.json": "37d34fb2859075ed8d4d974e03d198e7a033b149ff4d500200766e969920970b",
-    "registry/admission-reviews.json": "1d1e6fa07c3f290093800c8f27723432fb62d4b78490a65037f1a6343159fa4a",
-    "registry/author-replies/feedback-1390-20261016.json": null,
-    "registry/author-replies/feedback-1376-20261016.json": null
+    "docs/ops/author-feedback-resolution-20261015.json": "8b40510ad5bf6a3e2f4e247931de0331dd20298863c5e8a761ff2ec8dbf6da4f",
+    "docs/reviews/author-feedback-memory-gate-20261016.md": null,
+    "registry/author-replies/feedback-636-20261016-v0140.json": null
   },
   "postconditions": {
-    "docs/reviews/author-feedback-20261016.json": "3897513ed38929f5c79dd1660b9d9560897859877dbc0713dba39953ad362673",
-    "docs/reviews/author-feedback-20261016.md": "012194a5e7d5f85b2794c10c68d7f8b034b947ef34b94a2dc44e37eff5d3f9e6",
-    "registry/catalog.json": "88abf941b0d2003b5fc0a6a656b0fc3d2917c321b736ae9ac3af3895756894d4",
-    "registry/catalog-index.json": "985aae2e0309225ce1db9b514709c2690e9b9602eb254c5ec71b41e7f5700364",
-    "registry/catalog/details/dsh-qwen-paint.json": "028b1c5695dcdc1f5dfec8d6e1dd4dc2be83681e4ba41a1e63f6002343751b93",
-    "registry/catalog/details/dsh-ledger-memory.json": "ac878df4aea15474261a83dd701f3822c9bf62fa525f2c46c3e7540ce08cbeaf",
-    "registry/admission-reviews.json": "3f92373953650c6b86863f3aecc8d3edf9c750bf3786a165ba5ecfdd47b1a491",
-    "registry/author-replies/feedback-1390-20261016.json": "b9de760d87c5a41f48e08869dce23603075d77d3b08e5ecee615fc5b08453cff",
-    "registry/author-replies/feedback-1376-20261016.json": "8fd5268a438837278260358aa5befa37d34f0570fa341b645da6dad06fb4efd0"
+    "docs/reviews/author-feedback-memory-gate-20261016.md": "e7ba02eacba11fa03a09361e6839489b0de5e3444d33e782299566a195872ebb",
+    "registry/author-replies/feedback-636-20261016-v0140.json": "3b93d24744e6a8cd88a70a5f0bf0ef964b997ef6737c9691ebe878b08e236b3c"
   },
   "authorization": {
-    "source": "user-request",
-    "request": "你在检查一下github里面的回复 都处理一下",
-    "githubWriteCredential": "existing-credential-explicitly-authorized",
-    "outreach": "main-reviewed-request-specific-plan-and-central-CAS-only",
-    "credentialException": {
-      "source": "direct-user-request",
-      "request": "你直接上线啊 不要用短期的",
-      "scope": "this-feedback-publication-only"
-    }
+    "source": "direct-user-request",
+    "request": "检查一下 github里面的用户回复",
+    "priorActionAuthorization": "改回复的回复 改修复的修复 该关闭的关闭",
+    "githubWriteCredential": "short-lived-token-required",
+    "writeRoute": "GitHub integration for source PR; GitHub Actions GITHUB_TOKEN for the guarded sender",
+    "outreach": "main-reviewed request-specific plan and central immutable-person CAS only"
   },
   "gates": [
-    "complete-overlapping-comment-and-review-audit",
-    "fixed-commit-and-source-blob-integrity",
-    "complete-central-contact-history-and-live-grants",
-    "exact-base-and-file-hashes",
-    "npm run check",
-    "CI-checked-pull-request",
-    "Pages-and-production-readback"
+    "exact base and reviewed file hashes",
+    "npm run check before commit",
+    "CI checked PR before main",
+    "current request identity/body/time and complete history before reservation",
+    "one central CAS reservation and no uncertain retries"
   ],
   "rollback": {
-    "source": "revert via CI-checked policy PR",
-    "production": "previous validated artifact and atomic current symlink rollback",
-    "contacts": "never delete reservations or retry uncertain sends"
+    "source": "CI checked PR revert with recoverable Git history",
+    "contacts": "never delete reservations or repeat uncertain sends"
   },
-  "runtimeAcceptance": "not-performed; no real Profile or third-party execution",
-  "createdAt": "2026-10-16T00:55:34.250Z",
-  "evidence": {
-    "issues": [
-      1376,
-      1390,
-      1430
-    ],
-    "exactDispositionCount": 2,
-    "sourceEntryUpdates": 2,
-    "replyGrants": 2,
-    "closeGrants": 0
+  "healthCheck": "Exact reply body readback and matching permanent request reservation; no Catalog or Profile changes",
+  "verdict": {
+    "status": "passed",
+    "checkedAt": "2026-10-16T07:00:19.741809+00:00",
+    "localChecks": 443,
+    "failed": 0,
+    "logSha256": "885725f6ddaa0d318fa011cec0d3c10eb00a93a2154e88646e2213bfc0d701b9",
+    "thirdPartyCodeExecuted": false,
+    "catalogChanged": false,
+    "repliesSent": 0,
+    "publication": "CI-checked PR required before sender"
   }
 }

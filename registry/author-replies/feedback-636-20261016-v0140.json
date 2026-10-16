@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 636,
+  "userId": 269385000,
+  "requestCommentId": 6209483939,
+  "requestBodySha256": "dbc652a9dbae5e95bf667548b3245ea50ed47dbee06cc27b057d94c1d4181d17",
+  "requestUpdatedAt": "2026-10-16T06:24:36Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请复审新的固定源",
+    "scope": "Reply once to this exact v0.14.0 fixed-source recheck request, distinguishing verified remediation from unsupported injection metadata, file-capability review and actual host runtime acceptance."
+  },
+  "responseBody": "已按新请求只读复核 **0.14.0 / `1d49af750e68ee86677f74b6c95f0991a87a6c5b`**，完整读取 34 个运行/契约文本文件、131,427 字节。三项整改已有固定源码依据：Patch 中的 `!!js` 已移除；`dependencies` / `optionalDependencies` 均为空，schemastery 现为 peer；分发运行面不再包含 `backtest/` 或 `fixtures/synthetic/`，此前该部分的命令执行信号已不在本次扫描面中。\n\n仍需区分两项后续审阅：当前 Store 的有界 Patch 解析器尚未覆盖 `inject: [commands]` 元数据，因此预检返回 `SUBMISSION_PATCH_AMBIGUOUS`，这属于商城需要核验的契约覆盖，不能据此要求你删除正常注入功能；SQLite、session 日志与自动 workspace mining 的实际文件访问边界仍需针对该固定 Commit 做专项审阅。把 schemastery 移到 peer 也不等于 Store 已验证所有宿主精确版本都能提供该 peer。\n\n本轮确认上述整改，但没有自动批准新来源或移动 Catalog 安装固定点。没有执行你的构建、自测、npm pack、安装或真实 Profile；作者侧测试仍作为作者证据，商店运行验收保持未知。\n\n[固定源码复核记录](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-memory-gate-20261016.md) · [当前公开收录标准](https://dsh.store/standards/#policy-updates)"
+}
