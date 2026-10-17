@@ -823,12 +823,15 @@ function legacyAssurance(assurance) {
   }))
 }
 
-function legacyWireEntry(entry, searchTermLimit = 40) {
-  return {
+function legacyWireEntry(entry, { searchTermLimit = 40, descriptionLimit = null, omitDefaults = false } = {}) {
+  const description = [...entry.description]
+  const wire = {
     id: entry.id,
     name: entry.name,
     packageName: entry.packageName,
-    description: entry.description,
+    description: descriptionLimit !== null && description.length > descriptionLimit
+      ? description.slice(0, descriptionLimit - 1).join('') + '…'
+      : entry.description,
     searchTerms: entry.searchTerms.slice(0, searchTermLimit),
     repositoryUrl: entry.repositoryUrl,
     defaultBranch: entry.defaultBranch,
@@ -869,6 +872,18 @@ function legacyWireEntry(entry, searchTermLimit = 40) {
       review: entry.risk.review,
     },
   }
+  if (omitDefaults) {
+    // These exact defaults are reconstructed by every supported historical
+    // validator. Required safety and compatibility fields stay explicit.
+    for (const [field, fallback] of Object.entries({ defaultBranch: 'main', manifestPath: 'package.json', installPath: null, updatePolicy: null, installCount: null, featured: false })) {
+      if (wire[field] === fallback) delete wire[field]
+    }
+    if (wire.searchTerms.length === 0) delete wire.searchTerms
+    if (wire.risk.installScripts.length === 0) delete wire.risk.installScripts
+    if (wire.risk.review === 'curated-not-security-audited') delete wire.risk.review
+    if (Object.keys(wire.risk).length === 0) delete wire.risk
+  }
+  return wire
 }
 
 function registryWithoutSplitMetadata(registry) {
@@ -925,21 +940,31 @@ export function splitCatalogDocument(document, options = {}) {
     },
     entries: catalog.entries.map(entry => legacyWireEntry(entry)),
   }
-  if (catalogBridgeBuffer(bridge).length > MAX_CATALOG_BRIDGE_RESPONSE_BYTES) {
-    // Preserve every historical entry and safety field. Search remains full in
-    // the v2 index/detail; old clients retain as many leading terms as fit.
-    for (const limit of [20, 12, 8, 5, 3]) {
-      bridge.entries = catalog.entries.map(entry => legacyWireEntry(entry, limit))
-      if (catalogBridgeBuffer(bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES) break
-    }
+  // Batch rechecks add admission records and per-version evidence across the
+  // whole directory. Reserve space for that growth instead of fitting only the
+  // search terms that happened to exist before the scan.
+  const targetBytes = MAX_CATALOG_BRIDGE_RESPONSE_BYTES - 128 * 1024
+  let projection = { searchTermLimit: 40, descriptionLimit: null, omitDefaults: false }
+  let bridgeBytes = catalogBridgeBuffer(bridge).length
+  const projections = [40, 20, 12, 8, 5, 3].map(searchTermLimit => ({ searchTermLimit, descriptionLimit: null, omitDefaults: true }))
+  projections.push(...[256, 160, 96, 64].map(descriptionLimit => ({ searchTermLimit: 3, descriptionLimit, omitDefaults: true })),
+    { searchTermLimit: 1, descriptionLimit: 64, omitDefaults: true },
+    { searchTermLimit: 0, descriptionLimit: 64, omitDefaults: true },
+    { searchTermLimit: 0, descriptionLimit: 32, omitDefaults: true })
+  for (const next of projections) {
+    if (bridgeBytes <= targetBytes) break
+    projection = next
+    bridge.entries = catalog.entries.map(entry => legacyWireEntry(entry, projection))
+    bridgeBytes = catalogBridgeBuffer(bridge).length
   }
   validateLegacyCatalog(bridge)
   assertLegacyCatalogCompatibility(bridge)
-  if (catalogBridgeBuffer(bridge).length > MAX_CATALOG_BRIDGE_RESPONSE_BYTES) {
-    throw new TypeError('Catalog compatibility bridge exceeds the historical 2 MiB response ceiling')
+  if (bridgeBytes > MAX_CATALOG_BRIDGE_RESPONSE_BYTES) {
+    throw Object.assign(new TypeError(`Catalog compatibility bridge exceeds the historical 2 MiB response ceiling: bytes=${bridgeBytes} maximum=${MAX_CATALOG_BRIDGE_RESPONSE_BYTES}`), { code: 'CATALOG_BRIDGE_CAPACITY' })
   }
   return {
     bridge,
+    bridgeProjection: { bytes: bridgeBytes, maximumBytes: MAX_CATALOG_BRIDGE_RESPONSE_BYTES, targetBytes, entries: bridge.entries.length, ...projection },
     index: validatedIndex,
     details: validatedIndex.entries.map(indexEntry => ({
       path: indexEntry.detailPath,

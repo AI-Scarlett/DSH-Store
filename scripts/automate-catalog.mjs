@@ -1064,6 +1064,7 @@ report.postconditions = {
   candidatesSha256: sha256(candidatesBuffer),
   catalogEntries: validatedCatalog.entries.length, candidateEntries: validatedCandidates.entries.length,
   catalogDetails: split.details.length,
+  legacyBridge: split.bridgeProjection,
 }
 report.status = 'passed'
 report.completed = true
