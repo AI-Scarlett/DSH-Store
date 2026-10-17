@@ -28,7 +28,7 @@
     "test/contracts.test.mjs": "ac39a019b41f628bb89db5e03c9f8799e586b2b2281e84befaba6819ff610b77"
   },
   "postconditions": {
-    "package.json": "4c36a2841e0a6426bc755941799203a46f99c5dd809cda4a902c33fb9064efe0",
+    "package.json": "7e55af5a7db9109b4788c0f318aa35be707aec8c16b7525f7e2036a06613e0f2",
     "README.md": "e4d6db7b7ebe9110f7f77a259f88d6f94be1cf2205aface6b03953fb2f614635",
     "test/upgrade-matrix.test.mjs": "59b0cf78aca9e2357465fcfa688b404a1d122e6f6a36f0aaa5d9fab19989a381",
     "scripts/verify-dsh-upgrade-plan.mjs": "4c2717ce722bc4c0934c10cf8c6fee470b69c568ccee1d6ba0d8aaf39e026ff7",
@@ -61,7 +61,29 @@
       "0.2.1-rc.2"
     ],
     "windowSourceRun": 39034337510,
-    "rc1PassedLifecycleJob": 117401055026
+    "rc1PassedLifecycleJob": 117401055026,
+    "disposableLifecycleProof": {
+      "sourceHead": "56e955c44c673eaa0e0e11a39786fcad31cb34cc",
+      "runId": 39034710944,
+      "releases": [
+        "0.2.1-rc.1",
+        "0.2.1-rc.2"
+      ],
+      "observedSystems": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "operations": [
+        "install",
+        "startup",
+        "authenticated-api",
+        "uninstall",
+        "exact-profile-restoration"
+      ],
+      "remainingGate": "all OS/pnpm cells must pass again at the final source head before merge",
+      "rollback": "unverified"
+    }
   },
   "gates": [
     "exact base/scope/file hashes",
