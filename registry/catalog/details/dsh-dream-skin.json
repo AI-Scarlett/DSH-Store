@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6c5b3c7b4390bf2ba867d6ded90e0ba4d30d5fb2",
-  "version": "10.15.0",
+  "commit": "e91ae7245eff903ace78508b030cf8edc7f4626c",
+  "version": "10.16.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T08:15:29.000Z",
-    "observedAt": "2026-10-15T13:06:31.398Z",
+    "updatedAt": "2026-10-16T08:07:59.000Z",
+    "observedAt": "2026-10-17T01:45:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T13:06:31.398Z",
-      "evidenceUrl": "https://github.com/RevolutionLA/dsh-dream-skin/commit/6c5b3c7b4390bf2ba867d6ded90e0ba4d30d5fb2",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "evidenceUrl": "https://github.com/RevolutionLA/dsh-dream-skin/commit/e91ae7245eff903ace78508b030cf8edc7f4626c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation, package scripts, or builds were executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime reports were not independently reproduced."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "This bounded capability review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -90,6 +90,7 @@
   "entryIds": [
     "dream-skin"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Fixed-source recheck blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
@@ -105,7 +106,9 @@
       "0.1.2-alpha.5": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -169,6 +172,18 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

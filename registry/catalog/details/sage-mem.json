@@ -21,29 +21,29 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "16fd80bc093c7d36e2598c2ef6adae13a45e59f5",
-  "version": "0.6.4",
+  "updatePolicy": "external-only",
+  "commit": "71d1997c36c64f436682e0261f3948ed1e52d377",
+  "version": "1.0.1",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T09:44:29.000Z",
-    "observedAt": "2026-10-01T13:57:52.000Z",
+    "updatedAt": "2026-10-16T18:13:48.000Z",
+    "observedAt": "2026-10-17T01:45:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-01T13:57:52.000Z",
-      "evidenceUrl": "https://github.com/gezi-wen/sage-mem/commit/16fd80bc093c7d36e2598c2ef6adae13a45e59f5",
+      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "evidenceUrl": "https://github.com/gezi-wen/sage-mem/commit/71d1997c36c64f436682e0261f3948ed1e52d377",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -76,11 +76,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "0eabdea180f7bb76ced5faa8e8cda15cefc7e0874f8223de9255d31d71583743",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
   "entryIds": [
     "sage-mem"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "configOverrides": [],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.1.2-rc.1",
     "dshReleases": {
@@ -95,21 +107,16 @@
       "0.1.2-rc.1": "compatible",
       "0.1.3-alpha.1": "compatible",
       "0.1.3-alpha.2": "compatible",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
       "0.1.5-rc.1": "compatible",
-      "0.1.5-rc.2": "unknown",
       "0.1.6-alpha.1": "compatible",
       "0.1.6-alpha.2": "compatible",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.1": "compatible",
       "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -178,25 +185,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -209,18 +198,6 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.7-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -250,19 +227,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -276,25 +253,25 @@
     ]
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "Apache-2.0",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "none",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "api-key"
+        "unknown"
       ]
     },
     "externalDependencies": [
-      "用户配置的外部服务凭据"
+      "zod"
     ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "awesome-dsh-plugin-fixed-commit-and-npm-provenance-automated-source-review-not-runtime-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
