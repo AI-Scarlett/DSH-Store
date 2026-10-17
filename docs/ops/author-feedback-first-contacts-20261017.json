@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "baseCommit": "58b1dec62ad5d6e43d3c07b042d1455926471d71",
+  "createdAt": "2026-10-17T06:27:16.741507+00:00",
+  "scope": [
+    "docs/ops/author-feedback-first-contacts-20261017.json",
+    "scripts/send-first-author-contact.mjs",
+    "test/first-author-contact.test.mjs",
+    "scripts/verify-author-feedback-plan.mjs",
+    ".github/workflows/author-feedback-resolution.yml",
+    "registry/author-first-contacts/new-candidates-20261017.json"
+  ],
+  "preconditions": {
+    "docs/ops/author-feedback-first-contacts-20261017.json": null,
+    "scripts/send-first-author-contact.mjs": null,
+    "test/first-author-contact.test.mjs": null,
+    "scripts/verify-author-feedback-plan.mjs": "94d506d7d7d3615250cee95651ddfecc13b8d02beb9191396d86ed4743c22964",
+    ".github/workflows/author-feedback-resolution.yml": "26b249a7a4b2687861b06db0ffbd850d41fe440df708ceda04cf81fe55b44b23",
+    "registry/author-first-contacts/new-candidates-20261017.json": null
+  },
+  "postconditions": {
+    "scripts/send-first-author-contact.mjs": "4566d17378d4b220657dd415f59bb4f6196d16463a7995719fa0bdb06ac9e6ed",
+    "test/first-author-contact.test.mjs": "db499da2fe416406b6b172058070ca9b5a63cc6ba5151746fd2fb51aea8a8b81",
+    "scripts/verify-author-feedback-plan.mjs": "37cb5e6e4b29bc5a61fddc1ebcb67ffcb02c5bc8542728525280b23306dd0ab9",
+    ".github/workflows/author-feedback-resolution.yml": "c8269fa92febf49a8abb9e35f3a21faed44efa36798f242df86769ea5a7c4481",
+    "registry/author-first-contacts/new-candidates-20261017.json": "a7baaa7071e59fec29a15caa29a89fa0825c6180d59e3a77fc2edce6adb586c5"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "按照正常流程 该给用户发消息发消息",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "gates": [
+    "exact reviewed main plan bytes and unchanged source Commit/tree",
+    "verified immutable human identity; imported history, aliases, stops and current Store discussions",
+    "first-contact only; no continuation or owner exceptions",
+    "central Contents API SHA reservation before each issue creation",
+    "no mutation retries; exact Issue readback and durable receipt",
+    "npm run check and CI-checked PR"
+  ],
+  "healthCheck": "Exact Issue body/title, central reservation and workflow receipt readback.",
+  "rollback": "Disable the new sender through a CI-checked revert; preserve every contact reservation and all history. Never resend uncertain deliveries.",
+  "verdict": {
+    "status": "deterministic-scope-and-content-gates-passed",
+    "catalogChanged": false,
+    "thirdPartyCodeExecuted": false,
+    "realProfileChanged": false
+  }
+}

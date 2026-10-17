@@ -6,6 +6,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { validateReplyGrant } from './reply-author-contact.mjs'
 import { verifyReplyResolution } from '../src/author-resolution.mjs'
+import { validateFirstContacts } from './send-first-author-contact.mjs'
 export const planPath = 'docs/ops/author-feedback-resolution-20261015.json'
 const hash = bytes => bytes === null ? null : createHash('sha256').update(bytes).digest('hex')
 export function validateResolutionPlan(plan, changes, readBase, readCurrent, currentPlanPath = planPath) {
@@ -47,6 +48,10 @@ function main() {
         validateReplyGrant(reply)
         if (!['admission-recheck', 'other-request'].includes(reply.review?.kind)) throw new Error('new reply must classify the verified request')
         if (reply.review.kind === 'admission-recheck') verifyReplyResolution(reply, readFileSync('registry/author-resolutions.json'))
+      }
+      for (const path of git('diff', '--name-only', '--diff-filter=AM', from, to, '--', 'registry/author-first-contacts').split('\n').filter(Boolean)) {
+        if (!/^registry\/author-first-contacts\/[a-z0-9-]+\.json$/.test(path)) throw new Error('invalid first-contact plan path')
+        validateFirstContacts(JSON.parse(readFileSync(path)))
       }
     }
     const changedPlans = from && to ? git('diff', '--name-only', from, to, '--', 'docs/ops').split('\n')

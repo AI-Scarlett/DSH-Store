@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "operation": "reviewed-first-author-contacts",
+  "repository": "AI-Scarlett/DSH-Store",
+  "authorization": {
+    "source": "direct-user-request",
+    "quote": "按照正常流程 该给用户发消息发消息"
+  },
+  "targets": [
+    {
+      "key": "star-Cosmo/dsh-model-tidy",
+      "repositoryId": 1421763001,
+      "recipient": {
+        "id": 308724067,
+        "node_id": "U_kgDOEmbBYw",
+        "login": "star-Cosmo",
+        "type": "User"
+      },
+      "commit": "b886e9bb84a0f831af76c4901f671518f2a301e2",
+      "patchPath": "cordis.patch.yml",
+      "sourceFiles": [
+        {
+          "path": "cordis.patch.yml",
+          "blob": "66b5f0e8e0ce03ce3f0083595aaf5ec292d414ad",
+          "sha256": "2cfe2fc6dfacb8881997c6fdc1a6828eae2f45fd0117d85e31a771f90a8b762f"
+        },
+        {
+          "path": "lib/client.js",
+          "blob": "58918ec7692d5d1c8c858b901367779fa6c938dd",
+          "sha256": "fba42a193fbab2a3b5c0ecf646c7d43a540487733c5065eda67e568d5f528bf6"
+        },
+        {
+          "path": "lib/index.js",
+          "blob": "e6f7f11e20fa996cebc0250b72d98ff77bec36f6",
+          "sha256": "9458a37b8a661083474c2bf8592fd2226435f477b7913b161ad5875137b777bf"
+        },
+        {
+          "path": "package.json",
+          "blob": "3c61e72f7fd873d4e0f6bf88bdc4abf772c10802",
+          "sha256": "848febc4fec67285b2fb6d12e7535c9f041fe8b43ec0b9d77baf3fc5af8d1184"
+        },
+        {
+          "path": "LICENSE",
+          "blob": "a5ed8be5c62319b20ff692eb0922b85d962d7e3d",
+          "sha256": "ff1a3a4e2d08c6ded385cac2025e1bf3b24585e3017c059416abb8557ea30a2c"
+        }
+      ],
+      "title": "作者修复请求：star-Cosmo/dsh-model-tidy（DSH STORE 固定源码审核）",
+      "body": "<!-- dsh-author-notice:v1 key=star-cosmo/dsh-model-tidy signature=9268152f990c22e043f89c92e47ee87e3371fbc1eadc0b9fb2f75fc56b35251b notified=9268152f990c22e043f89c92e47ee87e3371fbc1eadc0b9fb2f75fc56b35251b -->\n<!-- dsh-author-source:v1 fingerprint=66adc265378662ca1135e7112c577c2a611106eb0ce78b4c78e0849a1805001f known=true -->\n\n您好，我们按固定源码审阅了 dsh-model-tidy 0.0.3，Commit：`b886e9bb84a0f831af76c4901f671518f2a301e2`。当前结论：**尚未准入 DSH STORE 可安装 Catalog**。Bundle 契约检查通过，完整有界静态扫描读取了 4 个源码文件；没有执行您的安装、构建、测试或运行时代码。\n\n需要您补充的内容：\n\n1. [package.json 第 26–38 行](https://github.com/star-Cosmo/dsh-model-tidy/blob/b886e9bb84a0f831af76c4901f671518f2a301e2/package.json#L26-L38)：目前 `dsh` 中没有明确的宿主兼容声明。请按实际支持情况补充 `dsh.compatibility.dsh`；若申请可安装准入，请同时提供对应 DSH 版本的明确兼容结果及安装、启动、卸载/回滚证据。未知版本保留 unknown，不需要猜测或宣称兼容 Alpha.5。\n2. [package.json 第 39–47 行](https://github.com/star-Cosmo/dsh-model-tidy/blob/b886e9bb84a0f831af76c4901f671518f2a301e2/package.json#L39-L47)：没有 `engines.node`。请声明实际验证过的 Node 支持范围。\n3. [package.json 第 45–47 行](https://github.com/star-Cosmo/dsh-model-tidy/blob/b886e9bb84a0f831af76c4901f671518f2a301e2/package.json#L45-L47)：运行依赖 `@deepseek-ai/schemastery: ~3.18.4` 需要供应链复核。请提供可复现的具体解析版本、完整依赖树/锁定完整性信息和对应上游源码；如果确实应由宿主提供，可说明并验证 peer 契约，**不要求为了扫描通过而直接删掉依赖**。这不是对该官方依赖的安全指控。\n\n商城负责核验依赖来源、源码覆盖及最新版本准入，不能把“需要商城审阅”直接当成您的代码缺陷。验收条件是：新固定 Commit 的上述声明与证据一致、运行依赖审阅通过、Bundle/入口/生命周期/权限检查无未决阻断，再经 CI PR 纳入 Catalog，并核验公开商城。静态检查通过不等于已完成真实 DSH 运行验收。\n\n如果您愿意继续申请，修改后可在本 Issue 明确请求复核并附新 Commit、支持版本和证据链接；我们会针对该请求给出是否准入及剩余具体问题。我们对每位作者跨项目只主动联系一次；如不希望再联系，请直接说明。\n\n[DSH STORE 收录标准](https://dsh.store/standards/)\n",
+      "review": {
+        "sourceCoverage": "complete-bounded-static",
+        "admission": "not-admitted",
+        "thirdPartyCodeExecuted": false,
+        "sourceAssessmentSha256": "867d0ade3dc5ae7f9aabacedbeba9d4027a8b44162a3ce5599c631e6a165f4aa",
+        "runtimeAcceptance": "unverified"
+      }
+    },
+    {
+      "key": "scclovez/dsh-tun-proxy",
+      "repositoryId": 1422607039,
+      "recipient": {
+        "id": 190562520,
+        "node_id": "U_kgDOC1vA2A",
+        "login": "scclovez",
+        "type": "User"
+      },
+      "commit": "ec6ae9d30ad77ef9f772de517c3624dcaaf9a654",
+      "patchPath": "cordis.patch.yml",
+      "sourceFiles": [
+        {
+          "path": "cordis.patch.yml",
+          "blob": "cb4c5a3f56ffd62f3c3ba81e298ef794f4dc435e",
+          "sha256": "6d63fd7d8a40d101c19c168143bcd4f4a53cf2a703e89a7cfb86b97dfb68c82b"
+        },
+        {
+          "path": "lib/actions.js",
+          "blob": "9fe5cb463158c5cfa4426383ad949a1bd11993c9",
+          "sha256": "0434aa9e656debd2f08ebae96c2f725bb10b496fc3c4e122dfdf42c05d3f6890"
+        },
+        {
+          "path": "lib/client.js",
+          "blob": "e0abcdc1bf1ca0338e4ce6dd4b661e44b09dfddf",
+          "sha256": "2eecf22939c6891f5f2c1ce5ac842a19b07b209b01ad7d0337a1e73363ddf179"
+        },
+        {
+          "path": "lib/core/chain.js",
+          "blob": "1459d71a7e1b66bb0d6293640c2d7a5c0f8c2324",
+          "sha256": "8e1dc7d022f8a44b14096a13ab03ab48e0c757781781a185338903308ca0df36"
+        },
+        {
+          "path": "lib/core/ipcheck.js",
+          "blob": "aa2d89039661ac782ec4b5da35bca7da32c9689e",
+          "sha256": "9c7b8518bbc462c9ff8448206d274245b6a30a9f98115baf723121db16198b5e"
+        },
+        {
+          "path": "lib/core/kernel.js",
+          "blob": "dc34220e8bb4d4e5c134247d1ef00ba6add0409d",
+          "sha256": "c371af45743977db39a9bebea2daaf2da7bbf03585155637df10f609bddeb407"
+        },
+        {
+          "path": "lib/core/net.js",
+          "blob": "0a230458fe62ee5be4affb1da7f053f2ef97c672",
+          "sha256": "636bb565d158efa7c40226e34e0ac5c59e1709fcac1b56dc7b14dc3c5ba31514"
+        },
+        {
+          "path": "lib/core/paths.js",
+          "blob": "7db463df96c77f07524607ea59b79377f57ce6e7",
+          "sha256": "02ec59dac9af587ad5af2318df722e961cb8be79ea706d314f60a2dd07d79716"
+        },
+        {
+          "path": "lib/core/profile.js",
+          "blob": "69035206eee7b2cf9cbab60c64c6d4b9a0ce70c2",
+          "sha256": "b81e005381fce8bdd6891b37ff1cafca4962de85823ee2b353e6723983c261cc"
+        },
+        {
+          "path": "lib/core/profiles.js",
+          "blob": "bf82783509adb03f9d2222d87ec30565a4d960ef",
+          "sha256": "2e95810afce9a0aef4f461c7d7e22465fd020dd282e5443bd9e8dac22dcad6e3"
+        },
+        {
+          "path": "lib/core/ps.js",
+          "blob": "bc334d86f6c6bf15912f24f3254f40bdd9a833fc",
+          "sha256": "6989f6da38a599710ae21baec27e5869517ae7a63f34bfb61c53a2700f2de385"
+        },
+        {
+          "path": "lib/core/service.js",
+          "blob": "b89304012c65a394982fec3b71675aa40da55c34",
+          "sha256": "ff0a51fcd597acb455623508df77fc9ad2f24414d65361ec090853fb26659c26"
+        },
+        {
+          "path": "lib/core/settings.js",
+          "blob": "a86314d6f76ff80cb1ffb8209f198cca99297705",
+          "sha256": "8871eaa4673c93f0acb3d5d547a774ac2535d33569df1f3c3087c24cb202d6a3"
+        },
+        {
+          "path": "lib/core/subscription.js",
+          "blob": "549f0b57e7c8b5cb47f340afdd44d4e62e6c3d42",
+          "sha256": "d4f3ddcc797140b1ba98496ae546b312d2faa966b9cce3f73b93451e94a0449f"
+        },
+        {
+          "path": "lib/core/system-proxy.js",
+          "blob": "01b17ca82caee7928e943a215c0a3a06189c262f",
+          "sha256": "85ea9bbfa39b27e874c3ef6a7a9a21c358ca133dc947d97b8eb4e36f92cbe751"
+        },
+        {
+          "path": "lib/core/yaml-config.js",
+          "blob": "c6d28ac0a013fc1d97dae1433f0ccbfcb4190186",
+          "sha256": "de95c976e8043622ea4ae2ecce238d7c051b3150d58d7d39192c2e1ee894ad63"
+        },
+        {
+          "path": "lib/gateway.js",
+          "blob": "bd034acbf62eb68f05cb3ba2714c1bd4a78ae4d0",
+          "sha256": "4597ddf680b26c9e2d687cb1e3b0ed5cd82d26c66ac320acd77121df13afc783"
+        },
+        {
+          "path": "lib/index.js",
+          "blob": "9b924802342958c26c53a84cf765f74d94aee695",
+          "sha256": "57fac4dea19029041bc782a3a099fa55a818fd062bc90786a3c841eb83f59bb6"
+        },
+        {
+          "path": "lib/panel-style.js",
+          "blob": "fc7dd43c354c7e90e57d1d75e3cebc45199917ee",
+          "sha256": "5cef0b62f33e1e16e585ebe807fd9a9903c32e188b640335e6edffb68c364b3b"
+        },
+        {
+          "path": "lib/panel.js",
+          "blob": "06c310957ba88b29de5c83506fef1d8a926d2557",
+          "sha256": "9a83c3e4e85f3277d8cb1283bb356bb4a988a42ed7d2c3b9dcf089a03d08e93d"
+        },
+        {
+          "path": "lib/routes.js",
+          "blob": "00c40a84da4bdfa1ef37dd78b7df739591e35028",
+          "sha256": "469ba71397bbfec9fe1f9485b4fbb009f9921bfb2f05eea40d620302c4327db1"
+        },
+        {
+          "path": "lib/select.js",
+          "blob": "4109652b6edee21aa1dd42bc46c502a303b0410f",
+          "sha256": "38df1c8beaf7679e00010587be23f0250d57de84fff5b670e9e047ec8c11c343"
+        },
+        {
+          "path": "lib/tools.js",
+          "blob": "8613f3261ac16fed2c58d756edd13bbeb21e7b76",
+          "sha256": "99b3269186a13f0c3d6d72bf439eaa91af1769bc95bc3491bc4823f9418dd00d"
+        },
+        {
+          "path": "package.json",
+          "blob": "f01b3a6603d19444aab81a448678c638738b8e76",
+          "sha256": "c79d98191bf2f7a57ed8f5551820c7fe983a6c526721d905027888a3f33d5bf4"
+        },
+        {
+          "path": "scripts/acceptance-tun.mjs",
+          "blob": "12494cdd3af3f5d0d3ef45f1980a756fce2f8faf",
+          "sha256": "4418fb2bb70de2889cfd1b05ad89b61fe491c80431f574b37a2db62f2361893e"
+        },
+        {
+          "path": "scripts/build-client.mjs",
+          "blob": "b5cc3b327090bbf7fd59125706ae359ab2417a2d",
+          "sha256": "44fa4663e0dccde2b89e0a5190a436ec24d8a98d6be6dabeea454af40a6893d2"
+        },
+        {
+          "path": "scripts/cli.mjs",
+          "blob": "e8bfb6f9953a67b5872f708fd324940ce21d6020",
+          "sha256": "5a4ff4c8fd9f1ed7dbcce8036a34ead8e51ff8c84ccd7fc1aec685426f8c2f7b"
+        },
+        {
+          "path": "scripts/install.ps1",
+          "blob": "255ad7dfe1fb1220936ad9e3830de36b8bfd0ca7",
+          "sha256": "b38940aff10d64649270e32710fb0aede4789ec584caa4b0202b6ab8b2a167b2"
+        },
+        {
+          "path": "scripts/preview.mjs",
+          "blob": "0d5380721f823cd2f75272486c3300471d5e825d",
+          "sha256": "194305be11123b32394d27da6b95424a3420631bcd7c576bf79dad8623b7a0d2"
+        },
+        {
+          "path": "scripts/uninstall.ps1",
+          "blob": "8301c67643c6637da60d42767f82efb0658012bd",
+          "sha256": "453d16d7d00afb737ee7793f7c4b32bf9c8b4cc1a3805cc37cee0368ac8c49c6"
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "blob": "5e31fe401953027299c0617d8764765a0e0a027e",
+          "sha256": "213fa0b85f3e203e027bfa82ea5cdd4570335d6c1863a1f3ec59b59e99c70b92"
+        },
+        {
+          "path": "test/activity.test.mjs",
+          "blob": "e630f622f4b1fed62ab60e15c0762ff7784808ab",
+          "sha256": "a71c009f080f5fa062329f8910105746ddc62970e7af228c01dc668bde35abae"
+        },
+        {
+          "path": "test/backup.test.mjs",
+          "blob": "9974a2c326e279f63253e4dd616d671edd8586e1",
+          "sha256": "cd355a2b196695abad4cd23f63036c96de091a1a18cf76f0a70bbf34fd3ec298"
+        },
+        {
+          "path": "test/chain.test.mjs",
+          "blob": "3ac923cf1d7798fa6d53a383aec55da918a185dc",
+          "sha256": "edb46e79a3d0b79873e02482a8694bec776b5b9464c2b3080cdcef2c33b4a67d"
+        },
+        {
+          "path": "test/ipcheck.test.mjs",
+          "blob": "ea41d8478d4a3d67658cb588f32bb8caaf6faa7b",
+          "sha256": "a2704083d68e37841b6ebcd93ad1caace13dfcf0cba776dfa39d496d1e985b2b"
+        },
+        {
+          "path": "test/mihomo.integration.test.mjs",
+          "blob": "c39fa3573fec806b9ece79e0f5085efb8fd0048c",
+          "sha256": "7172944d383a0780e3c2c42880f0578d49535eb994e44212cf78d4785a7bde5b"
+        },
+        {
+          "path": "test/paths.test.mjs",
+          "blob": "72686e3388d180fe114d79213f068e60c12543c4",
+          "sha256": "dd78cf835762e349816e3b0511b93376567a57cfe7422ff1d73b2eeedfe02444"
+        },
+        {
+          "path": "test/plugin-entry.test.mjs",
+          "blob": "4251bf2021400b6c1fedb3cd52b020dbce3023d7",
+          "sha256": "14063eb4044a4ca812d21cfd4864698e06fc6bf0742217a9346fb1405286a53b"
+        },
+        {
+          "path": "test/profile-scripts.test.mjs",
+          "blob": "8584f3ffd718fcfd631d6700ba6ab2a166de34d2",
+          "sha256": "354e16299f1cbe95d12807762f8f4eb2a50937c1440d2c0be866f88c96064623"
+        },
+        {
+          "path": "test/profiles.test.mjs",
+          "blob": "3b98fa8b5350f41351a2501713711befb09ecb6e",
+          "sha256": "c3f56e20c9aef283eec40382b8108d9e8a0413a28f0c6fe49922f94e4708bf0f"
+        },
+        {
+          "path": "test/routes.test.mjs",
+          "blob": "36f72b25f8ec7f314448745c9be133e69f98973c",
+          "sha256": "f9b021d5f219c560684706bc1018c3b61ef891c80f43a02b52070c8cf484128d"
+        },
+        {
+          "path": "test/service.test.mjs",
+          "blob": "a9448a8711081c41ffcdeb47052126da601e297e",
+          "sha256": "e29f734adfb044aa569af41ed18cb1fad337c8f35887050657532c249828ddbe"
+        },
+        {
+          "path": "test/settings.test.mjs",
+          "blob": "1a03c3b22bdbe340712b81ea74598ef09d173f38",
+          "sha256": "095db23d9ae5e1bce21e0ec0da2c5f5cf02b02a1dd81802f8db519ed9ae2fd69"
+        },
+        {
+          "path": "test/subscription.test.mjs",
+          "blob": "27ddfe20618cf0294ca6e3fa145383013356ff36",
+          "sha256": "90d4bc32c9f1b8bab9d8c9c8bdd6dc6fb4f8da97f7bae5c70a79e40a22e3403b"
+        },
+        {
+          "path": "test/system-proxy.test.mjs",
+          "blob": "e380766762f176f0ede654f4cc7e1799445dceb6",
+          "sha256": "c4102c20ef4367abef18f1943d76b5bfe80cf1e209bbed186eba093b1c6ac9c8"
+        },
+        {
+          "path": "test/yaml-config.test.mjs",
+          "blob": "c6d59ef2f4c89d1b312d06dafed7ddb00fdd0c6d",
+          "sha256": "4be3de1b53a33d01bc9154791604c5098596ba4807ab75501a2d3fad823c9927"
+        },
+        {
+          "path": "web/panel.html",
+          "blob": "4d0b8359a7d83bf8c68609511fb35c7496c2a4e2",
+          "sha256": "6b06e198ff310ac302e809ab883dc4a8103c731701cd5c60f8cfa8e85e1449b7"
+        },
+        {
+          "path": "LICENSE",
+          "blob": "5dd77bb384389462ddbab64b3b1135bafb8fc7b9",
+          "sha256": "580661f871f7243b32d7b8e284cb1c25973e468446a63d2532b46819558bef9d"
+        }
+      ],
+      "title": "作者修复请求：scclovez/dsh-tun-proxy（DSH STORE 固定源码审核）",
+      "body": "<!-- dsh-author-notice:v1 key=scclovez/dsh-tun-proxy signature=ccbb59267a1ea4498791ed800a31aaf6f6284d62b931bcba960fc94996423b81 notified=ccbb59267a1ea4498791ed800a31aaf6f6284d62b931bcba960fc94996423b81 -->\n<!-- dsh-author-source:v1 fingerprint=8cb78f2d85bfa6e8826d2246d481e072c629b8b0f6a432c4e1e78eb2d4ede5a9 known=true -->\n\n您好，我们按固定源码审阅了 dsh-tun-proxy 0.3.0，Commit：`ec6ae9d30ad77ef9f772de517c3624dcaaf9a654`。当前结论：**尚未准入 DSH STORE 可安装 Catalog**。Bundle 契约检查通过，完整有界静态扫描读取了 47 个源码文件。没有执行插件、PowerShell、测试、二进制或更改任何真实 DSH Profile。\n\n已核实 `LICENSE` 对自有源码声明 MIT，`THIRD_PARTY_NOTICES.md` 分别说明 yaml、mihomo 和 Wintun，且声明第三方二进制不随包分发。GitHub 的 NOASSERTION 不能直接证明项目没有许可证；许可元数据与第三方义务的复核由商城承担，不要求仅为匹配扫描器更改项目许可证。\n\n需要您处理的具体项：\n\n1. **下载产物在安装/执行前缺少受信预期摘要校验。** [lib/core/kernel.js 第 70–80 行](https://github.com/scclovez/dsh-tun-proxy/blob/ec6ae9d30ad77ef9f772de517c3624dcaaf9a654/lib/core/kernel.js#L70-L80) 获取 mihomo release 的名称、大小和 URL，没有绑定摘要；[第 183–214 行](https://github.com/scclovez/dsh-tun-proxy/blob/ec6ae9d30ad77ef9f772de517c3624dcaaf9a654/lib/core/kernel.js#L183-L214) 下载后直接解压、替换并执行 `mihomo -v`；[第 247–254 行](https://github.com/scclovez/dsh-tun-proxy/blob/ec6ae9d30ad77ef9f772de517c3624dcaaf9a654/lib/core/kernel.js#L247-L254) 对 Wintun 也直接解压复制。请为明确版本/资产绑定来自受信渠道的 SHA-256 或等价签名，所有直连/镜像下载都在解压、替换和执行前校验；缺少校验材料、校验失败或文件被替换时中止并保留旧版本。`-v` 是执行下载产物，不能替代完整性验证。验收请覆盖正确摘要、错误摘要、镜像篡改、失败后旧版本保留等情况。\n2. [package.json 第 79–81 行](https://github.com/scclovez/dsh-tun-proxy/blob/ec6ae9d30ad77ef9f772de517c3624dcaaf9a654/package.json#L79-L81) 已固定 `yaml: 2.9.1`，请补充该解析版本及传递依赖的可复现完整性/上游源码证据，供商城完成供应链复核。\n3. 代理、TUN、管理员命令和网络设置是项目用途的一部分，**不要求删除这些功能来获得自动低风险标签**。请提供可复现的 Windows 权限/用户确认、敏感订阅与凭据保护、卸载、异常退出和网络/系统代理恢复证据，以及实际支持的 DSH 版本安装/启动/卸载结果。商城会据此进行单独能力审阅，静态权限关键词不等于恶意行为。\n\n扫描到的固定 `import('node:fs')` 等导入和测试夹具也需要由商城区分，不能仅凭动态导入关键词要求作者删代码。完成上述修改后，请在本 Issue 明确请求复核，附新固定 Commit 与证据链接；我们会重新作出准入结论。只有源码、依赖、权限和兼容证据通过，且 CI PR 与公开商城回读完成，才会标记为可安装。\n\n我们对每位作者跨项目只主动联系一次；如不希望再联系，请直接说明。\n\n[DSH STORE 收录标准](https://dsh.store/standards/)\n",
+      "review": {
+        "sourceCoverage": "complete-bounded-static",
+        "admission": "not-admitted",
+        "thirdPartyCodeExecuted": false,
+        "sourceAssessmentSha256": "3716445fb76416b9b5bc2cea8c7e52c54065073c1694ef03976801e55a8eadb6",
+        "runtimeAcceptance": "unverified"
+      }
+    }
+  ]
+}
