@@ -1,0 +1,1959 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-fixed-source-review",
+  "commit": "8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
+  "sourceHead": "4a90f973f35748d408fa765793ce202014b1d887",
+  "sourceTree": "66f8d06b6bc2c911c74463c98f0df870f708bc3d",
+  "canonicalPublicRepository": true,
+  "manifest": {
+    "name": "dsh-safe-plugin-manager",
+    "version": "0.9.8",
+    "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/AI-Scarlett/DSH-Store.git"
+    },
+    "homepage": "https://dsh.store/",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.mjs",
+    "bin": {
+      "dsh-store-repair": "./bin/dsh-store-repair.mjs"
+    },
+    "exports": {
+      ".": "./src/index.mjs",
+      "./client": "./src/client.js",
+      "./catalog": "./src/catalog.mjs",
+      "./candidates": "./src/candidates.mjs",
+      "./cordis.patch.yml": "./cordis.patch.yml",
+      "./package.json": "./package.json"
+    },
+    "files": [
+      "bin",
+      "src",
+      "registry",
+      "marketplace",
+      "cordis.patch.yml",
+      "README.md",
+      "SECURITY.md",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "dsh": {
+      "bundle": {
+        "patch": "./cordis.patch.yml"
+      },
+      "client": {
+        "inject": [
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-client-ui-primitives",
+          "@deepseek-ai/dsh-client-ui-slots",
+          "@deepseek-ai/dsh-client-ui-settings"
+        ],
+        "platform": "web"
+      },
+      "compatibility": {
+        "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2",
+        "dshReleases": {
+          "rc.7": "compatible",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible",
+          "0.1.1-rc.2": "compatible",
+          "0.1.2-alpha.2": "compatible",
+          "0.1.2-alpha.3": "compatible",
+          "0.1.2-alpha.4": "compatible",
+          "0.1.2-alpha.5": "compatible",
+          "0.1.3-alpha.1": "compatible",
+          "0.1.3-alpha.2": "unknown",
+          "0.1.5-alpha.1": "compatible",
+          "0.1.5-alpha.2": "compatible",
+          "0.1.5-rc.1": "compatible",
+          "0.1.5-rc.2": "compatible",
+          "0.1.6-alpha.1": "unknown",
+          "0.1.7-alpha.1": "compatible",
+          "0.1.7-alpha.2": "compatible",
+          "0.1.7-rc.1": "compatible",
+          "0.1.7-rc.2": "compatible",
+          "0.2.0-rc.1": "compatible",
+          "0.2.0-rc.2": "compatible",
+          "0.2.1-alpha.1": "compatible",
+          "0.2.1-alpha.2": "compatible",
+          "0.2.1-alpha.3": "compatible",
+          "0.2.1-alpha.4": "compatible",
+          "0.2.1-alpha.5": "compatible",
+          "0.2.1-rc.1": "compatible",
+          "0.2.1-rc.2": "compatible"
+        },
+        "dshOperations": {
+          "0.1.7-alpha.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-alpha.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.0-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.0-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.3": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.2.1-alpha.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.2.1-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          }
+        }
+      }
+    },
+    "engines": {
+      "node": "^22.19.0 || >=24.0.0",
+      "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2"
+    },
+    "scripts": {
+      "check": "node --check src/native-market-index.mjs && node --check scripts/verify-dsh-upgrade-plan.mjs && node --check scripts/verify-native-market-official.mjs && node --check scripts/close-author-contact.mjs && node --check scripts/verify-author-feedback-plan.mjs && node --check src/index.mjs && node --check src/inventory.mjs && node --check src/catalog.mjs && node --check src/dsh-release-policy.mjs && node --check marketplace/lib/dsh-release-policy.js && node --check src/catalog-compatibility-policy.mjs && node --check src/candidate-retention-policy.mjs && node --check src/catalog-localization.mjs && node --check src/catalog-update-review.mjs && node --check src/candidates.mjs && node --check src/source-update.mjs && node --check src/submission-security-scan.mjs && node --check src/discovery-index-validation.mjs && node --check src/dsh-version.mjs && node --check src/cold-start.mjs && node --check src/dsh.mjs && node --check src/guardian.mjs && node --check src/guardian-daemon.mjs && node --check src/guardian-upgrader.mjs && node --check src/health.mjs && node --check src/legacy-repair.mjs && node --check src/managed-patch.mjs && node --check src/operations.mjs && node --check src/panel.mjs && node --check src/provenance.mjs && node --check src/restart.mjs && node --check src/runtime.mjs && node --check src/telemetry.mjs && node --check src/client.js && node --check bin/dsh-store-repair.mjs && node --check install-counter/src/worker.mjs && node --check marketplace/app.js && node --check marketplace/scan-history-nav.js && node --check marketplace/downloads/downloads.js && node --check marketplace/rankings/model.js && node --check marketplace/rankings/rankings.js && node --check marketplace/scans/scans.js && node --check marketplace/build/build.js && node --check marketplace/about/about.js && node --check marketplace/community/community.js && node --check marketplace/faq/faq.js && node --check marketplace/repair/repair.js && node --check marketplace/standards/standards.js && node --check scripts/apply-author-notice-plan.mjs && node --check scripts/automate-catalog.mjs && node --check scripts/build-marketplace-static.mjs && node --check scripts/build-plugin-discovery-index.mjs && node --check scripts/catalog-report-delivery.mjs && node --check scripts/collect-author-feedback.mjs && node --check scripts/check-plugin-submission.mjs && node --check scripts/localize-catalog.mjs && node --check scripts/plan-author-notices.mjs && node --check scripts/render-catalog-automation-notification.mjs && node --check scripts/resolve-author-notice-targets.mjs && node --check scripts/serve-marketplace.mjs && node --check scripts/submit-indexnow.mjs && node --check scripts/sync-catalog-source-metadata.mjs && node --check scripts/verify-marketplace-public.mjs && node --check src/source-scan-policy.mjs && node --check src/bundle-patch-contract.mjs && node --check src/admission-review.mjs && node --check src/catalog-migration.mjs && node --check src/fixed-source-review.mjs && node --check scripts/reassess-admission.mjs && node --check scripts/verify-admission-plan.mjs && npm run validate:registry && npm test",
+      "build:marketplace": "node scripts/build-marketplace-static.mjs",
+      "dev:marketplace": "node scripts/serve-marketplace.mjs",
+      "test": "node --test \"test/*.test.mjs\"",
+      "automate:catalog": "node scripts/automate-catalog.mjs",
+      "localize:catalog": "node scripts/localize-catalog.mjs",
+      "validate:registry": "node scripts/validate-registry.mjs",
+      "verify:marketplace-public": "node scripts/verify-marketplace-public.mjs",
+      "verify:registry-sources": "node scripts/verify-registry-sources.mjs",
+      "build:discovery-index": "node scripts/build-plugin-discovery-index.mjs",
+      "verify:admission-plan": "node scripts/verify-admission-plan.mjs",
+      "reassess:admission": "node scripts/reassess-admission.mjs"
+    },
+    "peerDependencies": {
+      "@deepseek-ai/dsh-client-runtime": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2",
+      "@deepseek-ai/dsh-client-ui-primitives": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2",
+      "@deepseek-ai/dsh-client-ui-settings": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2",
+      "@deepseek-ai/dsh-client-ui-slots": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2",
+      "react": ">=18.2.0"
+    },
+    "license": "MIT"
+  },
+  "analysis": {
+    "reasons": [
+      "fixed-source security findings require quarantine",
+      "fixed-source security warnings require review",
+      "runtime source contains the files permission signal",
+      "runtime source contains the network permission signal",
+      "runtime source contains the commands permission signal",
+      "runtime source contains the credentials permission signal",
+      "runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "Tool-view extension requires key ownership review; registration alone is not a protected component mutation"
+    ],
+    "signals": {
+      "files": true,
+      "network": true,
+      "commands": true,
+      "credentials": true,
+      "protectedDsh": false,
+      "nativeOrExecutableArtifacts": true
+    },
+    "securityScan": {
+      "engine": "dsh-store-submission-static-v1",
+      "policy": "high-risk-block-cli-capability-warn-v1",
+      "verdict": "fail",
+      "complete": true,
+      "scopeReasons": [],
+      "filesScanned": 155,
+      "eligibleFiles": 155,
+      "skippedOversize": 0,
+      "skippedUnsupported": 0,
+      "capped": false,
+      "counts": {
+        "critical": 1,
+        "warning": 12,
+        "info": 0
+      },
+      "findings": [
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "marketplace/articles/articles.json",
+          "line": 58
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "registry/author-replies/255.json",
+          "line": 11
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "registry/author-replies/backlog-1126-20261016.json",
+          "line": 15
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/automation-source-policy.mjs",
+          "line": 8
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/dsh.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian-daemon.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian-upgrader.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian.mjs",
+          "line": 2
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/legacy-repair.mjs",
+          "line": 2
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/source-update.mjs",
+          "line": 13
+        },
+        {
+          "rule": "crypto-miner",
+          "category": "mining",
+          "severity": "critical",
+          "message": "发现加密货币挖矿特征。",
+          "file": "src/submission-security-scan.mjs",
+          "line": 58
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/submission-security-scan.mjs",
+          "line": 68
+        },
+        {
+          "rule": "download-and-execute",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现下载后直接交给 Shell 或 PowerShell 执行的链路。",
+          "file": "src/submission-security-scan.mjs",
+          "line": 78
+        }
+      ],
+      "findingsTruncated": false
+    },
+    "engine": "bounded-source-v3",
+    "sourceDigest": "94be19aef466119fe2f85a9d8e4a2b3d2c78cf04f3a2ee5def10e1abc6008153",
+    "sourceEvidence": [
+      {
+        "file": "bin/dsh-store-repair.mjs",
+        "bytes": 4721,
+        "blob": "a9d5ca84caf8479391f14120140d29f9acdcbdd2",
+        "sha256": "4af01934d3c110950eb20d26246b61e376f3d777c7e82bd7e50c24492933b0f3"
+      },
+      {
+        "file": "cordis.patch.yml",
+        "bytes": 415,
+        "blob": "1257c40cf96a55902711a57ac43a5c15aef0125e",
+        "sha256": "5262cac893356db84aaf1c8a2a4af1dc8f0fc9f20efb982d102b3fa6724ce083"
+      },
+      {
+        "file": "marketplace/about/about.js",
+        "bytes": 16107,
+        "blob": "71b26ee6391d15aa7a97a91c4518fee85ef25cbc",
+        "sha256": "b37de8e73b370d1fad3267fca1be342d27b9c1ced163cd6d45e04b90e90bec99"
+      },
+      {
+        "file": "marketplace/about/deepseek-harness-guide/index.html",
+        "bytes": 60580,
+        "blob": "fa39f8aba1f48d67d5a575485b37861995a935f1",
+        "sha256": "ac7673fb18ebce32a2d9986be02c233bc169b9013d7d1797c98e856cda7283e0"
+      },
+      {
+        "file": "marketplace/about/index.html",
+        "bytes": 19052,
+        "blob": "d3c1d0cd7f57ca7c7cd2425551609321172f2245",
+        "sha256": "2e0fd549fa4b47d01484cbd7b1f18f1ab9f8332ef9d3a44a666d3c040f16bd1a"
+      },
+      {
+        "file": "marketplace/app.js",
+        "bytes": 128614,
+        "blob": "71da67354fb0ea472337ff836e7fc6f2c73cdd1a",
+        "sha256": "232d1f2e8b6ed331119aac90a985d12f435e0e74d70545c7fb61748a2f0183cf"
+      },
+      {
+        "file": "marketplace/articles/articles.json",
+        "bytes": 74799,
+        "blob": "ed64124d3e3f4a55849b9d99fc1c7963b1187c34",
+        "sha256": "cac597629bbcda4c1a73875eb389b229f34f81278a9dfc0e12e08eb7f3de25f4"
+      },
+      {
+        "file": "marketplace/articles/index.html",
+        "bytes": 6611,
+        "blob": "08fea3c8e6a0c7b960cb59fc86027824ea12589b",
+        "sha256": "82349db9be3c3504e15d2c16e18a3fc70e11703eccf29af16c743d3f90e97302"
+      },
+      {
+        "file": "marketplace/build/build.js",
+        "bytes": 33194,
+        "blob": "1f83cebea9a58b6d0d939f175a074e6dd3aaf2b4",
+        "sha256": "0bdb8b775c60a27756a3d30ae36e3a2df984f9e08891929fa1cd7f83435c6041"
+      },
+      {
+        "file": "marketplace/build/index.html",
+        "bytes": 21306,
+        "blob": "b5aec56295a7c522b5a6fe028a9fef8c42f5c602",
+        "sha256": "da033171f384d3357bb7a67724d94760395634ad023009acc39efa9a6e908e1e"
+      },
+      {
+        "file": "marketplace/community/community.js",
+        "bytes": 7642,
+        "blob": "a4381974f5b6cb3e7d51cb15d035855911bb0af1",
+        "sha256": "69ae89ce2619148a9324fb74db40f811b695bb339ef12fff97ba60c1fa160e18"
+      },
+      {
+        "file": "marketplace/community/index.html",
+        "bytes": 10272,
+        "blob": "5696c44b2b01e9ce1fc9fa9a24771846eabcf395",
+        "sha256": "3f7e45e2e0b20d0375d615515c6a7f1b61f2a85ae2cb543a193f8fec4bf807d4"
+      },
+      {
+        "file": "marketplace/downloads/downloads.js",
+        "bytes": 6317,
+        "blob": "2cffc55b141e8a81ab3df53eb0184e8c0aaf0306",
+        "sha256": "0df43119e559990714ea00b0c84b5b9cf7013dd04684e2efc58695193a515cb4"
+      },
+      {
+        "file": "marketplace/downloads/index.html",
+        "bytes": 9869,
+        "blob": "997e15bea2312ad0744e80ebd5be187e1e498f0c",
+        "sha256": "0cc189684e1b4a0816c8acbaf08884725765e9984f82219ed8742266fd48238a"
+      },
+      {
+        "file": "marketplace/dsh-plugins/index.html",
+        "bytes": 12725,
+        "blob": "fb16f1fb2864d92e1eb3cd1382971f57ba25178c",
+        "sha256": "8e2eec434c60f866831d361ef33780d01763d1cbe2f386869c2d56f8a2f72a59"
+      },
+      {
+        "file": "marketplace/dsh-store-guide/index.html",
+        "bytes": 12472,
+        "blob": "3a78c3614a14fcb6bae5c12996401738a6102872",
+        "sha256": "37e55e9ec586a66884ede3cc4508ac8b2bb46de9f9b281c9b813fad76b20029f"
+      },
+      {
+        "file": "marketplace/faq/faq.js",
+        "bytes": 14479,
+        "blob": "eff72f5f5ff9ed98b7d891d4d1c7eab56fc8a89c",
+        "sha256": "e773fad920eb87cdc35c10c918194bcd168a07f2ac88113d61d94ea6790d4207"
+      },
+      {
+        "file": "marketplace/faq/index.html",
+        "bytes": 19257,
+        "blob": "e75e48fb6f1f9147a4421bccde67206ff24905b7",
+        "sha256": "185046267cacaa2313d9017f25bce72e0562449d8ef1471cf0d92fcdef5b9a35"
+      },
+      {
+        "file": "marketplace/googled542dac4f5a6c169.html",
+        "bytes": 53,
+        "blob": "6a5a5a5c5cbc784fcca97f808218c387829fc2d3",
+        "sha256": "e8d992c6f2a48dfc40f7a8163d86e6a9786d252e6adfe5ec934d765fce8c1621"
+      },
+      {
+        "file": "marketplace/index.html",
+        "bytes": 30345,
+        "blob": "fec0ce7151289a838ca2a124520c47ecd938530c",
+        "sha256": "241d67bf19df64a786aa52f34eba4e1cfa7789d833db92d6a7302fb8f3689896"
+      },
+      {
+        "file": "marketplace/lib/community-recommendations.js",
+        "bytes": 3981,
+        "blob": "d50e67247777e9e368636f34fde157b9ff3b3ef9",
+        "sha256": "c8bf8ad32ea5bd69a03b87db58006dcbdfe6d908dc3185af8553ecaf8e8c0adc"
+      },
+      {
+        "file": "marketplace/lib/dsh-release-policy.js",
+        "bytes": 12660,
+        "blob": "01229eb7ebab1a71621946c87f6e0d9e9ac5cf14",
+        "sha256": "d6086c7714f079291d638d3bd6e6886cd8dff963324fab796c236793e1a53b66"
+      },
+      {
+        "file": "marketplace/lib/plugin-directory.js",
+        "bytes": 15690,
+        "blob": "2edcc89476ce4c8d4bec8c507fb5ac9b5b6a27ad",
+        "sha256": "4e1c9ea60c9ac736180a4d7bb2960030da37dc691937ea2bdb4b04c752a9687e"
+      },
+      {
+        "file": "marketplace/motion.js",
+        "bytes": 2559,
+        "blob": "859d6e8c97f3effd0d7fbca79ae2b4019c81f4eb",
+        "sha256": "80c5dd5ff884fe6fcd704d1fa715ef0cd99cb9efa440c0eda2001ea82b11bf79"
+      },
+      {
+        "file": "marketplace/plugins/index.html",
+        "bytes": 18973,
+        "blob": "2513e62aa3db040aca6dfc5f90e3e830458fd881",
+        "sha256": "6d079b498f9b24537ac1fb63a9718165d5d47a1435440de61039ebabb30b5cf4"
+      },
+      {
+        "file": "marketplace/rankings/index.html",
+        "bytes": 9671,
+        "blob": "89f7aeb5d011385ec28a8fd56fae4430ca9facbf",
+        "sha256": "09e6c851d2c8e9c36f23ee2d0135de611a121431d34d2d69a1d2e95057c4a52c"
+      },
+      {
+        "file": "marketplace/rankings/model.js",
+        "bytes": 27162,
+        "blob": "3d0d3b53c5a4811403dae4926e760778dbfb84a1",
+        "sha256": "93c3d01eaf9477bbbc039ad0ac530d3996e70fcda689e84f5b52ce23bdda3767"
+      },
+      {
+        "file": "marketplace/rankings/rankings.js",
+        "bytes": 15670,
+        "blob": "dea3547d70b9e075789b1b6d34ed05c0c480f83d",
+        "sha256": "76621f6166a430b6ccc3799a01311e344aebc93cd12da60d63860c8ebc563908"
+      },
+      {
+        "file": "marketplace/repair/index.html",
+        "bytes": 8038,
+        "blob": "dd454418d38715119fcffd260539dd6fd57b99f0",
+        "sha256": "9586a9a6b4d356f50ac3b641c02df5b0baf09a478ed0150c0de874dd7032ed51"
+      },
+      {
+        "file": "marketplace/repair/repair.js",
+        "bytes": 912,
+        "blob": "05d51274c15f2852137270abb5850c9ccfba3a3c",
+        "sha256": "7146a320d9629b31e76361a1a1797ff891eddf0217b8b591d2e1093dd2798cc2"
+      },
+      {
+        "file": "marketplace/scan-history-nav.js",
+        "bytes": 5746,
+        "blob": "44c6f2a4f131abdd96b6afa64da3c7d0309723e3",
+        "sha256": "3622a3210f84dccffa76fc311a6f02d483e32425a4de8a17ebed1e2a2174ce0b"
+      },
+      {
+        "file": "marketplace/scans/data/manual-baseline-20260925.json",
+        "bytes": 2937,
+        "blob": "52c803f9fd0a87df7aabc997d9bf0755a94fb1d6",
+        "sha256": "294b2405d6cc58bc03dead8e776ba9f479d709300b970914314c8af369f2ebbb"
+      },
+      {
+        "file": "marketplace/scans/index.html",
+        "bytes": 7055,
+        "blob": "e3f8e784da2a568132919a18851ccc408b65ee4f",
+        "sha256": "18c4c84816dcc11affbd35bfad9bab3d23c51f450119e69a1ee5e562b17dcdcb"
+      },
+      {
+        "file": "marketplace/scans/scans.js",
+        "bytes": 25600,
+        "blob": "f27c4c97d9554bc0357e95c5041fcfcec455c4ce",
+        "sha256": "05b862e45b732c2253b38a9c40fd1b8ee102359a7d6cd388deff90bfa5a4e454"
+      },
+      {
+        "file": "marketplace/standards/index.html",
+        "bytes": 25549,
+        "blob": "0ecbe49a6639f8cd6281ed1d03cb8b18579e593b",
+        "sha256": "718737802151ed3fdbe371da3a488c66a7522f2138da82d1471125d873db59b0"
+      },
+      {
+        "file": "marketplace/standards/standards.js",
+        "bytes": 29397,
+        "blob": "081db55c29d72483135f711a0b4a4a4988de0eeb",
+        "sha256": "8fd6cea48911f809eecdab5d9eba5262c8ab697fa51db8c85874450a4e277be4"
+      },
+      {
+        "file": "package.json",
+        "bytes": 9980,
+        "blob": "830ceb9b29ca55fd8d705878f84c4f65720776f6",
+        "sha256": "7e55af5a7db9109b4788c0f318aa35be707aec8c16b7525f7e2036a06613e0f2"
+      },
+      {
+        "file": "registry/admission-reviews.json",
+        "bytes": 26282,
+        "blob": "8de96b6c13903505ac8df6d26782951daba17cac",
+        "sha256": "84491e41ebfb4c451a31fe9d2d9f3dd4f3357102487b912bb24e077a2c4bf73d"
+      },
+      {
+        "file": "registry/author-batches/backlog-20261016.json",
+        "bytes": 4173,
+        "blob": "a555787e370a14183fd7dcd8db0861220526c33f",
+        "sha256": "2c96f8b46c82beb022b5e224b4f12afd38b5ce75a63ee0ab63241098887b1161"
+      },
+      {
+        "file": "registry/author-batches/final-20261016.json",
+        "bytes": 408,
+        "blob": "1414bb62894df53622de26b9335851acf9ed4d31",
+        "sha256": "3d45dcae87ca8fea67fca32d35fd68ba89a098de1761b6f7803869dd2f989e1d"
+      },
+      {
+        "file": "registry/author-batches/followup-20261016-1121.json",
+        "bytes": 426,
+        "blob": "1c7998f36a4d71954f89176270279e389d14f5af",
+        "sha256": "2609c5eb819319d0b8a23d75ee92ae6124f1f279a7167b9da0ced36d48035428"
+      },
+      {
+        "file": "registry/author-batches/rechecks-20261017.json",
+        "bytes": 575,
+        "blob": "eb4052e9c59d7d6da79a8399257a0edb5707a167",
+        "sha256": "fed262019c7359a3ed2cfdf805ed14e84e10bc7bd8e125e2bbcd4bbd4c4ddda5"
+      },
+      {
+        "file": "registry/author-closures/feedback-1338-20261015.json",
+        "bytes": 613,
+        "blob": "54f95522a6e4c26728c2aa30a706c2b639a256b4",
+        "sha256": "9dfe81dd6d2f03a2bb2a8e82d63e3bdbada4d85ff37bafb693b552a45ca199cb"
+      },
+      {
+        "file": "registry/author-closures/feedback-634-20261016.json",
+        "bytes": 708,
+        "blob": "ea67e3097446ddf2fe4802587da33da87707e3e2",
+        "sha256": "ad1a4033729d187e90a209aaa9150dfa8e4bd82855eddc84683d28fb625ab360"
+      },
+      {
+        "file": "registry/author-closures/feedback-686-20261016.json",
+        "bytes": 705,
+        "blob": "22a88f97e35c2c7b26f3be1c5662906defcae2b6",
+        "sha256": "bbf379618fb2ca61a7f7ef1941763f07fdf7947e9561895b1a8e8df5ba98748a"
+      },
+      {
+        "file": "registry/author-closures/feedback-709-20261015.json",
+        "bytes": 647,
+        "blob": "1276e611864a1f7e3eb8cb47c805f0e70d37848d",
+        "sha256": "18cdd5d1fc3bbf5469348556036e6821ec9b262527aaa0cffd062838e8080d6a"
+      },
+      {
+        "file": "registry/author-contact-history.json",
+        "bytes": 181562,
+        "blob": "a485f42551ec031887f0cd7285c6c7432d123587",
+        "sha256": "1e29fb7a597c109cf635740eb10f9965f0f3e97bb0346f1973318438c95c85f0"
+      },
+      {
+        "file": "registry/author-contact-policy.json",
+        "bytes": 470,
+        "blob": "6893dacfe836e9d211214961d3726602d6d5b031",
+        "sha256": "c7fa37346d91187a8990d4ad8c72b477e0cbdba44f0093c33545eb5603c5bfcf"
+      },
+      {
+        "file": "registry/author-first-contacts/new-candidates-20261017.json",
+        "bytes": 18960,
+        "blob": "a8ba096794adaa573e4db9ecb2cb8926a8cfff6c",
+        "sha256": "a7baaa7071e59fec29a15caa29a89fa0825c6180d59e3a77fc2edce6adb586c5"
+      },
+      {
+        "file": "registry/author-replies/255.json",
+        "bytes": 4469,
+        "blob": "6e05e55625fb50fc04cea4dfb84635ced88286fc",
+        "sha256": "a9756bd9d12062e27a7a25500ce953ec30ae389cd2938a37b6510d7bfd0fbee9"
+      },
+      {
+        "file": "registry/author-replies/390.json",
+        "bytes": 2876,
+        "blob": "410b0f4b1ad294925efb02ef6b0b3848779b1166",
+        "sha256": "1d46afd0aa02827ef225a45a9fdd4295b0c75d87cd07f0d8c964feb269ea0381"
+      },
+      {
+        "file": "registry/author-replies/422-toolview-owner-mapping-30807177.json",
+        "bytes": 1433,
+        "blob": "4b3c6e3c190b249a40b083d4a9bfd438611fd5bc",
+        "sha256": "b55842d5ad0bc28583c1e1ac24495d412f2315cf50ec8958f7a22c10db52ab14"
+      },
+      {
+        "file": "registry/author-replies/434.json",
+        "bytes": 3054,
+        "blob": "a3b6b56ad345a5d0de5bf34d0f74789977ba5c7b",
+        "sha256": "631c920ec5d661edfe954c69bbdc6308a3156943f95df7c5156b167d774408b5"
+      },
+      {
+        "file": "registry/author-replies/backlog-1071-20261016.json",
+        "bytes": 1369,
+        "blob": "27ad4b50ebbc8dc0475a3732c3951c38b9fa30d0",
+        "sha256": "38e73a3e1b61fa6e63e6c904ec624e8ae195cb9f702dc64027b57b11a68e0eea"
+      },
+      {
+        "file": "registry/author-replies/backlog-1081-20261016.json",
+        "bytes": 1596,
+        "blob": "872ba4baec902ba2e4cc39e8768074402ad7b941",
+        "sha256": "5be4f31f89379f7315a2f8674654b1fea9ae7624866b0f37eab88c346af62ec0"
+      },
+      {
+        "file": "registry/author-replies/backlog-1126-20261016.json",
+        "bytes": 1493,
+        "blob": "8522f02156b32995716740437fada060bd8c3c3d",
+        "sha256": "31435f9ebb7c1ce26266a8074ded521f9123d410de5c68864c8a1bc65aa2dde0"
+      },
+      {
+        "file": "registry/author-replies/backlog-1185-20261016.json",
+        "bytes": 1637,
+        "blob": "bf097b800b65d18c7f0dcb958dadc6cf553e98c2",
+        "sha256": "7289870241bacedd56adeab507c71ebc6a52b87e6b01f63f3f43f922847b053a"
+      },
+      {
+        "file": "registry/author-replies/backlog-1193-20261016.json",
+        "bytes": 1687,
+        "blob": "1033b971fa9cef8be3c974331301a9f7fa42f923",
+        "sha256": "7a266a8dcd3a13f9bad1fbb5b971c49b5acc561f7d47006679d2280e6c2a9432"
+      },
+      {
+        "file": "registry/author-replies/backlog-1364-20261016.json",
+        "bytes": 1423,
+        "blob": "65f9ca888cb4a8343b1140570a0c66354de083a3",
+        "sha256": "ebd3b10cbd94db31798ff69d5ea5f433d977653de784fc9ee9bdb91ff82f82f4"
+      },
+      {
+        "file": "registry/author-replies/backlog-1365-20261016.json",
+        "bytes": 1370,
+        "blob": "931120077be360f063c45d10144f247d54851198",
+        "sha256": "59fb33566328e85f47fff42ccec09a628c0becbb0f4f7f35dd47e11f6547bcf8"
+      },
+      {
+        "file": "registry/author-replies/backlog-1367-20261016.json",
+        "bytes": 1389,
+        "blob": "7ade9530dfeec6fc75b1d299a9e987da58bd430d",
+        "sha256": "f2967ffef211c1695a553c4d6e3ac286f2fdae458a986010e83e342f16cc7b68"
+      },
+      {
+        "file": "registry/author-replies/backlog-1368-20261016.json",
+        "bytes": 1409,
+        "blob": "d31fd58b518eaa5fcb86b99acaf524be2e0ad5de",
+        "sha256": "086019e195145cbf3ba87b1300f83e84f465e0c72e1b8c2d91a12338073c255f"
+      },
+      {
+        "file": "registry/author-replies/backlog-1376-20261016.json",
+        "bytes": 1684,
+        "blob": "66a71da0c27a1afb21585e65a1c2e3be1a6abd9f",
+        "sha256": "a15be156581a3eeb59d3a6a9b85803dcd54fe00b4447a357bd9f8b3671a7a7cb"
+      },
+      {
+        "file": "registry/author-replies/backlog-1390-20261016.json",
+        "bytes": 1754,
+        "blob": "b1408774de9c941cfe122aaa1b9fe081d4443d3c",
+        "sha256": "fd872c52fd03f20da62df51cdcbf3cad8889104695fcc8be8446c66ef10ea27e"
+      },
+      {
+        "file": "registry/author-replies/backlog-170-20261016.json",
+        "bytes": 1368,
+        "blob": "521713abf56fdbf7e14685248d0e83efd3b0e806",
+        "sha256": "7ac6274a8afd9ecebc48c75ff22950de4dd7a960907feb4eefa9bbf8291baaac"
+      },
+      {
+        "file": "registry/author-replies/backlog-389-20261016.json",
+        "bytes": 1359,
+        "blob": "10bda764667fc9f2dddd853029400a57b4e89d51",
+        "sha256": "63a1415ee06c313940bcc25a14b56358cdfcf0eecdf3c72dd95778b6f098a811"
+      },
+      {
+        "file": "registry/author-replies/backlog-422-20261016.json",
+        "bytes": 1593,
+        "blob": "f9eccb1c99be3416226acc8c48766ef1e6400d4d",
+        "sha256": "e058c54641c1eb408d1857f72bf94157e18462e9eacb5158a5aced8cdf80f4ab"
+      },
+      {
+        "file": "registry/author-replies/backlog-437-20261016.json",
+        "bytes": 1504,
+        "blob": "19da2463d212981c8b880c62d97baf36568ed739",
+        "sha256": "fc005bbcc0f90faf823628d35c0583da3c95b6308012863032f8aba12e8eaa99"
+      },
+      {
+        "file": "registry/author-replies/backlog-524-20261016.json",
+        "bytes": 1513,
+        "blob": "377a7df974d6c1382e24dbdfdb4e4d2bbd7f1ee9",
+        "sha256": "01fab5021f18cf8d6059f0d7218c49e9736cdc2dfeaf9d77a9a31d3b9e856fe3"
+      },
+      {
+        "file": "registry/author-replies/backlog-636-20261016.json",
+        "bytes": 1864,
+        "blob": "7918a0d454b706cfee5cc2e35fc02414cab0d9ac",
+        "sha256": "d7c2d4c5ae2d15b5e838a4b0f28bd2981befef9c9461e2f9505466375e3e61d8"
+      },
+      {
+        "file": "registry/author-replies/backlog-666-20261016.json",
+        "bytes": 1558,
+        "blob": "7cec5367fc242b3ced905fb453adc1239eda638b",
+        "sha256": "2c9a41c00dc694c3d0fa8b52d48aeead4108691f3942b049f4a849d0014c6e35"
+      },
+      {
+        "file": "registry/author-replies/backlog-714-20261016.json",
+        "bytes": 1461,
+        "blob": "37d2d003bd071e88ab45e13fc2fabf4fa1bc7476",
+        "sha256": "afe07dd630d1c7fb5823730a5bcfe162299cd927cb2874f35e4230328821584e"
+      },
+      {
+        "file": "registry/author-replies/backlog-806-20261016.json",
+        "bytes": 1533,
+        "blob": "b91e214f34493bf9d1771b1cb7c2756be2700c20",
+        "sha256": "5e20f93c250bf1c12f2d26b6fb436d67563075dc530e40c9a1e457d891e3c71d"
+      },
+      {
+        "file": "registry/author-replies/backlog-849-20261016.json",
+        "bytes": 1732,
+        "blob": "447e579cce892569143e09235c4abf6ccb6ea896",
+        "sha256": "46fa51b6087b7447be994308cd9e46e0ff317462e5df127f2cd85d58030ac6fd"
+      },
+      {
+        "file": "registry/author-replies/backlog-987-20261016.json",
+        "bytes": 1480,
+        "blob": "a378e1ddd9b2d5fb9afdd8849799d50ebcad52ca",
+        "sha256": "bac532f2e93467ae633559ae7f3113149a734ba0567057e8889e19a92e13f171"
+      },
+      {
+        "file": "registry/author-replies/feedback-1013-20261015.json",
+        "bytes": 1529,
+        "blob": "99ff141e0cb41ed25fcecdb5f9fbd229632cf6f0",
+        "sha256": "cc7da3bfbc64c0e2cae712362a36087b6ff8b209b8c05f67420b08a0c5663e91"
+      },
+      {
+        "file": "registry/author-replies/feedback-1173-20261015.json",
+        "bytes": 1546,
+        "blob": "cd766882f536c93282a5f54055c2009b14c5de21",
+        "sha256": "c42ca7f9213bfc9eac220a61db1cf269cd87abcba998d28a4c76d2a4d33b86fe"
+      },
+      {
+        "file": "registry/author-replies/feedback-1195-20261015.json",
+        "bytes": 1554,
+        "blob": "f1f82a09a03ce2b3053dee04f43296aa8b03bfbf",
+        "sha256": "4032d937f5a62f527038ba02531dc7276ed368430655c2818256cf2724be5e93"
+      },
+      {
+        "file": "registry/author-replies/feedback-1227-20261015.json",
+        "bytes": 1730,
+        "blob": "cfb470897121b81adc2048842baabe82a0dd2e69",
+        "sha256": "b7a76ba5d6753f91be6abe6d4f70908f669e49d6edb0bfc5aa10666c846cbdcc"
+      },
+      {
+        "file": "registry/author-replies/feedback-1296-20261015.json",
+        "bytes": 1695,
+        "blob": "535f6df63c222161769de45afb4149643324769c",
+        "sha256": "0ccc2aae5e3815b0071b17739a3262c21c2fb677801198e393aafee92e28d509"
+      },
+      {
+        "file": "registry/author-replies/feedback-1321-20261015.json",
+        "bytes": 1974,
+        "blob": "087424b9a1914ec35b779157dd4d9c12ec399385",
+        "sha256": "32f6204b50025f2a461e820a749d7877be8581dd28fc9322fae20027313f61b5"
+      },
+      {
+        "file": "registry/author-replies/feedback-1336-20261015.json",
+        "bytes": 1755,
+        "blob": "8c986b8d97337e3d6ac14329992282c4c0b30799",
+        "sha256": "cb192bb84790e33ef434a814c49ad8b2dcea89d80acc72de270847aa69125275"
+      },
+      {
+        "file": "registry/author-replies/feedback-1376-20261016.json",
+        "bytes": 2036,
+        "blob": "85e355217937dddc08dea9bba5a1ac4c31c3098d",
+        "sha256": "8fd5268a438837278260358aa5befa37d34f0570fa341b645da6dad06fb4efd0"
+      },
+      {
+        "file": "registry/author-replies/feedback-1390-20261015.json",
+        "bytes": 2000,
+        "blob": "ba4254db59758ad7262476f0262f0638b34193e5",
+        "sha256": "34da3d1e805a30c87be9caa1e13424508946c34f4055385d18b7a8191ec56e48"
+      },
+      {
+        "file": "registry/author-replies/feedback-1390-20261016-v0173.json",
+        "bytes": 2033,
+        "blob": "681910c4e4918273e90e5b2ec46ec512b7579cc3",
+        "sha256": "c8f95f6210b802315d5078e72dad4ca764fa0c40e977b05f1f46fefba152505f"
+      },
+      {
+        "file": "registry/author-replies/feedback-1390-20261016.json",
+        "bytes": 1980,
+        "blob": "40197f43bf2e6b372dccb767aa41a0cc4a47d5a1",
+        "sha256": "b9de760d87c5a41f48e08869dce23603075d77d3b08e5ecee615fc5b08453cff"
+      },
+      {
+        "file": "registry/author-replies/feedback-1411-20261015.json",
+        "bytes": 1910,
+        "blob": "dc435e853f7984cc68c43f5021dd7a6bbc421f19",
+        "sha256": "bb07bb3d1f8a4715cbfd4247b1aa9d87d0f12174ca9dac05bc7743203be8115a"
+      },
+      {
+        "file": "registry/author-replies/feedback-1415-20261015.json",
+        "bytes": 1622,
+        "blob": "90262b2dbb54e0818955c0ae5346c0343adb2b74",
+        "sha256": "3e52f1b4f5fac0267b7110c88036cdb2170f77af8f0b5c0d43eb749bd198dd56"
+      },
+      {
+        "file": "registry/author-replies/feedback-1415-20261016-v0211.json",
+        "bytes": 1947,
+        "blob": "93b7c42a8d728dc98b8ba057980988cc737e8ed5",
+        "sha256": "6c54ed4e1c26cb61f9e309e44b7ca22bcf81a12c0377f635f75634e4ffe152ea"
+      },
+      {
+        "file": "registry/author-replies/feedback-636-20261015.json",
+        "bytes": 1542,
+        "blob": "79549b3d9fe4cd55a78b6faf8f7d7b6e80c0d8ed",
+        "sha256": "15c93376c1f67db8efc1b96ab6ff0d92033b8dabe153b311443f6ab526f36a65"
+      },
+      {
+        "file": "registry/author-replies/feedback-636-20261016-v0140.json",
+        "bytes": 2046,
+        "blob": "145e1341f015eee2a8301eb3a9da783923074443",
+        "sha256": "3b93d24744e6a8cd88a70a5f0bf0ef964b997ef6737c9691ebe878b08e236b3c"
+      },
+      {
+        "file": "registry/author-replies/feedback-934-20261015.json",
+        "bytes": 1486,
+        "blob": "c4120b3e4aa2452f47830db712835021155692d7",
+        "sha256": "5e102f3ba1bc645958700272fafa38669e825c10e87e42da2a9cf170f8377c06"
+      },
+      {
+        "file": "registry/author-replies/final-1390-20261016.json",
+        "bytes": 2123,
+        "blob": "b7c28fba20af6b08a27ed1e61c86a9ca3ac3ddfe",
+        "sha256": "103ea398c4aa74ccec3e80bcea7865768f6e16759e50c2dea53a1e55aeffdf9b"
+      },
+      {
+        "file": "registry/author-replies/final-1415-20261016.json",
+        "bytes": 2231,
+        "blob": "c260a1cb0ce8902ec35bf41bbb67c8dedccc0086",
+        "sha256": "fab8a0d8e5bf5953655e63eeb6313bb63c411f0b47bc0b88337a4b97dbea64be"
+      },
+      {
+        "file": "registry/author-replies/followup-1390-20261016-v0176.json",
+        "bytes": 1830,
+        "blob": "b72bda588583b84511b59680045e19bbc367f7f9",
+        "sha256": "58b16c5e4d5c39a52b945878ccd632ebe292ff6ad0e6817dcd3395aa7e5805a3"
+      },
+      {
+        "file": "registry/author-replies/followup-1415-20261016-v0213.json",
+        "bytes": 2213,
+        "blob": "80624f9d876a87bb872411ef1cdfcebe4299a783",
+        "sha256": "7e9188acf819a334ac4247d36ea45c49fdf6941b81a43b549276a21fa5cbabc2"
+      },
+      {
+        "file": "registry/author-replies/qwen-latest-20261017.json",
+        "bytes": 3110,
+        "blob": "a6a594b1cacfbc082574783028e40e44c4ab08f5",
+        "sha256": "4a7becb62366bd091960c913e4107fe7a73f68dd3d1f94d861641b36638958dd"
+      },
+      {
+        "file": "registry/author-replies/recheck-1386-20261017.json",
+        "bytes": 2382,
+        "blob": "aab2fcb8af397933315988853521ba9327bb3777",
+        "sha256": "3a9bc3e7fe8482876977d6bd5b38a8b1c39a2677022595ba1761ddcb9119b5ea"
+      },
+      {
+        "file": "registry/author-replies/recheck-1390-20261017.json",
+        "bytes": 2215,
+        "blob": "e1c80b18ff0b6cbf13c138569e478c2ba381c88f",
+        "sha256": "e1470da92e3f947eb79e8e0a3485c32b53e657194c0aa7e9920f6a5d54ed5701"
+      },
+      {
+        "file": "registry/author-replies/recheck-934-20261017.json",
+        "bytes": 2428,
+        "blob": "79295ccf5a0586cf3d43f9c78150bbe5ff5d41c6",
+        "sha256": "328096767945cdad1a2182ce5676fb1b14f17276a801b0f23ddc291317961891"
+      },
+      {
+        "file": "registry/author-resolutions.json",
+        "bytes": 26801,
+        "blob": "44ea4844e949d2afcc938cc729fd58e8f038ea0a",
+        "sha256": "94f58d1095ad84a54afe945030dd8b3eb4245bb1fe53847030e9d79817b13bc6"
+      },
+      {
+        "file": "registry/author-stops/feedback-590-20261016.json",
+        "bytes": 690,
+        "blob": "4f2199943a2df003d069135d79f3834062b644d7",
+        "sha256": "a31312d197db4e1265a2a46ea5e91874478ff1ac283d77691217df49742934b1"
+      },
+      {
+        "file": "registry/author-submission-results/activities-20261017.json",
+        "bytes": 19411,
+        "blob": "21c4653cf4e37582d9fd430db4463a60f46460b0",
+        "sha256": "2bd492f9b6672251c006571204ed5b7a2faa90c3c23cb65be5ea158325aa0c1f"
+      },
+      {
+        "file": "registry/author-submission-results/file-actions-20261017.json",
+        "bytes": 5940,
+        "blob": "a9109bb2c57b78cf007a678c390b898d711a92b1",
+        "sha256": "cc1924aa5fc5891f32fe7de22b1fb7f1ffee4896412735c6bf43837966642324"
+      },
+      {
+        "file": "registry/author-submission-results/joey-20261017.json",
+        "bytes": 14581,
+        "blob": "c58b3fd57e69b6f11b4b3b6f8b36f317852a7237",
+        "sha256": "ea8b6d3f905bcefc5c62b2a6101703c4c8b96f657134122d1a93209b583aa164"
+      },
+      {
+        "file": "registry/automation-policy.json",
+        "bytes": 5849,
+        "blob": "bf9d345bf310b5b24d81b99d40d5296a0a836b15",
+        "sha256": "476b5af3f5aa3ed1af6da1c5045e7bb891981440686f5e174041dc927d955cf3"
+      },
+      {
+        "file": "registry/candidates.schema.json",
+        "bytes": 2587,
+        "blob": "fef153884c523ee7abae91a2c1217bd1aa634e79",
+        "sha256": "6a16c6d3baee3fd1a571b0686683063fd787bfdb1d9345bb8b56ca5059fd641e"
+      },
+      {
+        "file": "registry/catalog-detail.schema.json",
+        "bytes": 11767,
+        "blob": "1bba4268cee2c4a6f6b7fb17fe3ddc8000a7d7f1",
+        "sha256": "c5eaf58ffe0d9ccddb0c91de09242ea48d1ff7ed1d746a125a75e50fc61ce9ae"
+      },
+      {
+        "file": "registry/catalog-index.schema.json",
+        "bytes": 7365,
+        "blob": "4f739dfefd376d2e3cd740adaf9ef3a06ffb4fc6",
+        "sha256": "b41b5cdbbabce17f4cdcfad45eabd34e7baa17028224ba0ee4b28c6abe72e075"
+      },
+      {
+        "file": "registry/catalog-migrations.json",
+        "bytes": 7159,
+        "blob": "4a3f9db24e959bb15718f70e018d77ad0e9aa469",
+        "sha256": "bcfa86c2269d7303ffd3cc2939c63bb59947a7699b1e64927a4284475d541a5e"
+      },
+      {
+        "file": "registry/catalog.schema.json",
+        "bytes": 15705,
+        "blob": "9a6f5d397d6ee1bc7a71b2d43e566c355705f0a7",
+        "sha256": "047295025901bdbf644cbe4ebea30d66186e82b91cf15f1f5f421a86b465ec70"
+      },
+      {
+        "file": "registry/community-recommendations.json",
+        "bytes": 64531,
+        "blob": "b0a4610ba97b4862a0abea4cc77fb0aaa0910278",
+        "sha256": "a4d25ef1cc710fee34696c80597249a9210745529dfb68ca16972ec504426ad3"
+      },
+      {
+        "file": "src/activation.mjs",
+        "bytes": 2289,
+        "blob": "e30230f755e915fbf7c0aefafd24d0bd6361339a",
+        "sha256": "36ffe66332cd11673eea572b5c992d5eb937e0f74bac3e703c5645a71ab2f67d"
+      },
+      {
+        "file": "src/admission-review.mjs",
+        "bytes": 12161,
+        "blob": "64546e0320df5e38e81a57b6fba2e7a1e7d94e8c",
+        "sha256": "1317b2f6b98a368bb45e167c077007e53dde5bfb92c064a74064c7ad32b5606c"
+      },
+      {
+        "file": "src/author-resolution.mjs",
+        "bytes": 3642,
+        "blob": "eaf556ea7a531bc41730ff40297b8753fcf34189",
+        "sha256": "75cd09c8774aaebcb4ac9feafdf131fe69f7b653bd77f58b2461b534452d8405"
+      },
+      {
+        "file": "src/automation-source-policy.mjs",
+        "bytes": 15719,
+        "blob": "4326110d2fa52ee59519b642051635a5aaef7428",
+        "sha256": "c52fe934206ad5ccbf91a903d8da01c4707d717bd144531d114097d812ed4f30"
+      },
+      {
+        "file": "src/automation-status.mjs",
+        "bytes": 14773,
+        "blob": "f6bcefb82ce7d9d72662dbb59c3ec70f74af4572",
+        "sha256": "264a83616e437467b775c5a13ebe2d139996fad8d8c33e5f3ec39d623a4ec104"
+      },
+      {
+        "file": "src/bundle-patch-contract.mjs",
+        "bytes": 9017,
+        "blob": "5f70b910881ac94a6c3aa424a3962346ddc469ce",
+        "sha256": "b1ddc05bb72b94098c4e7c4615a6999851235df0389ff712e604cc7528653514"
+      },
+      {
+        "file": "src/candidate-retention-policy.mjs",
+        "bytes": 6785,
+        "blob": "7d4ceb619f6107baef8213bd8e9bf711321dbf7d",
+        "sha256": "3d949eec8af08df14c0f1681c9d2edc82019dc4e062fb5b3f08b876a4174c36f"
+      },
+      {
+        "file": "src/candidates.mjs",
+        "bytes": 8328,
+        "blob": "26b59cd89448c909fcd4cce10469e4cde4acb87b",
+        "sha256": "12bdf5302d4bca133f4c54ecffd4fc1a8d53675e4d0e9ba1dc8b3971b97faa6c"
+      },
+      {
+        "file": "src/catalog-compatibility-policy.mjs",
+        "bytes": 13887,
+        "blob": "b19337a82ee5fe6beeb75ae1c263dfe75bd20424",
+        "sha256": "37df1d51133010c92dfdf0d8d8faf8a626d6cfda428cbb1d7e090f511853533a"
+      },
+      {
+        "file": "src/catalog-localization.mjs",
+        "bytes": 15310,
+        "blob": "f449ab2946a1c696e2123223558f5fc9e7730d01",
+        "sha256": "71e4321cd58e4397389419a581939947bf72c367f54f319b1cf3819e1278a59e"
+      },
+      {
+        "file": "src/catalog-migration.mjs",
+        "bytes": 5259,
+        "blob": "345c2eea24367ca4c23cbe27f023584a68b726f5",
+        "sha256": "99611afff5a81d8f8c1a54697c5cfaeb259990a6a4a1b7c6ceb28587c635b8eb"
+      },
+      {
+        "file": "src/catalog-update-review.mjs",
+        "bytes": 12272,
+        "blob": "b3f73ed2485074a445c64e84cbe205170914a6d4",
+        "sha256": "12cfda508bf447550e017f3d10f3e3e71370289d51a1079fa7ea9b9d7007747f"
+      },
+      {
+        "file": "src/catalog.mjs",
+        "bytes": 88064,
+        "blob": "53f604fc7d43b57de3bc92f0d76daffbed83b1d6",
+        "sha256": "545c91044eaa8258c9342c02c7822bde45d02e50b68f7d5bfc4017ccdbc4f71e"
+      },
+      {
+        "file": "src/client.js",
+        "bytes": 135697,
+        "blob": "a83a3aafab5661f85790e1925c7df2abfecf5aa9",
+        "sha256": "8c1f1b4bbd6cba886af18b47ee437bcb3e7c6f9c5bb88be5ce819724c2e8c6f7"
+      },
+      {
+        "file": "src/cold-start.mjs",
+        "bytes": 2366,
+        "blob": "3d9f89a9e57da1b9e62996bf61062aab449a66b5",
+        "sha256": "99abdbb4dce3dd20efe360ca865bdfa4813e69996b9cd243d1768c75834f2ec8"
+      },
+      {
+        "file": "src/diagnostics.mjs",
+        "bytes": 1872,
+        "blob": "e1517c8526c26b5bad1b38671ebd918067cc8541",
+        "sha256": "f3a7346850febf7a55c0f804093e36259a14f16e1a780f0741ac704ece7ba5ab"
+      },
+      {
+        "file": "src/discovery-feeds.mjs",
+        "bytes": 2765,
+        "blob": "0993ce655c7472f6104fe15c1c748bd7114a6c2a",
+        "sha256": "c673e7ec60ff40a56f7fec5f62aad36a795972e908ee0457c35c572bbc702978"
+      },
+      {
+        "file": "src/discovery-index-validation.mjs",
+        "bytes": 4878,
+        "blob": "02a5b08c39ada1a7bd24b21212ab716b707d50b0",
+        "sha256": "1d33c6011582b21b1184f3e41c12264d9570c778306d7e45c1e8dbe75d3daffe"
+      },
+      {
+        "file": "src/dsh-release-policy.mjs",
+        "bytes": 125,
+        "blob": "46645ed1c6bf0948805e30abb2351920c173ab47",
+        "sha256": "899ee2db50205274283a232b935732c2b0d59365b31e81d94521501d274a10c9"
+      },
+      {
+        "file": "src/dsh-version.mjs",
+        "bytes": 5973,
+        "blob": "70e72e8d602beb77d0961fd483117bb553fd71ef",
+        "sha256": "f7333ab7e0808866882912c7c5b00ac49d863c26d2925beb55213c9236effb8c"
+      },
+      {
+        "file": "src/dsh.mjs",
+        "bytes": 4434,
+        "blob": "6efe60b7755413675c5d63889d88fc5a0e677c31",
+        "sha256": "35b33a7ccf3c8c60cbac0bf471c95d1a485e0946983c8e58277e002456e7c0e8"
+      },
+      {
+        "file": "src/fixed-source-review.mjs",
+        "bytes": 7833,
+        "blob": "0e520cfec892428b34a611bf99a38e5c6b4af397",
+        "sha256": "2ba4c4078d9d7f358dff208914d15cb8bf9001bad6a63c037f3430e5460609c1"
+      },
+      {
+        "file": "src/guardian-daemon.mjs",
+        "bytes": 22488,
+        "blob": "7ceedefc239d1fbcd7264119aec6ef2f0423b5df",
+        "sha256": "d7d9871ce92014580377891782ca54cd7ef6dbfd9c747866c6dd5d737f991f88"
+      },
+      {
+        "file": "src/guardian-upgrader.mjs",
+        "bytes": 12777,
+        "blob": "c77385cbfb3d9050fb388962ef95532cdb2e3db3",
+        "sha256": "57deef267d4a76a71d934d5c58c2535e269c832a7e5a9c8dceb8aa58f31b0c14"
+      },
+      {
+        "file": "src/guardian.mjs",
+        "bytes": 28803,
+        "blob": "0f1df951eda31c8661ebcea36d88687f607df63b",
+        "sha256": "2db3f93448b52b99e25f0a1e15a1c9fd45939f75a66438eb91ac61e8d056c5d5"
+      },
+      {
+        "file": "src/health.mjs",
+        "bytes": 11777,
+        "blob": "848b8b7c9b453cbc9766bbc97efa1176d05a3cba",
+        "sha256": "d0fe8d05bab55def1c7f20d9a609721d6b7a30f35bbb655952773a297b7c0134"
+      },
+      {
+        "file": "src/index.mjs",
+        "bytes": 5256,
+        "blob": "6e656819550bc07f641ef3b9d671071e47e71182",
+        "sha256": "cb667d90f2cbc5cae3282685c4fe8485675043bbc32766de500006addce17525"
+      },
+      {
+        "file": "src/inventory.mjs",
+        "bytes": 5488,
+        "blob": "af6963379f7059db87603831992c94a0c420d3a4",
+        "sha256": "7cd714e2cdc793e5022f76b96673c65f8f839b2e1ecaed2c615f03ef76b0b410"
+      },
+      {
+        "file": "src/legacy-repair.mjs",
+        "bytes": 26175,
+        "blob": "3a89885d6c3992d0514c52fbbede4c5b1c98ed5b",
+        "sha256": "e6142a520a26c3b6f6df957c1d528098c565b4b577886a153a3395b79df6f61e"
+      },
+      {
+        "file": "src/managed-patch.mjs",
+        "bytes": 3069,
+        "blob": "55a0b9c9dbba92da1e912087feb8d41467449ff0",
+        "sha256": "af8e835326a0365ef8d58e719fdbccdb01742632bb9c54e71a462f6ec16aec9e"
+      },
+      {
+        "file": "src/native-market-index.mjs",
+        "bytes": 3136,
+        "blob": "7aa66ec3d7831db539b4eeb33a4730eadd61253a",
+        "sha256": "0b77131fc20bdb2b38d007db6e9e2a1e5d7f3c653d8ae08b854ce60ebebbcac6"
+      },
+      {
+        "file": "src/operation-journal.mjs",
+        "bytes": 4730,
+        "blob": "29fe5f0b33dd76c8c03160df36733bae0cbba1aa",
+        "sha256": "b1b5c48dbfa97b9ba25b5a55d02e0fa86745e8b268ab679910b7c4860f440344"
+      },
+      {
+        "file": "src/operations.mjs",
+        "bytes": 23702,
+        "blob": "e507b193c32d538e37a6b5d985c040af803ecb69",
+        "sha256": "85d32ced80d581504a9bb1b8052542a916ff49c7cd3310cc0d58cdd070ceacdc"
+      },
+      {
+        "file": "src/package-source-surface.mjs",
+        "bytes": 8732,
+        "blob": "9545272795deff17ea117aaa985aa082ba855ac8",
+        "sha256": "986328186bc73a648d62e3fb063804d3f527b1f9019e041b793221989abb8fc7"
+      },
+      {
+        "file": "src/panel.mjs",
+        "bytes": 20470,
+        "blob": "d863240a52938bc0d9f7a438d4821b816e0e4f6b",
+        "sha256": "8e884dd6651f71324d7b00ce1ea67d2003dfbf0f3af17568460fc12e67a193ba"
+      },
+      {
+        "file": "src/provenance.mjs",
+        "bytes": 862,
+        "blob": "cd1fbe28fbe43e44972532b91efb71146e762534",
+        "sha256": "1ffccb22b01b986acf86a084c81dec6dbb42e1dbebb9d6494669f6d81d27b909"
+      },
+      {
+        "file": "src/repository-exclusions.mjs",
+        "bytes": 1072,
+        "blob": "daf37c46c0d1d2a286d551fc637eaaf497584fe9",
+        "sha256": "d8e8b4d56d240be181337234b0461e4c16183601495df907511a0dba82f85696"
+      },
+      {
+        "file": "src/restart.mjs",
+        "bytes": 2843,
+        "blob": "ca7d3d243a7183fbdb171c7ef27134baac1f9e61",
+        "sha256": "c48f7fd857ad2826ffb46ec4dcdbc6a8e472f6cd9e28508a8b2b513ac6931593"
+      },
+      {
+        "file": "src/runtime.mjs",
+        "bytes": 1245,
+        "blob": "bca47ac33b7bad17fca7584376b4f04645e43455",
+        "sha256": "9394f6bb208717fb4a1a9ebd7a83722b4c8171075bdb0c9172d356f89c505ce4"
+      },
+      {
+        "file": "src/source-scan-policy.mjs",
+        "bytes": 1389,
+        "blob": "a489a49dbb3d2365bf1923da37ac94a6219ac5ab",
+        "sha256": "32c4c0ad2e4925f55925b4537af5c553412675d2fd8fe6399c6c99e38f527d08"
+      },
+      {
+        "file": "src/source-update.mjs",
+        "bytes": 22198,
+        "blob": "171f4acff6ab32c4cbc507f48cbe0e2e5ac7f5e6",
+        "sha256": "f5ebad4620769fc62228a633aa37d2008d6716d01039f50bb87e28c6ea81e403"
+      },
+      {
+        "file": "src/submission-security-scan.mjs",
+        "bytes": 7401,
+        "blob": "6697b9547423289a2d44389688822438503367a0",
+        "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371"
+      },
+      {
+        "file": "src/telemetry.mjs",
+        "bytes": 1504,
+        "blob": "8460d76f4d44ba3341d694a35fb3292593be4c2c",
+        "sha256": "4fdf005a73ed1d66fb5ec1e7a84b7d8f3ced71cac7718cd7c9eaa2378fdcd46d"
+      }
+    ],
+    "capabilityEvidence": [
+      {
+        "rule": "capability-network",
+        "file": "marketplace/about/about.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 105,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/app.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 1055,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "marketplace/app.js",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 468,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "marketplace/articles/articles.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 58,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/build/build.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 204,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/community/community.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 56,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/faq/faq.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 126,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "marketplace/lib/plugin-directory.js",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 87,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/rankings/rankings.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 88,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/scans/scans.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 243,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "marketplace/standards/standards.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 163,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/admission-reviews.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 266,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "registry/author-first-contacts/new-candidates-20261017.json",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 312,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/author-replies/feedback-1336-20261015.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 15,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/author-replies/feedback-934-20261015.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 15,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/author-replies/qwen-latest-20261017.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 22,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/catalog-detail.schema.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 483,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "registry/catalog.schema.json",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 540,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/activation.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/admission-review.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 74,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/candidates.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/catalog-update-review.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 132,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/catalog.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "src/client.js",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 44,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/client.js",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 743,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/cold-start.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/discovery-index-validation.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 27,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/dsh-version.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/dsh.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/dsh.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/dsh.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 70,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-network",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "network",
+        "responsibility": "reviewer",
+        "line": 4,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/guardian-daemon.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 243,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/guardian-upgrader.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/guardian-upgrader.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/guardian.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/guardian.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/health.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/index.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 53,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/inventory.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/legacy-repair.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 5,
+        "location": "line"
+      },
+      {
+        "rule": "capability-commands",
+        "file": "src/legacy-repair.mjs",
+        "signal": "commands",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/legacy-repair.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 204,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/operation-journal.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/operations.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 6,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/panel.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 5,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/provenance.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/source-update.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 83,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "src/telemetry.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 8,
+        "location": "line"
+      }
+    ],
+    "toolViewEvidence": [
+      {
+        "file": "registry/admission-reviews.json",
+        "sha256": "84491e41ebfb4c451a31fe9d2d9f3dd4f3357102487b912bb24e077a2c4bf73d"
+      },
+      {
+        "file": "registry/author-replies/feedback-1390-20261015.json",
+        "sha256": "34da3d1e805a30c87be9caa1e13424508946c34f4055385d18b7a8191ec56e48"
+      }
+    ],
+    "budgetFindings": [],
+    "reviewSignals": {
+      "toolViewExtension": true,
+      "dynamicModuleLoading": false
+    },
+    "scanComplete": true,
+    "filesScanned": 155,
+    "unsupportedFiles": 0,
+    "scope": {
+      "kind": "explicit-files-conservative-superset",
+      "repositoryEntries": 1252,
+      "packageEntries": 998,
+      "files": 998
+    },
+    "runtimeFiles": 155,
+    "runtimeBytes": 1811416
+  },
+  "sourceChecks": [
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/runs/117403133232",
+      "name": "CodeQL",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059723",
+      "name": "runtime (macos-latest, 12)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059810",
+      "name": "runtime (macos-latest, 11)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059785",
+      "name": "runtime (macos-latest, 10)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059786",
+      "name": "runtime (windows-latest, 10)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059636",
+      "name": "previous-latest-three (0.2.1-rc.1)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059779",
+      "name": "runtime (ubuntu-latest, 11)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059721",
+      "name": "runtime (ubuntu-latest, 12)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059803",
+      "name": "runtime (ubuntu-latest, 10)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059778",
+      "name": "runtime (windows-latest, 11)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059869",
+      "name": "runtime (windows-latest, 12)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403059666",
+      "name": "previous-latest-three (0.2.1-alpha.5)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403061041",
+      "name": "next-channel",
+      "state": "SKIPPED"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223/job/117403032458",
+      "name": "resolve",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039187/job/117403032072",
+      "name": "validate",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035035778/job/117403024172",
+      "name": "Analyze (actions)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035035778/job/117403024225",
+      "name": "Analyze (javascript-typescript)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035035778/job/117403024057",
+      "name": "Analyze (python)",
+      "state": "SUCCESS"
+    }
+  ],
+  "checkedAt": "2026-10-17T13:09:59.935Z",
+  "findingReviews": [
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "marketplace/articles/articles.json",
+      "line": 58,
+      "sha256": "cac597629bbcda4c1a73875eb389b229f34f81278a9dfc0e12e08eb7f3de25f4",
+      "rationale": "This file contains published article or reviewed reply text. Command examples are data, not imported runtime code or automatically executed scripts."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "registry/author-replies/255.json",
+      "line": 11,
+      "sha256": "a9756bd9d12062e27a7a25500ce953ec30ae389cd2938a37b6510d7bfd0fbee9",
+      "rationale": "This file contains published article or reviewed reply text. Command examples are data, not imported runtime code or automatically executed scripts."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "registry/author-replies/backlog-1126-20261016.json",
+      "line": 15,
+      "sha256": "31435f9ebb7c1ce26266a8074ded521f9123d410de5c68864c8a1bc65aa2dde0",
+      "rationale": "This exact reviewed reply plan is inert JSON explaining removal of child_process from a third-party fixed source. The Store never executes JSON response text."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/automation-source-policy.mjs",
+      "line": 8,
+      "sha256": "c52fe934206ad5ccbf91a903d8da01c4707d717bd144531d114097d812ed4f30",
+      "rationale": "The child_process module name is a detector literal, not an imported subprocess API. Current lexical masking preserves template interpolation code while excluding quoted prose, comments and regex literals; the exact scanner tests pass."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/dsh.mjs",
+      "line": 1,
+      "sha256": "35b33a7ccf3c8c60cbac0bf471c95d1a485e0946983c8e58277e002456e7c0e8",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/guardian-daemon.mjs",
+      "line": 1,
+      "sha256": "d7d9871ce92014580377891782ca54cd7ef6dbfd9c747866c6dd5d737f991f88",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/guardian-upgrader.mjs",
+      "line": 1,
+      "sha256": "57deef267d4a76a71d934d5c58c2535e269c832a7e5a9c8dceb8aa58f31b0c14",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/guardian.mjs",
+      "line": 2,
+      "sha256": "2db3f93448b52b99e25f0a1e15a1c9fd45939f75a66438eb91ac61e8d056c5d5",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/legacy-repair.mjs",
+      "line": 2,
+      "sha256": "e6142a520a26c3b6f6df957c1d528098c565b4b577886a153a3395b79df6f61e",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/source-update.mjs",
+      "line": 13,
+      "sha256": "f5ebad4620769fc62228a633aa37d2008d6716d01039f50bb87e28c6ea81e403",
+      "rationale": "First-party manager command capability is explicitly reviewed: fixed argument arrays via execFile/spawn with shell disabled, planned Profile/Guardian operations, precondition hashes, confirmation, health checks and recovery. Existing manager-auth, operations, guardian, repair and disposable lifecycle tests passed."
+    },
+    {
+      "rule": "crypto-miner",
+      "category": "mining",
+      "severity": "critical",
+      "message": "发现加密货币挖矿特征。",
+      "file": "src/submission-security-scan.mjs",
+      "line": 58,
+      "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+      "rationale": "Scanner rule definitions are inert RegExp/signature data used to reject dangerous third-party sources; this exact literal is not an executed shell or miner."
+    },
+    {
+      "rule": "child-process",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+      "file": "src/submission-security-scan.mjs",
+      "line": 68,
+      "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+      "rationale": "Scanner rule definitions are inert RegExp/signature data used to reject dangerous third-party sources; this exact literal is not an executed shell or miner."
+    },
+    {
+      "rule": "download-and-execute",
+      "category": "shell",
+      "severity": "warning",
+      "message": "发现下载后直接交给 Shell 或 PowerShell 执行的链路。",
+      "file": "src/submission-security-scan.mjs",
+      "line": 78,
+      "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+      "rationale": "Scanner rule definitions are inert RegExp/signature data used to reject dangerous third-party sources; this exact literal is not an executed shell or miner."
+    }
+  ],
+  "disposition": {
+    "kind": "scanner-rule-literal",
+    "file": "src/submission-security-scan.mjs",
+    "line": 58,
+    "sha256": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+    "rationale": "The reviewed crypto-miner signature is a RegExp literal inside the security scanner rule table. It neither invokes a miner nor installs one. This disposition is bound to this exact first-party source only; generic scanner results remain unchanged."
+  },
+  "capabilityReview": {
+    "classification": "first-party-owner-reviewed-control-plane",
+    "files": "planned manager-owned writes with hash/backup/rollback",
+    "network": "GitHub/Store allowlisted metadata; no new arbitrary runtime endpoint",
+    "commands": "official CLI and system service management with fixed argument arrays",
+    "credentials": "host authentication and redacted inherited environment; no user API-key requirement",
+    "executable": "the existing Node CLI entrypoint; no binary/native third-party artifact",
+    "toolView": "detector signature in automation-source-policy; no protected tool-view ownership change",
+    "realProfile": "not mutated",
+    "genericAutomationAdmission": "Generic third-party admission remains fail-closed; this release is the independently reviewed first-party Store only."
+  },
+  "reviewNotes": [
+    "Complete bounded read of all 155 distributed source files; source/tree/blob/SHA256 bindings verified.",
+    "Every flagged source file is byte-identical to the prior independently reviewed release; the critical result is a scanner rule literal, not executable mining code.",
+    "Exact RC.1 and RC.2 host/engine and all four injected peer ranges; no future RC or wildcard admission.",
+    "Official RC.2 install/start/authenticated API/uninstall/exact Profile restoration passed on Linux/macOS/Windows x pnpm 10/11/12. RC.1 and alpha.5 regression passed at the same final source head.",
+    "Third-party candidate code, real Profile, official source modifications and author outreach: none. Desktop GUI and version rollback remain unverified."
+  ]
+}

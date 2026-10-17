@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "version": "0.9.8",
+  "planPath": "docs/ops/store-098-catalog-20261017.json",
+  "sourceReviewPath": "docs/reviews/store-098-source-review-20261017.json",
+  "baseCommit": "8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
+  "sourceCommit": "8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
+  "sourceHead": "4a90f973f35748d408fa765793ce202014b1d887",
+  "sourceTree": "66f8d06b6bc2c911c74463c98f0df870f708bc3d",
+  "scope": [
+    "docs/ops/store-098-catalog-20261017.json",
+    "docs/reviews/store-098-source-review-20261017.json",
+    "registry/catalog.json",
+    "registry/catalog-index.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    ".github/workflows/registry.yml"
+  ],
+  "preconditions": {
+    "docs/ops/store-098-catalog-20261017.json": null,
+    "docs/reviews/store-098-source-review-20261017.json": null,
+    "registry/catalog.json": "da3a85c9ec15c11c14a4c1c596ca1eaab18f3a1ed054c9bc70e33186d7e3e356",
+    "registry/catalog-index.json": "dd4453b8f49254b07d3e159df7a38a46e0246137d5d928114131b43a8e65939c",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "8bb0db8ba2487a0dc1f27570cab96265f5aeb8ac87cd1368eb8821ec9a64b0c5",
+    ".github/workflows/registry.yml": "cdd5fed87b664f811f3c078eb48d656741510915372aaec17d1cee12b54e3389"
+  },
+  "postconditions": {
+    "docs/reviews/store-098-source-review-20261017.json": "2db01743c13ef523263428d2d3e18ddb95d850de02ffb80414f2f821d59d03ca",
+    "registry/catalog.json": "dcffdce75e76adf41f14c635b846e73e89f2598fe73911ff988da3782afd81df",
+    "registry/catalog-index.json": "b357f427d77f5acf13b9eca9387f2108d5c4aa31752487f67fe7f2f3861d4f8d",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "84f8ebb878292066b40ce7e0a76fafed591c1aac7e2a402ae793bf48fe743b22",
+    ".github/workflows/registry.yml": "be3ff0973295f51af2871825c476246afede39f1db01b4b926dca0a1e6acf4b9"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "有问题就修复",
+    "priorPublicationRequest": "你直接上线啊 不要用短期的",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "你直接上线啊 不要用短期的"
+  },
+  "gates": [
+    "complete bounded fixed-source review with exact source hashes",
+    "all nine RC.2 OS/pnpm lifecycle jobs plus RC.1 and alpha.5 regression",
+    "npm run check",
+    "CI-checked Catalog PR",
+    "GitHub Pages and both storefronts exact version/source readback"
+  ],
+  "rollback": "CI-checked revert of this exact first-party release; existing verified atomic storefront previous-release rollback. Preserve all author contact history and real Profiles.",
+  "healthCheck": "Store 0.9.8 fixed source and exact RC.1/RC.2 compatibility visible on Raw, Pages, international and domestic Catalog/native index/repair surfaces.",
+  "verdict": {
+    "status": "approved-for-ci-checked-first-party-catalog-release",
+    "tests": 506,
+    "genericThirdPartyAdmissionUnchanged": true,
+    "realProfileChanged": false
+  }
+}

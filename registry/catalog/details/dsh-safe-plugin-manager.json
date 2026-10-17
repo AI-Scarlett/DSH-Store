@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 0.9.7：支持官方 alpha.5；作者整改复检必须形成明确收录结论和验收条件，保留固定提交审核与联系去重。",
+  "description": "DSH STORE 0.9.8：精确适配官方 RC.1 / RC.2，修复新版 CLI 安装前兼容检查拒绝；已通过三平台一次性安装、启动、鉴权和卸载还原验证。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "c706e4e0abe4b9aa2a8a60f96abef1f5119218ee",
-  "version": "0.9.7",
+  "commit": "8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
+  "version": "0.9.8",
   "categories": [
     "marketplace",
     "management"
@@ -39,27 +39,27 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T14:19:28.112Z",
-    "observedAt": "2026-10-16T14:19:28.112Z",
+    "updatedAt": "2026-10-17T13:09:59.935Z",
+    "observedAt": "2026-10-17T13:09:59.935Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-10-16T14:19:28.112Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/c706e4e0abe4b9aa2a8a60f96abef1f5119218ee",
+      "checkedAt": "2026-10-17T13:09:59.935Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Owner-reviewed Store 0.9.7; complete bounded fixed-source coverage and exact-head CI."
+      "summary": "Owner-reviewed Store 0.9.8; complete bounded fixed-source coverage and exact-head CI."
     },
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-10-16T14:19:28.112Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/38914258029",
-      "dshRelease": "0.2.1-alpha.5",
+      "checkedAt": "2026-10-17T13:09:59.935Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223",
+      "dshRelease": "0.2.1-rc.2",
       "systems": [
         "Linux",
         "macOS",
@@ -68,7 +68,7 @@
       "profiles": [
         "web"
       ],
-      "summary": "Official CLI install/start/authenticated API/uninstall/restore passed on Linux/macOS/Windows with pnpm 10/11/12; previous alpha.3/alpha.4 passed. Disposable Profiles only. Desktop GUI, real Profile and rollback acceptance remain unverified."
+      "summary": "Official RC.2 CLI install/start/authenticated API/uninstall/exact Profile restoration passed on Linux/macOS/Windows with pnpm 10/11/12; RC.1 and alpha.5 regression passed. Disposable Profiles only. Desktop GUI, real Profile and version rollback remain unverified."
     },
     "runtime": {
       "status": "unknown",
@@ -97,7 +97,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-r",
+    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "compatible",
       "rc.8": "compatible",
@@ -125,7 +125,8 @@
       "0.2.1-alpha.3": "compatible",
       "0.2.1-alpha.4": "compatible",
       "0.2.1-alpha.5": "compatible",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "compatible",
+      "0.2.1-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -243,9 +244,15 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       }
     },
