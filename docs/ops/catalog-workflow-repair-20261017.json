@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "operation": "catalog-workflow-repair",
+  "baseCommit": "d7adafe97381f2a604e9d6a221f1ad6ea251824f",
+  "createdAt": "2026-10-17T00:45:11.505843+00:00",
+  "scope": [
+    "docs/ops/catalog-workflow-repair-20261017.json",
+    "src/catalog.mjs",
+    "test/catalog.test.mjs",
+    "scripts/automate-catalog.mjs",
+    "scripts/verify-catalog-repair-plan.mjs",
+    "test/catalog-repair-plan.test.mjs",
+    ".github/workflows/registry.yml"
+  ],
+  "preconditions": {
+    "docs/ops/catalog-workflow-repair-20261017.json": null,
+    "src/catalog.mjs": "1ddc43883530b0e8c9cbafc4e15a99730c83c3bede8edaf648e8a350884aaf49",
+    "test/catalog.test.mjs": "3494500b1cdd76f7e300869e8ce5a08de7217ac7ccd442363d79b69d9bd3a5ed",
+    "scripts/automate-catalog.mjs": "30061efcf46e13ee01c03b92a8890eaae7577c8a0bdac020874166a9388d8432",
+    "scripts/verify-catalog-repair-plan.mjs": null,
+    "test/catalog-repair-plan.test.mjs": null,
+    ".github/workflows/registry.yml": "b1975a87536416afe536c15804debe65894d1f79755121059878b7c1c4e129ca"
+  },
+  "postconditions": {
+    "src/catalog.mjs": "545c91044eaa8258c9342c02c7822bde45d02e50b68f7d5bfc4017ccdbc4f71e",
+    "test/catalog.test.mjs": "206531844383418023321e811f434008fbf9f4c919a24f5561c66f6082f12100",
+    "scripts/automate-catalog.mjs": "a43444bf278c382b81075b0b3ea26a14c76cbc8978464fbe8d1eab5c915693e9",
+    "scripts/verify-catalog-repair-plan.mjs": "138c8d389da9ed8142df5d8a9c960c7bb3478ceb0a080b013dcd99cfa4f819d1",
+    "test/catalog-repair-plan.test.mjs": "86ed16dafecb71707a7fc64320024160e4a85944b3815c34c0f510688c58b5fc",
+    ".github/workflows/registry.yml": "905883db499bbeb4bb896af1228d5b61bc0c25b81ec94b86f19b1996f994aba8"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "自动扫描的 catalog工作流一直失败，你要想办法解决这个问题",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "evidence": {
+    "failedRuns": [
+      38984200578,
+      38954585308
+    ],
+    "failure": "CATALOG_COMPATIBILITY_BRIDGE_EXCEEDS_2_MIB",
+    "olderFailure": {
+      "run": 38854399606,
+      "validationRun": 38855001822,
+      "reason": "Patch package identity requires review",
+      "currentGuard": "check-plugin-submission.mjs rejects inserted implementations outside manifest.name"
+    }
+  },
+  "gates": [
+    "all source hashes and exact scope",
+    "old client normalized defaults and complete directory remain equivalent",
+    "versions Commits admission permissions compatibility and rejection reasons preserved",
+    "bounded display-only bridge projections; complete v2 detail/index retained",
+    "npm run check",
+    "CI-checked PR",
+    "actual main Catalog workflow succeeds and merges a checked signed commit",
+    "GitHub Pages and both production storefront readback"
+  ],
+  "rollback": "CI-checked revert of source fix; production atomic previous-release rollback on failed health; never alter contact ledger or real Profiles",
+  "verdict": {
+    "status": "allow-ci-checked-scoped-repair",
+    "catalogManuallyChanged": false,
+    "thirdPartyCodeExecuted": false,
+    "realProfileChanged": false,
+    "focusedTestsPassed": 34,
+    "allChecksPassed": 473
+  }
+}

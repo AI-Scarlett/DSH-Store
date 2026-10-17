@@ -30,6 +30,7 @@ jobs:
       - run: node scripts/verify-store-release-plan.mjs
       - run: node scripts/verify-store-release-plan.mjs docs/ops/store-096-catalog-20261016.json
       - run: node scripts/verify-store-release-plan.mjs docs/ops/store-097-catalog-20261016.json
+      - run: node scripts/verify-catalog-repair-plan.mjs
       - run: npm run check
       - name: Validate native index with the pinned official parser
         run: |

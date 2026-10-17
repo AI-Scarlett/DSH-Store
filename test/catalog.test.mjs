@@ -782,3 +782,63 @@ test('source verification distinguishes timeout, HTTP, manifest, and patch failu
     error => error.code === 'SOURCE_PATCH_MISMATCH',
   )
 })
+
+test('batch admission rechecks preserve every safety field under the historical response bound', async () => {
+  const source = await loadCatalogFromFiles()
+  const entries = source.entries.map((item, i) => ({
+    ...item,
+    // A real scan adds exact-source decisions across hundreds of entries;
+    // search-term growth alone did not reproduce the production failure.
+    ...(i < 550 ? { admission: item.admission ?? {
+      engine: 'bounded-source-v3', binding: 'a'.repeat(64), policyDigest: 'b'.repeat(64),
+      state: 'review-required', sourceContract: 'verified', coverage: 'complete', capabilities: 'review-required',
+      compatibility: 'per-version-declaration', reviewRegistryDigest: 'c'.repeat(64),
+    } } : {}),
+    description: ('完整功能说明与示例😀。'.repeat(120)).slice(0, 1400),
+    compatibility: { ...item.compatibility,
+      dshReleases: { ...item.compatibility.dshReleases, '0.2.1-alpha.4': 'unknown', '0.2.1-alpha.5': 'unknown' },
+      // The failed run refreshed 96 latest-window records.
+      ...(i < 96 ? { latestWindow: { state: 'recheck-required', releases: ['0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5'] } } : {}),
+    },
+  }))
+  const split = splitCatalogDocument({ ...source, entries })
+  assert.ok(catalogBridgeBuffer(split.bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
+  assert.equal(split.bridgeProjection.entries, entries.length)
+  assert.ok(split.bridgeProjection.descriptionLimit !== null, 'the fixture must exercise description compaction')
+  assert.equal(split.bridge.entries.length, entries.length)
+  for (let i = 0; i < entries.length; i++) {
+    const original = entries[i], wire = split.bridge.entries[i], hydrated = validateCatalogDetail(split.details[i].entry, split.index.entries[i], split.index.registry)
+    for (const field of ['id', 'packageName', 'commit', 'version', 'status', 'entryIds', 'admission']) {
+      assert.deepEqual(wire[field], original[field], `${original.id}: ${field} must stay exact`)
+    }
+    assert.equal(wire.statusReason ?? null, original.statusReason)
+    assert.deepEqual(wire.configOverrides ?? [], original.configOverrides ?? [])
+    assert.deepEqual(wire.compatibility.dshReleases, original.compatibility.dshReleases)
+    assert.deepEqual(wire.compatibility.latestWindow, original.compatibility.latestWindow)
+    assert.deepEqual(wire.details.permissions, original.details.permissions)
+    assert.equal(wire.details.license, original.details.license)
+    assert.deepEqual(hydrated.description, original.description)
+    assert.deepEqual(split.index.entries[i].searchTerms, original.searchTerms)
+    assert.ok(!wire.description.includes('\ufffd'))
+  }
+  for (const validate of [validateCatalog, validateCatalog085, validateCatalog086, validateCatalog087]) {
+    const parsed = validate(split.bridge)
+    const reference = validate({ ...split.bridge, entries: split.bridge.entries.map(wire => ({
+      ...wire, searchTerms: wire.searchTerms ?? [], defaultBranch: wire.defaultBranch ?? 'main', manifestPath: wire.manifestPath ?? 'package.json',
+      installPath: wire.installPath ?? null, updatePolicy: wire.updatePolicy ?? null,
+      installCount: wire.installCount ?? null, featured: wire.featured ?? false,
+      risk: { installScripts: wire.risk?.installScripts ?? [], review: wire.risk?.review ?? 'curated-not-security-audited' },
+    })) })
+    assert.deepEqual(parsed, reference, 'omitted defaults must reconstruct exactly in each supported client')
+  }
+})
+
+test('an irreducibly oversized safety directory still fails closed instead of dropping entries or raising the limit', () => {
+  const entries = Array.from({ length: 1800 }, (_, i) => ({ ...entry,
+    id: `entry-${i}`, packageName: `dsh-entry-${i}`, repositoryUrl: `https://github.com/example/dsh-entry-${i}`,
+    status: 'blocked', statusReason: '安全拒绝原因。'.repeat(70),
+    compatibility: { ...entry.compatibility, dshReleases: Object.fromEntries(Array.from({ length: 50 }, (_, n) => [`0.1.${n}`, 'unknown'])) },
+  }))
+  assert.throws(() => splitCatalogDocument(document(entries)), error => error.code === 'CATALOG_BRIDGE_CAPACITY')
+  assert.equal(MAX_CATALOG_BRIDGE_RESPONSE_BYTES, 2 * 1024 * 1024)
+})
