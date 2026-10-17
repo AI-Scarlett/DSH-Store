@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planFile": "docs/ops/dsh-native-market-rc-install-guide-20261017.json",
+  "baseCommit": "f764a2171a11245b91235e4bfbaefb4c3620579c",
+  "createdAt": "2026-10-17T13:28:36.572761+00:00",
+  "scope": [
+    "docs/ops/dsh-native-market-rc-install-guide-20261017.json",
+    "README.md",
+    "test/catalog.test.mjs",
+    ".github/workflows/registry.yml",
+    "test/contracts.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-native-market-rc-install-guide-20261017.json": null,
+    "README.md": "e4d6db7b7ebe9110f7f77a259f88d6f94be1cf2205aface6b03953fb2f614635",
+    "test/catalog.test.mjs": "27af2b67d9b9d26b408eccbd237d5041cfd22dca61ddfd0ca6b9762606debbe4",
+    ".github/workflows/registry.yml": "be3ff0973295f51af2871825c476246afede39f1db01b4b926dca0a1e6acf4b9",
+    "test/contracts.test.mjs": "ecc350c1b98610696d85ad3bcf7c221a2d3fd4e5e8e399e92afd7ed0c92224d9"
+  },
+  "postconditions": {
+    "README.md": "6afffc2f5f2f4863ca0e80f32ba82f06be7159a47732ae8588ed48ede923b4e9",
+    "test/catalog.test.mjs": "261995e0eb6d2ec43491fe5720510bbd89a9a3fcdb26eefa69d35c69342cd2c2",
+    ".github/workflows/registry.yml": "cf5b352119a54f8a8f9166fa24ec9fcfaa437ffa3e067425f56ba09e15cf67ab",
+    "test/contracts.test.mjs": "44da40e7c0b3207ac8b3009aad71714a40ad5298e688f3e37f432708dc58d46d"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "有问题就修复",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "你直接上线啊 不要用短期的"
+  },
+  "evidence": {
+    "problem": "README primary CLI command still installs 0.8.5, whose compatibility rejects the newly fixed RC runtimes",
+    "catalogVersion": "0.9.8",
+    "catalogCommit": "8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
+    "runtimeReleaseCommit": "f764a2171a11245b91235e4bfbaefb4c3620579c"
+  },
+  "gates": [
+    "exact base and file hashes",
+    "primary README command matches the current immutable Catalog manager pin and safe install flags",
+    "historical bootstrap is explicitly audit-only",
+    "npm run check",
+    "CI-checked documentation PR",
+    "public README and four Catalog surfaces readback"
+  ],
+  "healthCheck": "Public primary install command pins the audited 0.9.8 commit; Catalog/native/repair remain at the measured source.",
+  "rollback": "CI-checked revert of documentation only; never change real Profiles, the release tag or contact history.",
+  "verdict": {
+    "status": "prepared-for-documentation-gates",
+    "runtimeCodeChanged": false,
+    "realProfileChanged": false
+  }
+}

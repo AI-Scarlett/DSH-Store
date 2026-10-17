@@ -512,6 +512,13 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.match(manager.commit, /^[0-9a-f]{40}$/)
   assert.ok(readme.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`),
     'README must retain the fixed bootstrap install command even after the Catalog self-pin advances')
+  const guide = readme.split('### 使用固定 GitHub Commit 安装')[1]?.split('### 重启与验收')[0]
+  const primaryInstall = /```bash\n([^]*?)```/.exec(guide ?? '')?.[1]
+  assert.ok(primaryInstall?.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${manager.commit}`),
+    'the primary install command must use the current audited Catalog pin')
+  assert.ok(!primaryInstall.includes(bootstrapCommit), 'the obsolete bootstrap must not remain the primary install command')
+  assert.match(primaryInstall, /--ignore-scripts --config\.auto-install-peers=false/)
+  assert.match(guide, /仅供历史审计/)
   assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
   assert.match(readme, /dsh plugin --profile web add/)
   assert.match(readme, /设置 → 插件 → 插件商城/)
