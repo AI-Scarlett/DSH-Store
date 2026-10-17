@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planFile": "docs/ops/dsh-native-market-rc1-repair-20261017.json",
+  "planId": "dsh-rc1-install-repair-20261017",
+  "baseCommit": "2da8a9edc36e8be180e9c299d6a68e1d2d9e65b6",
+  "createdAt": "2026-10-17T12:45:40.425311+00:00",
+  "scope": [
+    "docs/ops/dsh-native-market-rc1-repair-20261017.json",
+    "package.json",
+    "README.md",
+    "test/upgrade-matrix.test.mjs",
+    "scripts/verify-dsh-upgrade-plan.mjs",
+    "test/dsh-upgrade-plan.test.mjs",
+    ".github/workflows/registry.yml",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-native-market-rc1-repair-20261017.json": null,
+    "package.json": "8d662f5268d8c57c123dc5faae6b4ba571837b15cbc35a121bcc124f832ae670",
+    "README.md": "a69193445549ca2b05faecdbaba87286a3194d3e1d8f341f54c3052a9726931c",
+    "test/upgrade-matrix.test.mjs": "d894d0dc12994aede15c216880b4bc954859179fd34e247456c30e7cdc1b1420",
+    "scripts/verify-dsh-upgrade-plan.mjs": "d8c1a9f6e861c35e4d3b69a6e553288c5a0fd8436f6789fd0b9f67b04b21c26e",
+    "test/dsh-upgrade-plan.test.mjs": "ce42c211eb1858bc30475221b6ac1ba144e82e4a10eefa1c8bcc2fa01fbc2c5a",
+    ".github/workflows/registry.yml": "905883db499bbeb4bb896af1228d5b61bc0c25b81ec94b86f19b1996f994aba8",
+    "test/catalog.test.mjs": "e0f7b5aed18131ef420ff24c4d65cdcd24f8406fbf6648f9367df22b99873647",
+    "test/contracts.test.mjs": "ac39a019b41f628bb89db5e03c9f8799e586b2b2281e84befaba6819ff610b77"
+  },
+  "postconditions": {
+    "package.json": "fd6e0d2194405cb8afbabd83d9f7cfa2b455d4bb2aaf46a193044689a56559d1",
+    "README.md": "e42c34520c7342891ecab4e03a08566b2411c132a96fc7695d6ab4e1501acc1c",
+    "test/upgrade-matrix.test.mjs": "356a61222de4e8c1157a1ca03040e49373ef2fb8f7dc6ef4ac9c70b77caf5339",
+    "scripts/verify-dsh-upgrade-plan.mjs": "4c2717ce722bc4c0934c10cf8c6fee470b69c568ccee1d6ba0d8aaf39e026ff7",
+    "test/dsh-upgrade-plan.test.mjs": "c22e2c0527ce3271f5e9e11022d728d1acfc17226c3b8b0729b3a19e40b3bf28",
+    ".github/workflows/registry.yml": "cdd5fed87b664f811f3c078eb48d656741510915372aaec17d1cee12b54e3389",
+    "test/catalog.test.mjs": "27af2b67d9b9d26b408eccbd237d5041cfd22dca61ddfd0ca6b9762606debbe4",
+    "test/contracts.test.mjs": "698a81abc2ec439d9d9d4fa751ec2f5753cd59149a278cbb7fc481040b814b6d"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "有问题就修复",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "你直接上线啊 不要用短期的"
+  },
+  "evidence": {
+    "baselineRun": 39010527254,
+    "baselineCommit": "58b1dec62ad5d6e43d3c07b042d1455926471d71",
+    "failure": "Official CLI plugin --profile web add failed against DSH 0.2.1-rc.1 on every OS/pnpm combination",
+    "declarationGap": "Host range and all four injected Client peers omit exact 0.2.1-rc.1; no official package or real Profile may be edited",
+    "officialEvaluator": {
+      "runtime": "0.2.1-rc.1",
+      "originalRejected": true,
+      "requirement": "engines.dsh",
+      "candidateAccepted": true,
+      "versionExemptionsUsed": false
+    }
+  },
+  "gates": [
+    "exact base/scope/file hashes",
+    "npm run check",
+    "same fixed source tested against official latest-three",
+    "Linux macOS Windows x pnpm 10 11 12 install/start/authenticated API/uninstall/exact Profile restoration",
+    "CI-checked source PR",
+    "fixed-source Catalog review and separate checked Catalog PR",
+    "GitHub Pages and both storefronts exact-version readback"
+  ],
+  "healthCheck": "Disposable official CLI full lifecycle matrix and public fixed-source version readback.",
+  "rollback": "CI-checked revert to previous Store source and Catalog entry; atomic production previous-release rollback on failed health. Preserve contact ledger and real Profiles.",
+  "verdict": {
+    "status": "prepared-for-disposable-runtime-verification",
+    "compatibilityClaim": "unknown until measured on exact source",
+    "thirdPartyCandidateCodeExecuted": false,
+    "officialSourceModified": false,
+    "realProfileChanged": false
+  }
+}

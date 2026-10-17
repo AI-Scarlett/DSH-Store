@@ -92,7 +92,7 @@ Profile 的自动测试推定。
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.7` |
+| 商城版本 | `0.9.8` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
@@ -536,5 +536,7 @@ headless、损坏 manifest、缺失依赖、坏链接和无 Web Server Profile �
 本项目采用 [MIT License](./LICENSE) 开源。Copyright (c) 2026 AI-Scarlett。
 
 ### 作者整改后的正式判定
+
+`0.9.8` 为官方 `0.2.1-rc.1` 补齐精确的宿主与四个注入客户端 peer 范围，避免新版官方 CLI 在安装前拒绝商城。新版本的真实安装、启动、鉴权 API、卸载及 Profile 还原由一次性环境独立验收；不扩展为未来 RC 或正式版兼容承诺。
 
 `0.9.7` 将作者的明确复检请求与固定源码、正式准入判定及 Catalog 状态绑定。通过的项目更新 Catalog 并验证公网；未通过的项目一次列清文件、位置、修改方式和验收条件。商城自身误报和审阅通道缺口由商城修复，读取源码或发送回执不算完成。Tool-view 归属与完整运行依赖闭包可按固定证据专项审阅；停止联系、中央预留和禁止重复发送规则继续有效。详见 [正式判定](docs/reviews/author-admission-decisions-20261016.md)。
