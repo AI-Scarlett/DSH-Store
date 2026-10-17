@@ -346,6 +346,19 @@
         "https://github.com/nubeslove/dsh-file-actions/blob/1dae73c840d94f98f8bd1d6738d4a701be5f61ac/lib/index.js#L84",
         "https://github.com/nubeslove/dsh-file-actions/blob/1dae73c840d94f98f8bd1d6738d4a701be5f61ac/package.json#L40"
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/nubeslove/dsh-file-actions",
+      "commit": "fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+      "binding": "49f18ca930dc7e36800e1fcf98e512662046377743bbe23aa3693194be92c792",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-17T10:42:07.738Z",
+      "rationale": "最新 0.1.1 固定源完整覆盖 7 个文本。已确认 open-url 的 http/https/双引号校验及 new Function 移除；请求信任、cmd/目标约束与精确 DSH 兼容仍拒绝准入。生成截图的 Playwright/DSH_HOME 查找属于显式开发脚本，不当成运行时凭据读取或新的恶意证据。",
+      "evidenceUrls": [
+        "https://github.com/nubeslove/dsh-file-actions/commit/fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md"
+      ]
     }
   ]
 }

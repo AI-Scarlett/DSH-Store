@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "baseCommit": "38a97c83b88652f229e4b6542ccdb2d3a28074b2",
+  "createdAt": "2026-10-17T10:40:17.322Z",
+  "scope": [
+    "docs/ops/author-feedback-submission-refresh-20261017.json",
+    "docs/reviews/submission-refresh-20261017.json",
+    "docs/reviews/submission-refresh-20261017.md",
+    "registry/admission-reviews.json",
+    "registry/author-resolutions.json",
+    "registry/catalog.json",
+    "registry/catalog-index.json",
+    "registry/catalog/details/dsh-file-actions.json",
+    "registry/author-submission-results/joey-20261017.json",
+    "registry/author-submission-results/file-actions-20261017.json"
+  ],
+  "preconditions": {
+    "docs/ops/author-feedback-submission-refresh-20261017.json": null,
+    "docs/reviews/submission-refresh-20261017.json": null,
+    "docs/reviews/submission-refresh-20261017.md": null,
+    "registry/admission-reviews.json": "0cc645d988d3c54a5cec71430fdf51226774d5766eb4db27204263696a07b9a9",
+    "registry/author-resolutions.json": "71c3abbdc7c1fd80254d8148ed541c89afc54fb6ca59a6b3dcad1a71b80c0cde",
+    "registry/catalog.json": "a96534874d77b225f5f6b8053a9d3864d4d0e9e7af00e98c0a4f23b0d2a9aaa0",
+    "registry/catalog-index.json": "9935ce65118c83d80b59f2ec7d71e225adc8934482b6a7d86f88c7c0d34f6aa9",
+    "registry/catalog/details/dsh-file-actions.json": "f06f8aeae397ff098a9331f436906c6a26f907c83662eb770c63be03452828fa",
+    "registry/author-submission-results/joey-20261017.json": null,
+    "registry/author-submission-results/file-actions-20261017.json": null
+  },
+  "postconditions": {
+    "docs/reviews/submission-refresh-20261017.json": "e4df0390c8025fa54b6ccf381bd9df6c4ad3b9f9e111306415eec8355c72999a",
+    "docs/reviews/submission-refresh-20261017.md": "2837d8d826291f0f05c4a08ee192f0bfcc41aa45954845d6ede26eb19e885e9d",
+    "registry/admission-reviews.json": "a7755db81eef9d07b7c21f090a9aba404e16b3872e9224ef764ed0af9edbd1db",
+    "registry/author-resolutions.json": "801424e40f28431cdcfd04c1ac1f4e63c12b688d1e5b3afeec7cd2aac0db8387",
+    "registry/catalog.json": "eb9273f6edd87ca292d4b9c0b7828c312158a3be32eef652010612c1bd82dec6",
+    "registry/catalog-index.json": "e92f09c00af3c193293fb770a8b3f95d54ef8e8513068737105adf8ed0b87cc4",
+    "registry/catalog/details/dsh-file-actions.json": "c1757cfa9b56047809a8f7b839614d123cc185404e8946625c476069879ccf05",
+    "registry/author-submission-results/joey-20261017.json": "41bc1d5feca821c356b967da865934368f36dba3c01e81f496dca2e6ba58bbb0",
+    "registry/author-submission-results/file-actions-20261017.json": "ad16c72442814e684c7c4a28aa732bd931f3254495236af6ed8d7fbce65e5f2b"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Finish remaining submission results; recheck new immutable source and split per-person notifications after stale-source preconditions prevented every reservation and message.",
+    "githubWriteCredential": "short-lived-token-required",
+    "manualBranchPublication": "Current explicit owner authorization; verified GitHub signed commits for source, short-lived workflow token for notifications."
+  },
+  "gates": [
+    "complete bounded fixed-source/blob verification; no third-party execution",
+    "failed stale-source batch had no reservations or message attempts",
+    "terminal source-bound decisions and exact Issue hash",
+    "npm run check",
+    "exact policy hashes and CI-checked signed PR",
+    "per-person CAS before one final comment; uncertain attempts never retried",
+    "GitHub/Pages readback"
+  ],
+  "rollback": {
+    "source": "CI-checked revert PR",
+    "contacts": "Never remove/reset reservations or history; never retry uncertain messages"
+  },
+  "verdict": {
+    "state": "allow-ci-checked-current-source-rejection-and-two-independent-first-results",
+    "thirdPartyCodeExecuted": false,
+    "realProfileChanged": false,
+    "previousBatchReserved": false,
+    "previousBatchPosted": false,
+    "sourceCommit": "fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+    "npmCheckPassed": 504
+  }
+}

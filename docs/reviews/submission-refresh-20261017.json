@@ -1,0 +1,409 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-17T10:42:07.738Z",
+  "baseCommit": "38a97c83b88652f229e4b6542ccdb2d3a28074b2",
+  "reason": "Upstream changed before any CAS or POST. The whole previous batch failed its source precondition; neither person was reserved or sent.",
+  "failedWorkflow": 39025606087,
+  "thirdPartyCodeExecuted": false,
+  "realProfileChanged": false,
+  "source": {
+    "candidate": {
+      "id": "dsh-file-actions",
+      "name": "dsh-file-actions",
+      "packageName": "dsh-file-actions",
+      "description": "DSH Web 插件：对消息中的文件引用（蓝色 chip、行内代码路径、file:// 链接）提供右键菜单，可按文件类型打开文件、在资源管理器中定位、用浏览器打开或复制路径。",
+      "searchTerms": [],
+      "repositoryUrl": "https://github.com/nubeslove/dsh-file-actions",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": null,
+      "commit": "fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+      "version": "0.1.1",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": null,
+        "observedAt": null,
+        "provenance": "unknown"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "catalog-presence",
+          "checkedAt": "2026-10-17T10:30:25.625Z",
+          "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Present in the trusted GitHub catalog."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": null
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": null
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": null
+        }
+      },
+      "entryIds": [
+        "file-actions"
+      ],
+      "status": "approved",
+      "statusReason": null,
+      "compatibility": {
+        "dsh": null,
+        "dshReleases": {},
+        "dshOperations": {
+          "rc.7": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "rc.8": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.1": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.1-rc.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.2": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.3": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.1.2-alpha.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          }
+        },
+        "node": ">=22.19",
+        "systems": [],
+        "profiles": [
+          "web"
+        ]
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "submission-static-precheck-not-security-audited"
+      }
+    },
+    "analysis": {
+      "reasons": [
+        "fixed-source security warnings require review",
+        "runtime source contains the files permission signal",
+        "runtime source contains the network permission signal",
+        "runtime source contains the commands permission signal",
+        "runtime source contains the credentials permission signal",
+        "dynamic module loading or code evaluation requires separate review",
+        "DSH compatibility is not explicitly declared"
+      ],
+      "signals": {
+        "files": true,
+        "network": true,
+        "commands": true,
+        "credentials": true,
+        "protectedDsh": false,
+        "nativeOrExecutableArtifacts": false
+      },
+      "securityScan": {
+        "engine": "dsh-store-submission-static-v1",
+        "policy": "high-risk-block-cli-capability-warn-v1",
+        "verdict": "warn",
+        "complete": true,
+        "scopeReasons": [],
+        "filesScanned": 7,
+        "eligibleFiles": 7,
+        "skippedOversize": 0,
+        "skippedUnsupported": 0,
+        "capped": false,
+        "counts": {
+          "critical": 0,
+          "warning": 1,
+          "info": 0
+        },
+        "findings": [
+          {
+            "rule": "child-process",
+            "category": "shell",
+            "severity": "warning",
+            "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+            "file": "lib/index.js",
+            "line": 5
+          }
+        ],
+        "findingsTruncated": false
+      },
+      "engine": "bounded-source-v3",
+      "sourceDigest": "58dbd9b24def1dc9dce3db863b6396164dfae1b2cec856b2df91783fdc680274",
+      "sourceEvidence": [
+        {
+          "file": "cordis.patch.yml",
+          "bytes": 122,
+          "blob": "551b58d37181a44f6d3c8f3e6db8a68252ca13d4",
+          "sha256": "f26b10e4feeab8b160b15b6763b991657da579e9c0193714c154ff98851ea034"
+        },
+        {
+          "file": "lib/client.js",
+          "bytes": 14869,
+          "blob": "4ac32e8386c66d1e95ad57c6b28875d18bda3b84",
+          "sha256": "78c1072f40c1aa95c3be9513d4b598ad8783cb42026409028b69d9c8cf1779c0"
+        },
+        {
+          "file": "lib/index.js",
+          "bytes": 7889,
+          "blob": "6ccbf2607d10ddac866969499cbc18bae7c29977",
+          "sha256": "7f324660d67eb26f9a8173dae919949ba1c4b6faf1a62ddd5ddead0815b03962"
+        },
+        {
+          "file": "package.json",
+          "bytes": 1309,
+          "blob": "9fba3e1452dcf75af831602ad07a420e60e5d37f",
+          "sha256": "04152d0ea64b2de287bacda3ab779571eba5bec0942c98ab9142fa65f2a0fa45"
+        },
+        {
+          "file": "scripts/demo/menus.html",
+          "bytes": 5251,
+          "blob": "972447c643cab6363055fda2e22e6aec1f572f33",
+          "sha256": "fc2f6193950fde2d824a43b26589f7ba1a436b80517a140340e463072ba99c1a"
+        },
+        {
+          "file": "scripts/make-screenshots.mjs",
+          "bytes": 2029,
+          "blob": "3358a1535b70f59a53377e470a40a665dac36f83",
+          "sha256": "ef8226ed0718400d41a5e025a67e177efe81fb2a1d47c1e62b6f338f78de4dc5"
+        },
+        {
+          "file": "scripts/verify.mjs",
+          "bytes": 9390,
+          "blob": "ad83677ebb79dbf323b321ad35c0c4128b2d4c33",
+          "sha256": "2c6de7fe3d472f97a2b6bc238fdb4d5805ec93e667615feb1127cca24aa14e64"
+        }
+      ],
+      "capabilityEvidence": [
+        {
+          "rule": "capability-network",
+          "file": "lib/client.js",
+          "signal": "network",
+          "responsibility": "reviewer",
+          "line": 166,
+          "location": "line"
+        },
+        {
+          "rule": "capability-files",
+          "file": "lib/index.js",
+          "signal": "files",
+          "responsibility": "reviewer",
+          "line": 6,
+          "location": "line"
+        },
+        {
+          "rule": "capability-commands",
+          "file": "lib/index.js",
+          "signal": "commands",
+          "responsibility": "reviewer",
+          "line": 5,
+          "location": "line"
+        },
+        {
+          "rule": "capability-files",
+          "file": "scripts/make-screenshots.mjs",
+          "signal": "files",
+          "responsibility": "reviewer",
+          "line": 11,
+          "location": "line"
+        },
+        {
+          "rule": "capability-credentials",
+          "file": "scripts/make-screenshots.mjs",
+          "signal": "credentials",
+          "responsibility": "reviewer",
+          "line": 20,
+          "location": "line"
+        },
+        {
+          "rule": "capability-files",
+          "file": "scripts/verify.mjs",
+          "signal": "files",
+          "responsibility": "reviewer",
+          "line": 3,
+          "location": "line"
+        }
+      ],
+      "toolViewEvidence": [],
+      "budgetFindings": [],
+      "reviewSignals": {
+        "toolViewExtension": false,
+        "dynamicModuleLoading": true
+      },
+      "scanComplete": true,
+      "filesScanned": 7,
+      "unsupportedFiles": 0,
+      "scope": {
+        "kind": "explicit-files-conservative-superset",
+        "repositoryEntries": 17,
+        "packageEntries": 12,
+        "files": 9
+      },
+      "runtimeFiles": 7,
+      "runtimeBytes": 40859,
+      "contractVerified": false,
+      "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+      "runtimeDependencies": {},
+      "approved": false
+    },
+    "binding": "49f18ca930dc7e36800e1fcf98e512662046377743bbe23aa3693194be92c792",
+    "snapshotFiles": [
+      {
+        "path": "LICENSE",
+        "blob": "f496ebf1731d1ca9dbfdfe91a088a42219d161a1",
+        "bytes": 1066
+      },
+      {
+        "path": "README.md",
+        "blob": "5682a5cee3df5502bf5bf997caafdc47ab004497",
+        "bytes": 6729
+      },
+      {
+        "path": "cordis.patch.yml",
+        "blob": "551b58d37181a44f6d3c8f3e6db8a68252ca13d4",
+        "bytes": 122
+      },
+      {
+        "path": "lib/client.js",
+        "blob": "4ac32e8386c66d1e95ad57c6b28875d18bda3b84",
+        "bytes": 14869
+      },
+      {
+        "path": "lib/index.js",
+        "blob": "6ccbf2607d10ddac866969499cbc18bae7c29977",
+        "bytes": 7889
+      },
+      {
+        "path": "package.json",
+        "blob": "9fba3e1452dcf75af831602ad07a420e60e5d37f",
+        "bytes": 1309
+      },
+      {
+        "path": "scripts/demo/menus.html",
+        "blob": "972447c643cab6363055fda2e22e6aec1f572f33",
+        "bytes": 5251
+      },
+      {
+        "path": "scripts/make-screenshots.mjs",
+        "blob": "3358a1535b70f59a53377e470a40a665dac36f83",
+        "bytes": 2029
+      },
+      {
+        "path": "scripts/verify.mjs",
+        "blob": "ad83677ebb79dbf323b321ad35c0c4128b2d4c33",
+        "bytes": 9390
+      }
+    ]
+  },
+  "decision": "rejected",
+  "blockers": [
+    {
+      "owner": "author",
+      "code": "AUTH001",
+      "file": "lib/index.js",
+      "line": 176,
+      "finding": "POST /exec 在处理本地文件和新增 open-url 之前均未验证请求来源/调用方，也未要求 application/json；64KiB 上限、动作白名单和文件存在检查不能替代授权。",
+      "requiredChange": "在读正文/探测路径/启动进程前使用可信宿主授权或 Host/Origin/Sec-Fetch-Site 围栏并限制 POST JSON；保留已有 64KiB 上限。",
+      "acceptance": "跨站/错误 Host/错误媒体类型/错误方法在任何文件探测和进程前拒绝；正常授权请求可使用白名单功能。"
+    },
+    {
+      "owner": "author",
+      "code": "EXEC001",
+      "file": "lib/index.js",
+      "line": 88,
+      "finding": "open/browser 与新增 open-url（lib/index.js:130-132）仍调用 cmd.exe /c start，并手工引号 + windowsVerbatimArguments=true。只拒绝双引号及限定 http/https 不取消 cmd 的百分号变量展开；文件 open 也没有宿主侧可执行/脚本确认边界。",
+      "requiredChange": "避免将不可信路径/URL 交给 cmd 解释，采用有安全参数契约的系统打开 API 或固定浏览器进程；宿主限制路径、URL、UNC/设备、扩展名和可执行文件，建立明确确认边界。",
+      "acceptance": "用一次性 Windows 夹具覆盖空格、百分号变量、引号/元字符、UNC、脚本/可执行文件；保证只打开经授权的原始目标且没有附加进程。"
+    },
+    {
+      "owner": "author",
+      "code": "COMPAT001",
+      "file": "package.json",
+      "line": 22,
+      "finding": "manifest 没有 DSH 兼容声明；投稿补充的 0.2.x 桌面端是范围描述，没有当前官方最新三版的逐版结果。",
+      "requiredChange": "只在实际验证后补 DSH/Windows 支持范围和至少一个当前版本的精确 compatible 记录；未验证系统/版本保持 unknown。",
+      "acceptance": "当前窗口至少一版有明确范围的安装/加载/卸载证据；不能从旧版本或平台推定。"
+    }
+  ],
+  "summary": "最新 0.1.1 固定源完整覆盖 7 个文本。已确认 open-url 的 http/https/双引号校验及 new Function 移除；请求信任、cmd/目标约束与精确 DSH 兼容仍拒绝准入。生成截图的 Playwright/DSH_HOME 查找属于显式开发脚本，不当成运行时凭据读取或新的恶意证据。",
+  "contactPlans": {
+    "joey": "independent first result; both unchanged fixed sources revalidated",
+    "nubeslove": "independent first result; latest source rechecked"
+  },
+  "runtimeAcceptance": "unverified"
+}

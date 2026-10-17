@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "operation": "reviewed-submission-results",
+  "repository": "AI-Scarlett/DSH-Store",
+  "authorization": {
+    "source": "direct-user-request",
+    "quote": "然后在对应 issue 上用中文（可附英文）回复作者审核/复核结果和下一步。"
+  },
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "801424e40f28431cdcfd04c1ac1f4e63c12b688d1e5b3afeec7cd2aac0db8387"
+  },
+  "targets": [
+    {
+      "key": "nubeslove/dsh-file-actions",
+      "repositoryId": 1423183194,
+      "recipient": {
+        "id": 231933552,
+        "node_id": "U_kgDODdMGcA",
+        "login": "nubeslove",
+        "type": "User"
+      },
+      "commit": "fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+      "patchPath": "cordis.patch.yml",
+      "title": "固定源投稿审核结果：dsh-file-actions",
+      "body": "已完成 **dsh-file-actions 0.1.1 / fb4a1ba9a3451d40045baf8d02748e245d7ee247** 的最新固定源审核，完整读取并核验 7/7 个打包文本（40,859 字节）。当前最终判定为 **blocked，暂不准入可安装 Catalog**。\n\n已确认新增 open-url 能区分网页与本地文件，限制 http/https 并拒绝双引号；verify 中已移除 new Function。README 两张图明确是界面示意，不把它们当成实际运行证据。Store 没有执行插件、测试、截图脚本或访问真实 DSH Profile。\n\n- **AUTH001** lib/index.js:176：POST /exec 在处理本地文件和新增 open-url 之前均未验证请求来源/调用方，也未要求 application/json；64KiB 上限、动作白名单和文件存在检查不能替代授权。\n  最小修改：在读正文/探测路径/启动进程前使用可信宿主授权或 Host/Origin/Sec-Fetch-Site 围栏并限制 POST JSON；保留已有 64KiB 上限。\n  验收：跨站/错误 Host/错误媒体类型/错误方法在任何文件探测和进程前拒绝；正常授权请求可使用白名单功能。\n\n- **EXEC001** lib/index.js:88：open/browser 与新增 open-url（lib/index.js:130-132）仍调用 cmd.exe /c start，并手工引号 + windowsVerbatimArguments=true。只拒绝双引号及限定 http/https 不取消 cmd 的百分号变量展开；文件 open 也没有宿主侧可执行/脚本确认边界。\n  最小修改：避免将不可信路径/URL 交给 cmd 解释，采用有安全参数契约的系统打开 API 或固定浏览器进程；宿主限制路径、URL、UNC/设备、扩展名和可执行文件，建立明确确认边界。\n  验收：用一次性 Windows 夹具覆盖空格、百分号变量、引号/元字符、UNC、脚本/可执行文件；保证只打开经授权的原始目标且没有附加进程。\n\n- **COMPAT001** package.json:22：manifest 没有 DSH 兼容声明；投稿补充的 0.2.x 桌面端是范围描述，没有当前官方最新三版的逐版结果。\n  最小修改：只在实际验证后补 DSH/Windows 支持范围和至少一个当前版本的精确 compatible 记录；未验证系统/版本保持 unknown。\n  验收：当前窗口至少一版有明确范围的安装/加载/卸载证据；不能从旧版本或平台推定。\n\n完整源码绑定和最终 Catalog 判定：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md。修复后请附新完整 Commit 与证据，并明确提出复核请求。Issue 保持打开。\n\n你的 [Plugin] 标题已触发投稿预检，缺少 label 无需重新投稿。child-process 是已披露的能力信号，不等于恶意；截图脚本的 Playwright/DSH_HOME 查找和开发测试不作为运行时凭据/动态执行的指控。",
+      "sourceFiles": [
+        {
+          "path": "cordis.patch.yml",
+          "blob": "551b58d37181a44f6d3c8f3e6db8a68252ca13d4",
+          "sha256": "f26b10e4feeab8b160b15b6763b991657da579e9c0193714c154ff98851ea034"
+        },
+        {
+          "path": "lib/client.js",
+          "blob": "4ac32e8386c66d1e95ad57c6b28875d18bda3b84",
+          "sha256": "78c1072f40c1aa95c3be9513d4b598ad8783cb42026409028b69d9c8cf1779c0"
+        },
+        {
+          "path": "lib/index.js",
+          "blob": "6ccbf2607d10ddac866969499cbc18bae7c29977",
+          "sha256": "7f324660d67eb26f9a8173dae919949ba1c4b6faf1a62ddd5ddead0815b03962"
+        },
+        {
+          "path": "package.json",
+          "blob": "9fba3e1452dcf75af831602ad07a420e60e5d37f",
+          "sha256": "04152d0ea64b2de287bacda3ab779571eba5bec0942c98ab9142fa65f2a0fa45"
+        },
+        {
+          "path": "scripts/demo/menus.html",
+          "blob": "972447c643cab6363055fda2e22e6aec1f572f33",
+          "sha256": "fc2f6193950fde2d824a43b26589f7ba1a436b80517a140340e463072ba99c1a"
+        },
+        {
+          "path": "scripts/make-screenshots.mjs",
+          "blob": "3358a1535b70f59a53377e470a40a665dac36f83",
+          "sha256": "ef8226ed0718400d41a5e025a67e177efe81fb2a1d47c1e62b6f338f78de4dc5"
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "blob": "ad83677ebb79dbf323b321ad35c0c4128b2d4c33",
+          "sha256": "2c6de7fe3d472f97a2b6bc238fdb4d5805ec93e667615feb1127cca24aa14e64"
+        },
+        {
+          "path": "LICENSE",
+          "blob": "f496ebf1731d1ca9dbfdfe91a088a42219d161a1",
+          "sha256": "1db6bca31053006bd0f9210d05518f3002f239e233d52c46cdc7f42c33b56c55"
+        },
+        {
+          "path": "README.md",
+          "blob": "5682a5cee3df5502bf5bf997caafdc47ab004497",
+          "sha256": "a71faeb267031c8034676f9d76c667a618252bb2d04fdd1eb6687a4f4739e47c"
+        }
+      ],
+      "issueNumber": 1468,
+      "issueId": 5897171832,
+      "issueBodySha256": "aa8a79b77eb13dd8c081120fc22600839cf7f808186d9c3365a58266e3c84948",
+      "issueUpdatedAt": "2026-10-17T10:30:12Z",
+      "review": {
+        "sourceCoverage": "complete-bounded-static",
+        "admission": "not-admitted",
+        "thirdPartyCodeExecuted": false,
+        "runtimeAcceptance": "unverified"
+      }
+    }
+  ]
+}
