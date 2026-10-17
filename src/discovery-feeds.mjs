@@ -4,7 +4,7 @@ export async function discoverFeedCandidates(github, { offset = 0, limit = 8, ob
   if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(limit) || limit < 1 || limit > 8) throw new Error('invalid discovery bounds')
   const head = await github.api(`repos/${REPOSITORY}/commits/main`)
   if (!/^[a-f0-9]{40}$/.test(head.sha)) throw new Error('feed Commit unavailable')
-  const tree = await github.api(`repos/${REPOSITORY}/git/trees/${head.sha}?recursive=1`)
+  const tree = await github.api(`repos/${REPOSITORY}/git/trees/${head.sha}?recursive=1`, { maxTreeEntries: 50000 })
   if (tree.truncated || !Array.isArray(tree.tree) || tree.tree.length > 50000) throw new Error('feed tree exceeds bound')
   const files = tree.tree.filter(item => item.type === 'blob' && item.mode === '100644' && /^data\/plugins\/[a-zA-Z0-9_.-]+\.yml$/.test(item.path)).sort((a,b) => a.path.localeCompare(b.path))
   const result = []; const seen = new Set()
