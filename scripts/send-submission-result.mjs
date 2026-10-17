@@ -4,11 +4,21 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { githubClient } from './author-contact-http.mjs'
 import { contactDecision, contactBody, humanIdentity, readContactState, reserveContact, digest } from './author-contact-state.mjs'
+import { parseIssueForm, parseRepositoryInput } from './check-plugin-submission.mjs'
+import { resolveTargets } from './resolve-author-notice-targets.mjs'
+import { firstContactDiscussionGate } from './send-first-author-contact.mjs'
+
+export function submissionRepository(event) {
+  const fields = parseIssueForm(event?.issue?.body)
+  return parseRepositoryInput(fields.get('GitHub repository')).repositoryUrl.replace('https://github.com/', '')
+}
 
 export function submissionDecision(event, state) {
   if (event?.action !== 'opened') return 'not-an-initial-submission'
   if (!Number.isSafeInteger(event?.issue?.number) || event.issue.pull_request) return 'invalid-submission'
-  return contactDecision(state, humanIdentity(event.issue.user), 'AI-Scarlett/DSH-Store')
+  let key
+  try { key = submissionRepository(event) } catch { return 'invalid-submission-repository' }
+  return contactDecision(state, humanIdentity(event.issue.user), key)
 }
 export async function sendSubmissionResult({ github, event, report, baseCommit, planPath, seed }) {
   const repository = 'AI-Scarlett/DSH-Store'
@@ -23,6 +33,7 @@ export async function sendSubmissionResult({ github, event, report, baseCommit, 
   const claimId = digest(JSON.stringify(plan))
   await writeFile(planPath, JSON.stringify({ ...plan, claimId }, null, 2) + '\n', { flag: 'wx', mode: 0o600 })
   if (decision !== 'first-contact') return { sent: false, reason: decision }
+  const key = submissionRepository(event)
   if (!/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('full main SHA required')
   const authority = await github.request('GET', `/repos/${repository}/commits/main`)
   if (authority.sha !== baseCommit) throw new Error('main changed after planning')
@@ -32,8 +43,12 @@ export async function sendSubmissionResult({ github, event, report, baseCommit, 
   }
   const live = humanIdentity(await github.request('GET', `/user/${plan.recipient.id}`))
   if (!live || live.node_id !== plan.recipient.node_id) throw new Error('submission identity changed')
+  const owner = await resolveTargets(path => github.request('GET', path), key)
+  if (!owner || owner.id !== live.id || owner.node_id !== live.node_id) throw new Error('submission repository owner is unresolved')
+  const blocked = await firstContactDiscussionGate(github, { key, recipient: live })
+  if (blocked) return { sent: false, reason: blocked }
   const body = contactBody(report, live, false)
-  const claim = await reserveContact({ github, repository, recipient: live, key: repository, claimId, seed })
+  const claim = await reserveContact({ github, repository, recipient: live, key, claimId, seed })
   if (!claim.allowed) return { sent: false, reason: claim.reason }
   const sent = await github.request('POST', `/repos/${repository}/issues/${issue.number}/comments`, { body })
   const readback = await github.request('GET', `/repos/${repository}/issues/comments/${sent.id}`)

@@ -1,0 +1,201 @@
+{
+  "id": "dsh-delete-archived",
+  "name": "归档会话删除（DSH Delete Archived）",
+  "packageName": "dsh-delete-archived",
+  "description": "删除 DeepSeek Harness 中已归档的对话：侧边栏归档会话菜单的删除入口 + 供助手调用的工具",
+  "searchTerms": [
+    "归档会话删除",
+    "DSH Delete Archived",
+    "dsh-delete-archived",
+    "会话",
+    "归档",
+    "恢复",
+    "删除",
+    "新锐实验",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "delete",
+    "archived"
+  ],
+  "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "7badd13a23a96d0c45f9b01ad8a2ded3e73ea611",
+  "version": "0.1.0",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-10-17T09:54:31.000Z",
+    "observedAt": "2026-10-17T10:16:52.165Z",
+    "provenance": "github-repository"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-source",
+      "checkedAt": "2026-10-17T10:16:52.165Z",
+      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/7badd13a23a96d0c45f9b01ad8a2ded3e73ea611",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Canonical repository and immutable source identity read back."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or runtime code was executed by the Store."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or runtime code was executed by the Store."
+    },
+    "securityReview": {
+      "status": "partial",
+      "method": "independent-bounded-static-admission-review",
+      "checkedAt": "2026-10-17T10:16:52.165Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "最新固定源已改为静态 Patch，旧预检标量错误已不适用；完整 6 文本覆盖。请求信任、删除事务/内存边界和 manifest/兼容契约仍拒绝。"
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "5017b326a1d95bd92e4c76b3fd548b9304cce3aafd7505787fd2c98111ba1c7d",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "rejected",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "1cf237c3ed0034e6fee92b6dbf48bb66aeab2982cabefd9bf53f2104052591ad"
+  },
+  "entryIds": [
+    "archived-session-delete"
+  ],
+  "status": "blocked",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: delete 路由只检查 POST，缺可信调用方和 JSON Content-Type，readJsonBody 无大小上限；list 也不验证调用方。 DELETE001: 当前源码只验证 archived；检查与 rm/registry 更新未序列化。已无“不在内存”检查，与工具说明及投稿描述不一致；磁盘删后登记修改失败时无法回滚。 META001: manifest 缺 repository 与 engines.node，且无当前官方窗口的逐版兼容结果。",
+  "compatibility": {
+    "dsh": "^0.2.0-rc.2",
+    "dshReleases": {
+      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown",
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "none",
+      "credentials": [
+        "none"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "manual-fixed-source-rejected-not-installable"
+  }
+}

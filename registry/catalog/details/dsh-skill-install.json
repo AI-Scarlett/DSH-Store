@@ -1,0 +1,200 @@
+{
+  "id": "dsh-skill-install",
+  "name": "技能安装器（DSH Skill Install）",
+  "packageName": "dsh-skill-install",
+  "description": "DeepSeek Harness 技能安装器：按名字搜索或直接输入 GitHub 仓库地址，列出仓库中的 SKILL.md 技能，勾选后安装到全局 / 当前项目 / 自定义目录，与内置 skill-filesystem 联动，装完即时生效。",
+  "searchTerms": [
+    "技能安装器",
+    "DSH Skill Install",
+    "dsh-skill-install",
+    "技能",
+    "Skill",
+    "扩展能力",
+    "新锐实验",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "skill",
+    "install"
+  ],
+  "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "user-reviewed",
+  "commit": "935dbb1ef7f10be54c0a972ac45a947f07832a78",
+  "version": "0.1.0",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-10-17T09:06:13.000Z",
+    "observedAt": "2026-10-17T10:16:52.165Z",
+    "provenance": "github-repository"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "github-fixed-commit-source",
+      "checkedAt": "2026-10-17T10:16:52.165Z",
+      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/935dbb1ef7f10be54c0a972ac45a947f07832a78",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Canonical repository and immutable source identity read back."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or runtime code was executed by the Store."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or runtime code was executed by the Store."
+    },
+    "securityReview": {
+      "status": "partial",
+      "method": "independent-bounded-static-admission-review",
+      "checkedAt": "2026-10-17T10:16:52.165Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "完整 7 文本覆盖；零 npm dependencies 不消除内置 js-yaml、curl/tar、文件写入和 GitHub token 能力。因请求/路径/身份兼容契约拒绝准入。"
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "c0434b7406ecec275c21d381c4547c21910231f788799515e613e355b99f82f4",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "rejected",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "1cf237c3ed0034e6fee92b6dbf48bb66aeab2982cabefd9bf53f2104052591ad"
+  },
+  "entryIds": [
+    "skill-install"
+  ],
+  "status": "blocked",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: 通用 route 不限制方法/媒体类型或验证 Host/Origin/调用方；安装、移除、代理和 token 更新均由 query 触发，GET 就能写文件或改凭据。 PATH001: dirs 来自 query 后直接 join 到 work；对源目录未校验相对路径/realpath。tar 解压及 cp(dereference:false) 也没有对链接、包内越界条目和总体大小作完整准入检查。 META001: manifest 缺 repository 和 engines.node；仅 engines.dsh 范围，没有当前窗口的逐版声明。",
+  "compatibility": {
+    "dsh": "^0.2.0-rc.2",
+    "dshReleases": {
+      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown",
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": null,
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "feature",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "restricted",
+      "credentials": [
+        "api-key"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "manual-fixed-source-rejected-not-installable"
+  }
+}

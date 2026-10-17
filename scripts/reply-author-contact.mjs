@@ -50,6 +50,18 @@ export async function verifyReplyRequest(github, plan) {
   if (request?.id !== plan.requestCommentId || digest(request.body) !== plan.requestBodySha256
     || request.updated_at !== plan.requestUpdatedAt
     || !request.body.includes(plan.review.requestQuote)) throw new Error('request changed, withdrawn, superseded or belongs to another person')
+  const prior = plan.review.priorExplicitRequest
+  if (prior) {
+    const original = authorComments.find(comment => comment.id === prior.commentId)
+    if (!original || original.updated_at !== prior.updatedAt || digest(original.body) !== prior.bodySha256
+      || typeof prior.quote !== 'string' || !original.body.includes(prior.quote)
+      || !isAdmissionRecheckRequest(prior.quote)
+      || Date.parse(original.created_at) >= Date.parse(request.created_at)
+      || comments.some(comment => ['ai-scarlett', 'github-actions[bot]'].includes(String(comment.user?.login).toLowerCase())
+        && Date.parse(comment.created_at) > Date.parse(original.created_at))) {
+      throw new Error('coalesced review request was changed, answered or is not explicit author consent')
+    }
+  }
   if (plan.review.kind === 'other-request' && isAdmissionRecheckRequest(request.body)) throw new Error('an admission recheck cannot bypass the terminal decision gate')
   const person = humanIdentity(await github.request('GET', `/user/${plan.userId}`))
   if (!person || person.node_id !== request.user.node_id) throw new Error('request author identity mismatch')
