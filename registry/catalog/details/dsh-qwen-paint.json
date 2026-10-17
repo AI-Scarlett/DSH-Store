@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "ec492531209e9cc89fc6d68fd86104074ef8241b",
-  "version": "0.17.7",
+  "commit": "ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
+  "version": "0.17.10",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T15:20:44.000Z",
-    "observedAt": "2026-10-17T01:09:33.816Z",
+    "updatedAt": "2026-10-17T10:17:02.000Z",
+    "observedAt": "2026-10-17T10:30:25.625Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-remediation-terminal-review-v1",
-      "checkedAt": "2026-10-17T01:09:33.816Z",
-      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/ec492531209e9cc89fc6d68fd86104074ef8241b",
+      "method": "github-fixed-commit-source",
+      "checkedAt": "2026-10-17T10:30:25.625Z",
+      "evidenceUrl": "https://github.com/yanfei0725/dsh-qwen-paint/commit/ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source identity and complete bounded Git blobs verified."
+      "summary": "Canonical repository and immutable source identity read back."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party code was installed or executed by the Store."
+      "summary": "No third-party installation or runtime code was executed by the Store."
     },
     "runtime": {
       "status": "unknown",
@@ -63,51 +63,46 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party code was installed or executed by the Store."
+      "summary": "No third-party installation or runtime code was executed by the Store."
     },
     "securityReview": {
-      "status": "partial",
+      "status": "verified",
       "method": "independent-bounded-static-admission-review",
-      "checkedAt": "2026-10-17T01:09:33.816Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
+      "checkedAt": "2026-10-17T10:30:25.625Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "AUTH001: request trust and POST client repairs verified; method/media-type and residual GET configuration mutation remain. COMPAT001: no current latest-three compatible declaration."
+      "summary": "AUTH001 三项修复已确认；精确兼容声明覆盖当前官方最新三版，按完整固定源能力审阅准入 approved / user-reviewed。Store 未运行插件，出图、安装卸载回滚、真实 Profile 验收仍未验证。"
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e2b643d07c26ee87d1410464707ba1c7cb84de60423e137674c79e25be9415d1",
+    "binding": "29f85d21ac2db6dea4e7a47e7a5275260dce785bf7b56f0a165aea1ff348834f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "rejected",
+    "state": "reviewed",
     "sourceContract": "verified",
     "coverage": "complete",
-    "capabilities": "review-required",
+    "capabilities": "reviewed",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "0cc645d988d3c54a5cec71430fdf51226774d5766eb4db27204263696a07b9a9"
   },
   "entryIds": [
     "qwen-paint"
   ],
-  "status": "blocked",
-  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: request trust and POST client repairs verified; method/media-type and residual GET configuration mutation remain. COMPAT001: no current latest-three compatible declaration.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": ">=0.2.0-rc.2",
     "dshReleases": {
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.5": "compatible",
+      "0.2.1-rc.1": "compatible",
+      "0.2.1-rc.2": "compatible",
       "rc.7": "unknown",
       "rc.8": "unknown",
       "0.1.1-rc.1": "unknown",
-      "0.1.1-rc.2": "unknown",
-      "0.1.2-alpha.2": "unknown",
-      "0.1.2-alpha.3": "unknown",
-      "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.1.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -158,24 +153,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -183,6 +160,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -216,6 +199,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "manual-fixed-source-rejected-not-installable"
+    "review": "manual-fixed-source-reviewed-high-permission-user-reviewed-updates"
   }
 }

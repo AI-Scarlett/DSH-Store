@@ -157,6 +157,198 @@
       ],
       "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
       "decidedAt": "2026-10-17T01:09:33.816Z"
+    },
+    {
+      "issueNumber": 1390,
+      "requestCommentId": 6232723021,
+      "userId": 283827478,
+      "requestBodySha256": "8f472c3cb56de2c1e111146fade78e7c71136776e53ffd5fb3978b6a0c680234",
+      "requestKind": "issue-comment",
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "commit": "ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
+      "version": "0.17.10",
+      "catalogId": "dsh-qwen-paint",
+      "binding": "29f85d21ac2db6dea4e7a47e7a5275260dce785bf7b56f0a165aea1ff348834f",
+      "decision": "admitted",
+      "blockers": [],
+      "summary": "AUTH001 三项修复已确认；精确兼容声明覆盖当前官方最新三版，按完整固定源能力审阅准入 approved / user-reviewed。Store 未运行插件，出图、安装卸载回滚、真实 Profile 验收仍未验证。",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
+    },
+    {
+      "issueNumber": 1465,
+      "requestCommentId": 5896408488,
+      "userId": 328639758,
+      "requestBodySha256": "8b4da5904f6111045bc6bcf9776bda5ac5cfc74ec0ae99c16afe471be766d227",
+      "requestKind": "submission-issue",
+      "repositoryUrl": "https://github.com/Wyatt5341/dsh-plugin-vision",
+      "commit": "84b838b9808c18e0652c93dbccaf0a413e1d59ae",
+      "version": "1.0.0",
+      "catalogId": "dsh-plugin-vision",
+      "binding": "f3710ddc812de85baeae8e8cfb7c494192e7d716ae66753836b87fc789102d81",
+      "decision": "rejected",
+      "blockers": [
+        {
+          "owner": "author",
+          "code": "PATCH001",
+          "file": "cordis.patch.yml",
+          "line": 9,
+          "finding": "insert 的条目带 repository / permissions 字段，当前受支持 Bundle row 契约不能解释这两个键；它们不能充当运行时权限强制。",
+          "requiredChange": "保持唯一 id/name 的增量 row；来源保留在 package.json.repository，权限在 manifest/README 披露。若必须使用新增官方字段，提供该 DSH 版本的官方解析契约供 Store 扩展有界审阅。",
+          "acceptance": "固定 Commit Bundle 解析通过，条目确为本包且未覆盖官方组件。"
+        },
+        {
+          "owner": "author",
+          "code": "COMPAT001",
+          "file": "package.json",
+          "line": 32,
+          "finding": "当前无 0.2.1-alpha.5 / 0.2.1-rc.1 / 0.2.1-rc.2 的准确 compatible 记录；peer range 不证明实际兼容。",
+          "requiredChange": "验证实际支持版本的加载/注册和安装启停卸载边界，至少声明一版准确结果并附证据；未测版本保持 unknown。",
+          "acceptance": "至少一个当前官方窗口版本有可追溯 compatible 声明，证据范围明确。"
+        },
+        {
+          "owner": "author",
+          "code": "NET001",
+          "file": "lib/index.js",
+          "line": 196,
+          "finding": "apiBaseUrl 可配置并携带 API key 和图片，未强制 HTTPS，也未显式限制重定向；失败响应仅截断原文，敏感远端回显边界不明确。",
+          "requiredChange": "在发请求前验证受信端点；远端强制 HTTPS，开发回环另设明确例外；拒绝重定向，限制响应字节并脱敏错误回显。保留视觉/外部模型能力。",
+          "acceptance": "HTTP 远端、跨源/降级重定向、超大/回显凭据响应均在敏感数据外发或展示前拒绝。"
+        }
+      ],
+      "summary": "重新投稿与 #1460 合并审查：manifest repository 已修正，不再保留旧身份不匹配结论；当前 Patch、精确兼容和端点/凭据边界仍不满足准入。只更新公开受审状态，不重复联系已收过消息的作者。",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
+    },
+    {
+      "issueNumber": 1466,
+      "requestCommentId": 5897071547,
+      "userId": 194322966,
+      "requestBodySha256": "1249c94fe7f0bacaa1e5c5a69ec09a6eb271deeb80277bf4b191c3a155120199",
+      "requestKind": "submission-issue",
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install",
+      "commit": "935dbb1ef7f10be54c0a972ac45a947f07832a78",
+      "version": "0.1.0",
+      "catalogId": "dsh-skill-install",
+      "binding": "c0434b7406ecec275c21d381c4547c21910231f788799515e613e355b99f82f4",
+      "decision": "rejected",
+      "blockers": [
+        {
+          "owner": "author",
+          "code": "AUTH001",
+          "file": "index.js",
+          "line": 608,
+          "finding": "通用 route 不限制方法/媒体类型或验证 Host/Origin/调用方；安装、移除、代理和 token 更新均由 query 触发，GET 就能写文件或改凭据。",
+          "requiredChange": "读取路由保持只读；写操作使用 POST application/json、有界正文和可信调用方检查，拒绝跨站/错误 Host/无效媒体类型后才读写；token 从正文传递，不放 URL，并以受限文件权限或凭据存储保存。",
+          "acceptance": "GET 不产生安装/删除/设置修改；跨站、未知 Host、错误方法/类型、超大 body 不触碰文件或 token。"
+        },
+        {
+          "owner": "author",
+          "code": "PATH001",
+          "file": "index.js",
+          "line": 466,
+          "finding": "dirs 来自 query 后直接 join 到 work；对源目录未校验相对路径/realpath。tar 解压及 cp(dereference:false) 也没有对链接、包内越界条目和总体大小作完整准入检查。",
+          "requiredChange": "固定下载源 Commit；在复制/解压前验证所有成员及 dirs 的规范路径、realpath 包含关系，拒绝 ..、绝对路径和越界软/硬链接，限制压缩/解压后大小；分阶段提交并支持失败回滚。",
+          "acceptance": "遍历、外链、超限包、并发/中途失败均不能读取或写入授权根外内容，安装源可复现到完整 SHA。"
+        },
+        {
+          "owner": "author",
+          "code": "META001",
+          "file": "package.json",
+          "line": 34,
+          "finding": "manifest 缺 repository 和 engines.node；仅 engines.dsh 范围，没有当前窗口的逐版声明。",
+          "requiredChange": "补 canonical repository 与真实 Node 支持范围；验证后在 dsh.compatibility.dshReleases 写至少一个当前窗口精确 compatible，其他 unknown。",
+          "acceptance": "manifest 与 canonical GitHub 一致，当前窗口至少一版有可追溯准确声明。"
+        }
+      ],
+      "summary": "完整 7 文本覆盖；零 npm dependencies 不消除内置 js-yaml、curl/tar、文件写入和 GitHub token 能力。因请求/路径/身份兼容契约拒绝准入。",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
+    },
+    {
+      "issueNumber": 1467,
+      "requestCommentId": 5897078856,
+      "userId": 194322966,
+      "requestBodySha256": "c82bc8e781ecc452f537f3982e8cddd263d41cb2a5f624b0ea83cf664e5c9b45",
+      "requestKind": "submission-issue",
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived",
+      "commit": "7badd13a23a96d0c45f9b01ad8a2ded3e73ea611",
+      "version": "0.1.0",
+      "catalogId": "dsh-delete-archived",
+      "binding": "5017b326a1d95bd92e4c76b3fd548b9304cce3aafd7505787fd2c98111ba1c7d",
+      "decision": "rejected",
+      "blockers": [
+        {
+          "owner": "author",
+          "code": "AUTH001",
+          "file": "lib/entry.js",
+          "line": 196,
+          "finding": "delete 路由只检查 POST，缺可信调用方和 JSON Content-Type，readJsonBody 无大小上限；list 也不验证调用方。",
+          "requiredChange": "在读取会话或删除前校验宿主授权/可信请求，POST JSON 和有界正文；list 同样校验调用方。",
+          "acceptance": "跨站/错误 Host/媒体类型/超大 body 在读取会话和删除前拒绝；错误方法 405。"
+        },
+        {
+          "owner": "author",
+          "code": "DELETE001",
+          "file": "lib/entry.js",
+          "line": 137,
+          "finding": "当前源码只验证 archived；检查与 rm/registry 更新未序列化。已无“不在内存”检查，与工具说明及投稿描述不一致；磁盘删后登记修改失败时无法回滚。",
+          "requiredChange": "用宿主公开维护/锁契约串行核验存档和存活状态；拒绝仍可写会话，或提供该版本已停止写入的官方可验证契约；将日志及登记变更做成可恢复事务，并令 UI/工具共享预览/明确确认边界，统一说明。",
+          "acceptance": "并发恢复/追加/删除、内存会话、登记写失败都不会复活或半删；确认取消不删除，失败可恢复。"
+        },
+        {
+          "owner": "author",
+          "code": "META001",
+          "file": "package.json",
+          "line": 32,
+          "finding": "manifest 缺 repository 与 engines.node，且无当前官方窗口的逐版兼容结果。",
+          "requiredChange": "补 canonical repository、Node 范围，实际验证后增加精确 dshReleases 与范围明确的安装/启动/卸载证据。",
+          "acceptance": "至少一个当前窗口版本有准确 compatible 声明；未验证字段保持 unknown。"
+        }
+      ],
+      "summary": "最新固定源已改为静态 Patch，旧预检标量错误已不适用；完整 6 文本覆盖。请求信任、删除事务/内存边界和 manifest/兼容契约仍拒绝。",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
+    },
+    {
+      "issueNumber": 1468,
+      "requestCommentId": 5897171832,
+      "userId": 231933552,
+      "requestBodySha256": "f0fa02b11f4fc0cf730a3a7df555a907730737a4ac41ef7674ba63035ae74f0c",
+      "requestKind": "submission-issue",
+      "repositoryUrl": "https://github.com/nubeslove/dsh-file-actions",
+      "commit": "1dae73c840d94f98f8bd1d6738d4a701be5f61ac",
+      "version": "0.1.0",
+      "catalogId": "dsh-file-actions",
+      "binding": "4e27e5f6afaca4a77d31febe7b78cc7a9a8608d3f72b4ff5cf903bb68bbbb264",
+      "decision": "rejected",
+      "blockers": [
+        {
+          "owner": "author",
+          "code": "AUTH001",
+          "file": "lib/index.js",
+          "line": 140,
+          "finding": "POST /exec 未验证请求来源/调用方，也未要求 application/json；因此动作白名单与 exists/stat 不建立调用者授权。",
+          "requiredChange": "在读正文/探测路径/启动进程前使用可信宿主授权或 Host/Origin/Sec-Fetch-Site 围栏并限制 POST JSON；保留已有 64KiB 上限。",
+          "acceptance": "跨站/错误 Host/错误媒体类型/错误方法在任何文件探测和进程前拒绝；正常授权请求可使用白名单功能。"
+        },
+        {
+          "owner": "author",
+          "code": "EXEC001",
+          "file": "lib/index.js",
+          "line": 84,
+          "finding": "open/browser 明确调用 cmd.exe /c start，且 windowsVerbatimArguments=true 手工加引号；参数数组不取消 cmd 的百分号环境展开等解释。open 同时接受存在的可执行/脚本文件，browser 也未在宿主限制文件类型。",
+          "requiredChange": "优先使用有安全参数契约的系统打开 API 或固定浏览器进程，避免把路径交给命令解释器；对路径、UNC/设备/URL、扩展名和可执行文件建立宿主允许/拒绝及明确确认边界，准确披露本地执行能力。",
+          "acceptance": "用一次性 Windows 夹具覆盖空格、百分号变量、引号/元字符、UNC、脚本/可执行文件；保证只打开经授权的原始目标且没有附加进程。"
+        },
+        {
+          "owner": "author",
+          "code": "COMPAT001",
+          "file": "package.json",
+          "line": 40,
+          "finding": "manifest 没有 DSH 兼容声明，README 只声称 0.1.1-rc.2 + Windows；当前官方窗口是 0.2.1-alpha.5 / rc.1 / rc.2。",
+          "requiredChange": "只在实际验证后补 DSH/Windows 支持范围和至少一个当前版本的精确 compatible 记录；未验证系统/版本保持 unknown。",
+          "acceptance": "当前窗口至少一版有明确范围的安装/加载/卸载证据；不能从旧版本或平台推定。"
+        }
+      ],
+      "summary": "完整 5 文本覆盖；保留已披露的本地命令能力，不把 child-process 信号当成恶意。scripts/verify.mjs 的 new Function 只用于客户端语法检查，不作为运行时动态执行的拒绝理由；真正阻断项是请求信任、cmd/目标约束与兼容。",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
     }
   ]
 }

@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "operation": "reviewed-submission-results",
+  "repository": "AI-Scarlett/DSH-Store",
+  "authorization": {
+    "source": "direct-user-request",
+    "quote": "然后在对应 issue 上用中文（可附英文）回复作者审核/复核结果和下一步。"
+  },
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "71c3abbdc7c1fd80254d8148ed541c89afc54fb6ca59a6b3dcad1a71b80c0cde"
+  },
+  "targets": [
+    {
+      "key": "Joey-K-tsubame/dsh-skill-install",
+      "repositoryId": 1423115918,
+      "recipient": {
+        "id": 194322966,
+        "node_id": "U_kgDOC5UiFg",
+        "login": "Joey-K-tsubame",
+        "type": "User"
+      },
+      "commit": "935dbb1ef7f10be54c0a972ac45a947f07832a78",
+      "patchPath": "cordis.patch.yml",
+      "title": "固定源投稿审核结果：dsh-skill-install",
+      "body": "本条合并回复你提交的两个项目 #1466 与 #1467。按全局作者联系规则，同一人跨项目只占用一次主动联系，避免给你重复发送。\n\n已完成 **dsh-skill-install 0.1.0 / `935dbb1ef7f10be54c0a972ac45a947f07832a78`** 的固定源审核。当前结论：**blocked，暂不准入可安装 Catalog**。未执行第三方安装、构建、测试或运行代码，也未修改真实 Profile。\n\n- **AUTH001** `index.js:608`：通用 route 不限制方法/媒体类型或验证 Host/Origin/调用方；安装、移除、代理和 token 更新均由 query 触发，GET 就能写文件或改凭据。\n  最小修改：读取路由保持只读；写操作使用 POST application/json、有界正文和可信调用方检查，拒绝跨站/错误 Host/无效媒体类型后才读写；token 从正文传递，不放 URL，并以受限文件权限或凭据存储保存。\n  验收：GET 不产生安装/删除/设置修改；跨站、未知 Host、错误方法/类型、超大 body 不触碰文件或 token。\n\n- **PATH001** `index.js:466`：dirs 来自 query 后直接 join 到 work；对源目录未校验相对路径/realpath。tar 解压及 cp(dereference:false) 也没有对链接、包内越界条目和总体大小作完整准入检查。\n  最小修改：固定下载源 Commit；在复制/解压前验证所有成员及 dirs 的规范路径、realpath 包含关系，拒绝 ..、绝对路径和越界软/硬链接，限制压缩/解压后大小；分阶段提交并支持失败回滚。\n  验收：遍历、外链、超限包、并发/中途失败均不能读取或写入授权根外内容，安装源可复现到完整 SHA。\n\n- **META001** `package.json:34`：manifest 缺 repository 和 engines.node；仅 engines.dsh 范围，没有当前窗口的逐版声明。\n  最小修改：补 canonical repository 与真实 Node 支持范围；验证后在 dsh.compatibility.dshReleases 写至少一个当前窗口精确 compatible，其他 unknown。\n  验收：manifest 与 canonical GitHub 一致，当前窗口至少一版有可追溯准确声明。\n\n完整源码绑定、最终 Catalog 判定：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md。修复后请附新完整 Commit 和证据，并明确提出复核请求；当前 Issue 保持打开。\n\n---\n\n已完成 **dsh-delete-archived 0.1.0 / `7badd13a23a96d0c45f9b01ad8a2ded3e73ea611`** 的固定源审核。当前结论：**blocked，暂不准入可安装 Catalog**。未执行第三方安装、构建、测试或运行代码，也未修改真实 Profile。\n\n- **AUTH001** `lib/entry.js:196`：delete 路由只检查 POST，缺可信调用方和 JSON Content-Type，readJsonBody 无大小上限；list 也不验证调用方。\n  最小修改：在读取会话或删除前校验宿主授权/可信请求，POST JSON 和有界正文；list 同样校验调用方。\n  验收：跨站/错误 Host/媒体类型/超大 body 在读取会话和删除前拒绝；错误方法 405。\n\n- **DELETE001** `lib/entry.js:137`：当前源码只验证 archived；检查与 rm/registry 更新未序列化。已无“不在内存”检查，与工具说明及投稿描述不一致；磁盘删后登记修改失败时无法回滚。\n  最小修改：用宿主公开维护/锁契约串行核验存档和存活状态；拒绝仍可写会话，或提供该版本已停止写入的官方可验证契约；将日志及登记变更做成可恢复事务，并令 UI/工具共享预览/明确确认边界，统一说明。\n  验收：并发恢复/追加/删除、内存会话、登记写失败都不会复活或半删；确认取消不删除，失败可恢复。\n\n- **META001** `package.json:32`：manifest 缺 repository 与 engines.node，且无当前官方窗口的逐版兼容结果。\n  最小修改：补 canonical repository、Node 范围，实际验证后增加精确 dshReleases 与范围明确的安装/启动/卸载证据。\n  验收：至少一个当前窗口版本有准确 compatible 声明；未验证字段保持 unknown。\n\n完整源码绑定、最终 Catalog 判定：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md。修复后请附新完整 Commit 和证据，并明确提出复核请求；当前 Issue 保持打开。",
+      "sourceFiles": [
+        {
+          "path": "client.js",
+          "blob": "cfca1a6faea2e132636250e81c524185fb2ac7fe",
+          "sha256": "186942b001e97ecda2dd5be20b03254f8882f05fc3e5e8c744fea8e7c14a49c7"
+        },
+        {
+          "path": "cordis.patch.yml",
+          "blob": "66f6ce008aa42b066c1e61268dcb339fe23e6a0c",
+          "sha256": "98f26499c1eda9033d4b0c89897e6d1b098a9512be3d55331f62714d0a503588"
+        },
+        {
+          "path": "index.js",
+          "blob": "678ad7243abab97db41be6ad1974509db816137d",
+          "sha256": "dd638c0a22210bc15e82f6c1b8d102bd64f95c1b98a4e71d6c91c94f193a6dfd"
+        },
+        {
+          "path": "js-yaml.mjs",
+          "blob": "c2fc6f93833511c5580d40117edc5110eebeaf64",
+          "sha256": "60c44c76575d467b1d584dffdffdd4c5f0a5923624213dd4e87d3822da027505"
+        },
+        {
+          "path": "locale/en.json",
+          "blob": "5ae1890171288f25f0ff30aab1b07f7550dd9a4b",
+          "sha256": "da48ce0843694b46d5dfa438bbcaef336093344434892088189e9bc4b0b2a528"
+        },
+        {
+          "path": "locale/zh.json",
+          "blob": "e5b3a261535cc0bf9e4c1cbb077b1ff2ab87d6ad",
+          "sha256": "59fc8e8ea2cc37623f6750f133f9db5d6a41c8b60a73e56dea2d202e07cb7d12"
+        },
+        {
+          "path": "package.json",
+          "blob": "a0bc77fd18ef251aab12b369e463ab0cce2a8ae2",
+          "sha256": "628da5c434efec5b646bb36c9478630c9a4b30621bfc0ee0f10b541f80f0b39a"
+        },
+        {
+          "path": "LICENSE",
+          "blob": "09a653789cf2f76ad0e0e1c7950c3e084bba669f",
+          "sha256": "626618c13bb585efb76423c4c29f8d35f422246c63f4f990d86adb26f1db745c"
+        },
+        {
+          "path": "README.md",
+          "blob": "c188ba89cfaf16c93941e9984b0dcfcd48743bc4",
+          "sha256": "46034fed18ad66e198e4cd14f4198b32fff14deab21e4cb81bbdf6b7116d8745"
+        }
+      ],
+      "issueNumber": 1466,
+      "issueId": 5897071547,
+      "issueBodySha256": "1249c94fe7f0bacaa1e5c5a69ec09a6eb271deeb80277bf4b191c3a155120199",
+      "issueUpdatedAt": "2026-10-17T09:43:23Z",
+      "review": {
+        "sourceCoverage": "complete-bounded-static",
+        "admission": "not-admitted",
+        "thirdPartyCodeExecuted": false,
+        "runtimeAcceptance": "unverified"
+      },
+      "relatedSubmissions": [
+        {
+          "key": "Joey-K-tsubame/dsh-delete-archived",
+          "repositoryId": 1423115267,
+          "recipient": {
+            "id": 194322966,
+            "node_id": "U_kgDOC5UiFg",
+            "login": "Joey-K-tsubame",
+            "type": "User"
+          },
+          "commit": "7badd13a23a96d0c45f9b01ad8a2ded3e73ea611",
+          "patchPath": "cordis.patch.yml",
+          "title": "固定源投稿审核结果：dsh-delete-archived",
+          "body": "本条合并回复你提交的两个项目 #1466 与 #1467。按全局作者联系规则，同一人跨项目只占用一次主动联系，避免给你重复发送。\n\n已完成 **dsh-skill-install 0.1.0 / `935dbb1ef7f10be54c0a972ac45a947f07832a78`** 的固定源审核。当前结论：**blocked，暂不准入可安装 Catalog**。未执行第三方安装、构建、测试或运行代码，也未修改真实 Profile。\n\n- **AUTH001** `index.js:608`：通用 route 不限制方法/媒体类型或验证 Host/Origin/调用方；安装、移除、代理和 token 更新均由 query 触发，GET 就能写文件或改凭据。\n  最小修改：读取路由保持只读；写操作使用 POST application/json、有界正文和可信调用方检查，拒绝跨站/错误 Host/无效媒体类型后才读写；token 从正文传递，不放 URL，并以受限文件权限或凭据存储保存。\n  验收：GET 不产生安装/删除/设置修改；跨站、未知 Host、错误方法/类型、超大 body 不触碰文件或 token。\n\n- **PATH001** `index.js:466`：dirs 来自 query 后直接 join 到 work；对源目录未校验相对路径/realpath。tar 解压及 cp(dereference:false) 也没有对链接、包内越界条目和总体大小作完整准入检查。\n  最小修改：固定下载源 Commit；在复制/解压前验证所有成员及 dirs 的规范路径、realpath 包含关系，拒绝 ..、绝对路径和越界软/硬链接，限制压缩/解压后大小；分阶段提交并支持失败回滚。\n  验收：遍历、外链、超限包、并发/中途失败均不能读取或写入授权根外内容，安装源可复现到完整 SHA。\n\n- **META001** `package.json:34`：manifest 缺 repository 和 engines.node；仅 engines.dsh 范围，没有当前窗口的逐版声明。\n  最小修改：补 canonical repository 与真实 Node 支持范围；验证后在 dsh.compatibility.dshReleases 写至少一个当前窗口精确 compatible，其他 unknown。\n  验收：manifest 与 canonical GitHub 一致，当前窗口至少一版有可追溯准确声明。\n\n完整源码绑定、最终 Catalog 判定：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md。修复后请附新完整 Commit 和证据，并明确提出复核请求；当前 Issue 保持打开。\n\n---\n\n已完成 **dsh-delete-archived 0.1.0 / `7badd13a23a96d0c45f9b01ad8a2ded3e73ea611`** 的固定源审核。当前结论：**blocked，暂不准入可安装 Catalog**。未执行第三方安装、构建、测试或运行代码，也未修改真实 Profile。\n\n- **AUTH001** `lib/entry.js:196`：delete 路由只检查 POST，缺可信调用方和 JSON Content-Type，readJsonBody 无大小上限；list 也不验证调用方。\n  最小修改：在读取会话或删除前校验宿主授权/可信请求，POST JSON 和有界正文；list 同样校验调用方。\n  验收：跨站/错误 Host/媒体类型/超大 body 在读取会话和删除前拒绝；错误方法 405。\n\n- **DELETE001** `lib/entry.js:137`：当前源码只验证 archived；检查与 rm/registry 更新未序列化。已无“不在内存”检查，与工具说明及投稿描述不一致；磁盘删后登记修改失败时无法回滚。\n  最小修改：用宿主公开维护/锁契约串行核验存档和存活状态；拒绝仍可写会话，或提供该版本已停止写入的官方可验证契约；将日志及登记变更做成可恢复事务，并令 UI/工具共享预览/明确确认边界，统一说明。\n  验收：并发恢复/追加/删除、内存会话、登记写失败都不会复活或半删；确认取消不删除，失败可恢复。\n\n- **META001** `package.json:32`：manifest 缺 repository 与 engines.node，且无当前官方窗口的逐版兼容结果。\n  最小修改：补 canonical repository、Node 范围，实际验证后增加精确 dshReleases 与范围明确的安装/启动/卸载证据。\n  验收：至少一个当前窗口版本有准确 compatible 声明；未验证字段保持 unknown。\n\n完整源码绑定、最终 Catalog 判定：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md。修复后请附新完整 Commit 和证据，并明确提出复核请求；当前 Issue 保持打开。",
+          "sourceFiles": [
+            {
+              "path": "cordis.patch.yml",
+              "blob": "91debbb6e3cbab4e14dfb1089fb404c870dd58cc",
+              "sha256": "ce2fd418ef539c5bb376b99090bb2b1f3c6740018d1d88f18b9c5de8ead22bd0"
+            },
+            {
+              "path": "lib/client.js",
+              "blob": "13b7eb77bfa2875e4bc3f99e9540dc26eb5c58b4",
+              "sha256": "fba328d9e141fdd962e45049a73c61e8e3370f408e9f9dc18e01bbd3eae14f61"
+            },
+            {
+              "path": "lib/entry.js",
+              "blob": "2c6761c7aec5d88e4fda4541bc60e25789df47ff",
+              "sha256": "45d91a705d13a40a2e0a3e97772cd950070b9e5ad9787e049b42dfac47cf9816"
+            },
+            {
+              "path": "locale/en.json",
+              "blob": "f279a514209e4da1bc251f8bcf17e453d38c3a2f",
+              "sha256": "7dc61ce2ace0739e3a8951cebd9014003f704470a2895136295ac1aec7ed667c"
+            },
+            {
+              "path": "locale/zh.json",
+              "blob": "9705397e37413042dd9fd29feb231de5c4c368fe",
+              "sha256": "77d6dc3deafc2b5fdddb87b616211b5af0bece8ba80f30e4fe1a37639a43cff6"
+            },
+            {
+              "path": "package.json",
+              "blob": "cf37dccfd628c6743eebbf02d03ea68980ad938b",
+              "sha256": "8ace093257866fcf0a6bdf91547113734ac0b46781cc884c59e875a81794fad8"
+            },
+            {
+              "path": "LICENSE",
+              "blob": "b6f9e3ebc639c8eeb8a32493fce32b2f8b46e235",
+              "sha256": "ee05b94e32794bfc80c4d203e0798acf5e6d6b70b4fe3331dbd0fc02af98517b"
+            },
+            {
+              "path": "README.md",
+              "blob": "a4195b7afe835d22de340ad33ede1dbb6c358cd7",
+              "sha256": "4cf65d57d5e42e40e5b424aa7f925f43ded4355c53c262622884f9fb7756e465"
+            }
+          ],
+          "issueNumber": 1467,
+          "issueId": 5897078856,
+          "issueBodySha256": "c82bc8e781ecc452f537f3982e8cddd263d41cb2a5f624b0ea83cf664e5c9b45",
+          "issueUpdatedAt": "2026-10-17T09:44:25Z",
+          "review": {
+            "sourceCoverage": "complete-bounded-static",
+            "admission": "not-admitted",
+            "thirdPartyCodeExecuted": false,
+            "runtimeAcceptance": "unverified"
+          }
+        }
+      ]
+    },
+    {
+      "key": "nubeslove/dsh-file-actions",
+      "repositoryId": 1423183194,
+      "recipient": {
+        "id": 231933552,
+        "node_id": "U_kgDODdMGcA",
+        "login": "nubeslove",
+        "type": "User"
+      },
+      "commit": "1dae73c840d94f98f8bd1d6738d4a701be5f61ac",
+      "patchPath": "cordis.patch.yml",
+      "title": "固定源投稿审核结果：dsh-file-actions",
+      "body": "已完成 **dsh-file-actions 0.1.0 / `1dae73c840d94f98f8bd1d6738d4a701be5f61ac`** 的固定源审核。当前结论：**blocked，暂不准入可安装 Catalog**。未执行第三方安装、构建、测试或运行代码，也未修改真实 Profile。\n\n- **AUTH001** `lib/index.js:140`：POST /exec 未验证请求来源/调用方，也未要求 application/json；因此动作白名单与 exists/stat 不建立调用者授权。\n  最小修改：在读正文/探测路径/启动进程前使用可信宿主授权或 Host/Origin/Sec-Fetch-Site 围栏并限制 POST JSON；保留已有 64KiB 上限。\n  验收：跨站/错误 Host/错误媒体类型/错误方法在任何文件探测和进程前拒绝；正常授权请求可使用白名单功能。\n\n- **EXEC001** `lib/index.js:84`：open/browser 明确调用 cmd.exe /c start，且 windowsVerbatimArguments=true 手工加引号；参数数组不取消 cmd 的百分号环境展开等解释。open 同时接受存在的可执行/脚本文件，browser 也未在宿主限制文件类型。\n  最小修改：优先使用有安全参数契约的系统打开 API 或固定浏览器进程，避免把路径交给命令解释器；对路径、UNC/设备/URL、扩展名和可执行文件建立宿主允许/拒绝及明确确认边界，准确披露本地执行能力。\n  验收：用一次性 Windows 夹具覆盖空格、百分号变量、引号/元字符、UNC、脚本/可执行文件；保证只打开经授权的原始目标且没有附加进程。\n\n- **COMPAT001** `package.json:40`：manifest 没有 DSH 兼容声明，README 只声称 0.1.1-rc.2 + Windows；当前官方窗口是 0.2.1-alpha.5 / rc.1 / rc.2。\n  最小修改：只在实际验证后补 DSH/Windows 支持范围和至少一个当前版本的精确 compatible 记录；未验证系统/版本保持 unknown。\n  验收：当前窗口至少一版有明确范围的安装/加载/卸载证据；不能从旧版本或平台推定。\n\n完整源码绑定、最终 Catalog 判定：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md。修复后请附新完整 Commit 和证据，并明确提出复核请求；当前 Issue 保持打开。\n\n补充：你的投稿虽未带 plugin-submission label，但 [Plugin] 标题已自动触发预检，无需重新投稿。child-process 是已披露的能力信号；scripts/verify.mjs:64 的 new Function 是语法检查夹具，未将其作为真实运行时代码执行或恶意指控。浏览器的文件类型过滤不能替代宿主检查。",
+      "sourceFiles": [
+        {
+          "path": "cordis.patch.yml",
+          "blob": "551b58d37181a44f6d3c8f3e6db8a68252ca13d4",
+          "sha256": "f26b10e4feeab8b160b15b6763b991657da579e9c0193714c154ff98851ea034"
+        },
+        {
+          "path": "lib/client.js",
+          "blob": "9772df81b16d1156d9df766dc2176d6e27e49949",
+          "sha256": "cc7c584427a38beed9cb469350798b7ce0118d8579f90b5ebc3ff7cf14781c36"
+        },
+        {
+          "path": "lib/index.js",
+          "blob": "37ae5d378c95a7db83817ba48c3752760127ac31",
+          "sha256": "1cbb4e63eaef38870c21589798e242b865785416e5d0819e00f2e2d7320e2d21"
+        },
+        {
+          "path": "package.json",
+          "blob": "853be4a25439d9476844eb041ce27f2b342a7d30",
+          "sha256": "2d3b6bfec130fe2132339c4535e0aa347cb13483800f053945982db05f225041"
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "blob": "699bc37451105d1308bc7dc5b8e97aa27bfc4152",
+          "sha256": "80f3080a7f5812517e00525d4ff5296facf356e7ba318463c7055334bfc114eb"
+        },
+        {
+          "path": "LICENSE",
+          "blob": "f496ebf1731d1ca9dbfdfe91a088a42219d161a1",
+          "sha256": "1db6bca31053006bd0f9210d05518f3002f239e233d52c46cdc7f42c33b56c55"
+        },
+        {
+          "path": "README.md",
+          "blob": "7a9f44960d965d4ea7f507c55fd0e146c514224c",
+          "sha256": "0724af18d406b8090f2658bff728cd614c5aa5befa7b58e711705f95f4cf6109"
+        }
+      ],
+      "issueNumber": 1468,
+      "issueId": 5897171832,
+      "issueBodySha256": "f0fa02b11f4fc0cf730a3a7df555a907730737a4ac41ef7674ba63035ae74f0c",
+      "issueUpdatedAt": "2026-10-17T09:56:47Z",
+      "review": {
+        "sourceCoverage": "complete-bounded-static",
+        "admission": "not-admitted",
+        "thirdPartyCodeExecuted": false,
+        "runtimeAcceptance": "unverified"
+      }
+    }
+  ]
+}

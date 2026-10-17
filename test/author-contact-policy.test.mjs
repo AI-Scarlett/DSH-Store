@@ -74,6 +74,8 @@ function mock(initial = empty()) {
     },
     async paginate(path) {
       if (path.includes('/labels')) return plan().requiredLabels
+      if (path.includes('/issues?state=all')) return [...issues.values()]
+      if (path.includes('/issues/comments?')) return structuredClone(comments)
       if (path.endsWith('/comments')) return structuredClone(comments)
       throw new Error('unexpected page ' + path)
     },
@@ -247,6 +249,20 @@ test('a verified explicit request grants one reply for that request only', async
   assert.equal(api.posts.length, 1)
   assert.equal(contactDecision(api.state, person, 'alice/new-project'), 'already-contacted')
 })
+test('supplemental source evidence coalesces only a still-unanswered exact author review request', async () => {
+  const original = incoming('请复核此固定 Commit。', 122)
+  const latest = { ...incoming('补充当前版本的兼容证据。'), created_at: '2026-09-07T02:00:00Z', updated_at: '2026-09-07T02:00:00Z' }
+  const p = grant(); p.requestBodySha256 = digest(latest.body); p.requestUpdatedAt = latest.updated_at
+  p.review.requestQuote = latest.body
+  p.review.priorExplicitRequest = { commentId: original.id, updatedAt: original.updated_at, bodySha256: digest(original.body), quote: original.body }
+  const api = mock(prior()); api.comments.push(original, latest)
+  await assert.doesNotReject(verifyReplyRequest(api, p))
+  api.comments.push({ user: { login: 'AI-Scarlett' }, created_at: '2026-09-07T01:30:00Z', body: 'Already answered' })
+  await assert.rejects(verifyReplyRequest(api, p), /answered/)
+  api.comments.pop(); original.body = 'Thanks'
+  await assert.rejects(verifyReplyRequest(api, p), /not explicit author consent/)
+  assert.equal(api.posts.length, 0)
+})
 test('withdrawal, edited requests, another author and global stops invalidate older consent', async () => {
   for (const change of [
     api => api.comments.push({ ...incoming('Do not contact me again.', 124), updated_at: '2026-09-07T02:00:00Z' }),
@@ -262,7 +278,11 @@ test('withdrawal, edited requests, another author and global stops invalidate ol
   assert.equal((await sendReviewedReply({ github: api, plan: grant(), seed: empty() })).sent, false)
 })
 test('submission replies share the same person slot, and edits or new projects cannot renew it', async () => {
-  const event = { action: 'opened', issue: { number: 20, user: person, body: 'Plugin submission', updated_at: '2026-09-07T00:00:00Z' } }
+  const event = { action: 'opened', issue: { number: 20, user: person, body: '### GitHub repository\n\nhttps://github.com/alice/one', updated_at: '2026-09-07T00:00:00Z' } }
+  const quarantinedStore = { ...empty(), blockedRepositories: ['ai-scarlett/dsh-store'] }
+  assert.equal(submissionDecision(event, quarantinedStore), 'first-contact')
+  assert.equal(submissionDecision(event, { ...quarantinedStore, blockedRepositories: ['alice/one'] }), 'historical-repository')
+  assert.equal(submissionDecision({ ...event, issue: { ...event.issue, body: 'invalid input' } }, empty()), 'invalid-submission-repository')
   assert.equal(submissionDecision(event, prior()), 'already-contacted')
   for (const action of ['edited', 'reopened']) assert.equal(submissionDecision({ ...event, action }, empty()), 'not-an-initial-submission')
   const api = mock(); api.issues.set(20, { ...event.issue, state: 'open' })
@@ -270,6 +290,7 @@ test('submission replies share the same person slot, and edits or new projects c
   try {
     const first = await sendSubmissionResult({ github: api, event, report: 'Result @Bob', baseCommit: 'a'.repeat(40), planPath: join(dir, 'first.json'), seed: empty() })
     assert.equal(first.sent, true); assert.equal(api.posts.length, 1)
+    assert.equal(Object.values(api.state.contacts[101].reservations)[0].key, 'alice/one')
     assert.equal((await reserve(api, person, 'e'.repeat(64), 'alice/new')).allowed, false)
     const second = await sendSubmissionResult({ github: api, event: { ...event, issue: { ...event.issue, number: 21 } }, report: 'New project', baseCommit: 'a'.repeat(40), planPath: join(dir, 'second.json'), seed: empty() })
     assert.equal(second.sent, false); assert.equal(api.posts.length, 1)

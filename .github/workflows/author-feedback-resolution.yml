@@ -51,7 +51,7 @@ jobs:
             node scripts/record-author-contact-stop.mjs --plan "$FEEDBACK_PLAN"
           elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-batches/[a-z0-9-]+\.json$ ]]; then
             node scripts/run-author-feedback-batch.mjs --plan "$FEEDBACK_PLAN"
-          elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-first-contacts/[a-z0-9-]+\.json$ ]]; then
+          elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-(first-contacts|submission-results)/[a-z0-9-]+\.json$ ]]; then
             node scripts/send-first-author-contact.mjs --plan "$FEEDBACK_PLAN"
           else
             echo 'Unsupported feedback plan path' >&2
