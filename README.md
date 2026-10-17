@@ -39,7 +39,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 
 ### 前置条件
 
-- 已在精确兼容记录中通过安装、启动、卸载与回滚的 DSH 版本；新发布版只有版本范围或 Peer 声明时仍视为待验证。Web Profile 的包操作需要官方 `dsh` CLI；
+- 已有对应版本的安装、启动和卸载证据；只有版本范围或 Peer 声明时仍视为待验证。卸载后的 Profile 还原与版本降级回滚分别验收，`unknown` 不等于通过。Web Profile 的包操作需要官方 `dsh` CLI；
 - Node.js `^22.19.0` 或 `>=24.0.0`；
 - 一个启用了 Web 客户端的目标 Profile。下面以 `web` 为例，如果你的 Profile 名称不同，
   请替换命令中的 `web`。
@@ -50,15 +50,20 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 
 ### 使用固定 GitHub Commit 安装
 
-通过 DSH 官方 CLI 安装经过目录固定的 GitHub Commit：
+优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
+当前 `0.9.8` 已在官方 RC.1 / RC.2 的一次性 Web Profile 中完成安装、启动、鉴权接口、卸载与原 Profile 还原验证；真实 Desktop 界面和版本降级回滚未验收。
+通过 DSH 官方 CLI 安装当前 Catalog 固定的 `0.9.8` Commit：
 
 ```bash
-dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#0bc733064bfc8ff16f6e8144188a7ac563092e12'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#8150c5ff43ca11b89aac4151c0f78e2c34777fb6'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
 不要把 Commit 换成 `main` 等浮动分支，也不要绕过 DSH CLI 直接运行 pnpm 或手工编辑
 Profile。命令失败时请保留完整错误和安装前备份，不要连续重复执行。
+
+历史引导固定点 `git+https://github.com/AI-Scarlett/DSH-Store.git#0bc733064bfc8ff16f6e8144188a7ac563092e12`
+对应 `0.8.5`，仅供历史审计；它不是当前安装入口，不能用于 RC.1 / RC.2。
 
 ### 重启与验收
 
