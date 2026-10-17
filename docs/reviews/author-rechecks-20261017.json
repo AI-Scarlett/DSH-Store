@@ -1,0 +1,1218 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-17T01:09:33.816Z",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "ef39537839a1c3817973ca4a5f5b7b1946e4506f",
+  "thirdPartyCodeExecuted": false,
+  "realProfileChanged": false,
+  "officialLatestThree": [
+    "0.2.1-alpha.3",
+    "0.2.1-alpha.4",
+    "0.2.1-alpha.5"
+  ],
+  "reviews": [
+    {
+      "issueNumber": 1390,
+      "requestCommentId": 6218698421,
+      "userId": 283827478,
+      "requestBodySha256": "e915480b11bad8f0949e40ef8fa0cdee047a146461174364931bdb5d3840cb3f",
+      "requestUpdatedAt": "2026-10-16T15:21:12Z",
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "commit": "ec492531209e9cc89fc6d68fd86104074ef8241b",
+      "version": "0.17.7",
+      "catalogId": "dsh-qwen-paint",
+      "result": {
+        "status": "passed",
+        "candidate": {
+          "id": "dsh-qwen-paint",
+          "name": "dsh-qwen-paint",
+          "packageName": "dsh-qwen-paint",
+          "description": "(绘图)千问 · 优化版 —— 面向 DeepSeek Harness 的本地图像生成插件。经由本机 ComfyUI 调用 Qwen-Image 2.1 完成文生图与图生图，图像落盘保存并在会话中直接呈现；出图数据流默认仅本机回环 127.0.0.1（代码层强制，非本机地址拒绝启动），无需 API 密钥。可选加速包下载（accelAutoInstall，默认开启）会访问 pip 源与 GitHub 但不发送提示词或图片。本优化版在推理链路性能、显卡厂商适配（NVIDIA / Intel Arc / AMD RDNA2·3·4）与操作系统兼容（Windows / Linux）三方面进行了系统性增强。原作者 @奇迹与你，优化版 @yanfei0725。",
+          "searchTerms": [],
+          "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+          "defaultBranch": "main",
+          "manifestPath": "package.json",
+          "installPath": null,
+          "updatePolicy": null,
+          "commit": "ec492531209e9cc89fc6d68fd86104074ef8241b",
+          "version": "0.17.7",
+          "categories": [
+            "experimental"
+          ],
+          "featured": false,
+          "installCount": null,
+          "source": {
+            "updatedAt": null,
+            "observedAt": null,
+            "provenance": "unknown"
+          },
+          "assurance": {
+            "discovery": {
+              "status": "verified",
+              "method": "catalog-presence",
+              "checkedAt": "2026-10-16T14:19:28.112Z",
+              "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": "Present in the trusted GitHub catalog."
+            },
+            "installability": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            },
+            "runtime": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            },
+            "securityReview": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            }
+          },
+          "entryIds": [
+            "qwen-paint"
+          ],
+          "status": "approved",
+          "statusReason": null,
+          "compatibility": {
+            "dsh": ">=0.2.0-rc.2",
+            "dshReleases": {
+              "0.2.0-rc.2": "compatible"
+            },
+            "dshOperations": {
+              "rc.7": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "rc.8": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.1-rc.1": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.1-rc.2": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.2": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.3": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.4": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.5": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              }
+            },
+            "node": ">=18.0.0",
+            "systems": [],
+            "profiles": [
+              "web"
+            ]
+          },
+          "details": {
+            "pluginType": "unknown",
+            "installSource": "github",
+            "license": "MIT",
+            "permissions": {
+              "level": "unknown",
+              "files": "unknown",
+              "network": "unknown",
+              "commands": "unknown",
+              "credentials": [
+                "unknown"
+              ]
+            },
+            "externalDependencies": [],
+            "reviewStatus": "automated-scan"
+          },
+          "risk": {
+            "installScripts": [],
+            "review": "submission-static-precheck-not-security-audited"
+          }
+        },
+        "source": {
+          "status": "verified",
+          "verifiedAt": "2026-10-17T01:04:55.986Z",
+          "manifestUrl": "https://raw.githubusercontent.com/yanfei0725/dsh-qwen-paint/ec492531209e9cc89fc6d68fd86104074ef8241b/package.json",
+          "patchUrl": "https://raw.githubusercontent.com/yanfei0725/dsh-qwen-paint/ec492531209e9cc89fc6d68fd86104074ef8241b/cordis.patch.yml",
+          "packageName": "dsh-qwen-paint",
+          "version": "0.17.7",
+          "license": "MIT",
+          "installScripts": []
+        },
+        "discovery": {
+          "publisher": "yanfei0725",
+          "readmePath": "README.md",
+          "patchPath": "cordis.patch.yml",
+          "reviewTarget": "explicit-fixed-commit"
+        }
+      },
+      "analysis": {
+        "reasons": [
+          "fixed-source security warnings require review",
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal",
+          "runtime source contains the commands permission signal",
+          "runtime source contains the credentials permission signal",
+          "Tool-view extension requires key ownership review; registration alone is not a protected component mutation"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "warn",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 8,
+          "eligibleFiles": 8,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 3,
+            "info": 0
+          },
+          "findings": [
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/config.js",
+              "line": 14
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/hipfire-img.js",
+              "line": 49
+            },
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/index.js",
+              "line": 46
+            }
+          ],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "fc8e973f10751b0621ef20a92132bf0a69dc1ffbec83b54e9d5cb58e2b8774fe",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 19492,
+            "blob": "03574cc7bb85e2851e237798b4b8f4f855547122",
+            "sha256": "d6d6e146b889e15040554d91abf9ba4f708761a7e8b160bde6285157e4ecd951"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 192404,
+            "blob": "6ae0a25d58fd952b92eb811c4826d62d3e516a0e",
+            "sha256": "26c32c286933226c5ad59ceeaed84f3ca6f8338c235085f8eb5623e22f4c9dd8"
+          },
+          {
+            "file": "lib/config.js",
+            "bytes": 239656,
+            "blob": "d85875ce512a520e939b1805edc779e98d0a3638",
+            "sha256": "c8b8fd02e09a3c250e678708dca1d4915ffd61bd131eb4c763504e833074554f"
+          },
+          {
+            "file": "lib/describe.js",
+            "bytes": 69481,
+            "blob": "a763b8501eaf194cd734ac9f0b907e4f684f7a61",
+            "sha256": "6f7d3ae24d5ca391a812df28dafef54a08997f5c67554bdcb70ee6f1bef5bbcd"
+          },
+          {
+            "file": "lib/hipfire-img.js",
+            "bytes": 40993,
+            "blob": "5541e0ab01942dcf6c5ed86d03204d2b002a4ae9",
+            "sha256": "00b40a35e40dadefa4971cbeca3e6d5cf7d9be165ed0428283ee211d856a9a6d"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 260375,
+            "blob": "e8ec0b73746d4861251cc91ac9f461676cce3333",
+            "sha256": "30684106618373b72219fbab95c37d4126bc1f3b91c26d197ceb1087140e50e7"
+          },
+          {
+            "file": "lib/net-guard.js",
+            "bytes": 11086,
+            "blob": "8f22f61ada420e781c64fd4c6f2776c590b7a75b",
+            "sha256": "bb9a7f99bb6e2b707588a14ba28e7b5bb9e3f6c19bcbfe70863687a93ae2b3b3"
+          },
+          {
+            "file": "package.json",
+            "bytes": 2494,
+            "blob": "94e2cd0d3d413f30a340882d8e588679ad6938cd",
+            "sha256": "c5cef48a74ed14838a88c720847c455b1629ad9b71f6fa5abff2e04fc0fc699b"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 99,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/config.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 11,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/config.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 14,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/config.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 35,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/hipfire-img.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 47,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/hipfire-img.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 49,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/hipfire-img.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 182,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 43,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/index.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 46,
+            "location": "line"
+          },
+          {
+            "rule": "capability-network",
+            "file": "lib/net-guard.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 172,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/net-guard.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 189,
+            "location": "line"
+          }
+        ],
+        "toolViewEvidence": [
+          {
+            "file": "lib/client.js",
+            "sha256": "26c32c286933226c5ad59ceeaed84f3ca6f8338c235085f8eb5623e22f4c9dd8"
+          }
+        ],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": true,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 8,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 85,
+          "packageEntries": 14,
+          "files": 12
+        },
+        "runtimeFiles": 8,
+        "runtimeBytes": 835981,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T15:20:44Z",
+        "dependencies": [],
+        "runtimeDependencies": {}
+      },
+      "binding": "e2b643d07c26ee87d1410464707ba1c7cb84de60423e137674c79e25be9415d1",
+      "decision": "rejected",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 3869,
+          "finding": "isTrustedRequest/旧名别名已增加 Host 缺失拒绝、cross-site 拒绝及存在 Origin 时同 authority 检查；但状态 POST 没有 Content-Type 校验，非 GET/POST 方法也未统一拒绝。repairHandler:4355-4367 无方法/媒体类型限制，任意方法解析 confirm:true 即调用 runRepair。另状态 GET 的 4242 行仍可调用 recoverFromSageCrash，后者 642-644 行会改 cfg.nvidiaSageAttention；不能判为严格只读。",
+          "requiredChange": "保留已完成的信任围栏和客户端 POST 改造。状态入口仅允许 GET 读取和 POST application/json 写入；repair 仅允许 POST application/json，错误方法/媒体类型在读取正文或任何修复动作前拒绝，正文采用有界解析。将修改运行配置的故障恢复放到生命周期/后台或显式写操作，GET 只展示状态。对 memory/preference POST 同步限制 JSON 与正文上限。",
+          "acceptance": "在一次性 fixture 中，跨站/不可信 Origin/缺 Host 请求均在私有读写/命令前 403；状态 GET（含故障恢复分支）不改配置或持久化状态；repair 的 GET/PUT/DELETE 与 text/plain POST 不执行动作；合法受信 POST JSON 正常工作。无需删除绘图、加速或卡片功能。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 34,
+          "finding": "截至本轮官方 npm 最新三个发布版为 0.2.1-alpha.3 / alpha.4 / alpha.5；此固定 manifest 对三者均未声明 compatible。现有 0.2.0-rc.2 声明不能替代当前窗口。",
+          "requiredChange": "在实际验证后，对所支持的完整 DSH 版本添加准确的逐版本声明，并提供对应安装、启动及卸载证据；未验证的版本保留 unknown，不从范围推断兼容。",
+          "acceptance": "新固定 Commit 至少对当前官方 latest-three 窗口中的一个完整版本具备可审核的 compatible 声明及对应证据；Store 自身未执行的运行验收继续 unknown。"
+        }
+      ],
+      "corrections": [],
+      "authorContinuationConsent": true,
+      "issueClosed": false
+    },
+    {
+      "issueNumber": 1386,
+      "requestCommentId": 6219417205,
+      "userId": 153054118,
+      "requestBodySha256": "85f65b52c83038502057c8fecd99e0485bf1bb59eaa3f6f2c2833876037e8c14",
+      "requestUpdatedAt": "2026-10-16T15:59:31Z",
+      "repositoryUrl": "https://github.com/ArisaYamatogi/dsh-lecture-copilot",
+      "commit": "75e475a7b45e3cc2cf3c093fb8892e36642030fb",
+      "version": "1.0.1",
+      "catalogId": "dsh-lecture-copilot-plugin",
+      "result": {
+        "status": "passed",
+        "candidate": {
+          "id": "dsh-lecture-copilot-plugin",
+          "name": "dsh-lecture-copilot-plugin",
+          "packageName": "dsh-lecture-copilot-plugin",
+          "description": "Lecture Copilot: live English lecture capture with real-time Chinese translation and an automatic logic-chain / knowledge-point review",
+          "searchTerms": [],
+          "repositoryUrl": "https://github.com/ArisaYamatogi/dsh-lecture-copilot",
+          "defaultBranch": "main",
+          "manifestPath": "package.json",
+          "installPath": null,
+          "updatePolicy": null,
+          "commit": "75e475a7b45e3cc2cf3c093fb8892e36642030fb",
+          "version": "1.0.1",
+          "categories": [
+            "experimental"
+          ],
+          "featured": false,
+          "installCount": null,
+          "source": {
+            "updatedAt": null,
+            "observedAt": null,
+            "provenance": "unknown"
+          },
+          "assurance": {
+            "discovery": {
+              "status": "verified",
+              "method": "catalog-presence",
+              "checkedAt": "2026-10-16T14:19:28.112Z",
+              "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": "Present in the trusted GitHub catalog."
+            },
+            "installability": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            },
+            "runtime": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            },
+            "securityReview": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            }
+          },
+          "entryIds": [
+            "lecture-copilot"
+          ],
+          "status": "approved",
+          "statusReason": null,
+          "compatibility": {
+            "dsh": ">=0.2.0-rc.2 <0.3.0",
+            "dshReleases": {
+              "rc.7": "incompatible",
+              "rc.8": "incompatible",
+              "0.1.1-rc.1": "incompatible",
+              "0.1.1-rc.2": "incompatible",
+              "0.1.2-alpha.2": "incompatible",
+              "0.1.2-alpha.3": "incompatible",
+              "0.1.2-alpha.4": "incompatible",
+              "0.1.2-alpha.5": "incompatible",
+              "0.2.0-rc.2": "compatible",
+              "0.2.1-alpha.1": "unknown",
+              "0.2.1-alpha.2": "unknown",
+              "0.2.1-alpha.3": "unknown"
+            },
+            "dshOperations": {
+              "rc.7": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "rc.8": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.1-rc.1": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.1-rc.2": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.2": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.3": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.4": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.5": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              }
+            },
+            "node": ">=22.19.0",
+            "systems": [],
+            "profiles": [
+              "web"
+            ]
+          },
+          "details": {
+            "pluginType": "unknown",
+            "installSource": "github",
+            "license": "GPL-3.0",
+            "permissions": {
+              "level": "unknown",
+              "files": "unknown",
+              "network": "unknown",
+              "commands": "unknown",
+              "credentials": [
+                "unknown"
+              ]
+            },
+            "externalDependencies": [],
+            "reviewStatus": "automated-scan"
+          },
+          "risk": {
+            "installScripts": [],
+            "review": "submission-static-precheck-not-security-audited"
+          }
+        },
+        "source": {
+          "status": "verified",
+          "verifiedAt": "2026-10-17T01:05:02.173Z",
+          "manifestUrl": "https://raw.githubusercontent.com/ArisaYamatogi/dsh-lecture-copilot/75e475a7b45e3cc2cf3c093fb8892e36642030fb/package.json",
+          "patchUrl": "https://raw.githubusercontent.com/ArisaYamatogi/dsh-lecture-copilot/75e475a7b45e3cc2cf3c093fb8892e36642030fb/cordis.patch.yml",
+          "packageName": "dsh-lecture-copilot-plugin",
+          "version": "1.0.1",
+          "license": "GPL-3.0",
+          "installScripts": []
+        },
+        "discovery": {
+          "publisher": "ArisaYamatogi",
+          "readmePath": "README.md",
+          "patchPath": "cordis.patch.yml",
+          "reviewTarget": "explicit-fixed-commit"
+        }
+      },
+      "analysis": {
+        "reasons": [
+          "fixed-source security warnings require review",
+          "runtime source contains the files permission signal",
+          "runtime source contains the network permission signal",
+          "runtime source contains the commands permission signal",
+          "runtime source contains the credentials permission signal"
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "warn",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 13,
+          "eligibleFiles": 13,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 1,
+            "info": 0
+          },
+          "findings": [
+            {
+              "rule": "child-process",
+              "category": "shell",
+              "severity": "warning",
+              "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+              "file": "lib/onenote.js",
+              "line": 18
+            }
+          ],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "422365eddce64b4de563af48c1d21b19a696e81df34d5b3c704584dfa7f99c75",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 919,
+            "blob": "5257c46ddb196666a90d8ed854d00cace2d99cb5",
+            "sha256": "4e27c67b2b9c96f966f88f37891b823dcc5850fd7de81eeda398a5fd871e5db2"
+          },
+          {
+            "file": "host/onenote.ps1",
+            "bytes": 6900,
+            "blob": "a547fd17fa048166df500482ed981a5f434f18e4",
+            "sha256": "f705e0261cef16c9e4d6d27bf514c6120d1c7d7fa7ec2759c5a0df10ad7595d1"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 59916,
+            "blob": "03a4fbaab1eac7e7c81cbaeb26ea8b27dfb203ec",
+            "sha256": "49586e2bb8f24b83f4afdccb4d2203b2c1040e993ca92e784c52ea28d9da952f"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 43903,
+            "blob": "e83aea71025760c47fc90fb6f8fa1a0f0b77162e",
+            "sha256": "12fccc41e8b0c96787a7c8c8ab9c40f5b732f0e2ff5375b16510055a44ecc63e"
+          },
+          {
+            "file": "lib/latex-mathml.js",
+            "bytes": 22699,
+            "blob": "c9b96d3090150e5faf2624c6863cf729206214e5",
+            "sha256": "a6526337632d90f6f2138edb8990e4b2f6c4e65c9a1b5777e7129a3c5ef9260b"
+          },
+          {
+            "file": "lib/note-xml.js",
+            "bytes": 11302,
+            "blob": "cc52cf34287f805e2d2640198c8072abdf0fd855",
+            "sha256": "e66f570ae50538dfe56f8b3a881bdf62045167127e23b4e3f55bd71aec80e2fa"
+          },
+          {
+            "file": "lib/notes.js",
+            "bytes": 10133,
+            "blob": "058acbfc8e85e1532984ba54aaf704c235027e97",
+            "sha256": "0e5517d9f5bb0808446fc45877347b7dac567ce1ef7f900fdce00f5abf2c07f4"
+          },
+          {
+            "file": "lib/onenote-store.js",
+            "bytes": 4799,
+            "blob": "28431c28585bbaad40bd1e999b3862d95db9275e",
+            "sha256": "33f368b5ecf2cc61df386b0c345899b94fec5afa66ea1d8e8df0a5a401aa4a9e"
+          },
+          {
+            "file": "lib/onenote.js",
+            "bytes": 8743,
+            "blob": "73dad6d334425b6e511cb58eeab65602aa23dc73",
+            "sha256": "0306084b5eba27920693ae6116c19f7f0f3e98ab16302aec3b87de1f25f9b55d"
+          },
+          {
+            "file": "lib/prompts.js",
+            "bytes": 9460,
+            "blob": "969c12b6ad8f9351637828169896689bd3dc9886",
+            "sha256": "92cfc8d50ee3319749aa348e19cfd0917ad62df863f9b06feea524d8300c8e21"
+          },
+          {
+            "file": "lib/state.js",
+            "bytes": 6850,
+            "blob": "1aaee015320e8e3d95e4998ba82677c3677e4f12",
+            "sha256": "fe87a9a8e704c6332adb9235342dfcfa17702d2aee422a480565081e8eec7cf8"
+          },
+          {
+            "file": "lib/tools.js",
+            "bytes": 8063,
+            "blob": "8cce2d74e370711ab1c3cd097c565ec3b7a81898",
+            "sha256": "bc1e548f2b3b53275c27d42d5fa4720bb7c655c9871adca9b25398b448ef1d2d"
+          },
+          {
+            "file": "package.json",
+            "bytes": 1981,
+            "blob": "6630856662f78882d0eea0b1617934b65e34b401",
+            "sha256": "5726a50cbf8e185c7edf001d9c052cab86724199ddf82ba6ba89c5b7c88be1cf"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-network",
+            "file": "lib/client.js",
+            "signal": "network",
+            "responsibility": "reviewer",
+            "line": 298,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 618,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/onenote-store.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 16,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "lib/onenote.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 19,
+            "location": "line"
+          },
+          {
+            "rule": "capability-commands",
+            "file": "lib/onenote.js",
+            "signal": "commands",
+            "responsibility": "reviewer",
+            "line": 18,
+            "location": "line"
+          },
+          {
+            "rule": "capability-credentials",
+            "file": "lib/onenote.js",
+            "signal": "credentials",
+            "responsibility": "reviewer",
+            "line": 86,
+            "location": "line"
+          }
+        ],
+        "toolViewEvidence": [],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 13,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 24,
+          "packageEntries": 18,
+          "files": 18
+        },
+        "runtimeFiles": 13,
+        "runtimeBytes": 195668,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "GPL-3.0",
+        "sourceUpdatedAt": "2026-10-16T15:58:47Z",
+        "dependencies": [],
+        "runtimeDependencies": {}
+      },
+      "binding": "8d57f64b382b3a0c338d41fe4a604e64652395c9e8488ba53826347369da5558",
+      "decision": "rejected",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 656,
+          "finding": "lectureRoutes 直接注册原始 HTTP handler；state/review 读取课堂内容，start:669、stop:694、clear:720 不检查 method 或请求信任；clear 可取消 review 并清空会话。928/986/1056 的 OneNote 写入/记忆删除同样无请求来源围栏。1117-1121 将这些 handler 直接传给 webServer.register，没有统一授权包装。",
+          "requiredChange": "在路由公共入口接入宿主支持的 request-trust/auth seam 或等价 Host/Origin/Sec-Fetch-Site 拒绝逻辑，私有读取与写入之前验证。读取限定 GET，start/stop/clear/select/OneNote 等变更限定显式 POST 及各自的 JSON/audio Content-Type；保留已有正文上限和错误处理。",
+          "acceptance": "一次性 fixture 中不可信 Origin、cross-site、缺必需上下文请求在访问课堂内容、调用模型、清空会话、写文件或启动 OneNote 前拒绝；GET 不触发写操作；可信的录音/翻译/OneNote 路径正常。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 63,
+          "finding": "截至本轮官方 npm 最新三个发布版为 0.2.1-alpha.3 / alpha.4 / alpha.5；此固定 manifest 对三者均未声明 compatible。现有 0.2.0-rc.2 声明不能替代当前窗口。",
+          "requiredChange": "在实际验证后，对所支持的完整 DSH 版本添加准确的逐版本声明，并提供对应安装、启动及卸载证据；未验证的版本保留 unknown，不从范围推断兼容。",
+          "acceptance": "新固定 Commit 至少对当前官方 latest-three 窗口中的一个完整版本具备可审核的 compatible 声明及对应证据；Store 自身未执行的运行验收继续 unknown。"
+        }
+      ],
+      "corrections": [],
+      "authorContinuationConsent": false,
+      "issueClosed": false
+    },
+    {
+      "issueNumber": 934,
+      "requestCommentId": 6219910739,
+      "userId": 51282470,
+      "requestBodySha256": "3fc53d8c2f39f203f8ac9e5a0d2d9b12655d4ac1b6cd1e58df2ab628d773a961",
+      "requestUpdatedAt": "2026-10-16T16:24:38Z",
+      "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
+      "commit": "ec9c22794b8de3c1794246b309fce6ecd66df90a",
+      "version": "0.2.4",
+      "catalogId": "dsh-auto-paste",
+      "result": {
+        "status": "passed",
+        "candidate": {
+          "id": "dsh-auto-paste",
+          "name": "dsh-auto-paste",
+          "packageName": "dsh-auto-paste",
+          "description": "dsh-auto-paste — 长文粘贴不进消息：存成工作区文件，输入框只留一张引用卡片，模型只收到一行引用（要读再读）。A DeepSeek Harness plugin: a long paste becomes a workspace file plus one reference chip, so the wall of text never enters the message.",
+          "searchTerms": [],
+          "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
+          "defaultBranch": "main",
+          "manifestPath": "package.json",
+          "installPath": null,
+          "updatePolicy": null,
+          "commit": "ec9c22794b8de3c1794246b309fce6ecd66df90a",
+          "version": "0.2.4",
+          "categories": [
+            "experimental"
+          ],
+          "featured": false,
+          "installCount": null,
+          "source": {
+            "updatedAt": null,
+            "observedAt": null,
+            "provenance": "unknown"
+          },
+          "assurance": {
+            "discovery": {
+              "status": "verified",
+              "method": "catalog-presence",
+              "checkedAt": "2026-10-16T14:19:28.112Z",
+              "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": "Present in the trusted GitHub catalog."
+            },
+            "installability": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            },
+            "runtime": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            },
+            "securityReview": {
+              "status": "unknown",
+              "method": null,
+              "checkedAt": null,
+              "evidenceUrl": null,
+              "dshRelease": null,
+              "systems": [],
+              "profiles": [],
+              "summary": null
+            }
+          },
+          "entryIds": [
+            "dsh-auto-paste"
+          ],
+          "status": "approved",
+          "statusReason": null,
+          "compatibility": {
+            "dsh": "^0.1.5-rc.1 || ^0.2.0-rc.2",
+            "dshReleases": {
+              "0.1.5-rc.2": "compatible",
+              "0.1.7-rc.2": "compatible",
+              "0.2.0-rc.2": "compatible"
+            },
+            "dshOperations": {
+              "rc.7": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "rc.8": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.1-rc.1": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.1-rc.2": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.2": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.3": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.4": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              },
+              "0.1.2-alpha.5": {
+                "install": "unknown",
+                "start": "unknown",
+                "uninstall": "unknown",
+                "rollback": "unknown"
+              }
+            },
+            "node": "^22.19.0 || >=24.0.0",
+            "systems": [],
+            "profiles": [
+              "web"
+            ]
+          },
+          "details": {
+            "pluginType": "unknown",
+            "installSource": "github",
+            "license": "MIT",
+            "permissions": {
+              "level": "unknown",
+              "files": "unknown",
+              "network": "unknown",
+              "commands": "unknown",
+              "credentials": [
+                "unknown"
+              ]
+            },
+            "externalDependencies": [],
+            "reviewStatus": "automated-scan"
+          },
+          "risk": {
+            "installScripts": [],
+            "review": "submission-static-precheck-not-security-audited"
+          }
+        },
+        "source": {
+          "status": "verified",
+          "verifiedAt": "2026-10-17T01:05:09.793Z",
+          "manifestUrl": "https://raw.githubusercontent.com/sakuraqqq/dsh-auto-paste/ec9c22794b8de3c1794246b309fce6ecd66df90a/package.json",
+          "patchUrl": "https://raw.githubusercontent.com/sakuraqqq/dsh-auto-paste/ec9c22794b8de3c1794246b309fce6ecd66df90a/cordis.patch.yml",
+          "packageName": "dsh-auto-paste",
+          "version": "0.2.4",
+          "license": "MIT",
+          "installScripts": []
+        },
+        "discovery": {
+          "publisher": "sakuraqqq",
+          "readmePath": "README.md",
+          "patchPath": "cordis.patch.yml",
+          "reviewTarget": "explicit-fixed-commit"
+        }
+      },
+      "analysis": {
+        "reasons": [
+          "runtime or optional dependencies require a separate supply-chain review",
+          "runtime source contains the files permission signal"
+        ],
+        "signals": {
+          "files": true,
+          "network": false,
+          "commands": false,
+          "credentials": false,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "engine": "dsh-store-submission-static-v1",
+          "policy": "high-risk-block-cli-capability-warn-v1",
+          "verdict": "pass",
+          "complete": true,
+          "scopeReasons": [],
+          "filesScanned": 8,
+          "eligibleFiles": 8,
+          "skippedOversize": 0,
+          "skippedUnsupported": 0,
+          "capped": false,
+          "counts": {
+            "critical": 0,
+            "warning": 0,
+            "info": 0
+          },
+          "findings": [],
+          "findingsTruncated": false
+        },
+        "engine": "bounded-source-v3",
+        "sourceDigest": "f0ec38833dd3380d83ab38073ce816460a4068316d15f3b933f252e788cb3475",
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 1865,
+            "blob": "30e5ecdbbc7f0d178fd4163d88f589859fc87317",
+            "sha256": "b49ecda960f72e19d72a79c0338be904eb95ef0456134a3b97ba7c5c83772062"
+          },
+          {
+            "file": "dist/client.js",
+            "bytes": 61217,
+            "blob": "b4682d082ae97bffdc5aaf947064b643a45c9c9c",
+            "sha256": "6bbcf65bec3375d37bb9835e9cc297ef0e22be6d7f29b5020a41932f686d2b06"
+          },
+          {
+            "file": "dist/index.js",
+            "bytes": 30515,
+            "blob": "72a8492fb31ca72103e807830a2a00396316c09e",
+            "sha256": "09e64fa5d389966cfd05f8b0fc8717d620437b37c6cfbf54d7c407b166b0498a"
+          },
+          {
+            "file": "dist/typert.host.js",
+            "bytes": 5369,
+            "blob": "091cf80772d1a2d7a86dbe2bfaf13b564aada3f8",
+            "sha256": "1aaf60c242bf7b8a046b0017422ab17af42821e9ccbd0187f8edc0f4d7db6813"
+          },
+          {
+            "file": "package.json",
+            "bytes": 2907,
+            "blob": "132e42c02dcac6734153409c0bab92f3f0ec0090",
+            "sha256": "c59c7c7b01e3679bbb1ec5f558274476031ef9e8f25fc3e982fc92113c62812f"
+          },
+          {
+            "file": "src/client.js",
+            "bytes": 56129,
+            "blob": "9cec2ff7b077837987d43a72619d05831fcc9db1",
+            "sha256": "4779525f48a47e98aae149fbe89e008433726472b03ed08f4e6cec5315ef1d3d"
+          },
+          {
+            "file": "src/index.ts",
+            "bytes": 36312,
+            "blob": "6ce185351f0767e902ef5f2fbaedab4404a76639",
+            "sha256": "1e5db22fdf9d8b80d2f0550f38b739267e5d8c75b4bb9e6ba838a6a0af62cf7e"
+          },
+          {
+            "file": "src/typert.host.ts",
+            "bytes": 4974,
+            "blob": "8c47be38944a321e8eba6c16d4576fd6f51d71ae",
+            "sha256": "557b09104778369dbd9d896ddd4425d941d48e7a48ab45160ad5e113572a299c"
+          }
+        ],
+        "capabilityEvidence": [
+          {
+            "rule": "capability-files",
+            "file": "dist/index.js",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 17,
+            "location": "line"
+          },
+          {
+            "rule": "capability-files",
+            "file": "src/index.ts",
+            "signal": "files",
+            "responsibility": "reviewer",
+            "line": 17,
+            "location": "line"
+          }
+        ],
+        "toolViewEvidence": [],
+        "budgetFindings": [],
+        "reviewSignals": {
+          "toolViewExtension": false,
+          "dynamicModuleLoading": false
+        },
+        "scanComplete": true,
+        "filesScanned": 8,
+        "unsupportedFiles": 0,
+        "scope": {
+          "kind": "explicit-files-conservative-superset",
+          "repositoryEntries": 57,
+          "packageEntries": 13,
+          "files": 11
+        },
+        "runtimeFiles": 8,
+        "runtimeBytes": 199288,
+        "contractVerified": true,
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "approved": false,
+        "repositoryLicense": "MIT",
+        "sourceUpdatedAt": "2026-10-16T16:30:55Z",
+        "dependencies": [
+          "zod"
+        ],
+        "runtimeDependencies": {
+          "zod": "^4.4.3"
+        }
+      },
+      "binding": "61a4b24f036fe886e4eadb85ecc179324ed8b8024ca2ee2a7b40c4dfdb6716f4",
+      "decision": "rejected",
+      "blockers": [
+        {
+          "code": "SUPPLY001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 73,
+          "finding": "zod:^4.4.3 是唯一直接第三方运行依赖，v0.1.4 已存在，先前“新增”说法错误。src/typert.host.ts 和实际分发的 dist/typert.host.js 均导入 zod。pnpm-lock.yaml:11-13 固定 4.4.3，而本次作者材料描述本机 4.6.5；没有证据证明实际 DSH Git 安装强制使用一个经审阅的精确依赖版本和分发文件闭包。npm 的 MIT/签名/来源元数据不能单独证明这一安装映射。",
+          "requiredChange": "可保留 zod。提供一种安装路径实际强制采用的固定依赖闭包：例如精确版本、完整性哈希、canonical source Commit、已分发运行文件的有界哈希/许可证/安装钩子证据以及 DSH 安装解析证明；或提供带许可证的自包含固定 Commit 分发。仅把 ^4.4.3 改成 4.6.5 不能单独补齐源码和分发映射。本轮不要求为了外观与官方包一致而改变依赖类型。",
+          "acceptance": "Store 可独立读取并绑定实际安装执行的全部依赖节点，确认精确版本、不可变源码/分发哈希、已知许可证、无未经审查安装钩子以及闭包完整性；安装路径不会再浮动解析到另一版本。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 49,
+          "finding": "截至本轮官方 npm 最新三个发布版为 0.2.1-alpha.3 / alpha.4 / alpha.5；此固定 manifest 对三者均未声明 compatible。现有 0.2.0-rc.2 声明不能替代当前窗口。",
+          "requiredChange": "在实际验证后，对所支持的完整 DSH 版本添加准确的逐版本声明，并提供对应安装、启动及卸载证据；未验证的版本保留 unknown，不从范围推断兼容。",
+          "acceptance": "新固定 Commit 至少对当前官方 latest-three 窗口中的一个完整版本具备可审核的 compatible 声明及对应证据；Store 自身未执行的运行验收继续 unknown。"
+        }
+      ],
+      "corrections": [
+        "v0.1.4 already declares zod:^4.4.3; prior added-dependency wording withdrawn",
+        "npm 4.6.5 metadata read, not cryptographic verification or installation mapping",
+        "Upstream docs-only commits after 5fab0ff do not change the 8 runtime blobs"
+      ],
+      "authorContinuationConsent": true,
+      "issueClosed": false
+    }
+  ]
+}

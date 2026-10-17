@@ -373,3 +373,55 @@ test('historical repository quarantine still blocks first contact but not a fini
   verifyHistoryPreserved(api.state, state)
   assert.deepEqual(api.state.blockedRepositories, state.blockedRepositories)
 })
+
+// The current owner specifically requested a result on this activity. Do not
+// classify its version-only author comment as explicit continuation consent.
+const ownerResultPerson = { id: 153054118, node_id: 'U_kgDOCR9rpg', login: 'ArisaYamatogi', type: 'User' }
+const ownerResultEvidence = { grantId: 'owner-review-result-1386-20261017', issueNumber: 1386, commentId: 6219417205,
+  requestHash: '85f65b52c83038502057c8fecd99e0485bf1bb59eaa3f6f2c2833876037e8c14' }
+const ownerResultState = () => ({ ...empty(), contacts: { [ownerResultPerson.id]: {
+  userId: ownerResultPerson.id, nodeId: ownerResultPerson.node_id, logins: [ownerResultPerson.login], stopped: false,
+  firstContact: { kind: 'historical' }, reservations: {},
+} } })
+const reserveOwnerResult = (api, evidence = ownerResultEvidence, extra = {}) => reserveContact({ github: api,
+  repository: 'AI-Scarlett/DSH-Store', recipient: ownerResultPerson, key: 'AI-Scarlett/DSH-Store', claimId: 'e'.repeat(64),
+  seed: empty(), ownerCorrection: evidence, ...extra })
+
+test('owner-directed result uses the central ledger once and cannot renew by changing claim/body', async () => {
+  const api = mock(ownerResultState())
+  assert.equal((await reserveOwnerResult(api)).allowed, true)
+  const reservations = Object.values(api.state.contacts[ownerResultPerson.id].reservations)
+  assert.equal(reservations[0].kind, 'owner-authorized-review-result')
+  assert.equal((await reserveOwnerResult(api, ownerResultEvidence, { claimId: 'f'.repeat(64) })).allowed, false)
+  assert.equal(Object.keys(api.state.contacts[ownerResultPerson.id].reservations).length, 1)
+})
+
+test('owner-directed grant rejects other identities, comments, channels, hashes and grants', async () => {
+  for (const extra of [{ recipient: person }, { key: 'ArisaYamatogi/dsh-lecture-copilot' }, { continuation: { commentId: 1 } }]) {
+    await assert.rejects(reserveOwnerResult(mock(ownerResultState()), ownerResultEvidence, extra))
+  }
+  for (const evidence of [{ ...ownerResultEvidence, issueNumber: 1390 }, { ...ownerResultEvidence, commentId: 6219417206 },
+    { ...ownerResultEvidence, requestHash: 'a'.repeat(64) }, { ...ownerResultEvidence, grantId: 'renewed' }]) {
+    await assert.rejects(reserveOwnerResult(mock(ownerResultState()), evidence), /finite owner/)
+  }
+})
+
+test('owner-directed result preserves stops and remains consumed after uncertain reservation', async () => {
+  const stopped = ownerResultState(); stopped.contacts[ownerResultPerson.id].stopped = true
+  assert.equal((await reserveOwnerResult(mock(stopped))).allowed, false)
+  const blocked = ownerResultState(); blocked.blockedLogins.push(ownerResultPerson.login)
+  assert.equal((await reserveOwnerResult(mock(blocked))).allowed, false)
+  assert.equal((await reserveOwnerResult(mock(empty()))).allowed, false)
+  const api = mock(ownerResultState()); api.failPutAfterCommit()
+  await assert.rejects(reserveOwnerResult(api), /uncertain/)
+  assert.equal((await reserveOwnerResult(api)).allowed, false)
+})
+
+test('owner-directed reply plans name the owner authority without fabricating author consent', async () => {
+  const p = JSON.parse(await readFile('registry/author-replies/recheck-1386-20261017.json', 'utf8'))
+  assert.doesNotThrow(() => validateReplyGrant(p))
+  assert.equal(p.review.decision, 'owner-directed-exact-result')
+  assert.throws(() => validateReplyGrant({ ...p, review: { ...p.review, decision: 'explicit-request-to-continue' } }))
+  assert.throws(() => validateReplyGrant({ ...p, userId: 101 }), /finite owner/)
+  assert.throws(() => validateReplyGrant({ ...p, ownerAuthorization: { ...p.ownerAuthorization, quote: 'Thanks' } }), /approval/)
+})

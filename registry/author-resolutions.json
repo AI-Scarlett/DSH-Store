@@ -52,6 +52,111 @@
       ],
       "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261016.md",
       "decidedAt": "2026-10-16T13:35:38.808Z"
+    },
+    {
+      "issueNumber": 1390,
+      "requestCommentId": 6218698421,
+      "userId": 283827478,
+      "requestBodySha256": "e915480b11bad8f0949e40ef8fa0cdee047a146461174364931bdb5d3840cb3f",
+      "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
+      "version": "0.17.7",
+      "commit": "ec492531209e9cc89fc6d68fd86104074ef8241b",
+      "binding": "e2b643d07c26ee87d1410464707ba1c7cb84de60423e137674c79e25be9415d1",
+      "catalogId": "dsh-qwen-paint",
+      "decision": "rejected",
+      "summary": "AUTH001: request trust and POST client repairs verified; method/media-type and residual GET configuration mutation remain. COMPAT001: no current latest-three compatible declaration.",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 3869,
+          "finding": "isTrustedRequest/旧名别名已增加 Host 缺失拒绝、cross-site 拒绝及存在 Origin 时同 authority 检查；但状态 POST 没有 Content-Type 校验，非 GET/POST 方法也未统一拒绝。repairHandler:4355-4367 无方法/媒体类型限制，任意方法解析 confirm:true 即调用 runRepair。另状态 GET 的 4242 行仍可调用 recoverFromSageCrash，后者 642-644 行会改 cfg.nvidiaSageAttention；不能判为严格只读。",
+          "requiredChange": "保留已完成的信任围栏和客户端 POST 改造。状态入口仅允许 GET 读取和 POST application/json 写入；repair 仅允许 POST application/json，错误方法/媒体类型在读取正文或任何修复动作前拒绝，正文采用有界解析。将修改运行配置的故障恢复放到生命周期/后台或显式写操作，GET 只展示状态。对 memory/preference POST 同步限制 JSON 与正文上限。",
+          "acceptance": "在一次性 fixture 中，跨站/不可信 Origin/缺 Host 请求均在私有读写/命令前 403；状态 GET（含故障恢复分支）不改配置或持久化状态；repair 的 GET/PUT/DELETE 与 text/plain POST 不执行动作；合法受信 POST JSON 正常工作。无需删除绘图、加速或卡片功能。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 34,
+          "finding": "截至本轮官方 npm 最新三个发布版为 0.2.1-alpha.3 / alpha.4 / alpha.5；此固定 manifest 对三者均未声明 compatible。现有 0.2.0-rc.2 声明不能替代当前窗口。",
+          "requiredChange": "在实际验证后，对所支持的完整 DSH 版本添加准确的逐版本声明，并提供对应安装、启动及卸载证据；未验证的版本保留 unknown，不从范围推断兼容。",
+          "acceptance": "新固定 Commit 至少对当前官方 latest-three 窗口中的一个完整版本具备可审核的 compatible 声明及对应证据；Store 自身未执行的运行验收继续 unknown。"
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
+      "decidedAt": "2026-10-17T01:09:33.816Z"
+    },
+    {
+      "issueNumber": 1386,
+      "requestCommentId": 6219417205,
+      "userId": 153054118,
+      "requestBodySha256": "85f65b52c83038502057c8fecd99e0485bf1bb59eaa3f6f2c2833876037e8c14",
+      "repositoryUrl": "https://github.com/ArisaYamatogi/dsh-lecture-copilot",
+      "version": "1.0.1",
+      "commit": "75e475a7b45e3cc2cf3c093fb8892e36642030fb",
+      "binding": "8d57f64b382b3a0c338d41fe4a604e64652395c9e8488ba53826347369da5558",
+      "catalogId": "dsh-lecture-copilot-plugin",
+      "decision": "rejected",
+      "summary": "AUTH001: manifest identity, license and declarations corrected; raw HTTP private reads and mutations lack request trust and method boundaries. COMPAT001: no current latest-three compatible declaration.",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 656,
+          "finding": "lectureRoutes 直接注册原始 HTTP handler；state/review 读取课堂内容，start:669、stop:694、clear:720 不检查 method 或请求信任；clear 可取消 review 并清空会话。928/986/1056 的 OneNote 写入/记忆删除同样无请求来源围栏。1117-1121 将这些 handler 直接传给 webServer.register，没有统一授权包装。",
+          "requiredChange": "在路由公共入口接入宿主支持的 request-trust/auth seam 或等价 Host/Origin/Sec-Fetch-Site 拒绝逻辑，私有读取与写入之前验证。读取限定 GET，start/stop/clear/select/OneNote 等变更限定显式 POST 及各自的 JSON/audio Content-Type；保留已有正文上限和错误处理。",
+          "acceptance": "一次性 fixture 中不可信 Origin、cross-site、缺必需上下文请求在访问课堂内容、调用模型、清空会话、写文件或启动 OneNote 前拒绝；GET 不触发写操作；可信的录音/翻译/OneNote 路径正常。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 63,
+          "finding": "截至本轮官方 npm 最新三个发布版为 0.2.1-alpha.3 / alpha.4 / alpha.5；此固定 manifest 对三者均未声明 compatible。现有 0.2.0-rc.2 声明不能替代当前窗口。",
+          "requiredChange": "在实际验证后，对所支持的完整 DSH 版本添加准确的逐版本声明，并提供对应安装、启动及卸载证据；未验证的版本保留 unknown，不从范围推断兼容。",
+          "acceptance": "新固定 Commit 至少对当前官方 latest-three 窗口中的一个完整版本具备可审核的 compatible 声明及对应证据；Store 自身未执行的运行验收继续 unknown。"
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
+      "decidedAt": "2026-10-17T01:09:33.816Z"
+    },
+    {
+      "issueNumber": 934,
+      "requestCommentId": 6219910739,
+      "userId": 51282470,
+      "requestBodySha256": "3fc53d8c2f39f203f8ac9e5a0d2d9b12655d4ac1b6cd1e58df2ab628d773a961",
+      "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
+      "version": "0.2.4",
+      "commit": "ec9c22794b8de3c1794246b309fce6ecd66df90a",
+      "binding": "61a4b24f036fe886e4eadb85ecc179324ed8b8024ca2ee2a7b40c4dfdb6716f4",
+      "catalogId": "dsh-auto-paste",
+      "decision": "rejected",
+      "summary": "SUPPLY001: corrected historical zod claim; actual DSH dependency resolution is not bound to an immutable reviewed closure. COMPAT001: no current latest-three compatible declaration.",
+      "blockers": [
+        {
+          "code": "SUPPLY001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 73,
+          "finding": "zod:^4.4.3 是唯一直接第三方运行依赖，v0.1.4 已存在，先前“新增”说法错误。src/typert.host.ts 和实际分发的 dist/typert.host.js 均导入 zod。pnpm-lock.yaml:11-13 固定 4.4.3，而本次作者材料描述本机 4.6.5；没有证据证明实际 DSH Git 安装强制使用一个经审阅的精确依赖版本和分发文件闭包。npm 的 MIT/签名/来源元数据不能单独证明这一安装映射。",
+          "requiredChange": "可保留 zod。提供一种安装路径实际强制采用的固定依赖闭包：例如精确版本、完整性哈希、canonical source Commit、已分发运行文件的有界哈希/许可证/安装钩子证据以及 DSH 安装解析证明；或提供带许可证的自包含固定 Commit 分发。仅把 ^4.4.3 改成 4.6.5 不能单独补齐源码和分发映射。本轮不要求为了外观与官方包一致而改变依赖类型。",
+          "acceptance": "Store 可独立读取并绑定实际安装执行的全部依赖节点，确认精确版本、不可变源码/分发哈希、已知许可证、无未经审查安装钩子以及闭包完整性；安装路径不会再浮动解析到另一版本。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 49,
+          "finding": "截至本轮官方 npm 最新三个发布版为 0.2.1-alpha.3 / alpha.4 / alpha.5；此固定 manifest 对三者均未声明 compatible。现有 0.2.0-rc.2 声明不能替代当前窗口。",
+          "requiredChange": "在实际验证后，对所支持的完整 DSH 版本添加准确的逐版本声明，并提供对应安装、启动及卸载证据；未验证的版本保留 unknown，不从范围推断兼容。",
+          "acceptance": "新固定 Commit 至少对当前官方 latest-three 窗口中的一个完整版本具备可审核的 compatible 声明及对应证据；Store 自身未执行的运行验收继续 unknown。"
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
+      "decidedAt": "2026-10-17T01:09:33.816Z"
     }
   ]
 }
