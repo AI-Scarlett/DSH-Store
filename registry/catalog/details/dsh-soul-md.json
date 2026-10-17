@@ -25,9 +25,9 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "2558f955bc8058a36ead384e0f5959428cb28b8c",
-  "version": "0.9.1",
+  "updatePolicy": "external-only",
+  "commit": "f32da33c0bec84b3af163643f8b146f40efb2874",
+  "version": "0.10.0",
   "categories": [
     "tools",
     "memory"
@@ -35,20 +35,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-02T11:09:33.000Z",
-    "observedAt": "2026-10-02T14:31:08.000Z",
+    "updatedAt": "2026-10-06T14:08:46.000Z",
+    "observedAt": "2026-10-17T01:45:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-02T14:31:08.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/2558f955bc8058a36ead384e0f5959428cb28b8c",
+      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/f32da33c0bec84b3af163643f8b146f40efb2874",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -81,11 +81,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "c61cb985d7f242c765620227a6e7a8e3dad12f3dc2ff45f0dfe7c4512d90c99f",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
   "entryIds": [
     "soul-md"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "configOverrides": [],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
@@ -97,25 +109,18 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.1.2-rc.1": "unknown",
-      "0.1.3-alpha.1": "unknown",
-      "0.1.3-alpha.2": "unknown",
-      "0.1.5-alpha.1": "unknown",
-      "0.1.5-alpha.2": "unknown",
-      "0.1.5-rc.1": "unknown",
       "0.1.5-rc.2": "incompatible",
-      "0.1.6-alpha.1": "unknown",
-      "0.1.6-alpha.2": "unknown",
       "0.1.5-rc.3": "incompatible",
-      "0.1.7-alpha.1": "unknown",
-      "0.1.7-alpha.2": "unknown",
+      "0.1.6-alpha.1": "incompatible",
+      "0.1.6-alpha.2": "incompatible",
+      "0.1.7-alpha.1": "incompatible",
+      "0.1.7-alpha.2": "incompatible",
       "0.1.7-rc.1": "incompatible",
       "0.1.7-rc.2": "incompatible",
       "0.2.0-rc.2": "compatible",
-      "0.2.0-rc.1": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -166,43 +171,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.1.5-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.5-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -215,12 +190,6 @@
         "rollback": "unknown"
       },
       "0.1.6-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -256,25 +225,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -289,23 +252,25 @@
     ]
   },
   "details": {
-    "pluginType": "client",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "write",
+      "level": "unknown",
+      "files": "unknown",
       "network": "unknown",
       "commands": "unknown",
       "credentials": [
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/schemastery"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "fixed-source-static-review-not-runtime-or-independent-security-audited"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

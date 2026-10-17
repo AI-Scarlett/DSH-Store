@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ab86bd8dba59cbccfdcad2f800d1d21201971bc1",
+  "commit": "4625758de6050fbd2c54550e39bb249a0af6e11d",
   "version": "0.3.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-03T14:41:20.000Z",
-    "observedAt": "2026-10-03T19:03:30.000Z",
+    "updatedAt": "2026-10-16T11:29:04.000Z",
+    "observedAt": "2026-10-17T01:45:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-03T19:03:30.000Z",
-      "evidenceUrl": "https://github.com/hashgraph-online/hol-guard-plugin/commit/ab86bd8dba59cbccfdcad2f800d1d21201971bc1",
+      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "evidenceUrl": "https://github.com/hashgraph-online/hol-guard-plugin/commit/4625758de6050fbd2c54550e39bb249a0af6e11d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,6 +80,7 @@
   "entryIds": [
     "hol-guard"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: the current fixed source ed794599dcf2 has no common ancestor with the prior Catalog pin 43b2dda59e9f; independent source history remains external-only. runtime source contains the files permission signal runtime source contains the commands permission signal runtime source contains the credentials permission signal",
   "compatibility": {
@@ -99,7 +100,9 @@
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -187,6 +190,18 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
