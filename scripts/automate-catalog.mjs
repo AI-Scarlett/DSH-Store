@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createCatalogGithubReader, sameCommitLineage } from './catalog-github-reader.mjs'
 import { admissionDecision, validateAdmissionReviews } from '../src/admission-review.mjs'
 import { validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget, catalogMigrationSource, verifyMigrationRepositories } from '../src/catalog-migration.mjs'
 import { SOURCE_SCAN_BOUNDS, SCAN_POLICY_VERSION, MANIFEST_MAX_BYTES } from '../src/source-scan-policy.mjs'
@@ -141,6 +142,7 @@ async function retryInfrastructure(worker) {
   for (const retryDelay of [0, 750]) {
     if (retryDelay > 0) await delay(retryDelay)
     try { return await worker() } catch (error) {
+      if (error?.code === 'CATALOG_AUTOMATION_GITHUB_BUDGET') throw error
       if (!INFRASTRUCTURE_CODES.has(error?.code) && !String(error?.code ?? '').startsWith('CATALOG_AUTOMATION_GITHUB_')) throw error
       lastError = error
     }
@@ -159,82 +161,6 @@ function requireExternalBackup(path, label) {
     throw new Error(`${label} must be an explicit absolute path outside the repository`)
   }
   return resolve(path)
-}
-
-function githubHeaders(token, accept = 'application/vnd.github+json') {
-  return {
-    accept, 'user-agent': 'dsh-safe-plugin-manager-catalog-automation',
-    'x-github-api-version': '2022-11-28',
-    ...(token ? { authorization: `Bearer ${token}` } : {}),
-  }
-}
-
-function createGithubClient(options = {}) {
-  const request = options.fetch ?? globalThis.fetch
-  const token = options.token ?? process.env.GITHUB_TOKEN ?? ''
-  const timeoutMs = options.timeoutMs ?? 15_000
-  if (typeof request !== 'function') throw new Error('GitHub fetch is unavailable')
-
-  async function text(url, settings = {}) {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), timeoutMs)
-    try {
-      const response = await request(url, {
-        headers: githubHeaders(token, settings.accept), signal: controller.signal,
-      })
-      if (!response.ok) {
-        let message = `GitHub returned HTTP ${response.status}`
-        if (response.status === 404 && settings.captureNoCommonAncestor === true) {
-          try {
-            const body = await response.text()
-            if (Buffer.byteLength(body) <= 4_096) {
-              const parsed = JSON.parse(body)
-              if (typeof parsed?.message === 'string'
-                && /^No common ancestor between [0-9a-f]{40} and [0-9a-f]{40}\.?$/.test(parsed.message)) {
-                message = parsed.message
-              }
-            }
-          } catch {
-            // A malformed or oversized error body remains a generic 404.
-          }
-        }
-        throw Object.assign(new Error(message), {
-          code: 'CATALOG_AUTOMATION_GITHUB_HTTP', status: response.status,
-        })
-      }
-      const value = await response.text()
-      if (Buffer.byteLength(value) > (settings.maxBytes ?? 4 * 1024 * 1024)) {
-        throw Object.assign(new Error('GitHub response exceeded the automation bound'), { code: 'CATALOG_AUTOMATION_SOURCE_TOO_LARGE' })
-      }
-      return value
-    } catch (error) {
-      if (typeof error?.code === 'string') throw error
-      throw Object.assign(new Error(error?.name === 'AbortError' ? 'GitHub request timed out' : 'GitHub request failed'), {
-        code: error?.name === 'AbortError' ? 'CATALOG_AUTOMATION_GITHUB_TIMEOUT' : 'CATALOG_AUTOMATION_GITHUB_NETWORK',
-      })
-    } finally {
-      clearTimeout(timer)
-    }
-  }
-
-  async function json(url, settings = {}) {
-    const value = await text(url, settings)
-    try { return JSON.parse(value) } catch {
-      throw Object.assign(new Error('GitHub returned invalid JSON'), { code: 'CATALOG_AUTOMATION_GITHUB_JSON' })
-    }
-  }
-
-  return {
-    json,
-    api: (path, settings) => json(`https://api.github.com/${path.replace(/^\//, '')}`, settings),
-    raw: (repositoryUrl, commit, path, settings = {}) => {
-      const { owner, repository } = repositoryParts(repositoryUrl)
-      const encoded = path.split('/').map(encodeURIComponent).join('/')
-      return text(`https://raw.githubusercontent.com/${encodeURIComponent(owner)}/${encodeURIComponent(repository)}/${commit}/${encoded}`, {
-        ...settings, accept: 'application/vnd.github.raw+json',
-      })
-    },
-  }
 }
 
 async function analyzeFixedSource(candidate, policy, github) {
@@ -395,7 +321,9 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     if (!repositorySnapshots.has(key)) {
       repositorySnapshots.set(key, retryInfrastructure(async () => {
         const { owner, repository } = repositoryParts(target.repositoryUrl)
-        const defaultBranch = target.defaultBranch || 'main'
+        const metadata = await github.api(`repos/${owner}/${repository}`)
+        if (metadata?.private === true || metadata?.archived === true || metadata?.disabled === true) throw Object.assign(new Error('the canonical repository is private, archived, or disabled'), { code: 'CATALOG_SOURCE_REPOSITORY_INACTIVE' })
+        const defaultBranch = metadata.default_branch || target.defaultBranch || 'main'
         if (target.record?.to.repositoryUrl) {
           const original = repositoryParts(entry.repositoryUrl)
           const [from, to] = await Promise.all([
@@ -445,12 +373,6 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
             sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? null,
           }
         }
-        const metadata = await github.api(`repos/${owner}/${repository}`)
-        if (metadata?.private === true || metadata?.archived === true || metadata?.disabled === true) {
-          throw Object.assign(new Error('the canonical repository is private, archived, or disabled'), {
-            code: 'CATALOG_SOURCE_REPOSITORY_INACTIVE',
-          })
-        }
         return {
           commit: head.sha,
           repositoryUrl: target.repositoryUrl,
@@ -499,6 +421,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         catalogDocument: withoutCurrent,
         allowProtectedManager: isSelfManagerEntry(entry),
         token: process.env.GITHUB_TOKEN, timeoutMs: 12_000,
+        fetch: github.fetch, fixedCommit: snapshot.commit,
       }))
       const candidate = result.candidate
       if (candidate.commit !== snapshot.commit || candidate.defaultBranch !== snapshot.defaultBranch) {
@@ -513,10 +436,10 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       }
       const sourcePolicy = catalogUpdatePolicy(entry)
       const { owner, repository } = repositoryParts(entry.repositoryUrl)
-      let lineage = null
+      let lineage = sameCommitLineage(entry.commit, candidate.commit)
       let disconnectedExternalOnly = false
       try {
-        lineage = await retryInfrastructure(() => github.api(
+        lineage ??= await retryInfrastructure(() => github.api(
           `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
           { maxBytes: 4 * 1024 * 1024, captureNoCommonAncestor: true },
         ))
@@ -723,7 +646,7 @@ async function inspectDiscoveries(catalog, candidates, policy, github, observedA
     process.stdout.write(`CATALOG_AUTOMATION_DISCOVERY_CHECK repository=${repository.full_name} candidate=${head.sha.slice(0, 12)}\n`)
     try {
       const result = await retryInfrastructure(() => checkRepository(repository.html_url, '', {
-        catalogDocument: catalog, token: process.env.GITHUB_TOKEN, timeoutMs: 12_000,
+        catalogDocument: catalog, token: process.env.GITHUB_TOKEN, timeoutMs: 12_000, fetch: github.fetch, fixedCommit: head.sha,
       }))
       const analysis = await retryInfrastructure(() => analyzeFixedSource(result.candidate, policy, github))
       const entry = automatedEntry(result.candidate, analysis, observedAt)
@@ -1013,7 +936,11 @@ const report = {
   skippedDiscoveries: [], transientFailures: [],
 }
 failureContext.report = report
-const github = createGithubClient()
+const github = createCatalogGithubReader()
+report.apiUsage = github.statistics
+// Resolve canonical repository identity and head metadata in bounded read-only
+// batches. All later package reads share these immutable snapshots and cache.
+await github.primeRepositories(catalog.entries.flatMap(entry => [entry.repositoryUrl, catalogMigrationSource(entry, catalogMigrations).repositoryUrl]))
 failureContext.stage = 'inspect-historical-catalog-entries'
 await updateExistingEntries(catalog, policy, github, observedAt, report)
 report.excludedCandidates = pruneExcludedCandidates(candidates, policy)
