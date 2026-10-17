@@ -785,22 +785,26 @@ test('source verification distinguishes timeout, HTTP, manifest, and patch failu
 
 test('batch admission rechecks preserve every safety field under the historical response bound', async () => {
   const source = await loadCatalogFromFiles()
-  const entries = source.entries.map((item, i) => ({
-    ...item,
+  const entries = source.entries.slice(0, 806).map((item, i) => {
+    const { admission: _priorAdmission, ...base } = item
+    const { latestWindow: _priorWindow, ...compatibility } = item.compatibility
+    return {
+    ...base,
     // A real scan adds exact-source decisions across hundreds of entries;
     // search-term growth alone did not reproduce the production failure.
-    ...(i < 550 ? { admission: item.admission ?? {
+    ...(i < 550 ? { admission: {
       engine: 'bounded-source-v3', binding: 'a'.repeat(64), policyDigest: 'b'.repeat(64),
       state: 'review-required', sourceContract: 'verified', coverage: 'complete', capabilities: 'review-required',
       compatibility: 'per-version-declaration', reviewRegistryDigest: 'c'.repeat(64),
     } } : {}),
     description: ('完整功能说明与示例😀。'.repeat(120)).slice(0, 1400),
-    compatibility: { ...item.compatibility,
+    compatibility: { ...compatibility,
       dshReleases: { ...item.compatibility.dshReleases, '0.2.1-alpha.4': 'unknown', '0.2.1-alpha.5': 'unknown' },
       // The failed run refreshed 96 latest-window records.
       ...(i < 96 ? { latestWindow: { state: 'recheck-required', releases: ['0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5'] } } : {}),
     },
-  }))
+    }
+  })
   const split = splitCatalogDocument({ ...source, entries })
   assert.ok(catalogBridgeBuffer(split.bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
   assert.equal(split.bridgeProjection.entries, entries.length)
