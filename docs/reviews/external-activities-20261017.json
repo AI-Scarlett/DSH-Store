@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "AI-Scarlett/DSH-Store",
-  "observedAt": "2026-10-17T10:16:52.165581+00:00",
+  "observedAt": "2026-10-17T10:30:25.625112+00:00",
   "baseCommit": "3fb5b3c2f70b88ad498e79d84cfa77980a797dcd",
   "evidenceLevel": "complete-bounded-static-source-review",
   "thirdPartyCodeExecuted": false,
@@ -52,8 +52,8 @@
         "manifestPath": "package.json",
         "installPath": null,
         "updatePolicy": null,
-        "commit": "a13ff75f40faf9accebbea6213172afd57e76dd6",
-        "version": "0.17.9",
+        "commit": "ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
+        "version": "0.17.10",
         "categories": [
           "experimental"
         ],
@@ -68,7 +68,7 @@
           "discovery": {
             "status": "verified",
             "method": "catalog-presence",
-            "checkedAt": "2026-10-17T03:22:17.000Z",
+            "checkedAt": "2026-10-17T10:16:52.165Z",
             "evidenceUrl": "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json",
             "dshRelease": null,
             "systems": [],
@@ -236,7 +236,7 @@
           "findingsTruncated": false
         },
         "engine": "bounded-source-v3",
-        "sourceDigest": "d3b049bd543397e34412fc54990be53a320714d137822564249302d0a0dc035e",
+        "sourceDigest": "e200fd7f88385b6a01aa685731815e09c534f30e5a3eb8472e35aa2091e7cb0f",
         "sourceEvidence": [
           {
             "file": "cordis.patch.yml",
@@ -276,9 +276,9 @@
           },
           {
             "file": "lib/index.js",
-            "bytes": 250350,
-            "blob": "341c543ec7279e391fb28f33236347ea3085aeba",
-            "sha256": "06a5ab2fbba09b7b5a2da3266860212a4181e53a8dee7c4124e10ea6ea253555"
+            "bytes": 251595,
+            "blob": "6bb9ad4ccbb50bb1301cba8f71ab68aaeb4ac9a8",
+            "sha256": "fd02d9d139356f9421089a54b51b367668e662de8c8e627b5d5ad5e17f21975b"
           },
           {
             "file": "lib/net-guard.js",
@@ -288,9 +288,9 @@
           },
           {
             "file": "package.json",
-            "bytes": 3002,
-            "blob": "807ed263b4b56f3ed99e9e0518ea64fc826149cd",
-            "sha256": "a7f56bcc273f95497cdf5991672cbccdf6462087c471e4559ea7c6fe34eef1c8"
+            "bytes": 3255,
+            "blob": "5a7fb0c992fca4e24eb391b56026e813d38db65a",
+            "sha256": "da81227161a7ed79cebed9129aef8888627369ac8c18a30ae59e8016063ba511"
           }
         ],
         "capabilityEvidence": [
@@ -420,13 +420,13 @@
           "files": 13
         },
         "runtimeFiles": 9,
-        "runtimeBytes": 841810,
+        "runtimeBytes": 843308,
         "contractVerified": true,
         "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
         "runtimeDependencies": {},
         "approved": false
       },
-      "binding": "6604157b0200d4b3bf6886bc81ea275fb198d2590f2ff3861abc98e01c317398",
+      "binding": "29f85d21ac2db6dea4e7a47e7a5275260dce785bf7b56f0a165aea1ff348834f",
       "decision": "admitted",
       "summary": "AUTH001 三项修复已确认；精确兼容声明覆盖当前官方最新三版，按完整固定源能力审阅准入 approved / user-reviewed。Store 未运行插件，出图、安装卸载回滚、真实 Profile 验收仍未验证。",
       "blockers": [],
@@ -445,8 +445,8 @@
         },
         {
           "path": "README.md",
-          "blob": "de4e207169e37941353a87685888bf247a9dfc9e",
-          "bytes": 98413
+          "blob": "20e42bcf58f1aa0ef5d579187fd9b0d709b6fd8a",
+          "bytes": 101359
         },
         {
           "path": "cordis.patch.yml",
@@ -480,8 +480,8 @@
         },
         {
           "path": "lib/index.js",
-          "blob": "341c543ec7279e391fb28f33236347ea3085aeba",
-          "bytes": 250350
+          "blob": "6bb9ad4ccbb50bb1301cba8f71ab68aaeb4ac9a8",
+          "bytes": 251595
         },
         {
           "path": "lib/net-guard.js",
@@ -490,8 +490,8 @@
         },
         {
           "path": "package.json",
-          "blob": "807ed263b4b56f3ed99e9e0518ea64fc826149cd",
-          "bytes": 3002
+          "blob": "5a7fb0c992fca4e24eb391b56026e813d38db65a",
+          "bytes": 3255
         },
         {
           "path": "qwen-image-optimized-workflow.json",
@@ -800,8 +800,8 @@
         },
         {
           "path": "scripts/test-net-guard.mjs",
-          "blob": "97864d18fbb741f237ba595fd5897fd0d8ff936a",
-          "bytes": 8818
+          "blob": "eb1fed4e85663b22b75aae112fddd76d9080bae9",
+          "bytes": 10643
         },
         {
           "path": "scripts/test-request-trust.mjs",
@@ -831,14 +831,14 @@
       ],
       "review": {
         "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
-        "commit": "a13ff75f40faf9accebbea6213172afd57e76dd6",
-        "binding": "6604157b0200d4b3bf6886bc81ea275fb198d2590f2ff3861abc98e01c317398",
+        "commit": "ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
+        "binding": "29f85d21ac2db6dea4e7a47e7a5275260dce785bf7b56f0a165aea1ff348834f",
         "verdict": "approved",
         "reviewer": "Codex on behalf of AI-Scarlett",
-        "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+        "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
         "rationale": "AUTH001 三项修复已确认；精确兼容声明覆盖当前官方最新三版，按完整固定源能力审阅准入 approved / user-reviewed。Store 未运行插件，出图、安装卸载回滚、真实 Profile 验收仍未验证。 Full immutable runtime text review confirms loopback/remote opt-in, no redirects, filtered child environment, JSON write guards, bounded parsing, and background-only cfg recovery. pip/Git and user-configured Python/Hipfire commands remain explicitly disclosed elevated capabilities; no claim of sandboxing or download reproducibility. Request compatibility tests are author evidence only.",
         "evidenceUrls": [
-          "https://github.com/yanfei0725/dsh-qwen-paint/commit/a13ff75f40faf9accebbea6213172afd57e76dd6",
+          "https://github.com/yanfei0725/dsh-qwen-paint/commit/ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
           "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
         ],
         "permissions": {
@@ -862,7 +862,7 @@
             "tool": {
               "file": "lib/index.js",
               "line": 2002,
-              "sha256": "06a5ab2fbba09b7b5a2da3266860212a4181e53a8dee7c4124e10ea6ea253555"
+              "sha256": "fd02d9d139356f9421089a54b51b367668e662de8c8e627b5d5ad5e17f21975b"
             },
             "rationale": "The keyed toolview registers draw_image only, which is the tool declared by this package. No built-in/protected Tool key or inventory row is replaced."
           }
@@ -1216,7 +1216,7 @@
         "binding": "f3710ddc812de85baeae8e8cfb7c494192e7d716ae66753836b87fc789102d81",
         "verdict": "rejected",
         "reviewer": "Codex on behalf of AI-Scarlett",
-        "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+        "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
         "rationale": "重新投稿与 #1460 合并审查：manifest repository 已修正，不再保留旧身份不匹配结论；当前 Patch、精确兼容和端点/凭据边界仍不满足准入。只更新公开受审状态，不重复联系已收过消息的作者。",
         "evidenceUrls": [
           "https://github.com/Wyatt5341/dsh-plugin-vision/commit/84b838b9808c18e0652c93dbccaf0a413e1d59ae",
@@ -1608,7 +1608,7 @@
         "binding": "c0434b7406ecec275c21d381c4547c21910231f788799515e613e355b99f82f4",
         "verdict": "rejected",
         "reviewer": "Codex on behalf of AI-Scarlett",
-        "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+        "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
         "rationale": "完整 7 文本覆盖；零 npm dependencies 不消除内置 js-yaml、curl/tar、文件写入和 GitHub token 能力。因请求/路径/身份兼容契约拒绝准入。",
         "evidenceUrls": [
           "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/935dbb1ef7f10be54c0a972ac45a947f07832a78",
@@ -1953,7 +1953,7 @@
         "binding": "5017b326a1d95bd92e4c76b3fd548b9304cce3aafd7505787fd2c98111ba1c7d",
         "verdict": "rejected",
         "reviewer": "Codex on behalf of AI-Scarlett",
-        "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+        "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
         "rationale": "最新固定源已改为静态 Patch，旧预检标量错误已不适用；完整 6 文本覆盖。请求信任、删除事务/内存边界和 manifest/兼容契约仍拒绝。",
         "evidenceUrls": [
           "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/7badd13a23a96d0c45f9b01ad8a2ded3e73ea611",
@@ -2317,7 +2317,7 @@
         "binding": "4e27e5f6afaca4a77d31febe7b78cc7a9a8608d3f72b4ff5cf903bb68bbbb264",
         "verdict": "rejected",
         "reviewer": "Codex on behalf of AI-Scarlett",
-        "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+        "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
         "rationale": "完整 5 文本覆盖；保留已披露的本地命令能力，不把 child-process 信号当成恶意。scripts/verify.mjs 的 new Function 只用于客户端语法检查，不作为运行时动态执行的拒绝理由；真正阻断项是请求信任、cmd/目标约束与兼容。",
         "evidenceUrls": [
           "https://github.com/nubeslove/dsh-file-actions/commit/1dae73c840d94f98f8bd1d6738d4a701be5f61ac",

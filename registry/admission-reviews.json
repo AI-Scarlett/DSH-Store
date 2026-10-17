@@ -220,14 +220,14 @@
     },
     {
       "repositoryUrl": "https://github.com/yanfei0725/dsh-qwen-paint",
-      "commit": "a13ff75f40faf9accebbea6213172afd57e76dd6",
-      "binding": "6604157b0200d4b3bf6886bc81ea275fb198d2590f2ff3861abc98e01c317398",
+      "commit": "ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
+      "binding": "29f85d21ac2db6dea4e7a47e7a5275260dce785bf7b56f0a165aea1ff348834f",
       "verdict": "approved",
       "reviewer": "Codex on behalf of AI-Scarlett",
-      "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+      "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
       "rationale": "AUTH001 三项修复已确认；精确兼容声明覆盖当前官方最新三版，按完整固定源能力审阅准入 approved / user-reviewed。Store 未运行插件，出图、安装卸载回滚、真实 Profile 验收仍未验证。 Full immutable runtime text review confirms loopback/remote opt-in, no redirects, filtered child environment, JSON write guards, bounded parsing, and background-only cfg recovery. pip/Git and user-configured Python/Hipfire commands remain explicitly disclosed elevated capabilities; no claim of sandboxing or download reproducibility. Request compatibility tests are author evidence only.",
       "evidenceUrls": [
-        "https://github.com/yanfei0725/dsh-qwen-paint/commit/a13ff75f40faf9accebbea6213172afd57e76dd6",
+        "https://github.com/yanfei0725/dsh-qwen-paint/commit/ebdb7bf130c8aa5f686d319ab95a92f131a0772e",
         "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
       ],
       "permissions": {
@@ -251,7 +251,7 @@
           "tool": {
             "file": "lib/index.js",
             "line": 2002,
-            "sha256": "06a5ab2fbba09b7b5a2da3266860212a4181e53a8dee7c4124e10ea6ea253555"
+            "sha256": "fd02d9d139356f9421089a54b51b367668e662de8c8e627b5d5ad5e17f21975b"
           },
           "rationale": "The keyed toolview registers draw_image only, which is the tool declared by this package. No built-in/protected Tool key or inventory row is replaced."
         }
@@ -289,7 +289,7 @@
       "binding": "f3710ddc812de85baeae8e8cfb7c494192e7d716ae66753836b87fc789102d81",
       "verdict": "rejected",
       "reviewer": "Codex on behalf of AI-Scarlett",
-      "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+      "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
       "rationale": "重新投稿与 #1460 合并审查：manifest repository 已修正，不再保留旧身份不匹配结论；当前 Patch、精确兼容和端点/凭据边界仍不满足准入。只更新公开受审状态，不重复联系已收过消息的作者。",
       "evidenceUrls": [
         "https://github.com/Wyatt5341/dsh-plugin-vision/commit/84b838b9808c18e0652c93dbccaf0a413e1d59ae",
@@ -305,7 +305,7 @@
       "binding": "c0434b7406ecec275c21d381c4547c21910231f788799515e613e355b99f82f4",
       "verdict": "rejected",
       "reviewer": "Codex on behalf of AI-Scarlett",
-      "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+      "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
       "rationale": "完整 7 文本覆盖；零 npm dependencies 不消除内置 js-yaml、curl/tar、文件写入和 GitHub token 能力。因请求/路径/身份兼容契约拒绝准入。",
       "evidenceUrls": [
         "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/935dbb1ef7f10be54c0a972ac45a947f07832a78",
@@ -321,7 +321,7 @@
       "binding": "5017b326a1d95bd92e4c76b3fd548b9304cce3aafd7505787fd2c98111ba1c7d",
       "verdict": "rejected",
       "reviewer": "Codex on behalf of AI-Scarlett",
-      "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+      "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
       "rationale": "最新固定源已改为静态 Patch，旧预检标量错误已不适用；完整 6 文本覆盖。请求信任、删除事务/内存边界和 manifest/兼容契约仍拒绝。",
       "evidenceUrls": [
         "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/7badd13a23a96d0c45f9b01ad8a2ded3e73ea611",
@@ -337,7 +337,7 @@
       "binding": "4e27e5f6afaca4a77d31febe7b78cc7a9a8608d3f72b4ff5cf903bb68bbbb264",
       "verdict": "rejected",
       "reviewer": "Codex on behalf of AI-Scarlett",
-      "reviewedAt": "2026-10-17T10:16:52.165581+00:00",
+      "reviewedAt": "2026-10-17T10:30:25.625112+00:00",
       "rationale": "完整 5 文本覆盖；保留已披露的本地命令能力，不把 child-process 信号当成恶意。scripts/verify.mjs 的 new Function 只用于客户端语法检查，不作为运行时动态执行的拒绝理由；真正阻断项是请求信任、cmd/目标约束与兼容。",
       "evidenceUrls": [
         "https://github.com/nubeslove/dsh-file-actions/commit/1dae73c840d94f98f8bd1d6738d4a701be5f61ac",
