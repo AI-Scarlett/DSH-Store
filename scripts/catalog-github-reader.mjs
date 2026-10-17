@@ -1,5 +1,5 @@
-// Public GitHub reads only. Query metadata and immutable trees through GraphQL
-// so the Actions REST bucket remains available for the checked PR/publication.
+// Public GitHub reads only. Batch metadata through GraphQL and cache complete
+// recursive REST trees. A bounded GraphQL fallback preserves the PR reserve.
 const OID = /^[a-f0-9]{40}$/
 const REPOSITORY = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/
 const MAX_BYTES = 4 * 1024 * 1024
@@ -164,7 +164,11 @@ export function createCatalogGithubReader(options = {}) {
         const repository = `${decodeURIComponent(match[1])}/${decodeURIComponent(match[2])}`, rest = match[3] ?? ''
         if (!rest && !parsed.search) value = (await repositorySnapshot(repository)).metadata
         else if (rest.startsWith('commits/') && !parsed.search) value = await commit(repository, decodeURIComponent(rest.slice(8)))
-        else if (/^git\/trees\/[a-f0-9]{40}$/.test(rest) && parsed.search === '?recursive=1') value = await tree(repository, rest.split('/').at(-1), settings.maxTreeEntries ?? 20000)
+        else if (/^git\/trees\/[a-f0-9]{40}$/.test(rest) && parsed.search === '?recursive=1'
+          && (options.treeTransport === 'graphql' || stats.restRequests >= stats.restLimit
+            || stats.remainingRest !== null && stats.remainingRest <= stats.publicationReserve)) {
+          value = await tree(repository, rest.split('/').at(-1), settings.maxTreeEntries ?? 20000)
+        }
       }
       if (value !== undefined) {
         const text = JSON.stringify(value)
@@ -178,7 +182,8 @@ export function createCatalogGithubReader(options = {}) {
       const { response, text } = await network(parsed.href, { maxBytes: settings.maxBytes ?? MAX_BYTES })
       if (parsed.hostname === 'api.github.com') {
         const remaining = response.headers?.get?.('x-ratelimit-remaining')
-        if (remaining !== null && remaining !== undefined && /^\d+$/.test(remaining)) stats.remainingRest = Number(remaining)
+        // Search has its own small quota; it must never replace core capacity.
+        if (!parsed.pathname.startsWith('/search/') && remaining !== null && remaining !== undefined && /^\d+$/.test(remaining)) stats.remainingRest = Number(remaining)
       }
       if (!response.ok) {
         let message = `GitHub returned HTTP ${response.status}`
@@ -186,6 +191,14 @@ export function createCatalogGithubReader(options = {}) {
           try { const body = JSON.parse(text); if (/^No common ancestor between [a-f0-9]{40} and [a-f0-9]{40}\.?$/.test(body.message)) message = body.message } catch {}
         }
         throw error(message, 'HTTP', response.status)
+      }
+      if (parsed.hostname === 'api.github.com' && /^\/repos\/[^/]+\/[^/]+\/git\/trees\/[a-f0-9]{40}$/.test(parsed.pathname) && parsed.search === '?recursive=1') {
+        let value
+        try { value = JSON.parse(text) } catch { throw error('GitHub returned an invalid immutable tree', 'TREE') }
+        if (!OID.test(value?.sha ?? '') || typeof value.truncated !== 'boolean' || !Array.isArray(value.tree)) throw error('GitHub returned an incomplete immutable tree', 'TREE')
+        const maximum = settings.maxTreeEntries ?? 20000
+        if (!Number.isSafeInteger(maximum) || maximum < 1 || maximum > 50000) throw error('Invalid immutable tree bound', 'TREE')
+        if (value.tree.length > maximum) return JSON.stringify({ ...value, truncated: true, tree: value.tree.slice(0, maximum + 1) })
       }
       return text
     })

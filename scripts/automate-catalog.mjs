@@ -951,6 +951,7 @@ await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report
 failureContext.stage = 'apply-latest-dsh-compatibility-policy'
 report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
   catalog, candidates, dshReleaseWindow, observedAt,
+  { policyDigest: sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })), reviewRegistryDigest: admissionReviewDigest },
 )
 report.compatibilityUnlisted = report.compatibilityPolicy.unlisted
 report.compatibilityRestored = report.compatibilityPolicy.restored

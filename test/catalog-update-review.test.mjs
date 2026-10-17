@@ -130,7 +130,7 @@ test('a Catalog version refresh resets old runtime and compatibility evidence', 
   assert.deepEqual(updated.risk.installScripts, ['prepare'])
 })
 
-test('a compatible same-version fixed Commit can restore a latest-three compatibility hold', () => {
+test('a compatible same-version fixed Commit requires current admission before restoring its hold', () => {
   const original = entry({
     status: 'unlisted',
     statusReason: `${COMPATIBILITY_HOLD_PREFIX} fixture`,
@@ -159,10 +159,17 @@ test('a compatible same-version fixed Commit can restore a latest-three compatib
     discoverySources: [COMPATIBILITY_CANDIDATE_SOURCE], topics: ['dsh-compatibility-review'],
     status: 'reviewing', route: 'direct-review', statusReason: `${COMPATIBILITY_HOLD_PREFIX} fixture`,
   }] }
-  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, {
+  const window = {
     authority: 'fixture', registryUrl: 'https://registry.npmjs.org', latestVersion: '0.1.2-rc.1',
     releaseCount: 2, releases: ['0.1.2-alpha.5', '0.1.2-rc.1'],
-  }, '2026-09-04T02:00:00Z')
+  }
+  const blocked = applyLatestDshCompatibilityPolicy(catalog, candidates, window, '2026-09-04T02:00:00Z')
+  assert.equal(blocked.restored.length, 0)
+  assert.equal(updated.status, 'unlisted', 'new Commit and compatibility alone cannot restore admission')
+  const authority = { policyDigest: 'c'.repeat(64), reviewRegistryDigest: 'd'.repeat(64) }
+  updated.admission = { engine: 'bounded-source-v3', binding: 'e'.repeat(64), ...authority,
+    state: 'source-verified', sourceContract: 'verified', coverage: 'complete', capabilities: 'low-risk-static' }
+  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, window, '2026-09-04T02:00:00Z', authority)
   assert.equal(catalog.entries[0].status, 'approved')
   assert.equal(report.restored.length, 1)
   assert.equal(candidates.entries.length, 0)
