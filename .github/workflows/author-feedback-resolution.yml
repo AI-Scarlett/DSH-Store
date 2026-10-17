@@ -38,6 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           EXPECTED_MAIN: ${{ inputs.expected_main }}
           FEEDBACK_PLAN: ${{ inputs.plan }}
+          FIRST_CONTACT_RECEIPT: ${{ runner.temp }}/first-author-contact-receipt.json
         run: |
           [[ "$EXPECTED_MAIN" =~ ^[0-9a-f]{40}$ ]]
           test "$(git rev-parse HEAD)" = "$EXPECTED_MAIN"
@@ -50,7 +51,17 @@ jobs:
             node scripts/record-author-contact-stop.mjs --plan "$FEEDBACK_PLAN"
           elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-batches/[a-z0-9-]+\.json$ ]]; then
             node scripts/run-author-feedback-batch.mjs --plan "$FEEDBACK_PLAN"
+          elif [[ "$FEEDBACK_PLAN" =~ ^registry/author-first-contacts/[a-z0-9-]+\.json$ ]]; then
+            node scripts/send-first-author-contact.mjs --plan "$FEEDBACK_PLAN"
           else
             echo 'Unsupported feedback plan path' >&2
             exit 1
           fi
+      - name: Preserve first-contact delivery receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-author-contact-${{ github.run_id }}
+          path: ${{ runner.temp }}/first-author-contact-receipt.json
+          if-no-files-found: ignore
+          retention-days: 30
