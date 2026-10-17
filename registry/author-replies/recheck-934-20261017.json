@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 934,
+  "userId": 51282470,
+  "requestCommentId": 6219910739,
+  "requestBodySha256": "3fc53d8c2f39f203f8ac9e5a0d2d9b12655d4ac1b6cd1e58df2ab628d773a961",
+  "requestUpdatedAt": "2026-10-16T16:24:38Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "No action requested beyond the review itself.",
+    "scope": "One final exact-source admission result for this verified new review request.",
+    "kind": "admission-recheck"
+  },
+  "responseBody": "已完成 **0.2.4 / ec9c22794b8de3c1794246b309fce6ecd66df90a** 的固定源复核（8 个运行文本、199,288 字节，Git blob 校验通过）。先纠正我们的旧回复：**zod 不是新增依赖，v0.1.4 已声明同样的 ^4.4.3**。当前 dist/src 的 Typert 文件确实导入它；未观测到网络、命令或凭据能力，credentials:[\"none\"] 与文件写入权限继续保留。\n\n依赖材料已纳入审阅：npm zod@4.6.5 元数据显示 MIT、无 runtime dependencies、带签名及 SLSA v1 provenance 声明；这不是恶意依赖或许可证问题的结论。我们没有独立验证你本机 46 个官方包的统计，也没有把来源元数据当成运行验收。\n\n仍有 SUPPLY001 的具体差距：package.json:73 是浮动 ^4.4.3，pnpm-lock.yaml:11-13 锁的是 **4.4.3**，不是本次材料的 4.6.5；尚缺“DSH 实际安装强制使用哪个经审阅版本/文件闭包”的绑定。可保留 zod；所需材料是实际安装采用的精确闭包、完整性哈希、canonical source Commit、分发文件哈希、许可证/安装钩子证据及解析机制。**单独精确 pin 4.6.5 还不足以补齐这项，无需先为此改版本。**\n\n独立的 COMPAT001 也仍存在：manifest 未声明当前官方最新三版 0.2.1-alpha.3 / alpha.4 / alpha.5 中任一版 compatible。实际验证后补一版准确声明及证据即可继续按新固定 Commit 评估，其余保持 unknown。\n\n完整判定与验收条件：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md。Catalog 继续 blocked，未执行第三方安装/测试或真实 Profile 验收，issue 保持打开。",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "84d1d79b15865aca4401483b2b2006600ad059d7ec9fc46619caf5cb348bf37a"
+  }
+}

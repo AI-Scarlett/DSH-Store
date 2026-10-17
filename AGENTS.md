@@ -86,3 +86,9 @@ are separate acceptance gates and must never be inferred from unit tests.
     final-1390-20261016.json、final-1415-20261016.json，经同一中央账本新增
     owner-authorized-admission-correction 预留；保留原请求占用、历史、停止联系和
     不重试规则。修改正文、计划摘要、claim 或重新调度都不能恢复名额。不适用于其他请求。
+
+19. 2026-10-17 当前所有者任务明确要求对 #1390、#1386、#934 三条指定动态逐条回复。
+    #1386 的 6219417205（用户 ID 153054118）只报告版本，不能记为作者明确继续沟通。
+    本次仅允许 owner-review-result-1386-20261017 对该原文发送一次受审的最终复核结果；
+    仍须绑定 main 上的计划和最终判定，经过同一中央 CAS 预留，遵守停止联系与不重试规则。
+    不适用于其他人、评论、渠道或后续版本，不提供通用所有者绕过入口。

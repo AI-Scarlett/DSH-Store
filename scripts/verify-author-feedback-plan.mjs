@@ -8,7 +8,7 @@ import { validateReplyGrant } from './reply-author-contact.mjs'
 import { verifyReplyResolution } from '../src/author-resolution.mjs'
 export const planPath = 'docs/ops/author-feedback-resolution-20261015.json'
 const hash = bytes => bytes === null ? null : createHash('sha256').update(bytes).digest('hex')
-export function validateResolutionPlan(plan, changes, readBase, readCurrent) {
+export function validateResolutionPlan(plan, changes, readBase, readCurrent, currentPlanPath = planPath) {
   const authority = plan?.authorization
   const exception = authority?.credentialException
   const credentialAuthorized = authority?.githubWriteCredential === 'short-lived-token-required'
@@ -24,14 +24,16 @@ export function validateResolutionPlan(plan, changes, readBase, readCurrent) {
   for (const path of plan.scope) if (hash(readBase(path)) !== plan.preconditions[path]) throw new Error(`base file hash changed: ${path}`)
   for (const path of changes) {
     if (!plan.scope.includes(path)) throw new Error(`outside resolution scope: ${path}`)
-    if (path !== planPath && !/^[a-f0-9]{64}$/.test(plan.postconditions?.[path] ?? '')) throw new Error(`missing reviewed postcondition: ${path}`)
+    if (path !== currentPlanPath && !/^[a-f0-9]{64}$/.test(plan.postconditions?.[path] ?? '')) throw new Error(`missing reviewed postcondition: ${path}`)
   }
   for (const [path, expected] of Object.entries(plan.postconditions ?? {})) {
-    if (!plan.scope.includes(path) || path === planPath || hash(readCurrent(path)) !== expected) throw new Error(`reviewed content changed: ${path}`)
+    if (!plan.scope.includes(path) || path === currentPlanPath || hash(readCurrent(path)) !== expected) throw new Error(`reviewed content changed: ${path}`)
   }
 }
 function main() {
   const git = (...args) => execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 24 * 1024 * 1024 }).trim()
+  let currentPlanPath = process.argv[2] ?? planPath
+  if (!/^docs\/ops\/author-feedback-[a-z0-9-]+\.json$/.test(currentPlanPath)) throw new Error('invalid feedback plan path')
   if (process.env.GITHUB_EVENT_PATH) {
     const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH))
     const from = event.pull_request?.base?.sha ?? event.before
@@ -47,14 +49,18 @@ function main() {
         if (reply.review.kind === 'admission-recheck') verifyReplyResolution(reply, readFileSync('registry/author-resolutions.json'))
       }
     }
-    if (!from || !to || !git('diff', '--name-only', from, to, '--', planPath)) { console.log('AUTHOR_FEEDBACK_PLAN_NOT_CHANGED'); return }
+    const changedPlans = from && to ? git('diff', '--name-only', from, to, '--', 'docs/ops').split('\n')
+      .filter(path => /^docs\/ops\/author-feedback-[a-z0-9-]+\.json$/.test(path)) : []
+    if (!changedPlans.length) { console.log('AUTHOR_FEEDBACK_PLAN_NOT_CHANGED'); return }
+    if (changedPlans.length !== 1) throw new Error('one fresh feedback plan required')
+    currentPlanPath = changedPlans[0]
   }
-  const plan = JSON.parse(readFileSync(planPath))
+  const plan = JSON.parse(readFileSync(currentPlanPath))
   git('merge-base', '--is-ancestor', plan.baseCommit, 'HEAD')
   const changes = [...new Set([git('diff', '--name-only', plan.baseCommit), git('ls-files', '--others', '--exclude-standard')].join('\n').split('\n').filter(Boolean))]
   validateResolutionPlan(plan, changes, path => {
     try { return execFileSync('git', ['show', `${plan.baseCommit}:${path}`], { stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 24 * 1024 * 1024 }) } catch { return null }
-  }, path => readFileSync(path))
+  }, path => readFileSync(path), currentPlanPath)
   console.log(`AUTHOR_FEEDBACK_PLAN_OK base=${plan.baseCommit} changed=${changes.length}`)
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) main()

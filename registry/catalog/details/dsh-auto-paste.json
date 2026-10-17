@@ -21,8 +21,8 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "5fab0ff99b6c202caf86cda73ba6e0429558d29b",
+  "updatePolicy": "user-reviewed",
+  "commit": "ec9c22794b8de3c1794246b309fce6ecd66df90a",
   "version": "0.2.4",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T14:34:15.000Z",
-    "observedAt": "2026-10-15T13:06:31.398Z",
+    "updatedAt": "2026-10-16T16:30:55.000Z",
+    "observedAt": "2026-10-17T01:09:33.816Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T13:06:31.398Z",
-      "evidenceUrl": "https://github.com/sakuraqqq/dsh-auto-paste/commit/5fab0ff99b6c202caf86cda73ba6e0429558d29b",
+      "method": "author-remediation-terminal-review-v1",
+      "checkedAt": "2026-10-17T01:09:33.816Z",
+      "evidenceUrl": "https://github.com/sakuraqqq/dsh-auto-paste/commit/ec9c22794b8de3c1794246b309fce6ecd66df90a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
+      "summary": "Fixed source identity and complete bounded Git blobs verified."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation, package scripts, or builds were executed."
+      "summary": "No third-party code was installed or executed by the Store."
     },
     "runtime": {
       "status": "unknown",
@@ -63,35 +63,35 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime reports were not independently reproduced."
+      "summary": "No third-party code was installed or executed by the Store."
     },
     "securityReview": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
+      "status": "partial",
+      "method": "independent-bounded-static-admission-review",
+      "checkedAt": "2026-10-17T01:09:33.816Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "This bounded capability review is not an independent security audit."
+      "summary": "SUPPLY001: corrected historical zod claim; actual DSH dependency resolution is not bound to an immutable reviewed closure. COMPAT001: no current latest-three compatible declaration."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "1c7e116c7eb54ab2897d6434ed26a2f0cec3d694920da5f52427ea74bfd926ed",
+    "binding": "61a4b24f036fe886e4eadb85ecc179324ed8b8024ca2ee2a7b40c4dfdb6716f4",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "review-required",
+    "state": "rejected",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
   },
   "entryIds": [
     "dsh-auto-paste"
   ],
   "status": "blocked",
-  "statusReason": "Fixed-source recheck blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: SUPPLY001: corrected historical zod claim; actual DSH dependency resolution is not bound to an immutable reviewed closure. COMPAT001: no current latest-three compatible declaration.",
   "compatibility": {
     "dsh": "^0.1.5-rc.1 || ^0.2.0-rc.2",
     "dshReleases": {
@@ -120,7 +120,9 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -302,10 +304,10 @@
     "externalDependencies": [
       "zod"
     ],
-    "reviewStatus": "automated-scan"
+    "reviewStatus": "manual-review"
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "manual-fixed-source-rejected-not-installable"
   }
 }
