@@ -8,6 +8,9 @@ import {
   officialDshReleaseWindow,
 } from '../src/catalog-compatibility-policy.mjs'
 
+const admissionAuthority = { policyDigest: 'c'.repeat(64), reviewRegistryDigest: 'd'.repeat(64) }
+const admission = { engine: 'bounded-source-v3', binding: 'e'.repeat(64), ...admissionAuthority, state: 'source-verified', sourceContract: 'verified', coverage: 'complete', capabilities: 'low-risk-static' }
+
 const observedAt = '2026-08-24T12:00:00.000Z'
 const releaseWindow = {
   packageName: '@deepseek-ai/dsh',
@@ -151,9 +154,9 @@ test('an exact compatible alias in any of the latest three releases keeps an app
   assert.equal(report.catalogChanged, true, 'missing operation records are materialized as unknown')
 })
 
-test('a managed hold restores automatically and removes only its managed candidate', () => {
+test('a managed hold with current complete admission restores and removes only its managed candidate', () => {
   const held = entry({
-    status: 'unlisted',
+    status: 'unlisted', admission,
     statusReason: `${COMPATIBILITY_HOLD_PREFIX} prior window`,
     compatibility: {
       dsh: '>=0.1.0-rc.7',
@@ -176,13 +179,32 @@ test('a managed hold restores automatically and removes only its managed candida
     statusReason: `${COMPATIBILITY_HOLD_PREFIX} prior window`,
   }
   const { catalog, candidates } = documents(held, [managed])
-  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, observedAt)
+  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, observedAt, admissionAuthority)
   assert.equal(catalog.entries[0].status, 'approved')
   assert.equal(Object.hasOwn(catalog.entries[0], 'statusReason'), false)
   assert.equal(candidates.entries.length, 0)
   assert.equal(report.restored.length, 1)
   assert.equal(report.catalogChanged, true)
   assert.equal(report.candidatesChanged, true)
+})
+
+test('historical compatibility never restores unknown, incomplete, rejected or stale source admission', () => {
+  const invalid = [undefined, { ...admission, state: 'incomplete' }, { ...admission, coverage: 'incomplete' },
+    { ...admission, sourceContract: 'unverified' }, { ...admission, state: 'rejected' }, { ...admission, capabilities: 'prohibited' },
+    { ...admission, policyDigest: 'f'.repeat(64) }, { ...admission, reviewRegistryDigest: 'f'.repeat(64) }, { ...admission, engine: 'old-policy' }]
+  for (const record of invalid) {
+    const held = entry({ status: 'unlisted', statusReason: `${COMPATIBILITY_HOLD_PREFIX} prior window`, admission: record,
+      compatibility: { dshReleases: { '0.1.2-alpha.4': 'compatible' } } })
+    const { catalog, candidates } = documents(held)
+    const report = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, observedAt, admissionAuthority)
+    assert.notEqual(held.status, 'approved'); assert.equal(report.restored.length, 0)
+    assert.equal(report.restorationBlocked.length, 1); assert.equal(candidates.entries.length, 1)
+    assert.match(held.statusReason, /current complete fixed-source admission/)
+  }
+  const { catalog, candidates } = documents(entry({ status: 'blocked', statusReason: `${COMPATIBILITY_HOLD_PREFIX} prior window`, admission,
+    compatibility: { dshReleases: { '0.1.2-alpha.4': 'compatible' } } }))
+  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, observedAt)
+  assert.equal(report.restored.length, 0, 'missing current policy authority fails closed')
 })
 
 test('a pre-existing candidate for the same repository is preserved byte-for-byte', () => {
@@ -210,7 +232,7 @@ test('a pre-existing candidate for the same repository is preserved byte-for-byt
 })
 
 test('multiple held plugins from one repository share one candidate and partial restoration keeps it', () => {
-  const first = entry({ id: 'dsh-example-one' })
+  const first = entry({ id: 'dsh-example-one', admission })
   const second = entry({ id: 'dsh-example-two', commit: 'b'.repeat(40) })
   const catalog = { entries: [first, second] }
   const candidates = { entries: [] }
@@ -221,7 +243,7 @@ test('multiple held plugins from one repository share one candidate and partial 
   assert.match(candidates.entries[0].statusReason, /dsh-example-one, dsh-example-two/)
 
   first.compatibility.dshReleases['0.1.2-alpha.5'] = 'compatible'
-  const followUp = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, '2026-08-25T00:00:00.000Z')
+  const followUp = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, '2026-08-25T00:00:00.000Z', admissionAuthority)
   assert.equal(first.status, 'approved')
   assert.equal(second.status, 'blocked')
   assert.equal(followUp.restored.length, 1)

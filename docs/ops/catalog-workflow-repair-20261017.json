@@ -1,31 +1,34 @@
 {
   "schemaVersion": 1,
   "operation": "catalog-workflow-repair",
-  "phase": "read-budget-and-publication-recovery",
-  "baseCommit": "d3b046269cece8cde91df06b8897a767b0dccc37",
-  "createdAt": "2026-10-17T01:07:41.249530+00:00",
+  "phase": "admission-restoration-and-tree-budget-recovery",
+  "baseCommit": "94ef2c8250e0cbaef3c6ad78e7f03278e943a171",
+  "createdAt": "2026-10-17T01:38:50.472231+00:00",
   "scope": [
     "docs/ops/catalog-workflow-repair-20261017.json",
     "scripts/automate-catalog.mjs",
     "scripts/catalog-github-reader.mjs",
-    "src/discovery-feeds.mjs",
-    "test/catalog-automation.test.mjs",
-    "test/catalog-github-reader.test.mjs"
+    "src/catalog-compatibility-policy.mjs",
+    "test/catalog-compatibility-policy.test.mjs",
+    "test/catalog-github-reader.test.mjs",
+    "test/catalog-update-review.test.mjs"
   ],
   "preconditions": {
-    "docs/ops/catalog-workflow-repair-20261017.json": "a1c7ea492884cfe0bf83d8e0a07aeb6ef29db46fdc1dfb0da04b2fcb2ef1d6ee",
-    "scripts/automate-catalog.mjs": "a43444bf278c382b81075b0b3ea26a14c76cbc8978464fbe8d1eab5c915693e9",
-    "scripts/catalog-github-reader.mjs": null,
-    "src/discovery-feeds.mjs": "446cf89b8441344ace9853773f5c814dcf79b27108b4b68c82a98926c78940fc",
-    "test/catalog-automation.test.mjs": "ac792f0e57a931c9e1dac424679bdb9f535f1b854f92def7b67d11f56f84e44c",
-    "test/catalog-github-reader.test.mjs": null
-  },
-  "postconditions": {
+    "docs/ops/catalog-workflow-repair-20261017.json": "f11f5892deaf4f05b362fc65581c85aa6db498bf1d85cfdd19c37dbabe00d37b",
     "scripts/automate-catalog.mjs": "a8f89c461c133d01565097923100a017c7d4268afaa4e8fafaaadd6ac4df7469",
     "scripts/catalog-github-reader.mjs": "fe74ba35cf26f24d3aef3ca33a2677ac1433475cf985144288cdfe56d0ed4234",
-    "src/discovery-feeds.mjs": "c673e7ec60ff40a56f7fec5f62aad36a795972e908ee0457c35c572bbc702978",
-    "test/catalog-automation.test.mjs": "2c0e3b5f3c3cea868bd41fdaf895dde9d23a04decb9fefc8f8340f2b149145ab",
-    "test/catalog-github-reader.test.mjs": "9879bbba958b0009b99c8d098464663b66f2ac9b3a1d803e17cece96649ea683"
+    "src/catalog-compatibility-policy.mjs": "8c212afdd432c1e8bf4e2454b87c07d0d4ce017386bd5e22249c8376d45d41bd",
+    "test/catalog-compatibility-policy.test.mjs": "0074ff9c5ebd1b92dff5a39f2fec436f86037550fdfe1a76c14867264bad956b",
+    "test/catalog-github-reader.test.mjs": "9879bbba958b0009b99c8d098464663b66f2ac9b3a1d803e17cece96649ea683",
+    "test/catalog-update-review.test.mjs": "2ddd481af7a3c75e3c305117987b190ae167f3d894449e2309259640a992d21c"
+  },
+  "postconditions": {
+    "scripts/automate-catalog.mjs": "281134e545983de33964170d8b3e7a1407e72923f2d26efda7091f1a90438ba2",
+    "scripts/catalog-github-reader.mjs": "8ae65ddf297a2af4c50ac43d4d0e4c2f582b6874eed4348dbd7d9cbd7b3ff440",
+    "src/catalog-compatibility-policy.mjs": "37df1d51133010c92dfdf0d8d8faf8a626d6cfda428cbb1d7e090f511853533a",
+    "test/catalog-compatibility-policy.test.mjs": "fb6617b620ae52b20ece6c1fd7ff2f332425b4ef595bae294012d1110616bd24",
+    "test/catalog-github-reader.test.mjs": "affc0cb935b662ba59e6d155fab4a8b2ad3f2d2ae207a76a498c61166b643fbd",
+    "test/catalog-update-review.test.mjs": "81b9ef5de2b975a4b74afd3657a1bf6d9b12310a64d03bed90cc766192a3e32c"
   },
   "authorization": {
     "source": "direct-user-request",
@@ -33,30 +36,46 @@
     "githubWriteCredential": "short-lived-token-required"
   },
   "evidence": {
-    "run": 38988608055,
-    "serialization": "passed; 1961312 bytes, 806 entries, all repository checks passed",
-    "publicationFailure": "GitHub installation API rate limit exhausted before creating PR",
-    "unresolvedSourceChecks": 722,
-    "liveReadOnlyProbe": {
+    "failedRun": 38990869217,
+    "failedChildRun": 38991384451,
+    "automatedPr": 1456,
+    "failure": "historical compatibility restored an unreviewed invalid Bundle Patch to approved",
+    "affectedExample": "dsh-xiapan-media@6c88a3707aed1e69bd470a9ad556a8a87e945e44",
+    "sourceReadBudget": {
+      "graphqlRequests": 700,
+      "transientBudgetFailures": 760,
+      "restRequests": 35
+    },
+    "hybridReadOnlyProbe": {
+      "status": "passed",
       "repository": "limbo947/dsh-recall-plugin",
       "commit": "625794a19b7efd8a4c8ec784e1be9f7450f484ab",
-      "completeTreeEntries": 249,
-      "submissionPrecheck": "passed",
-      "restRequests": 0,
-      "graphqlRequests": 7,
+      "treeEntries": 249,
+      "package": "dsh-recall-plugin",
+      "statistics": {
+        "restRequests": 1,
+        "restLimit": 650,
+        "publicationReserve": 250,
+        "remainingRest": 4813,
+        "graphqlRequests": 1,
+        "graphqlLimit": 700,
+        "remainingGraphql": 4999,
+        "cacheHits": 7,
+        "cacheBytes": 92615,
+        "cacheLimit": 67108864
+      },
       "thirdPartyCodeExecuted": false
     }
   },
   "gates": [
+    "no restoration without complete current admission and policy/review digests",
+    "complete recursive REST trees share a cache; bounded GraphQL fallback",
+    "search rate limits never replace the core publication budget",
     "exact base and file hashes",
-    "read-only batched GitHub metadata and complete immutable trees",
-    "shared bounded request cache and publication API reserve",
-    "same-Commit lineage is identity only; changed sources retain real compare proof",
-    "complete tree or fail closed",
     "npm run check",
     "CI-checked PR",
-    "actual main scan, signed automated PR and Pages publication",
-    "four public surfaces readback"
+    "actual main scan and signed checked merge",
+    "Pages and four public surfaces readback"
   ],
   "rollback": "CI-checked source revert; normal atomic production rollback on health failure; never reset contacts or mutate real Profiles",
   "verdict": {
@@ -64,6 +83,5 @@
     "thirdPartyCodeExecuted": false,
     "realProfileChanged": false,
     "newCredentialsRequired": false
-  },
-  "previousBaseCommit": "ef39537839a1c3817973ca4a5f5b7b1946e4506f"
+  }
 }

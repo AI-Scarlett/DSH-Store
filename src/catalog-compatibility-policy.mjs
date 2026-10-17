@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import { dshReleaseVersion } from './catalog.mjs'
+import { SCAN_POLICY_VERSION } from './source-scan-policy.mjs'
 import {
   DSH_PACKAGE_NAME,
   DSH_REGISTRY_URL,
@@ -81,7 +82,7 @@ function managedCandidate(entries, candidates, releases, observedAt, previous = 
     .sort((left, right) => Date.parse(right) - Date.parse(left))[0] ?? null
   const affected = entries.map(item => item.id).sort((left, right) => left.localeCompare(right, 'en'))
   const repositoryName = entry.repositoryUrl.replace('https://github.com/', '')
-  const reason = boundedText(`${compatibilityHoldReason(releases)} Affected Catalog entries: ${affected.join(', ')}.`)
+  const reason = boundedText(`${[...new Set(entries.map(item => item.statusReason || compatibilityHoldReason(releases)))].join(' ')} Affected Catalog entries: ${affected.join(', ')}.`)
   return {
     id: uniqueCandidateId(entry, candidates),
     name: entries.length === 1 ? entry.name : `兼容性复核：${repositoryName}（${entries.length} 个 Catalog 条目）`,
@@ -137,7 +138,18 @@ function ensureReleaseWindowFields(entry, releases) {
   return added
 }
 
-export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, observedAt) {
+function currentAdmission(entry, authority) {
+  const record = entry.admission
+  return authority && /^[a-f0-9]{64}$/.test(authority.policyDigest ?? '')
+    && /^[a-f0-9]{64}$/.test(authority.reviewRegistryDigest ?? '')
+    && record?.engine === SCAN_POLICY_VERSION && /^[a-f0-9]{64}$/.test(record.binding ?? '')
+    && record.policyDigest === authority.policyDigest && record.reviewRegistryDigest === authority.reviewRegistryDigest
+    && record.sourceContract === 'verified' && record.coverage === 'complete'
+    && (record.state === 'source-verified' && record.capabilities === 'low-risk-static'
+      || record.state === 'reviewed' && record.capabilities === 'reviewed')
+}
+
+export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, observedAt, admissionAuthority = null) {
   if (!catalog || !Array.isArray(catalog.entries)) throw new Error('compatibility policy requires Catalog entries')
   if (!candidates || !Array.isArray(candidates.entries)) throw new Error('compatibility policy requires Candidate Registry entries')
   if (!window || !Array.isArray(window.releases) || window.releases.length !== window.releaseCount) {
@@ -163,6 +175,7 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
     unlisted: [], // Historical report key: now visible blocked entries, never hidden.
     stale: [],
     restored: [],
+    restorationBlocked: [],
     refreshed: [],
   }
   const heldByRepository = new Map()
@@ -184,7 +197,7 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
       report.catalogChanged = true
     }
     if (!supported) report.stale.push(transitionRecord(entry, window.releases, null))
-    if (historicallySupported) {
+    if (historicallySupported && (!managedHold || currentAdmission(entry, admissionAuthority))) {
       if (!managedHold) continue
       entry.status = 'approved'
       delete entry.statusReason
@@ -192,8 +205,13 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
       report.restored.push(transitionRecord(entry, window.releases, null))
       continue
     }
+    if (historicallySupported && managedHold) report.restorationBlocked.push({
+      ...transitionRecord(entry, window.releases, null), reason: 'Current complete fixed-source admission is required before restoring a compatibility hold.',
+    })
 
-    const reason = compatibilityHoldReason(window.releases)
+    const reason = historicallySupported
+      ? `${COMPATIBILITY_HOLD_PREFIX} Installation held pending current complete fixed-source admission. Historical DSH compatibility does not approve the manifest, Bundle Patch, runtime source, or permissions.`
+      : compatibilityHoldReason(window.releases)
     if (entry.status === 'approved') {
       entry.status = 'blocked'
       entry.statusReason = reason
