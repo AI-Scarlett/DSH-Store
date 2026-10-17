@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "273526f8bbab1ea59150df93b9d834572af61936",
-  "version": "1.3.0",
+  "commit": "18a639f1eeff2715fb4a47471fc3cf62b83c59cc",
+  "version": "1.3.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T15:35:38.000Z",
-    "observedAt": "2026-10-15T13:06:31.398Z",
+    "updatedAt": "2026-10-16T13:38:39.000Z",
+    "observedAt": "2026-10-17T01:26:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T13:06:31.398Z",
-      "evidenceUrl": "https://github.com/KouzakiUmi/dsh-prompt-zh/commit/273526f8bbab1ea59150df93b9d834572af61936",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-17T01:26:45.000Z",
+      "evidenceUrl": "https://github.com/KouzakiUmi/dsh-prompt-zh/commit/18a639f1eeff2715fb4a47471fc3cf62b83c59cc",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation, package scripts, or builds were executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime reports were not independently reproduced."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "This bounded capability review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -90,6 +90,7 @@
   "entryIds": [
     "prompt-zh"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Fixed-source recheck blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
@@ -105,7 +106,9 @@
       "0.1.2-alpha.5": "unknown",
       "0.2.1-alpha.2": "compatible",
       "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -169,6 +172,18 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

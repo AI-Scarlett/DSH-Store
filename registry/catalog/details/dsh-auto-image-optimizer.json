@@ -24,7 +24,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "37c9df5fdd57a46c9528b1ba83475cd8d97c8114",
+  "commit": "459314a7839ce26e845f0bb91cfd16dec8d8041a",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -32,20 +32,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T03:57:41.000Z",
-    "observedAt": "2026-10-14T03:54:27.000Z",
+    "updatedAt": "2026-10-16T14:41:22.000Z",
+    "observedAt": "2026-10-17T01:26:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-14T03:54:27.000Z",
-      "evidenceUrl": "https://github.com/zyf2492313716-cloud/dsh-auto-image-optimizer/commit/37c9df5fdd57a46c9528b1ba83475cd8d97c8114",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-17T01:26:45.000Z",
+      "evidenceUrl": "https://github.com/zyf2492313716-cloud/dsh-auto-image-optimizer/commit/459314a7839ce26e845f0bb91cfd16dec8d8041a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,12 +75,24 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "d75394dee11ee9e90566f14454030b335745f71187944eb8e707c98646004a82",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
   },
   "entryIds": [
     "auto-image-optimizer"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: ./lib/client.cjs; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
@@ -94,10 +106,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -148,25 +159,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

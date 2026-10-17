@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b0aa81ca6af5306e53ca776766b0850755b93fb2",
-  "version": "0.10.2",
+  "commit": "ac62fb161ad059a66328db2b3584bac90fb2a090",
+  "version": "1.0.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T02:29:48.000Z",
-    "observedAt": "2026-10-15T03:36:12.000Z",
+    "updatedAt": "2026-10-17T01:20:17.000Z",
+    "observedAt": "2026-10-17T01:26:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T03:36:12.000Z",
-      "evidenceUrl": "https://github.com/TwinsEarth/dsh-windows2macos/commit/b0aa81ca6af5306e53ca776766b0850755b93fb2",
+      "checkedAt": "2026-10-17T01:26:45.000Z",
+      "evidenceUrl": "https://github.com/TwinsEarth/dsh-windows2macos/commit/ac62fb161ad059a66328db2b3584bac90fb2a090",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,11 +77,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "8e8a5282e56ddb1f0bfcfe676319f1540c8b9b8ea6e0da136d8d24884b673b6a",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "verified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
   "entryIds": [
     "w2m"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: deploy/caddy/Caddyfile.example, deploy/docker/Dockerfile, deploy/nginx/w2m.conf.example, deploy/server/w2m-localside.service, deploy/server/w2m-rabbit.service; runtime source exceeds the automatic review byte bound: 2037103 total bytes (maximum 2097152); largest file 269898 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: deploy/caddy/Caddyfile.example, deploy/docker/Dockerfile, deploy/logrotate/w2m.logrotate, deploy/nginx/w2m.conf.example, deploy/server/w2m-localside.service; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal;",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -93,9 +105,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,19 +158,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

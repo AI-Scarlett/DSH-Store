@@ -19,7 +19,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b9bd63a028f64ff0441f743d8f88ff876ccccbdd",
+  "commit": "c2fe45992fdcaf790a27843b5dd97b84376b65ee",
   "version": "0.2.0",
   "categories": [
     "experimental"
@@ -27,16 +27,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T22:08:40.000Z",
-    "observedAt": "2026-10-15T03:36:12.000Z",
+    "updatedAt": "2026-10-16T19:14:31.000Z",
+    "observedAt": "2026-10-17T01:26:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T03:36:12.000Z",
-      "evidenceUrl": "https://github.com/clanso/flowgal/commit/b9bd63a028f64ff0441f743d8f88ff876ccccbdd",
+      "checkedAt": "2026-10-17T01:26:45.000Z",
+      "evidenceUrl": "https://github.com/clanso/flowgal/commit/c2fe45992fdcaf790a27843b5dd97b84376b65ee",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -73,11 +73,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "28698142980c03834111fa9db80efde09f1dcf83a84b74ba3ee226bd3ca55dc3",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
   "entryIds": [
     "flowgal"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime source exceeds the automatic review byte bound: 3977883 total bytes (maximum 2097152); largest file 1492180 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.0-rc.8 <0.2.0",
     "dshReleases": {
@@ -89,9 +101,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -142,19 +154,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -84,8 +84,8 @@
   "entryIds": [
     "dsh-auto-vision"
   ],
-  "status": "unlisted",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Temporarily unlisted because the Catalog has no compatible result for any of the official latest 3 DSH releases (0.2.1-alpha.1, 0.2.1-alpha.2, 0.2.1-alpha.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": "0.1.x",
     "dshReleases": {
@@ -114,7 +114,9 @@
       "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -272,7 +274,27 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
+    },
+    "latestWindow": {
+      "state": "recheck-required",
+      "releases": [
+        "0.2.1-alpha.3",
+        "0.2.1-alpha.4",
+        "0.2.1-alpha.5"
+      ]
     },
     "node": ">=20.0.0",
     "systems": [],

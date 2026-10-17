@@ -22,7 +22,7 @@
   "manifestPath": "plugins/dsh-desktop-companion/package.json",
   "installPath": "plugins/dsh-desktop-companion",
   "updatePolicy": "external-only",
-  "commit": "5a4b29e5f4be32462525b2bedd1d5a1b393c1e15",
+  "commit": "e87da67f99d5573f258049b93c15e8c628debe3e",
   "version": "0.0.22",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-15T02:19:03.000Z",
-    "observedAt": "2026-10-15T03:36:12.000Z",
+    "updatedAt": "2026-10-16T19:14:30.000Z",
+    "observedAt": "2026-10-17T01:26:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T03:36:12.000Z",
-      "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/5a4b29e5f4be32462525b2bedd1d5a1b393c1e15",
+      "checkedAt": "2026-10-17T01:26:45.000Z",
+      "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/e87da67f99d5573f258049b93c15e8c628debe3e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,9 +76,21 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "30fabc901b7b6306fc6345fa249d2082eb3a8440779824d57564f2710c105770",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
   "entryIds": [
     "dsh-desktop-companion"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
   "compatibility": {
@@ -92,9 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -145,19 +157,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

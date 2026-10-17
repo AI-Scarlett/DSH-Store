@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fb284fb099ca8b8f1fc82432ceff12e3dbbe09ad",
-  "version": "1.6.0",
+  "commit": "74df77261900ef5f85889a25abb17335e52ee7be",
+  "version": "1.6.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T15:34:59.000Z",
-    "observedAt": "2026-10-14T17:38:48.000Z",
+    "updatedAt": "2026-10-16T16:30:19.000Z",
+    "observedAt": "2026-10-17T01:26:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T17:38:48.000Z",
-      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/fb284fb099ca8b8f1fc82432ceff12e3dbbe09ad",
+      "checkedAt": "2026-10-17T01:26:45.000Z",
+      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/74df77261900ef5f85889a25abb17335e52ee7be",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,9 +77,21 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "5c594ee6abd121c0893b1f49de40f08ee1450837379db8e67e02c58b3145518b",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
   "entryIds": [
     "git-panel"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the commands permission signal",
   "compatibility": {
@@ -94,8 +106,9 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.1-alpha.2": "compatible",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -152,13 +165,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.1": {
+      "0.2.1-alpha.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

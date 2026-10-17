@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b36f4de35026110522006bb3e42d84ecbd871288",
-  "version": "0.1.89",
+  "commit": "02173d2e1d57ebecd11aa8c6b9aadd115ca2bec4",
+  "version": "0.1.98",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T12:12:17.000Z",
-    "observedAt": "2026-10-14T12:30:15.000Z",
+    "updatedAt": "2026-10-16T15:40:17.000Z",
+    "observedAt": "2026-10-17T01:26:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T12:30:15.000Z",
-      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/b36f4de35026110522006bb3e42d84ecbd871288",
+      "checkedAt": "2026-10-17T01:26:45.000Z",
+      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/02173d2e1d57ebecd11aa8c6b9aadd115ca2bec4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,11 +76,23 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "a0b0efed011362bdba6c7058bf3d5f548388160af770bc12f82d5a572b26ce66",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
   "entryIds": [
     "vs-game"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: assets/music/bgm/Billie Jean.mp3, assets/music/bgm/bad-apple-frames.bin, assets/music/bgm/bad-apple.mp3, assets/music/bgm/letmego-all.mp3, assets/music/bgm/letmego.mp3; runtime source exceeds the automatic review byte bound: 663579 total bytes (maximum 2097152); largest file 542926 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: assets/music/bgm/Billie Jean.mp3, assets/music/bgm/bad-apple-frames.bin, assets/music/bgm/bad-apple.mp3, assets/music/bgm/letmego-all.mp3, assets/music/bgm/letmego.mp3; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source c",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6",
     "dshReleases": {
@@ -92,10 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -146,25 +157,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
