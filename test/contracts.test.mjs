@@ -539,7 +539,7 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
     readFile(new URL('package.json', project), 'utf8'),
   ])
   const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
-  const installCommand = `dsh plugin --profile web add 'git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}'`
+  const bootstrapReference = `git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`
   const submissionUrl = 'https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml'
   assert.match(html, /defer src="\.\/app\.js"/)
   assert.match(html, /data-locale="zh"/)
@@ -592,7 +592,7 @@ test('GitHub Pages marketplace handles omitted featured flags deterministically'
   assert.match(html, /DSH_STATIC_CATALOG/)
   assert.match(html, /softwareVersion": "catalog-derived"/)
   assert.doesNotMatch(html, /git\+https:\/\/github\.com\/AI-Scarlett\/dsh-safe-plugin-manager\.git#[0-9a-f]{40}/)
-  assert.ok(readme.includes(installCommand))
+  assert.ok(readme.includes(bootstrapReference))
   assert.match(app, /featured === true/)
   assert.match(app, /featured\.length === 0/)
   assert.match(app, /featured\.emptyTitle/)
