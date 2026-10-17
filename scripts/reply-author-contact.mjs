@@ -5,14 +5,15 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { githubClient } from './author-contact-http.mjs'
-import { humanIdentity, contactBody, digest, reserveContact, requireRepository, validateOwnerCorrection, CORRECTION_GRANT, CORRECTION_QUOTE } from './author-contact-state.mjs'
+import { humanIdentity, contactBody, digest, reserveContact, requireRepository, validateOwnerCorrection, CORRECTION_GRANT, CORRECTION_QUOTE, OWNER_REVIEW_GRANT, OWNER_REVIEW_QUOTE } from './author-contact-state.mjs'
 import { verifyReplyResolution } from '../src/author-resolution.mjs'
 import { loadCatalogFromFiles } from '../src/catalog.mjs'
 import { isAdmissionRecheckRequest } from './collect-author-feedback.mjs'
 
 export function validateReplyGrant(plan) {
-  if (plan?.schemaVersion !== 1 || !['requested-author-reply', 'owner-authorized-admission-correction'].includes(plan.operation)
-    || plan.review?.decision !== 'explicit-request-to-continue'
+  const ownerResult = plan?.operation === 'owner-authorized-review-result'
+  if (plan?.schemaVersion !== 1 || !['requested-author-reply', 'owner-authorized-admission-correction', 'owner-authorized-review-result'].includes(plan.operation)
+    || plan.review?.decision !== (ownerResult ? 'owner-directed-exact-result' : 'explicit-request-to-continue')
     || typeof plan.review.scope !== 'string' || !plan.review.scope.trim()
     || typeof plan.review.requestQuote !== 'string' || !plan.review.requestQuote.trim()
     || !Number.isSafeInteger(plan.userId) || plan.userId < 1
@@ -22,6 +23,11 @@ export function validateReplyGrant(plan) {
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || typeof plan.responseBody !== 'string' || !plan.responseBody.trim()) throw new Error('explicit reviewed continuation request required')
   requireRepository(plan.repository)
+  if (ownerResult) {
+    if (plan.ownerAuthorization?.source !== 'direct-user-request' || plan.ownerAuthorization.quote !== OWNER_REVIEW_QUOTE
+      || plan.ownerAuthorization.grantId !== OWNER_REVIEW_GRANT || plan.review.kind !== 'admission-recheck') throw new Error('finite owner review-result approval required')
+    validateOwnerCorrection(plan.userId, plan.repository, correctionEvidence(plan))
+  }
   if (plan.operation === 'owner-authorized-admission-correction') {
     if (plan.ownerAuthorization?.source !== 'direct-user-request' || plan.ownerAuthorization.quote !== CORRECTION_QUOTE
       || plan.ownerAuthorization.grantId !== CORRECTION_GRANT || plan.review.kind !== 'admission-recheck') throw new Error('finite owner correction approval required')
@@ -55,7 +61,7 @@ export async function sendReviewedReply({ github, plan, seed }) {
   const claim = await reserveContact({
     github, repository: 'AI-Scarlett/DSH-Store', key: plan.repository,
     recipient: person, claimId: digest(JSON.stringify(plan)), seed,
-    ...(plan.operation === 'owner-authorized-admission-correction'
+    ...(['owner-authorized-admission-correction', 'owner-authorized-review-result'].includes(plan.operation)
       ? { ownerCorrection: correctionEvidence(plan) }
       : { continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 } }),
   })

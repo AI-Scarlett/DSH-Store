@@ -102,11 +102,20 @@ export async function readContactState(github, repository, seed) {
 // ordinary consent, permits another channel, or overrides a stop.
 export const CORRECTION_GRANT = 'author-admission-final-20261016'
 export const CORRECTION_QUOTE = '允许本次各补发一条最终结论'
+// One exact owner-directed result; a version report is not author consent.
+export const OWNER_REVIEW_GRANT = 'owner-review-result-1386-20261017'
+export const OWNER_REVIEW_QUOTE = '然后在对应 issue 上用中文（可附英文）回复作者复核结果和下一步。'
+const ownerReviewResult = { issueNumber: 1386, commentId: 6219417205, requestHash: '85f65b52c83038502057c8fecd99e0485bf1bb59eaa3f6f2c2833876037e8c14' }
 const corrections = new Map([
   [283827478, { issueNumber: 1390, commentId: 6213375613, requestHash: '159fa3ed188899c9841a22d94ea1210909c5d60a7741d9ba078c884bddf49296' }],
   [132990250, { issueNumber: 1415, commentId: 6213790736, requestHash: 'b0547a90c89c73fefcefd5a21bdd893f6df5c4640c2ad371f433d54d79b766e7' }],
 ])
 export function validateOwnerCorrection(userId, key, correction) {
+  if (correction?.grantId === OWNER_REVIEW_GRANT) {
+    if (userId !== 153054118 || key !== 'AI-Scarlett/DSH-Store'
+      || Object.entries(ownerReviewResult).some(([field, value]) => correction[field] !== value)) throw new Error('outside finite owner review-result grant')
+    return
+  }
   const approved = corrections.get(userId)
   if (!approved || key !== 'AI-Scarlett/DSH-Store' || correction?.grantId !== CORRECTION_GRANT
     || Object.entries(approved).some(([field, value]) => correction[field] !== value)) throw new Error('outside finite owner correction grant')
@@ -115,6 +124,7 @@ export async function reserveContact({ github, repository, recipient, key, claim
   const person = humanIdentity(recipient)
   if (!person || !/^[0-9a-f]{24,64}$/.test(claimId)) throw new Error('invalid contact reservation')
   requireRepository(key)
+  const ownerResult = ownerCorrection?.grantId === OWNER_REVIEW_GRANT
   if (ownerCorrection) {
     if (continuation) throw new Error('ambiguous contact reservation')
     validateOwnerCorrection(person.id, key, ownerCorrection)
@@ -129,8 +139,8 @@ export async function reserveContact({ github, repository, recipient, key, claim
       if (!existing || existing.stopped || existing.nodeId !== person.node_id
         || snapshot.state.blockedLogins.some(value => value.toLowerCase() === person.login.toLowerCase())) return { allowed: false, reason: 'no-correction-permission' }
       const history = Object.values(existing.reservations)
-      if (history.some(item => item.kind === 'owner-authorized-admission-correction' && item.commentId === ownerCorrection.commentId)) return { allowed: false, reason: 'correction-already-consumed' }
-      if (!history.some(item => item.kind === 'requested-reply' && item.commentId === ownerCorrection.commentId && item.requestHash === ownerCorrection.requestHash)) return { allowed: false, reason: 'missing-original-request-reservation' }
+      if (history.some(item => item.commentId === ownerCorrection.commentId && (ownerResult || item.kind === 'owner-authorized-admission-correction'))) return { allowed: false, reason: 'correction-already-consumed' }
+      if (!ownerResult && !history.some(item => item.kind === 'requested-reply' && item.commentId === ownerCorrection.commentId && item.requestHash === ownerCorrection.requestHash)) return { allowed: false, reason: 'missing-original-request-reservation' }
     } else if (continuation) {
       // Only the separately reviewed, live-verified reply command supplies this.
       if (!existing || existing.stopped || existing.nodeId !== person.node_id) return { allowed: false, reason: 'no-continuation-permission' }
@@ -141,7 +151,7 @@ export async function reserveContact({ github, repository, recipient, key, claim
       }
     } else if (decision !== 'first-contact') return { allowed: false, reason: decision }
     const state = structuredClone(snapshot.state)
-    const reservation = { kind: ownerCorrection ? 'owner-authorized-admission-correction' : continuation ? 'requested-reply' : 'first-contact', key: key.toLowerCase(), reservedAt: new Date().toISOString(), ...(ownerCorrection ?? continuation ?? {}) }
+    const reservation = { kind: ownerResult ? 'owner-authorized-review-result' : ownerCorrection ? 'owner-authorized-admission-correction' : continuation ? 'requested-reply' : 'first-contact', key: key.toLowerCase(), reservedAt: new Date().toISOString(), ...(ownerCorrection ?? continuation ?? {}) }
     const record = state.contacts[String(person.id)] ?? {
       userId: person.id, nodeId: person.node_id, logins: [person.login],
       stopped: false, firstContact: { kind: 'reserved', claimId }, reservations: {},

@@ -22,29 +22,29 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "5220923d8887e30a88dd12bd4e8a6c5b7e8a5d50",
-  "version": "1.0.0",
+  "updatePolicy": "user-reviewed",
+  "commit": "75e475a7b45e3cc2cf3c093fb8892e36642030fb",
+  "version": "1.0.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-11T14:46:24.000Z",
-    "observedAt": "2026-10-11T14:43:05.000Z",
+    "updatedAt": "2026-10-16T15:58:47.000Z",
+    "observedAt": "2026-10-17T01:09:33.816Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-11T14:43:05.000Z",
-      "evidenceUrl": "https://github.com/ArisaYamatogi/dsh-lecture-copilot/commit/5220923d8887e30a88dd12bd4e8a6c5b7e8a5d50",
+      "method": "author-remediation-terminal-review-v1",
+      "checkedAt": "2026-10-17T01:09:33.816Z",
+      "evidenceUrl": "https://github.com/ArisaYamatogi/dsh-lecture-copilot/commit/75e475a7b45e3cc2cf3c093fb8892e36642030fb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "Fixed source identity and complete bounded Git blobs verified."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "No third-party code was installed or executed by the Store."
     },
     "runtime": {
       "status": "unknown",
@@ -64,39 +64,52 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No third-party code was installed or executed by the Store."
     },
     "securityReview": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
+      "status": "partial",
+      "method": "independent-bounded-static-admission-review",
+      "checkedAt": "2026-10-17T01:09:33.816Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "AUTH001: manifest identity, license and declarations corrected; raw HTTP private reads and mutations lack request trust and method boundaries. COMPAT001: no current latest-three compatible declaration."
     }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "8d57f64b382b3a0c338d41fe4a604e64652395c9e8488ba53826347369da5558",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "rejected",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
   },
   "entryIds": [
     "lecture-copilot"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: manifest identity, license and declarations corrected; raw HTTP private reads and mutations lack request trust and method boundaries. COMPAT001: no current latest-three compatible declaration.",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
-      "rc.7": "unknown",
-      "rc.8": "unknown",
-      "0.1.1-rc.1": "unknown",
-      "0.1.1-rc.2": "unknown",
-      "0.1.2-alpha.2": "unknown",
-      "0.1.2-alpha.3": "unknown",
-      "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
+      "rc.7": "incompatible",
+      "rc.8": "incompatible",
+      "0.1.1-rc.1": "incompatible",
+      "0.1.1-rc.2": "incompatible",
+      "0.1.2-alpha.2": "incompatible",
+      "0.1.2-alpha.3": "incompatible",
+      "0.1.2-alpha.4": "incompatible",
+      "0.1.2-alpha.5": "incompatible",
+      "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "unknown",
       "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown"
+      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -172,7 +185,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.19.0",
     "systems": [],
     "profiles": [
       "web"
@@ -181,21 +194,24 @@
   "details": {
     "pluginType": "unknown",
     "installSource": "github",
-    "license": "MIT",
+    "license": "GPL-3.0",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "high",
+      "files": "write",
+      "network": "specified-services",
+      "commands": "restricted",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
-    "externalDependencies": [],
-    "reviewStatus": "automated-scan"
+    "externalDependencies": [
+      "Host-configured model / speech services",
+      "Windows PowerShell and OneNote COM"
+    ],
+    "reviewStatus": "manual-review"
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "manual-fixed-source-rejected-not-installable"
   }
 }

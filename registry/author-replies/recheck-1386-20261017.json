@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "operation": "owner-authorized-review-result",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1386,
+  "userId": 153054118,
+  "requestCommentId": 6219417205,
+  "requestBodySha256": "85f65b52c83038502057c8fecd99e0485bf1bb59eaa3f6f2c2833876037e8c14",
+  "requestUpdatedAt": "2026-10-16T15:59:31Z",
+  "review": {
+    "decision": "owner-directed-exact-result",
+    "requestQuote": "version1.0.1已修复",
+    "scope": "One owner-directed final result for this exact activity; version report is not author continuation consent.",
+    "kind": "admission-recheck"
+  },
+  "responseBody": "已复核 **1.0.1 / 75e475a7b45e3cc2cf3c093fb8892e36642030fb**：13 个运行文本、195,668 字节全部读取并核验 Git blob。repository 已指向当前项目，GPL-3.0 与 GitHub 许可证一致，Node.js/DSH 声明及分发文件清单也已补齐，这些旧问题已撤换。\n\n最终结论为 blocked，尚有 AUTH001：lib/index.js:656 的 lectureRoutes 及 1117 的注册处没有统一的请求信任检查；669/694/720 的 start/stop/clear 不校验方法，GET 也能改变或清空课堂会话，928/986/1056 的 OneNote 写入/记忆删除也需同一围栏。请在私有读取、模型调用、文件或 OneNote 动作之前校验宿主支持的请求信任，写操作限定 POST 并检查对应内容类型；不可信 Origin、cross-site 或缺必需上下文时先拒绝。\n\n另有 COMPAT001：当前官方最新三版 0.2.1-alpha.3 / alpha.4 / alpha.5 尚无 compatible 声明；实际验证后补当前窗口至少一版的准确声明及安装、启动、卸载证据，未验证版本保持 unknown。\n\n完整位置、最小改法与验收条件：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md。本轮未执行第三方代码或真实 Profile 验收，issue 保持打开。",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "84d1d79b15865aca4401483b2b2006600ad059d7ec9fc46619caf5cb348bf37a"
+  },
+  "ownerAuthorization": {
+    "source": "direct-user-request",
+    "grantId": "owner-review-result-1386-20261017",
+    "quote": "然后在对应 issue 上用中文（可附英文）回复作者复核结果和下一步。",
+    "scope": "This exact person, issue, comment and response only; no retry, no stop override, no future contact permission."
+  }
+}
