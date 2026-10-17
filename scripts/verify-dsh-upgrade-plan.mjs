@@ -14,8 +14,9 @@ export function validateUpgradePlan(plan, changes, readBase, readCurrent) {
     || JSON.stringify([...plan.scope].sort()) !== JSON.stringify(Object.keys(plan.preconditions ?? {}).sort())
     || plan.scope.some(p => typeof p !== 'string' || !/^[a-zA-Z0-9._/-]+$/.test(p) || p.startsWith('/') || p.includes('..'))
     || plan.authorization?.source !== 'direct-user-request'
-    || plan.authorization?.githubWriteCredential !== 'existing-credential-explicitly-authorized'
-    || plan.authorization?.credentialExceptionRequest !== '你直接上线啊 不要用短期的') throw new Error('Invalid typed DSH upgrade plan')
+    || !(plan.authorization?.githubWriteCredential === 'short-lived-token-required'
+      || (plan.authorization?.githubWriteCredential === 'existing-credential-explicitly-authorized'
+        && plan.authorization?.credentialExceptionRequest === '你直接上线啊 不要用短期的'))) throw new Error('Invalid typed DSH upgrade plan')
   for (const path of plan.scope) if (digest(readBase(path)) !== plan.preconditions[path]) throw new Error(`Base hash changed: ${path}`)
   for (const path of changes) {
     if (!plan.scope.includes(path)) throw new Error(`Outside upgrade scope: ${path}`)

@@ -10,6 +10,7 @@ test('upgrade authorization binds exact base, file scope and reviewed output', (
     authorization: { source: 'direct-user-request', githubWriteCredential: 'existing-credential-explicitly-authorized', credentialExceptionRequest: '你直接上线啊 不要用短期的' } }
   const check = (p = plan, paths = ['src/demo.mjs'], base = 'before', current = 'after') => validateUpgradePlan(p, paths, () => Buffer.from(base), () => Buffer.from(current))
   check()
+  check({ ...plan, authorization: { source: 'direct-user-request', githubWriteCredential: 'short-lived-token-required' } })
   assert.throws(() => check(plan, ['outside.mjs']), /Outside/)
   assert.throws(() => check(plan, undefined, 'drift'), /Base hash/)
   assert.throws(() => check(plan, undefined, undefined, 'drift'), /Reviewed content/)

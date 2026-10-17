@@ -11,18 +11,32 @@ test('client peer declarations match the official Host pre-install contract', as
   assert.ok(clients.includes(runtime))
   const runtimeAlternatives = manifest.peerDependencies[runtime].split(' || ')
   assert.ok(runtimeAlternatives.includes('>=0.1.0-rc.6 <0.2.0'))
-  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5']) {
+  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2']) {
     assert.ok(runtimeAlternatives.includes(release), `Host pre-install check requires runtime ${release}`)
   }
   for (const name of clients.filter(value => value !== runtime)) {
     const alternatives = manifest.peerDependencies[name].split(' || ')
-    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5']) {
+    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2']) {
       assert.ok(alternatives.includes(release), `${name} must explicitly support published ${release}`)
     }
     assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
-    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 5)
+    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 7)
     assert.ok(!alternatives.includes('*'))
   }
+})
+
+test('RC support is exact across the host, engine and every injected peer without future prerelease claims', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  for (const range of [manifest.dsh.compatibility.dsh, manifest.engines.dsh,
+    ...manifest.dsh.client.inject.map(name => manifest.peerDependencies[name])]) {
+    for (const release of ['0.2.1-rc.1', '0.2.1-rc.2']) assert.ok(range.split(' || ').includes(release))
+    assert.ok(!range.includes('*'))
+    assert.ok(!range.split(' || ').some(part => /^>=0\.2\./.test(part)))
+    assert.ok(!range.includes('0.2.1-rc.3'))
+  }
+  assert.equal(manifest.version, '0.9.8')
+  assert.ok(['unknown', 'compatible'].includes(manifest.dsh.compatibility.dshReleases['0.2.1-rc.1']))
+  assert.equal(manifest.dsh.compatibility.dshOperations['0.2.1-rc.1'].rollback, 'unknown')
 })
 
 test('upgrade matrix uses the exact ordered official latest-three release window', async () => {
