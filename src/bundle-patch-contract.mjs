@@ -119,8 +119,20 @@ export function bundlePatchContract(source) {
     }
     const id = fields.id?.value
     if (typeof id !== 'string' || !ID.test(id)) fail('Patch entry ID must be explicit and unambiguous')
-    if (keys.some(key => !['id', 'name', 'config', 'inject'].includes(key))) fail('Patch removal, disable or unknown operation requires review')
+    if (keys.some(key => !['id', 'name', 'config', 'inject', 'repository', 'permissions'].includes(key))) fail('Patch removal, disable or unknown operation requires review')
     if (fields.config && !object(fields.config)) fail('Patch config must be a mapping')
+    // Official include 1.0.10 appends inserted rows without stripping metadata.
+    // These two literal fields neither select an operation nor enforce access.
+    // Keep their accepted shape narrow; review real capability in fixed source.
+    if (fields.repository || fields.permissions) {
+      if (!inserted || !fields.name) fail('Patch metadata is supported only on an additive named entry')
+      if (fields.repository && (typeof fields.repository.value !== 'string'
+        || !/^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{1,100}$/.test(fields.repository.value))) fail('Patch repository metadata requires a literal GitHub identity')
+      if (fields.permissions && (!object(fields.permissions)
+        || !Object.keys(fields.permissions.value).length
+        || Object.entries(fields.permissions.value).some(([key, node]) => !['network', 'storage'].includes(key)
+          || !['true', 'false'].includes(node.value)))) fail('Unsupported Patch permission metadata requires review')
+    }
     // Official include 1.0.10-alpha.2 permits inject metadata. Support only
     // the independently verified commands-service form on additive entries;
     // arbitrary injection shapes and unknown services still require review.

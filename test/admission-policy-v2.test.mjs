@@ -64,6 +64,20 @@ test('literal commands-service injection is additive metadata, while unknown inj
   ]) assert.throws(() => bundlePatchContract(invalid), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
 })
 
+test('literal repository and network/storage metadata do not change additive Patch ownership', () => {
+  const patch = '- insert:\n    - id: tool-vision\n      name: dsh-plugin-vision\n      repository: Example/plugin\n      permissions:\n        network: true\n        storage: false\n'
+  const contract = bundlePatchContract(patch)
+  assert.deepEqual(contract.entryIds, ['tool-vision'])
+  assert.deepEqual(contract.configOverrides, [])
+  for (const invalid of [
+    patch.replace('network: true', 'network: granted'),
+    patch.replace('storage: false', 'commands: true'),
+    patch.replace('Example/plugin', '../outside'),
+    '- id: official\n  repository: Example/plugin\n  config: {}',
+    patch.replace('permissions:', 'disabled: true\n      permissions:'),
+  ]) assert.throws(() => bundlePatchContract(invalid), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+})
+
 test('bounded quoted argument sequences are literal configuration data, never evaluated (#1368)', () => {
   const patch = "- insert:\n    - id: mcp-akasha\n      name: '@akasha-book/mcp'\n      config:\n        command: node\n        args: ['<AKASHA_DIR>/mcp.mjs', \"--stdio\"]\n"
   assert.deepEqual(bundlePatchContract(patch).entryIds, ['mcp-akasha'])

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "baseCommit": "38a97c83b88652f229e4b6542ccdb2d3a28074b2",
+  "createdAt": "2026-10-17T10:40:17.322Z",
+  "scope": [
+    "docs/ops/author-feedback-submission-refresh-20261017.json",
+    "docs/reviews/submission-refresh-20261017.json",
+    "docs/reviews/submission-refresh-20261017.md",
+    "registry/admission-reviews.json",
+    "registry/author-resolutions.json",
+    "registry/catalog.json",
+    "registry/catalog-index.json",
+    "registry/catalog/details/dsh-file-actions.json",
+    "registry/author-submission-results/joey-20261017.json",
+    "registry/author-submission-results/file-actions-20261017.json",
+    "src/bundle-patch-contract.mjs",
+    "test/admission-policy-v2.test.mjs",
+    "registry/catalog/details/dsh-plugin-vision.json"
+  ],
+  "preconditions": {
+    "docs/ops/author-feedback-submission-refresh-20261017.json": null,
+    "docs/reviews/submission-refresh-20261017.json": null,
+    "docs/reviews/submission-refresh-20261017.md": null,
+    "registry/admission-reviews.json": "0cc645d988d3c54a5cec71430fdf51226774d5766eb4db27204263696a07b9a9",
+    "registry/author-resolutions.json": "71c3abbdc7c1fd80254d8148ed541c89afc54fb6ca59a6b3dcad1a71b80c0cde",
+    "registry/catalog.json": "a96534874d77b225f5f6b8053a9d3864d4d0e9e7af00e98c0a4f23b0d2a9aaa0",
+    "registry/catalog-index.json": "9935ce65118c83d80b59f2ec7d71e225adc8934482b6a7d86f88c7c0d34f6aa9",
+    "registry/catalog/details/dsh-file-actions.json": "f06f8aeae397ff098a9331f436906c6a26f907c83662eb770c63be03452828fa",
+    "registry/author-submission-results/joey-20261017.json": null,
+    "registry/author-submission-results/file-actions-20261017.json": null,
+    "src/bundle-patch-contract.mjs": "0342484c94cb2228671f63fd48c8b399dbddde58cf9f8ad59c6d932e4ff6f02e",
+    "test/admission-policy-v2.test.mjs": "76a88c91033f75f3611667a6383de8bd80bc1b01a5536391abecd7bc107ea51b",
+    "registry/catalog/details/dsh-plugin-vision.json": "6db25bed6021a6586c75e5d879913a0dc6be7b9be6d408f6365e8760faec9630"
+  },
+  "postconditions": {
+    "docs/reviews/submission-refresh-20261017.json": "61b7cfe074ea887815913bed3e77fe3ebacdd810b154771048b3566d578ceac0",
+    "docs/reviews/submission-refresh-20261017.md": "f41f679a1e76d9e3e4f030654f3c99e3e77e1f7f9a861ba2d9d0ff5b464da68f",
+    "registry/admission-reviews.json": "84491e41ebfb4c451a31fe9d2d9f3dd4f3357102487b912bb24e077a2c4bf73d",
+    "registry/author-resolutions.json": "94f58d1095ad84a54afe945030dd8b3eb4245bb1fe53847030e9d79817b13bc6",
+    "registry/catalog.json": "da3a85c9ec15c11c14a4c1c596ca1eaab18f3a1ed054c9bc70e33186d7e3e356",
+    "registry/catalog-index.json": "dd4453b8f49254b07d3e159df7a38a46e0246137d5d928114131b43a8e65939c",
+    "registry/catalog/details/dsh-file-actions.json": "4d10e0a835fade84173f37cc716ddcbabd9d8d3c8d372740ae7d0b1aad8096de",
+    "registry/author-submission-results/joey-20261017.json": "ea8b6d3f905bcefc5c62b2a6101703c4c8b96f657134122d1a93209b583aa164",
+    "registry/author-submission-results/file-actions-20261017.json": "cc1924aa5fc5891f32fe7de22b1fb7f1ffee4896412735c6bf43837966642324",
+    "src/bundle-patch-contract.mjs": "b1ddc05bb72b94098c4e7c4615a6999851235df0389ff712e604cc7528653514",
+    "test/admission-policy-v2.test.mjs": "c8fd6b7975ab3d9e337466ba64df8afe5ec8677e2aa5a94efde55359762b322b",
+    "registry/catalog/details/dsh-plugin-vision.json": "2ca4d01b0b03c7ff5462c5a96138010b8c3d3f7cf7f957bb31c9c6a700dad3cf"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Finish remaining submission results; recheck new immutable source and split per-person notifications after stale-source preconditions prevented every reservation and message.",
+    "githubWriteCredential": "short-lived-token-required",
+    "manualBranchPublication": "Current explicit owner authorization; verified GitHub signed commits for source, short-lived workflow token for notifications."
+  },
+  "gates": [
+    "complete bounded fixed-source/blob verification; no third-party execution",
+    "failed stale-source batch had no reservations or message attempts",
+    "terminal source-bound decisions and exact Issue hash",
+    "npm run check",
+    "exact policy hashes and CI-checked signed PR",
+    "per-person CAS before one final comment; uncertain attempts never retried",
+    "GitHub/Pages readback"
+  ],
+  "rollback": {
+    "source": "CI-checked revert PR",
+    "contacts": "Never remove/reset reservations or history; never retry uncertain messages"
+  },
+  "verdict": {
+    "state": "allow-ci-checked-current-source-rejection-and-two-independent-first-results",
+    "thirdPartyCodeExecuted": false,
+    "realProfileChanged": false,
+    "previousBatchReserved": false,
+    "previousBatchPosted": false,
+    "sourceCommit": "fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+    "npmCheckPassed": 505
+  }
+}

@@ -346,6 +346,32 @@
         "https://github.com/nubeslove/dsh-file-actions/blob/1dae73c840d94f98f8bd1d6738d4a701be5f61ac/lib/index.js#L84",
         "https://github.com/nubeslove/dsh-file-actions/blob/1dae73c840d94f98f8bd1d6738d4a701be5f61ac/package.json#L40"
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/nubeslove/dsh-file-actions",
+      "commit": "fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+      "binding": "49f18ca930dc7e36800e1fcf98e512662046377743bbe23aa3693194be92c792",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-17T10:46:37.383Z",
+      "rationale": "最新 0.1.1 固定源完整覆盖 7 个文本。已确认 open-url 的 http/https/双引号校验及 new Function 移除；请求信任、cmd/目标约束与精确 DSH 兼容仍拒绝准入。生成截图的 Playwright/DSH_HOME 查找属于显式开发脚本，不当成运行时凭据读取或新的恶意证据。",
+      "evidenceUrls": [
+        "https://github.com/nubeslove/dsh-file-actions/commit/fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/Wyatt5341/dsh-plugin-vision",
+      "commit": "84b838b9808c18e0652c93dbccaf0a413e1d59ae",
+      "binding": "8bf9fcf4650dd1c78ced30d41af4527f555e698ea5b107ab5c0e4a5b0e2b1f45",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-17T10:46:37.383Z",
+      "rationale": "Store 已按官方 cordis-plugin-include 1.0.10 的增量行语义支持有界 literal repository / network-storage permissions 元数据，固定源预检通过；不再要求作者删除这些字段。它们不提供运行时权限强制。当前仍因 NET001 和 COMPAT001 拒绝准入。",
+      "evidenceUrls": [
+        "https://github.com/Wyatt5341/dsh-plugin-vision/commit/84b838b9808c18e0652c93dbccaf0a413e1d59ae",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md"
+      ]
     }
   ]
 }

@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "1dae73c840d94f98f8bd1d6738d4a701be5f61ac",
-  "version": "0.1.0",
+  "commit": "fb4a1ba9a3451d40045baf8d02748e245d7ee247",
+  "version": "0.1.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T09:59:21.000Z",
-    "observedAt": "2026-10-17T10:30:25.625Z",
+    "updatedAt": "2026-10-17T10:34:19.000Z",
+    "observedAt": "2026-10-17T10:46:37.383Z",
     "provenance": "github-repository"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "github-fixed-commit-source",
-      "checkedAt": "2026-10-17T10:30:25.625Z",
-      "evidenceUrl": "https://github.com/nubeslove/dsh-file-actions/commit/1dae73c840d94f98f8bd1d6738d4a701be5f61ac",
+      "checkedAt": "2026-10-17T10:46:37.383Z",
+      "evidenceUrl": "https://github.com/nubeslove/dsh-file-actions/commit/fb4a1ba9a3451d40045baf8d02748e245d7ee247",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -69,30 +69,30 @@
     "securityReview": {
       "status": "partial",
       "method": "independent-bounded-static-admission-review",
-      "checkedAt": "2026-10-17T10:30:25.625Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md",
+      "checkedAt": "2026-10-17T10:46:37.383Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "完整 5 文本覆盖；保留已披露的本地命令能力，不把 child-process 信号当成恶意。scripts/verify.mjs 的 new Function 只用于客户端语法检查，不作为运行时动态执行的拒绝理由；真正阻断项是请求信任、cmd/目标约束与兼容。"
+      "summary": "最新 0.1.1 固定源完整覆盖 7 个文本。已确认 open-url 的 http/https/双引号校验及 new Function 移除；请求信任、cmd/目标约束与精确 DSH 兼容仍拒绝准入。生成截图的 Playwright/DSH_HOME 查找属于显式开发脚本，不当成运行时凭据读取或新的恶意证据。"
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "4e27e5f6afaca4a77d31febe7b78cc7a9a8608d3f72b4ff5cf903bb68bbbb264",
+    "binding": "49f18ca930dc7e36800e1fcf98e512662046377743bbe23aa3693194be92c792",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "0cc645d988d3c54a5cec71430fdf51226774d5766eb4db27204263696a07b9a9"
+    "reviewRegistryDigest": "84491e41ebfb4c451a31fe9d2d9f3dd4f3357102487b912bb24e077a2c4bf73d"
   },
   "entryIds": [
     "file-actions"
   ],
   "status": "blocked",
-  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: POST /exec 未验证请求来源/调用方，也未要求 application/json；因此动作白名单与 exists/stat 不建立调用者授权。 EXEC001: open/browser 明确调用 cmd.exe /c start，且 windowsVerbatimArguments=true 手工加引号；参数数组不取消 cmd 的百分号环境展开等解释。open 同时接受存在的可执行/脚本文件，browser 也未在宿主限制文件类型。 COMPAT001: manifest 没有 DSH 兼容声明，README 只声称 0.1.1-rc.2 + Windows；当前官方窗口是 0.2.1-alpha.5 / rc.1 / rc.2。",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: POST /exec 在处理本地文件和新增 open-url 之前均未验证请求来源/调用方，也未要求 application/json；64KiB 上限、动作白名单和文件存在检查不能替代授权。 EXEC001: open/browser 与新增 open-url（lib/index.js:130-132）仍调用 cmd.exe /c start，并手工引号 + windowsVerbatimArguments=true。只拒绝双引号及限定 http/https 不取消 cmd 的百分号变量展开；文件 open 也没有宿主侧可执行/脚本确认边界。 COMPAT001: manifest 没有 DSH 兼容声明；投稿补充的 0.2.x 桌面端是范围描述，没有当前官方最新三版的逐版结果。",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
