@@ -1,0 +1,197 @@
+{
+  "id": "boardwise-dsh",
+  "name": "实验功能插件（Boardwise DSH）",
+  "packageName": "boardwise-dsh",
+  "description": "为 DSH 提供实验功能插件能力。英文原始说明：DeepSeek Harness (dsh) tools for boardwise: checkup / arch / doctor / bridge, spawned from the local boardwise CLI. Thin adapter — every judgement stays in the Python side.",
+  "searchTerms": [
+    "实验功能插件",
+    "Boardwise DSH",
+    "boardwise-dsh",
+    "实验功能",
+    "新功能",
+    "boardwise",
+    "dsh"
+  ],
+  "repositoryUrl": "https://github.com/xianyuyijinban/boardwise",
+  "defaultBranch": "main",
+  "manifestPath": "dsh-plugin/package.json",
+  "installPath": "dsh-plugin",
+  "updatePolicy": "external-only",
+  "commit": "992bddde877834bebefd2bccc0e9b7dbc067c3b5",
+  "version": "0.1.1",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-10-17T03:25:56.000Z",
+    "observedAt": "2026-10-17T03:22:17.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-10-17T03:22:17.000Z",
+      "evidenceUrl": "https://github.com/xianyuyijinban/boardwise/commit/992bddde877834bebefd2bccc0e9b7dbc067c3b5",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "6ed28ba222007e9f3e53b6c549f29d90ac1c5d296133b0e227c7b65003b54bf7",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+  },
+  "entryIds": [
+    "tool-boardwise"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: lib/types/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; r",
+  "compatibility": {
+    "dsh": ">=0.0.1-rc.1 <0.3.0 || >=0.1.7-rc.2 <0.2.0-0 || >=0.2.0-rc.1 <0.3.0-0",
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.2.1-alpha.4": "unknown",
+      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.1": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": "^22.19.0 || >=24.0.0",
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

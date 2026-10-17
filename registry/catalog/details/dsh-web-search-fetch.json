@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "46a3b4d31565df1dd03adff77607391a03805cf1",
-  "version": "0.2.13",
+  "commit": "20678bb8064238505f1943997337b327efb9b691",
+  "version": "0.2.16",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": null,
-    "observedAt": null,
-    "provenance": "unknown"
+    "updatedAt": "2026-10-16T14:08:25.000Z",
+    "observedAt": "2026-10-17T03:22:17.000Z",
+    "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-remediation-terminal-review-v1",
-      "checkedAt": "2026-10-16T13:35:38.808Z",
-      "evidenceUrl": "https://github.com/qikairo7/dsh-web-search-fetch/commit/46a3b4d31565df1dd03adff77607391a03805cf1",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-17T03:22:17.000Z",
+      "evidenceUrl": "https://github.com/qikairo7/dsh-web-search-fetch/commit/20678bb8064238505f1943997337b327efb9b691",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Pinned source and package identity reviewed; see the exact terminal admission decision."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party code was installed or executed by the Store."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,17 +63,17 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime reports are not independent Store execution."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
-      "status": "partial",
-      "method": "independent-bounded-static-admission-review",
-      "checkedAt": "2026-10-16T13:35:38.808Z",
-      "evidenceUrl": "https://github.com/qikairo7/dsh-web-search-fetch/commit/46a3b4d31565df1dd03adff77607391a03805cf1",
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -96,7 +96,7 @@
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: SUPPLY001: first-party source, stable distribution metadata and web override semantics are verified; admission rejected until the actual installed runtime dependency closure is reproducible and independently reviewable.",
   "compatibility": {
-    "dsh": "0.2.1-alpha.3",
+    "dsh": ">=0.2.1-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -106,12 +106,13 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown"
+      "0.2.0-rc.2": "incompatible",
+      "0.2.1-alpha.1": "incompatible",
+      "0.2.1-alpha.2": "compatible",
+      "0.2.1-alpha.3": "compatible",
+      "0.2.1-alpha.4": "compatible",
+      "0.2.1-alpha.5": "compatible",
+      "0.2.1-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -193,6 +194,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
