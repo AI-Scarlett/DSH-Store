@@ -28,14 +28,14 @@
     "test/contracts.test.mjs": "ac39a019b41f628bb89db5e03c9f8799e586b2b2281e84befaba6819ff610b77"
   },
   "postconditions": {
-    "package.json": "fd6e0d2194405cb8afbabd83d9f7cfa2b455d4bb2aaf46a193044689a56559d1",
-    "README.md": "e42c34520c7342891ecab4e03a08566b2411c132a96fc7695d6ab4e1501acc1c",
-    "test/upgrade-matrix.test.mjs": "356a61222de4e8c1157a1ca03040e49373ef2fb8f7dc6ef4ac9c70b77caf5339",
+    "package.json": "4c36a2841e0a6426bc755941799203a46f99c5dd809cda4a902c33fb9064efe0",
+    "README.md": "e4d6db7b7ebe9110f7f77a259f88d6f94be1cf2205aface6b03953fb2f614635",
+    "test/upgrade-matrix.test.mjs": "59b0cf78aca9e2357465fcfa688b404a1d122e6f6a36f0aaa5d9fab19989a381",
     "scripts/verify-dsh-upgrade-plan.mjs": "4c2717ce722bc4c0934c10cf8c6fee470b69c568ccee1d6ba0d8aaf39e026ff7",
     "test/dsh-upgrade-plan.test.mjs": "c22e2c0527ce3271f5e9e11022d728d1acfc17226c3b8b0729b3a19e40b3bf28",
     ".github/workflows/registry.yml": "cdd5fed87b664f811f3c078eb48d656741510915372aaec17d1cee12b54e3389",
     "test/catalog.test.mjs": "27af2b67d9b9d26b408eccbd237d5041cfd22dca61ddfd0ca6b9762606debbe4",
-    "test/contracts.test.mjs": "698a81abc2ec439d9d9d4fa751ec2f5753cd59149a278cbb7fc481040b814b6d"
+    "test/contracts.test.mjs": "ecc350c1b98610696d85ad3bcf7c221a2d3fd4e5e8e399e92afd7ed0c92224d9"
   },
   "authorization": {
     "source": "direct-user-request",
@@ -54,7 +54,14 @@
       "requirement": "engines.dsh",
       "candidateAccepted": true,
       "versionExemptionsUsed": false
-    }
+    },
+    "currentOfficialWindow": [
+      "0.2.1-alpha.5",
+      "0.2.1-rc.1",
+      "0.2.1-rc.2"
+    ],
+    "windowSourceRun": 39034337510,
+    "rc1PassedLifecycleJob": 117401055026
   },
   "gates": [
     "exact base/scope/file hashes",
