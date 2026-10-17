@@ -68,30 +68,30 @@
     "securityReview": {
       "status": "partial",
       "method": "independent-bounded-static-admission-review",
-      "checkedAt": "2026-10-17T10:30:25.625Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md",
+      "checkedAt": "2026-10-17T10:46:37.383Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "重新投稿与 #1460 合并审查：manifest repository 已修正，不再保留旧身份不匹配结论；当前 Patch、精确兼容和端点/凭据边界仍不满足准入。只更新公开受审状态，不重复联系已收过消息的作者。"
+      "summary": "Store 已按官方 cordis-plugin-include 1.0.10 的增量行语义支持有界 literal repository / network-storage permissions 元数据，固定源预检通过；不再要求作者删除这些字段。它们不提供运行时权限强制。当前仍因 NET001 和 COMPAT001 拒绝准入。"
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f3710ddc812de85baeae8e8cfb7c494192e7d716ae66753836b87fc789102d81",
+    "binding": "8bf9fcf4650dd1c78ced30d41af4527f555e698ea5b107ab5c0e4a5b0e2b1f45",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "0cc645d988d3c54a5cec71430fdf51226774d5766eb4db27204263696a07b9a9"
+    "reviewRegistryDigest": "84491e41ebfb4c451a31fe9d2d9f3dd4f3357102487b912bb24e077a2c4bf73d"
   },
   "entryIds": [
     "tool-vision"
   ],
   "status": "blocked",
-  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: PATCH001: insert 的条目带 repository / permissions 字段，当前受支持 Bundle row 契约不能解释这两个键；它们不能充当运行时权限强制。 COMPAT001: 当前无 0.2.1-alpha.5 / 0.2.1-rc.1 / 0.2.1-rc.2 的准确 compatible 记录；peer range 不证明实际兼容。 NET001: apiBaseUrl 可配置并携带 API key 和图片，未强制 HTTPS，也未显式限制重定向；失败响应仅截断原文，敏感远端回显边界不明确。",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: NET001: Remote API-key/image endpoint transport, redirect and response boundary. COMPAT001: no exact current DSH release declaration.",
   "compatibility": {
     "dsh": ">=0.2.0-rc.0",
     "dshReleases": {

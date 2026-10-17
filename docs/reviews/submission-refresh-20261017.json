@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-10-17T10:42:07.738Z",
+  "observedAt": "2026-10-17T10:46:37.383Z",
   "baseCommit": "38a97c83b88652f229e4b6542ccdb2d3a28074b2",
   "reason": "Upstream changed before any CAS or POST. The whole previous batch failed its source precondition; neither person was reserved or sent.",
   "failedWorkflow": 39025606087,
@@ -401,6 +401,233 @@
     }
   ],
   "summary": "最新 0.1.1 固定源完整覆盖 7 个文本。已确认 open-url 的 http/https/双引号校验及 new Function 移除；请求信任、cmd/目标约束与精确 DSH 兼容仍拒绝准入。生成截图的 Playwright/DSH_HOME 查找属于显式开发脚本，不当成运行时凭据读取或新的恶意证据。",
+  "storePatchCorrection": {
+    "repository": "https://github.com/Wyatt5341/dsh-plugin-vision",
+    "commit": "84b838b9808c18e0652c93dbccaf0a413e1d59ae",
+    "candidate": {
+      "id": "dsh-plugin-vision",
+      "name": "dsh-plugin-vision",
+      "packageName": "dsh-plugin-vision",
+      "description": "为 DSH 提供图像视觉工具能力。英文原始说明：DSH vision plugin: analyze image files through an OpenAI-compatible vision model (adds the analyze_image tool).",
+      "searchTerms": [
+        "图像视觉工具",
+        "DSH Plugin Vision",
+        "dsh-plugin-vision",
+        "视觉",
+        "识图",
+        "图片",
+        "多模态",
+        "实验功能",
+        "新功能",
+        "dsh",
+        "plugin",
+        "vision"
+      ],
+      "repositoryUrl": "https://github.com/Wyatt5341/dsh-plugin-vision",
+      "defaultBranch": "main",
+      "manifestPath": "package.json",
+      "installPath": null,
+      "updatePolicy": "external-only",
+      "commit": "84b838b9808c18e0652c93dbccaf0a413e1d59ae",
+      "version": "1.0.0",
+      "categories": [
+        "experimental"
+      ],
+      "featured": false,
+      "installCount": null,
+      "source": {
+        "updatedAt": "2026-10-17T03:24:55.000Z",
+        "observedAt": "2026-10-17T03:22:17.000Z",
+        "provenance": "github-commit"
+      },
+      "assurance": {
+        "discovery": {
+          "status": "verified",
+          "method": "automated-fixed-source-policy-v1",
+          "checkedAt": "2026-10-17T03:22:17.000Z",
+          "evidenceUrl": "https://github.com/Wyatt5341/dsh-plugin-vision/commit/9e949738d6ca338a26c2d0147ebe675019573ac8",
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+        },
+        "installability": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No third-party installation or build code was executed by the automation."
+        },
+        "runtime": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "No DSH runtime acceptance was inferred from static automation."
+        },
+        "securityReview": {
+          "status": "unknown",
+          "method": null,
+          "checkedAt": null,
+          "evidenceUrl": null,
+          "dshRelease": null,
+          "systems": [],
+          "profiles": [],
+          "summary": "Automated source policy is not an independent security audit."
+        }
+      },
+      "admission": {
+        "engine": "bounded-source-v3",
+        "binding": "3b64236f38a6eb98397176808abddb173c9c8b6f6a026781387819ddc17a517e",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "state": "review-required",
+        "sourceContract": "unverified",
+        "coverage": "complete",
+        "capabilities": "review-required",
+        "compatibility": "per-version-declaration",
+        "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+      },
+      "entryIds": [
+        "tool-vision"
+      ],
+      "status": "blocked",
+      "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+      "compatibility": {
+        "dsh": ">=0.2.0-rc.0",
+        "dshReleases": {},
+        "dshOperations": {},
+        "node": ">=18",
+        "systems": [],
+        "profiles": []
+      },
+      "details": {
+        "pluginType": "unknown",
+        "installSource": "github",
+        "license": "MIT",
+        "permissions": {
+          "level": "unknown",
+          "files": "unknown",
+          "network": "unknown",
+          "commands": "unknown",
+          "credentials": [
+            "unknown"
+          ]
+        },
+        "externalDependencies": [],
+        "reviewStatus": "automated-scan"
+      },
+      "risk": {
+        "installScripts": [],
+        "review": "automatic-policy-blocked-not-installable"
+      },
+      "configOverrides": []
+    },
+    "analysis": {
+      "reasons": [
+        "runtime source contains the network permission signal",
+        "runtime source contains the credentials permission signal"
+      ],
+      "signals": {
+        "files": false,
+        "network": true,
+        "commands": false,
+        "credentials": true,
+        "protectedDsh": false,
+        "nativeOrExecutableArtifacts": false
+      },
+      "securityScan": {
+        "engine": "dsh-store-submission-static-v1",
+        "policy": "high-risk-block-cli-capability-warn-v1",
+        "verdict": "pass",
+        "complete": true,
+        "scopeReasons": [],
+        "filesScanned": 3,
+        "eligibleFiles": 3,
+        "skippedOversize": 0,
+        "skippedUnsupported": 0,
+        "capped": false,
+        "counts": {
+          "critical": 0,
+          "warning": 0,
+          "info": 0
+        },
+        "findings": [],
+        "findingsTruncated": false
+      },
+      "engine": "bounded-source-v3",
+      "sourceDigest": "aeded028c999516b0b78d973946b768189fc51e43a0a40384481dbf084f7ef50",
+      "sourceEvidence": [
+        {
+          "file": "cordis.patch.yml",
+          "bytes": 501,
+          "blob": "81a3b59b801e0cdc1fb6efa3e4fde3f4e5747407",
+          "sha256": "a698bbd1fde714ba3341fc7282f70fdb68d8ab2c3dab48295f47903c29e236f8"
+        },
+        {
+          "file": "lib/index.js",
+          "bytes": 11851,
+          "blob": "f635bf2641212af71d4158bc556339122228deb6",
+          "sha256": "d852e6dc64fda92ee7b2e0043d0576f105b818ff201dce89c0bd5fd5331a2100"
+        },
+        {
+          "file": "package.json",
+          "bytes": 951,
+          "blob": "7be63e8332fac4ae16fb8f4cc430d061e2a89ad6",
+          "sha256": "d19f641f7981497a78eb841a12bd7cbbfe931d58a5c7288a414ac13087de0995"
+        }
+      ],
+      "capabilityEvidence": [
+        {
+          "rule": "capability-network",
+          "file": "lib/index.js",
+          "signal": "network",
+          "responsibility": "reviewer",
+          "line": 199,
+          "location": "line"
+        },
+        {
+          "rule": "capability-credentials",
+          "file": "lib/index.js",
+          "signal": "credentials",
+          "responsibility": "reviewer",
+          "line": 98,
+          "location": "line"
+        }
+      ],
+      "toolViewEvidence": [],
+      "budgetFindings": [],
+      "reviewSignals": {
+        "toolViewExtension": false,
+        "dynamicModuleLoading": false
+      },
+      "scanComplete": true,
+      "filesScanned": 3,
+      "unsupportedFiles": 0,
+      "scope": {
+        "kind": "explicit-files-conservative-superset",
+        "repositoryEntries": 6,
+        "packageEntries": 5,
+        "files": 5
+      },
+      "runtimeFiles": 3,
+      "runtimeBytes": 13303,
+      "contractVerified": true,
+      "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+      "runtimeDependencies": {},
+      "approved": false
+    },
+    "binding": "8bf9fcf4650dd1c78ced30d41af4527f555e698ea5b107ab5c0e4a5b0e2b1f45",
+    "summary": "Store 已按官方 cordis-plugin-include 1.0.10 的增量行语义支持有界 literal repository / network-storage permissions 元数据，固定源预检通过；不再要求作者删除这些字段。它们不提供运行时权限强制。当前仍因 NET001 和 COMPAT001 拒绝准入。",
+    "officialTarball": "https://registry.npmjs.org/@deepseek-ai/cordis-plugin-include/-/cordis-plugin-include-1.0.10.tgz",
+    "officialMethod": "Read applyEntryPatches insert handling only; no official or third-party code executed",
+    "precheck": "passed"
+  },
   "contactPlans": {
     "joey": "independent first result; both unchanged fixed sources revalidated",
     "nubeslove": "independent first result; latest source rechecked"

@@ -184,18 +184,9 @@
       "commit": "84b838b9808c18e0652c93dbccaf0a413e1d59ae",
       "version": "1.0.0",
       "catalogId": "dsh-plugin-vision",
-      "binding": "f3710ddc812de85baeae8e8cfb7c494192e7d716ae66753836b87fc789102d81",
+      "binding": "8bf9fcf4650dd1c78ced30d41af4527f555e698ea5b107ab5c0e4a5b0e2b1f45",
       "decision": "rejected",
       "blockers": [
-        {
-          "owner": "author",
-          "code": "PATCH001",
-          "file": "cordis.patch.yml",
-          "line": 9,
-          "finding": "insert 的条目带 repository / permissions 字段，当前受支持 Bundle row 契约不能解释这两个键；它们不能充当运行时权限强制。",
-          "requiredChange": "保持唯一 id/name 的增量 row；来源保留在 package.json.repository，权限在 manifest/README 披露。若必须使用新增官方字段，提供该 DSH 版本的官方解析契约供 Store 扩展有界审阅。",
-          "acceptance": "固定 Commit Bundle 解析通过，条目确为本包且未覆盖官方组件。"
-        },
         {
           "owner": "author",
           "code": "COMPAT001",
@@ -215,8 +206,13 @@
           "acceptance": "HTTP 远端、跨源/降级重定向、超大/回显凭据响应均在敏感数据外发或展示前拒绝。"
         }
       ],
-      "summary": "重新投稿与 #1460 合并审查：manifest repository 已修正，不再保留旧身份不匹配结论；当前 Patch、精确兼容和端点/凭据边界仍不满足准入。只更新公开受审状态，不重复联系已收过消息的作者。",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
+      "summary": "Store 已按官方 cordis-plugin-include 1.0.10 的增量行语义支持有界 literal repository / network-storage permissions 元数据，固定源预检通过；不再要求作者删除这些字段。它们不提供运行时权限强制。当前仍因 NET001 和 COMPAT001 拒绝准入。",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md",
+      "supersedes": {
+        "commit": "84b838b9808c18e0652c93dbccaf0a413e1d59ae",
+        "binding": "f3710ddc812de85baeae8e8cfb7c494192e7d716ae66753836b87fc789102d81",
+        "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md"
+      }
     },
     {
       "issueNumber": 1466,

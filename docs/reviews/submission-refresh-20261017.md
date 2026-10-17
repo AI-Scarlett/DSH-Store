@@ -18,6 +18,10 @@
   最小修改：只在实际验证后补 DSH/Windows 支持范围和至少一个当前版本的精确 compatible 记录；未验证系统/版本保持 unknown。
   验收：当前窗口至少一版有明确范围的安装/加载/卸载证据；不能从旧版本或平台推定。
 
+## Wyatt 的 Store 元数据误报修复
+
+Store 已按官方 cordis-plugin-include 1.0.10 的增量行语义支持有界 literal repository / network-storage permissions 元数据，固定源预检通过；不再要求作者删除这些字段。它们不提供运行时权限强制。当前仍因 NET001 和 COMPAT001 拒绝准入。 固定 Commit 84b838b9808c18e0652c93dbccaf0a413e1d59ae；绑定 8bf9fcf4650dd1c78ced30d41af4527f555e698ea5b107ab5c0e4a5b0e2b1f45。官方 @deepseek-ai/cordis-plugin-include 1.0.10 的 applyEntryPatches 直接追加 insert 行，不过滤这类元数据。Store 仅支持新增命名行中的 literal owner/repo 和 network/storage 布尔字段，其他未知键、覆写、动态值、disabled 等仍拒绝；实际能力继续从完整源码扫描，声明 false 不能隐藏真实权限。没有执行官方模块。当前最终结论仅保留 NET001、COMPAT001，具体整改沿用首轮同一源码的文件与行号。
+
 ## 其余状态
 
 Joey 两个项目仍为前次已完整审阅的固定源码；一个人一条合并结果，其完整结论保持在 [首轮报告](./external-activities-20261017.md)。新计划只刷新终局注册表的整体摘要引用，不增加联系名额。Qwen 已有单次成功回执，不重发；Wyatt 无新沟通授权，不另发。所有 Issue 保持打开。未运行任何第三方源码/测试/截图工具，未修改真实 Profile。源码回滚仅用 CI PR；联系预留及历史永不重置。
