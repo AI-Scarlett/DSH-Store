@@ -68,7 +68,7 @@ export async function firstContactDiscussionGate(github, target) {
   const mention = new RegExp(`@${login}(?![A-Za-z0-9-])`, 'i')
   for (const item of [...issues, ...comments]) {
     if (item.user?.id === target.recipient.id && stopped.test(authorFeedbackText(item.body))) return 'withdrawal-in-current-history'
-    if (String(item.user?.login).toLowerCase() === 'ai-scarlett'
+    if (['ai-scarlett', 'github-actions[bot]'].includes(String(item.user?.login).toLowerCase())
       && (mention.test(item.body ?? '') || String(item.body ?? '').toLowerCase().includes(`key=${target.key.toLowerCase()} `))) return 'unimported-prior-contact'
   }
   return null

@@ -74,8 +74,10 @@ test('source drift, incomplete imported history and live withdrawal stop first o
 })
 
 test('unimported historical mentions block contact and incomplete discussion pagination fails closed', async () => {
-  const github = { paginate: async path => path.includes('/comments') ? [] : [{ user: { login: 'AI-Scarlett' }, body: '@Maintainer prior message' }] }
-  assert.equal(await firstContactDiscussionGate(github, fixture().targets[0]), 'unimported-prior-contact')
+  for (const login of ['AI-Scarlett', 'github-actions[bot]']) {
+    const github = { paginate: async path => path.includes('/comments') ? [] : [{ user: { login }, body: '@Maintainer prior message' }] }
+    assert.equal(await firstContactDiscussionGate(github, fixture().targets[0]), 'unimported-prior-contact')
+  }
   await assert.rejects(firstContactDiscussionGate({ paginate: async () => { throw new Error('page bound exceeded') } }, fixture().targets[0]), /page bound exceeded/)
 })
 
