@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "bfe15b513b6527787a8e87ffbef54e929105d6f1",
+  "commit": "72c14d6ea6aa4f2bf3b9c79e375158a57c496613",
   "version": "1.3.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T04:00:00.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-16T14:18:08.000Z",
+    "observedAt": "2026-10-17T03:22:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/kangtsang/dsh-worktree-space/commit/bfe15b513b6527787a8e87ffbef54e929105d6f1",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-17T03:22:17.000Z",
+      "evidenceUrl": "https://github.com/kangtsang/dsh-worktree-space/commit/72c14d6ea6aa4f2bf3b9c79e375158a57c496613",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -92,7 +92,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: the current fixed source bfe15b513b65 has no common ancestor with the prior Catalog pin 50d2afa369e2; independent source history remains external-only. fixed-source security findings require quarantine runtime source contains the files permission signal runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: the current fixed source 72c14d6ea6aa has no common ancestor with the prior Catalog pin bfe15b513b65; independent source history remains external-only. fixed-source security findings require quarantine runtime source contains the files permission signal runtime source contains the network permission signal",
   "compatibility": {
     "dsh": ">=0.1.7-rc.1 <0.3.0-0",
     "dshReleases": {
@@ -110,7 +110,8 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.3": "unknown",
       "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown"
+      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -198,6 +199,12 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
