@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "75e475a7b45e3cc2cf3c093fb8892e36642030fb",
+  "commit": "7f3870e757f90f2a5c65d6dba2b6c2a206d021a2",
   "version": "1.0.1",
   "categories": [
     "experimental"
@@ -31,20 +31,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T15:58:47.000Z",
-    "observedAt": "2026-10-17T01:09:33.816Z",
+    "updatedAt": "2026-10-18T09:51:27.000Z",
+    "observedAt": "2026-10-18T12:29:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-remediation-terminal-review-v1",
-      "checkedAt": "2026-10-17T01:09:33.816Z",
-      "evidenceUrl": "https://github.com/ArisaYamatogi/dsh-lecture-copilot/commit/75e475a7b45e3cc2cf3c093fb8892e36642030fb",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "evidenceUrl": "https://github.com/ArisaYamatogi/dsh-lecture-copilot/commit/7f3870e757f90f2a5c65d6dba2b6c2a206d021a2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source identity and complete bounded Git blobs verified."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party code was installed or executed by the Store."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,17 +64,17 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party code was installed or executed by the Store."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
-      "status": "partial",
-      "method": "independent-bounded-static-admission-review",
-      "checkedAt": "2026-10-17T01:09:33.816Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-rechecks-20261017.md",
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "AUTH001: manifest identity, license and declarations corrected; raw HTTP private reads and mutations lack request trust and method boundaries. COMPAT001: no current latest-three compatible declaration."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -91,6 +91,7 @@
   "entryIds": [
     "lecture-copilot"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: manifest identity, license and declarations corrected; raw HTTP private reads and mutations lack request trust and method boundaries. COMPAT001: no current latest-three compatible declaration.",
   "compatibility": {

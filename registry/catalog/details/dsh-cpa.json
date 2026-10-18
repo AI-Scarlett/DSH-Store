@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "b90a485feaea50a258eaa1bae872e1d84c126f96",
-  "version": "0.1.10",
+  "commit": "787bcea50ed4de500c54b86d84e151067d77dcc7",
+  "version": "0.1.11",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T04:44:42.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "updatedAt": "2026-10-18T04:59:14.000Z",
+    "observedAt": "2026-10-18T12:29:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/b90a485feaea50a258eaa1bae872e1d84c126f96",
+      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/787bcea50ed4de500c54b86d84e151067d77dcc7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,7 +77,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d66cc96b5abefaebbd0ad190879e78471fc0073084c3511a3b3c36b517b12670",
+    "binding": "971ef483942c3590cb33dec17abc29f3280cea4ce8d34dd12b253873d78a0813",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -93,7 +93,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern has targets outside the distributable surface: ./src/*; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.2",
+    "dsh": "0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

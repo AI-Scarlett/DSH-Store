@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "214bef10579fb32c85718d16d481eb1be5f39320",
+  "commit": "f058f66c68277b771ee32f8bf336789a99b01e06",
   "version": "1.7.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T20:09:44.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "updatedAt": "2026-10-18T11:11:32.000Z",
+    "observedAt": "2026-10-18T12:29:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
-      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/214bef10579fb32c85718d16d481eb1be5f39320",
+      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "evidenceUrl": "https://github.com/xbzbing/dsh-git-panel/commit/f058f66c68277b771ee32f8bf336789a99b01e06",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "7f07dc70ef886c1bae7d053c34b0e841898519171a2961fdd623ca5191b77780",
+    "binding": "593ab4e3863f15d8e2f3529c8930dfa64de267e202b861f67dad28b1b16745ab",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -93,7 +93,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: local module is missing from the distributable surface: src/client/notice.tsx -> ./icons.js; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime artifact is missing from the distributable surface: lib/host/index.js; runtime artifact is missing from the distributable surface: ./lib/host/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/host/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: lib/host/index.d.ts; local module is missing from the distributable surface: src/client/notice.tsx -> ./icons.js; fixed-source scan is incomplete; unobserved capability signals are",
   "compatibility": {
     "dsh": ">=0.1.7-rc.2",
     "dshReleases": {
