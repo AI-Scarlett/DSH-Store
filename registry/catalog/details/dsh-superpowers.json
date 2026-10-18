@@ -30,14 +30,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-08-13T16:48:09.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
       "evidenceUrl": "https://github.com/codeAnqiang-ma/dsh-superpowers/commit/9511c7b961faafb35f31e6b0e297524bf377aeaf",
       "dshRelease": null,
       "systems": [],
@@ -77,21 +77,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "929d632a0696ac6237dd9bb77b0ef609aeaf92b4ef1ea28687aa6a761629549d",
+    "binding": "380a63e87bbfbae8712733280b2ad08085db7b9b6a7746d4d75cc76f1ef13f56",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "superpowers"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; package contains unsupported artifacts requiring review: skills/writing-skills/graphviz-conventions.dot, skills/subagent-driven-development/scripts/review-package, skills/subagent-driven-development/scripts/sdd-workspace, skills/subagent-driven-development/scripts/task-brief; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal;",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; package contains unsupported artifacts requiring review: skills/subagent-driven-development/scripts/review-package, skills/subagent-driven-development/scripts/sdd-workspace, skills/subagent-driven-development/scripts/task-brief, skills/writing-skills/graphviz-conventions.dot; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal;",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -103,10 +103,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -157,18 +156,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -176,6 +163,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

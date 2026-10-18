@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "28524694f1143c82b62065aaedb3fe3a0fe62c13",
-  "version": "0.7.8",
+  "commit": "0aa37c3a2b4f53a7c2a1fb54bff8196d84831962",
+  "version": "0.7.9",
   "categories": [
     "ui"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T13:53:47.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-17T13:41:48.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/rezon-aki/dsh-streamfold/commit/28524694f1143c82b62065aaedb3fe3a0fe62c13",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/rezon-aki/dsh-streamfold/commit/0aa37c3a2b4f53a7c2a1fb54bff8196d84831962",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,14 +78,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "084f2ca760b856128fc92d355f001d04dcc38afbd10f8a6c8cc207fdf9f7a397",
+    "binding": "7aaa1f898d09019266a635bab71a2bc2ab8da757dd4aa1d1a7d388aec86c8665",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "low-risk-static",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "dsh-streamfold"
@@ -94,7 +94,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.2.0-rc.2 <0.3.0",
+    "dsh": ">=0.2.1-rc.1 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,9 +104,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
+      "0.2.0-rc.2": "incompatible",
+      "0.2.1-rc.2": "compatible",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown"
     },
@@ -165,13 +164,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -191,11 +184,11 @@
       }
     },
     "latestWindow": {
-      "state": "recheck-required",
+      "state": "current",
       "releases": [
-        "0.2.1-alpha.4",
         "0.2.1-alpha.5",
-        "0.2.1-rc.1"
+        "0.2.1-rc.1",
+        "0.2.1-rc.2"
       ]
     },
     "node": ">=20",

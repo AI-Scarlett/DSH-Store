@@ -31,7 +31,7 @@
   "manifestPath": "plugins/dsh-browser-desktop/package.json",
   "installPath": "plugins/dsh-browser-desktop",
   "updatePolicy": "external-only",
-  "commit": "7377f72136e95047e73d3355d10ae1998321bd38",
+  "commit": "d482839b469562df36e450c6146ca7afea046a7e",
   "version": "0.1.5",
   "categories": [
     "tools",
@@ -41,16 +41,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T01:04:24.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-17T10:07:32.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/runzhliu/deepseek-harness-docker/commit/7377f72136e95047e73d3355d10ae1998321bd38",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/runzhliu/deepseek-harness-docker/commit/d482839b469562df36e450c6146ca7afea046a7e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -89,14 +89,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "089038e8c39757144fdb545af2b2ee498f546ea82137fa60b3de6ec09529e7d4",
+    "binding": "5ea3cf60ea9c50bfe3edca5bd938a2eaec674c45205de601c853cd6134c27c54",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "browser-desktop"
@@ -115,10 +115,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -169,18 +168,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -188,6 +175,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -25,8 +25,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d1602cb8c711fc5d2b2d36ad899d0b9211c0e72c",
-  "version": "0.8.0",
+  "commit": "112194f5eea16748a142c42f914ae044a8df18e4",
+  "version": "0.8.1",
   "categories": [
     "tools",
     "notifications"
@@ -34,16 +34,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T03:06:11.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-17T12:33:36.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/SeverusZh/dsh-notify-windows/commit/d1602cb8c711fc5d2b2d36ad899d0b9211c0e72c",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/SeverusZh/dsh-notify-windows/commit/112194f5eea16748a142c42f914ae044a8df18e4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,23 +82,23 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "c8ec1018ca2e66028123f7b8b4ed21a1de17c0e8988f4d910f8b5fbb2b171b6b",
+    "binding": "0ad7bceb149e2ba49d5b226944f81c80040319067fcac233d98067599a6934d4",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "dsh-notify"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -114,10 +114,9 @@
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.1": "compatible",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "compatible",
+      "0.2.1-rc.2": "compatible",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -204,25 +203,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
+      "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.4": {
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

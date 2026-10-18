@@ -20,7 +20,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c3a56d62bbf25b35b0ee9f3f08c622b64177f703",
+  "commit": "08ee7d6034e05beb37099b1d8c4e3ffad6fc9fd3",
   "version": "0.8.1",
   "categories": [
     "memory"
@@ -28,16 +28,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T03:03:21.000Z",
-    "observedAt": "2026-10-17T03:22:17.000Z",
+    "updatedAt": "2026-10-18T02:31:28.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T03:22:17.000Z",
-      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/c3a56d62bbf25b35b0ee9f3f08c622b64177f703",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/FuRongJun-1999/dsh-memory/commit/08ee7d6034e05beb37099b1d8c4e3ffad6fc9fd3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,21 +76,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "1c69ab6cdd472b98ec51fa67de5205c5631b2b118ded7769ac7e2b4a87d873a4",
+    "binding": "ebc9cdb1dddf2561b75ac79731bd8da2987b8a921f3dbf8ce1e8784967c09691",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "furongjun1999-dsh-memory"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/cli.js; runtime artifact is missing from the distributable surface: ./lib/init.js; runtime artifact is missing from the distributable surface: lib/index.d.ts; package ignore rules require artifact review; distributable",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/cli.js; runtime artifact is missing from the distributable surface: ./lib/init.js; runtime artifact is missing from the distributable surface: lib",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6",
     "dshReleases": {
@@ -102,9 +102,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -155,12 +155,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -168,6 +162,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -191,7 +191,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/schemastery"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

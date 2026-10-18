@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9610ab93c87e2405e7512d53a099b8fb2caf6936",
-  "version": "0.3.9",
+  "commit": "5b33fd51925dbd615836d72323e89262796efae5",
+  "version": "0.3.10",
   "categories": [
     "sessions"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-01T04:43:40.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-18T02:27:28.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-turn-rewind/commit/9610ab93c87e2405e7512d53a099b8fb2caf6936",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-turn-rewind/commit/5b33fd51925dbd615836d72323e89262796efae5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,14 +80,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "4c08e6a01a467ef096a3786994d640c828022eb5ebbf2026f0238142d5947c64",
+    "binding": "442ad02f6f7f3687b1fda54a3515cd122e56df1733a96e358e599c45a8c0eb79",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "turn-rewind"
@@ -96,7 +96,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; local module is missing from the distributable surface: src/directory.ts -> ./errors.js; local module is missing from the distributable surface: src/directory.ts -> ./path-utils.js; local module is missing from the distributable surface: src/directory.ts -> ./types.js; local module is missing from the distributable surface: src/engine.ts -> ./deadline.js; local module is missing from the distributable surface: src/engine.ts -> ./errors.js; local module is missing from the distributab",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || ^0.1.7-rc.1 || 0.2.0-rc.2",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || ^0.1.7-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -112,8 +112,7 @@
       "0.1.5-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
+      "0.2.1-rc.2": "compatible",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown"
     },
@@ -202,13 +201,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
