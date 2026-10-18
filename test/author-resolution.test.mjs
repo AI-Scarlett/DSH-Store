@@ -38,3 +38,16 @@ test('a terminal reply binds the exact request, current Catalog source and all c
   // Future source updates preserve historical decisions but cannot send them.
   assert.doesNotThrow(() => validateAuthorResolutions(JSON.parse(bytes), [{ ...entry(r), commit: 'd'.repeat(40) }]))
 })
+
+test('a merged reply must resolve every bundled project request against the current Catalog', () => {
+  const a = record(), b = { ...record(), issueNumber: 124, requestCommentId: 457, catalogId: 'second',
+    repositoryUrl: 'https://github.com/example/second', commit: 'd'.repeat(40), binding: 'e'.repeat(64) }
+  const bytes = Buffer.from(JSON.stringify({ schemaVersion: 1, resolutions: [a, b] }))
+  const plan = { issueNumber: a.issueNumber, userId: a.userId, requestCommentId: a.requestCommentId, requestBodySha256: a.requestBodySha256,
+    responseBody: `${a.commit} ${b.commit} AUTH001 ${a.evidenceUrl} ${b.evidenceUrl}`,
+    resolution: { path: resolutionPath, sha256: digest(bytes) },
+    review: { relatedRequests: [{ issueNumber: b.issueNumber, commentId: b.requestCommentId, bodySha256: b.requestBodySha256 }] } }
+  assert.equal(verifyReplyResolution(plan, bytes, [entry(a), entry(b)]).decision, 'rejected')
+  assert.throws(() => verifyReplyResolution(plan, bytes, [entry(a), { ...entry(b), commit: 'f'.repeat(40) }]), /superseded/)
+  assert.throws(() => verifyReplyResolution({ ...plan, responseBody: `${a.commit} AUTH001 ${a.evidenceUrl}` }, bytes), /exact decision/)
+})

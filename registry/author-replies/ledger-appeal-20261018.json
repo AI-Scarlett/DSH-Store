@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1477,
+  "userId": 325868576,
+  "requestCommentId": 5902246528,
+  "requestBodySha256": "d033521fa2e8e2b840c2b5fd3f32fc8d23657db41b3ad7859f87551db5c1dd01",
+  "requestUpdatedAt": "2026-10-17T19:28:20Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "### 五、请复核",
+    "scope": "One exact terminal fixed-source admission result; no automatic future consent.",
+    "kind": "admission-recheck"
+  },
+  "responseBody": "### dsh-ledger-memory 1.2.7\n\n固定 Commit：`cb397a780f0cab4838ce5b3baf17abb08f1c3c78`；11/11 个有界文本、1,431,332 字节，已完整读取并核验 Git blob/SHA-256。最终结论：**approved / user-reviewed**。\n\n准入通过：旧 AUTH001 已修复。路由 settingsGate 与 saveSettings/broadcast 均在副作用前复用官方 connection.requestRejection；完整固定源码、许可、增量 Patch、无安装脚本/直接运行依赖和 rc.2 精确声明已核对。以 user-reviewed 承载文件写入、同源设置接口和受限 Git 能力；运行验收保持 unknown。\n\n\n此申诉与原作者修复请求 #1376 关联，作为同一插件的一次新明确复核请求处理。你对两层授权的说明成立；官方 Connection 的 requestRejection 是可采用的机制，不要求另造鉴权或继续重复修复已成立的旧问题。Store 已更正过时 Catalog 判定，保留旧审核历史，以完整新源码绑定取代旧理由。\n\n已只读核验官方 @deepseek-ai/dsh-client-connection 0.2.1-rc.2 发布归档的 SRI 与 requestRejection → admit 契约。文件写入、同源接口和 Git 固定 argv 按真实能力进入 user-reviewed，DSH_HOME/诊断开关不等于 API 密钥。当前窗口 rc.2 的 compatible 是作者声明；Store 没有独立运行插件、Profile/GUI 或生命周期测试。后续更新仍需用户逐次确认。\n完整固定源码绑定、最终准入/Catalog 状态与验收条件：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md。本轮未执行第三方安装、构建、测试、插件或二进制；未改真实 Profile。作者自测保持作者证据。 公网状态回读另存交付记录；#1376 与本 issue 保持打开，不额外发送关闭通知。",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "a8a6876453b0544d742e1e828b92fef32bfc23fc492522e713105e3700e9f331"
+  },
+  "requestSource": "issue-body"
+}

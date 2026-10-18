@@ -372,6 +372,137 @@
         "https://github.com/Wyatt5341/dsh-plugin-vision/commit/84b838b9808c18e0652c93dbccaf0a413e1d59ae",
         "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/submission-refresh-20261017.md"
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install",
+      "commit": "70aa4ffd8706d7e6de2ca95558d954a213bc60f8",
+      "binding": "9c816a00bd3ab4a7b8f954e1adb9086baeb5fa0b67561d6d6d65942a174b4d64",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "AUTH001 的方法/JSON/有界正文与请求来源围栏已补齐；canonical repository、Node 和固定安装 SHA 已确认。仍因解压先于安全准入和当前窗口兼容声明缺失拒绝准入。",
+      "evidenceUrls": [
+        "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/70aa4ffd8706d7e6de2ca95558d954a213bc60f8",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1466"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived",
+      "commit": "80261000c204002ecea1ac609eaf16a0667df14b",
+      "binding": "09d5273a19106cdfd7f3a4def91e8f7736b73a0c7a0275ff6db5f6c6bec84175",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "AUTH001 的 POST/JSON/大小/Host/Origin 围栏与插件内按会话串行已确认；DELETE001 的跨宿主竞态和失败重试仍未闭合，当前窗口兼容声明也缺失。",
+      "evidenceUrls": [
+        "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/80261000c204002ecea1ac609eaf16a0667df14b",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1467"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/scclovez/dsh-tun-proxy",
+      "commit": "d639074c31502d2d115dcb67c77eeb5dba317ae5",
+      "binding": "e420a4e2d937f04eb10fd543636ecf5b342ad960a8f116e4ff277778f07636fe",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "0.3.1 的 ZIP/EXE/DLL 摘要与长度校验、缺摘要拒绝、替换备份已确认；a878df87 只修改文档/证据，按作者侧 rc.2 证据保存。仍有控制路由缺失 Host 时放行和精确兼容声明缺失。",
+      "evidenceUrls": [
+        "https://github.com/scclovez/dsh-tun-proxy/commit/d639074c31502d2d115dcb67c77eeb5dba317ae5",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1464"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/18477514055/dsh-ledger-memory",
+      "commit": "cb397a780f0cab4838ce5b3baf17abb08f1c3c78",
+      "binding": "4d7d8e512258f4b3e0cc7da6783f0ae648b598063dad88ea0ccfda6940196cd8",
+      "verdict": "approved",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "准入通过：旧 AUTH001 已修复。路由 settingsGate 与 saveSettings/broadcast 均在副作用前复用官方 connection.requestRejection；完整固定源码、许可、增量 Patch、无安装脚本/直接运行依赖和 rc.2 精确声明已核对。以 user-reviewed 承载文件写入、同源设置接口和受限 Git 能力；运行验收保持 unknown。",
+      "evidenceUrls": [
+        "https://github.com/18477514055/dsh-ledger-memory/commit/cb397a780f0cab4838ce5b3baf17abb08f1c3c78",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1477"
+      ],
+      "permissions": {
+        "level": "high",
+        "files": "write",
+        "network": "specified-services",
+        "commands": "restricted",
+        "credentials": [
+          "none"
+        ]
+      },
+      "capabilityDispositions": [
+        {
+          "kind": "false-positive",
+          "signal": "credentials",
+          "file": "lib/index.js",
+          "line": 761,
+          "sha256": "a2933a09c88f39a74349ca5a639a0cae8edd44c6cd71cfd6f9d0c8a25f654067",
+          "rationale": "The only environment reads in this complete fixed surface are LEDGER_DIAG_D115 (a diagnostic flag) and DSH_HOME (a local storage root); neither reads account credentials or API keys. Signed browser-session authentication remains owned by official Connection."
+        }
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/Angela-lwh/dsh-archive-purge",
+      "commit": "0fbe8584f2ab664cbc048162cd6e2d00c152b1d8",
+      "binding": "1d281d73cdb2509277f497f85957d6e6e246da8ea068ecb90e23f780c6036e0f",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "monorepo plugin/ 的固定 Bundle 与官方 Connection /api 认证入口已核对，预检通过不等于准入。永久删除的宿主并发边界和错误恢复不完整，标准兼容声明缺失，拒绝准入。",
+      "evidenceUrls": [
+        "https://github.com/Angela-lwh/dsh-archive-purge/commit/0fbe8584f2ab664cbc048162cd6e2d00c152b1d8",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1478"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/nubeslove/dsh-file-actions",
+      "commit": "0e7ff4f0ce2921580c9fda4575fbb6185478b799",
+      "binding": "c52910c7a2300ac48f41181faf5fbdb386176e99abebb698cc2d37a2dde545fe",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "与上轮运行文件 blob 相同，最新 Commit 只重绑定来源；AUTH001 / EXEC001 / COMPAT001 仍成立。截图脚本、测试和 DSH_HOME 不当成运行时恶意证据。",
+      "evidenceUrls": [
+        "https://github.com/nubeslove/dsh-file-actions/commit/0e7ff4f0ce2921580c9fda4575fbb6185478b799",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1468"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/nubeslove/dsh-web-preview",
+      "commit": "320cebb458a525e119d34095010e3faf55166c47",
+      "binding": "60e290cfdd0ce519e01900b89fc6ffcb446a1b7bfa4b6142646b5a8705de1f62",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "已按最新固定 Commit 完成审核；只读 health 也暴露本机绝对 Profile 路径，且资源直达绕过客户端 URL 校验。标准兼容声明缺失，拒绝准入；不把开发截图脚本当运行时凭据行为。",
+      "evidenceUrls": [
+        "https://github.com/nubeslove/dsh-web-preview/commit/320cebb458a525e119d34095010e3faf55166c47",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1469"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/nubeslove/dsh-web-annotate",
+      "commit": "511a4abf7be2a363930a7bead5d16b83a76caaf3",
+      "binding": "20615250469ba1ab8ce694fcc19900a9051da586da0b62115f5c8b56e2ee9dac",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-18T01:14:58.596Z",
+      "rationale": "预检 0.1.0 已被默认分支 0.3.0 的完整固定源审阅取代。浏览器/SSE/输入/导出缺请求授权，Chromium 强制关闭 sandbox，且宿主依赖和精确兼容契约缺失，拒绝准入。",
+      "evidenceUrls": [
+        "https://github.com/nubeslove/dsh-web-annotate/commit/511a4abf7be2a363930a7bead5d16b83a76caaf3",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1473"
+      ]
     }
   ]
 }

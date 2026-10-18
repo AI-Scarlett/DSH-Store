@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1466,
+  "userId": 194322966,
+  "requestCommentId": 6234198793,
+  "requestBodySha256": "5f72414d673b07b112233dd079ccec0f9f4c5967406b99bf6c985c17d054a21a",
+  "requestUpdatedAt": "2026-10-17T13:53:41Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "Requesting re-review against commit `70aa4ffd8706`.",
+    "scope": "One exact terminal fixed-source admission result; no automatic future consent.",
+    "kind": "admission-recheck",
+    "relatedRequests": [
+      {
+        "issueNumber": 1467,
+        "commentId": 6234205973,
+        "bodySha256": "47b4cfa7880d424801cd08d9059d271cfc8c3bb8e40ba092311e5fdecb1fe173",
+        "updatedAt": "2026-10-17T13:50:26Z",
+        "quote": "Requesting re-review against commit `80261000c204`."
+      }
+    ]
+  },
+  "responseBody": "本条合并回复 #1466 与 #1467 的两个明确复核请求；同一人跨项目仅发送这一条结果，两条请求在同一次中央预留中消费。\n\n### dsh-skill-install 0.1.3\n\n固定 Commit：`70aa4ffd8706d7e6de2ca95558d954a213bc60f8`；7/7 个有界文本、169,491 字节，已完整读取并核验 Git blob/SHA-256。最终结论：**blocked / rejected**。\n\nAUTH001 的方法/JSON/有界正文与请求来源围栏已补齐；canonical repository、Node 和固定安装 SHA 已确认。仍因解压先于安全准入和当前窗口兼容声明缺失拒绝准入。\n\n- **PATH001** [index.js:489](https://github.com/Joey-K-tsubame/dsh-skill-install/blob/70aa4ffd8706d7e6de2ca95558d954a213bc60f8/index.js#L489)：downloadExtract 在第 524 行运行 tar -xzf，直到第 529 行才 sanitizeTree；展开体积/条目数和链接检查发生在磁盘写入之后。第 516 行 arrayBuffer 与代理 curl 也在完整接收后才检查 64 MiB，未在传输时限制实际字节。\n  最小修改：用有界流限制所有直连/代理传输；在写出归档成员前验证规范路径、类型、链接目标及展开预算，拒绝越界或超限成员；失败清理 staging，保留原目标。\n  验收：压缩/展开超限、绝对路径、..、软/硬链接、设备条目均在写到授权根外或耗尽预算前拒绝；并发/失败不删除其他安装。\n\n- **COMPAT001** [package.json:41](https://github.com/Joey-K-tsubame/dsh-skill-install/blob/70aa4ffd8706d7e6de2ca95558d954a213bc60f8/package.json#L41)：固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。\n  最小修改：实际验证后，在 dsh.compatibility.dshReleases 声明至少一版当前窗口的准确结果，并给出该版本安装/启动/卸载证据；未验证项保留 unknown。\n  验收：至少一版当前窗口声明与证据一致；其他宿主、系统和 rollback 不从旧记录推定。\n\n### dsh-delete-archived 0.1.1\n\n固定 Commit：`80261000c204002ecea1ac609eaf16a0667df14b`；6/6 个有界文本、24,187 字节，已完整读取并核验 Git blob/SHA-256。最终结论：**blocked / rejected**。\n\nAUTH001 的 POST/JSON/大小/Host/Origin 围栏与插件内按会话串行已确认；DELETE001 的跨宿主竞态和失败重试仍未闭合，当前窗口兼容声明也缺失。\n\n- **DELETE001** [lib/entry.js:247](https://github.com/Joey-K-tsubame/dsh-delete-archived/blob/80261000c204002ecea1ac609eaf16a0667df14b/lib/entry.js#L247)：withSessionLock 只串行本插件调用，不能排除宿主恢复/追加。第 289 行 unarchive 成功后，第 294 或 302 行若清理失败，下一次调用会在第 253 行以 not-archived 退出；因此重复执行不能保证完成 registry cleanup。永久 rm 在第 270 行先发生，没有可恢复事务。\n  最小修改：通过可核验的宿主维护/互斥契约覆盖删除前重新检查、磁盘与登记变更；保存可恢复日志/事务状态，直到所有清理成功才消费归档标记；使重试可完成未完成步骤。\n  验收：一次性夹具覆盖删除与恢复/追加并发、unarchive 成功后 unpin/detach 失败和中断重启；不复活、不半删且重试能收敛；公开宿主版本对应的停止写入契约。\n\n- **COMPAT001** [package.json:44](https://github.com/Joey-K-tsubame/dsh-delete-archived/blob/80261000c204002ecea1ac609eaf16a0667df14b/package.json#L44)：固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。\n  最小修改：实际验证后，在 dsh.compatibility.dshReleases 声明至少一版当前窗口的准确结果，并给出该版本安装/启动/卸载证据；未验证项保留 unknown。\n  验收：至少一版当前窗口声明与证据一致；其他宿主、系统和 rollback 不从旧记录推定。\n\n版本核对：`70aa4ffd8706d7e6de2ca95558d954a213bc60f8` 的 manifest 是 0.1.3；你写的 tag v0.1.1 指向另一提交 `1c2922b85083e03a1820fffa91d7de8483a9a19e`。本轮以指定完整 Commit 为唯一基线，不混用标签。\n完整固定源码绑定、最终准入/Catalog 状态与验收条件：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md。本轮未执行第三方安装、构建、测试、插件或二进制；未改真实 Profile。作者自测保持作者证据。 修复后可附新完整 Commit 与证据明确请求复核；两个 issue 均保持打开。",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "a8a6876453b0544d742e1e828b92fef32bfc23fc492522e713105e3700e9f331"
+  }
+}

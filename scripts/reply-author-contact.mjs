@@ -23,6 +23,18 @@ export function validateReplyGrant(plan) {
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || typeof plan.responseBody !== 'string' || !plan.responseBody.trim()) throw new Error('explicit reviewed continuation request required')
   requireRepository(plan.repository)
+  if (plan.requestSource !== undefined && !['comment', 'issue-body'].includes(plan.requestSource)) throw new Error('unknown request source')
+  if (plan.requestSource === 'issue-body' && (plan.repository !== 'AI-Scarlett/DSH-Store'
+    || plan.operation !== 'requested-author-reply' || plan.review.kind !== 'admission-recheck'
+    || !isAdmissionRecheckRequest(plan.review.requestQuote) || plan.review.priorExplicitRequest)) throw new Error('explicit issue-body admission request required')
+  const related = plan.review.relatedRequests ?? []
+  if (!Array.isArray(related) || related.length > 8 || related.some(r => !Number.isSafeInteger(r.issueNumber) || r.issueNumber < 1
+    || !Number.isSafeInteger(r.commentId) || r.commentId < 1 || !/^[a-f0-9]{64}$/.test(r.bodySha256 ?? '')
+    || !Number.isFinite(Date.parse(r.updatedAt)) || !isAdmissionRecheckRequest(r.quote))
+    || new Set([plan.requestCommentId, ...related.map(r => r.commentId)]).size !== related.length + 1
+    || new Set([plan.issueNumber, ...related.map(r => r.issueNumber)]).size !== related.length + 1
+    || related.length && (plan.operation !== 'requested-author-reply' || plan.requestSource === 'issue-body'
+      || plan.review.kind !== 'admission-recheck')) throw new Error('invalid coalesced admission requests')
   if (ownerResult) {
     if (plan.ownerAuthorization?.source !== 'direct-user-request' || plan.ownerAuthorization.quote !== OWNER_REVIEW_QUOTE
       || plan.ownerAuthorization.grantId !== OWNER_REVIEW_GRANT || plan.review.kind !== 'admission-recheck') throw new Error('finite owner review-result approval required')
@@ -46,7 +58,15 @@ export async function verifyReplyRequest(github, plan) {
   const comments = await github.paginate(`/repos/${plan.repository}/issues/${plan.issueNumber}/comments`)
   const authorComments = comments.filter(comment => comment.user?.id === plan.userId)
     .sort((a, b) => Date.parse(a.updated_at ?? a.created_at) - Date.parse(b.updated_at ?? b.created_at) || a.id - b.id)
-  const request = authorComments.at(-1)
+  let request = authorComments.at(-1)
+  if (plan.requestSource === 'issue-body') {
+    request = await github.request('GET', `/repos/${plan.repository}/issues/${plan.issueNumber}`)
+    if (request?.number !== plan.issueNumber || request.state !== 'open' || request.pull_request
+      || request.user?.id !== plan.userId || authorComments.length
+      || comments.some(c => ['ai-scarlett', 'github-actions[bot]'].includes(String(c.user?.login).toLowerCase()))) {
+      throw new Error('issue-body request was closed, answered, superseded or belongs to another person')
+    }
+  }
   if (request?.id !== plan.requestCommentId || digest(request.body) !== plan.requestBodySha256
     || request.updated_at !== plan.requestUpdatedAt
     || !request.body.includes(plan.review.requestQuote)) throw new Error('request changed, withdrawn, superseded or belongs to another person')
@@ -65,6 +85,11 @@ export async function verifyReplyRequest(github, plan) {
   if (plan.review.kind === 'other-request' && isAdmissionRecheckRequest(request.body)) throw new Error('an admission recheck cannot bypass the terminal decision gate')
   const person = humanIdentity(await github.request('GET', `/user/${plan.userId}`))
   if (!person || person.node_id !== request.user.node_id) throw new Error('request author identity mismatch')
+  for (const related of plan.review.relatedRequests ?? []) {
+    await verifyReplyRequest(github, { ...plan, issueNumber: related.issueNumber,
+      requestCommentId: related.commentId, requestBodySha256: related.bodySha256, requestUpdatedAt: related.updatedAt,
+      review: { ...plan.review, requestQuote: related.quote, relatedRequests: [], priorExplicitRequest: undefined } })
+  }
   return person
 }
 export async function sendReviewedReply({ github, plan, seed }) {
@@ -75,7 +100,9 @@ export async function sendReviewedReply({ github, plan, seed }) {
     recipient: person, claimId: digest(JSON.stringify(plan)), seed,
     ...(['owner-authorized-admission-correction', 'owner-authorized-review-result'].includes(plan.operation)
       ? { ownerCorrection: correctionEvidence(plan) }
-      : { continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256 } }),
+      : { continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256,
+        ...(plan.requestSource === 'issue-body' ? { requestSource: 'issue-body', issueNumber: plan.issueNumber } : {}),
+        ...(plan.review.relatedRequests?.length ? { relatedRequests: plan.review.relatedRequests.map(r => ({ commentId: r.commentId, requestHash: r.bodySha256 })) } : {}) } }),
   })
   if (!claim.allowed) return { sent: false, reason: claim.reason }
   // Recheck the request after the CAS; cancellation never returns the slot.
