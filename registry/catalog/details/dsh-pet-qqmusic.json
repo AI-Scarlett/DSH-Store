@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e7cfabd74fa268ef8a1be89afce247d2f71e82f1",
-  "version": "1.3.2",
+  "commit": "ee888c6d4b90669bac799801da1bbe9d371911ed",
+  "version": "1.3.9",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T12:37:04.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "updatedAt": "2026-10-18T14:01:12.000Z",
+    "observedAt": "2026-10-18T18:29:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
-      "evidenceUrl": "https://github.com/344272586-sketch/dsh-pet-qqmusic/commit/e7cfabd74fa268ef8a1be89afce247d2f71e82f1",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-18T18:29:25.000Z",
+      "evidenceUrl": "https://github.com/344272586-sketch/dsh-pet-qqmusic/commit/ee888c6d4b90669bac799801da1bbe9d371911ed",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "03f19a13bf7c86f9b054f3255c961315d1974673ba42824ba991ee08b46ca015",
+    "binding": "910912bfd155c345ca4e60e9eeda62135a71e1e8bc7aae6d9cce1a3400328172",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
+    "state": "review-required",
     "sourceContract": "verified",
-    "coverage": "incomplete",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
@@ -90,8 +90,9 @@
   "entryIds": [
     "dsh-pet-qqmusic"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: lib/smtc-helper.exe; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
   "compatibility": {
     "dsh": "^0.2.0-rc.1",
     "dshReleases": {
