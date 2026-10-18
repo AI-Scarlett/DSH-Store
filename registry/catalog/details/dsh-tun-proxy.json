@@ -18,7 +18,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d639074c31502d2d115dcb67c77eeb5dba317ae5",
+  "commit": "64efd538bbbee3b00b6d303a44c40c7028469395",
   "version": "0.3.1",
   "categories": [
     "experimental"
@@ -26,20 +26,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T14:14:03.000Z",
-    "observedAt": "2026-10-18T01:14:58.596Z",
+    "updatedAt": "2026-10-18T02:28:00.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "owner-requested-fixed-source-review-v1",
-      "checkedAt": "2026-10-18T01:14:58.596Z",
-      "evidenceUrl": "https://github.com/scclovez/dsh-tun-proxy/commit/d639074c31502d2d115dcb67c77eeb5dba317ae5",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/scclovez/dsh-tun-proxy/commit/64efd538bbbee3b00b6d303a44c40c7028469395",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Immutable manifest, Bundle, license and complete bounded text surface reviewed."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or package scripts executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime evidence is not independent Store acceptance."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,7 +69,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Bounded static capability admission review; no independent runtime security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -86,6 +86,7 @@
   "entryIds": [
     "dsh-tun-proxy"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001 lib/routes.js:23 sameOrigin 仅在 Host 存在时检查 loopback；Host 与 Origin 均缺失且无 cross-site 元数据时第 30 行直接 true。/state 与 /action 共用该判定，后者可进入安装、启动、代理和设置副作用；不能宣称缺请求信任材料时 fail closed。 COMPAT001 package.json:36 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
   "compatibility": {
@@ -98,7 +99,10 @@
       "0.1.2-alpha.2": "unknown",
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
-      "0.1.2-alpha.5": "unknown"
+      "0.1.2-alpha.5": "unknown",
+      "0.2.1-rc.2": "compatible",
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -144,6 +148,24 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dd7f2bb9f16bfe7e4f6eecea55f5d96d9619735e",
-  "version": "0.1.66",
+  "commit": "b163a4e5a15ceb16ccccdc12f99439a0a86cb29e",
+  "version": "1.0.0",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T17:11:39.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-17T15:34:27.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-automation/commit/dd7f2bb9f16bfe7e4f6eecea55f5d96d9619735e",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-automation/commit/b163a4e5a15ceb16ccccdc12f99439a0a86cb29e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,14 +77,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "831d4648f78d15d9388444b4c38f844118b49bcdcf8311fa46bc625c8a7ea130",
+    "binding": "61e60deaedf64db9fa9d1f5588981a18e01891bdbdcd2576bb735d89633cc822",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "dsh-automation"
@@ -93,7 +93,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.5-rc.3 || 0.1.7-rc.1 || 0.1.7-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-al",
+    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,10 +103,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -157,18 +156,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -176,6 +163,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -202,7 +195,6 @@
       ]
     },
     "externalDependencies": [
-      "antd",
       "luxon",
       "zod"
     ],

@@ -43,14 +43,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-07T15:58:02.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
       "evidenceUrl": "https://github.com/Carpon39038/dsh-image-theme/commit/25c70fcd31b0cf36f8a0ff57b0413223daaf5d27",
       "dshRelease": null,
       "systems": [],
@@ -97,14 +97,14 @@
     "coverage": "complete",
     "capabilities": "low-risk-static",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "image-theme"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.1-alpha.4, 0.2.1-alpha.5, 0.2.1-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.1-alpha.5, 0.2.1-rc.1, 0.2.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": "^0.1.2-rc.1",
     "dshReleases": {
@@ -116,10 +116,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -170,18 +169,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -193,14 +180,20 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "latestWindow": {
       "state": "recheck-required",
       "releases": [
-        "0.2.1-alpha.4",
         "0.2.1-alpha.5",
-        "0.2.1-rc.1"
+        "0.2.1-rc.1",
+        "0.2.1-rc.2"
       ]
     },
     "node": ">=22",

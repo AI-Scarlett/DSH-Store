@@ -20,24 +20,24 @@
   "manifestPath": "integrations/dsh/package.json",
   "installPath": "integrations/dsh",
   "updatePolicy": "external-only",
-  "commit": "690a876c56724c80975ea53c9ef436e1bb7e61d2",
-  "version": "0.1.0",
+  "commit": "7534a8da2de669d196ff474f94a2d9ed286f1886",
+  "version": "0.2.0",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T12:41:32.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-17T23:04:18.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/first-fluke/oh-my-agent/commit/690a876c56724c80975ea53c9ef436e1bb7e61d2",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/first-fluke/oh-my-agent/commit/7534a8da2de669d196ff474f94a2d9ed286f1886",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,21 +76,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "49a0b2dcd73ef1f8747d007f255e3b9986827278b0642cf2f1f6084e244f5465",
+    "binding": "f22de3235c9b7217c2da55b30c4e2c98a979c81ae66bf9cae6d6dcde6cda3588",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "oma"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
   "compatibility": {
     "dsh": "0.2.0-rc.2",
     "dshReleases": {
@@ -102,10 +102,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -156,18 +155,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -175,6 +162,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -198,7 +191,10 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "oh-my-agent",
+      "tar"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

@@ -29,8 +29,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "157105403febc206a5f7a805d529e97cec67d55c",
-  "version": "0.3.0",
+  "commit": "5392650bc287550b66d0f50364391928f0b01966",
+  "version": "0.4.0",
   "categories": [
     "tools",
     "ui"
@@ -38,16 +38,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-02T04:25:31.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-18T02:21:48.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/Hotsteel2901/dsh-client-ui-mobile-adapt/commit/157105403febc206a5f7a805d529e97cec67d55c",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/Hotsteel2901/dsh-client-ui-mobile-adapt/commit/5392650bc287550b66d0f50364391928f0b01966",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -86,14 +86,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e1947f4c0dc927efc282913ceb09c821f779413c068df5c478db8ea125dc1e29",
+    "binding": "5e47b45692ad07c4598772ae307a463f89df9b0360d891032bea1db90f204af1",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "low-risk-static",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "ui-mobile-adapt"
@@ -127,10 +127,13 @@
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.1": "unknown",
+      "0.2.1-alpha.2": "unknown",
       "0.2.1-alpha.3": "unknown",
       "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -271,6 +274,18 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.2.1-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.2.1-alpha.3": {
         "install": "unknown",
         "start": "unknown",
@@ -294,14 +309,20 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "latestWindow": {
-      "state": "recheck-required",
+      "state": "current",
       "releases": [
-        "0.2.1-alpha.4",
         "0.2.1-alpha.5",
-        "0.2.1-rc.1"
+        "0.2.1-rc.1",
+        "0.2.1-rc.2"
       ]
     },
     "node": ">=18.0.0",

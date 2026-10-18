@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d4fb7402513cab73be915aa6f54d4e7f63ffc46e",
-  "version": "0.1.46",
+  "commit": "18a05b12dca54ce74538bd7d8b921491bb0d7f6a",
+  "version": "0.1.47",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-13T09:12:15.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-18T02:39:29.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-vision-toolkit/commit/d4fb7402513cab73be915aa6f54d4e7f63ffc46e",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-vision-toolkit/commit/18a05b12dca54ce74538bd7d8b921491bb0d7f6a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -95,7 +95,7 @@
   "status": "blocked",
   "statusReason": "Fixed-source recheck blocked installation: runtime or optional dependencies require a separate supply-chain review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: patches/vision-tools-dsh.patch, runtime/requirements.lock, vendor/agent-vision-toolkit/bin/crop, vendor/agent-vision-toolkit/bin/detect, vendor/agent-vision-toolkit/bin/glance; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.2.0-rc.2",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.2.0-rc.2 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -125,7 +125,8 @@
       "0.2.1-alpha.3": "unknown",
       "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown"
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -297,6 +298,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

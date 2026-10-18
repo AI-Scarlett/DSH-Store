@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e72dc717a4d4c6bed44363e82d745db6f5eb5087",
-  "version": "0.13.4",
+  "commit": "adc2107ad98594c8fb73fd7722ccf1057de101ca",
+  "version": "0.14.1",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T00:55:37.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-18T02:31:02.000Z",
+    "observedAt": "2026-10-18T03:27:51.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/e72dc717a4d4c6bed44363e82d745db6f5eb5087",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/adc2107ad98594c8fb73fd7722ccf1057de101ca",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,14 +79,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ebb792fd6d5841eb4cec793032673f6c9e4a2870f738c6cd196ad13c037bf185",
+    "binding": "1d3c4782ae9ac8d31fd26ac45d02cce5e46fa8cfec551034356ef97fcbc85d7f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "llm-commandcode"
@@ -95,7 +95,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.2 || 0.2.1-alpha.4",
+    "dsh": "0.2.0-rc.2 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -106,8 +106,7 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.4": "compatible",
-      "0.2.1-alpha.3": "unknown",
+      "0.2.1-rc.2": "compatible",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown"
     },
@@ -166,13 +165,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
