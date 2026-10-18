@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1464,
+  "userId": 190562520,
+  "requestCommentId": 6233532298,
+  "requestBodySha256": "e1b57ab897ebaecddd96872fca6188198f7a5fb7d6023e76a678b1d14ba47270",
+  "requestUpdatedAt": "2026-10-17T11:49:15Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "补充复测（仅供复核参考）",
+    "scope": "One exact terminal fixed-source admission result; no automatic future consent.",
+    "kind": "admission-recheck",
+    "priorExplicitRequest": {
+      "commentId": 6232759258,
+      "updatedAt": "2026-10-17T10:21:39Z",
+      "bodySha256": "fa6e9f6642647d67aec214234c20f95e95965006ccfcddc82b781c2a0cea4d24",
+      "quote": "请重新复核。"
+    }
+  },
+  "responseBody": "已合并核对两条复核材料：源码基线固定为 v0.3.1 / `d639074c31502d2d115dcb67c77eeb5dba317ae5`；补充 `a878df87b3d61ea0142f305744972fa5e9605fc1` 的 diff 仅有文档/证据，未替换源码基线。\n\n### dsh-tun-proxy 0.3.1\n\n固定 Commit：`d639074c31502d2d115dcb67c77eeb5dba317ae5`；61/61 个有界文本、438,317 字节，已完整读取并核验 Git blob/SHA-256。最终结论：**blocked / rejected**。\n\n0.3.1 的 ZIP/EXE/DLL 摘要与长度校验、缺摘要拒绝、替换备份已确认；a878df87 只修改文档/证据，按作者侧 rc.2 证据保存。仍有控制路由缺失 Host 时放行和精确兼容声明缺失。\n\n- **AUTH001** [lib/routes.js:23](https://github.com/scclovez/dsh-tun-proxy/blob/d639074c31502d2d115dcb67c77eeb5dba317ae5/lib/routes.js#L23)：sameOrigin 仅在 Host 存在时检查 loopback；Host 与 Origin 均缺失且无 cross-site 元数据时第 30 行直接 true。/state 与 /action 共用该判定，后者可进入安装、启动、代理和设置副作用；不能宣称缺请求信任材料时 fail closed。\n  最小修改：在任何读状态/解析正文/dispatch 前，缺失或畸形 Host、错误 Origin/Fetch Metadata 一律拒绝；优先复用官方 connection.requestRejection，并在该上下文缺失/抛错时拒绝；保留 POST JSON 与有界正文。\n  验收：缺 Host 的 HTTP/1.0、错 Host/Origin、无效或缺失授权上下文均在状态读取、下载、文件、进程及注册表动作前拒绝；授权面板仍正常。\n\n- **COMPAT001** [package.json:36](https://github.com/scclovez/dsh-tun-proxy/blob/d639074c31502d2d115dcb67c77eeb5dba317ae5/package.json#L36)：固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。\n  最小修改：实际验证后，在 dsh.compatibility.dshReleases 声明至少一版当前窗口的准确结果，并给出该版本安装/启动/卸载证据；未验证项保留 unknown。\n  验收：至少一版当前窗口声明与证据一致；其他宿主、系统和 rollback 不从旧记录推定。\n\n旧“下载后直接执行、缺少摘要”已不再作为当前阻塞。yaml 2.9.1 的官方 npm 元数据、233 文件归档、SHA-512 SRI、SHA-256、ISC 和无直接运行依赖/安装钩子已独立只读核对，与供给材料一致；GitHub NOASSERTION 不被当作没有 MIT 许可。固定 import 和开发测试也不被当成任意远程执行。作者声明的 TUN/强杀恢复/真实 Desktop 未验收项继续保持未验证，不要求删除正常代理能力。\n完整固定源码绑定、最终准入/Catalog 状态与验收条件：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261018.md。本轮未执行第三方安装、构建、测试、插件或二进制；未改真实 Profile。作者自测保持作者证据。 请针对上述 AUTH001 / COMPAT001 提交最小修复与可复核材料；issue 保持打开。",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "a8a6876453b0544d742e1e828b92fef32bfc23fc492522e713105e3700e9f331"
+  }
+}

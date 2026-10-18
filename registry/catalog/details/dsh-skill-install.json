@@ -1,16 +1,15 @@
 {
   "id": "dsh-skill-install",
-  "name": "技能安装器（DSH Skill Install）",
+  "name": "技能管理工具（DSH Skill Install）",
   "packageName": "dsh-skill-install",
   "description": "DeepSeek Harness 技能安装器：按名字搜索或直接输入 GitHub 仓库地址，列出仓库中的 SKILL.md 技能，勾选后安装到全局 / 当前项目 / 自定义目录，与内置 skill-filesystem 联动，装完即时生效。",
   "searchTerms": [
-    "技能安装器",
+    "技能管理工具",
     "DSH Skill Install",
     "dsh-skill-install",
     "技能",
     "Skill",
     "扩展能力",
-    "新锐实验",
     "实验功能",
     "新功能",
     "dsh",
@@ -21,29 +20,29 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
-  "commit": "935dbb1ef7f10be54c0a972ac45a947f07832a78",
-  "version": "0.1.0",
+  "updatePolicy": "external-only",
+  "commit": "70aa4ffd8706d7e6de2ca95558d954a213bc60f8",
+  "version": "0.1.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T09:06:13.000Z",
-    "observedAt": "2026-10-17T10:30:25.625Z",
-    "provenance": "github-repository"
+    "updatedAt": "2026-10-17T13:52:43.000Z",
+    "observedAt": "2026-10-18T01:14:58.596Z",
+    "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "github-fixed-commit-source",
-      "checkedAt": "2026-10-17T10:30:25.625Z",
-      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/935dbb1ef7f10be54c0a972ac45a947f07832a78",
+      "method": "owner-requested-fixed-source-review-v1",
+      "checkedAt": "2026-10-18T01:14:58.596Z",
+      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/70aa4ffd8706d7e6de2ca95558d954a213bc60f8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Canonical repository and immutable source identity read back."
+      "summary": "Immutable manifest, Bundle, license and complete bounded text surface reviewed."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or runtime code was executed by the Store."
+      "summary": "No third-party installation or package scripts executed."
     },
     "runtime": {
       "status": "unknown",
@@ -63,45 +62,50 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or runtime code was executed by the Store."
+      "summary": "Author runtime evidence is not independent Store acceptance."
     },
     "securityReview": {
-      "status": "partial",
-      "method": "independent-bounded-static-admission-review",
-      "checkedAt": "2026-10-17T10:30:25.625Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-activities-20261017.md",
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "完整 7 文本覆盖；零 npm dependencies 不消除内置 js-yaml、curl/tar、文件写入和 GitHub token 能力。因请求/路径/身份兼容契约拒绝准入。"
+      "summary": "Bounded static capability admission review; no independent runtime security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "c0434b7406ecec275c21d381c4547c21910231f788799515e613e355b99f82f4",
+    "binding": "9c816a00bd3ab4a7b8f954e1adb9086baeb5fa0b67561d6d6d65942a174b4d64",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "0cc645d988d3c54a5cec71430fdf51226774d5766eb4db27204263696a07b9a9"
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
   },
   "entryIds": [
     "skill-install"
   ],
   "status": "blocked",
-  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001: 通用 route 不限制方法/媒体类型或验证 Host/Origin/调用方；安装、移除、代理和 token 更新均由 query 触发，GET 就能写文件或改凭据。 PATH001: dirs 来自 query 后直接 join 到 work；对源目录未校验相对路径/realpath。tar 解压及 cp(dereference:false) 也没有对链接、包内越界条目和总体大小作完整准入检查。 META001: manifest 缺 repository 和 engines.node；仅 engines.dsh 范围，没有当前窗口的逐版声明。",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: PATH001 index.js:489 downloadExtract 在第 524 行运行 tar -xzf，直到第 529 行才 sanitizeTree；展开体积/条目数和链接检查发生在磁盘写入之后。第 516 行 arrayBuffer 与代理 curl 也在完整接收后才检查 64 MiB，未在传输时限制实际字节。 COMPAT001 package.json:41 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
   "compatibility": {
     "dsh": "^0.2.0-rc.2",
     "dshReleases": {
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
       "rc.7": "unknown",
       "rc.8": "unknown",
       "0.1.1-rc.1": "unknown",
-      "0.1.1-rc.2": "unknown"
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown",
+      "0.2.0-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -169,25 +173,31 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.0-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
     ]
   },
   "details": {
-    "pluginType": "feature",
+    "pluginType": "unknown",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
-      "files": "write",
-      "network": "any",
-      "commands": "restricted",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "api-key"
+        "unknown"
       ]
     },
     "externalDependencies": [],
@@ -195,6 +205,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "manual-fixed-source-rejected-not-installable"
+    "review": "fixed-source-review-rejected-not-installable"
   }
 }

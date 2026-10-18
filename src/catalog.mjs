@@ -575,7 +575,8 @@ function validateEntry(value, index, catalogUpdatedAt) {
       ? nonEmptyString(value.statusReason, `entries[${index}].statusReason`, 600)
       : null,
     compatibility: {
-      dsh: typeof value.compatibility?.dsh === 'string' ? value.compatibility.dsh.slice(0, 120) : null,
+      dsh: typeof value.compatibility?.dsh === 'string'
+        ? nonEmptyString(value.compatibility.dsh, `entries[${index}].compatibility.dsh`, 4096) : null,
       dshReleases: declaredDshReleaseCompatibility(value.compatibility?.dshReleases, value.compatibility?.dsh, `entries[${index}].compatibility`),
       dshOperations: declaredDshOperations(value.compatibility?.dshOperations, `entries[${index}].compatibility`),
       ...(value.compatibility.latestWindow ? { latestWindow: {

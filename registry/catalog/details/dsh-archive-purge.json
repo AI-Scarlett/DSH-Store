@@ -1,0 +1,183 @@
+{
+  "id": "dsh-archive-purge",
+  "name": "会话管理（DSH Archive Purge）",
+  "packageName": "dsh-archive-purge",
+  "description": "为 DSH 提供会话管理能力。英文原始说明：Delete action for archived DeepSeek Harness sessions: permanently removes the session log, its Workspace membership, and its archive mark.",
+  "searchTerms": [
+    "会话管理",
+    "DSH Archive Purge",
+    "dsh-archive-purge",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "archive",
+    "purge"
+  ],
+  "repositoryUrl": "https://github.com/Angela-lwh/dsh-archive-purge",
+  "defaultBranch": "main",
+  "manifestPath": "plugin/package.json",
+  "installPath": "plugin",
+  "updatePolicy": "external-only",
+  "commit": "0fbe8584f2ab664cbc048162cd6e2d00c152b1d8",
+  "version": "1.0.0",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-10-17T23:16:53.000Z",
+    "observedAt": "2026-10-18T01:14:58.596Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "owner-requested-fixed-source-review-v1",
+      "checkedAt": "2026-10-18T01:14:58.596Z",
+      "evidenceUrl": "https://github.com/Angela-lwh/dsh-archive-purge/commit/0fbe8584f2ab664cbc048162cd6e2d00c152b1d8",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Immutable manifest, Bundle, license and complete bounded text surface reviewed."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or package scripts executed."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Author runtime evidence is not independent Store acceptance."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Bounded static capability admission review; no independent runtime security audit."
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "1d281d73cdb2509277f497f85957d6e6e246da8ea068ecb90e23f780c6036e0f",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "rejected",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+  },
+  "entryIds": [
+    "archive-purge"
+  ],
+  "status": "blocked",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: DELETE001 plugin/index.js:221 归档/运行检查与实际 rm 之间有多个 await（stat、目录验证、等待/释放）；没有覆盖宿主恢复/追加及并发删除的维护锁。第 392-406 行吞掉 metadata 清理错误，随后仍返回 deleted:true，且未保存未完成清理事务。 COMPAT001 plugin/package.json:46 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "manual-review"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "fixed-source-review-rejected-not-installable"
+  }
+}

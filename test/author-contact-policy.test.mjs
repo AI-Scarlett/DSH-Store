@@ -446,3 +446,54 @@ test('owner-directed reply plans name the owner authority without fabricating au
   assert.throws(() => validateReplyGrant({ ...p, userId: 101 }), /finite owner/)
   assert.throws(() => validateReplyGrant({ ...p, ownerAuthorization: { ...p.ownerAuthorization, quote: 'Thanks' } }), /approval/)
 })
+
+test('an exact explicit issue-body appeal uses the same consumed central request slot', async () => {
+  const body = '请复核此固定 Commit。'
+  const p = { ...grant(), repository: 'AI-Scarlett/DSH-Store', requestSource: 'issue-body', requestCommentId: 888,
+    requestBodySha256: digest(body), review: { decision: 'explicit-request-to-continue', requestQuote: body, scope: 'One exact admission appeal', kind: 'admission-recheck' } }
+  const api = mock(prior()); api.issues.set(10, { ...incoming(body, 888), number: 10, state: 'open' })
+  assert.equal((await sendReviewedReply({ github: api, plan: p, seed: empty() })).sent, true)
+  assert.equal(Object.values(api.state.contacts[101].reservations)[0].requestSource, 'issue-body')
+  assert.equal((await sendReviewedReply({ github: api, plan: p, seed: empty() })).sent, false)
+  assert.equal(api.posts.length, 1)
+})
+
+test('issue-body appeals reject edits, responses, superseding author comments, closure and submission-only text before reservation', async () => {
+  const body = '请复核此固定 Commit。'
+  const p = { ...grant(), repository: 'AI-Scarlett/DSH-Store', requestSource: 'issue-body', requestCommentId: 888,
+    requestBodySha256: digest(body), review: { decision: 'explicit-request-to-continue', requestQuote: body, scope: 'One exact admission appeal', kind: 'admission-recheck' } }
+  for (const change of [
+    api => { api.issues.get(10).body = '撤回请求' },
+    api => { api.issues.get(10).updated_at = '2026-09-08T00:00:00Z' },
+    api => { api.issues.get(10).user = bob },
+    api => { api.issues.get(10).state = 'closed' },
+    api => { api.issues.get(10).pull_request = {} },
+    api => api.comments.push(incoming('不要再联系', 456)),
+    api => api.comments.push({ ...incoming('已处理', 456), user: { login: 'github-actions[bot]' } }),
+  ]) {
+    const api = mock(prior()); api.issues.set(10, { ...incoming(body, 888), number: 10, state: 'open' }); change(api)
+    await assert.rejects(sendReviewedReply({ github: api, plan: p, seed: empty() }))
+    assert.equal(Object.keys(api.state.contacts[101].reservations).length, 0)
+    assert.equal(api.posts.length, 0)
+  }
+  assert.throws(() => validateReplyGrant({ ...p, review: { ...p.review, requestQuote: 'Here is a new plugin' } }))
+  const api = mock(prior(true)); api.issues.set(10, { ...incoming(body, 888), number: 10, state: 'open' })
+  assert.equal((await sendReviewedReply({ github: api, plan: p, seed: empty() })).sent, false)
+})
+
+test('one merged reply reserves both same-person project requests atomically and never reuses either', async () => {
+  const api = mock(prior()); const second = { ...incoming('Please re-review commit abc.', 124) }
+  const originalPaginate = api.paginate
+  api.paginate = path => path.includes('/issues/11/') ? Promise.resolve([second]) : originalPaginate(path)
+  api.comments.push(incoming())
+  const p = grant(); p.review.kind = 'admission-recheck'
+  p.review.relatedRequests = [{ issueNumber: 11, commentId: 124, bodySha256: digest(second.body), updatedAt: second.updated_at, quote: second.body }]
+  assert.equal((await sendReviewedReply({ github: api, plan: p, seed: empty() })).sent, true)
+  const record = Object.values(api.state.contacts[101].reservations)[0]
+  assert.deepEqual(record.relatedRequests, [{ commentId: 124, requestHash: digest(second.body) }])
+  assert.equal((await reserve(api, person, '8'.repeat(64), 'alice/two', { commentId: 124, requestHash: digest(second.body) })).allowed, false)
+  assert.equal(api.posts.length, 1)
+  const changed = mock(prior()); changed.comments.push(incoming()); changed.paginate = path => path.includes('/issues/11/') ? Promise.resolve([{ ...second, user: bob }]) : Promise.resolve(changed.comments)
+  await assert.rejects(sendReviewedReply({ github: changed, plan: p, seed: empty() }))
+  assert.equal(Object.keys(changed.state.contacts[101].reservations).length, 0)
+})

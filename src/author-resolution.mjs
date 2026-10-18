@@ -43,5 +43,9 @@ export function verifyReplyResolution(plan, bytes, entries) {
   if (entries && !entries.some(e => e.id === r.catalogId && e.commit === r.commit)) throw new Error('reply decision was superseded by newer source')
   if (!plan.responseBody.includes(r.commit) || !plan.responseBody.includes(r.evidenceUrl)) throw new Error('reply must identify the exact decision and public evidence')
   if (r.decision === 'rejected' && r.blockers.some(b => !plan.responseBody.includes(b.code))) throw new Error('reply omits an actionable admission blocker')
+  for (const related of plan.review?.relatedRequests ?? []) {
+    verifyReplyResolution({ ...plan, issueNumber: related.issueNumber, requestCommentId: related.commentId,
+      requestBodySha256: related.bodySha256, review: { ...plan.review, relatedRequests: [] } }, bytes, entries)
+  }
   return r
 }

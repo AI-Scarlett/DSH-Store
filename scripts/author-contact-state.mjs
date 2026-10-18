@@ -146,7 +146,15 @@ export async function reserveContact({ github, repository, recipient, key, claim
       if (!existing || existing.stopped || existing.nodeId !== person.node_id) return { allowed: false, reason: 'no-continuation-permission' }
       if (!/^[1-9][0-9]*$/.test(String(continuation.commentId))
         || !/^[0-9a-f]{64}$/.test(continuation.requestHash)) throw new Error('invalid continuation evidence')
-      if (Object.values(existing.reservations).some(item => item.commentId === continuation.commentId)) {
+      const related = continuation.relatedRequests ?? []
+      if (!Array.isArray(related) || related.length > 8 || related.some(r => !Number.isSafeInteger(r.commentId) || r.commentId < 1
+        || !/^[a-f0-9]{64}$/.test(r.requestHash ?? ''))
+        || new Set([continuation.commentId, ...related.map(r => r.commentId)]).size !== related.length + 1
+        || continuation.requestSource !== undefined && continuation.requestSource !== 'issue-body'
+        || continuation.requestSource === 'issue-body' && (!Number.isSafeInteger(continuation.issueNumber) || continuation.issueNumber < 1)) throw new Error('invalid coalesced continuation evidence')
+      const requestedIds = new Set([continuation.commentId, ...related.map(r => r.commentId)])
+      if (Object.values(existing.reservations).some(item => [item.commentId, ...(item.relatedRequests ?? []).map(r => r.commentId)]
+        .some(id => requestedIds.has(id)))) {
         return { allowed: false, reason: 'request-already-consumed' }
       }
     } else if (decision !== 'first-contact') return { allowed: false, reason: decision }
