@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9880152e15de7b8909b21f71d10b15de6a6c5960",
-  "version": "0.3.22",
+  "commit": "d6a660533d9019d7b0543687d175696948dc7798",
+  "version": "0.3.23",
   "categories": [
     "security"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T10:33:40.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "updatedAt": "2026-10-18T15:02:54.000Z",
+    "observedAt": "2026-10-18T18:29:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-defend/commit/9880152e15de7b8909b21f71d10b15de6a6c5960",
+      "checkedAt": "2026-10-18T18:29:25.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-defend/commit/d6a660533d9019d7b0543687d175696948dc7798",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "36b577a8791c65aab9330485920b449525265edd247ff3fa38279908120f92e9",
+    "binding": "9c3bfc52a7964bbd2c0f940ca3eb52cbfef8c50d28868abec7d0053ae11457ba",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -92,7 +92,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0",
     "dshReleases": {
@@ -193,10 +193,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "tsdown",
-      "typescript"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

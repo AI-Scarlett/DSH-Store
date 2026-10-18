@@ -22,28 +22,28 @@
   "manifestPath": "plugin/package.json",
   "installPath": "plugin",
   "updatePolicy": "external-only",
-  "commit": "0fbe8584f2ab664cbc048162cd6e2d00c152b1d8",
-  "version": "1.0.0",
+  "commit": "0f7e7f5ee88c5cbfaf0cc5e2b8ab5dce8f3c42e1",
+  "version": "1.0.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T23:16:53.000Z",
-    "observedAt": "2026-10-18T01:14:58.596Z",
+    "updatedAt": "2026-10-18T15:44:09.000Z",
+    "observedAt": "2026-10-18T18:29:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "owner-requested-fixed-source-review-v1",
-      "checkedAt": "2026-10-18T01:14:58.596Z",
-      "evidenceUrl": "https://github.com/Angela-lwh/dsh-archive-purge/commit/0fbe8584f2ab664cbc048162cd6e2d00c152b1d8",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-18T18:29:25.000Z",
+      "evidenceUrl": "https://github.com/Angela-lwh/dsh-archive-purge/commit/0f7e7f5ee88c5cbfaf0cc5e2b8ab5dce8f3c42e1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Immutable manifest, Bundle, license and complete bounded text surface reviewed."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or package scripts executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime evidence is not independent Store acceptance."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Bounded static capability admission review; no independent runtime security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -90,6 +90,7 @@
   "entryIds": [
     "archive-purge"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: DELETE001 plugin/index.js:221 归档/运行检查与实际 rm 之间有多个 await（stat、目录验证、等待/释放）；没有覆盖宿主恢复/追加及并发删除的维护锁。第 392-406 行吞掉 metadata 清理错误，随后仍返回 deleted:true，且未保存未完成清理事务。 COMPAT001 plugin/package.json:46 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
   "compatibility": {
