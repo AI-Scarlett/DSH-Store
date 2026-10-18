@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "70aa4ffd8706d7e6de2ca95558d954a213bc60f8",
-  "version": "0.1.3",
+  "commit": "c03b72d85a391d1f510df0e61d12836649a10abc",
+  "version": "0.1.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T13:52:43.000Z",
-    "observedAt": "2026-10-18T01:14:58.596Z",
+    "updatedAt": "2026-10-18T05:01:35.000Z",
+    "observedAt": "2026-10-18T12:29:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "owner-requested-fixed-source-review-v1",
-      "checkedAt": "2026-10-18T01:14:58.596Z",
-      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/70aa4ffd8706d7e6de2ca95558d954a213bc60f8",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/c03b72d85a391d1f510df0e61d12836649a10abc",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Immutable manifest, Bundle, license and complete bounded text surface reviewed."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or package scripts executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime evidence is not independent Store acceptance."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Bounded static capability admission review; no independent runtime security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -89,10 +89,11 @@
   "entryIds": [
     "skill-install"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: PATH001 index.js:489 downloadExtract 在第 524 行运行 tar -xzf，直到第 529 行才 sanitizeTree；展开体积/条目数和链接检查发生在磁盘写入之后。第 516 行 arrayBuffer 与代理 curl 也在完整接收后才检查 64 MiB，未在传输时限制实际字节。 COMPAT001 package.json:41 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
   "compatibility": {
-    "dsh": "^0.2.0-rc.2",
+    "dsh": ">=0.2.0-rc.2-0 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,8 +105,8 @@
       "0.1.2-alpha.5": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.0-rc.2": "compatible"
+      "0.2.1-rc.2": "compatible",
+      "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {

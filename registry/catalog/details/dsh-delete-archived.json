@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f4fa1f7645ae944a3edca0820515390d59d30038",
-  "version": "0.1.1",
+  "commit": "437d935129368b7cdde68a862c6b47cb4e6c895d",
+  "version": "0.1.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T00:31:41.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "updatedAt": "2026-10-18T03:54:02.000Z",
+    "observedAt": "2026-10-18T12:29:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
-      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/f4fa1f7645ae944a3edca0820515390d59d30038",
+      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/437d935129368b7cdde68a862c6b47cb4e6c895d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: DELETE001 lib/entry.js:247 withSessionLock 只串行本插件调用，不能排除宿主恢复/追加。第 289 行 unarchive 成功后，第 294 或 302 行若清理失败，下一次调用会在第 253 行以 not-archived 退出；因此重复执行不能保证完成 registry cleanup。永久 rm 在第 270 行先发生，没有可恢复事务。 COMPAT001 package.json:44 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
   "compatibility": {
-    "dsh": "^0.2.0-rc.2",
+    "dsh": ">=0.2.0-rc.2-0 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -106,8 +106,8 @@
       "0.1.2-alpha.5": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.0-rc.2": "compatible"
+      "0.2.1-rc.2": "compatible",
+      "0.2.0-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
