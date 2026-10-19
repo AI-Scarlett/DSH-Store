@@ -19,24 +19,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "44fa2b550968d5065412dbe1eb608a65db3e5266",
-  "version": "0.2.0",
+  "commit": "6ea90761d2487b45c435abbff7c918e5f5e39f6f",
+  "version": "0.2.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-25T16:44:58.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-19T12:43:31.000Z",
+    "observedAt": "2026-10-19T14:05:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/qingmumingyang/dsh-doc-toolkit/commit/44fa2b550968d5065412dbe1eb608a65db3e5266",
+      "checkedAt": "2026-10-19T14:05:20.000Z",
+      "evidenceUrl": "https://github.com/qingmumingyang/dsh-doc-toolkit/commit/6ea90761d2487b45c435abbff7c918e5f5e39f6f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -75,14 +75,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "3b8f9fbf1ea12bb6a735afba3105557f8467f787adcda478ff9a2a7a157bbb8f",
+    "binding": "78b3602b91213a86608d9e9af93ce82d55f16d1955994377e21eac9219b29ede",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "low-risk-static",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-doc-toolkit"
@@ -91,7 +91,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.12 <0.2.0",
+    "dsh": ">=0.1.5-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -106,11 +106,10 @@
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
       "0.1.7-rc.2": "compatible",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.0-rc.2": "compatible",
+      "0.2.1-alpha.5": "compatible",
+      "0.2.1-rc.1": "compatible",
+      "0.2.1-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -191,39 +190,33 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+      "0.2.0-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.1-alpha.5": {
-        "install": "unknown",
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
-        "install": "unknown",
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
-        "install": "unknown",
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       }
     },
     "latestWindow": {
-      "state": "recheck-required",
+      "state": "current",
       "releases": [
         "0.2.1-alpha.5",
         "0.2.1-rc.1",

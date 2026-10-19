@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4a44d8767ede6f5b072a38f5e1097b8b16ab9dea",
-  "version": "0.14.2",
+  "commit": "dd07843f405d897ba142d7cfb6fa479274cd0b99",
+  "version": "0.14.3",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T11:13:59.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "updatedAt": "2026-10-19T12:19:00.000Z",
+    "observedAt": "2026-10-19T14:05:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/4a44d8767ede6f5b072a38f5e1097b8b16ab9dea",
+      "checkedAt": "2026-10-19T14:05:20.000Z",
+      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/dd07843f405d897ba142d7cfb6fa479274cd0b99",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,21 +79,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "18bc90f98f5b52c1e17856818ab75ac2cdd8d2cc2fb9268c6e07734f9ef5b19a",
+    "binding": "381f3f3d83c086cbb7750f516e19f47a4a217d2e28d08c78cac9b154622d896b",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "review-required",
+    "state": "rejected",
     "sourceContract": "verified",
-    "coverage": "complete",
-    "capabilities": "review-required",
+    "coverage": "incomplete",
+    "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "llm-commandcode"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore, .gitleaks.toml; local module is missing from the distributable surface: src/client/panel-slots.ts -> ./panel-view.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security findings require quarantine; fixed-source security warnings require rev",
   "compatibility": {
     "dsh": "0.2.0-rc.2 || 0.2.1-rc.2",
     "dshReleases": {

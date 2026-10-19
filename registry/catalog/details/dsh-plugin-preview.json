@@ -23,7 +23,7 @@
   "manifestPath": "apps/deepviewer-desktop/dsh-plugins/preview/package.json",
   "installPath": "apps/deepviewer-desktop/dsh-plugins/preview",
   "updatePolicy": "external-only",
-  "commit": "525862b8137764ed6266fc507867e7591ee8b229",
+  "commit": "a1114cf8db26a0d2583d3a43648e3f0af9e6d10b",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-04T00:15:55.000Z",
-    "observedAt": "2026-10-04T04:45:06.000Z",
+    "updatedAt": "2026-10-19T11:03:16.000Z",
+    "observedAt": "2026-10-19T14:05:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-04T04:45:06.000Z",
-      "evidenceUrl": "https://github.com/Duoasa/DeepViewer/commit/525862b8137764ed6266fc507867e7591ee8b229",
+      "checkedAt": "2026-10-19T14:05:20.000Z",
+      "evidenceUrl": "https://github.com/Duoasa/DeepViewer/commit/a1114cf8db26a0d2583d3a43648e3f0af9e6d10b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,9 +77,21 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "9a3ca161255f5c89044c02fccd9eaca6c1ad8bd7c0d3e83cf6664a5c94a2a26c",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+  },
   "entryIds": [
     "ui-preview"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/client/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the dist",
   "compatibility": {
@@ -93,12 +105,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -147,42 +153,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
