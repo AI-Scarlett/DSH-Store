@@ -29,14 +29,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-24T16:29:38.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/Themis4226/Installing-Deepseek-Harness-lazily/commit/b48f617845d75cdb60d3d214e3fec20bb840cc5e",
       "dshRelease": null,
       "systems": [],
@@ -76,21 +76,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "a4c3779577385ef452d878da6dcf447d620cddd306f2832c3da4999ad2537ece",
+    "binding": "ec1ed5e72ff5f499f92a946f1a8ca358cd3808bbaa2f3c493a8f4065647e9d72",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "official-update-check"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; local module escapes the package: test/runtime-integration.test.mjs; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains th",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; local module escapes the package: test/runtime-integration.test.mjs; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permi",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -102,8 +102,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -152,18 +150,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

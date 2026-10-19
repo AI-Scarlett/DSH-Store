@@ -21,24 +21,24 @@
   "manifestPath": "adapters/deepseek-harness/package.json",
   "installPath": "adapters/deepseek-harness",
   "updatePolicy": "external-only",
-  "commit": "2013dd2de8560957bbd0bd9076232bd5c7c994e7",
-  "version": "0.12.68",
+  "commit": "a975470dc51ef81ee049ffdd34ad1313ba12789b",
+  "version": "0.12.69",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T17:46:10.000Z",
-    "observedAt": "2026-10-18T18:29:25.000Z",
+    "updatedAt": "2026-10-19T03:03:39.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T18:29:25.000Z",
-      "evidenceUrl": "https://github.com/wdx9413/craft/commit/2013dd2de8560957bbd0bd9076232bd5c7c994e7",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
+      "evidenceUrl": "https://github.com/wdx9413/craft/commit/a975470dc51ef81ee049ffdd34ad1313ba12789b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,21 +77,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "bec135d5d4709a7535f32c81408c9c8ff3a7f498bb54b7accbb6427115b54558",
+    "binding": "c8ca0a72d6cbf1978b0b7b3f1286c1cf919c5153fe46cea3a496226843531b97",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "craft-adapter"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: dist/index.js; runtime artifact is missing from the distributable surface: dist/index.d.ts; local module is missing from the distributable surface: index.ts -> ./adapter-tools.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata conflict; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: dist/index.js; runtime artifact is missing from the distributable surface: dist/index.d.ts; local module is missing from the distributable surface: index.ts -> ./adapter-tools.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {

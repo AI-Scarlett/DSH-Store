@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-08-25T04:26:04.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/x2802490130-prog/dsh-writing-remote/commit/d92fc1060a848b8cc6054ce420f7fb84bdc96e8c",
       "dshRelease": null,
       "systems": [],
@@ -78,21 +78,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "1eb08bda0eb0ff93fcf07022483e749a229bf5c2293538953f1f7f90c3c9730a",
+    "binding": "8d6c1eedccf60b913a6fae889450bf7489681cb05c7f82a987f6e570d1d74f1e",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "writing-remote"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -104,8 +104,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -154,18 +152,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

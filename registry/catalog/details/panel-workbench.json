@@ -28,14 +28,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-08-28T02:44:41.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/ViktorWong/dsh-workbench/commit/3bcab863bf0bc60f0366b2f4ad8c1e1fa6f5ba6f",
       "dshRelease": null,
       "systems": [],
@@ -75,21 +75,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "80bbd206f0666e4285e97fd2dfe8216a6917e915e016e388163f172b7ab4b9f9",
+    "binding": "a2d2215d2b04e86571a8e24ff733e46320430e0aac3d74dbc8a4b3867bfd0e75",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "workbench-panel"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.mjs; runtime artifact is missing from the distributable surface: ./lib/index.mjs; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete;",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.mjs; runtime artifact is missing from the distributable surface: ./lib/index.mjs; runtime artifact is missing from the distributable surface: ./lib/clie",
   "compatibility": {
     "dsh": null,
     "dshReleases": {

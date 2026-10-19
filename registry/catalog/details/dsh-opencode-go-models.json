@@ -33,14 +33,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-16T08:39:36.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/writeCasually/dsh-opencode-go-models/commit/f83ed14b87be01ffdff5a3151d00554369ceb44d",
       "dshRelease": null,
       "systems": [],
@@ -80,21 +80,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "301e0b60c288e4c37d56ed511925a841bd5bdc7e121f2e7b7e78df0efa301816",
+    "binding": "4bb016cabeb7b6d2e470c5f541be7e9c8e6361e8a8d958379be920b6dcb4ed75",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-opencode-go-models"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: lib/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: lib/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": ">=0.2.1-alpha.4 <0.3.0",
     "dshReleases": {
@@ -106,8 +106,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -156,18 +154,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

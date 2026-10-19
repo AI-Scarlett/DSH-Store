@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e321b901d26899f2d82c44ee5949dafcf9fe8d4a",
-  "version": "2.3.0",
+  "commit": "8b6fe9828978a26471b1b135e9e89176b44db30f",
+  "version": "2.4.0",
   "categories": [
     "themes"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T07:58:35.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "updatedAt": "2026-10-19T01:51:29.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
-      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/e321b901d26899f2d82c44ee5949dafcf9fe8d4a",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
+      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/8b6fe9828978a26471b1b135e9e89176b44db30f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,23 +78,23 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "796b2d659f1391ac36ff5671b2799c8862ba991dda9bac5c7997f421a45f705c",
+    "binding": "8f9eeff42b903d65035e0bd4d3c5467aec01a70e5b26049346f05473c23dbde8",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-whale-musume"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.0-rc.6 <0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -106,9 +106,9 @@
       "0.1.2-alpha.5": "unknown",
       "0.1.2-rc.1": "compatible",
       "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.1-rc.1": "compatible",
+      "0.2.1-rc.2": "compatible",
+      "0.2.1-alpha.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -171,12 +171,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -184,6 +178,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

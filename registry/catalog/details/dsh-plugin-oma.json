@@ -29,14 +29,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-17T23:04:18.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/first-fluke/oh-my-agent/commit/7534a8da2de669d196ff474f94a2d9ed286f1886",
       "dshRelease": null,
       "systems": [],
@@ -76,21 +76,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f22de3235c9b7217c2da55b30c4e2c98a979c81ae66bf9cae6d6dcde6cda3588",
+    "binding": "4c68e1821b160d58677a6130ef1628bba917228368651dc972c2d61ec0c210d6",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "oma"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
   "compatibility": {
     "dsh": "0.2.0-rc.2",
     "dshReleases": {

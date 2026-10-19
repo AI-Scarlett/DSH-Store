@@ -35,14 +35,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-12T04:09:13.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/SZMY-haruhi/dsh-tavily/commit/b22e85a818738d30d2061def85b3ce088707ab67",
       "dshRelease": null,
       "systems": [],
@@ -82,14 +82,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ee250908978a34d9b7a10db64938e460f35d473b97ede8e344e16ee157409255",
+    "binding": "9976b568e74b8d2e008b83404d10b0fec7250d8ca2862101e968e7f624418dbe",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "web-search-tavily"
@@ -98,7 +98,7 @@
     "web"
   ],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the network permission signal; runtime source contains the credentials permission signal; Bundle configuration overrides require review: web; later layers replace the entire config",
+  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the network permission signal; runtime source contains the credentials permission signal; Bundle configuration overrides require review: web; later layers replace the entire config",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0 || >=0.2.1-alpha.0 <0.3.0",
     "dshReleases": {
@@ -110,8 +110,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -160,18 +158,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

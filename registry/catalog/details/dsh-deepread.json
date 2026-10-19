@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-11T13:13:19.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/xiehuan123/dsh-deepread/commit/9462f1e546b94a7f27e77abaf3d9ee3fedf7f746",
       "dshRelease": null,
       "systems": [],
@@ -78,21 +78,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "8b94f1e687fde7ec1c24093f4acde12c73457f8ed99b2a94f7a5e1fc62776a4c",
+    "binding": "9fb39c6fe31cc5ac6ab08fa395a2e2a0fbe6fe6d9e3a56b116954f9dac4fdf27",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "deepread"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: package ignore rules require artifact review; package contains unsupported artifacts requiring review: test/.npmignore, test/fixtures/objstm.pdf; local module is missing from the distributable surface: src/client/index.ts -> ./models.js; local module is missing from the distributable surface: src/client/index.ts -> ./store.js; local module is missing from the distributable surface: src/client/index.ts -> ./view.js; local module is missing from the distributable surface: src/client/storage.ts -> ./models.js; local module is missing from the distributable s",
+  "statusReason": "Automatic policy blocked installation: package ignore rules require artifact review; package contains unsupported artifacts requiring review: test/.npmignore, test/fixtures/objstm.pdf; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; Tool-view extension requires key ownership review; registration alone",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -104,8 +104,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -154,18 +152,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

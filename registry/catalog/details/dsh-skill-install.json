@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c03b72d85a391d1f510df0e61d12836649a10abc",
-  "version": "0.1.6",
+  "commit": "e3ff2b97aba86ae8a914e1664a190dc5206e76e9",
+  "version": "0.1.8",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T05:01:41.000Z",
-    "observedAt": "2026-10-18T23:44:39.000Z",
+    "updatedAt": "2026-10-19T03:20:41.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "manual-fixed-source-admission-review-v1",
-      "checkedAt": "2026-10-18T23:44:39.000Z",
-      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/c03b72d85a391d1f510df0e61d12836649a10abc",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
+      "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/e3ff2b97aba86ae8a914e1664a190dc5206e76e9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The full bounded fixed source was reviewed and terminally rejected on the listed blocker; no installability was inferred."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "DSH STORE did not install or build third-party code; installability remains unknown."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "DSH STORE did not perform runtime acceptance; author evidence is recorded separately and is not Store verification."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "A bounded static admission review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {

@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-18T18:29:25.000Z",
+    "updatedAt": "2026-10-19T03:39:26.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -3489,26 +3489,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held pending current complete fixed-source admission. Historical DSH compatibility does not approve the manifest, Bundle Patch, runtime source, or permissions. Affected Catalog entries: deep-whale-day-night-theme."
-    },
-    {
-      "id": "wnjxyk-dsh-codex-oauth",
-      "name": "Codex 模型接入（DSH Codex OAuth）",
-      "description": "在 DeepSeek Harness 中使用 ChatGPT/Codex 订阅接入 GPT 模型、图像生成与 Web 搜索，并支持订阅额度显示、模型与功能控制，以及浏览器或设备码 OAuth 登录。",
-      "repositoryUrl": "https://github.com/WNJXYK/dsh-codex-oauth",
-      "defaultBranch": "main",
-      "latestCommit": "06bc69cea6e92f86c59c50d41d785303d38bf51d",
-      "sourceUpdatedAt": "2026-08-15T17:22:57.000Z",
-      "discoveredAt": "2026-09-01T18:01:39.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "models",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held pending current complete fixed-source admission. Historical DSH compatibility does not approve the manifest, Bundle Patch, runtime source, or permissions. Affected Catalog entries: wnjxyk-dsh-codex-oauth."
     },
     {
       "id": "angli1997-dsh-plugin-sync",
@@ -13296,8 +13276,8 @@
       "description": "A context-compression plugin for small context windows (a 100K context is enough), token savings (5x fewer tokens), and month-long single sessions (billions of tokens).上下文压缩插件，兼顾小窗口(100k上下文足矣)省token(省5倍token)和超长会话(数月级别几十亿token单会话)。billion-context is all you need",
       "repositoryUrl": "https://github.com/ranxianglei/billion-context",
       "defaultBranch": "master",
-      "latestCommit": "1149bd8dc049d826766dcc174dabc516bd90c2ca",
-      "sourceUpdatedAt": "2026-10-12T15:58:49.000Z",
+      "latestCommit": "a8853feee3aef08d5ee265164695706e20a60258",
+      "sourceUpdatedAt": "2026-10-19T02:44:57.000Z",
       "discoveredAt": "2026-10-12T16:11:46.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -13308,7 +13288,7 @@
       ],
       "status": "rejected",
       "route": "blocked",
-      "statusReason": "SUBMISSION_ENTRY_COLLISION: DSH entry ID compaction-basic is already owned by dsh-fabric"
+      "statusReason": "SUBMISSION_PATCH_AMBIGUOUS: Unsupported Patch inline sequence requires review"
     },
     {
       "id": "gezi-wen-dsh-plugin-development",
@@ -14697,6 +14677,101 @@
       "discoveredAt": "2026-10-18T18:29:25.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@abf9ff90a49cae37771175c0ed78fc0ea68d49cb:data/plugins/techflag__dsh-plugin-ssh.yml:sha256=95fedb91a4c9a55ab257abfede79a8fec944250d096f85524ec0079bfd8e3c37:at=2026-10-18T18:36:33.037Z:owner=939362"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ash-qw-dsh-theme-prts",
+      "name": "ash-qw/dsh-theme-prts",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/ash-qw/dsh-theme-prts",
+      "defaultBranch": "main",
+      "latestCommit": "7e450836c4f35d238a445e121d3fa8d1bcf8b181",
+      "sourceUpdatedAt": "2026-10-19T03:37:27.000Z",
+      "discoveredAt": "2026-10-19T03:39:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@13dcda27177db72e1004b6116f0d589675176fba:data/plugins/ash-qw__dsh-theme-prts.yml:sha256=2e402aca4af6cd2df6af0bf6570a95a2b5edcd7c5acb22c78d58e77a48f2452e:at=2026-10-19T03:47:52.439Z:owner=52017856"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "asheblog-dsh-ollama-cloud",
+      "name": "Asheblog/dsh-ollama-cloud",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Asheblog/dsh-ollama-cloud",
+      "defaultBranch": "main",
+      "latestCommit": "2230ae4d77eeff2f8347993b62bd69f9c1e13916",
+      "sourceUpdatedAt": "2026-10-18T16:30:25.000Z",
+      "discoveredAt": "2026-10-19T03:39:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@13dcda27177db72e1004b6116f0d589675176fba:data/plugins/Asheblog__dsh-ollama-cloud.yml:sha256=f4e88b9f9f8aa0895c22ef5f21ceaac992013f27f1cf8c92fecd223fb607234b:at=2026-10-19T03:47:52.439Z:owner=20861711"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "chenchaoyi-gtmux",
+      "name": "chenchaoyi/gtmux",
+      "description": "Command center for your tmux sessions and coding agents",
+      "repositoryUrl": "https://github.com/chenchaoyi/gtmux",
+      "defaultBranch": "main",
+      "latestCommit": "aa2e5145df2e9af6f8d1214524071af3f2f550c3",
+      "sourceUpdatedAt": "2026-10-19T03:47:25.000Z",
+      "discoveredAt": "2026-10-19T03:39:26.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "asher-2000-dsh-memory-connect",
+      "name": "Asher-2000/dsh-memory-connect",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Asher-2000/dsh-memory-connect",
+      "defaultBranch": "main",
+      "latestCommit": "d3df500883597ecc26db61eeee246fc30a9165ae",
+      "sourceUpdatedAt": "2026-08-27T16:03:29.000Z",
+      "discoveredAt": "2026-10-19T03:39:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@13dcda27177db72e1004b6116f0d589675176fba:data/plugins/Asher-2000__dsh-memory-connect.yml:sha256=04e1cdf0e6deb399d00fb8a0a7369310e23bd0e437557f159e3922cf688c3539:at=2026-10-19T03:47:52.439Z:owner=269878140"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "asher-2000-dsh-expert-mode",
+      "name": "Asher-2000/dsh-expert-mode",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Asher-2000/dsh-expert-mode",
+      "defaultBranch": "main",
+      "latestCommit": "ed9a19d64bb0fc1889ebcb1a998ca3716c56d299",
+      "sourceUpdatedAt": "2026-09-07T06:26:38.000Z",
+      "discoveredAt": "2026-10-19T03:39:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@13dcda27177db72e1004b6116f0d589675176fba:data/plugins/Asher-2000__dsh-expert-mode.yml:sha256=9ab091b9a10953c4d5554e1c9b3f1ec8300f58d1400dcf106dea4708ca6d5b81:at=2026-10-19T03:47:52.439Z:owner=269878140"
       ],
       "topics": [
         "automatic-radar"

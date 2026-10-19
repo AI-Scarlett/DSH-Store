@@ -17,7 +17,7 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "user-reviewed",
+  "updatePolicy": "external-only",
   "commit": "3fd631e8ca928dabf1f28b8e7471e9252efb4434",
   "version": "0.2.6",
   "categories": [
@@ -26,20 +26,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T10:14:28.000Z",
-    "observedAt": "2026-10-15T13:06:31.398Z",
+    "updatedAt": "2026-10-05T09:44:40.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T13:06:31.398Z",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/itchenshi/dsh-keys-setting/commit/3fd631e8ca928dabf1f28b8e7471e9252efb4434",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation, package scripts, or builds were executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime reports were not independently reproduced."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,25 +69,26 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "This bounded capability review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e2ec90f23685552ac22d080d8c9ccc64ca4e7e4b1dfbf2fe78bfbd1cbd6790e7",
+    "binding": "6ff8deb966eb036b9047fadeae6ca614bba27c60cc8794fcb3261d878e943318",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "reviewed",
+    "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
-    "capabilities": "reviewed",
+    "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "composer-keys"
   ],
-  "status": "approved",
-  "statusReason": null,
+  "configOverrides": [],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the network permission signal",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2",
     "dshReleases": {
@@ -100,11 +101,6 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.2.0-rc.1": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -164,36 +160,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
@@ -213,14 +179,6 @@
         "rollback": "unknown"
       }
     },
-    "latestWindow": {
-      "state": "recheck-required",
-      "releases": [
-        "0.2.1-alpha.5",
-        "0.2.1-rc.1",
-        "0.2.1-rc.2"
-      ]
-    },
     "node": ">=20",
     "systems": [],
     "profiles": [
@@ -232,19 +190,19 @@
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "medium",
-      "files": "none",
-      "network": "specified-services",
-      "commands": "none",
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
       "credentials": [
-        "none"
+        "unknown"
       ]
     },
     "externalDependencies": [],
-    "reviewStatus": "manual-review"
+    "reviewStatus": "automated-scan"
   },
   "risk": {
     "installScripts": [],
-    "review": "fixed-source-capability-review"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }

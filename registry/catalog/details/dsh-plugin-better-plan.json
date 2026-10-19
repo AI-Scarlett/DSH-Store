@@ -33,14 +33,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-16T14:40:24.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/HuanLinOTO/dsh-plugin-better-plan/commit/5c62e227d94c9427a3ee71e9a0d7799c1abf07d4",
       "dshRelease": null,
       "systems": [],
@@ -80,21 +80,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "9f1c5484e7125986973f9ae3b21de4402915d13912ef97d841cc3b328602418e",
+    "binding": "717d080729cfe1d86b582eea6d7d552780159db425811de397cb775ca5186aae",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "better-plan"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitignore; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source cont",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitignore; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the file",
   "compatibility": {
     "dsh": "^0.2.1-alpha.5",
     "dshReleases": {

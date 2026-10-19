@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fb253925a2cd6b31f15140e792c6b7693b4f4a5c",
+  "commit": "cdeedd04d1ed1875f2cd0833c8d61dbdac225d7c",
   "version": "0.5.2",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T16:11:01.000Z",
-    "observedAt": "2026-10-18T18:29:25.000Z",
+    "updatedAt": "2026-10-18T18:46:17.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T18:29:25.000Z",
-      "evidenceUrl": "https://github.com/shenhuanageshei/dsh-team-link/commit/fb253925a2cd6b31f15140e792c6b7693b4f4a5c",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
+      "evidenceUrl": "https://github.com/shenhuanageshei/dsh-team-link/commit/cdeedd04d1ed1875f2cd0833c8d61dbdac225d7c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,21 +78,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ad198c6e96e04bb37881c419fb5c45b169c17e05e7d586f231ca0cb4502c2bac",
+    "binding": "0e87fa3b6ebd5da06559cfc480d2a4b9edd4b54c4379f8c1d9ff65fa1ae97b38",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "team-link"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal; Tool-view extension requires key ownership review; registration alone is not a protected component mutation",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal; Tool-view extension requires key ownership review; registration alone is not a protected component mutation",
   "compatibility": {
     "dsh": "^0.1.0-rc.6 || ^0.1.5-rc.1 || ^0.2.0-rc.1",
     "dshReleases": {
