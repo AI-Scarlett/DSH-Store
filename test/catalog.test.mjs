@@ -69,6 +69,11 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
     details: { ...entry.details, permissions: { ...entry.details.permissions, credentials: ['proxy-credentials'] } },
   }]))
   assert.deepEqual(proxyCredentials.entries[0].details.permissions.credentials, ['proxy-credentials'])
+  const webSessionCredential = validateCatalog(document([{
+    ...entry,
+    details: { ...entry.details, permissions: { ...entry.details.permissions, credentials: ['web-session-token'] } },
+  }]))
+  assert.deepEqual(webSessionCredential.entries[0].details.permissions.credentials, ['web-session-token'])
   assert.deepEqual(catalog.entries[0].compatibility.profiles, ['web'])
   assert.equal(catalog.entries[0].assurance.discovery.status, 'verified')
   assert.equal(catalog.entries[0].assurance.runtime.status, 'unknown')
@@ -87,9 +92,18 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
 
 test('new credential detail labels remain explicit for current clients and fail-safe for legacy bridges', async () => {
   const current = await loadCatalogFromFiles()
+  const webChat = current.entries.find(item => item.id === 'dsh-more-details')
+  assert.deepEqual(webChat.details.permissions.credentials, ['web-session-token'])
+  const bridge = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
+  const bridgeWebChat = bridge.entries.find(item => item.id === 'dsh-more-details')
+  const detailWebChat = JSON.parse(await readFile(new URL('../registry/catalog/details/dsh-more-details.json', import.meta.url), 'utf8'))
+  assert.deepEqual(bridgeWebChat.details.permissions.credentials, ['unknown'])
+  assert.deepEqual(detailWebChat.details.permissions.credentials, ['web-session-token'])
+  for (const validate of [validateCatalog085, validateCatalog086, validateCatalog087]) {
+    assert.deepEqual(validate(bridge).entries.find(item => item.id === 'dsh-more-details').details.permissions.credentials, ['unknown'])
+  }
   const source = current.entries.find(item => item.id === 'dsh-tun-proxy')
   assert.deepEqual(source.details.permissions.credentials, ['proxy-credentials'])
-  const bridge = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
   const bridgeEntry = bridge.entries.find(item => item.id === 'dsh-tun-proxy')
   const detailEntry = JSON.parse(await readFile(new URL('../registry/catalog/details/dsh-tun-proxy.json', import.meta.url), 'utf8'))
   assert.deepEqual(bridgeEntry.details.permissions.credentials, ['unknown'])

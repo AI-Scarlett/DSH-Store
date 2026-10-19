@@ -306,6 +306,17 @@ test('a credential false positive needs exact evidence for every observed file a
   assert.equal(admissionDecision(candidate, other, reviewed(other, { capabilityDispositions: [d] })).state, 'review-required')
 })
 
+test('manual fixed-source review can declare a web-session token as a distinct credential capability', () => {
+  const f = { file: 'lib/login-store.js', sha256: '6'.repeat(64), line: 12 }
+  const analysis = { ...clean, signals: { ...clean.signals, credentials: true }, sourceEvidence: [f],
+    capabilityEvidence: [{ ...f, signal: 'credentials' }],
+    reasons: [...clean.reasons, 'runtime source contains the credentials permission signal'] }
+  const permissions = { level: 'high', files: 'read-only', network: 'none', commands: 'none', credentials: ['web-session-token'] }
+  const registry = reviewed(analysis, { permissions })
+  assert.doesNotThrow(() => validateAdmissionReviews(registry))
+  assert.equal(admissionDecision(candidate, analysis, registry).state, 'reviewed')
+})
+
 test('dependencies require an independently reviewed complete source closure and an installation resolution bound to source', () => {
   const proof = { file: 'package-lock.json', sha256: '7'.repeat(64), line: 1, rationale: 'Reviewed installed dependency resolution is constrained to this exact immutable package closure.' }
   const files = [{ file: 'index.js', sha256: '8'.repeat(64), bytes: 12 }]

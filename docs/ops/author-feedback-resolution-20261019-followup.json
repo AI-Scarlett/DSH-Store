@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "phase": "terminal-fixed-source-review-and-scoped-catalog-admission",
+  "baseCommit": "590dbd6e22366e3dbe12b39a21b773ff5b85f939",
+  "createdAt": "2026-10-19T02:38:05.924Z",
+  "scope": [
+    "docs/ops/author-feedback-resolution-20261019-followup.json",
+    "docs/reviews/external-review-20261019-followup.json",
+    "docs/reviews/external-review-20261019-followup.md",
+    "marketplace/app.js",
+    "registry/admission-reviews.json",
+    "registry/author-resolutions.json",
+    "registry/catalog-detail.schema.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog.schema.json",
+    "registry/catalog/details/dsh-more-details.json",
+    "src/admission-review.mjs",
+    "src/catalog.mjs",
+    "src/client.js",
+    "test/admission-policy-v2.test.mjs",
+    "test/catalog.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/author-feedback-resolution-20261019-followup.json": null,
+    "docs/reviews/external-review-20261019-followup.json": null,
+    "docs/reviews/external-review-20261019-followup.md": null,
+    "marketplace/app.js": "436a34f2ba45e98e379185e495ca658b6805bac71497a06ad9aab17f9d539b7e",
+    "registry/admission-reviews.json": "84daeeb434c3c4226f81faac7dd01e9659475f816124434b1c461f823f10fba4",
+    "registry/author-resolutions.json": "9456ede88ce48229a04b177ee38a2160e959568fda102f4278dd146c98398840",
+    "registry/catalog-detail.schema.json": "1e4ad39d189d3597240138ac4cc76ff077754bb817de86d36d8552359abb32a6",
+    "registry/catalog-index.json": "3334446b137f695dceb5961b0e9f7c91d8d62a126558789dae3db0de89e1e93a",
+    "registry/catalog.json": "ba2b0bd83d722492dd3cc8cc0460850175f7cbb1f3b0fee0549f6ad057de6b17",
+    "registry/catalog.schema.json": "98ab68668e298c8d815afd84a579648510030f2a8b5cc64c56a63d30e6f7d766",
+    "registry/catalog/details/dsh-more-details.json": null,
+    "src/admission-review.mjs": "ff8597cfef30ccab085811567db1a8ee33d0726a4e922aae75c9b14d7a9fe08f",
+    "src/catalog.mjs": "521cd5662912bb940b88407d8c913f7000d211f51da5ab172bb6b64f8b39d573",
+    "src/client.js": "e74f65bb8389f8ae3c39c8c6a72b52e2a0b11e136397514e73ed37166002cfaa",
+    "test/admission-policy-v2.test.mjs": "c78c4e2c5c80ecb444c703219066f73c3a62c39a8abbb418f2f9d2363f2eb3aa",
+    "test/catalog.test.mjs": "c760f49289a319db8bb8a4186da2fd812ef0c3ab85b0f989b4586c5848fb436c"
+  },
+  "postconditions": {
+    "docs/reviews/external-review-20261019-followup.json": "a0fb0a69fac7f072bd8488de3ecd8430a4747b9c186fd429e7c17c92a7c72058",
+    "docs/reviews/external-review-20261019-followup.md": "c45b52a553132f2ba5c38f758bca1f0bac927df78e685311cfaf1015fd117611",
+    "marketplace/app.js": "7ff3c534bdcbc9680d46a8513d2e56a9cc3b3ac52aaea54a565e226d7900e547",
+    "registry/admission-reviews.json": "ef97b9d830ae88d856a480b92755106891e24772eb5b8eeb350bc8a42eea8c44",
+    "registry/author-resolutions.json": "56c2d6ec3d4a20f189005a711d8657890b82e67f64fc6b9d6487f671a6fec77a",
+    "registry/catalog-detail.schema.json": "ddda090268f6efa3a51b29d6ebc7b92e630cd2a594305b86b1e722efbe5f35e6",
+    "registry/catalog-index.json": "0f6dd984adc36c49af84bba1d2c77db39997cf02112bbf1e76129fde8f85edd0",
+    "registry/catalog.json": "c634b8f5c7644eec554039b2426a0906d21c6432287fe7087aa7c1afb01ec6af",
+    "registry/catalog.schema.json": "27f899ea9762380db12663b634a008dc9c18a43b212538a01ae9320f4f035a87",
+    "registry/catalog/details/dsh-more-details.json": "93d509f10c091dce16d2b71bd32d64060c869aee6e58b58d5d75381ed38c6f62",
+    "src/admission-review.mjs": "a7042f80b6870873a63e666315f949b35ae49e6ce1f5716ce2f7eb10999406ce",
+    "src/catalog.mjs": "5cfe317e7c6d9b6f5f9faf309a747ccf7a65bdb1084eda702d137e8087bbddb3",
+    "src/client.js": "3364caa6d8840277f4e4ca6d1624362eec6c620518ed9003c7fbe515cddc4852",
+    "test/admission-policy-v2.test.mjs": "37491174e92c65d52aaa70e8a5484ae3451d7776e41a10177140a0462f7ba039",
+    "test/catalog.test.mjs": "91b6d1e9e24b6d215ca154e614320a96fd87bc24edd803272fa2776545c51955"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "AI-Scarlett authorized complete review and scoped Store code/Catalog changes for #1445, #1489 and #1490 on 2026-10-19; no author message may bypass the live central contact ledger.",
+    "githubWriteCredential": "short-lived-token-required",
+    "manualBranchPublication": "Use the installed AI-Scarlett GitHub App through the authenticated GitHub connector; create one auditable CI-checked PR."
+  },
+  "activities": [
+    {
+      "issue": 1445,
+      "commit": "374b66c5ddd295e410bc216c17223df3a6fa1e08",
+      "decision": "admit-user-reviewed"
+    },
+    {
+      "issue": 1489,
+      "commit": "ef902623eb1cd1811be60a6d6130d8c6ed9f4c40",
+      "decision": "reject"
+    },
+    {
+      "pullRequest": 1490,
+      "commit": "51e5b2bfad2e9fb6455e9432b2dbecc9c7082c24",
+      "decision": "reject"
+    }
+  ],
+  "gates": [
+    "All three full fixed commits are pinned and scanned within bounds; no third-party code is executed.",
+    "Catalog permission vocabulary and user-facing labels disclose web-session-token; legacy readers fail safely to unknown.",
+    "One matching author resolution is saved only for #1445 comment 6248864932; no fake comment IDs are created for issue-body or PR events.",
+    "No message, review, closure, or reaction is sent; all author contact remains governed by the central ledger.",
+    "Run npm run check and npm run verify:registry-sources; pass registry workflow CI before merge.",
+    "Verify merged GitHub and Pages readback; do not connect to dsh.store or dsh-store.cn.",
+    "Keep the legacy registry/catalog.json bridge compact and below 2 MiB; verify Catalog, index, detail, and admission parity."
+  ],
+  "rollback": {
+    "source": "Revert the scoped change through a CI-checked PR; retain audit and Git history.",
+    "catalog": "Restore the previous Catalog state through the same reviewed PR workflow.",
+    "contacts": "No contact reservation is changed or deleted."
+  },
+  "verdict": {
+    "admitted": 1,
+    "rejected": 2,
+    "messagesSent": 0,
+    "issuesClosed": 0,
+    "thirdPartyCodeExecuted": false,
+    "realProfileChanged": false,
+    "productionStoresRefreshed": false
+  }
+}

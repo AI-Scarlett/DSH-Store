@@ -632,7 +632,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
           'none', 'restricted', 'shell', 'unknown',
         ]),
         credentials: enumArray(value.details?.permissions?.credentials, `entries[${index}].details.permissions.credentials`, [
-          'none', 'api-key', 'oauth', 'keychain', 'proxy-credentials', 'unknown',
+          'none', 'api-key', 'oauth', 'keychain', 'proxy-credentials', 'web-session-token', 'unknown',
         ], ['unknown'], 1),
       },
       externalDependencies: stringArray(
