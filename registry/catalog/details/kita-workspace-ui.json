@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-22T00:29:35.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/qiansekai/kita-dsh-plugins/commit/434941d8fbe7489d028c09f265720d494f14ffbd",
       "dshRelease": null,
       "systems": [],
@@ -78,21 +78,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "bd36b2e19a64cb25d1a65976d29e2461ba76d3d3f6942fed20f9b12af49bc318",
+    "binding": "b7ef149a492f2f6a73b2d7a450f34d30294c7f34ce6ab0975bfbeb972a728cc3",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "kita-workspace-ui"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern has no fixed-tree targets: ./src/*; runtime artifact is missing from the distributable surface: ./cordis.patch.yml; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern has no fixed-tree targets: ./src/*; runtime artifact is missing from the distributable surface: ./cordis.patch.yml; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain",
   "compatibility": {
     "dsh": null,
     "dshReleases": {

@@ -30,14 +30,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-04T20:06:30.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/aayan-cloud/dsh-reelsmaker/commit/606daa8a4a28c9b0aded910aad0cc6c7d0f49116",
       "dshRelease": null,
       "systems": [],
@@ -77,21 +77,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "7d39a8b765e53aba0debeb1857ce820afa8b4206f4efafcde5af7597a1f0ff48",
+    "binding": "03fa92b7a4a60aaa555810eeee3a9353ebefab95fa71904169cc59ed40e48c79",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "reelsmaker"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; local module is missing from the distributable surface: src/Reel.tsx -> ./engine/kinetic; local module is missing from the distributable surface: src/Reel.tsx -> ./engine/screen; local module is missing from the distributable surface: src/Root.tsx -> ./Reel; local module is missing from the distributable surface: src/engine/Captions.tsx -> ./palette; local module is missing fro",
+  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; local module is missing from the distributable surface: src/Reel.tsx -> ./engine/kinetic; local module is missing from the distributable surface: src/Reel.tsx -> ./engine/screen; local module is missing from the distributable surface: src/Root.tsx -> ./Reel; local module is missing from the distributable surface: src/engine/Captions.tsx -",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -103,8 +103,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -153,18 +151,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

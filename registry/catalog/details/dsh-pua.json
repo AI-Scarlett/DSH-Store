@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1d2e60988673c8f289903181914c5e91aae391dc",
-  "version": "0.3.28",
+  "commit": "791733b1a7c63f7818b36501eeeaa4dc85f9b0ff",
+  "version": "1.0.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T16:29:19.000Z",
-    "observedAt": "2026-10-14T17:38:48.000Z",
+    "updatedAt": "2026-10-17T09:30:31.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T17:38:48.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/1d2e60988673c8f289903181914c5e91aae391dc",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/791733b1a7c63f7818b36501eeeaa4dc85f9b0ff",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,14 +76,26 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "ab63216a542d16ac91f3b5bdf8f7196e0e33c7ba33b454fa79be22807ab50b11",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+  },
   "entryIds": [
     "michengai-pua-remote",
     "michengai-pua"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern requires review: ./locale/*.json; runtime artifact pattern requires review: ./locale/remote/*.json; package contains unsupported artifacts requiring review: NOTICE; runtime source exceeds the automatic review byte bound: 768338 total bytes (maximum 2097152); largest file 391288 bytes (maximum 262144); fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.1.5-rc.3 || 0.1.7-rc.1 || 0.1.7-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-al",
+    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -93,10 +105,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -145,30 +153,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

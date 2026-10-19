@@ -33,14 +33,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-17T04:23:16.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/2c948994c4b4367f0f8ee4638026356efcccf89d",
       "dshRelease": null,
       "systems": [],
@@ -80,21 +80,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "95d0747728afea668a7ff9187bdedbd5e47db916e5126d7360ce8fecb0612600",
+    "binding": "5e12c6e1b9c149adbe6166c5ff9b435f338cd0883d5cc7c1e18567ef4d2f9003",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "mcp-connector"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains",
   "compatibility": {
     "dsh": null,
     "dshReleases": {

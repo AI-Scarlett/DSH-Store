@@ -38,14 +38,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-08-16T14:18:42.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/LJninse/dsh-open-in-ide/commit/e03f9dc62a6f78932a0a3755996852d23ac216b3",
       "dshRelease": null,
       "systems": [],
@@ -85,21 +85,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "22a386540d8782e4a417ddd0e6eda1ef9fc3c956dfd746ce03b33eec6e84301b",
+    "binding": "9104133be35d28efb5906787e1190894c18068a322c6963c9839c33caa0a6c84",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "open-in-ide"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; Node.js compatibility is not explicitly declared; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6",
     "dshReleases": {
@@ -111,8 +111,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -161,18 +159,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

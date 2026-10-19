@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-28T15:18:13.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/Fisfzy/dsh-ego-browser/commit/c02428e25446bb26e1f8e09532d688090246cfe4",
       "dshRelease": null,
       "systems": [],
@@ -78,21 +78,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "6d5ff3763659bcec1ce12a7efe1a439c627edfdb2f25c6716bda08fb8dbf2385",
+    "binding": "018ceb4aa39cc5ba7094d41c1b2daae056d01cc296312cff4954bcc5ef1c57d7",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "ego-browser"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains",
+  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore; fixed-source scan is incomplete; unobserved capability signals are unkn",
   "compatibility": {
     "dsh": ">=0.1.2-rc.1",
     "dshReleases": {

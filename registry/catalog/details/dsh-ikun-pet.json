@@ -29,14 +29,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-08-15T19:27:28.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/eric-song-dev/dsh-ikun-pet/commit/ada74e3755730bbff1e619ca0f8ff7926d03ba98",
       "dshRelease": null,
       "systems": [],
@@ -76,21 +76,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "2b139c4498cdc2c0f5e0eb86a5dffde95e9b55ef1d784353df599512e88c652b",
+    "binding": "bcf4672040960d1ae58d3d6c64600b7eda385bab024e4ee84ae17d11e4382d37",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-ikun-pet"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; package contains unsupported artifacts requiring review: assets/voice.mp3; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; Node.js compatibility is not explicitly declared; package contains unsupported artifacts requiring review: assets/voice.mp3; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -102,8 +102,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -152,18 +150,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

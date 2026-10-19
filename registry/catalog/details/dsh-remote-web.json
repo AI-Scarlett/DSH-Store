@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-17T12:07:00.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/mrRisega/dsh-remote/commit/02abc6902a1d30a31cea40783428d6a4362b7333",
       "dshRelease": null,
       "systems": [],
@@ -78,21 +78,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "157a93a9e6dca44e4505c31e1e16b1659e85f7789d428c9fdf9ef9bd71777fc4",
+    "binding": "c0d6aa5f849aea7988fb48863743ddc30fd7e92028c7cd2e55be4ee9556b406f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-remote-web"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; Node.js compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; Node.js compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6 <0.3.0-0",
     "dshReleases": {

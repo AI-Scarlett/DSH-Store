@@ -26,20 +26,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T02:30:50.000Z",
-    "observedAt": "2026-10-18T23:44:39.000Z",
+    "updatedAt": "2026-10-18T02:28:00.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "manual-fixed-source-admission-review-v1",
-      "checkedAt": "2026-10-18T23:44:39.000Z",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/scclovez/dsh-tun-proxy/commit/64efd538bbbee3b00b6d303a44c40c7028469395",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The full bounded fixed source passed a terminal manual admission review; this is not runtime acceptance."
+      "summary": "The same-version fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "DSH STORE did not install or build third-party code; installability remains unknown."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "DSH STORE did not perform runtime acceptance; author evidence is recorded separately and is not Store verification."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,7 +69,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "A bounded static admission review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -81,7 +81,7 @@
     "coverage": "complete",
     "capabilities": "reviewed",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "71d207fa489eb8687dab7abc5dd3b540f83f19e2528bfb83062c7aee2ba11312"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-tun-proxy"
@@ -172,6 +172,14 @@
         "rollback": "unknown"
       }
     },
+    "latestWindow": {
+      "state": "current",
+      "releases": [
+        "0.2.1-alpha.5",
+        "0.2.1-rc.1",
+        "0.2.1-rc.2"
+      ]
+    },
     "node": ">=22.19.0",
     "systems": [],
     "profiles": [
@@ -191,13 +199,11 @@
         "proxy-credentials"
       ]
     },
-    "externalDependencies": [
-      "yaml@2.9.1 (ISC; no transitive runtime dependencies)"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "manual-review"
   },
   "risk": {
     "installScripts": [],
-    "review": "fixed-source-user-reviewed-admission-v1"
+    "review": "automated-fixed-source-policy-v1"
   }
 }

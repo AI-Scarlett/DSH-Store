@@ -33,14 +33,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-08-24T09:08:28.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/Saktawdi/dsh-ha-orchestrator/commit/86ace1f8ad84eaa7079bd0d36f17b37645a8a903",
       "dshRelease": null,
       "systems": [],
@@ -80,21 +80,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "80953b5322b68821bfcb427552bcfa26eec4728ed813cb37b52ed2bad380c599",
+    "binding": "2f5129e09f8925a51fa86bee0d9e68d17518ec6f20efab2e6c8121964b42f671",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-ha-orchestrator"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore; local module is missing from the distributable surface: src/index.ts -> ./language.js; local module is missing from the distributable surface: src/index.ts -> ./config.js; local module is missing from the distributable surface: src/index.ts -> ./ha-core.js; local module is missing from the distributable surface: src/index.ts -> ./orc",
+  "statusReason": "Automatic policy blocked installation: manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; Tool-view extension requires key ownership review; registration alone is not a protected component muta",
   "compatibility": {
     "dsh": "^0.1.0-rc.6",
     "dshReleases": {
@@ -106,8 +106,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -156,18 +154,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

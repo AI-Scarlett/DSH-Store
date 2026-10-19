@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-17T01:48:53.000Z",
-    "observedAt": "2026-10-17T03:22:17.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T03:22:17.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/tong-io/tongflow/commit/fce4987200e8ae44db2830e0a2fa2985275d6d36",
       "dshRelease": null,
       "systems": [],
@@ -79,21 +79,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e68b1ea9310b511fae94a298e6299e8a1f2c77a8ae4f6399f328cdf7794197eb",
+    "binding": "93cc1754254853fdb23d4ff4b3fab35e3b9f33cda4a435c8fda01adec8c3042d",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "tongflow"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata do not match; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata conflict; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "^0.1.2-rc.0 || ^0.1.3-alpha.0 || ^0.1.5-alpha.0 || ^0.1.7-alpha.0 || ^0.2.0-rc.0 || ^0.2.1-alpha.0",
     "dshReleases": {
@@ -109,7 +109,6 @@
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.1": "compatible",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -182,12 +181,6 @@
         "rollback": "unknown"
       },
       "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

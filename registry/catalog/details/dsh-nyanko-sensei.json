@@ -30,14 +30,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-09-18T14:37:19.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "observedAt": "2026-10-19T03:39:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
+      "checkedAt": "2026-10-19T03:39:26.000Z",
       "evidenceUrl": "https://github.com/Qihang-He/dsh-nyanko-sensei/commit/0cbfa56fa53d9b5b32fa31068076939249e38c02",
       "dshRelease": null,
       "systems": [],
@@ -77,21 +77,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "a5891734bdd95c99ce2a7af876b8fa1c2b120656d0978283c6d87e743b362ff9",
+    "binding": "5a9d05bc03a2c26ca60511908917285160a831741c625fd67240aa8673a3bea7",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "dsh-nyanko-sensei"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata do not match; DSH compatibility is not explicitly declared; package contains unsupported artifacts requiring review: assets/anims/.gitkeep, assets/voice/.gitkeep; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; package contains unsupported artifacts requiring review: assets/anims/.gitkeep, assets/voice/.gitkeep; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -103,8 +103,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown"
@@ -153,18 +151,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
