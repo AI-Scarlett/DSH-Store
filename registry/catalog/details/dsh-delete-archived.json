@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T03:54:02.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "updatedAt": "2026-10-18T03:54:10.000Z",
+    "observedAt": "2026-10-18T23:44:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "method": "manual-fixed-source-admission-review-v1",
+      "checkedAt": "2026-10-18T23:44:39.000Z",
       "evidenceUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/437d935129368b7cdde68a862c6b47cb4e6c895d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "The full bounded fixed source was reviewed and terminally rejected on the listed blocker; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "DSH STORE did not install or build third-party code; installability remains unknown."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "DSH STORE did not perform runtime acceptance; author evidence is recorded separately and is not Store verification."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,26 +73,26 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "A bounded static admission review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "09d5273a19106cdfd7f3a4def91e8f7736b73a0c7a0275ff6db5f6c6bec84175",
+    "binding": "3c8e339b37573a6d3ce6ae36d0e3cc2b6ea8f6f446d0a8d3fb2bd44606463c1f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "71d207fa489eb8687dab7abc5dd3b540f83f19e2528bfb83062c7aee2ba11312"
   },
   "entryIds": [
     "archived-session-delete"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: DELETE001 lib/entry.js:247 withSessionLock 只串行本插件调用，不能排除宿主恢复/追加。第 289 行 unarchive 成功后，第 294 或 302 行若清理失败，下一次调用会在第 253 行以 not-archived 退出；因此重复执行不能保证完成 registry cleanup。永久 rm 在第 270 行先发生，没有可恢复事务。 COMPAT001 package.json:44 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
+  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: DELETE002 lib/entry.js:116-120 accepts any parsed object as a valid journal. lib/entry.js:283-292 skips the archived-session check whenever that file exists, without validating its schema or binding the journal sessionId to the requested session.",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2-0 <0.3.0-0",
     "dshReleases": {
@@ -194,12 +194,12 @@
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "high",
+      "files": "write",
+      "network": "none",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "none"
       ]
     },
     "externalDependencies": [],

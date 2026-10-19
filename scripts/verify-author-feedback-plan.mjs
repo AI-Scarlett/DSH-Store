@@ -47,7 +47,9 @@ function main() {
         const reply = JSON.parse(readFileSync(path))
         validateReplyGrant(reply)
         if (!['admission-recheck', 'other-request'].includes(reply.review?.kind)) throw new Error('new reply must classify the verified request')
-        if (reply.review.kind === 'admission-recheck') verifyReplyResolution(reply, readFileSync('registry/author-resolutions.json'))
+        if (reply.review.kind === 'admission-recheck' || reply.review.finalAdmissionDecision === true) {
+          verifyReplyResolution(reply, readFileSync('registry/author-resolutions.json'))
+        }
       }
       for (const path of git('diff', '--name-only', '--diff-filter=AM', from, to, '--', 'registry/author-first-contacts', 'registry/author-submission-results').split('\n').filter(Boolean)) {
         if (!/^registry\/author-(?:first-contacts|submission-results)\/[a-z0-9-]+\.json$/.test(path)) throw new Error('invalid first-contact plan path')

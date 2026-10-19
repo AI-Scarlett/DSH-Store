@@ -1,0 +1,4618 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "557bd165c864b4236eb897be3884661f242fce2b",
+  "observedAt": "2026-10-18T23:44:39Z",
+  "cutoff": "2026-10-18T01:05:14Z",
+  "evidenceLevel": "complete-bounded-fixed-commit-source-review",
+  "runtimeAcceptance": "unknown",
+  "thirdPartyCodeExecuted": false,
+  "realProfileChanged": false,
+  "officialLatestThree": [
+    "0.2.1-alpha.5",
+    "0.2.1-rc.1",
+    "0.2.1-rc.2"
+  ],
+  "automation": {
+    "catalogAutomationLastRun": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39154363445",
+    "storefrontPublisherLastRun": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39176418611",
+    "issueAutomationAlreadyReplied": false,
+    "note": "Scheduled Catalog/storefront refreshes were read-only evidence for current state; no matching GitHub issue-event precheck run was found for #1484, and the fixed-Commit precheck was rerun locally after the contract update; none produced terminal author-admission resolutions or a maintainer reply for these five comments. #934 explicitly says the automatic refresh to 30e0188 is not its requested admission review.",
+    "submissionPrecheck": {
+      "issueNumber": 1484,
+      "matchingIssueEventRun": "none-found",
+      "fixedCommitResult": "passed",
+      "fixedCommit": "77ba449060adb6e80de554b52ec1e90845c9e780",
+      "entryIds": [
+        "dsh-model-everything",
+        "dsh-model-everything-gate"
+      ],
+      "filesScanned": 108,
+      "eligibleFiles": 108,
+      "securityFindings": 0
+    }
+  },
+  "admissionCounts": {
+    "admitted": 3,
+    "rejected": 2
+  },
+  "authorMessages": {
+    "preparedMainReviewedReplies": 4,
+    "uniquePeople": 4,
+    "joeyRequestsCombinedInOneMessage": true,
+    "notSentByPolicy": [],
+    "centralContactLedger": "author-contact-state/contacts.json",
+    "delivery": "Only by author-feedback-resolution workflow after main and public Catalog readback; CAS reservation precedes every issue-comment POST; no retry.",
+    "contactRationale": "#1484 author ID 49059886 has consumed historical contact reservations. The submission by itself does not restore contact permission; comment 6245870100 separately asks which Patch shape the Catalog prefers. This exact, request-specific question is treated as a one-time continuation request, after identity and no-stop checks; no further contact is implied."
+  },
+  "requestSummaries": [
+    {
+      "issueNumber": 1464,
+      "commentId": 6244757975,
+      "authorId": 190562520,
+      "commentSha256": "3417d9fd503e711f476d7e98fba525bb2a3344716e111e60ddb77c1bb8c22222",
+      "decision": "admitted",
+      "commit": "64efd538bbbee3b00b6d303a44c40c7028469395",
+      "resolutionBinding": "f70e499bf26c2ad91cf60ae1845c8df16e175b79a1f9834ee2d7d8ab50d2174c",
+      "blockers": []
+    },
+    {
+      "issueNumber": 1484,
+      "commentId": 6245870100,
+      "authorId": 49059886,
+      "commentSha256": "779022a3653858a86f26d32b347ef952997f4b6e32ff4eac6f237b05f4310f08",
+      "decision": "admitted",
+      "commit": "77ba449060adb6e80de554b52ec1e90845c9e780",
+      "resolutionBinding": "778377e4c38eda8fc3fe65d4b665daddcde67d7b3d8748d3d3e7c0159d14ffc9",
+      "blockers": []
+    },
+    {
+      "issueNumber": 1466,
+      "commentId": 6245946804,
+      "authorId": 194322966,
+      "commentSha256": "9732a1419ec75edeaa8cdc17f25e22bf66f5e2385717384153fdec04480133ad",
+      "decision": "rejected",
+      "commit": "c03b72d85a391d1f510df0e61d12836649a10abc",
+      "resolutionBinding": "9ca28ce18a062cb2bbcc9b7ef33c29ef04f0907d3777f153dd5fab4c436484b3",
+      "blockers": [
+        {
+          "code": "PATH002",
+          "file": "index.js",
+          "lines": [
+            482,
+            483,
+            552,
+            557
+          ]
+        }
+      ]
+    },
+    {
+      "issueNumber": 1467,
+      "commentId": 6245952852,
+      "authorId": 194322966,
+      "commentSha256": "a5a21ae30fd3baad8d76a3a0b4feaf121351df135bce8d166bac67eb74c860f0",
+      "decision": "rejected",
+      "commit": "437d935129368b7cdde68a862c6b47cb4e6c895d",
+      "resolutionBinding": "3c8e339b37573a6d3ce6ae36d0e3cc2b6ea8f6f446d0a8d3fb2bd44606463c1f",
+      "blockers": [
+        {
+          "code": "DELETE002",
+          "file": "lib/entry.js",
+          "lines": [
+            116,
+            120,
+            283,
+            292
+          ]
+        }
+      ]
+    },
+    {
+      "issueNumber": 934,
+      "commentId": 6247399388,
+      "authorId": 51282470,
+      "commentSha256": "1d58dd71224bb2f7ab26555c1c90f798efff5e25d5e68f2f672f7e432dd1ecd7",
+      "decision": "admitted",
+      "commit": "83bebac32199ca5c015ad10bb475ce5baf7d4455",
+      "resolutionBinding": "5fd634f64363989d1fae6d9df53b3acdbc067b9316433454f5ee55758baae2f6",
+      "blockers": []
+    }
+  ],
+  "records": [
+    {
+      "issueNumber": 1464,
+      "requestCommentId": 6244757975,
+      "author": {
+        "login": "scclovez",
+        "userId": 190562520
+      },
+      "requestBodySha256": "3417d9fd503e711f476d7e98fba525bb2a3344716e111e60ddb77c1bb8c22222",
+      "repositoryUrl": "https://github.com/scclovez/dsh-tun-proxy",
+      "commit": "64efd538bbbee3b00b6d303a44c40c7028469395",
+      "packageName": "dsh-tun-proxy",
+      "version": "0.3.1",
+      "source": {
+        "scanComplete": true,
+        "filesScanned": 65,
+        "runtimeBytes": 487656,
+        "sourceDigest": "5903579612e37402fd35e0cdfa42ccadecb321fb340bdae8a588ac60f50fb092",
+        "unsupportedFiles": 0,
+        "runtimeDependencies": {
+          "yaml": "2.9.1"
+        },
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 528,
+            "blob": "cb4c5a3f56ffd62f3c3ba81e298ef794f4dc435e",
+            "sha256": "6d63fd7d8a40d101c19c168143bcd4f4a53cf2a703e89a7cfb86b97dfb68c82b"
+          },
+          {
+            "file": "docs/evidence/compatibility.json",
+            "bytes": 2938,
+            "blob": "ab3d371343c8520b3292a4b83ca42fc09a7cd91e",
+            "sha256": "f966ce2ebbc115dd756fd56afc3e499fb42177d5c81a96fb8eb10de371c6092b"
+          },
+          {
+            "file": "docs/evidence/downloads.json",
+            "bytes": 2385,
+            "blob": "a9e5ec3a239e2063b23a65e319d05c5e34502d7b",
+            "sha256": "c4402c976717190ed986160b4693f51a18c2676cc99bff742e07661455d6baa5"
+          },
+          {
+            "file": "docs/evidence/gui.json",
+            "bytes": 7149,
+            "blob": "deb6dbc09ef4a9bae9f73533d0fa93ee40d8af45",
+            "sha256": "889fca286cbb6f7e8903c7cf8fba76603c948976b43ec8d896853adfa11cc654"
+          },
+          {
+            "file": "docs/evidence/host.json",
+            "bytes": 2251,
+            "blob": "15309c052695dbbd4c13c31f1c8f7fb65a0f12c8",
+            "sha256": "5650d4a284bb21e0c2f09c39e605e8fe06b229dc09f61df53fae559122b1ffd0"
+          },
+          {
+            "file": "docs/evidence/local-runtime.json",
+            "bytes": 1015,
+            "blob": "5577a88049c0114987ca51710332cb14ade56f6f",
+            "sha256": "795ec4842a1f97c0445b773986e37bbab9dada2d15d54dfcb113f3979da90db0"
+          },
+          {
+            "file": "docs/evidence/supply-chain.json",
+            "bytes": 951,
+            "blob": "294bcd9ebb17eeeff0bf52d4187491691dd10a7f",
+            "sha256": "db327049b9069d06d6d2a16873884bfbd81934bb5389ebf9059faf8c645176ec"
+          },
+          {
+            "file": "lib/actions.js",
+            "bytes": 2659,
+            "blob": "b0a1c9d8f295c820c50b3beea4e68508f649afe3",
+            "sha256": "a4b3d7860c6a0a8e5b6f818ab430f3423fc1be1eb43eddc9c96238aef34702ff"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 62445,
+            "blob": "0f850f94f10b5be390b6a83023897f70dd8a924a",
+            "sha256": "1a6ba927db455c8ccf621139d93794d1204887ee3ced39cef4fb16d2c5ca823c"
+          },
+          {
+            "file": "lib/core/artifacts.js",
+            "bytes": 9883,
+            "blob": "bbb89d46e9a96220bf7bd6eff8749face3002365",
+            "sha256": "a58175c2a10c3bf58a88ded9e49eb093ecbfd5e97a85637cc4763cba468bbda4"
+          },
+          {
+            "file": "lib/core/chain.js",
+            "bytes": 4483,
+            "blob": "1459d71a7e1b66bb0d6293640c2d7a5c0f8c2324",
+            "sha256": "8e1dc7d022f8a44b14096a13ab03ab48e0c757781781a185338903308ca0df36"
+          },
+          {
+            "file": "lib/core/ipcheck.js",
+            "bytes": 2006,
+            "blob": "aa2d89039661ac782ec4b5da35bca7da32c9689e",
+            "sha256": "9c7b8518bbc462c9ff8448206d274245b6a30a9f98115baf723121db16198b5e"
+          },
+          {
+            "file": "lib/core/kernel.js",
+            "bytes": 26326,
+            "blob": "415ed3c673272984755fd8e2695c7e7bc45d4885",
+            "sha256": "821612075fc769ad7c45f09a7fc57f883bd39036fdfa5c94bc5df1e1e758df7c"
+          },
+          {
+            "file": "lib/core/net.js",
+            "bytes": 6497,
+            "blob": "0a230458fe62ee5be4affb1da7f053f2ef97c672",
+            "sha256": "636bb565d158efa7c40226e34e0ac5c59e1709fcac1b56dc7b14dc3c5ba31514"
+          },
+          {
+            "file": "lib/core/paths.js",
+            "bytes": 4111,
+            "blob": "c49254f79afcaa601ab278b6ff9bc2cc368a07f1",
+            "sha256": "9db1f1f8b72dc9a092a2437595da36d21bfe08ac095611df93940af50174d3b0"
+          },
+          {
+            "file": "lib/core/profile.js",
+            "bytes": 1812,
+            "blob": "69035206eee7b2cf9cbab60c64c6d4b9a0ce70c2",
+            "sha256": "b81e005381fce8bdd6891b37ff1cafca4962de85823ee2b353e6723983c261cc"
+          },
+          {
+            "file": "lib/core/profiles.js",
+            "bytes": 6902,
+            "blob": "bf82783509adb03f9d2222d87ec30565a4d960ef",
+            "sha256": "2e95810afce9a0aef4f461c7d7e22465fd020dd282e5443bd9e8dac22dcad6e3"
+          },
+          {
+            "file": "lib/core/ps.js",
+            "bytes": 13756,
+            "blob": "4fea2e8814dc6f002488695a0fe9d0067631055e",
+            "sha256": "bdfaffa482b2528bc35b7dbdb1b844c656d31ddd1f1dd09c0fd8e92e1c8af33e"
+          },
+          {
+            "file": "lib/core/service.js",
+            "bytes": 43423,
+            "blob": "c15caf3d9a8b63f8cebfd120b05ec53a95296d64",
+            "sha256": "270298ece6ad4b124ced3c4b51159e315dc8a21b02c376aec964594745daf26a"
+          },
+          {
+            "file": "lib/core/settings.js",
+            "bytes": 12568,
+            "blob": "18f1938f49f3a4746c8ac8806b27827d0cdf0739",
+            "sha256": "59598824a2e622ae61c750d4e44e2e3cd67fc9719e4c1b2cbc7fdc41c2468ac3"
+          },
+          {
+            "file": "lib/core/subscription.js",
+            "bytes": 5585,
+            "blob": "549f0b57e7c8b5cb47f340afdd44d4e62e6c3d42",
+            "sha256": "d4f3ddcc797140b1ba98496ae546b312d2faa966b9cce3f73b93451e94a0449f"
+          },
+          {
+            "file": "lib/core/system-proxy.js",
+            "bytes": 3215,
+            "blob": "21cc3deba572bc745307ab653db4974bd0602097",
+            "sha256": "d6d2393d70b13e5f68a5605bb3412a33573c3514a851e89c5864684d95b02025"
+          },
+          {
+            "file": "lib/core/yaml-config.js",
+            "bytes": 8491,
+            "blob": "c6d28ac0a013fc1d97dae1433f0ccbfcb4190186",
+            "sha256": "de95c976e8043622ea4ae2ecce238d7c051b3150d58d7d39192c2e1ee894ad63"
+          },
+          {
+            "file": "lib/gateway.js",
+            "bytes": 1159,
+            "blob": "bd034acbf62eb68f05cb3ba2714c1bd4a78ae4d0",
+            "sha256": "4597ddf680b26c9e2d687cb1e3b0ed5cd82d26c66ac320acd77121df13afc783"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 3382,
+            "blob": "7a5dbacf831775bdbc7f9d7ed537bc25f1d5fc34",
+            "sha256": "2fd2d45a661c86074dea42cb207463d9d90e6bd04a52c11801721261ca93fd1d"
+          },
+          {
+            "file": "lib/panel-style.js",
+            "bytes": 18138,
+            "blob": "fc7dd43c354c7e90e57d1d75e3cebc45199917ee",
+            "sha256": "5cef0b62f33e1e16e585ebe807fd9a9903c32e188b640335e6edffb68c364b3b"
+          },
+          {
+            "file": "lib/panel.js",
+            "bytes": 34504,
+            "blob": "d8e3203de921ca2551cc6a01436045da12b7294a",
+            "sha256": "4417f3d2caecef0c701ce33ed499c711e872be556e5a52a90c8fceb31d9a0bd0"
+          },
+          {
+            "file": "lib/routes.js",
+            "bytes": 7209,
+            "blob": "f2c7f0941d6002e2a3a50c13ee1bbab7c1105bf0",
+            "sha256": "47367d72cc3e1384215e8dafd5ffa482c88dec6b63115242ac14ee4e00f123c6"
+          },
+          {
+            "file": "lib/select.js",
+            "bytes": 8125,
+            "blob": "4109652b6edee21aa1dd42bc46c502a303b0410f",
+            "sha256": "38df1c8beaf7679e00010587be23f0250d57de84fff5b670e9e047ec8c11c343"
+          },
+          {
+            "file": "lib/tools.js",
+            "bytes": 13756,
+            "blob": "878829a664a78d9bf28888c0b6f1789440042a19",
+            "sha256": "cf9fbd50312f4b0d2fd644449dbfb637f3cfc3446c7e7fed015c38f15cbf7e6c"
+          },
+          {
+            "file": "package.json",
+            "bytes": 2741,
+            "blob": "960c34bbe91019a1fde415eb5d039321ee696268",
+            "sha256": "74868ee7e9fbd528f6a212285db0e653cb0ae4679d2e1e35bde53db2aee5d5dc"
+          },
+          {
+            "file": "scripts/acceptance-tun.mjs",
+            "bytes": 3797,
+            "blob": "12494cdd3af3f5d0d3ef45f1980a756fce2f8faf",
+            "sha256": "4418fb2bb70de2889cfd1b05ad89b61fe491c80431f574b37a2db62f2361893e"
+          },
+          {
+            "file": "scripts/build-client.mjs",
+            "bytes": 2634,
+            "blob": "8f96c0aee8a362959a46dead054fb6bf0941b6eb",
+            "sha256": "76ca89a1c31712cbe32291bf9125018a480b8b130cbe37d469f0416be5c9812f"
+          },
+          {
+            "file": "scripts/cli.mjs",
+            "bytes": 4471,
+            "blob": "3095cdbae33949bf6ee55397fe0d3ef1a4c57569",
+            "sha256": "61b99ac3c34388d9e3ec66f93ba86db733a8dd35441bedd7f15a361563600bff"
+          },
+          {
+            "file": "scripts/install.ps1",
+            "bytes": 5545,
+            "blob": "255ad7dfe1fb1220936ad9e3830de36b8bfd0ca7",
+            "sha256": "b38940aff10d64649270e32710fb0aede4789ec584caa4b0202b6ab8b2a167b2"
+          },
+          {
+            "file": "scripts/preview.mjs",
+            "bytes": 763,
+            "blob": "0d5380721f823cd2f75272486c3300471d5e825d",
+            "sha256": "194305be11123b32394d27da6b95424a3420631bcd7c576bf79dad8623b7a0d2"
+          },
+          {
+            "file": "scripts/uninstall.ps1",
+            "bytes": 4256,
+            "blob": "54a85db2568d5066b4cb791e0ff7d7ea56a7552b",
+            "sha256": "dfcaadb32d11ca54c4453593068aac936121d7dd842ab3ef403bb95022b1dd9b"
+          },
+          {
+            "file": "scripts/verify-compatibility.mjs",
+            "bytes": 12079,
+            "blob": "a30195b315ede2b4c291ed9f980acec77259075f",
+            "sha256": "20afa30b5149940a3443d47f862149bc7a7c9136b9f97a7ceaed49fbb6a78c15"
+          },
+          {
+            "file": "scripts/verify-downloads.mjs",
+            "bytes": 3215,
+            "blob": "eb7915b6f45251f1122c6e7268e89edba743fa76",
+            "sha256": "0d16e0fddff9c2e40e83218bb80b822164e861d60c9ff892969d07d7704034e0"
+          },
+          {
+            "file": "scripts/verify-gui.mjs",
+            "bytes": 18031,
+            "blob": "58dcae7638b27dede9d9739a3e1961ab5133f718",
+            "sha256": "3d48f2e402df9d190d83e3f7840fb7e14ce2e387171811993b3742a93109416a"
+          },
+          {
+            "file": "scripts/verify-host.mjs",
+            "bytes": 5652,
+            "blob": "40b8c246b7f5ec79a07e5c5300d041c38764cbd2",
+            "sha256": "a1a87bd6339ea8382c1e9853b859f1db333ea3ad566d295e3146bcc518f2718f"
+          },
+          {
+            "file": "scripts/verify-local-runtime.mjs",
+            "bytes": 1332,
+            "blob": "02182cff04c5733ffed04f38e3411e9a2f9cd0c9",
+            "sha256": "119269436ba450a61dcf1b7916f7d4638a5adc2ca994800907ac01d2d4fa33cb"
+          },
+          {
+            "file": "scripts/verify-supply-chain.mjs",
+            "bytes": 2438,
+            "blob": "fa08c37e5da11ec446ac4b78bcf1c3d7d8e2dccc",
+            "sha256": "ffd8e3e90024708fed8eaa78e2a5c40cbacbb3d9b4972a7e357f8ee75e091467"
+          },
+          {
+            "file": "scripts/verify.mjs",
+            "bytes": 9404,
+            "blob": "4877c9ae0aa19246644f3ebfa0393def727471c0",
+            "sha256": "d536ec22ec0a2958749a5d63068341978457f07c862b8d25bb2640bff71d7f45"
+          },
+          {
+            "file": "test/activity.test.mjs",
+            "bytes": 2351,
+            "blob": "e630f622f4b1fed62ab60e15c0762ff7784808ab",
+            "sha256": "a71c009f080f5fa062329f8910105746ddc62970e7af228c01dc668bde35abae"
+          },
+          {
+            "file": "test/artifacts.test.mjs",
+            "bytes": 6072,
+            "blob": "a2a069e7d058a81ffd78bbf18098f3f0b487a7ed",
+            "sha256": "899c46be677308c3e42a61272d8e948aff13ee431be67e60521e865a9eed9dea"
+          },
+          {
+            "file": "test/backup.test.mjs",
+            "bytes": 1893,
+            "blob": "9974a2c326e279f63253e4dd616d671edd8586e1",
+            "sha256": "cd355a2b196695abad4cd23f63036c96de091a1a18cf76f0a70bbf34fd3ec298"
+          },
+          {
+            "file": "test/chain.test.mjs",
+            "bytes": 3546,
+            "blob": "3ac923cf1d7798fa6d53a383aec55da918a185dc",
+            "sha256": "edb46e79a3d0b79873e02482a8694bec776b5b9464c2b3080cdcef2c33b4a67d"
+          },
+          {
+            "file": "test/compatibility.test.mjs",
+            "bytes": 5814,
+            "blob": "8d0e893c7f7dfbca469a66b041427ae8876e0ba1",
+            "sha256": "b5721075331ecb928dc77f6f0fb09332cbc6be21c99a009ead192f856ba34962"
+          },
+          {
+            "file": "test/ipcheck.test.mjs",
+            "bytes": 2598,
+            "blob": "ea41d8478d4a3d67658cb588f32bb8caaf6faa7b",
+            "sha256": "a2704083d68e37841b6ebcd93ad1caace13dfcf0cba776dfa39d496d1e985b2b"
+          },
+          {
+            "file": "test/kernel-install.test.mjs",
+            "bytes": 18418,
+            "blob": "ad81cb7a83ff84047eb3a69ddaad72243ed62f97",
+            "sha256": "f698030d9bb119852569fdbdb41f736b08073032c61453b1d32835498b825348"
+          },
+          {
+            "file": "test/mihomo.integration.test.mjs",
+            "bytes": 7215,
+            "blob": "c39fa3573fec806b9ece79e0f5085efb8fd0048c",
+            "sha256": "7172944d383a0780e3c2c42880f0578d49535eb994e44212cf78d4785a7bde5b"
+          },
+          {
+            "file": "test/panel-loading.test.mjs",
+            "bytes": 3747,
+            "blob": "ab5445592ed9f801ca45fa96ff2207a9aa6718ab",
+            "sha256": "756c2edc534cbcfcbb74c15eb89fa2ee0250395bc681aa67edf97e972a059cb1"
+          },
+          {
+            "file": "test/paths.test.mjs",
+            "bytes": 1891,
+            "blob": "890f4918236f49855d7226a8967138b7c059fe45",
+            "sha256": "0bb0374ec78004c95641ce8b538a201e77d0c472acbcfa95a2142923dfa20971"
+          },
+          {
+            "file": "test/plugin-entry.test.mjs",
+            "bytes": 5661,
+            "blob": "4251bf2021400b6c1fedb3cd52b020dbce3023d7",
+            "sha256": "14063eb4044a4ca812d21cfd4864698e06fc6bf0742217a9346fb1405286a53b"
+          },
+          {
+            "file": "test/process-ownership.test.mjs",
+            "bytes": 1395,
+            "blob": "8d293db14c3de29cf1f2234bac604f41d1099cef",
+            "sha256": "146aad97a4a722a11f90aca5b5a51102f5e535fc46a7a765eee9927c6f62151d"
+          },
+          {
+            "file": "test/profile-scripts.test.mjs",
+            "bytes": 2932,
+            "blob": "b89e128f5809d203c21a3f17c9edc4ceb322c560",
+            "sha256": "c95c09c746ee9058825bfef645b814365b5f4f47dd5ab3da7ef7ab48247a54aa"
+          },
+          {
+            "file": "test/profiles.test.mjs",
+            "bytes": 2600,
+            "blob": "3b98fa8b5350f41351a2501713711befb09ecb6e",
+            "sha256": "c3f56e20c9aef283eec40382b8108d9e8a0413a28f0c6fe49922f94e4708bf0f"
+          },
+          {
+            "file": "test/routes.test.mjs",
+            "bytes": 12411,
+            "blob": "9f25268628914a7f4adba2404db7350713f5b5b4",
+            "sha256": "ce37309849f306f83e62a2d9bd1862fb68307983ec4768625c3c9beb6515aabf"
+          },
+          {
+            "file": "test/service.test.mjs",
+            "bytes": 3130,
+            "blob": "a9448a8711081c41ffcdeb47052126da601e297e",
+            "sha256": "e29f734adfb044aa569af41ed18cb1fad337c8f35887050657532c249828ddbe"
+          },
+          {
+            "file": "test/settings.test.mjs",
+            "bytes": 2650,
+            "blob": "9dab8bfec28f3aa7cb1da1d20880288b6eb99b09",
+            "sha256": "7ef20d2143d4d5227406b0e07cfe14479f2d25de50d8ae63a1ecd2e3b8f66e8f"
+          },
+          {
+            "file": "test/subscription.test.mjs",
+            "bytes": 2023,
+            "blob": "27ddfe20618cf0294ca6e3fa145383013356ff36",
+            "sha256": "90d4bc32c9f1b8bab9d8c9c8bdd6dc6fb4f8da97f7bae5c70a79e40a22e3403b"
+          },
+          {
+            "file": "test/system-proxy.test.mjs",
+            "bytes": 2684,
+            "blob": "eaddb552b348863cdab072a55167900da89cd8ff",
+            "sha256": "cde0641dc828e432400276754b3f28674063ccf8ba8f7acc7b9479227fbd040b"
+          },
+          {
+            "file": "test/yaml-config.test.mjs",
+            "bytes": 3649,
+            "blob": "c6d59ef2f4c89d1b312d06dafed7ddb00fdd0c6d",
+            "sha256": "4be3de1b53a33d01bc9154791604c5098596ba4807ab75501a2d3fad823c9927"
+          },
+          {
+            "file": "web/panel.html",
+            "bytes": 966,
+            "blob": "4d0b8359a7d83bf8c68609511fb35c7496c2a4e2",
+            "sha256": "6b06e198ff310ac302e809ab883dc4a8103c731701cd5c60f8cfa8e85e1449b7"
+          }
+        ],
+        "licenseEvidence": [
+          {
+            "file": "LICENSE",
+            "bytes": 1360,
+            "blob": "5dd77bb384389462ddbab64b3b1135bafb8fc7b9",
+            "sha256": "580661f871f7243b32d7b8e284cb1c25973e468446a63d2532b46819558bef9d"
+          },
+          {
+            "file": "THIRD_PARTY_NOTICES.md",
+            "bytes": 4890,
+            "blob": "ab387c1596e382f9049955a0dac8076040d772ab",
+            "sha256": "6292c004321b3df3a302453c1dc22d2814e02c24f41bf6662583e6b2c6ea367f"
+          }
+        ],
+        "resolutionEvidence": [
+          {
+            "file": "package-lock.json",
+            "bytes": 1113,
+            "blob": "4a9ce57a79351f66d3850f093fc1846d87a45b96",
+            "sha256": "a632a93f30f539a8bc70b51e3be87b0ab04badac1bfe6cb710caf47d6c813698"
+          }
+        ]
+      },
+      "manifest": {
+        "name": "dsh-tun-proxy",
+        "version": "0.3.1",
+        "description": "DSH proxy center: global TUN, subscriptions, nodes, and multi-hop dialer-proxy chains",
+        "author": "scclovez",
+        "repository": {
+          "type": "git",
+          "url": "git+https://github.com/scclovez/dsh-tun-proxy.git"
+        },
+        "homepage": "https://github.com/scclovez/dsh-tun-proxy#readme",
+        "bugs": {
+          "url": "https://github.com/scclovez/dsh-tun-proxy/issues"
+        },
+        "type": "module",
+        "main": "lib/index.js",
+        "exports": {
+          ".": {
+            "default": "./lib/index.js"
+          },
+          "./cordis.patch.yml": "./cordis.patch.yml",
+          "./package.json": "./package.json",
+          "./client": "./lib/client.js"
+        },
+        "files": [
+          "lib",
+          "scripts",
+          "docs",
+          "cordis.patch.yml",
+          "README.md",
+          "README.en.md",
+          "LICENSE",
+          "THIRD_PARTY_NOTICES.md",
+          "web",
+          "test"
+        ],
+        "dsh": {
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          },
+          "client": {
+            "platform": "web",
+            "inject": [
+              "@deepseek-ai/dsh-client-ui-renderer",
+              "@deepseek-ai/dsh-client-ui-slots",
+              "@deepseek-ai/dsh-client-connection",
+              "@deepseek-ai/dsh-client-ui-layout",
+              "@deepseek-ai/dsh-client-ui-sidebar"
+            ]
+          },
+          "compatibility": {
+            "dsh": ">=0.2.0-rc.2",
+            "dshReleases": {
+              "0.2.1-rc.2": "compatible",
+              "0.2.1-rc.1": "unknown",
+              "0.2.1-alpha.5": "unknown"
+            },
+            "dshOperations": {
+              "0.2.1-rc.2": {
+                "install": "passed",
+                "start": "passed",
+                "uninstall": "passed",
+                "rollback": "unknown"
+              }
+            },
+            "node": ">=22.19.0",
+            "systems": [
+              "win32-x64"
+            ],
+            "profiles": [
+              "web"
+            ]
+          }
+        },
+        "engines": {
+          "node": ">=22.19.0"
+        },
+        "peerDependencies": {
+          "@deepseek-ai/dsh": ">=0.2.0-rc.2",
+          "@deepseek-ai/dsh-typert-protocol": ">=0.2.0-rc.2"
+        },
+        "peerDependenciesMeta": {
+          "@deepseek-ai/dsh": {
+            "optional": true
+          },
+          "@deepseek-ai/dsh-typert-protocol": {
+            "optional": true
+          }
+        },
+        "scripts": {
+          "test": "node --test",
+          "verify": "node scripts/verify.mjs",
+          "verify:supply-chain": "node scripts/verify-supply-chain.mjs",
+          "verify:downloads": "node scripts/verify-downloads.mjs",
+          "verify:local-runtime": "node scripts/verify-local-runtime.mjs",
+          "verify:host": "node scripts/verify-host.mjs",
+          "verify:gui": "node scripts/verify-gui.mjs",
+          "verify:compatibility": "node scripts/verify-compatibility.mjs",
+          "build": "node scripts/build-client.mjs"
+        },
+        "keywords": [
+          "dsh-plugin",
+          "deepseek-harness",
+          "tun",
+          "mihomo",
+          "clash",
+          "proxy"
+        ],
+        "license": "MIT",
+        "dependencies": {
+          "yaml": "2.9.1"
+        }
+      },
+      "admissionReview": {
+        "repositoryUrl": "https://github.com/scclovez/dsh-tun-proxy",
+        "commit": "64efd538bbbee3b00b6d303a44c40c7028469395",
+        "binding": "f70e499bf26c2ad91cf60ae1845c8df16e175b79a1f9834ee2d7d8ab50d2174c",
+        "verdict": "approved",
+        "reviewer": "Codex on behalf of AI-Scarlett",
+        "reviewedAt": "2026-10-18T23:44:39Z",
+        "rationale": "The full fixed package source, exact dependency lock, license text, permission surfaces, and explicit CLI boundary were reviewed. No plugin or dependency code was executed.",
+        "evidenceUrls": [
+          "https://github.com/scclovez/dsh-tun-proxy/commit/64efd538bbbee3b00b6d303a44c40c7028469395",
+          "https://github.com/scclovez/dsh-tun-proxy/blob/64efd538bbbee3b00b6d303a44c40c7028469395/lib/routes.js",
+          "https://github.com/scclovez/dsh-tun-proxy/blob/64efd538bbbee3b00b6d303a44c40c7028469395/package.json",
+          "https://github.com/scclovez/dsh-tun-proxy/blob/64efd538bbbee3b00b6d303a44c40c7028469395/package-lock.json",
+          "https://github.com/scclovez/dsh-tun-proxy/blob/64efd538bbbee3b00b6d303a44c40c7028469395/THIRD_PARTY_NOTICES.md",
+          "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+        ],
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "proxy-credentials"
+          ]
+        },
+        "licenseReview": {
+          "license": "MIT",
+          "metadata": "NOASSERTION",
+          "evidence": {
+            "file": "LICENSE",
+            "sha256": "580661f871f7243b32d7b8e284cb1c25973e468446a63d2532b46819558bef9d",
+            "line": 1
+          },
+          "rationale": "The fixed manifest declares MIT and the complete hashed LICENSE contains the MIT grant. GitHub NOASSERTION is recorded as unknown metadata, not interpreted as a missing or conflicting license."
+        },
+        "supplyChain": {
+          "complete": true,
+          "direct": {
+            "yaml": "2.9.1"
+          },
+          "installResolution": {
+            "file": "package-lock.json",
+            "sha256": "a632a93f30f539a8bc70b51e3be87b0ab04badac1bfe6cb710caf47d6c813698",
+            "line": 1,
+            "rationale": "The fixed package-lock resolves yaml 2.9.1 from registry.npmjs.org with the exact SHA-512 integrity below; the package manifest has an exact 2.9.1 dependency."
+          },
+          "packages": [
+            {
+              "name": "yaml",
+              "version": "2.9.1",
+              "repositoryUrl": "https://github.com/eemeli/yaml",
+              "commit": "1440ecd3d1bff41e4ac399f8f6839e810328bd16",
+              "sourceDigest": "7da3059e11a790a970b28e3ad5824798119ed085f9e3c5d47be2c7b086ba0777",
+              "license": "ISC",
+              "installScriptsReviewed": "none",
+              "files": [
+                {
+                  "file": "bin.mjs",
+                  "sha256": "faebbf70669988b5be13130907adf7b788145960448eab08e92e66189e72f448",
+                  "bytes": 310
+                },
+                {
+                  "file": "browser/dist/compose/compose-collection.js",
+                  "sha256": "7fa2b7a37902d99bf924c3e4db7b003202837597a7815d9917736dbd1861b7f6",
+                  "bytes": 3500
+                },
+                {
+                  "file": "browser/dist/compose/compose-doc.js",
+                  "sha256": "0ec9140185c6d965783c4d3e9ae427fb4a377935dd20d8872eb35b56ec461579",
+                  "bytes": 1555
+                },
+                {
+                  "file": "browser/dist/compose/compose-node.js",
+                  "sha256": "c6ddd844d89a2086cc1c4cc643cae6361e7fae0728dc0f71066ded02bb7b5d12",
+                  "bytes": 4122
+                },
+                {
+                  "file": "browser/dist/compose/compose-scalar.js",
+                  "sha256": "3b7d0f5876dd7c33b8f2bf896178008283be8e4a82495070dc638a922e202e07",
+                  "bytes": 3316
+                },
+                {
+                  "file": "browser/dist/compose/composer.js",
+                  "sha256": "214e221c39346468e4b7713d775bfa9dca87695463ac795399e66b91a06540cc",
+                  "bytes": 8484
+                },
+                {
+                  "file": "browser/dist/compose/resolve-block-map.js",
+                  "sha256": "ffa61d87f9f0e58a5e05c54073f67c34c4575234f357bcaba6fb164e36996b97",
+                  "bytes": 4915
+                },
+                {
+                  "file": "browser/dist/compose/resolve-block-scalar.js",
+                  "sha256": "2a89c2b128e143a98f61751b9ab7dd08d140105c185ece6a687015ea8e0be036",
+                  "bytes": 7447
+                },
+                {
+                  "file": "browser/dist/compose/resolve-block-seq.js",
+                  "sha256": "7905b607f90dc9078463fd40e3fbb22537e45e0ef2514fc6c662526b4cdc2ec6",
+                  "bytes": 1740
+                },
+                {
+                  "file": "browser/dist/compose/resolve-end.js",
+                  "sha256": "e0a32e1b8c5649ea14152b0c0d45fbd64d46dbfa299a7328b71421e49ee48db2",
+                  "bytes": 1239
+                },
+                {
+                  "file": "browser/dist/compose/resolve-flow-collection.js",
+                  "sha256": "957722ee22cb72b48e9d78ed6dabdca97fcbff188cad1f362864a959b184925f",
+                  "bytes": 8778
+                },
+                {
+                  "file": "browser/dist/compose/resolve-flow-scalar.js",
+                  "sha256": "5516b92d61fedb6dbfb4523a7aa6c44c12b627e18da5178eafa28324aef4ff7d",
+                  "bytes": 7355
+                },
+                {
+                  "file": "browser/dist/compose/resolve-props.js",
+                  "sha256": "4b6c34fe620ddaf31e06c44a1acbbbe8e49a617ae805bb8dca70a278812c16cb",
+                  "bytes": 5552
+                },
+                {
+                  "file": "browser/dist/compose/util-contains-newline.js",
+                  "sha256": "4810ffba0d74ebb913731e1369ea17f6fef20df2feb2ef0bd8553e439f4a6b78",
+                  "bytes": 1051
+                },
+                {
+                  "file": "browser/dist/compose/util-empty-scalar-position.js",
+                  "sha256": "571d615e24fd379998df23e29df09f127349f4757fc4cbad176aecbfe77b7d82",
+                  "bytes": 816
+                },
+                {
+                  "file": "browser/dist/compose/util-flow-indent-check.js",
+                  "sha256": "ebab50fc461c9eaffe07c807dde4aff4f8c5976f5aa4e8f02608ed57ef52a690",
+                  "bytes": 494
+                },
+                {
+                  "file": "browser/dist/compose/util-map-includes.js",
+                  "sha256": "584a79bdaf93b530fee951c888daf844a6a329f672ffb57450b39f72b0bdfb95",
+                  "bytes": 428
+                },
+                {
+                  "file": "browser/dist/doc/Document.js",
+                  "sha256": "6b9c9187a04d13331c07d7193baf29b0547fd20de042e1fd57289f13d61ad196",
+                  "bytes": 12903
+                },
+                {
+                  "file": "browser/dist/doc/anchors.js",
+                  "sha256": "0d5c8fd9bf01e2f4eb0cf08771705e0c0efbd05d9835714fc94850d943003cc6",
+                  "bytes": 2276
+                },
+                {
+                  "file": "browser/dist/doc/applyReviver.js",
+                  "sha256": "b653aa07fcd8619637c1dbf6151d9de5e22efcb3becfd4dff86cdcf4bb2f1a97",
+                  "bytes": 1923
+                },
+                {
+                  "file": "browser/dist/doc/createNode.js",
+                  "sha256": "80a8212199fa1591e0836c0b19e05f9734dd5e6a7dcd54d6da1e4f2a20f2450c",
+                  "bytes": 3061
+                },
+                {
+                  "file": "browser/dist/doc/directives.js",
+                  "sha256": "688805b988a34cf7c2f6e5b6c3f1e6a798b22b4eaa450286df095d6b741fedf0",
+                  "bytes": 6188
+                },
+                {
+                  "file": "browser/dist/errors.js",
+                  "sha256": "410bb3397beb0d3a8c649d048b6e087bddf1f7114832eaf94be0fcbb4a8af29b",
+                  "bytes": 2023
+                },
+                {
+                  "file": "browser/dist/index.js",
+                  "sha256": "c7d10350202ee8cb14febfce6b559c93760405cc4738a89c10abcb3c44fd6990",
+                  "bytes": 879
+                },
+                {
+                  "file": "browser/dist/log.js",
+                  "sha256": "2e7d7edee783c901f36a8f986d126f15f33ac504fe17d4655e6846869d07b9e4",
+                  "bytes": 260
+                },
+                {
+                  "file": "browser/dist/nodes/Alias.js",
+                  "sha256": "0aaa9956d9f965e29f391c268baca1e7f9c50649b900128a9e5e669450d76411",
+                  "bytes": 3998
+                },
+                {
+                  "file": "browser/dist/nodes/Collection.js",
+                  "sha256": "f18de1edc4f5a3ae163a6ca894e2b4debd3a8c480338f580ac6cdffebbfc4bc9",
+                  "bytes": 5076
+                },
+                {
+                  "file": "browser/dist/nodes/Node.js",
+                  "sha256": "aaf0e1042d4b11f4760f7de032ec99ac49dda1742e55911f5a4df182cbd5471f",
+                  "bytes": 1339
+                },
+                {
+                  "file": "browser/dist/nodes/Pair.js",
+                  "sha256": "a9f0acf0f06eab7852a99418a07628fd0e26476895c90af3ae66bab8704e9b11",
+                  "bytes": 1124
+                },
+                {
+                  "file": "browser/dist/nodes/Scalar.js",
+                  "sha256": "80a4961d380ec00c5eb9a47f29dfb378437d055910e163a9ebd9accf032b6e03",
+                  "bytes": 700
+                },
+                {
+                  "file": "browser/dist/nodes/YAMLMap.js",
+                  "sha256": "42b884f36dfb23248e9f2200bce5e7a6007f90e0adfd228de8079346e9627737",
+                  "bytes": 4957
+                },
+                {
+                  "file": "browser/dist/nodes/YAMLSeq.js",
+                  "sha256": "75d12e1a5edbf1e3d04d6310ffdaf553a3a1ff7d12643cfa428330ca7189604d",
+                  "bytes": 3573
+                },
+                {
+                  "file": "browser/dist/nodes/addPairToJSMap.js",
+                  "sha256": "67cc22455591363a78723876f73640c5712161bb840423e705820666cb0d3ada",
+                  "bytes": 2289
+                },
+                {
+                  "file": "browser/dist/nodes/identity.js",
+                  "sha256": "da71af70da393500ab6e3cdbceba9c66965bc89c3401388c9ad422c91abf467f",
+                  "bytes": 1513
+                },
+                {
+                  "file": "browser/dist/nodes/toJS.js",
+                  "sha256": "80f2431eaef0c531ab93b1a8883206394ae3fac75732cc683cdabfdcc00dd724",
+                  "bytes": 1266
+                },
+                {
+                  "file": "browser/dist/parse/cst-scalar.js",
+                  "sha256": "e30a85b8b613badfb50039938fbb5bbbafbd5f9f95f3a630300ad3dec5fb3dc8",
+                  "bytes": 9235
+                },
+                {
+                  "file": "browser/dist/parse/cst-stringify.js",
+                  "sha256": "275b500e3f1a0067d5d8671af5c536963a46d4921e49cf156547f796067b8810",
+                  "bytes": 1775
+                },
+                {
+                  "file": "browser/dist/parse/cst-visit.js",
+                  "sha256": "0baadd57686b26163ba71e7323a9208fcba81978e9ecebbad80afaa8baa61788",
+                  "bytes": 3966
+                },
+                {
+                  "file": "browser/dist/parse/cst.js",
+                  "sha256": "8bf6c87dc02b9375750d550a9099cb1cd1cd71ca9da68f1a0798844a0f76bf8f",
+                  "bytes": 2886
+                },
+                {
+                  "file": "browser/dist/parse/lexer.js",
+                  "sha256": "14d3a6e0f1bf7945a92dfa0366f61bcd122aa3c62addb6fbfdaadd796c634036",
+                  "bytes": 24138
+                },
+                {
+                  "file": "browser/dist/parse/line-counter.js",
+                  "sha256": "2428d1b9a18ad7d8dabc7e12276e0fd90446c9e3433f1501e6bb43e111ad63c0",
+                  "bytes": 1419
+                },
+                {
+                  "file": "browser/dist/parse/parser.js",
+                  "sha256": "761580b1ad5b36b6fd5e2ffb411798cb5603f8fc46ff11ad8e68ca2ba32a405f",
+                  "bytes": 35393
+                },
+                {
+                  "file": "browser/dist/public-api.js",
+                  "sha256": "1635da91bae6389b88d38bc99c57fa6ed71c017b026cb80be9cead10bbafa499",
+                  "bytes": 3992
+                },
+                {
+                  "file": "browser/dist/schema/Schema.js",
+                  "sha256": "515d6576e94a5cc96c999cd9da230f7ef79d8fbea1f4c6c6939631ef122fb50e",
+                  "bytes": 1495
+                },
+                {
+                  "file": "browser/dist/schema/common/map.js",
+                  "sha256": "6094c4919ff0051a663866cf75df489be51987d808f0862b9b9e36d4090182a7",
+                  "bytes": 439
+                },
+                {
+                  "file": "browser/dist/schema/common/null.js",
+                  "sha256": "6666e819b0dd4c9eac1498e8520e23943abf2c9d92cee72b9c5607557800eb14",
+                  "bytes": 434
+                },
+                {
+                  "file": "browser/dist/schema/common/seq.js",
+                  "sha256": "446dc09d297b2b9823d981f3c44e595f8d87c2ce97e2435e1ecc01bc6c31f4b9",
+                  "bytes": 440
+                },
+                {
+                  "file": "browser/dist/schema/common/string.js",
+                  "sha256": "830740273a4f0a39b94549377cb12183ab8ce558dfb12818f7b295fe261fc08e",
+                  "bytes": 421
+                },
+                {
+                  "file": "browser/dist/schema/core/bool.js",
+                  "sha256": "9d4b1fe540d36d8e09cf5799b8abed53e4ee620425d3d6712e8a50c927752615",
+                  "bytes": 607
+                },
+                {
+                  "file": "browser/dist/schema/core/float.js",
+                  "sha256": "b24b968b6b714be9650480e07f10d039f145e88e4299ce2268eed57de02673a8",
+                  "bytes": 1399
+                },
+                {
+                  "file": "browser/dist/schema/core/int.js",
+                  "sha256": "dc7ae60f465273fd7e5dfd6b7f686ac47887fa02db3fe9ec603290003cc9baff",
+                  "bytes": 1324
+                },
+                {
+                  "file": "browser/dist/schema/core/schema.js",
+                  "sha256": "92e75125989595b02d9b9f8d6788076d4c1ec173bfa4b0f04eabaaff86153dd9",
+                  "bytes": 480
+                },
+                {
+                  "file": "browser/dist/schema/json/schema.js",
+                  "sha256": "a33036dc6f8916682f9494431ad7ffb1116af7616aa83439b1a956b628e44068",
+                  "bytes": 1867
+                },
+                {
+                  "file": "browser/dist/schema/tags.js",
+                  "sha256": "c8085f537d22c3f7f17ea2906ddc11fc69b0106d5447aac2953eec19c025f136",
+                  "bytes": 2962
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/binary.js",
+                  "sha256": "ad5b0407d199dda7bc4fbacaee90d2a2a99540c8ced44c13bdf6974cb6dc3ef1",
+                  "bytes": 2315
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/bool.js",
+                  "sha256": "1d605f63430047574323f352893ba3c52fc73fbd1b52e47fa6dec2eb375301a5",
+                  "bytes": 787
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/float.js",
+                  "sha256": "40e68189590e6924d063f2b88c7b2415dcb2f796fbd6e9af18e9b119eed3ce23",
+                  "bytes": 1515
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/int.js",
+                  "sha256": "6c83bf34c4ecfa722eff2c252c8bdf95661777738c9971c4ccda3a5413218d80",
+                  "bytes": 2132
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/merge.js",
+                  "sha256": "f3ac8d7fb4701053e97d5399bdacde15cdc662420cd7e85de349eb20330dab5e",
+                  "bytes": 2524
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/omap.js",
+                  "sha256": "fb3d04682a48ec1e0ad26c1afc8a85d1e6c814942ca6eba8bfb94a6571d3e9a6",
+                  "bytes": 2473
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/pairs.js",
+                  "sha256": "3c37806050903fd81b51e597bfe7acfff972e788e9a1b3c0148f17b32da3f568",
+                  "bytes": 2751
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/schema.js",
+                  "sha256": "1e684cad435d9e9601aa56dd4d55243369a010e75edba21ff31d7be84c8600eb",
+                  "bytes": 860
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/set.js",
+                  "sha256": "0cdce6c41328c116fc17f5660a79f8995af8d0227e424e89177a30894138b687",
+                  "bytes": 3030
+                },
+                {
+                  "file": "browser/dist/schema/yaml-1.1/timestamp.js",
+                  "sha256": "18fb9beee49f0f3452601ba01b46ae1d6e49bf4a63b499e9eff28366e3dfcb5d",
+                  "bytes": 3698
+                },
+                {
+                  "file": "browser/dist/stringify/foldFlowLines.js",
+                  "sha256": "1a6360496e3cb52767d4c346655307c978cb2c94853229152f97017c4209745a",
+                  "bytes": 4794
+                },
+                {
+                  "file": "browser/dist/stringify/stringify.js",
+                  "sha256": "af3ccd112cba318ff9b4686ed9afd0b33fc238da51954fd431dc4c7a9db0b455",
+                  "bytes": 4400
+                },
+                {
+                  "file": "browser/dist/stringify/stringifyCollection.js",
+                  "sha256": "0d2babd8428322fe6a9f5cd10fde361a1d8dedae662fd4245c6d151e4a5ae013",
+                  "bytes": 5552
+                },
+                {
+                  "file": "browser/dist/stringify/stringifyComment.js",
+                  "sha256": "20d3dc6bebda3efc2394ca162455ce9e4691b6c60995b5b4418b30659e09e03e",
+                  "bytes": 724
+                },
+                {
+                  "file": "browser/dist/stringify/stringifyDocument.js",
+                  "sha256": "3ca3818dc9e81ee7e45f0e26792065f47fccee99b6150e76a94fcbb3d0306421",
+                  "bytes": 2983
+                },
+                {
+                  "file": "browser/dist/stringify/stringifyNumber.js",
+                  "sha256": "e0d02220e66fedc267b435e5d13d2383e24c8460562d815f670a169dadc2859f",
+                  "bytes": 778
+                },
+                {
+                  "file": "browser/dist/stringify/stringifyPair.js",
+                  "sha256": "4074dc125fdad4ef2ec8bab4fbf7ece4b399ecd2fbd1813c4a316e88243f1179",
+                  "bytes": 5285
+                },
+                {
+                  "file": "browser/dist/stringify/stringifyString.js",
+                  "sha256": "0fd2e43243792cfa0a1d8cea13ba8e05ddaf6fb1296a4fde497b956454bfa44c",
+                  "bytes": 13164
+                },
+                {
+                  "file": "browser/dist/util.js",
+                  "sha256": "e6b73d7297c4253e5299d4f97dc2c05e6e30d69ace66962412f6ab9690d4d412",
+                  "bytes": 594
+                },
+                {
+                  "file": "browser/dist/visit.js",
+                  "sha256": "d9daffd11ec68755a7238684ae3f9c64f59dc86338d0e7cbe521a8fc1d45bd19",
+                  "bytes": 9107
+                },
+                {
+                  "file": "browser/index.js",
+                  "sha256": "5ae196b7abe55bed1d4d11f7eeba63aeda0c49fb73eb3c7359e3d6b9a080696b",
+                  "bytes": 191
+                },
+                {
+                  "file": "browser/package.json",
+                  "sha256": "3ca9d4afd21425087cf31893b8f9f63c81b0b8408db5e343ca76e5f8aa26ab9a",
+                  "bytes": 23
+                },
+                {
+                  "file": "dist/cli.d.ts",
+                  "sha256": "e31d2f97aadbc0ff370a134851af7757885cfcfcfa3a675cd59feb7872e4f91e",
+                  "bytes": 1254
+                },
+                {
+                  "file": "dist/cli.mjs",
+                  "sha256": "0ad1d42d88c0648fb6fbd158b21dcc2b4daa2e34e4d4df7aa949d6978d343d4d",
+                  "bytes": 7462
+                },
+                {
+                  "file": "dist/compose/compose-collection.d.ts",
+                  "sha256": "88460b54f95b8bc0294d2071430ec0e2c1e8f8aef2206646c027425a94767faf",
+                  "bytes": 582
+                },
+                {
+                  "file": "dist/compose/compose-collection.js",
+                  "sha256": "a7db11a1a7987d6412df8adbbb85ccd4370171f82265703b2b6af2d13c45d646",
+                  "bytes": 3613
+                },
+                {
+                  "file": "dist/compose/compose-doc.d.ts",
+                  "sha256": "ba8002d807e2b012f40e877b56bdad9ce0a6e215da96dc2319688b56e2a57212",
+                  "bytes": 623
+                },
+                {
+                  "file": "dist/compose/compose-doc.js",
+                  "sha256": "0f388537747b5c1a241639413f17fc2b5f831451b5017d6902e46db6842a5fe4",
+                  "bytes": 1615
+                },
+                {
+                  "file": "dist/compose/compose-node.d.ts",
+                  "sha256": "8045fa3122bf1c4b97dfb13a404f17d2d2b490521a4607b2ed5eb09b1f9c2a1a",
+                  "bytes": 1225
+                },
+                {
+                  "file": "dist/compose/compose-node.js",
+                  "sha256": "86562c85e4e5737d28b24aae2030b97bc9b672e1f2de5da9e4d25c4571e4345c",
+                  "bytes": 4269
+                },
+                {
+                  "file": "dist/compose/compose-scalar.d.ts",
+                  "sha256": "fc7fb9cb5044dfbfc552aed73d8b8e33b7e0de07bd3421f1d28c46b8ef4d5ba6",
+                  "bytes": 393
+                },
+                {
+                  "file": "dist/compose/compose-scalar.js",
+                  "sha256": "37920472755bdaa76399b6d33872f0015ae1fd9ba7faa031c03d501aa8c3e903",
+                  "bytes": 3446
+                },
+                {
+                  "file": "dist/compose/composer.d.ts",
+                  "sha256": "3e7ae921a43416e155d7bbe5b4229b7686cfa6a20af0a3ae5a79dfe127355c21",
+                  "bytes": 2652
+                },
+                {
+                  "file": "dist/compose/composer.js",
+                  "sha256": "509c0bdb4cef641cc784c130b6cc2b350752f6841798daa1a13cbcaf4fc74c46",
+                  "bytes": 8692
+                },
+                {
+                  "file": "dist/compose/resolve-block-map.d.ts",
+                  "sha256": "905f841ddfebf6b28a63423c0ff43fc17d4067f4021f7ba0fac4e93bc0c2d449",
+                  "bytes": 457
+                },
+                {
+                  "file": "dist/compose/resolve-block-map.js",
+                  "sha256": "dcfada448c8fc532ebba96d6788a4b41bb015fc5e697a9544ff429b9c4e4c70a",
+                  "bytes": 5071
+                },
+                {
+                  "file": "dist/compose/resolve-block-scalar.d.ts",
+                  "sha256": "acf6a9b33859e4409b56e68e919061f6daf40132529ec49bd5ba36b7ac2a1f92",
+                  "bytes": 484
+                },
+                {
+                  "file": "dist/compose/resolve-block-scalar.js",
+                  "sha256": "af562e2e3cd7ee7b3cb9342984177f6b5c77de73121e87695db3ff635e12d152",
+                  "bytes": 7500
+                },
+                {
+                  "file": "dist/compose/resolve-block-seq.d.ts",
+                  "sha256": "ffd6665710fd9c50d2eb87a584547b4ec583b39e8b639741b770be7ebcb757ea",
+                  "bytes": 467
+                },
+                {
+                  "file": "dist/compose/resolve-block-seq.js",
+                  "sha256": "18f54a39d73b600ebbd74a343e6671d0d08423f125bd86963b72dc24d6261911",
+                  "bytes": 1812
+                },
+                {
+                  "file": "dist/compose/resolve-end.d.ts",
+                  "sha256": "df9c83d8eac50c9214400faa415eaee2199288d3b87aaf381fc396799a128407",
+                  "bytes": 283
+                },
+                {
+                  "file": "dist/compose/resolve-end.js",
+                  "sha256": "532bf56299183e75bb7c20db75321367c28393b66ecb8ffd540faedd9817f116",
+                  "bytes": 1264
+                },
+                {
+                  "file": "dist/compose/resolve-flow-collection.d.ts",
+                  "sha256": "3f4d40133ff3c69fbb42e7eb758645c4288a52aaa3b1c9b6936339342ca07bd1",
+                  "bytes": 636
+                },
+                {
+                  "file": "dist/compose/resolve-flow-collection.js",
+                  "sha256": "242470b54c0deba1507babba2e879f3005ed2ee3bd53a36affb6ecf82fddd375",
+                  "bytes": 8927
+                },
+                {
+                  "file": "dist/compose/resolve-flow-scalar.d.ts",
+                  "sha256": "1e52c1052cad40acf62ba232ff1678c132aff44563e8fd553988c8bd7d282333",
+                  "bytes": 437
+                },
+                {
+                  "file": "dist/compose/resolve-flow-scalar.js",
+                  "sha256": "13bcd9d37afd4ffec4b1b3bc9ae1ecc2cff97e7f7c91b5f58b71c99ddd526b05",
+                  "bytes": 7417
+                },
+                {
+                  "file": "dist/compose/resolve-props.d.ts",
+                  "sha256": "f79e69096d500e49deeabf6b4e6bd5d3a51a52170e2ad07300349b963d110547",
+                  "bytes": 848
+                },
+                {
+                  "file": "dist/compose/resolve-props.js",
+                  "sha256": "0b49c6af0145c309883dbf24d1a00260c0c090412be10aaa301de126dad15983",
+                  "bytes": 5579
+                },
+                {
+                  "file": "dist/compose/util-contains-newline.d.ts",
+                  "sha256": "29d5bb59a4240ce49fb0bea3689f4a7ea6ba936374029db1f16931f50faecb97",
+                  "bytes": 131
+                },
+                {
+                  "file": "dist/compose/util-contains-newline.js",
+                  "sha256": "60182618fc9fa669e74ab74f4231c15b5d24bc52ab0a419684bb827a00d69be6",
+                  "bytes": 1081
+                },
+                {
+                  "file": "dist/compose/util-empty-scalar-position.d.ts",
+                  "sha256": "cd2cc1240eb3720e7154b4ae91116822cc59a5349436ed7631fb9f43302871c3",
+                  "bytes": 161
+                },
+                {
+                  "file": "dist/compose/util-empty-scalar-position.js",
+                  "sha256": "460516395ef7e961d5248e047ee6d52084f279b76e8af9f3c2bac92da1c7d656",
+                  "bytes": 850
+                },
+                {
+                  "file": "dist/compose/util-flow-indent-check.d.ts",
+                  "sha256": "60a9bbaf35ee0007d0925f376c067a3aa21b32485627cfcba948900a75eb42eb",
+                  "bytes": 221
+                },
+                {
+                  "file": "dist/compose/util-flow-indent-check.js",
+                  "sha256": "c7c0c9837a1f828de19eb3ee0947dff39c4f69222c762aed9fa2fe14fc46ee3e",
+                  "bytes": 547
+                },
+                {
+                  "file": "dist/compose/util-map-includes.d.ts",
+                  "sha256": "5424ca8906bc44d732c1b677a250bc85cd0942461c1d53e6408930cdd9e6e029",
+                  "bytes": 260
+                },
+                {
+                  "file": "dist/compose/util-map-includes.js",
+                  "sha256": "0330dc34072cb499493176b293228631ca8ebaaaddcdc0e63b02bf24f6a25c2d",
+                  "bytes": 471
+                },
+                {
+                  "file": "dist/doc/Document.d.ts",
+                  "sha256": "df9b266bceb94167c2e8ae25db37d31a28de02ae89ff58e8174708afdec26738",
+                  "bytes": 6540
+                },
+                {
+                  "file": "dist/doc/Document.js",
+                  "sha256": "9bc1c9a56de3902d554e77193125b6aadcfaec743073b3417b22c95a8f7d7923",
+                  "bytes": 13114
+                },
+                {
+                  "file": "dist/doc/anchors.d.ts",
+                  "sha256": "17b91b170b12687f10167b9e0a712e25ef4bfdc8b1f465e0b756e4512be08773",
+                  "bytes": 958
+                },
+                {
+                  "file": "dist/doc/anchors.js",
+                  "sha256": "ea9a479b1e98d88235ffa6736d0405e2119e9dde7b5249b72185488ab2527261",
+                  "bytes": 2386
+                },
+                {
+                  "file": "dist/doc/applyReviver.d.ts",
+                  "sha256": "bc41a8e33caf4d193b0c49ec70d1e8db5ce3312eafe5447c6c1d5a2084fece12",
+                  "bytes": 445
+                },
+                {
+                  "file": "dist/doc/applyReviver.js",
+                  "sha256": "7271668f41f264e4b9aeb184629cfd11c510b401c5a797fa7194d17a9652976e",
+                  "bytes": 1950
+                },
+                {
+                  "file": "dist/doc/createNode.d.ts",
+                  "sha256": "33a6d7b07c85ac0cef9a021b78b52e2d901d2ebfd5458db68f229ca482c1910c",
+                  "bytes": 662
+                },
+                {
+                  "file": "dist/doc/createNode.js",
+                  "sha256": "a39d14026d4cc6ff8d76d90db30c41facc26a146ebed30783bcf28e40b5caa65",
+                  "bytes": 3138
+                },
+                {
+                  "file": "dist/doc/directives.d.ts",
+                  "sha256": "9e5b8137b7ee679d31b35221503282561e764116d8b007c5419b6f9d60765683",
+                  "bytes": 1910
+                },
+                {
+                  "file": "dist/doc/directives.js",
+                  "sha256": "8f02c3c03571e377e33680b68027d4336234d7a6da3d8c6a8b7f1183c1c428ff",
+                  "bytes": 6237
+                },
+                {
+                  "file": "dist/errors.d.ts",
+                  "sha256": "bea7cae6a8b2d41fd1a9d70475b54d741dd7ca2103904934858108eec0336a69",
+                  "bytes": 1260
+                },
+                {
+                  "file": "dist/errors.js",
+                  "sha256": "c389d9c448193ce1bcb9641f5eda62cbe56467b2104357d2fc8dd86df88cb07b",
+                  "bytes": 2118
+                },
+                {
+                  "file": "dist/index.d.ts",
+                  "sha256": "9f85a1810d42f75e1abb4fc94be585aae1fdac8ae752c76b912d95aef61bf5de",
+                  "bytes": 1394
+                },
+                {
+                  "file": "dist/index.js",
+                  "sha256": "2d58984e0ae80de4acbd8f009fab332f5ce77d9e1a5f138a3058a0ada6567fb9",
+                  "bytes": 1769
+                },
+                {
+                  "file": "dist/log.d.ts",
+                  "sha256": "7c33f11a56ba4e79efc4ddae85f8a4a888e216d2bf66c863f344d403437ffc74",
+                  "bytes": 226
+                },
+                {
+                  "file": "dist/log.js",
+                  "sha256": "f6ccc3593357801851aa1023b202f842733043ac3b25773048d836f89de8108d",
+                  "bytes": 459
+                },
+                {
+                  "file": "dist/nodes/Alias.d.ts",
+                  "sha256": "a971cba9f67e1c87014a2a544c24bc58bad1983970dfa66051b42ae441da1f46",
+                  "bytes": 1077
+                },
+                {
+                  "file": "dist/nodes/Alias.js",
+                  "sha256": "139f5fbb3e7727a9cea89e16b2518f9ffe2e3a37cfb46717e60d23da7d6e739e",
+                  "bytes": 4042
+                },
+                {
+                  "file": "dist/nodes/Collection.d.ts",
+                  "sha256": "06b37153d512000a91cad6fcbae75ca795ecec00469effaa8916101a00d5b9e2",
+                  "bytes": 2909
+                },
+                {
+                  "file": "dist/nodes/Collection.js",
+                  "sha256": "e2d3ffdc9a997774602e72b296fba641558bc7355c9f12a3ee0502fb1e541306",
+                  "bytes": 5221
+                },
+                {
+                  "file": "dist/nodes/Node.d.ts",
+                  "sha256": "961fa18e1658f3f8e38c23e1a9bc3f4d7be75b056a94700291d5f82f57524ff0",
+                  "bytes": 2538
+                },
+                {
+                  "file": "dist/nodes/Node.js",
+                  "sha256": "b57b42071f7ebab633626858656ec5187617f2290c272e87edc57467ef591215",
+                  "bytes": 1382
+                },
+                {
+                  "file": "dist/nodes/Pair.d.ts",
+                  "sha256": "7821d3b702e0c672329c4d036c7037ecf2e5e758eceb5e740dde1355606dc9f2",
+                  "bytes": 1118
+                },
+                {
+                  "file": "dist/nodes/Pair.js",
+                  "sha256": "d5dad67916ba0e864a892da63265a062c45c15a191349ef50a540f2ddbae93e5",
+                  "bytes": 1232
+                },
+                {
+                  "file": "dist/nodes/Scalar.d.ts",
+                  "sha256": "afb5e9a110ff72b60783e0fe65ce1a28adbe6ab5f30d2dc31e2fb099e0f86de4",
+                  "bytes": 1792
+                },
+                {
+                  "file": "dist/nodes/Scalar.js",
+                  "sha256": "616ac0f6a0a5a6565307a4bb4443691b0dd019c03d6bb8777353750bd3459487",
+                  "bytes": 759
+                },
+                {
+                  "file": "dist/nodes/YAMLMap.d.ts",
+                  "sha256": "57cbeb55ec95326d068a2ce33403e1b795f2113487f07c1f53b1eaf9c21ff2ce",
+                  "bytes": 2376
+                },
+                {
+                  "file": "dist/nodes/YAMLMap.js",
+                  "sha256": "d140cfc5aa8d28737bd3c993d977d5a10ab81efe221e36708ac45b3cf18f5dce",
+                  "bytes": 5105
+                },
+                {
+                  "file": "dist/nodes/YAMLSeq.d.ts",
+                  "sha256": "8a641e3402f2988bf993007bd814faba348b813fc4058fce5b06de3e81ed511a",
+                  "bytes": 2511
+                },
+                {
+                  "file": "dist/nodes/YAMLSeq.js",
+                  "sha256": "9f89417f3cba5f22a4436f67a9ff9dce627344b5874d2ed7957ff9acffb030e4",
+                  "bytes": 3667
+                },
+                {
+                  "file": "dist/nodes/addPairToJSMap.d.ts",
+                  "sha256": "8f648847b52020c1c0cdfcc40d7bcab72ea470201a631004fde4d85ccbc0c4c7",
+                  "bytes": 236
+                },
+                {
+                  "file": "dist/nodes/addPairToJSMap.js",
+                  "sha256": "e4977864d75c1fdbf7fc78c9f4329406e153deccfff090fd812dae2b27e6c2c2",
+                  "bytes": 2338
+                },
+                {
+                  "file": "dist/nodes/identity.d.ts",
+                  "sha256": "a00362ee43d422bcd8239110b8b5da39f1122651a1809be83a518b1298fa6af8",
+                  "bytes": 1379
+                },
+                {
+                  "file": "dist/nodes/identity.js",
+                  "sha256": "1a7cb042ae725ff68d05dc503efbbecbe65281f18b23dfc23f12d1749a440cfe",
+                  "bytes": 1794
+                },
+                {
+                  "file": "dist/nodes/toJS.d.ts",
+                  "sha256": "cbef1abd1f8987dee5c9ed8c768a880fbfbff7f7053e063403090f48335c8e4e",
+                  "bytes": 986
+                },
+                {
+                  "file": "dist/nodes/toJS.js",
+                  "sha256": "34de93bb4e16abbf317210a7bd1b062ed20acb028cd8395b69b591f433e277b6",
+                  "bytes": 1292
+                },
+                {
+                  "file": "dist/options.d.ts",
+                  "sha256": "1720be851bdb7cdbff68061522a71d9ddaa69db1fe90c6819a26953da05942f2",
+                  "bytes": 11186
+                },
+                {
+                  "file": "dist/parse/cst-scalar.d.ts",
+                  "sha256": "079c02dc397960da2786db71d7c9e716475377bcedd81dede034f8a9f94c71b8",
+                  "bytes": 3528
+                },
+                {
+                  "file": "dist/parse/cst-scalar.js",
+                  "sha256": "2f72b634348b04b395408ac427fb4f8ee67432244c327561d4b755a28a783b34",
+                  "bytes": 9382
+                },
+                {
+                  "file": "dist/parse/cst-stringify.d.ts",
+                  "sha256": "a7595cbb1b354b54dff14a6bb87d471e6d53b63de101a1b4d9d82d3d3f6eddec",
+                  "bytes": 310
+                },
+                {
+                  "file": "dist/parse/cst-stringify.js",
+                  "sha256": "4d14a7a286cff9c1a578ab15839388ea76f77ae79293db25b235394bcc377b51",
+                  "bytes": 1799
+                },
+                {
+                  "file": "dist/parse/cst-visit.d.ts",
+                  "sha256": "1f49a85a97e01a26245fd74232b3b301ebe408fb4e969e72e537aa6ffbd3fe14",
+                  "bytes": 2241
+                },
+                {
+                  "file": "dist/parse/cst-visit.js",
+                  "sha256": "525535fc05841407420be6505804c74d873eb3aaa9319679896f7a24a474ca01",
+                  "bytes": 3986
+                },
+                {
+                  "file": "dist/parse/cst.d.ts",
+                  "sha256": "9c38563e4eabfffa597c4d6b9aa16e11e7f9a636f0dd80dd0a8bce1f6f0b2108",
+                  "bytes": 3500
+                },
+                {
+                  "file": "dist/parse/cst.js",
+                  "sha256": "acc25760d010068844f36f4aefc7fe6f5f6048fd7f8fcc29d4290e154819d1a4",
+                  "bytes": 3242
+                },
+                {
+                  "file": "dist/parse/lexer.d.ts",
+                  "sha256": "c7200ae85e414d5ed1d3c9507ae38c097050161f57eb1a70bef021d796af87a7",
+                  "bytes": 2921
+                },
+                {
+                  "file": "dist/parse/lexer.js",
+                  "sha256": "cb30a2c4628e270ee810530217f3f7bb0f2730ab89f8fbaf1f8a73ccd1883cf5",
+                  "bytes": 24149
+                },
+                {
+                  "file": "dist/parse/line-counter.d.ts",
+                  "sha256": "3dfcd0a3bfa70b53135db3cf2e4ddcb7eccc3e4418ce833ae24eecd06928328f",
+                  "bytes": 733
+                },
+                {
+                  "file": "dist/parse/line-counter.js",
+                  "sha256": "ddfd11ca2cdd42d36bc6c3090a31c21e6bbcc90bf3498bf6aacfbb30c5d79436",
+                  "bytes": 1445
+                },
+                {
+                  "file": "dist/parse/parser.d.ts",
+                  "sha256": "4edb4ff36b17b2cf19014b2c901a6bdcdd0d8f732bcf3a11aa6fd0a111198e27",
+                  "bytes": 2534
+                },
+                {
+                  "file": "dist/parse/parser.js",
+                  "sha256": "0adc5ffa51ffa4c0ceed1f80efa8b188d10f58c7b9389a6d46bc861e6bff34e1",
+                  "bytes": 35551
+                },
+                {
+                  "file": "dist/public-api.d.ts",
+                  "sha256": "810f0d14ce416a343dcdd0d3074c38c094505e664c90636b113d048471c292e2",
+                  "bytes": 2864
+                },
+                {
+                  "file": "dist/public-api.js",
+                  "sha256": "9b318ac7b3a3751127c74f59dd1dd209230a70ca116000348b82faae189f72f0",
+                  "bytes": 4187
+                },
+                {
+                  "file": "dist/schema/Schema.d.ts",
+                  "sha256": "a820499a28a5fcdbf4baec05cc069362041d735520ab5a94c38cc44db7df614c",
+                  "bytes": 787
+                },
+                {
+                  "file": "dist/schema/Schema.js",
+                  "sha256": "d3b1bc956a766e2489c36114366f3b3f89762a257ae05ff6271ee3fc8c2a9bf5",
+                  "bytes": 1547
+                },
+                {
+                  "file": "dist/schema/common/map.d.ts",
+                  "sha256": "e1b042779d17b69719d34f31822ddba8aa6f5eb15f221b02105785f4447e7f5b",
+                  "bytes": 88
+                },
+                {
+                  "file": "dist/schema/common/map.js",
+                  "sha256": "769207eaa56e34c113da10cdc22da845f92b4080ff2b921a72847a38d3ac03d8",
+                  "bytes": 483
+                },
+                {
+                  "file": "dist/schema/common/null.d.ts",
+                  "sha256": "68c7d5fe67e3dd9e0ae4809a37541e79c86c639758f6d93c478c900a23b3c715",
+                  "bytes": 108
+                },
+                {
+                  "file": "dist/schema/common/null.js",
+                  "sha256": "f5d5f694ea3a42ef136e0fbcc674dfd7aa0a3da2b8d62183fb750166a12e52bb",
+                  "bytes": 469
+                },
+                {
+                  "file": "dist/schema/common/seq.d.ts",
+                  "sha256": "6858337936b90bd31f1674c43bedda2edbab2a488d04adc02512aef47c792fd0",
+                  "bytes": 88
+                },
+                {
+                  "file": "dist/schema/common/seq.js",
+                  "sha256": "51fc0e8bfc63d1d9c7c66b0370a069bb33e0dad865080ff76802803597b9909a",
+                  "bytes": 484
+                },
+                {
+                  "file": "dist/schema/common/string.d.ts",
+                  "sha256": "15cb3deecc635efb26133990f521f7f1cc95665d5db8d87e5056beaea564b0ce",
+                  "bytes": 83
+                },
+                {
+                  "file": "dist/schema/common/string.js",
+                  "sha256": "51d0b3aafab2ffa4ad9d86656a3b92c4b4824d0a8806423882ea5f92a1bf8d11",
+                  "bytes": 457
+                },
+                {
+                  "file": "dist/schema/core/bool.d.ts",
+                  "sha256": "10e79425c8cb25ab4039f10bd844fb147bace0bbc1ea50b14cd6684e0e54d8b8",
+                  "bytes": 108
+                },
+                {
+                  "file": "dist/schema/core/bool.js",
+                  "sha256": "9fa696b1efc38cf8c73a398f30d9f9841658aa5afd0b7a6b0822947c3991ba7a",
+                  "bytes": 635
+                },
+                {
+                  "file": "dist/schema/core/float.d.ts",
+                  "sha256": "68f5e28618d07e0cd09f3c016fc2b5c597d41730cf7a5bc165bb137ee5d239c5",
+                  "bytes": 166
+                },
+                {
+                  "file": "dist/schema/core/float.js",
+                  "sha256": "139e3964f0e626ad3741500faf51d855ff98eafa2d9e7523cac06260e4515382",
+                  "bytes": 1510
+                },
+                {
+                  "file": "dist/schema/core/int.d.ts",
+                  "sha256": "5b1d8c847722d2137a61465051289c85b42cb7fbcd16c4a2818ae21f4cca32dd",
+                  "bytes": 160
+                },
+                {
+                  "file": "dist/schema/core/int.js",
+                  "sha256": "f0e474254f6877d5dd23bb57017980931ab333a7eaa3d33872247a80d11f754d",
+                  "bytes": 1407
+                },
+                {
+                  "file": "dist/schema/core/schema.d.ts",
+                  "sha256": "4763b3c6a3bfc9864e5712ca1d4a5ac2817e9d05aef44a0a1556bb449bb2bd06",
+                  "bytes": 98
+                },
+                {
+                  "file": "dist/schema/core/schema.js",
+                  "sha256": "481d7c64817b40090d519fb65bd83730dadd4c6baec1440b9bf85d29e52c046e",
+                  "bytes": 509
+                },
+                {
+                  "file": "dist/schema/json-schema.d.ts",
+                  "sha256": "c82708af4dcb3fb9dfacbadc6faf9cad4f2d07ffce12407f8cf9778af37bbefe",
+                  "bytes": 1998
+                },
+                {
+                  "file": "dist/schema/json/schema.d.ts",
+                  "sha256": "4cb584df88ebd02a7f14013b5d83a7cedd9b1551ad871a58c94dff44520fb1ea",
+                  "bytes": 118
+                },
+                {
+                  "file": "dist/schema/json/schema.js",
+                  "sha256": "9efdd848455f6e0621feb13f3eb762453cb02b09d5e04b6501163cfb26af27ed",
+                  "bytes": 1900
+                },
+                {
+                  "file": "dist/schema/tags.d.ts",
+                  "sha256": "213e4f26ee5853e8ba314ecad3a73cd06ab244a0809749bb777cbc1619aa07d8",
+                  "bytes": 1423
+                },
+                {
+                  "file": "dist/schema/tags.js",
+                  "sha256": "dba2f42d4dbe8cc8b13f662fd97d253da2da5567e71c47115305efede5a888f2",
+                  "bytes": 3239
+                },
+                {
+                  "file": "dist/schema/types.d.ts",
+                  "sha256": "281744305ba2dcb2d80e2021fae211b1b07e5d85cfc8e36f4520325fcf698dbb",
+                  "bytes": 3763
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/binary.d.ts",
+                  "sha256": "d67098dd1ebde01f58645901458c5f7b4fe6a32558e92c91db4883e74d1b5a4d",
+                  "bytes": 83
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/binary.js",
+                  "sha256": "15d7b0b8516c8190b191ec9a0adaab16808d09751ef534d7829512944072011f",
+                  "bytes": 2800
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/bool.d.ts",
+                  "sha256": "4ec1099a421a4519d614a09f4d88aebd4e2eae1f1840d7b6d06c648f1624e426",
+                  "bytes": 174
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/bool.js",
+                  "sha256": "80a0046224dac3437f22e3b27b0180e1aad82277ab2fee4769094c6d12d67b6f",
+                  "bytes": 841
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/float.d.ts",
+                  "sha256": "68f5e28618d07e0cd09f3c016fc2b5c597d41730cf7a5bc165bb137ee5d239c5",
+                  "bytes": 166
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/float.js",
+                  "sha256": "a90c44db83152e4d902d46f667737dac90aa86b401abdefe89371ac3bd03abfe",
+                  "bytes": 1626
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/int.d.ts",
+                  "sha256": "c2a157c5321741265c9e070abdb168bd62c960a8e42fe19b268a13f019e0866b",
+                  "bytes": 200
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/int.js",
+                  "sha256": "5ff72b08fecc3a924d4a76658a304859db5edb4fadf8893ee837aa06bba60a52",
+                  "bytes": 2232
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/merge.d.ts",
+                  "sha256": "d0f51295f868055927afc9c23e5077f17b0db247978becf7644612290b18cc45",
+                  "bytes": 459
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/merge.js",
+                  "sha256": "9c85b5e026e4369a96f3f7b5bc6c05da102dfa2968950b17986201cfe0be542c",
+                  "bytes": 2616
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/omap.d.ts",
+                  "sha256": "9c37dc73c97cd17686edc94cc534486509e479a1b8809ef783067b7dde5c6713",
+                  "bytes": 936
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/omap.js",
+                  "sha256": "3174270cd59c0f0e3ffd73b3b44c4de679efd5c681325b7aac8e0935d547bee8",
+                  "bytes": 2581
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/pairs.d.ts",
+                  "sha256": "e2e85e40eb6108d06a7c2116bb4fbaad323709f979c8135588619b63089efec9",
+                  "bytes": 725
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/pairs.js",
+                  "sha256": "46ba76da72ad65a6202358c486c6a3084ab7c48a8eb5be60d241d9e198c5a9b5",
+                  "bytes": 2854
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/schema.d.ts",
+                  "sha256": "4763b3c6a3bfc9864e5712ca1d4a5ac2817e9d05aef44a0a1556bb449bb2bd06",
+                  "bytes": 98
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/schema.js",
+                  "sha256": "a7320808484dc6d04817b33b2d09b65ead7ffc1c672ab54e068a80972b17702e",
+                  "bytes": 912
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/set.d.ts",
+                  "sha256": "5fe2ef29b33889d3279d5bc92f8e554ffd32145a02f48d272d30fc1eea8b4c89",
+                  "bytes": 1259
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/set.js",
+                  "sha256": "e4553b0cbde79090884908f44bb3b4afd04935fc23656a1b87ec1af87f24427a",
+                  "bytes": 3114
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/timestamp.d.ts",
+                  "sha256": "90e99573b3ab716e9203d32e8d9dd1fdb78c125128ffb8deed821c096885338e",
+                  "bytes": 194
+                },
+                {
+                  "file": "dist/schema/yaml-1.1/timestamp.js",
+                  "sha256": "b157c946dc1b8854aadc4e7994b268ec8afe6d916721cb3580e0752c7d15a5f7",
+                  "bytes": 3775
+                },
+                {
+                  "file": "dist/stringify/foldFlowLines.d.ts",
+                  "sha256": "e27605c8932e75b14e742558a4c3101d9f4fdd32e7e9a056b2ca83f37f973945",
+                  "bytes": 1273
+                },
+                {
+                  "file": "dist/stringify/foldFlowLines.js",
+                  "sha256": "7819679e80222b80c564ea4a9cf3145fa4d5e28a6cfbac248283ac55b0249761",
+                  "bytes": 4885
+                },
+                {
+                  "file": "dist/stringify/stringify.d.ts",
+                  "sha256": "0132f67b7f128d4a47324f48d0918ec73cf4220a5e9ea8bd92b115397911254f",
+                  "bytes": 865
+                },
+                {
+                  "file": "dist/stringify/stringify.js",
+                  "sha256": "38efb5bc5553e98fee58c825a88131c59184368d8689e3e6f43c652a06e9c167",
+                  "bytes": 4534
+                },
+                {
+                  "file": "dist/stringify/stringifyCollection.d.ts",
+                  "sha256": "7f03bfa106e6045d0ed9b1b3812df4c6edf70e231be92acb54c910530aefb7c4",
+                  "bytes": 528
+                },
+                {
+                  "file": "dist/stringify/stringifyCollection.js",
+                  "sha256": "b55fd3b6e3f1346bbcd1fcdc48a59c089b7a4b0e6fac2b46846f7828f9488600",
+                  "bytes": 5718
+                },
+                {
+                  "file": "dist/stringify/stringifyComment.d.ts",
+                  "sha256": "318c659afa92036e0c838821c40509e34506831f05acc9c2b182ccd39faa265f",
+                  "bytes": 419
+                },
+                {
+                  "file": "dist/stringify/stringifyComment.js",
+                  "sha256": "490bff57104b7cfdb1893f14528610bb4d0a63c29b314e122233cf308cf96662",
+                  "bytes": 801
+                },
+                {
+                  "file": "dist/stringify/stringifyDocument.d.ts",
+                  "sha256": "10eafb672440a5e93d378943b497a7dbd16ac5e63d843edec753d1fa3c3e8e20",
+                  "bytes": 260
+                },
+                {
+                  "file": "dist/stringify/stringifyDocument.js",
+                  "sha256": "dd5ba1813a16b62955c466bce8d1c16254e90b36d688f863c508dc8fe38f2afe",
+                  "bytes": 3104
+                },
+                {
+                  "file": "dist/stringify/stringifyNumber.d.ts",
+                  "sha256": "f0443725119ecde74b0d75c82555b1f95ee1c3cd371558e5528a83d1de8109de",
+                  "bytes": 147
+                },
+                {
+                  "file": "dist/stringify/stringifyNumber.js",
+                  "sha256": "26a1980d34a21a80704d356d475a0187a24ebcbeb37a2e3b149d4d791bb65598",
+                  "bytes": 808
+                },
+                {
+                  "file": "dist/stringify/stringifyPair.d.ts",
+                  "sha256": "c0629a169c48068fc384a22bde7e0c4ec35c34e7e6b19b83fba4c378b8fe05cc",
+                  "bytes": 248
+                },
+                {
+                  "file": "dist/stringify/stringifyPair.js",
+                  "sha256": "bc03ae533d85bf9122e87c0a256c841ae7fbf063499bc3034d49fd9f7b200659",
+                  "bytes": 5470
+                },
+                {
+                  "file": "dist/stringify/stringifyString.d.ts",
+                  "sha256": "7794810c4b3f03d2faa81189504b953a73eb80e5662a90e9030ea9a9a359a66f",
+                  "bytes": 357
+                },
+                {
+                  "file": "dist/stringify/stringifyString.js",
+                  "sha256": "4113b71a9c4c087a197f71452794a6acb9929111f569c973ff4efe7caee8f777",
+                  "bytes": 13345
+                },
+                {
+                  "file": "dist/test-events.d.ts",
+                  "sha256": "5e75986c9b907573b9ea4880e226f96dd189acc668cb24db0ac08651e6cf3068",
+                  "bytes": 96
+                },
+                {
+                  "file": "dist/test-events.js",
+                  "sha256": "5ff5e7f170702d75d4bfd5ef24a35fc95dc2871680c0ae4d714137d4c2cde571",
+                  "bytes": 4274
+                },
+                {
+                  "file": "dist/util.d.ts",
+                  "sha256": "b074516a691a30279f0fe6dff33cd76359c1daacf4ae024659e44a68756de602",
+                  "bytes": 835
+                },
+                {
+                  "file": "dist/util.js",
+                  "sha256": "193b1d92fb7641d78f17a8f560cbe44dd7cdede2eb8935bacd4ca30df2f1a17a",
+                  "bytes": 1008
+                },
+                {
+                  "file": "dist/visit.d.ts",
+                  "sha256": "e39090ffe9c45c59082c3746e2aa2546dc53e3c5eeb4ad83f8210be7e2e58022",
+                  "bytes": 5048
+                },
+                {
+                  "file": "dist/visit.js",
+                  "sha256": "a757e3b924af184b25e2386d1678b1fe341805a516ebf9bccee219b47aebd5e7",
+                  "bytes": 9253
+                },
+                {
+                  "file": "package.json",
+                  "sha256": "1c6441703d8204a23ded0d37ddf57c3b69d821dc392f20852d1f605bb9b8861c",
+                  "bytes": 3254
+                },
+                {
+                  "file": "util.js",
+                  "sha256": "2f1db26f6cc426ef698210b592f40cec49be1b6c4b34e7f2d61904786242bd85",
+                  "bytes": 80
+                }
+              ],
+              "dependencies": [],
+              "coverage": "complete",
+              "securityVerdict": "pass",
+              "moduleLoading": "static-node-library-reviewed-bin",
+              "runtimeContext": "node-library",
+              "runtimeEntryFiles": [
+                "browser/dist/compose/compose-collection.js",
+                "browser/dist/compose/compose-doc.js",
+                "browser/dist/compose/compose-node.js",
+                "browser/dist/compose/compose-scalar.js",
+                "browser/dist/compose/composer.js",
+                "browser/dist/compose/resolve-block-map.js",
+                "browser/dist/compose/resolve-block-scalar.js",
+                "browser/dist/compose/resolve-block-seq.js",
+                "browser/dist/compose/resolve-end.js",
+                "browser/dist/compose/resolve-flow-collection.js",
+                "browser/dist/compose/resolve-flow-scalar.js",
+                "browser/dist/compose/resolve-props.js",
+                "browser/dist/compose/util-contains-newline.js",
+                "browser/dist/compose/util-empty-scalar-position.js",
+                "browser/dist/compose/util-flow-indent-check.js",
+                "browser/dist/compose/util-map-includes.js",
+                "browser/dist/doc/anchors.js",
+                "browser/dist/doc/applyReviver.js",
+                "browser/dist/doc/createNode.js",
+                "browser/dist/doc/directives.js",
+                "browser/dist/doc/Document.js",
+                "browser/dist/errors.js",
+                "browser/dist/index.js",
+                "browser/dist/log.js",
+                "browser/dist/nodes/addPairToJSMap.js",
+                "browser/dist/nodes/Alias.js",
+                "browser/dist/nodes/Collection.js",
+                "browser/dist/nodes/identity.js",
+                "browser/dist/nodes/Node.js",
+                "browser/dist/nodes/Pair.js",
+                "browser/dist/nodes/Scalar.js",
+                "browser/dist/nodes/toJS.js",
+                "browser/dist/nodes/YAMLMap.js",
+                "browser/dist/nodes/YAMLSeq.js",
+                "browser/dist/parse/cst-scalar.js",
+                "browser/dist/parse/cst-stringify.js",
+                "browser/dist/parse/cst-visit.js",
+                "browser/dist/parse/cst.js",
+                "browser/dist/parse/lexer.js",
+                "browser/dist/parse/line-counter.js",
+                "browser/dist/parse/parser.js",
+                "browser/dist/public-api.js",
+                "browser/dist/schema/common/map.js",
+                "browser/dist/schema/common/null.js",
+                "browser/dist/schema/common/seq.js",
+                "browser/dist/schema/common/string.js",
+                "browser/dist/schema/core/bool.js",
+                "browser/dist/schema/core/float.js",
+                "browser/dist/schema/core/int.js",
+                "browser/dist/schema/core/schema.js",
+                "browser/dist/schema/json/schema.js",
+                "browser/dist/schema/Schema.js",
+                "browser/dist/schema/tags.js",
+                "browser/dist/schema/yaml-1.1/binary.js",
+                "browser/dist/schema/yaml-1.1/bool.js",
+                "browser/dist/schema/yaml-1.1/float.js",
+                "browser/dist/schema/yaml-1.1/int.js",
+                "browser/dist/schema/yaml-1.1/merge.js",
+                "browser/dist/schema/yaml-1.1/omap.js",
+                "browser/dist/schema/yaml-1.1/pairs.js",
+                "browser/dist/schema/yaml-1.1/schema.js",
+                "browser/dist/schema/yaml-1.1/set.js",
+                "browser/dist/schema/yaml-1.1/timestamp.js",
+                "browser/dist/stringify/foldFlowLines.js",
+                "browser/dist/stringify/stringify.js",
+                "browser/dist/stringify/stringifyCollection.js",
+                "browser/dist/stringify/stringifyComment.js",
+                "browser/dist/stringify/stringifyDocument.js",
+                "browser/dist/stringify/stringifyNumber.js",
+                "browser/dist/stringify/stringifyPair.js",
+                "browser/dist/stringify/stringifyString.js",
+                "browser/dist/util.js",
+                "browser/dist/visit.js",
+                "browser/index.js",
+                "dist/compose/compose-collection.js",
+                "dist/compose/compose-doc.js",
+                "dist/compose/compose-node.js",
+                "dist/compose/compose-scalar.js",
+                "dist/compose/composer.js",
+                "dist/compose/resolve-block-map.js",
+                "dist/compose/resolve-block-scalar.js",
+                "dist/compose/resolve-block-seq.js",
+                "dist/compose/resolve-end.js",
+                "dist/compose/resolve-flow-collection.js",
+                "dist/compose/resolve-flow-scalar.js",
+                "dist/compose/resolve-props.js",
+                "dist/compose/util-contains-newline.js",
+                "dist/compose/util-empty-scalar-position.js",
+                "dist/compose/util-flow-indent-check.js",
+                "dist/compose/util-map-includes.js",
+                "dist/doc/anchors.js",
+                "dist/doc/applyReviver.js",
+                "dist/doc/createNode.js",
+                "dist/doc/directives.js",
+                "dist/doc/Document.js",
+                "dist/errors.js",
+                "dist/index.js",
+                "dist/log.js",
+                "dist/nodes/addPairToJSMap.js",
+                "dist/nodes/Alias.js",
+                "dist/nodes/Collection.js",
+                "dist/nodes/identity.js",
+                "dist/nodes/Node.js",
+                "dist/nodes/Pair.js",
+                "dist/nodes/Scalar.js",
+                "dist/nodes/toJS.js",
+                "dist/nodes/YAMLMap.js",
+                "dist/nodes/YAMLSeq.js",
+                "dist/parse/cst-scalar.js",
+                "dist/parse/cst-stringify.js",
+                "dist/parse/cst-visit.js",
+                "dist/parse/cst.js",
+                "dist/parse/lexer.js",
+                "dist/parse/line-counter.js",
+                "dist/parse/parser.js",
+                "dist/public-api.js",
+                "dist/schema/common/map.js",
+                "dist/schema/common/null.js",
+                "dist/schema/common/seq.js",
+                "dist/schema/common/string.js",
+                "dist/schema/core/bool.js",
+                "dist/schema/core/float.js",
+                "dist/schema/core/int.js",
+                "dist/schema/core/schema.js",
+                "dist/schema/json/schema.js",
+                "dist/schema/Schema.js",
+                "dist/schema/tags.js",
+                "dist/schema/yaml-1.1/binary.js",
+                "dist/schema/yaml-1.1/bool.js",
+                "dist/schema/yaml-1.1/float.js",
+                "dist/schema/yaml-1.1/int.js",
+                "dist/schema/yaml-1.1/merge.js",
+                "dist/schema/yaml-1.1/omap.js",
+                "dist/schema/yaml-1.1/pairs.js",
+                "dist/schema/yaml-1.1/schema.js",
+                "dist/schema/yaml-1.1/set.js",
+                "dist/schema/yaml-1.1/timestamp.js",
+                "dist/stringify/foldFlowLines.js",
+                "dist/stringify/stringify.js",
+                "dist/stringify/stringifyCollection.js",
+                "dist/stringify/stringifyComment.js",
+                "dist/stringify/stringifyDocument.js",
+                "dist/stringify/stringifyNumber.js",
+                "dist/stringify/stringifyPair.js",
+                "dist/stringify/stringifyString.js",
+                "dist/util.js",
+                "dist/visit.js",
+                "package.json"
+              ],
+              "binEntrypointReview": {
+                "complete": true,
+                "packageManifest": {
+                  "file": "package.json",
+                  "sha256": "1c6441703d8204a23ded0d37ddf57c3b69d821dc392f20852d1f605bb9b8861c",
+                  "line": 22
+                },
+                "files": [
+                  {
+                    "file": "bin.mjs",
+                    "sha256": "faebbf70669988b5be13130907adf7b788145960448eab08e92e66189e72f448"
+                  },
+                  {
+                    "file": "dist/cli.mjs",
+                    "sha256": "0ad1d42d88c0648fb6fbd158b21dcc2b4daa2e34e4d4df7aa949d6978d343d4d"
+                  },
+                  {
+                    "file": "dist/compose/compose-collection.js",
+                    "sha256": "a7db11a1a7987d6412df8adbbb85ccd4370171f82265703b2b6af2d13c45d646"
+                  },
+                  {
+                    "file": "dist/compose/compose-doc.js",
+                    "sha256": "0f388537747b5c1a241639413f17fc2b5f831451b5017d6902e46db6842a5fe4"
+                  },
+                  {
+                    "file": "dist/compose/compose-node.js",
+                    "sha256": "86562c85e4e5737d28b24aae2030b97bc9b672e1f2de5da9e4d25c4571e4345c"
+                  },
+                  {
+                    "file": "dist/compose/compose-scalar.js",
+                    "sha256": "37920472755bdaa76399b6d33872f0015ae1fd9ba7faa031c03d501aa8c3e903"
+                  },
+                  {
+                    "file": "dist/compose/composer.js",
+                    "sha256": "509c0bdb4cef641cc784c130b6cc2b350752f6841798daa1a13cbcaf4fc74c46"
+                  },
+                  {
+                    "file": "dist/compose/resolve-block-map.js",
+                    "sha256": "dcfada448c8fc532ebba96d6788a4b41bb015fc5e697a9544ff429b9c4e4c70a"
+                  },
+                  {
+                    "file": "dist/compose/resolve-block-scalar.js",
+                    "sha256": "af562e2e3cd7ee7b3cb9342984177f6b5c77de73121e87695db3ff635e12d152"
+                  },
+                  {
+                    "file": "dist/compose/resolve-block-seq.js",
+                    "sha256": "18f54a39d73b600ebbd74a343e6671d0d08423f125bd86963b72dc24d6261911"
+                  },
+                  {
+                    "file": "dist/compose/resolve-end.js",
+                    "sha256": "532bf56299183e75bb7c20db75321367c28393b66ecb8ffd540faedd9817f116"
+                  },
+                  {
+                    "file": "dist/compose/resolve-flow-collection.js",
+                    "sha256": "242470b54c0deba1507babba2e879f3005ed2ee3bd53a36affb6ecf82fddd375"
+                  },
+                  {
+                    "file": "dist/compose/resolve-flow-scalar.js",
+                    "sha256": "13bcd9d37afd4ffec4b1b3bc9ae1ecc2cff97e7f7c91b5f58b71c99ddd526b05"
+                  },
+                  {
+                    "file": "dist/compose/resolve-props.js",
+                    "sha256": "0b49c6af0145c309883dbf24d1a00260c0c090412be10aaa301de126dad15983"
+                  },
+                  {
+                    "file": "dist/compose/util-contains-newline.js",
+                    "sha256": "60182618fc9fa669e74ab74f4231c15b5d24bc52ab0a419684bb827a00d69be6"
+                  },
+                  {
+                    "file": "dist/compose/util-empty-scalar-position.js",
+                    "sha256": "460516395ef7e961d5248e047ee6d52084f279b76e8af9f3c2bac92da1c7d656"
+                  },
+                  {
+                    "file": "dist/compose/util-flow-indent-check.js",
+                    "sha256": "c7c0c9837a1f828de19eb3ee0947dff39c4f69222c762aed9fa2fe14fc46ee3e"
+                  },
+                  {
+                    "file": "dist/compose/util-map-includes.js",
+                    "sha256": "0330dc34072cb499493176b293228631ca8ebaaaddcdc0e63b02bf24f6a25c2d"
+                  },
+                  {
+                    "file": "dist/doc/anchors.js",
+                    "sha256": "ea9a479b1e98d88235ffa6736d0405e2119e9dde7b5249b72185488ab2527261"
+                  },
+                  {
+                    "file": "dist/doc/applyReviver.js",
+                    "sha256": "7271668f41f264e4b9aeb184629cfd11c510b401c5a797fa7194d17a9652976e"
+                  },
+                  {
+                    "file": "dist/doc/createNode.js",
+                    "sha256": "a39d14026d4cc6ff8d76d90db30c41facc26a146ebed30783bcf28e40b5caa65"
+                  },
+                  {
+                    "file": "dist/doc/directives.js",
+                    "sha256": "8f02c3c03571e377e33680b68027d4336234d7a6da3d8c6a8b7f1183c1c428ff"
+                  },
+                  {
+                    "file": "dist/doc/Document.js",
+                    "sha256": "9bc1c9a56de3902d554e77193125b6aadcfaec743073b3417b22c95a8f7d7923"
+                  },
+                  {
+                    "file": "dist/errors.js",
+                    "sha256": "c389d9c448193ce1bcb9641f5eda62cbe56467b2104357d2fc8dd86df88cb07b"
+                  },
+                  {
+                    "file": "dist/log.js",
+                    "sha256": "f6ccc3593357801851aa1023b202f842733043ac3b25773048d836f89de8108d"
+                  },
+                  {
+                    "file": "dist/nodes/addPairToJSMap.js",
+                    "sha256": "e4977864d75c1fdbf7fc78c9f4329406e153deccfff090fd812dae2b27e6c2c2"
+                  },
+                  {
+                    "file": "dist/nodes/Alias.js",
+                    "sha256": "139f5fbb3e7727a9cea89e16b2518f9ffe2e3a37cfb46717e60d23da7d6e739e"
+                  },
+                  {
+                    "file": "dist/nodes/Collection.js",
+                    "sha256": "e2d3ffdc9a997774602e72b296fba641558bc7355c9f12a3ee0502fb1e541306"
+                  },
+                  {
+                    "file": "dist/nodes/identity.js",
+                    "sha256": "1a7cb042ae725ff68d05dc503efbbecbe65281f18b23dfc23f12d1749a440cfe"
+                  },
+                  {
+                    "file": "dist/nodes/Node.js",
+                    "sha256": "b57b42071f7ebab633626858656ec5187617f2290c272e87edc57467ef591215"
+                  },
+                  {
+                    "file": "dist/nodes/Pair.js",
+                    "sha256": "d5dad67916ba0e864a892da63265a062c45c15a191349ef50a540f2ddbae93e5"
+                  },
+                  {
+                    "file": "dist/nodes/Scalar.js",
+                    "sha256": "616ac0f6a0a5a6565307a4bb4443691b0dd019c03d6bb8777353750bd3459487"
+                  },
+                  {
+                    "file": "dist/nodes/toJS.js",
+                    "sha256": "34de93bb4e16abbf317210a7bd1b062ed20acb028cd8395b69b591f433e277b6"
+                  },
+                  {
+                    "file": "dist/nodes/YAMLMap.js",
+                    "sha256": "d140cfc5aa8d28737bd3c993d977d5a10ab81efe221e36708ac45b3cf18f5dce"
+                  },
+                  {
+                    "file": "dist/nodes/YAMLSeq.js",
+                    "sha256": "9f89417f3cba5f22a4436f67a9ff9dce627344b5874d2ed7957ff9acffb030e4"
+                  },
+                  {
+                    "file": "dist/parse/cst-scalar.js",
+                    "sha256": "2f72b634348b04b395408ac427fb4f8ee67432244c327561d4b755a28a783b34"
+                  },
+                  {
+                    "file": "dist/parse/cst-stringify.js",
+                    "sha256": "4d14a7a286cff9c1a578ab15839388ea76f77ae79293db25b235394bcc377b51"
+                  },
+                  {
+                    "file": "dist/parse/cst-visit.js",
+                    "sha256": "525535fc05841407420be6505804c74d873eb3aaa9319679896f7a24a474ca01"
+                  },
+                  {
+                    "file": "dist/parse/cst.js",
+                    "sha256": "acc25760d010068844f36f4aefc7fe6f5f6048fd7f8fcc29d4290e154819d1a4"
+                  },
+                  {
+                    "file": "dist/parse/lexer.js",
+                    "sha256": "cb30a2c4628e270ee810530217f3f7bb0f2730ab89f8fbaf1f8a73ccd1883cf5"
+                  },
+                  {
+                    "file": "dist/parse/line-counter.js",
+                    "sha256": "ddfd11ca2cdd42d36bc6c3090a31c21e6bbcc90bf3498bf6aacfbb30c5d79436"
+                  },
+                  {
+                    "file": "dist/parse/parser.js",
+                    "sha256": "0adc5ffa51ffa4c0ceed1f80efa8b188d10f58c7b9389a6d46bc861e6bff34e1"
+                  },
+                  {
+                    "file": "dist/schema/common/map.js",
+                    "sha256": "769207eaa56e34c113da10cdc22da845f92b4080ff2b921a72847a38d3ac03d8"
+                  },
+                  {
+                    "file": "dist/schema/common/null.js",
+                    "sha256": "f5d5f694ea3a42ef136e0fbcc674dfd7aa0a3da2b8d62183fb750166a12e52bb"
+                  },
+                  {
+                    "file": "dist/schema/common/seq.js",
+                    "sha256": "51fc0e8bfc63d1d9c7c66b0370a069bb33e0dad865080ff76802803597b9909a"
+                  },
+                  {
+                    "file": "dist/schema/common/string.js",
+                    "sha256": "51d0b3aafab2ffa4ad9d86656a3b92c4b4824d0a8806423882ea5f92a1bf8d11"
+                  },
+                  {
+                    "file": "dist/schema/core/bool.js",
+                    "sha256": "9fa696b1efc38cf8c73a398f30d9f9841658aa5afd0b7a6b0822947c3991ba7a"
+                  },
+                  {
+                    "file": "dist/schema/core/float.js",
+                    "sha256": "139e3964f0e626ad3741500faf51d855ff98eafa2d9e7523cac06260e4515382"
+                  },
+                  {
+                    "file": "dist/schema/core/int.js",
+                    "sha256": "f0e474254f6877d5dd23bb57017980931ab333a7eaa3d33872247a80d11f754d"
+                  },
+                  {
+                    "file": "dist/schema/core/schema.js",
+                    "sha256": "481d7c64817b40090d519fb65bd83730dadd4c6baec1440b9bf85d29e52c046e"
+                  },
+                  {
+                    "file": "dist/schema/json/schema.js",
+                    "sha256": "9efdd848455f6e0621feb13f3eb762453cb02b09d5e04b6501163cfb26af27ed"
+                  },
+                  {
+                    "file": "dist/schema/Schema.js",
+                    "sha256": "d3b1bc956a766e2489c36114366f3b3f89762a257ae05ff6271ee3fc8c2a9bf5"
+                  },
+                  {
+                    "file": "dist/schema/tags.js",
+                    "sha256": "dba2f42d4dbe8cc8b13f662fd97d253da2da5567e71c47115305efede5a888f2"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/binary.js",
+                    "sha256": "15d7b0b8516c8190b191ec9a0adaab16808d09751ef534d7829512944072011f"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/bool.js",
+                    "sha256": "80a0046224dac3437f22e3b27b0180e1aad82277ab2fee4769094c6d12d67b6f"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/float.js",
+                    "sha256": "a90c44db83152e4d902d46f667737dac90aa86b401abdefe89371ac3bd03abfe"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/int.js",
+                    "sha256": "5ff72b08fecc3a924d4a76658a304859db5edb4fadf8893ee837aa06bba60a52"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/merge.js",
+                    "sha256": "9c85b5e026e4369a96f3f7b5bc6c05da102dfa2968950b17986201cfe0be542c"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/omap.js",
+                    "sha256": "3174270cd59c0f0e3ffd73b3b44c4de679efd5c681325b7aac8e0935d547bee8"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/pairs.js",
+                    "sha256": "46ba76da72ad65a6202358c486c6a3084ab7c48a8eb5be60d241d9e198c5a9b5"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/schema.js",
+                    "sha256": "a7320808484dc6d04817b33b2d09b65ead7ffc1c672ab54e068a80972b17702e"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/set.js",
+                    "sha256": "e4553b0cbde79090884908f44bb3b4afd04935fc23656a1b87ec1af87f24427a"
+                  },
+                  {
+                    "file": "dist/schema/yaml-1.1/timestamp.js",
+                    "sha256": "b157c946dc1b8854aadc4e7994b268ec8afe6d916721cb3580e0752c7d15a5f7"
+                  },
+                  {
+                    "file": "dist/stringify/foldFlowLines.js",
+                    "sha256": "7819679e80222b80c564ea4a9cf3145fa4d5e28a6cfbac248283ac55b0249761"
+                  },
+                  {
+                    "file": "dist/stringify/stringify.js",
+                    "sha256": "38efb5bc5553e98fee58c825a88131c59184368d8689e3e6f43c652a06e9c167"
+                  },
+                  {
+                    "file": "dist/stringify/stringifyCollection.js",
+                    "sha256": "b55fd3b6e3f1346bbcd1fcdc48a59c089b7a4b0e6fac2b46846f7828f9488600"
+                  },
+                  {
+                    "file": "dist/stringify/stringifyComment.js",
+                    "sha256": "490bff57104b7cfdb1893f14528610bb4d0a63c29b314e122233cf308cf96662"
+                  },
+                  {
+                    "file": "dist/stringify/stringifyDocument.js",
+                    "sha256": "dd5ba1813a16b62955c466bce8d1c16254e90b36d688f863c508dc8fe38f2afe"
+                  },
+                  {
+                    "file": "dist/stringify/stringifyNumber.js",
+                    "sha256": "26a1980d34a21a80704d356d475a0187a24ebcbeb37a2e3b149d4d791bb65598"
+                  },
+                  {
+                    "file": "dist/stringify/stringifyPair.js",
+                    "sha256": "bc03ae533d85bf9122e87c0a256c841ae7fbf063499bc3034d49fd9f7b200659"
+                  },
+                  {
+                    "file": "dist/stringify/stringifyString.js",
+                    "sha256": "4113b71a9c4c087a197f71452794a6acb9929111f569c973ff4efe7caee8f777"
+                  },
+                  {
+                    "file": "dist/visit.js",
+                    "sha256": "a757e3b924af184b25e2386d1678b1fe341805a516ebf9bccee219b47aebd5e7"
+                  }
+                ],
+                "bins": [
+                  {
+                    "name": "yaml",
+                    "file": "bin.mjs",
+                    "sha256": "faebbf70669988b5be13130907adf7b788145960448eab08e92e66189e72f448",
+                    "rationale": "The manifest maps yaml to bin.mjs, which forwards to the separately reviewed local dist/cli.mjs. The CLI has an explicit --visit option that dynamically imports a caller-selected path; the DSH plugin source imports the YAML parser library API and does not invoke this executable."
+                  }
+                ],
+                "rationale": "The npm manifest bin mapping and complete 72-file CLI dependency closure were checked against the hashed 2.9.1 tarball. The CLI dynamic import is documented as an explicit user-invoked command capability and is not attributed to DSH plugin runtime execution."
+              },
+              "distribution": {
+                "registryUrl": "https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz",
+                "integrity": "sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==",
+                "shasum": "c16233fb31944e705cfefaff38795587f57588ce",
+                "tarballSha256": "4ef6c54cf559b8a207b7b518378230805a1c84af239b14960e8c67c7d59de5d3",
+                "tarballBytes": 112114,
+                "archiveEntries": 233,
+                "uncompressedBytes": 686297
+              },
+              "signals": {
+                "files": false,
+                "network": false,
+                "commands": false,
+                "credentials": true,
+                "protectedDsh": false,
+                "nativeOrExecutableArtifacts": false
+              },
+              "rationale": "The npm registry version, license, tarball SRI, shasum and upstream commit match the fixed lock; the downloaded tarball hashes match those fields. The full 233-entry archive is bounded and source-pinned; yaml has no transitive runtime dependencies or install scripts, and the DSH package does not invoke its separate CLI."
+            }
+          ]
+        }
+      },
+      "outcome": {
+        "id": "dsh-tun-proxy",
+        "repositoryUrl": "https://github.com/scclovez/dsh-tun-proxy",
+        "commit": "64efd538bbbee3b00b6d303a44c40c7028469395",
+        "version": "0.3.1",
+        "admission": {
+          "engine": "bounded-source-v3",
+          "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+          "binding": "f70e499bf26c2ad91cf60ae1845c8df16e175b79a1f9834ee2d7d8ab50d2174c",
+          "state": "reviewed",
+          "sourceContract": "verified",
+          "coverage": "complete",
+          "capabilities": "reviewed",
+          "compatibility": "per-version-declaration",
+          "reviewer": "Codex on behalf of AI-Scarlett",
+          "reviewedAt": "2026-10-18T23:44:39Z",
+          "permissions": {
+            "level": "high",
+            "files": "write",
+            "network": "any",
+            "commands": "shell",
+            "credentials": [
+              "proxy-credentials"
+            ]
+          }
+        },
+        "status": "approved",
+        "compatibility": {
+          "dsh": ">=0.2.0-rc.2",
+          "dshReleases": {
+            "rc.7": "unknown",
+            "rc.8": "unknown",
+            "0.1.1-rc.1": "unknown",
+            "0.1.1-rc.2": "unknown",
+            "0.1.2-alpha.2": "unknown",
+            "0.1.2-alpha.3": "unknown",
+            "0.1.2-alpha.4": "unknown",
+            "0.1.2-alpha.5": "unknown",
+            "0.2.1-rc.2": "compatible",
+            "0.2.1-rc.1": "unknown",
+            "0.2.1-alpha.5": "unknown"
+          },
+          "dshOperations": {
+            "rc.7": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "rc.8": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.2": {
+              "install": "passed",
+              "start": "passed",
+              "uninstall": "passed",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            }
+          },
+          "node": ">=22.19.0",
+          "systems": [],
+          "profiles": [
+            "web"
+          ]
+        },
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "proxy-credentials"
+          ]
+        },
+        "externalDependencies": [
+          "yaml@2.9.1 (ISC; no transitive runtime dependencies)"
+        ]
+      },
+      "terminalDecision": "admitted",
+      "blockers": []
+    },
+    {
+      "issueNumber": 1484,
+      "requestCommentId": 6245870100,
+      "author": {
+        "login": "AmethystLuna",
+        "userId": 49059886
+      },
+      "requestBodySha256": "779022a3653858a86f26d32b347ef952997f4b6e32ff4eac6f237b05f4310f08",
+      "repositoryUrl": "https://github.com/AmethystLuna/dsh-model-everything",
+      "commit": "77ba449060adb6e80de554b52ec1e90845c9e780",
+      "packageName": "dsh-model-everything",
+      "version": "0.1.0",
+      "source": {
+        "scanComplete": true,
+        "filesScanned": 108,
+        "runtimeBytes": 1909622,
+        "sourceDigest": "e32d90e3b7292a2bc463caafa194dc50e756052235e17c8270f8eb5832b390fa",
+        "unsupportedFiles": 0,
+        "runtimeDependencies": {},
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 976,
+            "blob": "7f39f682653d49da5dfeed5c5c713ac6aa1db0a5",
+            "sha256": "cf6f730bfa5541a960c11ccd9217f22b4e81eb8ce03cfd4efd7dda0d7a2e5185"
+          },
+          {
+            "file": "examples/control-dispatcher.json",
+            "bytes": 1870,
+            "blob": "45fd01ad579e773159892cad1a5fe90edfd8813e",
+            "sha256": "768ac7bbd3bbab1adc1218dfff6020ba3b03476a152b03100b5526f3d38f1675"
+          },
+          {
+            "file": "examples/control-dispatcher.overbudget.json",
+            "bytes": 1870,
+            "blob": "0e489dc7772ca8a6f5161bd1f47a45146f161cfc",
+            "sha256": "0333e7a47157e103cda7903aab192d7c1dee1184707698b37fddb1c20d7a9fd4"
+          },
+          {
+            "file": "examples/ecommerce-data-model.json",
+            "bytes": 3491,
+            "blob": "b569edc2a65489e07570443fadb5b4c12f8fff35",
+            "sha256": "33224080db5c5d27399aa7b7e3c7b80c96ee418a7f89a3819de9e92ec9241ea2"
+          },
+          {
+            "file": "examples/order-state-machine.after.json",
+            "bytes": 2304,
+            "blob": "c7dab73cfb991d958a58687ebec1531a4c375dea",
+            "sha256": "5bce44f09a5e4852a96b460a645ccf06f03724b997c01f59876ee0950cbcb732"
+          },
+          {
+            "file": "examples/order-state-machine.before.json",
+            "bytes": 1958,
+            "blob": "64b5009dced27e7b0b8ef3d561fcb4cd637fdd61",
+            "sha256": "69aa6e70319d84d8a0f7d1604ffd29984d7b9a6944437831b6489fe1fc1e7c5f"
+          },
+          {
+            "file": "examples/user-migration.after.json",
+            "bytes": 481,
+            "blob": "9d71f64fe4a51f1efb12d12e5a37a9520689263b",
+            "sha256": "0ae0d3678a5fbf1360aebbdfe125f700b5f6cef2ad899676d388a4c354a539f2"
+          },
+          {
+            "file": "examples/user-migration.before.json",
+            "bytes": 477,
+            "blob": "e80fa27a3c5cd8bb1ee466bfc0b30bda5b91169a",
+            "sha256": "d49061ea094a27f8520b6bf3c4978a21987211855fdf292a6d3c6e334a7db35d"
+          },
+          {
+            "file": "gate/locale/en.json",
+            "bytes": 291,
+            "blob": "422c0c049e0897181d77f235c28fa57a42f8d29f",
+            "sha256": "602856df55875a6e8af49fa8399183a365f4ec520ef7e220d2b562abd8892ada"
+          },
+          {
+            "file": "gate/locale/zh.json",
+            "bytes": 269,
+            "blob": "11e395b4bd682786c1e0b0e597b54018840ac7f0",
+            "sha256": "1fb14dd15a97f9df451b00c184193058f38b7e9983580b1552424ebb73017f27"
+          },
+          {
+            "file": "gate/package.json",
+            "bytes": 256,
+            "blob": "97940cccab9300960be7a799ff15e64ba65ee9ef",
+            "sha256": "6d7c1db67e13ca53218e5d9af809ca0dfba963c7bacbadc561ec6da27464fde1"
+          },
+          {
+            "file": "lib/baseline.js",
+            "bytes": 13747,
+            "blob": "36fff8439612a6f5084f9b6e5a52de3a9088c535",
+            "sha256": "099117684234e5f8200d6f2dbf37c2a7ba2094af1f7ce55726687dbb6228c27a"
+          },
+          {
+            "file": "lib/compose-tool.js",
+            "bytes": 4908,
+            "blob": "07bfd35b7371671c442aa6eac099d6dbc9d44067",
+            "sha256": "7bf88cdd8b210bde67221e56dda56762e8d2f7a7bdd61b5fa340b953e6f5d793"
+          },
+          {
+            "file": "lib/concurrency-tool.js",
+            "bytes": 3513,
+            "blob": "9a5db2ec7d7385d77a24d512ac2ef51c6121e2f5",
+            "sha256": "21b6cdd0ab74d4137611fda8fb8049ce489a7c773bea2bbf969febca07417d9f"
+          },
+          {
+            "file": "lib/concurrency.js",
+            "bytes": 14573,
+            "blob": "68b03414d477bbdb752a2c2f06809a14be44a547",
+            "sha256": "f9d97283f9b4b8b6df3dd02533f40db6b8be1cdca6a802a3933df3b6e53dff3f"
+          },
+          {
+            "file": "lib/data-engine.js",
+            "bytes": 69431,
+            "blob": "b2b052d9495210d9067467220fea2cfccd8aec81",
+            "sha256": "c0f5ade515fbe5aae53c3fcdd3fc37b8120c3e0db8fd0bf2c2d6f04733ac4e49"
+          },
+          {
+            "file": "lib/data-tool.js",
+            "bytes": 4240,
+            "blob": "2baf6fadd3d0b13801287c1acb53891eddc1b1cc",
+            "sha256": "6a5b94d1eddb3832b131f8fe07c16f9317eebcca8b71cd37e5d87521eb8294fb"
+          },
+          {
+            "file": "lib/design-engine.js",
+            "bytes": 60626,
+            "blob": "cddb68cef3df1ac1c91a002cd08cfba97962da19",
+            "sha256": "53808a4239f78ae77b6d7e0ef3356070c1d09690835aa22ec53d2ce9a7dc76c3"
+          },
+          {
+            "file": "lib/design-tool.js",
+            "bytes": 3778,
+            "blob": "8a073b331020c01706a9d6d2a48fc33d18c43869",
+            "sha256": "5665b58a865629e800cde14a0a73abf7f217a69ff669c66a7ddcb732eeff9f82"
+          },
+          {
+            "file": "lib/engine.js",
+            "bytes": 229696,
+            "blob": "88d194fe2a3b3dbd753e06efac5fea7218d397ee",
+            "sha256": "a1ea15ef2028502d1aa3a127c94b4102682b77386e51477f5c5ffe5bbefc0109"
+          },
+          {
+            "file": "lib/export-tool.js",
+            "bytes": 4180,
+            "blob": "132ef0b182de21ffe68ff30e5b149a4885786778",
+            "sha256": "6868de54cb858a645de6ca72f05641cbf913bbf3ef2783277c38ef260388bc72"
+          },
+          {
+            "file": "lib/exporters.js",
+            "bytes": 21853,
+            "blob": "99da597ef07c539c6f9c3a72075b770e752dffb2",
+            "sha256": "a5c7ebfebdd978ecc25f2e9c954401e2a09d5e55580836e63030136d5c3d12a3"
+          },
+          {
+            "file": "lib/gate.js",
+            "bytes": 14670,
+            "blob": "63f59575ba5691f8f99d7bda306ec0636115e96f",
+            "sha256": "cc4e9cccdb189e2d0728fe1f61cc29704b7003a874ea615fdfb7ed6a55b3c2a5"
+          },
+          {
+            "file": "lib/granularity.js",
+            "bytes": 11324,
+            "blob": "3b8145ea7adc3149a6471c26f268a3de992f5f89",
+            "sha256": "941daeabdb29a56f3016be043181a16620877fa7f675c6a4fc5aeb91002d1794"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 13655,
+            "blob": "f70088574c40ca5639abe7fbc1bf81bfdc8f9c6a",
+            "sha256": "4ebe1044091d6ed4fdbb7fcf68df96278bab0c9b8790f2c824b19b0d59cc3090"
+          },
+          {
+            "file": "lib/json-value.js",
+            "bytes": 872,
+            "blob": "2e2380608642364fa456a79c422819dc214d787c",
+            "sha256": "af41a54d7162a9fcdcd24c53df851abce13f5644f19bba7959f3f9df6a441d81"
+          },
+          {
+            "file": "lib/option-shape.js",
+            "bytes": 2940,
+            "blob": "41458b393d8fe4f3e39d44e412d2eb16eae85a34",
+            "sha256": "4f6991bd0022b8d17bb472c5b15d8d4cfbcae5bb57cfd57023ea1c563c6e9676"
+          },
+          {
+            "file": "lib/report-diff-tool.js",
+            "bytes": 3781,
+            "blob": "d22a484d73871440235a96b151639202d61a85f1",
+            "sha256": "1c3049c5114c8c18fbeea25d730c008c9760e5ab7d83bbb778687eb85e882be4"
+          },
+          {
+            "file": "lib/report-view.js",
+            "bytes": 22150,
+            "blob": "be8af6c5a2b8f2463572e998d21db55517de5b48",
+            "sha256": "e53054e0c88ea7f02a8ef61efa49700fa700ca7592ed9d338a798bf94c0a68c3"
+          },
+          {
+            "file": "lib/structure-tool.js",
+            "bytes": 6054,
+            "blob": "6939a854504da27e6f52e57dac66d4f81017625b",
+            "sha256": "4067d8289d09a56b2e8459d45d495e8797cb73333ad65666259499c638f9f80b"
+          },
+          {
+            "file": "lib/structure.js",
+            "bytes": 33945,
+            "blob": "095079ae09c7905d104525d792bf678edca1cc26",
+            "sha256": "ce453697d1d0fb47fb60be87a417fe85bd16a2a7ac21ce686f4afc0b833798b8"
+          },
+          {
+            "file": "lib/tool.js",
+            "bytes": 5683,
+            "blob": "3db613646ab5350c5979a864c64dc9caaed02aad",
+            "sha256": "29fdc02a7980c767dd43af69141bfb08683fbf57c2548da5f07c6697f1600e91"
+          },
+          {
+            "file": "lib/types/baseline.d.ts",
+            "bytes": 2472,
+            "blob": "4c0cb20a176987a6ba4ffaf69b94a19d0e4404cd",
+            "sha256": "a902f4dc8a5191329aa02099436365f3fbcabc8109726320e80321cefea82496"
+          },
+          {
+            "file": "lib/types/compose-tool.d.ts",
+            "bytes": 416,
+            "blob": "6dcf57d9622e622d78c189b6d6cdacaac5006502",
+            "sha256": "9fe0680b0fdfcf7c354dd4fc984c12799891e22503414bd0c79bb9d83b3c7e35"
+          },
+          {
+            "file": "lib/types/concurrency-tool.d.ts",
+            "bytes": 514,
+            "blob": "7f2b89899638699f77ba972cf300dd0f326d8e0d",
+            "sha256": "9e411d1b8ad3809ad5c9041b741b6b8e98d419bbffd565e67a75720b5187c605"
+          },
+          {
+            "file": "lib/types/concurrency.d.ts",
+            "bytes": 1486,
+            "blob": "9c66b804d56140d2ae001b8a4caf2482bd9bd338",
+            "sha256": "f20e4200dbab69c3176ce1d61001225614657372ed909da976fc758615aa0f21"
+          },
+          {
+            "file": "lib/types/data-engine.d.ts",
+            "bytes": 5476,
+            "blob": "1ce4da2f15d5cdcbeb23bf7010b0d1a9721d6bad",
+            "sha256": "141a083bddcdb049762d8ffa557c9fe8ebea78074499a801268f316761c71a8a"
+          },
+          {
+            "file": "lib/types/data-tool.d.ts",
+            "bytes": 597,
+            "blob": "24b24d5e38bc79eb01e6b5874e9cf5c5861766bb",
+            "sha256": "c34a9310e9cd8424e10cf296aefbe8b99107ab0139a15439a13cd1e91319bbb3"
+          },
+          {
+            "file": "lib/types/design-engine.d.ts",
+            "bytes": 8449,
+            "blob": "3111c762c2603eae64d3b8fb9f6a8148995816f1",
+            "sha256": "7391344fa14cfca54be4d309f8ea3872b26bca2cbead2af8ff629d49b18905f4"
+          },
+          {
+            "file": "lib/types/design-tool.d.ts",
+            "bytes": 626,
+            "blob": "412599dc0d1ee87d8f153a68ac107d218b2d22f3",
+            "sha256": "444014857ec19a447b2702acc747b985241a4bc038c4291531402b22d30ae08e"
+          },
+          {
+            "file": "lib/types/engine.d.ts",
+            "bytes": 20066,
+            "blob": "29ae5a2037c8b61a4ff1567833cef1dae7230d89",
+            "sha256": "8943fcac459f4cc3951e5badfd560af8b458fa61e609b177800267895abcd8a6"
+          },
+          {
+            "file": "lib/types/export-tool.d.ts",
+            "bytes": 396,
+            "blob": "c6d6c89ae06d59ebeb7dbc0c6a4c1f4d4c870f97",
+            "sha256": "3534574be0a778b91ffc1ee403141725b118039da581df11cc7af8bc483adfd1"
+          },
+          {
+            "file": "lib/types/exporters.d.ts",
+            "bytes": 1558,
+            "blob": "e2da674f9b78374780033b5b1870ef62e566974b",
+            "sha256": "c9da39c7bc86ff8b08bdb61f98743f5371a2a75b54423f12649037f154e74294"
+          },
+          {
+            "file": "lib/types/gate.d.ts",
+            "bytes": 4702,
+            "blob": "49ca12b796d0d45aab3ff9161e6f52fa329eb253",
+            "sha256": "cd8b6662e22468de53e7f9ea6b99ef11824db20ba8154a0de522b6858231621d"
+          },
+          {
+            "file": "lib/types/granularity.d.ts",
+            "bytes": 4000,
+            "blob": "4f3f20224d318e1b19817ce789804ff4a144adcd",
+            "sha256": "43327e7226bd65c429f0a40715eb8c204ce1311afe1180fc03c73b83fc47be45"
+          },
+          {
+            "file": "lib/types/index.d.ts",
+            "bytes": 2457,
+            "blob": "5af4d4345b6a0a040ff22097d7a8e5a123ae7ff5",
+            "sha256": "0ebf66738f11da0b26f1c3e5f01cd2c03f4e295ce40eb17470cd8b7563641dd2"
+          },
+          {
+            "file": "lib/types/json-value.d.ts",
+            "bytes": 1061,
+            "blob": "a42340c95910d6c9eca37d5995020043a6d7ab62",
+            "sha256": "1a4f08dcf913eff60db1925622f9ab9e2d282b947860a524c66cc3dac08352cc"
+          },
+          {
+            "file": "lib/types/option-shape.d.ts",
+            "bytes": 1402,
+            "blob": "e73b3e55518b200028d13974d9c7f6ece780a86b",
+            "sha256": "c39b93f9cb3b915862e7cd9fcb185816980bff3ca1a83df3c9b90777e1c56d3e"
+          },
+          {
+            "file": "lib/types/report-diff-tool.d.ts",
+            "bytes": 492,
+            "blob": "c2caedbb8dde5c12bf69f16e75ce0f50134560f8",
+            "sha256": "8845a94e07151cdbba5e35407e1019ff17c23fc1223b0c8ee98c1b6dfdd5de71"
+          },
+          {
+            "file": "lib/types/report-view.d.ts",
+            "bytes": 2021,
+            "blob": "73cb05b7f217cee569c7ad1c283c575dc5635235",
+            "sha256": "2bc68b56342df25cfa7089b782dc9d4e71bbbaf4bf09e56e6923d6e4712483e7"
+          },
+          {
+            "file": "lib/types/structure-tool.d.ts",
+            "bytes": 623,
+            "blob": "60bdb4c0bbf7cced45225f39a51fa6f3d75abd58",
+            "sha256": "c8129af7544cee25f9a44b6522629cbbeebc4b61618e45affb418f415eae7cc7"
+          },
+          {
+            "file": "lib/types/structure.d.ts",
+            "bytes": 6484,
+            "blob": "16e61d397c9b8215a05a5325a916a78996b547c1",
+            "sha256": "e14cb560ab895cf53fe36029682de51f583c7d29fd1034cd5bfeb018b8aef69e"
+          },
+          {
+            "file": "lib/types/tool.d.ts",
+            "bytes": 636,
+            "blob": "60c93a1d8d53d9d7c88a566fe1df0a8d93c27b71",
+            "sha256": "86a17b7f24668ca0da753388ef67e8c28987d7670a3da75d4e424c31e4b14726"
+          },
+          {
+            "file": "lib/types/uml-communication.d.ts",
+            "bytes": 5409,
+            "blob": "80f9d6bcca18c109d6f34ea6bd74c303b6f52f30",
+            "sha256": "d3f1f71756aa3e019877ba259a1890fa964385e24b429482036fdee28eedf27c"
+          },
+          {
+            "file": "lib/types/uml-composite.d.ts",
+            "bytes": 5253,
+            "blob": "4284478d23982c980c2783084b37f3d8a9c8b067",
+            "sha256": "bf39ad8b8bddd2da675a3a782b6d0eb8b36c09be4f3e48f6622884b89f3a952e"
+          },
+          {
+            "file": "lib/types/uml-interaction-overview.d.ts",
+            "bytes": 5001,
+            "blob": "0f3d2611c6da9c55e07b086ea86c3b97822cc5e1",
+            "sha256": "df82d6349361cb4f5746b980d0d9a83c1efeae2babcfd7cff75c90d56300a248"
+          },
+          {
+            "file": "lib/types/uml-profile.d.ts",
+            "bytes": 5280,
+            "blob": "545d4a77f9d4175ea00eb0ad428be2032a223529",
+            "sha256": "66b499cdc9abf5aff3394537a9a3246c173abb6ca0bf4b936603f7a69cdb2282"
+          },
+          {
+            "file": "lib/types/uml-structure.d.ts",
+            "bytes": 2873,
+            "blob": "bb12981e49a48bcdaac7c6c7eb77b7d93f0b21f6",
+            "sha256": "4a3adcfc196cd802bfc633da031d4aa2bc0045a5d03e48c70425af59c538d0a4"
+          },
+          {
+            "file": "lib/types/uml-syntax.d.ts",
+            "bytes": 14324,
+            "blob": "04a71f357dae998f692e42d205410b87279e3964",
+            "sha256": "2da906ced568f15031567c1c6865ba669136a389215a4f527799360192aac5a2"
+          },
+          {
+            "file": "lib/types/uml-timing.d.ts",
+            "bytes": 6813,
+            "blob": "1aeb0dcb7571eae4bbe9c5ec348f20fe08e8a84b",
+            "sha256": "ffc1d26eba89fb31962265c7315dd8e985deabdbf65f71b8834d163aeb0b8793"
+          },
+          {
+            "file": "lib/types/uml-tool.d.ts",
+            "bytes": 837,
+            "blob": "cf8b227177bc2c38c648b2c49f046cdf008d5857",
+            "sha256": "203f3f7297cd9045172f50cebf5b279490b6028f5887a1e35509c98d2e085896"
+          },
+          {
+            "file": "lib/types/uml-usecase.d.ts",
+            "bytes": 2989,
+            "blob": "b1c4b3765f54d6bc2a1da4f6e2e89872baef2323",
+            "sha256": "ccc7535c438b5c9c3dbb3e5409fb70960eba98626a552299c5820248fbe3323d"
+          },
+          {
+            "file": "lib/types/uml.d.ts",
+            "bytes": 14880,
+            "blob": "fe60f9a902b81ed225084a51e7f0fc691138adbf",
+            "sha256": "14c5269469d8160b5653cc3683d34c4622cf160b86c9aa06f72a1a1721220be3"
+          },
+          {
+            "file": "lib/uml-communication.js",
+            "bytes": 18364,
+            "blob": "b772060732c6e8482985fddb6bbd2b1a98de7d3b",
+            "sha256": "576913fd085ca57d1e81703c3a4ba968bec27b1747c4f7433eeb2db7835b924c"
+          },
+          {
+            "file": "lib/uml-composite.js",
+            "bytes": 21925,
+            "blob": "7a22bca23ce7e01a4e05ab8e0819fe4bdb32b6cd",
+            "sha256": "b5ff52a190ce75a47abd9419ce988c41d1f3b99d3b48aec76c23d86698b72bdc"
+          },
+          {
+            "file": "lib/uml-interaction-overview.js",
+            "bytes": 13736,
+            "blob": "9978dc5575c3f6594e704f42000c34314c962955",
+            "sha256": "1a403e94c7f8d620386e08774f84e0ea9419fd6fce57f74b1ca5eea8d21425ba"
+          },
+          {
+            "file": "lib/uml-profile.js",
+            "bytes": 18807,
+            "blob": "ce7a4beb8ffad43588033157ace5a3bb531dbfb7",
+            "sha256": "3a5600ee5a439e7c5b473ed4ad750db4e26fae9c9bed738bef4d1156fe999caa"
+          },
+          {
+            "file": "lib/uml-structure.js",
+            "bytes": 15791,
+            "blob": "b0a2bf0cd94d0ef65b55e2de973a09f6a85c2bb4",
+            "sha256": "45b17cf06a37574065e5951ca9548b4e3b9253d9272038efe10e33e42120682b"
+          },
+          {
+            "file": "lib/uml-syntax.js",
+            "bytes": 32552,
+            "blob": "d99eb54de35deecb72a8ee434e405834420fabb9",
+            "sha256": "2258b6b233c68207bcdd8fe52a3e440bdf0499b2fe666170c67658462d29ef79"
+          },
+          {
+            "file": "lib/uml-timing.js",
+            "bytes": 49496,
+            "blob": "027c68af1f0dc053eae3476e4ab2bfe264ac4bda",
+            "sha256": "a03effe24775e7943f8945b8f16867f962f1e9bc5a44f0c2df768f9022dfe696"
+          },
+          {
+            "file": "lib/uml-tool.js",
+            "bytes": 13100,
+            "blob": "b828b9bbaaad4dd94e48dd4498d3a5793204ed8d",
+            "sha256": "53b8774c9bd996bbe38d167b32d0dfbc914515b0e3a3937a7d0a0df7c0faa5ad"
+          },
+          {
+            "file": "lib/uml-usecase.js",
+            "bytes": 24806,
+            "blob": "de57de8bd1cda83ae3e0845c4d7c14137204df25",
+            "sha256": "c84a260e9e99329393f9576abf0b3b2c2cf235304bbac167eb6b777facfa1c5f"
+          },
+          {
+            "file": "lib/uml.js",
+            "bytes": 105881,
+            "blob": "9ff283a46602506a516edbd8a8556bc2f3453922",
+            "sha256": "8eb18bc04412c411c48a673f9540dc37ca4216bda0bd6738d29f64a61cdb067c"
+          },
+          {
+            "file": "locale/en.json",
+            "bytes": 277,
+            "blob": "f940411eb883a6b3eda6a48f72411a4118e5e8ad",
+            "sha256": "c627de34b0356ef545e025eabe188aee7e711025e187924d6b7fbf0f9af572c1"
+          },
+          {
+            "file": "locale/zh.json",
+            "bytes": 211,
+            "blob": "f5757e2a834880be1f54da8395762167e814d4b2",
+            "sha256": "4098e1519c364df80e0c2b66b9e87e3548b7631ff507f8c2a31a00b34a1250ea"
+          },
+          {
+            "file": "package.json",
+            "bytes": 5285,
+            "blob": "74d08434c8b8c0a0f7f08a4b9836f565878f25fa",
+            "sha256": "945be5d235058adcd31b1824b4432546da95ba6b2b4f47338fc9f48dcf0d18b2"
+          },
+          {
+            "file": "skills/model-everything-report-reading/references/reading-a-report.mmd",
+            "bytes": 2082,
+            "blob": "b6bd28fc62daee8d60afd66a20ca6d2a7b1b4f26",
+            "sha256": "b35b128353fe944859df172755d9f79965f24d28ed27eed5858943b853da576d"
+          },
+          {
+            "file": "src/baseline.ts",
+            "bytes": 14722,
+            "blob": "f1db1db940bdc8b359d25c80b0f7f74e5c096de0",
+            "sha256": "2d3513695b33c7662702daf4951b6e1419d34e442738bca5c2a6f7f54be9bc5f"
+          },
+          {
+            "file": "src/compose-tool.ts",
+            "bytes": 4847,
+            "blob": "4254e5355304c37caf57911e2709b53b99cf2e0a",
+            "sha256": "c19e59ae5304d0aaa5f7abc0862c26f384a58539e10822d7bc64d23e5ddb5c90"
+          },
+          {
+            "file": "src/concurrency-tool.ts",
+            "bytes": 3484,
+            "blob": "2181b2fd1ed94b4a513f32fa2e79cb729f3a3d6b",
+            "sha256": "4ed9a52bc2e9fe1c5f498d6222b02a004050ce45003f19dced25a042278d3c5f"
+          },
+          {
+            "file": "src/concurrency.ts",
+            "bytes": 15614,
+            "blob": "86da5d446cc97ebc9aa4d0537c29e252cfdd7570",
+            "sha256": "a73c1b052c58f821cdc3c05f525d1be0449c6ddd13acaf045d13ca806cf31d48"
+          },
+          {
+            "file": "src/data-engine.ts",
+            "bytes": 69621,
+            "blob": "829e5633a15e11d0238f3ea31a71db2f44ec9f84",
+            "sha256": "e92b3e7deb30378f2f76b4759c53ef255c7910ce086aba7a99e7621f8975442c"
+          },
+          {
+            "file": "src/data-tool.ts",
+            "bytes": 4422,
+            "blob": "b55c26b3cc34beddc6f252506e3e58fc3d014c94",
+            "sha256": "63935069d9e655c8dd1d75ca16f5990a99ca402d32bcce3e5c51434333029bfe"
+          },
+          {
+            "file": "src/design-engine.ts",
+            "bytes": 63921,
+            "blob": "01d74868e3ce585206db99176824556ee0a0500c",
+            "sha256": "c1f00932e0f432616a5488e1829e76007996190d63e30a8ceee45bf0256e774e"
+          },
+          {
+            "file": "src/design-tool.ts",
+            "bytes": 3703,
+            "blob": "18b7f1eb0579cd2e524318453cb07f3bb4a50abd",
+            "sha256": "caa4edda1009ae4807d2adc6ba7b0274cf2d010f96600753bb2af97bebfbf97e"
+          },
+          {
+            "file": "src/engine.ts",
+            "bytes": 230347,
+            "blob": "910a757826a405d8dbe949c67257c343511a2166",
+            "sha256": "831b77a007828e6878c24461c9783ed7e640269f07b06e74e7437f454ab331da"
+          },
+          {
+            "file": "src/export-tool.ts",
+            "bytes": 4057,
+            "blob": "49ebbceec601b10a0ec6b3380a4b9a7651e6ceda",
+            "sha256": "fc867cee4dfee6fd4bd531bfb574753fcb06a7dc115da9b8b1dd3806e8f508a9"
+          },
+          {
+            "file": "src/exporters.ts",
+            "bytes": 21304,
+            "blob": "d61b1fd431c7bf99b4b13f36fffb97a0df0d5759",
+            "sha256": "aafb1fd4b79af70c4f46d83ce11a5ecff4e87a3ea64969a4def96cff6b4cd5ca"
+          },
+          {
+            "file": "src/gate.ts",
+            "bytes": 16565,
+            "blob": "a2d3d0c1dbbfdd1ede96495652fcc83f5d187471",
+            "sha256": "48a84052bc63cc212410085e4786422a7c2d3330abcece42c4314306d67e740d"
+          },
+          {
+            "file": "src/granularity.ts",
+            "bytes": 12849,
+            "blob": "594c525ce94e43ddf4cd5d42b731937142a656a0",
+            "sha256": "4158578be95235aaffc30f154161206e92ed370934b94a733f930f4bcc85f4fb"
+          },
+          {
+            "file": "src/index.ts",
+            "bytes": 14748,
+            "blob": "618e12a229ba5dc3ae8be19d11899877d3379dee",
+            "sha256": "354a58ec863529a0bec55917a80f0df6088f5c87add1d485ba6754e87b973544"
+          },
+          {
+            "file": "src/json-value.ts",
+            "bytes": 1056,
+            "blob": "4268e653fc8b510e2c05d778b22d79c8e424d74a",
+            "sha256": "dbef50c943e4652f50a265390fb8688e8ff9ee564ac8bc8aad0e91026b4c8b39"
+          },
+          {
+            "file": "src/option-shape.ts",
+            "bytes": 2923,
+            "blob": "174e853294f3e3a34469e4702260e72583de75ed",
+            "sha256": "47b27cd785c01653710c32feee67115f3419fa6a9a8284fb676947ba926a34c3"
+          },
+          {
+            "file": "src/report-diff-tool.ts",
+            "bytes": 3735,
+            "blob": "6fb47c632025e611524cffaaa7d50ce2734e5bc5",
+            "sha256": "30587e15f00a8106d2de9f2dfb40b4b6b4995b167aa7bc3943ad3a185d336c5d"
+          },
+          {
+            "file": "src/report-view.ts",
+            "bytes": 24262,
+            "blob": "abf8ea01dc9a8ddddc6016d12ac97ccce0935315",
+            "sha256": "73104a2205812a1037041708eb13a645d905cb4c1dda3ebf3eafdb22b88c3807"
+          },
+          {
+            "file": "src/structure-tool.ts",
+            "bytes": 5914,
+            "blob": "7d46a39f001d8acc85f6fc8d68cfacbbbcdb8e1e",
+            "sha256": "9fb40ba94781ca350ac87c0e217ebd4705f7089acdba07fcb365074dca4fb956"
+          },
+          {
+            "file": "src/structure.ts",
+            "bytes": 35830,
+            "blob": "c7720e87f202bcedf40053fc2b21fe24937b04be",
+            "sha256": "922b1d65e9ba88f7acf92a1855bd52c28edb47bd116c153a01610cbdf45d5f7a"
+          },
+          {
+            "file": "src/tool.ts",
+            "bytes": 5568,
+            "blob": "9a698146dac70f808dee9f14219f446e13c4a800",
+            "sha256": "eeccf53edff5ee762f2eebc45e56dd5af1f4e13b12789631a2fdf0b5f13d234d"
+          },
+          {
+            "file": "src/uml-communication.ts",
+            "bytes": 20142,
+            "blob": "4551e38f92608bc87d9103bfb6d73de69bd87963",
+            "sha256": "ae00b6eabc4a1365cd2e9cc038e08f9f6a7e541fd07a80908655f6d0b3d20ada"
+          },
+          {
+            "file": "src/uml-composite.ts",
+            "bytes": 23483,
+            "blob": "ee94baef875441c2965cc5adc6fb1814bfc61d9c",
+            "sha256": "647dc89f4b630ea62def151524d1475afc3e2d0bdd908c3cd64c8b7374503d1e"
+          },
+          {
+            "file": "src/uml-interaction-overview.ts",
+            "bytes": 15238,
+            "blob": "4e61b63d14747eacc8049d353a1e54b03b76fda4",
+            "sha256": "6795d6aba19ca4efea931ab30ed3ff9b5508e1860ff18e69e028e741c57686ee"
+          },
+          {
+            "file": "src/uml-profile.ts",
+            "bytes": 20732,
+            "blob": "5fba379f287b8922cb5e7da46bf3f18ca4455d2f",
+            "sha256": "c6fa4509ddf4143282389695cac7c1f5fb7ea97a885faf1f22e0b291dd4c1007"
+          },
+          {
+            "file": "src/uml-structure.ts",
+            "bytes": 16547,
+            "blob": "570ec2b961590a8445d9eafd71c371760a7503d2",
+            "sha256": "6284f31b606a0dd114fdc6e3c35d773c11dd7c207f6f02d98a3d9476a9433fce"
+          },
+          {
+            "file": "src/uml-syntax.ts",
+            "bytes": 39807,
+            "blob": "6e5a41b6b8fde2ad1785f40b7e4e12b86923a4d0",
+            "sha256": "efb07692706f832eae53a3a0d9dfa684f60bc3a6c11bc7836ec3f224bff9f13b"
+          },
+          {
+            "file": "src/uml-timing.ts",
+            "bytes": 52930,
+            "blob": "08ae5fea6e9b4103f0f662fbc6a9c963a70dcdcd",
+            "sha256": "9e7a066d2a97cb108a0dd797e5096af46e7ffe072df4353d047da1693145aaf0"
+          },
+          {
+            "file": "src/uml-tool.ts",
+            "bytes": 13039,
+            "blob": "37da13ba4f6d75111e4ab070fa5a1c1af4292d8c",
+            "sha256": "cd5f8b28176ebd02b3ed1a1ee42fface0b039431c68640fd6483ba14a2248efc"
+          },
+          {
+            "file": "src/uml-usecase.ts",
+            "bytes": 25958,
+            "blob": "a04d1443682415b6b392f3b88df51c77a4c124db",
+            "sha256": "b9d55f56ac5b8995b1f7d593d36e506a77dda8d90760849677ecd65009bf75cb"
+          },
+          {
+            "file": "src/uml.ts",
+            "bytes": 110486,
+            "blob": "8b880beb174786afc91b695d04d1b4e6abdeae19",
+            "sha256": "c06aa580ee3ca9b68936ba1de57be07e59c2906bd82b4ea019882169895190e1"
+          }
+        ],
+        "licenseEvidence": [
+          {
+            "file": "LICENSE",
+            "bytes": 1069,
+            "blob": "70b79f2037f8b0375b4fb94fef54b650d6d3479f",
+            "sha256": "51dace0ac96df28f8f1e3843e1100c91b99e957965ab6cea685570c57f73de83"
+          }
+        ],
+        "resolutionEvidence": []
+      },
+      "manifest": {
+        "name": "dsh-model-everything",
+        "version": "0.1.0",
+        "description": "Modeling abstraction and automated review for designs and code, including a refactoring harness: UML diagrams, executable verification of machines and protocols with before/after regression, data-model and migration checks, concurrency claim routing, export to external checkers, dependency-graph review, and report diffing. Native plugin for DeepSeek Harness (dsh).",
+        "type": "module",
+        "main": "lib/index.js",
+        "types": "lib/types/index.d.ts",
+        "exports": {
+          ".": {
+            "types": "./lib/types/index.d.ts",
+            "default": "./lib/index.js"
+          },
+          "./gate": {
+            "types": "./lib/types/gate.d.ts",
+            "default": "./lib/gate.js"
+          },
+          "./gate/package.json": "./gate/package.json",
+          "./gate/locale/*.json": "./gate/locale/*.json",
+          "./cordis.patch.yml": "./cordis.patch.yml",
+          "./package.json": "./package.json",
+          "./locale/*.json": "./locale/*.json"
+        },
+        "files": [
+          "lib",
+          "src",
+          "skills",
+          "cordis.patch.yml",
+          "examples",
+          "gate",
+          "locale"
+        ],
+        "dsh": {
+          "engines": {
+            "dsh": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1"
+          },
+          "category": "tools/dev",
+          "displayName": "dsh-model-everything",
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          },
+          "compatibility": {
+            "dsh": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
+            "dshReleases": {
+              "0.1.7-alpha.2": "compatible",
+              "0.1.7-rc.1": "compatible",
+              "0.1.7-rc.2": "compatible",
+              "0.2.0-rc.1": "compatible",
+              "0.2.0-rc.2": "compatible",
+              "0.2.1-alpha.1": "compatible",
+              "0.2.1-alpha.2": "compatible",
+              "0.2.1-alpha.3": "compatible",
+              "0.2.1-alpha.4": "compatible",
+              "0.2.1-alpha.5": "compatible",
+              "0.2.1-rc.2": "compatible"
+            },
+            "profiles": [
+              "headless",
+              "web"
+            ]
+          }
+        },
+        "scripts": {
+          "build": "tsc -p tsconfig.json",
+          "typecheck": "tsc -p tsconfig.json --noEmit",
+          "lint:md": "markdownlint --dot --ignore \"**/node_modules/**\" .",
+          "bump": "node scripts/bump-version.mjs",
+          "test:engine": "npm run build && node tests/engine/run.mjs && node tests/design-engine/run.mjs && node tests/catalog/run.mjs && node tests/data-engine/run.mjs && node tests/concurrency/run.mjs && node tests/uml/run.mjs && node tests/apply-smoke.mjs && node tests/memory/run.mjs && node tests/skills/run.mjs && node tests/gate/run.mjs && node tests/skill-routing/run.mjs && node tests/toolset/run.mjs && node tests/principles/run.mjs && node tests/feature-checklist/run.mjs && node tests/usage/run.mjs && node tests/translation/run.mjs && node tests/documentation/run.mjs && node tests/contributing/run.mjs && node tests/routing-map/run.mjs && node tests/report-reading/run.mjs && node tests/structure/run.mjs && node tests/baseline/run.mjs && node tests/granularity/run.mjs && node tests/exporters/run.mjs && node tests/report-view/run.mjs && node tests/contracts/run.mjs && node tests/tool-boundary/run.mjs && node tests/negatives/run.mjs && node tests/external/run.mjs",
+          "test:full": "npm run build && node tests/full-suite.mjs"
+        },
+        "peerDependencies": {
+          "@deepseek-ai/cordis": "^4.0.4",
+          "@deepseek-ai/dsh-agent": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
+          "@deepseek-ai/dsh-llm": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
+          "@deepseek-ai/dsh-session": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
+          "@deepseek-ai/dsh-skill-filesystem": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
+          "@deepseek-ai/dsh-tools": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
+          "@deepseek-ai/schemastery": "^3.18.4"
+        },
+        "devDependencies": {
+          "@deepseek-ai/cordis": "^4.0.4",
+          "@deepseek-ai/dsh-agent": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-cordis-host-runner": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-home-paths": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-invariants": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-llm": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-ptc-runtime": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-sandbox": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-sandbox-policy": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-scope": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-session": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-skill": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-skill-filesystem": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-system-prompt": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-tools": "^0.2.0-rc.2",
+          "@deepseek-ai/dsh-user-approval": "^0.2.0-rc.2",
+          "@deepseek-ai/schemastery": "^3.18.4",
+          "@types/node": "^26.6.5",
+          "markdownlint-cli": "0.49.1",
+          "typescript": "^7.0.2"
+        },
+        "author": {
+          "name": "AmethystLuna",
+          "url": "https://github.com/AmethystLuna"
+        },
+        "license": "MIT",
+        "repository": "https://github.com/AmethystLuna/dsh-model-everything",
+        "funding": {
+          "type": "custom",
+          "url": "https://afdian.com/a/amethystluna"
+        },
+        "keywords": [
+          "verification",
+          "model-checking",
+          "uml",
+          "diagrams",
+          "state-machine",
+          "data-model",
+          "concurrency",
+          "mermaid",
+          "plantuml",
+          "dsh",
+          "dsh-plugin",
+          "plugin"
+        ],
+        "engines": {
+          "node": ">=20"
+        }
+      },
+      "admissionReview": {
+        "repositoryUrl": "https://github.com/AmethystLuna/dsh-model-everything",
+        "commit": "77ba449060adb6e80de554b52ec1e90845c9e780",
+        "binding": "778377e4c38eda8fc3fe65d4b665daddcde67d7b3d8748d3d3e7c0159d14ffc9",
+        "verdict": "approved",
+        "reviewer": "Codex on behalf of AI-Scarlett",
+        "reviewedAt": "2026-10-18T23:44:39Z",
+        "rationale": "The complete fixed distribution and both unique Patch rows were reviewed; the gate row resolves through the exact safe ./gate export and shipped files.",
+        "evidenceUrls": [
+          "https://github.com/AmethystLuna/dsh-model-everything/commit/77ba449060adb6e80de554b52ec1e90845c9e780",
+          "https://github.com/AmethystLuna/dsh-model-everything/blob/77ba449060adb6e80de554b52ec1e90845c9e780/package.json",
+          "https://github.com/AmethystLuna/dsh-model-everything/blob/77ba449060adb6e80de554b52ec1e90845c9e780/cordis.patch.yml",
+          "https://github.com/AmethystLuna/dsh-model-everything/blob/77ba449060adb6e80de554b52ec1e90845c9e780/lib/gate.js",
+          "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+        ],
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        }
+      },
+      "outcome": {
+        "id": "dsh-model-everything",
+        "repositoryUrl": "https://github.com/AmethystLuna/dsh-model-everything",
+        "commit": "77ba449060adb6e80de554b52ec1e90845c9e780",
+        "version": "0.1.0",
+        "admission": {
+          "engine": "bounded-source-v3",
+          "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+          "binding": "778377e4c38eda8fc3fe65d4b665daddcde67d7b3d8748d3d3e7c0159d14ffc9",
+          "state": "reviewed",
+          "sourceContract": "verified",
+          "coverage": "complete",
+          "capabilities": "reviewed",
+          "compatibility": "per-version-declaration",
+          "reviewer": "Codex on behalf of AI-Scarlett",
+          "reviewedAt": "2026-10-18T23:44:39Z",
+          "permissions": {
+            "level": "medium",
+            "files": "write",
+            "network": "none",
+            "commands": "none",
+            "credentials": [
+              "none"
+            ]
+          }
+        },
+        "status": "approved",
+        "compatibility": {
+          "dsh": "^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1",
+          "dshReleases": {
+            "rc.7": "unknown",
+            "rc.8": "unknown",
+            "0.1.1-rc.1": "unknown",
+            "0.1.1-rc.2": "unknown",
+            "0.1.2-alpha.2": "unknown",
+            "0.1.2-alpha.3": "unknown",
+            "0.1.2-alpha.4": "unknown",
+            "0.1.2-alpha.5": "unknown",
+            "0.1.7-alpha.2": "compatible",
+            "0.1.7-rc.1": "compatible",
+            "0.1.7-rc.2": "compatible",
+            "0.2.0-rc.1": "compatible",
+            "0.2.0-rc.2": "compatible",
+            "0.2.1-alpha.1": "compatible",
+            "0.2.1-alpha.2": "compatible",
+            "0.2.1-alpha.3": "compatible",
+            "0.2.1-alpha.4": "compatible",
+            "0.2.1-alpha.5": "compatible",
+            "0.2.1-rc.2": "compatible"
+          },
+          "dshOperations": {
+            "rc.7": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "rc.8": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.7-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.7-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.7-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.0-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.0-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            }
+          },
+          "node": ">=20",
+          "systems": [],
+          "profiles": [
+            "headless",
+            "web"
+          ]
+        },
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": []
+      },
+      "terminalDecision": "admitted",
+      "blockers": []
+    },
+    {
+      "issueNumber": 1466,
+      "requestCommentId": 6245946804,
+      "author": {
+        "login": "Joey-K-tsubame",
+        "userId": 194322966
+      },
+      "requestBodySha256": "9732a1419ec75edeaa8cdc17f25e22bf66f5e2385717384153fdec04480133ad",
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install",
+      "commit": "c03b72d85a391d1f510df0e61d12836649a10abc",
+      "packageName": "dsh-skill-install",
+      "version": "0.1.6",
+      "source": {
+        "scanComplete": true,
+        "filesScanned": 7,
+        "runtimeBytes": 171044,
+        "sourceDigest": "bcec0a7d7587a93db540b15086dc7ef687f061ecbed98d415a86bef3092cc411",
+        "unsupportedFiles": 0,
+        "runtimeDependencies": {},
+        "sourceEvidence": [
+          {
+            "file": "client.js",
+            "bytes": 20401,
+            "blob": "c04481d4768f00c2fd515f059140157fa55bcea6",
+            "sha256": "7b354e65dd58e37495240ab009f86202f72db456e01b37287ba8909ec83b75eb"
+          },
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 414,
+            "blob": "66f6ce008aa42b066c1e61268dcb339fe23e6a0c",
+            "sha256": "98f26499c1eda9033d4b0c89897e6d1b098a9512be3d55331f62714d0a503588"
+          },
+          {
+            "file": "index.js",
+            "bytes": 39770,
+            "blob": "0e3a046de11be0ad49c5eb0771781c4dcf79a4f5",
+            "sha256": "7e94c584c26156d6842fdd5b47b67a64a8859f7b8abf7a91182645cffd412311"
+          },
+          {
+            "file": "js-yaml.mjs",
+            "bytes": 108705,
+            "blob": "c2fc6f93833511c5580d40117edc5110eebeaf64",
+            "sha256": "60c44c76575d467b1d584dffdffdd4c5f0a5923624213dd4e87d3822da027505"
+          },
+          {
+            "file": "locale/en.json",
+            "bytes": 235,
+            "blob": "5ae1890171288f25f0ff30aab1b07f7550dd9a4b",
+            "sha256": "da48ce0843694b46d5dfa438bbcaef336093344434892088189e9bc4b0b2a528"
+          },
+          {
+            "file": "locale/zh.json",
+            "bytes": 218,
+            "blob": "e5b3a261535cc0bf9e4c1cbb077b1ff2ab87d6ad",
+            "sha256": "59fc8e8ea2cc37623f6750f133f9db5d6a41c8b60a73e56dea2d202e07cb7d12"
+          },
+          {
+            "file": "package.json",
+            "bytes": 1301,
+            "blob": "874bd99d48d08c1eb9d5d2879835d6a1a2026cc8",
+            "sha256": "7282c44af698e8f7f592ba8e83f005cf48549876a836b4d7ac3825c7002facb1"
+          }
+        ],
+        "licenseEvidence": [
+          {
+            "file": "LICENSE",
+            "bytes": 1087,
+            "blob": "09a653789cf2f76ad0e0e1c7950c3e084bba669f",
+            "sha256": "626618c13bb585efb76423c4c29f8d35f422246c63f4f990d86adb26f1db745c"
+          }
+        ],
+        "resolutionEvidence": []
+      },
+      "manifest": {
+        "name": "dsh-skill-install",
+        "version": "0.1.6",
+        "description": "DeepSeek Harness 技能安装器：按名字搜索或直接输入 GitHub 仓库地址，列出仓库中的 SKILL.md 技能，勾选后安装到全局 / 当前项目 / 自定义目录，与内置 skill-filesystem 联动，装完即时生效。",
+        "type": "module",
+        "main": "index.js",
+        "license": "MIT",
+        "repository": {
+          "type": "git",
+          "url": "git+https://github.com/Joey-K-tsubame/dsh-skill-install.git"
+        },
+        "icon": "./icon.svg",
+        "keywords": [
+          "dsh",
+          "dsh-plugin",
+          "deepseek-harness",
+          "skills",
+          "skill-install"
+        ],
+        "files": [
+          "index.js",
+          "client.js",
+          "js-yaml.mjs",
+          "cordis.patch.yml",
+          "README.md",
+          "README.zh.md",
+          "LICENSE",
+          "locale/*.json",
+          "icon.svg"
+        ],
+        "exports": {
+          ".": "./index.js",
+          "./client": "./client.js",
+          "./package.json": "./package.json",
+          "./locale/*.json": "./locale/*.json"
+        },
+        "engines": {
+          "node": "^22.19.0 || >=24.0.0",
+          "dsh": ">=0.2.0-rc.2-0 <0.3.0-0"
+        },
+        "dsh": {
+          "manifestVersion": 1,
+          "compatibility": {
+            "dshReleases": {
+              "0.2.1-rc.2": "compatible"
+            }
+          },
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          },
+          "client": {
+            "platform": "web"
+          }
+        }
+      },
+      "admissionReview": {
+        "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install",
+        "commit": "c03b72d85a391d1f510df0e61d12836649a10abc",
+        "binding": "9ca28ce18a062cb2bbcc9b7ef33c29ef04f0907d3777f153dd5fab4c436484b3",
+        "verdict": "rejected",
+        "reviewer": "Codex on behalf of AI-Scarlett",
+        "reviewedAt": "2026-10-18T23:44:39Z",
+        "rationale": "The complete fixed source is bounded and its advertised compatibility is declared, but the total expanded archive byte cap is enforced only after extraction.",
+        "evidenceUrls": [
+          "https://github.com/Joey-K-tsubame/dsh-skill-install/commit/c03b72d85a391d1f510df0e61d12836649a10abc",
+          "https://github.com/Joey-K-tsubame/dsh-skill-install/blob/c03b72d85a391d1f510df0e61d12836649a10abc/index.js",
+          "https://github.com/Joey-K-tsubame/dsh-skill-install/blob/c03b72d85a391d1f510df0e61d12836649a10abc/package.json",
+          "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+        ],
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        }
+      },
+      "outcome": {
+        "id": "dsh-skill-install",
+        "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install",
+        "commit": "c03b72d85a391d1f510df0e61d12836649a10abc",
+        "version": "0.1.6",
+        "admission": {
+          "engine": "bounded-source-v3",
+          "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+          "binding": "9ca28ce18a062cb2bbcc9b7ef33c29ef04f0907d3777f153dd5fab4c436484b3",
+          "state": "rejected",
+          "sourceContract": "verified",
+          "coverage": "complete",
+          "capabilities": "review-required",
+          "compatibility": "per-version-declaration"
+        },
+        "status": "blocked",
+        "compatibility": {
+          "dsh": ">=0.2.0-rc.2-0 <0.3.0-0",
+          "dshReleases": {
+            "rc.7": "unknown",
+            "rc.8": "unknown",
+            "0.1.1-rc.1": "unknown",
+            "0.1.1-rc.2": "unknown",
+            "0.1.2-alpha.2": "unknown",
+            "0.1.2-alpha.3": "unknown",
+            "0.1.2-alpha.4": "unknown",
+            "0.1.2-alpha.5": "unknown",
+            "0.2.1-alpha.5": "unknown",
+            "0.2.1-rc.1": "unknown",
+            "0.2.1-rc.2": "compatible",
+            "0.2.0-rc.2": "unknown"
+          },
+          "dshOperations": {
+            "rc.7": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "rc.8": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.0-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            }
+          },
+          "node": "^22.19.0 || >=24.0.0",
+          "systems": [],
+          "profiles": [
+            "web"
+          ]
+        },
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "any",
+          "commands": "shell",
+          "credentials": [
+            "api-key"
+          ]
+        },
+        "externalDependencies": []
+      },
+      "terminalDecision": "rejected",
+      "blockers": [
+        {
+          "code": "PATH002",
+          "file": "index.js",
+          "lines": [
+            482,
+            483,
+            552,
+            557
+          ],
+          "finding": "The total expanded byte budget is measured after tar writes the archive to the staging directory.",
+          "requiredChange": "Validate expanded member sizes against a strict aggregate budget before writing, or use a bounded extractor that aborts before any member crosses the per-file or total byte cap.",
+          "acceptance": "A compressed archive that expands above the cap is rejected before writes exceed the cap; staging is removed, the install target is untouched, and normal archives still pass the path/type checks."
+        }
+      ]
+    },
+    {
+      "issueNumber": 1467,
+      "requestCommentId": 6245952852,
+      "author": {
+        "login": "Joey-K-tsubame",
+        "userId": 194322966
+      },
+      "requestBodySha256": "a5a21ae30fd3baad8d76a3a0b4feaf121351df135bce8d166bac67eb74c860f0",
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived",
+      "commit": "437d935129368b7cdde68a862c6b47cb4e6c895d",
+      "packageName": "dsh-delete-archived",
+      "version": "0.1.2",
+      "source": {
+        "scanComplete": true,
+        "filesScanned": 6,
+        "runtimeBytes": 26152,
+        "sourceDigest": "994b6827ee666bbafff4a42ac470b68372cd148635e80713cd75d08f64bee1c2",
+        "unsupportedFiles": 0,
+        "runtimeDependencies": {},
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 787,
+            "blob": "91debbb6e3cbab4e14dfb1089fb404c870dd58cc",
+            "sha256": "ce2fd418ef539c5bb376b99090bb2b1f3c6740018d1d88f18b9c5de8ead22bd0"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 5540,
+            "blob": "13b7eb77bfa2875e4bc3f99e9540dc26eb5c58b4",
+            "sha256": "fba328d9e141fdd962e45049a73c61e8e3370f408e9f9dc18e01bbd3eae14f61"
+          },
+          {
+            "file": "lib/entry.js",
+            "bytes": 18081,
+            "blob": "aee5e7befd7be28234647f4ab512a47aae3c6087",
+            "sha256": "0e961f7543196c5eaf5d92719a31fa8bac904b26ed4f55bbe73d11f2508c176a"
+          },
+          {
+            "file": "locale/en.json",
+            "bytes": 203,
+            "blob": "f279a514209e4da1bc251f8bcf17e453d38c3a2f",
+            "sha256": "7dc61ce2ace0739e3a8951cebd9014003f704470a2895136295ac1aec7ed667c"
+          },
+          {
+            "file": "locale/zh.json",
+            "bytes": 194,
+            "blob": "9705397e37413042dd9fd29feb231de5c4c368fe",
+            "sha256": "77d6dc3deafc2b5fdddb87b616211b5af0bece8ba80f30e4fe1a37639a43cff6"
+          },
+          {
+            "file": "package.json",
+            "bytes": 1347,
+            "blob": "5c1c7c1239cd16e738d49e4faabe774077a19564",
+            "sha256": "dbbfe66d037a28d6c859ebca4af4625dd9a50514b146ec1827b75281c2ed8070"
+          }
+        ],
+        "licenseEvidence": [
+          {
+            "file": "LICENSE",
+            "bytes": 1089,
+            "blob": "b6f9e3ebc639c8eeb8a32493fce32b2f8b46e235",
+            "sha256": "ee05b94e32794bfc80c4d203e0798acf5e6d6b70b4fe3331dbd0fc02af98517b"
+          }
+        ],
+        "resolutionEvidence": []
+      },
+      "manifest": {
+        "name": "dsh-delete-archived",
+        "version": "0.1.2",
+        "description": "删除 DeepSeek Harness 中已归档的对话：侧边栏归档会话菜单的删除入口 + 供助手调用的工具",
+        "license": "MIT",
+        "repository": {
+          "type": "git",
+          "url": "git+https://github.com/Joey-K-tsubame/dsh-delete-archived.git"
+        },
+        "type": "module",
+        "main": "lib/entry.js",
+        "icon": "./icon.svg",
+        "keywords": [
+          "dsh",
+          "dsh-plugin",
+          "deepseek-harness",
+          "session",
+          "archive"
+        ],
+        "exports": {
+          ".": {
+            "default": "./lib/entry.js"
+          },
+          "./client": {
+            "default": "./lib/client.js"
+          },
+          "./package.json": "./package.json",
+          "./locale/*.json": "./locale/*.json"
+        },
+        "files": [
+          "lib/entry.js",
+          "lib/client.js",
+          "cordis.patch.yml",
+          "README.md",
+          "README.zh.md",
+          "LICENSE",
+          "locale/*.json",
+          "icon.svg"
+        ],
+        "engines": {
+          "node": "^22.19.0 || >=24.0.0",
+          "dsh": ">=0.2.0-rc.2-0 <0.3.0-0"
+        },
+        "dsh": {
+          "manifestVersion": 1,
+          "compatibility": {
+            "dshReleases": {
+              "0.2.1-rc.2": "compatible"
+            }
+          },
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          },
+          "client": {
+            "inject": [
+              "@deepseek-ai/dsh-client-ui-renderer",
+              "@deepseek-ai/dsh-client-ui-workspace"
+            ],
+            "platform": "web"
+          }
+        }
+      },
+      "admissionReview": {
+        "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived",
+        "commit": "437d935129368b7cdde68a862c6b47cb4e6c895d",
+        "binding": "3c8e339b37573a6d3ce6ae36d0e3cc2b6ea8f6f446d0a8d3fb2bd44606463c1f",
+        "verdict": "rejected",
+        "reviewer": "Codex on behalf of AI-Scarlett",
+        "reviewedAt": "2026-10-18T23:44:39Z",
+        "rationale": "The complete fixed source confirms the retry journal repair and exact compatibility declaration, but any parsed JSON object at the journal path bypasses the archived-state check.",
+        "evidenceUrls": [
+          "https://github.com/Joey-K-tsubame/dsh-delete-archived/commit/437d935129368b7cdde68a862c6b47cb4e6c895d",
+          "https://github.com/Joey-K-tsubame/dsh-delete-archived/blob/437d935129368b7cdde68a862c6b47cb4e6c895d/lib/entry.js",
+          "https://github.com/Joey-K-tsubame/dsh-delete-archived/blob/437d935129368b7cdde68a862c6b47cb4e6c895d/package.json",
+          "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+        ],
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "capabilityDispositions": [
+          {
+            "kind": "false-positive",
+            "signal": "network",
+            "file": "lib/client.js",
+            "sha256": "fba328d9e141fdd962e45049a73c61e8e3370f408e9f9dc18e01bbd3eae14f61",
+            "line": 55,
+            "rationale": "This fetch calls the same-origin DSH local plugin list route; it is not external network access."
+          }
+        ]
+      },
+      "outcome": {
+        "id": "dsh-delete-archived",
+        "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived",
+        "commit": "437d935129368b7cdde68a862c6b47cb4e6c895d",
+        "version": "0.1.2",
+        "admission": {
+          "engine": "bounded-source-v3",
+          "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+          "binding": "3c8e339b37573a6d3ce6ae36d0e3cc2b6ea8f6f446d0a8d3fb2bd44606463c1f",
+          "state": "rejected",
+          "sourceContract": "verified",
+          "coverage": "complete",
+          "capabilities": "review-required",
+          "compatibility": "per-version-declaration"
+        },
+        "status": "blocked",
+        "compatibility": {
+          "dsh": ">=0.2.0-rc.2-0 <0.3.0-0",
+          "dshReleases": {
+            "rc.7": "unknown",
+            "rc.8": "unknown",
+            "0.1.1-rc.1": "unknown",
+            "0.1.1-rc.2": "unknown",
+            "0.1.2-alpha.2": "unknown",
+            "0.1.2-alpha.3": "unknown",
+            "0.1.2-alpha.4": "unknown",
+            "0.1.2-alpha.5": "unknown",
+            "0.2.1-alpha.5": "unknown",
+            "0.2.1-rc.1": "unknown",
+            "0.2.1-rc.2": "compatible",
+            "0.2.0-rc.2": "unknown"
+          },
+          "dshOperations": {
+            "rc.7": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "rc.8": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.0-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            }
+          },
+          "node": "^22.19.0 || >=24.0.0",
+          "systems": [],
+          "profiles": [
+            "web"
+          ]
+        },
+        "permissions": {
+          "level": "high",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": []
+      },
+      "terminalDecision": "rejected",
+      "blockers": [
+        {
+          "code": "DELETE002",
+          "file": "lib/entry.js",
+          "lines": [
+            116,
+            120,
+            283,
+            292
+          ],
+          "finding": "readJournal accepts any parsed JSON object. Its mere presence skips the archived-session check, without schema validation or matching journal.sessionId to the requested session.",
+          "requiredChange": "Validate the exact journal schema and sessionId before treating a journal as an interrupted authorized deletion; reject malformed, mismatched, or unexpected fields without bypassing the archived gate.",
+          "acceptance": "Disposable fixtures cover valid same-session retry, wrong sessionId, arbitrary object, malformed JSON, and invalid timestamp; only the valid journal resumes, while invalid cases fail closed and do not delete persistence or registry state."
+        }
+      ]
+    },
+    {
+      "issueNumber": 934,
+      "requestCommentId": 6247399388,
+      "author": {
+        "login": "sakuraqqq",
+        "userId": 51282470
+      },
+      "requestBodySha256": "1d58dd71224bb2f7ab26555c1c90f798efff5e25d5e68f2f672f7e432dd1ecd7",
+      "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
+      "commit": "83bebac32199ca5c015ad10bb475ce5baf7d4455",
+      "packageName": "dsh-auto-paste",
+      "version": "0.3.1",
+      "source": {
+        "scanComplete": true,
+        "filesScanned": 8,
+        "runtimeBytes": 729059,
+        "sourceDigest": "a65f5a3526dcec7039184c9e6f2de60c4cde2765228e4868cd9e02f3cf2de1a1",
+        "unsupportedFiles": 0,
+        "runtimeDependencies": {},
+        "sourceEvidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 1865,
+            "blob": "30e5ecdbbc7f0d178fd4163d88f589859fc87317",
+            "sha256": "b49ecda960f72e19d72a79c0338be904eb95ef0456134a3b97ba7c5c83772062"
+          },
+          {
+            "file": "dist/client.js",
+            "bytes": 61652,
+            "blob": "7b3d425503a6ddafe799fbe2dfa3bdd63fce2b8e",
+            "sha256": "f734edde2ca18fad36cfc9e713815c553ce2614bc8e4029e9d8d038d408dfaeb"
+          },
+          {
+            "file": "dist/index.js",
+            "bytes": 17337,
+            "blob": "f7f55d28c32cc26a3ac5171653dc8350d08cb98b",
+            "sha256": "d546924e8fd4f3901703d9420a2b58ab00ad67342884298c2f351951fece3994"
+          },
+          {
+            "file": "dist/typert.host.js",
+            "bytes": 547122,
+            "blob": "bc5cabcff5c62eefc19aa72f791217152ab43fb9",
+            "sha256": "191bf04c6d063a7887dcd27071a474bb4e51e05d5acd87c665483233017fb052"
+          },
+          {
+            "file": "package.json",
+            "bytes": 3049,
+            "blob": "30df8c974ac82e68874eb319d06141fbed4154da",
+            "sha256": "5c3b273846455ffa56b9bc84281800041905e2ee1256908cf76c7293f483cfff"
+          },
+          {
+            "file": "src/client.js",
+            "bytes": 56458,
+            "blob": "8fd937a884d42d18fec8cd637f507960b3d5f0d0",
+            "sha256": "c5f17254c9e01abf5e12d483a0b82df1076f6faea7bfdb9de055cfdb464475bf"
+          },
+          {
+            "file": "src/index.ts",
+            "bytes": 36602,
+            "blob": "05a7316e6acf186397808242bbcc6831e7de9bbf",
+            "sha256": "d468ef365594de7c2555de2f25a215d66b0967cddc136da66d047fc9d2132f44"
+          },
+          {
+            "file": "src/typert.host.ts",
+            "bytes": 4974,
+            "blob": "8c47be38944a321e8eba6c16d4576fd6f51d71ae",
+            "sha256": "557b09104778369dbd9d896ddd4425d941d48e7a48ab45160ad5e113572a299c"
+          }
+        ],
+        "licenseEvidence": [
+          {
+            "file": "LICENSE",
+            "bytes": 1069,
+            "blob": "ce7a22833f9fbe6d5766909f1bde7cea9d21c8f2",
+            "sha256": "bc0062dd81cce9e3f9be9195306fe9cb8c8443a0d1d43fa4552eae9cf24bd99a"
+          },
+          {
+            "file": "THIRD_PARTY_NOTICES.md",
+            "bytes": 3812,
+            "blob": "62479ac9a3c2ca7fe82dfb52bf1b4f03c50198eb",
+            "sha256": "f6c0f2eed284ca39d156d96a56108c30d32dabaef1993b2ef9f9088800a56ed7"
+          }
+        ],
+        "resolutionEvidence": []
+      },
+      "manifest": {
+        "name": "dsh-auto-paste",
+        "version": "0.3.1",
+        "description": "dsh-auto-paste — 长文粘贴不进消息：存成工作区文件，输入框只留一张引用卡片，模型只收到一行引用（要读再读）。A DeepSeek Harness plugin: a long paste becomes a workspace file plus one reference chip, so the wall of text never enters the message.",
+        "repository": {
+          "type": "git",
+          "url": "git+https://github.com/sakuraqqq/dsh-auto-paste.git"
+        },
+        "homepage": "https://github.com/sakuraqqq/dsh-auto-paste",
+        "license": "MIT",
+        "author": "misakamaster",
+        "keywords": [
+          "dsh-plugin",
+          "dsh",
+          "deepseek-harness",
+          "better-sidebar",
+          "paste",
+          "attachment"
+        ],
+        "type": "module",
+        "engines": {
+          "node": "^22.19.0 || >=24.0.0"
+        },
+        "main": "./dist/index.js",
+        "exports": {
+          ".": "./dist/index.js",
+          "./client": "./dist/client.js",
+          "./typert": "./dist/typert.host.js",
+          "./package.json": "./package.json"
+        },
+        "files": [
+          "dist",
+          "src",
+          "cordis.patch.yml",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "dsh": {
+          "bundle": {
+            "patch": "./cordis.patch.yml"
+          },
+          "client": {
+            "platform": "web",
+            "inject": [
+              "sessions",
+              "connection"
+            ]
+          },
+          "compatibility": {
+            "dsh": "^0.1.5-rc.1 || ^0.2.0-rc.2",
+            "dshReleases": {
+              "0.1.5-rc.2": "compatible",
+              "0.1.7-rc.2": "compatible",
+              "0.2.0-rc.2": "compatible",
+              "0.2.1-alpha.5": "compatible",
+              "0.2.1-rc.1": "compatible"
+            },
+            "profiles": [
+              "web"
+            ]
+          }
+        },
+        "scripts": {
+          "build": "tsc -p tsconfig.json --noEmit && node scripts/bundle.mjs && node scripts/sync-lib.mjs",
+          "build:client": "node scripts/sync-client.mjs",
+          "build:all": "npm run build && npm run build:client",
+          "release": "node scripts/release.mjs",
+          "typecheck": "tsc -p tsconfig.json --noEmit",
+          "test": "node --test tests/release.test.js",
+          "lint": "eslint .",
+          "format": "prettier --write \"src/**/*.js\" \"scripts/**/*.mjs\" \"smoke.mjs\" \"tests/**/*.js\"",
+          "format:check": "prettier --check \"src/**/*.js\" \"scripts/**/*.mjs\" \"smoke.mjs\" \"tests/**/*.js\"",
+          "metrics": "node tools/metrics.mjs",
+          "privacy": "node tools/privacy-scan.mjs"
+        },
+        "peerDependencies": {
+          "@deepseek-ai/cordis": "^4.0.1",
+          "@deepseek-ai/dsh-tools": "^0.1.5-rc.1 || ^0.2.0-rc.2",
+          "@deepseek-ai/dsh-typert-protocol": "^0.1.5-rc.1 || ^0.2.0-rc.2",
+          "@deepseek-ai/schemastery": "^3.18.2"
+        },
+        "devDependencies": {
+          "@deepseek-ai/cordis": "^4.0.2",
+          "@deepseek-ai/dsh-session": "0.1.5-rc.2",
+          "@deepseek-ai/dsh-tools": "0.1.5-rc.2",
+          "@deepseek-ai/dsh-typert-protocol": "0.1.5-rc.2",
+          "@deepseek-ai/schemastery": "^3.18.2",
+          "@eslint/js": "^10.0.1",
+          "@types/node": "^22.10.0",
+          "esbuild": "^0.28.2",
+          "eslint": "^10.10.0",
+          "eslint-config-prettier": "^10.1.8",
+          "espree": "^11.2.0",
+          "globals": "^17.12.0",
+          "prettier": "^3.9.6",
+          "typescript": "^5.6.0",
+          "zod": "4.4.3"
+        }
+      },
+      "admissionReview": {
+        "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
+        "commit": "83bebac32199ca5c015ad10bb475ce5baf7d4455",
+        "binding": "5fd634f64363989d1fae6d9df53b3acdbc067b9316433454f5ee55758baae2f6",
+        "verdict": "approved",
+        "reviewer": "Codex on behalf of AI-Scarlett",
+        "reviewedAt": "2026-10-18T23:44:39Z",
+        "rationale": "The complete fixed distribution inlines the exact zod version with MIT notice and hashes, declares no runtime dependency edge, and has no install hooks.",
+        "evidenceUrls": [
+          "https://github.com/sakuraqqq/dsh-auto-paste/commit/83bebac32199ca5c015ad10bb475ce5baf7d4455",
+          "https://github.com/sakuraqqq/dsh-auto-paste/blob/83bebac32199ca5c015ad10bb475ce5baf7d4455/package.json",
+          "https://github.com/sakuraqqq/dsh-auto-paste/blob/83bebac32199ca5c015ad10bb475ce5baf7d4455/THIRD_PARTY_NOTICES.md",
+          "https://github.com/sakuraqqq/dsh-auto-paste/blob/83bebac32199ca5c015ad10bb475ce5baf7d4455/dist/typert.host.js",
+          "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+        ],
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        }
+      },
+      "outcome": {
+        "id": "dsh-auto-paste",
+        "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
+        "commit": "83bebac32199ca5c015ad10bb475ce5baf7d4455",
+        "version": "0.3.1",
+        "admission": {
+          "engine": "bounded-source-v3",
+          "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+          "binding": "5fd634f64363989d1fae6d9df53b3acdbc067b9316433454f5ee55758baae2f6",
+          "state": "reviewed",
+          "sourceContract": "verified",
+          "coverage": "complete",
+          "capabilities": "reviewed",
+          "compatibility": "per-version-declaration",
+          "reviewer": "Codex on behalf of AI-Scarlett",
+          "reviewedAt": "2026-10-18T23:44:39Z",
+          "permissions": {
+            "level": "medium",
+            "files": "write",
+            "network": "none",
+            "commands": "none",
+            "credentials": [
+              "none"
+            ]
+          }
+        },
+        "status": "approved",
+        "compatibility": {
+          "dsh": "^0.1.5-rc.1 || ^0.2.0-rc.2",
+          "dshReleases": {
+            "rc.7": "unknown",
+            "rc.8": "unknown",
+            "0.1.1-rc.1": "unknown",
+            "0.1.1-rc.2": "unknown",
+            "0.1.2-alpha.2": "unknown",
+            "0.1.2-alpha.3": "unknown",
+            "0.1.2-alpha.4": "unknown",
+            "0.1.2-alpha.5": "unknown",
+            "0.1.2-rc.1": "unknown",
+            "0.1.3-alpha.1": "unknown",
+            "0.1.3-alpha.2": "unknown",
+            "0.1.5-alpha.1": "unknown",
+            "0.1.5-alpha.2": "unknown",
+            "0.1.5-rc.1": "unknown",
+            "0.1.5-rc.2": "compatible",
+            "0.1.6-alpha.1": "unknown",
+            "0.1.6-alpha.2": "unknown",
+            "0.1.7-alpha.1": "unknown",
+            "0.1.7-alpha.2": "unknown",
+            "0.1.7-rc.1": "unknown",
+            "0.1.7-rc.2": "compatible",
+            "0.2.0-rc.1": "unknown",
+            "0.2.0-rc.2": "compatible",
+            "0.2.1-alpha.1": "unknown",
+            "0.2.1-alpha.2": "unknown",
+            "0.2.1-alpha.3": "unknown",
+            "0.2.1-alpha.4": "unknown",
+            "0.2.1-alpha.5": "compatible",
+            "0.2.1-rc.1": "compatible",
+            "0.2.1-rc.2": "unknown"
+          },
+          "dshOperations": {
+            "rc.7": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "rc.8": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.2-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.3-alpha.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.3-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.5-alpha.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.5-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.5-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.5-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.6-alpha.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.6-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.7-alpha.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.7-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.7-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.1.7-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.0-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.0-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.3": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.4": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-alpha.5": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.1": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            },
+            "0.2.1-rc.2": {
+              "install": "unknown",
+              "start": "unknown",
+              "uninstall": "unknown",
+              "rollback": "unknown"
+            }
+          },
+          "node": "^22.19.0 || >=24.0.0",
+          "systems": [],
+          "profiles": [
+            "web"
+          ]
+        },
+        "permissions": {
+          "level": "medium",
+          "files": "write",
+          "network": "none",
+          "commands": "none",
+          "credentials": [
+            "none"
+          ]
+        },
+        "externalDependencies": []
+      },
+      "terminalDecision": "admitted",
+      "blockers": [],
+      "bundledSupplyChain": {
+        "name": "zod",
+        "version": "4.4.3",
+        "registryUrl": "https://registry.npmjs.org/zod/-/zod-4.4.3.tgz",
+        "license": "MIT",
+        "repositoryUrl": "https://github.com/colinhacks/zod",
+        "upstreamCommit": "f3c9ec03ba7a28ae72d25cc295f38674bee0f559",
+        "integrity": "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==",
+        "shasum": "b680f172885d18bbebf21a834ea25e55a1bbf356",
+        "tarballSha256": "ee38f17f533fd500610685a483ae2f413c26f4eb33a51684314563c8d60f279c",
+        "tarballBytes": 759588,
+        "lockfile": {
+          "path": "pnpm-lock.yaml",
+          "sha256": "d13f8fa468f5873d3c5d7b21eb9c7824783c199544aed6d337846ee060fb8035",
+          "bytes": 46336,
+          "exactVersionAndIntegrity": true
+        },
+        "distributedArtifact": {
+          "file": "dist/typert.host.js",
+          "sha256": "191bf04c6d063a7887dcd27071a474bb4e51e05d5acd87c665483233017fb052",
+          "bytes": 547122,
+          "versionMarker": "zod@4.4.3",
+          "staticImportCount": 0
+        },
+        "notice": {
+          "file": "THIRD_PARTY_NOTICES.md",
+          "sha256": "f6c0f2eed284ca39d156d96a56108c30d32dabaef1993b2ef9f9088800a56ed7",
+          "bytes": 3812,
+          "containsFullMitText": true
+        },
+        "installHooks": [],
+        "runtimeDependencyEdges": [],
+        "evidenceBoundary": "Registry metadata, tarball digests, lock, bundle markers and shipped notice were read and hash-checked; no build, dependency code or plugin code was executed."
+      }
+    }
+  ]
+}

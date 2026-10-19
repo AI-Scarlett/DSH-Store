@@ -1,4 +1,4 @@
-import { bundlePatchContract } from './bundle-patch-contract.mjs'
+import { bundlePatchContract, patchPackageExports } from './bundle-patch-contract.mjs'
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 
@@ -335,6 +335,17 @@ function rawGithubUrl(entry, path) {
   return `https://raw.githubusercontent.com/${owner}/${repo}/${entry.commit}/${path}`
 }
 
+function explicitPackageFilesInclude(manifest, targetPath) {
+  if (!Array.isArray(manifest?.files) || !manifest.files.length) return false
+  return manifest.files.some(selector => {
+    if (typeof selector !== 'string' || !selector || selector.startsWith('!')
+      || /[*?\[\]{}!]/.test(selector) || selector.includes('\\')) return false
+    const normalized = selector.replace(/^\.\//, '').replace(/\/$/, '')
+    if (!normalized || normalized.split('/').some(segment => !segment || segment === '.' || segment === '..')) return false
+    return targetPath === normalized || targetPath.startsWith(`${normalized}/`)
+  })
+}
+
 function wait(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
@@ -442,12 +453,21 @@ export async function verifyCatalogEntry(entry, options = {}) {
   }
   let patchContract
   try { patchContract = bundlePatchContract(patch) } catch (error) { throw sourceError('SOURCE_PATCH_REJECTED', error.message) }
-  if (patchContract.insertedEntries.some(row => row.name.startsWith('@deepseek-ai/'))) throw sourceError('SOURCE_PATCH_REJECTED', 'Bundle references protected package implementation')
+  if (patchContract.insertedEntries.some(row => row.packageName.startsWith('@deepseek-ai/'))) throw sourceError('SOURCE_PATCH_REJECTED', 'Bundle references protected package implementation')
   if (JSON.stringify([...patchContract.entryIds].sort()) !== JSON.stringify([...entry.entryIds].sort())
     || JSON.stringify(patchContract.configOverrides.map(r => r.id).sort()) !== JSON.stringify([...(entry.configOverrides ?? [])].sort())) {
     throw sourceError('SOURCE_PATCH_MISMATCH', 'GitHub Bundle operations do not match the registry')
   }
-  if (patchContract.insertedEntries.some(row => row.name !== entry.packageName)) throw sourceError('SOURCE_PATCH_REJECTED', 'Bundle implementation is outside the reviewed package')
+  let subpathTargets
+  try { subpathTargets = patchPackageExports(manifest, patchContract.insertedEntries) }
+  catch (error) { throw sourceError('SOURCE_PATCH_REJECTED', error.message) }
+  const manifestDirectory = entry.manifestPath.includes('/') ? entry.manifestPath.slice(0, entry.manifestPath.lastIndexOf('/') + 1) : ''
+  for (const target of subpathTargets) {
+    if (!explicitPackageFilesInclude(manifest, target.path)) {
+      throw sourceError('SOURCE_PATCH_REJECTED', 'Patch subpath export target is outside the explicit package files list')
+    }
+    await fetchPinnedTextWithRetries(rawGithubUrl(entry, `${manifestDirectory}${target.path}`), request, timeoutMs, 512 * 1024, retryDelaysMs)
+  }
   const protectedIds = new Set(['ui-settings-plugin-inventory', 'dsh-safe-plugin-manager'])
   if (patchContract.configOverrides.some(r => protectedIds.has(r.id))) throw sourceError('SOURCE_PATCH_REJECTED', 'Protected DSH config override')
   return {
@@ -612,7 +632,7 @@ function validateEntry(value, index, catalogUpdatedAt) {
           'none', 'restricted', 'shell', 'unknown',
         ]),
         credentials: enumArray(value.details?.permissions?.credentials, `entries[${index}].details.permissions.credentials`, [
-          'none', 'api-key', 'oauth', 'keychain', 'unknown',
+          'none', 'api-key', 'oauth', 'keychain', 'proxy-credentials', 'unknown',
         ], ['unknown'], 1),
       },
       externalDependencies: stringArray(
@@ -824,8 +844,13 @@ function legacyAssurance(assurance) {
   }))
 }
 
+const LEGACY_CREDENTIAL_KINDS = new Set(['none', 'api-key', 'oauth', 'keychain', 'unknown'])
+
 function legacyWireEntry(entry, { searchTermLimit = 40, descriptionLimit = null, omitDefaults = false } = {}) {
   const description = [...entry.description]
+  const legacyCredentials = entry.details.permissions.credentials.every(value => LEGACY_CREDENTIAL_KINDS.has(value))
+    ? entry.details.permissions.credentials
+    : ['unknown']
   const wire = {
     id: entry.id,
     name: entry.name,
@@ -864,7 +889,7 @@ function legacyWireEntry(entry, { searchTermLimit = 40, descriptionLimit = null,
       pluginType: entry.details.pluginType,
       installSource: entry.details.installSource,
       license: entry.details.license,
-      permissions: entry.details.permissions,
+      permissions: { ...entry.details.permissions, credentials: legacyCredentials },
       externalDependencies: entry.details.externalDependencies,
       reviewStatus: entry.details.reviewStatus,
     },

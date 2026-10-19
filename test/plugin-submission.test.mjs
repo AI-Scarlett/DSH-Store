@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -74,11 +75,13 @@ function sourceFetch(options = {}) {
         tree: blobPaths.map(path => {
           const content = Object.hasOwn(packages, path) ? JSON.stringify(packages[path])
             : Object.hasOwn(patches, path) ? patches[path] : sources[path]
+        const bytes = Buffer.byteLength(content)
           return {
             type: options.treeTypes?.[path] ?? 'blob',
             mode: options.treeModes?.[path] ?? '100644',
             path,
-            size: options.treeSizes?.[path] ?? Buffer.byteLength(content),
+          size: options.treeSizes?.[path] ?? bytes,
+          sha: createHash('sha1').update(`blob ${bytes}\0`).update(content).digest('hex'),
           }
         }),
       }))
@@ -115,6 +118,62 @@ test('simple submission reads a fixed root package without executing it', async 
   assert.ok(report.startsWith(SUBMISSION_REPORT_MARKER))
   assert.match(report, /没有执行第三方代码/)
   assert.match(report, /不是安全审计、运行验证或自动上架/)
+})
+
+test('submission accepts a second component exported by the same fixed package', async () => {
+  const patch = '- insert:\n    - id: dsh-demo\n      name: dsh-demo\n    - id: dsh-demo-gate\n      name: dsh-demo/gate\n'
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(),
+    fetch: sourceFetch({
+      manifest: manifest({ files: ['index.js', 'lib/'], exports: { '.': './index.js', './gate': './lib/gate.js' } }),
+      patch,
+      sources: { 'lib/gate.js': 'export const gate = true\n' },
+    }),
+    retryDelaysMs: [],
+  })
+  assert.deepEqual(result.candidate.entryIds, ['dsh-demo', 'dsh-demo-gate'])
+  assert.equal(result.candidate.packageName, 'dsh-demo')
+  assert.equal(result.source.status, 'verified')
+})
+
+test('submission rejects a subpath without an exact safe manifest export', async () => {
+  const patch = '- insert:\n    - id: dsh-demo\n      name: dsh-demo\n    - id: dsh-demo-gate\n      name: dsh-demo/gate\n'
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(),
+    fetch: sourceFetch({ manifest: manifest({ exports: { '.': './index.js' } }), patch }),
+    retryDelaysMs: [],
+  }), { code: 'SOURCE_PATCH_REJECTED' })
+})
+
+test('submission rejects a package subpath unless its package root is in the same Patch', async () => {
+  const patch = '- insert:\n    - id: dsh-demo-gate\n      name: dsh-demo/gate\n'
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(),
+    fetch: sourceFetch({
+      manifest: manifest({ files: ['index.js', 'lib/'], exports: { '.': './index.js', './gate': './lib/gate.js' } }),
+      patch,
+      sources: { 'lib/gate.js': 'export const gate = true\n' },
+    }),
+    retryDelaysMs: [],
+  }), /package-root entry in the same Patch/)
+})
+
+test('bounded source scanning preserves a UTF-8 BOM for exact tree size and Git blob checks', async () => {
+  const fetch = sourceFetch({ sources: {
+    'index.js': '\uFEFFexport const ready = true\n',
+    LICENSE: 'MIT License\n',
+  } })
+  const result = await checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(), fetch, retryDelaysMs: [],
+  })
+  const scan = await scanSubmissionRepository(result, { fetch, retryDelaysMs: [] })
+  assert.equal(scan.complete, true)
+  const index = scan.sourceEvidence.find(file => file.file === 'index.js')
+  assert.ok(index)
+  assert.equal(index.bytes, Buffer.byteLength('\uFEFFexport const ready = true\n'))
+  assert.match(index.sha256, /^[a-f0-9]{64}$/)
+  assert.deepEqual(scan.licenseEvidence.map(file => file.file), ['LICENSE'])
+  assert.match(scan.licenseEvidence[0].sha256, /^[a-f0-9]{64}$/)
 })
 
 test('submission precheck hydrates the v2 Catalog before validating a candidate entry', async () => {

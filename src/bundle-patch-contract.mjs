@@ -43,6 +43,61 @@ function scalar(raw) {
 }
 function object(node) { return node?.value && !Array.isArray(node.value) && typeof node.value === 'object' }
 
+function packageSpecifier(value) {
+  const match = /^(?:(@[a-z0-9._-]+\/[a-z0-9._-]+)|([a-z0-9._-]+))(?:\/([A-Za-z0-9._-]+(?:\/[A-Za-z0-9._-]+)*))?$/.exec(value)
+  if (!match) return null
+  const packageName = match[1] ?? match[2]
+  if (packageName.replace(/^@/, '').split('/').some(segment => segment === '.' || segment === '..')) return null
+  const subpath = match[3] ?? null
+  if (subpath?.split('/').some(segment => segment === '.' || segment === '..')) return null
+  return { packageName, ...(subpath ? { subpath } : {}) }
+}
+
+// A Patch `name` is a Node package specifier. Keep the npm package identity
+// separate from a package export such as `some-plugin/gate` so callers can
+// prove the subpath belongs to the manifest under review.
+export function patchPackageExports(manifest, insertedEntries) {
+  if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)
+    || !Array.isArray(insertedEntries)) fail('Patch package identity requires review')
+  const targets = []
+  const safeExportTarget = (value, label) => {
+    if (typeof value !== 'string' || !value.startsWith('./')) {
+      fail(`Patch package ${label} must stay inside the reviewed package`)
+    }
+    const targetPath = value.slice(2)
+    const segments = targetPath.split('/')
+    if (!targetPath || value.includes('\\') || value.includes('\0')
+      || segments.some(segment => !/^[A-Za-z0-9._-]+$/.test(segment)
+        || segment === '.' || segment === '..' || segment === '*')) {
+      fail(`Patch package ${label} must stay inside the reviewed package`)
+    }
+    return targetPath
+  }
+  for (const entry of insertedEntries) {
+    if (entry.packageName !== manifest.name) fail('Inserted implementation package differs from the reviewed manifest')
+    if (!entry.subpath) continue
+    const exportKey = `./${entry.subpath}`
+    let target = manifest.exports?.[exportKey]
+    let typesTarget
+    if (target && typeof target === 'object' && !Array.isArray(target)) {
+      const keys = Object.keys(target)
+      if (keys.some(key => !['types', 'default'].includes(key))
+        || (target.types !== undefined && typeof target.types !== 'string')) {
+        fail('Patch package subpath has unsupported conditional exports')
+      }
+      if (target.types !== undefined) typesTarget = safeExportTarget(target.types, 'subpath types export')
+      target = target.default
+    }
+    if (typeof target !== 'string' || !target.startsWith('./')) {
+      fail('Patch package subpath must match an exact safe export in the reviewed manifest')
+    }
+    const targetPath = safeExportTarget(target, 'subpath export target')
+    targets.push({ entryId: entry.id, name: entry.name, path: targetPath })
+    if (typesTarget) targets.push({ entryId: entry.id, name: entry.name, path: typesTarget, kind: 'types' })
+  }
+  return targets
+}
+
 export function bundlePatchContract(source) {
   if (typeof source !== 'string' || Buffer.byteLength(source) > 512 * 1024) fail('Bundle Patch exceeds the bounded parser limit')
   const tokens = source.split(/\r?\n/).map((text, i) => ({ text, line: i + 1 }))
@@ -148,14 +203,20 @@ export function bundlePatchContract(source) {
     if (fields.name) {
       if (!inserted) fail('Name-qualified override is not an inserted entry; separate implementation review is required')
       const name = fields.name.value
-      if (typeof name !== 'string' || !/^(?:@[a-z0-9._-]+\/)?[a-z0-9._-]+$/.test(name)) fail('Patch package identity requires review')
+      const specifier = typeof name === 'string' ? packageSpecifier(name) : null
+      if (!specifier) fail('Patch package identity requires review')
       if (ids.has(id) || overrideIds.has(id)) fail('Conflicting Patch entry ID')
-      ids.add(id); insertedEntries.push({ id, name, line: row.line, ...(inject ? { inject } : {}) })
+      ids.add(id); insertedEntries.push({ id, name, ...specifier, line: row.line, ...(inject ? { inject } : {}) })
     } else {
       if (inserted || !fields.config || ids.has(id) || overrideIds.has(id)) fail('Unsupported or conflicting Patch config override')
       overrideIds.add(id); configOverrides.push({ id, line: row.line, replacesEntireConfig: true })
     }
   }
   root.value.forEach(row => operation(row))
+  for (const entry of insertedEntries) {
+    if (entry.subpath && !insertedEntries.some(rootEntry => rootEntry.name === entry.packageName)) {
+      fail('Patch package subpath requires a matching package-root entry in the same Patch')
+    }
+  }
   return { insertedEntries, entryIds: insertedEntries.map(row => row.id), configOverrides }
 }

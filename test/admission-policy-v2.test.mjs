@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createHash } from 'node:crypto'
-import { bundlePatchContract } from '../src/bundle-patch-contract.mjs'
+import { bundlePatchContract, patchPackageExports } from '../src/bundle-patch-contract.mjs'
 import { SOURCE_SCAN_BOUNDS, SCAN_POLICY_VERSION, sourceBudgetFindings } from '../src/source-scan-policy.mjs'
 import { reviewFixedSource } from '../src/fixed-source-review.mjs'
-import { admissionBinding, admissionDecision, validateAdmissionReviews } from '../src/admission-review.mjs'
+import { admissionBinding, admissionDecision, LICENSE_METADATA_REVIEW_REASON, validateAdmissionReviews } from '../src/admission-review.mjs'
 import { catalogIdentityHash, catalogMigrationTarget, migrateCatalogIdentity, validateCatalogMigrations } from '../src/catalog-migration.mjs'
-import { packageSourceSurface } from '../src/package-source-surface.mjs'
+import { missingLocalModuleReasons, packageSourceSurface, SCANNABLE_SOURCE, unsupportedPackageEntry } from '../src/package-source-surface.mjs'
 import { permissionSignals } from '../src/automation-source-policy.mjs'
 import { applyLatestDshCompatibilityPolicy } from '../src/catalog-compatibility-policy.mjs'
 import { exactHostCompatibility } from '../src/catalog.mjs'
@@ -35,6 +35,33 @@ test('configuration targets and nested config IDs never acquire inserted entry o
   assert.deepEqual(result.entryIds, ['web-search-fetch'])
   assert.deepEqual(result.configOverrides.map(r => r.id), ['web'])
   assert.equal(result.configOverrides[0].replacesEntireConfig, true)
+})
+
+test('one Patch may expose a declared subpath of its own package as a second component', () => {
+  const patch = '- insert:\n    - id: dsh-model-everything\n      name: dsh-model-everything\n    - id: dsh-model-everything-gate\n      name: dsh-model-everything/gate\n      config:\n        enabled: true\n'
+  const contract = bundlePatchContract(patch)
+  assert.deepEqual(contract.entryIds, ['dsh-model-everything', 'dsh-model-everything-gate'])
+  assert.deepEqual(contract.insertedEntries.map(row => [row.name, row.packageName, row.subpath ?? null]), [
+    ['dsh-model-everything', 'dsh-model-everything', null],
+    ['dsh-model-everything/gate', 'dsh-model-everything', 'gate'],
+  ])
+  assert.deepEqual(patchPackageExports({ name: 'dsh-model-everything', exports: { './gate': './lib/gate.js' } }, contract.insertedEntries), [
+    { entryId: 'dsh-model-everything-gate', name: 'dsh-model-everything/gate', path: 'lib/gate.js' },
+  ])
+  assert.deepEqual(patchPackageExports({ name: 'dsh-model-everything', exports: { './gate': { types: './lib/types/gate.d.ts', default: './lib/gate.js' } } }, contract.insertedEntries), [
+    { entryId: 'dsh-model-everything-gate', name: 'dsh-model-everything/gate', path: 'lib/gate.js' },
+    { entryId: 'dsh-model-everything-gate', name: 'dsh-model-everything/gate', path: 'lib/types/gate.d.ts', kind: 'types' },
+  ])
+  for (const invalid of [
+    '- insert:\n    - id: gate\n      name: dsh-model-everything/gate\n',
+    '- insert:\n    - id: root\n      name: dsh-model-everything\n    - id: gate\n      name: dsh-model-everything/../outside\n',
+    '- insert:\n    - id: invalid\n      name: .\n',
+  ]) assert.throws(() => bundlePatchContract(invalid), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+  assert.throws(() => patchPackageExports({ name: 'dsh-other', exports: { './gate': './lib/gate.js' } }, contract.insertedEntries), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+  assert.throws(() => patchPackageExports({ name: 'dsh-model-everything', exports: { './gate': './../outside.js' } }, contract.insertedEntries), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+  assert.throws(() => patchPackageExports({ name: 'dsh-model-everything', exports: { './gate': { types: './../outside.d.ts', default: './lib/gate.js' } } }, contract.insertedEntries), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+  assert.throws(() => patchPackageExports({ name: 'dsh-model-everything', exports: { './*': './lib/*.js' } }, contract.insertedEntries), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
+  assert.throws(() => patchPackageExports({ name: 'dsh-model-everything', exports: { './gate': { require: './lib/gate.js' } } }, contract.insertedEntries), { code: 'BUNDLE_PATCH_AMBIGUOUS' })
 })
 
 test('ambiguous, duplicate, disabled, tagged and malformed operations cannot be interpreted as additive', () => {
@@ -99,6 +126,87 @@ test('bounded locale exports and 442975-byte bundle are fully scanned without so
     assert.equal(packageSourceSurface({ ...manifest, exports: path }, treeOf(files)).complete, false)
   }
   assert.equal(packageSourceSurface({ ...manifest, files: ['index.js'], exports: './locale/*.json' }, treeOf(files)).complete, false)
+})
+
+test('dynamic imports in unreferenced tests do not become runtime findings', async () => {
+  const input = {
+    'index.js': 'export const ready = true\n',
+    'test/plugin-entry.test.mjs': 'await import(target)\n',
+  }
+  const testManifest = { files: ['index.js', 'test'], main: './index.js' }
+  const inspect = (sourceFiles, manifestValue) => reviewFixedSource(candidate, manifestValue, treeOf(sourceFiles), policy, async path => sourceFiles[path])
+  const isolated = await inspect(input, testManifest)
+  assert.equal(isolated.scanComplete, true)
+  assert.equal(isolated.reviewSignals.dynamicModuleLoading, false)
+  const exposed = await inspect(input, { ...testManifest, main: './test/plugin-entry.test.mjs' })
+  assert.equal(exposed.reviewSignals.dynamicModuleLoading, true)
+  const reachable = await inspect({ ...input, 'index.js': "import './test/plugin-entry.test.mjs'\n" }, testManifest)
+  assert.equal(reachable.reviewSignals.dynamicModuleLoading, true)
+})
+
+test('independent package CLI entrypoints remain in dynamic-loading review', async () => {
+  const input = {
+    'index.js': 'export const ready = true\n',
+    'bin.mjs': "const userHook = await import(resolve(args.visit))\n",
+  }
+  const testManifest = { files: ['index.js', 'bin.mjs'], main: './index.js', bin: './bin.mjs' }
+  const result = await reviewFixedSource(candidate, testManifest, treeOf(input), policy, async path => input[path])
+  assert.equal(result.scanComplete, true)
+  assert.equal(result.sourceEvidence.some(file => file.file === 'bin.mjs'), true)
+  assert.equal(result.reviewSignals.dynamicModuleLoading, true)
+})
+
+test('runtime dependency lockfiles are hashed as resolution evidence outside the runtime scan', async () => {
+  const input = { 'index.js': 'export const ready = true\n', 'package-lock.json': '{"lockfileVersion":3}\n' }
+  const gitBlob = value => createHash('sha1').update(`blob ${Buffer.byteLength(value)}\0`).update(value).digest('hex')
+  const tree = { truncated: false, tree: Object.entries(input).map(([path, value]) => ({
+    path, size: Buffer.byteLength(value), type: 'blob', mode: '100644', sha: gitBlob(value),
+  })) }
+  const manifestValue = { files: ['index.js'], main: './index.js', dependencies: { yaml: '2.9.1' } }
+  const depPolicy = { ...policy, automaticApproval: { ...policy.automaticApproval, allowRuntimeDependencies: false } }
+  const result = await reviewFixedSource(candidate, manifestValue, tree, depPolicy, async path => input[path])
+  assert.equal(result.scanComplete, true)
+  assert.deepEqual(result.runtimeDependencies, { yaml: '2.9.1' })
+  assert.deepEqual(result.sourceEvidence.map(item => item.file), ['index.js'])
+  assert.equal(result.resolutionEvidence[0].file, 'package-lock.json')
+  assert.match(result.reasons.join('\n'), /runtime or optional dependencies require a separate supply-chain review/)
+  const missingTree = { ...tree, tree: tree.tree.filter(item => item.path !== 'package-lock.json') }
+  const missing = await reviewFixedSource(candidate, manifestValue, missingTree, depPolicy, async path => input[path])
+  assert.match(missing.reasons.join('\n'), /one unambiguous fixed lockfile/)
+})
+
+test('NOASSERTION repository metadata can pass only with a hash-bound manual fixed-source license review', async () => {
+  const input = { 'index.js': 'export const ready = true\n', LICENSE: 'MIT License\n\nCopyright (c) Example\n' }
+  const gitBlob = value => createHash('sha1').update(`blob ${Buffer.byteLength(value)}\0`).update(value).digest('hex')
+  const tree = { truncated: false, tree: Object.entries(input).map(([path, value]) => ({
+    path, size: Buffer.byteLength(value), type: 'blob', mode: '100644', sha: gitBlob(value),
+  })) }
+  const manifestValue = { files: ['index.js'], main: './index.js', license: 'MIT' }
+  const reviewedCandidate = { ...candidate, details: { license: 'MIT' } }
+  const scanned = await reviewFixedSource(reviewedCandidate, manifestValue, tree, policy, async path => input[path])
+  assert.deepEqual(scanned.licenseEvidence.map(item => item.file), ['LICENSE'])
+  const analysis = { ...scanned, ...clean, sourceDigest: scanned.sourceDigest, licenseEvidence: scanned.licenseEvidence,
+    repositoryLicense: 'NOASSERTION', manifestLicense: 'MIT', contractVerified: false,
+    contractReasons: [LICENSE_METADATA_REVIEW_REASON], reasons: [...clean.reasons, LICENSE_METADATA_REVIEW_REASON] }
+  assert.equal(admissionDecision(reviewedCandidate, analysis).state, 'review-required')
+  const evidence = { file: 'LICENSE', sha256: scanned.licenseEvidence[0].sha256, line: 1 }
+  const registry = reviewed(analysis, { licenseReview: { license: 'MIT', metadata: 'NOASSERTION', evidence,
+    rationale: 'The exact MIT text in the fixed Commit was reviewed; NOASSERTION is unavailable metadata, not a license conflict.' } })
+  assert.equal(admissionDecision(reviewedCandidate, analysis, registry).state, 'reviewed')
+  assert.equal(admissionDecision(reviewedCandidate, { ...analysis, licenseEvidence: [] }, registry).state, 'review-required')
+  const conflict = { ...analysis, contractReasons: ['manifest and GitHub repository license metadata conflict'],
+    reasons: [...clean.reasons, 'manifest and GitHub repository license metadata conflict'] }
+  assert.equal(admissionDecision(reviewedCandidate, conflict, reviewed(conflict, { licenseReview: registry.reviews[0].licenseReview })).state, 'review-required')
+  assert.throws(() => validateAdmissionReviews(reviewed(analysis, { licenseReview: { ...registry.reviews[0].licenseReview, metadata: 'GPL-3.0' } })), /license review/)
+})
+
+test('TypeScript NodeNext source imports resolve emitted .js specifiers to TypeScript siblings', () => {
+  const entries = [{ type: 'blob', mode: '100644', relativePath: 'src/engine.ts' }]
+  assert.deepEqual(missingLocalModuleReasons(['./engine.js'], 'src/tool.ts', entries), [])
+  assert.deepEqual(missingLocalModuleReasons(['./engine.js'], 'lib/tool.js', entries), ['local module is missing from the distributable surface: lib/tool.js -> ./engine.js'])
+  const diagram = { type: 'blob', mode: '100644', relativePath: 'skills/reference/flow.mmd' }
+  assert.equal(SCANNABLE_SOURCE.test(diagram.relativePath), true)
+  assert.equal(unsupportedPackageEntry(diagram), false)
 })
 
 test('partial scan reports true observed signals, separate file/total limits, and unknown negatives', async () => {
@@ -199,16 +307,26 @@ test('a credential false positive needs exact evidence for every observed file a
 })
 
 test('dependencies require an independently reviewed complete source closure and an installation resolution bound to source', () => {
-  const proof = { file: 'package.json', sha256: '7'.repeat(64), line: 1, rationale: 'Reviewed installed dependency resolution is constrained to this exact immutable package closure.' }
+  const proof = { file: 'package-lock.json', sha256: '7'.repeat(64), line: 1, rationale: 'Reviewed installed dependency resolution is constrained to this exact immutable package closure.' }
   const files = [{ file: 'index.js', sha256: '8'.repeat(64), bytes: 12 }]
   const node = { name: 'dependency', version: '1.2.3', repositoryUrl: 'https://github.com/example/dependency', commit: 'd'.repeat(40),
     sourceDigest: createHash('sha256').update(JSON.stringify(files)).digest('hex'), license: 'MIT', installScriptsReviewed: 'none', files, dependencies: [],
     coverage: 'complete', securityVerdict: 'pass', moduleLoading: 'static', signals: { files: false, network: false, commands: false, credentials: false, protectedDsh: false, nativeOrExecutableArtifacts: false },
+    distribution: { registryUrl: 'https://registry.npmjs.org/dependency/-/dependency-1.2.3.tgz', integrity: `sha512-${Buffer.alloc(64).toString('base64')}`,
+      shasum: 'e'.repeat(40), tarballSha256: 'f'.repeat(64), tarballBytes: 1024, archiveEntries: 3, uncompressedBytes: 64 },
     rationale: 'Complete pinned dependency distribution inspected without executing any package code.' }
-  const analysis = { ...clean, runtimeDependencies: { dependency: '1.2.3' }, sourceEvidence: [proof], reasons: [...clean.reasons, 'runtime or optional dependencies require a separate supply-chain review'] }
+  const analysis = { ...clean, runtimeDependencies: { dependency: '1.2.3' }, sourceEvidence: [],
+    resolutionEvidence: [{ file: proof.file, bytes: 20, blob: 'c'.repeat(40), sha256: proof.sha256 }],
+    reasons: [...clean.reasons, 'runtime or optional dependencies require a separate supply-chain review'] }
   const supplyChain = { complete: true, direct: { dependency: '1.2.3' }, installResolution: proof, packages: [node] }
   assert.equal(admissionDecision(candidate, analysis, reviewed(analysis)).state, 'review-required')
   assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain })).state, 'reviewed')
+  const unboundLicenseOnly = { ...analysis, resolutionEvidence: [], licenseEvidence: [{ file: 'LICENSE', bytes: 12,
+    blob: 'a'.repeat(40), sha256: proof.sha256 }] }
+  const falselyBound = { ...supplyChain, installResolution: { ...proof, file: 'LICENSE' } }
+  assert.equal(admissionDecision(candidate, unboundLicenseOnly, reviewed(unboundLicenseOnly, { supplyChain: falselyBound })).state, 'review-required')
+  assert.equal(admissionDecision(candidate, { ...analysis, reviewSignals: { dynamicModuleLoading: true } },
+    reviewed({ ...analysis, reviewSignals: { dynamicModuleLoading: true } }, { supplyChain })).state, 'review-required')
   assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, direct: { dependency: '1.2.4' } } })).state, 'review-required')
   assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, packages: [{ ...node, dependencies: ['missing@2.0.0'] }] } })).state, 'review-required')
   assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, installResolution: { ...proof, sha256: 'f'.repeat(64) } } })).state, 'review-required')
@@ -217,6 +335,26 @@ test('dependencies require an independently reviewed complete source closure and
   assert.equal(admissionDecision(candidate, analysis, reviewed(analysis, { supplyChain: { ...supplyChain, packages: [{ ...node, signals: { ...node.signals, network: true } }] } })).state, 'review-required')
   const dynamic = { ...analysis, reasons: [...analysis.reasons, 'dynamic module loading or code evaluation requires separate review'] }
   assert.equal(admissionDecision(candidate, dynamic, reviewed(dynamic, { supplyChain })).state, 'review-required')
+
+  const dependencyFiles = [
+    { file: 'index.js', sha256: '8'.repeat(64), bytes: 12 },
+    { file: 'package.json', sha256: '9'.repeat(64), bytes: 16 },
+    { file: 'bin/cli.mjs', sha256: 'a'.repeat(64), bytes: 30 },
+  ]
+  const reviewedBinNode = { ...node, files: dependencyFiles,
+    sourceDigest: createHash('sha256').update(JSON.stringify(dependencyFiles)).digest('hex'),
+    moduleLoading: 'static-node-library-reviewed-bin', runtimeContext: 'node-library', runtimeEntryFiles: ['index.js'],
+    binEntrypointReview: { complete: true, packageManifest: { file: 'package.json', sha256: '9'.repeat(64), line: 1 },
+      files: [{ file: 'bin/cli.mjs', sha256: 'a'.repeat(64) }],
+      bins: [{ name: 'yaml', file: 'bin/cli.mjs', sha256: 'a'.repeat(64), rationale: 'The explicit CLI only loads local parser helpers when a user invokes the executable.' }],
+      rationale: 'The npm manifest bin map and every declared CLI target were reviewed against the complete hashed tarball file list.' } }
+  const reviewedBinChain = { ...supplyChain, packages: [reviewedBinNode] }
+  const reviewedBinRegistry = reviewed(analysis, { supplyChain: reviewedBinChain })
+  assert.equal(validateAdmissionReviews(reviewedBinRegistry), reviewedBinRegistry)
+  assert.equal(admissionDecision(candidate, analysis, reviewedBinRegistry).state, 'reviewed')
+  assert.throws(() => validateAdmissionReviews(reviewed(analysis, { supplyChain: { ...supplyChain,
+    packages: [{ ...reviewedBinNode, binEntrypointReview: { ...reviewedBinNode.binEntrypointReview,
+      bins: [{ ...reviewedBinNode.binEntrypointReview.bins[0], sha256: 'b'.repeat(64) }] } }] } })), /runtime supply-chain review/)
 })
 
 test('identity migration binds old identity, exact pair and new source; migration never grants admission', () => {

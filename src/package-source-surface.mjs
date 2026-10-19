@@ -1,6 +1,6 @@
 import { posix } from 'node:path'
 
-export const SCANNABLE_SOURCE = /\.(?:[cm]?[jt]sx?|jsonl?|ya?ml|sh|bash|zsh|fish|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|ps1|psm1|cmd|bat|html?|vue|svelte)$|(?:^|\/)(?:NOTICE|UPSTREAM_LICENSE)(?:\.[^/]*)?$/i
+export const SCANNABLE_SOURCE = /\.(?:[cm]?[jt]sx?|mmd|jsonl?|ya?ml|sh|bash|zsh|fish|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|ps1|psm1|cmd|bat|html?|vue|svelte)$|(?:^|\/)(?:NOTICE|UPSTREAM_LICENSE)(?:\.[^/]*)?$/i
 export const NATIVE_ARTIFACT = /\.(?:node|wasm|dll|dylib|so|exe|bin)$/i
 const STATIC_ASSET = /\.(?:md|txt|rst|png|jpe?g|webp|gif|ico|svg|css|woff2?|ttf|otf|map|webmanifest|xml)$/i
 const METADATA = /^(?:package\.json|npm-shrinkwrap\.json|readme(?:\..*)?|licen[cs]e(?:\..*)?|copying(?:\..*)?|notice(?:\..*)?|upstream_license(?:\..*)?)$/i
@@ -130,6 +130,17 @@ export function missingLocalModuleReasons(references, from, entries) {
     const target = posix.normalize(posix.join(posix.dirname(from), path))
     if (!validPath(target)) return [`local module escapes the package: ${from}`]
     const alternatives = [target, ...['.js', '.mjs', '.cjs', '.json', '/index.js', '/index.mjs', '/index.cjs'].map(ext => target + ext)]
+    // TypeScript NodeNext sources commonly write the emitted JavaScript suffix
+    // (`./engine.js`) while the packaged source tree contains `engine.ts`.
+    // Resolve that source counterpart only from TS files; emitted runtime JS is
+    // still required and is checked independently at the manifest entrypoint.
+    if (/\.(?:ts|tsx|mts|cts)$/.test(from)) {
+      const match = /\.(js|mjs|cjs)$/.exec(target)
+      if (match) {
+        const substitutions = { js: ['.ts', '.tsx', '.d.ts'], mjs: ['.mts', '.d.mts'], cjs: ['.cts', '.d.cts'] }
+        alternatives.push(...substitutions[match[1]].map(extension => target.slice(0, -match[0].length) + extension))
+      }
+    }
     // Declaration imports use TypeScript's extension substitution. This never
     // satisfies a missing JavaScript runtime import with a declaration file.
     if (/\.d\.(?:ts|mts|cts)$/.test(from)) {

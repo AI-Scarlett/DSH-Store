@@ -583,7 +583,7 @@ window.__ModuleLoader__.load({
       files: { none: '不访问', 'read-only': '只读', write: '可写', unknown: '未知' },
       network: { none: '无', 'specified-services': '指定服务', any: '任意网络', unknown: '未知' },
       commands: { none: '否', restricted: '受限', shell: '任意 Shell', unknown: '未知' },
-      credentials: { none: '否', 'api-key': 'API Key', oauth: 'OAuth', keychain: '系统 Keychain', unknown: '未知' },
+      credentials: { none: '否', 'api-key': 'API Key', oauth: 'OAuth', keychain: '系统 Keychain', 'proxy-credentials': '代理订阅/节点凭据', unknown: '未知' },
       reviewStatus: { unreviewed: '未审核', 'automated-scan': '自动扫描', 'manual-review': '人工检查', 'author-verified': '作者认证' },
     }
 

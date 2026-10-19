@@ -112,7 +112,19 @@ async function fetchText(url, options) {
       if (options.optional === true && response?.status === 404) return null
       throw submissionError(options.code ?? 'SUBMISSION_GITHUB_HTTP', `GitHub returned HTTP ${response?.status ?? 'unknown'} for required source metadata`)
     }
-    const text = await response.text()
+    let text
+    if (options.preserveBom === true) {
+      try {
+        // `Response.text()` consumes a UTF-8 BOM as a decoding marker. Source
+        // evidence must retain those three bytes so tree size and Git blob
+        // checks cover the exact fixed file.
+        text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(await response.arrayBuffer())
+      } catch {
+        throw submissionError('SUBMISSION_SOURCE_ENCODING_INVALID', 'Fixed source is not valid UTF-8 text')
+      }
+    } else {
+      text = await response.text()
+    }
     if (Buffer.byteLength(text) > (options.maxBytes ?? 2 * 1024 * 1024)) {
       throw submissionError('SUBMISSION_SOURCE_TOO_LARGE', 'GitHub source metadata exceeds the static precheck limit')
     }
@@ -152,7 +164,7 @@ async function readPinnedJson(repositoryUrl, commit, path, options) {
 async function readPinnedText(repositoryUrl, commit, path, options = {}) {
   return fetchText(rawUrl(repositoryUrl, commit, path), {
     ...options, accept: 'application/vnd.github.raw+json', maxBytes: options.maxBytes ?? 512 * 1024,
-    code: 'SUBMISSION_SOURCE_HTTP',
+    code: 'SUBMISSION_SOURCE_HTTP', preserveBom: options.preserveBom === true,
   })
 }
 
@@ -376,7 +388,7 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
     && manifest.name === 'dsh-safe-plugin-manager'
   const entryIds = patchEntryIds(patch, { allowProtectedManager })
   const contract = bundlePatchContract(patch)
-  if (contract.insertedEntries.some(row => row.name !== manifest.name)) throw submissionError('SUBMISSION_PATCH_IDENTITY', 'Inserted implementations must resolve to the reviewed package identity')
+  if (contract.insertedEntries.some(row => row.packageName !== manifest.name)) throw submissionError('SUBMISSION_PATCH_IDENTITY', 'Inserted implementations must resolve to the reviewed package identity')
   const configOverrides = contract.configOverrides.map(row => row.id)
   const readme = await optionalReadme(repositoryInput.repositoryUrl, snapshot.commit, discovered.manifestPath, fetchOptions)
   const pluginType = ['feature', 'theme', 'suite', 'client', 'provider'].includes(manifest?.dsh?.pluginType)
@@ -457,7 +469,7 @@ export async function scanSubmissionRepository(result, options = {}) {
   const review = await reviewFixedSource(entry, manifest, tree, {
     sourceBounds: SOURCE_SCAN_BOUNDS,
     automaticApproval: { allowSymlinks: false, allowSubmodules: false, permissionSignals: {} },
-  }, (path, maxBytes) => readPinnedText(entry.repositoryUrl, entry.commit, path, { ...fetchOptions, maxBytes }), {
+  }, (path, maxBytes) => readPinnedText(entry.repositoryUrl, entry.commit, path, { ...fetchOptions, maxBytes, preserveBom: true }), {
     onSource: file => sources.push(file),
   })
   const scopeReasons = review.scanComplete ? [] : review.reasons.filter(reason => !reason.startsWith('runtime source contains'))
@@ -467,6 +479,9 @@ export async function scanSubmissionRepository(result, options = {}) {
     skippedUnsupported: review.unsupportedFiles,
     capped: !review.scanComplete,
   }), engine: review.engine, sourceDigest: review.sourceDigest, sourceEvidence: review.sourceEvidence,
+    licenseEvidence: review.licenseEvidence,
+    ...(review.runtimeDependencies ? { runtimeDependencies: review.runtimeDependencies } : {}),
+    ...(review.resolutionEvidence ? { resolutionEvidence: review.resolutionEvidence } : {}),
     budgetFindings: review.budgetFindings, capabilityEvidence: review.capabilityEvidence, scope: review.scope }
 
 }

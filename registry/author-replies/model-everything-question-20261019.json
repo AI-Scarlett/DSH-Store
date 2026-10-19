@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1484,
+  "userId": 49059886,
+  "requestCommentId": 6245870100,
+  "requestBodySha256": "779022a3653858a86f26d32b347ef952997f4b6e32ff4eac6f237b05f4310f08",
+  "requestUpdatedAt": "2026-10-18T04:57:48Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "scope": "One answer to the exact Patch-shape question and the terminal fixed-Commit admission result; no consent for future contact.",
+    "requestQuote": "Which shape does the catalog prefer?",
+    "kind": "other-request",
+    "finalAdmissionDecision": true
+  },
+  "responseBody": "Thanks for explaining that both entries come from the same package. The Catalog answer is option 1: keep the two rows and their separate entry IDs. The fixed manifest exports `./gate` to `./lib/gate.js`; the Store contract now checks that each inserted name resolves to the reviewed package, requires a matching root entry in the same Patch, and accepts only an exact safe export target.\n\nFormal fixed-source decision: **admitted**. `dsh-model-everything` 0.1.0 is recorded as `approved` under manual review at Commit `77ba449060adb6e80de554b52ec1e90845c9e780`. The complete bounded source (108 files, 1,909,622 bytes) was hash-checked; no unsupported files or static security findings were observed.\n\nThe DSH install/boot/tool-call evidence in your repository remains author-provided; DSH STORE did not install or run the plugin, so Store-side installability and runtime acceptance remain unknown. Full fixed-source evidence and the contract change are recorded at https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md. This reply addresses your specific question and this admission result only; future versions need a new fixed-Commit review request. The Issue remains open.",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "9456ede88ce48229a04b177ee38a2160e959568fda102f4278dd146c98398840"
+  }
+}

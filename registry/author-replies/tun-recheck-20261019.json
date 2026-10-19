@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1464,
+  "userId": 190562520,
+  "requestCommentId": 6244757975,
+  "requestBodySha256": "3417d9fd503e711f476d7e98fba525bb2a3344716e111e60ddb77c1bb8c22222",
+  "requestUpdatedAt": "2026-10-18T02:32:20Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "scope": "One exact terminal fixed-Commit admission result and the directly requested contract answer; no consent for future contact.",
+    "requestQuote": "请求重新复核。",
+    "kind": "admission-recheck"
+  },
+  "responseBody": "您好，已基于固定 Commit 完成正式准入复核。\n\n- 项目：dsh-tun-proxy 0.3.1\n- Commit：`64efd538bbbee3b00b6d303a44c40c7028469395`\n- 固定源码：65/65 个有界运行文件、487,656 字节，覆盖完整；没有执行插件、第三方依赖、作者测试或真实 Profile。\n- 结论：AUTH001 与 COMPAT001 已修复；**正式准入通过，Catalog 状态为 approved（user-reviewed）**。您提供的 DSH 0.2.1-rc.2 安装/启动/卸载材料记为作者证据；Store 自身的安装、运行和安全审计仍为 unknown。旧版本升级/回滚、桌面侧栏、其他版本和系统也保持 unknown。\n- 权限如实列为高风险：文件写入、任意网络、Shell 命令和代理凭据。\n- yaml 2.9.1 已按固定 lockfile、ISC、官方 npm SRI、tarball SHA-256 与完整文件范围审阅；无传递运行依赖或安装钩子。它单独提供的 CLI 含显式 `--visit` 动态导入选项；固定插件源码使用解析库接口，不调用该 CLI。\n\n完整固定文件摘要、依赖与能力边界、准入记录见 https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md。Issue 保持打开；将来的新版本需要新的固定 Commit 和明确复核请求。",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "9456ede88ce48229a04b177ee38a2160e959568fda102f4278dd146c98398840"
+  }
+}

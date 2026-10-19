@@ -257,7 +257,7 @@ const labels = {
     files: { none: '不访问', 'read-only': '只读', write: '可写', unknown: '未知' },
     network: { none: '无', 'specified-services': '指定服务', any: '任意网络', unknown: '未知' },
     commands: { none: '不执行', restricted: '受限命令', shell: '任意 Shell', unknown: '未知' },
-    credentials: { none: '不访问', 'api-key': 'API Key', oauth: 'OAuth', keychain: '系统 Keychain', unknown: '未知' },
+    credentials: { none: '不访问', 'api-key': 'API Key', oauth: 'OAuth', keychain: '系统 Keychain', 'proxy-credentials': '代理订阅/节点凭据', unknown: '未知' },
     reviewStatus: { unreviewed: '未审核', 'automated-scan': '自动扫描', 'manual-review': '人工检查', 'author-verified': '作者认证' },
   },
   en: {
@@ -267,7 +267,7 @@ const labels = {
     files: { none: 'No access', 'read-only': 'Read only', write: 'Write', unknown: 'Unknown' },
     network: { none: 'None', 'specified-services': 'Named services', any: 'Any network', unknown: 'Unknown' },
     commands: { none: 'None', restricted: 'Restricted', shell: 'Any shell', unknown: 'Unknown' },
-    credentials: { none: 'No access', 'api-key': 'API key', oauth: 'OAuth', keychain: 'System Keychain', unknown: 'Unknown' },
+    credentials: { none: 'No access', 'api-key': 'API key', oauth: 'OAuth', keychain: 'System Keychain', 'proxy-credentials': 'Proxy subscription/node credentials', unknown: 'Unknown' },
     reviewStatus: { unreviewed: 'Unreviewed', 'automated-scan': 'Automated scan', 'manual-review': 'Manual review', 'author-verified': 'Author verified' },
   },
 }

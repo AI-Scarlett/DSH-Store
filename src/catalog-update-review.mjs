@@ -7,6 +7,13 @@ const PREFERRED_DSH_RELEASE_KEYS = new Map(
   DSH_RC_RELEASES.map(release => [dshReleaseVersion(release), release]),
 )
 
+export function updatePolicyForAdmission(state, signals = {}) {
+  if (signals.protectedDsh !== false) return 'external-only'
+  if (state === 'source-verified') return 'source-verified'
+  if (state === 'reviewed') return 'user-reviewed'
+  return 'external-only'
+}
+
 function normalizedPath(value) {
   return value === undefined || value === null || value === '' ? null : String(value)
 }

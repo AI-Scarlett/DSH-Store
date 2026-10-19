@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createCatalogGithubReader, sameCommitLineage } from './catalog-github-reader.mjs'
-import { admissionDecision, validateAdmissionReviews } from '../src/admission-review.mjs'
+import { admissionDecision, LICENSE_METADATA_REVIEW_REASON, validateAdmissionReviews } from '../src/admission-review.mjs'
 import { validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget, catalogMigrationSource, verifyMigrationRepositories } from '../src/catalog-migration.mjs'
 import { SOURCE_SCAN_BOUNDS, SCAN_POLICY_VERSION, MANIFEST_MAX_BYTES } from '../src/source-scan-policy.mjs'
 
@@ -20,6 +20,7 @@ import {
   catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
   catalogUpdatePolicy,
+  updatePolicyForAdmission,
   holdExternalOnlyAfterDisconnectedHistory,
   sourceDeclaredCompatibility,
 } from '../src/catalog-update-review.mjs'
@@ -170,20 +171,26 @@ async function analyzeFixedSource(candidate, policy, github) {
   const manifest = JSON.parse(await github.raw(candidate.repositoryUrl, candidate.commit, candidate.manifestPath, { maxBytes: MANIFEST_MAX_BYTES }))
   const manifestRepository = canonicalManifestRepository(manifest.repository)
   const repositoryLicense = metadata?.license?.spdx_id
+  const manifestLicense = typeof manifest.license === 'string' && manifest.license.trim() ? manifest.license.trim() : null
   if (policy.automaticApproval.requireManifestRepositoryMatch && manifestRepository !== candidate.repositoryUrl) {
     reasons.push('manifest repository does not match the canonical GitHub repository')
   }
-  if (policy.automaticApproval.requireRepositoryLicenseMatch
-    && (!repositoryLicense || repositoryLicense === 'NOASSERTION'
-      || normalizedLicense(repositoryLicense) !== normalizedLicense(candidate.details.license))) {
-    reasons.push('manifest and GitHub repository license metadata do not match')
+  if (policy.automaticApproval.requireRepositoryLicenseMatch) {
+    if (!repositoryLicense || String(repositoryLicense).toUpperCase() === 'NOASSERTION') reasons.push(LICENSE_METADATA_REVIEW_REASON)
+    else if (normalizedLicense(repositoryLicense) !== normalizedLicense(candidate.details.license)) {
+      reasons.push('manifest and GitHub repository license metadata conflict')
+    }
+    if (manifestLicense && normalizedLicense(manifestLicense) !== normalizedLicense(candidate.details.license)) {
+      reasons.push('manifest license does not match the Catalog declaration')
+    }
   }
   if (policy.automaticApproval.requireExplicitFiles && (!Array.isArray(manifest.files) || manifest.files.length === 0)) {
     reasons.push('manifest does not declare an explicit distributable files list')
   }
   if (policy.automaticApproval.requireDshCompatibility && !candidate.compatibility.dsh) reasons.push('DSH compatibility is not explicitly declared')
   if (policy.automaticApproval.requireNodeCompatibility && !candidate.compatibility.node) reasons.push('Node.js compatibility is not explicitly declared')
-  const contractVerified = reasons.length === 0
+  const contractReasons = [...reasons]
+  const contractVerified = contractReasons.length === 0
   if (!policy.automaticApproval.allowLifecycleScripts && candidate.risk.installScripts.length > 0) {
     reasons.push(`install lifecycle scripts are present: ${candidate.risk.installScripts.join(', ')}`)
   }
@@ -207,10 +214,12 @@ async function analyzeFixedSource(candidate, policy, github) {
   return {
     ...review,
     contractVerified,
+    contractReasons,
     policyDigest: sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })),
     approved: reasons.length === 0,
     reasons: [...new Set(reasons)].slice(0, 40),
     repositoryLicense: repositoryLicense ?? null,
+    manifestLicense,
     sourceUpdatedAt: metadata?.pushed_at ?? null,
     dependencies: Object.keys(dependencies).sort().slice(0, 50),
     runtimeDependencies: dependencies,
@@ -229,7 +238,7 @@ function automatedEntry(candidate, analysis, observedAt) {
     compatibility: sourceDeclaredCompatibility({ compatibility: {} }, candidate),
     status: approved ? 'approved' : 'blocked',
     ...(approved ? {} : { statusReason: boundedText(`Automatic policy blocked installation: ${analysis.reasons.join('; ')}`, 'Automatic policy could not prove safe installation.') }),
-    updatePolicy: admission.state === 'reviewed' ? 'user-reviewed' : admission.state === 'source-verified' ? 'source-verified' : 'external-only',
+    updatePolicy: updatePolicyForAdmission(admission.state, analysis.signals),
     assurance: {
       discovery: {
         status: 'verified', method: 'automated-fixed-source-policy-v1', checkedAt: observedAt,

@@ -65,7 +65,7 @@ export function isDshStoreProblem(body) {
 export function isAdmissionRecheckRequest(body) {
   const text = authorFeedbackText(body)
   if (/不要再|停止联系|撤回|不(?:请求|申请).{0,30}(?:复核|复检|审核)|无需.{0,20}(?:复核|复检)|do not contact|stop contacting|withdraw|\b(?:not|no)\s+(?:requesting|request)\b/i.test(text)) return false
-  return /请.{0,40}(?:复核|复检|重新审核|重新入库|重新收录)|(?:please|could you).{0,40}(?:recheck|re-review|review.{0,20}(?:commit|version|release))|\brequesting\s+(?:re-review|recheck)\b|\bre-review\s+request\b|请安排复检/iu.test(text)
+  return /请.{0,40}(?:复核|复检|重新审核|重新入库|重新收录)|(?:please|could you).{0,40}(?:recheck|re-review|review.{0,20}(?:commit|version|release))|\brequesting\s+(?:re-review|recheck)\b|\brequesting\s+(?:an?\s+)?admission decision\b|\bre-review\s+request\b|请安排复检/iu.test(text)
 }
 
 function safeUrl(value) {

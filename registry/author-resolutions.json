@@ -597,6 +597,113 @@
           "acceptance": "至少一版当前窗口声明与证据一致；其他宿主、系统和 rollback 不从旧记录推定。"
         }
       ]
+    },
+    {
+      "issueNumber": 1464,
+      "requestCommentId": 6244757975,
+      "userId": 190562520,
+      "requestBodySha256": "3417d9fd503e711f476d7e98fba525bb2a3344716e111e60ddb77c1bb8c22222",
+      "repositoryUrl": "https://github.com/scclovez/dsh-tun-proxy",
+      "version": "0.3.1",
+      "commit": "64efd538bbbee3b00b6d303a44c40c7028469395",
+      "binding": "f70e499bf26c2ad91cf60ae1845c8df16e175b79a1f9834ee2d7d8ab50d2174c",
+      "catalogId": "dsh-tun-proxy",
+      "decision": "admitted",
+      "summary": "AUTH001 and COMPAT001 are fixed. The complete fixed source and exact yaml 2.9.1 supply-chain closure pass manual admission; elevated proxy, shell, network, file, and credential capabilities are declared. Store runtime remains unknown.",
+      "blockers": [],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+    },
+    {
+      "issueNumber": 1484,
+      "requestCommentId": 6245870100,
+      "userId": 49059886,
+      "requestBodySha256": "779022a3653858a86f26d32b347ef952997f4b6e32ff4eac6f237b05f4310f08",
+      "repositoryUrl": "https://github.com/AmethystLuna/dsh-model-everything",
+      "version": "0.1.0",
+      "commit": "77ba449060adb6e80de554b52ec1e90845c9e780",
+      "binding": "778377e4c38eda8fc3fe65d4b665daddcde67d7b3d8748d3d3e7c0159d14ffc9",
+      "catalogId": "dsh-model-everything",
+      "decision": "admitted",
+      "summary": "The exact dsh-model-everything/gate export is within the same reviewed package and shipped files. The complete bounded source and both unique Patch rows pass manual admission; Store runtime remains unknown.",
+      "blockers": [],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+    },
+    {
+      "issueNumber": 1466,
+      "requestCommentId": 6245946804,
+      "userId": 194322966,
+      "requestBodySha256": "9732a1419ec75edeaa8cdc17f25e22bf66f5e2385717384153fdec04480133ad",
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-skill-install",
+      "version": "0.1.6",
+      "commit": "c03b72d85a391d1f510df0e61d12836649a10abc",
+      "binding": "9ca28ce18a062cb2bbcc9b7ef33c29ef04f0907d3777f153dd5fab4c436484b3",
+      "catalogId": "dsh-skill-install",
+      "decision": "rejected",
+      "summary": "PATH001 and COMPAT001 are fixed, but admission is rejected because PATH002 enforces total expanded bytes only after extraction has written the archive.",
+      "blockers": [
+        {
+          "owner": "author",
+          "code": "PATH002",
+          "file": "index.js",
+          "lines": [
+            482,
+            483,
+            552,
+            557
+          ],
+          "finding": "The total expanded byte budget is measured after tar writes the archive to the staging directory.",
+          "requiredChange": "Validate expanded member sizes against a strict aggregate budget before writing, or use a bounded extractor that aborts before any member crosses the per-file or total byte cap.",
+          "acceptance": "A compressed archive that expands above the cap is rejected before writes exceed the cap; staging is removed, the install target is untouched, and normal archives still pass the path/type checks.",
+          "line": 482
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+    },
+    {
+      "issueNumber": 1467,
+      "requestCommentId": 6245952852,
+      "userId": 194322966,
+      "requestBodySha256": "a5a21ae30fd3baad8d76a3a0b4feaf121351df135bce8d166bac67eb74c860f0",
+      "repositoryUrl": "https://github.com/Joey-K-tsubame/dsh-delete-archived",
+      "version": "0.1.2",
+      "commit": "437d935129368b7cdde68a862c6b47cb4e6c895d",
+      "binding": "3c8e339b37573a6d3ce6ae36d0e3cc2b6ea8f6f446d0a8d3fb2bd44606463c1f",
+      "catalogId": "dsh-delete-archived",
+      "decision": "rejected",
+      "summary": "DELETE001 and COMPAT001 are fixed, but admission is rejected because DELETE002 accepts any JSON object as a deletion journal and uses it to bypass the archived-session check.",
+      "blockers": [
+        {
+          "owner": "author",
+          "code": "DELETE002",
+          "file": "lib/entry.js",
+          "lines": [
+            116,
+            120,
+            283,
+            292
+          ],
+          "finding": "readJournal accepts any parsed JSON object. Its mere presence skips the archived-session check, without schema validation or matching journal.sessionId to the requested session.",
+          "requiredChange": "Validate the exact journal schema and sessionId before treating a journal as an interrupted authorized deletion; reject malformed, mismatched, or unexpected fields without bypassing the archived gate.",
+          "acceptance": "Disposable fixtures cover valid same-session retry, wrong sessionId, arbitrary object, malformed JSON, and invalid timestamp; only the valid journal resumes, while invalid cases fail closed and do not delete persistence or registry state.",
+          "line": 116
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
+    },
+    {
+      "issueNumber": 934,
+      "requestCommentId": 6247399388,
+      "userId": 51282470,
+      "requestBodySha256": "1d58dd71224bb2f7ab26555c1c90f798efff5e25d5e68f2f672f7e432dd1ecd7",
+      "repositoryUrl": "https://github.com/sakuraqqq/dsh-auto-paste",
+      "version": "0.3.1",
+      "commit": "83bebac32199ca5c015ad10bb475ce5baf7d4455",
+      "binding": "5fd634f64363989d1fae6d9df53b3acdbc067b9316433454f5ee55758baae2f6",
+      "catalogId": "dsh-auto-paste",
+      "decision": "admitted",
+      "summary": "SUPPLY001 and COMPAT001 are fixed at the pinned source: zod 4.4.3 is self-contained with reviewed MIT notices, no dependency edge, and exact file hashes. Store runtime remains unknown.",
+      "blockers": [],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md"
     }
   ]
 }

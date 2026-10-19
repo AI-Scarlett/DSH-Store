@@ -100,6 +100,12 @@ const CAPABILITY_RULES = [
 // regress the author-curated positioning.
 const CURATED_CAPABILITIES = [
   {
+    pattern: /(?:^|[^a-z0-9])dsh-model-everything(?:$|[^a-z0-9])/i,
+    label: '设计与代码建模审查',
+    terms: ['UML', '协议验证', '数据模型', '迁移回滚', '并发审查', '依赖图', '报告差异'],
+    description: '面向设计与代码的建模和自动化审查：渲染 UML 图，检查机器、协议和数据模型，核对迁移覆盖与回滚对称性，审阅并发主张，分析依赖图并比较报告。',
+  },
+  {
     pattern: /(?:^|[^a-z0-9])sage[-_ ]?mem(?:$|[^a-z0-9])/i,
     label: '文件式跨会话记忆',
     terms: ['记忆', '跨会话记忆', '文件式记忆', 'Markdown 记忆', '知识库', '召回', '配置迁移'],
@@ -157,9 +163,10 @@ export function localizeCatalogEntry(entry, categories = {}) {
   const chineseName = (matched.forceName ? matched.label : existingChineseName(entry?.name) || matched.label).slice(0, 50)
   const name = `${chineseName}（${englishName.slice(0, 100)}）`
   const originalDescription = String(entry?.description ?? '').replace(/\s+/gu, ' ').trim()
-  const description = HAN.test(originalDescription)
-    ? (matched.description ?? originalDescription).slice(0, 2_000)
-    : `为 DSH 提供${chineseName}能力。英文原始说明：${originalDescription || englishName}`.slice(0, 2_000)
+  const description = (matched.description
+    ?? (HAN.test(originalDescription)
+      ? originalDescription
+      : `为 DSH 提供${chineseName}能力。英文原始说明：${originalDescription || englishName}`)).slice(0, 2_000)
   const categoryTerms = (entry?.categories ?? []).flatMap(id => [categories[id], ...(CATEGORY_TERMS[id] ?? [])])
   const packageTokens = String(entry?.packageName ?? '').replace(/^@[^/]+\//, '').split(/[^A-Za-z0-9]+/u).filter(token => token.length >= 2)
   const searchTerms = [...new Set([

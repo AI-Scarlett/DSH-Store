@@ -157,6 +157,7 @@ test('collector rejects when managed issue snapshot exceeds bound', async () => 
 
 test('explicit English re-review requests qualify while status-only opt-outs never do', () => {
   assert.equal(isAdmissionRecheckRequest('Requesting re-review against commit abc.'), true)
+  assert.equal(isAdmissionRecheckRequest('I am requesting an admission decision on the fixed Commit.'), true)
   assert.equal(isAdmissionRecheckRequest('Re-review request — plugin v1.0.0'), true)
   assert.equal(isAdmissionRecheckRequest('状态同步，不请求本轮准入复核。'), false)
   assert.equal(isAdmissionRecheckRequest('Not requesting re-review; status only.'), false)
