@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-19T14:05:20.000Z",
+    "updatedAt": "2026-10-19T20:44:51.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -10131,8 +10131,8 @@
       "description": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
       "repositoryUrl": "https://github.com/ruvnet/ruflo",
       "defaultBranch": "main",
-      "latestCommit": "fe2884060f60110f8ccbcb93b442f67b585887d6",
-      "sourceUpdatedAt": "2026-10-02T20:27:25.000Z",
+      "latestCommit": "5e2ffd58f9e9448ef22e485a14122059ef8b768d",
+      "sourceUpdatedAt": "2026-10-19T20:53:42.000Z",
       "discoveredAt": "2026-10-02T20:24:31.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -10146,7 +10146,7 @@
         "ai-assistant",
         "ai-skills",
         "autonomous-agents",
-        "claude-code",
+        "claude",
         "codex",
         "dsh-plugin",
         "harness",
@@ -14895,6 +14895,37 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.1-alpha.5, 0.2.1-rc.1, 0.2.1-rc.2). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-auto-image-optimizer."
+    },
+    {
+      "id": "simple-with-us-botfleet",
+      "name": "Simple-With-Us/BotFleet",
+      "description": "Multi-bot AI workspace for Mac and iOS: run and inspect autonomous bot engines with matrix overview and kanban dispatch.",
+      "repositoryUrl": "https://github.com/Simple-With-Us/BotFleet",
+      "defaultBranch": "main",
+      "latestCommit": "b25cba78d454fd733bcdd17c0db852f993eed047",
+      "sourceUpdatedAt": "2026-10-19T20:52:58.000Z",
+      "discoveredAt": "2026-10-19T20:44:51.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "ai-framework",
+        "antigravity-cli",
+        "bot-framework",
+        "claude-cli",
+        "codex-cli",
+        "coding-agents",
+        "cross-platform",
+        "deepseek-harness",
+        "grok-bot",
+        "kimi-cli",
+        "openmausbot",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
