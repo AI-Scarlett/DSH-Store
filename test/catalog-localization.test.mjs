@@ -39,6 +39,17 @@ test('Sage Mem keeps its file-based cross-session memory identity ahead of migra
   assert.ok(localized.searchTerms.indexOf('跨会话记忆') < localized.searchTerms.indexOf('配置迁移'))
 })
 
+test('Model Everything keeps design and code modeling separate from model-provider listings', () => {
+  const localized = localizeCatalogEntry({
+    id: 'dsh-model-everything', packageName: 'dsh-model-everything', name: 'dsh-model-everything',
+    description: 'Modeling and automated review for designs and code.', categories: ['development', 'visualization'],
+  })
+  assert.equal(localized.name, '设计与代码建模审查（DSH Model Everything）')
+  assert.match(localized.description, /迁移覆盖与回滚对称性/)
+  assert.ok(localized.searchTerms.includes('UML'))
+  assert.ok(localized.searchTerms.includes('协议验证'))
+})
+
 test('catalog localization refresh reports stale persisted display metadata', () => {
   const sageMem = {
     id: 'sage-mem', packageName: 'sage-mem', name: '配置导入迁移（Sage Mem）',

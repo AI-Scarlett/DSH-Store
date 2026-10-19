@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T07:49:46.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "updatedAt": "2026-10-18T07:49:55.000Z",
+    "observedAt": "2026-10-18T23:44:39.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
+      "method": "manual-fixed-source-admission-review-v1",
+      "checkedAt": "2026-10-18T23:44:39.000Z",
       "evidenceUrl": "https://github.com/sakuraqqq/dsh-auto-paste/commit/83bebac32199ca5c015ad10bb475ce5baf7d4455",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The newer fixed Commit passed Catalog identity and source-contract review; installation still requires a separate local risk review."
+      "summary": "The full bounded fixed source passed a terminal manual admission review; this is not runtime acceptance."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "DSH STORE did not install or build third-party code; installability remains unknown."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "DSH STORE did not perform runtime acceptance; author evidence is recorded separately and is not Store verification."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,26 +73,26 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "A bounded static admission review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "61a4b24f036fe886e4eadb85ecc179324ed8b8024ca2ee2a7b40c4dfdb6716f4",
+    "binding": "5fd634f64363989d1fae6d9df53b3acdbc067b9316433454f5ee55758baae2f6",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "rejected",
+    "state": "reviewed",
     "sourceContract": "verified",
     "coverage": "complete",
-    "capabilities": "review-required",
+    "capabilities": "reviewed",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "71d207fa489eb8687dab7abc5dd3b540f83f19e2528bfb83062c7aee2ba11312"
   },
   "entryIds": [
     "dsh-auto-paste"
   ],
   "configOverrides": [],
-  "status": "blocked",
-  "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: SUPPLY001: corrected historical zod claim; actual DSH dependency resolution is not bound to an immutable reviewed closure. COMPAT001: no current latest-three compatible declaration.",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
     "dsh": "^0.1.5-rc.1 || ^0.2.0-rc.2",
     "dshReleases": {
@@ -320,7 +320,7 @@
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "high",
+      "level": "medium",
       "files": "write",
       "network": "none",
       "commands": "none",
@@ -328,13 +328,11 @@
         "none"
       ]
     },
-    "externalDependencies": [
-      "zod"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "manual-review"
   },
   "risk": {
     "installScripts": [],
-    "review": "manual-fixed-source-rejected-not-installable"
+    "review": "fixed-source-user-reviewed-admission-v1"
   }
 }

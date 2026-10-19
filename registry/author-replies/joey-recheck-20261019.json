@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1466,
+  "userId": 194322966,
+  "requestCommentId": 6245946804,
+  "requestBodySha256": "9732a1419ec75edeaa8cdc17f25e22bf66f5e2385717384153fdec04480133ad",
+  "requestUpdatedAt": "2026-10-18T05:20:41Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "scope": "One exact terminal fixed-Commit admission result and the directly requested contract answer; no consent for future contact.",
+    "requestQuote": "Requesting re-review against commit `c03b72d85a391d1f510df0e61d12836649a10abc`.",
+    "kind": "admission-recheck",
+    "relatedRequests": [
+      {
+        "issueNumber": 1467,
+        "commentId": 6245952852,
+        "bodySha256": "a5a21ae30fd3baad8d76a3a0b4feaf121351df135bce8d166bac67eb74c860f0",
+        "updatedAt": "2026-10-18T05:08:27Z",
+        "quote": "Requesting re-review against commit `437d935129368b7cdde68a862c6b47cb4e6c895d`."
+      }
+    ]
+  },
+  "responseBody": "## dsh-skill-install 0.1.6 — rejected\n\nFixed Commit: `c03b72d85a391d1f510df0e61d12836649a10abc`. The complete bounded source (7 files, 171,044 bytes) was read and hash-checked. PATH001 and COMPAT001 are fixed: archive member path/type checks run before extraction, and the manifest declares DSH 0.2.1-rc.2 compatible. Admission is still rejected for **PATH002**.\n\nAt [index.js:482-483](https://github.com/Joey-K-tsubame/dsh-skill-install/blob/c03b72d85a391d1f510df0e61d12836649a10abc/index.js#L482-L483), the aggregate expanded-byte limit is counted only by `sanitizeTree`. [index.js:552-557](https://github.com/Joey-K-tsubame/dsh-skill-install/blob/c03b72d85a391d1f510df0e61d12836649a10abc/index.js#L552-L557) starts and completes `tar -xzf` before that check. A highly compressed archive can therefore consume disk before rejection.\n\n**Minimal change:** enforce per-member and aggregate expanded-byte limits before writing members, or use an equivalently bounded extractor. Keep the current path/type checks and staging cleanup.\n\n**Acceptance:** an over-budget compressed fixture is rejected before writes cross the cap, leaves the install target untouched, cleans staging, and valid archives still pass.\n\n## dsh-delete-archived 0.1.2 — rejected\n\nFixed Commit: `437d935129368b7cdde68a862c6b47cb4e6c895d`. The complete bounded source (6 files, 26,152 bytes) was read and hash-checked. DELETE001 and COMPAT001 are fixed: the pending journal is written before persistence removal and the manifest declares DSH 0.2.1-rc.2. Admission is still rejected for **DELETE002**.\n\n[lib/entry.js:116-120](https://github.com/Joey-K-tsubame/dsh-delete-archived/blob/437d935129368b7cdde68a862c6b47cb4e6c895d/lib/entry.js#L116-L120) accepts any parsed object as a journal. [lib/entry.js:283-292](https://github.com/Joey-K-tsubame/dsh-delete-archived/blob/437d935129368b7cdde68a862c6b47cb4e6c895d/lib/entry.js#L283-L292) skips the archived-session check whenever that file exists, without validating its schema or matching `sessionId`.\n\n**Minimal change:** validate the exact journal schema and require its `sessionId` to match the requested session before treating it as a resumable deletion; reject malformed or mismatched journals without bypassing the archived gate.\n\n**Acceptance:** disposable fixtures cover a valid same-session retry, wrong session ID, arbitrary object, malformed JSON, and invalid timestamp; only the valid retry resumes, while invalid cases leave persistence and registry state untouched.\n\nThe request in `lib/client.js:55` calls the same-origin DSH plugin list route, so Catalog network permission is `none`. The author-provided DSH 0.2.1-rc.2 install/start/uninstall evidence is not Store runtime verification. DSH STORE did not execute third-party code or tests. Both Catalog entries remain blocked and both Issues remain open. Full fixed-source decisions and hashes are in https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019.md.\n\nThis is one response for both explicit requests; neither request will receive a second message.",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "9456ede88ce48229a04b177ee38a2160e959568fda102f4278dd146c98398840"
+  }
+}

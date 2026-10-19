@@ -22,6 +22,10 @@ export function validateReplyGrant(plan) {
     || !/^[0-9a-f]{64}$/.test(plan.requestBodySha256)
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || typeof plan.responseBody !== 'string' || !plan.responseBody.trim()) throw new Error('explicit reviewed continuation request required')
+  if (plan.review.finalAdmissionDecision !== undefined && typeof plan.review.finalAdmissionDecision !== 'boolean') throw new Error('invalid terminal decision marker')
+  if (plan.review.finalAdmissionDecision === true && (plan.review.kind !== 'other-request' || !plan.resolution)) {
+    throw new Error('other-request admission decisions must bind the terminal resolution')
+  }
   requireRepository(plan.repository)
   if (plan.requestSource !== undefined && !['comment', 'issue-body'].includes(plan.requestSource)) throw new Error('unknown request source')
   if (plan.requestSource === 'issue-body' && (plan.repository !== 'AI-Scarlett/DSH-Store'
@@ -70,6 +74,10 @@ export async function verifyReplyRequest(github, plan) {
   if (request?.id !== plan.requestCommentId || digest(request.body) !== plan.requestBodySha256
     || request.updated_at !== plan.requestUpdatedAt
     || !request.body.includes(plan.review.requestQuote)) throw new Error('request changed, withdrawn, superseded or belongs to another person')
+  if (comments.some(comment => ['ai-scarlett', 'github-actions[bot]'].includes(String(comment.user?.login).toLowerCase())
+    && Date.parse(comment.created_at) > Date.parse(request.updated_at))) {
+    throw new Error('request already has a maintainer response')
+  }
   const prior = plan.review.priorExplicitRequest
   if (prior) {
     const original = authorComments.find(comment => comment.id === prior.commentId)
@@ -120,7 +128,7 @@ async function main() {
   const github = githubClient(process.env.GITHUB_TOKEN)
   const remote = await github.request('GET', `/repos/AI-Scarlett/DSH-Store/contents/${path}?ref=main`)
   if (remote.encoding !== 'base64' || digest(Buffer.from(remote.content, 'base64')) !== digest(bytes)) throw new Error('reply plan has not been published on main')
-  if (plan.review.kind === 'admission-recheck') {
+  if (plan.review.kind === 'admission-recheck' || plan.review.finalAdmissionDecision === true) {
     const resolutionBytes = await readFile('registry/author-resolutions.json')
     const remoteResolution = await github.request('GET', '/repos/AI-Scarlett/DSH-Store/contents/registry/author-resolutions.json?ref=main')
     if (remoteResolution.encoding !== 'base64' || digest(Buffer.from(remoteResolution.content, 'base64')) !== digest(resolutionBytes)) throw new Error('resolution is not the reviewed main authority')

@@ -8,11 +8,23 @@ import test from 'node:test'
 import { promisify } from 'node:util'
 import { isGeneratedSelfManagerRegistryData, isNoCommonAncestorError, permissionSignals, dshInterfaceSignals } from '../src/automation-source-policy.mjs'
 import { resolveTargets } from '../scripts/resolve-author-notice-targets.mjs'
+import { updatePolicyForAdmission } from '../src/catalog-update-review.mjs'
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 const execFileAsync = promisify(execFile)
 const rootPath = fileURLToPath(new URL('..', import.meta.url))
 const catalogAutomationPath = fileURLToPath(new URL('../scripts/automate-catalog.mjs', import.meta.url))
+
+test('only approved admission states enable Catalog update lanes', () => {
+  assert.equal(updatePolicyForAdmission('reviewed', { protectedDsh: false }), 'user-reviewed')
+  assert.equal(updatePolicyForAdmission('reviewed', { protectedDsh: null }), 'external-only')
+  assert.equal(updatePolicyForAdmission('reviewed', {}), 'external-only')
+  assert.equal(updatePolicyForAdmission('rejected', { protectedDsh: false }), 'external-only')
+  assert.equal(updatePolicyForAdmission('incomplete', { protectedDsh: null }), 'external-only')
+  assert.equal(updatePolicyForAdmission('review-required', { protectedDsh: false }), 'external-only')
+  assert.equal(updatePolicyForAdmission('source-verified', { protectedDsh: false }), 'source-verified')
+  assert.equal(updatePolicyForAdmission('reviewed', { protectedDsh: true }), 'external-only')
+})
 
 test('permission scan ignores inert Catalog metadata and ordinary identifiers', () => {
   const source = `

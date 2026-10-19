@@ -241,6 +241,13 @@ test('neutral replies and absent reviewed permission never grant continuation', 
     const p = grant(); p.review.requestQuote = text; assert.throws(() => validateReplyGrant(p), /consent/)
   }
 })
+test('an other-request carrying a final admission decision must bind the terminal resolution', () => {
+  const p = grant()
+  p.review = { ...p.review, kind: 'other-request', finalAdmissionDecision: true }
+  assert.throws(() => validateReplyGrant(p), /bind the terminal resolution/)
+  p.resolution = { path: 'registry/author-resolutions.json', sha256: 'a'.repeat(64) }
+  assert.doesNotThrow(() => validateReplyGrant(p))
+})
 test('a verified explicit request grants one reply for that request only', async () => {
   const api = mock(prior()); api.comments.push(incoming())
   const first = await sendReviewedReply({ github: api, plan: grant(), seed: empty() })
@@ -248,6 +255,13 @@ test('a verified explicit request grants one reply for that request only', async
   assert.equal((await sendReviewedReply({ github: api, plan: grant(), seed: empty() })).sent, false)
   assert.equal(api.posts.length, 1)
   assert.equal(contactDecision(api.state, person, 'alice/new-project'), 'already-contacted')
+})
+test('a maintainer reply posted after the exact request suppresses a later duplicate send', async () => {
+  const api = mock(prior())
+  api.comments.push(incoming())
+  api.comments.push({ id: 124, user: { login: 'github-actions[bot]' }, created_at: '2026-09-07T02:00:00Z', body: 'Already answered.' })
+  await assert.rejects(verifyReplyRequest(api, grant()), /already has a maintainer response/)
+  assert.equal(api.posts.length, 0)
 })
 test('supplemental source evidence coalesces only a still-unanswered exact author review request', async () => {
   const original = incoming('请复核此固定 Commit。', 122)

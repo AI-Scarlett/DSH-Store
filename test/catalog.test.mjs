@@ -64,6 +64,11 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
   assert.equal(searchCatalog(catalog, 'MIT')[0].id, 'demo')
   assert.equal(catalog.entries[0].featured, true)
   assert.equal(catalog.entries[0].details.permissions.files, 'read-only')
+  const proxyCredentials = validateCatalog(document([{
+    ...entry,
+    details: { ...entry.details, permissions: { ...entry.details.permissions, credentials: ['proxy-credentials'] } },
+  }]))
+  assert.deepEqual(proxyCredentials.entries[0].details.permissions.credentials, ['proxy-credentials'])
   assert.deepEqual(catalog.entries[0].compatibility.profiles, ['web'])
   assert.equal(catalog.entries[0].assurance.discovery.status, 'verified')
   assert.equal(catalog.entries[0].assurance.runtime.status, 'unknown')
@@ -78,6 +83,20 @@ test('catalog accepts only pinned GitHub plugin entries', () => {
     details: { ...entry.details, permissions: { ...entry.details.permissions, credentials: [] } },
   }])), /credentials must contain at least 1 value/)
   assert.throws(() => validateCatalog(document([{ ...entry, details: undefined }])), /details must be an object/)
+})
+
+test('new credential detail labels remain explicit for current clients and fail-safe for legacy bridges', async () => {
+  const current = await loadCatalogFromFiles()
+  const source = current.entries.find(item => item.id === 'dsh-tun-proxy')
+  assert.deepEqual(source.details.permissions.credentials, ['proxy-credentials'])
+  const bridge = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
+  const bridgeEntry = bridge.entries.find(item => item.id === 'dsh-tun-proxy')
+  const detailEntry = JSON.parse(await readFile(new URL('../registry/catalog/details/dsh-tun-proxy.json', import.meta.url), 'utf8'))
+  assert.deepEqual(bridgeEntry.details.permissions.credentials, ['unknown'])
+  assert.deepEqual(detailEntry.details.permissions.credentials, ['proxy-credentials'])
+  for (const validate of [validateCatalog085, validateCatalog086, validateCatalog087]) {
+    assert.deepEqual(validate(bridge).entries.find(item => item.id === 'dsh-tun-proxy').details.permissions.credentials, ['unknown'])
+  }
 })
 
 test('catalog keeps partial evidence distinct from verified and unknown', () => {
@@ -748,6 +767,57 @@ test('source verification checks manifest, lifecycle scripts, and Bundle ids at 
   }, { fetch: request }), /license does not match/)
 })
 
+test('source verification accepts a same-package exported Patch subpath and reads its fixed targets', async () => {
+  const catalogEntry = validateCatalog(document([{ ...entry, entryIds: ['demo', 'demo-gate'] }])).entries[0]
+  const manifest = {
+    name: 'dsh-demo', version: '1.2.0', license: 'MIT', scripts: {},
+    files: ['lib'],
+    dsh: { bundle: { patch: './cordis.patch.yml' } },
+    exports: { './gate': { types: './lib/types/gate.d.ts', default: './lib/gate.js' } },
+  }
+  const patch = '- insert:\n    - id: demo\n      name: dsh-demo\n    - id: demo-gate\n      name: dsh-demo/gate\n'
+  const requests = []
+  const fetch = async url => {
+    requests.push(url)
+    if (url.endsWith('/package.json')) return new Response(JSON.stringify(manifest))
+    if (url.endsWith('/cordis.patch.yml')) return new Response(patch)
+    if (url.endsWith('/lib/gate.js')) return new Response('export const gate = true\n')
+    if (url.endsWith('/lib/types/gate.d.ts')) return new Response('export declare const gate: boolean\n')
+    return new Response('missing', { status: 404 })
+  }
+  const result = await verifyCatalogEntry(catalogEntry, { fetch, retryDelaysMs: [] })
+  assert.equal(result.status, 'verified')
+  assert.ok(requests.some(url => url.endsWith('/lib/gate.js')))
+  assert.ok(requests.some(url => url.endsWith('/lib/types/gate.d.ts')))
+  await assert.rejects(() => verifyCatalogEntry(catalogEntry, {
+    fetch: async url => url.endsWith('/package.json') ? new Response(JSON.stringify(manifest))
+      : url.endsWith('/cordis.patch.yml') ? new Response(patch)
+        : new Response('missing', { status: 404 }),
+    retryDelaysMs: [],
+  }), error => error.code === 'SOURCE_VERIFICATION_HTTP')
+})
+
+test('source verification rejects Patch subpath exports outside the explicit package files list', async () => {
+  const catalogEntry = validateCatalog(document([{ ...entry, entryIds: ['demo', 'demo-gate'] }])).entries[0]
+  const manifest = {
+    name: 'dsh-demo', version: '1.2.0', license: 'MIT', scripts: {}, files: ['src'],
+    dsh: { bundle: { patch: './cordis.patch.yml' } },
+    exports: { './gate': './lib/gate.js' },
+  }
+  const patch = '- insert:\n    - id: demo\n      name: dsh-demo\n    - id: demo-gate\n      name: dsh-demo/gate\n'
+  const requests = []
+  await assert.rejects(() => verifyCatalogEntry(catalogEntry, {
+    fetch: async url => {
+      requests.push(url)
+      if (url.endsWith('/package.json')) return new Response(JSON.stringify(manifest))
+      if (url.endsWith('/cordis.patch.yml')) return new Response(patch)
+      return new Response('gate implementation must not be fetched', { status: 500 })
+    },
+    retryDelaysMs: [],
+  }), error => error.code === 'SOURCE_PATCH_REJECTED')
+  assert.equal(requests.some(url => url.endsWith('/lib/gate.js')), false)
+})
+
 test('source verification retries transient GitHub transport failures', async () => {
   const catalogEntry = validateCatalog(document()).entries[0]
   let calls = 0
@@ -827,7 +897,13 @@ test('batch admission rechecks preserve every safety field under the historical 
     assert.deepEqual(wire.configOverrides ?? [], original.configOverrides ?? [])
     assert.deepEqual(wire.compatibility.dshReleases, original.compatibility.dshReleases)
     assert.deepEqual(wire.compatibility.latestWindow, original.compatibility.latestWindow)
-    assert.deepEqual(wire.details.permissions, original.details.permissions)
+    const legacyCredentialKinds = new Set(['none', 'api-key', 'oauth', 'keychain', 'unknown'])
+    const expectedWirePermissions = {
+      ...original.details.permissions,
+      credentials: original.details.permissions.credentials.every(value => legacyCredentialKinds.has(value))
+        ? original.details.permissions.credentials : ['unknown'],
+    }
+    assert.deepEqual(wire.details.permissions, expectedWirePermissions)
     assert.equal(wire.details.license, original.details.license)
     assert.deepEqual(hydrated.description, original.description)
     assert.deepEqual(split.index.entries[i].searchTerms, original.searchTerms)

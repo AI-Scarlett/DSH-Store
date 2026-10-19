@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import test from 'node:test'
 import { packageSourceSurface, missingLocalModuleReasons, unsupportedPackageEntry } from '../src/package-source-surface.mjs'
 import { reviewFixedSource } from '../src/fixed-source-review.mjs'
@@ -14,11 +15,15 @@ const policy = {
 const manifest = { files: ['index.js', 'lib/', 'cordis.patch.yml'], main: 'index.js', dsh: { bundle: { patch: './cordis.patch.yml' } } }
 const sources = { 'package.json': JSON.stringify(manifest), 'index.js': 'export const demo = true', 'lib/client.js': 'export const client = true', 'cordis.patch.yml': '- insert: []', 'README.md': '# demo', LICENSE: 'MIT' }
 function treeOf(files, modes = {}) {
-  return { truncated: false, tree: Object.entries(files).map(([path, source]) => ({ path, type: 'blob', mode: modes[path] ?? '100644', size: Buffer.byteLength(source) })) }
+  return { truncated: false, tree: Object.entries(files).map(([path, source]) => {
+    const bytes = Buffer.byteLength(source)
+    const sha = createHash('sha1').update(`blob ${bytes}\0`).update(source).digest('hex')
+    return { path, type: 'blob', mode: modes[path] ?? '100644', size: bytes, sha }
+  }) }
 }
-async function review(files = sources, meta = manifest, tree = treeOf(files), config = policy) {
+async function review(files = sources, meta = manifest, tree = treeOf(files), config = policy, runtimeContext = 'package') {
   const reads = []
-  const result = await reviewFixedSource(candidate, meta, tree, config, async path => { reads.push(path); return files[path] })
+  const result = await reviewFixedSource(candidate, meta, tree, config, async path => { reads.push(path); return files[path] }, { runtimeContext })
   return { ...result, reads }
 }
 
@@ -41,6 +46,19 @@ test('positive globs include hidden published resources and implicit main/bin me
   const surface = packageSourceSurface({ files: ['.plugin/**'], main: 'index.js', bin: { demo: 'bin/cli.js' } }, treeOf(files))
   assert.equal(surface.complete, true)
   assert.deepEqual(surface.entries.map(item => item.relativePath).sort(), ['.plugin/assets/icon.png', '.plugin/plugin.json', 'LICENSE', 'README.md', 'bin/cli.js', 'index.js', 'package.json'].sort())
+})
+
+test('Node library closure separates a package CLI and records its dynamic entry files', async () => {
+  const files = { ...sources, 'bin/cli.mjs': 'await import(resolve(args.visit))\n', 'bin/interactive.mjs': 'export const run = true\n' }
+  const meta = { ...manifest, files: [...manifest.files, 'bin/'], bin: { yaml: 'bin/cli.mjs' } }
+  const library = await review(files, meta, treeOf(files), policy, 'node-library')
+  assert.equal(library.reviewSignals.dynamicModuleLoading, false)
+  assert.equal(library.reviewSignals.dynamicBinLoading, true)
+  assert.deepEqual(library.runtimeEntryFiles, ['index.js'])
+  assert.deepEqual(library.binEntryFiles, ['bin/cli.mjs'])
+  assert.match(library.reasons.join('\n'), /package bin contains dynamic loading/)
+  const packageReview = await review(files, meta)
+  assert.equal(packageReview.reviewSignals.dynamicModuleLoading, true)
 })
 
 test('shipped test, docs, dist and minified sources are not hidden by directory names', async () => {
@@ -72,7 +90,7 @@ test('truncated tree retains bounded partial observations but never negative cap
   assert.equal(result.scanComplete, false)
   assert.equal(result.filesScanned, 4)
   assert.equal(result.signals.network, null)
-  assert.equal(result.reads.length, 4)
+  assert.equal(result.reads.length, 5) // Four runtime files plus fixed license evidence.
   const invalid = packageSourceSurface(manifest, { truncated: false, tree: [...treeOf(sources).tree, { path: '../outside', type: 'blob' }] })
   assert.equal(invalid.complete, false)
 })
