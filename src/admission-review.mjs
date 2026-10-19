@@ -124,7 +124,7 @@ export function validateAdmissionReviews(document) {
       const p = record.permissions
       if (!p || !['low', 'medium', 'high'].includes(p.level) || !['none', 'read-only', 'write'].includes(p.files)
         || !['none', 'specified-services', 'any'].includes(p.network) || !['none', 'restricted', 'shell'].includes(p.commands)
-        || !Array.isArray(p.credentials) || !p.credentials.length || p.credentials.some(v => !['none', 'api-key', 'oauth', 'keychain', 'proxy-credentials'].includes(v)) || (p.credentials.includes('none') && p.credentials.length !== 1)) throw new Error('reviewed permissions must be complete')
+        || !Array.isArray(p.credentials) || !p.credentials.length || p.credentials.some(v => !['none', 'api-key', 'oauth', 'keychain', 'proxy-credentials', 'web-session-token'].includes(v)) || (p.credentials.includes('none') && p.credentials.length !== 1)) throw new Error('reviewed permissions must be complete')
     }
     if (record.dispositions !== undefined && (!Array.isArray(record.dispositions) || record.dispositions.some(d =>
       !['synthetic-fixture', 'false-positive'].includes(d.kind) || !/^[a-f0-9]{64}$/.test(d.sha256 ?? '')

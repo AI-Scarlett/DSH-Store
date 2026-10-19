@@ -2307,6 +2307,82 @@
           "none"
         ]
       }
+    },
+    {
+      "repositoryUrl": "https://github.com/RZRZ-Q/dsh-more-details",
+      "commit": "374b66c5ddd295e410bc216c17223df3a6fa1e08",
+      "binding": "41fb74acb88acaebfdcca65567bc9d9f6f38642bac1aa843a3d0f1b78e42ce5b",
+      "verdict": "approved",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-19T02:56:31.000Z",
+      "rationale": "The complete fixed distribution is reviewed. The website-session token is a real credential capability, scoped to this plugin’s own DSH credential key and guarded to chat.deepseek.com; attachment writes and specified network services are disclosed. Store installability, runtime, and independent security audit remain unknown.",
+      "evidenceUrls": [
+        "https://github.com/RZRZ-Q/dsh-more-details/commit/374b66c5ddd295e410bc216c17223df3a6fa1e08",
+        "https://github.com/RZRZ-Q/dsh-more-details/blob/374b66c5ddd295e410bc216c17223df3a6fa1e08/package.json",
+        "https://github.com/RZRZ-Q/dsh-more-details/blob/374b66c5ddd295e410bc216c17223df3a6fa1e08/cordis.patch.yml",
+        "https://github.com/RZRZ-Q/dsh-more-details/blob/374b66c5ddd295e410bc216c17223df3a6fa1e08/lib/host/webchat-login-store.js",
+        "https://github.com/RZRZ-Q/dsh-more-details/blob/374b66c5ddd295e410bc216c17223df3a6fa1e08/lib/client/webchat/login-page.js",
+        "https://github.com/RZRZ-Q/dsh-more-details/blob/374b66c5ddd295e410bc216c17223df3a6fa1e08/lib/host/webchat-reference-store.js",
+        "https://github.com/RZRZ-Q/dsh-more-details/blob/374b66c5ddd295e410bc216c17223df3a6fa1e08/LICENSE"
+      ],
+      "permissions": {
+        "level": "high",
+        "files": "write",
+        "network": "specified-services",
+        "commands": "none",
+        "credentials": [
+          "web-session-token"
+        ]
+      },
+      "licenseReview": {
+        "license": "MIT",
+        "metadata": null,
+        "evidence": {
+          "file": "LICENSE",
+          "line": 1,
+          "sha256": "2512610353b45ee36abc63552c0d7404ed5e0a50f078206879ecbcc24aec7871"
+        },
+        "rationale": "The fixed package manifest declares MIT and its complete LICENSE file carries the MIT grant and both upstream contributor attributions; repository license metadata is NOASSERTION."
+      }
+    },
+    {
+      "repositoryUrl": "https://github.com/aikunx/dsh-mt-mcp",
+      "commit": "ef902623eb1cd1811be60a6d6130d8c6ed9f4c40",
+      "binding": "b44ed0918ea0c82e6b272d1b7ef1a57f731e6a08bc03c48a0e8f5204ab624cc5",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-19T02:56:31.000Z",
+      "rationale": "The complete bounded source lacks an exact DSH compatibility declaration and a unique fixed dependency lock. lib/index.js:182-186 permits arbitrary HTTP(S) /mcp hosts, while lines 335-338 sends the configured Bearer token to that host; admission is rejected until endpoint identity and token delivery are bound to an explicit trusted-origin decision.",
+      "evidenceUrls": [
+        "https://github.com/aikunx/dsh-mt-mcp/commit/ef902623eb1cd1811be60a6d6130d8c6ed9f4c40",
+        "https://github.com/aikunx/dsh-mt-mcp/blob/ef902623eb1cd1811be60a6d6130d8c6ed9f4c40/package.json",
+        "https://github.com/aikunx/dsh-mt-mcp/blob/ef902623eb1cd1811be60a6d6130d8c6ed9f4c40/lib/index.js",
+        "https://github.com/aikunx/dsh-mt-mcp/blob/ef902623eb1cd1811be60a6d6130d8c6ed9f4c40/cordis.patch.yml"
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/18477514055/dsh-ledger-memory",
+      "commit": "51e5b2bfad2e9fb6455e9432b2dbecc9c7082c24",
+      "binding": "5d46bb9c0feb311f07a8b9ce8e9e102fd847fc09c7f4d86f23fe95b24fee45f9",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-19T02:56:31.000Z",
+      "rationale": "The complete bounded 1.2.8 source remains rejected: lib/part2.js:2084 creates the temporary replacement with default permissions, renames it over the target at 2095, then only optionally chmods the final path at 2104-2109 while swallowing failures. Under umask 022 this can replace a private 0600 ledger with a 0644 file.",
+      "evidenceUrls": [
+        "https://github.com/18477514055/dsh-ledger-memory/commit/51e5b2bfad2e9fb6455e9432b2dbecc9c7082c24",
+        "https://github.com/18477514055/dsh-ledger-memory/blob/51e5b2bfad2e9fb6455e9432b2dbecc9c7082c24/package.json",
+        "https://github.com/18477514055/dsh-ledger-memory/blob/51e5b2bfad2e9fb6455e9432b2dbecc9c7082c24/lib/part2.js"
+      ],
+      "capabilityDispositions": [
+        {
+          "kind": "false-positive",
+          "signal": "credentials",
+          "file": "lib/index.js",
+          "line": 773,
+          "sha256": "8a924bd1214ca0cb004be085809b3cc5d4daf00024eda3282537e48e5ba8ce58",
+          "rationale": "The only matched environment read at this location is the LEDGER_DIAG_D115 diagnostic flag; it does not read an account credential or API key."
+        }
+      ]
     }
   ]
 }

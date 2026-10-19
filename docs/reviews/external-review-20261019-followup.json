@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "590dbd6e22366e3dbe12b39a21b773ff5b85f939",
+  "observedAt": "2026-10-19T02:56:31.000Z",
+  "cutoff": "2026-10-18T01:05:14Z",
+  "evidenceLevel": "complete-bounded-fixed-commit-source-review",
+  "runtimeAcceptance": "unknown",
+  "thirdPartyCodeExecuted": false,
+  "realProfileChanged": false,
+  "officialLatestThree": [
+    "0.2.1-alpha.5",
+    "0.2.1-rc.1",
+    "0.2.1-rc.2"
+  ],
+  "contactGate": {
+    "ledgerBranch": "author-contact-state",
+    "ledgerBlobSha": "5e1583501625ccc2b470d77254d39a0016adb0d5",
+    "historyComplete": true,
+    "repositoryBlocked": true,
+    "messagesSent": 0,
+    "issuesOrPullRequestsClosed": 0,
+    "reactionsSent": 0,
+    "deferredActivitiesTouched": []
+  },
+  "records": [
+    {
+      "issueNumber": 1445,
+      "requestCommentId": 6248864932,
+      "authorLogin": "RZRZ-Q",
+      "requestBodySha256": "dc1cd9968639b31d1f3d22a88ac9a7e76d7d5ebfcd9c395ffd92ccb7f728c38f",
+      "repositoryUrl": "https://github.com/RZRZ-Q/dsh-more-details",
+      "packageName": "dsh-more-details",
+      "version": "0.3.14",
+      "commit": "374b66c5ddd295e410bc216c17223df3a6fa1e08",
+      "binding": "41fb74acb88acaebfdcca65567bc9d9f6f38642bac1aa843a3d0f1b78e42ce5b",
+      "decision": "admitted-user-reviewed",
+      "catalogStatus": "approved",
+      "scan": {
+        "complete": true,
+        "files": 129,
+        "bytes": 661327,
+        "sourceDigest": "bfd22e1e917eef81a146c667a5cad44b69d9781d9d35abd2421f4597868d0018",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "securityVerdict": "pass",
+        "findings": [],
+        "signals": {
+          "files": false,
+          "network": false,
+          "commands": false,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "evidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 64,
+            "sha256": "c7e6dafe7b74b55661fa9c13eff8c8f09e3039029d3126ab12793ec25ac88168"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 210650,
+            "sha256": "df204cb7a7d638bfb10db47a3947b36e14e048445d83fb271d0239aca45709b4"
+          },
+          {
+            "file": "lib/client/webchat/deepseek-capture.js",
+            "bytes": 11440,
+            "sha256": "2b20ca8ce8ee73203cb1d1c10710a90dc919618ff2e5081767ac01cb8884e9ea"
+          },
+          {
+            "file": "lib/client/webchat/login-page.js",
+            "bytes": 4950,
+            "sha256": "dbede09c651fce5658a68413c8e3d7b5e421dafa5e6cf89a1b44b1264aded51e"
+          },
+          {
+            "file": "lib/host/webchat-login-store.js",
+            "bytes": 1428,
+            "sha256": "5427d15530a71147248553b5a0c15d042c8b62a38cf8515bae39c5b25772e344"
+          },
+          {
+            "file": "lib/host/webchat-reference-store.js",
+            "bytes": 5900,
+            "sha256": "24489ee31a584058a3718ecb99dfbe29dd8b098c43c870773d70979004c2b21d"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 4736,
+            "sha256": "1782f694173b20e19e0a4ef6793a3cd58ba186730f8c08869516f97c4d14d80e"
+          },
+          {
+            "file": "package.json",
+            "bytes": 8820,
+            "sha256": "98c238c1c07c25f9c825d701ba3d009c14b2df6507e9f1882a45ad5cacbe00f3"
+          }
+        ]
+      },
+      "compatibility": {
+        "declarations": {
+          "0.2.0-rc.2": "compatible",
+          "0.2.1-alpha.4": "compatible",
+          "0.2.1-alpha.5": "unknown",
+          "0.2.1-rc.1": "unknown",
+          "0.2.1-rc.2": "compatible"
+        },
+        "currentLatestThree": {
+          "0.2.1-alpha.5": "unknown",
+          "0.2.1-rc.1": "unknown",
+          "0.2.1-rc.2": "compatible"
+        },
+        "authorRuntimeClaims": "reported, not independently reproduced by Store"
+      },
+      "permissions": {
+        "level": "high",
+        "files": "write-via-DSH-attachments",
+        "network": [
+          "chat.deepseek.com",
+          "user-selected DSH model provider"
+        ],
+        "commands": "none-observed",
+        "credentials": [
+          "web-session-token: own credentialKey(dsh-more-details,webchat) record"
+        ],
+        "webview": "webview.executeJavaScript capability disclosed; page helper checks exact chat.deepseek.com origin"
+      },
+      "license": {
+        "manifest": "MIT",
+        "fixedLicenseFileSha256": "2512610353b45ee36abc63552c0d7404ed5e0a50f078206879ecbcc24aec7871",
+        "repositoryMetadata": null,
+        "manualReview": true
+      }
+    },
+    {
+      "issueNumber": 1489,
+      "requestSource": "issue-body",
+      "authorLogin": "aikunx",
+      "botPrecheckCommentId": 6251965919,
+      "repositoryUrl": "https://github.com/aikunx/dsh-mt-mcp",
+      "packageName": "dsh-mt-mcp",
+      "version": "0.1.0",
+      "commit": "ef902623eb1cd1811be60a6d6130d8c6ed9f4c40",
+      "binding": "b44ed0918ea0c82e6b272d1b7ef1a57f731e6a08bc03c48a0e8f5204ab624cc5",
+      "decision": "rejected",
+      "catalogStatus": "no-entry",
+      "scan": {
+        "complete": true,
+        "files": 4,
+        "bytes": 32936,
+        "sourceDigest": "76bc18bbc35030e09477c640ebc16cd2e05cdb51914402eb43ce2d5762b4f9eb",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "securityVerdict": "pass",
+        "findings": [],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": false,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "evidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 359,
+            "sha256": "37839585554fe2f070f8812c884dfbec1c2b7d8b7a3bf81e3dbe81e66ce7833a"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 9145,
+            "sha256": "5763fdcdba3fa290db510ba8723b207cd26b45e018f3eb27404a561cf3b70b66"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 22211,
+            "sha256": "5071299cecca236817df21a113716f7f388721575d29a65a7cecac05c054b104"
+          },
+          {
+            "file": "package.json",
+            "bytes": 1221,
+            "sha256": "ac6ceb74aef0c4c99a4ebf39343ac44ac06cb6e3fa3320c30577d3bc073ba096"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "COMPAT001",
+          "file": "package.json",
+          "lines": [
+            29,
+            53
+          ],
+          "reason": "No exact DSH compatibility declaration; no release in the current latest-three window is declared compatible.",
+          "minimumFix": "Declare exact tested DSH releases in the standard manifest and peer contract.",
+          "acceptance": "At least one exact current latest-three release is compatible and has bounded disposable host evidence; all untested versions remain unknown."
+        },
+        {
+          "code": "DEPENDENCY001",
+          "file": "package.json",
+          "lines": [
+            51,
+            53
+          ],
+          "reason": "@modelcontextprotocol/sdk is a floating ^1.12.0 runtime dependency and the complete fixed tree has no unique lockfile for supply-chain verification.",
+          "minimumFix": "Pin one exact dependency graph with a lockfile and provide immutable package integrity, license and transitive dependency evidence.",
+          "acceptance": "A fixed dependency closure is unique, bounded, hash/integrity checked, licensed and has no unreviewed lifecycle execution."
+        },
+        {
+          "code": "AUTH001",
+          "file": "lib/index.js",
+          "lines": [
+            182,
+            186,
+            335,
+            338
+          ],
+          "reason": "The endpoint accepts arbitrary HTTP(S) /mcp hosts and sends cfg.token as a Bearer header to the configured host.",
+          "minimumFix": "Bind token use to an exact explicitly approved origin, reject unapproved hosts and cross-origin redirects, or remove the token capability.",
+          "acceptance": "Disposable transport fixtures prove unapproved hosts, origin switch, DNS/redirect change or malformed URL never receives the token; an explicitly approved endpoint still connects."
+        }
+      ]
+    },
+    {
+      "pullRequest": 1490,
+      "requestSource": "pull-request-body",
+      "authorLogin": "18477514055",
+      "repositoryUrl": "https://github.com/18477514055/dsh-ledger-memory",
+      "packageName": "dsh-ledger-memory",
+      "version": "1.2.8",
+      "commit": "51e5b2bfad2e9fb6455e9432b2dbecc9c7082c24",
+      "binding": "5d46bb9c0feb311f07a8b9ce8e9e102fd847fc09c7f4d86f23fe95b24fee45f9",
+      "decision": "rejected-update",
+      "catalogStatus": "retains-1.2.7",
+      "prPatch": {
+        "changedFiles": 1,
+        "additions": 2,
+        "deletions": 2,
+        "path": "registry/catalog/details/dsh-ledger-memory.json",
+        "checks": 0,
+        "reviews": 0,
+        "comments": 0
+      },
+      "scan": {
+        "complete": true,
+        "files": 11,
+        "bytes": 1481050,
+        "sourceDigest": "a991938e2ef451600a3f15971a26e3ce4a36d44a1aa320a566e2bc90ce7a694e",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "securityVerdict": "warn",
+        "findings": [
+          {
+            "rule": "child-process",
+            "category": "shell",
+            "severity": "warning",
+            "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+            "file": "lib/index.js",
+            "line": 91
+          },
+          {
+            "rule": "child-process",
+            "category": "shell",
+            "severity": "warning",
+            "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+            "file": "lib/part2.js",
+            "line": 3
+          }
+        ],
+        "signals": {
+          "files": true,
+          "network": true,
+          "commands": true,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "evidence": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 546,
+            "sha256": "86f2b41e17c1ce46378ef8a3a339c81668711fdcfd9c81f50ba4109a91c8164a"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 144990,
+            "sha256": "8a924bd1214ca0cb004be085809b3cc5d4daf00024eda3282537e48e5ba8ce58"
+          },
+          {
+            "file": "lib/part2.js",
+            "bytes": 215203,
+            "sha256": "cf3622fda162877d516cd0cd67cbae74ed5592e4f70ac50debebcfa4ee1a359a"
+          },
+          {
+            "file": "package.json",
+            "bytes": 3568,
+            "sha256": "d5b7c8705dd124ca67d09a6d48fc07c557ae36fff7be89fb851ed9d956c9f2af"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "PERMISSION001",
+          "file": "lib/part2.js",
+          "lines": [
+            2084,
+            2095,
+            2104,
+            2109
+          ],
+          "severity": "P1",
+          "reason": "writeFileAtomic creates the temp file with default 0666 masked by umask, renames it over the target before setting an optional mode, and swallows chmod errors. Under umask 022 a new private ledger can be 0644; replacing an existing 0600 target also swaps in the broader mode.",
+          "minimumFix": "Create new sensitive files as 0600 by default; preserve an existing target mode where required; set and verify the temp inode mode before rename; propagate mode errors and keep the old target intact on failure.",
+          "acceptance": "Disposable tests under umask 022 cover new files, replacement of a 0600 target, explicit mode, write/rename/chmod failures, no permissive interval, temp cleanup, and unchanged prior data after failure."
+        }
+      ],
+      "credentialSignalDisposition": {
+        "file": "lib/index.js",
+        "line": 773,
+        "sha256": "8a924bd1214ca0cb004be085809b3cc5d4daf00024eda3282537e48e5ba8ce58",
+        "result": "false-positive-diagnostic-environment-flag"
+      }
+    }
+  ]
+}
