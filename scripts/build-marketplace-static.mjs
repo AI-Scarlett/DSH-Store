@@ -614,7 +614,6 @@ const alternateCode = alternateIsDomestic ? 'CN' : 'INTL'
 const alternateAriaLabel = alternateIsDomestic ? '切换到国内站 / Switch to China site' : '切换到国际站 / Switch to international site'
 const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international'
 const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
-const friendSisterSiteMarkup = `<a href="${htmlEscape(`${alternateOrigin}/`)}" target="_blank" rel="noopener noreferrer">DSH STORE · ${alternateIsDomestic ? '国内站' : 'International'} ↗</a>`
 
 const articleCollection = JSON.parse(await readFile(resolve(projectRoot, 'marketplace/articles/articles.json'), 'utf8'))
 if (articleCollection.schemaVersion !== 1 || !Array.isArray(articleCollection.articles)
@@ -776,6 +775,44 @@ await writeFile(resolve(outputRoot, 'marketplace/sitemap.xml'), sitemap)
 const icpMarkup = icpNumber
   ? `<a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">${htmlEscape(icpNumber)}</a>`
   : ''
+
+function compactPrimaryNavigation(page, pagePath) {
+  const navStart = page.indexOf('<nav class="site-nav"')
+  const navEnd = navStart < 0 ? -1 : page.indexOf('</nav>', navStart)
+  if (navStart < 0 || navEnd < 0) throw new Error(`${pagePath} primary navigation is missing`)
+  const nav = page.slice(navStart, navEnd + '</nav>'.length)
+  const compactNav = nav
+    .replace(/<a\b(?=[^>]*data-i18n="nav\.(?:faq|about)")[\s\S]*?<\/a>\s*/g, '')
+    .replace(/<a\b(?=[^>]*href="https:\/\/github\.com\/AI-Scarlett\/DSH-Store\/issues\/new\?template=plugin-submission\.yml")[\s\S]*?<\/a>\s*/g, '')
+  return `${page.slice(0, navStart)}${compactNav}${page.slice(navEnd + '</nav>'.length)}`
+}
+
+function ensureFooterUtilityLinks(page, pagePath, route) {
+  const navStart = page.indexOf('<nav class="footer-nav"')
+  const navEnd = navStart < 0 ? -1 : page.indexOf('</nav>', navStart)
+  if (navStart < 0 || navEnd < 0) throw new Error(`${pagePath} footer navigation is missing`)
+  const footerNav = page.slice(navStart, navEnd + '</nav>'.length)
+  const sectionMatch = footerNav.match(/<section class="footer-nav-group">[\s\S]*?<\/section>/)
+  if (!sectionMatch) throw new Error(`${pagePath} quick navigation group is missing`)
+
+  const quickLinks = sectionMatch[0]
+  const pageUrl = `https://store.invalid${route}`
+  const hasTarget = target => [...quickLinks.matchAll(/<a\b[^>]*href="([^"]+)"/g)].some(([, href]) => {
+    try { return new URL(href, pageUrl).pathname === target } catch { return false }
+  })
+  const faqHref = relative(dirname(pagePath), 'marketplace/faq') || '.'
+  const aboutHref = relative(dirname(pagePath), 'marketplace/about') || '.'
+  const submissionUrl = 'https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml'
+  const additions = []
+  if (!hasTarget('/faq/')) additions.push(`<a href="${htmlEscape(`${faqHref.replace(/\\/g, '/')}/`)}" data-i18n="nav.faq">常见问题</a>`)
+  if (!hasTarget('/about/')) additions.push(`<a href="${htmlEscape(`${aboutHref.replace(/\\/g, '/')}/`)}" data-i18n="nav.about">关于我们</a>`)
+  if (!quickLinks.includes(submissionUrl)) additions.push(`<a href="${submissionUrl}" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="footer"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>`)
+  if (!additions.length) return page
+
+  const updatedQuickLinks = quickLinks.replace('</section>', `${additions.join('')}</section>`)
+  const updatedFooterNav = footerNav.replace(quickLinks, updatedQuickLinks)
+  return `${page.slice(0, navStart)}${updatedFooterNav}${page.slice(navEnd + '</nav>'.length)}`
+}
 const baiduVerificationMarkup = baiduVerificationCode
   ? `<meta name="baidu-site-verification" content="${htmlEscape(baiduVerificationCode)}">`
   : ''
@@ -817,10 +854,12 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
   const articleNavLabel = (fixedLocale === 'zh-CN' || defaultLocale === 'zh') ? 'DSH 实战与观察' : 'DSH Field Notes'
   const articleNavCurrent = route.startsWith('/articles/') ? ' aria-current="page"' : ''
   const articleNavMarkup = `<a href="${htmlEscape(articlesLinkPath)}" data-i18n="nav.articles"${articleNavCurrent}>${articleNavLabel}</a>`
-  const withAlternate = replaceRequired(page, '<!-- DSH_ALTERNATE_SITE -->', `${articleNavMarkup}${alternateMarkup}`, `${pagePath} alternate site marker`)
-  const withFriendLinks = replaceRequired(withAlternate, '<!-- DSH_FRIEND_SISTER_SITE -->', friendSisterSiteMarkup, `${pagePath} friend sister site marker`)
-  const withHreflang = replaceRequired(withFriendLinks, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
-  const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', icpMarkup, `${pagePath} ICP marker`)
+  const compactPage = compactPrimaryNavigation(page, pagePath)
+  const withAlternate = replaceRequired(compactPage, '<!-- DSH_ALTERNATE_SITE -->', articleNavMarkup, `${pagePath} alternate site marker`)
+  const withFriendLinks = replaceRequired(withAlternate, '<!-- DSH_FRIEND_SISTER_SITE -->', '', `${pagePath} friend sister site marker`)
+  const withFooterLinks = ensureFooterUtilityLinks(withFriendLinks, pagePath, route)
+  const withHreflang = replaceRequired(withFooterLinks, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
+  const withIcp = replaceRequired(withHreflang, '<!-- DSH_ICP -->', `${alternateMarkup}${icpMarkup}`, `${pagePath} ICP marker`)
   const withBaiduVerification = replaceRequired(withIcp, '<!-- DSH_BAIDU_VERIFICATION -->', baiduVerificationMarkup, `${pagePath} Baidu verification marker`)
   const withBaiduUnionVerification = route === '/'
     ? replaceRequired(withBaiduVerification, '<!-- DSH_BAIDU_UNION_VERIFY -->', baiduUnionVerificationMarkup, `${pagePath} Baidu Union verification marker`)
