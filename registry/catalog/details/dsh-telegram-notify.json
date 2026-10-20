@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "99eaf74d94486fc3650912599200c23b9292f795",
-  "version": "0.2.0",
+  "commit": "797b7894c0056317cf4e307a7d5562b6b7558db4",
+  "version": "0.2.3",
   "categories": [
     "notifications"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-20T13:29:27.000Z",
-    "observedAt": "2026-10-20T13:23:28.000Z",
+    "updatedAt": "2026-10-20T15:07:22.000Z",
+    "observedAt": "2026-10-20T19:52:16.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-20T13:23:28.000Z",
-      "evidenceUrl": "https://github.com/RGarrido03/dsh-telegram-notify/commit/99eaf74d94486fc3650912599200c23b9292f795",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-20T19:52:16.000Z",
+      "evidenceUrl": "https://github.com/RGarrido03/dsh-telegram-notify/commit/797b7894c0056317cf4e307a7d5562b6b7558db4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,12 +72,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "7fae52ea9e4189a966fdcd6ad8a5b7b40ab881bc2a8f6ed35735aa3aa088aeac",
+    "binding": "058045c9301d7427b87f6b1a1d54452c5d087f4992ce397446acc417da0acbb1",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -89,6 +89,7 @@
   "entryIds": [
     "telegram-notify"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
