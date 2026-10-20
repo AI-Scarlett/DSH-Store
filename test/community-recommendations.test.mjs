@@ -21,7 +21,7 @@ test('all interactive plugins remain on both recommendation surfaces across ever
   const ranking = applyRankingRefreshState(createRankingSnapshot(catalog, index, {
     communityRecommendations: registry, excludedRepositories: policy.search.excludedRepositories, candidates,
   }), null, 'reuse')
-  const expected = new Set(selected.map(entry => entry.id))
+  const expected = new Set(selected.map(entry => entry.catalogId ?? entry.id))
   const ranked = rankingEntries(ranking, 'recommended').filter(entry => entry.communityRecommendation)
   assert.deepEqual(new Set(ranked.map(entry => entry.id)), expected)
   const pages = Array.from({ length: Math.ceil(ranked.length / 30) }, (_, i) => rankingPage(ranking, 'recommended', i + 1).entries).flat()
@@ -71,4 +71,12 @@ test('evidence identity drift and duplicate records fail closed; exclusions and 
   const entries = Array.from({ length: 65 }, (_, i) => ({ ...base, id: String(i), name: `Plugin ${i}` }))
   assert.equal(communityRecommendationPage(entries, { page: 4 }).entries.length, 5)
   assert.equal(communityRecommendationPage(entries, { query: 'Plugin 64' }).entries[0].id, '64')
+})
+
+test('recommendation names cannot reuse repair-request titles or float beside a matching Catalog repository', () => {
+  const base = { id: 'a', catalogId: null, repositoryUrl: 'https://github.com/example/a', manifestPath: 'package.json', name: '作者修复请求：example/a（DSH STORE）', categories: [], basis: 'author-interaction', userId: 1, evidenceUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/1', occurredAt: '2026-10-16T00:00:00Z' }
+  const registry = { schemaVersion: 1, updatedAt: base.occurredAt, entries: [base] }
+  assert.throws(() => validateCommunityRecommendations(registry), /Invalid community recommendation evidence/)
+  const named = { ...registry, entries: [{ ...base, name: 'Example Plugin' }] }
+  assert.throws(() => communityRecommendationEntries(named, [{ id: 'example-plugin', repositoryUrl: base.repositoryUrl }]), /must bind Catalog identity/)
 })
