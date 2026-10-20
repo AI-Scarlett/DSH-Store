@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "marketplace-ranking-publish-fix-20261020",
+  "kind": "storefront-build-repair-plan",
+  "createdAt": "2026-10-20",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "bcd9b6a5fac037cff2c010fbbe1f4882c287b06d",
+  "authorization": "The user requested the DSH Store traffic feature be completed and published. Publication is currently blocked by the pre-existing ranking snapshot size guard.",
+  "scope": [
+    "docs/ops/marketplace-ranking-publish-fix-plan-20261020.json",
+    "marketplace/rankings/model.js",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/marketplace-ranking-publish-fix-plan-20261020.json": null,
+    "marketplace/rankings/model.js": "93c3d01eaf9477bbbc039ad0ac530d3996e70fcda689e84f5b52ce23bdda3767",
+    "test/marketplace-static-build.test.mjs": "04849c1b26d604344946748f723178439b96954a2e9c5a3384945f02b140abf2"
+  },
+  "diagnosis": {
+    "workflowRun": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39373249140",
+    "failure": "The generated rankings snapshot exceeded the existing 1 MiB bound. The prior public snapshot was 1048232 bytes and valid; a deterministic reconstruction from the current Catalog, candidates, recommendations, and prior public ranking state was 1051809 bytes.",
+    "preExisting": "The same Pages workflow had failed on base commit 1b19eced320aaeeedd225fe0d28e5c7c88f45a02 before the traffic feature PR was merged."
+  },
+  "change": {
+    "descriptionLimitCharacters": 64,
+    "intent": "Reduce only display-description length in ranking entries so the regenerated artifact remains within the existing 1 MiB producer, input, and browser bounds. Do not change ranking eligibility, scores, Catalog decisions, admission, or source evidence.",
+    "sizeReplay": {"beforeBytes": 1051809, "afterBytes": 1018589, "maximumBytes": 1048576},
+    "preservedBounds": ["previous snapshot: 1 MiB", "generated snapshot: 1 MiB", "browser response: 1 MiB"]
+  },
+  "deterministicGates": [
+    {"id": "plan-hashes", "required": "All base commit and file precondition hashes match."},
+    {"id": "npm-check", "command": "npm run check", "required": "pass"},
+    {"id": "pages-build", "required": "The public and domestic marketplace artifacts build and ranking JSON remains below 1 MiB."},
+    {"id": "pull-request", "required": "All required CI checks pass on the exact PR head before merge."},
+    {"id": "public-readback", "required": "Pages contains the traffic runtime and About chart; both storefronts return the new pages and public aggregate endpoint."}
+  ],
+  "rollback": "Revert the source change through a CI-checked PR. Retain the last known-good Pages artifact and production releases until the replacement passes hash and health checks.",
+  "status": "planned"
+}
