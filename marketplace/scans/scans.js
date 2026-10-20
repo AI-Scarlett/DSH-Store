@@ -1,6 +1,6 @@
 const translations = {
   zh: {
-    'a11y.skip': '跳到主要内容', 'nav.home': '首页', 'nav.plugins': '插件目录', 'nav.community': '社区与开发者', 'nav.scans': '扫描记录',
+    'a11y.skip': '跳到主要内容', 'nav.home': '首页', 'nav.plugins': '插件目录', 'nav.articles': 'DSH 实战与观察', 'nav.community': '社区与开发者', 'nav.scans': '扫描记录',
     'nav.standards': '收录标准', 'nav.build': '开发插件', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
     'hero.eyebrow': 'SCAN ARCHIVE / PUBLIC EVIDENCE', 'hero.status': '可复核', 'hero.title': '扫描有记录，结果有边界。',
     'hero.lead': '集中查看固定来源的手动全量基准，以及商城自动化扫描的近期运行与结果。扫描结论不等于上架、安装或运行验收。',
@@ -38,7 +38,7 @@ const translations = {
     'action.top': '回到顶部 ↑', 'footer.note': '公开汇总 · 固定来源 · 未执行第三方代码',
   },
   en: {
-    'a11y.skip': 'Skip to main content', 'nav.home': 'Home', 'nav.plugins': 'Plugin catalog', 'nav.community': 'Community & creators', 'nav.scans': 'Scan history',
+    'a11y.skip': 'Skip to main content', 'nav.home': 'Home', 'nav.plugins': 'Plugin catalog', 'nav.articles': 'DSH Field Notes', 'nav.community': 'Community & creators', 'nav.scans': 'Scan history',
     'nav.standards': 'Listing standards', 'nav.build': 'Build plugins', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
     'hero.eyebrow': 'SCAN ARCHIVE / PUBLIC EVIDENCE', 'hero.status': 'AUDITABLE', 'hero.title': 'Every scan recorded. Every result bounded.',
     'hero.lead': 'Review the fixed-source manual baseline and recent automated Catalog scans in one place. A scan result is not a listing, installation, or runtime acceptance.',

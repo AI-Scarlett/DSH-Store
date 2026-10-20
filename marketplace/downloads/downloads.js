@@ -1,7 +1,7 @@
 const downloadTranslations = {
   zh: {
     'a11y.skip': '跳到主要内容',
-    'nav.home': '首页', 'nav.plugins': '插件目录', 'nav.community': '社区与开发者',
+    'nav.home': '首页', 'nav.plugins': '插件目录', 'nav.articles': 'DSH 实战与观察', 'nav.community': '社区与开发者',
     'nav.standards': '收录标准', 'nav.build': '开发插件', 'nav.faq': '常见问题',
     'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
     'hero.eyebrow': 'OFFICIAL DESKTOP BUILDS / DSH', 'hero.status': '官方发布',
@@ -29,7 +29,7 @@ const downloadTranslations = {
   },
   en: {
     'a11y.skip': 'Skip to main content',
-    'nav.home': 'Home', 'nav.plugins': 'Plugins', 'nav.community': 'Community',
+    'nav.home': 'Home', 'nav.plugins': 'Plugins', 'nav.articles': 'DSH Field Notes', 'nav.community': 'Community',
     'nav.standards': 'Listing standards', 'nav.build': 'Build a plugin', 'nav.faq': 'FAQ',
     'nav.about': 'About', 'nav.guide': 'Guide', 'nav.submit': 'Submit a plugin',
     'hero.eyebrow': 'OFFICIAL DESKTOP BUILDS / DSH', 'hero.status': 'Official builds',

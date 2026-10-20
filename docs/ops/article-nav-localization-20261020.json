@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "article-nav-localization-20261020",
+  "kind": "storefront-localization-fix-plan",
+  "createdAt": "2026-10-20",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "8993db98a6592ee407b88db5ca9b364dbffeb943",
+  "authorization": "The user reported that the DSH Field Notes navigation renders the raw nav.articles key after locale changes and requested the storefront change be published.",
+  "scope": [
+    "docs/ops/article-nav-localization-20261020.json",
+    "marketplace/about/about.js",
+    "marketplace/build/build.js",
+    "marketplace/community/community.js",
+    "marketplace/downloads/downloads.js",
+    "marketplace/faq/faq.js",
+    "marketplace/rankings/rankings.js",
+    "marketplace/scans/scans.js",
+    "marketplace/standards/standards.js",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/article-nav-localization-20261020.json": null,
+    "marketplace/about/about.js": "f23581d52f1ea200bb625eaaef56da905e26b8414f51bb50a8e5f0ac0111b486",
+    "marketplace/build/build.js": "0bdb8b775c60a27756a3d30ae36e3a2df984f9e08891929fa1cd7f83435c6041",
+    "marketplace/community/community.js": "69ae89ce2619148a9324fb74db40f811b695bb339ef12fff97ba60c1fa160e18",
+    "marketplace/downloads/downloads.js": "0df43119e559990714ea00b0c84b5b9cf7013dd04684e2efc58695193a515cb4",
+    "marketplace/faq/faq.js": "e773fad920eb87cdc35c10c918194bcd168a07f2ac88113d61d94ea6790d4207",
+    "marketplace/rankings/rankings.js": "76621f6166a430b6ccc3799a01311e344aebc93cd12da60d63860c8ebc563908",
+    "marketplace/scans/scans.js": "05b862e45b732c2253b38a9c40fd1b8ee102359a7d6cd388deff90bfa5a4e454",
+    "marketplace/standards/standards.js": "8fd6cea48911f809eecdab5d9eba5262c8ab697fa51db8c85874450a4e277be4",
+    "test/marketplace-static-build.test.mjs": "f3b8e3d84a2ffd2bb67d91c8d65ecf883a69bb71221a08d6cd1d9223896b97a4"
+  },
+  "change": {
+    "description": "Add the Chinese and English nav.articles label to every page-level locale dictionary that can localize the builder-injected article link, then assert coverage in a regression test.",
+    "runtimeBehavior": "Locale changes retain DSH 实战与观察 in Chinese and show DSH Field Notes in English; the raw translation key must not appear."
+  },
+  "deterministicGates": [
+    {
+      "id": "local-check",
+      "command": "npm run check",
+      "required": "Registry validation and all tests pass."
+    },
+    {
+      "id": "ci",
+      "required": "All required checks pass for the exact pull-request head, with no unresolved blocking review."
+    },
+    {
+      "id": "pages",
+      "required": "The Pages release manifest identifies the merged main Commit and the generated localized scripts include the fix."
+    },
+    {
+      "id": "production-preflight",
+      "required": "Inspect free disk and inodes on each target before refresh; do not clean or remove prior releases. Stop if the validated release plus recoverable backup cannot be safely retained."
+    },
+    {
+      "id": "production-readback",
+      "required": "Refresh international and domestic sites serially with deploy/refresh-from-pages.sh; verify source Commit, localized assets, and health endpoints independently on both domains."
+    }
+  ],
+  "rollback": "Revert the source change through a CI-checked PR. The existing refresh script preserves the prior release and backup and atomically restores the old current symlink if health checks fail.",
+  "externalEffects": "One source PR, its protected-main merge after required CI, the Pages build, and the two authorized production storefront refreshes. No Catalog, Candidate Registry, author-contact, DSH Profile, package, or restart mutation.",
+  "status": "planned"
+}
