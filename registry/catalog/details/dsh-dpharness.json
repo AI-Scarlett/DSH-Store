@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f88d0ed7f8006dab399e4bd111a34753bf90ca98",
-  "version": "0.6.3",
+  "commit": "e802844eaeaeaa577023158b9bfd223cae9d444a",
+  "version": "0.6.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-19T14:29:19.000Z",
-    "observedAt": "2026-10-19T20:44:51.000Z",
+    "updatedAt": "2026-10-20T08:15:20.000Z",
+    "observedAt": "2026-10-20T12:19:57.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-19T20:44:51.000Z",
-      "evidenceUrl": "https://github.com/zhanghao3693/dsh-dpharness/commit/f88d0ed7f8006dab399e4bd111a34753bf90ca98",
+      "checkedAt": "2026-10-20T12:19:57.000Z",
+      "evidenceUrl": "https://github.com/zhanghao3693/dsh-dpharness/commit/e802844eaeaeaa577023158b9bfd223cae9d444a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,11 +77,11 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "8b2d9e22540faeaa1427396778a60ddec1bdf84eeee28af848ca08db26bae923",
+    "binding": "bb1d498c509f20370b057c83159fa5b9cdca6a58cd139ebe7317993c4e1c3bec",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
+    "state": "review-required",
     "sourceContract": "verified",
-    "coverage": "incomplete",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
@@ -91,7 +91,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: local module is missing from the distributable surface: lib/index.js -> ./usage.js; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.1.0-rc.5",
     "dshReleases": {

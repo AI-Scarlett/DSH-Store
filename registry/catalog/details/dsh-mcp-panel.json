@@ -1,0 +1,208 @@
+{
+  "id": "dsh-mcp-panel",
+  "name": "文件与工作区工具（DSH MCP Panel）",
+  "packageName": "dsh-mcp-panel",
+  "description": "为 DSH 提供文件与工作区工具能力。英文原始说明：DSH web plugin: manage MCP servers for the official @deepseek-ai/dsh-mcp-client. One config surface for global (DSH_HOME/yiklek/mcp.json) and workspace-level (<workspace>/.dsh/yiklek/mcp.json) servers, importing and exporting the mainstream MCP config shapes.",
+  "searchTerms": [
+    "文件与工作区工具",
+    "DSH MCP Panel",
+    "dsh-mcp-panel",
+    "文件",
+    "工作区",
+    "目录",
+    "附件",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "mcp",
+    "panel"
+  ],
+  "repositoryUrl": "https://github.com/Yiklek/dsh-mcp-panel",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "7311fd2b4c6aec31ab7a46aaa891942eb7e6148e",
+  "version": "0.1.0",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-10-20T12:27:05.000Z",
+    "observedAt": "2026-10-20T12:19:57.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-10-20T12:19:57.000Z",
+      "evidenceUrl": "https://github.com/Yiklek/dsh-mcp-panel/commit/7311fd2b4c6aec31ab7a46aaa891942eb7e6148e",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "2e073d5f94ae8de5398695d2a2fcd89cd2a71d9501eca87d992f82d287c29914",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "incomplete",
+    "sourceContract": "unverified",
+    "coverage": "incomplete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+  },
+  "entryIds": [
+    "mcp-panel"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/host.mjs; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permissi",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [
+      "yaml"
+    ],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [
+      "prepare"
+    ],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}
