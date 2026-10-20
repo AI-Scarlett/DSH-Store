@@ -22,24 +22,24 @@
   "manifestPath": "dsh-astrbot-relay/package.json",
   "installPath": "dsh-astrbot-relay",
   "updatePolicy": "external-only",
-  "commit": "5369b59bb9b3ef6cf65c7b8816b780515b06b097",
-  "version": "0.9.7",
+  "commit": "e6738eb77d9653e9b06c14b5b7e6b6400c491d9e",
+  "version": "0.9.8",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-05T15:36:54.000Z",
-    "observedAt": "2026-10-19T03:39:26.000Z",
+    "updatedAt": "2026-10-20T12:42:07.000Z",
+    "observedAt": "2026-10-20T13:23:28.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-19T03:39:26.000Z",
-      "evidenceUrl": "https://github.com/NekoHome-Studio/astrdsh-relay/commit/5369b59bb9b3ef6cf65c7b8816b780515b06b097",
+      "checkedAt": "2026-10-20T13:23:28.000Z",
+      "evidenceUrl": "https://github.com/NekoHome-Studio/astrdsh-relay/commit/e6738eb77d9653e9b06c14b5b7e6b6400c491d9e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "8f998f53add127a796832d32304c8eaca094439497bc0634195a0875b6d5e5db",
+    "binding": "97adf36accb57d717cd78c37492cb4cd3326b277d0c8997a3a2052069edc7a21",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata conflict; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal;",
   "compatibility": {
-    "dsh": "^0.1.5-rc.2 || ^0.2.0-rc.2",
+    "dsh": ">=0.1.5-rc.2 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
