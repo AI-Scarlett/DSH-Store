@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "community-recommendation-ranking-name-fix-20261020",
+  "type": "storefront-data-and-validation-repair-plan",
+  "createdAt": "2026-10-20",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "9cdc7d10b2b02ed5d897914ac83ced7a4a692faa",
+  "authorization": "The user asked to fix the malformed plugin names, inspect and process GitHub author replies, and publish the requested repair.",
+  "scope": [
+    "docs/ops/community-recommendation-ranking-name-fix-plan-20261020.json",
+    "registry/community-recommendations.json",
+    "marketplace/lib/community-recommendations.js",
+    "test/community-recommendations.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/community-recommendation-ranking-name-fix-plan-20261020.json": null,
+    "registry/community-recommendations.json": "a4d25ef1cc710fee34696c80597249a9210745529dfb68ca16972ec504426ad3",
+    "marketplace/lib/community-recommendations.js": "c8bf8ad32ea5bd69a03b87db58006dcbdfe6d908dc3185af8553ecaf8e8c0adc",
+    "test/community-recommendations.test.mjs": "4f3155322530f5609b7590db01bb3d424d7386733b0091ac39f9f4a734492a12",
+    "test/marketplace-static-build.test.mjs": "5724d78bc7bcbe397f956f90cd2a8d25269a358b676779be8f289675d9651990"
+  },
+  "change": {
+    "description": "Replace Issue-title strings with repository/plugin display names, bind the recommendation for an already-cataloged repository to its exact Catalog ID, and reject unbound or issue-title recommendation records before rendering.",
+    "preserved": [
+      "Recommendation evidence remains distinct from Catalog admission and installation eligibility.",
+      "Do not change Catalog status, ranking scores, category policy, or author-contact history.",
+      "Keep producer, input, and browser ranking snapshot limits at 1 MiB.",
+      "Keep the existing 64-character ranking-description bound."
+    ]
+  },
+  "deterministicGates": [
+    { "id": "plan-hashes", "required": "The current main Commit and all listed file SHA-256 preconditions match." },
+    { "id": "focused-tests", "required": "Community recommendation tests reject Issue-title names and unbound Catalog identities; static build proves the dsh-web-search-fetch recommendation renders once under its Catalog name." },
+    { "id": "npm-check", "command": "npm run check", "required": "pass" },
+    { "id": "marketplace-build", "command": "npm run build:marketplace", "required": "The generated ranking snapshot remains below 1 MiB without weakening any bound." },
+    { "id": "diff-check", "command": "git diff --check", "required": "pass" },
+    { "id": "pull-request", "required": "All required CI checks pass on the exact PR head before merge." },
+    { "id": "public-readback", "required": "After merge, verify Pages and both production storefronts independently; report each surface separately." }
+  ],
+  "rollback": "Revert only this change through a CI-checked PR. Preserve Catalog state and contact-ledger history."
+}

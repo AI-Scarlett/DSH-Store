@@ -9,8 +9,9 @@ export function validateCommunityRecommendations(document) {
     if (!entry || !/^[a-z0-9][a-z0-9._-]{0,95}$/.test(entry.id) || ids.has(entry.id) || identities.has(identity)
       || !/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(entry.repositoryUrl)
       || !/^[A-Za-z0-9_./@-]+$/.test(entry.manifestPath) || entry.manifestPath.startsWith('/') || entry.manifestPath.includes('..')
-      || (entry.catalogId !== null && entry.catalogId !== entry.id)
+      || (entry.catalogId !== null && (typeof entry.catalogId !== 'string' || !/^[a-z0-9][a-z0-9._-]{0,95}$/.test(entry.catalogId)))
       || typeof entry.name !== 'string' || !entry.name.trim() || entry.name.length > 160
+      || /^(?:作者修复请求|author\s+(?:fix|remediation)\s+request)\s*[:：]/i.test(entry.name.trim())
       || !Array.isArray(entry.categories) || entry.categories.some(value => !/^[a-z0-9-]+$/.test(value))
       || entry.basis !== 'author-interaction' || !Number.isSafeInteger(entry.userId) || entry.userId < 1
       || !/^https:\/\/github\.com\/AI-Scarlett\/DSH-Store\/(?:issues|pull)\/\d+(?:#issuecomment-\d+)?$/.test(entry.evidenceUrl)
@@ -27,6 +28,9 @@ export function communityRecommendationEntries(document, catalogEntries, exclude
   const byId = new Map(catalogEntries.map(entry => [entry.id, entry]))
   return document.entries.filter(entry => !excluded.has(entry.repositoryUrl.toLowerCase())).map(record => {
     const catalog = record.catalogId ? byId.get(record.catalogId) : null
+    if (!record.catalogId && catalogEntries.some(entry => entry.repositoryUrl.toLowerCase() === record.repositoryUrl.toLowerCase())) {
+      throw new Error(`Community recommendation must bind Catalog identity: ${record.id}`)
+    }
     // A stale ID must never borrow another repository's approval or install action.
     if (record.catalogId && (!catalog || catalog.repositoryUrl.toLowerCase() !== record.repositoryUrl.toLowerCase())) {
       throw new Error(`Community recommendation Catalog identity mismatch: ${record.id}`)
