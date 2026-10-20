@@ -2,6 +2,7 @@
 import { communityRecommendationEntries } from '../lib/community-recommendations.js'
 export const PAGE_SIZE = 30
 export const POPULAR_LIMIT = 100
+export const MAX_RANKING_DESCRIPTION_CHARS = 64
 export const RANKING_TYPES = ['popular', 'listed', 'recommended', 'essential']
 export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const validStars = value => Number.isSafeInteger(value) && value >= 0
@@ -117,7 +118,7 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
     const listingStatus = entry.status === 'approved' && /^[a-f0-9]{40}$/.test(entry.commit || '') ? 'listed' : 'not-listed'
     return {
       id: entry.id, nameZh: light.nameZh || entry.name, nameEn: light.nameEn || entry.name,
-      version: entry.version, repositoryUrl: entry.repositoryUrl, description: Array.from(entry.description || '').slice(0, 96).join(''),
+      version: entry.version, repositoryUrl: entry.repositoryUrl, description: Array.from(entry.description || '').slice(0, MAX_RANKING_DESCRIPTION_CHARS).join(''),
       categories: [...new Set((entry.categories || []).filter(id => knownCategories.has(id)))],
       listingStatus, listingReason: getListingReason(entry, 'catalog', listingStatus),
       source: 'catalog', reviewStatus: entry.status,
@@ -137,7 +138,7 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
     repositories.add(key)
     entries.push({
       id: `candidate:${entry.id}`, nameZh: entry.name, nameEn: entry.name, version: '',
-      repositoryUrl: entry.repositoryUrl, description: Array.from(entry.description || '').slice(0, 96).join(''),
+      repositoryUrl: entry.repositoryUrl, description: Array.from(entry.description || '').slice(0, MAX_RANKING_DESCRIPTION_CHARS).join(''),
       // Only explicit category IDs are usable evidence. Do not guess from descriptions.
       categories: [...new Set((entry.topics || []).filter(id => knownCategories.has(id)))],
       listingStatus: 'not-listed', source: 'candidate', reviewStatus: entry.status, stars: null, weeklyStars: null,

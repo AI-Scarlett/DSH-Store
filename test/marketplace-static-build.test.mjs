@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
 import { catalogBridgeBuffer, compareVersions, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
-import { createRankingSnapshot, isDshDiscoveryCandidate } from '../marketplace/rankings/model.js'
+import { createRankingSnapshot, isDshDiscoveryCandidate, MAX_RANKING_DESCRIPTION_CHARS } from '../marketplace/rankings/model.js'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const execFileAsync = promisify(execFile)
@@ -130,6 +130,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(rankings, /data-ranking-tab="essential"/)
     assert.match(rankings, /aria-current="page" data-rankings-nav/)
     assert.match(rankings, /https:\/\/dsh\.store\/rankings\//)
+    assert.ok(rankingData.entries.every(entry => Array.from(entry.description).length <= MAX_RANKING_DESCRIPTION_CHARS))
     assert.ok(rankingBytes.length < 1024 * 1024)
     for (const page of [home, plugins, standards, article, articles, articleDetail, about, guide, faq, repair, scans]) {
       assert.match(page, /data-rankings-nav>榜单/)
