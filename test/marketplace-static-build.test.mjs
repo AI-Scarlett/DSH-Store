@@ -33,6 +33,26 @@ function assertCompactFooterNavigation(page, { alternateUrl, label, code }) {
   assert.match(footerBottom, new RegExp(`class="site-switch-link"[^>]*href="${alternateUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`))
   assert.match(footerBottom, new RegExp(`<span>${label}</span><small>${code}</small>`))
 }
+
+test('all page locale dictionaries translate the generated article navigation link', async () => {
+  const localeScripts = [
+    'marketplace/app.js',
+    'marketplace/about/about.js',
+    'marketplace/build/build.js',
+    'marketplace/community/community.js',
+    'marketplace/downloads/downloads.js',
+    'marketplace/faq/faq.js',
+    'marketplace/rankings/rankings.js',
+    'marketplace/scans/scans.js',
+    'marketplace/standards/standards.js',
+  ]
+  for (const path of localeScripts) {
+    const source = await readFile(new URL(`../${path}`, import.meta.url), 'utf8')
+    assert.match(source, /'nav\.articles':\s*'DSH 实战与观察'/, `${path} has the Chinese label`)
+    assert.match(source, /'nav\.articles':\s*'DSH Field Notes'/, `${path} has the English label`)
+  }
+})
+
 async function runtimeAssetDigest(directory, prefix = '') {
   const digest = createHash('sha256')
   async function visit(folder, currentPrefix) {
