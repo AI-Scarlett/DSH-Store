@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "id": "dsh-store-traffic-publication-20261020",
+  "kind": "storefront-traffic-publication-plan",
+  "createdAt": "2026-10-20",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "1b19eced320aaeeedd225fe0d28e5c7c88f45a02",
+  "authorization": "The user requested daily visit metrics in the marketplace navigation, a seven-day PV/UV chart on About, use of the independent TraceFence analytics source, server API work through Tailscale, and publication.",
+  "scope": [
+    "docs/ops/dsh-store-traffic-publication-plan-20261020.json",
+    "deploy/generate-public-dsh-store-traffic.py",
+    "deploy/site-analytics-public-traffic.cron",
+    "deploy/tracefence-public-dsh-store-traffic.location.conf",
+    "marketplace/about/about.js",
+    "marketplace/about/index.html",
+    "marketplace/styles.css",
+    "marketplace/traffic-model.js",
+    "marketplace/traffic.js",
+    "package.json",
+    "scripts/build-marketplace-static.mjs",
+    "test/marketplace-static-build.test.mjs",
+    "test/traffic-display.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-store-traffic-publication-plan-20261020.json": null,
+    "deploy/generate-public-dsh-store-traffic.py": null,
+    "deploy/site-analytics-public-traffic.cron": null,
+    "deploy/tracefence-public-dsh-store-traffic.location.conf": null,
+    "marketplace/about/about.js": "b37de8e73b370d1fad3267fca1be342d27b9c1ced163cd6d45e04b90e90bec99",
+    "marketplace/about/index.html": "2e0fd549fa4b47d01484cbd7b1f18f1ab9f8332ef9d3a44a666d3c040f16bd1a",
+    "marketplace/styles.css": "3ff97a799f53cc81757dd7355f30f9047be1840b92c6fedfbd25a807c31e68bf",
+    "marketplace/traffic-model.js": null,
+    "marketplace/traffic.js": null,
+    "package.json": "7e55af5a7db9109b4788c0f318aa35be707aec8c16b7525f7e2036a06613e0f2",
+    "scripts/build-marketplace-static.mjs": "378f00ebe5e9380ea1dc356aaeffe99bfe5618e889a451f3bddce88bd3b53791",
+    "test/marketplace-static-build.test.mjs": "22d3c51ac09b3cc71568ce927fb2ea033cd9c65d35ed90c8dc2541d89f935d70",
+    "test/traffic-display.test.mjs": null
+  },
+  "serverScope": [
+    {
+      "hostId": "tracefence-intl-production",
+      "tailscaleAddress": "100.119.62.98",
+      "provider": "aliyun",
+      "path": "/etc/nginx/sites-available/tracefence-intl.conf",
+      "baseSha256": "e4c0fcd147b46faad8855491fc4ae90440d2d7834aaf279e059e75adc6c791ab",
+      "insertedSnippet": "deploy/tracefence-public-dsh-store-traffic.location.conf",
+      "insertedSnippetSha256": "bf9d27c66728981c31817fb1d8de2bf89398a80d3dec62476e6e0bfa03f60b37",
+      "backupPath": "/etc/nginx/sites-available/tracefence-intl.conf.bak-traffic-20261020",
+      "backupBaseSha256": null,
+      "stagingPath": "/etc/nginx/sites-available/.tracefence-traffic-route.upload-20261020",
+      "stagingBaseSha256": null,
+      "backupRequired": true
+    },
+    {
+      "hostId": "tracefence-intl-production",
+      "tailscaleAddress": "100.119.62.98",
+      "provider": "aliyun",
+      "path": "/etc/cron.d/site-analytics-public-traffic",
+      "baseSha256": null,
+      "contentSource": "deploy/site-analytics-public-traffic.cron",
+      "contentSha256": "47fac1a268ea689b309db0443a0a22ebedbffd89bde498b7bc83c9adb7be0d03",
+      "stagingPath": "/etc/cron.d/.site-analytics-public-traffic.upload-20261020",
+      "stagingBaseSha256": null,
+      "backupRequired": false
+    },
+    {
+      "hostId": "tracefence-intl-production",
+      "tailscaleAddress": "100.119.62.98",
+      "provider": "aliyun",
+      "path": "/opt/site-analytics/public_dsh_store_traffic.py",
+      "baseSha256": null,
+      "contentSource": "deploy/generate-public-dsh-store-traffic.py",
+      "contentSha256": "1e099d488bc58591c951c4ba11ab0163c60aae8d1ce03eac263d41d27cbab375",
+      "stagingPath": "/opt/site-analytics/.public_dsh_store_traffic.py.upload-20261020",
+      "stagingBaseSha256": null,
+      "backupRequired": false
+    },
+    {
+      "hostId": "tracefence-intl-production",
+      "tailscaleAddress": "100.119.62.98",
+      "provider": "aliyun",
+      "path": "/var/lib/site-analytics/public-dsh-store-traffic.json",
+      "baseSha256": null,
+      "backupRequired": false,
+      "stagingPattern": "/var/lib/site-analytics/.public-dsh-store-traffic.json.*.tmp",
+      "note": "Generated allowlisted aggregate; preserve existing snapshots during rollback."
+    }
+  ],
+  "design": {
+    "source": "The protected TraceFence analytics collector reads the domestic Tailscale JSON endpoint http://100.75.186.28:18081/site-analytics.json every 15 minutes and merges reports.domestic into reports.dsh-store-cn.",
+    "publicEndpoint": "https://tracefence.com/_public/dsh-store-traffic.json",
+    "publicRoute": "Unauthenticated exact static JSON route with wildcard CORS; response contains only the aggregate allowlist and sends no credentials.",
+    "publicRefreshSchedule": "6,21,36,51 * * * *; runs shortly after the existing analytics collector at minutes 4,19,34,49.",
+    "publicFieldsOnly": ["schemaVersion", "site", "timeZone", "generatedAt", "sourceUpdatedAt", "fresh", "today.date", "today.pv", "today.uv", "days[].date", "days[].pv", "days[].uv"],
+    "excludedFields": ["raw logs", "IP addresses", "visitor identifiers", "location details", "referrers", "campaigns", "search terms", "other report tabs"],
+    "metrics": {
+      "pv": "human_pageviews after the analytics collector's known-bot and automation filters",
+      "uv": "human_unique_ips, an IP-deduplicated estimate rather than a count of verified people",
+      "timeZone": "Asia/Shanghai",
+      "window": "The latest seven calendar days including today"
+    },
+    "freshness": "Collector runs every 15 minutes; stale source data must not be presented as current today totals."
+  },
+  "deterministicGates": [
+    {"id": "precondition-hashes", "required": "All local and server baseline hashes match before each mutation."},
+    {"id": "npm-check", "command": "npm run check", "required": "pass"},
+    {"id": "static-builds", "required": "International and domestic marketplace builds succeed and include the traffic runtime and About chart."},
+    {"id": "aggregate-fixture", "required": "The generator emits only the allowlisted schema from a disposable fixture and handles stale/malformed input fail-closed."},
+    {"id": "nginx-health", "required": "nginx -t passes before reload; the new route returns only the public aggregate and the protected dashboard remains protected."},
+    {"id": "pull-request", "required": "Scoped CI checks pass on the exact PR head before protected-main merge."},
+    {"id": "public-readback", "required": "Pages, dsh.store, dsh-store.cn, and the public aggregate endpoint return the expected routes/data after deployment."}
+  ],
+  "deployment": {
+    "source": "Auditable CI-checked PR, protected-main merge, then GitHub Pages build and validated refresh of both storefronts.",
+    "server": "Install the reviewed helper and new 15-minute cron job on the registered Aliyun TraceFence collector over Tailscale; back up the existing Nginx config, atomically update it, validate and reload.",
+    "rollback": "Revert the source change through a new CI-checked PR; disable the added cron and restore the exact Nginx backup atomically, run nginx -t, reload, and verify the public endpoint is gone while /_analytics/ still requires Basic Auth. Keep generated snapshots for recovery."
+  },
+  "safety": {
+    "dshCoreModified": false,
+    "thirdPartyRuntimeExecuted": false,
+    "fullAnalyticsSnapshotExposed": false,
+    "credentialsIncluded": false,
+    "visitorIdentityExposed": false,
+    "authorOutreach": false
+  },
+  "status": "planned"
+}

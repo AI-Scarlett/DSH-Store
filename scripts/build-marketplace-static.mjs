@@ -828,7 +828,10 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
   const withBaiduTongji = baiduTongjiMarkup
     ? replaceRequired(withBaiduUnionVerification, '</head>', `${baiduTongjiMarkup}\n</head>`, `${pagePath} head`)
     : withBaiduUnionVerification
-  const withUmami = replaceRequired(withBaiduTongji, '</head>', `${umamiMarkup}\n</head>`, `${pagePath} Umami head`)
+  const trafficScriptPath = relative(dirname(pagePath), 'marketplace/traffic.js').replace(/\\/g, '/')
+  const trafficMarkup = `<script type="module" src="${htmlEscape(`${trafficScriptPath}?v=${runtimeAssetVersion}`)}"></script>`
+  const withTraffic = replaceRequired(withBaiduTongji, '</head>', `${trafficMarkup}\n</head>`, `${pagePath} traffic head`)
+  const withUmami = replaceRequired(withTraffic, '</head>', `${umamiMarkup}\n</head>`, `${pagePath} Umami head`)
   const pageLanguage = fixedLocale || htmlLanguage
   const pageDefaultLocale = fixedLocale === 'zh-CN' ? 'zh' : defaultLocale
   const fixedLocaleAttribute = fixedLocale ? ` data-fixed-locale="${fixedLocale}"` : ''

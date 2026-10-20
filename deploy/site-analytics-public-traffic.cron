@@ -1,0 +1,1 @@
+6,21,36,51 * * * * root /usr/bin/flock -n /run/site-analytics-public-traffic.lock /usr/bin/python3 /opt/site-analytics/public_dsh_store_traffic.py --input /var/lib/site-analytics/site-analytics.json --output /var/lib/site-analytics/public-dsh-store-traffic.json >>/var/log/site-analytics-public-traffic.log 2>&1
