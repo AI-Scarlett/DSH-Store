@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0e7ff4f0ce2921580c9fda4575fbb6185478b799",
-  "version": "0.1.1",
+  "commit": "696c088ce8982c9518b9c00f3b82a7bdd70c8aa3",
+  "version": "0.1.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T11:16:29.000Z",
-    "observedAt": "2026-10-18T01:14:58.596Z",
+    "updatedAt": "2026-10-20T03:32:30.000Z",
+    "observedAt": "2026-10-20T12:19:57.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "owner-requested-fixed-source-review-v1",
-      "checkedAt": "2026-10-18T01:14:58.596Z",
-      "evidenceUrl": "https://github.com/nubeslove/dsh-file-actions/commit/0e7ff4f0ce2921580c9fda4575fbb6185478b799",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-20T12:19:57.000Z",
+      "evidenceUrl": "https://github.com/nubeslove/dsh-file-actions/commit/696c088ce8982c9518b9c00f3b82a7bdd70c8aa3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Immutable manifest, Bundle, license and complete bounded text surface reviewed."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or package scripts executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime evidence is not independent Store acceptance."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,7 +73,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Bounded static capability admission review; no independent runtime security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -90,6 +90,7 @@
   "entryIds": [
     "file-actions"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "FIXED_SOURCE_REVIEW_REJECTED: AUTH001 lib/index.js:176 POST /exec 未在探测路径/启动进程前校验调用方/Host/Origin，也不要求 JSON Content-Type；动作白名单和 64 KiB 上限不能代替授权。 EXEC001 lib/index.js:88 open/browser/open-url 交给 cmd.exe /c start，手工引号与 windowsVerbatimArguments=true 仍保留 cmd 百分号变量展开；本地脚本/可执行文件也缺独立确认边界。 COMPAT001 package.json:23 固定 manifest 没有当前官方窗口（0.2.1-alpha.5 / rc.1 / rc.2）至少一版的精确 compatible 记录；历史版本、宽范围和自定义 workshop 字段不替代逐版声明。",
   "compatibility": {
