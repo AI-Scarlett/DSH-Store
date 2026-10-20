@@ -18,6 +18,21 @@ const root = new URL('../', import.meta.url)
 const rootPath = fileURLToPath(root)
 const staticBuilderPath = fileURLToPath(new URL('scripts/build-marketplace-static.mjs', root))
 const sha256 = value => createHash('sha256').update(value).digest('hex')
+function assertCompactFooterNavigation(page, { alternateUrl, label, code }) {
+  const primaryNav = page.match(/<nav class="site-nav"[\s\S]*?<\/nav>/)?.[0]
+  const footerNav = page.match(/<nav class="footer-nav"[\s\S]*?<\/nav>/)?.[0]
+  const footerBottom = page.match(/<div class="footer-bottom">([\s\S]*?)<\/div>/)?.[1]
+  assert.ok(primaryNav, 'primary navigation exists')
+  assert.ok(footerNav, 'footer navigation exists')
+  assert.ok(footerBottom, 'footer bottom exists')
+  assert.doesNotMatch(primaryNav, /data-i18n="nav\.(?:faq|about|submit)"/)
+  assert.doesNotMatch(primaryNav, /class="site-switch-link"/)
+  assert.match(footerNav, /href="[^"]*faq\/"/)
+  assert.match(footerNav, /href="[^"]*about\/"/)
+  assert.match(footerNav, /data-i18n="nav\.submit"/)
+  assert.match(footerBottom, new RegExp(`class="site-switch-link"[^>]*href="${alternateUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`))
+  assert.match(footerBottom, new RegExp(`<span>${label}</span><small>${code}</small>`))
+}
 async function runtimeAssetDigest(directory, prefix = '') {
   const digest = createHash('sha256')
   async function visit(folder, currentPrefix) {
@@ -240,7 +255,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     }
     assert.match(home, /name="dsh-catalog-delivery" content="external-json"/)
     assert.match(home, /data-automation-overall/)
-    assert.match(home, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
+    assertCompactFooterNavigation(home, { alternateUrl: 'https://dsh-store.cn/', label: '国内站', code: 'CN' })
     assert.match(home, /href="\.\/scans\/" data-scan-history-nav/)
     assert.match(home, /src="\.\/scan-history-nav\.js\?v=20261003-rankings-1"/)
     assert.match(home, new RegExp(`src="\\.\\/app\\.js\\?v=${runtimeVersion}"`))
@@ -267,7 +282,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
     assert.match(home, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
     assert.match(home, /href="https:\/\/aiaiai\.help\/"[^>]*>aiaiai\.help/)
-    assert.match(home, /href="https:\/\/dsh-store\.cn\/"[^>]*>DSH STORE · 国内站/)
+    assert.doesNotMatch(home, /href="https:\/\/dsh-store\.cn\/"[^>]*>DSH STORE · 国内站/)
     assert.doesNotMatch(home, /href="https:\/\/dsh\.store\/"[^>]*>DSH STORE · International/)
     assert.match(home, /hreflang="en"[^>]*https:\/\/dsh\.store\//)
     assert.match(home, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\//)
@@ -342,7 +357,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(article, /hreflang="en"[^>]*https:\/\/dsh\.store\/about\/deepseek-harness-guide\//)
     assert.match(article, /hreflang="x-default"[^>]*https:\/\/dsh\.store\/about\/deepseek-harness-guide\//)
     assert.match(article, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\/about\/deepseek-harness-guide\//)
-    assert.match(article, /class="site-switch-link"[^>]*href="https:\/\/dsh-store\.cn\//)
+    assertCompactFooterNavigation(article, { alternateUrl: 'https://dsh-store.cn/', label: '国内站', code: 'CN' })
     assert.match(article, /作者：<a href="https:\/\/x\.com\/Russell3402"/)
     assert.match(article, /https:\/\/mp\.weixin\.qq\.com\/s\/oKppevLlwQOg8TfPG74rVw/)
     assert.match(about, /href="\.\/deepseek-harness-guide\/"/)
@@ -577,10 +592,10 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       assert.doesNotMatch(page, /c0cf0ce3-b77c-4570-9573-59c07a583950/)
       assert.ok(page.indexOf('hm.baidu.com/hm.js?7c34f1fd076e8f052b6a6f746ab1135d') < page.indexOf('</head>'))
       assert.match(page, /<html lang="zh-CN" data-default-locale="zh"(?: data-fixed-locale="zh-CN")?>/)
-      assert.match(page, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\/"/)
+      assertCompactFooterNavigation(page, { alternateUrl: 'https://dsh.store/', label: '国际站', code: 'INTL' })
       assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
       assert.match(page, /href="https:\/\/aiaiai\.help\/"[^>]*>aiaiai\.help/)
-      assert.match(page, /href="https:\/\/dsh\.store\/"[^>]*>DSH STORE · International/)
+      assert.doesNotMatch(page, /href="https:\/\/dsh\.store\/"[^>]*>DSH STORE · International/)
       assert.doesNotMatch(page, /href="https:\/\/dsh-store\.cn\/"[^>]*>DSH STORE · 国内站/)
       if (pagePath === 'marketplace/index.html') {
         assert.match(page, /<meta name="baidu_union_verify" content="f7a5e80f6ec4d01cdfd011c771e7e706">/)
@@ -652,7 +667,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     assert.match(domesticArticle, /hreflang="en"[^>]*https:\/\/dsh\.store\/about\/deepseek-harness-guide\//)
     assert.match(domesticArticle, /hreflang="zh-CN"[^>]*https:\/\/dsh-store\.cn\/about\/deepseek-harness-guide\//)
     assert.match(domesticArticle, /hreflang="x-default"[^>]*https:\/\/dsh\.store\/about\/deepseek-harness-guide\//)
-    assert.match(domesticArticle, /class="site-switch-link"[^>]*href="https:\/\/dsh\.store\//)
+    assertCompactFooterNavigation(domesticArticle, { alternateUrl: 'https://dsh.store/', label: '国际站', code: 'INTL' })
     assert.match(domesticArticle, /https:\/\/mp\.weixin\.qq\.com\/s\/oKppevLlwQOg8TfPG74rVw/)
     assert.equal(manifest.siteOrigin, 'https://dsh-store.cn')
     assert.equal(manifest.alternateOrigin, 'https://dsh.store')
