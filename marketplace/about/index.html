@@ -155,9 +155,41 @@
       </div>
     </section>
 
+    <section class="about-traffic section-shell" id="traffic-weekly" aria-labelledby="traffic-title">
+      <div class="section-heading reveal">
+        <div><span class="section-index">04 / VISIT SIGNAL</span><h2 id="traffic-title" data-i18n="traffic.title">DSH STORE 国内站近七日访问趋势</h2></div>
+        <p data-i18n="traffic.lead">查看商城最近七个自然日的页面浏览与访问趋势，数据来自独立的站点访问统计。</p>
+      </div>
+      <figure class="traffic-panel reveal">
+        <div class="traffic-panel-head">
+          <div><span data-i18n="traffic.period">LAST 7 DAYS / ASIA-SHANGHAI</span><strong data-i18n="traffic.chartHeading">页面浏览与访问估算</strong></div>
+          <div class="traffic-chart-legend" aria-label="Traffic chart legend">
+            <span><i class="traffic-legend-pv" aria-hidden="true"></i><b data-i18n="traffic.pvLegend">PV 页面浏览</b></span>
+            <span><i class="traffic-legend-uv" aria-hidden="true"></i><b data-i18n="traffic.uvLegend">UV 按 IP 去重</b></span>
+          </div>
+        </div>
+        <svg class="traffic-chart" data-traffic-chart role="img" viewBox="0 0 360 218" aria-labelledby="traffic-chart-title traffic-chart-desc">
+          <title id="traffic-chart-title">DSH STORE 国内站近七日访问趋势</title>
+          <desc id="traffic-chart-desc">按日展示过滤已知爬虫后的页面浏览量与按 IP 去重访客数。</desc>
+          <text class="traffic-chart-placeholder" x="180" y="110" text-anchor="middle">正在读取访问统计…</text>
+        </svg>
+        <p class="traffic-chart-status" data-traffic-status aria-live="polite" data-i18n="traffic.loading">正在读取访问统计…</p>
+        <details class="traffic-table-details">
+          <summary data-traffic-table-summary data-i18n="traffic.tableSummary">查看每日明细</summary>
+          <div class="traffic-table-scroll">
+            <table>
+              <thead><tr><th scope="col" data-i18n="traffic.tableDate">日期</th><th scope="col">PV</th><th scope="col">UV</th></tr></thead>
+              <tbody data-traffic-table-body></tbody>
+            </table>
+          </div>
+        </details>
+        <figcaption class="traffic-source-note" data-i18n="traffic.note">PV 为过滤已知爬虫与自动化请求后的页面浏览量；UV 为按 IP 去重的访问估算，不等同于核验过的个人数。统计约每 15 分钟更新。</figcaption>
+      </figure>
+    </section>
+
     <!-- DSH_ARTICLE_PROMO_BEGIN -->
     <section class="about-reading section-shell" aria-labelledby="reading-title">
-      <div class="section-heading reveal"><div><span class="section-index">04 / FEATURED READING</span><h2 id="reading-title" data-i18n="reading.title">用一篇长文，把 DeepSeek Harness 真正讲透。</h2></div><p data-i18n="reading.lead">约两万字、十三章，从模型与 Harness 的分工一路讲到 Cordis、Agent Loop、Session Log、安全管线、四种模式与真实应用边界。</p></div>
+      <div class="section-heading reveal"><div><span class="section-index">05 / FEATURED READING</span><h2 id="reading-title" data-i18n="reading.title">用一篇长文，把 DeepSeek Harness 真正讲透。</h2></div><p data-i18n="reading.lead">约两万字、十三章，从模型与 Harness 的分工一路讲到 Cordis、Agent Loop、Session Log、安全管线、四种模式与真实应用边界。</p></div>
       <article class="about-reading-card reveal">
         <a class="about-reading-visual" href="./deepseek-harness-guide/" aria-label="阅读《万字长文：Deepseek Harness 一文全看懂！！》" data-analytics-event="featured_article_open" data-analytics-item="deepseek_harness_guide">
           <img src="https://pbs.twimg.com/media/HQorluqbAAAFxBu?format=jpg&amp;name=large" alt="DeepSeek Harness 长文封面，原文配图" width="1600" height="900" loading="lazy" decoding="async" referrerpolicy="no-referrer">
@@ -174,7 +206,7 @@
     <!-- DSH_ARTICLE_PROMO_END -->
 
     <section class="about-contact section-shell" id="contact" aria-labelledby="contact-title">
-      <div class="section-heading reveal"><div><span class="section-index">05 / CONTACT</span><h2 id="contact-title" data-i18n="contact.title">和我们保持联系。</h2></div><p data-i18n="contact.lead">插件提交、产品合作、品牌交流或使用反馈，都可以通过下面的渠道联系我们。</p></div>
+      <div class="section-heading reveal"><div><span class="section-index">06 / CONTACT</span><h2 id="contact-title" data-i18n="contact.title">和我们保持联系。</h2></div><p data-i18n="contact.lead">插件提交、产品合作、品牌交流或使用反馈，都可以通过下面的渠道联系我们。</p></div>
       <div class="about-contact-grid">
         <div class="about-contact-links">
           <a class="about-contact-card reveal" href="mailto:jadename.zhou@gmail.com" data-analytics-event="contact_email_open" data-analytics-item="about"><span>EMAIL / DIRECT</span><i aria-hidden="true">↗</i><small data-i18n="contact.email">联系邮箱</small><strong>jadename.zhou@gmail.com</strong></a>
