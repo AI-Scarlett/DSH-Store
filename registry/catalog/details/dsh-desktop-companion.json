@@ -22,7 +22,7 @@
   "manifestPath": "plugins/dsh-desktop-companion/package.json",
   "installPath": "plugins/dsh-desktop-companion",
   "updatePolicy": "external-only",
-  "commit": "68947d25c566a6f520936b48b19aa8a9b5aeb70d",
+  "commit": "e57c3dd777011292342897a1388ae870f46d8841",
   "version": "0.0.22",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-20T11:27:32.000Z",
-    "observedAt": "2026-10-20T12:19:57.000Z",
+    "updatedAt": "2026-10-21T03:36:16.000Z",
+    "observedAt": "2026-10-21T03:40:48.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-20T12:19:57.000Z",
-      "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/68947d25c566a6f520936b48b19aa8a9b5aeb70d",
+      "checkedAt": "2026-10-21T03:40:48.000Z",
+      "evidenceUrl": "https://github.com/ZK-Andy/dotnet-deepseek-harness-desktop/commit/e57c3dd777011292342897a1388ae870f46d8841",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e780986115caaa4f7c6c30e75b24e2995d4b29b613600e1e5d72ba5a8774d531",
+    "binding": "3ea98ff1906614c89ae27db758aa8a2d1b1a0b1681b5c4b029e963faff24754d",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -92,7 +92,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
