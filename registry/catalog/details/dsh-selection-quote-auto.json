@@ -19,28 +19,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ea237ef8e6f4667a31c44b912b69582b13f98310",
-  "version": "0.2.0",
+  "commit": "3e3bed8e047756c25aa1012e7a759634f0cd7fc8",
+  "version": "0.2.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-21T13:35:47.000Z",
-    "observedAt": "2026-10-21T13:31:49.000Z",
+    "updatedAt": "2026-10-21T14:33:14.000Z",
+    "observedAt": "2026-10-21T19:57:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-21T13:31:49.000Z",
-      "evidenceUrl": "https://github.com/prettyfox/dsh-selection-quote-auto/commit/ea237ef8e6f4667a31c44b912b69582b13f98310",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-21T19:57:02.000Z",
+      "evidenceUrl": "https://github.com/prettyfox/dsh-selection-quote-auto/commit/3e3bed8e047756c25aa1012e7a759634f0cd7fc8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -50,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -60,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -70,12 +70,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "404a01beb1ab9cc917485bd665d4d2aac8f09c78d3c0baa393774fe824bae823",
+    "binding": "318856d579bc595e336c6eddce83fd4d171aa843a2cfc27b2e6d2896095d5d16",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -87,6 +87,7 @@
   "entryIds": [
     "selection-quote-auto"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
