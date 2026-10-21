@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "community-recommendation-ranking-name-fix-20261021",
+  "type": "storefront-data-and-validation-repair-plan",
+  "createdAt": "2026-10-21",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "7ee44c49a134e3524dc756562cca7e125970735b",
+  "authorization": "The user requested repair of malformed plugin names in the ranking and publication of the completed fix.",
+  "scope": [
+    "docs/ops/community-recommendation-ranking-name-fix-plan-20261021.json",
+    "registry/community-recommendations.json",
+    "marketplace/lib/community-recommendations.js",
+    "test/community-recommendations.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/community-recommendation-ranking-name-fix-plan-20261021.json": null,
+    "registry/community-recommendations.json": "81a3f643b906474e0092b0c0cd3ea288f379a05374ce72bca4bb0d1eec78b9b6",
+    "marketplace/lib/community-recommendations.js": "b9a7d017b8af85a1509de3d3c5cf1f46aa8ebd29af861a9983032a75b1ea501c",
+    "test/community-recommendations.test.mjs": "9f87e6fa7bdfcd1c8b4bdda976190b091e8ce05ccb813e4affa8bd225e3a57b3",
+    "test/marketplace-static-build.test.mjs": "c1823eaee45363e5c31523019ab4c8261a33c04ca86f15f06081f6c3d1ca090c"
+  },
+  "change": {
+    "description": "Replace 17 community recommendation labels with the exact package.json name verified at each current GitHub default branch. Reject labels that repeat the repository owner/name heading. Recommendation evidence remains separate from Catalog admission and installability.",
+    "verifiedPackageNames": [
+      { "id": "interaction-ab8ee6f0d65113d3", "name": "dsh-usage-tab", "repository": "CNyaotian-Lunar/dsh-usage-tab", "manifestPath": "package.json", "manifestBlobSha": "6d9e61d0699e89e8b68255940acd28fa91cc8846" },
+      { "id": "interaction-2d3d237cb8d5bb23", "name": "@dightendless/dsh-bridge-browser", "repository": "DightEndless/dsh-browser", "manifestPath": "packages/browser/bridge-browser/package.json", "manifestBlobSha": "6b1f7a43c8eec2dfa60e856b030d58af9e2915eb" },
+      { "id": "interaction-05be00b908c44b50", "name": "@akasha-book/hooks", "repository": "Ersith/akasha-book", "manifestPath": "plugins/akasha-hooks/package.json", "manifestBlobSha": "d87a3712168ac10862f679e1a95675ae73ff58bc" },
+      { "id": "interaction-25e14a4fa5997bec", "name": "@akasha-book/gate", "repository": "Ersith/akasha-book", "manifestPath": "plugins/akasha-gate/package.json", "manifestBlobSha": "2e9e21eae553882344b4dc4e06f85b1f2f25e0be" },
+      { "id": "interaction-f3dd7dbe87530286", "name": "@akasha-book/mcp", "repository": "Ersith/akasha-book", "manifestPath": "plugins/mcp-akasha/package.json", "manifestBlobSha": "27140c9de4b72f6972e64ce71d2200a33128c094" },
+      { "id": "interaction-ef7f25a03c5c5b2f", "name": "@akasha-book/sleep", "repository": "Ersith/akasha-book", "manifestPath": "plugins/akasha-sleep/package.json", "manifestBlobSha": "a4fb7f5ecdf5e8d265b61c982e41a2bed321d3de" },
+      { "id": "interaction-a01ea901ac8483e3", "name": "@akasha-book/session", "repository": "Ersith/akasha-book", "manifestPath": "plugins/akasha-session/package.json", "manifestBlobSha": "081d3382f6402ca01871daacff00b2a0122af730" },
+      { "id": "interaction-af92caf265f396b8", "name": "dsh-context-manager", "repository": "SkanderBog/dsh-context-manager", "manifestPath": "package.json", "manifestBlobSha": "94cb5d3c2345bc06fc97f65fac70e0aa452e11ca" },
+      { "id": "interaction-0b38b2ae8a5a0504", "name": "@1agents/session-reader", "repository": "scottzx/session-reader", "manifestPath": "package.json", "manifestBlobSha": "e17af56e2e3b8801019561c96e01108885fba257" },
+      { "id": "interaction-33d1538f160cdd93", "name": "@1agents/acp-service", "repository": "scottzx/1acp", "manifestPath": "packages/service/package.json", "manifestBlobSha": "9e16a2b536dc364c4ba7b3f7cc5be3167f0c41ba" },
+      { "id": "interaction-762104621f980a4e", "name": "misakanet", "repository": "Ikalus1988/MisakaNet", "manifestPath": "package.json", "manifestBlobSha": "887065bc3faa440959f37ed89735875ff8c767e8" },
+      { "id": "interaction-295a27592ab883de", "name": "cordis-plugin-sofagent", "repository": "KongFangXun/sofagent", "manifestPath": "engine/dsh-plugins/cordis-plugin-sofagent/package.json", "manifestBlobSha": "2d228457963688bc75a149e8c088fa5b589e4bcb" },
+      { "id": "interaction-cdb414f5f5c104ec", "name": "dsh-fengge-distill", "repository": "MincongZhou/fengge-distill", "manifestPath": "package.json", "manifestBlobSha": "d8fe364bfd749b008b5f04575efb4c9c2926c804" },
+      { "id": "interaction-d04f3b39e47deb96", "name": "@adwmc/helm-d", "repository": "ADWMC/helm-d", "manifestPath": "packages/helmd/package.json", "manifestBlobSha": "d056efe05904fd1d332135c18397602fea50d740" },
+      { "id": "interaction-65b06d615800e61d", "name": "dsh-plugin-content-policy", "repository": "L-ingqin12/dsh-redaction", "manifestPath": "packages/dsh-plugin-content-policy/package.json", "manifestBlobSha": "21160917a6b5ef047ba9a0738c8c3437e6ddf627" },
+      { "id": "interaction-df165f66280b66f9", "name": "dsh-plugin-redact", "repository": "L-ingqin12/dsh-redaction", "manifestPath": "packages/dsh-plugin-redact/package.json", "manifestBlobSha": "87fedc86ec6e51559a55a01c8692b8ac3440f8cc" },
+      { "id": "interaction-7d80b900c9eb34b6", "name": "dsh-openwrite", "repository": "LiPu-jpg/Openwrite", "manifestPath": "package.json", "manifestBlobSha": "129f61d61557c321e3663f3cf2f6346a52b856e2" }
+    ],
+    "preserved": [
+      "No Catalog status, ranking score, category, author-contact history, or install eligibility changes.",
+      "Keep the existing 1 MiB producer/input/browser snapshot bound and 64-character description bound.",
+      "GitHub package names are display labels only, not fixed-source admission evidence."
+    ]
+  },
+  "deterministicGates": [
+    { "id": "base-and-hashes", "required": "Checked-out base is 7ee44c49a134e3524dc756562cca7e125970735b and every precondition SHA-256 matches." },
+    { "id": "recommendation-contract", "required": "Regression tests reject repository-heading labels and bind all 17 generated ranking labels to reviewed package.json names." },
+    { "id": "npm-check", "command": "npm run check", "required": "pass" },
+    { "id": "marketplace-build", "command": "npm run build:marketplace", "required": "Ranking snapshot stays below the existing 1 MiB bound without relaxing any limit." },
+    { "id": "diff-check", "command": "git diff --check", "required": "pass" },
+    { "id": "publication", "required": "Merge only through a CI-checked PR; verify Pages and both storefronts independently after merge." }
+  ],
+  "rollback": "Revert only this scoped storefront name and validation change through a CI-checked PR. Preserve Catalog and author-contact state."
+}

@@ -10,6 +10,22 @@ import { communityRecommendationEntries, communityRecommendationPage, validateCo
 import { createRankingSnapshot, rankingEntries, rankingPage, renderRankingRows, applyRankingRefreshState } from '../marketplace/rankings/model.js'
 const json = async path => JSON.parse(await readFile(new URL(path, import.meta.url), 'utf8'))
 
+test('verified recommendation labels match reviewed package manifests and do not repeat repository headings', async () => {
+  const [registry, plan] = await Promise.all([
+    json('../registry/community-recommendations.json'),
+    json('../docs/ops/community-recommendation-ranking-name-fix-plan-20261021.json'),
+  ])
+  const byId = new Map(registry.entries.map(entry => [entry.id, entry]))
+  assert.match(plan.baseCommit, /^[a-f0-9]{40}$/)
+  assert.equal(plan.change.verifiedPackageNames.length, 17)
+  for (const expected of plan.change.verifiedPackageNames) {
+    const entry = byId.get(expected.id)
+    assert.ok(entry, `recommendation ${expected.id} exists`)
+    assert.equal(entry.name, expected.name, `${expected.repository} ${expected.manifestPath}`)
+    assert.notEqual(entry.name.toLowerCase(), expected.repository.toLowerCase())
+  }
+})
+
 test('all interactive plugins remain on both recommendation surfaces across every page with admission unchanged', async () => {
   const [catalog, index, registry, policy, candidates] = await Promise.all([
     loadCatalogFromFiles(), json('../registry/catalog-index.json'), json('../registry/community-recommendations.json'),
@@ -77,6 +93,7 @@ test('recommendation names cannot reuse repair-request titles or float beside a 
   const base = { id: 'a', catalogId: null, repositoryUrl: 'https://github.com/example/a', manifestPath: 'package.json', name: '作者修复请求：example/a（DSH STORE）', categories: [], basis: 'author-interaction', userId: 1, evidenceUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/1', occurredAt: '2026-10-16T00:00:00Z' }
   const registry = { schemaVersion: 1, updatedAt: base.occurredAt, entries: [base] }
   assert.throws(() => validateCommunityRecommendations(registry), /Invalid community recommendation evidence/)
+  assert.throws(() => validateCommunityRecommendations({ ...registry, entries: [{ ...base, name: 'Example/a' }] }), /Invalid community recommendation evidence/)
   const named = { ...registry, entries: [{ ...base, name: 'Example Plugin' }] }
   assert.throws(() => communityRecommendationEntries(named, [{ id: 'example-plugin', repositoryUrl: base.repositoryUrl }]), /must bind Catalog identity/)
 })

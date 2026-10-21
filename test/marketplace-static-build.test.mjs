@@ -155,9 +155,16 @@ test('static marketplace derives manager identity and catalog cards without muta
     const candidates = JSON.parse(await readFile(new URL('registry/candidates.json', root), 'utf8'))
     const catalogRepos = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
     const communityRecommendations = JSON.parse(await readFile(new URL('registry/community-recommendations.json', root), 'utf8'))
+    const recommendationNamePlan = JSON.parse(await readFile(new URL('docs/ops/community-recommendation-ranking-name-fix-plan-20261021.json', root), 'utf8'))
     const policy = JSON.parse(await readFile(new URL('registry/automation-policy.json', root), 'utf8'))
     const expectedRankings = createRankingSnapshot(catalog, JSON.parse(catalogIndexBefore), { candidates, communityRecommendations, excludedRepositories: policy.search.excludedRepositories })
     assert.deepEqual(new Set(rankingData.entries.map(entry => entry.id)), new Set(expectedRankings.entries.map(entry => entry.id)))
+    for (const expected of recommendationNamePlan.change.verifiedPackageNames) {
+      const entry = rankingData.entries.find(record => record.id === expected.id)
+      assert.ok(entry, `ranking includes ${expected.repository}`)
+      assert.equal(entry.nameZh, expected.name)
+      assert.equal(entry.nameEn, expected.name)
+    }
     assert.equal(rankingData.entries.filter(entry => entry.listingStatus === 'listed').length, catalog.entries.filter(entry => entry.status === 'approved' && /^[a-f0-9]{40}$/.test(entry.commit || '')).length)
     assert.ok(rankingData.entries.some(entry => entry.listingStatus === 'not-listed'))
     assert.ok(rankingData.entries.filter(entry => entry.listingStatus === 'not-listed').every(entry => typeof entry.listingReason === 'string' && entry.listingReason.length > 0))
