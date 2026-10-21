@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "package-source-metadata-scope-fix-20261021",
+  "type": "catalog-review-analysis-repair-plan",
+  "createdAt": "2026-10-21",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "506f0941227098b4812c73bfaa0bd2b3fe58aad9",
+  "authorization": {
+    "source": "direct-user-request",
+    "githubWriteCredential": "short-lived-token-required",
+    "request": "Repair the DSH STORE fixed-source scanner error reported by the author and process the related re-review request."
+  },
+  "scope": [
+    "docs/ops/package-source-metadata-scope-fix-20261021.json",
+    "src/package-source-surface.mjs",
+    "test/package-source-surface.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/package-source-metadata-scope-fix-20261021.json": null,
+    "src/package-source-surface.mjs": "0ed1e7f5f69e64f754b3d2c525846b42bdf74a7e9226ca63319c1e681351d71f",
+    "test/package-source-surface.test.mjs": "1fbc1279309ee247fa52fa7c9c4d6f66891a0a230d76333625c1dbcfd34ccb31"
+  },
+  "change": {
+    "description": "Limit implicit package metadata to root-level package control files, so nested documentation or ignore files in repository-only subtrees do not widen a fixed package's runtime surface. Preserve explicit package file selectors and flag unsupported nested ignore rules for artifact review.",
+    "reportedBy": {
+      "repository": "zgat/dsh-wechat",
+      "issueNumber": 1321,
+      "commentId": 6284314307,
+      "followupCommentId": 6284405471,
+      "fixedCommit": "bff7282b54743877fcda19081b76423d6003e737"
+    },
+    "preserved": [
+      "No DSH or @deepseek-ai package, source, Profile, or installation changes.",
+      "No Catalog admission, permissions, author history, or installability changes in this repair.",
+      "Explicit package selectors remain authoritative; only implicit metadata selection is narrowed."
+    ]
+  },
+  "postconditions": {
+    "src/package-source-surface.mjs": "8187d628f40f1565bd084fb5ce25d8262564cd08c2b91838e1024db1519a5a5f",
+    "test/package-source-surface.test.mjs": "1ec234f3f2f68754b842390e907d5f8e7b3560117cd7b9317940a5a64984adaf"
+  },
+  "deterministicGates": [
+    { "id": "scanner-scope-regression", "command": "node --test test/package-source-surface.test.mjs", "required": "19/19 pass, including repository-only nested metadata exclusion and explicit artifact-review behavior." },
+    { "id": "repo-check", "command": "npm run check", "required": "pass; validate the current Registry and all tests." },
+    { "id": "marketplace-build", "command": "npm run build:marketplace", "required": "pass without increasing the ranking snapshot beyond its existing 1 MiB bound." },
+    { "id": "diff-check", "command": "git diff --check", "required": "pass." },
+    { "id": "publication", "required": "Merge only through a CI-checked PR; rerun the fixed-source review against the exact author Commit after this scanner repair reaches main." }
+  ],
+  "rollback": "Revert only this bounded source-surface and regression-test change through a CI-checked PR. Do not alter the contact ledger or any DSH Profile."
+}
