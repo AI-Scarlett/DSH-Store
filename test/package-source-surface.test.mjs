@@ -41,6 +41,17 @@ test('package surface ignores unshipped large datasets and scripts, not publishe
   assert.ok(result.reads.every(path => !path.startsWith('workers/') && !path.startsWith('scripts/')))
 })
 
+test('implicit package metadata is root-only and does not widen ignored repository subtrees', () => {
+  const files = { ...sources, 'bench/README.md': '# local benchmark tools', 'bench/.gitignore': '*.js', 'bench/runner.js': 'fetch(endpoint)' }
+  const surface = packageSourceSurface(manifest, treeOf(files))
+  assert.equal(surface.complete, true)
+  assert.equal(surface.entries.some(item => item.relativePath.startsWith('bench/')), false)
+
+  const published = packageSourceSurface({ ...manifest, files: [...manifest.files, 'bench/**'] }, treeOf(files))
+  assert.equal(published.complete, false)
+  assert.match(published.reasons.join('\n'), /package ignore rules require artifact review/)
+})
+
 test('positive globs include hidden published resources and implicit main/bin metadata', () => {
   const files = { ...sources, '.plugin/assets/icon.png': 'png', '.plugin/plugin.json': '{}', 'bin/cli.js': 'export {}' }
   const surface = packageSourceSurface({ files: ['.plugin/**'], main: 'index.js', bin: { demo: 'bin/cli.js' } }, treeOf(files))
@@ -152,6 +163,7 @@ test('bounded web metadata is static while executables and unknown artifacts sta
   for (const path of ['build-dsh-plugin/LICENSE', 'docs/README.md', 'packages/plugin/COPYING']) {
     assert.equal(unsupportedPackageEntry({ relativePath: path, type: 'blob', mode: '100644' }), false)
   }
+  assert.equal(unsupportedPackageEntry({ relativePath: 'bench/.gitignore', type: 'blob', mode: '100644' }), true)
   const metadata = packageSourceSurface({ files: ['src/**'] }, treeOf({
     'src/entry.js': 'export {}', 'src/LICENSE': 'MIT', 'src/README.md': '# package',
   }))

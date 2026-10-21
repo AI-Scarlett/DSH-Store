@@ -16,6 +16,14 @@ function metadataPath(path) {
   return String(path ?? '').split('/').at(-1) ?? ''
 }
 
+function isRootPackageMetadata(path) {
+  return !String(path ?? '').includes('/') && METADATA.test(String(path ?? ''))
+}
+
+function isDocumentaryMetadata(path) {
+  return /(?:^|\/)(?:readme(?:\.[^/]*)?|licen[cs]e(?:\.[^/]*)?|copying(?:\.[^/]*)?|notice(?:\.[^/]*)?|upstream_license(?:\.[^/]*)?)$/i.test(String(path ?? ''))
+}
+
 function targetsOf(value, targets = []) {
   if (typeof value === 'string') targets.push(value)
   else if (Array.isArray(value)) value.forEach(item => targetsOf(item, targets))
@@ -68,7 +76,7 @@ export function packageSourceSurface(manifest, tree, installPath = '') {
   if (typeof manifest.main === 'string') automaticTargets.push(manifest.main)
   const automatic = new Set(automaticTargets.map(path => path.replace(/^\.\//, '')))
   const selected = records.filter(item => !ALWAYS_EXCLUDED.test(item.relativePath)
-    && (!explicit || unsupported || METADATA.test(metadataPath(item.relativePath)) || automatic.has(item.relativePath)
+    && (!explicit || unsupported || isRootPackageMetadata(item.relativePath) || automatic.has(item.relativePath)
       || selectors.some(pattern => pattern.test(item.relativePath))))
   const entries = selected.filter(item => item.type !== 'tree')
   const paths = new Set(entries.filter(item => item.type === 'blob' && item.mode !== '120000').map(item => item.relativePath))
@@ -115,7 +123,7 @@ export function unsupportedPackageEntry(item) {
   return item.type !== 'blob' || !['100644', '100755'].includes(item.mode)
     || NATIVE_ARTIFACT.test(item.relativePath)
     || (!SCANNABLE_SOURCE.test(item.relativePath) && !STATIC_ASSET.test(item.relativePath)
-      && !METADATA.test(metadataPath(item.relativePath)))
+      && !isDocumentaryMetadata(item.relativePath))
 }
 
 // This checks literal local module references only. Dynamic loading is a
