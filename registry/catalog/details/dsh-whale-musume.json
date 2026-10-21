@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "7a3e51998cadb3d8a9f2183ad26d8ca8f650f8ab",
-  "version": "2.4.0",
+  "commit": "1ec653f5e451dfdb64507b4fc5cac970a50094a5",
+  "version": "2.5.0",
   "categories": [
     "themes"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-20T08:26:58.000Z",
-    "observedAt": "2026-10-20T12:19:57.000Z",
+    "updatedAt": "2026-10-21T12:34:38.000Z",
+    "observedAt": "2026-10-21T13:31:49.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-20T12:19:57.000Z",
-      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/7a3e51998cadb3d8a9f2183ad26d8ca8f650f8ab",
+      "checkedAt": "2026-10-21T13:31:49.000Z",
+      "evidenceUrl": "https://github.com/Sutera-Diffusus/dsh-whale-musume/commit/1ec653f5e451dfdb64507b4fc5cac970a50094a5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,10 +78,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "a439d37c0a8df1bd01683a8b1c8dfd29af960a8713cf1f46d95b5dc612206c2b",
+    "binding": "b597b67c07d3e23c9358cf507a88279cb8c29b8f5f3de40ecc9a598625aa5061",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -92,7 +92,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.0-rc.6 <0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2",
     "dshReleases": {
@@ -190,7 +190,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=18",
     "systems": [],
     "profiles": [
       "web"
