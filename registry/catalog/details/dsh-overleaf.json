@@ -26,7 +26,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "aca361f88bd23176b68169d625dae4452ab97983",
+  "commit": "59058647a7d641b5944e9d2ae9cc9f5f67e54980",
   "version": "0.1.3",
   "categories": [
     "files",
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-22T13:26:39.000Z",
-    "observedAt": "2026-10-19T03:39:26.000Z",
+    "updatedAt": "2026-10-21T06:08:38.000Z",
+    "observedAt": "2026-10-21T13:31:49.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-19T03:39:26.000Z",
-      "evidenceUrl": "https://github.com/fly233338/dsh-overleaf/commit/aca361f88bd23176b68169d625dae4452ab97983",
+      "checkedAt": "2026-10-21T13:31:49.000Z",
+      "evidenceUrl": "https://github.com/fly233338/dsh-overleaf/commit/59058647a7d641b5944e9d2ae9cc9f5f67e54980",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ae46f6d6bd73f4751b51775a74ee82b42ce8b067b7ea94d43ae4bceaab02970a",
+    "binding": "d8044c726d8e16b09b8502cc0df48cea43a3a4f752d1f56a8aa0bd90184224d2",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -99,7 +99,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.5",
+    "dsh": "^0.1.0-rc.5 || ^0.2.0-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

@@ -19,7 +19,7 @@
   "manifestPath": "english-coach/package.json",
   "installPath": "english-coach",
   "updatePolicy": "external-only",
-  "commit": "71dd05e3eb8ab5f382ec7ebbd09b92f144eeceff",
+  "commit": "bb03efb7de1a9bba5a32a3116d441e58ea7def60",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -27,20 +27,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-21T03:46:24.000Z",
-    "observedAt": "2026-10-21T03:40:48.000Z",
+    "updatedAt": "2026-10-21T04:46:07.000Z",
+    "observedAt": "2026-10-21T13:31:49.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-21T03:40:48.000Z",
-      "evidenceUrl": "https://github.com/baishatan/dsh-english-coach/commit/71dd05e3eb8ab5f382ec7ebbd09b92f144eeceff",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-21T13:31:49.000Z",
+      "evidenceUrl": "https://github.com/baishatan/dsh-english-coach/commit/bb03efb7de1a9bba5a32a3116d441e58ea7def60",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -50,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -60,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -70,16 +70,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "398588b68cf0de9835439790720733d1ce9b50dcdbab63213e64862efa01a840",
+    "binding": "af4142df620bd6fc45b37bd2b31872f0ac21a4b8fbb5349e77444f87bb90cfa4",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
-    "sourceContract": "unverified",
-    "coverage": "incomplete",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
@@ -87,10 +87,11 @@
   "entryIds": [
     "english-coach"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; local module is missing from the distributable surface: core/commands.js -> ./errors.js; local module is missing from the distributable surface: core/lesson.js -> ./errors.js; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -172,7 +173,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=24.21.0 <25",
     "systems": [],
     "profiles": [
       "web"

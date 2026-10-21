@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-21T03:40:48.000Z",
+    "updatedAt": "2026-10-21T13:31:49.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -915,8 +915,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "6389e50337c50f285c0979d9182b2489ea78e32b",
-      "sourceUpdatedAt": "2026-10-20T19:57:03.000Z",
+      "latestCommit": "6d356b84344659085f2b912857b5e27fe0160c9b",
+      "sourceUpdatedAt": "2026-10-21T12:51:24.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -15315,6 +15315,111 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "addie-ace-dsh-mattpocock-skills",
+      "name": "addie-ace/dsh-mattpocock-skills",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/addie-ace/dsh-mattpocock-skills",
+      "defaultBranch": "main",
+      "latestCommit": "a430d82c0de01e2607f84486eadb5fcd0fc4a17f",
+      "sourceUpdatedAt": "2026-09-05T08:54:10.000Z",
+      "discoveredAt": "2026-10-21T13:31:49.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@89257f135874cf0fd21b97faa71e444dd3cf9031:data/plugins/addie-ace__dsh-mattpocock-skills.yml:sha256=b0d3985e146cd5246af4b2f0d17f7455db1b938dad453b6c8a145741982849dd:at=2026-10-21T13:38:50.012Z:owner=103882671"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ericfl1998-deepseek-harness-mobile",
+      "name": "EricFL1998/deepseek-harness-mobile",
+      "description": "a full deepseek harness mobile client",
+      "repositoryUrl": "https://github.com/EricFL1998/deepseek-harness-mobile",
+      "defaultBranch": "master",
+      "latestCommit": "9efb6c06a17ac69e33e2df98379f34093069ab53",
+      "sourceUpdatedAt": "2026-10-21T13:38:30.000Z",
+      "discoveredAt": "2026-10-21T13:31:49.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: test-plugin/dsh-archive-manager-main, test-plugin/dsh-genui-main, .captures/bridge-pkg/dsh-mobile-bridge-plugin, .captures/sub-pkg/dsh-plugin-subscription-oauth"
+    },
+    {
+      "id": "adenxie-dsh-vercel",
+      "name": "AdenXie/dsh-vercel",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/AdenXie/dsh-vercel",
+      "defaultBranch": "main",
+      "latestCommit": "21b3c7372284ab53d10e61f2c717d44f752d9567",
+      "sourceUpdatedAt": "2026-10-19T13:04:14.000Z",
+      "discoveredAt": "2026-10-21T13:31:49.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@89257f135874cf0fd21b97faa71e444dd3cf9031:data/plugins/AdenXie__dsh-vercel.yml:sha256=19891254b4a1d071b85ba5e609e5b0b53dd1f28a52b83661a9a1acb82f1ec450:at=2026-10-21T13:38:50.012Z:owner=89302318"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "activeing123-dsh-mcptoon",
+      "name": "activeing123/dsh-mcptoon",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/activeing123/dsh-mcptoon",
+      "defaultBranch": "main",
+      "latestCommit": "4e496dfcb93964bf421670cd7b37fc3f36678529",
+      "sourceUpdatedAt": "2026-09-16T03:04:13.000Z",
+      "discoveredAt": "2026-10-21T13:31:49.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@89257f135874cf0fd21b97faa71e444dd3cf9031:data/plugins/activeing123__dsh-mcptoon.yml:sha256=b551ead450b9ed0c6a1f55df012b62a526aa00ff9cd4cba8248ef64f9f8a3487:at=2026-10-21T13:38:50.012Z:owner=305860409"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "reactive-resume-reactive-resume",
+      "name": "reactive-resume/reactive-resume",
+      "description": "A one-of-a-kind resume builder that keeps your privacy in mind. Completely secure, customizable, portable, open-source and free forever. Try it out today!",
+      "repositoryUrl": "https://github.com/reactive-resume/reactive-resume",
+      "defaultBranch": "main",
+      "latestCommit": "5d75e81b33b0323d087c93ec4ea7fb3f4d2a4f8a",
+      "sourceUpdatedAt": "2026-10-21T13:37:57.000Z",
+      "discoveredAt": "2026-10-21T13:31:49.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-skills",
+        "ai",
+        "dsh-plugin",
+        "hacktoberfest",
+        "javascript",
+        "mcp-server",
+        "react",
+        "resume-builder",
+        "self-hosted",
+        "typescript",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_AMBIGUOUS: Unsupported Patch scalar requires review"
     }
   ]
 }
