@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "79444ed13a5184d1a1dbb45dbd356e274f633cff",
-  "version": "1.3.1",
+  "commit": "0bbae8aade01cabd730c7aea1c614e7f7f8c67df",
+  "version": "1.3.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-19T20:30:24.000Z",
-    "observedAt": "2026-10-19T20:44:51.000Z",
+    "updatedAt": "2026-10-22T19:10:10.000Z",
+    "observedAt": "2026-10-22T19:47:29.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-19T20:44:51.000Z",
-      "evidenceUrl": "https://github.com/KouzakiUmi/dsh-prompt-zh/commit/79444ed13a5184d1a1dbb45dbd356e274f633cff",
+      "checkedAt": "2026-10-22T19:47:29.000Z",
+      "evidenceUrl": "https://github.com/KouzakiUmi/dsh-prompt-zh/commit/0bbae8aade01cabd730c7aea1c614e7f7f8c67df",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Fixed-source recheck blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -106,11 +106,11 @@
       "0.1.2-alpha.5": "unknown",
       "0.2.1-alpha.2": "compatible",
       "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.3": "unknown",
+      "0.2.1-alpha.3": "compatible",
       "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.1-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
