@@ -8,6 +8,7 @@ import { canonicalGithubRepository, dshReleaseVersion, dshVersionCompatibility, 
 import { packageSourceSurface, SCANNABLE_SOURCE, unsupportedPackageEntry, missingLocalModuleReasons } from '../src/package-source-surface.mjs'
 import { localModuleEvidence } from '../src/automation-source-policy.mjs'
 import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
+import { isBlockedAuthor } from '../src/author-exclusions.mjs'
 
 export const SUBMISSION_REPORT_MARKER = '<!-- dsh-plugin-submission-check -->'
 
@@ -295,6 +296,10 @@ async function repositorySnapshot(repositoryUrl, options, fixedCommit) {
   const { owner, repository } = githubParts(repositoryUrl)
   const apiRoot = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repository)}`
   const metadata = await fetchJson(apiRoot, { ...options, code: 'SUBMISSION_REPOSITORY_HTTP' })
+  const ownerUserId = Number(metadata?.owner?.id)
+  if (!Number.isSafeInteger(ownerUserId) || ownerUserId < 1) {
+    throw submissionError('SUBMISSION_OWNER_ID_UNKNOWN', 'GitHub did not return a stable repository-owner identity')
+  }
   if (metadata.private === true) throw submissionError('SUBMISSION_REPOSITORY_PRIVATE', 'Repository must be public')
   if (metadata.archived === true) throw submissionError('SUBMISSION_REPOSITORY_ARCHIVED', 'Archived repositories cannot enter the active marketplace')
   if (typeof metadata.default_branch !== 'string' || metadata.default_branch === '') {
@@ -307,7 +312,7 @@ async function repositorySnapshot(repositoryUrl, options, fixedCommit) {
     throw submissionError('SUBMISSION_COMMIT_INVALID', 'GitHub did not return a full immutable commit SHA')
   }
   if (fixedCommit && commit.sha !== fixedCommit) throw submissionError('SUBMISSION_COMMIT_INVALID', 'GitHub returned a different Commit from the explicit review target')
-  return { defaultBranch: metadata.default_branch, commit: commit.sha, apiRoot }
+  return { defaultBranch: metadata.default_branch, commit: commit.sha, apiRoot, ownerUserId }
 }
 
 async function discoverManifest(repositoryUrl, snapshot, requestedPath, options) {
@@ -369,7 +374,18 @@ export async function checkRepository(repositoryValue, pluginPath = '', options 
   const submittedPath = cleanValue(pluginPath)
   const requestedPath = safeRelativeDirectory(submittedPath) ?? repositoryInput.linkedPath
   const fetchOptions = { request, token: options.token ?? process.env.GITHUB_TOKEN, timeoutMs: options.timeoutMs }
+  if (options.submitterUserId !== undefined
+    && (!Number.isSafeInteger(options.submitterUserId) || options.submitterUserId < 1)) {
+    throw submissionError('SUBMISSION_SUBMITTER_ID_UNKNOWN', 'A stable GitHub submitter identity is required')
+  }
+  const authorPolicy = options.authorPolicy ?? JSON.parse(await readFile(new URL('../registry/automation-policy.json', import.meta.url), 'utf8'))
+  if (isBlockedAuthor(options.submitterUserId, authorPolicy)) {
+    throw submissionError('SUBMISSION_AUTHOR_PERMANENTLY_BLOCKED', 'Submission author is permanently excluded from DSH STORE admission')
+  }
   const snapshot = await repositorySnapshot(repositoryInput.repositoryUrl, fetchOptions, options.fixedCommit)
+  if (isBlockedAuthor(snapshot.ownerUserId, authorPolicy)) {
+    throw submissionError('SUBMISSION_AUTHOR_PERMANENTLY_BLOCKED', 'Repository owner is permanently excluded from DSH STORE admission')
+  }
   const discovered = await discoverManifest(repositoryInput.repositoryUrl, snapshot, requestedPath, fetchOptions)
   const manifest = discovered.manifest
   if (typeof manifest.name !== 'string' || !/^(?:@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/.test(manifest.name)) {
@@ -551,7 +567,11 @@ export async function runCli(argv = process.argv.slice(2), options = {}) {
   const event = JSON.parse(await readFile(eventPath, 'utf8'))
   let result
   try {
-    result = await checkSubmission(event?.issue?.body, options)
+    const submitterUserId = event?.issue?.user?.id
+    if (!Number.isSafeInteger(submitterUserId) || submitterUserId < 1) {
+      throw submissionError('SUBMISSION_SUBMITTER_ID_UNKNOWN', 'A stable GitHub submitter identity is required')
+    }
+    result = await checkSubmission(event?.issue?.body, { ...options, submitterUserId })
     const scanRepository = options.scanRepository ?? scanSubmissionRepository
     result.securityScan = await scanRepository(result, options)
     if (!result.securityScan.complete && result.securityScan.verdict !== 'fail') {

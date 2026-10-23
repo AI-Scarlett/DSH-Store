@@ -16,6 +16,7 @@ import {
   scanSubmissionRepository,
 } from '../scripts/check-plugin-submission.mjs'
 import { SUBMISSION_SCAN_BOUNDS, scanSubmissionSources } from '../src/submission-security-scan.mjs'
+import { githubUserIdFingerprint } from '../src/author-exclusions.mjs'
 
 const SHA = 'a'.repeat(40)
 
@@ -64,6 +65,7 @@ function sourceFetch(options = {}) {
     if (parsed.hostname === 'api.github.com' && parsed.pathname === '/repos/example/dsh-demo') {
       return new Response(JSON.stringify({
         private: options.private === true, archived: options.archived === true, default_branch: 'main',
+        owner: { id: options.ownerUserId ?? 1234 },
       }))
     }
     if (parsed.hostname === 'api.github.com' && parsed.pathname.endsWith('/commits/main')) {
@@ -195,6 +197,19 @@ test('repository automation reuses the same fixed-source gate without an Issue f
   assert.equal(result.candidate.details.permissions.level, 'unknown')
 })
 
+test('submission rejects permanently blocked immutable author identities and unknown owner IDs', async () => {
+  const authorPolicy = { blockedAuthors: [{
+    userIdSha256: githubUserIdFingerprint(1234), reason: 'fixture permanent exclusion',
+    requestRefSha256: '1'.repeat(64), requestBodySha256: '2'.repeat(64), blockedAt: '2026-10-01T00:00:00Z',
+  }] }
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(), fetch: sourceFetch(), authorPolicy, retryDelaysMs: [],
+  }), { code: 'SUBMISSION_AUTHOR_PERMANENTLY_BLOCKED' })
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '', {
+    catalogDocument: catalog(), fetch: sourceFetch({ ownerUserId: 0 }), retryDelaysMs: [],
+  }), { code: 'SUBMISSION_OWNER_ID_UNKNOWN' })
+})
+
 test('an explicit author review stays at its full Commit while default HEAD has moved', async () => {
   const original = sourceFetch()
   const seen = []
@@ -271,7 +286,7 @@ test('CLI converts a high-risk scan into a failed Issue gate and persists the sc
     const eventPath = join(directory, 'event.json')
     const reportPath = join(directory, 'report.md')
     const resultPath = join(directory, 'result.json')
-    await writeFile(eventPath, JSON.stringify({ issue: { body: issueBody() } }), 'utf8')
+    await writeFile(eventPath, JSON.stringify({ issue: { body: issueBody(), user: { id: 42424242 } } }), 'utf8')
     const code = await runCli([
       '--event', eventPath, '--report', reportPath, '--result', resultPath,
     ], {
@@ -464,7 +479,7 @@ test('CLI cannot call an incomplete scan a passed precheck', async t => {
   const directory = await mkdtemp(join(tmpdir(), 'dsh-scan-incomplete-'))
   t.after(() => rm(directory, { recursive: true, force: true }))
   const event = join(directory, 'event.json'), report = join(directory, 'report.md'), result = join(directory, 'result.json')
-  await writeFile(event, JSON.stringify({ issue: { body: issueBody() } }))
+  await writeFile(event, JSON.stringify({ issue: { body: issueBody(), user: { id: 42424242 } } }))
   const code = await runCli(['--event', event, '--report', report, '--result', result], {
     catalogDocument: catalog(), fetch: sourceFetch(),
     scanRepository: async () => scanSubmissionSources([], { eligibleFiles: 4, capped: true }),

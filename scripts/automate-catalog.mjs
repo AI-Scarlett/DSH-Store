@@ -34,9 +34,11 @@ import {
   splitCatalogDocument,
   validateCatalog,
 } from '../src/catalog.mjs'
-import { excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
+import { assertNoExcludedCandidates, excludedRepositoryKeys, pruneExcludedCandidates } from '../src/repository-exclusions.mjs'
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { isBoundedSourceLineage, isNoCommonAncestorError } from '../src/automation-source-policy.mjs'
+import { assertNoExcludedRecommendations, isBlockedAuthor, isWithdrawnRepository, pruneExcludedRecommendations } from '../src/author-exclusions.mjs'
+import { validateCommunityRecommendations } from '../marketplace/lib/community-recommendations.js'
 import {
   applyLatestDshCompatibilityPolicy,
   DSH_RELEASE_WINDOW_AUTHORITY,
@@ -54,6 +56,7 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const catalogPath = resolve(root, 'registry/catalog.json')
 const catalogIndexPath = resolve(root, 'registry/catalog-index.json')
 const candidatesPath = resolve(root, 'registry/candidates.json')
+const recommendationsPath = resolve(root, 'registry/community-recommendations.json')
 const policyPath = resolve(root, 'registry/automation-policy.json')
 const admissionReviews = validateAdmissionReviews(JSON.parse(await readFile(resolve(root, 'registry/admission-reviews.json'), 'utf8')))
 const admissionReviewDigest = sha256(JSON.stringify(admissionReviews))
@@ -73,8 +76,9 @@ function sha256(value) {
 function parseArgs(argv) {
   const options = {
     write: false, expectedCatalogSha: null, expectedCatalogIndexSha: null, expectedCandidatesSha: null,
+    expectedRecommendationsSha: null,
     catalogBackup: null, catalogIndexBackup: null, catalogDetailsBackup: null,
-    candidatesBackup: null, observedAt: null, report: null,
+    candidatesBackup: null, recommendationsBackup: null, observedAt: null, report: null,
   }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
@@ -82,10 +86,12 @@ function parseArgs(argv) {
     else if (value === '--expected-catalog-sha') options.expectedCatalogSha = argv[++index]
     else if (value === '--expected-catalog-index-sha') options.expectedCatalogIndexSha = argv[++index]
     else if (value === '--expected-candidates-sha') options.expectedCandidatesSha = argv[++index]
+    else if (value === '--expected-recommendations-sha') options.expectedRecommendationsSha = argv[++index]
     else if (value === '--catalog-backup') options.catalogBackup = argv[++index]
     else if (value === '--catalog-index-backup') options.catalogIndexBackup = argv[++index]
     else if (value === '--catalog-details-backup') options.catalogDetailsBackup = argv[++index]
     else if (value === '--candidates-backup') options.candidatesBackup = argv[++index]
+    else if (value === '--recommendations-backup') options.recommendationsBackup = argv[++index]
     else if (value === '--observed-at') options.observedAt = argv[++index]
     else if (value === '--report') options.report = argv[++index]
     else throw new Error(`unknown argument: ${value}`)
@@ -112,6 +118,16 @@ function canonicalManifestRepository(value) {
   const source = typeof value === 'string' ? value : value?.url
   if (typeof source !== 'string') return null
   try { return canonicalGithubRepository(source.replace(/^git\+/, '').replace(/^git:\/\//, 'https://')) } catch { return null }
+}
+
+function requiredOwnerUserId(metadata, stage) {
+  const userId = Number(metadata?.owner?.id)
+  if (!Number.isSafeInteger(userId) || userId < 1) {
+    throw Object.assign(new Error(`GitHub did not return a stable repository-owner identity during ${stage}`), {
+      code: 'CATALOG_OWNER_ID_UNKNOWN',
+    })
+  }
+  return userId
 }
 
 function normalizedLicense(value) {
@@ -168,6 +184,10 @@ async function analyzeFixedSource(candidate, policy, github) {
   const reasons = []
   const { owner, repository } = repositoryParts(candidate.repositoryUrl)
   const metadata = await github.api(`repos/${owner}/${repository}`)
+  const ownerUserId = requiredOwnerUserId(metadata, 'fixed-source admission')
+  if (isBlockedAuthor(ownerUserId, policy)) {
+    throw Object.assign(new Error('repository owner is permanently excluded from DSH STORE admission'), { code: 'CATALOG_AUTHOR_PERMANENTLY_BLOCKED' })
+  }
   const manifest = JSON.parse(await github.raw(candidate.repositoryUrl, candidate.commit, candidate.manifestPath, { maxBytes: MANIFEST_MAX_BYTES }))
   const manifestRepository = canonicalManifestRepository(manifest.repository)
   const repositoryLicense = metadata?.license?.spdx_id
@@ -297,6 +317,8 @@ async function discoverRepositories(policy, github) {
         const url = canonicalGithubRepository(item.html_url)
         if (url === 'https://github.com/AI-Scarlett/DSH-Store') continue
         if (excluded.has(url.toLowerCase())) continue
+        if (isWithdrawnRepository(url, policy)) continue
+        if (isBlockedAuthor(Number(item?.owner?.id), policy)) continue
         found.set(url.toLowerCase(), { ...item, html_url: url })
       }
     } catch {
@@ -307,7 +329,9 @@ async function discoverRepositories(policy, github) {
     try {
       const offset = Math.floor(Date.now() / 3600000) * 8
       for (const item of await discoverFeedCandidates(github, { offset })) {
-        if (!excluded.has(item.html_url.toLowerCase()) && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
+        if (!excluded.has(item.html_url.toLowerCase()) && !isWithdrawnRepository(item.html_url, policy)
+          && !isBlockedAuthor(Number(item?.owner?.id), policy)
+          && !found.has(item.html_url.toLowerCase())) found.set(item.html_url.toLowerCase(), item)
       }
     } catch {
       // feed failures do not abort search discoveries or overall automation
@@ -319,6 +343,7 @@ async function discoverRepositories(policy, github) {
 async function updateExistingEntries(catalog, policy, github, observedAt, report) {
   const baselineCatalog = { ...catalog, entries: [...catalog.entries] }
   const repositorySnapshots = new Map()
+  const excluded = excludedRepositoryKeys(policy)
   const updatePolicy = policy.updates ?? {}
   const concurrency = Number.isInteger(updatePolicy.concurrency) ? updatePolicy.concurrency : 8
   const maxCommitSpan = Number.isInteger(updatePolicy.maxCommitSpan) ? updatePolicy.maxCommitSpan : 200
@@ -331,6 +356,10 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       repositorySnapshots.set(key, retryInfrastructure(async () => {
         const { owner, repository } = repositoryParts(target.repositoryUrl)
         const metadata = await github.api(`repos/${owner}/${repository}`)
+        const ownerUserId = requiredOwnerUserId(metadata, 'Catalog owner recheck')
+        if (isBlockedAuthor(ownerUserId, policy)) {
+          return { commit: entry.commit, repositoryUrl: target.repositoryUrl, ownerUserId, blockedAuthor: true }
+        }
         if (metadata?.private === true || metadata?.archived === true || metadata?.disabled === true) throw Object.assign(new Error('the canonical repository is private, archived, or disabled'), { code: 'CATALOG_SOURCE_REPOSITORY_INACTIVE' })
         const defaultBranch = metadata.default_branch || target.defaultBranch || 'main'
         if (target.record?.to.repositoryUrl) {
@@ -363,6 +392,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
             return {
               commit: head.sha,
               repositoryUrl: target.repositoryUrl,
+              ownerUserId,
               defaultBranch: resolvedBranch,
               sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? metadata?.pushed_at ?? null,
             }
@@ -378,6 +408,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
           return {
             commit: head.sha,
             repositoryUrl: target.repositoryUrl,
+            ownerUserId,
             defaultBranch,
             sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? null,
           }
@@ -385,6 +416,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
         return {
           commit: head.sha,
           repositoryUrl: target.repositoryUrl,
+          ownerUserId,
           defaultBranch: typeof metadata?.default_branch === 'string' && metadata.default_branch
             ? metadata.default_branch
             : defaultBranch,
@@ -400,8 +432,10 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     let versionAssessment = null
     let changeContract = null
     try {
-      if (excludedRepositoryKeys(policy).has(entry.repositoryUrl.toLowerCase())) return { index, entry, kind: 'current' }
+      if (isWithdrawnRepository(entry.repositoryUrl, policy)) return { index, entry, kind: 'withdrawn' }
+      if (excluded.has(entry.repositoryUrl.toLowerCase())) return { index, entry, kind: 'current' }
       snapshot = await sourceSnapshot(entry)
+      if (snapshot.blockedAuthor === true) return { index, entry, kind: 'blocked-author', ownerUserId: snapshot.ownerUserId }
       const pendingMigration = catalogMigrationTarget(entry, snapshot, catalogMigrations).record
       const recheckCurrent = snapshot.commit === entry.commit && (pendingMigration !== null || ((entry.status === 'approved' || isAutomaticPolicyBlocked(entry) || String(entry.statusReason ?? '').startsWith('DSH_LATEST_THREE_COMPATIBILITY_HOLD:')) && (entry.admission?.engine !== SCAN_POLICY_VERSION || entry.admission?.reviewRegistryDigest !== admissionReviewDigest || entry.admission?.policyDigest !== sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })))))
       if (snapshot.commit === entry.commit && !recheckCurrent) return { index, entry, kind: 'current' }
@@ -514,9 +548,16 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
     const batch = baselineCatalog.entries.slice(index, index + concurrency)
     results.push(...await Promise.all(batch.map((entry, offset) => inspectEntry(entry, index + offset))))
   }
+  const removedCatalogIds = new Set()
   for (const result of results.sort((left, right) => left.index - right.index)) {
     const { entry, snapshot, versionAssessment } = result
     report.sourceVersionChecks.checkedEntries += 1
+    if (result.kind === 'withdrawn' || result.kind === 'blocked-author') {
+      removedCatalogIds.add(entry.id)
+      report.removedEntries.push({ recordFingerprint: sha256(`${entry.id}\n${entry.repositoryUrl.toLowerCase()}`),
+        reason: result.kind === 'withdrawn' ? 'author-requested-permanent-withdrawal' : 'permanently-excluded-author-identity' })
+      continue
+    }
     if (result.kind === 'current') {
       report.sourceVersionChecks.currentEntries += 1
       continue
@@ -602,6 +643,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       report.sourceVersionChecks.unresolvedEntries += 1
     }
   }
+  if (removedCatalogIds.size) catalog.entries = catalog.entries.filter(entry => !removedCatalogIds.has(entry.id))
 }
 
 async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow) {
@@ -873,11 +915,14 @@ if (policy.candidateRetention?.authority !== REJECTED_CANDIDATE_RETENTION_AUTHOR
 const originalCatalog = await readFile(catalogPath)
 const originalCatalogIndex = await readFile(catalogIndexPath)
 const originalCandidates = await readFile(candidatesPath)
+const originalRecommendations = await readFile(recommendationsPath)
 const catalogSha = sha256(originalCatalog)
 const catalogIndexSha = sha256(originalCatalogIndex)
 const candidatesSha = sha256(originalCandidates)
+const recommendationsSha = sha256(originalRecommendations)
 const catalog = await loadCatalogFromFiles({ indexUrl: new URL('../registry/catalog.json', import.meta.url) })
 const candidates = JSON.parse(originalCandidates.toString('utf8'))
+const recommendations = validateCommunityRecommendations(JSON.parse(originalRecommendations.toString('utf8')))
 failureContext.stage = 'validate-authority'
 const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
 if (baseCommit !== null && !/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('automation base Commit must be a full Git SHA')
@@ -897,13 +942,14 @@ const report = {
   status: 'running',
   completed: false,
   statisticsAvailable: false,
-  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
+  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   baseCommit,
   observedAt,
   preconditions: {
     catalogSha256: catalogSha,
     catalogIndexSha256: catalogIndexSha,
     candidatesSha256: candidatesSha,
+    communityRecommendationsSha256: recommendationsSha,
     dshReleaseWindowSha256: dshReleaseWindowSha,
     sourcePolicySha256: sha256(JSON.stringify(policy)),
     admissionReviewsSha256: sha256(JSON.stringify(admissionReviews)),
@@ -924,7 +970,8 @@ const report = {
     unresolvedEntries: 0,
   },
   updateReviews: [], updatedEntries: [], relocalizedEntries: [], sourceChangesWithoutVersionBump: [], upstreamVersionBehind: [],
-  addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [],
+  addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [], removedEntries: [],
+  removedRecommendations: [],
   compatibilityUnlisted: [], compatibilityRestored: [], compatibilityRefreshed: [],
   prunedCandidates: [],
   candidateRetention: {
@@ -949,10 +996,30 @@ const github = createCatalogGithubReader()
 report.apiUsage = github.statistics
 // Resolve canonical repository identity and head metadata in bounded read-only
 // batches. All later package reads share these immutable snapshots and cache.
-await github.primeRepositories(catalog.entries.flatMap(entry => [entry.repositoryUrl, catalogMigrationSource(entry, catalogMigrations).repositoryUrl]))
+await github.primeRepositories(catalog.entries.filter(entry => !isWithdrawnRepository(entry.repositoryUrl, policy))
+  .flatMap(entry => [entry.repositoryUrl, catalogMigrationSource(entry, catalogMigrations).repositoryUrl]))
+const candidateIdentityEntries = candidates.entries.filter(entry => !isWithdrawnRepository(entry.repositoryUrl, policy)
+  && !excludedRepositoryKeys(policy).has(entry.repositoryUrl.toLowerCase()))
+const candidateIdentitySnapshots = await github.primeRepositories(candidateIdentityEntries.map(entry => entry.repositoryUrl))
+const candidateOwnerUserIds = new Map()
+for (let index = 0; index < candidateIdentityEntries.length; index += 1) {
+  const result = candidateIdentitySnapshots[index]
+  if (result?.status === 'fulfilled' && Number.isSafeInteger(result.value?.metadata?.owner?.id)) {
+    candidateOwnerUserIds.set(candidateIdentityEntries[index].repositoryUrl.toLowerCase(), result.value.metadata.owner.id)
+  } else if (result?.status === 'rejected') {
+    report.transientFailures.push({ repository: candidateIdentityEntries[index].repositoryUrl,
+      reason: boundedText(result.reason?.message, 'candidate owner identity lookup failed') })
+  }
+}
 failureContext.stage = 'inspect-historical-catalog-entries'
 await updateExistingEntries(catalog, policy, github, observedAt, report)
-report.excludedCandidates = pruneExcludedCandidates(candidates, policy)
+report.excludedCandidates = pruneExcludedCandidates(candidates, policy, candidateOwnerUserIds)
+  .map(item => ({ recordFingerprint: sha256(`${item.id}\n${item.repositoryUrl.toLowerCase()}`), reason: item.reason }))
+report.removedRecommendations = pruneExcludedRecommendations(recommendations, policy)
+  .map(item => ({ recordFingerprint: sha256(item.id), reason: item.reason }))
+assertNoExcludedCandidates(candidates, policy, candidateOwnerUserIds)
+assertNoExcludedRecommendations(recommendations, policy)
+validateCommunityRecommendations(recommendations)
 failureContext.stage = 'prune-historical-candidates'
 await pruneHistoricalRejectedCandidates(candidates, policy, github, dshReleaseWindow, observedAt, report)
 failureContext.stage = 'inspect-new-discoveries'
@@ -973,11 +1040,14 @@ catalog.entries.sort(compareCatalogEntries)
 assertCatalogLocalization(catalog)
 
 const catalogChanged = report.updatedEntries.length > 0 || report.addedEntries.length > 0
-  || report.relocalizedEntries.length > 0 || report.compatibilityPolicy.catalogChanged
+  || report.removedEntries.length > 0 || report.relocalizedEntries.length > 0 || report.compatibilityPolicy.catalogChanged
 // Discovery can add or refresh Candidate records without entering any of the
 // decision lists above. Bind the write decision to the actual file contents.
 const prospectiveCandidatesBuffer = Buffer.from(`${JSON.stringify(candidates, null, 2)}\n`)
 const candidatesChanged = !prospectiveCandidatesBuffer.equals(originalCandidates)
+if (report.removedRecommendations.length > 0) recommendations.updatedAt = observedAt
+const recommendationsBuffer = Buffer.from(`${JSON.stringify(recommendations, null, 2)}\n`)
+const recommendationsChanged = !recommendationsBuffer.equals(originalRecommendations)
 if (catalogChanged) catalog.registry.updatedAt = observedAt
 if (candidatesChanged) candidates.registry.updatedAt = observedAt
 failureContext.stage = 'validate-automation-output'
@@ -992,13 +1062,19 @@ const candidatesBuffer = Buffer.from(`${JSON.stringify({
   registry: validatedCandidates.registry,
   entries: validatedCandidates.entries.map(({ installable, allowedActions, ...entry }) => entry),
 }, null, 2)}\n`)
+const validatedRecommendations = validateCommunityRecommendations(recommendations)
+const canonicalRecommendationsBuffer = Buffer.from(`${JSON.stringify(validatedRecommendations, null, 2)}\n`)
 if (!candidatesChanged && !candidatesBuffer.equals(originalCandidates)) {
   throw new Error('Candidate Registry serialization changed without a write decision')
 }
+if (!recommendationsChanged && !canonicalRecommendationsBuffer.equals(originalRecommendations)) {
+  throw new Error('Community recommendation serialization changed without a write decision')
+}
 report.postconditions = {
-  catalogChanged, candidatesChanged,
+  catalogChanged, candidatesChanged, recommendationsChanged,
   catalogSha256: sha256(catalogBuffer), catalogIndexSha256: sha256(catalogIndexBuffer),
   candidatesSha256: sha256(candidatesBuffer),
+  communityRecommendationsSha256: sha256(canonicalRecommendationsBuffer),
   catalogEntries: validatedCatalog.entries.length, candidateEntries: validatedCandidates.entries.length,
   catalogDetails: split.details.length,
   legacyBridge: split.bridgeProjection,
@@ -1010,12 +1086,12 @@ report.statisticsAvailable = true
 failureContext.stage = 'preserve-decision-record'
 if (options.report) await atomicWrite(resolve(options.report), Buffer.from(`${JSON.stringify(report, null, 2)}\n`))
 if (!options.write) {
-  process.stdout.write(`CATALOG_AUTOMATION_DRY_RUN plan=${report.planId} catalogChanged=${catalogChanged} candidatesChanged=${candidatesChanged}\n`)
+  process.stdout.write(`CATALOG_AUTOMATION_DRY_RUN plan=${report.planId} catalogChanged=${catalogChanged} candidatesChanged=${candidatesChanged} recommendationsChanged=${recommendationsChanged}\n`)
   process.exit(0)
 }
 failureContext.stage = 'validate-write-preconditions'
 if (options.expectedCatalogSha !== catalogSha || options.expectedCatalogIndexSha !== catalogIndexSha
-  || options.expectedCandidatesSha !== candidatesSha) {
+  || options.expectedCandidatesSha !== candidatesSha || options.expectedRecommendationsSha !== recommendationsSha) {
   throw new Error('automation precondition hash mismatch')
 }
 failureContext.stage = 'apply-catalog-transaction'
@@ -1023,13 +1099,16 @@ const catalogBackup = requireExternalBackup(options.catalogBackup, '--catalog-ba
 const catalogIndexBackup = requireExternalBackup(options.catalogIndexBackup, '--catalog-index-backup')
 const catalogDetailsBackup = requireExternalBackup(options.catalogDetailsBackup, '--catalog-details-backup')
 const candidatesBackup = requireExternalBackup(options.candidatesBackup, '--candidates-backup')
+const recommendationsBackup = requireExternalBackup(options.recommendationsBackup, '--recommendations-backup')
 await copyFile(catalogPath, catalogBackup)
 await copyFile(catalogIndexPath, catalogIndexBackup)
 await backupCatalogDetails(catalogDetailsBackup)
 await copyFile(candidatesPath, candidatesBackup)
+await copyFile(recommendationsPath, recommendationsBackup)
 try {
   if (catalogChanged) await writeCatalogFiles(catalogBuffer, catalogIndexBuffer, split.details)
   if (candidatesChanged) await atomicWrite(candidatesPath, candidatesBuffer)
+  if (recommendationsChanged) await atomicWrite(recommendationsPath, canonicalRecommendationsBuffer)
 } catch (error) {
   if (catalogChanged) {
     await atomicWrite(catalogPath, originalCatalog)
@@ -1037,9 +1116,10 @@ try {
     await restoreCatalogDetails(catalogDetailsBackup)
   }
   if (candidatesChanged) await atomicWrite(candidatesPath, originalCandidates)
+  if (recommendationsChanged) await atomicWrite(recommendationsPath, originalRecommendations)
   throw error
 }
-process.stdout.write(`CATALOG_AUTOMATION_OK plan=${report.planId} catalogChanged=${catalogChanged} candidatesChanged=${candidatesChanged} entries=${validatedCatalog.entries.length}\n`)
+process.stdout.write(`CATALOG_AUTOMATION_OK plan=${report.planId} catalogChanged=${catalogChanged} candidatesChanged=${candidatesChanged} recommendationsChanged=${recommendationsChanged} entries=${validatedCatalog.entries.length}\n`)
 } catch (error) {
   try {
     await writeAutomationFailureReport(failureContext, error)

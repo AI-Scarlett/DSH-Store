@@ -120,9 +120,12 @@ export function validateOwnerCorrection(userId, key, correction) {
   if (!approved || key !== 'AI-Scarlett/DSH-Store' || correction?.grantId !== CORRECTION_GRANT
     || Object.entries(approved).some(([field, value]) => correction[field] !== value)) throw new Error('outside finite owner correction grant')
 }
-export async function reserveContact({ github, repository, recipient, key, claimId, seed, continuation = null, ownerCorrection = null }) {
+export async function reserveContact({ github, repository, recipient, key, claimId, seed, continuation = null, ownerCorrection = null, stopAfterReservation = false }) {
   const person = humanIdentity(recipient)
   if (!person || !/^[0-9a-f]{24,64}$/.test(claimId)) throw new Error('invalid contact reservation')
+  if (typeof stopAfterReservation !== 'boolean' || stopAfterReservation && (!continuation || ownerCorrection)) {
+    throw new Error('a request-bound continuation is required to stop contact after its single final reply')
+  }
   requireRepository(key)
   const ownerResult = ownerCorrection?.grantId === OWNER_REVIEW_GRANT
   if (ownerCorrection) {
@@ -159,7 +162,7 @@ export async function reserveContact({ github, repository, recipient, key, claim
       }
     } else if (decision !== 'first-contact') return { allowed: false, reason: decision }
     const state = structuredClone(snapshot.state)
-    const reservation = { kind: ownerResult ? 'owner-authorized-review-result' : ownerCorrection ? 'owner-authorized-admission-correction' : continuation ? 'requested-reply' : 'first-contact', key: key.toLowerCase(), reservedAt: new Date().toISOString(), ...(ownerCorrection ?? continuation ?? {}) }
+    const reservation = { kind: ownerResult ? 'owner-authorized-review-result' : ownerCorrection ? 'owner-authorized-admission-correction' : continuation ? 'requested-reply' : 'first-contact', key: key.toLowerCase(), reservedAt: new Date().toISOString(), ...(ownerCorrection ?? continuation ?? {}), ...(stopAfterReservation ? { stopAfterReservation: true } : {}) }
     const record = state.contacts[String(person.id)] ?? {
       userId: person.id, nodeId: person.node_id, logins: [person.login],
       stopped: false, firstContact: { kind: 'reserved', claimId }, reservations: {},
@@ -167,6 +170,7 @@ export async function reserveContact({ github, repository, recipient, key, claim
     if (record.reservations[claimId]) return { allowed: false, reason: 'reservation-already-consumed' }
     record.logins = [...new Set([...record.logins, person.login])]
     record.reservations[claimId] = reservation
+    if (stopAfterReservation) record.stopped = true
     state.contacts[String(person.id)] = record
     try {
       await github.request('PUT', `/repos/${repository}/contents/${STATE_PATH}`, {
@@ -185,13 +189,14 @@ export async function reserveContact({ github, repository, recipient, key, claim
     for (let readbackAttempt = 0; readbackAttempt < RESERVATION_READBACK_ATTEMPTS; readbackAttempt += 1) {
       const confirmed = await readContactState(github, repository, seed)
       const committed = confirmed.state.contacts[String(person.id)]
-      if (committed?.stopped) throw new Error('contact stopped after reservation; do not send')
       if (committed?.reservations[claimId]) {
         if (JSON.stringify(committed.reservations[claimId]) !== JSON.stringify(reservation)) {
           throw new Error('contact reservation readback failed; do not send')
         }
+        if (committed.stopped !== stopAfterReservation) throw new Error('contact stop readback failed; do not send')
         return { allowed: true, claimId }
       }
+      if (committed?.stopped && !stopAfterReservation) throw new Error('contact stopped after reservation; do not send')
       if (readbackAttempt + 1 < RESERVATION_READBACK_ATTEMPTS) {
         await new Promise(resolveDelay => setTimeout(resolveDelay, RESERVATION_READBACK_DELAY_MS))
       }

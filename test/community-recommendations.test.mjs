@@ -7,6 +7,7 @@ import { Readable } from 'node:stream'
 import { loadCatalogFromFiles } from '../src/catalog.mjs'
 import { handleMarketRequest } from '../src/panel.mjs'
 import { communityRecommendationEntries, communityRecommendationPage, validateCommunityRecommendations } from '../marketplace/lib/community-recommendations.js'
+import { githubUserIdFingerprint } from '../src/author-exclusions.mjs'
 import { createRankingSnapshot, rankingEntries, rankingPage, renderRankingRows, applyRankingRefreshState } from '../marketplace/rankings/model.js'
 const json = async path => JSON.parse(await readFile(new URL(path, import.meta.url), 'utf8'))
 
@@ -32,10 +33,11 @@ test('all interactive plugins remain on both recommendation surfaces across ever
     json('../registry/automation-policy.json'), json('../registry/candidates.json'),
   ])
   const original = JSON.stringify(catalog)
-  const selected = communityRecommendationEntries(registry, index.entries, policy.search.excludedRepositories)
+  const selected = communityRecommendationEntries(registry, index.entries, policy.search.excludedRepositories, policy)
   assert.ok(selected.length > 100)
   const ranking = applyRankingRefreshState(createRankingSnapshot(catalog, index, {
     communityRecommendations: registry, excludedRepositories: policy.search.excludedRepositories, candidates,
+    automationPolicy: policy,
   }), null, 'reuse')
   const expected = new Set(selected.map(entry => entry.catalogId ?? entry.id))
   const ranked = rankingEntries(ranking, 'recommended').filter(entry => entry.communityRecommendation)
@@ -84,6 +86,8 @@ test('evidence identity drift and duplicate records fail closed; exclusions and 
   assert.throws(() => validateCommunityRecommendations({ ...registry, entries: [base, base] }), /Invalid/)
   assert.throws(() => communityRecommendationEntries(registry, [{ id: 'a', repositoryUrl: 'https://github.com/other/a' }]), /identity mismatch/)
   assert.deepEqual(communityRecommendationEntries(registry, [], [{ repositoryUrl: base.repositoryUrl }]), [])
+  const blockedPolicy = { blockedAuthors: [{ userIdSha256: githubUserIdFingerprint(1), reason: 'fixture exclusion', blockedAt: base.occurredAt, requestRefSha256: '1'.repeat(64), requestBodySha256: '2'.repeat(64) }] }
+  assert.deepEqual(communityRecommendationEntries(registry, [], [], blockedPolicy), [])
   const entries = Array.from({ length: 65 }, (_, i) => ({ ...base, id: String(i), name: `Plugin ${i}` }))
   assert.equal(communityRecommendationPage(entries, { page: 4 }).entries.length, 5)
   assert.equal(communityRecommendationPage(entries, { query: 'Plugin 64' }).entries[0].id, '64')

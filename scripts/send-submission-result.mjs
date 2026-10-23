@@ -7,23 +7,26 @@ import { contactDecision, contactBody, humanIdentity, readContactState, reserveC
 import { parseIssueForm, parseRepositoryInput } from './check-plugin-submission.mjs'
 import { resolveTargets } from './resolve-author-notice-targets.mjs'
 import { firstContactDiscussionGate } from './send-first-author-contact.mjs'
+import { isBlockedAuthor } from '../src/author-exclusions.mjs'
 
 export function submissionRepository(event) {
   const fields = parseIssueForm(event?.issue?.body)
   return parseRepositoryInput(fields.get('GitHub repository')).repositoryUrl.replace('https://github.com/', '')
 }
 
-export function submissionDecision(event, state) {
+export function submissionDecision(event, state, authorPolicy = null) {
   if (event?.action !== 'opened') return 'not-an-initial-submission'
   if (!Number.isSafeInteger(event?.issue?.number) || event.issue.pull_request) return 'invalid-submission'
+  if (isBlockedAuthor(event.issue?.user?.id, authorPolicy)) return 'permanently-excluded-author'
   let key
   try { key = submissionRepository(event) } catch { return 'invalid-submission-repository' }
   return contactDecision(state, humanIdentity(event.issue.user), key)
 }
-export async function sendSubmissionResult({ github, event, report, baseCommit, planPath, seed }) {
+export async function sendSubmissionResult({ github, event, report, baseCommit, planPath, seed, authorPolicy = null }) {
   const repository = 'AI-Scarlett/DSH-Store'
   const snapshot = await readContactState(github, repository, seed)
-  const decision = submissionDecision(event, snapshot.state)
+  const policy = authorPolicy ?? JSON.parse(await readFile(new URL('../registry/automation-policy.json', import.meta.url), 'utf8'))
+  const decision = submissionDecision(event, snapshot.state, policy)
   const plan = {
     schemaVersion: 1, operation: 'submission-first-contact', baseCommit, decision,
     eventSha256: digest(JSON.stringify(event)), reportSha256: digest(report),

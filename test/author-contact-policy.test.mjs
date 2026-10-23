@@ -248,6 +248,30 @@ test('an other-request carrying a final admission decision must bind the termina
   p.resolution = { path: 'registry/author-resolutions.json', sha256: 'a'.repeat(64) }
   assert.doesNotThrow(() => validateReplyGrant(p))
 })
+test('a request-bound final reply can atomically record a permanent stop before the single post', async () => {
+  const p = grant()
+  const request = 'Please confirm when the current public references have been removed.'
+  p.requestBodySha256 = digest(request)
+  p.stopAfterReply = true
+  p.review = { ...p.review, kind: 'other-request', requestQuote: request, scope: 'Confirm removal, then permanently stop future contact.' }
+  assert.doesNotThrow(() => validateReplyGrant(p))
+  const api = mock(prior())
+  api.comments.push(incoming(request))
+  const result = await sendReviewedReply({ github: api, plan: p, seed: empty() })
+  assert.equal(result.sent, true)
+  assert.equal(api.posts.length, 1)
+  assert.equal(api.state.contacts[101].stopped, true)
+  assert.equal(Object.values(api.state.contacts[101].reservations)[0].stopAfterReservation, true)
+  assert.equal(contactDecision(api.state, person, 'alice/new-project'), 'stopped')
+  assert.equal((await sendReviewedReply({ github: api, plan: p, seed: empty() })).sent, false)
+  assert.equal(api.posts.length, 1)
+})
+test('a permanent stop cannot be attached to a general or admission-result reply', () => {
+  const p = grant(); p.stopAfterReply = true; p.review.kind = 'other-request'
+  assert.throws(() => validateReplyGrant(p), /permanent stop/)
+  p.review.scope = 'Permanently stop future contact.'; p.review.kind = 'admission-recheck'
+  assert.throws(() => validateReplyGrant(p), /permanent stop/)
+})
 test('a verified explicit request grants one reply for that request only', async () => {
   const api = mock(prior()); api.comments.push(incoming())
   const first = await sendReviewedReply({ github: api, plan: grant(), seed: empty() })
