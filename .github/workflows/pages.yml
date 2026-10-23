@@ -81,14 +81,11 @@ jobs:
               continue
             fi
             bytes=$(wc -c < "$candidate")
-            if [ "$bytes" -le 0 ] || [ "$bytes" -gt 1048576 ]; then
-              echo "Ranking snapshot from $origin is outside the 1 MiB bound" >&2
-              continue
-            fi
             if RANKING_FILE="$candidate" node --input-type=module <<'NODE'
           import { readFile } from 'node:fs/promises'
-          import { validateRankingSnapshot } from './marketplace/rankings/model.js'
+          import { MAX_RANKING_SNAPSHOT_BYTES, validateRankingSnapshot } from './marketplace/rankings/model.js'
           const bytes = await readFile(process.env.RANKING_FILE)
+          if (bytes.length === 0 || bytes.length > MAX_RANKING_SNAPSHOT_BYTES) throw new Error('Ranking snapshot is outside the 2 MiB bound')
           validateRankingSnapshot(JSON.parse(bytes.toString('utf8')))
           NODE
             then

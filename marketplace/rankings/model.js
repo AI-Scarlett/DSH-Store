@@ -4,6 +4,7 @@ import { isWithdrawnRepository } from '../../src/author-exclusions.mjs'
 export const PAGE_SIZE = 30
 export const POPULAR_LIMIT = 100
 export const MAX_RANKING_DESCRIPTION_CHARS = 64
+export const MAX_RANKING_SNAPSHOT_BYTES = 2 * 1024 * 1024
 export const RANKING_TYPES = ['popular', 'listed', 'recommended', 'essential']
 export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const validStars = value => Number.isSafeInteger(value) && value >= 0

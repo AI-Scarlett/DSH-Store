@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
 import { catalogBridgeBuffer, compareVersions, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
-import { createRankingSnapshot, isDshDiscoveryCandidate, MAX_RANKING_DESCRIPTION_CHARS } from '../marketplace/rankings/model.js'
+import { createRankingSnapshot, isDshDiscoveryCandidate, MAX_RANKING_DESCRIPTION_CHARS, MAX_RANKING_SNAPSHOT_BYTES } from '../marketplace/rankings/model.js'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const execFileAsync = promisify(execFile)
@@ -82,6 +82,17 @@ test('GitHub Pages schedules distinct daily and weekly ranking refreshes while r
   assert.match(workflow, /7 \* 24 \* 60 \* 60 \* 1000/)
   assert.match(workflow, /24 \* 60 \* 60 \* 1000/)
   assert.match(workflow, /No valid public ranking snapshot was available; refusing to reset chart history/)
+})
+
+test('ranking snapshot byte bound is shared by the build, browser, and Pages history loader', async () => {
+  const builder = await readFile(new URL('../scripts/build-marketplace-static.mjs', import.meta.url), 'utf8')
+  const browser = await readFile(new URL('../marketplace/rankings/rankings.js', import.meta.url), 'utf8')
+  const workflow = await readFile(new URL('../.github/workflows/pages.yml', import.meta.url), 'utf8')
+  assert.equal(MAX_RANKING_SNAPSHOT_BYTES, 2 * 1024 * 1024)
+  assert.match(builder, /MAX_RANKING_SNAPSHOT_BYTES/)
+  assert.match(browser, /MAX_RANKING_SNAPSHOT_BYTES/)
+  assert.match(workflow, /MAX_RANKING_SNAPSHOT_BYTES/)
+  assert.doesNotMatch(workflow, /1048576|1 MiB bound/)
 })
 
 test('manifest validation stays approved-only; ranking metadata is independent and read-only', async () => {
@@ -179,7 +190,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(rankings, /aria-current="page" data-rankings-nav/)
     assert.match(rankings, /https:\/\/dsh\.store\/rankings\//)
     assert.ok(rankingData.entries.every(entry => Array.from(entry.description).length <= MAX_RANKING_DESCRIPTION_CHARS))
-    assert.ok(rankingBytes.length < 1024 * 1024)
+    assert.ok(rankingBytes.length < MAX_RANKING_SNAPSHOT_BYTES)
     for (const page of [home, plugins, standards, article, articles, articleDetail, about, guide, faq, repair, scans]) {
       assert.match(page, /data-rankings-nav>榜单/)
       assert.match(page, /data-i18n="nav\.articles"/)
