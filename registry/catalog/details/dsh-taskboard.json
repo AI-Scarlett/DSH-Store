@@ -20,24 +20,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "cf00e4ee8884fa6463da991b2fa2ac751448fc30",
-  "version": "0.9.2",
+  "commit": "ff7d197c4cc10404795f7749fd59df1966c4d588",
+  "version": "0.9.4",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-21T07:41:36.000Z",
-    "observedAt": "2026-10-21T13:31:49.000Z",
+    "updatedAt": "2026-10-23T15:51:53.000Z",
+    "observedAt": "2026-10-23T19:49:41.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-21T13:31:49.000Z",
-      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/cf00e4ee8884fa6463da991b2fa2ac751448fc30",
+      "checkedAt": "2026-10-23T19:49:41.000Z",
+      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/ff7d197c4cc10404795f7749fd59df1966c4d588",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,11 +76,11 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0670cc4c1234963950bbd6e2fd5fd8aec9b79cbfbe564a3c472a9d40d7a1d17e",
+    "binding": "5aea1dbfe2aab1740ba75fe99fe3fa17bf293e468dd329f4646209edfb251bbf",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "review-required",
+    "state": "incomplete",
     "sourceContract": "unverified",
-    "coverage": "complete",
+    "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
@@ -90,7 +90,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/invariant.js; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the netw",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -105,7 +105,6 @@
       "0.1.2-rc.1": "compatible",
       "0.1.5-rc.1": "compatible",
       "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown"
@@ -172,12 +171,6 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

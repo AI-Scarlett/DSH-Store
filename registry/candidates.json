@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-23T13:09:02.000Z",
+    "updatedAt": "2026-10-23T19:49:41.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -915,8 +915,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "746a41937d0c05fc8c53872c56f663b8b8f90b62",
-      "sourceUpdatedAt": "2026-10-22T19:25:24.000Z",
+      "latestCommit": "f713087132021d235682f908a1c0f3bc6ab8762d",
+      "sourceUpdatedAt": "2026-10-23T19:57:14.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -11326,25 +11326,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "dwjz-dsh-reflection",
-      "name": "DWJZ/dsh-reflection",
-      "description": "DeepSeek Harness 持久记忆插件：把用户与项目的长期记忆存在 $DSH_HOME/memory，并在每个新会话注入紧凑索引。 / Persistent user and project memory for DeepSeek Harness, stored under $DSH_HOME/memory and injected as a compact index.",
-      "repositoryUrl": "https://github.com/DWJZ/dsh-reflection",
-      "defaultBranch": "main",
-      "latestCommit": "145cdec34153b141c687f56624cf02e16b57540f",
-      "sourceUpdatedAt": "2026-10-07T04:52:27.000Z",
-      "discoveredAt": "2026-10-07T04:47:55.000Z",
-      "discoverySources": [
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "blocked",
-      "statusReason": "SUBMISSION_CATALOG_COLLISION: Catalog ID or package name collides with another registry entry"
-    },
-    {
       "id": "windypro-rourou-dsh-code-studio",
       "name": "WindyPro-rourou/dsh-code-studio",
       "description": "Code Studio for DSH Web GUI - VS Code + Cline hybrid: file tree, syntax-highlighted editor, Cline-style line diffs that auto-appear when the agent edits files.",
@@ -15910,6 +15891,82 @@
       "discoveredAt": "2026-10-23T13:09:02.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a5284f29fddb836f4afb87893fa9ea6c8b4cb9ff:data/plugins/yuehancn__dsh-tool-mining.yml:sha256=adec41d21dc5ce7c77698d0c5a8c535dd4e76858072e9914c5c9527329566026:at=2026-10-23T13:19:30.363Z:owner=181915304"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ruisenbai-dsh-annotation",
+      "name": "ruisenbai/dsh-annotation",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/ruisenbai/dsh-annotation",
+      "defaultBranch": "main",
+      "latestCommit": "5b7f85e0bdf44156d4ad3dd779eebf3019209f03",
+      "sourceUpdatedAt": "2026-10-20T03:39:37.000Z",
+      "discoveredAt": "2026-10-23T19:49:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@d135bb5f1b84c19c62022bb570c92369dcbacf54:data/plugins/ruisenbai__dsh-annotation.yml:sha256=37863a549771af21e0dfde233899a32df9703853f5fca5fd5a321092f2ff0be2:at=2026-10-23T19:57:51.468Z:owner=77267645"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "runcat-tommy-dsh-mcp-mini-manager",
+      "name": "runcat-tommy/dsh-mcp-mini-manager",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/runcat-tommy/dsh-mcp-mini-manager",
+      "defaultBranch": "main",
+      "latestCommit": "58285366ed9d5dbcdf26faa9732dca0c4bb21454",
+      "sourceUpdatedAt": "2026-10-16T03:44:00.000Z",
+      "discoveredAt": "2026-10-23T19:49:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@d135bb5f1b84c19c62022bb570c92369dcbacf54:data/plugins/runcat-tommy__dsh-mcp-mini-manager.yml:sha256=88fc3d3341e48d1a055f61696130a2d029a6b14372691c70e8a9a1ef850b54c0:at=2026-10-23T19:57:51.468Z:owner=321355890"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "runcat-tommy-dsh-chinese-poetry",
+      "name": "runcat-tommy/dsh-chinese-poetry",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/runcat-tommy/dsh-chinese-poetry",
+      "defaultBranch": "main",
+      "latestCommit": "d81d10720a1182e4d97bd761e9811e4c5521da0c",
+      "sourceUpdatedAt": "2026-10-16T03:36:28.000Z",
+      "discoveredAt": "2026-10-23T19:49:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@d135bb5f1b84c19c62022bb570c92369dcbacf54:data/plugins/runcat-tommy__dsh-chinese-poetry.yml:sha256=f3e0413941c6ce40dee168cd1854ca859e96d748881b0309cc66985679522e1a:at=2026-10-23T19:57:51.468Z:owner=321355890"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ruiyukirin-dsh-prompt-optimization-master",
+      "name": "ruiyukirin/dsh-prompt-optimization-master",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/ruiyukirin/dsh-prompt-optimization-master",
+      "defaultBranch": "main",
+      "latestCommit": "67478ed7cb6f83ed32ccbbdaed8e05bfbbf65abc",
+      "sourceUpdatedAt": "2026-10-12T13:34:03.000Z",
+      "discoveredAt": "2026-10-23T19:49:41.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@d135bb5f1b84c19c62022bb570c92369dcbacf54:data/plugins/ruiyukirin__dsh-prompt-optimization-master.yml:sha256=9b4e0232afd4f592114804710c82b0a7520e86debbe702e3e43ca0e93cc7b4c1:at=2026-10-23T19:57:51.468Z:owner=207894989"
       ],
       "topics": [
         "automatic-radar"
