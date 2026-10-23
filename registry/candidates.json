@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-22T19:47:29.000Z",
+    "updatedAt": "2026-10-23T02:00:26.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -4721,26 +4721,6 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held pending current complete fixed-source admission. Historical DSH compatibility does not approve the manifest, Bundle Patch, runtime source, or permissions. Affected Catalog entries: dsh-plugin-deepseek-vision."
-    },
-    {
-      "id": "cymosehq-cymose-code",
-      "name": "会话管理（Cymose Code）",
-      "description": "为 DSH 提供会话管理能力。英文原始说明：Cymose session graph as plugins for coding harnesses. See what you already tried — not another linear chat.",
-      "repositoryUrl": "https://github.com/cymosehq/cymose-code",
-      "defaultBranch": "main",
-      "latestCommit": "22188459944afab508408755a2d7e0b5c6c7bff6",
-      "sourceUpdatedAt": "2026-09-11T19:30:08.000Z",
-      "discoveredAt": "2026-09-10T03:30:58.000Z",
-      "discoverySources": [
-        "catalog-latest-three-compatibility-v1"
-      ],
-      "topics": [
-        "experimental",
-        "dsh-compatibility-review"
-      ],
-      "status": "reviewing",
-      "route": "direct-review",
-      "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held pending current complete fixed-source admission. Historical DSH compatibility does not approve the manifest, Bundle Patch, runtime source, or permissions. Affected Catalog entries: cymose-code."
     },
     {
       "id": "wecode-ai-wegent",
@@ -14833,8 +14813,8 @@
       "description": "会话头部徽标：显示 DeepSeek 高峰/闲时状态、当前模型 token 单价，并按真实用量统计会话与每轮费用。",
       "repositoryUrl": "https://github.com/future007s/dsh-peak-indicator",
       "defaultBranch": "main",
-      "latestCommit": "4c1fb3216ffa784a3de7314668b3fb11d7bddd91",
-      "sourceUpdatedAt": "2026-10-20T01:44:57.000Z",
+      "latestCommit": "cdbbf5457338ce97c28f6d692ba19e67e4e67b15",
+      "sourceUpdatedAt": "2026-10-23T01:58:58.000Z",
       "discoveredAt": "2026-10-19T14:05:20.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -15307,25 +15287,6 @@
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     },
     {
-      "id": "ericfl1998-deepseek-harness-mobile",
-      "name": "EricFL1998/deepseek-harness-mobile",
-      "description": "a full deepseek harness mobile client",
-      "repositoryUrl": "https://github.com/EricFL1998/deepseek-harness-mobile",
-      "defaultBranch": "master",
-      "latestCommit": "9efb6c06a17ac69e33e2df98379f34093069ab53",
-      "sourceUpdatedAt": "2026-10-21T13:38:30.000Z",
-      "discoveredAt": "2026-10-21T13:31:49.000Z",
-      "discoverySources": [
-        "github-automatic-radar-v1"
-      ],
-      "topics": [
-        "automatic-radar"
-      ],
-      "status": "rejected",
-      "route": "monorepo-review",
-      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: test-plugin/dsh-archive-manager-main, test-plugin/dsh-genui-main, .captures/bridge-pkg/dsh-mobile-bridge-plugin, .captures/sub-pkg/dsh-plugin-subscription-oauth"
-    },
-    {
       "id": "adenxie-dsh-vercel",
       "name": "AdenXie/dsh-vercel",
       "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
@@ -15717,6 +15678,106 @@
       "discoveredAt": "2026-10-22T19:47:29.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a08a5050d7094837cfc19016dc2a0ca43f39e0dc:data/plugins/lujianjun19__dsh-llm-github-copilot.yml:sha256=cdfe0b8e70bbc5f7e9de8950c50ea7184c264cc70ad3fd1053ff4d9206ca3631:at=2026-10-22T19:54:56.687Z:owner=56019342"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "yingjian666-dsh-zh-thinking",
+      "name": "yingjian666/dsh-zh-thinking",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/yingjian666/dsh-zh-thinking",
+      "defaultBranch": "main",
+      "latestCommit": "ce5bc5b786d4a2925552b2b03d218a0e80d9d8fe",
+      "sourceUpdatedAt": "2026-10-01T15:53:24.000Z",
+      "discoveredAt": "2026-10-23T02:00:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a5284f29fddb836f4afb87893fa9ea6c8b4cb9ff:data/plugins/yingjian666__dsh-zh-thinking.yml:sha256=e576646b958ec231264fea67086b3e379a38fb48dcf1679766c7b4816c2a426c:at=2026-10-23T02:09:44.562Z:owner=325670881"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "playform-deepseek",
+      "name": "PlayForm/DeepSeek",
+      "description": "DeepSeek 🐳",
+      "repositoryUrl": "https://github.com/PlayForm/DeepSeek",
+      "defaultBranch": "Current",
+      "latestCommit": "052b0937337f7d8fd9cf35b5ea10b2615a4f1663",
+      "sourceUpdatedAt": "2026-10-23T02:09:32.000Z",
+      "discoveredAt": "2026-10-23T02:00:26.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh-plugin",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "yinhcao-yinchao-ai-music-skill",
+      "name": "yinhcao/yinchao-ai-music-skill",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/yinhcao/yinchao-ai-music-skill",
+      "defaultBranch": "main",
+      "latestCommit": "4f7b013d9ea07559a1875ad2db330c4f6de27b00",
+      "sourceUpdatedAt": "2026-10-16T03:20:21.000Z",
+      "discoveredAt": "2026-10-23T02:00:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a5284f29fddb836f4afb87893fa9ea6c8b4cb9ff:data/plugins/yinhcao__yinchao-ai-music-skill.yml:sha256=88bd491fbb832cccd5f218b3edaa8e77a912755cf0f8647cbcc7fa14021f6fa8:at=2026-10-23T02:09:44.562Z:owner=318134025"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ying-kai-liao-kith",
+      "name": "Ying-Kai-Liao/kith",
+      "description": "Persistent specialist agents for Claude Code: versioned agent packages, layered memory, linked skills",
+      "repositoryUrl": "https://github.com/Ying-Kai-Liao/kith",
+      "defaultBranch": "main",
+      "latestCommit": "6d91f3bcc02109cfef4b0bc69dfb67f9a4e31c36",
+      "sourceUpdatedAt": "2026-10-23T02:09:31.000Z",
+      "discoveredAt": "2026-10-23T02:00:26.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "hq",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "yingtianlan-dsh-tauri-turnrewind",
+      "name": "yingtianlan/dsh-tauri-turnrewind",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/yingtianlan/dsh-tauri-turnrewind",
+      "defaultBranch": "main",
+      "latestCommit": "759ef2cab1927c161e5e871cc6094d3846407b4b",
+      "sourceUpdatedAt": "2026-09-09T14:38:22.000Z",
+      "discoveredAt": "2026-10-23T02:00:26.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a5284f29fddb836f4afb87893fa9ea6c8b4cb9ff:data/plugins/yingtianlan__dsh-tauri-turnrewind.yml:sha256=91919d248fc7133fcf762aeeb19b494e5b944b36d7d90f79eec8741da46a7ee4:at=2026-10-23T02:09:44.562Z:owner=269383641"
       ],
       "topics": [
         "automatic-radar"
