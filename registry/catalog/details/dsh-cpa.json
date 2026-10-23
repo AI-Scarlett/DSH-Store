@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a2df3308cd5705f3c4fb6089e765d5fe83dfb9d8",
+  "commit": "f79bd33a736b5dbbae412e42879e1f3f5c13f2d0",
   "version": "0.1.11",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-21T16:33:32.000Z",
-    "observedAt": "2026-10-21T19:57:02.000Z",
+    "updatedAt": "2026-10-23T11:59:59.000Z",
+    "observedAt": "2026-10-23T13:09:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-21T19:57:02.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/a2df3308cd5705f3c4fb6089e765d5fe83dfb9d8",
+      "checkedAt": "2026-10-23T13:09:02.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/f79bd33a736b5dbbae412e42879e1f3f5c13f2d0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,7 +77,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e087474242e74f449c4e2ecbd0d2c54d42e50c97995163f95b96518a4173784d",
+    "binding": "ec71aba6e0f6f86d45b248c3641a525fef023c8d5bf6f074771a446b88922c61",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -93,7 +93,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern has targets outside the distributable surface: ./src/*; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.1-rc.2",
+    "dsh": "0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,9 +103,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.1-rc.2": "unknown",
+      "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -156,12 +156,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -169,6 +163,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

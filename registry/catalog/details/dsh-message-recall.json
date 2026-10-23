@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fba02ce70aafc26a6312b0280a9f3b284a8fd998",
-  "version": "0.2.1",
+  "commit": "1999cee7b9d48015a36c85b7ebf6174c24cc15a8",
+  "version": "0.2.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-03T11:39:38.000Z",
-    "observedAt": "2026-10-15T13:06:31.398Z",
+    "updatedAt": "2026-10-23T12:40:40.000Z",
+    "observedAt": "2026-10-23T13:09:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T13:06:31.398Z",
-      "evidenceUrl": "https://github.com/kyle123740/dsh-message-recall/commit/fba02ce70aafc26a6312b0280a9f3b284a8fd998",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-23T13:09:02.000Z",
+      "evidenceUrl": "https://github.com/kyle123740/dsh-message-recall/commit/1999cee7b9d48015a36c85b7ebf6174c24cc15a8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation, package scripts, or builds were executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime reports were not independently reproduced."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,7 +74,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "This bounded capability review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -91,10 +91,11 @@
   "entryIds": [
     "message-recall"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Fixed-source recheck blocked installation: FIXED_SOURCE_REVIEW_REJECTED: caller authorization was not established for the Session inspection/deletion route at lib/main.js:461-483; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": ">=0.1.7-alpha.1",
+    "dsh": "^0.1.7-alpha.1 || ^0.2.0-rc.1 || ^0.2.1-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -112,7 +113,8 @@
       "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.1-rc.2": "unknown",
+      "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -212,6 +214,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

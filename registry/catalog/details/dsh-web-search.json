@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3924f4c605c45144baede9bf2f34a91792501bc2",
-  "version": "0.13.7",
+  "commit": "47d4fe34989b8c132fc21031dbf5f78d0636de26",
+  "version": "0.18.0",
   "categories": [
     "search"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-23T03:50:44.000Z",
-    "observedAt": "2026-10-23T03:44:58.000Z",
+    "updatedAt": "2026-10-23T12:57:54.000Z",
+    "observedAt": "2026-10-23T13:09:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-23T03:44:58.000Z",
-      "evidenceUrl": "https://github.com/fangchenghao/dsh-web-search/commit/3924f4c605c45144baede9bf2f34a91792501bc2",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-23T13:09:02.000Z",
+      "evidenceUrl": "https://github.com/fangchenghao/dsh-web-search/commit/47d4fe34989b8c132fc21031dbf5f78d0636de26",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,16 +74,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0ed64362ff9dcc6228404bd3a6b16ed06d16e9f77b3b171cf6f4392240ce3399",
+    "binding": "2de01beca3a6c664fea2919029404ff03ebe5dee61b093c71f5ea8d1321de8a2",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
-    "sourceContract": "unverified",
-    "coverage": "incomplete",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
@@ -91,10 +91,11 @@
   "entryIds": [
     "web-search-bing"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: lib/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.2 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,9 +105,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.2": "compatible",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -157,11 +158,11 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+      "0.2.1-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.2.1-rc.1": {
         "install": "unknown",
@@ -169,14 +170,14 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.2": {
+      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.18.0",
     "systems": [],
     "profiles": [
       "web"
