@@ -1,4 +1,4 @@
-import { PAGE_SIZE, RANKING_TYPES, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from './model.js?v=20261012-listed-reasons'
+import { PAGE_SIZE, RANKING_TYPES, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from './model.js?v=20261023-author-exclusions'
 
 const translations = {
   zh: {

@@ -173,7 +173,7 @@ export function handleMarketRequest(req, res, options = {}) {
         source = await options.catalogService.load()
       }
       const select = current => {
-        let records = communityRecommendationEntries(recommendations, current.entries, policy.search?.excludedRepositories)
+        let records = communityRecommendationEntries(recommendations, current.entries, policy.search?.excludedRepositories, policy)
         if (body.compatibleWith) {
           const compatible = new Set(current.entries.filter(entry => entry.compatibility?.dshReleases?.[body.compatibleWith] === 'compatible').map(entry => entry.id))
           records = records.filter(record => compatible.has(record.catalogId))

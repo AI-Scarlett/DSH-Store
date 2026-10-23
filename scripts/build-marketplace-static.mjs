@@ -973,7 +973,7 @@ const communityRecommendations = JSON.parse(await readFile(resolve(projectRoot, 
 const recommendationPolicy = JSON.parse(await readFile(resolve(projectRoot, 'registry/automation-policy.json'), 'utf8'))
 let rankings = validateRankingSnapshot(createRankingSnapshot(snapshot, catalogIndex, {
   sourceCommit: sourceSha, candidates: candidateRegistry, communityRecommendations,
-  excludedRepositories: recommendationPolicy.search.excludedRepositories,
+  excludedRepositories: recommendationPolicy.search.excludedRepositories, automationPolicy: recommendationPolicy,
 }))
 if (refreshRankingStars) {
   const enriched = await enrichRankingSnapshot(rankings, { token })

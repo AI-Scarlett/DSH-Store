@@ -45,9 +45,31 @@
         "repositoryUrl": "https://github.com/WizisCool/dsh-ears",
         "reason": "Author explicitly keeps npm as the canonical channel and declares fixed-Commit Store installation out of project scope; do not repeatedly request generated files.",
         "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/issues/1170#issuecomment-5850052391"
+      },
+      {
+        "repositoryUrl": "https://github.com/EricFL1998/deepseek-harness-mobile",
+        "reason": "The repository is an Android DSH client, not an installable plugin; its embedded test fixtures and capture bundles are not distribution packages.",
+        "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/issues/1528#issuecomment-6340836271"
       }
     ]
   },
+  "blockedAuthors": [
+    {
+      "userIdSha256": "3e8a5066e0bbea434bbc4b01a458b11a30cef4aa4611a1c1758b7771a3d5a301",
+      "reason": "Permanent marketplace exclusion after an explicit withdrawal request; do not rediscover, admit, re-list, recommend, or initiate future contact for this immutable GitHub identity.",
+      "requestRefSha256": "843835bc4b6f95bfafff80e18d68eb1428ee8015346b1e67dfa85e89f15b89a9",
+      "requestBodySha256": "74a4792f33e14ac5154978cb636d0b405afc894751c55070505ba03924994211",
+      "blockedAt": "2026-10-22T21:11:29Z"
+    }
+  ],
+  "withdrawnRepositories": [
+    {
+      "repositoryUrlSha256": "74e11e9a95f670a69f147e04e680c8cbc43369e4d9f9683307a233799863eabb",
+      "reason": "Permanent author-requested repository withdrawal; do not rediscover, admit, recommend, or re-list.",
+      "requestRefSha256": "843835bc4b6f95bfafff80e18d68eb1428ee8015346b1e67dfa85e89f15b89a9",
+      "requestBodySha256": "74a4792f33e14ac5154978cb636d0b405afc894751c55070505ba03924994211"
+    }
+  ],
   "sourceBounds": {
     "maxTreeEntries": 1200,
     "maxRuntimeFiles": 512,

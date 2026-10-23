@@ -1,3 +1,5 @@
+import { isBlockedAuthor, isWithdrawnRepository } from '../../src/author-exclusions.mjs'
+
 // Public recommendation evidence only. This is not a contact or admission ledger.
 export function validateCommunityRecommendations(document) {
   if (document?.schemaVersion !== 1 || !Array.isArray(document.entries) || document.entries.length > 2000
@@ -26,11 +28,13 @@ export function validateCommunityRecommendations(document) {
   return document
 }
 
-export function communityRecommendationEntries(document, catalogEntries, excludedRepositories = []) {
+export function communityRecommendationEntries(document, catalogEntries, excludedRepositories = [], policy = null) {
   validateCommunityRecommendations(document)
   const excluded = new Set(excludedRepositories.map(entry => String(entry.repositoryUrl).toLowerCase()))
   const byId = new Map(catalogEntries.map(entry => [entry.id, entry]))
-  return document.entries.filter(entry => !excluded.has(entry.repositoryUrl.toLowerCase())).map(record => {
+  return document.entries.filter(entry => !excluded.has(entry.repositoryUrl.toLowerCase())
+    && !isWithdrawnRepository(entry.repositoryUrl, policy)
+    && !(policy && isBlockedAuthor(entry.userId, policy))).map(record => {
     const catalog = record.catalogId ? byId.get(record.catalogId) : null
     if (!record.catalogId && catalogEntries.some(entry => entry.repositoryUrl.toLowerCase() === record.repositoryUrl.toLowerCase())) {
       throw new Error(`Community recommendation must bind Catalog identity: ${record.id}`)

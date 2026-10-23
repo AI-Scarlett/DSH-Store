@@ -110,6 +110,7 @@ test('payload contains only explicit additions and deletions, with strict paths 
   assert.throws(() => mutationInput({ ...plan, changes: [...plan.changes, ...plan.changes] }), /duplicate/)
   assert.throws(() => mutationInput({ ...plan, changes: [] }), /count/)
   assert.throws(() => mutationInput({ ...plan, changes: [{ ...plan.changes[0], contents: Buffer.alloc(8 * 1024 * 1024 + 1) }] }), /bounds/)
+  assert.doesNotThrow(() => mutationInput({ ...plan, changes: [{ path: 'registry/community-recommendations.json', contents: Buffer.from('{"entries":[]}\n') }] }))
 })
 
 test('Git change collection preserves unrelated files and real index while covering added and deleted details', async () => {

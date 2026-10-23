@@ -157,8 +157,9 @@ test('static marketplace derives manager identity and catalog cards without muta
     const communityRecommendations = JSON.parse(await readFile(new URL('registry/community-recommendations.json', root), 'utf8'))
     const recommendationNamePlan = JSON.parse(await readFile(new URL('docs/ops/community-recommendation-ranking-name-fix-plan-20261021.json', root), 'utf8'))
     const policy = JSON.parse(await readFile(new URL('registry/automation-policy.json', root), 'utf8'))
-    const expectedRankings = createRankingSnapshot(catalog, JSON.parse(catalogIndexBefore), { candidates, communityRecommendations, excludedRepositories: policy.search.excludedRepositories })
+    const expectedRankings = createRankingSnapshot(catalog, JSON.parse(catalogIndexBefore), { candidates, communityRecommendations, excludedRepositories: policy.search.excludedRepositories, automationPolicy: policy })
     assert.deepEqual(new Set(rankingData.entries.map(entry => entry.id)), new Set(expectedRankings.entries.map(entry => entry.id)))
+    assert.equal(rankingData.entries.some(entry => entry.repositoryUrl === 'https://github.com/EricFL1998/deepseek-harness-mobile'), false)
     for (const expected of recommendationNamePlan.change.verifiedPackageNames) {
       const entry = rankingData.entries.find(record => record.id === expected.id)
       assert.ok(entry, `ranking includes ${expected.repository}`)

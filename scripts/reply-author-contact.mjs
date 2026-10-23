@@ -12,6 +12,7 @@ import { isAdmissionRecheckRequest } from './collect-author-feedback.mjs'
 
 export function validateReplyGrant(plan) {
   const ownerResult = plan?.operation === 'owner-authorized-review-result'
+  const stopAfterReply = plan?.stopAfterReply === true
   if (plan?.schemaVersion !== 1 || !['requested-author-reply', 'owner-authorized-admission-correction', 'owner-authorized-review-result'].includes(plan.operation)
     || plan.review?.decision !== (ownerResult ? 'owner-directed-exact-result' : 'explicit-request-to-continue')
     || typeof plan.review.scope !== 'string' || !plan.review.scope.trim()
@@ -22,6 +23,9 @@ export function validateReplyGrant(plan) {
     || !/^[0-9a-f]{64}$/.test(plan.requestBodySha256)
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || typeof plan.responseBody !== 'string' || !plan.responseBody.trim()) throw new Error('explicit reviewed continuation request required')
+  if (plan.stopAfterReply !== undefined && typeof plan.stopAfterReply !== 'boolean') throw new Error('invalid post-reply contact stop')
+  if (stopAfterReply && (plan.operation !== 'requested-author-reply' || plan.review.kind !== 'other-request'
+    || !/\bpermanent(?:ly)?\b|永久|停止联系/iu.test(plan.review.scope))) throw new Error('permanent stop must be bound to one exact non-admission request')
   if (plan.review.finalAdmissionDecision !== undefined && typeof plan.review.finalAdmissionDecision !== 'boolean') throw new Error('invalid terminal decision marker')
   if (plan.review.finalAdmissionDecision === true && (plan.review.kind !== 'other-request' || !plan.resolution)) {
     throw new Error('other-request admission decisions must bind the terminal resolution')
@@ -106,6 +110,7 @@ export async function sendReviewedReply({ github, plan, seed }) {
   const claim = await reserveContact({
     github, repository: 'AI-Scarlett/DSH-Store', key: plan.repository,
     recipient: person, claimId: digest(JSON.stringify(plan)), seed,
+    stopAfterReservation: plan.stopAfterReply === true,
     ...(['owner-authorized-admission-correction', 'owner-authorized-review-result'].includes(plan.operation)
       ? { ownerCorrection: correctionEvidence(plan) }
       : { continuation: { commentId: plan.requestCommentId, requestHash: plan.requestBodySha256,

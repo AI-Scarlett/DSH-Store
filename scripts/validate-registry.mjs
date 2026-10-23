@@ -5,6 +5,9 @@ import { readFile, readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { validateDiscoveryIndexSnapshot } from '../src/discovery-index-validation.mjs'
+import { blockedAuthorFingerprints, withdrawnRepositoryFingerprints } from '../src/author-exclusions.mjs'
+import { validateCandidateRegistry } from '../src/candidates.mjs'
+import { validateCommunityRecommendations } from '../marketplace/lib/community-recommendations.js'
 import { assertCatalogLocalization } from '../src/catalog-localization.mjs'
 import {
   assertLegacyCatalogCompatibility, loadCatalogFromFiles, MAX_CATALOG_DETAIL_RESPONSE_BYTES,
@@ -36,3 +39,8 @@ process.stdout.write(`REGISTRY_OK entries=${catalog.entries.length} bridgeBytes=
 validateAdmissionReviews(JSON.parse(await readFile(resolve(root, 'registry/admission-reviews.json'), 'utf8')))
 validateCatalogMigrations(JSON.parse(await readFile(resolve(root, 'registry/catalog-migrations.json'), 'utf8')))
 validateAuthorResolutions(JSON.parse(await readFile(resolve(root, 'registry/author-resolutions.json'), 'utf8')), catalog.entries)
+const automationPolicy = JSON.parse(await readFile(resolve(root, 'registry/automation-policy.json'), 'utf8'))
+blockedAuthorFingerprints(automationPolicy)
+withdrawnRepositoryFingerprints(automationPolicy)
+validateCandidateRegistry(JSON.parse(await readFile(resolve(root, 'registry/candidates.json'), 'utf8')))
+validateCommunityRecommendations(JSON.parse(await readFile(resolve(root, 'registry/community-recommendations.json'), 'utf8')))

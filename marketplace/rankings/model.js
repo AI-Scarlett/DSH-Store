@@ -1,5 +1,6 @@
 // Shared by the static builder and browser. Rankings never change Catalog approval.
 import { communityRecommendationEntries } from '../lib/community-recommendations.js'
+import { isWithdrawnRepository } from '../../src/author-exclusions.mjs'
 export const PAGE_SIZE = 30
 export const POPULAR_LIMIT = 100
 export const MAX_RANKING_DESCRIPTION_CHARS = 64
@@ -105,10 +106,11 @@ export function isDshDiscoveryCandidate(entry) {
 }
 
 // Display eligibility is independent of Catalog admission. No install fields are exported.
-export function createRankingSnapshot(catalog, index, { sourceCommit, candidates = { entries: [] }, starsObservedAt = null, communityRecommendations = null, excludedRepositories = [] } = {}) {
+export function createRankingSnapshot(catalog, index, { sourceCommit, candidates = { entries: [] }, starsObservedAt = null, communityRecommendations = null, excludedRepositories = [], automationPolicy = null } = {}) {
   const indexed = new Map(index.entries.map(entry => [entry.id, entry]))
   const categories = Object.entries(catalog.registry.categories || {}).map(([id, zh]) => ({ id, zh, en: categoryNamesEn[id] || id }))
   const knownCategories = new Set(categories.map(category => category.id))
+  const excludedRepositoryUrls = new Set(excludedRepositories.map(entry => String(entry.repositoryUrl).toLowerCase()))
   const repositories = new Set()
   const entries = catalog.entries.map(entry => {
     const light = indexed.get(entry.id)
@@ -134,6 +136,7 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
     if (!isDshDiscoveryCandidate(entry)) continue
     if (!validRepository(entry.repositoryUrl)) throw new Error('Ranking repository must be canonical GitHub')
     const key = entry.repositoryUrl.toLowerCase()
+    if (excludedRepositoryUrls.has(key) || isWithdrawnRepository(entry.repositoryUrl, automationPolicy)) continue
     if (repositories.has(key)) continue
     repositories.add(key)
     entries.push({
@@ -147,7 +150,7 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
     })
   }
   if (communityRecommendations) {
-    const records = communityRecommendationEntries(communityRecommendations, catalog.entries, excludedRepositories)
+    const records = communityRecommendationEntries(communityRecommendations, catalog.entries, excludedRepositories, automationPolicy)
     for (const record of records) {
       const existing = record.catalogId ? entries.find(entry => entry.id === record.catalogId)
         : entries.find(entry => entry.source === 'candidate' && entry.repositoryUrl.toLowerCase() === record.repositoryUrl.toLowerCase())

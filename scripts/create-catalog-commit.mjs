@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const oid = value => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value)
-const allowedPath = value => /^(?:registry\/(?:catalog|catalog-index|candidates)\.json|registry\/catalog\/details\/[a-z0-9][a-z0-9-]*\.json)$/.test(value)
+const allowedPath = value => /^(?:registry\/(?:catalog|catalog-index|candidates|community-recommendations)\.json|registry\/catalog\/details\/[a-z0-9][a-z0-9-]*\.json)$/.test(value)
 const pause = ms => new Promise(done => setTimeout(done, ms))
 
 export function validateChanges(changes) {
