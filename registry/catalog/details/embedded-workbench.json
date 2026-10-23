@@ -27,8 +27,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "1bb1bcfc45ca6efab327967a252d4d9203a323a7",
-  "version": "0.9.4",
+  "commit": "f32698d8e61bd50295ac66721838bf6aacec1859",
+  "version": "0.9.5",
   "categories": [
     "workflow",
     "tools"
@@ -36,16 +36,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T12:05:03.000Z",
-    "observedAt": "2026-10-18T12:29:04.000Z",
+    "updatedAt": "2026-10-23T16:16:13.000Z",
+    "observedAt": "2026-10-23T19:49:41.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-18T12:29:04.000Z",
-      "evidenceUrl": "https://github.com/AmethystLuna/embedded-workbench/commit/1bb1bcfc45ca6efab327967a252d4d9203a323a7",
+      "checkedAt": "2026-10-23T19:49:41.000Z",
+      "evidenceUrl": "https://github.com/AmethystLuna/embedded-workbench/commit/f32698d8e61bd50295ac66721838bf6aacec1859",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -84,14 +84,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d73473f882f1329c579eb07cad8f2c07698066f93cb2535a32283ff7c9f82036",
+    "binding": "280ee76db842db68625b99280c79bea5ba5c0babde4d07ea7d8cb62ad1af62ac",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "low-risk-static",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "embedded-workbench"
@@ -100,7 +100,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "^0.1.0-rc.7 || ^0.1.1-rc.1 || ^0.1.2-alpha.2 || ^0.1.2-alpha.3 || ^0.1.2-alpha.4 || ^0.1.2-alpha.5 || ^0.1.2-rc.1 || ^0.1.3-alpha.1 || ^0.1.3-alpha.2 || ^0.1.5-alpha.1 || ^0.1.5-rc.1 || ^0.1.5-alpha.2 || ^0.1.5-rc.2 || ^0.1.5-rc.3 || ^0.1.6-alpha.1 || ^0.1.6-alpha.2 || ^0.1.7-alpha.1 || ^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.1.7-rc.2 || ^0.2.0-rc.1 || ^0.2.1-alpha.1 || ^0.2.1-alpha.2 || ^0.2.1-rc.2",
+    "dsh": "^0.1.0-rc.7 || ^0.1.1-rc.1 || ^0.1.2-alpha.2 || ^0.1.2-alpha.3 || ^0.1.2-alpha.4 || ^0.1.2-alpha.5 || ^0.1.2-rc.1 || ^0.1.3-alpha.1 || ^0.1.3-alpha.2 || ^0.1.5-alpha.1 || ^0.1.5-rc.1 || ^0.1.5-alpha.2 || ^0.1.5-rc.2 || ^0.1.5-rc.3 || ^0.1.6-alpha.1 || ^0.1.6-alpha.2 || ^0.1.7-alpha.1 || ^0.1.7-alpha.2 || ^0.1.7-rc.1 || ^0.1.7-rc.2 || ^0.2.0-rc.1 || ^0.2.1-alpha.1 || ^0.2.1-alpha.2 || ^0.2.1-rc.2 || ^0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "incompatible",
       "rc.8": "compatible",
@@ -130,8 +130,7 @@
       "0.2.1-alpha.2": "compatible",
       "0.2.1-rc.1": "compatible",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.3": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -297,12 +296,6 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

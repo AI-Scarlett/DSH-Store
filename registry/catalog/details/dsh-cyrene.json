@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4f2d18be23a2be3330d526258a5d6cfd6cfbd242",
-  "version": "0.7.0",
+  "commit": "6a31b001ec61da92f911769de1f781ee94ac44ad",
+  "version": "0.7.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-23T13:19:00.000Z",
-    "observedAt": "2026-10-23T13:09:02.000Z",
+    "updatedAt": "2026-10-23T14:08:48.000Z",
+    "observedAt": "2026-10-23T19:49:41.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-23T13:09:02.000Z",
-      "evidenceUrl": "https://github.com/Cyrene-xl/DSH-Cyrene/commit/4f2d18be23a2be3330d526258a5d6cfd6cfbd242",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-23T19:49:41.000Z",
+      "evidenceUrl": "https://github.com/Cyrene-xl/DSH-Cyrene/commit/6a31b001ec61da92f911769de1f781ee94ac44ad",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,16 +72,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "946f0c9f681dc6d2de54f09eb08026bdbeb0bbdea385832bfe8cd957c0154483",
+    "binding": "cc647cb332d96731f20922d75550cdfd649ed55f3ab8d41bac910d4fb545843a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
-    "sourceContract": "unverified",
-    "coverage": "incomplete",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
@@ -89,10 +89,11 @@
   "entryIds": [
     "dsh-cyrene"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime artifact path is invalid: ./worldbook/; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.1.0 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
