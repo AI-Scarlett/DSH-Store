@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d14ec9e674ee206bf73b524f12243b46a6c61430",
-  "version": "0.1.3",
+  "commit": "b40ba58d8880bc5dcc69406290a33459b3586c09",
+  "version": "0.1.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-22T13:39:50.000Z",
-    "observedAt": "2026-10-22T13:32:48.000Z",
+    "updatedAt": "2026-10-23T07:02:23.000Z",
+    "observedAt": "2026-10-23T13:09:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-22T13:32:48.000Z",
-      "evidenceUrl": "https://github.com/sdfedsfsdf/dsh-netease-whale-lyrics/commit/d14ec9e674ee206bf73b524f12243b46a6c61430",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-23T13:09:02.000Z",
+      "evidenceUrl": "https://github.com/sdfedsfsdf/dsh-netease-whale-lyrics/commit/b40ba58d8880bc5dcc69406290a33459b3586c09",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,15 +74,15 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "b8a5f9112863f085bbcbcf974bc6b3fd20bf10a696dbbddfdaefd2fffc2b6b68",
+    "binding": "dac566a6bd2fccd65fdae973b37227a79cf0f8b8deea21f4d965143339df3603",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -91,8 +91,9 @@
   "entryIds": [
     "netease-whale-lyrics"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
     "dsh": ">=0.1.7",
     "dshReleases": {
@@ -104,9 +105,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.1-rc.2": "unknown",
+      "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -157,12 +158,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -170,6 +165,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

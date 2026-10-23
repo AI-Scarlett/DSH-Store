@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a54fae06bbd189e064cf04d8f2e00c602e5d3fe7",
-  "version": "1.9.26",
+  "commit": "19ccb4f5b5e387b923f9c2062cd29a40b3a2f473",
+  "version": "1.9.30",
   "categories": [
     "visualization",
     "tools"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-22T08:45:33.000Z",
-    "observedAt": "2026-10-22T13:32:48.000Z",
+    "updatedAt": "2026-10-23T11:20:45.000Z",
+    "observedAt": "2026-10-23T13:09:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-22T13:32:48.000Z",
-      "evidenceUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/a54fae06bbd189e064cf04d8f2e00c602e5d3fe7",
+      "checkedAt": "2026-10-23T13:09:02.000Z",
+      "evidenceUrl": "https://github.com/Han-1413141/dsh-cost-meter/commit/19ccb4f5b5e387b923f9c2062cd29a40b3a2f473",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "5a8e8cc438a06a37b560d469031462d6095a9a1ecae1c6811c33e839f575769d",
+    "binding": "afc0705dd17153a2480184241390f8ee61f51d1df26f30ada0d08c502d1cb703",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -113,7 +113,8 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-alpha.5": "compatible",
       "0.2.1-rc.1": "compatible",
-      "0.2.1-rc.2": "compatible"
+      "0.2.1-rc.2": "compatible",
+      "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -189,6 +190,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

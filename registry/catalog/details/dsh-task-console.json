@@ -31,8 +31,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5157e3703f674902af3042d34bc8af9e39e2f085",
-  "version": "0.26.1",
+  "commit": "eacfe1cbdf5b9e06fa1d4d2e99a4083114a562fe",
+  "version": "0.27.0",
   "categories": [
     "tools",
     "ui",
@@ -41,16 +41,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-22T11:52:20.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-23T08:37:46.000Z",
+    "observedAt": "2026-10-23T13:09:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/He2way/dsh-task-console/commit/5157e3703f674902af3042d34bc8af9e39e2f085",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-23T13:09:02.000Z",
+      "evidenceUrl": "https://github.com/He2way/dsh-task-console/commit/eacfe1cbdf5b9e06fa1d4d2e99a4083114a562fe",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -89,14 +89,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "096ddafa55c24c478b164119bb07cea81ab5f2200434d7027e5f26c4bd7c7768",
+    "binding": "4b01fcfdda470695539119f4d3526978cd697b501bd99e03d60ee893d2f42546",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "task-console"
@@ -105,7 +105,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": ">=0.1.5-rc.1 <0.2.0-0",
+    "dsh": ">=0.1.5-rc.1 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -115,11 +115,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown"
+      "0.2.1-rc.2": "unknown",
+      "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -170,24 +168,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -195,6 +175,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
