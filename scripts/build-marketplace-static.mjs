@@ -7,7 +7,7 @@ import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PA
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { automationReportRunId, buildAutomationStatus } from '../src/automation-status.mjs'
 import { enrichRankingSnapshot } from './ranking-github-metadata.mjs'
-import { applyRankingRefreshState, createRankingSnapshot, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
+import { applyRankingRefreshState, createRankingSnapshot, MAX_RANKING_SNAPSHOT_BYTES, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 import { createKnownPluginDirectory, filterPluginDirectory } from '../marketplace/lib/plugin-directory.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -23,7 +23,7 @@ const previousRankingsPath = argValue('--previous-ranking-snapshot')
 let previousRankings = null
 if (previousRankingsPath) {
   const bytes = await readFile(resolve(projectRoot, previousRankingsPath))
-  if (bytes.length > 1024 * 1024) throw new Error('Previous rankings snapshot exceeds the 1 MiB bound')
+  if (bytes.length > MAX_RANKING_SNAPSHOT_BYTES) throw new Error('Previous rankings snapshot exceeds the 2 MiB bound')
   previousRankings = validateRankingSnapshot(JSON.parse(bytes.toString('utf8')))
 }
 const refreshRankingStars = ['daily', 'weekly', 'baseline'].includes(rankingRefreshMode)
@@ -982,7 +982,7 @@ if (refreshRankingStars) {
 }
 rankings = applyRankingRefreshState(rankings, previousRankings, rankingRefreshMode)
 const rankingsBytes = Buffer.from(JSON.stringify(rankings) + '\n')
-if (rankingsBytes.length > 1024 * 1024) throw new Error('Rankings snapshot exceeds the 1 MiB bound')
+if (rankingsBytes.length > MAX_RANKING_SNAPSHOT_BYTES) throw new Error('Rankings snapshot exceeds the 2 MiB bound')
 await writeFile(resolve(outputRoot, 'marketplace/rankings/data.json'), rankingsBytes)
 const rankingsPath = resolve(outputRoot, 'marketplace/rankings/index.html')
 let rankingsHtml = await readFile(rankingsPath, 'utf8')

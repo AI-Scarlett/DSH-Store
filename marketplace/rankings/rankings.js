@@ -1,4 +1,4 @@
-import { PAGE_SIZE, RANKING_TYPES, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from './model.js?v=20261023-author-exclusions'
+import { MAX_RANKING_SNAPSHOT_BYTES, PAGE_SIZE, RANKING_TYPES, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from './model.js?v=20261023-ranking-bound-2m'
 
 const translations = {
   zh: {
@@ -88,7 +88,7 @@ async function load() {
     const response = await fetch('./data.json', { cache: 'no-cache', signal: AbortSignal.timeout(15000) })
     if (!response.ok) throw new Error('Rankings unavailable')
     const bytes = await response.arrayBuffer()
-    if (bytes.byteLength > 1024 * 1024) throw new Error('Rankings exceed bound')
+    if (bytes.byteLength > MAX_RANKING_SNAPSHOT_BYTES) throw new Error('Rankings exceed bound')
     const expected = document.querySelector('meta[name="dsh-rankings-sha256"]')?.content
     if (!expected) throw new Error('Ranking release identity missing')
     const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map(n => n.toString(16).padStart(2, '0')).join('')
