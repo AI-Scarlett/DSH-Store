@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "ranking-snapshot-bound-fix-20261023",
+  "type": "repository-source-fix",
+  "createdAt": "2026-10-23",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "8c95855204a4fe478da956e7e10710290367d624",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "处理 GitHub 作者回复并完成已授权的商城下架；修复阻止公开发布的确定性构建错误。",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "incident": {
+    "workflowRun": 39888225963,
+    "failedStep": "Build public marketplace artifact",
+    "error": "Rankings snapshot exceeds the 1 MiB bound",
+    "baseCommit": "8c95855204a4fe478da956e7e10710290367d624"
+  },
+  "scope": [
+    ".github/workflows/pages.yml",
+    "docs/ops/ranking-snapshot-bound-fix-20261023.json",
+    "marketplace/rankings/model.js",
+    "marketplace/rankings/index.html",
+    "marketplace/rankings/rankings.js",
+    "scripts/build-marketplace-static.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/pages.yml": "09459cc83085dfe77520b1da97f9783bc445c0499db03045740a5f2fe6405611",
+    "docs/ops/ranking-snapshot-bound-fix-20261023.json": null,
+    "marketplace/rankings/model.js": "2a33f90a6ea838382f3b25bd06037407edf30d246602dc9ddf4501cb133ea1cd",
+    "marketplace/rankings/index.html": "d83d931d1d586cccac7e74589508058bf414285c2dc647624cb6f3bcb56ef5fc",
+    "marketplace/rankings/rankings.js": "81495e9b7e059536b1517fb0f6d454ab48a0e2d6b4bb49c080ab3548929b479a",
+    "scripts/build-marketplace-static.mjs": "503c2625f33cf4901b8705b895b20baea63ef59058ff174199ab8d7e8ea4e681",
+    "test/marketplace-static-build.test.mjs": "a18eca2aed906df153caa4542953b7a08cbd4b84d5ea8b7b327ce64f7423f2d1"
+  },
+  "change": {
+    "type": "bounded-consumer-limit-alignment",
+    "maximumBytes": 2097152,
+    "evidence": {
+      "currentEntries": 1398,
+      "currentGeneratedBytes": 1046030,
+      "limitBeforeBytes": 1048576,
+      "workflowFailureRun": 39888225963
+    },
+    "invariants": [
+      "Preserve every ranking entry, order, field and pagination behavior.",
+      "Use one exported byte bound for the builder, browser reader and Pages prior-snapshot reader.",
+      "Bump the ranking module URL so the browser cannot retain the previous one-megabyte reader from cache.",
+      "Reject empty, malformed, or over-bound prior snapshots; never reset chart history on invalid input.",
+      "Do not modify Catalog admission, author state, DSH source, Profiles, or third-party code."
+    ]
+  },
+  "verification": [
+    "npm run check",
+    "Offline static marketplace build using the prior snapshot from a preserved disposable output directory",
+    "CI-checked pull request before merge",
+    "Pages deployment and independent GitHub, Pages, dsh.store, and dsh-store.cn readback"
+  ],
+  "recovery": {
+    "history": "The source change is committed on an auditable PR branch; revert the merged PR in a separate CI-checked PR if the deployed health check fails.",
+    "externalMutation": "No Catalog, DSH Profile, or author-contact mutation is part of this source fix."
+  }
+}
