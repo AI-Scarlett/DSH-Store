@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9e768f709e32d3761fb74cc4f612994c76fe5f1b",
-  "version": "0.10.2",
+  "commit": "c248af33a8b3215b771ed52c1e2395a56a717908",
+  "version": "0.10.3",
   "categories": [
     "tools",
     "memory"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T10:14:36.000Z",
-    "observedAt": "2026-10-19T03:39:26.000Z",
+    "updatedAt": "2026-10-24T06:45:45.000Z",
+    "observedAt": "2026-10-24T12:29:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-19T03:39:26.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/9e768f709e32d3761fb74cc4f612994c76fe5f1b",
+      "checkedAt": "2026-10-24T12:29:02.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/c248af33a8b3215b771ed52c1e2395a56a717908",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0e3d0b469fe7f4f3249b3577b37d3869c89755cab6ed261e67be5e10e4414cb2",
+    "binding": "7264a1b6ba20124d3c40dcbd2188b4c31639b8088419140210f80eeea14044c7",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -97,9 +97,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2",
+    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -120,8 +120,7 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-rc.1": "compatible",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.3": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -233,12 +232,6 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
