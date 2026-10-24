@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5d48bee179f517a3479d1e26c312567239281fa7",
-  "version": "0.4.5",
+  "commit": "a16ee5da3f7a9e8ecc3ff05bbb0f2b74f5c6475f",
+  "version": "0.4.7",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-29T13:02:17.000Z",
-    "observedAt": "2026-09-30T02:08:17.000Z",
+    "updatedAt": "2026-10-24T08:42:05.000Z",
+    "observedAt": "2026-10-24T12:29:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-09-30T02:08:17.000Z",
-      "evidenceUrl": "https://github.com/ningmengxr/dsh-task-control/commit/5d48bee179f517a3479d1e26c312567239281fa7",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-24T12:29:02.000Z",
+      "evidenceUrl": "https://github.com/ningmengxr/dsh-task-control/commit/a16ee5da3f7a9e8ecc3ff05bbb0f2b74f5c6475f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,10 +80,11 @@
   "entryIds": [
     "task-control"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: the current fixed source 5d48bee179f5 has no common ancestor with the prior Catalog pin 447c39d291a9; independent source history remains external-only. runtime artifact is missing from the fixed Git Commit: ./lib/types/index.d.ts runtime artifact is missing from the fixed Git Commit: ./lib/types/client/index.d.ts runtime source contains the files permission signal runtime source contains the network permission signal runtime source contains the commands permission signal runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0",
+    "dsh": ">=0.1.0-rc.8 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,7 +104,7 @@
       "0.2.1-alpha.4": "unknown",
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
+      "0.2.1-rc.2": "compatible",
       "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
@@ -216,10 +217,10 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       },
       "0.2.1-rc.3": {
         "install": "unknown",

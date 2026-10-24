@@ -32,8 +32,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "55994bb046eea3db6dd3fae0907ffeb806dd0d7e",
-  "version": "0.4.4",
+  "commit": "7e1dd9c9b1214f5fc531f560296e492af204c4e1",
+  "version": "0.4.5",
   "categories": [
     "sessions",
     "memory",
@@ -43,16 +43,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T10:14:39.000Z",
-    "observedAt": "2026-10-19T03:39:26.000Z",
+    "updatedAt": "2026-10-24T06:41:03.000Z",
+    "observedAt": "2026-10-24T12:29:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-19T03:39:26.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-tdai-memory/commit/55994bb046eea3db6dd3fae0907ffeb806dd0d7e",
+      "checkedAt": "2026-10-24T12:29:02.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-tdai-memory/commit/7e1dd9c9b1214f5fc531f560296e492af204c4e1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -91,7 +91,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "2320d9b36db618a5a211313c3b67161394a32abebe1ff41eeee014cd9396a447",
+    "binding": "a9137f2f3aaa61a9905eca0ce8e712695d048bb38af30e0e38d6188feb89a067",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -105,9 +105,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2",
+    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -128,8 +128,7 @@
       "0.2.0-rc.2": "compatible",
       "0.2.1-rc.1": "compatible",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.3": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -241,12 +240,6 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

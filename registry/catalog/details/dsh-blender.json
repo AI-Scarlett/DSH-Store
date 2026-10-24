@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9bd95e97a61096cfae1edb0f88fcd2be54b0adee",
-  "version": "0.2.3",
+  "commit": "1441134b2281bc7c473e95af41fcc5cc6f0757b6",
+  "version": "0.2.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-12T03:44:59.000Z",
-    "observedAt": "2026-10-15T13:06:31.398Z",
+    "updatedAt": "2026-10-24T06:42:12.000Z",
+    "observedAt": "2026-10-24T12:29:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "author-feedback-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-15T13:06:31.398Z",
-      "evidenceUrl": "https://github.com/CheshireJCat/blender/commit/9bd95e97a61096cfae1edb0f88fcd2be54b0adee",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-10-24T12:29:02.000Z",
+      "evidenceUrl": "https://github.com/CheshireJCat/blender/commit/1441134b2281bc7c473e95af41fcc5cc6f0757b6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source manifest and Bundle identity verified; admission is a separate decision."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation, package scripts, or builds were executed."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Author runtime reports were not independently reproduced."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,7 +72,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "This bounded capability review is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
@@ -89,6 +89,7 @@
   "entryIds": [
     "blender-modeling"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Fixed-source recheck blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {

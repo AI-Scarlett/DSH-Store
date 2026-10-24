@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "791733b1a7c63f7818b36501eeeaa4dc85f9b0ff",
-  "version": "1.0.1",
+  "commit": "532eed4ef5edf635cd4d1aaa91f91dab71e26574",
+  "version": "1.0.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T09:30:31.000Z",
-    "observedAt": "2026-10-19T03:39:26.000Z",
+    "updatedAt": "2026-10-24T08:01:17.000Z",
+    "observedAt": "2026-10-24T12:29:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-19T03:39:26.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/791733b1a7c63f7818b36501eeeaa4dc85f9b0ff",
+      "checkedAt": "2026-10-24T12:29:02.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/532eed4ef5edf635cd4d1aaa91f91dab71e26574",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ab63216a542d16ac91f3b5bdf8f7196e0e33c7ba33b454fa79be22807ab50b11",
+    "binding": "35b3336e20c4752744ec66fcb234ebe866393bc327498c0da45b18a7251e25a5",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -93,9 +93,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2",
+    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -105,7 +105,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown"
@@ -154,12 +153,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
