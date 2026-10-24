@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d1d2293c922cf0692332657d49cd8d38175f9701",
-  "version": "0.3.0",
+  "commit": "f35e779547cf3327f74b7bf85155dbc5fa4b4f65",
+  "version": "0.3.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-21T20:04:48.000Z",
-    "observedAt": "2026-10-21T19:57:02.000Z",
+    "updatedAt": "2026-10-24T18:12:42.000Z",
+    "observedAt": "2026-10-24T18:37:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-21T19:57:02.000Z",
-      "evidenceUrl": "https://github.com/EndPB/dsh-telegram/commit/d1d2293c922cf0692332657d49cd8d38175f9701",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-24T18:37:19.000Z",
+      "evidenceUrl": "https://github.com/EndPB/dsh-telegram/commit/f35e779547cf3327f74b7bf85155dbc5fa4b4f65",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,12 +73,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0b656795521bc9e34dc456232025f8a544f93208af82e04969a81fe95f58b06f",
+    "binding": "2f8a5781ad93f6987b9c1684d0eafcbac782780e36f7d77c3680d14e3cc16327",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -90,6 +90,7 @@
   "entryIds": [
     "dsh-telegram"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
@@ -103,7 +104,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown"
@@ -152,12 +152,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

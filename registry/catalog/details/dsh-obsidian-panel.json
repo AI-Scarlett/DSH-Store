@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f0fb92ade2ba237e32bcaae41847ac3877102636",
-  "version": "1.2.1",
+  "commit": "6dd744275e3949e2540a65df18f7b22ea00c2bb5",
+  "version": "1.4.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-08T07:27:49.000Z",
-    "observedAt": "2026-10-08T10:57:44.000Z",
+    "updatedAt": "2026-10-24T16:47:35.000Z",
+    "observedAt": "2026-10-24T18:37:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-08T10:57:44.000Z",
-      "evidenceUrl": "https://github.com/DedsecLemon/dsh-obsidian/commit/f0fb92ade2ba237e32bcaae41847ac3877102636",
+      "checkedAt": "2026-10-24T18:37:19.000Z",
+      "evidenceUrl": "https://github.com/DedsecLemon/dsh-obsidian/commit/6dd744275e3949e2540a65df18f7b22ea00c2bb5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,9 +76,21 @@
       "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "e5cdff0bccf07bc2ae5c34f794a0a160ace347158348f316fa68eb47fa1bef5b",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+  },
   "entryIds": [
     "dsh-obsidian-panel"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
@@ -95,11 +107,6 @@
       "0.1.7-rc.2": "unknown",
       "0.2.0-rc.1": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown"
@@ -169,36 +176,6 @@
         "install": "passed",
         "start": "passed",
         "uninstall": "passed",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {

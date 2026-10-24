@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "532eed4ef5edf635cd4d1aaa91f91dab71e26574",
-  "version": "1.0.2",
+  "commit": "4255ab111962f91a2f654f6103f58a0b5f8f021f",
+  "version": "1.0.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-24T08:01:17.000Z",
-    "observedAt": "2026-10-24T12:29:02.000Z",
+    "updatedAt": "2026-10-24T16:38:34.000Z",
+    "observedAt": "2026-10-24T18:37:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-24T12:29:02.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/532eed4ef5edf635cd4d1aaa91f91dab71e26574",
+      "checkedAt": "2026-10-24T18:37:19.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-pua/commit/4255ab111962f91a2f654f6103f58a0b5f8f021f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "35b3336e20c4752744ec66fcb234ebe866393bc327498c0da45b18a7251e25a5",
+    "binding": "eca968b98a2b9a09b38b5c7cbfd5b041b5788058ac70c4a5496d4168a285ef31",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -95,7 +95,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
+    "dsh": ">=0.2.0-rc.1 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
