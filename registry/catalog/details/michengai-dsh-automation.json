@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "7e8222d827d30a178460403702d2605fe735fec0",
-  "version": "1.0.8",
+  "commit": "325bee10808042b3479013b8acc0c1f474be5b74",
+  "version": "1.0.10",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-24T07:45:43.000Z",
-    "observedAt": "2026-10-24T12:29:02.000Z",
+    "updatedAt": "2026-10-24T17:10:17.000Z",
+    "observedAt": "2026-10-24T18:37:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-24T12:29:02.000Z",
-      "evidenceUrl": "https://github.com/MichengAI/dsh-automation/commit/7e8222d827d30a178460403702d2605fe735fec0",
+      "checkedAt": "2026-10-24T18:37:19.000Z",
+      "evidenceUrl": "https://github.com/MichengAI/dsh-automation/commit/325bee10808042b3479013b8acc0c1f474be5b74",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,7 +77,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0c65ac24b7666454758a9ec30f15bf836ae3285ee08d28ab5eeb71984a2da16a",
+    "binding": "f56e6f42b8b76aaccdce9713ef73b6bda33d49d159b9afbe2d704fd7572d5a85",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -93,7 +93,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
+    "dsh": ">=0.2.0-rc.1 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
