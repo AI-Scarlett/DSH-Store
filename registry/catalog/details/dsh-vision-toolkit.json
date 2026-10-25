@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "2a1519c1909282dc05e21c2c26601349bc8fe923",
+  "commit": "f7615990b2e12ba9a43ffd8c8596e6bb383da554",
   "version": "0.1.47",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-23T04:58:07.000Z",
-    "observedAt": "2026-10-23T13:09:02.000Z",
+    "updatedAt": "2026-10-24T18:52:03.000Z",
+    "observedAt": "2026-10-25T03:36:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-23T13:09:02.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-vision-toolkit/commit/2a1519c1909282dc05e21c2c26601349bc8fe923",
+      "checkedAt": "2026-10-25T03:36:38.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-vision-toolkit/commit/f7615990b2e12ba9a43ffd8c8596e6bb383da554",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -95,7 +95,7 @@
   "status": "blocked",
   "statusReason": "Fixed-source recheck blocked installation: runtime or optional dependencies require a separate supply-chain review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: patches/vision-tools-dsh.patch, runtime/requirements.lock, vendor/agent-vision-toolkit/bin/crop, vendor/agent-vision-toolkit/bin/detect, vendor/agent-vision-toolkit/bin/glance; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.2.0-rc.2 || 0.2.1-rc.2",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -127,7 +127,7 @@
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.3": "compatible"
     },
     "dshOperations": {
       "rc.7": {
