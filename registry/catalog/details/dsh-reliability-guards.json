@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "884529459edfcf56ed3f26ee0f6e7c37b2b3dbbf",
+  "commit": "cd3384e577c726a1d87ca99bacf5bbf4be5b76e9",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T13:06:51.000Z",
-    "observedAt": "2026-10-25T12:59:54.000Z",
+    "updatedAt": "2026-10-25T17:18:28.000Z",
+    "observedAt": "2026-10-25T18:45:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-25T12:59:54.000Z",
-      "evidenceUrl": "https://github.com/MathieuPortmann/dsh-reliability-guards/commit/884529459edfcf56ed3f26ee0f6e7c37b2b3dbbf",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-25T18:45:36.000Z",
+      "evidenceUrl": "https://github.com/MathieuPortmann/dsh-reliability-guards/commit/cd3384e577c726a1d87ca99bacf5bbf4be5b76e9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,15 +73,15 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "00ca3cc84960db063ca3df029b81915e7d3a0d06f4b1228f07c8f8246b7a728a",
+    "binding": "9782183f10ddac343c2ea2a874f384fae10292f86ce821a82f01d8732901e14c",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -90,10 +90,11 @@
   "entryIds": [
     "reliability-guards"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -175,7 +176,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.6",
+    "node": "^22.19.0 || >=24.0.0",
     "systems": [],
     "profiles": [
       "web"
