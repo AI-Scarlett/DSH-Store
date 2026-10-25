@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8b51ace847fc24a5ff94267ae19dbd52e0e8b1a2",
+  "commit": "71fb7a39c00a6f5b0caa10e4f05d0b3fec719d69",
   "version": "1.1.1",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-24T18:45:27.000Z",
-    "observedAt": "2026-10-24T18:37:19.000Z",
+    "updatedAt": "2026-10-24T19:16:48.000Z",
+    "observedAt": "2026-10-25T03:36:38.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-24T18:37:19.000Z",
-      "evidenceUrl": "https://github.com/HDHKVT/dsh-qq-relay/commit/8b51ace847fc24a5ff94267ae19dbd52e0e8b1a2",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-25T03:36:38.000Z",
+      "evidenceUrl": "https://github.com/HDHKVT/dsh-qq-relay/commit/71fb7a39c00a6f5b0caa10e4f05d0b3fec719d69",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,16 +73,16 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f314fa2ac0a7e54fff4caf45723355f40b7427f0dd9466ef588708b94f41eeaf",
+    "binding": "dd50e3625ff9eb4dd9a176a5304380076f2d069f4ce414ac23fea5bc69ba668e",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
-    "sourceContract": "unverified",
-    "coverage": "incomplete",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
@@ -90,10 +90,11 @@
   "entryIds": [
     "qq-relay"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; local module is missing from the distributable surface: index.js -> ./lib/config.js; local module is missing from the distributable surface: index.js -> ./lib/qq-direct.js; local module is missing from the distributable surface: index.js -> ./lib/delivery.js; local module is missing from the distributable surface: index.js -> ./lib/qq-reply.js; local module is missing from the distributable surface: index.js -> ./lib/vision.js; local module is missing from the distributable surface: index.js -> ./lib/gif.js; l",
+  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": "^0.2.0-rc.2 || ^0.2.1-rc.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -175,8 +176,10 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=20",
-    "systems": [],
+    "node": "^22.19 || >=24",
+    "systems": [
+      "Windows"
+    ],
     "profiles": [
       "web"
     ]
