@@ -17,24 +17,24 @@
   "manifestPath": "dsh-plugin/package.json",
   "installPath": "dsh-plugin",
   "updatePolicy": "external-only",
-  "commit": "79ddebe959fd52eabe35714dff6f7100511545e1",
-  "version": "0.1.3",
+  "commit": "23f030fbfe88ba71852de642bccc4d6c536523cb",
+  "version": "0.5.22",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-23T06:57:54.000Z",
-    "observedAt": "2026-10-23T13:09:02.000Z",
+    "updatedAt": "2026-10-25T06:04:35.000Z",
+    "observedAt": "2026-10-25T12:59:54.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-23T13:09:02.000Z",
-      "evidenceUrl": "https://github.com/xianyuyijinban/boardwise/commit/79ddebe959fd52eabe35714dff6f7100511545e1",
+      "checkedAt": "2026-10-25T12:59:54.000Z",
+      "evidenceUrl": "https://github.com/xianyuyijinban/boardwise/commit/23f030fbfe88ba71852de642bccc4d6c536523cb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -73,10 +73,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "b02af7bec9a75515f3a493a8bdf477fd3cbc9dd48c5d606072d44785e7a966d7",
+    "binding": "cfdbb05afbe48bbe45614f5431457a6e47d26ff2b8738f5072b080ece1d610ce",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "verified",
+    "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -87,9 +87,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.0.1-rc.1 <0.3.0 || >=0.1.7-rc.2 <0.2.0-0 || >=0.2.0-rc.1 <0.3.0-0",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
