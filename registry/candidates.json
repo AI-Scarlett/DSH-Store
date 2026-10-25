@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-25T03:36:38.000Z",
+    "updatedAt": "2026-10-25T12:59:54.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -16271,6 +16271,97 @@
       "discoveredAt": "2026-10-25T03:36:38.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a7ae7b2a1295e96b2a84268ed0443f1aead14f33:data/plugins/1624318455__dsh-plugin-tavily.yml:sha256=5dc6b85c53137357753537a3e8b47f8db0b852f20b5c72cd0a1c784f8ca078b4:at=2026-10-25T03:42:31.698Z:owner=55984574"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "173787247-dsh-wsl-workspace",
+      "name": "173787247/dsh-wsl-workspace",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/173787247/dsh-wsl-workspace",
+      "defaultBranch": "master",
+      "latestCommit": "f14cb216ecbf7551fa7fe7d81df1fb6df16e13ac",
+      "sourceUpdatedAt": "2026-10-09T09:01:01.000Z",
+      "discoveredAt": "2026-10-25T12:59:54.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a7ae7b2a1295e96b2a84268ed0443f1aead14f33:data/plugins/173787247__dsh-wsl-workspace.yml:sha256=4bf00da20588f7f15cb997829fb78268696fb8dd8fee46dfc92f72ccd74e1d1b:at=2026-10-25T13:07:15.140Z:owner=25984532"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "jimoto-no-llm-rustdsh",
+      "name": "jimoto-no-llm/rustdsh",
+      "description": "Fast Rust launcher for DeepSeek Harness, with clear Claude Code/Codex migration, model setup and lightweight local tools",
+      "repositoryUrl": "https://github.com/jimoto-no-llm/rustdsh",
+      "defaultBranch": "main",
+      "latestCommit": "a523e2ed292cf3cf8550f9c3b4026727cc230256",
+      "sourceUpdatedAt": "2026-10-25T13:06:55.000Z",
+      "discoveredAt": "2026-10-25T12:59:54.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "command-line",
+        "cross-platform",
+        "dashboard",
+        "deepseek",
+        "developer-tools",
+        "dsh",
+        "mcp",
+        "model-context-protocol",
+        "performance",
+        "rust",
+        "token-optimization",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: plugins/rdsh-agent-ui, plugins/rdsh-answer-guard, plugins/rdsh-budget-guard, plugins/rdsh-compute, plugins/rdsh-direct-models, plugins/rdsh-easy-work, plugins/rdsh-mobile-ui, plugins/rdsh-no-feedback-client, plugins/rdsh-no-feedback, plugins/rdsh-ptc-catalog, plugins/rdsh-session-cleanup, plugins/rdsh-settings, plugins/rdsh-subagent-optimizer, plugins/rdsh-subagent-route, plugins/rdsh-translation, plugins/rdsh-ui-comfort, plugins/rdsh-update-banner, plugins/rdsh-web-cache, scripts/headless-runtime/runtime"
+    },
+    {
+      "id": "19north-dsh-redstone-music",
+      "name": "19north/dsh-redstone-music",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/19north/dsh-redstone-music",
+      "defaultBranch": "main",
+      "latestCommit": "7ab206d8b7befe321603cd8b046bdae5be5f66ef",
+      "sourceUpdatedAt": "2026-10-02T04:06:43.000Z",
+      "discoveredAt": "2026-10-25T12:59:54.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a7ae7b2a1295e96b2a84268ed0443f1aead14f33:data/plugins/19north__dsh-redstone-music.yml:sha256=59f2d2cbdf46073fdd9c384aa2c69468830240d5589ceb82739248c70b562b57:at=2026-10-25T13:07:15.140Z:owner=179595031"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "173787247-dsh-wsl-wslconfig",
+      "name": "173787247/dsh-wsl-wslconfig",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/173787247/dsh-wsl-wslconfig",
+      "defaultBranch": "master",
+      "latestCommit": "486d6ffce7530bf46320c859ad9d4df502243d0f",
+      "sourceUpdatedAt": "2026-10-01T16:36:37.000Z",
+      "discoveredAt": "2026-10-25T12:59:54.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@a7ae7b2a1295e96b2a84268ed0443f1aead14f33:data/plugins/173787247__dsh-wsl-wslconfig.yml:sha256=c7627fc557f966551c9db325ebb4525689deff0100d31a229ed83dcf09a25685:at=2026-10-25T13:07:15.140Z:owner=25984532"
       ],
       "topics": [
         "automatic-radar"
