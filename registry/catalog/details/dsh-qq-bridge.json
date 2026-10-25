@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6e86255c6e35a3cc0104ff7aa7987194e455dde3",
-  "version": "0.9.9",
+  "commit": "715e373ec70ac5f27c499ebb52a08c62f2ecf40e",
+  "version": "1.0.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T13:07:06.000Z",
-    "observedAt": "2026-10-25T12:59:54.000Z",
+    "updatedAt": "2026-10-25T15:14:57.000Z",
+    "observedAt": "2026-10-25T18:45:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-25T12:59:54.000Z",
-      "evidenceUrl": "https://github.com/Yuuyuko-uu/dsh-qq-bridge/commit/6e86255c6e35a3cc0104ff7aa7987194e455dde3",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-25T18:45:36.000Z",
+      "evidenceUrl": "https://github.com/Yuuyuko-uu/dsh-qq-bridge/commit/715e373ec70ac5f27c499ebb52a08c62f2ecf40e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,12 +72,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "25e2708ed05bca374431aab07184519c2e980e8614f866519b8b64acc3b9d83d",
+    "binding": "fa54f1c8e1349263d7dd3be8a0a4f9139d4d5f12683c579bb98505fcd00094cf",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -89,6 +89,7 @@
   "entryIds": [
     "qq-bridge"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {

@@ -18,24 +18,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "62e18f8b6ceff318370ef59caa8d66d261f50f23",
-  "version": "0.2.1",
+  "commit": "12afffce0f627b70b9ae967e20e8617c172396d9",
+  "version": "0.2.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-20T12:06:35.000Z",
-    "observedAt": "2026-10-20T12:19:57.000Z",
+    "updatedAt": "2026-10-25T14:33:03.000Z",
+    "observedAt": "2026-10-25T18:45:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-20T12:19:57.000Z",
-      "evidenceUrl": "https://github.com/HaowenCang/dsh-word-lookup/commit/62e18f8b6ceff318370ef59caa8d66d261f50f23",
+      "checkedAt": "2026-10-25T18:45:36.000Z",
+      "evidenceUrl": "https://github.com/HaowenCang/dsh-word-lookup/commit/12afffce0f627b70b9ae967e20e8617c172396d9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,7 +74,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "39c3eaa6272bb1203936d4c91987b9f142b7525257a53c44a1b26a4471252db2",
+    "binding": "62116187a77c482460aed921ce2c0839e8ab2d3f0f01ec1a5545717efea395b1",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -90,7 +90,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.2",
+    "dsh": "0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -101,12 +101,11 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "compatible",
+      "0.2.0-rc.2": "unknown",
       "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.5": "unknown",
+      "0.2.1-rc.3": "compatible",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -164,10 +163,10 @@
         "rollback": "unknown"
       },
       "0.2.0-rc.2": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "passed"
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       },
       "0.2.1-alpha.1": {
         "install": "unknown",
@@ -175,10 +174,10 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+      "0.2.1-rc.3": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
@@ -188,12 +187,6 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
