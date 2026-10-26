@@ -91,7 +91,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.1-rc.1, 0.2.1-rc.2, 0.2.1-rc.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
+  "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.1-rc.2, 0.2.1-rc.3, 0.2.1-rc.4). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
     "dsh": "^0.2.0-rc.2",
     "dshReleases": {
@@ -106,7 +106,8 @@
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.3": "unknown",
+      "0.2.1-rc.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -180,14 +181,20 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-rc.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "latestWindow": {
       "state": "recheck-required",
       "releases": [
-        "0.2.1-rc.1",
         "0.2.1-rc.2",
-        "0.2.1-rc.3"
+        "0.2.1-rc.3",
+        "0.2.1-rc.4"
       ]
     },
     "node": "^22.19.0 || >=24",
