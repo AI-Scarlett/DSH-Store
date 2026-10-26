@@ -1,0 +1,200 @@
+{
+  "id": "dsh-memory-layers",
+  "name": "记忆与知识库（DSH Memory Layers）",
+  "packageName": "dsh-memory-layers",
+  "description": "为 DSH 提供记忆与知识库能力。英文原始说明：Layered long-term memory for DeepSeek Harness: a ~600-character hot layer that evicts its own overflow, month-archived cold entries with usage-ranked keyword recall, and extractive day/week/month summaries that keep injected context small.",
+  "searchTerms": [
+    "记忆与知识库",
+    "DSH Memory Layers",
+    "dsh-memory-layers",
+    "记忆",
+    "知识库",
+    "召回",
+    "长期记忆",
+    "dsh",
+    "memory",
+    "layers"
+  ],
+  "repositoryUrl": "https://github.com/mllun/dsh-memory-layers",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "1994af581a8855503d2e068ddfb889c84bde906c",
+  "version": "1.2.0",
+  "categories": [
+    "memory"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-10-26T03:46:02.000Z",
+    "observedAt": "2026-10-26T03:39:31.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-10-26T03:39:31.000Z",
+      "evidenceUrl": "https://github.com/mllun/dsh-memory-layers/commit/1994af581a8855503d2e068ddfb889c84bde906c",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "dd9ff77b1d49dc1008b3382fbe98243ffc153014c5285fc7fd8f5496181e0b5c",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+  },
+  "entryIds": [
+    "dsh-memory-layers"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.2.1-rc.1": "unknown",
+      "0.2.1-rc.2": "unknown",
+      "0.2.1-rc.3": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=20",
+    "systems": [],
+    "profiles": []
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}

@@ -23,7 +23,7 @@
   "manifestPath": "packages/demo/package.json",
   "installPath": "packages/demo",
   "updatePolicy": "external-only",
-  "commit": "83696bde5720d86528e58837ddd1954c79a37848",
+  "commit": "0fd4c552811e7678b4aebc24067cffc1bb8cbb5f",
   "version": "0.3.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T04:58:37.000Z",
-    "observedAt": "2026-10-25T12:59:54.000Z",
+    "updatedAt": "2026-10-26T00:38:28.000Z",
+    "observedAt": "2026-10-26T03:39:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-25T12:59:54.000Z",
-      "evidenceUrl": "https://github.com/cq-guojia/dsh-plugin-core/commit/83696bde5720d86528e58837ddd1954c79a37848",
+      "checkedAt": "2026-10-26T03:39:31.000Z",
+      "evidenceUrl": "https://github.com/cq-guojia/dsh-plugin-core/commit/0fd4c552811e7678b4aebc24067cffc1bb8cbb5f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f6ce572ad77ff2090a8e9ad706051bd970d5d1faccaf903251fbeee4c5575873",
+    "binding": "9aa0b8113752c543c85bc27f75d6013afd5a8c5164c1ac66e640c52b9abc51ae",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -93,7 +93,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -177,7 +177,7 @@
         "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.5",
     "systems": [],
     "profiles": [
       "web"
