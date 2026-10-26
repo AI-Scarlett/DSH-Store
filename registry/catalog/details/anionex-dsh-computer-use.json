@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1e9c8862e99ee86519799b8f30e335d22c078ee7",
-  "version": "0.3.4",
+  "commit": "de2bdecf86515f206ac25e197417e2c0c73719ff",
+  "version": "0.3.5",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-18T02:27:04.000Z",
-    "observedAt": "2026-10-18T03:27:51.000Z",
+    "updatedAt": "2026-10-26T05:00:19.000Z",
+    "observedAt": "2026-10-26T13:38:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-18T03:27:51.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-computer-use/commit/1e9c8862e99ee86519799b8f30e335d22c078ee7",
+      "checkedAt": "2026-10-26T13:38:19.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-computer-use/commit/de2bdecf86515f206ac25e197417e2c0c73719ff",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,14 +80,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "32769fef2d7011b8b49fbf866fb3c20fd4b285dd9b551f5647617d4203e38ed6",
+    "binding": "fb8cfd9cc198641ea89b5be4731aa62691fb29a2c2bf756b560a1bd737bf6c8c",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "a2d32abe37f2af34911a166b622ddb14de367e1ac9a3061f150aa2d22eb958c0"
+    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
   },
   "entryIds": [
     "computer-use"
@@ -96,7 +96,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: native/macos/bin/dsh-computer-use-helper; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecuta",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || >=0.1.1-rc.1 <0.2.0 || >=0.1.2-alpha.3 <0.2.0 || >=0.1.5-rc.1 <0.2.0 || 0.1.7-rc.2 || 0.2.0-rc.2 || 0.2.1-rc.2",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || >=0.1.1-rc.1 <0.2.0 || >=0.1.2-alpha.3 <0.2.0 || >=0.1.5-rc.1 <0.2.0 || 0.1.7-rc.2 || 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -112,9 +112,8 @@
       "0.1.7-rc.2": "compatible",
       "0.2.0-rc.2": "compatible",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.3": "compatible",
+      "0.2.1-rc.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -201,19 +200,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
+      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

@@ -20,28 +20,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1994af581a8855503d2e068ddfb889c84bde906c",
-  "version": "1.2.0",
+  "commit": "d76b44f9cef91fca21a33b12eaede65d0f776cfa",
+  "version": "1.2.1",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-26T03:46:02.000Z",
-    "observedAt": "2026-10-26T03:39:31.000Z",
+    "updatedAt": "2026-10-26T05:21:35.000Z",
+    "observedAt": "2026-10-26T13:38:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-26T03:39:31.000Z",
-      "evidenceUrl": "https://github.com/mllun/dsh-memory-layers/commit/1994af581a8855503d2e068ddfb889c84bde906c",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-26T13:38:19.000Z",
+      "evidenceUrl": "https://github.com/mllun/dsh-memory-layers/commit/d76b44f9cef91fca21a33b12eaede65d0f776cfa",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,15 +71,15 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "dd9ff77b1d49dc1008b3382fbe98243ffc153014c5285fc7fd8f5496181e0b5c",
+    "binding": "f03dc260b21685e52ab70e0d34d0bc59d58956f1adb4599e7c61e285c9d815de",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -88,10 +88,11 @@
   "entryIds": [
     "dsh-memory-layers"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.1 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -101,8 +102,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
+      "0.2.1-rc.2": "compatible",
       "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown"
     },
     "dshOperations": {
@@ -154,13 +155,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.1": {
+      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.2": {
+      "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
