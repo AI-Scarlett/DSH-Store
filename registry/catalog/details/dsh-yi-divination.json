@@ -18,24 +18,24 @@
   "manifestPath": "dsh-plugin/package.json",
   "installPath": "dsh-plugin",
   "updatePolicy": "external-only",
-  "commit": "7a5769279e1a6ffeacbe5a1c70f6116a4bd45788",
-  "version": "1.0.22",
+  "commit": "1866486378cf01aed089aa0c87cd9888d59c90cb",
+  "version": "1.0.23",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T20:27:32.000Z",
-    "observedAt": "2026-10-26T13:38:19.000Z",
+    "updatedAt": "2026-10-26T14:54:12.000Z",
+    "observedAt": "2026-10-26T20:55:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-26T13:38:19.000Z",
-      "evidenceUrl": "https://github.com/LinHoMo/Yi/commit/7a5769279e1a6ffeacbe5a1c70f6116a4bd45788",
+      "checkedAt": "2026-10-26T20:55:04.000Z",
+      "evidenceUrl": "https://github.com/LinHoMo/Yi/commit/1866486378cf01aed089aa0c87cd9888d59c90cb",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,10 +74,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "7cc2b33e108248cf8c9e0d30ec5dac18287493bd27bb6a955c04bdc23882eae9",
+    "binding": "025e29bed4312fc6dfa20ded527cc4974511092e8a3a368377f23e89d96db917",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -88,9 +88,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -100,9 +100,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown"
+      "0.2.1-rc.3": "unknown",
+      "0.2.1-rc.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -153,12 +153,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -166,6 +160,12 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
