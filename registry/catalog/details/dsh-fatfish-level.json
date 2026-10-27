@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9c5b42364fdfb58b50316decf30cc0b2e9061aa7",
-  "version": "0.3.2",
+  "commit": "fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1",
+  "version": "0.3.3",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-27T04:11:31.000Z",
-    "observedAt": "2026-10-27T04:03:32.000Z",
+    "updatedAt": "2026-10-27T04:28:27.000Z",
+    "observedAt": "2026-10-27T05:18:11.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-27T04:03:32.000Z",
-      "evidenceUrl": "https://github.com/lg6169219/dsh-fatfish-level/commit/9c5b42364fdfb58b50316decf30cc0b2e9061aa7",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-27T05:18:11.000Z",
+      "evidenceUrl": "https://github.com/lg6169219/dsh-fatfish-level/commit/fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,12 +73,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e5a6640fac11b28eff4ce28286295c08fad658ac3536a58bf872405a62246c52",
+    "binding": "e618f07d3afcf402ec930c00da99641ae4a21e29dd341b2c9f5f49630128475a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -90,6 +90,7 @@
   "entryIds": [
     "dsh-fatfish-level"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
