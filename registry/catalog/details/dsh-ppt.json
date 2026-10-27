@@ -25,8 +25,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9effffa5512ca014b22ab0e103afcddd481a9863",
-  "version": "0.17.0",
+  "commit": "062edd14fabbdc9fcacb735efb0ddcd45af40ced",
+  "version": "0.18.1",
   "categories": [
     "files",
     "tools"
@@ -34,16 +34,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T12:03:03.000Z",
-    "observedAt": "2026-10-25T12:59:54.000Z",
+    "updatedAt": "2026-10-27T02:21:16.000Z",
+    "observedAt": "2026-10-27T04:03:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-25T12:59:54.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-ppt/commit/9effffa5512ca014b22ab0e103afcddd481a9863",
+      "checkedAt": "2026-10-27T04:03:32.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-ppt/commit/062edd14fabbdc9fcacb735efb0ddcd45af40ced",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,10 +82,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "5c718eea8cda6072e79bd204f7bd124f4ac4d2ca3ede4c0ae6de4ddf104c646e",
+    "binding": "c102ccc6157ec958b9331e52c51d8ac4f7fdd1bafe8172763a74721296c799c7",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -96,9 +96,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -108,7 +108,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown"
@@ -162,12 +161,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -208,6 +201,7 @@
     },
     "externalDependencies": [
       "@office-kit/pptx",
+      "@stardustlc/dsh-updates",
       "csv-parse",
       "fflate",
       "jsep"

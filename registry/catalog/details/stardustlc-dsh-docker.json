@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dc5b312c06253ca1281c01e9a40fe2672681f11a",
-  "version": "0.4.3",
+  "commit": "63584a836272aabc92d68de638a933508d9eeee2",
+  "version": "0.5.1",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T17:59:37.000Z",
-    "observedAt": "2026-10-25T18:45:36.000Z",
+    "updatedAt": "2026-10-27T02:21:08.000Z",
+    "observedAt": "2026-10-27T04:03:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-25T18:45:36.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-docker/commit/dc5b312c06253ca1281c01e9a40fe2672681f11a",
+      "checkedAt": "2026-10-27T04:03:32.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-docker/commit/63584a836272aabc92d68de638a933508d9eeee2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,10 +79,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "54bd91f7dafd496f7c87f4bd032215e7514d3b8c16ec15538408ebe978b26313",
+    "binding": "ab97c7de68da95a0fee39e240d0359bdc80cf30587d9935c218d23335bc27fd1",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -93,9 +93,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -105,7 +105,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown"
@@ -159,12 +158,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -186,7 +179,9 @@
     },
     "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -201,7 +196,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@stardustlc/dsh-updates"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {

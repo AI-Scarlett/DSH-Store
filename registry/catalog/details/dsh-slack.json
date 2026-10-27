@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f680a3f1311f855fcf3545b74d10939b4cb0e69c",
-  "version": "0.3.5",
+  "commit": "004a6edf27f4b2ed513f405ef06ffb3a5c9fdc96",
+  "version": "0.4.1",
   "categories": [
     "notifications"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T17:59:57.000Z",
-    "observedAt": "2026-10-25T18:45:36.000Z",
+    "updatedAt": "2026-10-27T02:21:21.000Z",
+    "observedAt": "2026-10-27T04:03:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-25T18:45:36.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-slack/commit/f680a3f1311f855fcf3545b74d10939b4cb0e69c",
+      "checkedAt": "2026-10-27T04:03:32.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-slack/commit/004a6edf27f4b2ed513f405ef06ffb3a5c9fdc96",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,10 +77,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f00231dad88887707c3f02505d66792999c38df3fc00a7b2102996cd0f6b64a1",
+    "binding": "7d91e5f742b6ca5c2ee0ba3ceba2105fc67e3dae18c1c7bf81b843cd586d598d",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -91,9 +91,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,7 +103,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown"
@@ -157,12 +156,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -184,7 +177,9 @@
     },
     "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -202,6 +197,7 @@
     "externalDependencies": [
       "@slack/socket-mode",
       "@slack/web-api",
+      "@stardustlc/dsh-updates",
       "undici"
     ],
     "reviewStatus": "automated-scan"
