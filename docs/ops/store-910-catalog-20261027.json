@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "version": "0.9.10",
+  "planPath": "docs/ops/store-910-catalog-20261027.json",
+  "sourceReviewPath": "docs/reviews/store-910-source-review-20261027.json",
+  "baseCommit": "2f54e7b1dab2561e9d2b685cc8907a3eeac574e3",
+  "sourceCommit": "67402c37f880d0fb7ffa47f7c474674780dacca7",
+  "sourceHead": "6adb65cbc4c3b18c1943cfbee1335d8087b9bc0a",
+  "sourceTree": "5855ab6006150dddebd541dbfe217175847d7089",
+  "scope": [
+    "docs/ops/store-910-catalog-20261027.json",
+    "docs/reviews/store-910-source-review-20261027.json",
+    "README.md",
+    "registry/catalog.json",
+    "registry/catalog-index.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    ".github/workflows/registry.yml"
+  ],
+  "preconditions": {
+    "docs/ops/store-910-catalog-20261027.json": null,
+    "docs/reviews/store-910-source-review-20261027.json": null,
+    "README.md": "23e9b278c6281a91414ca8232c57b76e80a6dfded4cc4eac9429bc87dc62e65d",
+    "registry/catalog.json": "7a16c145108de26ca4939f66197d29788e3b2689a43d15dab8aa093836ca2f06",
+    "registry/catalog-index.json": "22aeffa18f06741c3b78e8d331ee89bd1140b820337ef61dbdd8f6ab9d002059",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "3f1c0266c35d83d0ad1b56b8d3620d58af6f53ad9493b885bf4e4a9edb8f7f57",
+    ".github/workflows/registry.yml": "e9f25f8cad97b02b2f73c996d6c9ccbf087a3ffe85d9c65dcd3416e45d90126c"
+  },
+  "postconditions": {
+    "docs/reviews/store-910-source-review-20261027.json": "44f23e6b83fbb25760494281f2265698a95ecd36424efee78266bf129e03e2f1",
+    "README.md": "c54e18f388e981764dd383d3951ee0c97e2363fbd0f0221b5ec30bb156cbedcf",
+    "registry/catalog.json": "9bf6058bdb3597ed1b59bda85112c7afb0449fa659c80c65dcd9bcb12b8d24a1",
+    "registry/catalog-index.json": "49c911305ee559a03784ac92e66123fea6c823605740bf7ecc33fca4e9df7e7f",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "8e389d3640fe9e2e27375bed933835aa0ea4330bbe8d8467d67ec431af4ee802",
+    ".github/workflows/registry.yml": "6ea0be6393a055d1f06c1a655d47a56b193b9f588c79ac8c51edb12b08c12ddd"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "适配最新 DSH 与 Desktop，并更新插件商城和官网；用户明确要求直接执行上线。",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "gates": [
+    "fixed-source review and DSH 0.2.1-rc.4 CI evidence",
+    "npm run check",
+    "CI-checked Catalog PR",
+    "GitHub Pages, dsh.store and dsh-store.cn exact version, source and native-index readback"
+  ],
+  "rollback": "Revert this exact PR through a CI-checked commit; use the existing atomic storefront rollback if public deployment fails.",
+  "healthCheck": "All public Catalog and native-index surfaces show Store 0.9.10 at the fixed source Commit and DSH 0.2.1-rc.4 compatibility; Desktop and real Profile acceptance remain separately recorded.",
+  "verdict": {
+    "status": "reviewed-ready-for-ci-checked-first-party-catalog-release",
+    "genericThirdPartyAdmissionUnchanged": true,
+    "realProfileChanged": false
+  }
+}
