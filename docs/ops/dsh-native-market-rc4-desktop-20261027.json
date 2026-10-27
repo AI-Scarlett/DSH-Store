@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-rc4-desktop-20261027",
+  "planFile": "docs/ops/dsh-native-market-rc4-desktop-20261027.json",
+  "createdAt": "2026-10-27T04:52:54Z",
+  "baseCommit": "2353385eb9b0b70ea1a0c157358c4d1186838cf0",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-rc4-desktop-20261027.json",
+    "docs/reviews/dsh-native-market-rc4-desktop-20261027.md",
+    "package.json",
+    "scripts/verify-dsh-upgrade-plan.mjs",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/dsh-upgrade-plan.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "cf5b352119a54f8a8f9166fa24ec9fcfaa437ffa3e067425f56ba09e15cf67ab",
+    "README.md": "6afffc2f5f2f4863ca0e80f32ba82f06be7159a47732ae8588ed48ede923b4e9",
+    "docs/ops/dsh-native-market-rc4-desktop-20261027.json": null,
+    "docs/reviews/dsh-native-market-rc4-desktop-20261027.md": null,
+    "package.json": "90cb612a9e47c03bd4fa64d3b4ba148b5a215e4678260937486f91cc661818ba",
+    "scripts/verify-dsh-upgrade-plan.mjs": "4c2717ce722bc4c0934c10cf8c6fee470b69c568ccee1d6ba0d8aaf39e026ff7",
+    "test/catalog.test.mjs": "91b6d1e9e24b6d215ca154e614320a96fd87bc24edd803272fa2776545c51955",
+    "test/contracts.test.mjs": "44da40e7c0b3207ac8b3009aad71714a40ad5298e688f3e37f432708dc58d46d",
+    "test/dsh-upgrade-plan.test.mjs": "c22e2c0527ce3271f5e9e11022d728d1acfc17226c3b8b0729b3a19e40b3bf28",
+    "test/upgrade-matrix.test.mjs": "59b0cf78aca9e2357465fcfa688b404a1d122e6f6a36f0aaa5d9fab19989a381"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "User requested a full DSH plugin scan and Store RC.4/Desktop adaptation, then explicitly authorized the existing AI-Scarlett GitHub credential on 2026-10-27: 根本不需要这些啊 以前更新也没用这些东西啊",
+    "publication": "auditable-pull-request-only",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "根本不需要这些啊 以前更新也没用这些东西啊"
+  },
+  "official": {
+    "version": "0.2.1-rc.4",
+    "npmUrl": "https://www.npmjs.com/package/@deepseek-ai/dsh/v/0.2.1-rc.4",
+    "latestThree": [
+      "0.2.1-rc.2",
+      "0.2.1-rc.3",
+      "0.2.1-rc.4"
+    ],
+    "githubReleaseNotes": "The latest GitHub release notes available on 2026-10-27 are for RC.3; no RC.4 Desktop notes were found."
+  },
+  "gates": [
+    "current official latest-three release resolver",
+    "exact host and published Client peer metadata",
+    "npm run check",
+    "npm run build:marketplace",
+    "official CLI install/start/auth/uninstall against a disposable DSH_HOME on RC.4",
+    "CI disposable matrix on exact PR head",
+    "auditable PR before Catalog automation or storefront publication"
+  ],
+  "rollback": "CI-checked revert PR; production retains the prior artifact. No Catalog or storefront mutation is part of this plan.",
+  "healthCheck": "registry validation, full npm check suite, static marketplace build, exact-head disposable official CLI CI; real Desktop UI remains a separate acceptance gate.",
+  "boundaries": [
+    "No Catalog or production storefront mutation",
+    "No author contact or contact-ledger mutation",
+    "No real Profile/package/restart mutation",
+    "No third-party plugin install/build/test/runtime execution",
+    "No changes to DSH source or @deepseek-ai packages"
+  ],
+  "postconditions": {
+    ".github/workflows/registry.yml": "e9f25f8cad97b02b2f73c996d6c9ccbf087a3ffe85d9c65dcd3416e45d90126c",
+    "README.md": "23e9b278c6281a91414ca8232c57b76e80a6dfded4cc4eac9429bc87dc62e65d",
+    "docs/reviews/dsh-native-market-rc4-desktop-20261027.md": "8f5ff9fb7774e9f2724125662e5e1a6e590afb8cef41e704a39e5c85652bd1f6",
+    "package.json": "b76c9292bb574e5276226c84c5d4442856ace70f34cd8bba93f0ed7c6749aef1",
+    "scripts/verify-dsh-upgrade-plan.mjs": "69c043bfb4e224de1439a536d2928ea71f720dd61d2ed24684641a38e1c01902",
+    "test/catalog.test.mjs": "8255cfd2d2b0a1a7eaed4f489a49783a8e58a5d7b6561e8b09bedd2b8c0beb9a",
+    "test/contracts.test.mjs": "5ba38df167024d9e665eb4e867faf35f933ac7d52a63f03ddac31d5e5be4e2ba",
+    "test/dsh-upgrade-plan.test.mjs": "d05f8fabd53c157c22b281fd07b3ca7d4dd1debfe0589b1743ba6a7e0fcaacb6",
+    "test/upgrade-matrix.test.mjs": "385e9cf251884f6eba7be67aa4c192bd8afb174722c671cfab6f17c3514987db"
+  },
+  "verdict": {
+    "status": "ready-for-pr",
+    "dshRc4Disposable": "passed",
+    "npmRunCheck": "passed-545-of-545",
+    "marketplaceBuild": "passed",
+    "ci": "pending-exact-pr-head",
+    "desktopUi": "unverified",
+    "catalog": "unchanged",
+    "realProfile": "unchanged"
+  }
+}
