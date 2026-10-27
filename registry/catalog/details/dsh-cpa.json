@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f79bd33a736b5dbbae412e42879e1f3f5c13f2d0",
+  "commit": "0c4ee64a4920639b02f404e24284de9641858a1b",
   "version": "0.1.11",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-23T11:59:59.000Z",
-    "observedAt": "2026-10-23T13:09:02.000Z",
+    "updatedAt": "2026-10-27T03:26:16.000Z",
+    "observedAt": "2026-10-27T04:03:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-23T13:09:02.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/f79bd33a736b5dbbae412e42879e1f3f5c13f2d0",
+      "checkedAt": "2026-10-27T04:03:32.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/0c4ee64a4920639b02f404e24284de9641858a1b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,10 +77,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ec71aba6e0f6f86d45b248c3641a525fef023c8d5bf6f074771a446b88922c61",
+    "binding": "9db64c296b4ff79c658d939dbe0173d035365053649d715bddac249a65970e63",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
-    "sourceContract": "verified",
+    "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -91,9 +91,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern has targets outside the distributable surface: ./src/*; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern has targets outside the distributable surface: ./src/*; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.1-rc.3",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,7 +103,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown"
@@ -152,12 +151,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

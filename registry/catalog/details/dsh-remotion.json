@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6e60a0ff7f71a179715600d3ef671e972bcc7ed5",
-  "version": "0.7.0",
+  "commit": "9997552591fb03fca8b11f95de6eda99c9372117",
+  "version": "0.8.1",
   "categories": [
     "workflow",
     "tools"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-25T12:03:18.000Z",
-    "observedAt": "2026-10-25T12:59:54.000Z",
+    "updatedAt": "2026-10-27T02:21:17.000Z",
+    "observedAt": "2026-10-27T04:03:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-25T12:59:54.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-remotion/commit/6e60a0ff7f71a179715600d3ef671e972bcc7ed5",
+      "checkedAt": "2026-10-27T04:03:32.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-remotion/commit/9997552591fb03fca8b11f95de6eda99c9372117",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,10 +83,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "481739e78a0077391987524a2412988ee6adbc2a9709b374d98bbbd3e8c023d1",
+    "binding": "9b07d9682a7170c7f29af1dadd3710d8001b817590ee14d949689c403e9cba4a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -97,9 +97,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: skills/remotion-best-practices/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-best-practices/remotion-markup/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-markup/remotion-maps/techniques/cesium/assets/sample-river.geojson; local module is missing from the",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: skills/remotion-best-practices/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-best-practices/remotion-markup/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-markup/remotion-maps/techniques/cesium/assets/sample-river.geojson; local module is missing from the distributable surface: skills/remotion-best-pr",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -109,7 +109,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown"
@@ -163,12 +162,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -208,6 +201,7 @@
       ]
     },
     "externalDependencies": [
+      "@stardustlc/dsh-updates",
       "fflate",
       "proper-lockfile",
       "yaml"

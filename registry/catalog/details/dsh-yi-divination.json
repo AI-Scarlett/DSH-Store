@@ -18,24 +18,24 @@
   "manifestPath": "dsh-plugin/package.json",
   "installPath": "dsh-plugin",
   "updatePolicy": "external-only",
-  "commit": "1866486378cf01aed089aa0c87cd9888d59c90cb",
-  "version": "1.0.23",
+  "commit": "3315fdc9c3da69d71ab3261106c91cd634c7cdda",
+  "version": "1.0.24",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-26T14:54:12.000Z",
-    "observedAt": "2026-10-26T20:55:04.000Z",
+    "updatedAt": "2026-10-27T02:01:16.000Z",
+    "observedAt": "2026-10-27T04:03:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-26T20:55:04.000Z",
-      "evidenceUrl": "https://github.com/LinHoMo/Yi/commit/1866486378cf01aed089aa0c87cd9888d59c90cb",
+      "checkedAt": "2026-10-27T04:03:32.000Z",
+      "evidenceUrl": "https://github.com/LinHoMo/Yi/commit/3315fdc9c3da69d71ab3261106c91cd634c7cdda",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,11 +74,11 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "025e29bed4312fc6dfa20ded527cc4974511092e8a3a368377f23e89d96db917",
+    "binding": "212d204ba08617b68870d1f9917c86b1c2cb67f2c308874436a80bcc78de313e",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "review-required",
+    "state": "incomplete",
     "sourceContract": "verified",
-    "coverage": "complete",
+    "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
@@ -88,7 +88,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: local module is missing from the distributable surface: src/index.mjs -> ./engine.mjs; local module is missing from the distributable surface: src/index.mjs -> ./kb.mjs; local module is missing from the distributable surface: src/index.mjs -> ./tools.mjs; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal",
   "compatibility": {
     "dsh": ">=0.2.1-rc.2",
     "dshReleases": {

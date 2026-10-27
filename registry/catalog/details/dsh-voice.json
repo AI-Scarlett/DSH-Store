@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "31031e1d470b822a1df553e2c5e43181a5d4e713",
-  "version": "0.3.7",
+  "commit": "fe53a384899c6a62a0169df76f4f102518a9b53c",
+  "version": "0.4.1",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-20T06:05:19.000Z",
-    "observedAt": "2026-10-20T12:19:57.000Z",
+    "updatedAt": "2026-10-27T02:21:25.000Z",
+    "observedAt": "2026-10-27T04:03:32.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-20T12:19:57.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-voice/commit/31031e1d470b822a1df553e2c5e43181a5d4e713",
+      "checkedAt": "2026-10-27T04:03:32.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-voice/commit/fe53a384899c6a62a0169df76f4f102518a9b53c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,10 +78,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f06db5127bab1dff6de778ad962aa703452076f4315494600cf2205f5126bfef",
+    "binding": "c245e8d74e10c3505746852602694d5b6ce90fb76567a5a9af894bf95c3129f0",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -92,9 +92,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,8 +104,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown"
@@ -159,18 +157,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -192,7 +178,9 @@
     },
     "node": "^22.19.0 || >=24.0.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
@@ -208,6 +196,7 @@
       ]
     },
     "externalDependencies": [
+      "@stardustlc/dsh-updates",
       "https-proxy-agent",
       "undici",
       "ws"
