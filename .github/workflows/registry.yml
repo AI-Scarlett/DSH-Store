@@ -28,6 +28,7 @@ jobs:
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-layout-20261016.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-standards-feedback-20261016.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-rc1-repair-20261017.json
+      - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-rc4-desktop-20261027.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-rc-install-guide-20261017.json
       - run: node scripts/verify-store-release-plan.mjs
       - run: node scripts/verify-store-release-plan.mjs docs/ops/store-096-catalog-20261016.json
