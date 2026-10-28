@@ -55,7 +55,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 通过 DSH 官方 CLI 安装当前 Catalog 固定的 `0.9.8` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#8150c5ff43ca11b89aac4151c0f78e2c34777fb6'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#67402c37f880d0fb7ffa47f7c474674780dacca7'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
