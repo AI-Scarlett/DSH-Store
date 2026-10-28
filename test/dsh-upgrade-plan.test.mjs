@@ -16,6 +16,13 @@ test('upgrade authorization binds exact base, file scope and reviewed output', (
       credentialExceptionRequest: '根本不需要这些啊 以前更新也没用这些东西啊' } }
   check(rc4ExistingCredentialPlan)
   assert.throws(() => check({ ...rc4ExistingCredentialPlan, planId: 'another-plan' }), /Invalid/)
+  const alpha2ExistingCredentialPlan = { ...plan, planId: 'dsh-native-market-alpha2-desktop-20261028',
+    authorization: { source: 'direct-user-request', githubWriteCredential: 'existing-credential-explicitly-authorized',
+      credentialExceptionRequest: '你有权限啊 直接去弄' } }
+  check(alpha2ExistingCredentialPlan)
+  assert.throws(() => check({ ...alpha2ExistingCredentialPlan, planId: 'another-plan' }), /Invalid/)
+  assert.throws(() => check({ ...alpha2ExistingCredentialPlan, authorization: { ...alpha2ExistingCredentialPlan.authorization,
+    credentialExceptionRequest: 'approve future write access' } }), /Invalid/)
   assert.throws(() => check({ ...rc4ExistingCredentialPlan, authorization: { ...rc4ExistingCredentialPlan.authorization,
     credentialExceptionRequest: 'previous updates used a different credential' } }), /Invalid/)
   assert.throws(() => check(plan, ['outside.mjs']), /Outside/)

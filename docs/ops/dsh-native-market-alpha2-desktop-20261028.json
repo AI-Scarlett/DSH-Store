@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-alpha2-desktop-20261028",
+  "planFile": "docs/ops/dsh-native-market-alpha2-desktop-20261028.json",
+  "createdAt": "2026-10-28T05:30:00Z",
+  "baseCommit": "2f54e7b1dab2561e9d2b685cc8907a3eeac574e3",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-alpha2-desktop-20261028.json",
+    "docs/reviews/dsh-native-market-alpha2-desktop-20261028.md",
+    "package.json",
+    "scripts/verify-dsh-upgrade-plan.mjs",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/dsh-upgrade-plan.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "e9f25f8cad97b02b2f73c996d6c9ccbf087a3ffe85d9c65dcd3416e45d90126c",
+    "README.md": "23e9b278c6281a91414ca8232c57b76e80a6dfded4cc4eac9429bc87dc62e65d",
+    "docs/ops/dsh-native-market-alpha2-desktop-20261028.json": null,
+    "docs/reviews/dsh-native-market-alpha2-desktop-20261028.md": null,
+    "package.json": "b76c9292bb574e5276226c84c5d4442856ace70f34cd8bba93f0ed7c6749aef1",
+    "scripts/verify-dsh-upgrade-plan.mjs": "69c043bfb4e224de1439a536d2928ea71f720dd61d2ed24684641a38e1c01902",
+    "test/catalog.test.mjs": "8255cfd2d2b0a1a7eaed4f489a49783a8e58a5d7b6561e8b09bedd2b8c0beb9a",
+    "test/contracts.test.mjs": "5ba38df167024d9e665eb4e867faf35f933ac7d52a63f03ddac31d5e5be4e2ba",
+    "test/dsh-upgrade-plan.test.mjs": "d05f8fabd53c157c22b281fd07b3ca7d4dd1debfe0589b1743ba6a7e0fcaacb6",
+    "test/upgrade-matrix.test.mjs": "385e9cf251884f6eba7be67aa4c192bd8afb174722c671cfab6f17c3514987db"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "1395f7d02c652040079a6032e12d5f305d080146e4ccae2fdc2b6d41da1fd831",
+    "README.md": "cbe8f44effc1f807f607da7aa745a17ca02e8c7999f3450af4fe0cb300086c9a",
+    "docs/reviews/dsh-native-market-alpha2-desktop-20261028.md": "2bc2a6078e4791e4c99fe7d9431ab07d9b96184d19d5604ebed1f67ca7995cf0",
+    "package.json": "b521604110642b932d913d07a45e20e665baa35a43b6da31786fb08933d973a7",
+    "scripts/verify-dsh-upgrade-plan.mjs": "69edeac5f70e2c3352e0b1aba1b780a336431b3b6a8e1915e3abfe37869e1dd9",
+    "test/catalog.test.mjs": "21ffc3a11e6d00d1c23234c3a04461705518c638eb28659add0362cbfedd0df2",
+    "test/contracts.test.mjs": "a9bd45e468d205550d05d636247a4dda2ccf10c9bd97eba41ea532ffe5cfd7b8",
+    "test/dsh-upgrade-plan.test.mjs": "f49104cec82f01ae1efe32953700e8244fe68ada84f530e0acbd40e5b04f9517",
+    "test/upgrade-matrix.test.mjs": "4beecb5f1eb2ed8a2090f13311cc66d241c580cd411e489a9629075f566dec4d"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求继续适配当前官方 DSH 和 Desktop，并将符合条件的源码与商城更新直接上线。",
+    "publication": "auditable-pull-request-only",
+    "githubWriteCredential": "existing-credential-explicitly-authorized",
+    "credentialExceptionRequest": "你有权限啊 直接去弄"
+  },
+  "official": {
+    "repository": "deepseek-ai/deepseek-harness",
+    "releaseTag": "dsh-v0.2.2-alpha.2",
+    "releaseUrl": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-alpha.2",
+    "publishedAt": "2026-10-28T02:50:54Z",
+    "npmVersion": "0.2.2-alpha.2",
+    "nodeRequirement": ">=24.9.0",
+    "latestThree": [
+      "0.2.1-rc.3",
+      "0.2.1-rc.4",
+      "0.2.2-alpha.2"
+    ],
+    "desktopNotes": [
+      "The official plugin page now renders rich-text plugin details.",
+      "The official plugin page updates third-party plugin packages and attempts to restore the prior version if hot-update fails."
+    ],
+    "publishedClientPackages": {
+      "@deepseek-ai/dsh-client-ui-primitives": "0.2.2-alpha.2",
+      "@deepseek-ai/dsh-client-ui-settings": "0.2.2-alpha.2",
+      "@deepseek-ai/dsh-client-ui-slots": "0.2.2-alpha.2",
+      "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.2"
+    }
+  },
+  "gates": [
+    "Preserve the exact official latest-three resolver and fail closed on incomplete authority evidence.",
+    "Declare only the three published 0.2.2-alpha.2 UI client packages; do not invent an unpublished dsh-client-runtime version.",
+    "Run official CLI install, startup, authenticated API, uninstall, and exact disposable Profile restoration against 0.2.2-alpha.2.",
+    "Keep Desktop manager mutations read-only and route installation, updates, enable/disable, and restart through the official Desktop plugin page.",
+    "Run npm run check, registry validation, and the exact-head CI matrix on Linux, Windows, and macOS.",
+    "Open an auditable source PR first; update the Catalog only in a separate fresh policy plan after source merge."
+  ],
+  "rollback": {
+    "source": "Revert the exact merged source PR through a CI-checked commit.",
+    "catalog": "No Catalog mutation in this plan; prepare a separate fixed-Commit policy PR after source merge.",
+    "profile": "No real Profile or Desktop package mutation. Disposable CLI fixtures are removed after the run."
+  },
+  "healthCheck": "The exact latest-three disposable DSH matrix passes; registry and static marketplace checks pass; Desktop real-UI state remains separately recorded.",
+  "boundaries": [
+    "Do not modify DSH source or any @deepseek-ai package.",
+    "Do not read or mutate ~/.dsh, a real Profile, or the installed Desktop app.",
+    "Do not change the Catalog, contact plugin authors, or update production sites in the source PR.",
+    "Do not claim Desktop UI acceptance from Web Profile tests or release notes."
+  ],
+  "verification": {
+    "officialReleaseResolver": "passed: latest-three 0.2.1-rc.3, 0.2.1-rc.4, 0.2.2-alpha.2",
+    "publishedPeerPackages": "passed: three UI client packages exist at 0.2.2-alpha.2; runtime remains 0.1.1-rc.2",
+    "localDisposableAlpha2": "passed with official CLI 0.2.2-alpha.2: install, dump-config, authenticated startup/API, activation, uninstall, exact Profile restoration; local Node 26.8.1; real Profile unchanged",
+    "npmRunCheck": "passed: REGISTRY_OK entries=856 and 545/545 tests",
+    "upgradePlanPreconditions": "passed: DSH_UPGRADE_PLAN_OK base=2f54e7b1dab2561e9d2b685cc8907a3eeac574e3 changed=10",
+    "pullRequestCi": "passed on source commit fe224209d87db4e96e1867ef14360789bdb4a950: DSH matrix run 40639167852 (9 platform/pnpm combinations and previous releases 0.2.1-rc.3/rc.4), Registry validation run 40639167712, CodeQL run 40639164037; final PR head must also pass before merge",
+    "desktopRealUi": "unverified; no Desktop package or Profile was changed",
+    "catalogAndProductionSurfaces": "not-in-scope"
+  }
+}
