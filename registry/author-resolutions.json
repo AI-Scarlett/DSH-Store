@@ -719,6 +719,76 @@
       "summary": "The exact 0.3.14 source is admitted under user-reviewed updates. Its web-session token, attachment writes, specified network, and webview script capability are disclosed; Store runtime and independent security audit remain unknown.",
       "blockers": [],
       "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/external-review-20261019-followup.md"
+    },
+    {
+      "issueNumber": 1276,
+      "requestCommentId": 6432573518,
+      "userId": 288661966,
+      "requestBodySha256": "df6fcdb4ad40f6a0692fbd0610d3f8890df0343c5df54be8fa25306017148c57",
+      "repositoryUrl": "https://github.com/DedsecLemon/dsh-obsidian",
+      "version": "1.6.4",
+      "commit": "789ddbf7f326f59260759337848728406f9aab67",
+      "binding": "46e525e4266f08e0adae7746f02ce6dc2b1ac4d23cdc1ce3258376fded2a8f36",
+      "catalogId": "dsh-obsidian-panel",
+      "decision": "rejected",
+      "summary": "AUTH001: the complete 1.6.4 source exposes private Vault reads/writes through raw webServer routes without a verified caller-trust gate. COMPAT001: all current latest-three DSH releases remain unknown. The credentials scan is a false positive for local path environment variables.",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "index.mjs",
+          "line": 1342,
+          "finding": "allowMethod 只限制 GET/POST；index.mjs:1381 之后的 webServer 路由没有调用方信任验证。Vault 读取路由可返回私有笔记数据，POST 路由可在所选 Vault 中创建、重命名和移入 .trash；没有在私有读写前拒绝跨站/不可信 Origin 或缺失请求上下文。",
+          "requiredChange": "在所有 Vault 数据读取和写入路由前接入 DSH 支持的 request-trust/auth seam；缺少服务或必需上下文、校验报错时 fail closed。保留现有文件能力，仅补齐调用方校验。",
+          "acceptance": "一次性 fixture 中，不可信 Origin、Sec-Fetch-Site=cross-site、缺少信任服务/请求上下文均在读取或写入 Vault 前拒绝；受信 DSH 请求仍可工作；GET 不写入，写入仅接受受信的 POST JSON。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 41,
+          "finding": "当前官方 DSH latest-three 为 0.2.1-rc.3、0.2.1-rc.4、0.2.2-alpha.2；固定 manifest 的 dshReleases 对这三版均无 compatible 证据。0.2.0-rc.2 的旧 compatible 记录和版本范围不能证明当前兼容。",
+          "requiredChange": "只对实际验证的当前 DSH 版本写入精确 dshReleases compatible 结果，并提供该版本安装、启动、卸载证据；未验证版本保持 unknown。",
+          "acceptance": "至少一版当前 latest-three 有可审核的精确 compatible 声明及对应安装/启动/卸载证据；其余版本不从版本范围推定兼容。"
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261028.md",
+      "decidedAt": "2026-10-28T13:10:14Z"
+    },
+    {
+      "issueNumber": 1596,
+      "requestCommentId": 6465097579,
+      "userId": 39356339,
+      "requestBodySha256": "9d2ee46f6a33d93041c108a71615a286d9c028ff9c035912d616a57ca6cb91c1",
+      "repositoryUrl": "https://github.com/lg6169219/dsh-fatfish-level",
+      "version": "0.3.3",
+      "commit": "fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1",
+      "binding": "e618f07d3afcf402ec930c00da99641ae4a21e29dd341b2c9f5f49630128475a",
+      "catalogId": "dsh-fatfish-level",
+      "decision": "rejected",
+      "summary": "AUTH001: the fixed request-trust fence fails open when the DSH connection service is missing or errors. COMPAT001: all current latest-three DSH releases remain unknown.",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 61,
+          "finding": "rejectUntrusted 在 connection/requestRejection 缺失时于第 64 行放行；requestRejection 抛错时只记录日志并于第 74 行放行。因而 state 路由在信任检查不可用时仍返回本地用量账本快照。",
+          "requiredChange": "将请求信任检查改为 fail closed：缺少 connection/requestRejection 或检查异常时拒绝该 HTTP 请求；只有官方信任检查成功且未返回拒绝时才继续。若 Desktop IPC 需要独立路径，应为其提供明确、可验证的受信入口，不得把 Web HTTP 路由作为无校验回退。",
+          "acceptance": "一次性 fixture 中 connection 缺失、requestRejection 缺失或抛错均在 store.snapshot/文件读取前拒绝；跨站请求被拒；受信请求仍能读取统计。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 45,
+          "finding": "engines.dsh 只声明宽版本范围，dsh 段没有逐版本兼容矩阵；当前官方 DSH latest-three 0.2.1-rc.3、0.2.1-rc.4、0.2.2-alpha.2 均无 compatible 证据。",
+          "requiredChange": "对实际验证的当前 DSH 版本增加精确逐版本 compatible 声明和安装、启动、卸载证据；未验证版本保持 unknown。",
+          "acceptance": "至少一版当前 latest-three 有可审核的 compatible 声明和对应安装/启动/卸载证据；不从 engines.dsh 范围推定兼容。"
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261028.md",
+      "decidedAt": "2026-10-28T13:10:14Z"
     }
   ]
 }

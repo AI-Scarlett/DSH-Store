@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 1,
+  "type": "author-admission-decisions",
+  "reviewedAt": "2026-10-28T13:10:14Z",
+  "baseCommit": "f307a016f660ea706ec7b9c5b870d74a0a7bfde1",
+  "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+  "currentDshLatestThree": {
+    "versions": [
+      "0.2.1-rc.3",
+      "0.2.1-rc.4",
+      "0.2.2-alpha.2"
+    ],
+    "evidence": [
+      "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-alpha.2",
+      "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/dsh-native-market-alpha2-desktop-20261028.md"
+    ]
+  },
+  "method": "complete bounded fixed-Commit source review; read-only source inspection; no third-party install, prepare, build, test, or runtime code executed",
+  "authorMessagesSent": false,
+  "realProfilesChanged": false,
+  "desktopRuntimeAcceptance": "unverified",
+  "admissionReviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07",
+  "results": [
+    {
+      "issueNumber": 1276,
+      "commentId": 6432573518,
+      "author": {
+        "login": "DedsecLemon",
+        "userId": 288661966
+      },
+      "requestCreatedAt": "2026-10-27T02:54:00Z",
+      "requestBodySha256": "df6fcdb4ad40f6a0692fbd0610d3f8890df0343c5df54be8fa25306017148c57",
+      "requestSummary": "仅请求对当前默认分支进行固定源码复核；不要求自动批准。",
+      "fixedSource": {
+        "repositoryUrl": "https://github.com/DedsecLemon/dsh-obsidian",
+        "version": "1.6.4",
+        "commit": "789ddbf7f326f59260759337848728406f9aab67",
+        "catalogId": "dsh-obsidian-panel",
+        "catalogBinding": "46e525e4266f08e0adae7746f02ce6dc2b1ac4d23cdc1ce3258376fded2a8f36",
+        "sourceDigest": "5049ae28b8d75d3d85bf3eefb2c08f62ea47c572c41b276a73c7022935fe1882",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "treeEntries": 19,
+        "runtimeCoverage": "complete",
+        "runtimeSourceFiles": [
+          {
+            "file": "client.js",
+            "bytes": 165561,
+            "blob": "35e3839dcdbe9fd403a47e9c5ab23151178a3c79",
+            "sha256": "4c1d01c643aa35cda7002f88910b9879df42d17a3828fef287aa1cc05cfa0032"
+          },
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 254,
+            "blob": "8252708078c1ca494de322afe806228f97538d66",
+            "sha256": "929e77296838fe6036e02459422b74e0b36dd9b6ee096e9fd550bee6d601f281"
+          },
+          {
+            "file": "index.mjs",
+            "bytes": 73319,
+            "blob": "d1dbe5145be2a09fc31b8352dbf13cdcb39c3662",
+            "sha256": "f34667d765601244fd184a96b12fc3c11c8970cb3fe7a88da1777cdc1d2009df"
+          },
+          {
+            "file": "package.json",
+            "bytes": 2097,
+            "blob": "86c0386ca3e6f19c40c7268c617a0b29b0a24e9d",
+            "sha256": "e10c5b98048628cb12e10610d846537bd1a03bb11f0bb189287cf687df594dc2"
+          }
+        ],
+        "automatedSignals": {
+          "files": true,
+          "network": true,
+          "commands": false,
+          "credentials": true,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "verdict": "pass",
+          "complete": true,
+          "findings": 0
+        },
+        "manualCapabilityReview": {
+          "permissions": {
+            "level": "high",
+            "files": "write",
+            "network": "specified-services",
+            "commands": "restricted",
+            "credentials": [
+              "none"
+            ]
+          },
+          "falsePositiveSignals": [
+            {
+              "signal": "credentials",
+              "file": "index.mjs",
+              "line": 111,
+              "sha256": "f34667d765601244fd184a96b12fc3c11c8970cb3fe7a88da1777cdc1d2009df",
+              "rationale": "process.env 在此用于读取 DSH_OBSIDIAN_APP 与平台安装路径，不读取认证信息。"
+            }
+          ]
+        },
+        "boundedFilesScanned": 4
+      },
+      "decision": "rejected",
+      "catalogStatus": "blocked",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "index.mjs",
+          "line": 1342,
+          "finding": "allowMethod 只限制 GET/POST；index.mjs:1381 之后的 webServer 路由没有调用方信任验证。Vault 读取路由可返回私有笔记数据，POST 路由可在所选 Vault 中创建、重命名和移入 .trash；没有在私有读写前拒绝跨站/不可信 Origin 或缺失请求上下文。",
+          "requiredChange": "在所有 Vault 数据读取和写入路由前接入 DSH 支持的 request-trust/auth seam；缺少服务或必需上下文、校验报错时 fail closed。保留现有文件能力，仅补齐调用方校验。",
+          "acceptance": "一次性 fixture 中，不可信 Origin、Sec-Fetch-Site=cross-site、缺少信任服务/请求上下文均在读取或写入 Vault 前拒绝；受信 DSH 请求仍可工作；GET 不写入，写入仅接受受信的 POST JSON。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 41,
+          "finding": "当前官方 DSH latest-three 为 0.2.1-rc.3、0.2.1-rc.4、0.2.2-alpha.2；固定 manifest 的 dshReleases 对这三版均无 compatible 证据。0.2.0-rc.2 的旧 compatible 记录和版本范围不能证明当前兼容。",
+          "requiredChange": "只对实际验证的当前 DSH 版本写入精确 dshReleases compatible 结果，并提供该版本安装、启动、卸载证据；未验证版本保持 unknown。",
+          "acceptance": "至少一版当前 latest-three 有可审核的精确 compatible 声明及对应安装/启动/卸载证据；其余版本不从版本范围推定兼容。"
+        }
+      ]
+    },
+    {
+      "issueNumber": 1596,
+      "commentId": 6465097579,
+      "author": {
+        "login": "lg6169219",
+        "userId": 39356339
+      },
+      "requestCreatedAt": "2026-10-28T09:12:50Z",
+      "requestBodySha256": "9d2ee46f6a33d93041c108a71615a286d9c028ff9c035912d616a57ca6cb91c1",
+      "requestSummary": "明确请求针对固定 Commit fa7a183... / v0.3.3 做 user-reviewed 专项审阅，并说明文件与网络能力。",
+      "fixedSource": {
+        "repositoryUrl": "https://github.com/lg6169219/dsh-fatfish-level",
+        "version": "0.3.3",
+        "commit": "fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1",
+        "catalogId": "dsh-fatfish-level",
+        "catalogBinding": "e618f07d3afcf402ec930c00da99641ae4a21e29dd341b2c9f5f49630128475a",
+        "sourceDigest": "3b88abb7f855e7b60b7deab62083d3b28ae43ec892c598c875b1ea911ff747f5",
+        "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+        "treeEntries": 24,
+        "runtimeCoverage": "complete",
+        "runtimeSourceFiles": [
+          {
+            "file": "cordis.patch.yml",
+            "bytes": 233,
+            "blob": "6b4ffa0f07a5777eb9b2cbbbf2ce9521091e8ce7",
+            "sha256": "c25b8fb561ebf82079f8d02575878d1066bdd831ad9e4f4217896cefbdad72ae"
+          },
+          {
+            "file": "lib/client.js",
+            "bytes": 74255,
+            "blob": "7cc5e12b437fbf307d8cd4bfcae9de4b966b6f71",
+            "sha256": "f04d62c0cf4598d9cbcc34eb5e32f4ac51b0c916ac3f6b564a05a6aed34dfad2"
+          },
+          {
+            "file": "lib/index.js",
+            "bytes": 8288,
+            "blob": "b632c898eb513a5f43ba1581bb93638b63c76348",
+            "sha256": "320f6e548875b275852caf153e2c39b60db8e4cca6cc572fc05e42849431b4d6"
+          },
+          {
+            "file": "lib/levels.js",
+            "bytes": 4242,
+            "blob": "238fbdb0df24304cd35c93504efa0adcf1ff0cad",
+            "sha256": "5c994b828f14fb3fa352d983cbf749ae4feffe810cd06b0a634dd4f9284d1ec4"
+          },
+          {
+            "file": "lib/store.js",
+            "bytes": 13386,
+            "blob": "2d4dba202e28568c245d75112d2e960b073bf645",
+            "sha256": "a33153fe565896735059ef3a998fa7caab79754b5db51767e338f551d7cc066b"
+          },
+          {
+            "file": "package.json",
+            "bytes": 1423,
+            "blob": "92a9ebb52808988f6b048aef7133e4404ba2a08f",
+            "sha256": "179bec0fbe0b6e38cf8a5ca4410f97b310563580351a810523ab493880aedf2c"
+          }
+        ],
+        "automatedSignals": {
+          "files": true,
+          "network": true,
+          "commands": false,
+          "credentials": false,
+          "protectedDsh": false,
+          "nativeOrExecutableArtifacts": false
+        },
+        "securityScan": {
+          "verdict": "pass",
+          "complete": true,
+          "findings": 0
+        },
+        "manualCapabilityReview": {
+          "permissions": {
+            "level": "high",
+            "files": "write",
+            "network": "specified-services",
+            "commands": "none",
+            "credentials": [
+              "none"
+            ]
+          },
+          "note": "文件仅为插件私有统计账本及作者说明的可选只读鲸鱼历史数据；网络调用为同源 DSH 路由。"
+        },
+        "boundedFilesScanned": 6
+      },
+      "decision": "rejected",
+      "catalogStatus": "blocked",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 61,
+          "finding": "rejectUntrusted 在 connection/requestRejection 缺失时于第 64 行放行；requestRejection 抛错时只记录日志并于第 74 行放行。因而 state 路由在信任检查不可用时仍返回本地用量账本快照。",
+          "requiredChange": "将请求信任检查改为 fail closed：缺少 connection/requestRejection 或检查异常时拒绝该 HTTP 请求；只有官方信任检查成功且未返回拒绝时才继续。若 Desktop IPC 需要独立路径，应为其提供明确、可验证的受信入口，不得把 Web HTTP 路由作为无校验回退。",
+          "acceptance": "一次性 fixture 中 connection 缺失、requestRejection 缺失或抛错均在 store.snapshot/文件读取前拒绝；跨站请求被拒；受信请求仍能读取统计。"
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 45,
+          "finding": "engines.dsh 只声明宽版本范围，dsh 段没有逐版本兼容矩阵；当前官方 DSH latest-three 0.2.1-rc.3、0.2.1-rc.4、0.2.2-alpha.2 均无 compatible 证据。",
+          "requiredChange": "对实际验证的当前 DSH 版本增加精确逐版本 compatible 声明和安装、启动、卸载证据；未验证版本保持 unknown。",
+          "acceptance": "至少一版当前 latest-three 有可审核的 compatible 声明和对应安装/启动/卸载证据；不从 engines.dsh 范围推定兼容。"
+        }
+      ]
+    }
+  ]
+}
