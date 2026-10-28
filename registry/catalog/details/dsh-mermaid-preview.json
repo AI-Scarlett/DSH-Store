@@ -31,14 +31,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-20T08:43:47.000Z",
-    "observedAt": "2026-10-20T12:19:57.000Z",
+    "observedAt": "2026-10-28T14:54:29.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-20T12:19:57.000Z",
+      "checkedAt": "2026-10-28T14:54:29.000Z",
       "evidenceUrl": "https://github.com/realguan/dsh-mermaid-preview/commit/fcbb7e3ff3c273962524a9bb5610aeb4f01c6cb3",
       "dshRelease": null,
       "systems": [],
@@ -78,21 +78,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "05fd90f9ecaaa56a0a82e87c52aedd1364e238838b4910f2d7631773adae298f",
+    "binding": "38e8e31b5cc9b86c9fb61e08a5b7b68bb3caa8d68b5c7e74f760044c09542538",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
+    "state": "review-required",
     "sourceContract": "verified",
-    "coverage": "incomplete",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
   },
   "entryIds": [
     "mermaid-preview"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: package ignore rules require artifact review; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
