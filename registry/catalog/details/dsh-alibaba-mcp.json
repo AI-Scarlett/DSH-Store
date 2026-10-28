@@ -18,28 +18,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dfb585acc785acf9a97973bb3a07adece8ee6f28",
-  "version": "0.2.0",
+  "commit": "80214ea3ac42ddb3e7590ef39308477cd242250e",
+  "version": "0.3.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-27T14:13:59.000Z",
-    "observedAt": "2026-10-27T14:04:39.000Z",
+    "updatedAt": "2026-10-28T00:44:26.000Z",
+    "observedAt": "2026-10-28T04:30:05.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-27T14:04:39.000Z",
-      "evidenceUrl": "https://github.com/NingYuanLee/dsh-alibaba-mcp/commit/dfb585acc785acf9a97973bb3a07adece8ee6f28",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-28T04:30:05.000Z",
+      "evidenceUrl": "https://github.com/NingYuanLee/dsh-alibaba-mcp/commit/80214ea3ac42ddb3e7590ef39308477cd242250e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,12 +69,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ce909fe32462da9151e017df80d8a6d35277cbfbf722733763027651c22495b6",
+    "binding": "b4464fc7a2e37970e44c75c1609bcf4560c76f74869263957503a1a0b7434688",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -86,6 +86,7 @@
   "entryIds": [
     "alibaba-mcp"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
@@ -99,7 +100,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
       "0.2.2-alpha.2": "unknown"
@@ -153,12 +153,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
@@ -180,7 +174,9 @@
     },
     "node": ">=22.19.0",
     "systems": [],
-    "profiles": []
+    "profiles": [
+      "web"
+    ]
   },
   "details": {
     "pluginType": "unknown",
