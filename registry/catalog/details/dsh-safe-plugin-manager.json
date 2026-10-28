@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 0.9.8：精确适配官方 RC.1 / RC.2，修复新版 CLI 安装前兼容检查拒绝；已通过三平台一次性安装、启动、鉴权和卸载还原验证。",
+  "description": "DSH STORE 0.9.11 适配 DSH 0.2.1-rc.3、0.2.1-rc.4 和 0.2.2-alpha.2。最新三版的安装、启动、卸载均有精确记录；版本回滚仍为 unknown。Desktop Profile 仅提供只读目录和诊断，真实 Desktop UI 未验收。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
-  "version": "0.9.8",
+  "commit": "752285a52cb6b2842c956bb9fa03d0536b978e4f",
+  "version": "0.9.11",
   "categories": [
     "marketplace",
     "management"
@@ -39,27 +39,27 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-17T13:09:59.935Z",
-    "observedAt": "2026-10-17T13:09:59.935Z",
+    "updatedAt": "2026-10-28T06:08:30.000Z",
+    "observedAt": "2026-10-28T06:16:14.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-10-17T13:09:59.935Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/8150c5ff43ca11b89aac4151c0f78e2c34777fb6",
+      "checkedAt": "2026-10-28T06:16:14.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/752285a52cb6b2842c956bb9fa03d0536b978e4f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Owner-reviewed Store 0.9.8; complete bounded fixed-source coverage and exact-head CI."
+      "summary": "Owner-reviewed 169/169 bounded runtime files (2,001,985 bytes); all static findings were individually classified. Existing high-risk permissions remain disclosed; no independent security audit is claimed."
     },
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-10-17T13:09:59.935Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/39035039223",
-      "dshRelease": "0.2.1-rc.2",
+      "checkedAt": "2026-10-28T06:16:14.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/40640340904",
+      "dshRelease": "0.2.2-alpha.2",
       "systems": [
         "Linux",
         "macOS",
@@ -68,27 +68,33 @@
       "profiles": [
         "web"
       ],
-      "summary": "Official RC.2 CLI install/start/authenticated API/uninstall/exact Profile restoration passed on Linux/macOS/Windows with pnpm 10/11/12; RC.1 and alpha.5 regression passed. Disposable Profiles only. Desktop GUI, real Profile and version rollback remain unverified."
+      "summary": "DSH 0.2.2-alpha.2 official CLI installation passed in disposable Profiles across Linux/macOS/Windows and pnpm 10/11/12. RC.3 and RC.4 regression jobs passed. No real Profile was changed."
     },
     "runtime": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
-      "dshRelease": null,
-      "systems": [],
-      "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "status": "verified",
+      "method": "official-cli-disposable-profile-runtime-matrix",
+      "checkedAt": "2026-10-28T06:16:14.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/40640340904",
+      "dshRelease": "0.2.2-alpha.2",
+      "systems": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "profiles": [
+        "web"
+      ],
+      "summary": "Disposable Web Profile install, config synthesis, startup, authenticated API, activation, uninstall, and exact Profile restoration passed. Version downgrade rollback remains unknown; real Desktop UI is unverified."
     },
     "securityReview": {
       "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
+      "method": "owner-reviewed-bounded-static-fixed-source-analysis",
+      "checkedAt": "2026-10-28T06:16:14.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/752285a52cb6b2842c956bb9fa03d0536b978e4f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "Full bounded source review is recorded, but the Store remains high risk and has no independent security audit."
     }
   },
   "entryIds": [
@@ -97,7 +103,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2",
+    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.2-alpha.2",
     "dshReleases": {
       "rc.7": "compatible",
       "rc.8": "compatible",
@@ -127,9 +133,9 @@
       "0.2.1-alpha.5": "compatible",
       "0.2.1-rc.1": "compatible",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-rc.3": "unknown",
-      "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown"
+      "0.2.1-rc.3": "compatible",
+      "0.2.1-rc.4": "compatible",
+      "0.2.2-alpha.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -259,26 +265,26 @@
         "rollback": "unknown"
       },
       "0.2.1-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.1-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       }
     },
     "latestWindow": {
-      "state": "recheck-required",
+      "state": "current",
       "releases": [
         "0.2.1-rc.3",
         "0.2.1-rc.4",
@@ -312,6 +318,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "owner-curated-not-security-audited"
+    "review": "owner-reviewed-bounded-source-review; high risk; no independent security audit"
   }
 }
