@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "type": "production-store-refresh",
+  "planId": "international-refresh-gzip-20261028",
+  "createdAt": "2026-10-28T13:45:15Z",
+  "expiresAt": "2026-10-30T13:45:15Z",
+  "repository": "https://github.com/AI-Scarlett/DSH-Store",
+  "branch": "codex/international-store-refresh-20261028",
+  "baseCommit": "4a05f7259bdbec201fb8d5a05a960d86b13e1402",
+  "scope": [
+    "docs/ops/international-refresh-gzip-20261028.json"
+  ],
+  "preconditions": {
+    "docs/ops/international-refresh-gzip-20261028.json": null
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "codex的 github是授权的吧，该上线上线",
+    "githubWriteCredential": "Codex GitHub connector short-lived authorization",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "authorContact": "prohibited"
+  },
+  "purpose": "Refresh the stale international DSH STORE from the already merged and validated GitHub Pages artifact.",
+  "source": {
+    "mergedCommit": "4a05f7259bdbec201fb8d5a05a960d86b13e1402",
+    "pagesReleaseManifest": "https://ai-scarlett.github.io/DSH-Store/release-manifest.json",
+    "pagesReleaseManifestSha256": "6746795aaf468cbd8cea9490741c6290e92843d379e303ad267a410db571f648",
+    "pagesReleaseSourceCommit": "4a05f7259bdbec201fb8d5a05a960d86b13e1402",
+    "pagesReleaseFileCount": 1019,
+    "refreshScriptPath": "deploy/refresh-from-pages.sh",
+    "refreshScriptSha256": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d"
+  },
+  "remotePreconditions": {
+    "serverId": "dsh-store-intl",
+    "environment": "production",
+    "domain": "dsh.store",
+    "connection": {
+      "method": "registered-ssh",
+      "host": "100.119.62.98",
+      "port": 22,
+      "user": "root",
+      "hostKeyPolicy": "StrictHostKeyChecking; host key already present in known_hosts"
+    },
+    "systemdUnit": "dsh-store-refresh@intl-public.service",
+    "systemdTimer": "dsh-store-refresh@intl-public.timer",
+    "environmentFileValues": {
+      "DSH_STORE_DOMAIN": "dsh.store",
+      "DSH_STORE_ROOT": "/opt/dsh-store",
+      "DSH_STORE_HEALTH_SCHEME": "https",
+      "DSH_STORE_SITE_PREFIX": ""
+    },
+    "installedScriptPath": "/opt/dsh-store/bin/refresh-from-pages.sh",
+    "installedScriptSha256": "f7ccdb7cbe58fa727f545d7dfd7054d627c3e0fcaa3d88b0ed6e950b5715c961",
+    "currentRelease": "/opt/dsh-store/releases/20261028T125134Z-pages-f307a016f660",
+    "currentReleaseManifestSha256": "a4dc1c37cb9fb346bbc12a64cffb91abf1af279602a54a050dae501dfe6e2b54",
+    "lastSuccessfulRefreshUtc": "2026-10-28T12:51:34Z",
+    "backupPath": "/opt/dsh-store/backups/20261028T134515Z-before/refresh-from-pages.sh",
+    "backupPathMustBeAbsent": true,
+    "publicCatalogSha256Before": "2970a5b8beea428b207689a6db18508500edbfcfba403bfec40b748911eb52e2",
+    "publicCatalogIndexSha256Before": "a839741c500dcde23eba7e1b7d9784b5c873e8c981831a08018b13dd449900ff"
+  },
+  "remoteMutation": {
+    "installMethod": "Download deploy/refresh-from-pages.sh from the immutable merged Commit, verify SHA-256 0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d, copy the verified old script to backupPath, then atomically replace the installed script.",
+    "runUnit": "dsh-store-refresh@intl-public.service",
+    "expectedBehavior": "Request gzip for bounded fixed-source artifacts, retry from byte zero, preserve release-manifest SHA-256 validation, reuse unchanged files, and switch the current symlink atomically.",
+    "backup": "The refresh service creates a release backup with relative-path SHA-256 manifest before switching.",
+    "rollback": "On health failure the script restores the previous current symlink and rechecks health. If script installation fails, restore the backed-up script using a same-filesystem temporary file and atomic rename."
+  },
+  "gates": [
+    "Re-fetch GitHub main and confirm it remains at the planned base before creating the branch.",
+    "Run npm run check and git diff --check for the exact one-file plan change.",
+    "Open a CI-checked PR and merge only after all required checks pass.",
+    "Immediately before remote mutation, recheck server ID, exact environment, installed script hash, current release path and manifest hash, and backup-path absence.",
+    "Install only the immutable merged script after its SHA-256 matches the plan.",
+    "Run the existing international systemd refresh unit.",
+    "Verify unit success, release-manifest source Commit, all artifact hashes, public health paths, and exact public Catalog/detail hashes."
+  ],
+  "expectedPublicHashes": {
+    "registry/catalog.json": "fbe0fa078f991ee944bef33048195b18bdc96beee124f3e2797ae9d3b4113ceb",
+    "registry/catalog-index.json": "5085bbd4b5bf5047f8f252183d099b54a840f17ad78e14fcb82d91ccadeb87d5",
+    "registry/catalog/details/dsh-obsidian-panel.json": "e61a974dbf55603c169825408874ee0b7a51bf5e045e6a410cbf767157e0041a",
+    "registry/catalog/details/dsh-fatfish-level.json": "dc2a0966142a22bd1e4bb5eb344d9b715ff32395379407a0c44d153a052a6696"
+  },
+  "healthCheck": "The international systemd unit succeeds; /opt/dsh-store/current points to a release whose manifest names source Commit 4a05f7259bdbec201fb8d5a05a960d86b13e1402 and whose files match every manifest hash; HTTPS health paths pass; dsh.store Catalog, index, and both details match expectedPublicHashes.",
+  "rollback": {
+    "site": "Script-managed atomic current-symlink rollback to the exact prior release, preserving the generated backup.",
+    "script": "Restore the exact old script from backupPath with a verified hash and atomic rename.",
+    "authorContactState": "No author contact or ledger changes.",
+    "realProfiles": "Unchanged."
+  },
+  "state": {
+    "sourceCommit": "merged",
+    "pages": "verified",
+    "internationalStore": "pending-ci-checked-pr-and-refresh",
+    "authorMessages": "none",
+    "realProfile": "unchanged"
+  }
+}
