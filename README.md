@@ -51,7 +51,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-当前源码包版本为 `0.9.10`，并在官方 `0.2.1-rc.4` 的一次性 Web Profile 中完成安装、启动、鉴权接口、卸载与 Profile 基线还原验证；真实 Desktop 界面和版本降级回滚未验收。公开 Catalog 仍固定到 `0.9.8`，后续按审计 PR 的 Catalog 流程推进。
+当前源码包版本为 `0.9.11`，并在官方 `0.2.2-alpha.2` 的一次性 Web Profile 中完成安装、启动、鉴权接口、卸载与 Profile 基线还原验证；真实 Desktop 界面和版本降级回滚未验收。公开 Catalog 暂时仍固定到 `0.9.8`，本次源码合并后会单独按固定 Commit 的 Catalog 审计流程更新。
 通过 DSH 官方 CLI 安装当前 Catalog 固定的 `0.9.8` Commit：
 
 ```bash
@@ -97,7 +97,7 @@ Profile 的自动测试推定。
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.10` |
+| 商城版本 | `0.9.11` |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
@@ -107,9 +107,9 @@ Profile 的自动测试推定。
 
 `0.9.4` 在官方 `dsh-app://` 渲染器中停用依赖 Web Host 的商城请求和 Guardian 轮询；如果商城面板被桌面端加载，会显示只读说明并引导至 DSH Store 网页目录和桌面端内置“插件”页面。它不访问或修改 Web Profile。此安全交接不代表商城已能在桌面端内嵌浏览或安装插件；Catalog 仍只声明 `web` Profile，真实打包桌面端 UI 尚未验收。版本号同步提升至 `0.9.4`，避免已安装用户因同版本修复无法收到商城更新。
 
-`0.9.10` 将官方 DSH `0.2.1-rc.4` 加入精确兼容范围，并完成一次性 Web Profile 的安装、配置合成、冷启动、鉴权 API（未登录 `401`、登录 `200`、跨源 `403`）、激活接口和卸载还原验证；rollback 字段仍为 `unknown`。三个注入 UI 客户端包分别发布了 `0.2.1-rc.4`，并纳入精确 peer 范围。npm 没有发布 `@deepseek-ai/dsh-client-runtime@0.2.1-rc.4`（该包最新为 `0.1.1-rc.2`），因此保留已有 runtime peer 范围，不虚构 RC.4 包版本；验证关闭自动安装 peers，由官方 DSH CLI 校验 Host 契约。
+`0.9.11` 将官方 DSH 最新三版 `0.2.1-rc.3`、`0.2.1-rc.4`、`0.2.2-alpha.2` 纳入精确兼容记录，并在一次性 Web Profile 中验证最新 alpha 版的安装、配置合成、冷启动、鉴权 API（未登录 `401`、登录 `200`、跨源 `403`）、激活接口和卸载还原；rollback 字段仍为 `unknown`。三个注入 UI 客户端包确实发布了 `0.2.2-alpha.2`，因此加入精确 peer 范围；`@deepseek-ai/dsh-client-runtime` 仍只发布到 `0.1.1-rc.2`，继续保留已验证的旧范围，不声明不存在的 alpha 包。官方 DSH `0.2.2-alpha.2` 要求 Node `>=24.9.0`；验证由官方 CLI 在隔离 Profile 中执行，并关闭 peer 自动安装。
 
-截至 2026-10-27，最新可读取的官方 GitHub 桌面发行说明是 `0.2.1-rc.3`，其中左侧栏、会话视图和右侧栏新增浏览与创建插件的“更多”菜单；npm 已发布 `0.2.1-rc.4`，但 GitHub 尚无该版本发行说明，不能据此推断新增桌面界面行为。商城继续把 Desktop 的安装、更新、启停和重启交给其内置“插件”页与应用更新入口；商城在 Desktop Profile 中只读。隔离自动测试确认 `dsh-app://` 页面不请求 Web Host API；真实打包 Desktop UI 尚未实测，因此不宣称内嵌商城或 Desktop 安装已验收。
+官方 DSH `0.2.2-alpha.2` 桌面发行说明新增了插件详情富文本展示与第三方插件更新；热更新失败时会尝试恢复旧版本。DSH Store 在 Desktop Profile 中继续只读，安装、更新、启停、卸载和重启交给 Desktop 内置“插件”页；Store 不接管 Desktop 生命周期，也不把 Web Profile 操作送入桌面环境。自动化边界测试确认 `dsh-app://` 页面不请求 Web Host API，但真实打包 Desktop UI 尚未实测，因此不宣称内嵌商城或桌面安装已验收。
 
 `0.9.3` 将官方 Desktop 绑定到其实际 Profile，并在服务端拒绝不受支持的商城写入、Guardian 与重启操作；商城界面明确展示只读模式。版本面板从 Desktop 内置的官方 DSH 包读取当前版本，不提供修改桌面应用运行时的 npm 命令。`0.2.0-rc.2`、`0.2.1-alpha.1`、`0.2.1-alpha.2` 已在 PR 的一次性 Web Profile 中完成安装、启动、卸载和精确回滚验证。`@deepseek-ai/dsh-client-runtime` 的 0.2.x 尚无独立 npm 包，但其精确 Peer 版本声明是官方 Host 安装前检查的契约；移除后一次性 Profile 安装在最新三版均失败。源码、Catalog、生产站点和真实 Desktop 界面各自需要独立验收。
 

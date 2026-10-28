@@ -8,6 +8,8 @@ export const planPath = 'docs/ops/dsh-native-market-20261016.json'
 const digest = bytes => bytes === null ? null : createHash('sha256').update(bytes).digest('hex')
 const rc4ExistingCredentialException = plan => plan?.planId === 'dsh-native-market-rc4-desktop-20261027'
   && plan.authorization?.credentialExceptionRequest === '根本不需要这些啊 以前更新也没用这些东西啊'
+const alpha2ExistingCredentialException = plan => plan?.planId === 'dsh-native-market-alpha2-desktop-20261028'
+  && plan.authorization?.credentialExceptionRequest === '你有权限啊 直接去弄'
 export function validateUpgradePlan(plan, changes, readBase, readCurrent) {
   const ownPlanPath = plan?.planFile ?? planPath
   if (!/^docs\/ops\/dsh-native-market-[a-z0-9-]+\.json$/.test(ownPlanPath) || plan?.schemaVersion !== 1 || plan.type !== 'dsh-native-market-upgrade'
@@ -19,7 +21,8 @@ export function validateUpgradePlan(plan, changes, readBase, readCurrent) {
     || !(plan.authorization?.githubWriteCredential === 'short-lived-token-required'
       || (plan.authorization?.githubWriteCredential === 'existing-credential-explicitly-authorized'
         && (plan.authorization?.credentialExceptionRequest === '你直接上线啊 不要用短期的'
-          || rc4ExistingCredentialException(plan))))) throw new Error('Invalid typed DSH upgrade plan')
+          || rc4ExistingCredentialException(plan)
+          || alpha2ExistingCredentialException(plan))))) throw new Error('Invalid typed DSH upgrade plan')
   for (const path of plan.scope) if (digest(readBase(path)) !== plan.preconditions[path]) throw new Error(`Base hash changed: ${path}`)
   for (const path of changes) {
     if (!plan.scope.includes(path)) throw new Error(`Outside upgrade scope: ${path}`)
