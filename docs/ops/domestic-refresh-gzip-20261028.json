@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "type": "production-store-refresh-transport-fix",
+  "planId": "domestic-refresh-gzip-20261028",
+  "createdAt": "2026-10-28T12:35:28Z",
+  "baseCommit": "420c5289a29fe625312891790c3a2263e3a3e893",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "codex的 github是授权的吧，该上线上线",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request"
+  },
+  "scope": [
+    "deploy/refresh-from-pages.sh",
+    "test/catalog-automation.test.mjs",
+    "docs/ops/domestic-refresh-gzip-20261028.json"
+  ],
+  "preconditions": {
+    "deploy/refresh-from-pages.sh": "f7ccdb7cbe58fa727f545d7dfd7054d627c3e0fcaa3d88b0ed6e950b5715c961",
+    "test/catalog-automation.test.mjs": "0d8b79be49362a19031f6b0809e847fec48dd5fd05a4d1ae28bb034b305a701d",
+    "docs/ops/domestic-refresh-gzip-20261028.json": null,
+    "remoteScriptSha256": "f7ccdb7cbe58fa727f545d7dfd7054d627c3e0fcaa3d88b0ed6e950b5715c961",
+    "remoteCurrentRelease": "/opt/dsh-store/releases/20261028T094854Z-pages-5dfa5241eea4",
+    "remoteCurrentReleaseManifestSha256": "74964f01ba1ee9a785aecef6d394b81c40fcfeec6c25c0b113d9339e9561d15a"
+  },
+  "expectedPostconditions": {
+    "deploy/refresh-from-pages.sh": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d",
+    "test/catalog-automation.test.mjs": "4244ea2b2441b42ff70583488bb8bcb85612264f989715657e2188540b65b39e",
+    "transport": "request gzip for bounded fixed-source artifacts; retry from byte zero; keep release-manifest SHA-256 checks"
+  },
+  "diagnosis": {
+    "failedUnit": "dsh-store-refresh@domestic.service",
+    "failure": "Pages catalog-index.json transfer stalled after 360448-391889 of 652117 identity-encoded bytes; service exited 123 before changing the current release.",
+    "compressedEvidence": {
+      "endpoint": "https://ai-scarlett.github.io/DSH-Store/registry/catalog-index.json",
+      "gzipBytes": 77803,
+      "decodedBytes": 652117,
+      "decodedSha256": "a839741c500dcde23eba7e1b7d9784b5c873e8c981831a08018b13dd449900ff"
+    }
+  },
+  "remoteMutation": {
+    "serverId": "dsh-store-cn-814823065",
+    "environment": "production",
+    "scriptPath": "/opt/dsh-store/bin/refresh-from-pages.sh",
+    "backupPath": "/opt/dsh-store/backups/20261028T123528Z-before/refresh-from-pages.sh",
+    "installMethod": "download the PR-merged script at its immutable Commit; verify the expected SHA-256; copy the current script to backup; atomically replace the installed script",
+    "runUnit": "dsh-store-refresh@domestic.service",
+    "healthCheck": [
+      "systemd unit succeeds",
+      "release-manifest and all artifact hashes validate before symlink switch",
+      "service health checks pass after switch",
+      "public dsh-store.cn Catalog, native index and repair surface match GitHub main 0.9.11"
+    ],
+    "rollback": "On health failure the refresh script restores the previous current symlink. If the script installation itself fails, restore the backup script through a same-filesystem temporary file and atomic rename; retain all release backups."
+  },
+  "gates": [
+    "Verify base Commit and exact file precondition hashes",
+    "Add deterministic assertions for gzip negotiation and no compressed-byte resume",
+    "Run npm run check and inspect the exact three-file diff",
+    "Submit a CI-checked PR and merge only after required checks pass",
+    "Install the merged fixed-Commit script only after checking its SHA-256",
+    "Run the existing domestic refresh systemd unit and verify public readback"
+  ]
+}

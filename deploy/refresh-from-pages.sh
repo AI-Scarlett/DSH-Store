@@ -278,7 +278,7 @@ PY
 download_artifact() {
   local path="$1"
   install -d -o root -g root -m 0755 "$candidate/$(dirname "$path")"
-  if curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 --continue-at - \
+  if curl -4 --http1.1 --compressed -fsSL --connect-timeout 10 --max-time 300 --retry 4 --retry-all-errors --retry-delay 2 \
     "$pages_base/${pages_path_prefix}$path" -o "$candidate/$path"; then
     return 0
   fi
@@ -288,7 +288,7 @@ download_artifact() {
       # Pages manifest as the authority and let the final hash gate reject any
       # raw response that differs from the signed public artifact.
       rm -f -- "$candidate/$path"
-      curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
+      curl -4 --http1.1 --compressed -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
         "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/$source_sha/$path" -o "$candidate/$path"
       printf 'DSH_STORE_REFRESH_RAW_FALLBACK path=%s source=%s\n' "$path" "$source_sha"
       ;;
