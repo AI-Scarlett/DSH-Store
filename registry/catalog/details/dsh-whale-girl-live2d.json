@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-20T16:41:14.000Z",
-    "observedAt": "2026-10-20T19:52:16.000Z",
+    "observedAt": "2026-10-28T14:54:29.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-20T19:52:16.000Z",
+      "checkedAt": "2026-10-28T14:54:29.000Z",
       "evidenceUrl": "https://github.com/Andersen216/dsh-whale-girl-live2d/commit/f977bef508690e75ba6535cd8f4ce18e7f6ba9b0",
       "dshRelease": null,
       "systems": [],
@@ -79,21 +79,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "448fdfb1dc868345006712fb3662138f2eb314d928e4a82641dfb8662c8774a8",
+    "binding": "d1e5a8133c7df2e8b8213053499a04fe266ca96cb72bc072142cdbc081cea966",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
   },
   "entryIds": [
     "dsh-live2d-pet"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; package ignore rules require artifact review; package contains unsupported artifacts requiring review: assets/model/c_0120.moc3; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutable",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; package contains unsupported artifacts requiring review: assets/model/c_0120.moc3; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -105,9 +105,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
       "0.2.2-alpha.2": "unknown"
@@ -156,24 +153,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

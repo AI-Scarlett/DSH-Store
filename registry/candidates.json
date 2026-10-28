@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-10-28T05:54:13.000Z",
+    "updatedAt": "2026-10-28T14:54:29.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -915,8 +915,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "c36971953c3c867e4f3a1f149dbf0022a8e10a73",
-      "sourceUpdatedAt": "2026-10-28T04:35:55.000Z",
+      "latestCommit": "6c895eeb8e6b26bac1d551fc6660ee075a76fd6b",
+      "sourceUpdatedAt": "2026-10-28T14:39:34.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -17127,6 +17127,64 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "hytime-dsh-thinking-effort",
+      "name": "hytime/dsh-thinking-effort",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/hytime/dsh-thinking-effort",
+      "defaultBranch": "main",
+      "latestCommit": "83b7ad6520930068bc2c075c9af2492c4c14cf15",
+      "sourceUpdatedAt": "2026-10-20T09:08:09.000Z",
+      "discoveredAt": "2026-10-28T14:54:29.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@0b3d3606b217699e7097a3c4d531bb90c6c3887c:data/plugins/hytime__dsh-thinking-effort.yml:sha256=cae8250ddfc35724b6aa11c202128c58584f1fe76c2a43bd59ac3997ed30846e:at=2026-10-28T15:06:26.108Z:owner=7565421"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "syngnat-gonavi",
+      "name": "Syngnat/GoNavi",
+      "description": "High-performance multi-data-source database client — ~30MB, AI & MCP ready, zero Electron bloat. | 高性能多数据源数据库客户端：约 30MB，AI 与 MCP 就绪，告别 Electron 膨胀。",
+      "repositoryUrl": "https://github.com/Syngnat/GoNavi",
+      "defaultBranch": "dev",
+      "latestCommit": "034298955363b0c6d37aa63cab0b1248481f909d",
+      "sourceUpdatedAt": "2026-10-28T15:06:20.000Z",
+      "discoveredAt": "2026-10-28T14:54:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai",
+        "cross-platform",
+        "database-client",
+        "database-gui",
+        "desktop-app",
+        "developer-tools",
+        "golang",
+        "kafka",
+        "mcp",
+        "model-context-protocol",
+        "mongodb",
+        "mqtt",
+        "mysql",
+        "oracle-database",
+        "postgresql",
+        "react",
+        "redis",
+        "sql-client",
+        "typescript",
+        "wails",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }

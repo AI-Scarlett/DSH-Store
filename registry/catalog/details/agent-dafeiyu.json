@@ -21,28 +21,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "12f0a5fdad6fa2a5fc2b25dd4eec2101eb752016",
-  "version": "0.2.2",
+  "commit": "428c15b3458070980db72ad6695ed2047effdbff",
+  "version": "0.2.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-28T06:01:30.000Z",
-    "observedAt": "2026-10-28T05:54:13.000Z",
+    "updatedAt": "2026-10-28T09:47:38.000Z",
+    "observedAt": "2026-10-28T14:54:29.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-28T05:54:13.000Z",
-      "evidenceUrl": "https://github.com/seawhilt/dafeiyu/commit/12f0a5fdad6fa2a5fc2b25dd4eec2101eb752016",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-28T14:54:29.000Z",
+      "evidenceUrl": "https://github.com/seawhilt/dafeiyu/commit/428c15b3458070980db72ad6695ed2047effdbff",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,25 +72,26 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f1272b70ac4662c4bbcb55f5fb62f3c83dc76abfb1d6dc8d677e7e47a780c51c",
+    "binding": "b1d1951a8725f4b42d3acd493d48545079fe9db47c737fb4a30496670f8f4588",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
   },
   "entryIds": [
     "agent-dafeiyu"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; distributable package tree exceeds the automatic review bound; package contains unsupported artifacts requiring review: assets/cursor_grab.cur, assets/cursor_grabbing.cur, assets/sounds/error.wav, assets/sounds/success.wav, native/macos/Info.plist; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source co",
+  "statusReason": "Automatic policy blocked installation: the current fixed source 428c15b34580 has no common ancestor with the prior Catalog pin 12f0a5fdad6f; independent source history remains external-only. DSH compatibility is not explicitly declared runtime or optional dependencies require a separate supply-chain review distributable package tree exceeds the automatic review bound package contains unsupported artifacts requiring review: assets/cursor_grab.cur, assets/cursor_grabbing.cur, assets/sounds/error.wav, assets/sounds/success.wav, native/macos/Info.plist fixed-source scan is incomplete; unobserved c",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -202,6 +203,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "disconnected-history-external-only"
   }
 }
