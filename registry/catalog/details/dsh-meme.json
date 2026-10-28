@@ -18,24 +18,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "49e2a7e5a56f271b91e8f5ee71ccce9d0c9d1a2c",
-  "version": "0.1.65",
+  "commit": "b09aa39a42eacf6ebfbc354b27348447f4c83f16",
+  "version": "0.1.67",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-28T06:43:14.000Z",
-    "observedAt": "2026-10-28T14:54:29.000Z",
+    "updatedAt": "2026-10-28T17:09:28.000Z",
+    "observedAt": "2026-10-28T20:50:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-28T14:54:29.000Z",
-      "evidenceUrl": "https://github.com/yyh-001/dsh-meme/commit/49e2a7e5a56f271b91e8f5ee71ccce9d0c9d1a2c",
+      "checkedAt": "2026-10-28T20:50:20.000Z",
+      "evidenceUrl": "https://github.com/yyh-001/dsh-meme/commit/b09aa39a42eacf6ebfbc354b27348447f4c83f16",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,7 +74,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "c3f610bc6e4a1c88158c0a038b6291cc6d980599c2d6f3668452db70f0daff46",
+    "binding": "d8a0102e86caf1ef50d2027676883422f57a721a41a3135b584c67fa682a021c",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -88,7 +88,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: docs/.nojekyll, memes/dafeiyu-001/index.db; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; package contains unsupported artifacts requiring review: docs/.nojekyll, memes/dafeiyu-001/index.db; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -191,7 +191,9 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "sharp"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
