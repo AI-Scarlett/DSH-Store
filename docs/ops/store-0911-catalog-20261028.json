@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-0911-catalog-20261028",
+  "planPath": "docs/ops/store-0911-catalog-20261028.json",
+  "sourceReviewPath": "docs/reviews/store-0911-source-review-20261028.json",
+  "version": "0.9.11",
+  "targetDshRelease": "0.2.2-alpha.2",
+  "latestDshWindow": [
+    "0.2.1-rc.3",
+    "0.2.1-rc.4",
+    "0.2.2-alpha.2"
+  ],
+  "reviewMode": "first-party-owner-reviewed",
+  "createdAt": "2026-10-28T06:16:14.000Z",
+  "baseCommit": "5dfa5241eea4e7cbda87afba5624c949ef950609",
+  "sourceCommit": "752285a52cb6b2842c956bb9fa03d0536b978e4f",
+  "sourceHead": "e161a10f677336bba2b50ac0b8b81bc5ab69e73b",
+  "sourceTree": "f037a2f0d5d47c91c34ebbb666fea6b930630f90",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/store-0911-catalog-20261028.json",
+    "docs/reviews/store-0911-release-20261028.md",
+    "docs/reviews/store-0911-source-review-20261028.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    "scripts/verify-store-release-plan.mjs",
+    "test/catalog.test.mjs",
+    "test/store-release-plan.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "1395f7d02c652040079a6032e12d5f305d080146e4ccae2fdc2b6d41da1fd831",
+    "README.md": "cbe8f44effc1f807f607da7aa745a17ca02e8c7999f3450af4fe0cb300086c9a",
+    "docs/ops/store-0911-catalog-20261028.json": null,
+    "docs/reviews/store-0911-release-20261028.md": null,
+    "docs/reviews/store-0911-source-review-20261028.json": null,
+    "registry/catalog-index.json": "d878fcb2aa78493189b3248f35352753ea0c9ec0d4a88f013fdd3e80f5468f58",
+    "registry/catalog.json": "77e0338cdcb4a09430183f4d3286a059b675416affb4d1edb11b1d61e2aba7ef",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "3f1c0266c35d83d0ad1b56b8d3620d58af6f53ad9493b885bf4e4a9edb8f7f57",
+    "scripts/verify-store-release-plan.mjs": "7ccde989cf674bb8f88034b304697e8fcc2d8352c52d1731eecffa0823a319ab",
+    "test/catalog.test.mjs": "21ffc3a11e6d00d1c23234c3a04461705518c638eb28659add0362cbfedd0df2",
+    "test/store-release-plan.test.mjs": "fce8112bb45317401a4190a54d985c71e42732b0043615eca629c1bd86b8af1f"
+  },
+  "postconditions": {
+    "docs/reviews/store-0911-source-review-20261028.json": "53e9ef4ec0de43f4cbb73cda33bbdc3eb54a961bc8b50a3894bc59b307741bac",
+    "docs/reviews/store-0911-release-20261028.md": "3c233b477f0f34c0eeb2d45939bb3123d9497cc9f97a39e5f756588f3c0cee84",
+    "registry/catalog-index.json": "a839741c500dcde23eba7e1b7d9784b5c873e8c981831a08018b13dd449900ff",
+    "registry/catalog.json": "2970a5b8beea428b207689a6db18508500edbfcfba403bfec40b748911eb52e2",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "32b30e39943b706a7218ea85154ffab15f9ca52a4c0e4046b0be608ceeeef8a5",
+    "README.md": "bef94c836a12ddeba1d007e8a1058053bee9c8f2984099b2ac2ce8b1cd83344d",
+    "test/catalog.test.mjs": "e75c6489a5af3f2f03b0d59559e4d4f9b56dbc1cde726c973ae3b87d4e560879",
+    ".github/workflows/registry.yml": "80111502da9e7d2a919955050e9ed9b88c8bc43dcbc7eb762b50bc3c7092c7bf",
+    "scripts/verify-store-release-plan.mjs": "4b35348dd5e8436b71b5af2820c62956ea317f66a1fd28babfbdd7f57b23b6bb",
+    "test/store-release-plan.test.mjs": "8cd066fdf84fe3185b1284c348abe25778452d7fcb6449f8d42058fd48ba4757"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "继续处理啊 该上线就上线",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request"
+  },
+  "sourceEvidence": {
+    "canonicalRepository": "https://github.com/AI-Scarlett/DSH-Store",
+    "mergedSourcePullRequest": 1611,
+    "sourceHead": "e161a10f677336bba2b50ac0b8b81bc5ab69e73b",
+    "mergeCommit": "752285a52cb6b2842c956bb9fa03d0536b978e4f",
+    "sourceTree": "f037a2f0d5d47c91c34ebbb666fea6b930630f90",
+    "sourceChecks": [
+      {
+        "workflow": "DSH upgrade matrix",
+        "runId": 40640340904,
+        "state": "success"
+      },
+      {
+        "workflow": "Registry validation",
+        "runId": 40640340898,
+        "state": "success"
+      },
+      {
+        "workflow": "PR #1611",
+        "runId": 40640336553,
+        "state": "success"
+      }
+    ],
+    "boundedScan": {
+      "files": 169,
+      "bytes": 2001985,
+      "complete": true
+    }
+  },
+  "gates": [
+    "Review every finding and bind complete fixed-source file hashes",
+    "Verify the exact latest-three DSH window and per-release install/start/uninstall evidence",
+    "Preserve current first-party Catalog identity and declared elevated permissions",
+    "Bind the current main Commit and exact touched-file hashes",
+    "Run the exact Store release verifier, Registry validation, and npm run check",
+    "Submit an auditable CI-checked Catalog PR using a short-lived GitHub token",
+    "After merge, run Pages publication and read back GitHub Raw, Pages, dsh.store, and dsh-store.cn"
+  ],
+  "rollback": "Revert only this exact Catalog release through a CI-checked PR. If production health validation fails, restore the previous verified storefront artifact atomically. Preserve the central author-contact ledger and all real Profiles.",
+  "healthCheck": "The merged Catalog, native index, detail and install pin all identify Store 0.9.11 at the fixed source Commit; Pages and both production storefronts show the same version and source; Desktop UI remains separately marked unverified.",
+  "state": {
+    "localSourceAndDisposableRuntime": "verified",
+    "catalogPullRequest": "not-submitted",
+    "mergedCatalog": "unverified",
+    "publicStorefronts": "unverified",
+    "realProfile": "unchanged",
+    "desktopRealUi": "unverified"
+  }
+}

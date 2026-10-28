@@ -541,6 +541,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.9.8' && manager.version === '0.9.7')
     || (packageManifest.version === '0.9.10' && manager.version === '0.9.8')
     || (packageManifest.version === '0.9.11' && ['0.9.8', '0.9.10'].includes(manager.version))
+    || (packageManifest.version === '0.9.11' && manager.version === '0.9.11')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')

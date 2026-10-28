@@ -51,11 +51,11 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-当前源码包版本为 `0.9.11`，并在官方 `0.2.2-alpha.2` 的一次性 Web Profile 中完成安装、启动、鉴权接口、卸载与 Profile 基线还原验证；真实 Desktop 界面和版本降级回滚未验收。公开 Catalog 暂时仍固定到 `0.9.8`，本次源码合并后会单独按固定 Commit 的 Catalog 审计流程更新。
-通过 DSH 官方 CLI 安装当前 Catalog 固定的 `0.9.8` Commit：
+当前源码包版本为 `0.9.11`，固定源码 Commit 为 `752285a52cb6b2842c956bb9fa03d0536b978e4f`。公开 Catalog 已在本次独立的首方固定源码审阅中 pin 到该 Commit；官方 `0.2.2-alpha.2` 的一次性 Web Profile 安装、启动、鉴权接口、卸载与 Profile 基线还原已通过。真实 Desktop 界面和版本降级回滚仍未验收。
+通过 DSH 官方 CLI 安装 Catalog 固定的 `0.9.11` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#8150c5ff43ca11b89aac4151c0f78e2c34777fb6'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#752285a52cb6b2842c956bb9fa03d0536b978e4f'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
