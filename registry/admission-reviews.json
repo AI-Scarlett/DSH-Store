@@ -2383,6 +2383,64 @@
           "rationale": "The only matched environment read at this location is the LEDGER_DIAG_D115 diagnostic flag; it does not read an account credential or API key."
         }
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/DedsecLemon/dsh-obsidian",
+      "commit": "789ddbf7f326f59260759337848728406f9aab67",
+      "binding": "46e525e4266f08e0adae7746f02ce6dc2b1ac4d23cdc1ce3258376fded2a8f36",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-28T13:10:14Z",
+      "rationale": "Complete bounded fixed-source review of v1.6.4 is bound to this Commit. Catalog rejects admission for AUTH001: raw webServer routes lack a verified caller-trust boundary before private Vault reads/writes, and COMPAT001: all current latest-three DSH releases remain unknown. The scanner credentials signal at index.mjs:111 is a verified false positive: process.env is read for local application/path selection only; credentials are none. Legitimate file and local-network features remain disclosed.",
+      "evidenceUrls": [
+        "https://github.com/DedsecLemon/dsh-obsidian/commit/789ddbf7f326f59260759337848728406f9aab67",
+        "https://github.com/DedsecLemon/dsh-obsidian/blob/789ddbf7f326f59260759337848728406f9aab67/index.mjs#L1342",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1276",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261028.md"
+      ],
+      "permissions": {
+        "level": "high",
+        "files": "write",
+        "network": "specified-services",
+        "commands": "restricted",
+        "credentials": [
+          "none"
+        ]
+      },
+      "capabilityDispositions": [
+        {
+          "kind": "false-positive",
+          "signal": "credentials",
+          "file": "index.mjs",
+          "line": 111,
+          "sha256": "f34667d765601244fd184a96b12fc3c11c8970cb3fe7a88da1777cdc1d2009df",
+          "rationale": "The complete fixed source uses process.env at this location to select DSH_OBSIDIAN_APP and platform application paths. It does not read an API key, token, cookie, OAuth credential, or keychain secret; classify credentials as none."
+        }
+      ]
+    },
+    {
+      "repositoryUrl": "https://github.com/lg6169219/dsh-fatfish-level",
+      "commit": "fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1",
+      "binding": "e618f07d3afcf402ec930c00da99641ae4a21e29dd341b2c9f5f49630128475a",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-10-28T13:10:14Z",
+      "rationale": "Complete bounded fixed-source review of v0.3.3 is bound to the requested Commit. Catalog rejects admission for AUTH001: the request-trust guard explicitly fails open when the Connection service is unavailable or throws, and COMPAT001: the current latest-three DSH releases have no compatible evidence. The author-declared plugin-private file and same-origin network features are retained and classified; no third-party runtime was executed.",
+      "evidenceUrls": [
+        "https://github.com/lg6169219/dsh-fatfish-level/commit/fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1",
+        "https://github.com/lg6169219/dsh-fatfish-level/blob/fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1/lib/index.js#L61",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1596",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261028.md"
+      ],
+      "permissions": {
+        "level": "high",
+        "files": "write",
+        "network": "specified-services",
+        "commands": "none",
+        "credentials": [
+          "none"
+        ]
+      }
     }
   ]
 }

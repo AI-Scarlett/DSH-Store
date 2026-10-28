@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "type": "author-admission-resolution",
+  "createdAt": "2026-10-28T13:07:07Z",
+  "repository": "https://github.com/AI-Scarlett/DSH-Store",
+  "branch": "codex/author-admission-results-20261028",
+  "baseCommit": "f307a016f660ea706ec7b9c5b870d74a0a7bfde1",
+  "scope": [
+    "docs/ops/author-admission-decisions-20261028.json",
+    "docs/reviews/author-admission-decisions-20261028.json",
+    "docs/reviews/author-admission-decisions-20261028.md",
+    "registry/admission-reviews.json",
+    "registry/author-resolutions.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-fatfish-level.json",
+    "registry/catalog/details/dsh-obsidian-panel.json"
+  ],
+  "preconditions": {
+    "docs/ops/author-admission-decisions-20261028.json": null,
+    "docs/reviews/author-admission-decisions-20261028.json": null,
+    "docs/reviews/author-admission-decisions-20261028.md": null,
+    "registry/admission-reviews.json": "ef97b9d830ae88d856a480b92755106891e24772eb5b8eeb350bc8a42eea8c44",
+    "registry/author-resolutions.json": "56c2d6ec3d4a20f189005a711d8657890b82e67f64fc6b9d6487f671a6fec77a",
+    "registry/catalog-index.json": "a839741c500dcde23eba7e1b7d9784b5c873e8c981831a08018b13dd449900ff",
+    "registry/catalog.json": "2970a5b8beea428b207689a6db18508500edbfcfba403bfec40b748911eb52e2",
+    "registry/catalog/details/dsh-fatfish-level.json": "33fb4e0a2e58f86ee2829a06478335412bbb8af5ed13ab181a512de3156b75b0",
+    "registry/catalog/details/dsh-obsidian-panel.json": "0cf08bf4c03a8ad485de2080923a831f815fc2f9534381f0852bc1b7c5067d58"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "codex的 github是授权的吧，该上线上线",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "authorContact": "prohibited-for-this-operation"
+  },
+  "requests": [
+    {
+      "issueNumber": 1276,
+      "commentId": 6432573518,
+      "userId": 288661966,
+      "commentBodySha256": "df6fcdb4ad40f6a0692fbd0610d3f8890df0343c5df54be8fa25306017148c57",
+      "repositoryUrl": "https://github.com/DedsecLemon/dsh-obsidian",
+      "version": "1.6.4",
+      "commit": "789ddbf7f326f59260759337848728406f9aab67",
+      "binding": "46e525e4266f08e0adae7746f02ce6dc2b1ac4d23cdc1ce3258376fded2a8f36",
+      "sourceDigest": "5049ae28b8d75d3d85bf3eefb2c08f62ea47c572c41b276a73c7022935fe1882",
+      "decision": "rejected"
+    },
+    {
+      "issueNumber": 1596,
+      "commentId": 6465097579,
+      "userId": 39356339,
+      "commentBodySha256": "9d2ee46f6a33d93041c108a71615a286d9c028ff9c035912d616a57ca6cb91c1",
+      "repositoryUrl": "https://github.com/lg6169219/dsh-fatfish-level",
+      "version": "0.3.3",
+      "commit": "fa7a183b01c7a2ec0e71cb3587f1f8c1523e35c1",
+      "binding": "e618f07d3afcf402ec930c00da99641ae4a21e29dd341b2c9f5f49630128475a",
+      "sourceDigest": "3b88abb7f855e7b60b7deab62083d3b28ae43ec892c598c875b1ea911ff747f5",
+      "decision": "rejected"
+    }
+  ],
+  "gates": [
+    "Re-fetch exact GitHub request comments and immutable user IDs",
+    "Re-review complete source from each exact immutable Commit without executing third-party code",
+    "Record terminal admission decision, exact source bindings, blockers, minimal upstream fixes, and acceptance criteria",
+    "Keep both Catalog entries blocked and latest-three compatibility unknown",
+    "Record the Obsidian credentials scanner false-positive against exact source bytes",
+    "Run Registry validation, Registry fixed-source verification, and npm run check",
+    "Submit an auditable CI-checked PR using the connected short-lived GitHub authorization",
+    "After merge, verify GitHub Raw, Pages, dsh.store, and dsh-store.cn Catalog and detail readback"
+  ],
+  "rollback": {
+    "method": "CI-checked revert PR for the exact merged commit",
+    "preserve": "author-contact-state ledger and all author history",
+    "realProfiles": "unchanged"
+  },
+  "healthCheck": "The merged Catalog and Catalog index expose both fixed-source final rejections with exact findings; no blocked entry becomes installable; public Pages and both production storefronts match GitHub Raw.",
+  "state": {
+    "sourceReview": "complete-fixed-source-review-no-third-party-execution",
+    "catalogDecision": "both-terminally-rejected-and-blocked",
+    "authorMessages": "none",
+    "realProfile": "unchanged",
+    "publication": "pending-ci-checked-pr-and-public-readback"
+  },
+  "expiresAt": "2026-10-30T13:07:07Z",
+  "postconditions": {
+    "docs/reviews/author-admission-decisions-20261028.json": "af3f34c26a586d515fa55d1ea3ff5e9c6f38092ded4aa1f05951d71520214ea0",
+    "docs/reviews/author-admission-decisions-20261028.md": "cceaadbb3ce5b52b15bfd012ffe62ec18fa4dd5a3df6f15258a454baea4b9b72",
+    "registry/admission-reviews.json": "33efecb2441aefe7adeaa6472dfcf15bf5a41473dd43c56719a9857ed4709b88",
+    "registry/author-resolutions.json": "b035f0a190aa58d7666c2f560f0809754c48fe0ef99c041daf25046bbafc0aa4",
+    "registry/catalog-index.json": "5085bbd4b5bf5047f8f252183d099b54a840f17ad78e14fcb82d91ccadeb87d5",
+    "registry/catalog.json": "fbe0fa078f991ee944bef33048195b18bdc96beee124f3e2797ae9d3b4113ceb",
+    "registry/catalog/details/dsh-fatfish-level.json": "dc2a0966142a22bd1e4bb5eb344d9b715ff32395379407a0c44d153a052a6696",
+    "registry/catalog/details/dsh-obsidian-panel.json": "e61a974dbf55603c169825408874ee0b7a51bf5e045e6a410cbf767157e0041a"
+  }
+}
