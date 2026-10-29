@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-articles-to-server-20261029",
+  "kind": "server-content-migration",
+  "createdAt": "2026-10-29T00:00:00Z",
+  "authorization": "Explicit user request: migrate the DSH Field Notes articles to server-managed persistent storage.",
+  "baseCommit": "c8873c9473f601f6ecddb3783aea932574d37d97",
+  "worktree": "/Users/zhouxiaoming/.codex/worktrees/server-articles-migration/dsh-safe-plugin-manager",
+  "repositoryPrecondition": {
+    "branch": "codex/server-articles-migration-20261029",
+    "baseCommit": "c8873c9473f601f6ecddb3783aea932574d37d97",
+    "worktreeBeforeTaskChanges": "clean",
+    "currentChanges": "only the files in exactFileScope, created for this migration",
+    "unrelatedChanges": [],
+    "status": "clean",
+    "statusMeaning": "clean at the pinned base Commit before this task created its scoped changes"
+  },
+  "exactFileScope": {
+    "modify": [
+      "scripts/build-marketplace-static.mjs",
+      "deploy/refresh-from-pages.sh",
+      "package.json",
+      "test/marketplace-static-build.test.mjs",
+      "test/deploy-refresh.test.mjs"
+    ],
+    "delete": [
+      "marketplace/articles/articles.css",
+      "marketplace/articles/articles.json",
+      "marketplace/articles/index.html",
+      "scripts/templates/dsh-article-page.html"
+    ],
+    "create": [
+      "scripts/build-server-articles.py",
+      "deploy/migrate-articles-to-server.sh",
+      "test/server-articles.test.mjs",
+      "docs/ops/articles-server-migration-20261029.json"
+    ]
+  },
+  "sourceFilePreconditions": {
+    "scripts/build-marketplace-static.mjs": "3b4d477e98c63f1eb259cf8102ca1716ce2930fac91835f2d81617c462ca8012",
+    "deploy/refresh-from-pages.sh": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d",
+    "package.json": "b521604110642b932d913d07a45e20e665baa35a43b6da31786fb08933d973a7",
+    "test/marketplace-static-build.test.mjs": "0ebcc45e9c104321c84835cb99cd7f45883aeab531554915f50cda0acbcc00b9",
+    "test/deploy-refresh.test.mjs": "0f9c68ab2ae1b46f13f4e9accdc7713e539b030cfa8e5659fce40f0a96ab1a5c",
+    "marketplace/articles/articles.json": "a46c2a6d1adfb9890fc8922724aaceac1154fa9599e7c3d41cb847ed7aa330ab",
+    "marketplace/articles/articles.css": "4bf211064b20231b2c947ce4eee6f7daee88b0784a9784686802cde0807bb4b4",
+    "marketplace/articles/index.html": "82349db9be3c3504e15d2c16e18a3fc70e11703eccf29af16c743d3f90e97302",
+    "scripts/templates/dsh-article-page.html": "ee0586f59d46fbdbc8c3604529004605ee756d24ea8c478edcfbea34a5239ef9"
+  },
+  "serverPayload": {
+    "files": {
+      "articles.json": "a46c2a6d1adfb9890fc8922724aaceac1154fa9599e7c3d41cb847ed7aa330ab",
+      "articles.css": "4bf211064b20231b2c947ce4eee6f7daee88b0784a9784686802cde0807bb4b4",
+      "index.template.html": "82349db9be3c3504e15d2c16e18a3fc70e11703eccf29af16c743d3f90e97302",
+      "article.template.html": "ee0586f59d46fbdbc8c3604529004605ee756d24ea8c478edcfbea34a5239ef9"
+    },
+    "expectedArticleCount": 12,
+    "sourceOfTruth": "Each production server's /opt/dsh-store[-cn]/content/articles/source directory."
+  },
+  "servers": [
+    {
+      "id": "dsh-store-intl",
+      "domain": "dsh.store",
+      "root": "/opt/dsh-store",
+      "currentTarget": "/opt/dsh-store/releases/20261029T015120Z-pages-c8873c9473f6",
+      "currentReleaseManifestSha256": "c4d7f69db5f12f19aeab4c02aa782fd67195c781d4327eaf27626b7e4bca570a",
+      "installedRefreshScript": {
+        "path": "/opt/dsh-store/bin/refresh-from-pages.sh",
+        "sha256": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d"
+      },
+      "refreshScriptBackupPrecondition": "/opt/dsh-store/backups/articles-server-migration-20261029-before absent",
+      "persistentArticleTargetPrecondition": "/opt/dsh-store/content/articles/source absent",
+      "articleSourceBackupPrecondition": "/opt/dsh-store/backups/articles-before-20261029 absent",
+      "uploadStagingPrecondition": "/opt/dsh-store/incoming/article-migration-upload-20261029 absent",
+      "systemdUnit": "dsh-store-refresh@intl-public.service",
+      "lastRefreshResult": "success; current release remained on baseCommit c8873c"
+    },
+    {
+      "id": "dsh-store-cn-814823065",
+      "domain": "dsh-store.cn",
+      "root": "/opt/dsh-store-cn",
+      "currentTarget": "/opt/dsh-store-cn/releases/20261029T015119Z-pages-c8873c9473f6",
+      "currentReleaseManifestSha256": "3131a5c3f66c4e404109db7c29ca8f441e9c06088d0cad093ddaf0c76e922034",
+      "installedRefreshScript": {
+        "path": "/opt/dsh-store/bin/refresh-from-pages.sh",
+        "sha256": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d"
+      },
+      "refreshScriptBackupPrecondition": "/opt/dsh-store/backups/articles-server-migration-20261029-before absent",
+      "persistentArticleTargetPrecondition": "/opt/dsh-store-cn/content/articles/source absent",
+      "articleSourceBackupPrecondition": "/opt/dsh-store-cn/backups/articles-before-20261029 absent",
+      "uploadStagingPrecondition": "/opt/dsh-store-cn/incoming/article-migration-upload-20261029 absent",
+      "systemdUnit": "dsh-store-refresh@domestic.service",
+      "lastRefreshResult": "success; current release remained on baseCommit c8873c"
+    }
+  ],
+  "atomicity": {
+    "refreshScriptInstall": "verify the script downloaded from the immutable merged Commit against the plan SHA-256; copy current script to the absent per-host backup directory; install via same-filesystem temporary file and atomic rename",
+    "articlePayloadStage": "<root>/incoming/articles-migration-20261029.<pid>",
+    "articleBackup": "<root>/backups/articles-before-20261029",
+    "sourceCommit": "the article source is installed by verified migrate-articles-to-server.sh through same-filesystem staging and atomic rename; the prior target must be absent",
+    "releaseSwitch": "the existing refresh script creates a verified release candidate, backs up current, then atomically replaces current via symlink rename",
+    "rollback": "on any post-switch health failure restore the exact old current release; preserve the server article snapshot and release backup. If script installation fails, restore the verified prior script atomically."
+  },
+  "healthChecks": [
+    "npm run check and git diff --check",
+    "GitHub Pages release manifest and artifact contain no article content, article routes, or article sitemap; the root sitemap contains no article URLs",
+    "each production release regenerates its article list, 12 detail pages, CSS, and separate article sitemap from that server persistent source",
+    "verify both storefronts over HTTPS, including article index, all 12 detail routes, article sitemap, root sitemap, and robots.txt",
+    "confirm current release Commit, all Pages artifact hashes, generated article file hashes, and server source checksums after deployment"
+  ],
+  "githubReview": {
+    "scope": "Read-only scan of open Issues and PRs updated since 2026-10-24 in AI-Scarlett/DSH-Store; exact comments/reviews fetched separately; no comments, reviews, or contact ledger writes.",
+    "asOf": "2026-10-29T02:00:00Z",
+    "latestActionableItems": [
+      1596,
+      1628,
+      1276,
+      1155,
+      1582,
+      1584,
+      1565,
+      546,
+      547,
+      562,
+      563
+    ]
+  }
+}

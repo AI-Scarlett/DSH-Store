@@ -615,104 +615,10 @@ const alternateAriaLabel = alternateIsDomestic ? '切换到国内站 / Switch to
 const alternateAnalyticsItem = alternateIsDomestic ? 'domestic' : 'international'
 const alternateMarkup = `<a class="site-switch-link" href="${htmlEscape(`${alternateOrigin}/`)}" aria-label="${htmlEscape(alternateAriaLabel)}" data-analytics-event="alternate_site_open" data-analytics-item="${alternateAnalyticsItem}"><span>${alternateLabel}</span><small>${alternateCode}</small><i aria-hidden="true">↗</i></a>`
 
-const articleCollection = JSON.parse(await readFile(resolve(projectRoot, 'marketplace/articles/articles.json'), 'utf8'))
-if (articleCollection.schemaVersion !== 1 || !Array.isArray(articleCollection.articles)
-  || articleCollection.articles.length < 1 || articleCollection.articles.length > 100) {
-  throw new Error('The article collection schema or size is invalid')
-}
-const articleSlugs = new Set()
-for (const article of articleCollection.articles) {
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.slug || '')
-    || articleSlugs.has(article.slug)
-    || typeof article.title !== 'string' || article.title.length < 8 || article.title.length > 180
-    || typeof article.summary !== 'string' || article.summary.length < 30 || article.summary.length > 420
-    || !/^\d{4}-\d{2}-\d{2}$/.test(article.datePublished || '')
-    || new Date(article.datePublished).toISOString().slice(0, 10) !== article.datePublished
-    || article.language !== 'zh-CN'
-    || typeof article.contentMarkdown !== 'string' || article.contentMarkdown.length < 500 || article.contentMarkdown.length > 50000) {
-    throw new Error('An article entry is malformed or exceeds its bound')
-  }
-  articleSlugs.add(article.slug)
-}
-const articleRoute = article => '/articles/' + article.slug + '/'
-const articleListMarkup = articleCollection.articles.map(article => {
-  const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
-    .format(new Date(article.datePublished + 'T00:00:00Z'))
-  return '<article class="article-card">'
-    + '<div class="article-card-meta"><time datetime="' + htmlEscape(article.datePublished) + '">' + htmlEscape(date) + '</time><span>' + htmlEscape(article.category) + '</span></div>'
-    + '<h3><a href="./' + htmlEscape(article.slug) + '/">' + htmlEscape(article.title) + '</a></h3>'
-    + '<p>' + htmlEscape(article.summary) + '</p>'
-    + '<a href="./' + htmlEscape(article.slug) + '/">阅读文章 <span aria-hidden="true">↗</span></a>'
-    + '</article>'
-}).join('\n')
-const articleCollectionJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  '@id': siteOrigin + '/articles/#collection',
-  url: siteOrigin + '/articles/',
-  name: articleCollection.collectionTitle,
-  description: articleCollection.collectionDescription,
-  inLanguage: 'zh-CN',
-  isPartOf: { '@type': 'WebSite', '@id': siteOrigin + '/#website', name: 'DSH STORE', url: siteOrigin + '/' },
-  mainEntity: {
-    '@type': 'ItemList',
-    itemListOrder: 'https://schema.org/ItemListOrderDescending',
-    numberOfItems: articleCollection.articles.length,
-    itemListElement: articleCollection.articles.map((article, index) => ({
-      '@type': 'ListItem', position: index + 1, url: siteOrigin + articleRoute(article),
-      name: article.title, description: article.summary,
-    })),
-  },
-}
-const articleIndexPath = resolve(outputRoot, 'marketplace/articles/index.html')
-let articleIndexHtml = await readFile(articleIndexPath, 'utf8')
-articleIndexHtml = replaceRequired(articleIndexHtml, '<!-- DSH_ARTICLE_COLLECTION_SCHEMA -->',
-  '<script type="application/ld+json">' + jsonLdScript(articleCollectionJsonLd) + '</script>', 'article collection schema')
-articleIndexHtml = replaceRequired(articleIndexHtml, '<!-- DSH_STATIC_ARTICLE_LIST -->', articleListMarkup, 'article list')
-articleIndexHtml = replaceElementText(articleIndexHtml, 'article-count', String(articleCollection.articles.length))
-await writeFile(articleIndexPath, articleIndexHtml)
-
-const articleTemplate = await readFile(resolve(projectRoot, 'scripts/templates/dsh-article-page.html'), 'utf8')
-const articleDetailPages = []
-for (const article of articleCollection.articles) {
-  const route = articleRoute(article)
-  const url = siteOrigin + route
-  const articleSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    '@id': url + '#article',
-    headline: article.title,
-    description: article.summary,
-    datePublished: article.datePublished,
-    inLanguage: article.language,
-    articleSection: article.category,
-    keywords: ['DeepSeek Harness', 'DSH', 'DSH 插件', article.category],
-    isAccessibleForFree: true,
-    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    publisher: { '@type': 'Organization', name: 'DSH STORE', url: siteOrigin + '/' },
-  }
-  let page = articleTemplate
-  const replacements = [
-    ['<!-- ARTICLE_DESCRIPTION -->', htmlEscape(article.summary)],
-    ['<!-- ARTICLE_DATE -->', htmlEscape(article.datePublished)],
-    ['<!-- ARTICLE_TITLE -->', htmlEscape(article.title)],
-    ['<!-- ARTICLE_URL -->', htmlEscape(url)],
-    ['<!-- ARTICLE_IMAGE -->', htmlEscape(siteOrigin + '/dsh-store-icon.png')],
-    ['<!-- ARTICLE_CATEGORY -->', htmlEscape(article.category)],
-    ['<!-- ARTICLE_SCHEMA -->', '<script type="application/ld+json">' + jsonLdScript(articleSchema) + '</script>'],
-    ['<!-- ARTICLE_CONTENT -->', renderArticleMarkdown(article.contentMarkdown)],
-    ['<!-- ASSET_VERSION -->', runtimeAssetVersion],
-  ]
-  for (const [marker, value] of replacements) {
-    if (!page.includes(marker)) throw new Error('Article template marker is missing: ' + marker)
-    page = page.replaceAll(marker, value)
-  }
-  const file = 'marketplace/articles/' + article.slug + '/index.html'
-  const target = resolve(outputRoot, file)
-  await mkdir(dirname(target), { recursive: true })
-  await writeFile(target, page)
-  articleDetailPages.push({ file, route })
-}
+// The article column is server-managed content. GitHub Pages carries only a
+// navigation slot and the trusted renderer hash; production refreshes fetch
+// the renderer at this Commit and build pages from each server's own source.
+await rm(resolve(outputRoot, 'marketplace/articles'), { recursive: true, force: true })
 
 const canonicalPages = [
   { file: 'marketplace/index.html', route: '/' },
@@ -726,8 +632,6 @@ const canonicalPages = [
   { file: 'marketplace/faq/index.html', route: '/faq/' },
   { file: 'marketplace/about/index.html', route: '/about/' },
   { file: 'marketplace/repair/index.html', route: '/repair/' },
-  { file: 'marketplace/articles/index.html', route: '/articles/', fixedLocale: 'zh-CN', domesticOnly: true },
-  ...articleDetailPages.map(({ file, route }) => ({ file, route, fixedLocale: 'zh-CN', domesticOnly: true })),
   {
     file: 'marketplace/about/deepseek-harness-guide/index.html',
     route: '/about/deepseek-harness-guide/',
@@ -755,12 +659,8 @@ const sitemapDate = (() => {
   const candidate = new Date(snapshot.registry?.updatedAt || generatedAt)
   return Number.isNaN(candidate.valueOf()) ? generatedAt.slice(0, 10) : candidate.toISOString().slice(0, 10)
 })()
-const sitemapPriority = { '/rankings/': '0.9', '/': '1.0', '/plugins/': '0.9', '/downloads/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8', '/articles/': '0.8' }
-const sitemapChangefreq = { '/rankings/': 'daily', '/': 'weekly', '/plugins/': 'daily', '/downloads/': 'weekly', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly', '/articles/': 'weekly' }
-for (const { route } of articleDetailPages) {
-  sitemapPriority[route] = '0.7'
-  sitemapChangefreq[route] = 'monthly'
-}
+const sitemapPriority = { '/rankings/': '0.9', '/': '1.0', '/plugins/': '0.9', '/downloads/': '0.9', '/scans/': '0.7', '/community/': '0.8', '/standards/': '0.9', '/dsh-plugins/': '0.9', '/build/': '0.8', '/repair/': '0.9', '/faq/': '0.8', '/about/': '0.7', '/about/deepseek-harness-guide/': '0.8' }
+const sitemapChangefreq = { '/rankings/': 'daily', '/': 'weekly', '/plugins/': 'daily', '/downloads/': 'weekly', '/scans/': 'daily', '/community/': 'weekly', '/standards/': 'weekly', '/dsh-plugins/': 'weekly', '/build/': 'weekly', '/repair/': 'daily', '/faq/': 'monthly', '/about/': 'monthly', '/about/deepseek-harness-guide/': 'monthly' }
 if (isDomestic) {
   sitemapPriority['/dsh-store-guide/'] = '0.8'
   sitemapChangefreq['/dsh-store-guide/'] = 'monthly'
@@ -849,13 +749,8 @@ const umamiMarkup = `<script>
 for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
-  const articlesHref = relative(dirname(pagePath), 'marketplace/articles') || '.'
-  const articlesLinkPath = articlesHref === '.' ? './' : articlesHref.replace(/\\/g, '/') + '/'
-  const articleNavLabel = (fixedLocale === 'zh-CN' || defaultLocale === 'zh') ? 'DSH 实战与观察' : 'DSH Field Notes'
-  const articleNavCurrent = route.startsWith('/articles/') ? ' aria-current="page"' : ''
-  const articleNavMarkup = `<a href="${htmlEscape(articlesLinkPath)}" data-i18n="nav.articles"${articleNavCurrent}>${articleNavLabel}</a>`
   const compactPage = compactPrimaryNavigation(page, pagePath)
-  const withAlternate = replaceRequired(compactPage, '<!-- DSH_ALTERNATE_SITE -->', articleNavMarkup, `${pagePath} alternate site marker`)
+  const withAlternate = replaceRequired(compactPage, '<!-- DSH_ALTERNATE_SITE -->', '<!-- DSH_SERVER_ARTICLES_NAV -->', `${pagePath} article navigation marker`)
   const withFriendLinks = replaceRequired(withAlternate, '<!-- DSH_FRIEND_SISTER_SITE -->', '', `${pagePath} friend sister site marker`)
   const withFooterLinks = ensureFooterUtilityLinks(withFriendLinks, pagePath, route)
   const withHreflang = replaceRequired(withFooterLinks, '<!-- DSH_HREFLANG -->', hreflangMarkup(route, domesticOnly), `${pagePath} hreflang marker`)
@@ -1002,10 +897,12 @@ await writeFile(resolve(outputRoot, 'automation-status.json'), JSON.stringify(bu
   generatedAt: new Date().toISOString(),
   sourceCommit: sourceSha,
 }), null, 2) + '\n')
+const serverArticleBuilderBytes = await readFile(resolve(projectRoot, 'scripts/build-server-articles.py'))
 await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   schemaVersion: 1,
   generatedAt,
   sourceCommit: sourceSha,
+  runtimeAssetVersion,
   siteOrigin,
   alternateOrigin,
   icp: icpNumber || null,
@@ -1013,6 +910,14 @@ await writeFile(resolve(outputRoot, 'build-manifest.json'), JSON.stringify({
   baiduUnionVerification: isDomestic ? 'configured' : null,
   catalogUpdatedAt: snapshot.registry.updatedAt,
   entryCount: snapshot.entries.length,
+  serverArticles: {
+    schemaVersion: 1,
+    builder: {
+      path: 'scripts/build-server-articles.py',
+      sha256: createHash('sha256').update(serverArticleBuilderBytes).digest('hex'),
+      size: serverArticleBuilderBytes.byteLength,
+    },
+  },
   manager: { version: manager.version, commit: manager.commit, license: manager.details?.license, status: manager.status },
   githubEnriched: snapshot.generated.githubEnriched,
 }, null, 2) + '\n')

@@ -6,6 +6,7 @@ umask 022
 readonly pages_base="${DSH_STORE_PAGES_BASE:-https://ai-scarlett.github.io/DSH-Store}"
 readonly deploy_root="${DSH_STORE_ROOT:-/opt/dsh-store}"
 readonly current_link="$deploy_root/current"
+readonly article_source="$deploy_root/content/articles/source"
 readonly lock_file="${DSH_STORE_LOCK_FILE:-/run/lock/dsh-store-refresh.lock}"
 readonly store_domain="${DSH_STORE_DOMAIN:-dsh.store}"
 readonly pages_subdir="${DSH_STORE_PAGES_SUBDIR:-}"
@@ -164,6 +165,109 @@ if len(markdown) <= 200 or '第三方插件商城' not in markdown:
     raise SystemExit('public homepage Markdown is missing or incomplete')
 print('DSH_STORE_PUBLIC_OK', manager['version'], manager['commit'], manager['status'], manager['details']['license'], 'candidates', len(candidates['entries']))
 PY
+
+  if python3 - "$current_link/build-manifest.json" <<'PY'
+import json,sys
+build=json.load(open(sys.argv[1],encoding='utf-8'))
+sys.exit(0 if isinstance(build.get('serverArticles',{}).get('builder'),dict) else 1)
+PY
+  then
+    test -f "$current_link/server-state/articles-manifest.json"
+    origin=$(python3 - "$current_link/build-manifest.json" <<'PY'
+import json,sys
+print(json.load(open(sys.argv[1],encoding='utf-8'))['siteOrigin'])
+PY
+)
+    code='000'
+    for attempt in 1 2 3 4 5; do
+      code=$(origin_health -o "$incoming/health-articles-index" -w '%{http_code}' "$health_base$site_prefix/articles/" || true)
+      test "$code" = 200 && break
+      sleep 1
+    done
+    test "$code" = 200
+    code='000'
+    for attempt in 1 2 3 4 5; do
+      code=$(origin_health -o "$incoming/health-articles-sitemap" -w '%{http_code}' "$health_base$site_prefix/articles/sitemap.xml" || true)
+      test "$code" = 200 && break
+      sleep 1
+    done
+    test "$code" = 200
+    mapfile -t article_slugs < <(python3 - "$current_link/server-state/articles-manifest.json" <<'PY'
+import json,re,sys
+state=json.load(open(sys.argv[1],encoding='utf-8'))
+slugs=state.get('articleSlugs')
+if state.get('schemaVersion')!=1 or state.get('articleCount')!=len(slugs or []) or not isinstance(slugs,list) or not slugs:
+    raise SystemExit('server article state is invalid')
+for slug in slugs:
+    if not isinstance(slug,str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',slug):
+        raise SystemExit('server article state contains an unsafe slug')
+    print(slug)
+PY
+)
+    for slug in "${article_slugs[@]}"; do
+      code='000'
+      for attempt in 1 2 3 4 5; do
+        code=$(origin_health -o "$incoming/health-article-$slug" -w '%{http_code}' "$health_base$site_prefix/articles/$slug/" || true)
+        test "$code" = 200 && break
+        sleep 1
+      done
+      test "$code" = 200
+    done
+    python3 - "$current_link" "$article_source" "$incoming/health-articles-index" "$incoming/health-articles-sitemap" "$incoming/health-sitemap" "$incoming/health-robots" "$origin" "${article_slugs[@]}" <<'PY'
+import hashlib,json,pathlib,re,sys
+release,source=pathlib.Path(sys.argv[1]),pathlib.Path(sys.argv[2])
+index=pathlib.Path(sys.argv[3]).read_text(encoding='utf-8')
+article_sitemap=pathlib.Path(sys.argv[4]).read_text(encoding='utf-8')
+root_sitemap=pathlib.Path(sys.argv[5]).read_text(encoding='utf-8')
+robots=pathlib.Path(sys.argv[6]).read_text(encoding='utf-8')
+origin=sys.argv[7]; slugs=sys.argv[8:]
+state=json.loads((release/'server-state/articles-manifest.json').read_text(encoding='utf-8'))
+build=json.loads((release/'build-manifest.json').read_text(encoding='utf-8'))
+source_manifest=json.loads((source/'migration-manifest.json').read_text(encoding='utf-8'))
+expected={'articles.json','articles.css','index.template.html','article.template.html'}
+if state.get('migrationPlanId')!='dsh-articles-to-server-20261029' or set(slugs)!=set(state.get('articleSlugs',[])):
+    raise SystemExit('server article manifest does not match generated slugs')
+if source_manifest.get('schemaVersion')!=1 or source_manifest.get('planId')!='dsh-articles-to-server-20261029' or set(source_manifest.get('files',{}))!=expected:
+    raise SystemExit('server article source manifest is invalid')
+if source.is_symlink() or {p.name for p in source.iterdir()}!=expected|{'migration-manifest.json'}:
+    raise SystemExit('server article source has an unexpected file set')
+digest=hashlib.sha256()
+for name in ('articles.json','articles.css','index.template.html','article.template.html'):
+    path=source/name
+    if path.is_symlink() or not path.is_file(): raise SystemExit('server article source is unsafe')
+    data=path.read_bytes()
+    if name!='articles.json' and hashlib.sha256(data).hexdigest()!=source_manifest['files'][name]:
+        raise SystemExit('server article template asset changed')
+    digest.update(name.encode()); digest.update(b'\0'); digest.update(data); digest.update(b'\0')
+if digest.hexdigest()!=state.get('sourceSetSha256'):
+    raise SystemExit('current release was not generated from the current server article source')
+if len(slugs)!=state.get('articleCount') or len(re.findall(r'<loc>',article_sitemap))!=len(slugs)+1:
+    raise SystemExit('article sitemap count does not match the server article source')
+if origin+'/articles/sitemap.xml' not in robots or '/articles/' in root_sitemap:
+    raise SystemExit('article sitemap discovery or root sitemap separation is invalid')
+if not re.search(r'<b id="article-count">'+str(len(slugs))+r'</b>',index):
+    raise SystemExit('public article index count does not match the server article source')
+for relative,metadata in state.get('files',{}).items():
+    if not isinstance(relative,str) or not relative.startswith('marketplace/articles/') or '..' in pathlib.PurePosixPath(relative).parts:
+        raise SystemExit('generated server article manifest contains an unsafe path')
+    raw=release/relative
+    if any(part.is_symlink() for part in (raw,*raw.parents) if part!=release):
+        raise SystemExit('generated server article path contains a symlink')
+    path=raw.resolve()
+    if release.resolve() not in path.parents or not path.is_file():
+        raise SystemExit('generated server article file is missing or unsafe')
+    data=path.read_bytes()
+    if len(data)!=metadata.get('size') or hashlib.sha256(data).hexdigest()!=metadata.get('sha256'):
+        raise SystemExit('generated server article file hash does not match its manifest')
+for slug in slugs:
+    page=(pathlib.Path(sys.argv[1])/'marketplace/articles'/slug/'index.html')
+    if page.is_symlink() or not page.is_file(): raise SystemExit('generated article page is missing')
+    expected_url=origin+'/articles/'+slug+'/'
+    if expected_url not in page.read_text(encoding='utf-8'):
+        raise SystemExit('generated article canonical URL does not match its route')
+print('DSH_STORE_ARTICLES_OK',len(slugs),state['sourceSetSha256'])
+PY
+  fi
 }
 
 curl -4 --http1.1 -fsSL --connect-timeout 10 --max-time 60 --retry 4 --retry-all-errors --retry-delay 2 \
@@ -220,13 +324,63 @@ print(json.load(open(sys.argv[1], encoding='utf-8'))['sourceCommit'])
 PY
 )
 
+same_static_release=0
 if test -f "$current_link/release-manifest.json" && cmp -s "$incoming/release-manifest.json" "$current_link/release-manifest.json"; then
-  check_public
-  printf 'DSH_STORE_REFRESH_SKIPPED reason=already-current source=%s\n' "$source_sha"
-  exit 0
+  same_static_release=1
+  if python3 - "$current_link" "$article_source" <<'PY'
+import hashlib,json,pathlib,re,sys
+release,source=pathlib.Path(sys.argv[1]),pathlib.Path(sys.argv[2])
+build=json.loads((release/'build-manifest.json').read_text(encoding='utf-8'))
+builder=build.get('serverArticles',{}).get('builder')
+if not isinstance(builder,dict): raise SystemExit(0)  # legacy Pages release
+if builder.get('path')!='scripts/build-server-articles.py' or not re.fullmatch(r'[a-f0-9]{64}',str(builder.get('sha256',''))):
+    raise SystemExit(1)
+state_path=release/'server-state/articles-manifest.json'
+if not state_path.is_file() or source.is_symlink() or not source.is_dir(): raise SystemExit(1)
+state=json.loads(state_path.read_text(encoding='utf-8'))
+source_manifest=json.loads((source/'migration-manifest.json').read_text(encoding='utf-8'))
+names=('articles.json','articles.css','index.template.html','article.template.html')
+if source_manifest.get('planId')!='dsh-articles-to-server-20261029' or set(source_manifest.get('files',{}))!=set(names): raise SystemExit(1)
+digest=hashlib.sha256()
+for name in names:
+    path=source/name
+    if path.is_symlink() or not path.is_file(): raise SystemExit(1)
+    data=path.read_bytes()
+    if name!='articles.json' and hashlib.sha256(data).hexdigest()!=source_manifest['files'][name]: raise SystemExit(1)
+    digest.update(name.encode()); digest.update(b'\0'); digest.update(data); digest.update(b'\0')
+if digest.hexdigest()!=state.get('sourceSetSha256'): raise SystemExit(1)
+if source.is_symlink() or {p.name for p in source.iterdir()}!=set(names)|{'migration-manifest.json'}: raise SystemExit(1)
+for relative,metadata in state.get('files',{}).items():
+    if not isinstance(relative,str) or not relative.startswith('marketplace/articles/') or '..' in pathlib.PurePosixPath(relative).parts: raise SystemExit(1)
+    raw=release/relative
+    if any(part.is_symlink() for part in (raw,*raw.parents) if part!=release): raise SystemExit(1)
+    path=raw.resolve()
+    if release.resolve() not in path.parents or not path.is_file(): raise SystemExit(1)
+    data=path.read_bytes()
+    if len(data)!=metadata.get('size') or hashlib.sha256(data).hexdigest()!=metadata.get('sha256'): raise SystemExit(1)
+PY
+  then
+    check_public
+    printf 'DSH_STORE_REFRESH_SKIPPED reason=already-current source=%s\n' "$source_sha"
+    exit 0
+  fi
 fi
 
 release_id="$(date -u +%Y%m%dT%H%M%SZ)-pages-${source_sha:0:12}"
+if test "$same_static_release" -eq 1; then
+  article_source_hash=$(python3 - "$article_source" <<'PY'
+import hashlib,pathlib,sys
+root=pathlib.Path(sys.argv[1])
+d=hashlib.sha256()
+for name in ('articles.json','articles.css','index.template.html','article.template.html'):
+    p=root/name
+    if p.is_symlink() or not p.is_file(): raise SystemExit('server article source is missing or unsafe')
+    data=p.read_bytes(); d.update(name.encode()); d.update(b'\0'); d.update(data); d.update(b'\0')
+print(d.hexdigest()[:12])
+PY
+)
+  release_id="$release_id-articles-$article_source_hash"
+fi
 candidate="$deploy_root/releases/$release_id"
 backup="$deploy_root/backups/$release_id-before"
 test ! -e "$candidate"
@@ -365,11 +519,42 @@ if build.get('siteOrigin') == 'https://dsh-store.cn':
         raise SystemExit('domestic use and troubleshooting guide is missing or incomplete')
 elif usage_guide.exists():
     raise SystemExit('domestic-only use and troubleshooting guide leaked into the international artifact')
+builder = build.get('serverArticles', {}).get('builder')
+if builder is not None:
+    if builder.get('path') != 'scripts/build-server-articles.py' or not re.fullmatch(r'[a-f0-9]{64}', str(builder.get('sha256', ''))):
+        raise SystemExit('server article builder identity is invalid')
+    if any(path.startswith('marketplace/articles/') for path in manifest['files']):
+        raise SystemExit('GitHub Pages release contains server-managed article routes')
+    if '/articles/' in (root / 'marketplace/sitemap.xml').read_text(encoding='utf-8'):
+        raise SystemExit('GitHub Pages root sitemap contains server-managed article routes')
+    if '/articles/sitemap.xml' in robots:
+        raise SystemExit('GitHub Pages robots.txt contains a server-managed article sitemap')
+    for page in (root / 'marketplace').rglob('*.html'):
+        if '/articles/' in page.read_text(encoding='utf-8'):
+            raise SystemExit('GitHub Pages HTML contains a server-managed article URL')
 for path in root.rglob('*'):
     if path.is_symlink() or path.name == '.git' or path.name.startswith('.env') or path.name.startswith('._'):
         raise SystemExit(f'forbidden artifact entry: {path.relative_to(root)}')
 print('DSH_STORE_CANDIDATE_OK', build['sourceCommit'], *actual)
 PY
+
+if python3 - "$candidate/build-manifest.json" <<'PY'
+import json,sys
+build=json.load(open(sys.argv[1],encoding='utf-8'))
+sys.exit(0 if isinstance(build.get('serverArticles',{}).get('builder'),dict) else 1)
+PY
+then
+  builder_path="$incoming/build-server-articles.py"
+  builder_sha=$(python3 - "$candidate/build-manifest.json" <<'PY'
+import json,sys
+print(json.load(open(sys.argv[1],encoding='utf-8'))['serverArticles']['builder']['sha256'])
+PY
+)
+  curl -4 --http1.1 --compressed -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
+    "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/$source_sha/scripts/build-server-articles.py" -o "$builder_path"
+  test "$(sha256sum "$builder_path" | awk '{print $1}')" = "$builder_sha"
+  python3 "$builder_path" --source-dir "$article_source" --site-root "$candidate/marketplace" --build-manifest "$candidate/build-manifest.json"
+fi
 
 chown -R root:root "$candidate"
 find "$candidate" -type d -exec chmod 0755 {} +
