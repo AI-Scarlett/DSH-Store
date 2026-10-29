@@ -122,3 +122,68 @@ test('server article renderer builds production pages from a bounded persistent 
     await rm(fixture, { recursive: true, force: true })
   }
 })
+
+test('server article migration validates the plan path-bound source precondition', async () => {
+  const fixture = await mkdtemp(join(tmpdir(), 'dsh-server-article-migration-'))
+  try {
+    const planPath = join(fixture, 'plan.json')
+    const payload = join(fixture, 'source')
+    await mkdir(payload)
+    const plan = JSON.parse(await readFile(join(root, 'docs/ops/articles-server-migration-20261029.json'), 'utf8'))
+    for (const configuredServer of plan.servers) {
+      assert.equal(configuredServer.persistentArticleTargetPrecondition, `${configuredServer.root}/content/articles/source absent`)
+    }
+    const server = plan.servers.find(item => item.id === 'dsh-store-intl')
+    const current = '/opt/dsh-store/releases/test-pages'
+    const manifestSha = 'a'.repeat(64)
+    server.currentTarget = current
+    server.currentReleaseManifestSha256 = manifestSha
+    const files = {
+      'articles.json': Buffer.from(JSON.stringify({ articles: Array.from({ length: 12 }, (_, index) => ({ slug: `case-${index}` })) })),
+      'articles.css': Buffer.from('article styles'),
+      'index.template.html': Buffer.from('index template'),
+      'article.template.html': Buffer.from('article template'),
+    }
+    for (const [name, bytes] of Object.entries(files)) await writeFile(join(payload, name), bytes)
+    plan.serverPayload.files = Object.fromEntries(Object.entries(files).map(([name, bytes]) => [name, sha256(bytes)]))
+    await writeFile(planPath, JSON.stringify(plan))
+
+    const migrator = await readFile(join(root, 'deploy/migrate-articles-to-server.sh'), 'utf8')
+    const validator = /python3 - "\$plan_file" "\$payload_dir" "\$deploy_root" "\$expected_server" "\$expected_current" "\$current_manifest_sha" "\$expected_base" <<'PY'\n([\s\S]*?)\nPY/.exec(migrator)?.[1]
+    assert.ok(validator, 'server migration plan validator must remain present')
+    const runValidator = () => execFileAsync('python3', ['-c', validator, planPath, payload, '/opt/dsh-store',
+      'dsh-store-intl', current, manifestSha, 'c8873c9473f601f6ecddb3783aea932574d37d97'])
+    await runValidator()
+
+    server.persistentArticleTargetPrecondition = 'absent'
+    await writeFile(planPath, JSON.stringify(plan))
+    await assert.rejects(runValidator(), error => {
+      assert.match(error.stderr, /server release or persistent-content precondition changed/)
+      return true
+    })
+  } finally {
+    await rm(fixture, { recursive: true, force: true })
+  }
+})
+
+test('server article migration reuses only a real empty backup directory', async () => {
+  const fixture = await mkdtemp(join(tmpdir(), 'dsh-server-article-backup-'))
+  try {
+    const backup = join(fixture, 'backups/articles-before')
+    await mkdir(backup, { recursive: true })
+    const migrator = await readFile(join(root, 'deploy/migrate-articles-to-server.sh'), 'utf8')
+    const gate = /backup_preexisting_empty=0\nif test -e "\$backup" \|\| test -L "\$backup"; then\n[\s\S]*?\nfi/.exec(migrator)?.[0]
+    assert.ok(gate, 'article backup precondition gate must remain present')
+    const runGate = () => execFileAsync('bash', ['-c', `set -e\n${gate}\nprintf '%s' "$backup_preexisting_empty"`], {
+      env: { PATH: process.env.PATH, backup },
+    })
+    assert.equal((await runGate()).stdout, '1')
+    await writeFile(join(backup, 'keep.txt'), 'existing content')
+    await assert.rejects(runGate(), error => {
+      assert.match(error.stderr, /Refusing non-empty article backup target/)
+      return true
+    })
+  } finally {
+    await rm(fixture, { recursive: true, force: true })
+  }
+})

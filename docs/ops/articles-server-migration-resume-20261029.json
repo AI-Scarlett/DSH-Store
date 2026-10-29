@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "planId": "dsh-articles-server-migration-resume-20261029",
+  "kind": "server-content-migration-resume",
+  "createdAt": "2026-10-29T03:53:42Z",
+  "authorization": "Explicit user request to migrate DSH Field Notes to server-managed article storage; prior user authorization to publish the resulting website update remains in effect.",
+  "baseCommit": "c0ca1ae476b686c9b16d4e05f874ff11c4f640f4",
+  "exactFileScope": [
+    "deploy/migrate-articles-to-server.sh",
+    "test/server-articles.test.mjs",
+    "docs/ops/articles-server-migration-resume-20261029.json"
+  ],
+  "repositoryPreconditions": {
+    "branchBase": "main",
+    "baseCommit": "c0ca1ae476b686c9b16d4e05f874ff11c4f640f4",
+    "worktreeBeforeChanges": "clean",
+    "preconditionHashes": {
+      "deploy/migrate-articles-to-server.sh": "a4a86e2dc0488d5fdac4cbd39a9dd21f49d45bf097baba3f9df6f345f1cde10e",
+      "test/server-articles.test.mjs": "d680d528e222b53695ff8a44804ff000d509160a3e08d0c2dcbf3559a6862944"
+    },
+    "newFilePrecondition": {
+      "docs/ops/articles-server-migration-resume-20261029.json": "absent"
+    },
+    "reason": "The first server-side attempt failed closed because the migration validator expected the word absent while the approved plan binds the exact source path plus absent. The failed attempt left no article source and did not switch either release."
+  },
+  "fix": {
+    "planContract": "Validate persistentArticleTargetPrecondition against <deploy_root>/content/articles/source absent.",
+    "failureHandling": "Do not create an article backup directory for a pre-stage validation failure; preserve a failed stage or installed source only after one exists.",
+    "expectedMigrationScriptSha256": "76690e5910ee616aac5806ecf7ad669f868b822b5a0ee0b5aedf2ebc80aa19de",
+    "test": "Run the embedded plan validator using disposable temporary plan and payload files; the path-bound precondition passes and the ambiguous absent-only value fails."
+  },
+  "resumeAmendment": {
+    "baseHeadCommit": "b8dace55e9da4dd98e408670aae234f369daa17b",
+    "exactFileScope": [
+      "deploy/migrate-articles-to-server.sh",
+      "test/server-articles.test.mjs",
+      "docs/ops/articles-server-migration-resume-20261029.json"
+    ],
+    "preconditionSha256": {
+      "deploy/migrate-articles-to-server.sh": "76690e5910ee616aac5806ecf7ad669f868b822b5a0ee0b5aedf2ebc80aa19de",
+      "test/server-articles.test.mjs": "d7f402b57680748d1bf79842849b4abec8942f4896cc9e988dd50135582982ec",
+      "docs/ops/articles-server-migration-resume-20261029.json": "83bab99f86a51481740a51f74f672cf923e64f7df8d502d814e3ddbab7fdd744"
+    },
+    "cause": "The migrator consumes the separately hashed original upload plan, which already binds each exact persistent article path. The resume record summarized both target conditions as absent, and the disposable validator test overwrote the original plan value before validation, obscuring that contract.",
+    "correction": "Keep the resume record path-bound as well, and assert both original upload-plan values before running the validator without overriding them.",
+    "authorization": "Continue the user's direct request to migrate DSH Field Notes to server-managed storage."
+  },
+  "sourceContent": {
+    "sourceCommit": "c8873c9473f601f6ecddb3783aea932574d37d97",
+    "articleCount": 12,
+    "articleJsonSha256": "a46c2a6d1adfb9890fc8922724aaceac1154fa9599e7c3d41cb847ed7aa330ab",
+    "migrationPlanSha256": "e33f25d838ee7dbce6cf96bbc96e07af3aad94ebd762829fc612f971c3ac1557",
+    "newIndustrySlugs": [
+      "procurement-quote-comparison-with-dsh",
+      "finance-three-way-match-with-dsh",
+      "manufacturing-maintenance-triage-with-dsh",
+      "supplier-contract-review-with-dsh"
+    ],
+    "sourceOfTruth": "Each production server's /opt/dsh-store[-cn]/content/articles/source directory."
+  },
+  "servers": [
+    {
+      "id": "dsh-store-intl",
+      "domain": "dsh.store",
+      "root": "/opt/dsh-store",
+      "currentTarget": "/opt/dsh-store/releases/20261029T015120Z-pages-c8873c9473f6",
+      "currentReleaseManifestSha256": "c4d7f69db5f12f19aeab4c02aa782fd67195c781d4327eaf27626b7e4bca570a",
+      "refreshScript": "/opt/dsh-store/bin/refresh-from-pages.sh",
+      "refreshScriptSha256": "494d655e647ff319f0d4558bd9e89d82c28ed90d91685c342d0e7a8830282f9d",
+      "refreshScriptBackup": "/opt/dsh-store/backups/articles-server-migration-20261029-before/refresh-from-pages.sh",
+      "refreshScriptBackupSha256": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d",
+      "persistentArticleTarget": "/opt/dsh-store/content/articles/source",
+      "persistentArticleTargetPrecondition": "/opt/dsh-store/content/articles/source absent",
+      "articleBackupTarget": "/opt/dsh-store/backups/articles-before-20261029",
+      "articleBackupPrecondition": "real empty directory with no symlink or children; preserve the directory and reuse only after rechecking emptiness",
+      "service": "dsh-store-refresh@intl-public.service",
+      "timer": "dsh-store-refresh@intl-public.timer",
+      "timerState": "inactive and enabled; temporarily paused for the migration",
+      "stagingRoot": "/opt/dsh-store/incoming/article-migration-upload-20261029"
+    },
+    {
+      "id": "dsh-store-cn-814823065",
+      "domain": "dsh-store.cn",
+      "root": "/opt/dsh-store-cn",
+      "currentTarget": "/opt/dsh-store-cn/releases/20261029T015119Z-pages-c8873c9473f6",
+      "currentReleaseManifestSha256": "3131a5c3f66c4e404109db7c29ca8f441e9c06088d0cad093ddaf0c76e922034",
+      "refreshScript": "/opt/dsh-store/bin/refresh-from-pages.sh",
+      "refreshScriptSha256": "494d655e647ff319f0d4558bd9e89d82c28ed90d91685c342d0e7a8830282f9d",
+      "refreshScriptBackup": "/opt/dsh-store/backups/articles-server-migration-20261029-before/refresh-from-pages.sh",
+      "refreshScriptBackupSha256": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d",
+      "persistentArticleTarget": "/opt/dsh-store-cn/content/articles/source",
+      "persistentArticleTargetPrecondition": "/opt/dsh-store-cn/content/articles/source absent",
+      "articleBackupTarget": "/opt/dsh-store-cn/backups/articles-before-20261029",
+      "articleBackupPrecondition": "real empty directory with no symlink or children; preserve the directory and reuse only after rechecking emptiness",
+      "service": "dsh-store-refresh@domestic.service",
+      "timer": "dsh-store-refresh@domestic.timer",
+      "timerState": "inactive and enabled; temporarily paused for the migration",
+      "stagingRoot": "/opt/dsh-store-cn/incoming/article-migration-upload-20261029"
+    }
+  ],
+  "mutationOrder": [
+    "Merge this fix through its CI-checked pull request.",
+    "Recheck both server IDs, current release symlinks and manifest hashes, installed refresh script and backup hashes, timer states, source absence, empty backup directories, and uploaded plan/source hashes.",
+    "Fetch the fixed migrator from the immutable merged main Commit into a new staging filename and verify its SHA-256 against expectedMigrationScriptSha256.",
+    "Preserve each existing article backup directory; reuse it only if it remains a real empty directory with no symlink or children, otherwise stop without changing it.",
+    "Run the fixed migrator on each server using its exact upload plan, source directory, server identity, current release and source hashes.",
+    "Start the standard production refresh service on both sites; retain its release backup and automatic rollback behavior.",
+    "Verify article source, generated pages and hashes, all 12 article routes, both article sitemaps, root sitemaps, robots.txt, Catalog routes, and health endpoints independently.",
+    "Restore both refresh timers to active while preserving their enabled state."
+  ],
+  "rollback": {
+    "migration": "The fixed migrator preserves a failed staging bundle or installed source under the server backup root; it does not delete the previously absent article source silently.",
+    "release": "The standard refresh service atomically restores the exact old current symlink if any post-switch health check fails; preserve the backup and leave the timer paused until the site is healthy."
+  },
+  "githubReview": {
+    "scope": "Read-only review of exact open Issue comments and PR submissions identified in the current author-action-required scan; no comments, reviews, issue states, or contact-ledger writes.",
+    "asOf": "2026-10-29T03:53:42Z",
+    "latestActionableItems": [
+      1596,
+      1628,
+      1276,
+      1155,
+      1582,
+      1584,
+      1565,
+      546,
+      547,
+      562,
+      563
+    ]
+  }
+}

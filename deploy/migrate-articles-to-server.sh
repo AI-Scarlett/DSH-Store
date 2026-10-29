@@ -18,13 +18,14 @@ installed=0
 rollback_on_error() {
   rc=$?
   trap - ERR EXIT
-  mkdir -p -m 0750 "$backup"
   if test -n "$stage" && test -d "$stage"; then
+    mkdir -p -m 0750 "$backup"
     failed_stage="$backup/staged-source-failed.$BASHPID"
     mv -T "$stage" "$failed_stage"
     printf 'DSH_ARTICLES_MIGRATION_PRESERVED_FAILED_STAGE=%s\n' "$failed_stage" >&2
   fi
   if test "$installed" -eq 1 && test -e "$source_target"; then
+    mkdir -p -m 0750 "$backup"
     failed_source="$backup/source-failed.$BASHPID"
     mv -T "$source_target" "$failed_source"
     printf 'DSH_ARTICLES_MIGRATION_ROLLBACK_SOURCE=%s\n' "$failed_source" >&2
@@ -47,8 +48,18 @@ test ! -L "$plan_file"
 test ! -L "$payload_dir"
 test ! -e "$source_target"
 test ! -L "$source_target"
-test ! -e "$backup"
-test ! -L "$backup"
+backup_preexisting_empty=0
+if test -e "$backup" || test -L "$backup"; then
+  if ! test -d "$backup" || test -L "$backup"; then
+    printf 'Refusing unsafe article backup target: %s\n' "$backup" >&2
+    exit 1
+  fi
+  if test -n "$(find "$backup" -mindepth 1 -print -quit)"; then
+    printf 'Refusing non-empty article backup target: %s\n' "$backup" >&2
+    exit 1
+  fi
+  backup_preexisting_empty=1
+fi
 
 case "$deploy_root" in
   /opt/dsh-store) readonly expected_server="dsh-store-intl"; readonly expected_current="/opt/dsh-store/releases/20261029T015120Z-pages-c8873c9473f6" ;;
@@ -71,7 +82,8 @@ if plan.get('baseCommit') != base or plan.get('repositoryPrecondition', {}).get(
 server = next((item for item in plan.get('servers', []) if item.get('id') == server_id), None)
 if not server or server.get('root') != deploy_root or server.get('currentTarget') != current:
     raise SystemExit('migration plan server target mismatch')
-if server.get('currentReleaseManifestSha256') != manifest_sha or server.get('persistentArticleTargetPrecondition') != 'absent':
+expected_source_precondition = deploy_root + '/content/articles/source absent'
+if server.get('currentReleaseManifestSha256') != manifest_sha or server.get('persistentArticleTargetPrecondition') != expected_source_precondition:
     raise SystemExit('server release or persistent-content precondition changed')
 files = plan.get('serverPayload', {}).get('files')
 if not isinstance(files, dict) or set(files) != {'articles.json', 'articles.css', 'index.template.html', 'article.template.html'}:
@@ -116,7 +128,11 @@ manifest = {
 PY
 chmod 0640 "$stage/migration-manifest.json"
 
-mkdir -m 0750 "$backup"
+if test "$backup_preexisting_empty" -eq 0; then
+  mkdir -m 0750 "$backup"
+else
+  test -z "$(find "$backup" -mindepth 1 -print -quit)"
+fi
 printf 'plan_id=%s\nserver_id=%s\nprior_content_target=absent\ncurrent_release=%s\ncurrent_release_manifest_sha256=%s\n' \
   "$plan_id" "$expected_server" "$old_target" "$current_manifest_sha" > "$backup/BACKUP.txt"
 (
