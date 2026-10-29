@@ -130,12 +130,14 @@ test('server article migration validates the plan path-bound source precondition
     const payload = join(fixture, 'source')
     await mkdir(payload)
     const plan = JSON.parse(await readFile(join(root, 'docs/ops/articles-server-migration-20261029.json'), 'utf8'))
+    for (const configuredServer of plan.servers) {
+      assert.equal(configuredServer.persistentArticleTargetPrecondition, `${configuredServer.root}/content/articles/source absent`)
+    }
     const server = plan.servers.find(item => item.id === 'dsh-store-intl')
     const current = '/opt/dsh-store/releases/test-pages'
     const manifestSha = 'a'.repeat(64)
     server.currentTarget = current
     server.currentReleaseManifestSha256 = manifestSha
-    server.persistentArticleTargetPrecondition = '/opt/dsh-store/content/articles/source absent'
     const files = {
       'articles.json': Buffer.from(JSON.stringify({ articles: Array.from({ length: 12 }, (_, index) => ({ slug: `case-${index}` })) })),
       'articles.css': Buffer.from('article styles'),

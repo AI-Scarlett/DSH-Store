@@ -29,6 +29,22 @@
     "expectedMigrationScriptSha256": "76690e5910ee616aac5806ecf7ad669f868b822b5a0ee0b5aedf2ebc80aa19de",
     "test": "Run the embedded plan validator using disposable temporary plan and payload files; the path-bound precondition passes and the ambiguous absent-only value fails."
   },
+  "resumeAmendment": {
+    "baseHeadCommit": "b8dace55e9da4dd98e408670aae234f369daa17b",
+    "exactFileScope": [
+      "deploy/migrate-articles-to-server.sh",
+      "test/server-articles.test.mjs",
+      "docs/ops/articles-server-migration-resume-20261029.json"
+    ],
+    "preconditionSha256": {
+      "deploy/migrate-articles-to-server.sh": "76690e5910ee616aac5806ecf7ad669f868b822b5a0ee0b5aedf2ebc80aa19de",
+      "test/server-articles.test.mjs": "d7f402b57680748d1bf79842849b4abec8942f4896cc9e988dd50135582982ec",
+      "docs/ops/articles-server-migration-resume-20261029.json": "83bab99f86a51481740a51f74f672cf923e64f7df8d502d814e3ddbab7fdd744"
+    },
+    "cause": "The migrator consumes the separately hashed original upload plan, which already binds each exact persistent article path. The resume record summarized both target conditions as absent, and the disposable validator test overwrote the original plan value before validation, obscuring that contract.",
+    "correction": "Keep the resume record path-bound as well, and assert both original upload-plan values before running the validator without overriding them.",
+    "authorization": "Continue the user's direct request to migrate DSH Field Notes to server-managed storage."
+  },
   "sourceContent": {
     "sourceCommit": "c8873c9473f601f6ecddb3783aea932574d37d97",
     "articleCount": 12,
@@ -54,7 +70,7 @@
       "refreshScriptBackup": "/opt/dsh-store/backups/articles-server-migration-20261029-before/refresh-from-pages.sh",
       "refreshScriptBackupSha256": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d",
       "persistentArticleTarget": "/opt/dsh-store/content/articles/source",
-      "persistentArticleTargetPrecondition": "absent",
+      "persistentArticleTargetPrecondition": "/opt/dsh-store/content/articles/source absent",
       "articleBackupTarget": "/opt/dsh-store/backups/articles-before-20261029",
       "articleBackupPrecondition": "real empty directory with no symlink or children; preserve the directory and reuse only after rechecking emptiness",
       "service": "dsh-store-refresh@intl-public.service",
@@ -73,7 +89,7 @@
       "refreshScriptBackup": "/opt/dsh-store/backups/articles-server-migration-20261029-before/refresh-from-pages.sh",
       "refreshScriptBackupSha256": "0a1e6fc0a78f49d0914662c943d594bd639be844c605c4fe0a6126b90f224d5d",
       "persistentArticleTarget": "/opt/dsh-store-cn/content/articles/source",
-      "persistentArticleTargetPrecondition": "absent",
+      "persistentArticleTargetPrecondition": "/opt/dsh-store-cn/content/articles/source absent",
       "articleBackupTarget": "/opt/dsh-store-cn/backups/articles-before-20261029",
       "articleBackupPrecondition": "real empty directory with no symlink or children; preserve the directory and reuse only after rechecking emptiness",
       "service": "dsh-store-refresh@domestic.service",
