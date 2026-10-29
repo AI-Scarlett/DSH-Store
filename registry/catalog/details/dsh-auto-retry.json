@@ -18,24 +18,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "2fff2e10a20d5110bd4512e4ecb93ba241ed0758",
-  "version": "0.6.0",
+  "commit": "37e0adde7f822897f6579385831ed26183f3a4d8",
+  "version": "0.6.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-28T16:34:14.000Z",
-    "observedAt": "2026-10-28T20:50:20.000Z",
+    "updatedAt": "2026-10-29T00:56:34.000Z",
+    "observedAt": "2026-10-29T04:46:23.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-28T20:50:20.000Z",
-      "evidenceUrl": "https://github.com/Amer-CN/dsh-retry-panel/commit/2fff2e10a20d5110bd4512e4ecb93ba241ed0758",
+      "checkedAt": "2026-10-29T04:46:23.000Z",
+      "evidenceUrl": "https://github.com/Amer-CN/dsh-retry-panel/commit/37e0adde7f822897f6579385831ed26183f3a4d8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,10 +74,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d803d9181abb781ea540faf23fd0705501f0a32c4b041af0c3afbc5b5ae84b25",
+    "binding": "3daf5a14fe5da56723bd5b870b1faecc3c76c01903be8bc37088d17737d2a053",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "verified",
+    "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -88,9 +88,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": ">=0.2.1-rc.1",
+    "dsh": null,
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
