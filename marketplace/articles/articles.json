@@ -1,8 +1,44 @@
 {
   "schemaVersion": 1,
   "collectionTitle": "DSH 实战与观察",
-  "collectionDescription": "围绕 DeepSeek Harness 的插件安全、来源核验、兼容性、远程访问与多智能体工作流的原创实战文章。",
+  "collectionDescription": "围绕 DeepSeek Harness 的插件安全、来源核验、兼容性、远程访问、多智能体工作流与行业应用方案的原创文章；案例中的插件能力均绑定公开固定 Commit，方案设计与真实部署结果分开说明。",
   "articles": [
+    {
+      "slug": "procurement-quote-comparison-with-dsh",
+      "title": "多家供应商报价口径不一？用 DSH + Office 插件做可追溯比价初筛",
+      "summary": "把需求清单和供应商 Excel 报价放进同一工作区，DSH 可借助 Office 工具整理规格、单位、税费与交期差异，生成带来源行号的比价草稿。这是基于公开源码的流程方案，不是客户实绩。",
+      "datePublished": "2026-10-29",
+      "category": "行业流程方案",
+      "language": "zh-CN",
+      "contentMarkdown": "# 多家供应商报价口径不一？用 DSH + Office 插件做可追溯比价初筛\n\n> **案例性质：流程方案，不是客户实绩。** 下文根据固定版本公开的工具能力设计，没有真实采购方、供应商数据或节省比例背书。\n\n#### 采购比价为什么容易卡在表格整理\n\n采购人员经常要把多家供应商的报价表与内部需求清单逐项对齐：同一物料可能使用不同名称、规格写法、包装单位和交货周期；含税与未税价格、运费、质保条件也散落在不同列或备注里。人工复制粘贴不只费时，还容易丢掉原始行号，后续很难解释为什么某个报价被标为异常。\n\n#### DSH + dsh-office-tools 的流程\n\n在一个仅放置去敏采购文件的 DSH 工作区中，让 DSH 读取需求清单 Word 文档和供应商 Excel 表。固定源码中，`word_read`、`excel_read` 用于提取文档和工作表内容，`excel_create` 可以新建比价工作簿；这些能力来自 DSH Office Tools 1.0.8 的公开说明。\n\n1. 先从需求清单提取物料编码、规格、数量、验收条件和必须交期；保持原有表述，并给每项保留来源文件及段落位置。\n2. 再读取供应商表格，将名称、型号、单位、数量、报价、税费、运费、交期和质保拆成统一字段。遇到单位换算、税口径或备注含义不明时，标为“待确认”，不替采购员猜值。\n3. 生成新的 `supplier-comparison.xlsx`，按需求项并排列出各供应商报价、缺项、偏离条件及来源工作表/行号。原始报价文件只读保留，不覆盖。\n4. 输出一页待复核清单，集中显示没有可比价格、交付条件冲突、规格不匹配和需要询价澄清的项目。\n\n#### 它解决哪段行业问题\n\n这条流程把“从不同表格找字段、对齐口径、找遗漏”的重复劳动变成一张可追溯的初筛表。它不替代询价规则，也不自动决定中标供应商。采购人员仍需核验币种、税率、运输费用、交期、最低采购量与供应商资质，再按企业审批制度作出决定。\n\n试点时可以记录字段完整率、需要人工改正的匹配项比例、异常提醒的误报率，以及从收齐报价到形成复核表所花的时间。没有试点数据之前，不应把这些指标写成已实现的效率提升。\n\n#### 插件版本与证据边界\n\n案例依据 [dsh-office-tools 1.0.8 固定源码](https://github.com/kw78/dsh-office-tools/tree/5ec874b0b164c5eac878554ff078d23eae27299f) 和 [DSH STORE 固定 Catalog 记录](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-office-tools.json)。工具面向 DSH 工作区里的 Word、Excel、PowerPoint 文件，源码说明要求通过宿主文件系统服务读写，并将路径限制在会话工作区；README 的安装示例面向 web profile，桌面端运行验收没有由这条 Catalog 记录证明。\n\n截至这份目录快照，Catalog 对 DSH `0.2.1-rc.3` 记录为兼容；`0.2.1-rc.4` 和 `0.2.2-alpha.2` 仍为 `unknown`，安装性与当前运行时验收也为 `unknown`。这不是对最新 DSH 或桌面端可用性的承诺。进入实际采购环境前，需先用一次性配置和去敏文件核对目标版本、工作区边界与生成表格，再由采购负责人批准使用。\n\n#### 参考\n\n- [插件固定源码与 README](https://github.com/kw78/dsh-office-tools/tree/5ec874b0b164c5eac878554ff078d23eae27299f)\n- [该快照中的 DSH STORE 插件详情](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-office-tools.json)"
+    },
+    {
+      "slug": "finance-three-way-match-with-dsh",
+      "title": "财务共享中心的三单匹配：让 DSH 先报差异，再交给会计确认",
+      "summary": "用 DSH 文档工具读取去敏的订单、收货记录和发票文本，先列出金额、数量与税额的差异，再由财务人员复核。插件当前属于实验功能，案例不代表上线客户或自动记账能力。",
+      "datePublished": "2026-10-29",
+      "category": "行业流程方案",
+      "language": "zh-CN",
+      "contentMarkdown": "# 财务共享中心的三单匹配：让 DSH 先报差异，再交给会计确认\n\n> **案例性质：流程方案，不是客户实绩。** 根据 DSH Doc Toolkit 的固定源码与公开工具说明构造，不含真实企业账单、客户数据或效果数字。\n\n#### 财务复核的具体问题\n\n应付审核常要把采购订单、收货记录和发票逐项核对。三份资料可能分别是 PDF、Excel、CSV，字段名字和行序并不统一；发票还会出现分批到货、折扣、税率变化或跨期付款。初筛人员需要快速找到金额、数量、供应商名称和订单号之间的差异，同时保留足够证据交给会计判断。\n\n#### DSH + dsh-doc-toolkit 如何整理差异\n\n在经批准的隔离工作区中，给 DSH Doc Toolkit 读取已去敏的订单表、收货 CSV 和含文本层的发票 PDF。固定版本提供 `read_document` 读取 PDF、DOCX、XLSX、CSV，以及 `write_document` 生成 XLSX、CSV、DOCX 或 PDF。工具还支持对大型表格分页读取，避免一次把整本账单塞进上下文。\n\n1. 把供应商、订单号、物料、数量、含税/未税金额、税率、币种和日期抽成字段；每个值同时保留原始文件名与页码或行号。\n2. 以订单号和物料为主键尝试匹配订单、收货和发票。没有键、出现一对多、退货或分批到货时，放入“需要人工判定”，不强行合并。\n3. 对数量和金额做显式的差异计算，分别列出缺少收货记录、超订单数量、金额不一致、重复发票号和字段缺失；每条提醒附上对应来源位置。\n4. 生成一份新的 `ap-review.xlsx`，分为匹配结果、差异项目和待补资料三张表。它是复核工作底稿，不是会计凭证，也不写入 ERP 或银行系统。\n\n#### 人工复核仍是关键步骤\n\n会计需要确认折扣、税务处理、汇率、红字发票、跨期入账和合同约定。DSH 可以帮助把资料整理成更容易检查的结构，但不能作出税务结论、审批付款或代替企业内控。\n\nPDF 读取只适用于含可提取文本层的文件；扫描件没有 OCR 能力，需先通过企业批准的识别流程处理。涉及个人信息、银行账号和商业秘密时，应使用符合企业数据政策的模型与网络路径，先在复制并去敏的样本上验证，不能把“本地文件工具”误解为模型推理一定不出本机。\n\n#### 插件版本与证据边界\n\n本案例固定到 [dsh-doc-toolkit 0.2.1 源码](https://github.com/qingmumingyang/dsh-doc-toolkit/tree/6ea90761d2487b45c435abbff7c918e5f5e39f6f) 及 [DSH STORE 对应 Catalog 记录](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-doc-toolkit.json)。Catalog 将该插件归为“实验功能”，详情记录的 profile 范围是 web，桌面端验收未验证；其已知兼容记录不覆盖当前最新窗口，`0.2.1-rc.3`、`0.2.1-rc.4`、`0.2.2-alpha.2` 状态均为 `unknown`，安装性与运行时验收也是 `unknown`。支持声明中的宽版本范围不能替代逐版本证据。\n\n因此这里给出的是一条可评估的工作流设计，不构成生产环境安装建议。试点验收可比较人工抽查发现率、差异提醒的准确率、来源位置能否复核和账务人员的改写比例；在完成版本与数据保护审核前，不应接入真实账单。\n\n#### 参考\n\n- [插件固定源码与 README](https://github.com/qingmumingyang/dsh-doc-toolkit/tree/6ea90761d2487b45c435abbff7c918e5f5e39f6f)\n- [该快照中的 DSH STORE 插件详情](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-doc-toolkit.json)"
+    },
+    {
+      "slug": "manufacturing-maintenance-triage-with-dsh",
+      "title": "产线异常如何从手册走到工单草稿：DSH 辅助设备维修交接",
+      "summary": "把设备手册、报警表和维修记录连起来，让 DSH 生成带页码与行号的排查清单和交接草稿。流程依赖文本型文档与人工确认，不会操作 PLC，也不是已部署工厂的成效报告。",
+      "datePublished": "2026-10-29",
+      "category": "行业流程方案",
+      "language": "zh-CN",
+      "contentMarkdown": "# 产线异常如何从手册走到工单草稿：DSH 辅助设备维修交接\n\n> **案例性质：流程方案，不是客户实绩。** 没有真实产线、客户名称、故障案例或停机改善数字；内容只映射到插件固定源码声明的文档能力。\n\n#### 设备故障资料为什么难以交接\n\n设备报警代码可能在手册 PDF 里，现场现象记在 CSV 或 Excel 维修表，上一班的处置过程又写在 Word 工单中。值班工程师要在这些资料间来回找同一设备、同一故障代码的处理记录。交接时如果缺少停机条件、已做检查和未确认项，下一班容易重复排查或把猜测当成既定原因。\n\n#### DSH + DSH Doc Toolkit 的维修资料整理流程\n\n准备一份去敏设备手册、报警代码表和历史维修记录：手册使用可提取文字的 PDF 或 DOCX，历史记录使用 CSV/XLSX。`read_document` 可读取上述文本型格式，带页码/行数等定位信息；`write_document` 可将结构化结果写成新的 DOCX 或 XLSX。\n\n1. 以设备编号和报警代码筛选相关记录，保留手册章节、页码和维修记录行号。不同型号或版本的手册分开处理，避免把相似设备的内容混用。\n2. 将每一条排查建议标成“手册明确写出”“历史记录曾采用”或“资料中找不到”。如果手册和历史工单互相矛盾，明确列为冲突，不让模型自行选一个答案。\n3. 生成一份 `first-response-checklist.docx` 草稿：设备信息、现场现象、已知安全隔离要求、待检查项目、停止条件、使用的来源位置、交接班待确认事项。\n4. 维修工程师逐项核对厂家手册和现场安全规程后，才将批准内容抄入正式工单。未确认的内容留在“待核实”，不能变成操作指令。\n\n#### 解决的是信息检索和交接，不是设备控制\n\n这个流程针对的是“资料分散、相似故障难回忆、交接证据不完整”。它不读取设备传感器、不连接 PLC、不执行远程启停，也不作安全诊断。扫描图片型 PDF 不在 Doc Toolkit 的 OCR 能力范围内；没有文本层时必须另走经过批准的 OCR 流程，且重新核对识别结果。\n\n可在不接生产线的桌面演练中，用虚构设备和样例记录检查来源定位准确率、未知项是否被诚实保留、技师改写了哪些步骤，以及换班后能否复现处置依据。任何涉及隔离、带电、高温或压力设备的操作，都必须以厂家手册和企业安全程序为准。\n\n#### 插件版本与证据边界\n\n依据 [dsh-doc-toolkit 0.2.1 固定源码](https://github.com/qingmumingyang/dsh-doc-toolkit/tree/6ea90761d2487b45c435abbff7c918e5f5e39f6f) 及 [固定 Catalog 详情](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-doc-toolkit.json)。目录将它标为实验功能，详情记录的 profile 范围是 web，桌面端验收未验证；对于最新兼容窗口中的 DSH `0.2.1-rc.3`、`0.2.1-rc.4` 与 `0.2.2-alpha.2`，记录为 `unknown`。运行时与桌面端验收没有由这篇文章补齐。\n\n正式试点前应先用隔离环境和虚构数据验证目标 DSH 版本、工作区访问范围、分页读取与文档输出，再由设备工程和安全负责人共同批准流程。插件源代码通过静态审查并不等于生产设备已验证。\n\n#### 参考\n\n- [插件固定源码与 README](https://github.com/qingmumingyang/dsh-doc-toolkit/tree/6ea90761d2487b45c435abbff7c918e5f5e39f6f)\n- [该快照中的 DSH STORE 插件详情](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-doc-toolkit.json)"
+    },
+    {
+      "slug": "supplier-contract-review-with-dsh",
+      "title": "供应商合同先做条款偏差表：DSH + 文档插件辅助法务初审",
+      "summary": "让 DSH 把合同正文与企业条款清单逐项对照，输出引用原文的缺项和差异表，帮助法务集中复核风险点。它不提供法律结论、自动签约或客户部署证明。",
+      "datePublished": "2026-10-29",
+      "category": "行业流程方案",
+      "language": "zh-CN",
+      "contentMarkdown": "# 供应商合同先做条款偏差表：DSH + 文档插件辅助法务初审\n\n> **案例性质：流程方案，不是客户实绩。** 本文不引用具体客户合同，也不报告实际审查量、准确率或节省时间。\n\n#### 合同初审的工作量来自逐项对照\n\n供应商合同常有多种模板和修订版本。法务人员需要查找付款条件、交付验收、保密、知识产权、数据处理、违约责任、自动续期和争议解决等约定，再与企业标准条款比对。难点是迅速定位差异并保留合同原文，让业务团队和律师能回到上下文，而不是只收到一串模型给出的“高风险”标签。\n\n#### DSH + dsh-doc-toolkit 的条款清单\n\n在已批准的数据处理环境中，使用 DSH Doc Toolkit 读取去敏合同 DOCX/文本型 PDF 和企业内部的条款检查表 XLSX/CSV。将标准条款清单作为“核对规则”，不要把它写成模型可自行扩充的法律标准。\n\n1. 先把合同按章节拆分，保留文件名、章节标题、页码或表格行号；扫描件若没有文本层，先退出流程，不能假设插件会 OCR。\n2. 对每条检查项分别输出“找到匹配表述”“发现文本差异”“未找到相关内容”或“无法判断”。每个结果都附上合同原句和标准条款原文，避免只给结论不留依据。\n3. 写出新的 `contract-deviation-review.xlsx`，列出检查项、双方文本、差异摘要、需业务补充的信息和建议复核角色。合同原文不覆盖，正式版仍由法务在原有文档系统内管理。\n4. 法务人员判断差异是否可接受、是否需要谈判或外部律师意见，再通过企业原有审批与签署流程处理。\n\n#### 哪些风险不能交给模型决定\n\n合同解释受适用法律、交易背景、附件和谈判记录影响。插件不能替代律师判断条款效力、风险等级或可执行性；模型也不应根据缺失信息猜测双方意图。输出只是一张定位和比较底稿，不是法律意见，不应自动发给对方或触发电子签署。\n\n合同和附件往往包含价格、个人信息或商业秘密。试点先使用脱敏副本并按企业模型路由及保存策略审批。即使插件自身不声明外网请求，DSH 所配置的模型服务仍可能接收提示内容，数据路径必须单独核实。\n\n#### 插件版本与证据边界\n\n本方案对应 [dsh-doc-toolkit 0.2.1 固定源码](https://github.com/qingmumingyang/dsh-doc-toolkit/tree/6ea90761d2487b45c435abbff7c918e5f5e39f6f) 和 [对应 Catalog 详情](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-doc-toolkit.json)。Catalog 将该条目标为实验功能，详情记录的 profile 范围是 web，桌面端验收未验证；当前快照里的最新 DSH `0.2.2-alpha.2` 兼容状态为 `unknown`，安装性、运行时和桌面端验收也为 `unknown`。本文展示的是功能映射与流程设计，不能作为当前版本安装或合同自动审查的背书。\n\n#### 参考\n\n- [插件固定源码与 README](https://github.com/qingmumingyang/dsh-doc-toolkit/tree/6ea90761d2487b45c435abbff7c918e5f5e39f6f)\n- [该快照中的 DSH STORE 插件详情](https://github.com/AI-Scarlett/DSH-Store/blob/9372139075a37300c5ca608653dfd693addb19b1/registry/catalog/details/dsh-doc-toolkit.json)"
+    },
     {
       "slug": "session-flow-agent-session-archive",
       "title": "DSH 跑出几十个子代理却找不到结论？dsh-session-flow 如何归档会话",

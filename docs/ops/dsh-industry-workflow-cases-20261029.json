@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "planType": "StaticMarketplaceContentChange",
+  "planId": "dsh-industry-workflow-cases-20261029",
+  "status": "validated-pending-pull-request",
+  "createdAt": "2026-10-29",
+  "repository": "AI-Scarlett/DSH-Store",
+  "base": {
+    "branch": "main",
+    "commit": "9372139075a37300c5ca608653dfd693addb19b1"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "官网上的 DSH 实战与观察需要更多行业应用案例，说明 DSH 与插件如何解决行业问题；此前已明确要求该上线就上线。",
+    "scope": "Publish four evidence-bounded industry workflow case articles in the existing DSH Field Notes collection."
+  },
+  "exactFileScope": [
+    "docs/ops/dsh-industry-workflow-cases-20261029.json",
+    "marketplace/articles/articles.json"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-industry-workflow-cases-20261029.json": {
+      "exists": false
+    },
+    "marketplace/articles/articles.json": {
+      "exists": true,
+      "sha256": "cac597629bbcda4c1a73875eb389b229f34f81278a9dfc0e12e08eb7f3de25f4"
+    }
+  },
+  "content": {
+    "newArticleCount": 4,
+    "articleSlugs": [
+      "procurement-quote-comparison-with-dsh",
+      "finance-three-way-match-with-dsh",
+      "manufacturing-maintenance-triage-with-dsh",
+      "supplier-contract-review-with-dsh"
+    ],
+    "evidenceRules": [
+      "Present the stories as workflow designs based on public fixed-Commit plugin capabilities, not as named customer deployments or measured outcomes.",
+      "Link every plugin capability to its immutable source Commit and the Catalog detail record.",
+      "State current DSH compatibility, installability, and runtime evidence separately; latest-window unknown remains unknown.",
+      "Disclose that scanned PDFs without a text layer require OCR outside the described plugin capability.",
+      "Keep procurement award, payment, accounting, maintenance execution, and legal conclusions under qualified human approval.",
+      "Do not imply DSH Desktop support: dsh-doc-toolkit is catalogued for the web profile; Desktop acceptance for both plugins remains unverified."
+    ],
+    "presentation": "The article card category is 行业流程方案 so readers can distinguish designed workflows from documented customer deployments."
+  },
+  "sourceBindings": [
+    {
+      "catalogCommit": "9372139075a37300c5ca608653dfd693addb19b1",
+      "pluginId": "dsh-office-tools",
+      "packageVersion": "1.0.8",
+      "sourceRepository": "https://github.com/kw78/dsh-office-tools",
+      "sourceCommit": "5ec874b0b164c5eac878554ff078d23eae27299f",
+      "sourceStatus": "approved-source-verified",
+      "runtimeStatus": "unknown",
+      "knownCompatibleRelease": "0.2.1-rc.3",
+      "latestWindowUnknown": [
+        "0.2.1-rc.4",
+        "0.2.2-alpha.2"
+      ]
+    },
+    {
+      "catalogCommit": "9372139075a37300c5ca608653dfd693addb19b1",
+      "pluginId": "dsh-doc-toolkit",
+      "packageVersion": "0.2.1",
+      "sourceRepository": "https://github.com/qingmumingyang/dsh-doc-toolkit",
+      "sourceCommit": "6ea90761d2487b45c435abbff7c918e5f5e39f6f",
+      "catalogCategory": "experimental",
+      "sourceStatus": "approved-source-verified",
+      "runtimeStatus": "unknown",
+      "knownCompatibleRelease": "0.2.1-rc.2",
+      "latestWindowUnknown": [
+        "0.2.1-rc.3",
+        "0.2.1-rc.4",
+        "0.2.2-alpha.2"
+      ],
+      "profileScope": [
+        "web"
+      ]
+    }
+  ],
+  "deterministicGates": [
+    "Recheck base Commit and the articles.json SHA-256 before editing; reject concurrent source drift.",
+    "Validate unique article slugs, required metadata, bounded content size, fixed-Commit links, compatibility caveats, and case-evidence disclaimers.",
+    "Run npm run check and git diff --check.",
+    "Build the international and domestic static storefronts in separate disposable directories; verify the collection and all four new detail routes, canonical metadata, Article JSON-LD, and sitemap entries.",
+    "Verify exact file scope and ensure no DSH source, @deepseek-ai package, Catalog admission, author-contact state, or real Profile changed.",
+    "Submit through an auditable CI-checked pull request; after merge verify GitHub main, Pages manifest, dsh.store, and dsh-store.cn independently."
+  ],
+  "mutationPolicy": {
+    "noDshProfileMutation": true,
+    "noDshCoreMutation": true,
+    "noThirdPartyCodeExecution": true,
+    "noAuthorOutreach": true,
+    "commitViaCiCheckedPullRequest": true,
+    "productionRefreshAfterMerge": true
+  },
+  "rollback": {
+    "source": "Revert the content commit through a CI-checked pull request.",
+    "production": "Use the storefront refresh script's retained release and atomic symlink rollback; preserve the backup."
+  },
+  "execution": {
+    "basePreconditions": "PASS: worktree HEAD matches pinned main Commit; marketplace/articles/articles.json matched the pinned SHA-256 before editing.",
+    "changedPaths": "PASS: actual working-tree paths exactly match exactFileScope (the plan and marketplace/articles/articles.json).",
+    "checks": {
+      "npmRunCheck": "PASS: Registry validation entries=860; 545/545 tests passed.",
+      "internationalStaticBuild": "PASS: STATIC_MARKETPLACE_OK; collection has 12 articles; all four new detail routes, canonical URLs, Article JSON-LD, sitemap entries, fixed source links, and evidence caveats verified.",
+      "domesticStaticBuild": "PASS: STATIC_MARKETPLACE_OK; collection has 12 articles; all four new detail routes, canonical URLs, Article JSON-LD, sitemap entries, fixed source links, and evidence caveats verified.",
+      "diffCheck": "PASS: git diff --check."
+    },
+    "externalEffects": {
+      "authorOutreach": false,
+      "dshProfileMutation": false,
+      "dshCoreMutation": false,
+      "productionDeployment": false
+    },
+    "deployment": "PENDING: CI-checked pull request, merged Pages manifest, and independent public readback on GitHub, Pages, dsh.store, and dsh-store.cn."
+  }
+}
