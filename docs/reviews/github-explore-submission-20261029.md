@@ -1,14 +1,18 @@
-# github-explore 3.1.2：作者提交的复核证据
+# github-explore 3.1.2: author-submitted review evidence
 
-请求对 [github-explore](https://github.com/Fectivnfy112357/github-explore) 的固定源码
+This is a request for a fixed-source admission review of [github-explore](https://github.com/Fectivnfy112357/github-explore),
 [`6ee754470c23f71204f26ebbd6b8bb1d36915d5f`](https://github.com/Fectivnfy112357/github-explore/commit/6ee754470c23f71204f26ebbd6b8bb1d36915d5f)
-进行专项准入复核，关联 [#585](https://github.com/AI-Scarlett/DSH-Store/issues/585)。
-本文件是作者申请，不是商城的批准结论；目录状态、安装策略和独立审计状态不由此改变。
+related to [#585](https://github.com/AI-Scarlett/DSH-Store/issues/585).
+This document is an author submission, not a Store approval; it does not change
+the Catalog status, installation policy, or independent audit status.
 
-- manifest：`package.json`；Bundle：`cordis.patch.yml`；入口：`github-explore-skill`；许可证：MIT。
-- 逐版本声明包括当前官方窗口 `0.2.1-rc.3`、`0.2.1-rc.4`、`0.2.2-alpha.2`；Node 声明为 `26.8.1`。
-- 作者侧：在 Linux / Node 26.8.1 的独立 DSH_HOME 中，三个当前版本分别通过本地 checkout 安装；启动宿主后，临时探针在 `ctx.skills.list()` 中观察到该技能；随后卸载命令退出成功。宿主由超时停止。旧窗口三个版本也进行了相同检查。没有验证交互式 agent 调用、回滚或其他系统、Node 版本。
-- DSH-Store 本地提交预检针对上述 commit 返回 passed；有界扫描 18/18 文件，发现 `lib/index.js:14` 文件访问能力信号。该静态预检不等同于完整准入审阅、安全审计或商城独立运行验收。
-- 技能依赖 `gh` 和 Python；按用户指令调用 GitHub 命令与脚本，可能访问文件、网络及 gh 管理的凭据。manifest 含 `prepack` 脚本；申请预检定义的 `preinstall`、`install`、`postinstall`、`prepare` 均未声明。
+- Manifest: `package.json`; bundle: `cordis.patch.yml`; entry: `github-explore-skill`; license: MIT.
+- The per-version declarations include the current official window: `0.2.1-rc.3`, `0.2.1-rc.4`, and `0.2.2-alpha.2`. The Node declaration is `26.8.1`.
+- Author-side validation: on Linux with Node 26.8.1 and a separate DSH_HOME per version, a local checkout was installed with each of the three current releases. After the host started, a temporary probe found the skill in `ctx.skills.list()`; each removal command exited successfully. The host was stopped by a timeout. The same checks were performed for three releases in the previous window. Interactive agent invocation, rollback, and other systems and Node versions were not tested.
+- The local DSH-Store submission preflight passed against the fixed commit, scanning 18/18 files and reporting a file-access capability signal at `lib/index.js:14`. This bounded static preflight is not a complete admission review, security audit, or independent Store runtime validation.
+- The skill depends on `gh` and Python. Commands and scripts invoked at the user's request may access files, the network, and credentials managed by `gh`. The manifest includes a `prepack` script; the preflight's `preinstall`, `install`, `postinstall`, and `prepare` lifecycle scripts are not declared.
 
-请按当前固定源码、入口、权限和策略完成复核，并由商城维护者决定能否更新 Catalog 及采用何种安装策略。真实 Profile 操作结果属于作者侧证据；商城独立验收和安全审计仍未完成。
+Please review the fixed source, entry, permissions, and applicable policy, and
+decide whether to update the Catalog and which installation policy to use.
+The Profile results are author-side evidence; independent Store validation and
+security audit remain incomplete.
