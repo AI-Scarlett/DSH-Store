@@ -13,6 +13,20 @@ import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.m
 const execFileAsync = promisify(execFile)
 const root = fileURLToPath(new URL('../', import.meta.url))
 
+test('production refresher obtains the server article builder from the pinned GitHub API commit first', async () => {
+  const script = await readFile(join(root, 'deploy/refresh-from-pages.sh'), 'utf8')
+  const apiUrl = 'https://api.github.com/repos/AI-Scarlett/DSH-Store/contents/scripts/build-server-articles.py?ref=$source_sha'
+  const rawUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/$source_sha/scripts/build-server-articles.py'
+  const apiOffset = script.indexOf(apiUrl)
+  const rawOffset = script.indexOf(rawUrl)
+  const shaCheckOffset = script.indexOf('sha256sum "$builder_path"', rawOffset)
+  assert.ok(apiOffset >= 0 && rawOffset > apiOffset && shaCheckOffset > rawOffset,
+    'the API source, raw fallback, and post-download hash check must remain ordered')
+  assert.match(script.slice(apiOffset - 180, rawOffset), /Accept: application\/vnd\.github\.raw\+json/)
+  assert.match(script, /DSH_STORE_REFRESH_API_OK source=/)
+  assert.match(script, /DSH_STORE_REFRESH_RAW_FALLBACK source=/)
+})
+
 test('production candidate gate accepts a held manager but rejects an exposed install action',
   { skip: process.platform === 'win32' }, async () => {
     const fixture = await mkdtemp(join(tmpdir(), 'dsh-store-refresh-fixture-'))
