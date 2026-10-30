@@ -18,3 +18,11 @@ test('DSH adapter readiness requires exactly one matching approved fixed-source 
  for(const patch of [{status:'unlisted'},{version:'0.4.4'},{repositoryUrl:'https://github.com/other/repo'},{commit:'main'},{installPath:'elsewhere'},{entryIds:['official']},{compatibility:{dshReleases:{'0.1.5-rc.2':'unknown'}}}])assert.equal(context.parse({...catalog,entries:[{...entry,...patch}]},manifest),null)
  assert.equal(context.parse({...catalog,entries:[entry,entry]},manifest),null)
 })
+
+test('Build Lab requests a target host and per-host acceptance evidence in both locales',()=>{
+ assert.match(source,/目标宿主：DSH Web \/ 官方 DSH Desktop \/ 两者/);
+ assert.match(source,/Target host: DSH Web \/ official DSH Desktop \/ both/);
+ assert.match(source,/Observable success criterion for each selected host/);
+ assert.match(source,/Desktop UI\/Profile E4 is a separate gate/);
+ assert.match(source,/public APIs, static Client dependencies, the official Desktop plugin manager/);
+})

@@ -5,10 +5,10 @@ const translations = {
     'a11y.skip': '跳到 Skill 安装',
     'nav.home': '首页', 'nav.store': '插件目录', 'nav.articles': 'DSH 实战与观察', 'nav.community': '社区与开发者', 'nav.standards': '收录标准', 'nav.manager': 'DSH Store 插件', 'nav.build': '开发插件', 'nav.trust': '信任机制', 'nav.faq': '常见问题', 'nav.about': '关于我们', 'nav.guide': '使用说明', 'nav.submit': '提交插件',
     'hero.title1': '用三个答案，', 'hero.title2': '启动一个 DSH 插件。',
-    'hero.lead': '把自然语言 Brief 转换为标准 Bundle、风险边界、源码、测试和证据门槛。开发从用户结果开始，不从内部 API 开始。',
+    'hero.lead': '把自然语言 Brief 转换为标准 Bundle、风险边界、源码、测试和证据门槛。指定 DSH Web、官方桌面端或两者；每个宿主分别核对公开接口和验收证据。',
     'action.install': '安装 Skill', 'action.copyBrief': '复制开发 Brief', 'action.github': '查看开源 Skill', 'action.copy': '复制模板', 'action.copyInstall': '复制安装指令', 'action.download': '下载已验证 ZIP', 'action.downloadAgent': '下载当前 Agent Skill ZIP', 'action.source': '查看源码', 'action.top': '回到顶部 ↑',
     'console.problem': '现在的问题是什么？', 'console.outcome': '希望发生什么改变？', 'console.success': '怎么观察到它成功？',
-    'principle.one': '标准 DSH Bundle', 'principle.two': '默认只读与最小权限', 'principle.three': '一次性 Profile 测试', 'principle.four': '发行与真实安装分离',
+    'principle.one': '按 DSH Web / 官方桌面端分别适配', 'principle.two': '默认只读与最小权限', 'principle.three': '一次性 Profile 测试', 'principle.four': '发行与真实安装分离',
     'install.title': '先把 Skill 装进你的 Agent。', 'install.lead': '任何支持 Skill 的编程 Agent 都可以使用项目仓库地址；兼容时，也可以直接通过 DSH STORE 安装到 DSH。发行 ZIP 与安装命令继续通过最新 Release 和对应标签的 manifest.json 核验。',
     'install.targetCodingAgent': '复制给任何编程 Agent', 'install.targetDshStore': '通过 DSH STORE 安装到 DSH', 'install.targetZip': '下载 ZIP 到兼容的 Skills 目录',
     'install.loading': '正在核对固定发行…', 'install.ready': '固定发行已核验', 'install.unavailableStatus': '发行核验失败', 'install.loadingCommand': '正在读取并验证 GitHub Release…',
@@ -22,32 +22,32 @@ const translations = {
     'start.title': '先把意图写清楚，技术结构交给 Skill。', 'start.lead': '下面的模板可以直接复制到支持 Skill 的 Agent。缺省字段会采用安全默认值，并作为假设明确展示。', 'start.note': '不要在 Brief 中放入 Token、密码、Cookie 或私有文件内容。',
     'process.title': '每一步都有输出，也有停止条件。', 'process.lead': '通过当前证据再进入下一阶段；无法证明时保持 Partial 或 Blocked。',
     'process.step0': '归一化目标', 'process.body0': '把问题、结果和成功标准整理为可测试 Brief。',
-    'process.step1': '核对 DSH 宿主', 'process.body1': '确认标准 Bundle、公开扩展面和适配器边界。',
+    'process.step1': '选择并核对目标宿主', 'process.body1': '分别核对 DSH Web 与官方桌面端的公开 API、Client 静态依赖、桌面插件管理器和逐版本证据。',
     'process.step2': '判断风险', 'process.body2': '根据写入、网络、凭据与生命周期选择控制强度。',
     'process.step3': '选择最小架构', 'process.body3': '比较 Host、Client、Skill Adapter 与生命周期方案。',
     'process.step4': '生成源码与测试', 'process.body4': '输出标准结构、权限矩阵、失败行为和测试夹具。',
     'process.step5': '按证据验收', 'process.body5': '区分源码、测试、一次性 Profile、真实运行与外部验收。',
     'deliverables.title': '交付的不只是代码。', 'deliverables.lead': '每个插件都带着它为什么这样设计、能做什么、不能做什么以及如何证明。',
-    'deliverables.one': '宿主与架构记录', 'deliverables.oneBody': '兼容、需适配或不兼容，并附当前 DSH 证据。',
+    'deliverables.one': '宿主与架构记录', 'deliverables.oneBody': '对每个目标宿主分别标记兼容、需适配或不兼容，并附当前 DSH 版本证据。',
     'deliverables.two': '权限与风险矩阵', 'deliverables.twoBody': '每项数据和动作都对应用户结果、边界与测试。',
     'deliverables.three': '标准源码工程', 'deliverables.threeBody': 'Bundle、Host、可选 Client、测试和安全说明。',
     'deliverables.four': '证据与下一道门', 'deliverables.fourBody': '当前 E0–E5 状态、缺失证据和允许的下一步。',
     'boundary.title': '扩展 DSH，不改造 DSH。', 'boundary.lead': 'Skill 构建标准插件，不修改 DSH 源码、不遮蔽官方清单，也不会把测试写入真实 Profile。',
-    'boundary.one': '标准 Bundle 与公开扩展面', 'boundary.two': '一次性目录与 Profile 夹具', 'boundary.three': '真实变更单独计划与确认', 'boundary.four': '未知事实保持未知',
+    'boundary.one': 'Web 与官方 Desktop 分开验证', 'boundary.two': '一次性目录与 Profile 夹具', 'boundary.three': '真实变更单独计划与确认', 'boundary.four': '未知事实保持未知',
     'cta.title': '从一个真实问题开始。', 'cta.lead': '复制 Brief，或者前往 GitHub 查看完整 Skill、模板和验证方法。',
     'footer.lead': '面向 DeepSeek Harness 的第三方插件发现与开发入口。', 'footer.note': 'Skill 不是 DSH Profile 插件 · 真实变更需要单独确认',
     'toast.copied': '开发 Brief 已复制', 'toast.installCopied': '安装指令已复制', 'toast.denied': '浏览器未允许复制，请手动选择内容',
   },
   en: {
     'meta.title': 'Build DSH Plugins | DSH STORE Build Lab',
-    'meta.description': 'Use the build-dsh-plugin Agent Skill to turn a problem, outcome, and success criterion into a standard, non-destructive DeepSeek Harness plugin project.',
+    'meta.description': 'Use build-dsh-plugin to create a standard DSH plugin for DSH Web, official DSH Desktop, or both, with separate host contracts and acceptance evidence.',
     'a11y.skip': 'Skip to Skill installation',
     'nav.home': 'Home', 'nav.store': 'Plugin catalog', 'nav.articles': 'DSH Field Notes', 'nav.community': 'Community & creators', 'nav.standards': 'Listing standards', 'nav.manager': 'DSH Store plugin', 'nav.build': 'Build plugins', 'nav.trust': 'Trust protocol', 'nav.faq': 'FAQ', 'nav.about': 'About us', 'nav.guide': 'Usage guide', 'nav.submit': 'Submit plugin',
     'hero.title1': 'Three answers', 'hero.title2': 'start a DSH plugin.',
-    'hero.lead': 'Turn a natural-language brief into a standard Bundle, risk boundary, source project, tests, and evidence gates. Start with the user outcome, not internal APIs.',
+    'hero.lead': 'Turn a natural-language brief into a standard Bundle, risk boundary, source project, tests, and evidence gates. Choose DSH Web, official Desktop, or both; verify each host separately.',
     'action.install': 'Install Skill', 'action.copyBrief': 'Copy starter brief', 'action.github': 'View open-source Skill', 'action.copy': 'Copy template', 'action.copyInstall': 'Copy install request', 'action.download': 'Download verified ZIP', 'action.downloadAgent': 'Download current Agent Skill ZIP', 'action.source': 'View source', 'action.top': 'Back to top ↑',
     'console.problem': 'What problem exists today?', 'console.outcome': 'What outcome should change?', 'console.success': 'How will success be observed?',
-    'principle.one': 'Standard DSH Bundle', 'principle.two': 'Read-only and least privilege by default', 'principle.three': 'Disposable Profile testing', 'principle.four': 'Release and real install stay separate',
+    'principle.one': 'Separate DSH Web / official Desktop targets', 'principle.two': 'Read-only and least privilege by default', 'principle.three': 'Disposable Profile testing', 'principle.four': 'Release and real install stay separate',
     'install.title': 'Install the Skill in your Agent first.', 'install.lead': 'Any coding Agent that supports Skills can use the project repository directly. When compatible, you can also install it into DSH through DSH STORE. Release ZIPs and install commands stay verified against the latest Release and its tagged manifest.',
     'install.targetCodingAgent': 'Copy to any coding Agent', 'install.targetDshStore': 'Install into DSH through DSH STORE', 'install.targetZip': 'Download the ZIP to a compatible Skills directory',
     'install.loading': 'Verifying fixed release…', 'install.ready': 'Fixed release verified', 'install.unavailableStatus': 'Release verification failed', 'install.loadingCommand': 'Reading and validating the GitHub Release…',
@@ -61,18 +61,18 @@ const translations = {
     'start.title': 'Write the intent. Let the Skill derive the technical structure.', 'start.lead': 'Copy this template into an Agent that supports the Skill. Missing optional fields receive disclosed safe defaults.', 'start.note': 'Never place tokens, passwords, cookies, or private file contents in the brief.',
     'process.title': 'Every stage has an output and a stop condition.', 'process.lead': 'Advance on current evidence. When proof is missing, the state remains Partial or Blocked.',
     'process.step0': 'Normalize the outcome', 'process.body0': 'Turn the problem, outcome, and success criteria into a testable brief.',
-    'process.step1': 'Prove DSH host fit', 'process.body1': 'Check the standard Bundle contract, public seams, and adapter boundary.',
+    'process.step1': 'Choose and verify each target host', 'process.body1': 'Check public APIs, static Client dependencies, the official Desktop plugin manager, and version-specific evidence for Web and Desktop separately.',
     'process.step2': 'Classify risk', 'process.body2': 'Scale controls to writes, networks, credentials, and lifecycle impact.',
     'process.step3': 'Choose the smallest architecture', 'process.body3': 'Compare Host, Client, Skill Adapter, and lifecycle patterns.',
     'process.step4': 'Generate source and tests', 'process.body4': 'Produce the standard structure, permission matrix, failures, and fixtures.',
     'process.step5': 'Accept by evidence', 'process.body5': 'Keep source, tests, disposable Profile, real runtime, and external proof distinct.',
     'deliverables.title': 'The handoff is more than code.', 'deliverables.lead': 'Each plugin carries the reasoning, capability boundary, prohibited actions, and proof needed to move forward.',
-    'deliverables.one': 'Host and architecture record', 'deliverables.oneBody': 'Compatible, adapter-required, or incompatible, with current DSH evidence.',
+    'deliverables.one': 'Host and architecture record', 'deliverables.oneBody': 'Mark each target host compatible, adapter-required, or incompatible, with current DSH version evidence.',
     'deliverables.two': 'Permission and risk matrix', 'deliverables.twoBody': 'Every data source and action maps to an outcome, boundary, and test.',
     'deliverables.three': 'Standard source project', 'deliverables.threeBody': 'Bundle, Host, optional Client, tests, and security notes.',
     'deliverables.four': 'Evidence and next gate', 'deliverables.fourBody': 'Current E0–E5 status, missing proof, and the allowed next action.',
     'boundary.title': 'Extend DSH. Do not rewrite it.', 'boundary.lead': 'The Skill builds standard plugins without changing DSH source, hiding official inventory, or testing against a real Profile.',
-    'boundary.one': 'Standard Bundle and public seams', 'boundary.two': 'Disposable homes and Profile fixtures', 'boundary.three': 'Separate plans for real mutations', 'boundary.four': 'Unknown facts stay unknown',
+    'boundary.one': 'Verify Web and official Desktop separately', 'boundary.two': 'Disposable homes and Profile fixtures', 'boundary.three': 'Separate plans for real mutations', 'boundary.four': 'Unknown facts stay unknown',
     'cta.title': 'Start with one real problem.', 'cta.lead': 'Copy the brief or open GitHub for the complete Skill, templates, and verification method.',
     'footer.lead': 'A third-party discovery and development gateway for DeepSeek Harness.', 'footer.note': 'The Skill is not a DSH Profile plugin · Real changes require separate confirmation',
     'toast.copied': 'Starter brief copied', 'toast.installCopied': 'Install request copied', 'toast.denied': 'Clipboard access was denied. Select the content manually.',
@@ -87,9 +87,10 @@ const briefs = {
 核心能力：（可选）
 需要读取的数据：（可选；默认无）
 需要执行的动作：（可选；默认只读）
+目标宿主：DSH Web / 官方 DSH Desktop / 两者（默认两者，若公开扩展面不支持则说明适配器）
 需要界面：（可选；默认 Host-only）
 明确不能做什么：（可选；默认不改 DSH 核心、官方插件和真实 Profile）
-怎么才算成功：`,
+怎么才算成功：（为每个目标宿主给出可观察结果；Desktop UI/Profile E4 单独验收）`,
   en: `Use $build-dsh-plugin to generate a standard DSH plugin source project.
 
 Current problem:
@@ -97,9 +98,10 @@ Expected outcome:
 Core capabilities: (optional)
 Data to read: (optional; defaults to none)
 Actions to perform: (optional; defaults to read-only)
+Target host: DSH Web / official DSH Desktop / both (default both when public seams permit)
 UI needed: (optional; defaults to Host-only)
 Must not do: (optional; defaults to no DSH core, official inventory, or real Profile changes)
-Observable success criterion:`,
+Observable success criterion for each selected host (Desktop UI/Profile E4 is a separate gate):`,
 }
 
 const RELEASE_API = 'https://api.github.com/repos/AI-Scarlett/build-dsh-plugin/releases/latest'

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "type": "storefront-build-lab-guidance-update",
+  "planId": "dsh-store-buildlab-build-plugin-desktop-20261030",
+  "planFile": "docs/ops/build-dsh-plugin-desktop-buildlab-20261030.json",
+  "createdAt": "2026-10-30T10:31:38.305Z",
+  "baseCommit": "9e9f7c02da5ae948854c6f172c560224cc77a958",
+  "repository": "AI-Scarlett/DSH-Store",
+  "objective": "让 DSH STORE Build Lab 的 Brief 明确选择 DSH Web、官方 DSH Desktop 或两者，并要求逐宿主核对公开扩展面、桌面 Client 静态依赖和官方插件管理器，分别记录兼容与验收证据。",
+  "scope": [
+    "marketplace/build/build.js",
+    "marketplace/build/index.html",
+    "test/build-release-page.test.mjs",
+    "docs/ops/build-dsh-plugin-desktop-buildlab-20261030.json"
+  ],
+  "preconditions": {
+    "marketplace/build/build.js": "ff2bf50aa0e1a12cbf9577527fc8216d2dfa39c1976b47c2b485a0798c387e30",
+    "marketplace/build/index.html": "da033171f384d3357bb7a67724d94760395634ad023009acc39efa9a6e908e1e",
+    "test/build-release-page.test.mjs": "4a7cb099bc456428fec0f92f4a5922376c5759b8f2938b7d95737494a8337013",
+    "docs/ops/build-dsh-plugin-desktop-buildlab-20261030.json": null
+  },
+  "postconditions": {
+    "marketplace/build/build.js": "0bd6f289a6dcea449175f522a8d74fd38abb0204fca1ad566905bf54581f5c57",
+    "marketplace/build/index.html": "173e0de7bfb6ac19be942f7b3736f25f09a054ad143da3b207f7c4f6b9c2b8b6",
+    "test/build-release-page.test.mjs": "fe72492593b4f991729ab87eaf42ce82701e08dd86efad089f52a2cdb31ef7ae"
+  },
+  "authorization": {
+    "source": "direct-user-request-in-active-conversation",
+    "request": "Update build-dsh-plugin for latest DSH and official Desktop standards, update the official website and publish it; earlier explicit instruction to go live remains applicable.",
+    "githubWrite": "auditable-pull-request-only",
+    "storefrontPublication": "after-merge-Pages-and-both-production-site-readbacks",
+    "catalogMutation": "excluded; requires a separate fresh policy workflow"
+  },
+  "changes": {
+    "buildBrief": "Add an optional DSH Web / official DSH Desktop / both target, with both as the default where public seams support it; require observable acceptance per selected host and keep real Profile/Desktop UI acceptance separate.",
+    "desktopStandards": "State that Web evidence does not establish Desktop compatibility; check version-specific public APIs, static Client dependencies, and the official Desktop plugin-manager contract.",
+    "releaseDiscovery": "Keep version and download data dynamic from the latest GitHub Release and its tagged manifest; do not hardcode release metadata into the page."
+  },
+  "gates": [
+    "The plan base Commit must equal current GitHub main and all precondition hashes must match before editing.",
+    "English and Chinese Build Lab copy and generated Brief both name the target host and keep per-host evidence distinct.",
+    "npm run check passes; changes are merged only through a CI-checked pull request.",
+    "After Build DSH Plugin v0.6.0 is publicly released, verify the page resolves the tagged manifest and release assets.",
+    "After merge, verify GitHub Pages, https://dsh.store/build/, and https://dsh-store.cn/build/ independently; record visible copy and release version on both domains."
+  ],
+  "healthCheck": "Build Lab Brief contains Web/Desktop/both target selection and per-host acceptance guidance in both locales; release panel resolves the latest verified GitHub tag, manifest, ZIP, and SHA; GitHub Pages and both production domains expose the merged page.",
+  "rollback": "Revert only the scoped Build Lab copy/test/plan change through a CI-checked PR. If a published static site is unhealthy, restore the previous verified storefront artifact atomically; keep Catalog and author-contact history unchanged.",
+  "boundaries": [
+    "Do not change DSH source or @deepseek-ai packages.",
+    "Do not change real DSH Profiles or infer Desktop UI/Profile acceptance from CLI CI.",
+    "Do not change Catalog records in this plan; use the dedicated fresh Catalog policy workflow separately.",
+    "Do not contact plugin authors or change the central contact ledger."
+  ],
+  "verification": {
+    "baseCommit": "9e9f7c02da5ae948854c6f172c560224cc77a958",
+    "latestDshWindow": [
+      "0.2.1-rc.4",
+      "0.2.1-rc.5",
+      "0.2.2-alpha.2"
+    ],
+    "skillRelease": "v0.6.0-pending-final-source-CI-and-merge",
+    "localCheck": "passed: npm run check; REGISTRY_OK entries=862; 554/554 tests",
+    "pages": "pending",
+    "dshStore": "pending",
+    "dshStoreCn": "pending",
+    "staticBuild": "passed for both https://dsh.store and https://dsh-store.cn origins; generated Build Lab HTML and bilingual Brief contain DSH Web/official Desktop target guidance"
+  }
+}
