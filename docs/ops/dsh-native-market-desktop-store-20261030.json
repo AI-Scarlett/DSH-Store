@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-store-20261030",
+  "planFile": "docs/ops/dsh-native-market-desktop-store-20261030.json",
+  "createdAt": "2026-10-30T00:00:00Z",
+  "baseCommit": "7d1ee86f4ec489fabdbd7669a15d616845a09541",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-store-20261030.json",
+    "docs/reviews/dsh-native-market-desktop-store-20261030.md",
+    "locale/en.json",
+    "locale/zh.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "c23dc9980a5ea4dd300d2f0835dacef372d1d786c30ac757717c4eab947915e4",
+    "README.md": "297af29c67b770bc5ff901779295524cc86a903eed0148092fca7afc1ef9611e",
+    "docs/ops/dsh-native-market-desktop-store-20261030.json": null,
+    "docs/reviews/dsh-native-market-desktop-store-20261030.md": null,
+    "locale/en.json": null,
+    "locale/zh.json": null,
+    "package.json": "bd5ae2a297936f58e1c6f4f8c150d6a93fbafa64a4c6910d2702d0157cf856ef",
+    "src/client.js": "3364caa6d8840277f4e4ca6d1624362eec6c620518ed9003c7fbe515cddc4852",
+    "test/catalog.test.mjs": "576c1d636f7e3cc4f1ece1c7ff6cec67c973dce89fecc4a31f4862c54252c2dc",
+    "test/contracts.test.mjs": "27e50f85b037869ce5c5f09249891871496b24331ccab3bd850ff13237a5de0a",
+    "test/desktop-compat.test.mjs": "2f1a1fd9a73f4fbf0aa9f4ae53579824a2a902e9f26c4830ec181cdcf2e4e256",
+    "test/upgrade-matrix.test.mjs": "35d3de667f45dfce6389b7da2263e418d1ad96bbd6704ed8d5104697ca0b8a65"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "c01edbab0fd35d4ba025d6528622aab35ed9346363487610487cc69492327907",
+    "README.md": "2f209fb966dd76abe1279043a17b63779b18ecb623a704eab1e7d1169c72885b",
+    "docs/reviews/dsh-native-market-desktop-store-20261030.md": "f332507bdcaa80bed844841ed74db47cf3c3fb8c80793c09e555fe2ed1529ab4",
+    "locale/en.json": "f3acf67b5ef6db8b94a7c9eb53f844f9deca7dccab258f4385f2d005da12399f",
+    "locale/zh.json": "0a4d6c09537ac58b67753d30314af0d215cfa6e348dfc9bedd5dadad29c3079a",
+    "package.json": "6611e003cfef4141f21af9451dbd4ffb4cb50d5ea8c020e1ac293b7cac2fa42c",
+    "src/client.js": "6355b79c4f806f0c8d4d859b9fae651d75f5c464492b925dc8f60813a98ebef5",
+    "test/catalog.test.mjs": "2a59d24503c4c7ed9858806e5df6211bbfb5b33615361d8e0247aab81564c66e",
+    "test/contracts.test.mjs": "e9ac8379d3d1e41c49c7b1a62586964f581dde5955c0c524a88c970d7f9edfd6",
+    "test/desktop-compat.test.mjs": "c3d8aff04f27150e6d517c7a007a867298b4c38c44f2d7c6fdcf0abc4fe8a3ee",
+    "test/upgrade-matrix.test.mjs": "0c465f7e8845e4f9bb13da8d718b7d7988a2defcc27533ff86b68039fca48936"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "把插件商城入口移到设置左侧独立分区，并让 DSH Desktop 加载商城列表、显示已安装状态并可通过官方安装器安装固定 Commit 插件；展示名为 DSH-Store。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-pull-request-only"
+  },
+  "official": {
+    "repository": "deepseek-ai/deepseek-harness",
+    "targetRelease": "dsh-v0.2.2-alpha.2",
+    "targetReleaseUrl": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-alpha.2",
+    "latestVerifiedWindow": [
+      "0.2.1-rc.4",
+      "0.2.1-rc.5",
+      "0.2.2-alpha.2"
+    ],
+    "settingsExtension": "settings.section",
+    "desktopInventory": "ctx.remote.pluginManager.listBundles",
+    "desktopInstaller": "ctx.remote.pluginManager.inspect and installBundle; waitForInstall recovers an active request",
+    "desktopRuntimeVersionSource": "official pluginManager.listBundles entries with official=true and exact installTarget.version",
+    "packageDisplayMetadata": "locale/en.json and locale/zh.json meta.title, exported by ./locale/*.json"
+  },
+  "gates": [
+    "Register DSH-Store as its own settings.section contribution and keep it outside the built-in plugins tab.",
+    "Expose the DSH-Store package title through locale/en.json and locale/zh.json while retaining the internal package and Patch IDs.",
+    "Desktop catalog loading is bounded and fails closed; only approved entries pinned to canonical GitHub repositories and full Commits are shown as trusted entries.",
+    "Read Desktop installed state and exact DSH runtime version through the official pluginManager Remote API; show approved Catalog entries for browsing, but enable installation only when compatibility.profiles explicitly includes desktop and the exact runtime release is declared compatible.",
+    "Require a typed per-entry confirmation containing the package name and all 40 Commit characters, call official inspect then installBundle, and do not grant approved build scripts automatically.",
+    "Keep Store plan/execute, Profile Patch, enable/disable, uninstall, Guardian and restart paths unavailable in Desktop mode; use the official DSH plugin page for those lifecycle actions.",
+    "Run disposable desktop-client contract coverage for profile and version gates, validate the current trusted Catalog through the Desktop reader, and run npm run check; require exact-head CI before merging.",
+    "After source merge, prepare a separate fresh Catalog plan and verify GitHub Raw, Pages, dsh.store, and dsh-store.cn; do not claim listing or deployment from this source PR."
+  ],
+  "rollback": {
+    "source": "Revert only the exact source PR through a CI-checked PR.",
+    "desktopProfile": "This plan does not install or change a real Desktop Profile. DSH installation actions are invoked only after the Desktop user completes the explicit typed confirmation in the product UI."
+  },
+  "healthCheck": "Disposable tests verify Settings section registration, bounded trusted Catalog parsing, explicit Desktop Profile plus exact DSH release compatibility gating, installed-state projection, typed full-Commit confirmation and official inspect/installBundle calls. npm run check and exact-head PR CI must pass.",
+  "boundaries": [
+    "Do not modify DSH source or any @deepseek-ai package.",
+    "Do not disable or shadow the official plugin inventory.",
+    "Do not use Loader/Fiber mutation APIs or the Store's custom Profile mutation endpoints in Desktop mode.",
+    "Do not install, update, enable, disable, uninstall, or restart anything in the user's real Desktop Profile during this source change.",
+    "Do not change registry Catalog records or production storefronts in this source PR.",
+    "Do not contact plugin authors."
+  ],
+  "verification": {
+    "officialApiEvidence": "passed against dsh-v0.2.2-alpha.2: pluginManager types expose listBundles, inspect, installBundle, waitForInstall; Plugin Manager presentation resolves meta.title; package metadata reads exported locale resources.",
+    "desktopClientTests": "passed: 26/26 contract tests, including Settings section, actual trusted Catalog (861 entries), explicit Desktop Profile gating, exact version compatibility, installed state, malformed/oversized Catalog, full-Commit confirmation and official inspect/installBundle call. Current Catalog has 33 approved entries, 3 declare Desktop support, and none of those 3 declare compatible for 0.2.2-alpha.2; browsing works while install remains disabled until evidence is updated.",
+    "npmRunCheck": "passed: REGISTRY_OK entries=861 and 552/552 tests; npm pack --dry-run includes locale/en.json and locale/zh.json in dsh-safe-plugin-manager@0.9.13.",
+    "exactHeadPullRequestCi": "pending",
+    "realDesktopUi": "unverified: live read-only inspection of dsh-app://app/ still shows the previous Built-in Plugins tab and read-only handoff panel; source is not installed into the real Desktop Profile.",
+    "catalogAndProductionSurfaces": "separate post-merge Catalog plan"
+  }
+}
