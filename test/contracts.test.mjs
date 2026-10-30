@@ -332,7 +332,7 @@ test('guarded write path uses exact process arguments and permanent protection c
 test('bundle patch inserts only the manager and does not shadow official inventory', async () => {
   const patch = await readFile(new URL('cordis.patch.yml', project), 'utf8')
   assert.match(patch, /id:\s*dsh-safe-plugin-manager/)
-  assert.match(patch, /name:\s*DSH-Store/)
+  assert.match(patch, /name:\s*dsh-safe-plugin-manager/)
   assert.doesNotMatch(patch, /ui-settings-plugin-inventory/)
   assert.doesNotMatch(patch, /disabled:\s*true/)
 })

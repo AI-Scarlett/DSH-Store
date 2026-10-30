@@ -7,7 +7,6 @@
   "baseCommit": "1b5a40145642a0e760d7780ca4bb705f4040dcce",
   "scope": [
     ".github/workflows/registry.yml",
-    "cordis.patch.yml",
     "docs/ops/dsh-native-market-client-adaptation-20261030.json",
     "docs/wiki/Catalog-Automation.md",
     "marketplace/app.js",
@@ -22,7 +21,6 @@
   ],
   "preconditions": {
     ".github/workflows/registry.yml": "5edbaae4b637f1f1fe1fd9cfad9bdfee8c693d010de05325ee6adb88ac9aa45b",
-    "cordis.patch.yml": "5262cac893356db84aaf1c8a2a4af1dc8f0fc9f20efb982d102b3fa6724ce083",
     "docs/ops/dsh-native-market-client-adaptation-20261030.json": null,
     "docs/wiki/Catalog-Automation.md": "b0d3fd8e26162edaeeb750dacd07617ec301e3cf501178aa3f5dfbc3f323dd3c",
     "marketplace/app.js": "7ff3c534bdcbc9680d46a8513d2e56a9cc3b3ac52aaea54a565e226d7900e547",
@@ -37,7 +35,6 @@
   },
   "postconditions": {
     ".github/workflows/registry.yml": "e81d3701167693fe25f38bc55f783d063b64fd8df9c1598c5241978b77051eae",
-    "cordis.patch.yml": "44773e135937e40d98019e88e83e1a9c3e6d1f68d98473daf5de2cc2eb598e9c",
     "docs/wiki/Catalog-Automation.md": "ba532bb82754b47d825882419778e45057615c3709abc3b9ee2ed1e3d8efb19a",
     "marketplace/app.js": "05f0fcdb45120afd44c15ae793e7ac31605b959abc51e465d16ab9d1e515ac9b",
     "marketplace/store-layout.css": "a23f62ad324803144956073b24dc22f5e2775d34da78e637e1b547eab673d455",
@@ -45,7 +42,7 @@
     "package.json": "39743b499dcbba6f9e44f8814a0c44203e702d3cfa33692a5b9481e697453b20",
     "src/client.js": "a1bed2f2318e9f0d97918501c423f712f2cc4486c3ae82c4ccef111ed5777722",
     "test/catalog.test.mjs": "95211293329d3644339d98de46064b17fbf3fe9b13a083123e97a7ab89b73c2c",
-    "test/contracts.test.mjs": "53f3692302ee56776348052038322dfd9a269b64128fcf2eb517b6b09b008543",
+    "test/contracts.test.mjs": "bd578563af2c62f71ac8653842d355521c2d801ae73c1649a541d04c7b51b7ec",
     "test/desktop-compat.test.mjs": "dd11dee9438f8c083d7aa1f7ec37d20150666d09189f6b4fde28ec349b7cd791",
     "test/upgrade-matrix.test.mjs": "6559040a6f76190bac9d6421e7b9e4bd437530cf6b3d9ba0d7846e0858402cce"
   },
@@ -58,9 +55,10 @@
   "objective": "为 DSH Store 0.9.16 补充商店卡片、详情和 DSH 客户端列表的 Desktop 适配声明标识；保留 Desktop 的官方插件管理器安装路径与只读 Profile 边界。",
   "change": {
     "packageVersion": "0.9.16",
-    "displayName": "DSH-Store",
+    "displayName": "DSH-Store, provided by locale meta.title; the Bundle row name remains dsh-safe-plugin-manager to preserve Host API routing.",
     "compatibilityLabel": "compatibility.profiles 含 desktop 显示已声明适配，否则显示未声明适配；Desktop 适配不是收录条件。",
-    "desktopInstallPath": "继续使用 DSH Desktop 官方 pluginManager inspect/installBundle；完整 Commit 二次确认；不通过 Store 修改自身、启停或卸载。"
+    "desktopInstallPath": "继续使用 DSH Desktop 官方 pluginManager inspect/installBundle；完整 Commit 二次确认；不通过 Store 修改自身、启停或卸载。",
+    "hostRouting": "The Bundle row name stays equal to package.name (dsh-safe-plugin-manager) because DSH scopes Host API routes to that technical identity; DSH-Store remains the localized meta.title shown in the official client."
   },
   "commands": [
     {
@@ -131,12 +129,12 @@
   ],
   "verification": {
     "desktopHarness": "passed: 8/8 cases, including Settings section, Catalog loading, compatibility badges, exact-Commit confirmation and official installBundle call.",
-    "packageDryRun": "passed: dsh-safe-plugin-manager-0.9.16.tgz, 1062 files.",
+    "packageDryRun": "passed: dsh-safe-plugin-manager-0.9.16.tgz, 1062 files; dry-run only.",
     "npmRunCheck": "passed: REGISTRY_OK entries=862; 555/555 tests passed.",
     "exactHeadPullRequestCi": "pending.",
     "catalogPublicReadback": "pending separate catalog release.",
     "realDesktopInstall": "pending separate, explicitly user-requested local Profile operation.",
-    "registrySources": "passed: all 26 approved entries matched their fixed Commit sources.",
-    "sourcePlan": "passed: DSH_UPGRADE_PLAN_OK base=1b5a40145642a0e760d7780ca4bb705f4040dcce changed=13."
+    "registrySources": "passed: all 33 approved entries matched their fixed Commit sources.",
+    "sourcePlan": "passed: DSH_UPGRADE_PLAN_OK base=1b5a40145642a0e760d7780ca4bb705f4040dcce changed=12."
   }
 }
