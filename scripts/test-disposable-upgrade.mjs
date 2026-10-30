@@ -39,7 +39,7 @@ try {
     child.once('exit', code => { clearTimeout(timer); reject(new Error(`startup-exited-${code}`)) })
   })
   const base = `http://127.0.0.1:${port}`
-  const request = (path, cookie, method = 'POST') => fetch(base + path, { method, headers: { 'content-type': 'application/json', ...(cookie ? { cookie } : {}) }, ...(method === 'POST' ? { body: '{}' } : {}), signal: AbortSignal.timeout(10000) })
+  const request = (path, cookie, method = 'POST') => fetch(base + path, { method, headers: { 'content-type': 'application/json', ...(cookie ? { cookie } : {}) }, ...(method === 'POST' ? { body: '{}' } : {}), signal: AbortSignal.timeout(60000) })
   const denied = await request('/api2/dsh-safe-plugin-manager/runtime'); assert.equal(denied.status, 401)
   const login = await fetch(launch, { redirect: 'manual', signal: AbortSignal.timeout(10000) })
   assert.ok([302, 303].includes(login.status))

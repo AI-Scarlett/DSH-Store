@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-rc5-desktop-20261030",
+  "planFile": "docs/ops/dsh-native-market-rc5-desktop-20261030.json",
+  "createdAt": "2026-10-30T02:31:02Z",
+  "baseCommit": "763db1b7624be0d83641c1c7c7ac10c9efd50c1d",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-rc5-desktop-20261030.json",
+    "docs/reviews/dsh-native-market-rc5-desktop-20261030.md",
+    "package.json",
+    "scripts/test-disposable-upgrade.mjs",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "80111502da9e7d2a919955050e9ed9b88c8bc43dcbc7eb762b50bc3c7092c7bf",
+    "README.md": "bef94c836a12ddeba1d007e8a1058053bee9c8f2984099b2ac2ce8b1cd83344d",
+    "docs/ops/dsh-native-market-rc5-desktop-20261030.json": null,
+    "docs/reviews/dsh-native-market-rc5-desktop-20261030.md": null,
+    "package.json": "585ae5f162e7848a930320aaacca5e0716ec0910d40a45e8674da4d6f89e8b06",
+    "scripts/test-disposable-upgrade.mjs": "b992fe35bc5b1cb3f3b4f89a477ca4ec22b34e6e909f439fffea65d413b4d99d",
+    "test/catalog.test.mjs": "e75c6489a5af3f2f03b0d59559e4d4f9b56dbc1cde726c973ae3b87d4e560879",
+    "test/contracts.test.mjs": "a9bd45e468d205550d05d636247a4dda2ccf10c9bd97eba41ea532ffe5cfd7b8",
+    "test/upgrade-matrix.test.mjs": "4beecb5f1eb2ed8a2090f13311cc66d241c580cd411e489a9629075f566dec4d"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "2f3ab50186d9b3d7f4c42660a4d6e4577fb41b7074738f3a7d077ac77918cabb",
+    "README.md": "699ac0d9552104781ac663cf95d62c953c7bfe7c2e19264a8d44a4237ad0636e",
+    "docs/reviews/dsh-native-market-rc5-desktop-20261030.md": "448370d21488beb418dcb68486ed2a8012d464d878341f97056bd2478ee89188",
+    "package.json": "bd5ae2a297936f58e1c6f4f8c150d6a93fbafa64a4c6910d2702d0157cf856ef",
+    "scripts/test-disposable-upgrade.mjs": "564aad8c12f96d9bd4735c3b9482e0df160305f19c58777253343a8c002f9f18",
+    "test/catalog.test.mjs": "311b8af386ccc794199245d27e881b6a94ff475c05e79fb87c9c09c904e4e0e6",
+    "test/contracts.test.mjs": "27e50f85b037869ce5c5f09249891871496b24331ccab3bd850ff13237a5de0a",
+    "test/upgrade-matrix.test.mjs": "35d3de667f45dfce6389b7da2263e418d1ad96bbd6704ed8d5104697ca0b8a65"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "DSH 发新版了 去适配 上线吧",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-pull-request-only"
+  },
+  "official": {
+    "repository": "deepseek-ai/deepseek-harness",
+    "targetVersion": "0.2.2-alpha.2",
+    "targetReleaseUrl": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-alpha.2",
+    "npmNextVersion": "0.2.1-rc.5",
+    "npmNextPublishedAt": "2026-10-29T14:15:23.355Z",
+    "npmNextUrl": "https://www.npmjs.com/package/@deepseek-ai/dsh/v/0.2.1-rc.5",
+    "githubReleaseForNextVersion": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-rc.5",
+    "githubReleaseForNextPublishedAt": "2026-10-30T02:12:26Z",
+    "latestThree": [
+      "0.2.1-rc.4",
+      "0.2.1-rc.5",
+      "0.2.2-alpha.2"
+    ],
+    "latestThreeAuthority": "official-github-releases-and-npm-published-versions",
+    "nodeRequirements": {
+      "0.2.1-rc.5": "not-declared-in-npm-manifest",
+      "0.2.2-alpha.2": ">=24.9.0"
+    },
+    "publishedUiClientPackages": {
+      "@deepseek-ai/dsh-client-ui-primitives": "0.2.1-rc.5",
+      "@deepseek-ai/dsh-client-ui-settings": "0.2.1-rc.5",
+      "@deepseek-ai/dsh-client-ui-slots": "0.2.1-rc.5",
+      "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.2"
+    },
+    "desktopNotes": [
+      "The official DSH 0.2.2-alpha.2 plugin page renders rich-text details.",
+      "The official DSH 0.2.2-alpha.2 plugin page updates third-party packages and attempts rollback after failed hot update."
+    ]
+  },
+  "gates": [
+    "Resolve and record the exact official npm/GitHub latest-three window as rc.4, rc.5, alpha.2.",
+    "Declare rc.5 only for published DSH and UI client packages; do not invent a dsh-client-runtime rc.5 version.",
+    "Run official DSH CLI install, dump-config, startup, authenticated API, uninstall, and exact temporary Profile restoration for rc.5 using fixed argv and a disposable DSH_HOME.",
+    "Preserve read-only Desktop Profile behavior and use the official Desktop plugin page for package lifecycle actions.",
+    "Run npm run check and the DSH matrix/Registry/CodeQL checks on the exact PR head.",
+    "Merge source through the auditable PR, then prepare a fresh Catalog plan pinned to the resulting source Commit.",
+    "After Catalog merge, read back GitHub Raw, Pages, dsh.store, and dsh-store.cn independently.",
+    "Use a bounded 60-second response timeout for the disposable activation probe, which hydrates the live multi-file Catalog before returning."
+  ],
+  "rollback": {
+    "source": "Revert only the exact source PR through a CI-checked PR.",
+    "catalog": "Separate fixed-Commit revert PR; no Catalog edits in this source plan.",
+    "profile": "Disposable temporary DSH_HOME is removed. The preceding Desktop rejection reported restoring package.json, pnpm-lock.yaml, and node_modules; complete real Profile state readback remains unverified."
+  },
+  "healthCheck": "Exact official latest-three resolver passes; rc.5 disposable CLI acceptance passes; Registry validation and exact-head PR checks pass. Desktop real UI remains separately marked unverified.",
+  "boundaries": [
+    "Do not modify DSH source or any @deepseek-ai package.",
+    "Do not mutate ~/.dsh, a real Profile, or the installed Desktop package. The user's direct request authorizes read-only Desktop UI inspection for compatibility evidence.",
+    "Do not change the Catalog or production sites in this source PR.",
+    "Do not contact plugin authors.",
+    "Do not claim Desktop UI acceptance from Web Profile tests or release notes."
+  ],
+  "verification": {
+    "officialReleaseResolver": "passed: 0.2.1-rc.4, 0.2.1-rc.5, 0.2.2-alpha.2; dsh-v0.2.1-rc.5 GitHub Release published 2026-10-30T02:12:26Z",
+    "publishedPeerPackages": "passed: three DSH UI clients at 0.2.1-rc.5; runtime remains 0.1.1-rc.2",
+    "localDisposableRc5": "passed with official CLI 0.2.1-rc.5: install, dump-config, authenticated startup/API, activation, uninstall, exact temporary Profile restoration; Node 26.8.1; real Profile unchanged. The activation probe uses a bounded 60-second timeout for live Catalog hydration.",
+    "npmRunCheck": "passed: REGISTRY_OK entries=861 and 548/548 tests",
+    "exactHeadPullRequestCi": "must pass on the exact PR head before merge; the PR status checks are the authoritative evidence.",
+    "desktopRealUi": "Read-only Desktop UI inspection on the installed DSH 0.2.1-rc.5 confirmed the Plugins page renders and the Add third-party plugin flow accepts an npm package, GitHub repository, or local directory while showing a local-permissions warning. No source was entered and no installation submitted. Earlier failure-dialog evidence: source dsh-safe-plugin-manager@0.9.11 from the official Git URL was rejected because engines.dsh lacked rc.5; DSH reported restoring package.json, pnpm-lock.yaml, and node_modules. The UI entry flow is verified; Store 0.9.12 installation, activation, and complete real Profile state remain unverified.",
+    "catalogAndProductionSurfaces": "separate Catalog PR after source merge"
+  }
+}
