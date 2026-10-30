@@ -2351,7 +2351,7 @@ window.__ModuleLoader__.load({
     }
 
     const name = 'dsh-safe-plugin-manager'
-    const inject = ['slots']
+    const inject = ['slots', 'remote', 'remote.pluginManager']
     function apply(ctx) {
       if (!OFFICIAL_DESKTOP_RENDERER) {
         if (typeof ctx.effect === 'function') {

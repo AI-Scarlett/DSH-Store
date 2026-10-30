@@ -51,7 +51,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-当前公开 Catalog 仍固定到 Store `0.9.12`、Commit `8837c09f4546735475cfdfd6b1669e701b3a40fd`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。Store `0.9.13` 加入 Desktop 商城入口与官方安装器适配；计划中的 `0.9.14` 在此基础上压缩旧版 Catalog 桥接响应。两次源码改动都需要独立 Catalog 策略更新和公网回读，才会到达已安装用户。
+当前公开 Catalog 仍固定到 Store `0.9.12`、Commit `8837c09f4546735475cfdfd6b1669e701b3a40fd`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。Store `0.9.13` 加入 Desktop 商城入口与官方安装器适配；`0.9.14` 压缩旧版 Catalog 桥接响应；`0.9.15` 补齐 DSH Desktop Client 对官方 `remote.pluginManager` 的静态依赖声明。源码版本合并不代表 Catalog 已更新；Catalog 与生产商城需通过独立策略更新并逐站回读，才会到达其他已安装用户。
 通过 DSH 官方 CLI 安装 Catalog 固定的 `0.9.12` Commit：
 
 ```bash
@@ -112,7 +112,7 @@ Desktop 验收；当前公开 Catalog 仍指向 `0.9.12`，直到后续 Catalog 
 
 `0.9.12` 将官方 DSH 最新三版 `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2` 纳入精确兼容记录。`0.2.1-rc.5` 于 2026-10-29 发布到 npm 的 `next` 和 `latest` 标签，官方 `dsh-v0.2.1-rc.5` GitHub Release 于 2026-10-30 发布。三个注入 UI 客户端包均发布了 `0.2.1-rc.5`，而独立 `@deepseek-ai/dsh-client-runtime` 仍停在 `0.1.1-rc.2`，因此只更新确有发布的三个 UI peer。`0.2.2-alpha.2` 仍是语义版本最高项并要求 Node `>=24.9.0`。每个受支持版本的安装、启动、卸载和精确 Profile 还原按隔离 CLI 验收；降级回滚保持 `unknown`。
 
-官方 DSH `0.2.2-alpha.2` 提供供 Client 使用的 `settings.section`、`pluginManager.listBundles`、`inspect`、`installBundle` 和 `waitForInstall` Remote 契约。Store `0.9.13` 使用独立设置分区、精确版本门控和 DSH 官方安装器；商城仍不接管 Desktop 生命周期，也不把 Web Profile 操作送入桌面环境。自动化边界与 UI 合同测试覆盖此路径，真实已安装 Desktop Profile 未被改动，真实打包 UI 仍需独立验收。`0.9.14` 还会压缩旧客户端桥接响应，并保持 v2 详情中的完整兼容性记录。
+官方 DSH `0.2.2-alpha.2` 提供供 Client 使用的 `settings.section`、`pluginManager.listBundles`、`inspect`、`installBundle` 和 `waitForInstall` Remote 契约。Store `0.9.13` 使用独立设置分区、精确版本门控和 DSH 官方安装器；商城仍不接管 Desktop 生命周期，也不把 Web Profile 操作送入桌面环境。真实 DSH `0.2.1-rc.5` 只读验收已确认左侧 `DSH-Store` 独立入口可见，但 `0.9.14` 未声明 `remote.pluginManager` 模块依赖，导致目录显示 `DESKTOP_PLUGIN_MANAGER_UNAVAILABLE`。`0.9.15` 补上该依赖声明；隔离测试通过，真实桌面端更新与重启验收仍待完成。`0.9.14` 压缩旧客户端桥接响应，并保持 v2 详情中的完整兼容性记录。
 
 `0.9.3` 将官方 Desktop 绑定到其实际 Profile，并在服务端拒绝不受支持的商城写入、Guardian 与重启操作；商城界面明确展示只读模式。版本面板从 Desktop 内置的官方 DSH 包读取当前版本，不提供修改桌面应用运行时的 npm 命令。`0.2.0-rc.2`、`0.2.1-alpha.1`、`0.2.1-alpha.2` 已在 PR 的一次性 Web Profile 中完成安装、启动、卸载和精确回滚验证。`@deepseek-ai/dsh-client-runtime` 的 0.2.x 尚无独立 npm 包，但其精确 Peer 版本声明是官方 Host 安装前检查的契约；移除后一次性 Profile 安装在最新三版均失败。源码、Catalog、生产站点和真实 Desktop 界面各自需要独立验收。
 
