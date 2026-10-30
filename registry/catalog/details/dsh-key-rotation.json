@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f0984686f6ccf6b1c2eee126ff6fd9c9158f845e",
-  "version": "0.8.73",
+  "commit": "3b51464a19ce5499271bcf624360a6e8a062316c",
+  "version": "0.8.75",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-30T08:58:57.000Z",
-    "observedAt": "2026-10-30T09:25:15.000Z",
+    "updatedAt": "2026-10-30T12:01:02.000Z",
+    "observedAt": "2026-10-30T13:39:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-30T09:25:15.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/f0984686f6ccf6b1c2eee126ff6fd9c9158f845e",
+      "checkedAt": "2026-10-30T13:39:58.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-key-rotation/commit/3b51464a19ce5499271bcf624360a6e8a062316c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ea0f0b56c0e65d76c83e858541d69e6d7f0ed1b7011bd248eaa87b8d4ed7e1ef",
+    "binding": "13a1596d48b567397ef74eeae69d9c7740c933aa722afae629d334a1680ae59f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
@@ -94,7 +94,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security findings require quarantine; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: fixed-source security findings require quarantine; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": "^0.1.7-rc.2 || >=0.2.0-rc.1 <0.2.1-0 || >=0.2.1-alpha.1 <0.2.2-0",
     "dshReleases": {
@@ -197,9 +197,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "undici"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
