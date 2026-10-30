@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-remote-bridge-20261030",
+  "planFile": "docs/ops/dsh-native-market-desktop-remote-bridge-20261030.json",
+  "createdAt": "2026-10-30T08:44:02Z",
+  "baseCommit": "cd99595f18ce3b9351ea565f07dc22b04a3456c5",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-remote-bridge-20261030.json",
+    "docs/reviews/dsh-native-market-desktop-remote-bridge-20261030.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "c01edbab0fd35d4ba025d6528622aab35ed9346363487610487cc69492327907",
+    "README.md": "3b66d86980eac545a8c7efd0facb0856edf909016ed1d964b87bcda5f070f1b4",
+    "docs/ops/dsh-native-market-desktop-remote-bridge-20261030.json": null,
+    "docs/reviews/dsh-native-market-desktop-remote-bridge-20261030.md": null,
+    "package.json": "5cfcae395841faca42974ac06f2fc4a4cbddac62dd76b28f1575a0a97d73b295",
+    "src/client.js": "6355b79c4f806f0c8d4d859b9fae651d75f5c464492b925dc8f60813a98ebef5",
+    "test/catalog.test.mjs": "e8f6e51340b591e1d824166c93eeb68ccafae650f9ff7b70fce6a2b91cce106e",
+    "test/contracts.test.mjs": "aa02ebf8594edbab614e9f9450851d74d8a0f6086a0563a2bddbf7c019ed151b",
+    "test/desktop-compat.test.mjs": "c3d8aff04f27150e6d517c7a007a867298b4c38c44f2d7c6fdcf0abc4fe8a3ee",
+    "test/upgrade-matrix.test.mjs": "dc43d2ecd08aff6889863f85a60d34a90d0f27a52e7605c289c679230d23153d"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "41f2d2b00adf35c7e2b759bc6bf1ffe35089eec59b47e7125d6f42cc9db9516a",
+    "README.md": "09d2b835a27eecbc872b5cc9d42a4bb08f13f4ae974e68b0c4dcec77e457aff7",
+    "docs/reviews/dsh-native-market-desktop-remote-bridge-20261030.md": "0709f249ef0ffb316ee95ea4c8eae138dd96a3d42788f9bc727d6850efef29b9",
+    "package.json": "bae04bed10b5cbeb246dc053a8e151952ab85c2de427b7f2fa1f2c61039c846b",
+    "src/client.js": "251f5622a0bf731a41e458409502f8e1d4bf7c836bbc41494d08e10cec8ebd52",
+    "test/catalog.test.mjs": "49f71e3cd1a5e27006070577495af0430e4edcd1262ba990cfcc362212f385c6",
+    "test/contracts.test.mjs": "4b64ddb2b3751e96d0feda833c7cda56ef518390593a12030e8b21e57718486c",
+    "test/desktop-compat.test.mjs": "22305587094f5786e9406556d0ab0ff4dd48fc3a0f5c2fa36bbcffdec47ec5c2",
+    "test/upgrade-matrix.test.mjs": "31e77ed4930aa758801844fb725cf8300dd5c8fa4742b8481ac5ce51e5e3dc2a"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "插件商城没有兼容 这个桌面端，所以不显示里面的列表，这个要做兼容。要显示列表可以直接安装等等，安装方式也要兼容DSH的桌面端。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-pull-request-only"
+  },
+  "objective": "修复官方 DSH Desktop 设置中的 DSH-Store 空商城；当前 0.9.14 的模块未声明 remote.pluginManager，正式桌面加载器未向其注入官方插件管理器服务。",
+  "change": {
+    "packageVersion": "0.9.15",
+    "behavior": "声明 slots、remote、remote.pluginManager 三项静态 Client 模块依赖；保持现有有界 Catalog 校验、Desktop 兼容门控及官方 inspect/installBundle 安装路径。",
+    "prohibited": [
+      "不得修改 DSH 核心或 @deepseek-ai 包",
+      "不得修改真实 Desktop Profile 或重启 DSH",
+      "不得修改 Catalog、作者联系账本或生产商城",
+      "不得点按安装器重试或再次安装同一 Git 仓库"
+    ]
+  },
+  "official": {
+    "repository": "deepseek-ai/deepseek-harness",
+    "currentDesktopVersion": "0.2.1-rc.5",
+    "latestVerifiedRelease": "0.2.2-alpha.2",
+    "latestVerifiedWindow": [
+      "0.2.1-rc.4",
+      "0.2.1-rc.5",
+      "0.2.2-alpha.2"
+    ],
+    "settingsExtension": "settings.section",
+    "requiredDesktopServices": [
+      "remote",
+      "remote.pluginManager"
+    ],
+    "installerMethods": [
+      "listBundles",
+      "inspect",
+      "installBundle",
+      "waitForInstall"
+    ]
+  },
+  "gates": [
+    "Client module statically declares slots, remote, and remote.pluginManager so the official Desktop loader provides its manager service.",
+    "Keep DSH-Store as a separate Settings section labelled DSH-Store.",
+    "Keep Catalog reads bounded and fail-closed; keep installation gated by Desktop profile support and exact DSH compatibility.",
+    "Keep typed confirmation with package name and the complete 40-character Commit, then call official inspect/installBundle only.",
+    "Do not enable DSH-Store self-installation, Profile mutation, enable/disable, uninstall, Guardian, or restart through Desktop mode.",
+    "Run desktop compatibility tests, npm run check, npm pack --dry-run, the fresh plan verifier, and exact-head CI before merge.",
+    "Treat the live post-fix Desktop UI, Catalog publication, and storefront readbacks as separate acceptance gates."
+  ],
+  "healthCheck": "Disposable Desktop client harness must provide remote.pluginManager only when declared in the module dependency list; the DSH-Store view then loads the current Catalog, displays installed state, gates compatibility, and uses the official manager only after full-Commit confirmation. npm run check and exact-head CI must pass.",
+  "rollback": "Revert only this exact source PR through a CI-checked PR. No real Desktop Profile mutation is in scope; existing Git history is the source rollback.",
+  "boundaries": [
+    "Do not modify DSH source or any @deepseek-ai package.",
+    "Do not disable or shadow the official plugin inventory.",
+    "Do not call Loader/Fiber mutation APIs.",
+    "Do not mutate or restart the real Desktop Profile in this source PR.",
+    "Do not change Catalog records or production storefronts in this source PR.",
+    "Do not contact plugin authors or change the central contact ledger."
+  ],
+  "verification": {
+    "liveDesktopBeforeFix": "confirmed: DSH Desktop 0.2.1-rc.5, dsh-safe-plugin-manager 0.9.14 running, DSH-Store is a separate Settings entry, and its panel reports DESKTOP_PLUGIN_MANAGER_UNAVAILABLE.",
+    "officialDesktopApi": "confirmed in the installed official Desktop runtime: ui-plugin-manager declares remote and remote.pluginManager as Client module dependencies and calls listBundles, inspect, installBundle, and waitForInstall.",
+    "desktopClientTests": "passed: 8/8 cases after strict static-dependency injection modeling.",
+    "npmRunCheck": "passed: REGISTRY_OK entries=861, 553/553 tests.",
+    "packageDryRun": "passed: dsh-safe-plugin-manager-0.9.15.tgz, 1061 files, 8431789 bytes.",
+    "exactHeadPullRequestCi": "pending.",
+    "realDesktopAfterFix": "pending: installed Profile remains 0.9.14; update/restart is a separately planned and explicitly confirmed mutation.",
+    "catalogAndProductionSurfaces": "unchanged by this source PR; require a separate fresh Catalog policy run and independent GitHub Raw, Pages, dsh.store, and dsh-store.cn readback."
+  }
+}

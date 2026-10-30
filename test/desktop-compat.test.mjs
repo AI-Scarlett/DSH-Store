@@ -136,6 +136,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory } = {})
   const sourcePromise = readFile(new URL('../src/client.js', import.meta.url), 'utf8')
   const settingsRegistrations = []
   const injections = []
+  const moduleDependencies = []
   const requests = []
   const timerCallbacks = []
   const calls = { listBundles: 0, inspect: [], installBundle: [], waitForInstall: [] }
@@ -232,9 +233,15 @@ function createDesktopHarness({ catalog, installed = [], responseFactory } = {})
     clearTimeout: () => {},
     __ModuleLoader__: { load({ factory }) {
       const plugin = factory(name => name === 'react' ? React : ({ Modal }))
+      moduleDependencies.push(...plugin.inject)
+      const declaredDependencies = new Set(plugin.inject)
       plugin.apply({
-        remote: { pluginManager: manager },
-        inject(paths, callback) { injections.push(paths); callback() },
+        ...(declaredDependencies.has('remote') && declaredDependencies.has('remote.pluginManager')
+          ? { remote: { pluginManager: manager } } : {}),
+        inject(paths, callback) {
+          injections.push(paths)
+          if (paths.every(path => declaredDependencies.has(path))) callback()
+        },
         slots: {
           inject(slot, register) { settingsRegistrations.push({ slot }); register() },
           register(metadata, component) { settingsRegistrations.at(-1).metadata = metadata; panel = component },
@@ -260,7 +267,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory } = {})
   }
   return { ready, render, runEffects,
     getComponent: name => [...componentRecords.keys()].find(component => component.name === name),
-    settingsRegistrations, injections, requests, calls, timerCallbacks,
+    settingsRegistrations, injections, moduleDependencies, requests, calls, timerCallbacks,
     setInstalled: value => { installedBundles = value } }
 }
 
@@ -315,6 +322,7 @@ test('official Desktop registers DSH-Store as a separate Settings section and lo
   assert.equal(harness.settingsRegistrations[0].slot, 'settings.section')
   assert.equal(harness.settingsRegistrations[0].metadata.id, 'dsh-store')
   assert.equal(harness.settingsRegistrations[0].metadata.label(), 'DSH-Store')
+  assert.deepEqual(harness.moduleDependencies, ['slots', 'remote', 'remote.pluginManager'])
   assert.equal(JSON.stringify(harness.injections[0]), '["remote","remote.pluginManager"]')
 
   const initial = await harness.render()
