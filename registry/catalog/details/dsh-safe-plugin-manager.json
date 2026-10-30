@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 0.9.12 适配 DSH 0.2.1-rc.4、0.2.1-rc.5 和 0.2.2-alpha.2",
+  "description": "DSH STORE 0.9.15 适配 DSH 最新三版并补齐官方 Desktop 插件管理器依赖声明；真实 Desktop UI/Profile 尚未验收",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "8837c09f4546735475cfdfd6b1669e701b3a40fd",
-  "version": "0.9.12",
+  "commit": "098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4",
+  "version": "0.9.15",
   "categories": [
     "marketplace",
     "management"
@@ -39,26 +39,26 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-30T02:38:52.000Z",
-    "observedAt": "2026-10-30T03:03:50.000Z",
+    "updatedAt": "2026-10-30T10:45:20.000Z",
+    "observedAt": "2026-10-30T11:42:40.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-10-30T03:03:50.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/8837c09f4546735475cfdfd6b1669e701b3a40fd",
+      "checkedAt": "2026-10-30T11:42:40.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Owner-reviewed 167/167 bounded runtime files (1,929,852 bytes); every static finding is individually classified. Existing high-risk permissions remain disclosed; no independent security audit is claimed."
+      "summary": "Owner-reviewed 169/169 bounded runtime files (1,962,494 bytes); all 12 static findings were rechecked and classified. Existing elevated permissions remain disclosed; real Desktop UI/Profile is unverified."
     },
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-10-30T03:03:50.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/40992569002",
+      "checkedAt": "2026-10-30T11:42:40.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41042002914",
       "dshRelease": "0.2.1-rc.5",
       "systems": [
         "Linux",
@@ -68,13 +68,13 @@
       "profiles": [
         "web"
       ],
-      "summary": "DSH 0.2.1-rc.5 official CLI installation and disposable Profile checks passed; CI covers nine OS/pnpm combinations. No real Profile was changed."
+      "summary": "DSH 0.9.15 fixed source passed the nine OS/pnpm disposable runtime matrix. The real official Desktop UI/Profile install remains unverified."
     },
     "runtime": {
       "status": "verified",
       "method": "official-cli-disposable-profile-runtime-matrix",
-      "checkedAt": "2026-10-30T03:03:50.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/40992569002",
+      "checkedAt": "2026-10-30T11:42:40.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41042002914",
       "dshRelease": "0.2.1-rc.5",
       "systems": [
         "Linux",
@@ -84,17 +84,17 @@
       "profiles": [
         "web"
       ],
-      "summary": "Disposable official DSH runtime checks passed for the recorded releases. Version downgrade rollback remains unknown; real Desktop UI remains unverified."
+      "summary": "Disposable Web runtime CI passed for the pinned 0.9.15 source. Desktop UI/Profile acceptance and version downgrade rollback remain unknown."
     },
     "securityReview": {
       "status": "unknown",
       "method": "owner-reviewed-bounded-static-fixed-source-analysis",
-      "checkedAt": "2026-10-30T03:03:50.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/8837c09f4546735475cfdfd6b1669e701b3a40fd",
+      "checkedAt": "2026-10-30T11:42:40.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Complete bounded source review is recorded, but the Store remains high risk and has no independent security audit."
+      "summary": "A complete bounded source review is recorded, but the Store remains high risk and has no independent security audit."
     }
   },
   "entryIds": [
