@@ -3,8 +3,8 @@
   "type": "dsh-native-market-upgrade",
   "planId": "dsh-native-market-client-adaptation-20261030",
   "planFile": "docs/ops/dsh-native-market-client-adaptation-20261030.json",
-  "createdAt": "2026-10-30T14:24:03Z",
-  "baseCommit": "1b5a40145642a0e760d7780ca4bb705f4040dcce",
+  "createdAt": "2026-10-30T15:16:11Z",
+  "baseCommit": "66e6c77a316450da08648458e25da3438e278c46",
   "scope": [
     ".github/workflows/registry.yml",
     "docs/ops/dsh-native-market-client-adaptation-20261030.json",
@@ -133,8 +133,10 @@
     "npmRunCheck": "passed: REGISTRY_OK entries=862; 555/555 tests passed.",
     "exactHeadPullRequestCi": "pending.",
     "catalogPublicReadback": "pending separate catalog release.",
-    "realDesktopInstall": "pending separate, explicitly user-requested local Profile operation.",
+    "realDesktopInstall": "pending: requires native DSH Desktop UI/Profile readback after the Mac is unlocked; the user requested this acceptance.",
     "registrySources": "passed: all 33 approved entries matched their fixed Commit sources.",
-    "sourcePlan": "passed: DSH_UPGRADE_PLAN_OK base=1b5a40145642a0e760d7780ca4bb705f4040dcce changed=12."
+    "sourcePlan": "passed: DSH_UPGRADE_PLAN_OK base=66e6c77a316450da08648458e25da3438e278c46 changed=12 on a temporary merge with current main.",
+    "disposableGithubInstall": "passed: official DSH CLI 0.2.2-alpha.2 installed package version 0.9.16 from fixed GitHub Commit 54b173313ff7e4cfd82341cc58e895ab98489b6b into a disposable DSH_HOME; the Bundle row identity and composed config matched.",
+    "disposableHostRouteSmoke": "passed: disposable Web Host POST /api2/dsh-safe-plugin-manager/health returned 401 AUTHENTICATION_REQUIRED, confirming route registration and auth enforcement; it no longer returns 405."
   }
 }
