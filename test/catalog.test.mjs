@@ -542,6 +542,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.9.10' && manager.version === '0.9.8')
     || (packageManifest.version === '0.9.11' && ['0.9.8', '0.9.10'].includes(manager.version))
     || (packageManifest.version === '0.9.11' && manager.version === '0.9.11')
+    || (packageManifest.version === '0.9.12' && manager.version === '0.9.11')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -555,7 +556,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(!primaryInstall.includes(bootstrapCommit), 'the obsolete bootstrap must not remain the primary install command')
   assert.match(primaryInstall, /--ignore-scripts --config\.auto-install-peers=false/)
   assert.match(guide, /仅供历史审计/)
-  assert.ok(readme.includes(`| 商城版本 | \`${packageManifest.version}\` |`), 'README marketplace version must match package.json')
+  assert.ok(readme.includes(`| 商城版本 | \`${manager.version}\``), 'README marketplace version must match the publicly fixed Catalog entry')
   assert.match(readme, /dsh plugin --profile web add/)
   assert.match(readme, /设置 → 插件 → 插件商城/)
   assert.doesNotMatch(readme, /dsh-safe-plugin-manager\.git#main/)
