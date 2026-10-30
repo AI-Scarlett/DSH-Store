@@ -550,8 +550,16 @@ import json,sys
 print(json.load(open(sys.argv[1],encoding='utf-8'))['serverArticles']['builder']['sha256'])
 PY
 )
-  curl -4 --http1.1 --compressed -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
-    "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/$source_sha/scripts/build-server-articles.py" -o "$builder_path"
+  if ! curl -4 --http1.1 --compressed -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
+    -H 'Accept: application/vnd.github.raw+json' \
+    "https://api.github.com/repos/AI-Scarlett/DSH-Store/contents/scripts/build-server-articles.py?ref=$source_sha" -o "$builder_path"; then
+    rm -f -- "$builder_path"
+    curl -4 --http1.1 --compressed -fsSL --connect-timeout 10 --max-time 90 --retry 3 --retry-all-errors --retry-delay 2 \
+      "https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/$source_sha/scripts/build-server-articles.py" -o "$builder_path"
+    printf 'DSH_STORE_REFRESH_RAW_FALLBACK source=%s\n' "$source_sha"
+  else
+    printf 'DSH_STORE_REFRESH_API_OK source=%s\n' "$source_sha"
+  fi
   test "$(sha256sum "$builder_path" | awk '{print $1}')" = "$builder_sha"
   python3 "$builder_path" --source-dir "$article_source" --site-root "$candidate/marketplace" --build-manifest "$candidate/build-manifest.json"
 fi

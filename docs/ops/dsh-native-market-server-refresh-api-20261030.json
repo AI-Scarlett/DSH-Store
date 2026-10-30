@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-server-refresh-api-20261030",
+  "planFile": "docs/ops/dsh-native-market-server-refresh-api-20261030.json",
+  "createdAt": "2026-10-30T04:02:32Z",
+  "baseCommit": "6604dbbe06d81ed89cd9404ed12ecd516ae2e859",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "deploy/refresh-from-pages.sh",
+    "docs/ops/dsh-native-market-server-refresh-api-20261030.json",
+    "docs/reviews/dsh-server-refresh-api-fallback-20261030.md",
+    "test/deploy-refresh.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "8eaa4cb2e4cfc6f1b22a7deba587fe469354c6de38a66b3b1884105cf665c28e",
+    "deploy/refresh-from-pages.sh": "494d655e647ff319f0d4558bd9e89d82c28ed90d91685c342d0e7a8830282f9d",
+    "docs/ops/dsh-native-market-server-refresh-api-20261030.json": null,
+    "docs/reviews/dsh-server-refresh-api-fallback-20261030.md": null,
+    "test/deploy-refresh.test.mjs": "9de4df5791ced9528a003a2a433baf0d51f2bc511abfbe91910af57c8bf93334"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "c23dc9980a5ea4dd300d2f0835dacef372d1d786c30ac757717c4eab947915e4",
+    "deploy/refresh-from-pages.sh": "06deab3c3c99e71b46413c2948d62e9267cf90df12469a963a50c23ca8f70ee3",
+    "docs/reviews/dsh-server-refresh-api-fallback-20261030.md": "0152485f847cac6d83c0cd78fec18a75c96ef5b50b012c3125f37f5a65930311",
+    "test/deploy-refresh.test.mjs": "d31bdacc028d30cf5b7165ddb68e7604ed6d6916a515d1e4908c140b1a0c4479"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "进行迁移吧 同时检查一下github上面尚未处理的用户回复",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-pull-request-only"
+  },
+  "official": {
+    "repository": "AI-Scarlett/DSH-Store",
+    "storeVersion": "0.9.12",
+    "sourceCommit": "8837c09f4546735475cfdfd6b1669e701b3a40fd",
+    "dshVersion": "0.2.1-rc.5"
+  },
+  "gates": [
+    "Fetch scripts/build-server-articles.py from the GitHub Contents API at the exact source_sha using the raw MIME Accept header.",
+    "Preserve raw.githubusercontent.com only as a fallback and verify the downloaded builder SHA-256 before executing it.",
+    "Run npm run check and the exact PR CI before merge.",
+    "After merge, verify the replacement helper hash, back up the production helper, install atomically, run the domestic refresh service, and verify health and public 0.9.12 source Commit."
+  ],
+  "rollback": {
+    "source": "Revert only this source PR through a CI-checked PR.",
+    "production": "Restore the saved helper backup by atomic rename; the refresh service preserves the prior site release when candidate validation or health checks fail."
+  },
+  "healthCheck": "The plan verifier and repository checks pass; after deployment the service reports DSH_STORE_REFRESH_OK for source 8837c09f4546735475cfdfd6b1669e701b3a40fd and dsh-store.cn serves the approved 0.9.12 detail.",
+  "boundaries": [
+    "No DSH core or @deepseek-ai package changes.",
+    "No article content or Catalog entries are modified by this fallback source PR.",
+    "No author outreach.",
+    "No floating Git source; the builder remains bound to the source_sha and exact SHA-256."
+  ]
+}
