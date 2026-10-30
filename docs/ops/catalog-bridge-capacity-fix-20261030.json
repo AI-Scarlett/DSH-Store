@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-store-source-fix",
+  "planId": "catalog-bridge-capacity-fix-20261030",
+  "planFile": "docs/ops/catalog-bridge-capacity-fix-20261030.json",
+  "createdAt": "2026-10-30T07:42:36Z",
+  "baseCommit": "8fb0527a4ac251b9499edd0d3f8271fcc0fa8da0",
+  "sourceBranch": "codex/catalog-bridge-capacity-fix",
+  "scope": [
+    "README.md",
+    "docs/ops/catalog-bridge-capacity-fix-20261030.json",
+    "docs/reviews/catalog-bridge-capacity-fix-20261030.md",
+    "package.json",
+    "src/catalog.mjs",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "README.md": "2f209fb966dd76abe1279043a17b63779b18ecb623a704eab1e7d1169c72885b",
+    "docs/ops/catalog-bridge-capacity-fix-20261030.json": null,
+    "docs/reviews/catalog-bridge-capacity-fix-20261030.md": null,
+    "package.json": "6611e003cfef4141f21af9451dbd4ffb4cb50d5ea8c020e1ac293b7cac2fa42c",
+    "src/catalog.mjs": "5cfe317e7c6d9b6f5f9faf309a747ccf7a65bdb1084eda702d137e8087bbddb3",
+    "test/catalog.test.mjs": "2a59d24503c4c7ed9858806e5df6211bbfb5b33615361d8e0247aab81564c66e",
+    "test/contracts.test.mjs": "e9ac8379d3d1e41c49c7b1a62586964f581dde5955c0c524a88c970d7f9edfd6",
+    "test/upgrade-matrix.test.mjs": "0c465f7e8845e4f9bb13da8d718b7d7988a2defcc27533ff86b68039fca48936"
+  },
+  "postconditions": {
+    "README.md": "3b66d86980eac545a8c7efd0facb0856edf909016ed1d964b87bcda5f070f1b4",
+    "docs/reviews/catalog-bridge-capacity-fix-20261030.md": "0e031f5301dc67367de6a178ca0488e39f0236b55189c164ab7200ce192872b0",
+    "package.json": "5cfcae395841faca42974ac06f2fc4a4cbddac62dd76b28f1575a0a97d73b295",
+    "src/catalog.mjs": "dc258521e4fe7ec39a789f767b98cdbb3fd0a13b732ff6ab8977b965e028da60",
+    "test/catalog.test.mjs": "e8f6e51340b591e1d824166c93eeb68ccafae650f9ff7b70fce6a2b91cce106e",
+    "test/contracts.test.mjs": "aa02ebf8594edbab614e9f9450851d74d8a0f6086a0563a2bddbf7c019ed151b",
+    "test/upgrade-matrix.test.mjs": "dc43d2ecd08aff6889863f85a60d34a90d0f27a52e7605c289c679230d23153d"
+  },
+  "objective": "Unblock the dedicated Catalog policy workflow after its full-directory update exceeded the historical 2 MiB legacy bridge response limit, without changing DSH compatibility decisions or the full Catalog v2 details.",
+  "authorization": {
+    "source": "direct-user-request-plus-prior-release-authorization",
+    "request": "Make the DSH-Store Desktop marketplace adaptation publishable and launch it through the approved GitHub workflow.",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request-only"
+  },
+  "change": {
+    "packageVersion": "0.9.14",
+    "behavior": "The v1 compatibility bridge omits a per-release declaration only when its existing fallback computes the same effective status; the v2 Catalog detail records remain complete and unchanged.",
+    "prohibited": [
+      "Do not raise the 2 MiB response ceiling.",
+      "Do not drop plugin entries or explicit compatible results.",
+      "Do not change unknown to incompatible or compatible.",
+      "Do not modify DSH source, @deepseek-ai packages, or a real Profile.",
+      "Do not send author notifications from this source PR."
+    ]
+  },
+  "healthCheck": "Run the full-directory admission and compatibility stress fixture, verify status equivalence in current and historical Catalog validators, run npm run check and npm pack --dry-run, then require exact-head Registry CI before merge.",
+  "rollback": "Revert only the exact source PR through a CI-checked PR. Git history is the recoverable backup. No Profile, package installation, restart, or author-contact ledger mutation is in scope.",
+  "catalogPublication": "Separate post-merge fresh policy run. It must bind the then-current main Commit and Registry hashes, create and verify its own short-lived-token PR, and independently pass GitHub Raw, Pages, dsh.store, and dsh-store.cn readback."
+}
