@@ -1400,6 +1400,455 @@ window.__ModuleLoader__.load({
           `${row.packageName} · ${{ queued: '等待执行', running: '执行及健康检查中', succeeded: '已完成', failed: '失败', 'rolled-back': '已回滚', 'recovery-required': '需要恢复' }[row.state]} · ${row.createdAt}`)))
     }
 
+    const DESKTOP_CATALOG_URL = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
+    const DESKTOP_CATALOG_MAX_BYTES = 4 * 1024 * 1024
+    const DESKTOP_CATALOG_MAX_ENTRIES = 2_000
+    const DESKTOP_CATALOG_TIMEOUT_MS = 12_000
+    const DESKTOP_PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/
+    const DESKTOP_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
+    const DESKTOP_COMMIT = /^[0-9a-f]{40}$/
+    const DESKTOP_INSTALL_SCRIPTS = new Set(['preinstall', 'install', 'postinstall', 'prepare'])
+    const DESKTOP_LEGACY_RELEASES = { 'rc.7': '0.1.0-rc.7', 'rc.8': '0.1.0-rc.8' }
+    let desktopPluginManager = null
+    const desktopPluginManagerWaiters = new Set()
+
+    function setDesktopPluginManager(service) {
+      desktopPluginManager = service
+      for (const resolve of desktopPluginManagerWaiters) resolve(service)
+      desktopPluginManagerWaiters.clear()
+    }
+
+    function waitForDesktopPluginManager(timeoutMs = 10_000) {
+      if (desktopPluginManager) return Promise.resolve(desktopPluginManager)
+      return new Promise(resolve => {
+        let settled = false
+        const finish = value => {
+          if (settled) return
+          settled = true
+          window.clearTimeout(timer)
+          desktopPluginManagerWaiters.delete(finish)
+          resolve(value)
+        }
+        const timer = window.setTimeout(() => finish(null), timeoutMs)
+        desktopPluginManagerWaiters.add(finish)
+      })
+    }
+
+    function unwrapDesktopRemote(result, code = 'DESKTOP_REMOTE_FAILED') {
+      if (result && typeof result === 'object' && Object.hasOwn(result, 'ok')) {
+        if (!result.ok) {
+          const error = new Error(code)
+          error.code = result.error?.code || code
+          throw error
+        }
+        return result.value
+      }
+      return result
+    }
+
+    function validateDesktopInstallEntry(entry, index) {
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) throw new Error(`CATALOG_ENTRY_${index}_INVALID`)
+      if (!['approved', 'blocked', 'unlisted'].includes(entry.status)) throw new Error(`CATALOG_ENTRY_${index}_STATUS_INVALID`)
+      if (entry.status !== 'approved') return null
+      if (typeof entry.id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/.test(entry.id)) throw new Error(`CATALOG_ENTRY_${index}_ID_INVALID`)
+      if (typeof entry.name !== 'string' || !entry.name.trim() || entry.name.length > 160) throw new Error(`CATALOG_ENTRY_${index}_NAME_INVALID`)
+      if (typeof entry.description !== 'string' || !entry.description.trim() || entry.description.length > 2_000) throw new Error(`CATALOG_ENTRY_${index}_DESCRIPTION_INVALID`)
+      if (typeof entry.packageName !== 'string' || !DESKTOP_PACKAGE_NAME.test(entry.packageName) || entry.packageName.includes('..')) throw new Error(`CATALOG_ENTRY_${index}_PACKAGE_INVALID`)
+      if (typeof entry.repositoryUrl !== 'string' || !/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+$/.test(entry.repositoryUrl)) throw new Error(`CATALOG_ENTRY_${index}_REPOSITORY_INVALID`)
+      if (typeof entry.commit !== 'string' || !DESKTOP_COMMIT.test(entry.commit)) throw new Error(`CATALOG_ENTRY_${index}_COMMIT_INVALID`)
+      if (typeof entry.version !== 'string' || !DESKTOP_VERSION.test(entry.version)) throw new Error(`CATALOG_ENTRY_${index}_VERSION_INVALID`)
+      if (!entry.source || entry.source.provenance !== 'github-commit' || !Number.isFinite(Date.parse(entry.source.updatedAt))) throw new Error(`CATALOG_ENTRY_${index}_SOURCE_INVALID`)
+      const installPath = entry.installPath == null ? null : entry.installPath
+      const manifestPath = entry.manifestPath ?? 'package.json'
+      const validPath = value => typeof value === 'string' && value.length <= 160 && !value.startsWith('/')
+        && value.split('/').every(part => /^[A-Za-z0-9@._+-]+$/.test(part) && part !== '.' && part !== '..')
+      if (installPath !== null && !validPath(installPath)) throw new Error(`CATALOG_ENTRY_${index}_INSTALL_PATH_INVALID`)
+      if (installPath ? manifestPath !== `${installPath}/package.json` : manifestPath !== 'package.json') throw new Error(`CATALOG_ENTRY_${index}_MANIFEST_PATH_INVALID`)
+      if (!Array.isArray(entry.categories) || entry.categories.length > 32
+        || entry.categories.some(id => typeof id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(id))) throw new Error(`CATALOG_ENTRY_${index}_CATEGORIES_INVALID`)
+      if (entry.searchTerms !== undefined && (!Array.isArray(entry.searchTerms) || entry.searchTerms.length > 64
+        || entry.searchTerms.some(term => typeof term !== 'string' || term.length > 160))) throw new Error(`CATALOG_ENTRY_${index}_SEARCH_TERMS_INVALID`)
+      if (!Array.isArray(entry.entryIds) || entry.entryIds.length === 0 || entry.entryIds.length > 64
+        || entry.entryIds.some(id => typeof id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/.test(id))) throw new Error(`CATALOG_ENTRY_${index}_ENTRY_IDS_INVALID`)
+      if (!entry.compatibility || typeof entry.compatibility !== 'object' || Array.isArray(entry.compatibility)
+        || !entry.compatibility.dshReleases || typeof entry.compatibility.dshReleases !== 'object' || Array.isArray(entry.compatibility.dshReleases)
+        || Object.keys(entry.compatibility.dshReleases).length === 0
+        || Object.entries(entry.compatibility.dshReleases).some(([release, status]) => release.length > 64
+          || !['compatible', 'incompatible', 'unknown'].includes(status))) throw new Error(`CATALOG_ENTRY_${index}_COMPATIBILITY_INVALID`)
+      if (!Array.isArray(entry.compatibility.profiles) || entry.compatibility.profiles.length > 32
+        || entry.compatibility.profiles.some(profile => typeof profile !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(profile))
+        || new Set(entry.compatibility.profiles).size !== entry.compatibility.profiles.length) {
+        throw new Error(`CATALOG_ENTRY_${index}_PROFILES_INVALID`)
+      }
+      if (!entry.details || typeof entry.details !== 'object' || Array.isArray(entry.details) || !entry.details.permissions
+        || typeof entry.details.license !== 'string' || !entry.details.license.trim() || entry.details.license.length > 128
+        || !Array.isArray(entry.details.externalDependencies) || entry.details.externalDependencies.length > 64
+        || entry.details.externalDependencies.some(value => typeof value !== 'string' || value.length > 160)) throw new Error(`CATALOG_ENTRY_${index}_DETAILS_INVALID`)
+      const permissions = entry.details.permissions
+      if (!['low', 'medium', 'high', 'unknown'].includes(permissions.level)
+        || !['none', 'read-only', 'write', 'unknown'].includes(permissions.files)
+        || !['none', 'specified-services', 'any', 'unknown'].includes(permissions.network)
+        || !['none', 'restricted', 'shell', 'unknown'].includes(permissions.commands)
+        || !Array.isArray(permissions.credentials) || permissions.credentials.length === 0 || permissions.credentials.length > 32
+        || permissions.credentials.some(value => typeof value !== 'string' || value.length > 120)) throw new Error(`CATALOG_ENTRY_${index}_PERMISSIONS_INVALID`)
+      if (entry.risk !== undefined && (!entry.risk || typeof entry.risk !== 'object' || Array.isArray(entry.risk))) throw new Error(`CATALOG_ENTRY_${index}_RISK_INVALID`)
+      const scripts = entry.risk?.installScripts ?? []
+      if (!Array.isArray(scripts) || scripts.length > DESKTOP_INSTALL_SCRIPTS.size
+        || scripts.some(script => !DESKTOP_INSTALL_SCRIPTS.has(script))) throw new Error(`CATALOG_ENTRY_${index}_SCRIPTS_INVALID`)
+      return entry
+    }
+
+    function validateDesktopCatalog(value) {
+      if (!value || typeof value !== 'object' || Array.isArray(value) || value.schemaVersion !== 1
+        || !value.registry || value.registry.repositoryUrl !== 'https://github.com/AI-Scarlett/DSH-Store'
+        || !value.registry.categories || typeof value.registry.categories !== 'object' || Array.isArray(value.registry.categories)
+        || Object.keys(value.registry.categories).length > 128
+        || Object.entries(value.registry.categories).some(([id, label]) => !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(id)
+          || typeof label !== 'string' || label.length > 100)
+        || !Array.isArray(value.entries) || value.entries.length === 0 || value.entries.length > DESKTOP_CATALOG_MAX_ENTRIES) {
+        throw new Error('CATALOG_DOCUMENT_INVALID')
+      }
+      const ids = new Set()
+      const packageNames = new Set()
+      const approved = []
+      for (const [index, entry] of value.entries.entries()) {
+        const normalized = validateDesktopInstallEntry(entry, index)
+        if (!normalized) continue
+        if (normalized.categories.some(id => !Object.hasOwn(value.registry.categories, id))) throw new Error(`CATALOG_ENTRY_${index}_CATEGORY_UNKNOWN`)
+        if (ids.has(normalized.id) || packageNames.has(normalized.packageName)) throw new Error('CATALOG_IDENTITY_DUPLICATE')
+        ids.add(normalized.id)
+        packageNames.add(normalized.packageName)
+        approved.push(normalized)
+      }
+      if (approved.length === 0) throw new Error('CATALOG_HAS_NO_APPROVED_ENTRIES')
+      return { registry: value.registry, generatedAt: value.generatedAt ?? value.registry.updatedAt ?? null, entries: approved }
+    }
+
+    function desktopFailure(code) {
+      return Object.assign(new Error(code), { code })
+    }
+
+    function withDesktopTimeout(promise, code) {
+      return new Promise((resolve, reject) => {
+        let settled = false
+        const timer = window.setTimeout(() => {
+          if (settled) return
+          settled = true
+          reject(desktopFailure(code))
+        }, DESKTOP_CATALOG_TIMEOUT_MS)
+        Promise.resolve(promise).then(value => {
+          if (settled) return
+          settled = true
+          window.clearTimeout(timer)
+          resolve(value)
+        }, error => {
+          if (settled) return
+          settled = true
+          window.clearTimeout(timer)
+          reject(error)
+        })
+      })
+    }
+
+    async function fetchDesktopCatalogDocument() {
+      const controller = new AbortController()
+      const timeout = window.setTimeout(() => controller.abort(), DESKTOP_CATALOG_TIMEOUT_MS)
+      try {
+        const response = await fetch(DESKTOP_CATALOG_URL, {
+          cache: 'no-store', redirect: 'error', headers: { accept: 'application/json' }, signal: controller.signal,
+        })
+        if (!response.ok) throw desktopFailure('DESKTOP_CATALOG_HTTP_FAILED')
+        if (response.url) {
+          const finalUrl = new URL(response.url)
+          if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== 'raw.githubusercontent.com'
+            || finalUrl.pathname !== '/AI-Scarlett/DSH-Store/main/registry/catalog.json') throw desktopFailure('DESKTOP_CATALOG_REDIRECT_REFUSED')
+        }
+        const lengthHeader = response.headers?.get?.('content-length')
+        if (typeof lengthHeader === 'string' && /^\d+$/.test(lengthHeader)
+          && Number(lengthHeader) > DESKTOP_CATALOG_MAX_BYTES) throw desktopFailure('DESKTOP_CATALOG_TOO_LARGE')
+        const reader = response.body?.getReader?.()
+        if (!reader) throw desktopFailure('DESKTOP_CATALOG_STREAM_UNAVAILABLE')
+        const decoder = new TextDecoder('utf-8', { fatal: true })
+        let byteLength = 0
+        let raw = ''
+        try {
+          while (true) {
+            const chunk = await reader.read()
+            if (chunk.done) break
+            if (!(chunk.value instanceof Uint8Array)) throw desktopFailure('DESKTOP_CATALOG_STREAM_INVALID')
+            byteLength += chunk.value.byteLength
+            if (byteLength > DESKTOP_CATALOG_MAX_BYTES) {
+              try { await reader.cancel() } catch {}
+              throw desktopFailure('DESKTOP_CATALOG_TOO_LARGE')
+            }
+            raw += decoder.decode(chunk.value, { stream: true })
+          }
+          raw += decoder.decode()
+        } catch (error) {
+          if (error?.code) throw error
+          if (controller.signal.aborted) throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
+          throw desktopFailure('DESKTOP_CATALOG_ENCODING_INVALID')
+        } finally {
+          reader.releaseLock?.()
+        }
+        if (byteLength === 0) throw desktopFailure('DESKTOP_CATALOG_EMPTY')
+        try { return JSON.parse(raw) } catch { throw desktopFailure('DESKTOP_CATALOG_JSON_INVALID') }
+      } catch (error) {
+        if (error?.code) throw error
+        if (controller.signal.aborted) throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
+        throw desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
+      } finally {
+        window.clearTimeout(timeout)
+      }
+    }
+
+    async function readDesktopStoreSnapshot() {
+      const manager = await waitForDesktopPluginManager()
+      if (!manager || typeof manager.listBundles !== 'function') throw Object.assign(new Error('DESKTOP_PLUGIN_MANAGER_UNAVAILABLE'), { code: 'DESKTOP_PLUGIN_MANAGER_UNAVAILABLE' })
+      const [document, bundlesResult] = await Promise.all([
+        fetchDesktopCatalogDocument(), withDesktopTimeout(manager.listBundles(), 'DESKTOP_INVENTORY_TIMEOUT'),
+      ])
+      const catalog = validateDesktopCatalog(document)
+      const bundles = unwrapDesktopRemote(bundlesResult, 'DESKTOP_INVENTORY_FAILED')
+      if (!Array.isArray(bundles)) throw Object.assign(new Error('DESKTOP_INVENTORY_INVALID'), { code: 'DESKTOP_INVENTORY_INVALID' })
+      const versions = new Set(bundles.map(bundle => bundle?.official === true ? bundle.installTarget?.version : null)
+        .filter(version => typeof version === 'string' && DESKTOP_VERSION.test(version)))
+      const runtimeVersion = versions.size === 1 ? [...versions][0] : null
+      return { catalog, bundles, runtimeVersion }
+    }
+
+    function desktopInstallSpecifier(entry) {
+      const repository = entry.repositoryUrl
+      if (!/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+$/.test(repository)
+        || !DESKTOP_COMMIT.test(entry.commit)) throw Object.assign(new Error('DESKTOP_INSTALL_SOURCE_INVALID'), { code: 'DESKTOP_INSTALL_SOURCE_INVALID' })
+      return `git+${repository}.git#${entry.commit}${entry.installPath ? `&path:${entry.installPath}` : ''}`
+    }
+
+    function desktopCompatibility(entry, runtimeVersion) {
+      if (!entry.compatibility?.profiles?.includes('desktop')) return 'unsupported-profile'
+      if (typeof runtimeVersion !== 'string' || !DESKTOP_VERSION.test(runtimeVersion)) return 'unknown'
+      const status = Object.entries(entry.compatibility?.dshReleases ?? {}).find(([release]) =>
+        (DESKTOP_LEGACY_RELEASES[release] ?? release) === runtimeVersion)?.[1]
+      return status === 'compatible' || status === 'incompatible' ? status : 'unknown'
+    }
+
+    function desktopErrorCode(error) {
+      const value = error?.code || error?.error?.code || error?.message
+      return typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(value) ? value : 'DESKTOP_OPERATION_FAILED'
+    }
+
+    function DesktopStorePanel() {
+      const [loadState, setLoadState] = useState({ status: 'loading' })
+      const [query, setQuery] = useState('')
+      const [category, setCategory] = useState('')
+      const [page, setPage] = useState(1)
+      const [installPlan, setInstallPlan] = useState(null)
+      const [confirmation, setConfirmation] = useState('')
+      const [installState, setInstallState] = useState({ status: 'idle' })
+      const installInFlight = useRef(false)
+      const refresh = useCallback(async () => {
+        setLoadState({ status: 'loading' })
+        try {
+          const snapshot = await readDesktopStoreSnapshot()
+          setLoadState({ status: 'ready', ...snapshot })
+        } catch (error) {
+          setLoadState({ status: 'error', code: desktopErrorCode(error) })
+        }
+      }, [])
+      useEffect(() => {
+        let cancelled = false
+        void readDesktopStoreSnapshot().then(snapshot => {
+          if (!cancelled) setLoadState({ status: 'ready', ...snapshot })
+        }).catch(error => {
+          if (!cancelled) setLoadState({ status: 'error', code: desktopErrorCode(error) })
+        })
+        return () => { cancelled = true }
+      }, [])
+
+      const entries = loadState.status === 'ready' ? loadState.catalog.entries : []
+      const desktopSupportedCount = entries.filter(entry => entry.compatibility.profiles.includes('desktop')).length
+      const categoryLabels = loadState.status === 'ready' ? loadState.catalog.registry.categories || {} : {}
+      const categoryIds = [...new Set(entries.flatMap(entry => entry.categories || []))].sort()
+      const normalizedQuery = query.trim().toLocaleLowerCase()
+      const filtered = entries.filter(entry => (!category || entry.categories?.includes(category))
+        && (!normalizedQuery || [entry.name, entry.packageName, entry.description, entry.repositoryUrl, ...(entry.searchTerms || [])]
+          .some(value => String(value || '').toLocaleLowerCase().includes(normalizedQuery))))
+      const pageCount = Math.max(1, Math.ceil(filtered.length / MARKET_PAGE_SIZE))
+      const currentPage = Math.min(page, pageCount)
+      const visible = filtered.slice((currentPage - 1) * MARKET_PAGE_SIZE, currentPage * MARKET_PAGE_SIZE)
+      const installedByName = new Map((loadState.status === 'ready' ? loadState.bundles : [])
+        .filter(bundle => bundle && typeof bundle.name === 'string').map(bundle => [bundle.name, bundle]))
+      const closePlan = () => {
+        if (installState.status === 'installing') return
+        setInstallPlan(null)
+        setConfirmation('')
+        setInstallState({ status: 'idle' })
+        installInFlight.current = false
+      }
+
+      const confirmInstall = async () => {
+        if (!installPlan || confirmation !== installPlan.confirmation || installInFlight.current || loadState.status !== 'ready') return
+        const entry = loadState.catalog.entries.find(item => item.id === installPlan.entry.id)
+        const currentVersionStatus = entry ? desktopCompatibility(entry, loadState.runtimeVersion) : 'unknown'
+        if (!entry || entry.status !== 'approved' || currentVersionStatus !== 'compatible') {
+          setInstallState({ status: 'error', code: 'CATALOG_COMPATIBILITY_CHANGED' })
+          return
+        }
+        if (installedByName.get(entry.packageName)?.installed) {
+          setInstallState({ status: 'error', code: 'PACKAGE_ALREADY_INSTALLED' })
+          return
+        }
+        const manager = desktopPluginManager
+        if (!manager || typeof manager.inspect !== 'function' || typeof manager.installBundle !== 'function') {
+          setInstallState({ status: 'error', code: 'DESKTOP_PLUGIN_MANAGER_UNAVAILABLE' })
+          return
+        }
+        installInFlight.current = true
+        setInstallState({ status: 'installing' })
+        let requestId = null
+        let installRequested = false
+        const settle = async outcome => {
+          if (!outcome || !['applied', 'restart-required'].includes(outcome.application)) {
+            setInstallState({ status: 'error', code: desktopErrorCode(outcome?.error || outcome) })
+            return
+          }
+          setInstallState({ status: 'success', application: outcome.application })
+          await refresh()
+        }
+        try {
+          const spec = desktopInstallSpecifier(entry)
+          const inspected = unwrapDesktopRemote(await manager.inspect(spec), 'DESKTOP_SOURCE_INSPECTION_FAILED')
+          if (!inspected || inspected.status !== 'accepted') throw Object.assign(new Error('DESKTOP_SOURCE_REFUSED'), { code: 'DESKTOP_SOURCE_REFUSED' })
+          requestId = window.crypto?.randomUUID?.()
+          if (typeof requestId !== 'string' || !/^[0-9a-f-]{36}$/i.test(requestId)) throw Object.assign(new Error('INSTALL_REQUEST_ID_UNAVAILABLE'), { code: 'INSTALL_REQUEST_ID_UNAVAILABLE' })
+          installRequested = true
+          const outcome = unwrapDesktopRemote(await manager.installBundle(spec, { enabled: true, requestId }), 'DESKTOP_INSTALL_FAILED')
+          await settle(outcome)
+        } catch (error) {
+          if (installRequested && requestId && typeof manager.waitForInstall === 'function') {
+            try {
+              const recovered = unwrapDesktopRemote(await manager.waitForInstall(requestId), 'DESKTOP_INSTALL_RESULT_UNAVAILABLE')
+              if (recovered) {
+                await settle(recovered)
+                return
+              }
+            } catch { /* The single install request may still have an unknown outcome. */ }
+            setInstallState({ status: 'unknown', code: 'INSTALL_RESULT_UNKNOWN' })
+            await refresh()
+            return
+          }
+          setInstallState({ status: 'error', code: desktopErrorCode(error) })
+        } finally {
+          installInFlight.current = false
+        }
+      }
+
+      const planToken = entry => `INSTALL ${entry.packageName} ${entry.commit}`
+      const openPlan = entry => {
+        setInstallPlan({ entry, spec: desktopInstallSpecifier(entry), confirmation: planToken(entry) })
+        setConfirmation('')
+        setInstallState({ status: 'idle' })
+        installInFlight.current = false
+      }
+      const permissionsOf = entry => {
+        const permissions = entry.details.permissions
+        return `权限 ${permissions.level} · 文件 ${detailLabel('files', permissions.files)} · 网络 ${detailLabel('network', permissions.network)} · 命令 ${detailLabel('commands', permissions.commands)} · 凭据 ${(permissions.credentials || []).map(value => detailLabel('credentials', value)).join(' / ')}`
+      }
+
+      const planFooter = installPlan ? React.createElement('div', { style: styles.actions },
+        installState.status === 'success' ? React.createElement(Button, { primary: true, onClick: closePlan }, '完成')
+          : installState.status === 'unknown' ? React.createElement(Button, { onClick: closePlan }, '关闭并核对已安装状态')
+            : React.createElement(Button, { disabled: installState.status === 'installing', onClick: closePlan }, '取消'),
+        !['success', 'unknown'].includes(installState.status) ? React.createElement(Button, {
+          primary: true, disabled: installState.status === 'installing' || confirmation !== installPlan.confirmation,
+          onClick: confirmInstall,
+        }, installState.status === 'installing' ? '正在通过 DSH 安装…' : '确认并安装') : null) : null
+
+      return React.createElement('section', { style: styles.root, 'aria-label': 'DSH-Store 插件商城' },
+        React.createElement('div', { style: styles.toolbar },
+          React.createElement('div', { style: styles.headingCopy },
+            React.createElement('h2', { style: styles.title }, 'DSH-Store'),
+            React.createElement('p', { style: styles.subtitle }, '官方 Desktop 插件商城 · 固定 Commit · 使用 DSH 官方安装器')),
+          React.createElement('div', { style: styles.actions },
+            loadState.status === 'ready' && loadState.runtimeVersion
+              ? React.createElement('span', { style: styles.versionPill }, `DSH ${loadState.runtimeVersion}`) : null,
+            React.createElement(Button, { compact: true, disabled: loadState.status === 'loading', onClick: refresh }, loadState.status === 'loading' ? '正在刷新…' : '刷新目录'))),
+        React.createElement('div', { style: styles.notice, role: 'status' },
+          '列表只包含 Catalog 已审核并固定完整 Commit 的插件。安装还要求条目明确声明支持 Desktop Profile，并精确兼容当前 DSH 版本；最终由 DSH 官方插件管理器检查并安装。更新、启停和卸载请在 DSH 内置“插件”页面操作。',
+          loadState.status === 'ready' && !loadState.runtimeVersion
+            ? React.createElement('div', { style: styles.error }, '无法从 Desktop 插件管理器读取当前 DSH 版本，因此暂不开放安装；插件列表与已安装状态仍可查看。') : null),
+        loadState.status === 'loading' ? React.createElement('p', { style: styles.muted }, '正在读取 DSH-Store Catalog 与当前 Desktop Profile…') : null,
+        loadState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' }, `无法读取 Desktop 商城数据（${loadState.code}）。刷新后重试。`) : null,
+        loadState.status === 'ready' ? React.createElement(React.Fragment, null,
+          React.createElement('div', { style: styles.actions },
+            React.createElement('input', {
+              type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
+              style: { ...styles.input, flex: '1 1 300px' }, placeholder: '搜索插件名称、包名或 GitHub 仓库',
+            }),
+            React.createElement('select', {
+              value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
+              style: styles.select, 'aria-label': '按分类筛选',
+            }, React.createElement('option', { value: '' }, '全部分类'),
+            categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id)))),
+          React.createElement('div', { style: styles.muted }, `已审核插件 ${entries.length} 个 · 声明支持 Desktop ${desktopSupportedCount} 个 · 当前页 ${visible.length} 个 · Desktop Profile ${loadState.bundles.filter(bundle => bundle?.installed).length} 个已安装 bundle`),
+          filtered.length === 0 ? React.createElement('div', { style: styles.notice }, '没有符合筛选条件的插件。') : null,
+          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': 'DSH-Store 已审核插件' }, visible.map(entry => {
+            const installedBundle = installedByName.get(entry.packageName)
+            const installed = installedBundle?.installed === true
+            const compatibility = desktopCompatibility(entry, loadState.runtimeVersion)
+            const official = installedBundle?.official === true || entry.packageName.startsWith('@deepseek-ai/')
+            const canInstall = !installed && !official && compatibility === 'compatible' && entry.packageName !== 'dsh-safe-plugin-manager'
+            const compatibilityText = compatibility === 'unsupported-profile' ? 'Catalog 未声明支持 Desktop'
+              : compatibility === 'compatible' ? `兼容 DSH ${loadState.runtimeVersion}`
+                : compatibility === 'incompatible' ? `不兼容 DSH ${loadState.runtimeVersion}` : '当前 DSH 兼容性未确认'
+            return React.createElement('article', { key: entry.id, style: styles.card, role: 'listitem' },
+              React.createElement('div', { style: styles.cardHeader },
+                React.createElement('div', { style: styles.name }, entry.name),
+                React.createElement('span', { style: styles.statusPill }, installed ? '已安装' : compatibilityText)),
+              React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
+              React.createElement('div', { style: styles.cardDescription }, entry.description),
+              React.createElement('div', { style: styles.muted }, `${entry.categories.map(id => categoryLabels[id] || id).join(' / ') || '未分类'} · ${licenseLabel(entry.details.license)}`),
+              React.createElement('div', { style: styles.code }, `Commit ${entry.commit}`),
+              React.createElement('div', { style: styles.muted }, permissionsOf(entry)),
+              entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join('、')}`) : null,
+              React.createElement('div', { style: styles.cardFooter },
+                React.createElement('div', { style: styles.actions },
+                  canInstall ? React.createElement(Button, { primary: true, onClick: () => openPlan(entry) }, '安装')
+                    : installed ? React.createElement('span', { style: styles.muted }, '请在 DSH 内置“插件”页面管理')
+                      : React.createElement('span', { style: styles.muted }, official ? '官方组件不由商城安装' : compatibilityText)),
+                React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub 源码 ↗')))
+          }),
+          React.createElement(Pagination, { pagination: {
+            page: currentPage, pageCount, hasPrevious: currentPage > 1, hasNext: currentPage < pageCount,
+          }, loading: false, onPageChange: setPage }))) : null,
+        installPlan ? React.createElement(Modal, {
+          open: true, onClose: installState.status === 'installing' ? () => {} : closePlan,
+          title: installState.status === 'success' ? '安装已提交给 DSH' : 'Desktop 安装计划确认',
+          closeLabel: '关闭 Desktop 安装计划', footer: planFooter,
+          className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+        }, React.createElement('div', { style: styles.detailSection },
+          React.createElement('div', { style: styles.code }, `${installPlan.entry.packageName} · ${installPlan.entry.version}`),
+          React.createElement('div', { style: styles.muted }, `GitHub：${installPlan.entry.repositoryUrl}`),
+          React.createElement('div', { style: styles.code }, `固定 Commit：${installPlan.entry.commit}`),
+          React.createElement('div', { style: styles.code }, `安装 spec：${installPlan.spec}`),
+          React.createElement('div', { style: styles.muted }, `DSH 版本：${loadState.runtimeVersion || '未知'} · ${licenseLabel(installPlan.entry.details.license)}`),
+          React.createElement('div', { style: styles.muted }, permissionsOf(installPlan.entry)),
+          installPlan.entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
+            `本包声明安装脚本：${installPlan.entry.risk.installScripts.join('、')}。商城不会代为批准构建脚本。`) : null,
+          React.createElement('div', { style: styles.notice }, 'DSH 官方安装器会在 Git 源取回后检查 DSH 兼容性；拒绝或安装失败时会恢复 Profile 的 package.json 与 lockfile。此前已允许的构建脚本若运行，其副作用可能无法回滚。'),
+          installState.status === 'installing' ? React.createElement('div', { style: styles.muted, role: 'status' }, '正在由 DSH 官方插件管理器检查并安装；请等待结果，不要重复提交。') : null,
+          installState.status === 'success' ? React.createElement('div', { style: styles.notice, role: 'status' },
+            installState.application === 'restart-required' ? '安装已写入 Desktop Profile；DSH 报告需要按其官方流程重启后生效。' : 'DSH 官方安装器已完成该插件的安装与激活。') : null,
+          installState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' }, `安装未确认成功（${installState.code}）。请在 DSH 内置“插件”页面核对状态；商城不会自动重试。`) : null,
+          installState.status === 'unknown' ? React.createElement('div', { style: styles.error, role: 'alert' }, '安装结果暂时无法确认。请先在 DSH 内置“插件”页面核对是否已安装，再决定是否重新操作。') : null,
+          !['success', 'error', 'unknown'].includes(installState.status) ? React.createElement('label', { style: styles.muted },
+            `输入 ${installPlan.confirmation}，确认在当前 Desktop Profile 安装此固定来源：`,
+            React.createElement('input', {
+              value: confirmation, onChange: event => setConfirmation(event.target.value),
+              style: styles.input, placeholder: installPlan.confirmation, disabled: installState.status === 'installing',
+            })) : null)) : null)
+    }
+
     function ManagerPanel() {
       const [view, setView] = useState('market')
       const [query, setQuery] = useState('')
@@ -1705,23 +2154,7 @@ window.__ModuleLoader__.load({
         }
       }, [restartConfirmation, restartOperation])
       const closeDetails = useCallback(() => setDetailEntry(null), [])
-      if (OFFICIAL_DESKTOP_RENDERER) return React.createElement('section', {
-        style: styles.root, 'aria-label': 'DSH-Store 桌面端兼容说明',
-      },
-      React.createElement('h3', { style: styles.title }, 'DSH Store · 桌面端只读入口'),
-      React.createElement('div', { style: styles.notice, role: 'status' },
-        React.createElement('p', { style: { ...styles.muted, margin: 0 } },
-          '当前页面运行在 DSH 官方桌面端（dsh-app://）中。该环境没有提供 DSH Store 所依赖的 Web Host 管理接口，因此此处不能读取插件目录、已安装清单或执行商城管理操作。'),
-        React.createElement('p', { style: { ...styles.muted, margin: '8px 0 0' } },
-          '浏览商城目录请打开 DSH Store 网页；在桌面端安装、更新、启用或停用插件，请使用 DSH 内置的“插件”页面。这里不会访问或修改 Web Profile。')),
-      React.createElement('div', { style: styles.actions },
-        React.createElement('a', {
-          href: 'https://dsh.store/marketplace/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link,
-        }, '浏览 DSH Store 插件目录 ↗'),
-        React.createElement('a', {
-          href: 'https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md',
-          target: '_blank', rel: 'noreferrer', style: styles.link,
-        }, '查看 DSH 桌面端插件说明 ↗')))
+      if (OFFICIAL_DESKTOP_RENDERER) return React.createElement(DesktopStorePanel)
       const dshVersion = state.status === 'ready' ? state.dshVersion : null
       const versionLabel = dshVersion?.currentVersion
         ? `DSH ${dshVersion.currentVersion}${dshVersion.updateAvailable ? ` → ${dshVersion.latestVersion}${dshVersion.releaseChannel === 'preview' ? '（预发布）' : ''}` : dshVersion.status === 'current' ? dshVersion.releaseChannel === 'preview' ? ' · 已是当前预发布' : ' · 稳定版已是最新' : ''}`
@@ -1925,9 +2358,12 @@ window.__ModuleLoader__.load({
           ctx.effect(() => installBootRecovery(ctx), 'dsh-safe-plugin-manager: boot recovery')
         } else installBootRecovery(ctx)
       }
-      ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
-        name: 'settings.plugins.tab', id: 'safe-plugin-manager', order: -10,
-        label: () => '插件商城', inject: () => ({}),
+      if (typeof ctx.inject === 'function') {
+        ctx.inject(['remote', 'remote.pluginManager'], () => setDesktopPluginManager(ctx.remote.pluginManager))
+      }
+      ctx.slots.inject('settings.section', () => ctx.slots.register({
+        name: 'settings.section', id: 'dsh-store', order: -10,
+        label: () => 'DSH-Store', inject: () => ({}),
       }, ManagerPanel))
     }
 

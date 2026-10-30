@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.12')
+  assert.equal(pkg.version, '0.9.13')
   assert.equal(pkg.engines.dsh, pkg.dsh.compatibility.dsh)
   for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
     assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
@@ -30,6 +30,16 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.main, './src/index.mjs')
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
   assert.equal(pkg.dsh.client.platform, 'web')
+  assert.equal(pkg.exports['./locale/*.json'], './locale/*.json')
+  assert.ok(pkg.files.includes('locale'))
+  const [english, chinese] = await Promise.all([
+    readFile(new URL('locale/en.json', project), 'utf8').then(JSON.parse),
+    readFile(new URL('locale/zh.json', project), 'utf8').then(JSON.parse),
+  ])
+  assert.equal(english.meta.title, 'DSH-Store')
+  assert.equal(chinese.meta.title, 'DSH-Store')
+  assert.ok(english.meta.description)
+  assert.ok(chinese.meta.description)
   assert.equal(pkg.repository.url, 'git+https://github.com/AI-Scarlett/DSH-Store.git')
   assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.2'], 'compatible')
@@ -342,12 +352,14 @@ test('current Host implementation contains no mutation or shell primitives', asy
   }
 })
 
-test('client registers through ModuleLoader and a separate settings tab', async () => {
+test('client registers through ModuleLoader and a standalone Settings section', async () => {
   const client = await readFile(new URL('src/client.js', project), 'utf8')
   assert.match(client, /window\.__ModuleLoader__\.load/)
   assert.match(client, /const module = \{ exports: \{\} \}/)
-  assert.match(client, /settings\.plugins\.tab/)
-  assert.match(client, /id:\s*'safe-plugin-manager'/)
+  assert.match(client, /settings\.section/)
+  assert.doesNotMatch(client, /settings\.plugins\.tab/)
+  assert.match(client, /id:\s*'dsh-store'/)
+  assert.match(client, /label: \(\) => 'DSH-Store'/)
   assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
   assert.match(client, /GitHub-only/)
   assert.match(client, /DSH第三方插件商城/)
@@ -369,7 +381,7 @@ test('client registers through ModuleLoader and a separate settings tab', async 
   assert.match(client, /--dsw-alias-label-primary-foreground/)
   assert.match(client, /role: 'tab'/)
   assert.match(client, /'aria-selected': active/)
-  assert.match(client, /label: \(\) => '插件商城'/)
+  assert.match(client, /label: \(\) => 'DSH-Store'/)
   assert.match(client, /迁移到商城版/)
   assert.match(client, /function CatalogFilters/)
   assert.match(client, /只看推荐/)
@@ -479,7 +491,8 @@ test('public rc.7 through 0.1.2-alpha.5 client contract stays on official Module
     '@deepseek-ai/dsh-client-ui-settings',
   ])
   assert.match(client, /window\.__ModuleLoader__\.load/)
-  assert.match(client, /settings\.plugins\.tab/)
+  assert.match(client, /settings\.section/)
+  assert.doesNotMatch(client, /settings\.plugins\.tab/)
   assert.match(client, /order:\s*-10/)
   assert.match(client, /0\.1\.2-alpha\.5/)
   assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
