@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "762bc2911283e187c0d9f53df108e290de2e347b",
-  "version": "0.20.4",
+  "commit": "abcf6bf30892368396c1db9d9822cc34066b5433",
+  "version": "0.21.1",
   "categories": [
     "notifications"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-29T01:53:15.000Z",
-    "observedAt": "2026-10-29T04:46:23.000Z",
+    "updatedAt": "2026-10-30T07:37:02.000Z",
+    "observedAt": "2026-10-30T09:25:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-29T04:46:23.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-email/commit/762bc2911283e187c0d9f53df108e290de2e347b",
+      "checkedAt": "2026-10-30T09:25:15.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-email/commit/abcf6bf30892368396c1db9d9822cc34066b5433",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "49c99957b48cbb5878aef33a96cf8a9d46cd006b4833db5e63260acdcff7a535",
+    "binding": "340a59e1299b22e3c3ee4fa16e22de48c676aa8a390df29d5851e58bd14621ea",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -105,8 +105,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
+      "0.2.1-rc.5": "unknown",
       "0.2.2-alpha.2": "unknown"
     },
     "dshOperations": {
@@ -158,13 +158,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.3": {
+      "0.2.1-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.4": {
+      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -199,8 +199,10 @@
     "externalDependencies": [
       "@deepseek-ai/schemastery",
       "@stardustlc/dsh-updates",
+      "html-to-text",
       "imapflow",
       "mailparser",
+      "node-pop3",
       "nodemailer",
       "proper-lockfile",
       "schemastery",

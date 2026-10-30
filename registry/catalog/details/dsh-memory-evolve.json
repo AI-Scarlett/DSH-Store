@@ -27,7 +27,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "e6f6b84c56f0fc18ba4a6a1a5959fbf86ea9ec8b",
+  "commit": "44b6b3eb65a1d50ceba0afb2c13acdd4a8b81423",
   "version": "0.1.0",
   "categories": [
     "memory",
@@ -37,16 +37,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-28T14:51:22.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-10-29T14:43:31.000Z",
+    "observedAt": "2026-10-30T09:25:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/csyangwen/dsh-memory-evolve/commit/e6f6b84c56f0fc18ba4a6a1a5959fbf86ea9ec8b",
+      "checkedAt": "2026-10-30T09:25:15.000Z",
+      "evidenceUrl": "https://github.com/csyangwen/dsh-memory-evolve/commit/44b6b3eb65a1d50ceba0afb2c13acdd4a8b81423",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -85,21 +85,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "8c43f263790bd716e9b6d1b5df20a9c79a09f762e2130981842a322605844875",
+    "binding": "f1e64fef29797c14570a50b9a1a7bb529177c23be4d361707eaa00c15952b0c3",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
   },
   "entryIds": [
     "dsh-memory-evolve"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitignore; scanner budget source-total-bytes: package actual=8722905 maximum=8388608; store scanner review required; local module is missing from the distributable surface: src/client/index.ts -> ./mobile-input-sheet; fixed-sourc",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest does not declare an explicit distributable files list; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitignore; scanner budget source-total-bytes: package actual=8734833 maximum=8388608; store scanner review required; local module is missing from the distributable surface: src/client/index.ts -> ./mobile-input-sheet; fixed-sourc",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
@@ -111,13 +111,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
+      "0.2.1-rc.5": "unknown",
       "0.2.2-alpha.2": "unknown"
     },
     "dshOperations": {
@@ -169,43 +164,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

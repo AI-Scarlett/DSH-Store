@@ -18,24 +18,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d9d234205d743d61b20c0512a3dc90c945109916",
-  "version": "1.4.3",
+  "commit": "6a40f56f7315e8fea5cabb5f49f2fcebb2c34b1f",
+  "version": "1.6.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-28T09:08:33.000Z",
-    "observedAt": "2026-10-28T14:54:29.000Z",
+    "updatedAt": "2026-10-30T09:01:33.000Z",
+    "observedAt": "2026-10-30T09:25:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-28T14:54:29.000Z",
-      "evidenceUrl": "https://github.com/zuwenyin/dsh-plugin-upgrader/commit/d9d234205d743d61b20c0512a3dc90c945109916",
+      "checkedAt": "2026-10-30T09:25:15.000Z",
+      "evidenceUrl": "https://github.com/zuwenyin/dsh-plugin-upgrader/commit/6a40f56f7315e8fea5cabb5f49f2fcebb2c34b1f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,11 +74,11 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ae45ee21187ae802875cbe84688f990349f60519225744cc67bcae83140bc97e",
+    "binding": "78df01ada9ebb5d816e627fe3a62b98df97c01d0107116bfa5fccbc66be14ee7",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "incomplete",
-    "sourceContract": "unverified",
-    "coverage": "incomplete",
+    "state": "review-required",
+    "sourceContract": "verified",
+    "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
@@ -88,9 +88,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/client.js; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.3 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -100,8 +100,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
+      "0.2.1-rc.5": "unknown",
       "0.2.2-alpha.2": "unknown"
     },
     "dshOperations": {
@@ -153,13 +153,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.3": {
+      "0.2.1-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.4": {
+      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -191,13 +191,13 @@
         "unknown"
       ]
     },
-    "externalDependencies": [],
+    "externalDependencies": [
+      "@deepseek-ai/schemastery"
+    ],
     "reviewStatus": "automated-scan"
   },
   "risk": {
-    "installScripts": [
-      "prepare"
-    ],
+    "installScripts": [],
     "review": "automatic-policy-blocked-not-installable"
   }
 }
