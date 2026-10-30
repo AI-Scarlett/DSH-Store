@@ -64,13 +64,14 @@ function projectedReleaseStatus(original, wire, release) {
   return rangeStatus === 'incompatible' ? 'incompatible' : 'unknown'
 }
 
-test('catalog accepts only pinned GitHub plugin entries', () => {
+test('catalog accepts pinned GitHub entries without requiring Desktop client adaptation', () => {
   const catalog = validateCatalog(document())
   assert.equal(catalog.entries.length, 1)
   assert.equal(githubInstallSpecifier(catalog.entries[0]), `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}`)
   assert.equal(searchCatalog(catalog, 'TOOLS')[0].id, 'demo')
   assert.equal(searchCatalog(catalog, 'MIT')[0].id, 'demo')
   assert.equal(catalog.entries[0].featured, true)
+  assert.equal(catalog.entries[0].status, 'approved')
   assert.equal(catalog.entries[0].details.permissions.files, 'read-only')
   const proxyCredentials = validateCatalog(document([{
     ...entry,
@@ -602,6 +603,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.9.11' && manager.version === '0.9.11')
     || (packageManifest.version === '0.9.13' && manager.version === '0.9.12')
     || (packageManifest.version === '0.9.14' && manager.version === '0.9.12')
+    || (packageManifest.version === '0.9.16' && manager.version === '0.9.15')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')

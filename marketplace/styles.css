@@ -785,6 +785,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .plugin-badge.risk-low { color: var(--green); }
 .plugin-badge.risk-medium { color: var(--amber); }
 .plugin-badge.risk-high { color: var(--danger); }
+.plugin-badge.client-adaptation.declared, .dialog-badge.client-adaptation.declared { border-color: rgba(21, 148, 104, .4); color: #087c59; }
+.plugin-badge.client-adaptation.undeclared, .dialog-badge.client-adaptation.undeclared { color: var(--muted); }
 .plugin-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
 .details-button { padding: 0; border: 0; background: transparent; color: var(--green); cursor: pointer; font-size: 9px; font-weight: 850; }
 .repo-link { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line-strong); color: var(--green); transition: background .2s, color .2s; }

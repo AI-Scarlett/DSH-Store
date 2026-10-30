@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.15')
+  assert.equal(pkg.version, '0.9.16')
   assert.equal(pkg.engines.dsh, pkg.dsh.compatibility.dsh)
   for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
     assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
@@ -335,6 +335,17 @@ test('bundle patch inserts only the manager and does not shadow official invento
   assert.match(patch, /name:\s*dsh-safe-plugin-manager/)
   assert.doesNotMatch(patch, /ui-settings-plugin-inventory/)
   assert.doesNotMatch(patch, /disabled:\s*true/)
+})
+
+test('storefront and DSH client label optional Desktop adaptation from the Catalog profiles', async () => {
+  const [storefront, client] = await Promise.all([
+    readFile(new URL('marketplace/app.js', project), 'utf8'),
+    readFile(new URL('src/client.js', project), 'utf8'),
+  ])
+  assert.match(storefront, /compat\.client\.undeclared/)
+  assert.match(storefront, /desktopClientAdaptationStatus\(entry\.compatibility\.profiles\)/)
+  assert.match(client, /desktopClientAdaptationLabel\(entry\.compatibility\.profiles\)/)
+  assert.match(client, /DSH Desktop 客户端：\$\{desktopClientAdaptationLabel/)
 })
 
 test('current Host implementation contains no mutation or shell primitives', async () => {

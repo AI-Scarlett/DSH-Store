@@ -332,6 +332,8 @@ test('official Desktop registers DSH-Store as a separate Settings section and lo
   const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-installable'))
   const text = desktopText(tree)
   assert.match(text, /DSH-Store/)
+  assert.match(text, /DSH Desktop 客户端：已声明适配/)
+  assert.match(text, /DSH Desktop 客户端：未声明适配/)
   assert.match(text, /Name dsh-installed.*已安装|已安装.*Name dsh-installed/)
   assert.match(text, /不兼容 DSH 0\.2\.2-alpha\.2/)
   assert.match(text, /当前 DSH 兼容性未确认/)
