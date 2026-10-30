@@ -844,6 +844,19 @@ function legacyAssurance(assurance) {
   }))
 }
 
+function legacyDshReleases(compatibility) {
+  const declarations = compatibility.dshReleases ?? {}
+  return Object.fromEntries(Object.entries(declarations).filter(([release, status]) => {
+    const version = dshReleaseVersion(release)
+    if (version === null) return true
+    const rangeStatus = dshVersionCompatibility(compatibility.dsh, version)
+    const fallbackStatus = rangeStatus === 'incompatible' ? 'incompatible' : 'unknown'
+    // Only omit a declaration when legacy clients derive the same effective status from the existing range.
+    // Keep explicit compatible results and unknown overrides of a known range. The v2 detail keeps every row.
+    return status !== fallbackStatus
+  }))
+}
+
 const LEGACY_CREDENTIAL_KINDS = new Set(['none', 'api-key', 'oauth', 'keychain', 'unknown'])
 
 function legacyWireEntry(entry, { searchTermLimit = 40, descriptionLimit = null, omitDefaults = false } = {}) {
@@ -878,7 +891,7 @@ function legacyWireEntry(entry, { searchTermLimit = 40, descriptionLimit = null,
     ...(entry.statusReason ? { statusReason: entry.statusReason } : {}),
     compatibility: {
       dsh: entry.compatibility.dsh,
-      dshReleases: entry.compatibility.dshReleases,
+      dshReleases: legacyDshReleases(entry.compatibility),
       ...(entry.compatibility.latestWindow ? { latestWindow: entry.compatibility.latestWindow } : {}),
       node: entry.compatibility.node,
       systems: entry.compatibility.systems,

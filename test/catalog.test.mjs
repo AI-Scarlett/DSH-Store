@@ -7,6 +7,7 @@ import test from 'node:test'
 import {
   assertLegacyCatalogCompatibility, buildMarketplaceSnapshot, catalogBridgeBuffer, createCatalogService, githubInstallSpecifier,
   compareCatalogEntries, compareVersions, createDshReleaseContext, dshReleaseCompatibility, dshVersionCompatibility,
+  dshReleaseVersion,
   MAX_CATALOG_BRIDGE_RESPONSE_BYTES, MAX_CATALOG_INDEX_RESPONSE_BYTES, MAX_CATALOG_RESPONSE_BYTES,
   loadCatalogFromFiles, paginateMarketplaceSnapshot, projectDshRelease,
   searchCatalog, splitCatalogDocument, validateCatalog, validateCatalogBridgeIndex, validateCatalogDetail,
@@ -54,6 +55,13 @@ function document(entries = [entry]) {
     },
     entries,
   }
+}
+
+function projectedReleaseStatus(original, wire, release) {
+  if (Object.hasOwn(wire.compatibility.dshReleases ?? {}, release)) return wire.compatibility.dshReleases[release]
+  const version = dshReleaseVersion(release)
+  const rangeStatus = version === null ? 'unknown' : dshVersionCompatibility(original.compatibility.dsh, version)
+  return rangeStatus === 'incompatible' ? 'incompatible' : 'unknown'
 }
 
 test('catalog accepts only pinned GitHub plugin entries', () => {
@@ -281,18 +289,32 @@ test('catalog v2 keeps the index bounded and maps every plugin id to one detail 
 
 test('legacy bridge stays below 2 MiB when source updates grow the complete directory', async () => {
   const source = await loadCatalogFromFiles()
-  const entries = source.entries.map(item => ({
-    ...item,
-    searchTerms: [
-      ...item.searchTerms,
-      `${item.id.slice(0, 12)}-${'x'.repeat(75)}-one`,
-      `${item.id.slice(0, 12)}-${'x'.repeat(75)}-two`,
-    ],
-    compatibility: {
-      ...item.compatibility,
-      dshReleases: { ...item.compatibility.dshReleases, '0.2.1-alpha.2': 'unknown' },
-    },
-  }))
+  const entries = source.entries.map((item, i) => {
+    const { admission: _priorAdmission, ...base } = item
+    const { latestWindow: _priorWindow, ...compatibility } = item.compatibility
+    return {
+      ...base,
+      ...(i < 550 ? { admission: {
+        engine: 'bounded-source-v3', binding: 'a'.repeat(64), policyDigest: 'b'.repeat(64),
+        state: 'review-required', sourceContract: 'verified', coverage: 'complete', capabilities: 'review-required',
+        compatibility: 'per-version-declaration', reviewRegistryDigest: 'c'.repeat(64),
+      } } : {}),
+      description: ('完整功能说明与示例😀。'.repeat(120)).slice(0, 1400),
+      searchTerms: [
+        ...item.searchTerms,
+        `${item.id.slice(0, 12)}-${'x'.repeat(75)}-one`,
+        `${item.id.slice(0, 12)}-${'x'.repeat(75)}-two`,
+      ],
+      compatibility: {
+        ...compatibility,
+        dshReleases: {
+          ...item.compatibility.dshReleases,
+          '0.2.1-alpha.2': 'unknown', '0.2.1-alpha.4': 'unknown', '0.2.1-alpha.5': 'unknown',
+        },
+        ...(i < 96 ? { latestWindow: { state: 'recheck-required', releases: ['0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5'] } } : {}),
+      },
+    }
+  })
   const split = splitCatalogDocument({ ...source, sourceFormat: undefined, entries })
   assert.ok(catalogBridgeBuffer(split.bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
   assert.equal(split.bridge.entries.length, source.entries.length)
@@ -305,10 +327,46 @@ test('legacy bridge stays below 2 MiB when source updates grow the complete dire
   const expectedInstallability = source.entries.find(item => item.id === manager.id).assurance.installability.status
   if (expectedInstallability === 'unknown') assert.equal(manager.assurance.installability, undefined)
   else assert.equal(manager.assurance.installability.status, expectedInstallability)
+  for (let i = 0; i < entries.length; i++) {
+    const original = entries[i]
+    const wire = split.bridge.entries[i]
+    const hydrated = validateCatalogDetail(split.details[i].entry, split.index.entries[i], split.index.registry)
+    assert.deepEqual(hydrated.compatibility.dshReleases, original.compatibility.dshReleases)
+    for (const [release, status] of Object.entries(original.compatibility.dshReleases)) {
+      assert.equal(projectedReleaseStatus(original, wire, release), status, `${original.id}: ${release} status must be preserved`)
+    }
+  }
   for (const validate of [validateCatalog085, validateCatalog086, validateCatalog087]) {
     const historical = validate(split.bridge)
     assert.equal(historical.entries.length, entries.length)
     assert.equal(historical.entries.find(item => item.id === manager.id).assurance.installability.status, expectedInstallability)
+  }
+})
+
+test('legacy bridge compacts only release declarations with the same fallback status', () => {
+  const scenarios = [
+    { id: 'explicit-compatible', range: '>=0.2.1-alpha.2', status: 'compatible', retained: true },
+    { id: 'redundant-incompatible', range: '<0.2.1-alpha.2', status: 'incompatible', retained: false },
+    { id: 'unknown-over-compatible-range', range: '>=0.2.1-alpha.2', status: 'unknown', retained: false },
+    { id: 'unknown-over-incompatible-range', range: '<0.2.1-alpha.2', status: 'unknown', retained: true },
+  ]
+  const entries = scenarios.map(({ id, range, status }) => ({
+    ...entry,
+    id,
+    packageName: `dsh-${id}`,
+    entryIds: [id],
+    compatibility: { ...entry.compatibility, dsh: range, dshReleases: { '0.2.1-alpha.2': status } },
+  }))
+  const split = splitCatalogDocument(document(entries))
+  const release = { key: '0.2.1-alpha.2', version: '0.2.1-alpha.2', aliases: ['0.2.1-alpha.2'] }
+  for (let i = 0; i < scenarios.length; i++) {
+    const scenario = scenarios[i]
+    const original = entries[i]
+    const wire = split.bridge.entries[i]
+    assert.equal(Object.hasOwn(wire.compatibility.dshReleases, '0.2.1-alpha.2'), scenario.retained)
+    assert.equal(projectDshRelease(original, release).status, scenario.status)
+    assert.equal(projectDshRelease(wire, release).status, scenario.status)
+    assert.deepEqual(split.details[i].entry.compatibility.dshReleases, original.compatibility.dshReleases)
   }
 })
 
@@ -543,6 +601,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.9.11' && ['0.9.8', '0.9.10'].includes(manager.version))
     || (packageManifest.version === '0.9.11' && manager.version === '0.9.11')
     || (packageManifest.version === '0.9.13' && manager.version === '0.9.12')
+    || (packageManifest.version === '0.9.14' && manager.version === '0.9.12')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -913,7 +972,9 @@ test('batch admission rechecks preserve every safety field under the historical 
     }
     assert.equal(wire.statusReason ?? null, original.statusReason)
     assert.deepEqual(wire.configOverrides ?? [], original.configOverrides ?? [])
-    assert.deepEqual(wire.compatibility.dshReleases, original.compatibility.dshReleases)
+    for (const [release, status] of Object.entries(original.compatibility.dshReleases)) {
+      assert.equal(projectedReleaseStatus(original, wire, release), status, `${original.id}: ${release} status must be preserved`)
+    }
     assert.deepEqual(wire.compatibility.latestWindow, original.compatibility.latestWindow)
     const legacyCredentialKinds = new Set(['none', 'api-key', 'oauth', 'keychain', 'unknown'])
     const expectedWirePermissions = {
@@ -924,6 +985,7 @@ test('batch admission rechecks preserve every safety field under the historical 
     assert.deepEqual(wire.details.permissions, expectedWirePermissions)
     assert.equal(wire.details.license, original.details.license)
     assert.deepEqual(hydrated.description, original.description)
+    assert.deepEqual(hydrated.compatibility.dshReleases, original.compatibility.dshReleases)
     assert.deepEqual(split.index.entries[i].searchTerms, original.searchTerms)
     assert.ok(!wire.description.includes('\ufffd'))
   }
