@@ -75,6 +75,8 @@ const translations = {
     'directory.loading': '正在读取公开插件发现索引…', 'directory.detailsLoading': '正在读取插件详情…', 'directory.partial': '公开发现索引暂时无法读取；当前只显示商城及候选仓库记录，数量不完整。', 'directory.candidatePartial': '商城候选补充记录暂时不可用；公开发现索引仍可浏览。', 'directory.detailPartial': '部分插件详情暂时无法读取。', 'directory.reasonTitle': '收录状态', 'directory.reasonUnavailable': '公开详情暂时无法读取。', 'directory.noDescription': '暂无公开简介，打开来源查看详情。', 'directory.noAction': '仅展示目录记录 · 不提供安装', 'directory.categoryTitle': '按分类浏览', 'directory.statusTitle': '再按收录状态筛选', 'directory.snapshot': '公开索引记录', 'directory.sourceLink': '第三方来源', 'directory.githubLink': 'GitHub 仓库', 'directory.ecosystemApp': '生态应用', 'directory.stars': 'Stars', 'directory.uncategorized': '未分类', 'directory.notCollected': '该记录尚未匹配到 DSH STORE Catalog 条目。此处仅展示是否收录，不作合规、安全或兼容性筛选。', 'directory.sourceAttribution': '来自第三方公开记录', 'directory.sourceDisclosureTitle': '关于来源与许可', 'directory.sourceDisclosureBody': '公开记录索引来自第三方公开数据；具体来源与许可信息见此处。', 'directory.sourceGenerated': '索引生成时间：{date}', 'directory.sourceEntries': '{count} 条公开记录', 'directory.stats.total': '全部公开记录', 'directory.stats.listed': '商城已收录', 'directory.stats.categories': '插件分类', 'directory.stats.unlisted': '商城未收录', 'directory.catalogTitle': '全部已知 DSH 插件', 'directory.catalogLead': '先按公开记录的分类浏览，再单独筛选商城已收录或未收录；此目录不做合规或兼容性筛选。', 'directory.sort.recommended': '分类内：已收录与 Stars 优先', 'directory.sort.stars': 'Stars 由高到低',
     'directory.statusBlocked': '目录策略未通过', 'directory.statusUnlisted': '当前未上架', 'directory.statusRejected': '候选审核未通过', 'directory.statusReviewing': '候选审核中', 'directory.statusDiscovered': '候选已发现',
     'status.available': '可安装', 'status.viewOnly': '仅展示', 'status.unlisted': '已下架',
+    'compat.client.label': 'DSH Desktop 客户端适配', 'compat.client.declared': '已声明适配', 'compat.client.undeclared': '未声明适配',
+    'compat.client.note': '此标识只反映 Catalog 的 Profile 声明；未声明 Desktop 不影响收录，也不等于不兼容。',
     'empty.title': '没有找到匹配插件', 'empty.body': '换个关键词，或清除当前分类筛选。', 'error.title': '目录暂时没有加载成功', 'error.body': '请稍后重试，或前往 GitHub 查看最新目录。',
     'safety.title': '信任不是口号，是四个可检查的状态。', 'safety.lead': '收录从不等于安全审计。我们把来源、权限、变更与恢复分开显示，未知事实保持未知。',
     'safety.card1.title': '来源固定', 'safety.card1.body': '可安装条目指向完整 40 位 Git Commit，不把浮动分支伪装成稳定版本。',
@@ -148,6 +150,8 @@ const translations = {
     'directory.loading': 'Loading the public plugin discovery index…', 'directory.detailsLoading': 'Loading plugin details…', 'directory.partial': 'The public discovery index is temporarily unavailable; only Store Catalog and candidate repository records are shown, so the count is incomplete.', 'directory.candidatePartial': 'Store candidate supplements are temporarily unavailable; the public discovery index remains available.', 'directory.detailPartial': 'Some plugin details are temporarily unavailable.', 'directory.reasonTitle': 'Listing status', 'directory.reasonUnavailable': 'Public details are temporarily unavailable.', 'directory.noDescription': 'No public summary; open the source record for details.', 'directory.noAction': 'Directory record only · no install action', 'directory.categoryTitle': 'Browse by category', 'directory.statusTitle': 'Then filter by Store listing', 'directory.snapshot': 'Public index records', 'directory.sourceLink': 'Third-party source', 'directory.githubLink': 'GitHub repository', 'directory.ecosystemApp': 'Ecosystem app', 'directory.stars': 'Stars', 'directory.uncategorized': 'Uncategorized', 'directory.notCollected': 'No matching DSH STORE Catalog entry was found. This directory only marks listing status; it does not screen for compliance, safety, or compatibility.', 'directory.sourceAttribution': 'From public third-party records', 'directory.sourceDisclosureTitle': 'Source and license', 'directory.sourceDisclosureBody': 'The public-record index comes from third-party public data; its specific source and license are disclosed here.', 'directory.sourceGenerated': 'Index generated: {date}', 'directory.sourceEntries': '{count} public records', 'directory.stats.total': 'Public records', 'directory.stats.listed': 'In DSH STORE', 'directory.stats.categories': 'Categories', 'directory.stats.unlisted': 'Not in DSH STORE', 'directory.catalogTitle': 'All known DSH plugins', 'directory.catalogLead': 'Browse public categories first, then filter independently by Store listing status. This directory does not screen for compliance or compatibility.', 'directory.sort.recommended': 'Category, then listed and stars', 'directory.sort.stars': 'Stars: high to low',
     'directory.statusBlocked': 'Catalog policy blocked', 'directory.statusUnlisted': 'Not currently listed', 'directory.statusRejected': 'Candidate review rejected', 'directory.statusReviewing': 'Candidate under review', 'directory.statusDiscovered': 'Candidate discovered',
     'status.available': 'Available', 'status.viewOnly': 'View only', 'status.unlisted': 'Unlisted',
+    'compat.client.label': 'DSH Desktop client adaptation', 'compat.client.declared': 'Declared', 'compat.client.undeclared': 'Not declared',
+    'compat.client.note': 'This label reflects only the Catalog Profile declaration. Desktop support is optional for listing; not declared does not mean incompatible.',
     'empty.title': 'No matching plugins', 'empty.body': 'Try another query or clear the active category.', 'error.title': 'The catalog could not be loaded', 'error.body': 'Try again later or view the latest catalog on GitHub.',
     'safety.title': 'Trust is four inspectable states, not a slogan.', 'safety.lead': 'Listing is never a security audit. Source, permissions, change, and recovery stay separate, and unknown facts stay unknown.',
     'safety.card1.title': 'Pinned source', 'safety.card1.body': 'Installable entries point to a full 40-character Git commit, never a floating branch presented as stable.',
@@ -307,6 +311,8 @@ const categoryLabel = id => state.locale === 'en'
 const initials = name => String(name || 'DSH').replace(/^DSH\s*/i, '').split(/[\s_-]+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase() || 'D'
 const pluginColor = id => palette[[...String(id)].reduce((total, character) => total + character.charCodeAt(0), 0) % palette.length]
 const statusLabel = entry => entry.status === 'approved' ? t('status.available') : entry.status === 'blocked' ? t('status.viewOnly') : t('status.unlisted')
+const desktopClientAdaptationStatus = profiles => Array.isArray(profiles) && profiles.includes('desktop') ? 'declared' : 'undeclared'
+const desktopClientAdaptationLabel = profiles => t(`compat.client.${desktopClientAdaptationStatus(profiles)}`)
 const listLabel = (items, fallback = t('value.undeclared')) => Array.isArray(items) && items.length ? items.join(' / ') : fallback
 const DSH_VERSION_URL = 'https://registry.npmjs.org/@deepseek-ai%2Fdsh'
 const DSH_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
@@ -710,6 +716,7 @@ function anchorId(value) {
 function cardTemplate(entry) {
   const permissions = entry.details.permissions
   const topCategories = entry.categories.slice(0, 2)
+  const desktopAdaptation = desktopClientAdaptationStatus(entry.compatibility.profiles)
   return `<article id="plugin-${anchorId(entry.id)}" class="plugin-card" style="--plugin-color:${pluginColor(entry.id)}">
     <div class="plugin-card-top">
       <span class="plugin-card-icon" aria-hidden="true">${escape(initials(entry.name))}</span>
@@ -721,6 +728,7 @@ function cardTemplate(entry) {
     <p class="plugin-description">${escape(entry.description)}</p>
     <div class="plugin-badges">
       ${topCategories.map(id => `<span class="plugin-badge">${escape(categoryLabel(id))}</span>`).join('')}
+      <span class="plugin-badge client-adaptation ${desktopAdaptation}" title="${escape(t('compat.client.note'))}">${escape(t('compat.client.label'))}: ${escape(desktopClientAdaptationLabel(entry.compatibility.profiles))}</span>
       <span class="plugin-badge risk-${escape(permissions.level)}">${escape(detailLabel('level', permissions.level))}${state.locale === 'en' ? ' permission' : '权限'}</span>
     </div>
     ${compatibilityMatrix(entry)}
@@ -909,6 +917,7 @@ function showDetails(entry) {
       <span class="dialog-icon" aria-hidden="true">${escape(initials(entry.name))}</span>
       <div><p>${escape(entry.description)}</p><div class="dialog-badges">
         <span class="dialog-badge">${statusLabel(entry)}</span>${entry.featured ? `<span class="dialog-badge">${escape(t('tab.featured'))}</span>` : ''}
+        <span class="dialog-badge client-adaptation ${desktopClientAdaptationStatus(entry.compatibility.profiles)}" title="${escape(t('compat.client.note'))}">${escape(t('compat.client.label'))}: ${escape(desktopClientAdaptationLabel(entry.compatibility.profiles))}</span>
         ${entry.categories.map(id => `<span class="dialog-badge">${escape(categoryLabel(id))}</span>`).join('')}
       </div></div>
     </div>
@@ -930,6 +939,7 @@ function showDetails(entry) {
       ${entry.configOverrides?.length ? detailItem(state.locale === 'en' ? 'Config override targets (not owned IDs)' : '配置覆盖目标（不占有入口 ID）', entry.configOverrides.join(', ')) : ''}
       ${compatibility.latestWindow?.state === 'recheck-required' ? detailItem(state.locale === 'en' ? 'Compatibility recheck' : '兼容性待复核', state.locale === 'en' ? 'Historical records retained. Installation requires an exact match for your DSH version.' : '历史记录保留；安装需匹配实际 DSH 版本的精确兼容声明。') : ''}
       ${detailItem(state.locale === 'en' ? 'DSH public version compatibility' : 'DSH 公开版本兼容性', compatibility.dshReleaseViews.map(view => `${view.version}${view.latest ? (state.locale === 'en' ? ' (latest)' : '（最新）') : ''}: ${compatibilityViewLabel(view)}`).join(' · '))}${detailItem('Node.js', compatibility.node === 'unknown' ? t('value.undeclared') : compatibility.node)}
+      ${detailItem(t('compat.client.label'), desktopClientAdaptationLabel(compatibility.profiles))}
       ${detailItem(state.locale === 'en' ? 'Lifecycle evidence' : '安装/启动/卸载/回滚证据', operationEvidenceText(entry))}
       ${detailItem(t('assurance.installable'), evidenceStatusLabel(entry.assurance.installability.status))}${detailItem(t('assurance.runtime'), evidenceStatusLabel(entry.assurance.runtime.status))}
       ${detailItem(t('assurance.security'), evidenceStatusLabel(entry.assurance.securityReview.status))}${detailItem(state.locale === 'en' ? 'Source updated' : '来源最近更新', entry.source.updatedAt ? new Intl.DateTimeFormat(state.locale === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(entry.source.updatedAt)) : t('value.unknown'))}

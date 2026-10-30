@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-client-adaptation-20261030",
+  "planFile": "docs/ops/dsh-native-market-client-adaptation-20261030.json",
+  "createdAt": "2026-10-30T14:24:03Z",
+  "baseCommit": "1b5a40145642a0e760d7780ca4bb705f4040dcce",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "cordis.patch.yml",
+    "docs/ops/dsh-native-market-client-adaptation-20261030.json",
+    "docs/wiki/Catalog-Automation.md",
+    "marketplace/app.js",
+    "marketplace/store-layout.css",
+    "marketplace/styles.css",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "5edbaae4b637f1f1fe1fd9cfad9bdfee8c693d010de05325ee6adb88ac9aa45b",
+    "cordis.patch.yml": "5262cac893356db84aaf1c8a2a4af1dc8f0fc9f20efb982d102b3fa6724ce083",
+    "docs/ops/dsh-native-market-client-adaptation-20261030.json": null,
+    "docs/wiki/Catalog-Automation.md": "b0d3fd8e26162edaeeb750dacd07617ec301e3cf501178aa3f5dfbc3f323dd3c",
+    "marketplace/app.js": "7ff3c534bdcbc9680d46a8513d2e56a9cc3b3ac52aaea54a565e226d7900e547",
+    "marketplace/store-layout.css": "01ef42147f0ae5af74e230f88405aac88351192e2d0880e477f7247e35b52a62",
+    "marketplace/styles.css": "0b5ae42b13ab8123b8b48d65f5a66102e802dc33b6e28e9ced92674c218d3807",
+    "package.json": "bae04bed10b5cbeb246dc053a8e151952ab85c2de427b7f2fa1f2c61039c846b",
+    "src/client.js": "251f5622a0bf731a41e458409502f8e1d4bf7c836bbc41494d08e10cec8ebd52",
+    "test/catalog.test.mjs": "3ee8ce75e92cf96e2d6707742a3481cbfc2cfeb6bb9adddd8cedecb3028ad06e",
+    "test/contracts.test.mjs": "4b64ddb2b3751e96d0feda833c7cda56ef518390593a12030e8b21e57718486c",
+    "test/desktop-compat.test.mjs": "22305587094f5786e9406556d0ab0ff4dd48fc3a0f5c2fa36bbcffdec47ec5c2",
+    "test/upgrade-matrix.test.mjs": "31e77ed4930aa758801844fb725cf8300dd5c8fa4742b8481ac5ce51e5e3dc2a"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "e81d3701167693fe25f38bc55f783d063b64fd8df9c1598c5241978b77051eae",
+    "cordis.patch.yml": "44773e135937e40d98019e88e83e1a9c3e6d1f68d98473daf5de2cc2eb598e9c",
+    "docs/wiki/Catalog-Automation.md": "ba532bb82754b47d825882419778e45057615c3709abc3b9ee2ed1e3d8efb19a",
+    "marketplace/app.js": "05f0fcdb45120afd44c15ae793e7ac31605b959abc51e465d16ab9d1e515ac9b",
+    "marketplace/store-layout.css": "a23f62ad324803144956073b24dc22f5e2775d34da78e637e1b547eab673d455",
+    "marketplace/styles.css": "02c6a2f592272fdb203ec5386341c41c3d7372aaa86fa8dd96d77a3d32cefbe3",
+    "package.json": "39743b499dcbba6f9e44f8814a0c44203e702d3cfa33692a5b9481e697453b20",
+    "src/client.js": "a1bed2f2318e9f0d97918501c423f712f2cc4486c3ae82c4ccef111ed5777722",
+    "test/catalog.test.mjs": "95211293329d3644339d98de46064b17fbf3fe9b13a083123e97a7ab89b73c2c",
+    "test/contracts.test.mjs": "53f3692302ee56776348052038322dfd9a269b64128fcf2eb517b6b09b008543",
+    "test/desktop-compat.test.mjs": "dd11dee9438f8c083d7aa1f7ec37d20150666d09189f6b4fde28ec349b7cd791",
+    "test/upgrade-matrix.test.mjs": "6559040a6f76190bac9d6421e7b9e4bd437530cf6b3d9ba0d7846e0858402cce"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "商城条目显示 Desktop 客户端适配标识；修复 DSH Desktop 安装问题，并在本机完成真实安装验收。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "为 DSH Store 0.9.16 补充商店卡片、详情和 DSH 客户端列表的 Desktop 适配声明标识；保留 Desktop 的官方插件管理器安装路径与只读 Profile 边界。",
+  "change": {
+    "packageVersion": "0.9.16",
+    "displayName": "DSH-Store",
+    "compatibilityLabel": "compatibility.profiles 含 desktop 显示已声明适配，否则显示未声明适配；Desktop 适配不是收录条件。",
+    "desktopInstallPath": "继续使用 DSH Desktop 官方 pluginManager inspect/installBundle；完整 Commit 二次确认；不通过 Store 修改自身、启停或卸载。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "purpose": "验证 Desktop Catalog 与官方安装器调用契约",
+      "expected": "8/8 tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "purpose": "运行注册表验证和全量仓库测试",
+      "expected": "REGISTRY_OK and all tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "purpose": "确认 0.9.16 包装入清单",
+      "expected": "dsh-safe-plugin-manager-0.9.16.tgz"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-client-adaptation-20261030.json"
+      ],
+      "purpose": "验证固定 base、完整文件范围和工作区哈希",
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "verify:registry-sources"
+      ],
+      "purpose": "核对批准目录条目与固定来源",
+      "expected": "REGISTRY_SOURCES_OK"
+    }
+  ],
+  "gates": [
+    "完成源代码和 Desktop 兼容测试，并通过 npm run check、包清单和当前计划校验。",
+    "通过审计 PR 提交源变更，等待 exact-head CI，通过后再合并。",
+    "源代码合并后以完整 Commit 更新 DSH Store 自身 Catalog 固定记录，再创建单独的 CI 检查 Catalog PR。",
+    "Catalog 合并后独立回读 GitHub Raw、GitHub Pages、dsh.store 和 dsh-store.cn。",
+    "完成上述发布后，使用单独的新鲜本机 Profile 操作计划、备份、前置哈希与回滚，通过 DSH Desktop 官方界面卸载旧版并用已填 GitHub 地址安装 0.9.16；核实 Profile 清单、安装包版本、设置入口、Catalog 列表和安装状态。"
+  ],
+  "rollback": {
+    "source": "仅通过 CI 检查的 PR 回退本计划对应的源代码提交。",
+    "desktopProfile": "真实 Desktop 操作另立计划并备份 Profile 包清单和锁文件；如新版本失败，通过官方 DSH Desktop 插件界面恢复到已审核固定来源 098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4，再核对旧版入口与 Profile 健康状态。"
+  },
+  "healthCheck": "Desktop 新版在官方设置中显示 DSH-Store，成功读取 Catalog，并通过 DSH 官方安装界面以包名 dsh-safe-plugin-manager、版本 0.9.16 完成安装；官网目录显示适配标识且不改变官方插件库存。",
+  "boundaries": [
+    "不修改 DSH 源码或任何 @deepseek-ai/* 包。",
+    "不禁用或覆盖官方插件库存，不调用 Loader/Fiber mutation API。",
+    "本源 PR 不写入真实 Desktop Profile，不直接安装第三方插件，不重启 DSH。",
+    "Catalog 与四个公网 storefront 属于独立发布步骤，分别验证。",
+    "保留 Desktop 内 Store 写操作禁用和官方管理器负责插件安装、启停、更新及卸载的边界。"
+  ],
+  "verification": {
+    "desktopHarness": "passed: 8/8 cases, including Settings section, Catalog loading, compatibility badges, exact-Commit confirmation and official installBundle call.",
+    "packageDryRun": "passed: dsh-safe-plugin-manager-0.9.16.tgz, 1062 files.",
+    "npmRunCheck": "passed: REGISTRY_OK entries=862; 555/555 tests passed.",
+    "exactHeadPullRequestCi": "pending.",
+    "catalogPublicReadback": "pending separate catalog release.",
+    "realDesktopInstall": "pending separate, explicitly user-requested local Profile operation.",
+    "registrySources": "passed: all 26 approved entries matched their fixed Commit sources.",
+    "sourcePlan": "passed: DSH_UPGRADE_PLAN_OK base=1b5a40145642a0e760d7780ca4bb705f4040dcce changed=13."
+  }
+}

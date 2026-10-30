@@ -1173,6 +1173,15 @@ body.home-page::before, body.plugins-page::before {
   background: #fef2f2 !important;
   color: var(--store-danger) !important;
 }
+.plugins-page .plugin-badge.client-adaptation.declared,
+.plugins-page .dialog-badge.client-adaptation.declared {
+  border-color: rgba(21, 148, 104, .4) !important;
+  color: var(--store-success) !important;
+}
+.plugins-page .plugin-badge.client-adaptation.undeclared,
+.plugins-page .dialog-badge.client-adaptation.undeclared {
+  color: var(--store-muted) !important;
+}
 
 .plugins-page .plugin-card-footer {
   margin-top: 14px !important;

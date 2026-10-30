@@ -1052,6 +1052,7 @@ window.__ModuleLoader__.load({
           entry.featured ? React.createElement('span', { style: styles.badge }, '推荐') : null,
           React.createElement('span', { style: styles.badge }, status),
           React.createElement('span', { style: styles.badge }, installed),
+          React.createElement('span', { style: styles.badge }, `DSH Desktop 客户端：${desktopClientAdaptationLabel(entry.compatibility.profiles)}`),
           ...(entry.categories || []).map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id))),
         React.createElement(PersonalNotes, { key: entry.id, entry }),
         React.createElement(VerifiedScreenshots, { key: `${entry.id}:${entry.commit}`, entry }),
@@ -1060,6 +1061,7 @@ window.__ModuleLoader__.load({
           React.createElement(DetailRow, { label: '包名', value: entry.packageName, code: true }),
           React.createElement(DetailRow, { label: '版本', value: entry.version }),
           React.createElement(DetailRow, { label: 'GitHub 发布者', value: githubPublisher(entry.repositoryUrl) }),
+          React.createElement(DetailRow, { label: 'DSH Desktop 客户端', value: desktopClientAdaptationLabel(entry.compatibility.profiles) }),
           React.createElement(DetailRow, { label: 'Git Commit', value: entry.commit, code: true }),
           React.createElement(DetailRow, { label: '固定提交时间', value: entry.source.updatedAt ? new Date(entry.source.updatedAt).toLocaleString() : '未知' }),
           React.createElement(DetailRow, { label: '时间证据来源', value: entry.source.provenance }),
@@ -1632,6 +1634,10 @@ window.__ModuleLoader__.load({
       return status === 'compatible' || status === 'incompatible' ? status : 'unknown'
     }
 
+    function desktopClientAdaptationLabel(profiles) {
+      return Array.isArray(profiles) && profiles.includes('desktop') ? '已声明适配' : '未声明适配'
+    }
+
     function desktopErrorCode(error) {
       const value = error?.code || error?.error?.code || error?.message
       return typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(value) ? value : 'DESKTOP_OPERATION_FAILED'
@@ -1807,6 +1813,7 @@ window.__ModuleLoader__.load({
                 React.createElement('span', { style: styles.statusPill }, installed ? '已安装' : compatibilityText)),
               React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
               React.createElement('div', { style: styles.cardDescription }, entry.description),
+              React.createElement('div', { style: styles.muted }, `DSH Desktop 客户端：${desktopClientAdaptationLabel(entry.compatibility.profiles)}`),
               React.createElement('div', { style: styles.muted }, `${entry.categories.map(id => categoryLabels[id] || id).join(' / ') || '未分类'} · ${licenseLabel(entry.details.license)}`),
               React.createElement('div', { style: styles.code }, `Commit ${entry.commit}`),
               React.createElement('div', { style: styles.muted }, permissionsOf(entry)),
