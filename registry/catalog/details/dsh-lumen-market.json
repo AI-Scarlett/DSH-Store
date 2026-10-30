@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "112bb48b08dea93c08caae0f571e1da48355d018",
-  "version": "0.6.0",
+  "commit": "8df30f60f3171f9c7943fee291ff342b9ecc3ae3",
+  "version": "0.7.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-28T13:10:03.000Z",
-    "observedAt": "2026-10-28T14:54:29.000Z",
+    "updatedAt": "2026-10-29T14:05:07.000Z",
+    "observedAt": "2026-10-30T09:25:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-28T14:54:29.000Z",
-      "evidenceUrl": "https://github.com/Femad-6/dsh-lumen-market/commit/112bb48b08dea93c08caae0f571e1da48355d018",
+      "checkedAt": "2026-10-30T09:25:15.000Z",
+      "evidenceUrl": "https://github.com/Femad-6/dsh-lumen-market/commit/8df30f60f3171f9c7943fee291ff342b9ecc3ae3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,7 +77,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ae2c73c851bb508312b4002b4bec1c53f194c9f119b67bd7528e30969f404010",
+    "binding": "460259c85829aa6041eacee341bcda43c45571b971982d699ff0ffceb717b034",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -91,7 +91,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": "0.2.1-rc.2",
     "dshReleases": {
@@ -106,8 +106,8 @@
       "0.2.1-alpha.5": "unknown",
       "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
+      "0.2.1-rc.5": "unknown",
       "0.2.2-alpha.2": "unknown"
     },
     "dshOperations": {
@@ -177,13 +177,13 @@
         "uninstall": "passed",
         "rollback": "unknown"
       },
-      "0.2.1-rc.3": {
+      "0.2.1-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.4": {
+      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

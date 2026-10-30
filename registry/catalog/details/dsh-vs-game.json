@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "64f62682b83444d34a0b928d072944d2fc96d526",
-  "version": "0.10.2",
+  "commit": "2395096cc7bf64bd53e5c6321d5c2408551846d6",
+  "version": "0.10.6",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-28T08:04:37.000Z",
-    "observedAt": "2026-10-28T14:54:29.000Z",
+    "updatedAt": "2026-10-29T11:12:35.000Z",
+    "observedAt": "2026-10-30T09:25:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-28T14:54:29.000Z",
-      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/64f62682b83444d34a0b928d072944d2fc96d526",
+      "checkedAt": "2026-10-30T09:25:15.000Z",
+      "evidenceUrl": "https://github.com/shang-han/dsh-vs-game/commit/2395096cc7bf64bd53e5c6321d5c2408551846d6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "7f0011cf6e02fa41085ad0e62c6c190ee084c69003ad21687128beb90f9d2e17",
+    "binding": "c66dca28862d743357ee114ddd65802e05fa929c0399c7fd97b6da3cd909c8ac",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
@@ -104,8 +104,8 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
+      "0.2.1-rc.5": "unknown",
       "0.2.2-alpha.2": "unknown"
     },
     "dshOperations": {
@@ -157,13 +157,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.3": {
+      "0.2.1-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.4": {
+      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -196,7 +196,10 @@
       ]
     },
     "externalDependencies": [
-      "ws"
+      "@deepseek-ai/dsh-storage-domain",
+      "@deepseek-ai/schemastery",
+      "ws",
+      "zod"
     ],
     "reviewStatus": "automated-scan"
   },

@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "d08ede5874e4bee2827cf438c971d3649f23d7c0",
-  "version": "0.15.5",
+  "commit": "79147b203d9d21314857dc16bce7105fabeda7c0",
+  "version": "0.16.0",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-27T14:19:55.000Z",
-    "observedAt": "2026-10-27T20:28:26.000Z",
+    "updatedAt": "2026-10-29T16:27:01.000Z",
+    "observedAt": "2026-10-30T09:25:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-27T20:28:26.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/d08ede5874e4bee2827cf438c971d3649f23d7c0",
+      "checkedAt": "2026-10-30T09:25:15.000Z",
+      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/79147b203d9d21314857dc16bce7105fabeda7c0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,14 +79,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "104e6a4ab7677047becb40ae34c6e370ec387fe9e767d5a15f98e5e3962a00aa",
+    "binding": "67238f409a1663098240f3e85fc518c667a5a51a23c9726574d709351b36da82",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
   },
   "entryIds": [
     "llm-commandcode"
@@ -95,7 +95,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore, .gitleaks.toml; local module is missing from the distributable surface: src/client/panel-slots.ts -> ./panel-view.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security findings require quarantine; fixed-source security warnings require rev",
   "compatibility": {
-    "dsh": ">=0.2.1-rc.2 <0.2.2-0",
+    "dsh": ">=0.2.1-rc.2 <0.2.2-0 || >=0.2.2-alpha.2 <0.2.3-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -108,7 +108,8 @@
       "0.2.1-rc.2": "compatible",
       "0.2.1-rc.3": "compatible",
       "0.2.1-rc.4": "compatible",
-      "0.2.2-alpha.2": "unknown"
+      "0.2.2-alpha.2": "compatible",
+      "0.2.1-rc.5": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -182,9 +183,15 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.1-rc.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": ">=22",
+    "node": ">=24.9",
     "systems": [],
     "profiles": [
       "web"
