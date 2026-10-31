@@ -2,36 +2,25 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH Store 0.9.20 在 DSH Desktop 插件商城列表和详情页始终显示安装、启动/关闭、卸载等操作；门禁未通过时显示禁用状态和原因。实际操作仍由 DSH 官方插件管理器和固定来源门禁控制。Catalog 仍只声明 web Profile，真实 Desktop Profile 安装尚未验收。",
+  "description": "DSH Store 0.9.22 在 DSH Desktop 恢复插件目录与已安装视图、搜索筛选排序分页、详情与生命周期操作；已审核插件的兼容性由 DSH Desktop 官方插件管理器校验。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
     "dsh-safe-plugin-manager",
-    "安全",
-    "审计",
-    "验证",
-    "防护",
-    "插件市场",
-    "商城",
-    "插件发现",
-    "管理工具",
-    "插件管理",
-    "管理",
-    "dsh",
-    "safe",
-    "plugin",
-    "manager",
-    "ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED",
-    "安全修复",
-    "repair"
+    "插件商城",
+    "DSH Desktop",
+    "已安装",
+    "插件详情",
+    "插件搜索",
+    "安装管理"
   ],
   "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "11ccb0249d80758bf44c3cf9bf9d471f0aefc72c",
-  "version": "0.9.20",
+  "commit": "d7c17ce782986697af80f29a1c82476f91b7dc0c",
+  "version": "0.9.22",
   "categories": [
     "marketplace",
     "management"
@@ -39,62 +28,50 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-31T11:37:23.000Z",
-    "observedAt": "2026-10-31T11:44:17.396Z",
+    "updatedAt": "2026-10-31T15:15:10.000Z",
+    "observedAt": "2026-10-31T15:26:27.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/11ccb0249d80758bf44c3cf9bf9d471f0aefc72c",
+      "checkedAt": "2026-10-31T15:26:27.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/d7c17ce782986697af80f29a1c82476f91b7dc0c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Owner-reviewed 169/169 bounded runtime files (1977844 bytes) at fixed Store 0.9.20 Commit; real Desktop Profile acceptance remains unverified."
+      "summary": null
     },
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41197382589",
+      "checkedAt": "2026-10-31T15:26:27.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41213698667",
       "dshRelease": "0.2.2-alpha.2",
-      "systems": [
-        "Linux",
-        "macOS",
-        "Windows"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "The exact 0.9.20 source passed official DSH CLI disposable-Profile install and operation checks on current DSH 0.2.2-alpha.2 and previous releases 0.2.1-rc.4 and 0.2.1-rc.5, plus the nine OS/pnpm runtime jobs. These checks cover the web Profile; real Desktop Profile installation remains unverified."
+      "systems": [],
+      "profiles": [],
+      "summary": null
     },
     "runtime": {
       "status": "verified",
       "method": "official-cli-disposable-profile-runtime-matrix",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41197382589",
+      "checkedAt": "2026-10-31T15:26:27.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41213698667",
       "dshRelease": "0.2.2-alpha.2",
-      "systems": [
-        "Linux",
-        "macOS",
-        "Windows"
-      ],
-      "profiles": [
-        "web"
-      ],
-      "summary": "The exact 0.9.20 source passed the DSH 0.2.2-alpha.2 disposable-Profile matrix, previous release checks, and nine OS/pnpm runtime jobs. Real Desktop UI/Profile installation and downgrade rollback remain unknown."
+      "systems": [],
+      "profiles": [],
+      "summary": null
     },
     "securityReview": {
       "status": "unknown",
       "method": "owner-reviewed-bounded-static-fixed-source-analysis",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/11ccb0249d80758bf44c3cf9bf9d471f0aefc72c",
+      "checkedAt": "2026-10-31T15:26:27.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/d7c17ce782986697af80f29a1c82476f91b7dc0c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "A complete bounded source review is recorded, but Store remains high risk and has no independent security audit."
+      "summary": null
     }
   },
   "entryIds": [
@@ -114,12 +91,10 @@
       "0.1.2-alpha.4": "compatible",
       "0.1.2-alpha.5": "compatible",
       "0.1.3-alpha.1": "compatible",
-      "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "compatible",
       "0.1.5-alpha.2": "compatible",
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "compatible",
-      "0.1.6-alpha.1": "unknown",
       "0.1.7-alpha.1": "compatible",
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",

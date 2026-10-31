@@ -51,11 +51,11 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-Catalog 目前固定 Store `0.9.20`、Commit `11ccb0249d80758bf44c3cf9bf9d471f0aefc72c`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。源码 `0.9.21` 把已审核插件的最终兼容性检查交给 DSH Desktop 官方管理器；源码 `0.9.22` 补齐目录与已安装视图、状态和适配筛选、搜索、排序、分页及目录外插件的只读展示。源码合并后仍须单独更新 Catalog 固定 Commit，才会成为商城用户安装的版本。Catalog 继续只声明 `web` Profile，直到真实 Desktop Profile 安装验收完成。
-通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.20` Commit：
+Catalog 当前固定 Store `0.9.22`、Commit `d7c17ce782986697af80f29a1c82476f91b7dc0c`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。`0.9.22` 恢复 DSH Desktop 商城的目录和已安装视图、搜索、分类/状态/Desktop 适配筛选、排序、分页、详情与生命周期操作；已审核插件的兼容性由 DSH Desktop 官方插件管理器判断，Desktop 适配标识只作参考。`build-dsh-plugin` 可以搜索并查看审核原因，但 Catalog 仍标记为 `blocked`，因此商城不会安装或启动它。当前 Catalog 只声明 `web` Profile，真实 Desktop Profile 验收仍未完成。
+通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.22` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#11ccb0249d80758bf44c3cf9bf9d471f0aefc72c'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#d7c17ce782986697af80f29a1c82476f91b7dc0c'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -87,7 +87,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 ### 官方 Desktop
 
-官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.20` 把入口注册为
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.22` 将入口注册为
 设置左侧独立的 `插件商城` 分区；页面标题为 `插件商城（DSH-Store）`，并通过本地化插件元数据显示
 `DSH-Store`，保留内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方
 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。`0.9.22` 增加独立的插件目录和已安装视图，提供搜索、分类、Catalog 状态、Desktop 适配标识筛选、排序、分页、详情及生命周期操作；Catalog 标记为 `blocked` 的条目也可搜索和查看审核原因，但不会从商城安装或启动。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。
@@ -102,7 +102,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.20`（源码 `0.9.22` 的 Catalog 更新待单独计划；真实 Desktop Profile 安装尚未验收） |
+| Catalog 固定版本 | `0.9.22`（Catalog 仍只声明 `web`；真实 Desktop Profile 安装尚未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
