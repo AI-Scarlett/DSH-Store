@@ -32,8 +32,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5544c5bdb489b6a99952e2fbd5a1bb78c2530d55",
-  "version": "0.4.5",
+  "commit": "330fc42116424c479086fd9c1378755195548579",
+  "version": "0.4.6",
   "categories": [
     "sessions",
     "memory",
@@ -43,16 +43,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-27T05:59:14.000Z",
-    "observedAt": "2026-10-27T14:04:39.000Z",
+    "updatedAt": "2026-10-31T02:15:45.000Z",
+    "observedAt": "2026-10-31T04:30:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-27T14:04:39.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-tdai-memory/commit/5544c5bdb489b6a99952e2fbd5a1bb78c2530d55",
+      "checkedAt": "2026-10-31T04:30:10.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-tdai-memory/commit/330fc42116424c479086fd9c1378755195548579",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -91,14 +91,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "878923626a0ba48408020140b8ac80ea7c5a92ebff97d860a7816d27bbc59162",
+    "binding": "edb31d10b52bdb4df9048eb7fbe2485c5207f458be52aba83e6bee28a244bdf2",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
   },
   "entryIds": [
     "tdai-memory"
@@ -107,7 +107,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
+    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -129,9 +129,9 @@
       "0.2.1-rc.1": "compatible",
       "0.2.1-rc.2": "compatible",
       "0.2.1-rc.3": "compatible",
-      "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown"
+      "0.2.1-rc.4": "compatible",
+      "0.2.1-rc.5": "compatible",
+      "0.2.2-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -260,13 +260,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
+      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.5": {
+      "0.2.2-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
