@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-fixed-source-review",
+  "commit": "81f5d9f708c62595c0907e9978efef7e5278e817",
+  "sourceHead": "df9f2c2e7c4444a89dea32023a4b878aa987957b",
+  "sourceTree": "55765161d7513d81f86feccf6526bc40edd255a5",
+  "canonicalPublicRepository": true,
+  "reviewedAt": "2026-10-31T09:35:23.460Z",
+  "manifest": {
+    "name": "dsh-safe-plugin-manager",
+    "version": "0.9.19",
+    "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/AI-Scarlett/DSH-Store.git"
+    },
+    "homepage": "https://dsh.store/",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.mjs",
+    "bin": {
+      "dsh-store-repair": "./bin/dsh-store-repair.mjs"
+    },
+    "exports": {
+      ".": "./src/index.mjs",
+      "./client": "./src/client.js",
+      "./locale/*.json": "./locale/*.json",
+      "./catalog": "./src/catalog.mjs",
+      "./candidates": "./src/candidates.mjs",
+      "./cordis.patch.yml": "./cordis.patch.yml",
+      "./package.json": "./package.json"
+    },
+    "files": [
+      "bin",
+      "locale",
+      "src",
+      "registry",
+      "marketplace",
+      "cordis.patch.yml",
+      "README.md",
+      "SECURITY.md",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "dsh": {
+      "bundle": {
+        "patch": "./cordis.patch.yml"
+      },
+      "client": {
+        "inject": [
+          "@deepseek-ai/dsh-client-runtime",
+          "@deepseek-ai/dsh-client-ui-primitives",
+          "@deepseek-ai/dsh-client-ui-slots",
+          "@deepseek-ai/dsh-client-ui-settings"
+        ],
+        "platform": "web"
+      },
+      "compatibility": {
+        "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
+        "dshReleases": {
+          "rc.7": "compatible",
+          "rc.8": "compatible",
+          "0.1.1-rc.1": "compatible",
+          "0.1.1-rc.2": "compatible",
+          "0.1.2-alpha.2": "compatible",
+          "0.1.2-alpha.3": "compatible",
+          "0.1.2-alpha.4": "compatible",
+          "0.1.2-alpha.5": "compatible",
+          "0.1.3-alpha.1": "compatible",
+          "0.1.3-alpha.2": "unknown",
+          "0.1.5-alpha.1": "compatible",
+          "0.1.5-alpha.2": "compatible",
+          "0.1.5-rc.1": "compatible",
+          "0.1.5-rc.2": "compatible",
+          "0.1.6-alpha.1": "unknown",
+          "0.1.7-alpha.1": "compatible",
+          "0.1.7-alpha.2": "compatible",
+          "0.1.7-rc.1": "compatible",
+          "0.1.7-rc.2": "compatible",
+          "0.2.0-rc.1": "compatible",
+          "0.2.0-rc.2": "compatible",
+          "0.2.1-alpha.1": "compatible",
+          "0.2.1-alpha.2": "compatible",
+          "0.2.1-alpha.3": "compatible",
+          "0.2.1-alpha.4": "compatible",
+          "0.2.1-alpha.5": "compatible",
+          "0.2.1-rc.1": "compatible",
+          "0.2.1-rc.2": "compatible",
+          "0.2.1-rc.3": "compatible",
+          "0.2.1-rc.4": "compatible",
+          "0.2.1-rc.5": "compatible",
+          "0.2.2-alpha.2": "compatible"
+        },
+        "dshOperations": {
+          "0.1.7-alpha.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-alpha.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.1.7-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.0-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.0-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "passed"
+          },
+          "0.2.1-alpha.3": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-alpha.4": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.2.1-alpha.5": {
+            "install": "unknown",
+            "start": "unknown",
+            "uninstall": "unknown",
+            "rollback": "unknown"
+          },
+          "0.2.1-rc.1": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-rc.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-rc.3": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-rc.4": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.1-rc.5": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          },
+          "0.2.2-alpha.2": {
+            "install": "passed",
+            "start": "passed",
+            "uninstall": "passed",
+            "rollback": "unknown"
+          }
+        }
+      }
+    },
+    "engines": {
+      "node": "^22.19.0 || >=24.0.0",
+      "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2"
+    },
+    "scripts": {
+      "check": "node --check src/native-market-index.mjs && node --check scripts/verify-dsh-upgrade-plan.mjs && node --check scripts/verify-native-market-official.mjs && node --check scripts/close-author-contact.mjs && node --check scripts/verify-author-feedback-plan.mjs && node --check src/index.mjs && node --check src/inventory.mjs && node --check src/catalog.mjs && node --check src/dsh-release-policy.mjs && node --check marketplace/lib/dsh-release-policy.js && node --check src/catalog-compatibility-policy.mjs && node --check src/candidate-retention-policy.mjs && node --check src/catalog-localization.mjs && node --check src/catalog-update-review.mjs && node --check src/candidates.mjs && node --check src/source-update.mjs && node --check src/submission-security-scan.mjs && node --check src/discovery-index-validation.mjs && node --check src/dsh-version.mjs && node --check src/cold-start.mjs && node --check src/dsh.mjs && node --check src/guardian.mjs && node --check src/guardian-daemon.mjs && node --check src/guardian-upgrader.mjs && node --check src/health.mjs && node --check src/legacy-repair.mjs && node --check src/managed-patch.mjs && node --check src/operations.mjs && node --check src/panel.mjs && node --check src/provenance.mjs && node --check src/restart.mjs && node --check src/runtime.mjs && node --check src/telemetry.mjs && node --check src/client.js && node --check bin/dsh-store-repair.mjs && node --check install-counter/src/worker.mjs && node --check marketplace/app.js && node --check marketplace/traffic.js && node --check marketplace/traffic-model.js && node --check marketplace/scan-history-nav.js && node --check marketplace/downloads/downloads.js && node --check marketplace/rankings/model.js && node --check marketplace/rankings/rankings.js && node --check marketplace/scans/scans.js && node --check marketplace/build/build.js && node --check marketplace/about/about.js && node --check marketplace/community/community.js && node --check marketplace/faq/faq.js && node --check marketplace/repair/repair.js && node --check marketplace/standards/standards.js && node --check scripts/apply-author-notice-plan.mjs && node --check scripts/automate-catalog.mjs && node --check scripts/build-marketplace-static.mjs && node --check scripts/build-plugin-discovery-index.mjs && node --check scripts/catalog-report-delivery.mjs && node --check scripts/collect-author-feedback.mjs && node --check scripts/check-plugin-submission.mjs && node --check scripts/localize-catalog.mjs && node --check scripts/plan-author-notices.mjs && node --check scripts/render-catalog-automation-notification.mjs && node --check scripts/resolve-author-notice-targets.mjs && node --check scripts/serve-marketplace.mjs && node --check scripts/submit-indexnow.mjs && node --check scripts/sync-catalog-source-metadata.mjs && node --check scripts/verify-marketplace-public.mjs && node --check src/source-scan-policy.mjs && node --check src/bundle-patch-contract.mjs && node --check src/admission-review.mjs && node --check src/catalog-migration.mjs && node --check src/fixed-source-review.mjs && node --check scripts/reassess-admission.mjs && node --check scripts/verify-admission-plan.mjs && python3 -c 'import ast,sys; ast.parse(open(sys.argv[1], encoding=\"utf-8\").read())' scripts/build-server-articles.py && bash -n deploy/refresh-from-pages.sh && bash -n deploy/migrate-articles-to-server.sh && node --check test/server-articles.test.mjs && npm run validate:registry && npm test",
+      "build:marketplace": "node scripts/build-marketplace-static.mjs",
+      "dev:marketplace": "node scripts/serve-marketplace.mjs",
+      "test": "node --test \"test/*.test.mjs\"",
+      "automate:catalog": "node scripts/automate-catalog.mjs",
+      "localize:catalog": "node scripts/localize-catalog.mjs",
+      "validate:registry": "node scripts/validate-registry.mjs",
+      "verify:marketplace-public": "node scripts/verify-marketplace-public.mjs",
+      "verify:registry-sources": "node scripts/verify-registry-sources.mjs",
+      "build:discovery-index": "node scripts/build-plugin-discovery-index.mjs",
+      "verify:admission-plan": "node scripts/verify-admission-plan.mjs",
+      "reassess:admission": "node scripts/reassess-admission.mjs"
+    },
+    "peerDependencies": {
+      "@deepseek-ai/dsh-client-runtime": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
+      "@deepseek-ai/dsh-client-ui-primitives": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
+      "@deepseek-ai/dsh-client-ui-settings": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
+      "@deepseek-ai/dsh-client-ui-slots": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
+      "react": ">=18.2.0"
+    },
+    "license": "MIT"
+  },
+  "analysis": {
+    "reasons": [
+      "fixed-source security findings require quarantine",
+      "fixed-source security warnings require review",
+      "runtime source contains the files permission signal",
+      "runtime source contains the network permission signal",
+      "runtime source contains the commands permission signal",
+      "runtime source contains the credentials permission signal",
+      "runtime source contains the nativeOrExecutableArtifacts permission signal",
+      "Tool-view extension requires key ownership review; registration alone is not a protected component mutation"
+    ],
+    "signals": {
+      "files": true,
+      "network": true,
+      "commands": true,
+      "credentials": true,
+      "protectedDsh": false,
+      "nativeOrExecutableArtifacts": true
+    },
+    "securityScan": {
+      "engine": "dsh-store-submission-static-v1",
+      "policy": "high-risk-block-cli-capability-warn-v1",
+      "verdict": "fail",
+      "complete": true,
+      "scopeReasons": [],
+      "filesScanned": 169,
+      "eligibleFiles": 169,
+      "skippedOversize": 0,
+      "skippedUnsupported": 0,
+      "capped": false,
+      "counts": {
+        "critical": 1,
+        "warning": 11,
+        "info": 0
+      },
+      "findings": [
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "registry/author-replies/255.json",
+          "line": 11
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "registry/author-replies/backlog-1126-20261016.json",
+          "line": 15
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/automation-source-policy.mjs",
+          "line": 8
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/dsh.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian-daemon.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian-upgrader.mjs",
+          "line": 1
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/guardian.mjs",
+          "line": 2
+        },
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "src/legacy-repair.mjs",
+          "line": 2
+    

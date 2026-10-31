@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-0919-catalog-20261031",
+  "planPath": "docs/ops/store-0919-catalog-20261031.json",
+  "sourceReviewPath": "docs/reviews/store-0919-source-review-20261031.json",
+  "version": "0.9.19",
+  "targetDshRelease": "0.2.2-alpha.2",
+  "latestDshWindow": [
+    "0.2.1-rc.4",
+    "0.2.1-rc.5",
+    "0.2.2-alpha.2"
+  ],
+  "reviewMode": "first-party-owner-reviewed",
+  "createdAt": "2026-10-31T09:35:23.460Z",
+  "baseCommit": "81f5d9f708c62595c0907e9978efef7e5278e817",
+  "sourceCommit": "81f5d9f708c62595c0907e9978efef7e5278e817",
+  "sourceHead": "df9f2c2e7c4444a89dea32023a4b878aa987957b",
+  "sourceTree": "55765161d7513d81f86feccf6526bc40edd255a5",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/store-0919-catalog-20261031.json",
+    "docs/reviews/store-0919-release-20261031.md",
+    "docs/reviews/store-0919-source-review-20261031.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    "test/catalog.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "179618b9d09fad2dc352cb83bcfaf270b95c731caea6e94a197f3dc7ab17b56b",
+    "README.md": "475f7c798d0b1549ba0ffb3dfe37dd6b5f7fe1d3b979c5ef1d0ea9ce6d7b749d",
+    "docs/ops/store-0919-catalog-20261031.json": null,
+    "docs/reviews/store-0919-release-20261031.md": null,
+    "docs/reviews/store-0919-source-review-20261031.json": null,
+    "registry/catalog-index.json": "a60676deb4325cc081f98d3a7f7519331a35ee01da40c4c31ff5acf5e0508740",
+    "registry/catalog.json": "5603ecef1e4dfa7dc9dfa4d05f37031abcbc2f90b31e99e680febc9652a2c051",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "e108279275df5b6935188c03a1347c07b81ea61e694a27d8eae65a732eb507fe",
+    "test/catalog.test.mjs": "556a8c5d28f7a0eb7c8b90811975455d3ee689274f4f32d3c4f64ffc89b5c321"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "c6bab4f1bed17b0c5f5f501bf0ed5a2627c9560236939f5477b531de2c48a9ad",
+    "README.md": "86bc5370f4385d5f21f8362950d9c7ed3c2e33d0e2db5d94ee755a18ceff0b87",
+    "docs/reviews/store-0919-release-20261031.md": "44781ed246ed8cd72c9cac0b7984534dd7b86b489b24d0cb0e01265a7c4bce59",
+    "docs/reviews/store-0919-source-review-20261031.json": "2c6220984a42ba293655796cc82d5cdc47176239d97859a6305f60c6e0744875",
+    "registry/catalog-index.json": "d94a2641faebdb07489bf97148ca538502f45db662f8ff30af1de66a498d72b6",
+    "registry/catalog.json": "7e72e9a7a0ae05f44a71f70ad9fef6df426b4e795b1582c92a5450232e3c780d",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "362b3b1ca989a2d5a17c0cc9b934d4603e343c6d6ab7f524a3e20131e2ebc5b0",
+    "test/catalog.test.mjs": "dbc85a57b633cb28a900cf5a7cb601e2467f14829398bef7c0174b857980bc17"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求 DSH Desktop 插件商城详情页显示详情和安装/卸载/启动/关闭入口，修复后通过 GitHub 与官网渠道上线；已授权在本机验收。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "deterministicPolicyVerdictRequired": true
+  },
+  "sourceEvidence": {
+    "canonicalRepository": "https://github.com/AI-Scarlett/DSH-Store",
+    "mergedSourcePullRequest": 1669,
+    "sourceHead": "df9f2c2e7c4444a89dea32023a4b878aa987957b",
+    "mergeCommit": "81f5d9f708c62595c0907e9978efef7e5278e817",
+    "sourceTree": "55765161d7513d81f86feccf6526bc40edd255a5",
+    "sourceChecks": [
+      {
+        "workflow": "DSH upgrade matrix",
+        "runId": 41188055149,
+        "state": "success"
+      },
+      {
+        "workflow": "Registry validation",
+        "runId": 41188055135,
+        "state": "success"
+      },
+      {
+        "workflow": "CodeQL",
+        "runId": 41188053009,
+        "state": "success"
+      }
+    ],
+    "boundedScan": {
+      "files": 169,
+      "bytes": 1977547,
+      "complete": true
+    },
+    "officialDshLatestThree": [
+      "0.2.1-rc.4",
+      "0.2.1-rc.5",
+      "0.2.2-alpha.2"
+    ],
+    "desktopUiProfile": "local 0.9.18 reproduction only; 0.9.19 real Desktop Profile acceptance unverified"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "scripts/verify-store-release-plan.mjs",
+        "docs/ops/store-0919-catalog-20261031.json"
+      ],
+      "purpose": "Verify current main base, exact file scope, fixed source hashes, and complete source review",
+      "expected": "STORE_RELEASE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "purpose": "Run Registry validation and all repository checks",
+      "expected": "REGISTRY_OK and all tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "verify:registry-sources"
+      ],
+      "purpose": "Verify every approved Catalog entry against its pinned fixed source",
+      "expected": "REGISTRY_SOURCES_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "purpose": "Reject whitespace errors before PR",
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Review all 169 fixed-source runtime files and bind every scanned file hash to the merged 0.9.19 source tree.",
+    "Keep the exact official DSH latest-three compatibility window and per-version operation evidence.",
+    "Preserve the existing first-party Catalog identity, permissions, web-only Profile claim, and all third-party entries.",
+    "Bind current main Commit 81f5d9f708c62595c0907e9978efef7e5278e817 and exact precondition/postcondition hashes.",
+    "Pass the deterministic Store plan verifier, npm run check, Registry source verification, whitespace check, and exact-head PR CI.",
+    "Submit only through a CI-checked PR using the GitHub connector short-lived credential.",
+    "After merge, independently read back GitHub Raw, Pages, dsh.store, and dsh-store.cn; keep real Desktop Profile installation separate."
+  ],
+  "rollback": "Revert only this exact 0.9.19 Catalog PR through a CI-checked PR; restore the prior verified storefront artifact if publication health checks fail. Preserve all third-party entries and every real Profile.",
+  "healthCheck": "Merged catalog, bridge index, detail, and README identify Store 0.9.19 at fixed Commit 81f5d9f708c62595c0907e9978efef7e5278e817, preserve web-only Profile claim, and all four public surfaces expose the same pin. Real Desktop Profile remains unchanged unless separately approved.",
+  "state": {
+    "localSourceReview": "verified",
+    "localChecks": "passed",
+    "catalogPullRequest": "ready-to-submit",
+    "mergedCatalog": "unverified",
+    "publicStorefronts": "unverified",
+    "realProfile": "unchanged",
+    "desktopRealUi": "reproduced-0.9.18-missing-controls; 0.9.19-unverified"
+  }
+}
