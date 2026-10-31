@@ -1,0 +1,215 @@
+{
+  "id": "dsh-qq-tools",
+  "name": "会话管理（DSH QQ Tools）",
+  "packageName": "dsh-qq-tools",
+  "description": "给大肥鱼会话用的 QQ 群/私聊工具：列群、看群记录、发群消息（可引用/@）、发表情、收藏表情（SnowLuma 收藏夹）、好友/私聊记录、发私聊消息、私聊唤醒、群成员、戳一戳感知/戳回去、更改头像、好友管理（资料/备注/分组/删好友/名片赞/好友申请）、QQ 空间说说（列表/详情/发表/评论/点赞/权限）、挂载会话选择。11 个工具组加 1 个设置组件，可在插件页逐个开关。",
+  "searchTerms": [
+    "会话管理",
+    "DSH QQ Tools",
+    "dsh-qq-tools",
+    "会话",
+    "对话",
+    "历史",
+    "消息",
+    "实验功能",
+    "新功能",
+    "dsh",
+    "qq",
+    "tools"
+  ],
+  "repositoryUrl": "https://github.com/cyhddyx/dsh-qq-tools",
+  "defaultBranch": "main",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "updatePolicy": "external-only",
+  "commit": "1b1579d6fced507cba41293a03bc87c57da394fb",
+  "version": "0.9.1",
+  "categories": [
+    "experimental"
+  ],
+  "featured": false,
+  "installCount": null,
+  "source": {
+    "updatedAt": "2026-10-31T04:37:20.000Z",
+    "observedAt": "2026-10-31T04:30:10.000Z",
+    "provenance": "github-commit"
+  },
+  "assurance": {
+    "discovery": {
+      "status": "verified",
+      "method": "automated-fixed-source-policy-v1",
+      "checkedAt": "2026-10-31T04:30:10.000Z",
+      "evidenceUrl": "https://github.com/cyhddyx/dsh-qq-tools/commit/1b1579d6fced507cba41293a03bc87c57da394fb",
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+    },
+    "installability": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No third-party installation or build code was executed by the automation."
+    },
+    "runtime": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "No DSH runtime acceptance was inferred from static automation."
+    },
+    "securityReview": {
+      "status": "unknown",
+      "method": null,
+      "checkedAt": null,
+      "evidenceUrl": null,
+      "dshRelease": null,
+      "systems": [],
+      "profiles": [],
+      "summary": "Automated source policy is not an independent security audit."
+    }
+  },
+  "admission": {
+    "engine": "bounded-source-v3",
+    "binding": "f919581dfae0180a7690327112633d6c9ae842c3e0d21be539da92a520cd18fc",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "review-required",
+    "sourceContract": "unverified",
+    "coverage": "complete",
+    "capabilities": "review-required",
+    "compatibility": "per-version-declaration",
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
+  },
+  "entryIds": [
+    "qq-tools-list-groups",
+    "qq-tools-group-history",
+    "qq-tools-group-members",
+    "qq-tools-send-group-message",
+    "qq-tools-send-face",
+    "qq-tools-favorite-faces",
+    "qq-tools-private-chat",
+    "qq-tools-send-poke",
+    "qq-tools-set-avatar",
+    "qq-tools-friend-management",
+    "qq-tools-qzone",
+    "qq-tools-root"
+  ],
+  "status": "blocked",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "compatibility": {
+    "dsh": null,
+    "dshReleases": {
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown",
+      "0.1.2-alpha.2": "unknown",
+      "0.1.2-alpha.3": "unknown",
+      "0.1.2-alpha.4": "unknown",
+      "0.1.2-alpha.5": "unknown",
+      "0.2.1-rc.4": "unknown",
+      "0.2.1-rc.5": "unknown",
+      "0.2.2-alpha.2": "unknown"
+    },
+    "dshOperations": {
+      "rc.7": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "rc.8": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.1-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.1.2-alpha.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.4": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      }
+    },
+    "node": ">=22",
+    "systems": [],
+    "profiles": [
+      "web"
+    ]
+  },
+  "details": {
+    "pluginType": "unknown",
+    "installSource": "github",
+    "license": "MIT",
+    "permissions": {
+      "level": "unknown",
+      "files": "unknown",
+      "network": "unknown",
+      "commands": "unknown",
+      "credentials": [
+        "unknown"
+      ]
+    },
+    "externalDependencies": [],
+    "reviewStatus": "automated-scan"
+  },
+  "risk": {
+    "installScripts": [],
+    "review": "automatic-policy-blocked-not-installable"
+  }
+}
