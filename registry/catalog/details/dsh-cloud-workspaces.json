@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "95aabd88e1c454aec5356e8410e30ca6143530b2",
+  "commit": "390e3b8f05dc6e21f91bf41f7021f4a9660a17f2",
   "version": "0.4.0",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-31T14:29:18.000Z",
-    "observedAt": "2026-10-31T14:21:52.000Z",
+    "updatedAt": "2026-10-31T14:54:00.000Z",
+    "observedAt": "2026-10-31T19:45:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-10-31T14:21:52.000Z",
-      "evidenceUrl": "https://github.com/harryopo/dsh-cloud-workspaces/commit/95aabd88e1c454aec5356e8410e30ca6143530b2",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-10-31T19:45:17.000Z",
+      "evidenceUrl": "https://github.com/harryopo/dsh-cloud-workspaces/commit/390e3b8f05dc6e21f91bf41f7021f4a9660a17f2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,12 +73,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "494258fd007100ac6784ac59a7d3237cae994482b6b53e39e657f88581c65734",
+    "binding": "e51ede8c70aadc0dad2f61324457def55c91368f31a5c1675acea56e734a156d",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
@@ -90,8 +90,9 @@
   "entryIds": [
     "remote-ide"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/invariant.d.ts; runtime artifact is missing from the distributable surface: ./lib/invariant.js; runtime artifact is missing from the distributable surface: ./lib/types/tools.d.ts; ru",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; local module is missing from the distributable surface: src/engine.ts -> ./protocol; local module is missing from the distributable surface: src/engine.ts -> ./store; local module is missing from the distributable surface: src/engine.ts -> ./debug-log; local module is missing from the distributable surface: src/index.ts -> ./ssh-service; local module is missing from the distributable surface: src/index.ts -> ./tools; local module is missing from the distributable surface: src/index.t",
   "compatibility": {
     "dsh": "^0.2.1-rc.5",
     "dshReleases": {

@@ -19,7 +19,7 @@
   "manifestPath": "english-coach/package.json",
   "installPath": "english-coach",
   "updatePolicy": "external-only",
-  "commit": "bdf5ac11d96a6771a9c77f7ce8862e7b963a4b18",
+  "commit": "d86f06da85932d4efd823cd95d28b4466f8daf8e",
   "version": "0.1.2",
   "categories": [
     "experimental"
@@ -27,16 +27,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-29T09:19:45.000Z",
-    "observedAt": "2026-10-30T09:25:15.000Z",
+    "updatedAt": "2026-10-31T15:53:00.000Z",
+    "observedAt": "2026-10-31T19:45:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-30T09:25:15.000Z",
-      "evidenceUrl": "https://github.com/baishatan/dsh-english-coach/commit/bdf5ac11d96a6771a9c77f7ce8862e7b963a4b18",
+      "checkedAt": "2026-10-31T19:45:17.000Z",
+      "evidenceUrl": "https://github.com/baishatan/dsh-english-coach/commit/d86f06da85932d4efd823cd95d28b4466f8daf8e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -75,11 +75,11 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "54b413bf89761bce09611a98f3c6e6c691d60c615464e94fad60fbd338380582",
+    "binding": "e4689782c6ced0d8090829686b958efeb70ffd41616a2b9a48422ca453161ade",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "review-required",
+    "state": "incomplete",
     "sourceContract": "verified",
-    "coverage": "complete",
+    "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
@@ -89,9 +89,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: speech/vendor/exports/gb/g2p.onnx, speech/vendor/exports/us/g2p.onnx, speech/vendor/frontend/LICENSE-APACHE-2.0, speech/vendor/notices/Kokoro-LICENSE, speech/vendor/ort/dist/ort-wasm-simd-threaded.wasm; scanner budget source-file-count: package actual=629 maximum=512; store scanner review required; scanner budget source-total-bytes: package actual=20689743 maximum=8388608; store scanner review required; package has too many fixed license/notice files for a bounded manual review; fixed-source scan is",
   "compatibility": {
-    "dsh": "0.2.1-rc.3",
+    "dsh": "0.2.1-rc.5",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
