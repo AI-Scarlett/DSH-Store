@@ -439,6 +439,28 @@ test('official Desktop requires the full package and Commit confirmation before 
   assert.match(desktopText(tree), /已安装/)
 })
 
+test('official Desktop shows a disabled install action and reason when current DSH compatibility is unknown', async () => {
+  const entry = desktopEntry({ id: 'dsh-unknown', packageName: '@acme/dsh-unknown', commit: desktopCommit, compatibility: 'unknown' })
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]) })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
+  const details = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('查看详情'))
+  details.props.onClick()
+  tree = await harness.render()
+  assert.match(desktopText(tree), /安装已禁用：当前 DSH 版本兼容性未确认/)
+  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('安装'))
+  assert.ok(install)
+  assert.equal(install.props.disabled, true)
+  assert.match(install.props.title, /当前 DSH 版本兼容性未确认/)
+  assert.equal(install.props.onClick, undefined)
+  assert.equal(harness.calls.installBundle.length, 0)
+  assert.equal(harness.calls.removeBundle.length, 0)
+  assert.equal(harness.calls.setBundleEnabled.length, 0)
+})
+
 test('official Desktop starts, closes, and uninstalls only the matching Catalog bundle through pluginManager', async () => {
   const entry = desktopEntry({ id: 'dsh-managed', packageName: '@acme/dsh-managed', commit: desktopCommit })
   const oldCommit = 'b'.repeat(40)
@@ -507,6 +529,16 @@ test('official Desktop hides lifecycle operations when an installed package sour
   assert.match(desktopText(card), /已安装来源与商城记录不一致/)
   assert.equal(desktopNodes(card).some(node => node.type === 'button'
     && ['安装', '启动', '关闭', '卸载'].some(label => node.children?.includes(label))), false)
+  const details = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('查看详情'))
+  details.props.onClick()
+  const detailTree = await harness.render()
+  assert.match(desktopText(detailTree), /来源与 Catalog 仓库不一致，商城不会管理/)
+  for (const label of ['关闭', '卸载']) {
+    const button = desktopNodes(detailTree).find(node => node.type === 'button' && node.children?.includes(label))
+    assert.ok(button, label + ' remains visible in details')
+    assert.equal(button.props.disabled, true)
+    assert.equal(button.props.onClick, undefined)
+  }
   assert.equal(harness.calls.installBundle.length, 0)
   assert.equal(harness.calls.removeBundle.length, 0)
   assert.equal(harness.calls.setBundleEnabled.length, 0)
