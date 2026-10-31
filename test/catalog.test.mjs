@@ -604,11 +604,10 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.9.13' && manager.version === '0.9.12')
     || (packageManifest.version === '0.9.14' && manager.version === '0.9.12')
     || (packageManifest.version === '0.9.16' && manager.version === '0.9.15')
-    || (packageManifest.version === '0.9.17' && manager.version === '0.9.15')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
-  if (manager.version === '0.9.15') assert.deepEqual(manager.compatibility.profiles, ['web'])
+  if (manager.version === '0.9.17') assert.deepEqual(manager.compatibility.profiles, ['web'])
   assert.match(manager.commit, /^[0-9a-f]{40}$/)
   assert.ok(readme.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`),
     'README must retain the fixed bootstrap install command even after the Catalog self-pin advances')
