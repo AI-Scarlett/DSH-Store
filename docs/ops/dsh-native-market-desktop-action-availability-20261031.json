@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-action-availability-20261031",
+  "planFile": "docs/ops/dsh-native-market-desktop-action-availability-20261031.json",
+  "createdAt": "2026-10-31T05:20:18.049723+00:00",
+  "baseCommit": "946d644014a1434f13033dbae3feb1afe173fe68",
+  "scope": [
+    "docs/ops/dsh-native-market-desktop-action-availability-20261031.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "package.json": "12333024791eeb322fe28c2ff69b8e044497365c29055fa7755305a788f1006a",
+    "src/client.js": "b27c1b5f6d05ae5c30877eeab9d88514bcf997314068363d0f72b29a6b7254af",
+    "test/desktop-compat.test.mjs": "13e6bf6f5f565dda9e2dfa2158f10464545eda8231a074812b73124286999da7",
+    "test/catalog.test.mjs": "6e3748b755824d80d67eb52e2f05ed185ab37081ca903b1d9cfdf2a4f0892974",
+    "docs/ops/dsh-native-market-desktop-action-availability-20261031.json": null,
+    "test/contracts.test.mjs": "a6eea0fce37eb05fa02709f8698014e8fc121dab42aea7af0b8bbc6e45c3c3e5",
+    "test/upgrade-matrix.test.mjs": "d097caa48c29d06c63b5a2537e1689decff6abc4484a9704bcd687eaea8b6ed4"
+  },
+  "postconditions": {
+    "package.json": "efa3bc3c1de721c8ae64e82d6f29fe195e4a0800c5b178401bd7a93210c36dfd",
+    "src/client.js": "ce955436ef6222ef818e9f62bffa4b230c38c67443fd031f3136133a3abf546e",
+    "test/catalog.test.mjs": "acdd1294c3c1f2edcc8a0b2e886a0344ad93a546a0acf9221c865c4705bf6952",
+    "test/contracts.test.mjs": "2123b125da1f4c854e106945912a7d574a0a0123ea320f5474504e80a1790a8f",
+    "test/desktop-compat.test.mjs": "da1ae854d8bcc5027f30d1bc362b5875e5685bbe394872fc2d9cc83d3b52b24d",
+    "test/upgrade-matrix.test.mjs": "273e9e2dcbda99210b4568b9b85f7adddd7beba334533c1c55c68860f63c269c"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求 DSH Desktop 插件商城在详情页提供安装、卸载、启动、关闭操作入口；锁定状态应显示具体原因。用户已明确要求实际安装验收并授权 GitHub/官网按流程上线。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "在 DSH Desktop 插件详情页始终展示当前状态对应的生命周期按钮；未满足 Catalog/Profile/兼容性/来源/官方 API 门禁时显示禁用按钮和具体原因，不发送任何管理 API 调用。",
+  "change": {
+    "packageVersion": "0.9.18",
+    "desktopDetails": "对 Catalog 已审核条目在详情页显示安装或启动/关闭/卸载按钮；可执行时沿用现有全量固定 Commit 确认和 DSH pluginManager，门禁不满足时按钮禁用并显示解释。",
+    "safety": "保持 Store 自身、官方 Bundle、非 Catalog 来源和未核验安装的保护；不得绕过兼容性或权限门禁。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager-0.9.18.tgz"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-action-availability-20261031.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    }
+  ],
+  "gates": [
+    "Fresh plan base/scope/hash verification.",
+    "Full repository checks and exact-head CI pass.",
+    "Disabled lifecycle buttons make no remote calls; enabled operations retain exact package and Commit confirmation.",
+    "Submit source update only through a CI-checked pull request.",
+    "After merge, update the first-party Catalog to the fixed merged Commit and verify public surfaces."
+  ],
+  "rollback": {
+    "source": "Revert this exact source change through a CI-checked PR.",
+    "desktopProfile": "Real Desktop Profile update is separate, explicitly planned, backed up, and rolled back through the official DSH CLI if health checks fail."
+  },
+  "healthCheck": "The Desktop detail modal visibly provides status-specific operations and block reasons; existing fail-closed compatibility and source checks remain unchanged."
+}
