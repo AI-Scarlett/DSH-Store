@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-authority-20261031",
+  "planFile": "docs/ops/dsh-native-market-desktop-authority-20261031.json",
+  "createdAt": "2026-10-31T21:57:27+08:00",
+  "baseCommit": "3c101b713d9acaf1698b15f94fa3ddd8a75f434d",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs",
+    "docs/reviews/dsh-native-market-desktop-authority-20261031.md",
+    "docs/ops/dsh-native-market-desktop-authority-20261031.json"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "578ab02282cbef3201c9e95cb13471ef68b45066833e130ce4902799d5786a8a",
+    "README.md": "3b49405a2f8d3497102e9fd6abd8436fa7daa5be4e452c249857684206f4f96c",
+    "package.json": "e7f0f7ad440731928b0758f49edf1ffcd836da22aedc0ea0a10852dbb054cee3",
+    "src/client.js": "e3a621b7bbc77bbfa6acf50fa34eebbe68cbea10fa927fba666213af5bc6e569",
+    "test/catalog.test.mjs": "3e512e869eef109e76eafc458588657ab70c80afd2a3c20fcd374be616ab6708",
+    "test/contracts.test.mjs": "b519e8c35238baba7acadde68fd430bc9063cea2b86e64dd891084c7b14e35e1",
+    "test/desktop-compat.test.mjs": "13dfb06603c3390a29de53ef3c5f17f80051535e507eb1b013cb0c431fbdff84",
+    "test/upgrade-matrix.test.mjs": "19e84d6982cd2df3c439d82234460415d42b3cbcf1c0dbe9ce74512f52779e6f",
+    "docs/reviews/dsh-native-market-desktop-authority-20261031.md": null,
+    "docs/ops/dsh-native-market-desktop-authority-20261031.json": null
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "f8153125c9ab743040dab20e87319cef4370ffd477622fa884ea85d8931a19f7",
+    "README.md": "e3ea7b48e74cacdb0dfa5ddb7b6f3a37d8c2ca6c19a08614d594f3df6cdf136f",
+    "package.json": "e8e54dabf8409e70ebefbbba43bfb0db91b905708adf658d7d7b8434f98b4342",
+    "src/client.js": "d6df91e3aa89b91c82899e7c188ee8a19ab876da97c6341376dd647fbff91802",
+    "test/catalog.test.mjs": "dbd9325ac9c2c32744812a29c2ba407c497de9d58e47b5390d89d5eb7f7f81e7",
+    "test/contracts.test.mjs": "17ca93a18397d646f291eabbd1811a6a51b1d7607ca3262d25dada559f9abebf",
+    "test/desktop-compat.test.mjs": "0306566335ffbad6ccb425513c67c070bac4bca4dc01e40afb6e6c65726068c9",
+    "test/upgrade-matrix.test.mjs": "df6c7b7484bf97857c6165000bfe79f7b52f54fdbd8bb3fc81c677c673c31a15",
+    "docs/reviews/dsh-native-market-desktop-authority-20261031.md": "7fd6d737596a61068873bed102d38aa6ba14daf376d183c9e5088a83006aeb14"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求未声明适配 Desktop 的插件仍可安装，并由 DSH Desktop 官方插件管理器按自身规则校验，而不是由商城兼容性声明拦截。",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "objective": "让受商城管理的已审核第三方插件在不声明 Desktop 适配或精确兼容记录时，仍可提交给 DSH Desktop 官方 pluginManager 安装；Catalog 适配与兼容声明只作信息展示，安装校验和拒绝原因由官方管理器负责。",
+  "change": {
+    "packageVersion": "0.9.21",
+    "installation": "不再用 Catalog profiles/dshReleases 或商城推导的 runtimeVersion 阻止已审核第三方插件安装；仍要求规范 GitHub 仓库、固定 Commit、包身份确认和显式用户确认，并保护商城自身及 @deepseek-ai/* 官方组件。",
+    "officialValidation": "先调用官方 pluginManager.inspect；inspect 拒绝时显示官方原因；通过后只调用 pluginManager.installBundle，由其检查实际 Git 包的 DSH engines/peers 等规则，并展示结构化拒绝原因。",
+    "lifecycle": "启动/关闭不再使用 Catalog compatibility gate；现有 DSH 管理器状态、Bundle 来源、官方/自身组件保护和可卸载状态约束继续生效。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager-0.9.21.tgz"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-authority-20261031.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Bind all changes to the current base Commit and exact file hashes; reject out-of-scope edits.",
+    "Disposable tests prove an unadapted, unknown, incompatible, and missing-runtime-version Catalog entry can reach official Desktop confirmation and pluginManager inspection.",
+    "Disposable tests prove official inspect refusal and installBundle DSH-compatibility refusal are shown to the user without resubmitting.",
+    "No third-party package code is executed by this workflow; the real Desktop Profile remains a separate explicitly confirmed operation.",
+    "Publish source through a CI-checked PR and update the Catalog with a fresh post-merge fixed-Commit plan."
+  ],
+  "rollback": {
+    "source": "Revert only this source change through a CI-checked PR.",
+    "desktopProfile": "This source change does not mutate the real Desktop Profile; any installed package rollback uses only the DSH official Desktop plugin manager under its own plan."
+  },
+  "healthCheck": "A disposable Desktop Client tree exposes enabled Install for approved fixed-Commit Catalog entries regardless of adaptation/compatibility declarations; official manager rejection is visible and no install call occurs after a refused inspect."
+}

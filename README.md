@@ -51,8 +51,8 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-当前源码版本为 Store `0.9.20`、Commit `11ccb0249d80758bf44c3cf9bf9d471f0aefc72c`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。`0.9.20` 在 DSH Desktop 插件列表和详情页始终显示安装、启动/关闭和卸载入口；兼容性或来源门禁未满足时仍显示禁用状态和原因，实际操作继续由 DSH 官方插件管理器执行。Catalog 仍只声明 `web` Profile，直到真实 Desktop Profile 安装验收完成。
-通过 DSH 官方 CLI 安装 Catalog 固定的 `0.9.20` Commit：
+Catalog 目前固定 Store `0.9.20`、Commit `11ccb0249d80758bf44c3cf9bf9d471f0aefc72c`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。源码 `0.9.21` 更新 Desktop 商城的安装判定；源码合并后仍须单独更新 Catalog 固定 Commit，才会成为商城用户安装的版本。Catalog 继续只声明 `web` Profile，直到真实 Desktop Profile 安装验收完成。
+通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.20` Commit：
 
 ```bash
 dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#11ccb0249d80758bf44c3cf9bf9d471f0aefc72c'
@@ -91,7 +91,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 设置左侧独立的 `插件商城` 分区；页面标题为 `插件商城（DSH-Store）`，并通过本地化插件元数据显示
 `DSH-Store`，保留内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方
 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。详情、搜索和分类筛选都在商城内提供；
-安装要求条目明确声明支持 Desktop Profile，并对当前 DSH 版本声明 `compatible`。安装、卸载和
+`0.9.21` 中，客户端适配标识和 Catalog 的 DSH 兼容记录只作参考，不决定已审核第三方插件能否安装；商城自身和 DSH 官方组件仍受保护。可管理的第三方条目交由 DSH Desktop 官方管理器检查；Git 源的 `inspect` 检查来源格式，实际包的 DSH 版本/peer 兼容性由 `installBundle` 校验。官方拒绝码和兼容要求会显示在商城中。安装、卸载和
 Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`setBundleEnabled` 执行；每次操作
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
 来源与 Catalog 仓库一致。启停只使用官方 Bundle Profile Patch 管理接口，不调用 Loader/Fiber API。
@@ -102,7 +102,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.20`（本次 Catalog 固定点；真实 Desktop Profile 安装尚未验收） |
+| Catalog 固定版本 | `0.9.20`（源码 `0.9.21` 的 Catalog 更新待单独计划；真实 Desktop Profile 安装尚未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |

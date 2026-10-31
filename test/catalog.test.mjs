@@ -607,10 +607,11 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.9.18' && manager.version === '0.9.17')
     || (packageManifest.version === '0.9.19' && manager.version === '0.9.18')
     || (packageManifest.version === '0.9.20' && manager.version === '0.9.19')
+    || (packageManifest.version === '0.9.21' && manager.version === '0.9.20')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
-  if (['0.9.17', '0.9.18', '0.9.19'].includes(manager.version)) assert.deepEqual(manager.compatibility.profiles, ['web'])
+  if (['0.9.17', '0.9.18', '0.9.19', '0.9.20'].includes(manager.version)) assert.deepEqual(manager.compatibility.profiles, ['web'])
   assert.match(manager.commit, /^[0-9a-f]{40}$/)
   assert.ok(readme.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`),
     'README must retain the fixed bootstrap install command even after the Catalog self-pin advances')
@@ -621,7 +622,7 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.ok(!primaryInstall.includes(bootstrapCommit), 'the obsolete bootstrap must not remain the primary install command')
   assert.match(primaryInstall, /--ignore-scripts --config\.auto-install-peers=false/)
   assert.match(guide, /仅供历史审计/)
-  assert.ok(readme.includes(`| 商城版本 | \`${manager.version}\``), 'README marketplace version must match the publicly fixed Catalog entry')
+  assert.ok(readme.includes(`| Catalog 固定版本 | \`${manager.version}\``), 'README must distinguish its Catalog pin from the newer source version')
   assert.match(readme, /dsh plugin --profile web add/)
   assert.match(readme, /设置左侧独立的\s+`插件商城`\s+分区/)
   assert.doesNotMatch(readme, /dsh-safe-plugin-manager\.git#main/)
