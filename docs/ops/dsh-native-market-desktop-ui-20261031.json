@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-ui-20261031",
+  "planFile": "docs/ops/dsh-native-market-desktop-ui-20261031.json",
+  "createdAt": "2026-10-31T14:59:54Z",
+  "baseCommit": "74012b1f9765b043773d5f5122428a4b9ccfab6d",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs",
+    "docs/reviews/dsh-native-market-desktop-ui-20261031.md",
+    "docs/ops/dsh-native-market-desktop-ui-20261031.json"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "f8153125c9ab743040dab20e87319cef4370ffd477622fa884ea85d8931a19f7",
+    "README.md": "e3ea7b48e74cacdb0dfa5ddb7b6f3a37d8c2ca6c19a08614d594f3df6cdf136f",
+    "package.json": "e8e54dabf8409e70ebefbbba43bfb0db91b905708adf658d7d7b8434f98b4342",
+    "src/client.js": "d6df91e3aa89b91c82899e7c188ee8a19ab876da97c6341376dd647fbff91802",
+    "test/catalog.test.mjs": "dbd9325ac9c2c32744812a29c2ba407c497de9d58e47b5390d89d5eb7f7f81e7",
+    "test/contracts.test.mjs": "17ca93a18397d646f291eabbd1811a6a51b1d7607ca3262d25dada559f9abebf",
+    "test/desktop-compat.test.mjs": "0306566335ffbad6ccb425513c67c070bac4bca4dc01e40afb6e6c65726068c9",
+    "test/upgrade-matrix.test.mjs": "df6c7b7484bf97857c6165000bfe79f7b52f54fdbd8bb3fc81c677c673c31a15",
+    "docs/reviews/dsh-native-market-desktop-ui-20261031.md": null,
+    "docs/ops/dsh-native-market-desktop-ui-20261031.json": null
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "7fb5a904c107030678665e86abe766298e96c6123ab1aa9453f2fc4a011dc2ff",
+    "README.md": "8601eb5161427d2458a912eeaaf5fd8e686ad523c7a2bee2930aedbbfb27daf7",
+    "package.json": "ea09da3ab5c7bb27685128559988f37bbfa028b10753d539255ea46cd3ed0284",
+    "src/client.js": "8477ea1bf4c097a6d253a5806b5b4d8084e44ebd2a31eebf4f73d5a198d247d6",
+    "test/catalog.test.mjs": "719497da5aac18673fc559c0587cb9430169860dca53dfddb68ce92a6c7dd377",
+    "test/contracts.test.mjs": "c5d69f713906e7979daa1ca6fea2059f891c0c0ab0131438be80da30d89bd130",
+    "test/desktop-compat.test.mjs": "d5dcda99946131bb31fea058a162fd281cf6a67fba3ebe3a38a83ff9fa2b1a50",
+    "test/upgrade-matrix.test.mjs": "f765086f98acba8484f7d332f114412751bb1aa956bfd6222b5eaaba6ce22066",
+    "docs/reviews/dsh-native-market-desktop-ui-20261031.md": "770bc66a0de5939cf5c0e5cc1f9c6371d4d0a3b8279808a98f9c0033e0de9f18"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求插件商城可搜索 build-dsh-plugin，补齐 Web/Desktop 商城样式与缺失功能；已要求详情、筛选及安装/启动/关闭/卸载入口，并明确已审核插件由 DSH Desktop 官方管理器按自身规则校验。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "发布 DSH Store 0.9.22 Desktop marketplace UI 修复：受限记录可发现和查看，恢复完整目录浏览与已安装管理视图，保留 Catalog 审核边界并让官方 DSH Desktop 管理器决定已审核插件的运行兼容性。",
+  "change": {
+    "packageVersion": "0.9.22",
+    "directory": "Catalog approved 和 blocked 条目可搜索；unlisted 仍隐藏。搜索覆盖标识、名称、用途、权限、固定来源、分类与审核原因。",
+    "views": "新增插件目录和已安装分页，支持分类、Catalog 状态、Desktop 适配标识筛选、排序、清除筛选、计数与分页；目录外已安装插件以只读状态显示。",
+    "lifecycle": "列表卡片和详情均提供适用的安装、启动、关闭、卸载动作；已审核第三方条目的兼容检查由 DSH Desktop 官方 pluginManager 决定，Catalog blocked 条目不开放安装或启动。",
+    "presentation": "使用 DSH 样式令牌、响应式卡片、状态徽标和独立视图导航；页面标题为插件商城（DSH-Store），设置侧栏名为插件商城。"
+  },
+  "commands": [
+    { "argv": ["node", "--check", "src/client.js"], "expected": "exit 0" },
+    { "argv": ["node", "--test", "test/desktop-compat.test.mjs"], "expected": "all cases pass" },
+    { "argv": ["npm", "run", "check"], "expected": "REGISTRY_OK and all tests pass" },
+    { "argv": ["npm", "pack", "--dry-run", "--json"], "expected": "dsh-safe-plugin-manager-0.9.22.tgz" },
+    { "argv": ["node", "scripts/verify-dsh-upgrade-plan.mjs", "docs/ops/dsh-native-market-desktop-ui-20261031.json"], "expected": "DSH_UPGRADE_PLAN_OK" },
+    { "argv": ["git", "diff", "--check"], "expected": "exit 0" }
+  ],
+  "gates": [
+    "Bind every changed file to the full main Commit and exact base/postcondition hashes; reject any out-of-scope change.",
+    "Disposable Desktop fixtures prove blocked build-dsh-plugin can be found and inspected while install stays disabled; approved entries without a Desktop declaration remain available to the official manager.",
+    "Disposable Desktop fixtures cover catalog and installed tabs, search of a directory-only bundle, adaptation filters, visible lifecycle actions, and the lack of Store controls for unlisted installed bundles.",
+    "Do not change a real DSH Profile or package as part of the source PR. Real Desktop installation and UI acceptance remain separate planned operations.",
+    "Publish through an exact-head CI-checked source PR, then pin the merged full Commit using a fresh Catalog plan and independently verify GitHub Raw, Pages, dsh.store, and dsh-store.cn."
+  ],
+  "rollback": {
+    "source": "Revert only this exact UI release through a CI-checked PR.",
+    "desktopProfile": "This source change does not update any real DSH Profile or package. Any later local update uses the DSH official Plugin Manager under a separate explicit plan."
+  },
+  "healthCheck": "node --test test/desktop-compat.test.mjs verifies the searchable blocked record, view controls, category/status/adaptation filtering, details and lifecycle visibility with disposable manager fixtures; the full repository check and exact-head CI are separate release gates."
+}

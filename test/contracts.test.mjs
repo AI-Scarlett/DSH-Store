@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.21')
+  assert.equal(pkg.version, '0.9.22')
   assert.equal(pkg.engines.dsh, pkg.dsh.compatibility.dsh)
   for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
     assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
@@ -377,7 +377,7 @@ test('client registers through ModuleLoader and a standalone Settings section', 
   assert.match(client, /插件商城（DSH-Store）/)
   assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
   assert.match(client, /GitHub-only/)
-  assert.match(client, /DSH第三方插件商城/)
+  assert.match(client, /插件商城（DSH-Store）/)
   assert.match(client, /LEGACY_DSH_VERSIONS = \{ 'rc\.7': '0\.1\.0-rc\.7'/)
   assert.match(client, /function CompatibilityMatrix/)
   assert.match(client, /partial: '部分验证'/)

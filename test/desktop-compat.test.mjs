@@ -104,14 +104,14 @@ test('Desktop Guardian status reports official ownership without probing launchd
 const desktopCatalogUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
 const desktopCommit = 'a'.repeat(40)
 
-function desktopEntry({ id, packageName, commit, compatibility = 'compatible', profiles = ['desktop'] }) {
+function desktopEntry({ id, packageName, commit, compatibility = 'compatible', profiles = ['desktop'], status = 'approved', statusReason }) {
   return {
     id, name: id === 'dsh-safe-plugin-manager' ? '安全插件商城（DSH-Store）' : `Name ${id}`,
     packageName, description: `Description for ${id}`,
     repositoryUrl: `https://github.com/acme/${id}`, commit, version: '1.2.3',
     source: { provenance: 'github-commit', updatedAt: '2026-10-30T00:00:00Z' },
     installPath: null, manifestPath: 'package.json', entryIds: [id], categories: ['tools'],
-    searchTerms: [id], status: 'approved',
+    searchTerms: [id], status, ...(statusReason ? { statusReason } : {}),
     compatibility: { dshReleases: { '0.2.2-alpha.2': compatibility }, profiles },
     details: {
       license: 'MIT', externalDependencies: [],
@@ -335,6 +335,8 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
       desktopEntry({ id: 'dsh-unknown', packageName: '@acme/dsh-unknown', commit: 'e'.repeat(40), compatibility: 'unknown' }),
       desktopEntry({ id: 'dsh-web-only', packageName: '@acme/dsh-web-only', commit: 'f'.repeat(40), profiles: ['web'] }),
       desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: 'd'.repeat(40), profiles: ['web'] }),
+      desktopEntry({ id: 'build-dsh-plugin', packageName: 'dsh-build-plugin', commit: '9'.repeat(40), profiles: [], status: 'blocked',
+        statusReason: 'Automatic policy blocked installation: fixed-source security warnings require review' }),
     ]),
     installed: [{ name: '@acme/dsh-installed', official: false, installed: true, removable: true, enabled: true,
       version: '1.0.0', source: `git+https://github.com/acme/dsh-installed.git#${'b'.repeat(40)}` }],
@@ -359,8 +361,9 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
   assert.match(text, /DSH Desktop 客户端：未声明适配/)
   assert.match(text, /Name dsh-installed.*已启动|已启动.*Name dsh-installed/)
   assert.match(text, /安装由 DSH Desktop 校验/)
-  assert.match(text, /已审核第三方插件是否适配 Desktop 不决定能否安装/)
-  assert.match(text, /声明支持 Desktop 4 个/)
+  assert.match(text, /客户端适配标识仅供参考，不决定安装资格/)
+  assert.match(text, /只读受限/)
+  assert.match(text, /4 声明适配 Desktop/)
   assert.ok(desktopNodes(initial).length > 0)
   assert.equal(harness.calls.listBundles, 1)
   assert.equal(harness.requests.length, 1)
@@ -371,10 +374,17 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
   const incompatibleCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/dsh-incompatible'))
   const unknownCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/dsh-unknown'))
   const webOnlyCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/dsh-web-only'))
+  const blockedPluginCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('dsh-build-plugin'))
   assert.ok(installedCard)
   assert.ok(incompatibleCard)
   assert.ok(unknownCard)
   assert.ok(webOnlyCard)
+  assert.ok(blockedPluginCard, 'Catalog-blocked plugins remain searchable in the read-only store catalog')
+  assert.match(desktopText(blockedPluginCard), /Catalog 阻止安装/)
+  const blockedInstallCard = desktopNodes(blockedPluginCard).find(node => node.type === 'button' && node.children?.includes('安装'))
+  assert.ok(blockedInstallCard)
+  assert.equal(blockedInstallCard.props.disabled, true)
+  assert.match(blockedInstallCard.props.title, /Catalog 当前将此条目标记为 blocked/)
   for (const label of ['关闭', '卸载', '查看详情']) {
     assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes(label)), true, `${label} is available for a matching installed third-party bundle`)
   }
@@ -423,11 +433,72 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
 
   const search = desktopNodes(detailTree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索插件')
   assert.ok(search)
-  search.props.onChange({ target: { value: 'dsh-web-only' } })
+  search.props.onChange({ target: { value: 'build-dsh-plugin' } })
+  const blockedSearchTree = await harness.render()
+  const searchResults = desktopNodes(blockedSearchTree).filter(node => node.type === 'article')
+  assert.equal(searchResults.length, 1)
+  assert.match(desktopText(searchResults[0]), /dsh-build-plugin/)
+  assert.ok(desktopNodes(blockedSearchTree).some(node => node.type === 'button' && node.children?.includes('只读受限 · 1')))
+  const blockedDetailsButton = desktopNodes(searchResults[0]).find(node => node.type === 'button' && node.children?.includes('查看详情'))
+  blockedDetailsButton.props.onClick()
+  const blockedDetailsTree = await harness.render()
+  assert.match(desktopText(blockedDetailsTree), /Catalog 审核原因：Automatic policy blocked installation/)
+  const blockedDetailActions = desktopNodes(blockedDetailsTree).find(node => node.props?.['aria-label'] === '插件操作')
+  assert.equal(desktopNodes(blockedDetailActions).find(node => node.type === 'button' && node.children?.includes('安装')).props.disabled, true)
+  const clearBlockedSearch = desktopNodes(blockedDetailsTree).find(node => node.type === 'button' && node.children?.includes('清除筛选'))
+  clearBlockedSearch.props.onClick()
+  const resetTree = await harness.render()
+  const resetSearch = desktopNodes(resetTree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索插件')
+  resetSearch.props.onChange({ target: { value: 'dsh-web-only' } })
   const searchedTree = await harness.render()
   assert.equal(desktopNodes(searchedTree).filter(node => node.type === 'article').length, 1)
   assert.match(desktopText(searchedTree), /Name dsh-web-only/)
   assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '按分类筛选'))
+  assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '排序方式'))
+  assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '按 Desktop 适配标识筛选'))
+})
+
+test('official Desktop restores a separate installed view and keeps out-of-catalog bundles read-only', async () => {
+  const catalogInstalled = desktopEntry({ id: 'dsh-installed-view', packageName: '@acme/dsh-installed-view', commit: 'b'.repeat(40) })
+  const harness = createDesktopHarness({
+    catalog: desktopCatalog([catalogInstalled]),
+    installed: [
+      { name: '@acme/dsh-installed-view', official: false, installed: true, removable: true, enabled: false,
+        version: '1.0.0', source: `git+https://github.com/acme/dsh-installed-view.git#${'b'.repeat(40)}` },
+      { name: 'local-unlisted-plugin', official: false, installed: true, removable: true, enabled: true,
+        version: '2.0.0', source: `git+https://github.com/acme/local-unlisted-plugin.git#${'c'.repeat(40)}` },
+    ],
+  })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  const catalogTree = await waitForDesktopTree(harness, tree => desktopText(tree).includes('Name dsh-installed-view'))
+  const catalogTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
+    && node.children?.some(value => String(value).startsWith('插件目录 · ')))
+  const installedTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
+    && node.children?.some(value => String(value).startsWith('已安装 · 2')))
+  assert.ok(catalogTab)
+  assert.ok(installedTab)
+  assert.equal(installedTab.props['aria-selected'], false)
+  installedTab.props.onClick()
+
+  const installedTree = await harness.render()
+  assert.ok(desktopNodes(installedTree).some(node => node.type === 'button' && node.props.role === 'tab'
+    && node.props['aria-selected'] === true && node.children?.some(value => String(value).startsWith('已安装 · '))))
+  assert.match(desktopText(installedTree), /DSH 已安装/)
+  assert.match(desktopText(installedTree), /目录外只读/)
+  assert.match(desktopText(installedTree), /local-unlisted-plugin/)
+  const externalCard = desktopNodes(installedTree).find(node => node.type === 'article' && desktopText(node).includes('local-unlisted-plugin'))
+  assert.ok(externalCard)
+  assert.match(desktopText(externalCard), /此插件没有可匹配的已审核 Catalog 固定来源记录/)
+  assert.ok(desktopNodes(externalCard).some(node => node.type === 'button' && node.children?.includes('商城不管理') && node.props.disabled))
+  assert.equal(desktopNodes(externalCard).some(node => node.type === 'button' && ['安装', '启动', '关闭', '卸载'].some(label => node.children?.includes(label))), false)
+
+  const search = desktopNodes(installedTree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索插件')
+  search.props.onChange({ target: { value: 'local-unlisted-plugin' } })
+  const searchedTree = await harness.render()
+  assert.equal(desktopNodes(searchedTree).filter(node => node.type === 'article').length, 1)
+  assert.match(desktopText(searchedTree), /GitHub 来源：https:\/\/github\.com\/acme\/local-unlisted-plugin/)
 })
 
 test('official Desktop requires the full package and Commit confirmation before using the DSH installer', async () => {
@@ -673,13 +744,25 @@ test('official Desktop fails closed for malformed Catalog data and oversized res
 test('current trusted Registry Catalog is accepted by the Desktop reader', async () => {
   const catalog = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
   const expectedApproved = catalog.entries.filter(entry => entry.status === 'approved').length
+  const expectedBlocked = catalog.entries.filter(entry => entry.status === 'blocked').length
   const harness = createDesktopHarness({ catalog })
   await harness.ready
   await harness.render()
   await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes(`已审核插件 ${expectedApproved} 个`))
-  assert.match(desktopText(tree), new RegExp(`已审核插件 ${expectedApproved} 个`))
-  const expectedDesktop = catalog.entries.filter(entry => entry.status === 'approved' && entry.compatibility.profiles.includes('desktop')).length
-  assert.match(desktopText(tree), new RegExp(`声明支持 Desktop ${expectedDesktop} 个`))
+  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes(`${expectedBlocked} 只读受限`))
+  assert.match(desktopText(tree), new RegExp(`${expectedApproved + expectedBlocked} 目录条目`))
+  assert.match(desktopText(tree), new RegExp(`${expectedApproved} Catalog 已审核`))
+  assert.match(desktopText(tree), new RegExp(`${expectedBlocked} 只读受限`))
+  const expectedDesktop = catalog.entries.filter(entry => entry.status !== 'unlisted' && entry.compatibility?.profiles?.includes('desktop')).length
+  assert.match(desktopText(tree), new RegExp(`${expectedDesktop} 声明适配 Desktop`))
+  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索插件')
+  assert.ok(search)
+  search.props.onChange({ target: { value: 'build-dsh-plugin' } })
+  const searched = await harness.render()
+  const matches = desktopNodes(searched).filter(node => node.type === 'article')
+  assert.equal(matches.length, 1)
+  assert.match(desktopText(matches[0]), /DSH 插件开发工作流（Build DSH Plugin）/)
+  assert.match(desktopText(matches[0]), /Catalog 阻止安装/)
+  assert.equal(desktopNodes(matches[0]).find(node => node.type === 'button' && node.children?.includes('安装')).props.disabled, true)
   assert.equal(harness.requests[0].url, desktopCatalogUrl)
 })
