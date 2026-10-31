@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "cb138b394e04152a913d7c8b4c6c04710f79a56b",
+  "commit": "220da8e94f94f341126f14ad82c52c361847ce75",
   "version": "2.1.0",
   "categories": [
     "experimental"
@@ -30,16 +30,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-30T07:04:51.000Z",
-    "observedAt": "2026-10-30T09:25:15.000Z",
+    "updatedAt": "2026-10-31T05:42:26.000Z",
+    "observedAt": "2026-10-31T14:21:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-30T09:25:15.000Z",
-      "evidenceUrl": "https://github.com/kkppshuai-svg/dsh-corner-gauge/commit/cb138b394e04152a913d7c8b4c6c04710f79a56b",
+      "checkedAt": "2026-10-31T14:21:52.000Z",
+      "evidenceUrl": "https://github.com/kkppshuai-svg/dsh-corner-gauge/commit/220da8e94f94f341126f14ad82c52c361847ce75",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,10 +78,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "8a38660e5d2d24f9fc03f9890b998dc0c4857ef3b0e83d22a74623adf810f862",
+    "binding": "7505fa92baed44eb7770e477d2da4513303dca924ef0a1ce6bd07bf83e151847",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -92,9 +92,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; runtime source contains the network permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.1-rc.2 <0.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
