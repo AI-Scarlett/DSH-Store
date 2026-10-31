@@ -87,15 +87,17 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 ### 官方 Desktop
 
-官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.13` 把入口注册为
-设置左侧独立的 `DSH-Store` 分区，并通过本地化插件元数据在 DSH 插件列表显示 `DSH-Store`，保留
-内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方 `pluginManager` Remote
-读取 Desktop 已安装清单和当前 DSH 版本；条目还必须在 `compatibility.profiles` 明确包含 `desktop`，并对当前 DSH 版本声明 `compatible`，才可安装。
-用户输入同时绑定包名与完整 Commit 后，由 DSH 官方 `inspect` / `installBundle` 执行安装。更新、
-启停、卸载与 Host 重启继续使用 DSH 官方“插件”页及应用更新入口。商城不会将 Desktop 操作误送到
-`web` Profile，也不会让固定 `3080` 端口的 Guardian 接管 Desktop。`0.9.15` 已声明官方
-`remote.pluginManager` 模块依赖并通过隔离 Desktop 契约测试；真实打包 Desktop UI/Profile 安装仍未验收，
-因此 Catalog 继续只声明 `web` Profile。
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.17` 把入口注册为
+设置左侧独立的 `插件商城` 分区；页面标题为 `插件商城（DSH-Store）`，并通过本地化插件元数据显示
+`DSH-Store`，保留内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方
+`pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。详情、搜索和分类筛选都在商城内提供；
+安装要求条目明确声明支持 Desktop Profile，并对当前 DSH 版本声明 `compatible`。安装、卸载和
+Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`setBundleEnabled` 执行；每次操作
+都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
+来源与 Catalog 仓库一致。启停只使用官方 Bundle Profile Patch 管理接口，不调用 Loader/Fiber API。
+超时或结果不确定时商城刷新清单且不会自动重试。所有操作仅针对 DSH 自己的 Desktop Profile，不会误写
+`web` Profile，也不会让固定 `3080` 端口的 Guardian 接管 Desktop。Store `0.9.17` 的本机真实安装与操作
+验收仍需在发布后通过 DSH 官方 UI 单独完成；Catalog 适配状态仍以其固定记录为准。
 
 ## 当前概况
 
