@@ -139,7 +139,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory } = {})
   const moduleDependencies = []
   const requests = []
   const timerCallbacks = []
-  const calls = { listBundles: 0, inspect: [], installBundle: [], waitForInstall: [] }
+  const calls = { listBundles: 0, inspect: [], installBundle: [], removeBundle: [], setBundleEnabled: [], waitForInstall: [] }
   const componentRecords = new Map()
   let activeComponent = null
   let panel
@@ -176,7 +176,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory } = {})
       return [record.states[index], value => { record.states[index] = typeof value === 'function' ? value(record.states[index]) : value }]
     },
   }
-  const Modal = props => React.createElement('div', { role: 'dialog' }, props.children, props.footer)
+  const Modal = props => React.createElement('div', { role: 'dialog', 'aria-label': props.title }, props.title, props.children, props.footer)
   const withComponent = (component, props = {}) => {
     const previous = activeComponent
     const record = recordFor(component)
@@ -201,8 +201,22 @@ function createDesktopHarness({ catalog, installed = [], responseFactory } = {})
     async inspect(spec) { calls.inspect.push(spec); return { status: 'accepted', kind: 'git' } },
     async installBundle(spec, options) {
       calls.installBundle.push({ spec, options })
-      installedBundles = [...installedBundles, { name: '@acme/dsh-installable', official: false, installed: true }]
+      const entry = catalog.entries.find(item => spec.startsWith(`git+${item.repositoryUrl}.git#`))
+      installedBundles = [...installedBundles.filter(bundle => bundle.name !== entry?.packageName), {
+        name: entry?.packageName || '@acme/dsh-installable', official: false, installed: true,
+        removable: true, enabled: options.enabled, version: entry?.version, source: spec,
+      }]
       return { application: 'applied', changed: true, stage: 'install', target: spec }
+    },
+    async removeBundle(name) {
+      calls.removeBundle.push(name)
+      installedBundles = installedBundles.filter(bundle => bundle.name !== name)
+      return { application: 'applied', changed: true, stage: 'remove', target: name }
+    },
+    async setBundleEnabled(name, enabled) {
+      calls.setBundleEnabled.push({ name, enabled })
+      installedBundles = installedBundles.map(bundle => bundle.name === name ? { ...bundle, enabled } : bundle)
+      return { application: 'applied', changed: true, stage: 'enable', target: name, enabled }
     },
     async waitForInstall(requestId) { calls.waitForInstall.push(requestId); return null },
   }
@@ -304,7 +318,7 @@ async function waitForDesktopTree(harness, predicate) {
   return tree
 }
 
-test('official Desktop registers DSH-Store as a separate Settings section and loads the Catalog', async () => {
+test('official Desktop registers 插件商城 and loads the Catalog with search and category filters', async () => {
   const entry = desktopEntry({ id: 'dsh-installed', packageName: '@acme/dsh-installed', commit: 'b'.repeat(40) })
   const harness = createDesktopHarness({
     catalog: desktopCatalog([
@@ -315,13 +329,14 @@ test('official Desktop registers DSH-Store as a separate Settings section and lo
       desktopEntry({ id: 'dsh-web-only', packageName: '@acme/dsh-web-only', commit: 'f'.repeat(40), profiles: ['web'] }),
       desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: 'd'.repeat(40), profiles: ['web'] }),
     ]),
-    installed: [{ name: '@acme/dsh-installed', official: false, installed: true }],
+    installed: [{ name: '@acme/dsh-installed', official: false, installed: true, removable: true, enabled: true,
+      version: '1.0.0', source: `git+https://github.com/acme/dsh-installed.git#${'b'.repeat(40)}` }],
   })
   await harness.ready
   assert.equal(harness.settingsRegistrations.length, 1)
   assert.equal(harness.settingsRegistrations[0].slot, 'settings.section')
   assert.equal(harness.settingsRegistrations[0].metadata.id, 'dsh-store')
-  assert.equal(harness.settingsRegistrations[0].metadata.label(), 'DSH-Store')
+  assert.equal(harness.settingsRegistrations[0].metadata.label(), '插件商城')
   assert.deepEqual(harness.moduleDependencies, ['slots', 'remote', 'remote.pluginManager'])
   assert.equal(JSON.stringify(harness.injections[0]), '["remote","remote.pluginManager"]')
 
@@ -332,9 +347,10 @@ test('official Desktop registers DSH-Store as a separate Settings section and lo
   const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-installable'))
   const text = desktopText(tree)
   assert.match(text, /DSH-Store/)
+  assert.match(text, /插件商城（DSH-Store）/)
   assert.match(text, /DSH Desktop 客户端：已声明适配/)
   assert.match(text, /DSH Desktop 客户端：未声明适配/)
-  assert.match(text, /Name dsh-installed.*已安装|已安装.*Name dsh-installed/)
+  assert.match(text, /Name dsh-installed.*已启动|已启动.*Name dsh-installed/)
   assert.match(text, /不兼容 DSH 0\.2\.2-alpha\.2/)
   assert.match(text, /当前 DSH 兼容性未确认/)
   assert.match(text, /声明支持 Desktop 4 个/)
@@ -353,10 +369,31 @@ test('official Desktop registers DSH-Store as a separate Settings section and lo
   assert.ok(incompatibleCard)
   assert.ok(unknownCard)
   assert.ok(webOnlyCard)
+  for (const label of ['关闭', '卸载', '查看详情']) {
+    assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes(label)), true, `${label} is available for a matching installed third-party bundle`)
+  }
   assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
   assert.equal(desktopNodes(incompatibleCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
   assert.equal(desktopNodes(unknownCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
   assert.equal(desktopNodes(webOnlyCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
+  const storeCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('dsh-safe-plugin-manager'))
+  assert.ok(storeCard)
+  assert.equal(desktopNodes(storeCard).some(node => node.type === 'button' && ['启动', '关闭', '卸载'].some(label => node.children?.includes(label))), false)
+
+  const detailButton = desktopNodes(installedCard).find(node => node.type === 'button' && node.children?.includes('查看详情'))
+  detailButton.props.onClick()
+  const detailTree = await harness.render()
+  assert.match(desktopText(detailTree), /Name dsh-installed · 插件详情/)
+  assert.match(desktopText(detailTree), /GitHub 仓库：https:\/\/github\.com\/acme\/dsh-installed/)
+  assert.match(desktopText(detailTree), /权限 low/)
+
+  const search = desktopNodes(detailTree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索插件')
+  assert.ok(search)
+  search.props.onChange({ target: { value: 'dsh-web-only' } })
+  const searchedTree = await harness.render()
+  assert.equal(desktopNodes(searchedTree).filter(node => node.type === 'article').length, 1)
+  assert.match(desktopText(searchedTree), /Name dsh-web-only/)
+  assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '按分类筛选'))
 })
 
 test('official Desktop requires the full package and Commit confirmation before using the DSH installer', async () => {
@@ -389,7 +426,7 @@ test('official Desktop requires the full package and Commit confirmation before 
   confirmButton = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
   assert.equal(confirmButton.props.disabled, false)
   await confirmButton.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方安装器已完成'))
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成安装'))
   assert.equal(harness.calls.inspect.length, 1)
   assert.equal(harness.calls.inspect[0], `git+https://github.com/acme/dsh-installable.git#${desktopCommit}`)
   assert.equal(harness.calls.installBundle.length, 1)
@@ -400,6 +437,79 @@ test('official Desktop requires the full package and Commit confirmation before 
   assert.equal(harness.calls.waitForInstall.length, 0)
   assert.equal(harness.requests.every(item => item.url === desktopCatalogUrl), true)
   assert.match(desktopText(tree), /已安装/)
+})
+
+test('official Desktop starts, closes, and uninstalls only the matching Catalog bundle through pluginManager', async () => {
+  const entry = desktopEntry({ id: 'dsh-managed', packageName: '@acme/dsh-managed', commit: desktopCommit })
+  const oldCommit = 'b'.repeat(40)
+  const harness = createDesktopHarness({
+    catalog: desktopCatalog([entry]),
+    installed: [{ name: entry.packageName, official: false, installed: true, removable: true, enabled: true,
+      version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }],
+  })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-managed'))
+  const managedCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
+  assert.ok(managedCard)
+  assert.equal(desktopNodes(managedCard).some(node => node.type === 'button' && node.children?.includes('更新')), false,
+    'fixed GitHub Commit entries do not offer a registry-only update operation')
+
+  const runConfirmed = async (buttonName, token, successText) => {
+    const button = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes(buttonName))
+    assert.ok(button, `${buttonName} button is available`)
+    button.props.onClick()
+    tree = await harness.render()
+    assert.match(desktopText(tree), new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+    const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === token)
+    assert.ok(input)
+    input.props.onChange({ target: { value: token } })
+    tree = await harness.render()
+    const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并' + buttonName))
+    assert.ok(confirm)
+    await confirm.props.onClick()
+    tree = await waitForDesktopTree(harness, value => desktopText(value).includes(successText))
+  }
+
+  await runConfirmed('关闭', `CLOSE ${entry.packageName} ${desktopCommit}`, 'DSH 官方插件管理器已完成关闭')
+  assert.deepEqual(harness.calls.setBundleEnabled.at(-1), { name: entry.packageName, enabled: false })
+
+  const finishClose = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('完成'))
+  finishClose.props.onClick()
+  tree = await harness.render()
+  assert.ok(desktopNodes(tree).some(node => node.type === 'button' && node.children?.includes('启动')))
+  await runConfirmed('启动', `START ${entry.packageName} ${desktopCommit}`, 'DSH 官方插件管理器已完成启动')
+  assert.deepEqual(harness.calls.setBundleEnabled.at(-1), { name: entry.packageName, enabled: true })
+
+  const finishStart = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('完成'))
+  finishStart.props.onClick()
+  tree = await harness.render()
+  await runConfirmed('卸载', `REMOVE ${entry.packageName} ${desktopCommit}`, 'DSH 官方插件管理器已完成卸载')
+  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
+  assert.equal(harness.calls.installBundle.length, 0)
+  assert.equal(harness.calls.setBundleEnabled.length, 2)
+})
+
+test('official Desktop hides lifecycle operations when an installed package source differs from the Catalog', async () => {
+  const entry = desktopEntry({ id: 'dsh-source-mismatch', packageName: '@acme/dsh-source-mismatch', commit: desktopCommit })
+  const harness = createDesktopHarness({
+    catalog: desktopCatalog([entry]),
+    installed: [{ name: entry.packageName, official: false, installed: true, removable: true, enabled: true,
+      version: '1.0.0', source: `git+https://github.com/other-owner/other-repo.git#${'b'.repeat(40)}` }],
+  })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-source-mismatch'))
+  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
+  assert.ok(card)
+  assert.match(desktopText(card), /已安装来源与商城记录不一致/)
+  assert.equal(desktopNodes(card).some(node => node.type === 'button'
+    && ['安装', '启动', '关闭', '卸载'].some(label => node.children?.includes(label))), false)
+  assert.equal(harness.calls.installBundle.length, 0)
+  assert.equal(harness.calls.removeBundle.length, 0)
+  assert.equal(harness.calls.setBundleEnabled.length, 0)
 })
 
 test('official Desktop fails closed for malformed Catalog data and oversized response headers', async () => {

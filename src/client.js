@@ -1406,6 +1406,7 @@ window.__ModuleLoader__.load({
     const DESKTOP_CATALOG_MAX_BYTES = 4 * 1024 * 1024
     const DESKTOP_CATALOG_MAX_ENTRIES = 2_000
     const DESKTOP_CATALOG_TIMEOUT_MS = 12_000
+    const DESKTOP_OPERATION_TIMEOUT_MS = 90_000
     const DESKTOP_PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/
     const DESKTOP_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
     const DESKTOP_COMMIT = /^[0-9a-f]{40}$/
@@ -1638,6 +1639,39 @@ window.__ModuleLoader__.load({
       return Array.isArray(profiles) && profiles.includes('desktop') ? '已声明适配' : '未声明适配'
     }
 
+    function desktopSourceRepository(source) {
+      if (typeof source !== 'string' || source.length > 1_024) return null
+      const address = source.trim().replace(/^git\+/, '').split('#', 1)[0]
+      let repository = null
+      if (address.startsWith('github:')) repository = address.slice('github:'.length)
+      else if (/^git@github\.com:/i.test(address)) repository = address.slice('git@github.com:'.length)
+      else {
+        try {
+          const url = new URL(address)
+          if (url.protocol === 'https:' && url.hostname.toLowerCase() === 'github.com') repository = url.pathname
+        } catch { return null }
+      }
+      if (!repository) return null
+      const parts = repository.replace(/^\/+/, '').replace(/\.git$/i, '').split('/')
+      if (parts.length !== 2 || parts.some(part => !/^[A-Za-z0-9_.-]+$/.test(part))) return null
+      return `https://github.com/${parts[0]}/${parts[1]}`.toLowerCase()
+    }
+
+    function desktopEntryRepository(entry) {
+      return typeof entry?.repositoryUrl === 'string' ? entry.repositoryUrl.replace(/\.git$/i, '').toLowerCase() : null
+    }
+
+    function desktopBundleMatchesCatalogEntry(entry, bundle) {
+      return desktopSourceRepository(bundle?.source) !== null
+        && desktopSourceRepository(bundle.source) === desktopEntryRepository(entry)
+    }
+
+    function desktopActionConfirmation(action, entry) {
+      const verb = { install: 'INSTALL', remove: 'REMOVE', enable: 'START', disable: 'CLOSE' }[action]
+      if (!verb) throw desktopFailure('DESKTOP_ACTION_INVALID')
+      return `${verb} ${entry.packageName} ${entry.commit}`
+    }
+
     function desktopErrorCode(error) {
       const value = error?.code || error?.error?.code || error?.message
       return typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(value) ? value : 'DESKTOP_OPERATION_FAILED'
@@ -1648,10 +1682,11 @@ window.__ModuleLoader__.load({
       const [query, setQuery] = useState('')
       const [category, setCategory] = useState('')
       const [page, setPage] = useState(1)
-      const [installPlan, setInstallPlan] = useState(null)
+      const [detailEntry, setDetailEntry] = useState(null)
+      const [actionPlan, setActionPlan] = useState(null)
       const [confirmation, setConfirmation] = useState('')
-      const [installState, setInstallState] = useState({ status: 'idle' })
-      const installInFlight = useRef(false)
+      const [actionState, setActionState] = useState({ status: 'idle' })
+      const actionInFlight = useRef(false)
       const refresh = useCallback(async () => {
         setLoadState({ status: 'loading' })
         try {
@@ -1684,175 +1719,290 @@ window.__ModuleLoader__.load({
       const visible = filtered.slice((currentPage - 1) * MARKET_PAGE_SIZE, currentPage * MARKET_PAGE_SIZE)
       const installedByName = new Map((loadState.status === 'ready' ? loadState.bundles : [])
         .filter(bundle => bundle && typeof bundle.name === 'string').map(bundle => [bundle.name, bundle]))
-      const closePlan = () => {
-        if (installState.status === 'installing') return
-        setInstallPlan(null)
-        setConfirmation('')
-        setInstallState({ status: 'idle' })
-        installInFlight.current = false
-      }
 
-      const confirmInstall = async () => {
-        if (!installPlan || confirmation !== installPlan.confirmation || installInFlight.current || loadState.status !== 'ready') return
-        const entry = loadState.catalog.entries.find(item => item.id === installPlan.entry.id)
-        const currentVersionStatus = entry ? desktopCompatibility(entry, loadState.runtimeVersion) : 'unknown'
-        if (!entry || entry.status !== 'approved' || currentVersionStatus !== 'compatible') {
-          setInstallState({ status: 'error', code: 'CATALOG_COMPATIBILITY_CHANGED' })
-          return
-        }
-        if (installedByName.get(entry.packageName)?.installed) {
-          setInstallState({ status: 'error', code: 'PACKAGE_ALREADY_INSTALLED' })
-          return
-        }
-        const manager = desktopPluginManager
-        if (!manager || typeof manager.inspect !== 'function' || typeof manager.installBundle !== 'function') {
-          setInstallState({ status: 'error', code: 'DESKTOP_PLUGIN_MANAGER_UNAVAILABLE' })
-          return
-        }
-        installInFlight.current = true
-        setInstallState({ status: 'installing' })
-        let requestId = null
-        let installRequested = false
-        const settle = async outcome => {
-          if (!outcome || !['applied', 'restart-required'].includes(outcome.application)) {
-            setInstallState({ status: 'error', code: desktopErrorCode(outcome?.error || outcome) })
-            return
-          }
-          setInstallState({ status: 'success', application: outcome.application })
-          await refresh()
-        }
-        try {
-          const spec = desktopInstallSpecifier(entry)
-          const inspected = unwrapDesktopRemote(await manager.inspect(spec), 'DESKTOP_SOURCE_INSPECTION_FAILED')
-          if (!inspected || inspected.status !== 'accepted') throw Object.assign(new Error('DESKTOP_SOURCE_REFUSED'), { code: 'DESKTOP_SOURCE_REFUSED' })
-          requestId = window.crypto?.randomUUID?.()
-          if (typeof requestId !== 'string' || !/^[0-9a-f-]{36}$/i.test(requestId)) throw Object.assign(new Error('INSTALL_REQUEST_ID_UNAVAILABLE'), { code: 'INSTALL_REQUEST_ID_UNAVAILABLE' })
-          installRequested = true
-          const outcome = unwrapDesktopRemote(await manager.installBundle(spec, { enabled: true, requestId }), 'DESKTOP_INSTALL_FAILED')
-          await settle(outcome)
-        } catch (error) {
-          if (installRequested && requestId && typeof manager.waitForInstall === 'function') {
-            try {
-              const recovered = unwrapDesktopRemote(await manager.waitForInstall(requestId), 'DESKTOP_INSTALL_RESULT_UNAVAILABLE')
-              if (recovered) {
-                await settle(recovered)
-                return
-              }
-            } catch { /* The single install request may still have an unknown outcome. */ }
-            setInstallState({ status: 'unknown', code: 'INSTALL_RESULT_UNKNOWN' })
-            await refresh()
-            return
-          }
-          setInstallState({ status: 'error', code: desktopErrorCode(error) })
-        } finally {
-          installInFlight.current = false
-        }
-      }
-
-      const planToken = entry => `INSTALL ${entry.packageName} ${entry.commit}`
-      const openPlan = entry => {
-        setInstallPlan({ entry, spec: desktopInstallSpecifier(entry), confirmation: planToken(entry) })
+      const closeActionPlan = () => {
+        if (actionState.status === 'running') return
+        setActionPlan(null)
         setConfirmation('')
-        setInstallState({ status: 'idle' })
-        installInFlight.current = false
+        setActionState({ status: 'idle' })
+        actionInFlight.current = false
       }
       const permissionsOf = entry => {
         const permissions = entry.details.permissions
-        return `权限 ${permissions.level} · 文件 ${detailLabel('files', permissions.files)} · 网络 ${detailLabel('network', permissions.network)} · 命令 ${detailLabel('commands', permissions.commands)} · 凭据 ${(permissions.credentials || []).map(value => detailLabel('credentials', value)).join(' / ')}`
+        return '权限 ' + permissions.level + ' · 文件 ' + detailLabel('files', permissions.files)
+          + ' · 网络 ' + detailLabel('network', permissions.network)
+          + ' · 命令 ' + detailLabel('commands', permissions.commands)
+          + ' · 凭据 ' + (permissions.credentials || []).map(value => detailLabel('credentials', value)).join(' / ')
+      }
+      const canManageBundle = (entry, bundle) => bundle?.installed === true
+        && bundle.official !== true && bundle.optional !== true
+        && !entry.packageName.startsWith('@deepseek-ai/')
+        && entry.packageName !== 'dsh-safe-plugin-manager'
+        && !bundle.readOnlyReason && desktopBundleMatchesCatalogEntry(entry, bundle)
+      const actionAvailable = (action, entry, bundle, compatibility) => {
+        if (action === 'install') return !bundle?.installed && compatibility === 'compatible'
+          && entry.compatibility.profiles.includes('desktop') && entry.packageName !== 'dsh-safe-plugin-manager'
+          && !entry.packageName.startsWith('@deepseek-ai/')
+        if (!canManageBundle(entry, bundle)) return false
+        if (action === 'remove') return bundle.removable === true
+        if (action === 'enable') return bundle.enabled === false && compatibility === 'compatible'
+        if (action === 'disable') return bundle.enabled === true
+        return false
+      }
+      const managerSupports = action => {
+        if (action === 'install') return typeof desktopPluginManager?.inspect === 'function'
+          && typeof desktopPluginManager?.installBundle === 'function'
+        if (action === 'remove') return typeof desktopPluginManager?.removeBundle === 'function'
+        if (action === 'enable' || action === 'disable') return typeof desktopPluginManager?.setBundleEnabled === 'function'
+        return false
+      }
+      const beginAction = (action, entry) => {
+        const bundle = installedByName.get(entry.packageName)
+        if (!actionAvailable(action, entry, bundle, desktopCompatibility(entry, loadState.runtimeVersion)) || !managerSupports(action)) return
+        setDetailEntry(null)
+        setActionPlan({ action, entry, confirmation: desktopActionConfirmation(action, entry) })
+        setConfirmation('')
+        setActionState({ status: 'idle' })
+        actionInFlight.current = false
+      }
+      const confirmAction = async () => {
+        if (!actionPlan || confirmation !== actionPlan.confirmation || actionInFlight.current || loadState.status !== 'ready') return
+        const { action, entry: plannedEntry } = actionPlan
+        actionInFlight.current = true
+        setActionState({ status: 'running' })
+        let requestId = null
+        let mutationStarted = false
+        const manager = desktopPluginManager
+        try {
+          const fresh = await readDesktopStoreSnapshot()
+          setLoadState({ status: 'ready', ...fresh })
+          const entry = fresh.catalog.entries.find(item => item.id === plannedEntry.id)
+          const bundle = entry ? fresh.bundles.find(item => item?.name === entry.packageName) : null
+          const compatibility = entry ? desktopCompatibility(entry, fresh.runtimeVersion) : 'unknown'
+          if (!entry || entry.status !== 'approved' || entry.commit !== plannedEntry.commit
+            || !actionAvailable(action, entry, bundle, compatibility) || !managerSupports(action)) {
+            throw desktopFailure('CATALOG_OR_PROFILE_STATE_CHANGED')
+          }
+          let outcome
+          if (action === 'install') {
+            const spec = desktopInstallSpecifier(entry)
+            const inspected = unwrapDesktopRemote(await withDesktopTimeout(manager.inspect(spec), DESKTOP_CATALOG_TIMEOUT_MS), 'DESKTOP_SOURCE_INSPECTION_FAILED')
+            if (!inspected || inspected.status !== 'accepted') throw desktopFailure('DESKTOP_SOURCE_REFUSED')
+            requestId = window.crypto?.randomUUID?.()
+            if (typeof requestId !== 'string' || !/^[0-9a-f-]{36}$/i.test(requestId)) throw desktopFailure('INSTALL_REQUEST_ID_UNAVAILABLE')
+            mutationStarted = true
+            outcome = unwrapDesktopRemote(await withDesktopTimeout(manager.installBundle(spec, {
+              enabled: action === 'install' ? true : bundle.enabled === true, requestId,
+            }), DESKTOP_OPERATION_TIMEOUT_MS), 'DESKTOP_INSTALL_FAILED')
+          } else if (action === 'remove') {
+            mutationStarted = true
+            outcome = unwrapDesktopRemote(await withDesktopTimeout(manager.removeBundle(entry.packageName), DESKTOP_OPERATION_TIMEOUT_MS), 'DESKTOP_REMOVE_FAILED')
+          } else {
+            mutationStarted = true
+            outcome = unwrapDesktopRemote(await withDesktopTimeout(
+              manager.setBundleEnabled(entry.packageName, action === 'enable'), DESKTOP_OPERATION_TIMEOUT_MS,
+            ), 'DESKTOP_TOGGLE_FAILED')
+          }
+          if (!outcome || !['applied', 'restart-required'].includes(outcome.application)) {
+            throw desktopFailure(desktopErrorCode(outcome?.error || outcome))
+          }
+          setActionState({ status: 'success', application: outcome.application })
+          await refresh()
+        } catch (error) {
+          const code = desktopErrorCode(error)
+          const uncertain = mutationStarted && /(?:TIMEOUT|RESULT_UNKNOWN|REMOTE_FAILED|UNAVAILABLE)/.test(code)
+          if (uncertain && action === 'install' && requestId && typeof manager.waitForInstall === 'function') {
+            try {
+              const recovered = unwrapDesktopRemote(await withDesktopTimeout(manager.waitForInstall(requestId), DESKTOP_OPERATION_TIMEOUT_MS),
+                'DESKTOP_INSTALL_RESULT_UNAVAILABLE')
+              if (recovered) {
+                if (['applied', 'restart-required'].includes(recovered.application)) {
+                  setActionState({ status: 'success', application: recovered.application })
+                } else {
+                  setActionState({ status: 'error', code: desktopErrorCode(recovered.error || recovered) })
+                }
+                await refresh()
+                return
+              }
+            } catch { /* Refresh the one submitted request; never submit it again. */ }
+          }
+          if (uncertain) {
+            setActionState({ status: 'unknown', code })
+            await refresh()
+            return
+          }
+          setActionState({ status: 'error', code })
+          if (mutationStarted) await refresh()
+        } finally {
+          actionInFlight.current = false
+        }
       }
 
-      const planFooter = installPlan ? React.createElement('div', { style: styles.actions },
-        installState.status === 'success' ? React.createElement(Button, { primary: true, onClick: closePlan }, '完成')
-          : installState.status === 'unknown' ? React.createElement(Button, { onClick: closePlan }, '关闭并核对已安装状态')
-            : React.createElement(Button, { disabled: installState.status === 'installing', onClick: closePlan }, '取消'),
-        !['success', 'unknown'].includes(installState.status) ? React.createElement(Button, {
-          primary: true, disabled: installState.status === 'installing' || confirmation !== installPlan.confirmation,
-          onClick: confirmInstall,
-        }, installState.status === 'installing' ? '正在通过 DSH 安装…' : '确认并安装') : null) : null
+      const actionLabel = action => ({ install: '安装', remove: '卸载', enable: '启动', disable: '关闭' }[action] || action)
+      const actionButtons = (entry, bundle, compatibility) => {
+        const actions = []
+        const add = action => {
+          if (actionAvailable(action, entry, bundle, compatibility) && managerSupports(action)) actions.push(React.createElement(Button, {
+            key: action, primary: action === 'install', onClick: () => beginAction(action, entry),
+          }, actionLabel(action)))
+        }
+        if (bundle?.installed) {
+          add(bundle.enabled === true ? 'disable' : 'enable')
+          add('remove')
+        } else add('install')
+        return actions
+      }
+      const detailFooter = detailEntry => {
+        const bundle = installedByName.get(detailEntry.packageName)
+        return React.createElement('div', { style: styles.actions },
+          React.createElement(Button, { onClick: () => setDetailEntry(null) }, '关闭详情'),
+          ...actionButtons(detailEntry, bundle, desktopCompatibility(detailEntry, loadState.runtimeVersion)))
+      }
+      const detailBundle = detailEntry ? installedByName.get(detailEntry.packageName) : null
+      const detailInstalledState = detailBundle?.installed === true
+        ? '本机已' + (detailBundle.enabled === true ? '启动' : detailBundle.enabled === false ? '关闭' : '安装')
+          + ' · 版本 ' + (typeof detailBundle.version === 'string' && DESKTOP_VERSION.test(detailBundle.version) ? detailBundle.version : '未知')
+          + ' · ' + (desktopBundleMatchesCatalogEntry(detailEntry, detailBundle) ? '安装来源与 Catalog 仓库匹配' : '安装来源未核验')
+        : '本机未安装'
+      const actionBundle = actionPlan ? installedByName.get(actionPlan.entry.packageName) : null
+      const actionInstalledSummary = actionBundle?.installed === true
+        ? '当前 Desktop 安装版本：' + (typeof actionBundle.version === 'string' && DESKTOP_VERSION.test(actionBundle.version) ? actionBundle.version : '未知')
+          + ' · ' + (actionBundle.enabled === true ? '已启动' : actionBundle.enabled === false ? '已关闭' : '状态未知')
+        : '当前 Desktop 尚未安装'
+      const operationFooter = actionPlan ? React.createElement('div', { style: styles.actions },
+        actionState.status === 'success' ? React.createElement(Button, { primary: true, onClick: closeActionPlan }, '完成')
+          : actionState.status === 'unknown' ? React.createElement(Button, { onClick: closeActionPlan }, '关闭并刷新核对')
+            : React.createElement(Button, { disabled: actionState.status === 'running', onClick: closeActionPlan }, '取消'),
+        !['success', 'unknown'].includes(actionState.status) ? React.createElement(Button, {
+          primary: true, disabled: actionState.status === 'running' || confirmation !== actionPlan.confirmation,
+          onClick: confirmAction,
+        }, actionState.status === 'running' ? '正在由 DSH 处理…' : '确认并' + actionLabel(actionPlan.action)) : null) : null
 
-      return React.createElement('section', { style: styles.root, 'aria-label': 'DSH-Store 插件商城' },
+      return React.createElement('section', { style: styles.root, 'aria-label': '插件商城（DSH-Store）' },
         React.createElement('div', { style: styles.toolbar },
           React.createElement('div', { style: styles.headingCopy },
-            React.createElement('h2', { style: styles.title }, 'DSH-Store'),
-            React.createElement('p', { style: styles.subtitle }, '官方 Desktop 插件商城 · 固定 Commit · 使用 DSH 官方安装器')),
+            React.createElement('h2', { style: styles.title }, '插件商城（DSH-Store）'),
+            React.createElement('p', { style: styles.subtitle }, '已审核 GitHub Catalog · 固定 Commit · 使用 DSH 官方插件管理器')),
           React.createElement('div', { style: styles.actions },
             loadState.status === 'ready' && loadState.runtimeVersion
-              ? React.createElement('span', { style: styles.versionPill }, `DSH ${loadState.runtimeVersion}`) : null,
-            React.createElement(Button, { compact: true, disabled: loadState.status === 'loading', onClick: refresh }, loadState.status === 'loading' ? '正在刷新…' : '刷新目录'))),
+              ? React.createElement('span', { style: styles.versionPill }, 'DSH ' + loadState.runtimeVersion) : null,
+            React.createElement(Button, { compact: true, disabled: loadState.status === 'loading', onClick: refresh },
+              loadState.status === 'loading' ? '正在刷新…' : '刷新目录'))),
         React.createElement('div', { style: styles.notice, role: 'status' },
-          '列表只包含 Catalog 已审核并固定完整 Commit 的插件。安装还要求条目明确声明支持 Desktop Profile，并精确兼容当前 DSH 版本；最终由 DSH 官方插件管理器检查并安装。更新、启停和卸载请在 DSH 内置“插件”页面操作。',
+          '列表只包含 Catalog 已审核并固定完整 Commit 的插件。安装要求条目明确声明支持 Desktop Profile，并精确兼容当前 DSH 版本；安装、启停和卸载都由 DSH 官方插件管理器执行。操作前会显示目标包名和固定 Commit 并要求确认。',
           loadState.status === 'ready' && !loadState.runtimeVersion
             ? React.createElement('div', { style: styles.error }, '无法从 Desktop 插件管理器读取当前 DSH 版本，因此暂不开放安装；插件列表与已安装状态仍可查看。') : null),
-        loadState.status === 'loading' ? React.createElement('p', { style: styles.muted }, '正在读取 DSH-Store Catalog 与当前 Desktop Profile…') : null,
-        loadState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' }, `无法读取 Desktop 商城数据（${loadState.code}）。刷新后重试。`) : null,
+        loadState.status === 'loading' ? React.createElement('p', { style: styles.muted }, '正在读取 DSH Store Catalog 与当前 Desktop Profile…') : null,
+        loadState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' }, '无法读取 Desktop 商城数据（' + loadState.code + '）。刷新后重试。') : null,
         loadState.status === 'ready' ? React.createElement(React.Fragment, null,
           React.createElement('div', { style: styles.actions },
             React.createElement('input', {
               type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
-              style: { ...styles.input, flex: '1 1 300px' }, placeholder: '搜索插件名称、包名或 GitHub 仓库',
+              style: { ...styles.input, flex: '1 1 300px' }, placeholder: '搜索插件名称、包名或 GitHub 仓库', 'aria-label': '搜索插件',
             }),
             React.createElement('select', {
               value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
               style: styles.select, 'aria-label': '按分类筛选',
             }, React.createElement('option', { value: '' }, '全部分类'),
             categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id)))),
-          React.createElement('div', { style: styles.muted }, `已审核插件 ${entries.length} 个 · 声明支持 Desktop ${desktopSupportedCount} 个 · 当前页 ${visible.length} 个 · Desktop Profile ${loadState.bundles.filter(bundle => bundle?.installed).length} 个已安装 bundle`),
+          React.createElement('div', { style: styles.muted },
+            '已审核插件 ' + entries.length + ' 个 · 声明支持 Desktop ' + desktopSupportedCount + ' 个 · 当前页 ' + visible.length
+            + ' 个 · Desktop Profile ' + loadState.bundles.filter(bundle => bundle?.installed).length + ' 个已安装 bundle'),
           filtered.length === 0 ? React.createElement('div', { style: styles.notice }, '没有符合筛选条件的插件。') : null,
-          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': 'DSH-Store 已审核插件' }, visible.map(entry => {
+          React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件商城已审核插件' }, visible.map(entry => {
             const installedBundle = installedByName.get(entry.packageName)
             const installed = installedBundle?.installed === true
             const compatibility = desktopCompatibility(entry, loadState.runtimeVersion)
             const official = installedBundle?.official === true || entry.packageName.startsWith('@deepseek-ai/')
-            const canInstall = !installed && !official && compatibility === 'compatible' && entry.packageName !== 'dsh-safe-plugin-manager'
-            const compatibilityText = compatibility === 'unsupported-profile' ? 'Catalog 未声明支持 Desktop'
-              : compatibility === 'compatible' ? `兼容 DSH ${loadState.runtimeVersion}`
-                : compatibility === 'incompatible' ? `不兼容 DSH ${loadState.runtimeVersion}` : '当前 DSH 兼容性未确认'
+            const unmanagedMessage = entry.packageName === 'dsh-safe-plugin-manager' ? '商城自身不由商城管理'
+              : installed && !canManageBundle(entry, installedBundle)
+                ? (official ? '官方组件不由商城管理' : '已安装来源与商城记录不一致，商城不管理')
+                : ''
+            const stateLabel = !installed ? (compatibility === 'unsupported-profile' ? 'Catalog 未声明支持 Desktop'
+              : compatibility === 'compatible' ? '兼容 DSH ' + loadState.runtimeVersion
+                : compatibility === 'incompatible' ? '不兼容 DSH ' + loadState.runtimeVersion : '当前 DSH 兼容性未确认')
+              : (installedBundle.enabled === true ? '已启动' : installedBundle.enabled === false ? '已关闭' : '已安装')
             return React.createElement('article', { key: entry.id, style: styles.card, role: 'listitem' },
               React.createElement('div', { style: styles.cardHeader },
                 React.createElement('div', { style: styles.name }, entry.name),
-                React.createElement('span', { style: styles.statusPill }, installed ? '已安装' : compatibilityText)),
-              React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
+                React.createElement('span', { style: styles.statusPill }, stateLabel)),
+              React.createElement('div', { style: styles.code }, entry.packageName + ' · ' + entry.version),
               React.createElement('div', { style: styles.cardDescription }, entry.description),
-              React.createElement('div', { style: styles.muted }, `DSH Desktop 客户端：${desktopClientAdaptationLabel(entry.compatibility.profiles)}`),
-              React.createElement('div', { style: styles.muted }, `${entry.categories.map(id => categoryLabels[id] || id).join(' / ') || '未分类'} · ${licenseLabel(entry.details.license)}`),
-              React.createElement('div', { style: styles.code }, `Commit ${entry.commit}`),
+              React.createElement('div', { style: styles.muted }, 'DSH Desktop 客户端：' + desktopClientAdaptationLabel(entry.compatibility.profiles)),
+              React.createElement('div', { style: styles.muted },
+                entry.categories.map(id => categoryLabels[id] || id).join(' / ') + ' · ' + licenseLabel(entry.details.license)),
+              React.createElement('div', { style: styles.code }, 'Commit ' + entry.commit),
               React.createElement('div', { style: styles.muted }, permissionsOf(entry)),
-              entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error }, `安装脚本：${entry.risk.installScripts.join('、')}`) : null,
+              entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
+                '安装脚本：' + entry.risk.installScripts.join('、')) : null,
               React.createElement('div', { style: styles.cardFooter },
                 React.createElement('div', { style: styles.actions },
-                  canInstall ? React.createElement(Button, { primary: true, onClick: () => openPlan(entry) }, '安装')
-                    : installed ? React.createElement('span', { style: styles.muted }, '请在 DSH 内置“插件”页面管理')
-                      : React.createElement('span', { style: styles.muted }, official ? '官方组件不由商城安装' : compatibilityText)),
+                  ...actionButtons(entry, installedBundle, compatibility),
+                  unmanagedMessage ? React.createElement('span', { key: 'unmanaged', style: styles.muted }, unmanagedMessage) : null,
+                  React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry),
+                    'aria-label': '查看 ' + entry.name + ' 详情' }, '查看详情')),
                 React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub 源码 ↗')))
           }),
           React.createElement(Pagination, { pagination: {
             page: currentPage, pageCount, hasPrevious: currentPage > 1, hasNext: currentPage < pageCount,
           }, loading: false, onPageChange: setPage }))) : null,
-        installPlan ? React.createElement(Modal, {
-          open: true, onClose: installState.status === 'installing' ? () => {} : closePlan,
-          title: installState.status === 'success' ? '安装已提交给 DSH' : 'Desktop 安装计划确认',
-          closeLabel: '关闭 Desktop 安装计划', footer: planFooter,
+        detailEntry ? React.createElement(Modal, {
+          open: true, onClose: () => setDetailEntry(null), title: detailEntry.name + ' · 插件详情',
+          closeLabel: '关闭插件详情', footer: detailFooter(detailEntry),
           className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
         }, React.createElement('div', { style: styles.detailSection },
-          React.createElement('div', { style: styles.code }, `${installPlan.entry.packageName} · ${installPlan.entry.version}`),
-          React.createElement('div', { style: styles.muted }, `GitHub：${installPlan.entry.repositoryUrl}`),
-          React.createElement('div', { style: styles.code }, `固定 Commit：${installPlan.entry.commit}`),
-          React.createElement('div', { style: styles.code }, `安装 spec：${installPlan.spec}`),
-          React.createElement('div', { style: styles.muted }, `DSH 版本：${loadState.runtimeVersion || '未知'} · ${licenseLabel(installPlan.entry.details.license)}`),
-          React.createElement('div', { style: styles.muted }, permissionsOf(installPlan.entry)),
-          installPlan.entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
-            `本包声明安装脚本：${installPlan.entry.risk.installScripts.join('、')}。商城不会代为批准构建脚本。`) : null,
-          React.createElement('div', { style: styles.notice }, 'DSH 官方安装器会在 Git 源取回后检查 DSH 兼容性；拒绝或安装失败时会恢复 Profile 的 package.json 与 lockfile。此前已允许的构建脚本若运行，其副作用可能无法回滚。'),
-          installState.status === 'installing' ? React.createElement('div', { style: styles.muted, role: 'status' }, '正在由 DSH 官方插件管理器检查并安装；请等待结果，不要重复提交。') : null,
-          installState.status === 'success' ? React.createElement('div', { style: styles.notice, role: 'status' },
-            installState.application === 'restart-required' ? '安装已写入 Desktop Profile；DSH 报告需要按其官方流程重启后生效。' : 'DSH 官方安装器已完成该插件的安装与激活。') : null,
-          installState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' }, `安装未确认成功（${installState.code}）。请在 DSH 内置“插件”页面核对状态；商城不会自动重试。`) : null,
-          installState.status === 'unknown' ? React.createElement('div', { style: styles.error, role: 'alert' }, '安装结果暂时无法确认。请先在 DSH 内置“插件”页面核对是否已安装，再决定是否重新操作。') : null,
-          !['success', 'error', 'unknown'].includes(installState.status) ? React.createElement('label', { style: styles.muted },
-            `输入 ${installPlan.confirmation}，确认在当前 Desktop Profile 安装此固定来源：`,
+          React.createElement('div', { style: styles.cardDescription }, detailEntry.description),
+          React.createElement('div', { style: styles.code }, detailEntry.packageName + ' · ' + detailEntry.version),
+          React.createElement('div', { style: styles.muted }, 'GitHub 仓库：' + detailEntry.repositoryUrl),
+          React.createElement('div', { style: styles.code }, '固定 Commit：' + detailEntry.commit),
+          React.createElement('div', { style: styles.muted },
+            'Desktop 客户端：' + desktopClientAdaptationLabel(detailEntry.compatibility.profiles)
+            + ' · DSH ' + (loadState.runtimeVersion || '未知') + '：' + desktopCompatibility(detailEntry, loadState.runtimeVersion)),
+          React.createElement('div', { style: styles.muted }, detailInstalledState),
+          React.createElement('div', { style: styles.muted },
+            '分类：' + (detailEntry.categories.map(id => categoryLabels[id] || id).join(' / ') || '未分类')
+            + ' · 许可证：' + licenseLabel(detailEntry.details.license)),
+          React.createElement('div', { style: styles.muted }, permissionsOf(detailEntry)),
+          detailEntry.details.externalDependencies.length ? React.createElement('div', { style: styles.muted },
+            '外部依赖：' + detailEntry.details.externalDependencies.join('、')) : null,
+          detailEntry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
+            '本包声明安装脚本：' + detailEntry.risk.installScripts.join('、') + '。商城不会代为批准构建脚本。') : null,
+          React.createElement('a', { href: detailEntry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '打开 GitHub 源码 ↗'))) : null,
+        actionPlan ? React.createElement(Modal, {
+          open: true, onClose: actionState.status === 'running' ? () => {} : closeActionPlan,
+          title: actionState.status === 'success' ? actionLabel(actionPlan.action) + '已提交给 DSH'
+            : 'Desktop ' + actionLabel(actionPlan.action) + '确认',
+          closeLabel: '关闭 Desktop 插件操作', footer: operationFooter,
+          className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
+        }, React.createElement('div', { style: styles.detailSection },
+          React.createElement('div', { style: styles.code }, actionPlan.entry.packageName + ' · ' + actionPlan.entry.version),
+          React.createElement('div', { style: styles.muted }, 'GitHub：' + actionPlan.entry.repositoryUrl),
+          React.createElement('div', { style: styles.code }, '固定 Commit：' + actionPlan.entry.commit),
+          React.createElement('div', { style: styles.muted }, actionInstalledSummary),
+          actionPlan.action === 'install'
+            ? React.createElement('div', { style: styles.code }, '安装 spec：' + desktopInstallSpecifier(actionPlan.entry)) : null,
+          React.createElement('div', { style: styles.muted },
+            'DSH 版本：' + (loadState.runtimeVersion || '未知') + ' · ' + licenseLabel(actionPlan.entry.details.license)),
+          React.createElement('div', { style: styles.muted }, permissionsOf(actionPlan.entry)),
+          actionPlan.entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
+            '本包声明安装脚本：' + actionPlan.entry.risk.installScripts.join('、') + '。商城不会代为批准构建脚本。') : null,
+          React.createElement('div', { style: styles.notice },
+            'DSH 官方插件管理器会检查固定来源并处理 Profile。商城不会自动授权安装脚本。'),
+          actionState.status === 'running' ? React.createElement('div', { style: styles.muted, role: 'status' },
+            '正在由 DSH 官方插件管理器处理；请等待结果，不要重复提交。') : null,
+          actionState.status === 'success' ? React.createElement('div', { style: styles.notice, role: 'status' },
+            actionState.application === 'restart-required'
+              ? '操作已写入 Desktop Profile；DSH 报告需要按其官方流程重新加载后生效。'
+              : 'DSH 官方插件管理器已完成' + actionLabel(actionPlan.action) + '。') : null,
+          actionState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' },
+            '操作未完成（' + actionState.code + '）。刷新目录核对状态；商城不会自动重试。') : null,
+          actionState.status === 'unknown' ? React.createElement('div', { style: styles.error, role: 'alert' },
+            '操作结果暂时无法确认。商城已刷新 Desktop Profile；请核对当前状态后再决定下一步，不会自动重试。') : null,
+          !['success', 'error', 'unknown'].includes(actionState.status) ? React.createElement('label', { style: styles.muted },
+            '输入 ' + actionPlan.confirmation + '，确认在当前 Desktop Profile 执行' + actionLabel(actionPlan.action) + '：',
             React.createElement('input', {
-              value: confirmation, onChange: event => setConfirmation(event.target.value),
-              style: styles.input, placeholder: installPlan.confirmation, disabled: installState.status === 'installing',
+              value: confirmation, onChange: event => { setConfirmation(event.target.value) },
+              style: styles.input, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',
             })) : null)) : null)
     }
 
@@ -2370,7 +2520,7 @@ window.__ModuleLoader__.load({
       }
       ctx.slots.inject('settings.section', () => ctx.slots.register({
         name: 'settings.section', id: 'dsh-store', order: -10,
-        label: () => 'DSH-Store', inject: () => ({}),
+        label: () => '插件商城', inject: () => ({}),
       }, ManagerPanel))
     }
 

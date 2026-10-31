@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-controls-20261031",
+  "planFile": "docs/ops/dsh-native-market-desktop-controls-20261031.json",
+  "createdAt": "2026-10-31T00:00:00Z",
+  "baseCommit": "5fe6df867db65dc4188af763b4072fcc36412f4f",
+  "scope": [
+    "README.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs",
+    "docs/ops/dsh-native-market-desktop-controls-20261031.json"
+  ],
+  "preconditions": {
+    "README.md": "5a3a28d1731eb0eea8d9ecea368d6a59d2ea1941fe3f887981021636c614d5d9",
+    "package.json": "39743b499dcbba6f9e44f8814a0c44203e702d3cfa33692a5b9481e697453b20",
+    "src/client.js": "a1bed2f2318e9f0d97918501c423f712f2cc4486c3ae82c4ccef111ed5777722",
+    "test/catalog.test.mjs": "95211293329d3644339d98de46064b17fbf3fe9b13a083123e97a7ab89b73c2c",
+    "test/contracts.test.mjs": "bd578563af2c62f71ac8653842d355521c2d801ae73c1649a541d04c7b51b7ec",
+    "test/desktop-compat.test.mjs": "dd11dee9438f8c083d7aa1f7ec37d20150666d09189f6b4fde28ec349b7cd791",
+    "test/upgrade-matrix.test.mjs": "6559040a6f76190bac9d6421e7b9e4bd437530cf6b3d9ba0d7846e0858402cce",
+    "docs/ops/dsh-native-market-desktop-controls-20261031.json": null
+  },
+  "postconditions": {
+    "README.md": "d84efec51c22f4e0dd2365b80e9b4c15fb4abc587e342d8e85ad565c0558efc7",
+    "package.json": "12333024791eeb322fe28c2ff69b8e044497365c29055fa7755305a788f1006a",
+    "src/client.js": "b27c1b5f6d05ae5c30877eeab9d88514bcf997314068363d0f72b29a6b7254af",
+    "test/catalog.test.mjs": "7f17c35900723be1dd46467b20ea4b43af116e49a96ca99b328f588025e1e4e3",
+    "test/contracts.test.mjs": "a6eea0fce37eb05fa02709f8698014e8fc121dab42aea7af0b8bbc6e45c3c3e5",
+    "test/desktop-compat.test.mjs": "13e6bf6f5f565dda9e2dfa2158f10464545eda8231a074812b73124286999da7",
+    "test/upgrade-matrix.test.mjs": "d097caa48c29d06c63b5a2537e1689decff6abc4484a9704bcd687eaea8b6ed4"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "DSH Desktop 插件商城增加详情、筛选、安装、启停和卸载入口；左侧入口名为插件商城，页面标题为插件商城（DSH-Store）。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "将 DSH-Store Desktop 页面的标题和侧栏命名按用户要求区分，并接入官方插件管理器的审核来源生命周期操作。",
+  "change": {
+    "packageVersion": "0.9.17",
+    "settingsLabel": "插件商城",
+    "pageTitle": "插件商城（DSH-Store）",
+    "catalog": "只显示 Catalog 已审核且固定完整 Commit 的条目；详情页展示仓库、版本、兼容性、许可和权限。",
+    "operations": "安装使用 inspect + installBundle；卸载仅在 listBundles 标记 removable 且安装来源匹配 Catalog 仓库时调用 removeBundle；启动/关闭只调用 setBundleEnabled，不调用 Loader/Fiber 或 setPluginEnabled。固定 Git Commit 条目不提供 DSH 官方接口不支持的商城更新按钮。",
+    "confirmation": "每个动作都要求精确输入操作词、包名与当前 Catalog 完整 Commit；不确定结果只刷新清单，不自动重试。",
+    "compatibility": "安装要求 profiles 含 desktop 且当前 DSH 版本有精确 compatible 证据；官方组件、Store 自身和来源不匹配的包不提供管理按钮。"
+  },
+  "officialDesktopContract": {
+    "locallyObservedRuntime": "0.2.1-rc.5",
+    "releaseTag": "dsh-v0.2.1-rc.5",
+    "supportedMethods": [
+      "listBundles",
+      "inspect",
+      "installBundle",
+      "waitForInstall",
+      "removeBundle",
+      "setBundleEnabled"
+    ],
+    "fixedCommitUpdate": "No update action is exposed for GitHub fixed-Commit Catalog installs. DSH 0.2.2-alpha.2 updateBundle/listVersions supports eligible registry dependencies, not GitHub Git specs.",
+    "evidence": [
+      "https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.5/packages/boot/plugin-manager/src/index.ts",
+      "https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.2-alpha.2/packages/boot/plugin-manager/src/index.ts",
+      "https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.2-alpha.2/packages/boot/plugin-manager/src/types.ts"
+    ]
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "purpose": "检查桌面 Client 语法",
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "purpose": "检查 Desktop UI、筛选、确认及官方 lifecycle Remote 调用",
+      "expected": "all cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "purpose": "运行 Registry 校验和完整仓库测试",
+      "expected": "REGISTRY_OK and all tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "purpose": "检查 0.9.17 发布包清单",
+      "expected": "dsh-safe-plugin-manager-0.9.17.tgz"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-controls-20261031.json"
+      ],
+      "purpose": "验证计划基线、文件范围和变更哈希",
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    }
+  ],
+  "gates": [
+    "通过固定基线与范围校验、npm run check、桌面隔离夹具和打包清单检查。",
+    "以审计 PR 发布 0.9.17 源码并等待 exact-head CI。",
+    "源 PR 合并后，以新鲜 Catalog 计划单独 pin Store 到完整 source Commit；公开后核对 GitHub Raw、Pages、dsh.store、dsh-store.cn。",
+    "真实 DSH Desktop Profile 操作需单独计划、备份和确认；隔离测试结果不代替真实安装或 UI 验收。"
+  ],
+  "rollback": {
+    "source": "通过 CI 检查的 PR 回退本计划源码变更。",
+    "desktopProfile": "本计划不直接修改用户 Profile；任何实际安装或生命周期变更都使用 DSH 官方插件管理器并另立计划。"
+  },
+  "healthCheck": "隔离 Desktop harness 覆盖名称、详情、搜索、分类筛选、安装固定来源确认、Bundle 启停、卸载、来源核验和兼容性门禁；真实 Desktop UI/Profile 验收单独记录。"
+}
