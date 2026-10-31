@@ -18,24 +18,24 @@
   "manifestPath": "01_content/package.json",
   "installPath": "01_content",
   "updatePolicy": "external-only",
-  "commit": "56ffe0cd1c320cde9f6101c6b2e49ec60ad53a17",
-  "version": "0.5.0",
+  "commit": "f98246ef0cd10173cabfdb4d7070eb245b12b42d",
+  "version": "0.5.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-27T15:09:34.000Z",
-    "observedAt": "2026-10-27T20:28:26.000Z",
+    "updatedAt": "2026-10-31T09:05:17.000Z",
+    "observedAt": "2026-10-31T14:21:52.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-27T20:28:26.000Z",
-      "evidenceUrl": "https://github.com/Aisland-SJL/dsh-worktable/commit/56ffe0cd1c320cde9f6101c6b2e49ec60ad53a17",
+      "checkedAt": "2026-10-31T14:21:52.000Z",
+      "evidenceUrl": "https://github.com/Aisland-SJL/dsh-worktable/commit/f98246ef0cd10173cabfdb4d7070eb245b12b42d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,14 +74,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "fd0afaee4a71e7565ef867ec8e902f7273406d9963ef8a96d0677ba40bc44d0b",
+    "binding": "00a63a58f3cf51dc6ab361cbba9330498283f381de052e0c3d44c7182a5ff2d2",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
   },
   "entryIds": [
     "dsh-worktable"
@@ -90,7 +90,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.2 || 0.2.1-rc.3",
+    "dsh": "0.2.0-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.5",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -102,9 +102,9 @@
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.2": "compatible",
       "0.2.1-rc.3": "compatible",
+      "0.2.1-rc.5": "compatible",
       "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown"
+      "0.2.2-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -167,6 +167,12 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.2.1-rc.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.2.1-rc.4": {
         "install": "unknown",
         "start": "unknown",
@@ -174,12 +180,6 @@
         "rollback": "unknown"
       },
       "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
