@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH Store 0.9.20 在 DSH Desktop 插件商城列表和详情页始终显示安装、启动/关闭、卸载等操作；门禁未通过时显示禁用状态和原因。实际操作仍由 DSH 官方插件管理器和固定来源门禁控制。Catalog 仍只声明 web Profile，真实 Desktop Profile 安装尚未验收。",
+  "description": "DSH Store 0.9.21 将客户端适配标识和 Catalog 兼容记录作为参考信息，不再以缺少 Desktop 声明或商城推导的 DSH 版本拦截已审核插件安装；实际安装校验和拒绝原因由 DSH Desktop 官方 pluginManager.inspect()/installBundle() 提供。Catalog 仍只声明 web Profile，真实 Desktop Profile 安装尚未验收。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "11ccb0249d80758bf44c3cf9bf9d471f0aefc72c",
-  "version": "0.9.20",
+  "commit": "16419717aff2885f4ddfc1c5631874240aa9cc1d",
+  "version": "0.9.21",
   "categories": [
     "marketplace",
     "management"
@@ -39,26 +39,26 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-31T11:37:23.000Z",
-    "observedAt": "2026-10-31T11:44:17.396Z",
+    "updatedAt": "2026-10-31T22:07:59+08:00",
+    "observedAt": "2026-10-31T14:18:48.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/11ccb0249d80758bf44c3cf9bf9d471f0aefc72c",
+      "checkedAt": "2026-10-31T14:18:48.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/16419717aff2885f4ddfc1c5631874240aa9cc1d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Owner-reviewed 169/169 bounded runtime files (1977844 bytes) at fixed Store 0.9.20 Commit; real Desktop Profile acceptance remains unverified."
+      "summary": "Owner-reviewed 169/169 bounded runtime files (1979539 bytes) at fixed Store 0.9.21 Commit; real Desktop Profile acceptance remains unverified."
     },
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41197382589",
+      "checkedAt": "2026-10-31T14:18:48.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41208408261",
       "dshRelease": "0.2.2-alpha.2",
       "systems": [
         "Linux",
@@ -68,13 +68,13 @@
       "profiles": [
         "web"
       ],
-      "summary": "The exact 0.9.20 source passed official DSH CLI disposable-Profile install and operation checks on current DSH 0.2.2-alpha.2 and previous releases 0.2.1-rc.4 and 0.2.1-rc.5, plus the nine OS/pnpm runtime jobs. These checks cover the web Profile; real Desktop Profile installation remains unverified."
+      "summary": "The exact 0.9.21 source passed the official DSH disposable web Profile matrix on current 0.2.2-alpha.2 and previous releases 0.2.1-rc.4 and 0.2.1-rc.5, plus nine OS/pnpm runtime jobs. Desktop installation is delegated to its official manager; real Desktop Profile installation remains unverified."
     },
     "runtime": {
       "status": "verified",
       "method": "official-cli-disposable-profile-runtime-matrix",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41197382589",
+      "checkedAt": "2026-10-31T14:18:48.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41208408261",
       "dshRelease": "0.2.2-alpha.2",
       "systems": [
         "Linux",
@@ -84,13 +84,13 @@
       "profiles": [
         "web"
       ],
-      "summary": "The exact 0.9.20 source passed the DSH 0.2.2-alpha.2 disposable-Profile matrix, previous release checks, and nine OS/pnpm runtime jobs. Real Desktop UI/Profile installation and downgrade rollback remain unknown."
+      "summary": "The exact 0.9.21 source passed the current DSH 0.2.2-alpha.2 disposable web Profile matrix, previous release checks, and nine OS/pnpm runtime jobs. Real Desktop UI/Profile installation and downgrade rollback remain unknown."
     },
     "securityReview": {
       "status": "unknown",
       "method": "owner-reviewed-bounded-static-fixed-source-analysis",
-      "checkedAt": "2026-10-31T11:44:17.396Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/11ccb0249d80758bf44c3cf9bf9d471f0aefc72c",
+      "checkedAt": "2026-10-31T14:18:48.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/16419717aff2885f4ddfc1c5631874240aa9cc1d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
