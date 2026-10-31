@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-detail-actions-20261031",
+  "planFile": "docs/ops/dsh-native-market-desktop-detail-actions-20261031.json",
+  "createdAt": "2026-10-31T17:07:44+08:00",
+  "baseCommit": "c578c27ad0770e493605de030dd8049158cff053",
+  "scope": [
+    "docs/ops/dsh-native-market-desktop-detail-actions-20261031.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-native-market-desktop-detail-actions-20261031.json": null,
+    "package.json": "efa3bc3c1de721c8ae64e82d6f29fe195e4a0800c5b178401bd7a93210c36dfd",
+    "src/client.js": "ce955436ef6222ef818e9f62bffa4b230c38c67443fd031f3136133a3abf546e",
+    "test/catalog.test.mjs": "acdd1294c3c1f2edcc8a0b2e886a0344ad93a546a0acf9221c865c4705bf6952",
+    "test/contracts.test.mjs": "2123b125da1f4c854e106945912a7d574a0a0123ea320f5474504e80a1790a8f",
+    "test/desktop-compat.test.mjs": "da1ae854d8bcc5027f30d1bc362b5875e5685bbe394872fc2d9cc83d3b52b24d",
+    "test/upgrade-matrix.test.mjs": "273e9e2dcbda99210b4568b9b85f7adddd7beba334533c1c55c68860f63c269c"
+  },
+  "postconditions": {
+    "package.json": "87f16a2ef2606e3150a4044f3a7636f2b156a969d259da15ae9046f9c145002b",
+    "src/client.js": "72bb95441463f9d00f5c01208d28f73836cd7917df7c4b9bf2c7b586406e2ec8",
+    "test/catalog.test.mjs": "556a8c5d28f7a0eb7c8b90811975455d3ee689274f4f32d3c4f64ffc89b5c321",
+    "test/contracts.test.mjs": "c7a50bf9789adac10d53e5e7aad73e246b1e7a51ddb515846491c81f33bdd20c",
+    "test/desktop-compat.test.mjs": "a68f0a3db53199c1bead3d5f37b5635bec3a479690c18f3221868654ecad1a79",
+    "test/upgrade-matrix.test.mjs": "aa77449da5a92846e1ef7d9e41dffaa7533a21fa7f30fa5ee648c07e5a794c85"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求 DSH Desktop 插件商城详情可查看，并提供安装、卸载、启动、关闭入口；未满足条件时显示禁用原因。用户明确要求完成功能后验证并上线。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修复 DSH Desktop 详情弹窗缺少生命周期操作区的问题；把按钮和禁用原因渲染在详情正文中，避免依赖 Desktop Modal 页脚插槽的显示行为。",
+  "change": {
+    "packageVersion": "0.9.19",
+    "desktopDetails": "对符合 Catalog 条件的条目按当前安装状态显示安装或启动/关闭/卸载按钮；当前 DSH 兼容性未知时在正文展示禁用安装按钮和原因。",
+    "safety": "保持现有精确 DSH 兼容性、固定 Commit、安装来源、官方 Bundle、商城自身和官方 pluginManager 门禁；禁用按钮不调用任何写接口。"
+  },
+  "commands": [
+    {
+      "argv": ["node", "--check", "src/client.js"],
+      "expected": "exit 0"
+    },
+    {
+      "argv": ["node", "--test", "test/desktop-compat.test.mjs"],
+      "expected": "all cases pass"
+    },
+    {
+      "argv": ["npm", "run", "check"],
+      "expected": "REGISTRY_OK and all tests pass"
+    },
+    {
+      "argv": ["npm", "pack", "--dry-run", "--json"],
+      "expected": "dsh-safe-plugin-manager-0.9.19.tgz"
+    },
+    {
+      "argv": ["node", "scripts/verify-dsh-upgrade-plan.mjs", "docs/ops/dsh-native-market-desktop-detail-actions-20261031.json"],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": ["git", "diff", "--check"],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Bind the change to the current main Commit and exact file hashes; reject out-of-scope edits.",
+    "Verify matching installed bundles show their available lifecycle actions inside details; unknown compatibility shows a disabled Install action and an explicit reason.",
+    "Keep all real Desktop Profile and package changes out of this source PR; perform any later local update only through the official DSH plugin manager under a separate plan and confirmation.",
+    "Run repository checks and exact-head CI; publish through a CI-checked PR, then update the first-party Catalog to the merged fixed Commit in a separate fresh Catalog plan."
+  ],
+  "rollback": {
+    "source": "Revert only this exact 0.9.19 source change through a CI-checked PR.",
+    "desktopProfile": "This source change does not alter the real Desktop Profile. Any later local plugin update remains a separate planned official-manager operation."
+  },
+  "healthCheck": "The DSH Desktop detail content tree exposes the status-appropriate operation buttons and compatibility/source gate reason; exact-head CI and a fresh Catalog/public readback pass after source merge."
+}
