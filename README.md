@@ -51,11 +51,11 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-当前源码版本为 Store `0.9.18`、Commit `ecbf2af9c97a13e0f13f2d30225b5521284f0d3b`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。`0.9.18` 在既有商城详情、搜索与分类筛选基础上，使详情页生命周期按钮在门禁未通过时仍可见并说明原因；通过门禁后仍只由 DSH 官方插件管理器执行操作。真实 Desktop UI/Profile 验收完成前，Catalog 仍只声明 `web` Profile。
-通过 DSH 官方 CLI 安装 Catalog 固定的 `0.9.18` Commit：
+当前源码版本为 Store `0.9.19`、Commit `81f5d9f708c62595c0907e9978efef7e5278e817`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。`0.9.19` 将安装、启动/关闭和卸载入口放在 DSH Desktop 插件详情正文中；兼容性或来源门禁未满足时仍显示禁用状态和原因，实际操作继续由 DSH 官方插件管理器执行。Catalog 仍只声明 `web` Profile，直到真实 Desktop Profile 安装验收完成。
+通过 DSH 官方 CLI 安装 Catalog 固定的 `0.9.19` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#ecbf2af9c97a13e0f13f2d30225b5521284f0d3b'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#81f5d9f708c62595c0907e9978efef7e5278e817'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -87,7 +87,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 ### 官方 Desktop
 
-官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.18` 把入口注册为
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.19` 把入口注册为
 设置左侧独立的 `插件商城` 分区；页面标题为 `插件商城（DSH-Store）`，并通过本地化插件元数据显示
 `DSH-Store`，保留内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方
 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。详情、搜索和分类筛选都在商城内提供；
@@ -96,14 +96,13 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
 来源与 Catalog 仓库一致。启停只使用官方 Bundle Profile Patch 管理接口，不调用 Loader/Fiber API。
 超时或结果不确定时商城刷新清单且不会自动重试。所有操作仅针对 DSH 自己的 Desktop Profile，不会误写
-`web` Profile，也不会让固定 `3080` 端口的 Guardian 接管 Desktop。Store `0.9.18` 的本机真实安装与操作
-验收仍需在发布后通过 DSH 官方 UI 单独完成；Catalog 适配状态仍以其固定记录为准。
+`web` Profile，也不会让固定 `3080` 端口的 Guardian 接管 Desktop。实机检查曾在 0.9.18 复现详情页没有操作按钮；0.9.19 已把操作区移入详情正文并通过桌面端内容树测试。0.9.19 尚未在本机 Desktop Profile 安装验收，因此 Catalog 仍只声明 `web` Profile。
 
 ## 当前概况
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.18`（本次 Catalog 固定点；真实 Desktop UI/Profile 尚未验收） |
+| 商城版本 | `0.9.19`（本次 Catalog 固定点；真实 Desktop Profile 安装尚未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
@@ -111,7 +110,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 | 推荐 | 商城“只看推荐”与官网推荐榜共享公开作者互动名单，完整分页；推荐不改变审核或安装资格 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
-`0.9.4` 在官方 `dsh-app://` 渲染器中停用依赖 Web Host 的商城请求和 Guardian 轮询；如果商城面板被桌面端加载，会显示只读说明并引导至 DSH Store 网页目录和桌面端内置“插件”页面。它不访问或修改 Web Profile。此安全交接不代表商城已能在桌面端内嵌浏览或安装插件；Catalog 仍只声明 `web` Profile，真实打包桌面端 UI 尚未验收。版本号同步提升至 `0.9.4`，避免已安装用户因同版本修复无法收到商城更新。
+桌面端目录中的“客户端适配”标识独立展示插件是否声明支持 DSH Desktop；收录不强制要求该声明。标识为已适配不代表当前 DSH 版本兼容，也不代表真实 Desktop Profile 安装已验收。
 
 `0.9.15` 延续官方 DSH 最新三版 `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2` 的精确兼容记录。`0.2.1-rc.5` 于 2026-10-29 发布到 npm 的 `next` 和 `latest` 标签，官方 `dsh-v0.2.1-rc.5` GitHub Release 于 2026-10-30 发布。三个注入 UI 客户端包均发布了 `0.2.1-rc.5`，而独立 `@deepseek-ai/dsh-client-runtime` 仍停在 `0.1.1-rc.2`，因此只更新确有发布的三个 UI peer。`0.2.2-alpha.2` 仍是语义版本最高项并要求 Node `>=24.9.0`。隔离 CLI/CI 对已覆盖版本完成安装、启动、卸载和 Profile 还原；降级回滚保持 `unknown`。
 
