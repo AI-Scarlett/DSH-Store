@@ -251,4 +251,780 @@ for (const historical of [
   const index = JSON.parse(await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8'))
   const legacy = historical.validate(bridge)
   assert.ok(bridgeText.length < MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
-  assert.deepEqual(bridgeText, catalogBridgeBuffer(bridge), 
+  assert.deepEqual(bridgeText, catalogBridgeBuffer(bridge), 'the compatibility bridge must use its bounded canonical encoding')
+  assert.equal(legacy.entries.length, bridge.registry.indexEntryCount)
+  assert.equal(legacy.entries.length, index.entries.length)
+  assert.ok(legacy.entries.length > 1, 'historical clients must receive the complete compatibility directory')
+  assert.deepEqual(legacy.entries.map(entry => entry.id), index.entries.map(entry => entry.id))
+  const manager = legacy.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
+  assert.ok(manager)
+  assert.equal(historical.compare(manager.version, historical.version), 1)
+  assert.equal(legacy.registry.indexPath, undefined, `${historical.version} safely ignores the new bridge pointer`)
+  const snapshot = historical.snapshot({ ...legacy, source: { kind: 'github' } }, {
+    profile: 'web', plugins: [{
+      packageName: 'dsh-safe-plugin-manager', official: false, source: 'git', version: historical.version,
+      declaredSpecifier: `git+https://github.com/AI-Scarlett/DSH-Store.git#${historical.commit}`,
+    }],
+  })
+  const managerSnapshot = snapshot.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')
+  assert.ok(managerSnapshot)
+  assert.equal(managerSnapshot.updateAvailable, true)
+  assert.deepEqual(managerSnapshot.allowedActions, manager.status === 'approved' ? ['update'] : [],
+    'historical clients must not offer a manager update while compatibility is on hold')
+})
+
+test('catalog v2 keeps the index bounded and maps every plugin id to one detail record', async () => {
+  const bridgeText = await readFile(new URL('../registry/catalog.json', import.meta.url))
+  const indexText = await readFile(new URL('../registry/catalog-index.json', import.meta.url))
+  const bridge = validateCatalog(JSON.parse(bridgeText))
+  const index = validateCatalogIndex(JSON.parse(indexText))
+  validateCatalogBridgeIndex(bridge, index, indexText)
+  assert.ok(Buffer.byteLength(indexText) < MAX_CATALOG_INDEX_RESPONSE_BYTES)
+  assert.equal(index.entries.length, bridge.registry.indexEntryCount)
+  assert.ok(index.entries.every(item => item.detailPath === `${index.registry.detailsPath}/${item.id}.json`))
+  assert.ok(index.entries.every(item => !Object.hasOwn(item, 'description') && !Object.hasOwn(item, 'compatibility')))
+  assert.equal(new Set(index.entries.map(item => item.id)).size, index.entries.length)
+  const trimmed = splitCatalogDocument(document(), { detailsPath: '///catalog/details///' })
+  assert.equal(trimmed.index.registry.detailsPath, 'catalog/details')
+})
+
+test('legacy bridge stays below 2 MiB when source updates grow the complete directory', async () => {
+  const source = await loadCatalogFromFiles()
+  const entries = source.entries.map((item, i) => {
+    const { admission: _priorAdmission, ...base } = item
+    const { latestWindow: _priorWindow, ...compatibility } = item.compatibility
+    return {
+      ...base,
+      ...(i < 550 ? { admission: {
+        engine: 'bounded-source-v3', binding: 'a'.repeat(64), policyDigest: 'b'.repeat(64),
+        state: 'review-required', sourceContract: 'verified', coverage: 'complete', capabilities: 'review-required',
+        compatibility: 'per-version-declaration', reviewRegistryDigest: 'c'.repeat(64),
+      } } : {}),
+      description: ('完整功能说明与示例😀。'.repeat(120)).slice(0, 1400),
+      searchTerms: [
+        ...item.searchTerms,
+        `${item.id.slice(0, 12)}-${'x'.repeat(75)}-one`,
+        `${item.id.slice(0, 12)}-${'x'.repeat(75)}-two`,
+      ],
+      compatibility: {
+        ...compatibility,
+        dshReleases: {
+          ...item.compatibility.dshReleases,
+          '0.2.1-alpha.2': 'unknown', '0.2.1-alpha.4': 'unknown', '0.2.1-alpha.5': 'unknown',
+        },
+        ...(i < 96 ? { latestWindow: { state: 'recheck-required', releases: ['0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5'] } } : {}),
+      },
+    }
+  })
+  const split = splitCatalogDocument({ ...source, sourceFormat: undefined, entries })
+  assert.ok(catalogBridgeBuffer(split.bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
+  assert.equal(split.bridge.entries.length, source.entries.length)
+  assert.deepEqual(split.bridge.entries.map(item => item.id), split.index.entries.map(item => item.id))
+  assert.ok(split.bridge.entries.some((item, index) => (item.searchTerms ?? []).length < split.index.entries[index].searchTerms.length))
+  assert.ok(split.index.entries.every((item, index) => item.searchTerms.length === entries[index].searchTerms.length))
+  const manager = split.bridge.entries.find(item => item.id === 'dsh-safe-plugin-manager')
+  assert.equal(manager.version, source.entries.find(item => item.id === manager.id).version)
+  assert.equal(manager.commit, source.entries.find(item => item.id === manager.id).commit)
+  const expectedInstallability = source.entries.find(item => item.id === manager.id).assurance.installability.status
+  if (expectedInstallability === 'unknown') assert.equal(manager.assurance.installability, undefined)
+  else assert.equal(manager.assurance.installability.status, expectedInstallability)
+  for (let i = 0; i < entries.length; i++) {
+    const original = entries[i]
+    const wire = split.bridge.entries[i]
+    const hydrated = validateCatalogDetail(split.details[i].entry, split.index.entries[i], split.index.registry)
+    assert.deepEqual(hydrated.compatibility.dshReleases, original.compatibility.dshReleases)
+    for (const [release, status] of Object.entries(original.compatibility.dshReleases)) {
+      assert.equal(projectedReleaseStatus(original, wire, release), status, `${original.id}: ${release} status must be preserved`)
+    }
+  }
+  for (const validate of [validateCatalog085, validateCatalog086, validateCatalog087]) {
+    const historical = validate(split.bridge)
+    assert.equal(historical.entries.length, entries.length)
+    assert.equal(historical.entries.find(item => item.id === manager.id).assurance.installability.status, expectedInstallability)
+  }
+})
+
+test('legacy bridge compacts only release declarations with the same fallback status', () => {
+  const scenarios = [
+    { id: 'explicit-compatible', range: '>=0.2.1-alpha.2', status: 'compatible', retained: true },
+    { id: 'redundant-incompatible', range: '<0.2.1-alpha.2', status: 'incompatible', retained: false },
+    { id: 'unknown-over-compatible-range', range: '>=0.2.1-alpha.2', status: 'unknown', retained: false },
+    { id: 'unknown-over-incompatible-range', range: '<0.2.1-alpha.2', status: 'unknown', retained: true },
+  ]
+  const entries = scenarios.map(({ id, range, status }) => ({
+    ...entry,
+    id,
+    packageName: `dsh-${id}`,
+    entryIds: [id],
+    compatibility: { ...entry.compatibility, dsh: range, dshReleases: { '0.2.1-alpha.2': status } },
+  }))
+  const split = splitCatalogDocument(document(entries))
+  const release = { key: '0.2.1-alpha.2', version: '0.2.1-alpha.2', aliases: ['0.2.1-alpha.2'] }
+  for (let i = 0; i < scenarios.length; i++) {
+    const scenario = scenarios[i]
+    const original = entries[i]
+    const wire = split.bridge.entries[i]
+    assert.equal(Object.hasOwn(wire.compatibility.dshReleases, '0.2.1-alpha.2'), scenario.retained)
+    assert.equal(projectDshRelease(original, release).status, scenario.status)
+    assert.equal(projectDshRelease(wire, release).status, scenario.status)
+    assert.deepEqual(split.details[i].entry.compatibility.dshReleases, original.compatibility.dshReleases)
+  }
+})
+
+test('Catalog bridge fails closed when its index is missing or does not match the pinned digest', async () => {
+  const bridge = await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8')
+  const index = JSON.parse(await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8'))
+  const root = await mkdtemp(join(tmpdir(), 'dsh-catalog-bridge-'))
+  const bridgeUrl = pathToFileURL(join(root, 'catalog.json'))
+  try {
+    await writeFile(bridgeUrl, bridge)
+    await assert.rejects(() => loadCatalogFromFiles({ indexUrl: bridgeUrl }), error => error.code === 'CATALOG_INDEX_MISSING')
+    index.entries[0] = { ...index.entries[0], version: '9.9.9' }
+    await writeFile(join(root, 'catalog-index.json'), `${JSON.stringify(index, null, 2)}\n`)
+    await assert.rejects(() => loadCatalogFromFiles({ indexUrl: bridgeUrl }), error => error.code === 'CATALOG_INDEX_INVALID')
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('catalog v2 fails closed when a detail record is missing or does not match its index', async () => {
+  const source = await loadCatalogFromFiles()
+  const sourceDetail = JSON.parse(await readFile(new URL('../registry/catalog/details/dsh-safe-plugin-manager.json', import.meta.url), 'utf8'))
+  const root = await mkdtemp(join(tmpdir(), 'dsh-catalog-v2-'))
+  try {
+    const split = splitCatalogDocument({ ...source, sourceFormat: undefined, entries: [source.entries.find(entry => entry.id === 'dsh-safe-plugin-manager')] })
+    const indexUrl = pathToFileURL(join(root, 'catalog.json'))
+    await writeFile(indexUrl, `${JSON.stringify(split.bridge, null, 2)}\n`)
+    await writeFile(join(root, 'catalog-index.json'), `${JSON.stringify(split.index, null, 2)}\n`)
+    await assert.rejects(
+      () => loadCatalogFromFiles({ indexUrl }),
+      error => error.code === 'CATALOG_DETAIL_MISSING' && /dsh-safe-plugin-manager/.test(error.message),
+    )
+
+    await mkdir(join(root, 'catalog', 'details'), { recursive: true })
+    for (const field of ['id', 'version', 'repositoryUrl']) {
+      const detail = { ...sourceDetail, [field]: field === 'id' ? 'other-plugin' : field === 'version' ? '9.9.9' : 'https://github.com/example/other-plugin' }
+      await writeFile(join(root, 'catalog', 'details', 'dsh-safe-plugin-manager.json'), `${JSON.stringify(detail)}\n`)
+      await assert.rejects(
+        () => loadCatalogFromFiles({ indexUrl }),
+        new RegExp(`catalog detail ${field} does not match index entry dsh-safe-plugin-manager`),
+      )
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('catalog service loads only the requested page details and caches them without duplicate requests', async () => {
+  const bridgeText = await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8')
+  const indexText = await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8')
+  const remoteCatalogUrl = 'https://catalog.example.test/registry/catalog.json'
+  const localRegistryRoot = new URL('../registry/', import.meta.url)
+  let detailCalls = 0
+  const service = createCatalogService({
+    catalogUrl: remoteCatalogUrl,
+    retryDelaysMs: [],
+    fetch: async url => {
+      const requested = new URL(url)
+      if (requested.pathname === '/registry/catalog.json') return new Response(bridgeText)
+      if (requested.pathname === '/registry/catalog-index.json') return new Response(indexText)
+      if (!requested.pathname.startsWith('/registry/catalog/details/')) return new Response('missing', { status: 404 })
+      detailCalls += 1
+      const relativePath = requested.pathname.slice('/registry/'.length)
+      const detailText = await readFile(new URL(relativePath, localRegistryRoot), 'utf8')
+      return new Response(detailText)
+    },
+  })
+  const index = await service.loadIndex()
+  const pageIds = index.entries.slice(20, 40).map(item => item.id)
+  const details = await service.loadDetails(pageIds, { index })
+  assert.equal(details.length, 20)
+  assert.equal(detailCalls, 20)
+  await service.loadDetails(pageIds, { index })
+  assert.equal(detailCalls, 20)
+})
+
+test('catalog service atomically falls back without mixing remote details into the bundled generation', async () => {
+  const second = { ...entry, id: 'demo-two', packageName: 'dsh-demo-two', name: 'Demo Two', repositoryUrl: 'https://github.com/example/dsh-demo-two' }
+  const split = splitCatalogDocument(document([entry, second]))
+  const root = await mkdtemp(join(tmpdir(), 'dsh-catalog-atomic-fallback-'))
+  try {
+    await mkdir(join(root, 'catalog', 'details'), { recursive: true })
+    await writeFile(join(root, 'catalog.json'), `${JSON.stringify(split.bridge, null, 2)}\n`)
+    await writeFile(join(root, 'catalog-index.json'), `${JSON.stringify(split.index, null, 2)}\n`)
+    for (const detail of split.details) await writeFile(join(root, detail.path), `${JSON.stringify(detail.entry, null, 2)}\n`)
+    const service = createCatalogService({
+      catalogUrl: 'https://catalog.example.test/registry/catalog.json',
+      bundledUrl: pathToFileURL(join(root, 'catalog.json')),
+      retryDelaysMs: [],
+      fetch: async url => {
+        const path = new URL(url).pathname
+        if (path.endsWith('/catalog.json')) return new Response(`${JSON.stringify(split.bridge, null, 2)}\n`)
+        if (path.endsWith('/catalog-index.json')) return new Response(`${JSON.stringify(split.index, null, 2)}\n`)
+        const id = path.split('/').at(-1).replace(/\.json$/, '')
+        const detail = split.details.find(item => item.entry.id === id).entry
+        return new Response(JSON.stringify(id === 'demo'
+          ? { ...detail, description: 'REMOTE DETAIL MUST NOT LEAK INTO FALLBACK' }
+          : { ...detail, version: '9.9.9' }))
+      },
+    })
+    const catalog = await service.load()
+    assert.equal(catalog.source.kind, 'bundled')
+    assert.equal(catalog.source.errorCode, 'CATALOG_DETAILS_UNAVAILABLE')
+    assert.ok(catalog.entries.every(item => item.description !== 'REMOTE DETAIL MUST NOT LEAK INTO FALLBACK'))
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('marketplace snapshot pagination returns one bounded page and lazy candidate data', () => {
+  const entries = Array.from({ length: 61 }, (_, index) => ({
+    ...entry,
+    id: `demo-${String(index).padStart(2, '0')}`,
+    packageName: `dsh-demo-${String(index).padStart(2, '0')}`,
+    name: `Demo ${String(index).padStart(2, '0')}`,
+    featured: index < 3,
+  }))
+  const catalog = validateCatalog(document(entries))
+  const snapshot = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] }, '', {
+    candidateRegistry: {
+      registry: { name: 'Candidates' }, source: { kind: 'fixture' },
+      entries: [
+        { id: 'candidate-new', name: 'Candidate New', status: 'pending', sourceUpdatedAt: '2026-08-21T00:00:00Z' },
+        { id: 'candidate-old', name: 'Candidate Old', status: 'pending', sourceUpdatedAt: '2026-08-20T00:00:00Z' },
+        { id: 'candidate-rejected', name: 'Candidate Rejected', status: 'rejected', sourceUpdatedAt: '2026-08-22T00:00:00Z' },
+      ],
+    },
+  })
+  const market = paginateMarketplaceSnapshot(snapshot, { view: 'market', page: 2, pageSize: 20 })
+  assert.equal(market.entries.length, 20)
+  assert.equal(market.candidates.length, 0)
+  assert.deepEqual(market.pagination, {
+    view: 'market', query: '', category: '', featuredOnly: false, page: 2, pageSize: 20, total: 61, pageCount: 4,
+    hasPrevious: true, hasNext: true,
+  })
+  assert.equal(market.catalogPackageNames.length, 61)
+
+  const featured = paginateMarketplaceSnapshot(snapshot, { view: 'market', featuredOnly: true, page: 1, pageSize: 20 })
+  assert.deepEqual(featured.entries.map(item => item.id), ['demo-00', 'demo-01', 'demo-02'])
+  assert.equal(featured.pagination.total, 3)
+  assert.equal(featured.pagination.featuredOnly, true)
+
+  const candidates = paginateMarketplaceSnapshot(snapshot, { view: 'candidates', includeRejected: true, page: 1, pageSize: 1 })
+  assert.equal(candidates.entries.length, 0)
+  assert.deepEqual(candidates.candidates.map(item => item.id), ['candidate-rejected'])
+  assert.equal(candidates.pagination.total, 3)
+  assert.deepEqual(candidates.candidateSummary, { total: 3, discovered: 0, reviewing: 0, rejected: 1, unknown: 2, reviewable: 0 })
+  assert.throws(() => paginateMarketplaceSnapshot(snapshot, { pageSize: 49 }), /pageSize/)
+})
+
+test('catalog recommended ordering puts latest-compatible entries first', () => {
+  const old = { ...entry, id: 'old', packageName: 'dsh-old', name: 'Old', compatibility: { ...entry.compatibility, dsh: '0.1.0-rc.7' } }
+  const current = { ...entry, id: 'current', packageName: 'dsh-current', name: 'Current', version: '0.1.0', compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' } }
+  assert.deepEqual(searchCatalog(validateCatalog(document([old, current]))).map(item => item.id), ['current', 'old'])
+})
+
+test('catalog ordering pins featured entries before compatibility and source freshness', () => {
+  const currentOld = {
+    ...entry, id: 'current-old', packageName: 'dsh-current-old', name: 'Current old',
+    compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' },
+    source: { updatedAt: '2026-08-01T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
+  }
+  const currentNew = {
+    ...entry, id: 'current-new', packageName: 'dsh-current-new', name: 'Current new', featured: false,
+    compatibility: { ...entry.compatibility, dsh: '>=0.1.0-rc.8 <0.2.0' },
+    source: { updatedAt: '2026-08-19T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
+  }
+  const unsupportedNew = {
+    ...entry, id: 'unsupported-new', packageName: 'dsh-unsupported-new', name: 'Unsupported new',
+    compatibility: { ...entry.compatibility, dsh: '0.1.0-rc.7' },
+    source: { updatedAt: '2026-08-20T00:00:00Z', observedAt: '2026-08-20T00:00:00Z', provenance: 'github-commit' },
+  }
+  const catalog = validateCatalog(document([currentOld, currentNew, unsupportedNew]))
+  assert.deepEqual([...catalog.entries].sort(compareCatalogEntries).map(item => item.id), ['current-old', 'unsupported-new', 'current-new'])
+  assert.equal(catalog.entries.find(item => item.id === 'current-old').assurance.securityReview.status, 'unknown')
+})
+
+test('bundled registry declares complete detail metadata for every entry', async () => {
+  const source = await loadCatalogFromFiles()
+  assert.equal(assertLegacyCatalogCompatibility(source), true)
+  const catalog = source
+  const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8')
+  const packageManifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const legacyCatalogReleases = ['rc.7', 'rc.8', '0.1.1-rc.1', '0.1.1-rc.2']
+  assert.equal(catalog.entries.length, source.entries.length)
+  for (const item of source.entries) {
+    assert.ok(item.details, `${item.id} must declare details in the GitHub catalog`)
+    assert.ok(Array.isArray(item.compatibility.systems), `${item.id} must declare supported systems`)
+    assert.ok(Array.isArray(item.compatibility.profiles), `${item.id} must declare supported profiles`)
+    assert.ok(item.details.permissions.credentials.length > 0, `${item.id} must declare credential access`)
+    if (item.compatibility.dshReleases) {
+      for (const release of legacyCatalogReleases) {
+        assert.ok(['compatible', 'incompatible', 'unknown'].includes(item.compatibility.dshReleases[release]),
+          `${item.id} must preserve the ${release} compatibility key for DSH-Store 0.8.0 clients`)
+      }
+    }
+  }
+  assert.deepEqual(source.entries.filter(item => item.featured === true).map(item => item.id).sort(), [
+    'build-dsh-plugin', 'dsh-plugin-agent-workflow', 'dsh-safe-plugin-manager', 'dsh-settings-hub',
+  ])
+  const manager = catalog.entries.find(item => item.id === 'dsh-safe-plugin-manager')
+  assert.ok(manager, 'the marketplace manager must be listed in its own catalog')
+  assert.equal(catalog.registry.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
+  assert.equal(manager.repositoryUrl, 'https://github.com/AI-Scarlett/DSH-Store')
+  assert.ok(manager.status === 'approved' || (
+    manager.status === 'unlisted' && manager.statusReason?.startsWith(COMPATIBILITY_HOLD_PREFIX)
+  ), 'the self manager may be hidden only by the latest-three compatibility hold')
+  assert.ok(compareVersions(manager.version, packageManifest.version) <= 0, 'catalog manager version cannot be newer than package.json during two-phase self-pinning')
+  const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
+  const managerIsBootstrap = manager.version === '0.8.5' && manager.commit === bootstrapCommit
+  const managerIsCurrent = manager.version === packageManifest.version && manager.commit !== bootstrapCommit
+  const managerIsPreviousReleaseBeforeCatalogPin = (
+    (packageManifest.version === '0.8.9' && manager.version === '0.8.8')
+    || (packageManifest.version === '0.8.10' && manager.version === '0.8.9')
+    || (packageManifest.version === '0.8.11' && manager.version === '0.8.10')
+    || (packageManifest.version === '0.8.12' && manager.version === '0.8.11')
+    || (packageManifest.version === '0.8.13' && manager.version === '0.8.12')
+    || (packageManifest.version === '0.8.14' && manager.version === '0.8.13')
+    || (packageManifest.version === '0.8.15' && manager.version === '0.8.14')
+    || (packageManifest.version === '0.8.16' && manager.version === '0.8.15')
+    || (packageManifest.version === '0.8.17' && manager.version === '0.8.16')
+    || (packageManifest.version === '0.9.0' && manager.version === '0.8.17')
+    || (packageManifest.version === '0.9.1' && manager.version === '0.9.0')
+    || (packageManifest.version === '0.9.2' && manager.version === '0.9.1')
+    || (packageManifest.version === '0.9.3' && manager.version === '0.9.2')
+    || (packageManifest.version === '0.9.4' && manager.version === '0.9.3')
+    || (packageManifest.version === '0.9.5' && manager.version === '0.9.4')
+    || (packageManifest.version === '0.9.6' && manager.version === '0.9.5')
+    || (packageManifest.version === '0.9.7' && manager.version === '0.9.6')
+    || (packageManifest.version === '0.9.8' && manager.version === '0.9.7')
+    || (packageManifest.version === '0.9.10' && manager.version === '0.9.8')
+    || (packageManifest.version === '0.9.11' && ['0.9.8', '0.9.10'].includes(manager.version))
+    || (packageManifest.version === '0.9.11' && manager.version === '0.9.11')
+    || (packageManifest.version === '0.9.13' && manager.version === '0.9.12')
+    || (packageManifest.version === '0.9.14' && manager.version === '0.9.12')
+    || (packageManifest.version === '0.9.16' && manager.version === '0.9.15')
+    || (packageManifest.version === '0.9.18' && manager.version === '0.9.17')
+    || (packageManifest.version === '0.9.19' && manager.version === '0.9.18')
+  )
+  assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
+    'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
+  if (['0.9.17', '0.9.18', '0.9.19'].includes(manager.version)) assert.deepEqual(manager.compatibility.profiles, ['web'])
+  assert.match(manager.commit, /^[0-9a-f]{40}$/)
+  assert.ok(readme.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`),
+    'README must retain the fixed bootstrap install command even after the Catalog self-pin advances')
+  const guide = readme.split('### 使用固定 GitHub Commit 安装')[1]?.split('### 重启与验收')[0]
+  const primaryInstall = /```bash\n([^]*?)```/.exec(guide ?? '')?.[1]
+  assert.ok(primaryInstall?.includes(`git+https://github.com/AI-Scarlett/DSH-Store.git#${manager.commit}`),
+    'the primary install command must use the current audited Catalog pin')
+  assert.ok(!primaryInstall.includes(bootstrapCommit), 'the obsolete bootstrap must not remain the primary install command')
+  assert.match(primaryInstall, /--ignore-scripts --config\.auto-install-peers=false/)
+  assert.match(guide, /仅供历史审计/)
+  assert.ok(readme.includes(`| 商城版本 | \`${manager.version}\``), 'README marketplace version must match the publicly fixed Catalog entry')
+  assert.match(readme, /dsh plugin --profile web add/)
+  assert.match(readme, /设置左侧独立的\s+`插件商城`\s+分区/)
+  assert.doesNotMatch(readme, /dsh-safe-plugin-manager\.git#main/)
+  const agentReach = source.entries.find(item => item.id === 'dsh-agent-reach')
+  assert.ok(agentReach, 'Agent Reach adapter must be listed')
+  assert.ok(['approved', 'unlisted'].includes(agentReach.status), 'latest-three policy may reversibly unlist an older compatibility record')
+  assert.equal(agentReach.featured, false)
+  assert.equal(agentReach.repositoryUrl, 'https://github.com/AI-Scarlett/dsh-agent-reach')
+  assert.match(agentReach.commit, /^[0-9a-f]{40}$/, 'automatic updates retain an immutable source, not one historical commit')
+  assert.deepEqual(agentReach.entryIds, ['dsh-agent-reach-skill-provider'])
+  assert.equal(agentReach.details.permissions.level, 'high')
+  assert.ok(agentReach.details.externalDependencies.includes('Agent Reach CLI 1.5.0'))
+  for (const id of ['dsh-safe-plugin-manager', 'dsh-token-monitor', 'dsh-chat-import', 'dsh-agent-reach', 'dsh-wecom-cli']) {
+    const item = source.entries.find(entry => entry.id === id)
+    assert.ok(item, `${id} must be listed`)
+    for (const release of legacyCatalogReleases) {
+      assert.ok(Object.hasOwn(item.compatibility.dshReleases, release), `${id} must declare the ${release} compatibility key`)
+      assert.ok(['compatible', 'incompatible', 'unknown'].includes(item.compatibility.dshReleases[release]),
+        `${id} ${release} compatibility must be a valid status`)
+    }
+    for (const release of Object.keys(item.compatibility.dshReleases).filter(release => !legacyCatalogReleases.includes(release))) {
+      assert.match(release, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/, `${id} dynamic releases must use full SemVer`)
+    }
+  }
+  // The live catalog is mutable. Test its admission contract rather than
+  // freezing one release's version, SHA, range or lifecycle observations.
+  for (const [id, repo] of [
+    ['dsh-settings-hub', 'dsh-settings-hub'], ['dsh-cliapi', 'DSH_CLIAPI'],
+    ['dsh-chat-import', 'dsh-chat-import'], ['dsh-token-monitor', 'DSH_TokenMonitor'],
+    ['dsh-agent-reach', 'dsh-agent-reach'], ['build-dsh-plugin', 'build-dsh-plugin'],
+  ]) {
+    const plugin = source.entries.find(item => item.id === id)
+    assert.ok(plugin, `${id} must remain represented during compatibility review`)
+    assert.equal(plugin.repositoryUrl, `https://github.com/AI-Scarlett/${repo}`)
+    assert.match(plugin.commit, /^[0-9a-f]{40}$/)
+    assert.match(plugin.version, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/)
+    assert.ok(githubInstallSpecifier(plugin).includes(`#${plugin.commit}`))
+    for (const record of Object.values(plugin.compatibility.dshOperations)) {
+      assert.deepEqual(Object.keys(record).sort(), ['install', 'rollback', 'start', 'uninstall'])
+      assert.ok(Object.values(record).every(status => ['passed', 'failed', 'unknown'].includes(status)))
+    }
+    for (const gate of ['installability', 'runtime', 'securityReview']) {
+      assert.ok(['verified', 'partial', 'failed', 'unknown', 'not-applicable'].includes(plugin.assurance[gate].status))
+      assert.equal(Object.hasOwn(plugin.assurance[gate], 'evidenceStatus'), false, 'hydrated evidence must preserve its actual status')
+    }
+  }
+  const requestedIm = source.entries.find(item => item.id === 'xmanrui-dsh-im')
+  assert.ok(requestedIm, 'the requested DSH IM plugin must remain represented')
+  assert.equal(requestedIm.updatePolicy, 'user-reviewed')
+
+})
+
+test('catalog supports pinned repository subdirectories and hides unlisted entries from search', () => {
+  const nested = { ...entry, id: 'nested', packageName: 'dsh-nested', manifestPath: 'plugin/package.json', installPath: 'plugin' }
+  const hidden = { ...entry, id: 'hidden', packageName: 'dsh-hidden', status: 'unlisted', statusReason: 'retired', featured: false }
+  const catalog = validateCatalog(document([nested, hidden]))
+  assert.equal(githubInstallSpecifier(catalog.entries[0]), `git+https://github.com/example/dsh-demo.git#${'a'.repeat(40)}&path:plugin`)
+  assert.deepEqual(searchCatalog(catalog).map(item => item.id), ['nested'])
+  assert.deepEqual(searchCatalog(catalog, '', { includeUnlisted: true }).map(item => item.id), ['nested', 'hidden'])
+})
+
+test('catalog service falls back to bundled snapshot when GitHub is unavailable', async () => {
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    fetch: async () => new Response('missing', { status: 404 }),
+  })
+  const catalog = await service.load()
+  assert.equal(catalog.source.kind, 'bundled')
+  assert.equal(catalog.source.errorCode, 'CATALOG_HTTP_ERROR')
+  assert.ok(catalog.entries.length >= 2)
+})
+
+test('catalog service retries a transient GitHub transport failure before using the bundle', async () => {
+  let calls = 0
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [0],
+    fetch: async () => {
+      calls += 1
+      if (calls === 1) throw new TypeError('fetch failed')
+      return new Response(JSON.stringify(document()))
+    },
+  })
+  const catalog = await service.load()
+  assert.equal(catalog.source.kind, 'github')
+  assert.equal(catalog.source.errorCode, null)
+  assert.equal(calls, 2)
+})
+
+test('catalog service accepts a valid remote response between the legacy and current bounds', async () => {
+  const raw = JSON.stringify({ ...document(), padding: 'x'.repeat(2 * 1024 * 1024) })
+  const bytes = Buffer.byteLength(raw)
+  assert.ok(bytes > 2 * 1024 * 1024, 'the fixture must reproduce the retired 2 MiB limit')
+  assert.ok(bytes < MAX_CATALOG_RESPONSE_BYTES, 'the fixture must remain below the bounded 4 MiB limit')
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => ({
+      ok: true,
+      headers: new Headers({ 'content-length': String(bytes) }),
+      text: async () => raw,
+    }),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(catalog.source.kind, 'github')
+  assert.equal(catalog.source.errorCode, null)
+  assert.equal(catalog.entries.length, 1)
+})
+
+test('catalog service fails closed when the declared remote response exceeds the bound', async () => {
+  let bodyRead = false
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => ({
+      ok: true,
+      headers: new Headers({ 'content-length': String(MAX_CATALOG_RESPONSE_BYTES + 1) }),
+      text: async () => {
+        bodyRead = true
+        return JSON.stringify(document())
+      },
+    }),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(bodyRead, false, 'a declared oversized response must be rejected before reading the body')
+  assert.equal(catalog.source.kind, 'bundled')
+  assert.equal(catalog.source.errorCode, 'CATALOG_UNAVAILABLE')
+})
+
+test('catalog service fails closed when the remote body exceeds the bound without a length header', async () => {
+  const raw = `${JSON.stringify(document())}${' '.repeat(MAX_CATALOG_RESPONSE_BYTES)}`
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => ({ ok: true, headers: new Headers(), text: async () => raw }),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(catalog.source.kind, 'bundled')
+  assert.equal(catalog.source.errorCode, 'CATALOG_UNAVAILABLE')
+})
+
+test('catalog service accepts partial assurance evidence from the remote Catalog', async () => {
+  const remote = document([{ ...entry, assurance: {
+    discovery: { status: 'verified', method: 'fixed-source', checkedAt: '2026-08-25T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
+    installability: { status: 'partial', method: 'disposable-profile-install', checkedAt: '2026-08-25T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/releases/tag/v1.2.0', summary: 'Installation evidence is bounded and public runtime evidence is pending.' },
+    runtime: { status: 'unknown', summary: 'No runtime evidence yet.' },
+    securityReview: { status: 'partial', method: 'fixed-source-policy', checkedAt: '2026-08-25T00:00:00Z', evidenceUrl: 'https://github.com/example/dsh-demo/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', summary: 'Bounded policy checks passed; this is not an independent audit.' },
+  } }])
+  const service = createCatalogService({
+    catalogUrl: 'https://raw.githubusercontent.com/example/registry/main/catalog.json',
+    retryDelaysMs: [],
+    fetch: async () => new Response(JSON.stringify(remote)),
+  })
+  const catalog = await service.load({ force: true })
+  assert.equal(catalog.source.kind, 'github')
+  assert.equal(catalog.entries[0].assurance.installability.status, 'partial')
+  assert.equal(catalog.entries[0].assurance.securityReview.status, 'partial')
+})
+
+test('catalog overlays live marketplace install counts without changing catalog authority', async () => {
+  const service = createCatalogService({
+    catalogUrl: 'https://catalog.test/catalog.json', installCountsUrl: 'https://counts.test/v1/counts', retryDelaysMs: [],
+    fetch: async url => url.includes('counts')
+      ? new Response(JSON.stringify({ schemaVersion: 1, updatedAt: '2026-08-17T00:00:00Z', counts: { demo: 42 } }))
+      : new Response(JSON.stringify(document())),
+  })
+  const catalog = await service.load()
+  assert.equal(catalog.entries[0].installCount, 42)
+  assert.equal(catalog.installCounts.status, 'live')
+  assert.equal(catalog.source.kind, 'github')
+})
+
+test('marketplace offers explicit migration for local links and reports version updates', () => {
+  const host = { dshVersion: { currentVersion: '0.1.0' } }
+  const catalog = { ...validateCatalog(document([{ ...entry, compatibility: { ...entry.compatibility, dshReleases: { '0.1.0': 'compatible' } } }])), source: { kind: 'fixture' } }
+  const local = buildMarketplaceSnapshot(catalog, {
+    profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'link', version: '1.0.0' }],
+  }, '', host)
+  assert.equal(local.entries[0].updateAvailable, true)
+  assert.equal(local.entries[0].migrationAvailable, true)
+  assert.deepEqual(local.entries[0].allowedActions, ['migrate'])
+  assert.equal(local.entries[0].manageable, true)
+  const npm = buildMarketplaceSnapshot(catalog, {
+    profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'npm', version: '1.0.0' }],
+  }, '', host)
+  assert.equal(npm.entries[0].manageable, true)
+  const git = buildMarketplaceSnapshot(catalog, {
+    profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '1.2.0', declaredSpecifier: 'github:example/dsh-demo#main' }],
+  }, '', host)
+  assert.equal(git.entries[0].updateAvailable, false)
+  assert.equal(git.entries[0].commitMatched, false)
+  assert.equal(git.entries[0].sourceDrift, true)
+  assert.equal(git.entries[0].sameVersionSourceChange, true)
+  assert.equal(git.entries[0].manualSourceUpdate.status, 'manual-only')
+  assert.equal(git.entries[0].manualSourceUpdate.commit, entry.commit)
+  assert.deepEqual(git.entries[0].manualSourceUpdate.command, [
+    'dsh', 'plugin', '--profile', 'web', 'add', '--ignore-scripts', `git+https://github.com/example/dsh-demo.git#${entry.commit}`,
+  ])
+  assert.deepEqual(git.entries[0].allowedActions, ['disable', 'enable', 'uninstall'])
+  const uninstalled = buildMarketplaceSnapshot(catalog, { profile: 'web', plugins: [] }, '', host)
+  assert.equal(uninstalled.entries[0].installed, false)
+  assert.equal(uninstalled.entries[0].manualSourceUpdate, null)
+  assert.deepEqual(uninstalled.entries[0].allowedActions, ['install'], 'new users install the current audited Catalog Commit')
+  const sourceNewer = buildMarketplaceSnapshot(catalog, {
+    profile: 'web', plugins: [{ packageName: 'dsh-demo', official: false, source: 'git', version: '2.0.0', declaredSpecifier: 'github:example/dsh-demo#newer' }],
+  }, '', host)
+  assert.equal(sourceNewer.entries[0].versionState, 'ahead')
+  assert.equal(sourceNewer.entries[0].sourceDrift, true)
+  assert.equal(sourceNewer.entries[0].updateAvailable, false, 'a newer source-verified install must not be offered a catalog downgrade')
+})
+
+test('source verification checks manifest, lifecycle scripts, and Bundle ids at the pinned commit', async () => {
+  const catalogEntry = validateCatalog(document()).entries[0]
+  const request = async url => {
+    if (url.endsWith('/package.json')) return new Response(JSON.stringify({
+      name: 'dsh-demo', version: '1.2.0', license: 'MIT', dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {},
+    }))
+    return new Response('- insert:\n    - id: demo\n      name: dsh-demo\n')
+  }
+  const result = await verifyCatalogEntry(catalogEntry, { fetch: request })
+  assert.equal(result.status, 'verified')
+  assert.equal(result.packageName, 'dsh-demo')
+  assert.equal(result.license, 'MIT')
+  await assert.rejects(() => verifyCatalogEntry({
+    ...catalogEntry, details: { ...catalogEntry.details, license: 'Apache-2.0' },
+  }, { fetch: request }), /license does not match/)
+})
+
+test('source verification accepts a same-package exported Patch subpath and reads its fixed targets', async () => {
+  const catalogEntry = validateCatalog(document([{ ...entry, entryIds: ['demo', 'demo-gate'] }])).entries[0]
+  const manifest = {
+    name: 'dsh-demo', version: '1.2.0', license: 'MIT', scripts: {},
+    files: ['lib'],
+    dsh: { bundle: { patch: './cordis.patch.yml' } },
+    exports: { './gate': { types: './lib/types/gate.d.ts', default: './lib/gate.js' } },
+  }
+  const patch = '- insert:\n    - id: demo\n      name: dsh-demo\n    - id: demo-gate\n      name: dsh-demo/gate\n'
+  const requests = []
+  const fetch = async url => {
+    requests.push(url)
+    if (url.endsWith('/package.json')) return new Response(JSON.stringify(manifest))
+    if (url.endsWith('/cordis.patch.yml')) return new Response(patch)
+    if (url.endsWith('/lib/gate.js')) return new Response('export const gate = true\n')
+    if (url.endsWith('/lib/types/gate.d.ts')) return new Response('export declare const gate: boolean\n')
+    return new Response('missing', { status: 404 })
+  }
+  const result = await verifyCatalogEntry(catalogEntry, { fetch, retryDelaysMs: [] })
+  assert.equal(result.status, 'verified')
+  assert.ok(requests.some(url => url.endsWith('/lib/gate.js')))
+  assert.ok(requests.some(url => url.endsWith('/lib/types/gate.d.ts')))
+  await assert.rejects(() => verifyCatalogEntry(catalogEntry, {
+    fetch: async url => url.endsWith('/package.json') ? new Response(JSON.stringify(manifest))
+      : url.endsWith('/cordis.patch.yml') ? new Response(patch)
+        : new Response('missing', { status: 404 }),
+    retryDelaysMs: [],
+  }), error => error.code === 'SOURCE_VERIFICATION_HTTP')
+})
+
+test('source verification rejects Patch subpath exports outside the explicit package files list', async () => {
+  const catalogEntry = validateCatalog(document([{ ...entry, entryIds: ['demo', 'demo-gate'] }])).entries[0]
+  const manifest = {
+    name: 'dsh-demo', version: '1.2.0', license: 'MIT', scripts: {}, files: ['src'],
+    dsh: { bundle: { patch: './cordis.patch.yml' } },
+    exports: { './gate': './lib/gate.js' },
+  }
+  const patch = '- insert:\n    - id: demo\n      name: dsh-demo\n    - id: demo-gate\n      name: dsh-demo/gate\n'
+  const requests = []
+  await assert.rejects(() => verifyCatalogEntry(catalogEntry, {
+    fetch: async url => {
+      requests.push(url)
+      if (url.endsWith('/package.json')) return new Response(JSON.stringify(manifest))
+      if (url.endsWith('/cordis.patch.yml')) return new Response(patch)
+      return new Response('gate implementation must not be fetched', { status: 500 })
+    },
+    retryDelaysMs: [],
+  }), error => error.code === 'SOURCE_PATCH_REJECTED')
+  assert.equal(requests.some(url => url.endsWith('/lib/gate.js')), false)
+})
+
+test('source verification retries transient GitHub transport failures', async () => {
+  const catalogEntry = validateCatalog(document()).entries[0]
+  let calls = 0
+  const request = async url => {
+    calls += 1
+    if (calls === 1) throw new TypeError('fetch failed')
+    if (url.endsWith('/package.json')) return new Response(JSON.stringify({
+      name: 'dsh-demo', version: '1.2.0', license: 'MIT', dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {},
+    }))
+    return new Response('- insert:\n    - id: demo\n      name: dsh-demo\n')
+  }
+  assert.equal((await verifyCatalogEntry(catalogEntry, { fetch: request, retryDelaysMs: [0, 0] })).status, 'verified')
+  assert.equal(calls, 3)
+})
+
+test('source verification distinguishes timeout, HTTP, manifest, and patch failures', async () => {
+  const catalogEntry = validateCatalog(document()).entries[0]
+  const manifest = JSON.stringify({
+    name: 'dsh-demo', version: '1.2.0', license: 'MIT',
+    dsh: { bundle: { patch: './cordis.patch.yml' } }, scripts: {},
+  })
+  const timeout = Object.assign(new Error('aborted'), { name: 'AbortError' })
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, { fetch: async () => { throw timeout }, retryDelaysMs: [] }),
+    error => error.code === 'SOURCE_VERIFICATION_TIMEOUT',
+  )
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, { fetch: async () => new Response('missing', { status: 404 }), retryDelaysMs: [] }),
+    error => error.code === 'SOURCE_VERIFICATION_HTTP',
+  )
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, { fetch: async () => new Response('{'), retryDelaysMs: [] }),
+    error => error.code === 'SOURCE_MANIFEST_INVALID',
+  )
+  await assert.rejects(
+    () => verifyCatalogEntry(catalogEntry, {
+      fetch: async url => new Response(url.endsWith('/package.json') ? manifest : '- insert:\n    - id: wrong\n      name: dsh-demo\n'),
+      retryDelaysMs: [],
+    }),
+    error => error.code === 'SOURCE_PATCH_MISMATCH',
+  )
+})
+
+test('batch admission rechecks preserve every safety field under the historical response bound', async () => {
+  const source = await loadCatalogFromFiles()
+  const entries = source.entries.slice(0, 806).map((item, i) => {
+    const { admission: _priorAdmission, ...base } = item
+    const { latestWindow: _priorWindow, ...compatibility } = item.compatibility
+    return {
+    ...base,
+    // A real scan adds exact-source decisions across hundreds of entries;
+    // search-term growth alone did not reproduce the production failure.
+    ...(i < 550 ? { admission: {
+      engine: 'bounded-source-v3', binding: 'a'.repeat(64), policyDigest: 'b'.repeat(64),
+      state: 'review-required', sourceContract: 'verified', coverage: 'complete', capabilities: 'review-required',
+      compatibility: 'per-version-declaration', reviewRegistryDigest: 'c'.repeat(64),
+    } } : {}),
+    description: ('完整功能说明与示例😀。'.repeat(120)).slice(0, 1400),
+    compatibility: { ...compatibility,
+      dshReleases: { ...item.compatibility.dshReleases, '0.2.1-alpha.4': 'unknown', '0.2.1-alpha.5': 'unknown' },
+      // The failed run refreshed 96 latest-window records.
+      ...(i < 96 ? { latestWindow: { state: 'recheck-required', releases: ['0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5'] } } : {}),
+    },
+    }
+  })
+  const split = splitCatalogDocument({ ...source, entries })
+  assert.ok(catalogBridgeBuffer(split.bridge).length <= MAX_CATALOG_BRIDGE_RESPONSE_BYTES)
+  assert.equal(split.bridgeProjection.entries, entries.length)
+  assert.ok(split.bridgeProjection.descriptionLimit !== null, 'the fixture must exercise description compaction')
+  assert.equal(split.bridge.entries.length, entries.length)
+  for (let i = 0; i < entries.length; i++) {
+    const original = entries[i], wire = split.bridge.entries[i], hydrated = validateCatalogDetail(split.details[i].entry, split.index.entries[i], split.index.registry)
+    for (const field of ['id', 'packageName', 'commit', 'version', 'status', 'entryIds', 'admission']) {
+      assert.deepEqual(wire[field], original[field], `${original.id}: ${field} must stay exact`)
+    }
+    assert.equal(wire.statusReason ?? null, original.statusReason)
+    assert.deepEqual(wire.configOverrides ?? [], original.configOverrides ?? [])
+    for (const [release, status] of Object.entries(original.compatibility.dshReleases)) {
+      assert.equal(projectedReleaseStatus(original, wire, release), status, `${original.id}: ${release} status must be preserved`)
+    }
+    assert.deepEqual(wire.compatibility.latestWindow, original.compatibility.latestWindow)
+    const legacyCredentialKinds = new Set(['none', 'api-key', 'oauth', 'keychain', 'unknown'])
+    const expectedWirePermissions = {
+      ...original.details.permissions,
+      credentials: original.details.permissions.credentials.every(value => legacyCredentialKinds.has(value))
+        ? original.details.permissions.credentials : ['unknown'],
+    }
+    assert.deepEqual(wire.details.permissions, expectedWirePermissions)
+    assert.equal(wire.details.license, original.details.license)
+    assert.deepEqual(hydrated.description, original.description)
+    assert.deepEqual(hydrated.compatibility.dshReleases, original.compatibility.dshReleases)
+    assert.deepEqual(split.index.entries[i].searchTerms, original.searchTerms)
+    assert.ok(!wire.description.includes('\ufffd'))
+  }
+  for (const validate of [validateCatalog, validateCatalog085, validateCatalog086, validateCatalog087]) {
+    const parsed = validate(split.bridge)
+    const reference = validate({ ...split.bridge, entries: split.bridge.entries.map(wire => ({
+      ...wire, searchTerms: wire.searchTerms ?? [], defaultBranch: wire.defaultBranch ?? 'main', manifestPath: wire.manifestPath ?? 'package.json',
+      installPath: wire.installPath ?? null, updatePolicy: wire.updatePolicy ?? null,
+      installCount: wire.installCount ?? null, featured: wire.featured ?? false,
+      risk: { installScripts: wire.risk?.installScripts ?? [], review: wire.risk?.review ?? 'curated-not-security-audited' },
+    })) })
+    assert.deepEqual(parsed, reference, 'omitted defaults must reconstruct exactly in each supported client')
+  }
+})
+
+test('an irreducibly oversized safety directory still fails closed instead of dropping entries or raising the limit', () => {
+  const entries = Array.from({ length: 1800 }, (_, i) => ({ ...entry,
+    id: `entry-${i}`, packageName: `dsh-entry-${i}`, repositoryUrl: `https://github.com/example/dsh-entry-${i}`,
+    status: 'blocked', statusReason: '安全拒绝原因。'.repeat(70),
+    compatibility: { ...entry.compatibility, dshReleases: Object.fromEntries(Array.from({ length: 50 }, (_, n) => [`0.1.${n}`, 'unknown'])) },
+  }))
+  assert.throws(() => splitCatalogDocument(document(entries)), error => error.code === 'CATALOG_BRIDGE_CAPACITY')
+  assert.equal(MAX_CATALOG_BRIDGE_RESPONSE_BYTES, 2 * 1024 * 1024)
+})
+
+test('long DSH compatibility ranges survive Catalog load and split without changing their meaning', () => {
+  const range = [...Array.from({ length: 12 }, (_, i) => `0.1.${i}-alpha.1`), '0.2.1-rc.2'].join(' || ')
+  assert.ok(range.length > 120)
+  const source = document([{ ...entry, compatibility: { ...entry.compatibility, dsh: range } }])
+  const validated = validateCatalog(source)
+  assert.equal(validated.entries[0].compatibility.dsh, range)
+  const split = splitCatalogDocument(source)
+  assert.equal(split.details[0].entry.compatibility.dsh, range)
+  assert.equal(split.bridge.entries[0].compatibility.dsh, range)
+  assert.equal(dshVersionCompatibility(split.details[0].entry.compatibility.dsh, '0.2.1-rc.2'), 'compatible')
+  assert.throws(() => validateCatalog(document([{ ...entry, compatibility: { ...entry.compatibility, dsh: '1'.repeat(4097) } }])), /compatibility.dsh/)
+})
