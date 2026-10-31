@@ -521,7 +521,10 @@ window.__ModuleLoader__.load({
       },
       dangerButton: { borderColor: 'var(--dsw-alias-state-error-primary)', color: 'var(--dsw-alias-state-error-primary)' },
       primaryButton: { borderColor: 'var(--dsw-alias-label-primary)', fontWeight: 600 },
-      disabledButton: { opacity: 0.45, cursor: 'not-allowed' },
+      disabledButton: {
+        opacity: 0.82, cursor: 'not-allowed', color: 'var(--dsw-alias-label-secondary)',
+        borderColor: 'var(--dsw-alias-border-l2)',
+      },
       grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '12px' },
       card: {
         display: 'flex', flexDirection: 'column', gap: '10px', border: '1px solid var(--dsw-alias-border-l2)',
@@ -1860,7 +1863,7 @@ window.__ModuleLoader__.load({
         if (action === 'disable' && bundle.enabled !== true) return '此插件当前未启动。'
         return '当前条件未满足，商城没有执行操作。'
       }
-      const actionButtons = (entry, bundle, compatibility, { includeUnavailable = false } = {}) => {
+      const actionButtons = (entry, bundle, compatibility, { includeUnavailable = false, allActions = false } = {}) => {
         if (entry.packageName === 'dsh-safe-plugin-manager') return []
         const actions = []
         const add = action => {
@@ -1874,7 +1877,9 @@ window.__ModuleLoader__.load({
             title: reason || undefined,
           }, actionLabel(action)))
         }
-        if (bundle?.installed) {
+        if (allActions) {
+          for (const action of ['install', 'enable', 'disable', 'remove']) add(action)
+        } else if (bundle?.installed) {
           add(bundle.enabled === true ? 'disable' : 'enable')
           add('remove')
         } else add('install')
@@ -1972,7 +1977,7 @@ window.__ModuleLoader__.load({
                 '安装脚本：' + entry.risk.installScripts.join('、')) : null,
               React.createElement('div', { style: styles.cardFooter },
                 React.createElement('div', { style: styles.actions },
-                  ...actionButtons(entry, installedBundle, compatibility),
+                  ...actionButtons(entry, installedBundle, compatibility, { includeUnavailable: true }),
                   unmanagedMessage ? React.createElement('span', { key: 'unmanaged', style: styles.muted }, unmanagedMessage) : null,
                   React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry),
                     'aria-label': '查看 ' + entry.name + ' 详情' }, '查看详情')),
@@ -1988,7 +1993,7 @@ window.__ModuleLoader__.load({
         }, React.createElement('div', { style: styles.detailSection },
           React.createElement('div', { style: styles.cardDescription }, detailEntry.description),
           React.createElement('div', { style: styles.actions, 'aria-label': '插件操作' },
-            ...actionButtons(detailEntry, detailBundle, detailCompatibility, { includeUnavailable: true })),
+            ...actionButtons(detailEntry, detailBundle, detailCompatibility, { includeUnavailable: true, allActions: true })),
           detailOperationsMessage ? React.createElement('div', { style: styles.notice, role: 'status' }, detailOperationsMessage) : null,
           React.createElement('div', { style: styles.code }, detailEntry.packageName + ' · ' + detailEntry.version),
           React.createElement('div', { style: styles.muted }, 'GitHub 仓库：' + detailEntry.repositoryUrl),

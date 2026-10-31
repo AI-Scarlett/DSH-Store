@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-buttons-20261031",
+  "planFile": "docs/ops/dsh-native-market-desktop-buttons-20261031.json",
+  "createdAt": "2026-10-31T00:00:00+08:00",
+  "baseCommit": "4a60b5094a97051dd3b3b2e0d6b4d89189c69b69",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "docs/ops/dsh-native-market-desktop-buttons-20261031.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "c6bab4f1bed17b0c5f5f501bf0ed5a2627c9560236939f5477b531de2c48a9ad",
+    "docs/ops/dsh-native-market-desktop-buttons-20261031.json": null,
+    "package.json": "87f16a2ef2606e3150a4044f3a7636f2b156a969d259da15ae9046f9c145002b",
+    "src/client.js": "72bb95441463f9d00f5c01208d28f73836cd7917df7c4b9bf2c7b586406e2ec8",
+    "test/catalog.test.mjs": "dbc85a57b633cb28a900cf5a7cb601e2467f14829398bef7c0174b857980bc17",
+    "test/contracts.test.mjs": "c7a50bf9789adac10d53e5e7aad73e246b1e7a51ddb515846491c81f33bdd20c",
+    "test/desktop-compat.test.mjs": "a68f0a3db53199c1bead3d5f37b5635bec3a479690c18f3221868654ecad1a79",
+    "test/upgrade-matrix.test.mjs": "aa77449da5a92846e1ef7d9e41dffaa7533a21fa7f30fa5ee648c07e5a794c85"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "8a4e79672a7dad11c35018eb221c1a051eb754ba586b3944d956403ca788702c",
+    "package.json": "e7f0f7ad440731928b0758f49edf1ffcd836da22aedc0ea0a10852dbb054cee3",
+    "src/client.js": "e3a621b7bbc77bbfa6acf50fa34eebbe68cbea10fa927fba666213af5bc6e569",
+    "test/catalog.test.mjs": "3e512e869eef109e76eafc458588657ab70c80afd2a3c20fcd374be616ab6708",
+    "test/contracts.test.mjs": "b519e8c35238baba7acadde68fd430bc9063cea2b86e64dd891084c7b14e35e1",
+    "test/desktop-compat.test.mjs": "13dfb06603c3390a29de53ef3c5f17f80051535e507eb1b013cb0c431fbdff84",
+    "test/upgrade-matrix.test.mjs": "19e84d6982cd2df3c439d82234460415d42b3cbcf1c0dbe9ce74512f52779e6f"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求修复 DSH Desktop 插件商城详情页没有安装、卸载、启动、关闭等按钮的问题，并要求本机验收和按 CI 检查后的 PR 上线。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "在 Desktop 商城列表显示可见的门禁状态操作，在详情正文始终显示安装、启动、关闭、卸载四个操作；不可执行时用可读的禁用样式和原因说明，绝不调用写接口。",
+  "change": {
+    "packageVersion": "0.9.20",
+    "desktopDetails": "未安装条目显示安装和其他生命周期状态按钮；已安装条目显示四种操作状态，只有当前可执行操作可触发；禁用按钮保持可读且说明原因。",
+    "safety": "保留固定 Commit、精确 DSH 兼容性、Desktop Profile 声明、官方 pluginManager、来源匹配、Bundle 可移除和商城自身保护。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and 558 tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager-0.9.20.tgz"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-buttons-20261031.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Bind current main Commit 4a60b509 and exact file precondition and reviewed content hashes.",
+    "Run all repository checks and exact-head CI including DSH upgrade and runtime matrices.",
+    "Disabled operations never call Desktop pluginManager mutation APIs; enabled operations retain exact package and full Commit confirmation.",
+    "Publish source only through a CI-checked pull request using the connected short-lived GitHub credential.",
+    "Keep Catalog pin and public storefront publication as a separate fresh Catalog plan after source merge.",
+    "Keep any real Desktop Profile package update in its own typed plan with backup and explicit authorization."
+  ],
+  "rollback": {
+    "source": "Revert only the exact source PR through a CI-checked PR.",
+    "desktopProfile": "Source PR does not update the real Desktop Profile; any local update is separately planned, backed up, and performed with the official DSH CLI."
+  },
+  "healthCheck": "Desktop list and details render the lifecycle actions; disabled reasons match current Catalog, install state, source trust, and DSH compatibility; full CI and post-merge Catalog/public readback pass."
+}

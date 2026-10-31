@@ -373,9 +373,16 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
     assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes(label)), true, `${label} is available for a matching installed third-party bundle`)
   }
   assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
-  assert.equal(desktopNodes(incompatibleCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
-  assert.equal(desktopNodes(unknownCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
-  assert.equal(desktopNodes(webOnlyCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
+  for (const [card, reason] of [
+    [incompatibleCard, '此插件与当前 DSH 版本不兼容。'],
+    [unknownCard, '当前 DSH 版本兼容性未确认。'],
+    [webOnlyCard, 'Catalog 未声明适配 DSH Desktop。'],
+  ]) {
+    const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('安装'))
+    assert.ok(install, 'an install control remains visible when unavailable')
+    assert.equal(install.props.disabled, true)
+    assert.equal(install.props.title, reason)
+  }
   const storeCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('dsh-safe-plugin-manager'))
   assert.ok(storeCard)
   assert.equal(desktopNodes(storeCard).some(node => node.type === 'button' && ['启动', '关闭', '卸载'].some(label => node.children?.includes(label))), false)
@@ -388,8 +395,12 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
   assert.match(desktopText(detailTree), /权限 low/)
   const installedDetailActions = desktopNodes(detailTree).find(node => node.props?.['aria-label'] === '插件操作')
   assert.ok(installedDetailActions)
-  assert.equal(desktopNodes(installedDetailActions).some(node => node.type === 'button' && node.children?.includes('关闭')), true)
-  assert.equal(desktopNodes(installedDetailActions).some(node => node.type === 'button' && node.children?.includes('卸载')), true)
+  for (const label of ['安装', '启动', '关闭', '卸载']) {
+    assert.equal(desktopNodes(installedDetailActions).some(node => node.type === 'button' && node.children?.includes(label)), true,
+      `${label} remains visible in plugin details`)
+  }
+  assert.equal(desktopNodes(installedDetailActions).find(node => node.type === 'button' && node.children?.includes('安装')).props.disabled, true)
+  assert.equal(desktopNodes(installedDetailActions).find(node => node.type === 'button' && node.children?.includes('卸载')).props.disabled, false)
 
   const unknownDetailButton = desktopNodes(unknownCard).find(node => node.type === 'button' && node.children?.includes('查看详情'))
   unknownDetailButton.props.onClick()
@@ -400,6 +411,12 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
   assert.ok(blockedInstall)
   assert.equal(blockedInstall.props.disabled, true)
   assert.equal(blockedInstall.props.title, '当前 DSH 版本兼容性未确认。')
+  for (const label of ['启动', '关闭', '卸载']) {
+    const button = desktopNodes(unknownDetailActions).find(node => node.type === 'button' && node.children?.includes(label))
+    assert.ok(button, `${label} remains visible in plugin details`)
+    assert.equal(button.props.disabled, true)
+    assert.equal(button.props.title, '当前 Profile 尚未安装此插件。')
+  }
   assert.match(desktopText(unknownDetailTree), /安装已禁用：当前 DSH 版本兼容性未确认。/)
 
   const search = desktopNodes(detailTree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索插件')
@@ -528,7 +545,7 @@ test('official Desktop starts, closes, and uninstalls only the matching Catalog 
   assert.equal(harness.calls.setBundleEnabled.length, 2)
 })
 
-test('official Desktop hides lifecycle operations when an installed package source differs from the Catalog', async () => {
+test('official Desktop keeps lifecycle operations disabled when an installed package source differs from the Catalog', async () => {
   const entry = desktopEntry({ id: 'dsh-source-mismatch', packageName: '@acme/dsh-source-mismatch', commit: desktopCommit })
   const harness = createDesktopHarness({
     catalog: desktopCatalog([entry]),
@@ -542,8 +559,11 @@ test('official Desktop hides lifecycle operations when an installed package sour
   const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
   assert.ok(card)
   assert.match(desktopText(card), /已安装来源与商城记录不一致/)
-  assert.equal(desktopNodes(card).some(node => node.type === 'button'
-    && ['安装', '启动', '关闭', '卸载'].some(label => node.children?.includes(label))), false)
+  for (const label of ['关闭', '卸载']) {
+    const button = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes(label))
+    assert.ok(button, `${label} remains visible in the card`)
+    assert.equal(button.props.disabled, true)
+  }
   const details = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('查看详情'))
   details.props.onClick()
   const detailTree = await harness.render()
