@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH STORE 0.9.15 适配 DSH 最新三版并补齐官方 Desktop 插件管理器依赖声明；真实 Desktop UI/Profile 尚未验收",
+  "description": "DSH Store 0.9.17 为官方桌面端商城补齐详情页、搜索与分类筛选，并通过 DSH 官方插件管理器提供受保护的安装、启停和卸载入口；真实桌面端界面与 Profile 验收仍待完成。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -30,8 +30,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4",
-  "version": "0.9.15",
+  "commit": "7723d4d8c7cda4bd560685e9e8f8360a82f0fbe6",
+  "version": "0.9.17",
   "categories": [
     "marketplace",
     "management"
@@ -39,26 +39,26 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-30T10:45:20.000Z",
-    "observedAt": "2026-10-30T11:42:40.000Z",
+    "updatedAt": "2026-10-31T01:07:18.000Z",
+    "observedAt": "2026-10-31T01:15:36.790Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-10-30T11:42:40.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4",
+      "checkedAt": "2026-10-31T01:15:36.790Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7723d4d8c7cda4bd560685e9e8f8360a82f0fbe6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Owner-reviewed 169/169 bounded runtime files (1,962,494 bytes); all 12 static findings were rechecked and classified. Existing elevated permissions remain disclosed; real Desktop UI/Profile is unverified."
+      "summary": "Owner-reviewed 169/169 bounded runtime files (1974201 bytes); all 12 static findings were rechecked and classified. Desktop UI/Profile remains unverified."
     },
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-10-30T11:42:40.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41042002914",
+      "checkedAt": "2026-10-31T01:15:36.790Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41153247542",
       "dshRelease": "0.2.1-rc.5",
       "systems": [
         "Linux",
@@ -68,13 +68,13 @@
       "profiles": [
         "web"
       ],
-      "summary": "DSH 0.9.15 fixed source passed the nine OS/pnpm disposable runtime matrix. The real official Desktop UI/Profile install remains unverified."
+      "summary": "The fixed 0.9.17 source passed the nine OS/pnpm CI runtime matrix. This is Web disposable-profile evidence; real Desktop installability remains unverified."
     },
     "runtime": {
       "status": "verified",
       "method": "official-cli-disposable-profile-runtime-matrix",
-      "checkedAt": "2026-10-30T11:42:40.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41042002914",
+      "checkedAt": "2026-10-31T01:15:36.790Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41153247542",
       "dshRelease": "0.2.1-rc.5",
       "systems": [
         "Linux",
@@ -84,13 +84,13 @@
       "profiles": [
         "web"
       ],
-      "summary": "Disposable Web runtime CI passed for the pinned 0.9.15 source. Desktop UI/Profile acceptance and version downgrade rollback remain unknown."
+      "summary": "The fixed 0.9.17 source passed the disposable Web runtime matrix. Desktop UI/Profile acceptance and version downgrade rollback remain unknown."
     },
     "securityReview": {
       "status": "unknown",
       "method": "owner-reviewed-bounded-static-fixed-source-analysis",
-      "checkedAt": "2026-10-30T11:42:40.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4",
+      "checkedAt": "2026-10-31T01:15:36.790Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7723d4d8c7cda4bd560685e9e8f8360a82f0fbe6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],

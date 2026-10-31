@@ -51,11 +51,11 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-当前公开 Catalog 固定到 Store `0.9.15`、Commit `098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。`0.9.13` 加入 Desktop 商城入口与官方安装器适配；`0.9.14` 压缩旧版 Catalog 桥接响应；`0.9.15` 补齐 DSH Desktop Client 对官方 `remote.pluginManager` 的静态依赖声明。Catalog 目前仍只声明 `web` Profile；真实 Desktop UI/Profile 安装尚未验收。
-通过 DSH 官方 CLI 安装 Catalog 固定的 `0.9.15` Commit：
+当前源码版本为 Store `0.9.17`、Commit `7723d4d8c7cda4bd560685e9e8f8360a82f0fbe6`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。`0.9.17` 加入桌面商城详情、搜索与分类筛选，并通过 DSH 官方插件管理器提供受保护的安装、启停和卸载入口。Catalog 仍只声明 `web` Profile；真实 Desktop UI/Profile 验收完成前不声明桌面兼容。
+通过 DSH 官方 CLI 安装 Catalog 固定的 `0.9.17` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#098b6f77bc8c626422b9a549ca5cad4f2ed1c8f4'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#7723d4d8c7cda4bd560685e9e8f8360a82f0fbe6'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -103,7 +103,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 商城版本 | `0.9.15`（当前公开 Catalog 固定点） |
+| 商城版本 | `0.9.17`（本次 Catalog 固定点；真实 Desktop UI/Profile 尚未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
