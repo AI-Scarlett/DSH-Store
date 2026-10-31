@@ -1888,10 +1888,8 @@ window.__ModuleLoader__.load({
         return [...new Set(blocked)].join('；') || null
       }
       const detailFooter = detailEntry => {
-        const bundle = installedByName.get(detailEntry.packageName)
         return React.createElement('div', { style: styles.actions },
-          React.createElement(Button, { onClick: () => setDetailEntry(null) }, '关闭详情'),
-          ...actionButtons(detailEntry, bundle, desktopCompatibility(detailEntry, loadState.runtimeVersion), { includeUnavailable: true }))
+          React.createElement(Button, { onClick: () => setDetailEntry(null) }, '关闭详情'))
       }
       const detailBundle = detailEntry ? installedByName.get(detailEntry.packageName) : null
       const detailCompatibility = detailEntry ? desktopCompatibility(detailEntry, loadState.runtimeVersion) : null
@@ -1989,6 +1987,9 @@ window.__ModuleLoader__.load({
           className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
         }, React.createElement('div', { style: styles.detailSection },
           React.createElement('div', { style: styles.cardDescription }, detailEntry.description),
+          React.createElement('div', { style: styles.actions, 'aria-label': '插件操作' },
+            ...actionButtons(detailEntry, detailBundle, detailCompatibility, { includeUnavailable: true })),
+          detailOperationsMessage ? React.createElement('div', { style: styles.notice, role: 'status' }, detailOperationsMessage) : null,
           React.createElement('div', { style: styles.code }, detailEntry.packageName + ' · ' + detailEntry.version),
           React.createElement('div', { style: styles.muted }, 'GitHub 仓库：' + detailEntry.repositoryUrl),
           React.createElement('div', { style: styles.code }, '固定 Commit：' + detailEntry.commit),
@@ -1996,7 +1997,6 @@ window.__ModuleLoader__.load({
             'Desktop 客户端：' + desktopClientAdaptationLabel(detailEntry.compatibility.profiles)
             + ' · DSH ' + (loadState.runtimeVersion || '未知') + '：' + detailCompatibility),
           React.createElement('div', { style: styles.muted }, detailInstalledState),
-          detailOperationsMessage ? React.createElement('div', { style: styles.notice, role: 'status' }, detailOperationsMessage) : null,
           React.createElement('div', { style: styles.muted },
             '分类：' + (detailEntry.categories.map(id => categoryLabels[id] || id).join(' / ') || '未分类')
             + ' · 许可证：' + licenseLabel(detailEntry.details.license)),
