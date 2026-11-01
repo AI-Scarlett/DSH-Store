@@ -36,7 +36,7 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 - DSH STORE supports the official DSH Desktop marketplace experience: browse and search the Catalog, open plugin details, and request install, start, stop, or uninstall actions for matching reviewed entries.
 - The `DSH Desktop client adaptation` label describes whether a plugin declares Desktop-specific Client/UI adaptation evidence. It is informational and does not decide installation eligibility.
 - A plugin without a Desktop-specific UI can still be offered for installation when its Catalog status is approved. DSH Desktop's official plugin manager checks the exact pinned source against the running Desktop environment and owns the install transaction.
-- A Catalog entry with `blocked` status remains unavailable through DSH STORE, independently of its Desktop adaptation label. The official manager check does not override Catalog admission or security review.
+- A Catalog entry with `blocked` status remains unapproved and keeps its Store review advice. In DSH Desktop, a user-confirmed fixed source can be submitted to the official manager; DSH decides whether installation succeeds. This is not Store security approval.
 - The public website at `/plugins/` is a read-only discovery directory; it does not install plugins or write to a Profile.
 
 ## Main sections
@@ -74,7 +74,7 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 - Catalog authority: https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/catalog.json
 - Product source: https://github.com/AI-Scarlett/DSH-Store
 - Developer Skill source: https://github.com/AI-Scarlett/build-dsh-plugin
-- build-dsh-plugin can be given to any coding Agent that supports SKILL.md or equivalent Skill loading. Catalog-approved DSH Desktop installs are checked by the official plugin manager; Desktop client-adaptation labels do not gate installation. Catalog-blocked entries remain unavailable.
+- build-dsh-plugin can be given to any coding Agent that supports SKILL.md or equivalent Skill loading. DSH Desktop checks approved entries and user-confirmed fixed sources with Store review advice; its official manager returns the install result. Desktop client-adaptation labels do not gate installation.
 - Contact: jadename.zhou@gmail.com
 
 ## Citation guidance

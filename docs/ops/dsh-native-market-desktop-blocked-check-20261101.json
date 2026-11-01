@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-blocked-check-20261101",
+  "planFile": "docs/ops/dsh-native-market-desktop-blocked-check-20261101.json",
+  "createdAt": "2026-11-01T00:00:00Z",
+  "baseCommit": "0f2d945e30097b24a4ecf742ff792fdd61484e6b",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-blocked-check-20261101.json",
+    "docs/reviews/dsh-native-market-desktop-blocked-check-20261101.md",
+    "marketplace/app.js",
+    "marketplace/build/build.js",
+    "marketplace/build/index.html",
+    "marketplace/dsh-store-guide/index.html",
+    "marketplace/index.html",
+    "marketplace/llms.txt",
+    "marketplace/plugins/index.html",
+    "marketplace/standards/index.html",
+    "marketplace/standards/standards.js",
+    "package.json",
+    "registry/README.md",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "73a8c81d2d30255761dfd27ebd86c1956539f42516c66061bb4fa9c1b301b803",
+    "README.md": "8cf286f90604beba71bedfa3e652c439e5e390fedcd6f640ae9cc3618886445c",
+    "docs/ops/dsh-native-market-desktop-blocked-check-20261101.json": null,
+    "docs/reviews/dsh-native-market-desktop-blocked-check-20261101.md": null,
+    "marketplace/app.js": "84ca7c202913ab77fdbd9164fb21954c845fa7048f0bde0c904e2c7c8f262940",
+    "marketplace/build/build.js": "9bd7c756c55ebac90e34a3980d1e1ac7ead3dc01bc2e3a57175dfb63aa911d82",
+    "marketplace/build/index.html": "5fc343e05658033218db5f9232376c3433f77888456676c0461230375a57512b",
+    "marketplace/dsh-store-guide/index.html": "37e55e9ec586a66884ede3cc4508ac8b2bb46de9f9b281c9b813fad76b20029f",
+    "marketplace/index.html": "843e42b981d70c3c08f838ab00038f93df090213c84c9356e8aeecd4d0f75e3b",
+    "marketplace/llms.txt": "75cbf3f910b61de52237b09a6fea48a7f2c75a19f627e35aad2b48862472cdc2",
+    "marketplace/plugins/index.html": "fedb6e2e2dd0cc00923a51e99e9ada9368216265f7ec36cb7f278a2a4c8d6514",
+    "marketplace/standards/index.html": "ce3e79c0591769eaa813d8cdf6d1aa2c59d9a4a584a9874ec11c87b05fc32b86",
+    "marketplace/standards/standards.js": "14703c32d8de589ec8ca48163fd584e1a5fae633a8c57787a4a4d893bd81ead5",
+    "package.json": "ea09da3ab5c7bb27685128559988f37bbfa028b10753d539255ea46cd3ed0284",
+    "registry/README.md": "5c72eace4fe64ed1c08a26e9dccdbed639528ba42e61eb36a1cb56bbd6230db2",
+    "src/client.js": "8477ea1bf4c097a6d253a5806b5b4d8084e44ebd2a31eebf4f73d5a198d247d6",
+    "test/catalog.test.mjs": "719497da5aac18673fc559c0587cb9430169860dca53dfddb68ce92a6c7dd377",
+    "test/contracts.test.mjs": "c5d69f713906e7979daa1ca6fea2059f891c0c0ab0131438be80da30d89bd130",
+    "test/desktop-compat.test.mjs": "99067c519a99028ecf1135cfa3ffecaa10c2e3e9dba20df205b69aefbdc8e9d9",
+    "test/upgrade-matrix.test.mjs": "71b8cb0819aa3d5680cd85a2b4818111e10489266611fc73163b422addb15995"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "0ea173aadb14001bd6251ec23f4df5744b7679b9ca88d1a8538b4edb2ad7086e",
+    "README.md": "48dde50aa4f68fdb252496dceac3d9246f8e9e4f453faf7169062368df2fe427",
+    "docs/reviews/dsh-native-market-desktop-blocked-check-20261101.md": "94fa1ebbb9fd0ee49a2cabe277695a80efc55346bb3a6ab5b1591929b2aae01c",
+    "marketplace/app.js": "9b100a536a73676ae2a8fa15d3ef5e001af5b3ed9102e4794424000599396eab",
+    "marketplace/build/build.js": "39ccc8c1c3d9cbd55bde4f74727e200c84ba55bf1dc4110494ca0629ef91249c",
+    "marketplace/build/index.html": "75f368f379650b8091f485157104656f9608f46386a6353a6358ef05f53447ad",
+    "marketplace/dsh-store-guide/index.html": "fd43e1c56667a2a6596b70fb5d133b65c8f7adf9f628920e87d40008eb34d9ba",
+    "marketplace/index.html": "bdc5d4b4e564f2470759eff936afd05e263338d82a5fcf8c4c2a2e3fbd72a528",
+    "marketplace/llms.txt": "fcca112fe71471a1791aebf99a5a3cbad0fbfd04cb911bf64e1a237e6540917f",
+    "marketplace/plugins/index.html": "a8b5043ae7a954e49745190eaebdc1c1f8ba19d21ba890aad6423249914d2f28",
+    "marketplace/standards/index.html": "d42c605aa9de5e37898ee80f7b4a8b2d04c03443ac644b4c508d66d9f8dc2786",
+    "marketplace/standards/standards.js": "8dfd5ca82fe115d6373f85ba4f28d1fc44509ed6e14e0c4838efb0edcf6eaa17",
+    "package.json": "c4824b7625a07be77ad9e27cb640f591fb7c0fa10796d0ab22004d2ea81bba0f",
+    "registry/README.md": "0fd5f4c62582cd6354f100ba6a86973d421ea562753662fca7ba389dcf9269b2",
+    "src/client.js": "33ebc9e7d133a614c042c9864407730ab549334217cfd16983aa6b8b8537b15e",
+    "test/catalog.test.mjs": "35cbe242035f5cec9e4453bf758cdef9cbb3a12cc185e90bd582874c22aafac4",
+    "test/contracts.test.mjs": "606e609d2b7239528f3afec89d3cf3cf41e40cf74618f91d5c75b0d838945794",
+    "test/desktop-compat.test.mjs": "afac1e8311ded2c1bcb85b2e05c71e50e07fd0a80bcf796180d3215f81a79583",
+    "test/upgrade-matrix.test.mjs": "39743946a16a194eb59c21a9a99713087d3d1ff05d8ea2e14a9d4708248e001e"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "DSH STORE 给出审核建议；固定来源仍可交由 DSH Desktop 官方插件管理器最终检查、安装并回报结果。用户已要求推送发布。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修复 DSH Desktop 中大量 Catalog blocked 条目的 Store 前置拦截。Catalog 保留复核状态和建议；用户逐次确认后，符合固定 GitHub 来源与安全路径约束的条目交由 DSH 官方 inspect/installBundle，并以 Desktop 结果为安装状态。",
+  "change": {
+    "packageVersion": "0.9.23",
+    "scope": "仅变更 DSH Desktop 内的 Marketplace 面板；不放宽 Web/Store 自主管理操作或 Catalog approved 准入。",
+    "desktopInstall": "blocked 条目通过 canonical GitHub、40 位 Commit、有效包名、entry IDs、非官方命名空间、安全 installPath/manifestPath 与非受保护 entry ID 检查后，显示交由 DSH 检查安装的入口；安全 Unicode 路径可用，来源 provenance 标签和更新时间不作为安装门槛。明确展示 Store 审核原因与 updatePolicy。用户输入绑定当前包名和完整 Commit 的确认短语后，先调用 DSH inspect，只有 accepted 才调用 installBundle，按 DSH application/error 回报结果。",
+    "hardStops": "unlisted、DSH Store 自身、@deepseek-ai/*、受保护 DSH entry ID、无效/浮动 GitHub 来源、错误安装路径或来源证据不全仍不可通过该按钮操作。",
+    "catalog": "不修改 Catalog status、admission 或 statusReason；permission/security signals 继续显示为 Store 建议，不声称 Desktop 安装等于安全审核。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop cases pass, including DSH inspect rejection and accepted install result"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "build:marketplace"
+      ],
+      "expected": "STATIC_MARKETPLACE_OK"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager-0.9.23.tgz"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-blocked-check-20261101.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "The Catalog stays blocked/unapproved and the Store displays the review reason; the button only submits a user-confirmed fixed source to DSH Desktop. Provenance labels and timestamps do not block a full-Commit source.",
+    "The official manager must return inspect status accepted before installBundle is called; rejected and unknown results never trigger an automatic retry.",
+    "Disposable tests cover malformed URL, floating/missing Commit, unsafe paths, safe Unicode install paths, protected package/entry IDs, changed source between confirmation and execution, manager rejection, successful/restart-required DSH results, and a blocked fixed-Commit entry whose provenance label/timestamp would previously have failed the Store gate.",
+    "Do not change real DSH Profiles, official DSH code, package admission status, candidate policy, or the Web Store operation gate.",
+    "Run npm run check before committing; merge only through exact-head CI-checked PR. After source merge, create a fresh Catalog release plan for 0.9.23 and verify GitHub Raw, Pages, dsh.store, and dsh-store.cn independently."
+  ],
+  "rollback": {
+    "source": "Revert this exact Store UI release through a CI-checked PR.",
+    "desktopProfile": "This source change alone does not change a Desktop Profile. A user-confirmed DSH installation is a separate operation whose final status and recovery are owned by the official plugin manager."
+  },
+  "healthCheck": "Verify plan hashes and npm run check, then run disposable Desktop fixtures proving the full confirmation -> inspect -> installBundle -> result path. Exact-head CI and public listing readback remain separate release gates.",
+  "verification": {
+    "desktopTests": "passed: 21/21 disposable cases",
+    "npmRunCheck": "passed: REGISTRY_OK entries=872; 568 tests",
+    "staticMarketplaceBuild": "passed: entries=872; Catalog manager remains 0.9.22 until separate post-merge Catalog release",
+    "npmPack": "passed: dsh-safe-plugin-manager-0.9.23.tgz",
+    "diffCheck": "passed",
+    "realDesktopAcceptance": "not verified; requires updated DSH Desktop Store runtime",
+    "typedPlan": "passed: DSH_UPGRADE_PLAN_OK base=0f2d945e30097b24a4ecf742ff792fdd61484e6b changed=20"
+  }
+}
