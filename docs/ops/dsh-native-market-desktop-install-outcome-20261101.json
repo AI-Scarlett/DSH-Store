@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-install-outcome-20261101",
+  "planFile": "docs/ops/dsh-native-market-desktop-install-outcome-20261101.json",
+  "createdAt": "2026-11-01T12:09:33Z",
+  "baseCommit": "3369b5a2f70ff26de6dba7a3a0606e309c073a0a",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-install-outcome-20261101.json",
+    "docs/reviews/dsh-native-market-desktop-install-outcome-20261101.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "179e3b3284d3db78cf0e09a078be07ac8da985913315f5728870750cb2fb73f2",
+    "README.md": "5aa8357839a45ad4838998fe8aaf68ab9542d49036ea67e99758d1d3b17e220b",
+    "docs/ops/dsh-native-market-desktop-install-outcome-20261101.json": null,
+    "docs/reviews/dsh-native-market-desktop-install-outcome-20261101.md": null,
+    "package.json": "c4824b7625a07be77ad9e27cb640f591fb7c0fa10796d0ab22004d2ea81bba0f",
+    "src/client.js": "33ebc9e7d133a614c042c9864407730ab549334217cfd16983aa6b8b8537b15e",
+    "test/catalog.test.mjs": "35cbe242035f5cec9e4453bf758cdef9cbb3a12cc185e90bd582874c22aafac4",
+    "test/contracts.test.mjs": "606e609d2b7239528f3afec89d3cf3cf41e40cf74618f91d5c75b0d838945794",
+    "test/desktop-compat.test.mjs": "afac1e8311ded2c1bcb85b2e05c71e50e07fd0a80bcf796180d3215f81a79583",
+    "test/upgrade-matrix.test.mjs": "39743946a16a194eb59c21a9a99713087d3d1ff05d8ea2e14a9d4708248e001e"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "9d0135c954ae5a5f01251d00d3926ca6457b6273fb24093f494c37fbaf4a205f",
+    "README.md": "f84edd59a86b82118d90bd6a25598c5ff23d3a7c5b42dfe1376490dec84e35fd",
+    "docs/reviews/dsh-native-market-desktop-install-outcome-20261101.md": "7e46d9b7e452d519d6593d0fd117e83b0763f62c29289ddf52c02164c049c95a",
+    "package.json": "040dac45a824ae6d087e011e4adb1580197fe56e3cac1f686f68e8cbbf3eb8e1",
+    "src/client.js": "16ab0751067d124e729cd3bbca95367ce4df1b961576c2af48ec202916c499e9",
+    "test/catalog.test.mjs": "c1dcdf58669d43d9622c100123be8f89a4f6a025bb7e05988886926faa3ef2d7",
+    "test/contracts.test.mjs": "5f5770c9d15494e0a0e0312f731374d3cc82b4175aa2d97a41a359704ef26676",
+    "test/desktop-compat.test.mjs": "59be0a2eb14f62591569d150895fa2a39aa5e443ba3205a9700f9a2f2fa410dc",
+    "test/upgrade-matrix.test.mjs": "1967a29a2dc22505618667f436a2b985a96a9cd9335407843b65a33306d81205"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求修复无法安装/更新并已明确要求推送发布；本次仅修改 DSH Store，真实 Desktop Profile 操作仍单独确认。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修正 DSH Desktop 插件安装中的 Store 预检拦截和 Already up to date 误报，同时让 Store 包版本升级到 0.9.24，使 GitHub 自更新有新的包版本可识别。",
+  "change": {
+    "packageVersion": "0.9.24",
+    "installAuthority": "Store 固定来源/包身份和用户完整 Commit 确认继续作为基础门槛；DSH inspect 只提供建议。可用时把确认请求交给 DSH installBundle 作最终判断；inspect 缺失或拒绝不再在 Store 中终止。",
+    "outcomeReconciliation": "installBundle 失败后仅查询一次 DSH listBundles；当 Desktop 明确列出相同包名、版本、仓库，且 source 可见 Commit 与目标一致时报告已安装且无依赖变更，否则保留 DSH 失败/未知状态。绝不重试安装。",
+    "catalog": "本 Source PR 不改 Catalog pin；Catalog 更新在 source Commit 固定后另建 fresh release plan 和 CI-checked PR。",
+    "protectedBoundary": "不改 DSH 核心、@deepseek-ai/*、Catalog admission 或真实 DSH Profile。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop install and reconciliation cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and full repository test suite passes"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "package name dsh-safe-plugin-manager, version 0.9.24"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-install-outcome-20261101.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Every changed or new file is in this exact scope; base Commit and precondition hashes must match.",
+    "All repository checks and the exact-head pull request CI must pass before merge.",
+    "Full Commit, canonical GitHub source, safe paths, package identity, protected-component checks, and typed per-install confirmation remain mandatory.",
+    "DSH inspect warnings are advice only; DSH installBundle and then Desktop listBundles determine the reported install state.",
+    "No blind retry, real Profile write, DSH restart, DSH core change, or Catalog status/admission change is included.",
+    "After source merge, update the Store Catalog pin in a separate newly hashed plan and independently read back GitHub Raw, Pages, dsh.store, and dsh-store.cn."
+  ],
+  "rollback": {
+    "source": "Revert the source change only through an auditable CI-checked PR.",
+    "catalog": "Catalog remains on 0.9.23 until its separate release is merged; abandon that Catalog PR if source acceptance fails.",
+    "profile": "No real DSH Profile or package was changed."
+  },
+  "healthCheck": "Verify the typed plan, full npm run check, disposable Desktop fixtures, and package dry run; then require exact-head CI before merging. Public Catalog/storefront and real Desktop acceptance remain separate evidence gates.",
+  "verification": {
+    "desktopCompatibilityTests": "passed: 24/24 disposable cases",
+    "npmRunCheck": "passed: REGISTRY_OK entries=872; 571/571 tests",
+    "packageDryRun": "passed: dsh-safe-plugin-manager@0.9.24; 1072 files",
+    "typedPlan": "passed: DSH_UPGRADE_PLAN_OK base=3369b5a2f70ff26de6dba7a3a0606e309c073a0a changed=10",
+    "exactHeadCi": "pending exact-head pull request CI",
+    "publicCatalogAndStorefronts": "pending separate Catalog release and independent readback",
+    "realDesktopProfile": "unverified; no real Profile write"
+  }
+}
