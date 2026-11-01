@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-0924-catalog-20261101",
+  "planPath": "docs/ops/store-0924-catalog-20261101.json",
+  "sourceReviewPath": "docs/reviews/store-0924-source-review-20261101.json",
+  "version": "0.9.24",
+  "targetDshRelease": "0.2.2-alpha.2",
+  "latestDshWindow": [
+    "0.2.1-rc.4",
+    "0.2.1-rc.5",
+    "0.2.2-alpha.2"
+  ],
+  "reviewMode": "first-party-owner-reviewed",
+  "createdAt": "2026-11-01T12:29:56.930Z",
+  "baseCommit": "0b7c48466eec17d9125be42c81d5f538fd178209",
+  "sourceCommit": "0b7c48466eec17d9125be42c81d5f538fd178209",
+  "sourceTree": "95adfb5d157c4682bcb8f5e2b3d7f16b13375c6b",
+  "sourceHead": "7b0cceb3ce43e14d5f2271f44d51066608dbdc41",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/store-0924-catalog-20261101.json",
+    "docs/reviews/store-0924-release-20261101.md",
+    "docs/reviews/store-0924-source-review-20261101.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "9d0135c954ae5a5f01251d00d3926ca6457b6273fb24093f494c37fbaf4a205f",
+    "README.md": "f84edd59a86b82118d90bd6a25598c5ff23d3a7c5b42dfe1376490dec84e35fd",
+    "docs/ops/store-0924-catalog-20261101.json": null,
+    "docs/reviews/store-0924-release-20261101.md": null,
+    "docs/reviews/store-0924-source-review-20261101.json": null,
+    "registry/catalog-index.json": "827a988fa888e196723756db94ea893c341a3aa0554f88ab03b312a0490cd7bd",
+    "registry/catalog.json": "44711a213dd27b66e584c32ff7b02004d5052a9c5c0eec7493b4d96faad6c5cf",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "ce427e8d11742898d03c6ee9f88c9a93e907e0ce81973ea9ffd66aa9a5c40ce1"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "3022cc3a09d92662c3ce4fa717eebf4545eed7274f419b77518ee28db0513cb4",
+    "README.md": "1825517071f86a8eb9ef3b95a68319d3df20618b7551d71d4366585bdf9baa51",
+    "docs/reviews/store-0924-source-review-20261101.json": "d84d00645b72797d63424e70185d42639576a3158c088e6e5ad91213fcabf34d",
+    "docs/reviews/store-0924-release-20261101.md": "72e5b24447d39f625d6f84f8fef62fc09b6daa053fd6afa1a5671f04f6a8f1c4",
+    "registry/catalog-index.json": "fe35f0de06b272dbc85bedf279080d3357d44d9f239a48a5f2962858b6d490dd",
+    "registry/catalog.json": "1f45bf96dd3d627bf965f10ab69e2815f6fa322bdd650283c500929e82b65904",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "423e3fd52fbbafc6b1f2b70ac4406c8ae499a4fc71ba1cc818a2ef514926438e"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户明确要求修复商城与 DSH Desktop 的安装/更新交接，并已授权推送和发布。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "deterministicPolicyVerdictRequired": true
+  },
+  "sourceEvidence": {
+    "canonicalRepository": "https://github.com/AI-Scarlett/DSH-Store",
+    "mergedSourcePullRequest": 1699,
+    "sourceHead": "7b0cceb3ce43e14d5f2271f44d51066608dbdc41",
+    "mergeCommit": "0b7c48466eec17d9125be42c81d5f538fd178209",
+    "sourceTree": "95adfb5d157c4682bcb8f5e2b3d7f16b13375c6b",
+    "sourceChecks": [
+      {
+        "name": "DSH upgrade matrix",
+        "state": "SUCCESS",
+        "runId": 41305695817,
+        "headRevision": "7b0cceb3ce43e14d5f2271f44d51066608dbdc41",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41305695817"
+      },
+      {
+        "name": "Registry validation",
+        "state": "SUCCESS",
+        "runId": 41305695815,
+        "headRevision": "7b0cceb3ce43e14d5f2271f44d51066608dbdc41",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41305695815"
+      }
+    ]
+  },
+  "objective": "发布 DSH Store 0.9.24，使 Store 提供安装审核建议，用户确认后由 DSH Desktop 官方 installBundle() 决定安装结果；无变更失败仅查询一次已安装清单并严格核对身份。",
+  "change": {
+    "packageVersion": "0.9.24",
+    "directory": "Store 保留审核建议与固定来源校验；DSH inspect() 为建议，用户确认后调用 installBundle()，失败无变更时只核对一次 listBundles()。",
+    "lifecycle": "DSH Desktop 决定安装/更新成功或拒绝；Store 不用 Catalog blocked 或 inspect() 提示代替 DSH 最终判定，不自动重试。",
+    "catalog": "仅更新既有 dsh-safe-plugin-manager 记录至固定合并 Commit；保留 web-only Profile、现有权限与第三方条目状态。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all repository checks pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager-0.9.24.tgz package metadata"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-store-release-plan.mjs",
+        "docs/ops/store-0924-catalog-20261101.json"
+      ],
+      "expected": "STORE_RELEASE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Plan binds the fresh main Commit, exact merged source tree, and pre/post hashes for its bounded file scope.",
+    "The fixed-source review covers all distributable runtime files at the immutable source Commit, with exact hashes and a specific rationale for every scanner finding; no third-party code is executed.",
+    "Registry CI validates the release plan, Catalog schema, fixed source review, DSH release window, and unchanged third-party entries.",
+    "The Store Catalog self-pin resolves to version 0.9.24 and the exact merged source Commit; status and permissions remain unchanged.",
+    "Catalog blocked plugin statuses and review reasons remain unchanged; only DSH Desktop inspect/install responses decide the requested installation result.",
+    "Keep the Store Catalog Profile claim at web until real Desktop Profile acceptance is established.",
+    "After merge, independently read GitHub Raw, Pages, dsh.store, and dsh-store.cn."
+  ],
+  "rollback": {
+    "source": "Revert this exact Catalog commit through a CI-checked PR; preserve prior immutable Catalog history.",
+    "runtime": "No real DSH Profile or package mutation is part of this Catalog PR. A real Desktop install remains separately verified by DSH."
+  },
+  "healthCheck": "The release-plan verifier and Registry CI pass; Catalog/index/detail pins agree on the fixed 0.9.24 Commit, third-party entries are unchanged, and each public surface is independently read back after merge."
+}
