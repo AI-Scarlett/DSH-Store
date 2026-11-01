@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "0439ce9ac74d8b63316e7f2a1d0cfdfca2085f40",
-  "version": "0.2.48",
+  "commit": "288027ae2e45d86ea63b10a1e0d953ded13f6600",
+  "version": "0.2.51",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-01T04:21:41.000Z",
-    "observedAt": "2026-11-01T04:50:46.000Z",
+    "updatedAt": "2026-11-01T11:12:52.000Z",
+    "observedAt": "2026-11-01T14:02:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-01T04:50:46.000Z",
-      "evidenceUrl": "https://github.com/JunyuZhan/dsh-privmask/commit/0439ce9ac74d8b63316e7f2a1d0cfdfca2085f40",
+      "checkedAt": "2026-11-01T14:02:58.000Z",
+      "evidenceUrl": "https://github.com/JunyuZhan/dsh-privmask/commit/288027ae2e45d86ea63b10a1e0d953ded13f6600",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "dac1139d55c23162b96ea132a7e74ded51933b5e9d943a07679a283b3c2e04f0",
+    "binding": "44efe0349642e5445ebfad30d57c73b58182f0f99d4a2afcddc9bedd64c09890",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -92,7 +92,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {

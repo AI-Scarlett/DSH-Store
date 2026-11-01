@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "dfa89cad2c3cb5aa199fc2b2f08aa98fa3dd7130",
+  "commit": "0f3c2c0304cb5942f48fb35bc3dd6ebbbc7a9c13",
   "version": "0.4.4",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-01T04:59:06.000Z",
-    "observedAt": "2026-11-01T04:50:46.000Z",
+    "updatedAt": "2026-11-01T05:22:33.000Z",
+    "observedAt": "2026-11-01T14:02:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-01T04:50:46.000Z",
-      "evidenceUrl": "https://github.com/zp96324511/dsh-context-control/commit/dfa89cad2c3cb5aa199fc2b2f08aa98fa3dd7130",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-01T14:02:58.000Z",
+      "evidenceUrl": "https://github.com/zp96324511/dsh-context-control/commit/0f3c2c0304cb5942f48fb35bc3dd6ebbbc7a9c13",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,12 +73,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d2d2b60245a58002c6a892c8f44a32d6f53d9fbc05caedcdeb97f296090172c9",
+    "binding": "99da4ddf68bddf153d7711e6aa79ecb9c2635cf9b1a73dfd0a9644425903e70b",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -90,6 +90,7 @@
   "entryIds": [
     "context-control"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
