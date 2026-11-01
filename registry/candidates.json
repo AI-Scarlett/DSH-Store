@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-01T14:47:34.000Z",
+    "updatedAt": "2026-11-01T20:17:51.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -915,8 +915,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "aa48d494e9726d469a1b9ed917f021d8a1a4c7ea",
-      "sourceUpdatedAt": "2026-11-01T13:24:01.000Z",
+      "latestCommit": "d3ab0faf52a02ff5a618f3ed7beb608b78752abd",
+      "sourceUpdatedAt": "2026-11-01T19:14:29.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -18119,6 +18119,131 @@
       "discoveredAt": "2026-11-01T14:02:58.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@920d6e8d993eae977c4946e776667e790f500258:data/plugins/X-Xyy__dsh-auto-email.yml:sha256=4f630a13877511735724705e82e71fc2368cdc73fd2346e769c6e272099dc841:at=2026-11-01T14:12:28.516Z:owner=186896693"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "ccch1mneyyy-dsh-go",
+      "name": "ccch1mneyyy/dsh-Go",
+      "description": "dsh-go — DeepSeek Harness 装进口袋：手机本机运行，也能遥控你的电脑。",
+      "repositoryUrl": "https://github.com/ccch1mneyyy/dsh-Go",
+      "defaultBranch": "main",
+      "latestCommit": "77cc8924515787c367cb2d55dc78a020c0f265ea",
+      "sourceUpdatedAt": "2026-11-01T20:01:44.000Z",
+      "discoveredAt": "2026-11-01T20:17:51.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "android",
+        "android-app",
+        "coding-agent",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-tui",
+        "flutter",
+        "llm",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: runtime/bridge/dsh-go-bridge, runtime/media/dsh-media, sdk/plugin-kit/skill/template"
+    },
+    {
+      "id": "xiebaiyuan-dsh-lead-mode",
+      "name": "xiebaiyuan/dsh-lead-mode",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/xiebaiyuan/dsh-lead-mode",
+      "defaultBranch": "main",
+      "latestCommit": "84432b63832969532e54e5b6c9ac727b186fd04f",
+      "sourceUpdatedAt": "2026-10-30T06:51:34.000Z",
+      "discoveredAt": "2026-11-01T20:17:51.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@60751c3654722c32a2e553596383c001d9f7cc7b:data/plugins/xiebaiyuan__dsh-lead-mode.yml:sha256=6b8cbbeffb401d5488823607776b665b5eb81acfabac534f954bc7561e3f4a14:at=2026-11-01T20:26:37.690Z:owner=11607785"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "xieddenv-dsh-brain-kit",
+      "name": "Xieddenv/dsh-brain-kit",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Xieddenv/dsh-brain-kit",
+      "defaultBranch": "main",
+      "latestCommit": "f701d42e22d3c7c97f3fb0de93a9709f6f1468e1",
+      "sourceUpdatedAt": "2026-10-30T05:26:57.000Z",
+      "discoveredAt": "2026-11-01T20:17:51.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@60751c3654722c32a2e553596383c001d9f7cc7b:data/plugins/Xieddenv__dsh-brain-kit.yml:sha256=8dea32491bd0a4dbbc502dec3457db39830f6f6c612ad2671a0bf2848e744fa7:at=2026-11-01T20:26:37.690Z:owner=348709104"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fairladyz625-harness-anything",
+      "name": "FairladyZ625/harness-anything",
+      "description": "Clean-room Harness rewrite monorepo",
+      "repositoryUrl": "https://github.com/FairladyZ625/harness-anything",
+      "defaultBranch": "main",
+      "latestCommit": "da8b808dfaceefe6b3a74c0ffde5060584e1f11b",
+      "sourceUpdatedAt": "2026-11-01T20:26:19.000Z",
+      "discoveredAt": "2026-11-01T20:17:51.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "SUBMISSION_PATCH_PROTECTED: Bundle Patch impersonates the protected @deepseek-ai namespace"
+    },
+    {
+      "id": "xieddenv-dsh-memory-kit",
+      "name": "Xieddenv/dsh-memory-kit",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Xieddenv/dsh-memory-kit",
+      "defaultBranch": "main",
+      "latestCommit": "8b954fc8d87171d30a43f55c189c3ee53833dc4e",
+      "sourceUpdatedAt": "2026-10-28T05:08:01.000Z",
+      "discoveredAt": "2026-11-01T20:17:51.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@60751c3654722c32a2e553596383c001d9f7cc7b:data/plugins/Xieddenv__dsh-memory-kit.yml:sha256=54d531b37118ebccfdb8eb924a9f8eb1843c212cb83391b87d6efc106b3ddca0:at=2026-11-01T20:26:37.690Z:owner=348709104"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "xienda-dsh-jev-verify",
+      "name": "xienda/dsh-jev-verify",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/xienda/dsh-jev-verify",
+      "defaultBranch": "master",
+      "latestCommit": "121531624ef9c513ae5a4ba74db741787c9f5bdc",
+      "sourceUpdatedAt": "2026-10-26T02:47:47.000Z",
+      "discoveredAt": "2026-11-01T20:17:51.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@60751c3654722c32a2e553596383c001d9f7cc7b:data/plugins/xienda__dsh-jev-verify.yml:sha256=fc9e49f3ac6981d0243f6950a4e7f620f3e50419bc125917217328169885f1a6:at=2026-11-01T20:26:37.690Z:owner=124771177"
       ],
       "topics": [
         "automatic-radar"
