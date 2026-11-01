@@ -618,6 +618,38 @@ test('official Desktop inspect refusal is shown and installBundle is not called'
   assert.equal(harness.calls.installBundle.length, 0)
 })
 
+test('official Desktop installs an approved plugin without Desktop adaptation when its manager accepts it', async () => {
+  const entry = desktopEntry({ id: 'dsh-host-only', packageName: '@acme/dsh-host-only', commit: desktopCommit,
+    compatibility: 'unknown', profiles: ['web'] })
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]) })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
+  assert.ok(card)
+  assert.match(desktopText(card), /DSH Desktop 客户端：未声明适配/)
+  const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('安装'))
+  assert.ok(install)
+  assert.equal(install.props.disabled, false)
+  install.props.onClick()
+  tree = await harness.render()
+  const confirmation = `INSTALL ${entry.packageName} ${entry.commit}`
+  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  assert.ok(input)
+  input.props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
+  assert.ok(confirm)
+  await confirm.props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成安装'))
+  assert.equal(harness.calls.inspect.length, 1)
+  assert.equal(harness.calls.inspect[0], `git+${entry.repositoryUrl}.git#${desktopCommit}`)
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.equal(harness.calls.installBundle[0].spec, harness.calls.inspect[0])
+  assert.equal(harness.calls.installBundle[0].options.enabled, true)
+})
+
 test('official Desktop starts, closes, and uninstalls only the matching Catalog bundle through pluginManager', async () => {
   const entry = desktopEntry({ id: 'dsh-managed', packageName: '@acme/dsh-managed', commit: desktopCommit,
     compatibility: 'incompatible', profiles: ['web'] })
@@ -765,4 +797,24 @@ test('current trusted Registry Catalog is accepted by the Desktop reader', async
   assert.match(desktopText(matches[0]), /Catalog 阻止安装/)
   assert.equal(desktopNodes(matches[0]).find(node => node.type === 'button' && node.children?.includes('安装')).props.disabled, true)
   assert.equal(harness.requests[0].url, desktopCatalogUrl)
+})
+
+test('website SEO and LLM guidance separates Desktop adaptation labels from installation', async () => {
+  const home = await readFile(new URL('../marketplace/index.html', import.meta.url), 'utf8')
+  const directory = await readFile(new URL('../marketplace/plugins/index.html', import.meta.url), 'utf8')
+  const buildPage = await readFile(new URL('../marketplace/build/index.html', import.meta.url), 'utf8')
+  const buildScript = await readFile(new URL('../marketplace/build/build.js', import.meta.url), 'utf8')
+  const llms = await readFile(new URL('../marketplace/llms.txt', import.meta.url), 'utf8')
+  assert.match(home, /DSH STORE 已适配 DSH 官方桌面端/)
+  assert.match(home, /DSH Desktop 官方插件管理器/)
+  assert.match(home, /DSH Desktop 内通过 DSH STORE 查看和管理已审核条目/)
+  assert.match(home, /"name": "DSH STORE — DSH Desktop Plugin Marketplace"/)
+  assert.match(directory, /client-adaptation labels do not gate installation/)
+  assert.match(directory, /DSH Desktop 内的 DSH STORE 可查看和管理已审核插件/)
+  assert.match(buildPage, /official plugin manager checks approved entries/)
+  assert.match(buildPage, /用 build-dsh-plugin 为 DSH Web 或官方 DSH Desktop 设计和验证插件/)
+  assert.match(buildScript, /客户端适配标识不作安装门槛/)
+  assert.match(buildScript, /client-adaptation labels describe optional UI evidence, not install eligibility/)
+  assert.match(llms, /informational and does not decide installation eligibility/)
+  assert.match(llms, /Catalog-blocked entries remain unavailable/)
 })

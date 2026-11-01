@@ -6,15 +6,15 @@
   <meta name="applicable-device" content="pc,mobile">
   <!-- DSH_BAIDU_VERIFICATION -->
   <!-- DSH_BAIDU_UNION_VERIFY -->
-  <meta name="description" content="DSH STORE (dsh.store) is a third-party DeepSeek Harness (DSH) plugin marketplace for discovery, source and permission checks, safe access, and plugin development. DSH 插件商城。">
+  <meta name="description" content="DSH STORE 是第三方 DeepSeek Harness 插件商城，已适配 DSH 官方桌面端。DSH Desktop 官方插件管理器负责兼容性预检；Desktop 客户端适配标识不决定已审核插件能否安装。">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="author" content="DSH STORE">
   <meta name="application-name" content="DSH STORE">
   <meta name="theme-color" content="#f7f9fd">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DSH STORE">
-  <meta property="og:title" content="DSH STORE | DeepSeek Harness Plugin Marketplace | DSH 插件商城">
-  <meta property="og:description" content="Discover DeepSeek Harness plugins, inspect sources and permissions, and connect them through a clear, recoverable path.">
+  <meta property="og:title" content="DSH STORE | DSH Desktop Plugin Marketplace | DSH 插件商城">
+  <meta property="og:description" content="DSH STORE supports the official DSH Desktop. Approved plugins are checked by Desktop's official plugin manager; a Desktop client-adaptation label is not an install gate.">
   <meta property="og:url" content="https://dsh.store/">
   <meta property="og:image" content="https://dsh.store/dsh-store-icon.png">
   <meta property="og:image:width" content="1254">
@@ -22,9 +22,9 @@
   <meta property="og:image:alt" content="DSH STORE — Trusted DeepSeek Harness Plugins">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="DSH STORE｜DeepSeek Harness（DSH）插件商城">
-  <meta name="twitter:description" content="发现 DSH 插件，核对来源与权限，按计划安全接入 DeepSeek Harness。">
+  <meta name="twitter:description" content="DSH STORE 已适配 DSH Desktop；插件安装由官方管理器校验，客户端适配标识不作安装门槛。">
   <meta name="twitter:image" content="https://dsh.store/dsh-store-icon.png">
-  <title>DSH STORE | DeepSeek Harness Plugin Marketplace | DSH 插件商城</title>
+  <title>DSH STORE | DSH Desktop Plugin Marketplace | DSH 插件商城</title>
   <link rel="canonical" href="https://dsh.store/">
   <!-- DSH_HREFLANG -->
   <link rel="alternate" type="text/plain" href="https://dsh.store/llms.txt" title="DSH STORE for AI agents">
@@ -66,14 +66,14 @@
         "alternateName": ["DSH.STORE", "dsh.store", "DeepSeek Harness Plugin Store"],
         "inLanguage": ["zh-CN", "en"],
         "publisher": {"@id": "https://dsh.store/#organization"},
-        "description": "A trusted third-party gateway for discovering DeepSeek Harness plugins with pinned sources, visible permissions, guarded plans, and rollback paths."
+        "description": "A third-party DeepSeek Harness plugin marketplace and developer gateway, including a plugin catalog inside the official DSH Desktop. Desktop's official plugin manager checks install compatibility for approved fixed-source entries."
       },
       {
         "@type": "WebPage",
         "@id": "https://dsh.store/#webpage",
         "url": "https://dsh.store/",
-        "name": "DSH STORE — DeepSeek Harness Plugin Marketplace",
-        "description": "A third-party marketplace for discovering, evaluating, building, and safely connecting DeepSeek Harness plugins.",
+        "name": "DSH STORE — DSH Desktop Plugin Marketplace",
+        "description": "DSH STORE is a third-party DeepSeek Harness plugin marketplace adapted for the official DSH Desktop. Its client-adaptation label describes Desktop-specific UI evidence; DSH Desktop's official plugin manager checks whether approved plugins can be installed.",
         "isPartOf": {"@id": "https://dsh.store/#website"},
         "about": [
           {"@type": "SoftwareApplication", "name": "DeepSeek Harness"},
@@ -91,7 +91,7 @@
         "@type": "CollectionPage",
         "@id": "https://dsh.store/plugins/#catalog",
         "url": "https://dsh.store/plugins/",
-        "name": "DSH STORE Plugin Catalog",
+        "name": "DSH STORE DSH Plugin Catalog and Desktop Marketplace",
         "isPartOf": {"@id": "https://dsh.store/#website"},
         "about": ["DeepSeek Harness", "DSH plugins", "plugin security"]
       },
@@ -104,14 +104,15 @@
         "operatingSystem": "Any system supported by DeepSeek Harness",
         "url": "https://dsh.store/#manager",
         "downloadUrl": "https://github.com/AI-Scarlett/DSH-Store",
-        "description": "A standard Host Plugin and Client Bundle for discovering and managing DeepSeek Harness plugins through guarded, reviewable operations."
+        "description": "A standard Host Plugin and Client Bundle that adds a DSH plugin catalog and management entry to the official Desktop. The official DSH Desktop plugin manager performs compatibility checks and installation for approved fixed-source entries."
       },
       {
         "@type": "FAQPage",
         "mainEntity": [
           {"@type": "Question", "name": "官网会直接安装 DSH 插件吗？", "acceptedAnswer": {"@type": "Answer", "text": "不会。官网只负责发现与查看；真实操作需要在 DSH 内生成一次性计划并确认。"}},
           {"@type": "Question", "name": "可安装是否等于完成安全审计？", "acceptedAnswer": {"@type": "Answer", "text": "不等于。可安装表示条目满足当前固定来源、标准 Bundle 与策略检查。"}},
-          {"@type": "Question", "name": "插件目录的数据来自哪里？", "acceptedAnswer": {"@type": "Answer", "text": "运行时目录以 GitHub registry/catalog.json 为权威源，无法核验的安全与兼容性字段保持未知。"}}
+          {"@type": "Question", "name": "插件目录的数据来自哪里？", "acceptedAnswer": {"@type": "Answer", "text": "运行时目录以 GitHub registry/catalog.json 为权威源，无法核验的安全与兼容性字段保持未知。"}},
+          {"@type": "Question", "name": "DSH STORE 是否适配 DSH Desktop？未声明客户端适配的插件能安装吗？", "acceptedAnswer": {"@type": "Answer", "text": "DSH STORE 已适配 DSH 官方桌面端。客户端适配标识只说明 Desktop 专属界面的适配声明，不是安装门槛；已审核固定来源的插件仍可交由 DSH Desktop 官方插件管理器按当前环境校验。Catalog 标记为 blocked 的条目仍不能通过商城安装。"}}
         ]
       }
     ]
@@ -155,7 +156,7 @@
       <div class="hero-copy reveal">
         <div class="system-status"><span></span><b data-i18n="hero.eyebrow">DSH TRUSTED EXTENSION LAYER</b><em>ONLINE</em></div>
         <h1 id="hero-title"><span class="hero-brand-title">DSH STORE · PLUGIN ECOSYSTEM</span><span data-i18n="hero.title1">让 DSH，</span><br><em data-i18n="hero.title2">拥有更多可能。</em></h1>
-        <p class="hero-lead" data-i18n="hero.lead">发现插件、看清来源与权限，与开发者一起扩展工作流。所有真实接入仍通过清楚、可恢复的路径完成。</p>
+        <p class="hero-lead" data-i18n="hero.lead">发现插件、核对来源与权限，并在 DSH Desktop 内通过 DSH STORE 查看和管理已审核条目。安装兼容性由官方插件管理器校验；客户端适配标识不作为安装门槛。</p>
         <form class="store-search-form" action="./plugins/" role="search"><label for="home-plugin-search" data-i18n="home.searchLabel">搜索插件</label><span aria-hidden="true">⌕</span><input id="home-plugin-search" type="search" maxlength="80" placeholder="搜索插件名称、用途或英文包名" data-i18n-placeholder="home.search"><button type="submit" data-i18n="home.searchAction">搜索插件 ↗</button></form>
         <div class="hero-actions">
           <a class="button button-primary" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="hero"><span data-i18n="action.explore">查看全部插件</span><i aria-hidden="true">↗</i></a>
@@ -280,6 +281,7 @@
         <details><summary><span data-i18n="faq.q1">官网会直接安装插件吗？</span><i>＋</i></summary><p data-i18n="faq.a1">不会。官网只负责发现与详情展示；生命周期操作需要在 DSH 内生成计划并确认。</p></details>
         <details><summary><span data-i18n="faq.q2">“可安装”等于完成安全审计吗？</span><i>＋</i></summary><p data-i18n="faq.a2">不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。</p></details>
         <details><summary><span data-i18n="faq.q3">如何选择适合自己的插件？</span><i>＋</i></summary><p data-i18n="faq.a3">先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。</p></details>
+        <details><summary><span data-i18n="faq.q4">DSH STORE 是否适配 DSH Desktop？没有桌面界面的插件能安装吗？</span><i>＋</i></summary><p data-i18n="faq.a4">DSH STORE 已适配 DSH 官方桌面端。客户端适配标识只描述 Desktop 专属界面，不是安装门槛；已审核条目由 Desktop 官方插件管理器校验，Catalog blocked 条目仍不可安装。</p></details>
       </div>
     </section>
   </main>
