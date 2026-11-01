@@ -1516,13 +1516,6 @@ window.__ModuleLoader__.load({
       return `DSH Desktop 官方插件管理器拒绝，错误码：${code}。`
     }
 
-    function desktopInspectionReason(inspection) {
-      const reason = desktopSafeReasonText(inspection?.reason)
-      return reason
-        ? `DSH Desktop 官方插件检查拒绝：${reason}`
-        : 'DSH Desktop 官方插件检查未接受该安装来源。'
-    }
-
     function validateDesktopInstallEntry(entry, index, categoryLabels = {}) {
       if (!entry || typeof entry !== 'object' || Array.isArray(entry)) throw new Error(`CATALOG_ENTRY_${index}_INVALID`)
       if (!['approved', 'blocked', 'unlisted'].includes(entry.status)) throw new Error(`CATALOG_ENTRY_${index}_STATUS_INVALID`)
@@ -1821,6 +1814,21 @@ window.__ModuleLoader__.load({
         && desktopSourceRepository(bundle.source) === desktopEntryRepository(entry)
     }
 
+    function desktopBundleConfirmsInstall(entry, bundle) {
+      if (!bundle || bundle.name !== entry.packageName || bundle.installed !== true
+        || bundle.version !== entry.version || !desktopBundleMatchesCatalogEntry(entry, bundle)) return false
+      const source = typeof bundle.source === 'string' ? bundle.source : ''
+      const revision = source.match(/#([a-f0-9]{40})(?:&|$)/i)?.[1]?.toLowerCase()
+      return !revision || revision === entry.commit
+    }
+
+    function desktopInspectionAdvice(inspection) {
+      const reason = desktopSafeReasonText(inspection?.reason)
+      return reason
+        ? `DSH Desktop 预检提示：${reason}`
+        : 'DSH Desktop 预检未接受该来源；安装请求仍已提交给官方安装器作最终判断。'
+    }
+
     function desktopActionConfirmation(action, entry) {
       const verb = { install: 'INSTALL', remove: 'REMOVE', enable: 'START', disable: 'CLOSE' }[action]
       if (!verb) throw desktopFailure('DESKTOP_ACTION_INVALID')
@@ -1953,8 +1961,7 @@ window.__ModuleLoader__.load({
         return false
       }
       const managerSupports = action => {
-        if (action === 'install') return typeof desktopPluginManager?.inspect === 'function'
-          && typeof desktopPluginManager?.installBundle === 'function'
+        if (action === 'install') return typeof desktopPluginManager?.installBundle === 'function'
         if (action === 'remove') return typeof desktopPluginManager?.removeBundle === 'function'
         if (action === 'enable' || action === 'disable') return typeof desktopPluginManager?.setBundleEnabled === 'function'
         return false
@@ -1975,6 +1982,7 @@ window.__ModuleLoader__.load({
         setActionState({ status: 'running' })
         let requestId = null
         let mutationStarted = false
+        let inspectionNotice = null
         const manager = desktopPluginManager
         try {
           const fresh = await readDesktopStoreSnapshot()
@@ -1995,12 +2003,15 @@ window.__ModuleLoader__.load({
           let outcome
           if (action === 'install') {
             const spec = desktopInstallSpecifier(entry)
-            const inspected = unwrapDesktopRemote(await withDesktopTimeout(manager.inspect(spec), DESKTOP_CATALOG_TIMEOUT_MS), 'DESKTOP_SOURCE_INSPECTION_FAILED')
-            if (!inspected || inspected.status !== 'accepted') {
-              const error = desktopFailure(desktopErrorCode(inspected) === 'DESKTOP_OPERATION_FAILED'
-                ? 'DESKTOP_SOURCE_REFUSED' : desktopErrorCode(inspected))
-              error.reason = desktopInspectionReason(inspected)
-              throw error
+            if (typeof manager.inspect === 'function') {
+              try {
+                const inspected = unwrapDesktopRemote(await withDesktopTimeout(
+                  manager.inspect(spec), DESKTOP_CATALOG_TIMEOUT_MS,
+                ), 'DESKTOP_SOURCE_INSPECTION_FAILED')
+                if (!inspected || inspected.status !== 'accepted') inspectionNotice = desktopInspectionAdvice(inspected)
+              } catch (error) {
+                inspectionNotice = `DSH Desktop 预检未完成（${desktopErrorCode(error)}）；安装请求仍交由官方安装器最终判断。`
+              }
             }
             requestId = window.crypto?.randomUUID?.()
             if (typeof requestId !== 'string' || !/^[0-9a-f-]{36}$/i.test(requestId)) throw desktopFailure('INSTALL_REQUEST_ID_UNAVAILABLE')
@@ -2022,7 +2033,7 @@ window.__ModuleLoader__.load({
             if (outcome?.error || outcome?.problem || outcome?.packageResult?.incompatible) error.reason = desktopManagerReason(outcome)
             throw error
           }
-          setActionState({ status: 'success', application: outcome.application })
+          setActionState({ status: 'success', application: outcome.application, inspectionNotice })
           await refresh()
         } catch (error) {
           const code = desktopErrorCode(error)
@@ -2033,15 +2044,25 @@ window.__ModuleLoader__.load({
                 'DESKTOP_INSTALL_RESULT_UNAVAILABLE')
               if (recovered) {
                 if (['applied', 'restart-required'].includes(recovered.application)) {
-                  setActionState({ status: 'success', application: recovered.application })
+                  setActionState({ status: 'success', application: recovered.application, inspectionNotice })
                 } else {
-                  setActionState({ status: 'error', code: desktopErrorCode(recovered.error || recovered),
-                    reason: desktopManagerReason(recovered) })
+                  const recoveredCode = desktopErrorCode(recovered.error || recovered)
+                  const reason = desktopManagerReason(recovered)
+                  if (await desktopInstallIsAlreadyPresent(manager, actionPlan.entry)) {
+                    setActionState({ status: 'success', application: 'already-installed', inspectionNotice })
+                  } else {
+                    setActionState({ status: 'error', code: recoveredCode, reason, inspectionNotice })
+                  }
                 }
                 await refresh()
                 return
               }
             } catch { /* Refresh the one submitted request; never submit it again. */ }
+          }
+          if (mutationStarted && action === 'install' && await desktopInstallIsAlreadyPresent(manager, actionPlan.entry)) {
+            setActionState({ status: 'success', application: 'already-installed', inspectionNotice })
+            await refresh()
+            return
           }
           if (uncertain) {
             setActionState({ status: 'unknown', code })
@@ -2050,10 +2071,22 @@ window.__ModuleLoader__.load({
           }
           const reason = typeof error?.reason === 'string' ? error.reason
             : !code.startsWith('DESKTOP_') ? `DSH Desktop 官方校验返回：${code}` : null
-          setActionState({ status: 'error', code, reason })
+          setActionState({ status: 'error', code, reason, inspectionNotice })
           if (mutationStarted) await refresh()
         } finally {
           actionInFlight.current = false
+        }
+      }
+
+      const desktopInstallIsAlreadyPresent = async (manager, entry) => {
+        if (!manager || typeof manager.listBundles !== 'function') return false
+        try {
+          const current = unwrapDesktopRemote(await withDesktopTimeout(
+            manager.listBundles(), 'DESKTOP_INVENTORY_TIMEOUT',
+          ), 'DESKTOP_INVENTORY_FAILED')
+          return Array.isArray(current) && current.some(bundle => desktopBundleConfirmsInstall(entry, bundle))
+        } catch {
+          return false
         }
       }
 
@@ -2265,7 +2298,7 @@ window.__ModuleLoader__.load({
                 React.createElement('span', { style: styles.badge }, licenseLabel(entry.details.license))),
               React.createElement('div', { style: styles.muted }, entry.commit ? 'Commit ' + entry.commit.slice(0, 12) : '固定 Commit 未提供'),
               entry.status === 'blocked' ? React.createElement('div', { style: styles.notice },
-                'Store 给出复核建议。确认后可将此固定来源交由 DSH Desktop 检查；只有 DSH 接受检查后才会安装。审核原因见详情。') : null,
+                'Store 给出复核建议。确认后将此固定来源交由 DSH Desktop 安装；预检结果仅作提示，最终结果以 DSH 官方安装器返回为准。审核原因见详情。') : null,
               React.createElement('div', { style: styles.cardFooter },
                 React.createElement('div', { style: styles.marketCardActions },
                   ...actionButtons(entry, installedBundle, { includeUnavailable: true }),
@@ -2332,13 +2365,16 @@ window.__ModuleLoader__.load({
           actionPlan.entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
             '本包声明安装脚本：' + actionPlan.entry.risk.installScripts.join('、') + '。商城不会代为批准构建脚本。') : null,
           React.createElement('div', { style: styles.notice },
-            'DSH 官方插件管理器会检查固定来源并处理 Profile。商城不会自动授权安装脚本。'),
+            'DSH 官方安装器会检查固定来源并处理 Profile。预检提示不会阻止本次已确认的安装请求；最终状态以 DSH 官方安装器和 Desktop 已安装清单为准。商城不会自动授权安装脚本。'),
           actionState.status === 'running' ? React.createElement('div', { style: styles.muted, role: 'status' },
             '正在由 DSH 官方插件管理器处理；请等待结果，不要重复提交。') : null,
+          actionState.inspectionNotice ? React.createElement('div', { style: styles.notice, role: 'status' }, actionState.inspectionNotice) : null,
           actionState.status === 'success' ? React.createElement('div', { style: styles.notice, role: 'status' },
-            actionState.application === 'restart-required'
-              ? '操作已写入 Desktop Profile；DSH 报告需要按其官方流程重新加载后生效。'
-              : 'DSH 官方插件管理器已完成' + actionLabel(actionPlan.action) + '。') : null,
+            actionState.application === 'already-installed'
+              ? 'DSH Desktop 已安装清单确认此版本已安装；本次未发生依赖变更。'
+              : actionState.application === 'restart-required'
+                ? '操作已写入 Desktop Profile；DSH 报告需要按其官方流程重新加载后生效。'
+                : 'DSH 官方插件管理器已完成' + actionLabel(actionPlan.action) + '。') : null,
           actionState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' },
             '操作未完成（' + actionState.code + '）。' + (actionState.reason ? actionState.reason + '。' : '')
             + '刷新目录核对状态；商城不会自动重试。') : null,

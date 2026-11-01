@@ -135,7 +135,7 @@ function desktopCatalog(entries) {
 }
 
 function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.2',
-  inspectResult, installResult } = {}) {
+  inspectResult, installResult, installedAfterInstallResult = null, inspectAvailable = true } = {}) {
   const sourcePromise = readFile(new URL('../src/client.js', import.meta.url), 'utf8')
   const settingsRegistrations = []
   const injections = []
@@ -209,7 +209,10 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
     async installBundle(spec, options) {
       calls.installBundle.push({ spec, options })
       const requestedResult = typeof installResult === 'function' ? await installResult(spec, options) : installResult
-      if (requestedResult) return requestedResult
+      if (requestedResult) {
+        if (Array.isArray(installedAfterInstallResult)) installedBundles = installedAfterInstallResult
+        return requestedResult
+      }
       const entry = catalog.entries.find(item => spec.startsWith(`git+${item.repositoryUrl}.git#`))
       installedBundles = [...installedBundles.filter(bundle => bundle.name !== entry?.packageName), {
         name: entry?.packageName || '@acme/dsh-installable', official: false, installed: true,
@@ -229,6 +232,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
     },
     async waitForInstall(requestId) { calls.waitForInstall.push(requestId); return null },
   }
+  if (!inspectAvailable) delete manager.inspect
   const fetch = async (url, options) => {
     requests.push({ url, options })
     if (responseFactory) return responseFactory()
@@ -503,7 +507,7 @@ test('blocked fixed-source entries use DSH inspect and install only after explic
   assert.ok(desktopNodes(tree).some(node => node.type === 'article' && desktopText(node).includes('Store 待复核 · 已安装')))
 })
 
-test('DSH inspection rejection is shown and never reaches installBundle', async () => {
+test('DSH inspection warning is shown while the confirmed request reaches installBundle', async () => {
   const commit = '8'.repeat(40)
   const entry = desktopEntry({ id: 'review-rejected', packageName: 'dsh-review-rejected', commit, status: 'blocked',
     statusReason: 'Fixed-source review required' })
@@ -522,10 +526,10 @@ test('DSH inspection rejection is shown and never reaches installBundle', async 
   tree = await harness.render()
   const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
   await confirm.props.onClick()
-  tree = await harness.render()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成安装'))
   assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.installBundle.length, 0)
-  assert.match(desktopText(tree), /DSH Desktop 官方插件检查拒绝：DSH runtime requirement is not met/)
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.match(desktopText(tree), /DSH Desktop 预检提示：DSH runtime requirement is not met/)
 })
 
 test('blocked full-Commit entries are not gated by Catalog provenance labels or timestamps', async () => {
@@ -772,11 +776,13 @@ test('official Desktop receives unadapted unknown entries and displays DSH compa
   assert.equal(harness.calls.setBundleEnabled.length, 0)
 })
 
-test('official Desktop inspect refusal is shown and installBundle is not called', async () => {
+test('official Desktop inspection refusal is advisory and installBundle determines the final result', async () => {
   const entry = desktopEntry({ id: 'dsh-no-bundle', packageName: '@acme/dsh-no-bundle', commit: desktopCommit,
     compatibility: 'incompatible', profiles: [] })
   const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
-    inspectResult: { status: 'refused', problem: 'not-a-bundle', reason: 'the Git source has no DSH Bundle Patch' } })
+    inspectResult: { status: 'refused', problem: 'not-a-bundle', reason: 'the Git source has no DSH Bundle Patch' },
+    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
+      error: { code: 'not-a-bundle' } } })
   await harness.ready
   await harness.render()
   await harness.runEffects(harness.getComponent('DesktopStorePanel'))
@@ -792,11 +798,80 @@ test('official Desktop inspect refusal is shown and installBundle is not called'
   tree = await harness.render()
   const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
   await confirm.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop 官方插件检查拒绝'))
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('操作未完成（not-a-bundle）'))
+  assert.match(desktopText(tree), /DSH Desktop 预检提示：the Git source has no DSH Bundle Patch/)
   assert.match(desktopText(tree), /the Git source has no DSH Bundle Patch/)
   assert.match(desktopText(tree), /not-a-bundle/)
   assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.installBundle.length, 0)
+  assert.equal(harness.calls.installBundle.length, 1)
+})
+
+test('official Desktop install result can succeed after its inspection advisory', async () => {
+  const entry = desktopEntry({ id: 'dsh-inspection-advisory', packageName: '@acme/dsh-inspection-advisory', commit: desktopCommit })
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
+    inspectResult: { status: 'refused', reason: 'Desktop preflight could not confirm this source' } })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('安装'))
+  install.props.onClick()
+  tree = await harness.render()
+  const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成安装'))
+  assert.match(desktopText(tree), /DSH Desktop 预检提示：Desktop preflight could not confirm this source/)
+  assert.equal(harness.calls.inspect.length, 1)
+  assert.equal(harness.calls.installBundle.length, 1)
+})
+
+test('an already installed exact package reported by Desktop reconciles a no-change install failure', async () => {
+  const entry = desktopEntry({ id: 'dsh-no-change-installed', packageName: '@acme/dsh-no-change-installed', commit: desktopCommit })
+  const installedPackage = { name: entry.packageName, official: false, installed: true, removable: true,
+    enabled: true, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
+    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
+      error: { code: 'NO_DEPENDENCY_CHANGES' } },
+    installedAfterInstallResult: [installedPackage] })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('安装'))
+  install.props.onClick()
+  tree = await harness.render()
+  const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop 已安装清单确认此版本已安装'))
+  assert.match(desktopText(tree), /本次未发生依赖变更/)
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.ok(harness.calls.listBundles >= 2)
+  assert.equal(harness.calls.waitForInstall.length, 0)
+})
+
+test('Desktop installBundle remains available when the optional inspect method is absent', async () => {
+  const entry = desktopEntry({ id: 'dsh-no-inspect', packageName: '@acme/dsh-no-inspect', commit: desktopCommit })
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), inspectAvailable: false })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('安装')).props.onClick()
+  tree = await harness.render()
+  const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成安装'))
+  assert.equal(harness.calls.inspect.length, 0)
+  assert.equal(harness.calls.installBundle.length, 1)
 })
 
 test('official Desktop installs an approved plugin without Desktop adaptation when its manager accepts it', async () => {
