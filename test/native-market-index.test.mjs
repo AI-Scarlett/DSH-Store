@@ -9,21 +9,32 @@ const entry = overrides => ({
   compatibility: { dsh: '*', dshReleases: { 'rc.8': 'compatible', '0.2.1-alpha.4': 'unknown' } }, ...overrides,
 })
 
-test('native market only exposes approved immutable entries and exact compatible releases', () => {
+test('native market only exposes approved immutable entries and leaves compatibility checks to DSH', () => {
   const catalog = { entries: [entry(), entry({ status: 'blocked' }), entry({ status: 'unlisted' })] }
   const value = createNativeMarketIndex(catalog)
   assert.equal(value.format, 1)
   assert.equal(value.plugins.length, 1)
-  assert.equal(value.plugins[0].versions[0].engines.dsh, '0.1.0-rc.8')
+  assert.equal(value.plugins[0].versions[0].engines, undefined)
+  assert.deepEqual(value.plugins[0].metadata.labels, ['dsh-install-check', 'store-compatibility-review'])
+  assert.match(value.description.zh, /最终由 DSH 检查/)
   assert.equal(value.plugins[0].versions[0].source.commit, 'a'.repeat(40))
   assert.equal(value.plugins[0].versions[0].publishTimestamp, 1792022400)
   assert.equal(validateNativeMarketIndex(value, catalog), value)
-  value.plugins[0].versions[0].engines.dsh = '*'
+  value.plugins[0].versions[0].source.commit = 'b'.repeat(40)
   assert.throws(() => validateNativeMarketIndex(value, catalog), /differs/)
 })
 
-test('native market excludes unknown-only declarations and preserves safe monorepo paths', () => {
-  assert.equal(createNativeMarketIndex({ entries: [entry({ compatibility: { dshReleases: {} } })] }).plugins.length, 0)
+test('native market includes unknown-only declarations with a review label and preserves safe monorepo paths', () => {
+  const unknown = createNativeMarketIndex({ entries: [entry({ compatibility: {
+    dshReleases: {}, latestWindow: { state: 'recheck-required', releases: ['0.2.2-alpha.2'] },
+  } })] })
+  assert.equal(unknown.plugins.length, 1)
+  assert.deepEqual(unknown.plugins[0].metadata.labels, ['dsh-install-check', 'store-compatibility-review'])
+  const current = createNativeMarketIndex({ entries: [entry({ compatibility: {
+    dshReleases: { '0.2.2-alpha.2': 'compatible' },
+    latestWindow: { state: 'current', releases: ['0.2.2-alpha.2'] },
+  } })] })
+  assert.deepEqual(current.plugins[0].metadata.labels, ['dsh-install-check'])
   const value = createNativeMarketIndex({ entries: [entry({ installPath: 'packages/demo', manifestPath: 'packages/demo/package.json' })] })
   assert.equal(value.plugins[0].versions[0].source.path, 'packages/demo')
   assert.equal(value.plugins[0].repository.directory, 'packages/demo')

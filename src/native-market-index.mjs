@@ -1,7 +1,7 @@
-import { canonicalGithubRepository, dshReleaseVersion } from './catalog.mjs'
+import { canonicalGithubRepository } from './catalog.mjs'
 
 // A projection of approved Catalog entries, never the broader discovery feed.
-// Exact declarations avoid widening old, unknown or truncated source ranges.
+// Store compatibility evidence is advisory; DSH owns the final install check.
 export function createNativeMarketIndex(catalog) {
   const names = new Set()
   const plugins = catalog.entries.filter(entry => entry.status === 'approved').flatMap(entry => {
@@ -19,13 +19,7 @@ export function createNativeMarketIndex(catalog) {
     if (!Number.isFinite(published) || published < 0 || entry.source?.provenance !== 'github-commit') {
       throw new Error(`Native market requires Git Commit publication evidence: ${entry.id}`)
     }
-    const releases = [...new Set(Object.entries(entry.compatibility?.dshReleases ?? {})
-      .filter(([, status]) => status === 'compatible').map(([release]) => {
-        const version = dshReleaseVersion(release)
-        if (!version) throw new Error(`Native market release is invalid: ${entry.id}`)
-        return version
-      }))].sort()
-    if (!releases.length) return [] // No supported runtime is established; do not expose an install target.
+    const compatibilityNeedsReview = entry.compatibility?.latestWindow?.state !== 'current'
     return [{
       name: entry.packageName,
       title: entry.name,
@@ -33,11 +27,16 @@ export function createNativeMarketIndex(catalog) {
       author: new URL(url).pathname.split('/')[1],
       homepage: url,
       repository: { url, ...(path ? { directory: path } : {}) },
+      metadata: {
+        labels: [
+          'dsh-install-check',
+          ...(compatibilityNeedsReview ? ['store-compatibility-review'] : []),
+        ],
+      },
       versions: [{
         version: entry.version,
         publishTimestamp: Math.floor(published / 1000),
         source: { type: 'git', url, commit: entry.commit, ...(path ? { path } : {}) },
-        engines: { dsh: releases.join(' || ') },
       }],
     }]
   })
@@ -45,8 +44,18 @@ export function createNativeMarketIndex(catalog) {
     format: 1,
     title: { en: 'DSH STORE', zh: 'DSH STORE 插件商城' },
     description: {
-      en: 'Approved fixed-Commit Catalog entries. Compatibility declarations do not establish runtime or security acceptance.',
-      zh: '仅包含已批准的固定 Commit 条目；兼容性声明不等于运行验收或安全审计。',
+      en: 'The Store reviews pinned sources and provides compatibility advice. DSH performs its own compatibility checks, asks for installation confirmation, and reports the final result.',
+      zh: 'Store 审核固定来源并提供兼容性建议；最终由 DSH 检查插件要求、展示安装确认并返回安装结果。',
+    },
+    metadata: {
+      labels: {
+        'dsh-install-check': {
+          title: { en: 'DSH install check', zh: '由 DSH 最终检查' },
+        },
+        'store-compatibility-review': {
+          title: { en: 'Store compatibility review needed', zh: '商城兼容性待复核' },
+        },
+      },
     },
     plugins,
   }
