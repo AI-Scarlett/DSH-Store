@@ -51,7 +51,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-源码与 Catalog 当前固定 Store `0.9.24`、Commit `0b7c48466eec17d9125be42c81d5f538fd178209`。0.9.24 保留 Store 审核建议和固定来源检查；用户确认完整包名与 Commit 后，即使 DSH inspect() 提示或无法确认，也会把请求交给 DSH Desktop 官方安装器作最终判断。若 Desktop 返回失败且没有依赖变更，Store 只查询一次 DSH 已安装清单；只有包名、版本、仓库与可见 Commit 全部吻合才报告“已安装”。Catalog 状态和权限/安全建议保留，DSH 安装结果不等同安全审计。Catalog 仍只声明 `web` Profile，真实 Desktop Profile 验收尚未完成。
+源码候选版本为 `0.9.25`；Catalog 在单独发布合入前仍固定 Store `0.9.24`、Commit `0b7c48466eec17d9125be42c81d5f538fd178209`。0.9.25 为 Desktop 已安装且来源匹配的条目增加固定 Commit 更新操作，也支持从商城页面更新 DSH Store 自身。用户输入完整包名和 40 位目标 Commit 后，Store 把固定 GitHub spec 交给 DSH Desktop 官方 `installBundle()`。若 DSH 报失败，Store 只查询一次安装清单；只有包名、版本、仓库和完整来源 Commit 全部吻合才报告目标已安装。其他情况保留 DSH 的失败或未知状态，不自动重试。Catalog 状态和权限/安全建议仍显示为 Store 建议，最终安装结果以 DSH 返回值及已安装清单为准。Catalog 仍只声明 `web` Profile，真实 Desktop Profile 验收尚未完成。
 通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.24` Commit：
 
 ```bash
@@ -87,11 +87,11 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 ### 官方 Desktop
 
-官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.24` 将入口注册为
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.25` 将入口注册为
 设置左侧独立的 `插件商城` 分区；页面标题为 `插件商城（DSH-Store）`，并通过本地化插件元数据显示
 `DSH-Store`，保留内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方
-`pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。`0.9.24` 保留插件目录和已安装视图、搜索、分类、状态筛选、排序、分页及详情；`blocked` 条目显示 Store 审核原因，用户逐次确认后可将固定来源交给 DSH 官方安装器。DSH `inspect` 结果仅作提示，不会阻止已确认请求；`installBundle` 返回安装结果，失败后再以 Desktop 已安装清单对账，避免把已安装的无变更结果误报为失败。Catalog 仍保持 `blocked`，Web 管理操作仍按原准入策略执行。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。
-`0.9.21` 中，客户端适配标识和 Catalog 的 DSH 兼容记录只作参考，不决定第三方插件能否安装；商城自身和 DSH 官方组件仍受保护。可管理的第三方条目交由 DSH Desktop 官方管理器处理；Git 源的 `inspect` 结果作为预检提示，实际包的 DSH 版本/peer 兼容性由 `installBundle` 作最终判断。官方拒绝码和兼容要求会显示在商城中。安装、卸载和
+`pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。`0.9.25` 保留插件目录和已安装视图、搜索、分类、状态筛选、排序、分页及详情；`blocked` 条目显示 Store 审核原因。对同仓库且不是 Catalog 当前完整 Commit 的已安装包，用户逐次确认后可把新的固定来源交给 DSH 官方 `installBundle()`；商城自身也可用该入口升级到 Catalog 固定的新版本。DSH `inspect` 结果仅作提示，不会阻止已确认请求；失败后只核对一次 Desktop 已安装清单，精确 Commit 不匹配时保留 DSH 的失败/未知状态，不重复提交。Catalog 仍保持 `blocked`，Web 管理操作仍按原准入策略执行。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。
+`0.9.21` 中，客户端适配标识和 Catalog 的 DSH 兼容记录只作参考，不决定第三方插件能否安装；商城自身和 DSH 官方组件仍受保护。可管理的第三方条目交由 DSH Desktop 官方管理器处理；Git 源的 `inspect` 结果作为预检提示，实际包的 DSH 版本/peer 兼容性由 `installBundle` 作最终判断。官方拒绝码和兼容要求会显示在商城中。安装、更新、卸载和
 Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`setBundleEnabled` 执行；每次操作
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
 来源与 Catalog 仓库一致。启停只使用官方 Bundle Profile Patch 管理接口，不调用 Loader/Fiber API。

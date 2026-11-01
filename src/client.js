@@ -1653,14 +1653,14 @@ window.__ModuleLoader__.load({
       return Object.assign(new Error(code), { code })
     }
 
-    function withDesktopTimeout(promise, code) {
+    function withDesktopTimeout(promise, code, timeoutMs = DESKTOP_CATALOG_TIMEOUT_MS) {
       return new Promise((resolve, reject) => {
         let settled = false
         const timer = window.setTimeout(() => {
           if (settled) return
           settled = true
           reject(desktopFailure(code))
-        }, DESKTOP_CATALOG_TIMEOUT_MS)
+        }, timeoutMs)
         Promise.resolve(promise).then(value => {
           if (settled) return
           settled = true
@@ -1809,6 +1809,11 @@ window.__ModuleLoader__.load({
       return typeof entry?.repositoryUrl === 'string' ? entry.repositoryUrl.replace(/\.git$/i, '').toLowerCase() : null
     }
 
+    function desktopSourceRevision(source) {
+      if (typeof source !== 'string' || source.length > 1_024) return null
+      return source.match(/#([a-f0-9]{40})(?:&|$)/i)?.[1]?.toLowerCase() ?? null
+    }
+
     function desktopBundleMatchesCatalogEntry(entry, bundle) {
       return desktopSourceRepository(bundle?.source) !== null
         && desktopSourceRepository(bundle.source) === desktopEntryRepository(entry)
@@ -1817,9 +1822,20 @@ window.__ModuleLoader__.load({
     function desktopBundleConfirmsInstall(entry, bundle) {
       if (!bundle || bundle.name !== entry.packageName || bundle.installed !== true
         || bundle.version !== entry.version || !desktopBundleMatchesCatalogEntry(entry, bundle)) return false
-      const source = typeof bundle.source === 'string' ? bundle.source : ''
-      const revision = source.match(/#([a-f0-9]{40})(?:&|$)/i)?.[1]?.toLowerCase()
-      return !revision || revision === entry.commit
+      return desktopSourceRevision(bundle.source) === entry.commit
+    }
+
+    function desktopBundleNeedsUpdate(entry, bundle) {
+      if (!bundle || bundle.name !== entry.packageName || bundle.installed !== true
+        || bundle.official === true || bundle.optional === true || bundle.readOnlyReason
+        || entry.packageName.startsWith('@deepseek-ai/')
+        || !['approved', 'blocked'].includes(entry.status)
+        || !DESKTOP_COMMIT.test(entry.commit || '')
+        || !desktopBundleMatchesCatalogEntry(entry, bundle)) return false
+      if (entry.packageName === 'dsh-safe-plugin-manager'
+        && (entry.id !== 'dsh-safe-plugin-manager'
+          || desktopEntryRepository(entry) !== 'https://github.com/ai-scarlett/dsh-store')) return false
+      return desktopSourceRevision(bundle.source) !== entry.commit
     }
 
     function desktopInspectionAdvice(inspection) {
@@ -1830,7 +1846,7 @@ window.__ModuleLoader__.load({
     }
 
     function desktopActionConfirmation(action, entry) {
-      const verb = { install: 'INSTALL', remove: 'REMOVE', enable: 'START', disable: 'CLOSE' }[action]
+      const verb = { install: 'INSTALL', update: 'UPDATE', remove: 'REMOVE', enable: 'START', disable: 'CLOSE' }[action]
       if (!verb) throw desktopFailure('DESKTOP_ACTION_INVALID')
       return `${verb} ${entry.packageName} ${entry.commit}`
     }
@@ -1954,6 +1970,7 @@ window.__ModuleLoader__.load({
         if (action === 'install') return ['approved', 'blocked'].includes(entry.status) && !bundle?.installed
           && entry.packageName !== 'dsh-safe-plugin-manager' && !entry.packageName.startsWith('@deepseek-ai/')
           && !desktopHasProtectedEntryId(entry) && desktopBlockedInstallReady(entry)
+        if (action === 'update') return desktopBundleNeedsUpdate(entry, bundle)
         if (!canManageBundle(entry, bundle)) return false
         if (action === 'remove') return bundle.removable === true
         if (action === 'enable') return entry.status === 'approved' && bundle.enabled === false
@@ -1961,7 +1978,7 @@ window.__ModuleLoader__.load({
         return false
       }
       const managerSupports = action => {
-        if (action === 'install') return typeof desktopPluginManager?.installBundle === 'function'
+        if (action === 'install' || action === 'update') return typeof desktopPluginManager?.installBundle === 'function'
         if (action === 'remove') return typeof desktopPluginManager?.removeBundle === 'function'
         if (action === 'enable' || action === 'disable') return typeof desktopPluginManager?.setBundleEnabled === 'function'
         return false
@@ -1970,7 +1987,9 @@ window.__ModuleLoader__.load({
         const bundle = installedByName.get(entry.packageName)
         if (!actionAvailable(action, entry, bundle) || !managerSupports(action)) return
         setDetailEntry(null)
-        setActionPlan({ action, entry, confirmation: desktopActionConfirmation(action, entry) })
+        setActionPlan({ action, entry, confirmation: desktopActionConfirmation(action, entry),
+          installedState: action === 'update' ? { version: bundle.version ?? null, source: bundle.source ?? null,
+            enabled: bundle.enabled === true } : null })
         setConfirmation('')
         setActionState({ status: 'idle' })
         actionInFlight.current = false
@@ -1989,24 +2008,28 @@ window.__ModuleLoader__.load({
           setLoadState({ status: 'ready', ...fresh })
           const entry = fresh.catalog.entries.find(item => item.id === plannedEntry.id)
           const bundle = entry ? fresh.bundles.find(item => item?.name === entry.packageName) : null
-          const catalogAllowsAction = entry && (action === 'install'
+          const catalogAllowsAction = entry && (action === 'install' || action === 'update'
             ? ['approved', 'blocked'].includes(entry.status)
             : action === 'enable' ? entry.status === 'approved' : ['approved', 'blocked'].includes(entry.status))
+          const installedStateMatchesPlan = action !== 'update' || (bundle && actionPlan.installedState
+            && (bundle.version ?? null) === actionPlan.installedState.version
+            && (bundle.source ?? null) === actionPlan.installedState.source
+            && (bundle.enabled === true) === actionPlan.installedState.enabled)
           const sourceMatchesPlan = entry && entry.packageName === plannedEntry.packageName
             && entry.version === plannedEntry.version && entry.status === plannedEntry.status
             && entry.statusReason === plannedEntry.statusReason && entry.updatePolicy === plannedEntry.updatePolicy
             && desktopInstallSpecifier(entry) === desktopInstallSpecifier(plannedEntry)
-          if (!catalogAllowsAction || !sourceMatchesPlan
+          if (!catalogAllowsAction || !sourceMatchesPlan || !installedStateMatchesPlan
             || !actionAvailable(action, entry, bundle) || !managerSupports(action)) {
             throw desktopFailure('CATALOG_OR_PROFILE_STATE_CHANGED')
           }
           let outcome
-          if (action === 'install') {
+          if (action === 'install' || action === 'update') {
             const spec = desktopInstallSpecifier(entry)
             if (typeof manager.inspect === 'function') {
               try {
                 const inspected = unwrapDesktopRemote(await withDesktopTimeout(
-                  manager.inspect(spec), DESKTOP_CATALOG_TIMEOUT_MS,
+                  manager.inspect(spec), 'DESKTOP_SOURCE_INSPECTION_TIMEOUT', DESKTOP_CATALOG_TIMEOUT_MS,
                 ), 'DESKTOP_SOURCE_INSPECTION_FAILED')
                 if (!inspected || inspected.status !== 'accepted') inspectionNotice = desktopInspectionAdvice(inspected)
               } catch (error) {
@@ -2018,14 +2041,16 @@ window.__ModuleLoader__.load({
             mutationStarted = true
             outcome = unwrapDesktopRemote(await withDesktopTimeout(manager.installBundle(spec, {
               enabled: action === 'install' ? true : bundle.enabled === true, requestId,
-            }), DESKTOP_OPERATION_TIMEOUT_MS), 'DESKTOP_INSTALL_FAILED')
+            }), 'DESKTOP_INSTALL_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS), 'DESKTOP_INSTALL_FAILED')
           } else if (action === 'remove') {
             mutationStarted = true
-            outcome = unwrapDesktopRemote(await withDesktopTimeout(manager.removeBundle(entry.packageName), DESKTOP_OPERATION_TIMEOUT_MS), 'DESKTOP_REMOVE_FAILED')
+            outcome = unwrapDesktopRemote(await withDesktopTimeout(
+              manager.removeBundle(entry.packageName), 'DESKTOP_REMOVE_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
+            ), 'DESKTOP_REMOVE_FAILED')
           } else {
             mutationStarted = true
             outcome = unwrapDesktopRemote(await withDesktopTimeout(
-              manager.setBundleEnabled(entry.packageName, action === 'enable'), DESKTOP_OPERATION_TIMEOUT_MS,
+              manager.setBundleEnabled(entry.packageName, action === 'enable'), 'DESKTOP_TOGGLE_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
             ), 'DESKTOP_TOGGLE_FAILED')
           }
           if (!outcome || !['applied', 'restart-required'].includes(outcome.application)) {
@@ -2038,9 +2063,11 @@ window.__ModuleLoader__.load({
         } catch (error) {
           const code = desktopErrorCode(error)
           const uncertain = mutationStarted && /(?:TIMEOUT|RESULT_UNKNOWN|REMOTE_FAILED|UNAVAILABLE)/.test(code)
-          if (uncertain && action === 'install' && requestId && typeof manager.waitForInstall === 'function') {
+          if (uncertain && ['install', 'update'].includes(action) && requestId && typeof manager.waitForInstall === 'function') {
             try {
-              const recovered = unwrapDesktopRemote(await withDesktopTimeout(manager.waitForInstall(requestId), DESKTOP_OPERATION_TIMEOUT_MS),
+              const recovered = unwrapDesktopRemote(await withDesktopTimeout(
+                manager.waitForInstall(requestId), 'DESKTOP_INSTALL_RESULT_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
+              ),
                 'DESKTOP_INSTALL_RESULT_UNAVAILABLE')
               if (recovered) {
                 if (['applied', 'restart-required'].includes(recovered.application)) {
@@ -2059,7 +2086,7 @@ window.__ModuleLoader__.load({
               }
             } catch { /* Refresh the one submitted request; never submit it again. */ }
           }
-          if (mutationStarted && action === 'install' && await desktopInstallIsAlreadyPresent(manager, actionPlan.entry)) {
+          if (mutationStarted && ['install', 'update'].includes(action) && await desktopInstallIsAlreadyPresent(manager, actionPlan.entry)) {
             setActionState({ status: 'success', application: 'already-installed', inspectionNotice })
             await refresh()
             return
@@ -2090,9 +2117,17 @@ window.__ModuleLoader__.load({
         }
       }
 
-      const actionLabel = action => ({ install: '安装', remove: '卸载', enable: '启动', disable: '关闭' }[action] || action)
+      const actionLabel = action => ({ install: '安装', update: '更新', remove: '卸载', enable: '启动', disable: '关闭' }[action] || action)
       const actionBlockReason = (action, entry, bundle) => {
-        if (entry.packageName === 'dsh-safe-plugin-manager') return '商城自身不由商城管理。'
+        if (entry.packageName === 'dsh-safe-plugin-manager') {
+          if (action !== 'update') return '商城自身不提供商城自安装、启停或卸载；首次安装请用 DSH Desktop，之后可在此提交固定 Commit 更新。'
+          if (!bundle?.installed) return '请先通过 DSH Desktop 安装商城；安装后可在此提交固定 Commit 更新。'
+          if (bundle.official === true || bundle.optional === true || bundle.readOnlyReason
+            || !desktopBundleMatchesCatalogEntry(entry, bundle)) return 'DSH 已安装来源受保护或与商城仓库不一致，商城不会更新。'
+          if (!DESKTOP_COMMIT.test(entry.commit || '')) return 'Catalog 固定 Commit 无效，无法提交更新。'
+          return desktopSourceRevision(bundle.source) === entry.commit
+            ? '商城自身已经是 Catalog 当前固定 Commit。' : '商城更新条件未满足。'
+        }
         if (entry.packageName.startsWith('@deepseek-ai/')) return 'DSH 官方组件不由商城管理。'
         if (action === 'install' && entry.status === 'blocked' && !desktopBlockedInstallReady(entry)) return '固定 GitHub Commit、来源证据、entry ID 或安装路径未通过基础校验。'
         if (['install', 'enable'].includes(action) && entry.status !== 'approved'
@@ -2101,6 +2136,15 @@ window.__ModuleLoader__.load({
         if (action === 'install') {
           if (bundle?.installed) return '当前 Profile 已安装此插件。'
           return '安装条件未满足。'
+        }
+        if (action === 'update') {
+          if (!bundle?.installed) return '当前 Profile 尚未安装此插件。'
+          if (bundle.official === true || bundle.optional === true || bundle.readOnlyReason
+            || !desktopBundleMatchesCatalogEntry(entry, bundle)) return '已安装 Bundle 受 DSH 保护或来源与 Catalog 仓库不一致，商城不会更新。'
+          if (!DESKTOP_COMMIT.test(entry.commit || '')) return 'Catalog 固定 Commit 无效，无法提交更新。'
+          if (!desktopBundleNeedsUpdate(entry, bundle)) return 'DSH 已安装来源已经是 Catalog 当前固定 Commit。'
+          if (!managerSupports('update')) return '当前 DSH Desktop 未提供官方 installBundle 更新接口。'
+          return '更新条件未满足。'
         }
         if (!bundle?.installed) return '当前 Profile 尚未安装此插件。'
         if (bundle.official === true || bundle.optional === true || bundle.readOnlyReason
@@ -2111,7 +2155,6 @@ window.__ModuleLoader__.load({
         return '当前条件未满足，商城没有执行操作。'
       }
       const actionButtons = (entry, bundle, { includeUnavailable = false, allActions = false } = {}) => {
-        if (entry.packageName === 'dsh-safe-plugin-manager') return []
         const actions = []
         const add = action => {
           const available = actionAvailable(action, entry, bundle) && managerSupports(action)
@@ -2119,23 +2162,27 @@ window.__ModuleLoader__.load({
           const reason = available ? null : actionBlockReason(action, entry, bundle)
           const label = action === 'install' && entry.status === 'blocked' ? '交由 DSH 检查安装' : actionLabel(action)
           actions.push(React.createElement(Button, {
-            key: action, primary: action === 'install' && available, danger: action === 'remove',
+            key: action, primary: ['install', 'update'].includes(action) && available, danger: action === 'remove',
             disabled: !available, onClick: available ? () => beginAction(action, entry) : undefined,
             ariaLabel: reason ? label + '（已禁用：' + reason + '）' : undefined,
             title: reason || undefined,
           }, label))
         }
         if (allActions) {
-          for (const action of ['install', 'enable', 'disable', 'remove']) add(action)
+          for (const action of ['install', 'update', 'enable', 'disable', 'remove']) add(action)
         } else if (bundle?.installed) {
+          add('update')
           add(bundle.enabled === true ? 'disable' : 'enable')
           add('remove')
         } else add('install')
         return actions
       }
       const detailActionMessage = (entry, bundle) => {
-        if (entry.packageName === 'dsh-safe-plugin-manager') return '商城自身不由商城管理。'
-        const actions = bundle?.installed ? [bundle.enabled === true ? 'disable' : 'enable', 'remove'] : ['install']
+        if (entry.packageName === 'dsh-safe-plugin-manager') {
+          return actionAvailable('update', entry, bundle) && managerSupports('update')
+            ? null : actionBlockReason('update', entry, bundle)
+        }
+        const actions = bundle?.installed ? ['update', bundle.enabled === true ? 'disable' : 'enable', 'remove'] : ['install']
         const blocked = actions.filter(action => !actionAvailable(action, entry, bundle) || !managerSupports(action))
           .map(action => actionLabel(action) + '已禁用：' + actionBlockReason(action, entry, bundle))
         return [...new Set(blocked)].join('；') || null
@@ -2181,7 +2228,7 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.toolbar },
             React.createElement('div', { style: styles.headingCopy },
               React.createElement('h2', { style: styles.marketHeroTitle }, '插件商城（DSH-Store）'),
-              React.createElement('p', { style: styles.subtitle }, '固定 GitHub Commit · 搜索、筛选、查看详情；安装由 DSH Desktop 官方插件管理器校验')),
+              React.createElement('p', { style: styles.subtitle }, '固定 GitHub Commit · 搜索、筛选、查看详情；安装与更新均交由 DSH Desktop 官方插件管理器')),
             React.createElement('div', { style: styles.actions },
               loadState.status === 'ready' && loadState.runtimeVersion
                 ? React.createElement('span', { style: styles.versionPill }, 'DSH ' + loadState.runtimeVersion) : null,
@@ -2352,13 +2399,14 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.muted }, 'GitHub：' + actionPlan.entry.repositoryUrl),
           React.createElement('div', { style: styles.code }, '固定 Commit：' + actionPlan.entry.commit),
           React.createElement('div', { style: styles.muted }, actionInstalledSummary),
-          actionPlan.action === 'install'
-            ? React.createElement('div', { style: styles.code }, '安装 spec：' + desktopInstallSpecifier(actionPlan.entry)) : null,
-          actionPlan.action === 'install' && actionPlan.entry.status === 'blocked'
+          ['install', 'update'].includes(actionPlan.action)
+            ? React.createElement('div', { style: styles.code }, (actionPlan.action === 'update' ? '更新' : '安装')
+              + ' spec：' + desktopInstallSpecifier(actionPlan.entry)) : null,
+          ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
             ? React.createElement('div', { style: styles.error, role: 'alert' },
-              'Store 复核建议：' + actionPlan.entry.statusReason + '。这是 Store 的风险提示，不是 DSH 的安装结论。请先核对来源、权限和脚本；确认后由 DSH 官方插件管理器检查并返回结果。') : null,
-          actionPlan.action === 'install' && actionPlan.entry.updatePolicy === 'external-only'
-            ? React.createElement('div', { style: styles.notice }, '更新策略：external-only。此操作只把当前固定 Commit 交由 DSH 检查；后续更新仍不由 Store 管理。') : null,
+              'Store 复核建议：' + actionPlan.entry.statusReason + '。这是 Store 的风险提示，不是 DSH 的安装结论；最终安装/更新结果由 DSH 官方插件管理器返回。请先核对来源、权限和脚本。') : null,
+          ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.updatePolicy === 'external-only'
+            ? React.createElement('div', { style: styles.notice }, '更新策略：external-only。此次仅把当前 Catalog 固定 Commit 交由 DSH 检查；Store 不会自动跟随后续源码更新。') : null,
           React.createElement('div', { style: styles.muted },
             'DSH 版本：' + (loadState.runtimeVersion || '未知') + ' · ' + licenseLabel(actionPlan.entry.details.license)),
           React.createElement('div', { style: styles.muted }, permissionsOf(actionPlan.entry)),
@@ -2371,7 +2419,9 @@ window.__ModuleLoader__.load({
           actionState.inspectionNotice ? React.createElement('div', { style: styles.notice, role: 'status' }, actionState.inspectionNotice) : null,
           actionState.status === 'success' ? React.createElement('div', { style: styles.notice, role: 'status' },
             actionState.application === 'already-installed'
-              ? 'DSH Desktop 已安装清单确认此版本已安装；本次未发生依赖变更。'
+              ? actionPlan.action === 'update'
+                ? 'DSH Desktop 已安装清单确认此固定 Commit 已是当前版本；本次未发生依赖变更。'
+                : 'DSH Desktop 已安装清单确认此版本已安装；本次未发生依赖变更。'
               : actionState.application === 'restart-required'
                 ? '操作已写入 Desktop Profile；DSH 报告需要按其官方流程重新加载后生效。'
                 : 'DSH 官方插件管理器已完成' + actionLabel(actionPlan.action) + '。') : null,
@@ -2382,7 +2432,8 @@ window.__ModuleLoader__.load({
             '操作结果暂时无法确认。商城已刷新 Desktop Profile；请核对当前状态后再决定下一步，不会自动重试。') : null,
           !['success', 'error', 'unknown'].includes(actionState.status) ? React.createElement('label', { style: styles.muted },
             '输入 ' + actionPlan.confirmation + '，确认在当前 Desktop Profile 执行'
-              + (actionPlan.action === 'install' && actionPlan.entry.status === 'blocked' ? 'DSH 检查与安装' : actionLabel(actionPlan.action)) + '：',
+              + (['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
+                ? 'DSH 检查与' + actionLabel(actionPlan.action) : actionLabel(actionPlan.action)) + '：',
             React.createElement('input', {
               value: confirmation, onChange: event => { setConfirmation(event.target.value) },
               style: styles.input, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',

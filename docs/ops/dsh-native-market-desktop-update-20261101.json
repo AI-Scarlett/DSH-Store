@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-update-20261101",
+  "planFile": "docs/ops/dsh-native-market-desktop-update-20261101.json",
+  "createdAt": "2026-11-01T13:10:11Z",
+  "baseCommit": "20c086212269a861ef931f120d2fee2d04cecf17",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-update-20261101.json",
+    "docs/reviews/dsh-native-market-desktop-update-20261101.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "3022cc3a09d92662c3ce4fa717eebf4545eed7274f419b77518ee28db0513cb4",
+    "README.md": "1825517071f86a8eb9ef3b95a68319d3df20618b7551d71d4366585bdf9baa51",
+    "docs/ops/dsh-native-market-desktop-update-20261101.json": null,
+    "docs/reviews/dsh-native-market-desktop-update-20261101.md": null,
+    "package.json": "040dac45a824ae6d087e011e4adb1580197fe56e3cac1f686f68e8cbbf3eb8e1",
+    "src/client.js": "16ab0751067d124e729cd3bbca95367ce4df1b961576c2af48ec202916c499e9",
+    "test/catalog.test.mjs": "c1dcdf58669d43d9622c100123be8f89a4f6a025bb7e05988886926faa3ef2d7",
+    "test/contracts.test.mjs": "5f5770c9d15494e0a0e0312f731374d3cc82b4175aa2d97a41a359704ef26676",
+    "test/desktop-compat.test.mjs": "59be0a2eb14f62591569d150895fa2a39aa5e443ba3205a9700f9a2f2fa410dc",
+    "test/upgrade-matrix.test.mjs": "1967a29a2dc22505618667f436a2b985a96a9cd9335407843b65a33306d81205"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "bc042bffe7ef9402df73f4d5909a00d14ecf15ecea19d7f6c8079da8befc6eb8",
+    "README.md": "693cac813c94c3d559221c4864489a3acd6838d4a8ece9a9fab64f5e89738053",
+    "docs/reviews/dsh-native-market-desktop-update-20261101.md": "29812873518ec006ce7f17e9c7fb4813b53dc48e27c965f1f8eb92d27da7fe44",
+    "package.json": "b28ae9d194f1950ecf80fd1fb7a11dd28899c82c22ee9e65bdde41e7515e940a",
+    "src/client.js": "73ba7e506a59350074f478ad95c35e2565c29f0e09202912914a520b9f18c3cf",
+    "test/catalog.test.mjs": "e95b93a5ec6cfd538f2933238aa5e0fb0ff5db66bebc52d8e6e4f5023fce4a2b",
+    "test/contracts.test.mjs": "378707de8cdcd19d61c39b3e0dac6d3eeef3061381575f542ba3a70ab2d248f7",
+    "test/desktop-compat.test.mjs": "4c1174be9481c27650c560e62a930f57d4021648cae8bcfbfc9e8f66bca873d8",
+    "test/upgrade-matrix.test.mjs": "03f81f16614ea59e167658adea7d06a694ded7ee23baf1b0d9d8195f918496ba"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户指出 DSH Desktop 中 DSH Store 仍无法更新/安装，要求修改；此前已明确要求推送发布。本计划仅修改 Store 源码和发布记录，不写入真实 Desktop Profile。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修复 DSH Store Desktop 已安装 GitHub 插件无法更新及慢请求被过早判失败的问题。提供基于新 Catalog 完整 Commit 的更新入口（包括 Store 自身）；更新由 DSH 官方 installBundle() 执行，最终结果以 DSH 返回值和精确已安装清单核对为准。",
+  "change": {
+    "packageVersion": "0.9.25",
+    "updatePath": "已安装包的当前 Git 来源须与 Catalog 仓库匹配；当版本或来源 Commit 落后于 Catalog 时，显示更新操作。用户输入 UPDATE、完整包名和目标 40 位 Commit 后，调用 DSH 官方 inspect() 提示并提交精确 git+https GitHub Commit 给 installBundle()。同样允许 Store 自身 dsh-safe-plugin-manager 按此流程更新；禁止 Store 自行写 Profile 或 pnpm 文件。",
+    "noChangeHandling": "若 DSH 返回无变更失败，只查一次 listBundles()；仅当包名、版本、GitHub 仓库和完整来源 Commit 均与目标相同才显示已是当前版本，否则原样展示 DSH 失败或未知状态，不自动重试。",
+    "apiBasis": "当前官方 latest-three 为 0.2.1-rc.4、0.2.1-rc.5、0.2.2-alpha.2。0.2.2-alpha.2 公共类型/实现将 updateBundle/listVersions 限定为 registry dependency；inspect 接受 Git spec，GitHub fixed-Commit 更新走公开 installBundle(spec)，由 DSH 管理包事务。",
+    "timeoutHandling": "修复 withDesktopTimeout 把 90 秒时长误作错误码、所有操作仍在 12 秒超时的问题。helper 明确区分超时码和时长；Catalog/inspection 继续 12 秒，installBundle、waitForInstall、removeBundle、setBundleEnabled 使用 90 秒。install 超时进入已有 waitForInstall/单次清单核对路径，不重复提交。",
+    "catalog": "本 Source PR 不改 Catalog pin；源码合入取得完整 Commit 后，另建新鲜 Catalog release plan 和 CI-checked PR。",
+    "protectedBoundary": "不改 DSH 核心、@deepseek-ai/*、Catalog 准入规则或真实 DSH Profile。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop install/update cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and full repository suite passes"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "package name dsh-safe-plugin-manager, version 0.9.25"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-update-20261101.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Fresh base Commit and every precondition hash must match; only the exact scope may change.",
+    "Disposable tests cover fixed-Commit updates for an older Git install, Store self-update, already-current no-op, stale confirmation, DSH refusal, and no blind retry.",
+    "All repository checks, package dry-run, typed-plan verifier, and exact-head PR CI must pass before merge.",
+    "After source merge, update Catalog pin in a separate plan and verify GitHub Raw, Pages, dsh.store, and dsh-store.cn.",
+    "Real Desktop UI/Profile acceptance remains separate; this source change never writes the user's Profile."
+  ],
+  "rollback": {
+    "source": "Revert only through an auditable CI-checked source PR; Catalog stays at 0.9.24 until a separate Catalog release is accepted.",
+    "desktopProfile": "No real Profile mutation is included. Runtime updates use only DSH installBundle() after the user's typed confirmation; DSH owns the package operation and reports its outcome."
+  },
+  "healthCheck": "Run the typed plan check, focused disposable Desktop tests, complete npm run check, diff check, and npm pack dry-run; then wait for exact-head CI. Confirm update spec contains the Catalog's full Commit and no custom profile/package-manager write exists.",
+  "verification": {
+    "desktopCompatibilityTests": "passed: 30/30 disposable Desktop cases, including fixed-Commit update, Store self-update, DSH refusal, and 90-second operation deadline",
+    "npmRunCheck": "passed: REGISTRY_OK entries=872; 577/577 tests",
+    "packageDryRun": "passed: dsh-safe-plugin-manager@0.9.25; 1072 files; 8511487 bytes",
+    "syntaxAndDiffCheck": "passed: node --check src/client.js; git diff --check",
+    "typedPlan": "passed: DSH_UPGRADE_PLAN_OK base=20c086212269a861ef931f120d2fee2d04cecf17 changed=10",
+    "exactHeadCi": "pending",
+    "catalogAndStorefronts": "pending separate Catalog release",
+    "realDesktopProfile": "unverified; no real Profile write"
+  }
+}
