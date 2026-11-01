@@ -243,7 +243,7 @@ SemVer 键，例如 `0.1.1-rc.2`，避免不同发布线的 `rc.1` 混淆。商�
 
 - `categories` 必须引用 `registry.categories` 中已声明的分类；页面会自动生成分类筛选；
 - `featured: true` 表示推荐，在每个分类中优先显示，但不会绕过来源和安全检查；
-- `status: approved` 为正常上架；`blocked` 为商城不可安装，但保留 GitHub 手动安装入口
+- `status: approved` 表示正常 Catalog 准入；`blocked` 表示未通过 Catalog 审核，Store 保留审核原因。DSH Desktop 的本地目录可在固定来源和基础字段校验通过后，经用户逐次确认把 Commit 交给官方插件管理器检查；Desktop 返回结果决定安装是否完成。Web/CLI 的 Store 管理操作仍禁止 blocked 条目，且 Desktop 安装不等于 Store 安全审核通过。
   和风险原因；手动安装不受商城事务、健康检查或回滚保护；
 - `status: unlisted` 为下架：公共商城隐藏，已安装用户仍可停用或卸载；
 - `installCount` 是可选聚合快照。客户端不得持有 GitHub 写令牌，自动计数必须通过

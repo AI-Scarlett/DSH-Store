@@ -51,7 +51,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-Catalog 当前固定 Store `0.9.22`、Commit `d7c17ce782986697af80f29a1c82476f91b7dc0c`，适配官方 DSH `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2`。`0.9.22` 恢复 DSH Desktop 商城的目录和已安装视图、搜索、分类/状态/Desktop 适配筛选、排序、分页、详情与生命周期操作；已审核插件的兼容性由 DSH Desktop 官方插件管理器判断，Desktop 适配标识只作参考。`build-dsh-plugin` 可以搜索并查看审核原因，但 Catalog 仍标记为 `blocked`，因此商城不会安装或启动它。当前 Catalog 只声明 `web` Profile，真实 Desktop Profile 验收仍未完成。
+源码当前为 `0.9.23`；远端 Catalog 仍固定 Store `0.9.22`、Commit `d7c17ce782986697af80f29a1c82476f91b7dc0c`，0.9.23 的 Catalog 发布待源码 PR 合并后单独完成。`0.9.23` 让 DSH Desktop 对固定来源且通过基础字段校验的 Catalog `blocked` 条目显示审核建议；用户输入包名和完整 Commit 确认后，Store 调用 DSH 官方管理器检查与安装，并展示 DSH 返回结果。Catalog 状态和权限/安全建议保留；DSH 拒绝时不安装，Store 不把 DSH 安装结果当成安全审计。当前 Catalog 只声明 `web` Profile，真实 Desktop Profile 验收仍未完成。
 通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.22` Commit：
 
 ```bash
@@ -87,10 +87,10 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 ### 官方 Desktop
 
-官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.22` 将入口注册为
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。Store `0.9.23` 将入口注册为
 设置左侧独立的 `插件商城` 分区；页面标题为 `插件商城（DSH-Store）`，并通过本地化插件元数据显示
 `DSH-Store`，保留内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方
-`pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。`0.9.22` 增加独立的插件目录和已安装视图，提供搜索、分类、Catalog 状态、Desktop 适配标识筛选、排序、分页、详情及生命周期操作；Catalog 标记为 `blocked` 的条目也可搜索和查看审核原因，但不会从商城安装或启动。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。
+`pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。`0.9.23` 保留插件目录和已安装视图、搜索、分类、状态筛选、排序、分页及详情；`blocked` 条目显示 Store 审核原因，用户逐次确认后可将固定来源交给 DSH 官方检查并安装，Store 以 DSH 的结果显示成功、拒绝或待重启。Catalog 仍保持 `blocked`，Web 管理操作仍按原准入策略执行。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。
 `0.9.21` 中，客户端适配标识和 Catalog 的 DSH 兼容记录只作参考，不决定已审核第三方插件能否安装；商城自身和 DSH 官方组件仍受保护。可管理的第三方条目交由 DSH Desktop 官方管理器检查；Git 源的 `inspect` 检查来源格式，实际包的 DSH 版本/peer 兼容性由 `installBundle` 校验。官方拒绝码和兼容要求会显示在商城中。安装、卸载和
 Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`setBundleEnabled` 执行；每次操作
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
@@ -102,10 +102,11 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.22`（Catalog 仍只声明 `web`；真实 Desktop Profile 安装尚未验收） |
+| Catalog 固定版本 | `0.9.22`（源码 `0.9.23` 的 Catalog 更新待发布；真实 Desktop Profile 安装尚未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
-| 可安装 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
-| 商城不可安装 | 以实时 Catalog 中 `blocked` / `unlisted` 的条目数与 `statusReason` 为准 |
+| Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
+| Desktop 可交由 DSH 检查 | 按每条记录的固定 GitHub Commit、Bundle 入口和安装路径进行基础校验；blocked 不会仅因审核状态而被挡在 DSH 外 |
+| Store 未准入 / 下架 | 以实时 Catalog 的 `blocked` / `unlisted` 状态及 `statusReason` 为准；这不是 DSH 安装结果 |
 | 分类 | 22 个 |
 | 推荐 | 商城“只看推荐”与官网推荐榜共享公开作者互动名单，完整分页；推荐不改变审核或安装资格 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
@@ -169,7 +170,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - 按名称、包名、分类或 GitHub 仓库搜索；
 - DSH 内嵌商城由 Host 每次最多返回 20 个条目，搜索、分类和翻页都使用有界响应；候选发现库只在打开候选视图后读取；
 - 公共商城使用 20 条一页的上一页、页码、下一页导航；完整目录不再内嵌到 HTML，避免首屏解析兆字节级脚本数据；主索引与详情文件可分别缓存和读取；
-- 支持 22 个分类筛选、推荐置顶、可信安装中的“只看推荐”筛选、上架、商城不可安装和下架；
+- 支持 22 个分类筛选、推荐置顶、可信安装中的“只看推荐”筛选，以及 Catalog 审核状态筛选；Desktop 的 DSH 委托安装资格另按固定来源和保护边界判断；
 - 默认按照 approved、推荐、官方最新 DSH 的精确兼容证据、范围支持待验证、GitHub 固定来源更新时间和安装量依次排序；范围不支持、证据未知或长期未更新的条目依次排在后面；
 - 目录中的安装目标固定到 40 位 Git Commit，不接受 npm-only、任意下载地址或浮动分支；
 - 商城页面和 DSH 内置界面共享同一组 `catalog.json` 兼容桥、`catalog-index.json` 主索引和独立详情文件。
@@ -264,7 +265,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 `0.9.6` 的作者互动推荐由 `registry/community-recommendations.json` 提供公开提交/回复链接、不变用户 ID 和时间，覆盖全部互动插件；商城每页 20 项，官网推荐榜每页 30 项。已退出、停止展示或不是插件的项目排除。待审、blocked、unlisted 和 rejected 项目可按各自审核状态展示，不授予安装资格。官网另保留星标推荐和明确标注的工具展示位。
 
 - `approved`：正常上架并允许生成安装计划；
-- `blocked`：商城中继续展示并提供 GitHub 手动安装入口，但不提供商城安装操作；
+- `blocked`：Catalog 不视为已审核；在 DSH Desktop 中显示 Store 建议，用户明确确认后可交给 DSH 官方管理器检查固定来源并决定是否安装。Web/CLI 受保护安装仍不放宽。
 - `unlisted`：公共商城隐藏，已安装用户仍可停用或卸载；
 - `featured: true`：在全部视图和所属分类中优先显示；旧展示标记不会提高任何可信证据；“只看推荐”现在使用上面的作者互动名单；当前推荐 DSH-Store、
   Build DSH Plugin、Agent Workflow 和 Settings Hub；
@@ -378,7 +379,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | [DSH Web Plugin Manager](https://github.com/LX2000WASD/dsh-web-plugin-manager) | 插件市场、管理工具 | 商城不可安装（GitHub 手动） | 第三方综合插件管理器，当前 Bundle 会遮蔽 DSH 官方插件清单。 |
 | [DSH Plugin Hub](https://github.com/Noob-stupid/dsh-plugin-hub) | 插件市场、管理工具 | 商城不可安装（GitHub 手动） | 社区插件控制台，当前使用受保护的 `@deepseek-ai` 官方命名空间。 |
 
-### 商城不可安装说明
+### 固定边界条目说明
 
 - **DSH Memory Evolve**：固定 Commit 的 manifest 未声明 `dsh.bundle.patch`；
 - **DSH TUI**：属于独立终端入口，Bundle Patch 会覆盖或停用多项基础 Profile 行；
@@ -386,10 +387,7 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - **DSH Web Plugin Manager**：会禁用官方 `ui-settings-plugin-inventory`；
 - **DSH Plugin Hub**：第三方仓库声明受保护的 `@deepseek-ai` 官方命名空间。
 
-“商城不可安装”不是下架：用户仍可查看项目介绍和 GitHub 仓库，并按项目文档自行决定
-是否手动安装，但商城不会为其生成安装计划。手动安装可进入只读健康检查，但没有固定
-目录证据，也不受商城的备份或失败回滚保护。目录收录也不代表完成安全审计；第三方插件会以 DSH 进程权限运行，安装前
-仍应核对仓库、固定 Commit、许可证、生命周期脚本和影响范围。
+上列项目因缺少单包 Bundle、缺少可检查的入口或触及受保护的官方组件，当前不会由商城提交安装请求。其他 `blocked` 条目仍显示 Catalog 审核建议；通过固定 GitHub Commit、入口 ID 和路径等基础校验后，用户可在 DSH Desktop 明确确认并交给官方插件管理器检查。DSH 可能接受或拒绝，商城展示 DSH 返回的结果；这不会把 Catalog 提升为 `approved`，也不代表安全审计通过。第三方插件会以 DSH 进程权限运行，安装前仍应核对仓库、固定 Commit、许可证、生命周期脚本和影响范围。
 
 ## 详细健康检查与权限选择
 

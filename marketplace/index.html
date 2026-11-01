@@ -66,7 +66,7 @@
         "alternateName": ["DSH.STORE", "dsh.store", "DeepSeek Harness Plugin Store"],
         "inLanguage": ["zh-CN", "en"],
         "publisher": {"@id": "https://dsh.store/#organization"},
-        "description": "A third-party DeepSeek Harness plugin marketplace and developer gateway, including a plugin catalog inside the official DSH Desktop. Desktop's official plugin manager checks install compatibility for approved fixed-source entries."
+        "description": "A third-party DeepSeek Harness plugin marketplace and developer gateway, including a plugin catalog inside the official DSH Desktop. Desktop's official plugin manager checks approved sources and user-confirmed fixed sources that carry Store review advice."
       },
       {
         "@type": "WebPage",
@@ -104,7 +104,7 @@
         "operatingSystem": "Any system supported by DeepSeek Harness",
         "url": "https://dsh.store/#manager",
         "downloadUrl": "https://github.com/AI-Scarlett/DSH-Store",
-        "description": "A standard Host Plugin and Client Bundle that adds a DSH plugin catalog and management entry to the official Desktop. The official DSH Desktop plugin manager performs compatibility checks and installation for approved fixed-source entries."
+        "description": "A standard Host Plugin and Client Bundle that adds a DSH plugin catalog and management entry to the official Desktop. The official DSH Desktop plugin manager checks approved sources and user-confirmed fixed sources with Store review advice."
       },
       {
         "@type": "FAQPage",
@@ -112,7 +112,7 @@
           {"@type": "Question", "name": "官网会直接安装 DSH 插件吗？", "acceptedAnswer": {"@type": "Answer", "text": "不会。官网只负责发现与查看；真实操作需要在 DSH 内生成一次性计划并确认。"}},
           {"@type": "Question", "name": "可安装是否等于完成安全审计？", "acceptedAnswer": {"@type": "Answer", "text": "不等于。可安装表示条目满足当前固定来源、标准 Bundle 与策略检查。"}},
           {"@type": "Question", "name": "插件目录的数据来自哪里？", "acceptedAnswer": {"@type": "Answer", "text": "运行时目录以 GitHub registry/catalog.json 为权威源，无法核验的安全与兼容性字段保持未知。"}},
-          {"@type": "Question", "name": "DSH STORE 是否适配 DSH Desktop？未声明客户端适配的插件能安装吗？", "acceptedAnswer": {"@type": "Answer", "text": "DSH STORE 已适配 DSH 官方桌面端。客户端适配标识只说明 Desktop 专属界面的适配声明，不是安装门槛；已审核固定来源的插件仍可交由 DSH Desktop 官方插件管理器按当前环境校验。Catalog 标记为 blocked 的条目仍不能通过商城安装。"}}
+          {"@type": "Question", "name": "DSH STORE 是否适配 DSH Desktop？未声明客户端适配的插件能安装吗？", "acceptedAnswer": {"@type": "Answer", "text": "DSH STORE 已适配 DSH 官方桌面端。客户端适配标识只说明 Desktop 专属界面的适配声明，不是安装门槛；已审核固定来源的插件仍可交由 DSH Desktop 官方插件管理器按当前环境校验。Catalog 标记为 blocked 的条目会展示 Store 审核建议；用户确认后交给 DSH 检查，DSH 返回安装结果。"}}
         ]
       }
     ]
@@ -281,7 +281,7 @@
         <details><summary><span data-i18n="faq.q1">官网会直接安装插件吗？</span><i>＋</i></summary><p data-i18n="faq.a1">不会。官网只负责发现与详情展示；生命周期操作需要在 DSH 内生成计划并确认。</p></details>
         <details><summary><span data-i18n="faq.q2">“可安装”等于完成安全审计吗？</span><i>＋</i></summary><p data-i18n="faq.a2">不等于。它表示条目满足固定来源、标准 Bundle 与当前策略检查。</p></details>
         <details><summary><span data-i18n="faq.q3">如何选择适合自己的插件？</span><i>＋</i></summary><p data-i18n="faq.a3">先确认能力是否匹配，再查看来源、权限、兼容性和维护状态；遇到未知信息时保持谨慎。</p></details>
-        <details><summary><span data-i18n="faq.q4">DSH STORE 是否适配 DSH Desktop？没有桌面界面的插件能安装吗？</span><i>＋</i></summary><p data-i18n="faq.a4">DSH STORE 已适配 DSH 官方桌面端。客户端适配标识只描述 Desktop 专属界面，不是安装门槛；已审核条目由 Desktop 官方插件管理器校验，Catalog blocked 条目仍不可安装。</p></details>
+        <details><summary><span data-i18n="faq.q4">DSH STORE 是否适配 DSH Desktop？没有桌面界面的插件能安装吗？</span><i>＋</i></summary><p data-i18n="faq.a4">DSH STORE 已适配 DSH 官方桌面端。客户端适配标识只描述 Desktop 专属界面，不是安装门槛；已审核条目由 Desktop 官方插件管理器校验，Catalog blocked 条目会展示 Store 审核建议；用户确认后交给 DSH 检查，DSH 返回安装结果。</p></details>
       </div>
     </section>
   </main>
