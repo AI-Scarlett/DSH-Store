@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-0925-catalog-20261101",
+  "planPath": "docs/ops/store-0925-catalog-20261101.json",
+  "sourceReviewPath": "docs/reviews/store-0925-source-review-20261101.json",
+  "version": "0.9.25",
+  "targetDshRelease": "0.2.2-alpha.2",
+  "latestDshWindow": [
+    "0.2.1-rc.4",
+    "0.2.1-rc.5",
+    "0.2.2-alpha.2"
+  ],
+  "reviewMode": "first-party-owner-reviewed",
+  "createdAt": "2026-11-01T13:44:41.000Z",
+  "baseCommit": "b544c8f8fdad7626400e06dfc7dd255668465d1e",
+  "sourceCommit": "b544c8f8fdad7626400e06dfc7dd255668465d1e",
+  "sourceTree": "a99e65214c9201c7e4fce9f583b22d298997ab82",
+  "sourceHead": "af2a9431fbbf495cd2277754128a97af0596598e",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/store-0925-catalog-20261101.json",
+    "docs/reviews/store-0925-source-review-20261101.json",
+    "docs/reviews/store-0925-release-20261101.md",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "bc042bffe7ef9402df73f4d5909a00d14ecf15ecea19d7f6c8079da8befc6eb8",
+    "README.md": "693cac813c94c3d559221c4864489a3acd6838d4a8ece9a9fab64f5e89738053",
+    "docs/ops/store-0925-catalog-20261101.json": null,
+    "docs/reviews/store-0925-source-review-20261101.json": null,
+    "docs/reviews/store-0925-release-20261101.md": null,
+    "registry/catalog-index.json": "fe35f0de06b272dbc85bedf279080d3357d44d9f239a48a5f2962858b6d490dd",
+    "registry/catalog.json": "1f45bf96dd3d627bf965f10ab69e2815f6fa322bdd650283c500929e82b65904",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "423e3fd52fbbafc6b1f2b70ac4406c8ae499a4fc71ba1cc818a2ef514926438e"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "5793f18c05976dd5dccc39501bacff818ef33f8502660a6582151ad64217905c",
+    "README.md": "f60ab713c70e26739af618aeadd9298ca81a5f8577c5626a3ac1c183c140840b",
+    "docs/reviews/store-0925-source-review-20261101.json": "429a0f3b193b6c5ec3d2e8f467b9c5b65d4a2ae4f48a086a1f0dac9711d2eb3a",
+    "docs/reviews/store-0925-release-20261101.md": "a45928399964c6feaa099779298162f5ee3c8b53d208df59459bb97e272e9af5",
+    "registry/catalog-index.json": "7d5ccf33c13229a633ff36ee93186ee17875e16c3d30bfd6c019ab563d18d800",
+    "registry/catalog.json": "54df8589b443aa7f339d421b47a564f1bb037771341d24226749f00cd6e58c03",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "91ca240b504fa21990b0e88de774445d8c9977f2907c1f050d9957d57f049d50"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户指出 DSH Store 仍有大量无法安装的条目，要求修改；此前已明确要求推送和发布。本 Catalog 发布仅更新 Store 自身固定版本，安装/更新最终结果交由 DSH Desktop 官方 installBundle()。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "deterministicPolicyVerdictRequired": true
+  },
+  "sourceEvidence": {
+    "canonicalRepository": "https://github.com/AI-Scarlett/DSH-Store",
+    "mergedSourcePullRequest": 1701,
+    "sourceHead": "af2a9431fbbf495cd2277754128a97af0596598e",
+    "mergeCommit": "b544c8f8fdad7626400e06dfc7dd255668465d1e",
+    "sourceTree": "a99e65214c9201c7e4fce9f583b22d298997ab82",
+    "sourceChecks": [
+      {
+        "name": "DSH upgrade matrix",
+        "state": "SUCCESS",
+        "runId": 41311903661,
+        "headRevision": "af2a9431fbbf495cd2277754128a97af0596598e",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41311903661"
+      },
+      {
+        "name": "Registry validation",
+        "state": "SUCCESS",
+        "runId": 41311903652,
+        "headRevision": "af2a9431fbbf495cd2277754128a97af0596598e",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41311903652"
+      }
+    ]
+  },
+  "objective": "发布 DSH Store 0.9.25：商城的 Catalog 与 inspect() 仅提供来源/安全建议；用户逐次确认后由 DSH Desktop 官方 installBundle() 执行更新/安装并决定最终结果。",
+  "change": {
+    "packageVersion": "0.9.25",
+    "directory": "仅更新 DSH Store 自身已有 Catalog 条目到合入源码 Commit b544c8f8fdad7626400e06dfc7dd255668465d1e；其它条目不变。",
+    "lifecycle": "对已安装且 GitHub 仓库匹配的条目提供固定 Commit 更新入口，包括 Store 自身；DSH inspect() 与 Catalog blocked 只显示建议，确认后调用 DSH installBundle()，不自动重试。",
+    "catalog": "保留已有 approved 身份、权限和 web Profile 声明；不将真实 Desktop UI/Profile 体验标记为已验收。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all repository checks pass"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-store-release-plan.mjs",
+        "docs/ops/store-0925-catalog-20261101.json"
+      ],
+      "expected": "STORE_RELEASE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Plan binds current Catalog base Commit, exact merged source Commit/tree, PR head, and pre/post SHA-256 hashes for its bounded file scope.",
+    "The fixed-source review covers all distributable runtime files at the immutable source Commit; no third-party install/build/test/runtime code is executed.",
+    "Registry CI validates the plan, Catalog schema, fixed-source hashes, DSH release window, and byte-for-byte unchanged third-party entries.",
+    "The Store Catalog pin resolves to version 0.9.25 and the exact merged source Commit; approved status, permissions, and web-only Profile claim stay unchanged.",
+    "After merge, independently read GitHub Raw, Pages, dsh.store, and dsh-store.cn."
+  ],
+  "rollback": {
+    "catalog": "Revert this exact Catalog commit through a CI-checked PR; preserve immutable prior Catalog history.",
+    "runtime": "No real DSH Profile or package mutation is part of this Catalog release."
+  },
+  "healthCheck": "The release-plan verifier and Registry CI pass; Catalog/index/detail pins agree on the fixed 0.9.25 Commit, third-party entries remain byte-for-byte unchanged, and each public surface is independently read back after merge."
+}
