@@ -2,7 +2,7 @@ const translations = {
   zh: {
     'native.title': '在 DSH 原生「发现」中添加商城',
     'native.steps': 'DSH 0.2.1-alpha.4：插件 → 实验性插件 → 更多 → 打开「自定义插件市场」，然后选择「发现 → 添加索引源」，填入下方链接。',
-    'native.scope': '只包含已批准的固定 Commit 条目；未知版本不自动标为兼容。安装前核对 DSH 确认框中的来源。删除索引源即可撤销接入。',
+    'native.scope': '只发布已批准且固定到完整 Commit 的条目。Store 用标签提供兼容性证据和待复核建议；安装入口交给 DSH，由 DSH 检查插件的 engines.dsh 或官方 peer 要求、展示来源确认并返回结果。遇到待复核标签仍可发起安装，DSH 会给出最终判断。删除索引源即可撤销接入。',
     'meta.title': '常见问题｜DSH STORE',
     'meta.description': 'DSH STORE 常见问题：了解 DeepSeek Harness 插件商城、插件安装、安全边界、目录来源、插件提交、开发方式与隐私说明。',
     'a11y.skip': '跳到主要内容',
@@ -45,7 +45,7 @@ const translations = {
   en: {
     'native.title': 'Add DSH STORE to native Discover',
     'native.steps': 'DSH 0.2.1-alpha.4: open Plugins → Experimental plugins → More, enable Custom plugin market, then choose Discover → Add index source and paste the URL below.',
-    'native.scope': 'Only approved entries pinned to full Commits are included. Unknown versions remain unsupported. Check the source in the DSH installation confirmation. Remove the index source to disconnect.',
+    'native.scope': 'Only approved entries pinned to full Commits are included. The Store labels compatibility evidence and review advice; DSH owns the install action, checks the plugin engines.dsh or official peer requirements, shows the source confirmation, and returns the result. A review label does not hide the install action. Remove the index source to disconnect.',
     'meta.title': 'Frequently Asked Questions | DSH STORE',
     'meta.description': 'DSH STORE FAQ covering the DeepSeek Harness plugin marketplace, installation, safety boundaries, catalog sources, submissions, development, and privacy.',
     'a11y.skip': 'Skip to main content',

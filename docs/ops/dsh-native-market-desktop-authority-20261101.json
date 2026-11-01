@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-authority-20261101",
+  "planFile": "docs/ops/dsh-native-market-desktop-authority-20261101.json",
+  "createdAt": "2026-11-01T00:00:00+08:00",
+  "baseCommit": "3815536e319da5cd282182819d1e0227eacf539c",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-authority-20261101.json",
+    "docs/reviews/dsh-native-market-install-delegation-20261101.md",
+    "marketplace/faq/faq.js",
+    "marketplace/faq/index.html",
+    "marketplace/standards/index.html",
+    "marketplace/standards/standards.js",
+    "src/native-market-index.mjs",
+    "test/native-market-index.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "f6a31b6216d2c4ea173b47e520eb90705384da3575d0c4db7d0d1c455362f393",
+    "README.md": "956eed6b514bfdbe7e034c71df0692e4570fa07309c1ae1ac109723fa2a4a1dc",
+    "docs/ops/dsh-native-market-desktop-authority-20261101.json": null,
+    "docs/reviews/dsh-native-market-install-delegation-20261101.md": null,
+    "marketplace/faq/faq.js": "eff345c32717fde40cd01b12bd3465a84f556bb1a8de596dc270c6152a88ed54",
+    "marketplace/faq/index.html": "185046267cacaa2313d9017f25bce72e0562449d8ef1471cf0d92fcdef5b9a35",
+    "marketplace/standards/index.html": "718737802151ed3fdbe371da3a488c66a7522f2138da82d1471125d873db59b0",
+    "marketplace/standards/standards.js": "ef626e523843ad043a5088ce8f8abf2b0f90e85a945ceda28f57b23e4141738b",
+    "src/native-market-index.mjs": "0b77131fc20bdb2b38d007db6e9e2a1e5d7f3c653d8ae08b854ce60ebebbcac6",
+    "test/native-market-index.test.mjs": "5ee08a59ff575a73356ddc9ebe57b419bc5e259ebb66fa65efa0fa903d467d61",
+    "test/upgrade-matrix.test.mjs": "f765086f98acba8484f7d332f114412751bb1aa956bfd6222b5eaaba6ce22066"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "73a8c81d2d30255761dfd27ebd86c1956539f42516c66061bb4fa9c1b301b803",
+    "README.md": "8cf286f90604beba71bedfa3e652c439e5e390fedcd6f640ae9cc3618886445c",
+    "docs/reviews/dsh-native-market-install-delegation-20261101.md": "adc3d57d973d23e076172ddbe9fa9463fe9dda79d21718e94dca8a6454d8511c",
+    "marketplace/faq/faq.js": "ebd00e2734d30a801340076b8f0628cdb0e48f70194bcd2c756873c26cc68135",
+    "marketplace/faq/index.html": "21a78551619464ac02e97b301942b52eff581d89e7de411cfae25177e5c80d59",
+    "marketplace/standards/index.html": "ce3e79c0591769eaa813d8cdf6d1aa2c59d9a4a584a9874ec11c87b05fc32b86",
+    "marketplace/standards/standards.js": "14703c32d8de589ec8ca48163fd584e1a5fae633a8c57787a4a4d893bd81ead5",
+    "src/native-market-index.mjs": "368b7549c94633ff83be78d72b78aa48bb8d7b2788af9350d019aab472e0f5d1",
+    "test/native-market-index.test.mjs": "e5bc5e263cc9d1d21ca8701d8e9b91912647d6e568cceea91565c91f2a142975",
+    "test/upgrade-matrix.test.mjs": "71b8cb0819aa3d5680cd85a2b4818111e10489266611fc73163b422addb15995"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Store gives compatibility advice; DSH Desktop performs final installation checks and reports the result.",
+    "publication": "auditable-pull-request-and-publication",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "gates": [
+    "Only approved Catalog entries with immutable Git Commits, safe paths, matching manifests, and Commit publication evidence enter native Discover.",
+    "Compatibility evidence is advice; the index does not pre-filter unknown DSH versions or impose Store-generated engines.dsh ranges.",
+    "Native index labels disclose DSH final checks and any Store compatibility recheck recommendation.",
+    "Run npm run check before committing; CI must run the typed plan, official parser, and exact-head checks before merge.",
+    "Merge only through the auditable PR after deterministic checks pass, then verify GitHub Raw, Pages, dsh.store, and dsh-store.cn.",
+    "Do not claim real Desktop acceptance from source checks; do not change a real Profile or DSH source."
+  ],
+  "rollback": "Revert the exact source PR through a CI-checked PR. Production keeps the prior artifact until the atomic storefront refresh and health checks pass; no real Profile is changed.",
+  "healthCheck": "Verify the typed plan and npm run check locally, official parser and exact-head CI on the PR, then independently read back GitHub Raw, Pages, dsh.store, and dsh-store.cn.",
+  "verdict": {
+    "status": "local-check-passed-release-in-progress-desktop-unverified",
+    "checkedAt": "2026-11-01T13:30:38+08:00",
+    "npmRunCheck": "passed; registry entries=872; tests=562",
+    "nativeIndexProjection": "33 approved entries published; 30 carry the Store compatibility recheck label; no Store-generated engines.dsh constraints",
+    "staticBuild": "STATIC_MARKETPLACE_OK; native index format=1, entries=33, review labels=30, version fields omit Store-generated engines.dsh",
+    "officialDshParser": "not run locally; required in PR CI before merge",
+    "pullRequestCi": "pending exact-head PR",
+    "publicSurfaces": "pending merge and atomic deployment",
+    "realDesktop": "not tested; no real Profile was changed"
+  },
+  "boundaries": [
+    "No DSH source or @deepseek-ai package changes.",
+    "No real DSH Profile, package, or restart mutations.",
+    "No third-party plugin code execution.",
+    "No direct main-branch writes; changes enter through the authorized auditable PR.",
+    "No production state claim until four-surface readback passes."
+  ]
+}

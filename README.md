@@ -31,9 +31,9 @@ DSH `0.2.1-alpha.4` 新增实验性「自定义插件市场」。在 **插件 �
 - 国内站：`https://dsh-store.cn/plugin-market.json`
 - GitHub Pages：`https://ai-scarlett.github.io/DSH-Store/marketplace/plugin-market.json`
 
-原生索引按官方 `format: 1` 生成，仅包含已批准条目，来源锁定完整 Git Commit；兼容范围只包含 Catalog 明确声明兼容的版本。未知版本不会自动扩大支持范围。发布时间取该固定 Commit 的公开时间。索引会随正式站点每三小时刷新；添加索引源属于当前 Profile，安装仍需核对 DSH 确认框中的来源。关闭实验性市场或删除索引源可撤销接入。
+原生索引按官方 `format: 1` 生成，只发布已批准、固定到完整 Git Commit 且结构完整的条目。Store 会用标签展示兼容性证据和待复核建议，但不再用这些记录替 DSH 隐藏安装入口或限定 DSH 版本范围。点击安装后，DSH 官方流程读取插件自己的 `engines.dsh` 或 DSH peer 要求、展示来源确认，并返回实际检查与安装结果；明确不兼容或包结构错误时由 DSH 给出原因。发布时间取固定 Commit 的公开时间。索引会随正式站点每三小时刷新；添加索引源属于当前 Profile。关闭实验性市场或删除索引源可撤销接入。
 
-DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所有 DSH peer。Store 保留逐版本声明与隔离运行证据；范围声明、源码检查和真实 Desktop 验收分别记录。
+DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所有 DSH peer。Store 仍保留逐版本声明与隔离运行证据，并给出建议；这些证据不会冒充 Desktop 对当前版本的实际安装判定。真实 Desktop 验收仍单独记录。
 
 ## 安装插件商城
 

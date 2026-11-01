@@ -122,6 +122,7 @@ test('runtime workflow has one timeout and keeps the expensive disposable smoke 
   assert.match(nextChannel, /scripts\/test-disposable-upgrade\.mjs/)
   const registryWorkflow = await readFile(new URL('../.github/workflows/registry.yml', import.meta.url), 'utf8')
   assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-rc5-desktop-20261030\.json/)
+  assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-desktop-authority-20261101\.json/)
 })
 
 test('next channel must be a well-formed preview and newer than the active latest-three target', async () => {
