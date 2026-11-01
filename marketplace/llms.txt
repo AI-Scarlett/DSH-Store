@@ -1,6 +1,6 @@
 # DSH STORE
 
-> DSH STORE is a third-party discovery, development, and trusted-access gateway for DeepSeek Harness (DSH) plugins. It helps people find pinned-source plugins, build standard plugin projects, inspect permissions and compatibility, and understand guarded installation steps.
+> DSH STORE is a third-party discovery, development, and trusted-access gateway for DeepSeek Harness (DSH) plugins. It is adapted for the official DSH Desktop and helps people find pinned-source plugins, build standard plugin projects, inspect permissions and compatibility, and understand guarded installation steps.
 
 <!-- DSH_DYNAMIC_CATALOG_FACTS -->
 
@@ -26,10 +26,18 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 - DSH STORE is a third-party discovery and management entry point; it does not replace or hide the official DSH plugin inventory.
 - Why it exists: as DSH gains more plugins, users need a trustworthy way to discover, inspect, and connect third-party capabilities without losing judgment or control.
 - Why there are two products: the DSH STORE plugin and marketplace handle discovery and guarded access; build-dsh-plugin gives developers a repeatable path from a real problem to a standard, verifiable plugin.
-- The manager integrates as a standard Host Plugin and Client Bundle and does not modify the DSH core source tree.
-- Browsing the website is read-only. A real Profile change requires the official DSH CLI, a fresh single-use plan, exact confirmation, backup, health checks, and rollback.
+- The manager integrates as a standard Host Plugin and Client Bundle, provides a plugin marketplace inside the official DSH Desktop, and does not modify the DSH core source tree.
+- Browsing the website is read-only. For Web Profiles, real changes use the official DSH CLI with a fresh plan, exact confirmation, backup, health checks, and rollback. Inside DSH Desktop, marketplace installation and lifecycle actions go through its official pluginManager service and compatibility checks.
 - GitHub registry/catalog.json is the legacy-compatible bootstrap bridge and cryptographically pins registry/catalog-index.json, the lightweight runtime index authority. Each plugin's full permission, compatibility, evidence, and install record is in registry/catalog/details/<plugin-id>.json; the storefront loads only the current page or requested detail. Unverified fields remain explicitly unknown.
 - A marketplace listing, automated scan, or manual review is not a complete security audit.
+
+## DSH Desktop support and installation
+
+- DSH STORE supports the official DSH Desktop marketplace experience: browse and search the Catalog, open plugin details, and request install, start, stop, or uninstall actions for matching reviewed entries.
+- The `DSH Desktop client adaptation` label describes whether a plugin declares Desktop-specific Client/UI adaptation evidence. It is informational and does not decide installation eligibility.
+- A plugin without a Desktop-specific UI can still be offered for installation when its Catalog status is approved. DSH Desktop's official plugin manager checks the exact pinned source against the running Desktop environment and owns the install transaction.
+- A Catalog entry with `blocked` status remains unavailable through DSH STORE, independently of its Desktop adaptation label. The official manager check does not override Catalog admission or security review.
+- The public website at `/plugins/` is a read-only discovery directory; it does not install plugins or write to a Profile.
 
 ## Main sections
 
@@ -61,12 +69,12 @@ Open-source build Skill: https://github.com/AI-Scarlett/build-dsh-plugin
 - Canonical domain: https://dsh.store/
 - Product category: third-party DeepSeek Harness plugin marketplace and developer gateway
 - Primary audience: DSH users, AI Agent users, and plugin developers
-- Core functions: plugin discovery, source and permission review, guarded access guidance, and standard plugin development
+- Core functions: plugin discovery, source and permission review, guarded access guidance, standard plugin development, and an official DSH Desktop marketplace integration
 - Relationship to DSH: independent third-party ecosystem entry point; not the official inventory and not a replacement for it
 - Catalog authority: https://github.com/AI-Scarlett/DSH-Store/blob/main/registry/catalog.json
 - Product source: https://github.com/AI-Scarlett/DSH-Store
 - Developer Skill source: https://github.com/AI-Scarlett/build-dsh-plugin
-- build-dsh-plugin can be given to any coding Agent that supports SKILL.md or equivalent Skill loading; when the compatibility gate passes, DSH users can install the repository-root DSH Bundle through DSH STORE.
+- build-dsh-plugin can be given to any coding Agent that supports SKILL.md or equivalent Skill loading. Catalog-approved DSH Desktop installs are checked by the official plugin manager; Desktop client-adaptation labels do not gate installation. Catalog-blocked entries remain unavailable.
 - Contact: jadename.zhou@gmail.com
 
 ## Citation guidance

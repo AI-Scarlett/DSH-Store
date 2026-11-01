@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-website-content-release",
+  "planId": "store-desktop-website-20261101",
+  "planPath": "docs/ops/store-desktop-website-20261101.json",
+  "createdAt": "2026-11-01",
+  "baseCommit": "7701b4f1bbfd572bfce2d95206422768e7586b66",
+  "scope": [
+    "docs/ops/store-desktop-website-20261101.json",
+    "marketplace/index.html",
+    "marketplace/plugins/index.html",
+    "marketplace/app.js",
+    "marketplace/llms.txt",
+    "marketplace/build/index.html",
+    "marketplace/build/build.js",
+    "test/desktop-compat.test.mjs",
+    "test/marketplace-static-build.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/store-desktop-website-20261101.json": null,
+    "marketplace/index.html": "241d67bf19df64a786aa52f34eba4e1cfa7789d833db92d6a7302fb8f3689896",
+    "marketplace/plugins/index.html": "6d079b498f9b24537ac1fb63a9718165d5d47a1435440de61039ebabb30b5cf4",
+    "marketplace/app.js": "05f0fcdb45120afd44c15ae793e7ac31605b959abc51e465d16ab9d1e515ac9b",
+    "marketplace/llms.txt": "af73fa6900cb8099757e286e0df8410fe3209a4e3aef1e87d121e128e1ddd08c",
+    "marketplace/build/index.html": "173e0de7bfb6ac19be942f7b3736f25f09a054ad143da3b207f7c4f6b9c2b8b6",
+    "marketplace/build/build.js": "0bd6f289a6dcea449175f522a8d74fd38abb0204fca1ad566905bf54581f5c57",
+    "test/desktop-compat.test.mjs": "d5dcda99946131bb31fea058a162fd281cf6a67fba3ebe3a38a83ff9fa2b1a50",
+    "test/marketplace-static-build.test.mjs": "b5c26e65721f3fb5434093e72f68a7160b8f26a3fd5d01b56744b80c844c1eea"
+  },
+  "postconditions": {
+    "marketplace/index.html": "843e42b981d70c3c08f838ab00038f93df090213c84c9356e8aeecd4d0f75e3b",
+    "marketplace/plugins/index.html": "fedb6e2e2dd0cc00923a51e99e9ada9368216265f7ec36cb7f278a2a4c8d6514",
+    "marketplace/app.js": "84ca7c202913ab77fdbd9164fb21954c845fa7048f0bde0c904e2c7c8f262940",
+    "marketplace/llms.txt": "75cbf3f910b61de52237b09a6fea48a7f2c75a19f627e35aad2b48862472cdc2",
+    "marketplace/build/index.html": "5fc343e05658033218db5f9232376c3433f77888456676c0461230375a57512b",
+    "marketplace/build/build.js": "9bd7c756c55ebac90e34a3980d1e1ac7ead3dc01bc2e3a57175dfb63aa911d82",
+    "test/desktop-compat.test.mjs": "99067c519a99028ecf1135cfa3ffecaa10c2e3e9dba20df205b69aefbdc8e9d9",
+    "test/marketplace-static-build.test.mjs": "8c24e9915d7a1462568cf55a76c07185d2bccf30fe9f7de4fbdd0b10a1f6282f"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "明确官网 DSH Desktop 支持，修正 Desktop 安装适配标识与安装准入的关系，并更新 SEO/GEO。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request"
+  },
+  "objective": "准确说明 DSH STORE 在官方 DSH Desktop 内的商城能力、安装校验权属，以及客户端适配标识和 Catalog 准入状态的区别。",
+  "change": {
+    "claims": [
+      "DSH Desktop 内的 DSH STORE 为已审核固定来源条目展示安装操作，安装预检与事务由官方 Desktop pluginManager 负责。",
+      "客户端适配标识描述 Desktop 专属 UI/体验的适配声明，不作为安装门槛；无 Desktop 专属界面的插件仍可交由官方管理器校验。",
+      "Catalog blocked 条目仍不可通过商城安装；公开网站目录只负责发现与详情，不改写 Profile。"
+    ],
+    "surfaces": [
+      "homepage metadata and visible FAQ",
+      "plugin directory metadata and copy",
+      "Build Lab metadata and bilingual install guidance",
+      "llms.txt GEO facts",
+      "disposable Desktop manager regression test"
+    ]
+  },
+  "gates": [
+    "precondition and postcondition SHA-256 verification",
+    "git diff --check",
+    "npm run check",
+    "npm run build:marketplace",
+    "Registry CI",
+    "post-merge GitHub Pages and both production storefront readback"
+  ],
+  "rollback": {
+    "source": "Revert the exact merged website-content commit through a CI-checked pull request.",
+    "runtime": "No DSH Profile, package, Catalog entry, or lifecycle state is changed by this content update."
+  },
+  "healthCheck": "Chinese and English HTML metadata/visible content and llms.txt state the same Desktop installation boundary; a disposable pluginManager test installs an approved web-only/unmarked entry when inspect accepts it; blocked Catalog entries remain unavailable; all three public surfaces serve the merged plan content.",
+  "verification": {
+    "baseAndPreconditions": "passed against 7701b4f1bbfd572bfce2d95206422768e7586b66",
+    "diffCheck": "passed",
+    "npmRunCheck": "passed: REGISTRY_OK entries=870; 562 tests passed",
+    "targetedDesktopAndWebsiteTests": "passed: 15 desktop-compat tests; full npm run check also passed all marketplace-static build tests",
+    "staticMarketplaceBuild": "passed: STATIC_MARKETPLACE_OK entries=870; Store 0.9.22; source d7c17ce782986697af80f29a1c82476f91b7dc0c",
+    "desktopUiAcceptance": "not performed; source fixtures do not establish real Desktop UI acceptance",
+    "pagesAndProductionDomains": "pending merged source and public readback",
+    "crawlableStaticCopy": "passed: homepage, plugin directory, and Build Lab include visible Desktop guidance; title, metadata, JSON-LD, FAQ, and llms.txt updated"
+  }
+}
