@@ -1,3 +1,4 @@
+/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 {
   "schemaVersion": 1,
   "type": "dsh-native-market-upgrade",
@@ -108,11 +109,11 @@
     }
   ],
   "execution": {
-    "status": "source-pr-ready",
+    "status": "source-pr-pending",
     "packageVersion": "0.9.29",
     "catalogVersion": "0.9.27 until separate Catalog policy publication",
     "sourceChecks": "passed: DSH_UPGRADE_PLAN_OK; Desktop fixtures 41/41; npm run check REGISTRY_OK with 588/588 tests; npm pack --dry-run dsh-safe-plugin-manager@0.9.29 (1,075 files); live dsh.store index metadata matches GitHub Raw SHA-256 fafe139d90916b4ec15548c9d7582f7cb747816a85d15a915a7cda0c334a4f94 with 24,171 discovery rows; shared directory merge 24,838 rows, 945 Catalog matches, 20 categories; git diff --check",
-    "pullRequest": "pending",
+    "pullRequest": 1721,
     "publicReadback": "pending",
     "realDesktop": "user confirms installation succeeded; Desktop scrolling, keyboard search and operation UI remain unverified by Codex"
   }
