@@ -88,6 +88,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 ### 官方 Desktop
 
 官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。源码 `0.9.26` 将 DSH Store 注册为 root `main` 面板，并在首页左侧 `sidebar.panellist` 添加“插件商城”入口；原设置分区继续保留。页面标题为 `插件商城（DSH-Store）`，保留内部包 ID `dsh-safe-plugin-manager`。商城有界读取公开 Catalog，并通过官方 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本；目录、已安装视图、搜索、分类、状态筛选、排序、分页及详情行为均保留。普通第三方 GitHub 插件更新时，用户逐次确认后由 DSH 官方管理器执行 `removeBundle()`，再提交新的固定 Commit 给 `installBundle()`；若 DSH 返回 `stop-profile`，按官方更新流程继续提交安装。更新 DSH Store 自身时不会先卸载 Store，而是直接把固定 Commit 交给 DSH 的 `installBundle()`，避免商城在自更新时被移除。DSH 返回 `applied` 或 `restart-required` 即视为已接受操作；对于失败、无变更或不确定结果，Store 只核对一次 DSH 安装清单，只有包名、版本、GitHub 仓库和完整 Commit 全部匹配才显示已更新，不匹配时保留 DSH 的失败或未知状态且不重试。普通第三方更新遇到明确失败时，Store 根据 DSH 清单确认原 Commit 是否保留；如果已移除，再通过 DSH 提交旧固定来源恢复。DSH `inspect` 结果、Catalog `blocked` 状态和风险提示都只是建议，不会拦住用户确认后的官方安装请求。Web 管理操作继续执行原准入策略。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。Catalog 当前固定 `0.9.26`，真实 Desktop Profile 安装与界面验收尚未完成。
+源码 `0.9.27` 将桌面插件目录扩展为官网相同的完整已知目录：合并公开发现索引、Catalog 主索引和候选记录，按官网的身份匹配规则去重，并分别标记“Catalog 是否收录”和 Catalog 审核状态。2026-11-02 官网显示 20,025 条记录、962 条匹配 Catalog、19,063 条未收录记录和 46 个分类；桌面端搜索覆盖完整合并目录，支持分类、收录状态、审核状态、排序及分页，并为结果列表增加独立滚动区域。完整目录只扩大浏览和搜索范围，非受审固定来源记录仍不显示安装动作；Catalog 审核建议不会取代 DSH Desktop 官方插件管理器的安装结果。上述计数是当日官网读数，目录会随公开索引更新。Catalog 当前仍固定 `0.9.26`，该源码版本尚待独立 Catalog 发布；真实 DSH Desktop UI/Profile 验收必须单独完成，不由测试推断。
 `0.9.21` 中，客户端适配标识和 Catalog 的 DSH 兼容记录只作参考，不决定第三方插件能否安装；商城自身和 DSH 官方组件仍受保护。可管理的第三方条目交由 DSH Desktop 官方管理器处理；Git 源的 `inspect` 结果作为预检提示，实际包的 DSH 版本/peer 兼容性由 `installBundle` 作最终判断。官方拒绝码和兼容要求会显示在商城中。安装、更新、卸载和
 Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`setBundleEnabled` 执行；每次操作
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
@@ -104,7 +105,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | Desktop 可交由 DSH 检查 | 按每条记录的固定 GitHub Commit、Bundle 入口和安装路径进行基础校验；blocked 不会仅因审核状态而被挡在 DSH 外 |
 | Store 未准入 / 下架 | 以实时 Catalog 的 `blocked` / `unlisted` 状态及 `statusReason` 为准；这不是 DSH 安装结果 |
-| 分类 | 22 个 |
+| 分类 | Catalog 22 个；官网完整发现目录在 2026-11-02 显示 46 个（实时变化） |
 | 推荐 | 商城“只看推荐”与官网推荐榜共享公开作者互动名单，完整分页；推荐不改变审核或安装资格 |
 | 目录来源 | GitHub 仓库 + 不可变 Commit |
 
