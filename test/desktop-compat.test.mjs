@@ -198,7 +198,7 @@ function desktopCatalogIndex(entries) {
 function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.2',
   inspectResult, installResult, installedAfterInstallResult = null, removeResult = null,
   retainInstalledAfterRemove = false, inspectAvailable = true, removeBundleAvailable = true,
-  protocol = 'dsh-app:', directoryDocuments = undefined } = {}) {
+  protocol = 'dsh-app:', directoryDocuments = undefined, listBundlesError = false } = {}) {
   const activeDirectoryDocuments = directoryDocuments === undefined
     ? (catalog ? desktopDirectoryDocuments(catalog) : null) : directoryDocuments
   const sourcePromise = readFile(new URL('../src/client.js', import.meta.url), 'utf8')
@@ -265,6 +265,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
   const manager = {
     async listBundles() {
       calls.listBundles++
+      if (listBundlesError) throw Object.assign(new Error('DESKTOP_INVENTORY_FAILED'), { code: 'DESKTOP_INVENTORY_FAILED' })
       return [
         ...(desktopRuntimeVersion ? [{ name: 'dsh.desktop-runtime', official: true,
           installTarget: { version: desktopRuntimeVersion }, installed: true }] : []),
@@ -522,10 +523,14 @@ test('official Desktop registers 插件商城 and mirrors the complete website d
   assert.match(desktopText(tree), /AI 与智能体/)
   const directorySearch = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
   assert.ok(directorySearch)
-  const viewport = desktopNodes(tree).find(node => node.props?.['aria-label'] === '全部已知插件列表，可在此区域滚动浏览')
-  assert.equal(viewport.props.style.overflowY, 'auto')
-  assert.equal(viewport.props.style.overscrollBehaviorY, 'contain')
-  assert.equal(viewport.children.length, 1, 'pagination stays outside the independently scrollable card list')
+  const viewport = desktopNodes(tree).find(node => node.props?.['aria-label'] === '全部已知插件结果')
+  assert.equal(viewport.props.style.overflow, 'visible')
+  assert.equal(viewport.children.length, 1, 'the list and pagination share the marketplace scroll flow')
+  const root = desktopNodes(tree).find(node => node.type === 'section' && node.props?.['aria-label'].startsWith('插件商城（DSH-Store）'))
+  assert.match(root.props.style.height, /100vh/)
+  assert.equal(root.props.style.overflowY, 'auto')
+  assert.equal(root.props.tabIndex, 0)
+  assert.equal(desktopNodes(tree).find(node => node.props?.['aria-label'] === '目录搜索和筛选').props.style.position, 'sticky')
   for (const label of ['关闭', '卸载', '查看详情']) {
     assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes(label)), true, `${label} is available for a matching installed third-party bundle`)
   }
@@ -604,6 +609,34 @@ test('Web renderer retains the Settings entry without registering a Desktop home
   await harness.ready
   assert.deepEqual(harness.slotRegistrations.map(row => row.slot), ['settings.section'])
   assert.equal(harness.settingsRegistrations[0].metadata.id, 'dsh-store')
+})
+
+test('Desktop keeps the complete directory searchable when its official install inventory is unavailable', async () => {
+  const entry = desktopEntry({ id: 'inventory-independent', packageName: '@acme/inventory-independent', commit: desktopCommit })
+  const catalog = desktopCatalog([entry])
+  const directoryDocuments = desktopDirectoryDocuments(catalog)
+  const expectedDirectory = createKnownPluginDirectory(catalog.entries.filter(row => row.status !== 'unlisted'),
+    directoryDocuments.candidates.entries, { discoveryIndex: directoryDocuments.discovery })
+  const harness = createDesktopHarness({ catalog, directoryDocuments, listBundlesError: true })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(`全部已知插件 · ${expectedDirectory.length}`))
+  assert.match(desktopText(tree), /DSH 安装清单暂不可用（DESKTOP_INVENTORY_FAILED）/)
+  assert.match(desktopText(tree), /完整目录和搜索仍可使用/)
+  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
+  assert.ok(search)
+  search.props.onChange({ target: { value: 'public-only' } })
+  tree = await harness.render()
+  const publicCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('Public only plugin'))
+  assert.ok(publicCard, 'directory search remains independent of the DSH installed list')
+  search.props.onChange({ target: { value: 'inventory-independent' } })
+  tree = await harness.render()
+  const catalogCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/inventory-independent'))
+  const install = desktopNodes(catalogCard).find(node => node.type === 'button' && node.children?.includes('安装'))
+  assert.ok(install)
+  assert.equal(install.props.disabled, true, 'state-dependent installs wait for an authoritative DSH inventory')
+  assert.match(install.props.title, /DSH 安装清单暂不可用/)
 })
 
 test('blocked fixed-source entries use DSH inspect and install only after explicit confirmation', async () => {
@@ -1602,9 +1635,9 @@ test('current trusted Registry Catalog is accepted by the Desktop reader', async
   const firstPageCardCount = desktopNodes(tree).filter(node => node.type === 'article').length
   const expectedPageCount = Math.ceil(expectedDirectory.length / firstPageCardCount)
   assert.match(text, new RegExp(`${expectedPageCount} 页`))
-  const viewport = desktopNodes(tree).find(node => node.props?.['aria-label'] === '全部已知插件列表，可在此区域滚动浏览')
-  assert.equal(viewport.props.style.overflowY, 'auto')
-  const root = desktopNodes(tree).find(node => node.type === 'section' && node.props?.['aria-label'] === '插件商城（DSH-Store）')
+  const viewport = desktopNodes(tree).find(node => node.props?.['aria-label'] === '全部已知插件结果')
+  assert.equal(viewport.props.style.overflow, 'visible')
+  const root = desktopNodes(tree).find(node => node.type === 'section' && node.props?.['aria-label'].startsWith('插件商城（DSH-Store）'))
   assert.equal(root.props.style.overflowY, 'auto')
   assert.equal(expectedApproved, 33)
   assert.equal(expectedBlocked, 746)

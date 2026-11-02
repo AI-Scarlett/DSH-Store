@@ -528,7 +528,8 @@ window.__ModuleLoader__.load({
       grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '12px' },
       marketRoot: {
         display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '1180px', minWidth: 0, minHeight: 0,
-        maxHeight: 'calc(100vh - 24px)', overflowY: 'auto', overscrollBehaviorY: 'contain',
+        height: 'calc(100vh - 24px)', maxHeight: 'calc(100vh - 24px)', boxSizing: 'border-box',
+        overflowX: 'hidden', overflowY: 'auto', overscrollBehaviorY: 'contain', WebkitOverflowScrolling: 'touch',
       },
       marketHero: {
         display: 'flex', flexDirection: 'column', gap: '14px', border: '1px solid var(--dsw-alias-border-l2)',
@@ -540,15 +541,14 @@ window.__ModuleLoader__.load({
       marketStatValue: { fontSize: '17px', lineHeight: '22px', fontWeight: 700, fontVariantNumeric: 'tabular-nums' },
       marketStatLabel: { color: 'var(--dsw-alias-label-tertiary)', fontSize: '11px', lineHeight: '16px' },
       marketToolbar: { display: 'flex', alignItems: 'stretch', flexWrap: 'wrap', gap: '8px' },
+      marketDirectoryControls: {
+        position: 'sticky', top: 0, zIndex: 2, display: 'flex', flexDirection: 'column', gap: '8px',
+        padding: '7px 0', background: 'var(--dsw-alias-bg-layer-1)',
+      },
       marketViewBar: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', paddingBottom: '10px', borderBottom: '1px solid var(--dsw-alias-border-l2)' },
       marketFilterTabs: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' },
       marketResults: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' },
-      marketListViewport: {
-        width: '100%', height: '48vh', maxHeight: '520px', minHeight: '220px', minWidth: 0,
-        overflowX: 'hidden', overflowY: 'auto', overscrollBehaviorY: 'contain',
-        scrollbarGutter: 'stable', scrollbarWidth: 'auto', WebkitOverflowScrolling: 'touch',
-        paddingRight: '4px', touchAction: 'pan-y',
-      },
+      marketListViewport: { width: '100%', minWidth: 0, overflow: 'visible' },
       marketGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: '10px', alignItems: 'stretch' },
       marketCard: {
         display: 'flex', flexDirection: 'column', gap: '9px', minWidth: 0, padding: '13px',
@@ -2160,19 +2160,25 @@ window.__ModuleLoader__.load({
       return '官网发现 · Store 未收录'
     }
 
-    async function readDesktopStoreSnapshot() {
+    async function readDesktopCatalogSnapshot() {
+      return validateDesktopCatalog(await fetchDesktopCatalogDocument())
+    }
+
+    async function readDesktopInventorySnapshot() {
       const manager = await waitForDesktopPluginManager()
       if (!manager || typeof manager.listBundles !== 'function') throw Object.assign(new Error('DESKTOP_PLUGIN_MANAGER_UNAVAILABLE'), { code: 'DESKTOP_PLUGIN_MANAGER_UNAVAILABLE' })
-      const [document, bundlesResult] = await Promise.all([
-        fetchDesktopCatalogDocument(), withDesktopTimeout(manager.listBundles(), 'DESKTOP_INVENTORY_TIMEOUT'),
-      ])
-      const catalog = validateDesktopCatalog(document)
+      const bundlesResult = await withDesktopTimeout(manager.listBundles(), 'DESKTOP_INVENTORY_TIMEOUT')
       const bundles = unwrapDesktopRemote(bundlesResult, 'DESKTOP_INVENTORY_FAILED')
       if (!Array.isArray(bundles)) throw Object.assign(new Error('DESKTOP_INVENTORY_INVALID'), { code: 'DESKTOP_INVENTORY_INVALID' })
       const versions = new Set(bundles.map(bundle => bundle?.official === true ? bundle.installTarget?.version : null)
         .filter(version => typeof version === 'string' && DESKTOP_VERSION.test(version)))
       const runtimeVersion = versions.size === 1 ? [...versions][0] : null
-      return { catalog, bundles, runtimeVersion }
+      return { bundles, runtimeVersion }
+    }
+
+    async function readDesktopStoreSnapshot() {
+      const [catalog, inventory] = await Promise.all([readDesktopCatalogSnapshot(), readDesktopInventorySnapshot()])
+      return { catalog, ...inventory }
     }
 
     function desktopInstallSpecifier(entry) {
@@ -2326,7 +2332,9 @@ window.__ModuleLoader__.load({
 
     function DesktopStorePanel() {
       const [loadState, setLoadState] = useState({ status: 'loading' })
+      const [inventoryState, setInventoryState] = useState({ status: 'loading' })
       const [directoryState, setDirectoryState] = useState({ status: 'loading' })
+      const [refreshing, setRefreshing] = useState(false)
       const [view, setView] = useState('directory')
       const [query, setQuery] = useState('')
       const [category, setCategory] = useState('')
@@ -2342,6 +2350,7 @@ window.__ModuleLoader__.load({
       const [actionState, setActionState] = useState({ status: 'idle' })
       const actionInFlight = useRef(false)
       const directoryRequestId = useRef(0)
+      const refreshRequestId = useRef(0)
       const loadDirectory = useCallback(async catalog => {
         const requestId = ++directoryRequestId.current
         setDirectoryState({ status: 'loading' })
@@ -2353,27 +2362,39 @@ window.__ModuleLoader__.load({
         }
       }, [])
       const refresh = useCallback(async () => {
-        setLoadState({ status: 'loading' })
-        void loadDirectory(loadState.status === 'ready' ? loadState.catalog : null)
+        const requestId = ++refreshRequestId.current
+        setRefreshing(true)
+        setInventoryState({ status: 'loading' })
+        setLoadState(current => current.status === 'ready' ? current : { status: 'loading' })
+        const catalogPromise = readDesktopCatalogSnapshot()
+        const inventoryPromise = readDesktopInventorySnapshot()
         try {
-          const snapshot = await readDesktopStoreSnapshot()
-          setLoadState({ status: 'ready', ...snapshot })
+          const catalog = await catalogPromise
+          if (requestId !== refreshRequestId.current) return
+          setLoadState(current => ({ status: 'ready', catalog,
+            bundles: current.status === 'ready' ? current.bundles : [],
+            runtimeVersion: current.status === 'ready' ? current.runtimeVersion : null }))
+          void loadDirectory(catalog)
         } catch (error) {
-          setLoadState({ status: 'error', code: desktopErrorCode(error) })
-        }
-      }, [loadDirectory, loadState.catalog, loadState.status])
-      useEffect(() => {
-        let cancelled = false
-        void readDesktopStoreSnapshot().then(snapshot => {
-          if (!cancelled) {
-            setLoadState({ status: 'ready', ...snapshot })
-            void loadDirectory(snapshot.catalog)
+          if (requestId === refreshRequestId.current) {
+            setLoadState(current => current.status === 'ready' ? current : { status: 'error', code: desktopErrorCode(error) })
           }
-        }).catch(error => {
-          if (!cancelled) setLoadState({ status: 'error', code: desktopErrorCode(error) })
-        })
-        return () => { cancelled = true; directoryRequestId.current += 1 }
+        }
+        try {
+          const inventory = await inventoryPromise
+          if (requestId !== refreshRequestId.current) return
+          setLoadState(current => current.status === 'ready' ? { ...current, ...inventory } : current)
+          setInventoryState({ status: 'ready' })
+        } catch (error) {
+          if (requestId === refreshRequestId.current) setInventoryState({ status: 'error', code: desktopErrorCode(error) })
+        } finally {
+          if (requestId === refreshRequestId.current) setRefreshing(false)
+        }
       }, [loadDirectory])
+      useEffect(() => {
+        void refresh()
+        return () => { refreshRequestId.current += 1; directoryRequestId.current += 1 }
+      }, [refresh])
 
       const entries = loadState.status === 'ready' ? loadState.catalog.entries : []
       const categoryLabels = loadState.status === 'ready' ? loadState.catalog.registry.categories || {} : {}
@@ -2383,7 +2404,9 @@ window.__ModuleLoader__.load({
         if (directoryState.status === 'error') return createDesktopKnownDirectory(loadState.catalog, { discovery: { entries: [] }, candidates: [] })
         return []
       }, [loadState.status, loadState.catalog, directoryState.status, directoryState.snapshot])
-      const categoryIds = [...new Set((view === 'directory' ? directoryRows : entries).flatMap(entry => entry.categories || []))].sort()
+      const directoryCategoryIds = useMemo(() => [...new Set(directoryRows.flatMap(entry => entry.categories || []))].sort(), [directoryRows])
+      const catalogCategoryIds = useMemo(() => [...new Set(entries.flatMap(entry => entry.categories || []))].sort(), [entries])
+      const categoryIds = view === 'directory' ? directoryCategoryIds : catalogCategoryIds
       const installedByName = new Map((loadState.status === 'ready' ? loadState.bundles : [])
         .filter(bundle => bundle && typeof bundle.name === 'string').map(bundle => [bundle.name, bundle]))
       const catalogPackageNames = new Set(entries.map(entry => entry.packageName))
@@ -2437,6 +2460,7 @@ window.__ModuleLoader__.load({
       const pageCount = Math.max(1, Math.ceil(filtered.length / MARKET_PAGE_SIZE))
       const currentPage = Math.min(page, pageCount)
       const visible = filtered.slice((currentPage - 1) * MARKET_PAGE_SIZE, currentPage * MARKET_PAGE_SIZE)
+      const installedInventoryUnavailable = view === 'installed' && inventoryState.status !== 'ready'
       const directoryCounts = useMemo(() => {
         const counts = { all: directoryRows.length, listed: 0, unlisted: 0, approved: 0, blocked: 0,
           withdrawn: 0, reviewing: 0, rejected: 0, discovered: 0, publicOnly: 0 }
@@ -2458,9 +2482,30 @@ window.__ModuleLoader__.load({
         for (const row of directoryRows) for (const id of row.categories || []) counts.set(id, (counts.get(id) || 0) + 1)
         return counts
       }, [directoryRows])
+      const directorySearchIndex = useMemo(() => directoryRows.map(row => ({
+        row,
+        text: [row.id, row.sourceId, row.alias, row.packageName, row.name, row.description,
+          row.catalogIndexEntry?.nameZh, row.catalogIndexEntry?.nameEn, row.catalogIndexEntry?.version,
+          row.catalogIndexEntry?.status, ...(row.catalogIndexEntry?.searchTerms || []),
+          row.repositoryUrl, row.detailUrl, row.kind, row.catalogEntry?.statusReason,
+          row.candidateEntry?.status, row.candidateEntry?.statusReason,
+          ...(row.categories || []), ...(row.categories || []).map(id => categoryLabels[id])]
+          .filter(value => value !== null && value !== undefined)
+          .map(value => String(value).toLocaleLowerCase()).join('\n'),
+      })), [directoryRows, categoryLabels])
+      const directoryOrderedSearchIndex = useMemo(() => [...directorySearchIndex].sort((left, right) => {
+        const leftName = left.row.name || left.row.packageName || left.row.sourceId || ''
+        const rightName = right.row.name || right.row.packageName || right.row.sourceId || ''
+        if (sortBy === 'name') return leftName.localeCompare(rightName, 'zh-CN')
+        if (sortBy === 'stars') return (right.row.stars || 0) - (left.row.stars || 0) || left.row.order - right.row.order
+        return String(left.row.primaryCategory || 'uncategorized').localeCompare(String(right.row.primaryCategory || 'uncategorized'), 'en')
+          || Number(Boolean(right.row.catalogIndexEntry)) - Number(Boolean(left.row.catalogIndexEntry))
+          || (right.row.stars || 0) - (left.row.stars || 0)
+          || leftName.localeCompare(rightName, 'zh-CN') || left.row.order - right.row.order
+      }), [directorySearchIndex, sortBy])
       const directoryFiltered = useMemo(() => {
         const needle = query.trim().toLocaleLowerCase()
-        return directoryRows.filter(row => (!category || row.categories.includes(category))
+        return directoryOrderedSearchIndex.filter(({ row, text }) => (!category || row.categories.includes(category))
           && (directoryListingFilter === 'all' || (directoryListingFilter === 'listed' ? Boolean(row.catalogIndexEntry) : !row.catalogIndexEntry))
           && (directoryReviewFilter === 'all'
             || (directoryReviewFilter === 'approved' && row.catalogIndexEntry?.status === 'approved')
@@ -2470,24 +2515,8 @@ window.__ModuleLoader__.load({
             || (directoryReviewFilter === 'rejected' && !row.catalogIndexEntry && row.candidateEntry?.status === 'rejected')
             || (directoryReviewFilter === 'discovered' && !row.catalogIndexEntry && row.candidateEntry?.status === 'discovered')
             || (directoryReviewFilter === 'public-only' && !row.catalogIndexEntry && !row.candidateEntry))
-          && (!needle || [row.id, row.sourceId, row.alias, row.packageName, row.name, row.description,
-            row.catalogIndexEntry?.nameZh, row.catalogIndexEntry?.nameEn, row.catalogIndexEntry?.version,
-            row.catalogIndexEntry?.status, ...(row.catalogIndexEntry?.searchTerms || []),
-            row.repositoryUrl, row.detailUrl, row.kind, row.catalogEntry?.statusReason,
-            row.candidateEntry?.status, row.candidateEntry?.statusReason,
-            ...(row.categories || []), ...(row.categories || []).map(id => categoryLabels[id])]
-            .some(value => String(value || '').toLocaleLowerCase().includes(needle))))
-          .sort((left, right) => {
-            const leftName = left.name || left.packageName || left.sourceId || ''
-            const rightName = right.name || right.packageName || right.sourceId || ''
-            if (sortBy === 'name') return leftName.localeCompare(rightName, 'zh-CN')
-            if (sortBy === 'stars') return (right.stars || 0) - (left.stars || 0) || left.order - right.order
-            return String(left.primaryCategory || 'uncategorized').localeCompare(String(right.primaryCategory || 'uncategorized'), 'en')
-              || Number(Boolean(right.catalogIndexEntry)) - Number(Boolean(left.catalogIndexEntry))
-              || (right.stars || 0) - (left.stars || 0)
-              || leftName.localeCompare(rightName, 'zh-CN') || left.order - right.order
-          })
-      }, [directoryRows, query, category, directoryListingFilter, directoryReviewFilter, sortBy, categoryLabels])
+          && (!needle || text.includes(needle))).map(({ row }) => row)
+      }, [directoryOrderedSearchIndex, query, category, directoryListingFilter, directoryReviewFilter])
       const directoryPageCount = Math.max(1, Math.ceil(directoryFiltered.length / MARKET_PAGE_SIZE))
       const directoryCurrentPage = Math.min(page, directoryPageCount)
       const directoryVisible = directoryFiltered.slice((directoryCurrentPage - 1) * MARKET_PAGE_SIZE, directoryCurrentPage * MARKET_PAGE_SIZE)
@@ -2514,6 +2543,7 @@ window.__ModuleLoader__.load({
         && DESKTOP_COMMIT.test(entry.commit || '')
         && !bundle.readOnlyReason && desktopBundleMatchesCatalogEntry(entry, bundle)
       const actionAvailable = (action, entry, bundle) => {
+        if (inventoryState.status !== 'ready') return false
         if (action === 'install') return ['approved', 'blocked'].includes(entry.status) && !bundle?.installed
           && entry.packageName !== 'dsh-safe-plugin-manager' && !entry.packageName.startsWith('@deepseek-ai/')
           && !desktopHasProtectedEntryId(entry) && desktopBlockedInstallReady(entry)
@@ -2820,6 +2850,8 @@ window.__ModuleLoader__.load({
 
       const actionLabel = action => ({ install: '安装', update: '更新', remove: '卸载', enable: '启动', disable: '关闭' }[action] || action)
       const actionBlockReason = (action, entry, bundle) => {
+        if (inventoryState.status === 'loading') return '正在读取 DSH 安装清单；完整目录仍可浏览和搜索。'
+        if (inventoryState.status === 'error') return `DSH 安装清单暂不可用（${inventoryState.code}）；完整目录仍可浏览和搜索，刷新后再执行安装管理。`
         if (entry.packageName === 'dsh-safe-plugin-manager') {
           if (action !== 'update') return '商城自身不提供商城自安装、启停或卸载；首次安装请用 DSH Desktop，之后可在此提交固定 Commit 更新。'
           if (!bundle?.installed) return '请先通过 DSH Desktop 安装商城；安装后可在此提交固定 Commit 更新。'
@@ -2899,7 +2931,9 @@ window.__ModuleLoader__.load({
       const detailBundle = detailEntry ? installedByName.get(detailEntry.packageName) : null
       const detailCompatibility = detailEntry ? desktopCatalogCompatibility(detailEntry, loadState.runtimeVersion) : null
       const detailOperationsMessage = detailEntry ? detailActionMessage(detailEntry, detailBundle) : null
-      const detailInstalledState = detailBundle?.installed === true
+      const detailInstalledState = inventoryState.status !== 'ready'
+        ? `DSH 安装状态暂不可核实（${inventoryState.code || '正在读取'}）`
+        : detailBundle?.installed === true
         ? '本机已' + (detailBundle.enabled === true ? '启动' : detailBundle.enabled === false ? '关闭' : '安装')
           + ' · 版本 ' + (typeof detailBundle.version === 'string' && DESKTOP_VERSION.test(detailBundle.version) ? detailBundle.version : '未知')
           + ' · ' + (desktopBundleMatchesCatalogEntry(detailEntry, detailBundle) ? '安装来源与 Catalog 仓库匹配' : '安装来源未核验')
@@ -2935,11 +2969,12 @@ window.__ModuleLoader__.load({
         setQuery(''); setCategory(''); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1)
       }
       const directoryViewContent = React.createElement(React.Fragment, null,
+        React.createElement('div', { style: styles.marketDirectoryControls, 'aria-label': '目录搜索和筛选' },
         React.createElement('div', { style: styles.marketToolbar },
           React.createElement('input', {
             type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
             style: { ...styles.input, flex: '1 1 280px', minWidth: '180px' },
-            placeholder: '搜索插件、用途或 GitHub 仓库', 'aria-label': '搜索全部已知插件',
+            placeholder: '搜索插件名称、用途或 GitHub 仓库', 'aria-label': '搜索全部已知插件', autoComplete: 'off', spellCheck: false,
           }),
           React.createElement('select', {
             value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
@@ -2960,7 +2995,7 @@ window.__ModuleLoader__.load({
             .map(([id, label, count]) => React.createElement(Button, {
               key: id, compact: true, primary: directoryListingFilter === id, ariaPressed: directoryListingFilter === id,
               onClick: () => { setDirectoryListingFilter(id); setPage(1) },
-            }, `${label} · ${count}`))),
+            }, `${label} · ${count}`)))),
         React.createElement('div', { style: styles.marketResults },
           React.createElement('span', { style: styles.muted, role: 'status' },
             `${directoryFiltered.length} 条结果 · 第 ${directoryCurrentPage} / ${directoryPageCount} 页 · ${directoryCounts.approved} 已审核 · ${directoryCounts.blocked} 已拦截 · ${directoryCounts.unlisted} 未收录`),
@@ -2978,7 +3013,7 @@ window.__ModuleLoader__.load({
             React.createElement('span', { style: styles.muted }, '试试名称、用途、分类或 GitHub 仓库；也可以清除筛选。'),
             directoryHasFilters ? React.createElement(Button, { compact: true, onClick: clearDirectoryFilters }, '清除筛选') : null) : null,
         React.createElement('div', {
-          style: styles.marketListViewport, role: 'region', tabIndex: 0, 'aria-label': '全部已知插件列表，可在此区域滚动浏览',
+          style: styles.marketListViewport, 'aria-label': '全部已知插件结果',
         }, React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': '全部已知插件' }, directoryVisible.map(row => {
           const entry = row.catalogEntry
           const catalogIndexEntry = row.catalogIndexEntry
@@ -3036,6 +3071,8 @@ window.__ModuleLoader__.load({
           `公开索引生成于 ${directoryState.snapshot.discovery.source.generatedAt.slice(0, 10)} · 数据来源 dsh.so（CC BY 4.0，保留署名） · Catalog 收录状态不代表审核通过。`) : null)
 
       const catalogViewContent = React.createElement(React.Fragment, null,
+        installedInventoryUnavailable ? React.createElement('div', { style: styles.notice, role: 'status' },
+          `DSH 安装清单${inventoryState.status === 'loading' ? '正在读取' : `暂不可用（${inventoryState.code}）`}；当前无法确认已安装列表，请刷新后重试。`) : null,
         React.createElement('div', { style: styles.marketToolbar },
           React.createElement('input', {
             type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
@@ -3071,21 +3108,25 @@ window.__ModuleLoader__.load({
                 React.createElement('span', { style: styles.marketStatLabel }, label)))),
         React.createElement('div', { style: styles.marketResults },
           React.createElement('span', { style: styles.muted, role: 'status' },
-            `${filtered.length} 条结果 · 第 ${currentPage} / ${pageCount} 页 · ${view === 'installed' ? `其中 ${installedCatalogEntries.length} 个与 Catalog 匹配` : `Desktop Profile ${installedCount} 个已安装 bundle`}`),
+            installedInventoryUnavailable ? '安装清单读取后才会显示结果。'
+              : `${filtered.length} 条结果 · 第 ${currentPage} / ${pageCount} 页 · ${view === 'installed' ? `其中 ${installedCatalogEntries.length} 个与 Catalog 匹配` : `Desktop Profile ${installedCount} 个已安装 bundle`}`),
           hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
             setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
           } }, '清除筛选') : null),
         filtered.length === 0 ? React.createElement('div', { style: styles.marketEmpty },
-          React.createElement('strong', { style: styles.name }, view === 'installed' ? '当前没有匹配的已安装插件' : '没有匹配的插件'),
-          React.createElement('span', { style: styles.muted }, view === 'installed'
+          React.createElement('strong', { style: styles.name }, installedInventoryUnavailable ? '无法读取已安装列表'
+            : view === 'installed' ? '当前没有匹配的已安装插件' : '没有匹配的插件'),
+          React.createElement('span', { style: styles.muted }, installedInventoryUnavailable
+            ? '这是 DSH 安装清单状态，不能据此判断为空。完整插件目录仍可浏览和搜索。'
+            : view === 'installed'
             ? '已安装状态来自 DSH Desktop 官方插件管理器。清除筛选，或在插件目录中浏览可安装条目。'
             : '试试插件名、包名、用途、分类、权限或 GitHub 仓库。'),
           hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
             setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
           } }, '清除筛选') : null) : null,
         React.createElement('div', {
-          style: styles.marketListViewport, role: 'region', tabIndex: 0,
-          'aria-label': view === 'installed' ? '已安装插件列表，可在此区域滚动浏览' : 'Catalog 审核记录列表，可在此区域滚动浏览',
+          style: styles.marketListViewport,
+          'aria-label': view === 'installed' ? '已安装插件结果' : 'Catalog 审核记录结果',
         }, React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': view === 'installed' ? '已安装插件目录' : '插件商城目录' }, visible.map(row => {
           if (row.kind === 'external') {
             const bundle = row.bundle
@@ -3144,7 +3185,7 @@ window.__ModuleLoader__.load({
           page: currentPage, pageCount, hasPrevious: currentPage > 1, hasNext: currentPage < pageCount,
         }, loading: false, onPageChange: setPage }))
 
-      return React.createElement('section', { style: styles.marketRoot, 'aria-label': '插件商城（DSH-Store）' },
+      return React.createElement('section', { style: styles.marketRoot, tabIndex: 0, 'aria-label': '插件商城（DSH-Store），可滚动浏览' },
         React.createElement('div', { style: styles.marketHero },
           React.createElement('div', { style: styles.toolbar },
             React.createElement('div', { style: styles.headingCopy },
@@ -3154,21 +3195,23 @@ window.__ModuleLoader__.load({
               loadState.status === 'ready' && loadState.runtimeVersion
                 ? React.createElement('span', { style: styles.versionPill }, 'DSH ' + loadState.runtimeVersion) : null,
               React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网完整目录 ↗'),
-              React.createElement(Button, { compact: true, disabled: loadState.status === 'loading', onClick: refresh },
-                loadState.status === 'loading' ? '正在刷新…' : '刷新目录'))),
+              React.createElement(Button, { compact: true, disabled: refreshing, onClick: refresh },
+                refreshing ? '正在刷新…' : '刷新目录'))),
           loadState.status === 'ready' ? React.createElement('div', { style: styles.marketStats, 'aria-label': '目录概况' },
             [[directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'loading' ? '读取中' : '暂不可用', '已知目录条目'],
               [directoryCounts.listed, '有 Catalog 记录'], [directoryCounts.approved, 'Catalog 已审核'],
               [directoryCounts.blocked, 'Catalog 已拦截'], [directoryCounts.withdrawn, 'Catalog 未上架'],
-              [installedCount, 'Desktop 已安装']].map(([value, label]) =>
+              [inventoryState.status === 'ready' ? installedCount : inventoryState.status === 'loading' ? '读取中' : '暂不可用', 'Desktop 已安装']].map(([value, label]) =>
               React.createElement('div', { key: label, style: styles.marketStat },
                 React.createElement('span', { style: styles.marketStatValue }, String(value)),
                 React.createElement('span', { style: styles.marketStatLabel }, label)))) : null),
         React.createElement('div', { style: styles.notice, role: 'status' },
-          'Catalog 收录状态不等于审核通过。已审核条目可提交安装或更新；已拦截条目会显示 Store 建议，确认后仍可交给 DSH 检查。未收录或已下架条目仅供浏览；最终安装结果以 DSH Desktop 官方插件管理器返回为准。',
+          '“Catalog 审核记录”只显示商城审核条目；点“全部已知插件”查看官网完整目录。Catalog 收录状态不等于审核通过。已审核条目可提交安装或更新；已拦截条目会显示 Store 建议，确认后仍可交给 DSH 检查。未收录或已下架条目仅供浏览；最终安装结果以 DSH Desktop 官方插件管理器返回为准。',
           loadState.status === 'ready' && !loadState.runtimeVersion
-            ? React.createElement('div', { style: styles.muted }, '商城无法读取用于显示的 DSH 版本；安装仍会交由 Desktop 官方插件管理器按当前运行环境校验。') : null),
-        loadState.status === 'loading' ? React.createElement('p', { style: styles.muted }, '正在读取 DSH Store Catalog 与当前 Desktop Profile…') : null,
+            ? React.createElement('div', { style: styles.muted }, '商城无法读取用于显示的 DSH 版本；安装仍会交由 Desktop 官方插件管理器按当前运行环境校验。') : null,
+          inventoryState.status === 'error'
+            ? React.createElement('div', { style: styles.muted }, `DSH 安装清单暂不可用（${inventoryState.code}）；完整目录和搜索仍可使用，刷新后再执行安装管理。`) : null),
+        loadState.status === 'loading' ? React.createElement('p', { style: styles.muted }, '正在读取 DSH Store Catalog；完整目录与 DSH 安装清单分别加载。') : null,
         loadState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' }, '无法读取 Desktop 商城数据（' + loadState.code + '）。刷新后重试。') : null,
         loadState.status === 'ready' ? React.createElement(React.Fragment, null,
           React.createElement('div', { style: styles.marketViewBar, role: 'tablist', 'aria-label': '插件商城视图' },
@@ -3178,7 +3221,8 @@ window.__ModuleLoader__.load({
             React.createElement(TabButton, { active: view === 'catalog',
               onClick: () => { setView('catalog'); setListFilter('all'); setPage(1) } }, `Catalog 审核记录 · ${entries.length}`),
             React.createElement(TabButton, { active: view === 'installed',
-              onClick: () => { setView('installed'); setListFilter('all'); setPage(1) } }, `已安装 · ${installedCount}`),
+              onClick: () => { setView('installed'); setListFilter('all'); setPage(1) } },
+              `已安装 · ${inventoryState.status === 'ready' ? installedCount : inventoryState.status === 'loading' ? '读取中' : '暂不可用'}`),
             React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网目录 ↗')),
           view === 'directory' ? directoryViewContent : catalogViewContent,
         detailEntry ? React.createElement(Modal, {
