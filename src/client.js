@@ -2268,6 +2268,7 @@ window.__ModuleLoader__.load({
       if (entry.packageName === 'dsh-safe-plugin-manager'
         && (entry.id !== 'dsh-safe-plugin-manager'
           || desktopEntryRepository(entry) !== 'https://github.com/ai-scarlett/dsh-store')) return false
+      if (entry.packageName === 'dsh-safe-plugin-manager') return desktopStoreNeedsUpdate(entry, bundle)
       const installedCommit = desktopSourceRevision(bundle.source)
       return installedCommit !== null && installedCommit !== entry.commit
     }
@@ -2276,7 +2277,33 @@ window.__ModuleLoader__.load({
       if (!bundle || bundle.name !== entry.packageName || bundle.installed !== true
         || bundle.version !== previous?.version || !desktopBundleMatchesCatalogEntry(entry, bundle)) return false
       const previousCommit = desktopSourceRevision(previous?.source)
+      if (previousCommit === null && entry.packageName === 'dsh-safe-plugin-manager') {
+        return typeof previous?.source === 'string' && bundle.source === previous.source
+      }
       return previousCommit !== null && desktopSourceRevision(bundle.source) === previousCommit
+    }
+
+    function desktopStoreVersionParts(value) {
+      if (typeof value !== 'string') return null
+      const match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(value)
+      return match ? match.slice(1) : null
+    }
+
+    function desktopStoreNeedsUpdate(entry, bundle) {
+      const installedCommit = desktopSourceRevision(bundle?.source)
+      if (installedCommit === entry.commit) return false
+      const installedVersion = desktopStoreVersionParts(bundle?.version)
+      const targetVersion = desktopStoreVersionParts(entry?.version)
+      if (installedVersion && targetVersion) {
+        for (let index = 0; index < targetVersion.length; index++) {
+          if (targetVersion[index] !== installedVersion[index]) {
+            return targetVersion[index].length === installedVersion[index].length
+              ? targetVersion[index] > installedVersion[index]
+              : targetVersion[index].length > installedVersion[index].length
+          }
+        }
+      }
+      return installedCommit !== null && installedCommit !== entry.commit
     }
 
     function desktopInspectionAdvice(inspection) {
@@ -2497,8 +2524,12 @@ window.__ModuleLoader__.load({
         if (action === 'disable') return bundle.enabled === true
         return false
       }
-      const managerSupports = action => {
+      const managerSupports = (action, entry = null) => {
         if (action === 'install') return typeof desktopPluginManager?.installBundle === 'function'
+        if (action === 'update' && entry?.packageName === 'dsh-safe-plugin-manager') {
+          return typeof desktopPluginManager?.installBundle === 'function'
+            && typeof desktopPluginManager?.listBundles === 'function'
+        }
         if (action === 'update') return typeof desktopPluginManager?.installBundle === 'function'
           && typeof desktopPluginManager?.removeBundle === 'function'
           && typeof desktopPluginManager?.listBundles === 'function'
@@ -2508,7 +2539,7 @@ window.__ModuleLoader__.load({
       }
       const beginAction = (action, entry) => {
         const bundle = installedByName.get(entry.packageName)
-        if (!actionAvailable(action, entry, bundle) || !managerSupports(action)) return
+        if (!actionAvailable(action, entry, bundle) || !managerSupports(action, entry)) return
         setDetailEntry(null)
         setActionPlan({ action, entry, confirmation: desktopActionConfirmation(action, entry),
           installedState: action === 'update' ? { version: bundle.version ?? null, source: bundle.source ?? null,
@@ -2575,7 +2606,7 @@ window.__ModuleLoader__.load({
             && entry.statusReason === plannedEntry.statusReason && entry.updatePolicy === plannedEntry.updatePolicy
             && desktopInstallSpecifier(entry) === desktopInstallSpecifier(plannedEntry)
           if (!catalogAllowsAction || !sourceMatchesPlan || !installedStateMatchesPlan
-            || !actionAvailable(action, entry, bundle) || !managerSupports(action)) {
+            || !actionAvailable(action, entry, bundle) || !managerSupports(action, entry)) {
             throw desktopFailure('CATALOG_OR_PROFILE_STATE_CHANGED')
           }
           let outcome
@@ -2596,7 +2627,9 @@ window.__ModuleLoader__.load({
             } else {
               const previous = actionPlan.installedState
               const previousCommit = desktopSourceRevision(previous?.source)
-              if (!previous || previousCommit === null || !desktopBundleMatchesCatalogEntry(entry, bundle)) {
+              const isStoreSelfUpdate = entry.packageName === 'dsh-safe-plugin-manager'
+              if (!previous || !desktopBundleMatchesCatalogEntry(entry, bundle)
+                || (!isStoreSelfUpdate && previousCommit === null)) {
                 throw desktopFailure('DESKTOP_UPDATE_PREVIOUS_SOURCE_UNVERIFIED')
               }
               const restorePreviousThroughDesktop = async () => {
@@ -2682,6 +2715,10 @@ window.__ModuleLoader__.load({
                 } else if (current?.installed === true) {
                   error.recovery = 'recovery-required'
                   error.recoveryReason = 'DSH reports an installed source that matches neither the previous nor target Commit.'
+                  throw error
+                } else if (isStoreSelfUpdate) {
+                  error.recovery = 'recovery-required'
+                  error.recoveryReason = 'DSH reports the Store missing after its direct update request; no floating source was submitted for restoration.'
                   throw error
                 } else {
                   try {
@@ -2789,8 +2826,9 @@ window.__ModuleLoader__.load({
           if (bundle.official === true || bundle.optional === true || bundle.readOnlyReason
             || !desktopBundleMatchesCatalogEntry(entry, bundle)) return 'DSH 已安装来源受保护或与商城仓库不一致，商城不会更新。'
           if (!DESKTOP_COMMIT.test(entry.commit || '')) return 'Catalog 固定 Commit 无效，无法提交更新。'
-          return desktopSourceRevision(bundle.source) === entry.commit
-            ? '商城自身已经是 Catalog 当前固定 Commit。' : '商城更新条件未满足。'
+          if (!managerSupports('update', entry)) return '当前 DSH Desktop 未提供官方 installBundle / listBundles 接口。'
+          if (!desktopStoreNeedsUpdate(entry, bundle)) return '商城当前版本不低于 Catalog 固定版本，未提交降级更新。'
+          return '商城更新条件未满足。'
         }
         if (entry.packageName.startsWith('@deepseek-ai/')) return 'DSH 官方组件不由商城管理。'
         if (action === 'install' && entry.status === 'blocked') {
@@ -2799,7 +2837,7 @@ window.__ModuleLoader__.load({
             : '此条目缺少可交由 DSH 检查的固定来源或条目 ID。'
         }
         if (['install', 'update', 'enable'].includes(action) && entry.status !== 'approved') return '此条目尚未通过 DSH STORE 审核；仅 Catalog 已拦截条目可在确认后交由 DSH 检查安装。'
-        if (!managerSupports(action)) return '当前 DSH Desktop 未提供对应的官方插件管理器接口。'
+        if (!managerSupports(action, entry)) return '当前 DSH Desktop 未提供对应的官方插件管理器接口。'
         if (action === 'install') {
           if (bundle?.installed) return '当前 Profile 已安装此插件。'
           return '安装条件未满足。'
@@ -2810,7 +2848,7 @@ window.__ModuleLoader__.load({
             || !desktopBundleMatchesCatalogEntry(entry, bundle)) return '已安装 Bundle 受 DSH 保护或来源与 Catalog 仓库不一致，商城不会更新。'
           if (!DESKTOP_COMMIT.test(entry.commit || '')) return 'Catalog 固定 Commit 无效，无法提交更新。'
           if (!desktopBundleNeedsUpdate(entry, bundle)) return 'DSH 已安装来源已经是 Catalog 当前固定 Commit。'
-          if (!managerSupports('update')) return '当前 DSH Desktop 未提供官方 installBundle 更新接口。'
+          if (!managerSupports('update', entry)) return '当前 DSH Desktop 未提供官方 installBundle 更新接口。'
           return '更新条件未满足。'
         }
         if (!bundle?.installed) return '当前 Profile 尚未安装此插件。'
@@ -2824,7 +2862,7 @@ window.__ModuleLoader__.load({
       const actionButtons = (entry, bundle, { includeUnavailable = false, allActions = false } = {}) => {
         const actions = []
         const add = action => {
-          const available = actionAvailable(action, entry, bundle) && managerSupports(action)
+          const available = actionAvailable(action, entry, bundle) && managerSupports(action, entry)
           if (!available && !includeUnavailable) return
           const reason = available ? null : actionBlockReason(action, entry, bundle)
           const label = action === 'install' && entry.status === 'blocked' ? '交由 DSH 检查安装' : actionLabel(action)
@@ -2846,11 +2884,11 @@ window.__ModuleLoader__.load({
       }
       const detailActionMessage = (entry, bundle) => {
         if (entry.packageName === 'dsh-safe-plugin-manager') {
-          return actionAvailable('update', entry, bundle) && managerSupports('update')
+          return actionAvailable('update', entry, bundle) && managerSupports('update', entry)
             ? null : actionBlockReason('update', entry, bundle)
         }
         const actions = bundle?.installed ? ['update', bundle.enabled === true ? 'disable' : 'enable', 'remove'] : ['install']
-        const blocked = actions.filter(action => !actionAvailable(action, entry, bundle) || !managerSupports(action))
+        const blocked = actions.filter(action => !actionAvailable(action, entry, bundle) || !managerSupports(action, entry))
           .map(action => actionLabel(action) + '已禁用：' + actionBlockReason(action, entry, bundle))
         return [...new Set(blocked)].join('；') || null
       }
