@@ -7,6 +7,7 @@ import { Readable } from 'node:stream'
 import { runInNewContext } from 'node:vm'
 import test from 'node:test'
 import { createKnownPluginDirectory } from '../marketplace/lib/plugin-directory.js'
+import { rankingEntries } from '../marketplace/rankings/model.js'
 import { resolveHostOptions } from '../src/index.mjs'
 import { createRuntimeStatus } from '../src/runtime.mjs'
 import {
@@ -107,6 +108,8 @@ const desktopCatalogUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Sto
 const desktopCatalogIndexUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog-index.json'
 const desktopDiscoveryUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
 const desktopCandidatesUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/candidates.json'
+const desktopRankingIndexUrl = 'https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/index.html'
+const desktopRankingDataUrl = 'https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/data.json'
 const desktopCommit = 'a'.repeat(40)
 
 function desktopEntry({ id, packageName, commit, compatibility = 'compatible', profiles = ['desktop'], status = 'approved', statusReason,
@@ -125,6 +128,27 @@ function desktopEntry({ id, packageName, commit, compatibility = 'compatible', p
       permissions: { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] },
     },
     risk: { installScripts: [] },
+  }
+}
+
+function desktopRankingEntry({ id, name = id, repositoryUrl = `https://github.com/acme/${id}`, source = 'catalog',
+  reviewStatus = 'approved', listingStatus = source === 'catalog' && reviewStatus === 'approved' ? 'listed' : 'not-listed',
+  listingReason = listingStatus === 'listed' ? null : 'This entry is not approved for Store listing.',
+  categories = ['tools'], weeklyCategories = categories, weeklyStars = 0, communityRecommendation }) {
+  return {
+    id, nameZh: name, nameEn: name, version: '1.0.0', repositoryUrl, description: `${name} description`, categories,
+    listingStatus, listingReason, source, reviewStatus, stars: weeklyStars, weeklyStars,
+    weeklySnapshotMember: true, weeklyCategories,
+    ...(communityRecommendation ? { communityRecommendation } : {}),
+  }
+}
+
+function desktopRankingSnapshot(entries) {
+  return {
+    schemaVersion: 4, sourceCommit: desktopCommit, catalogUpdatedAt: '2026-11-02T00:00:00.000Z',
+    candidatesUpdatedAt: '2026-11-02T00:00:00.000Z', starsObservedAt: '2026-11-02T00:00:00.000Z',
+    weeklyStarsObservedAt: '2026-11-02T00:00:00.000Z',
+    categories: [{ id: 'tools', zh: '工具', en: 'Tools' }, { id: 'ai', zh: 'AI', en: 'AI' }], entries,
   }
 }
 
@@ -181,6 +205,37 @@ function desktopDirectoryDocuments(catalog, { extraCandidates = [] } = {}) {
   }
 }
 
+function desktopRankingFixture() {
+  const rankingSnapshot = desktopRankingSnapshot([
+    desktopRankingEntry({ id: 'dsh-rank-alpha', name: 'Alpha ranked plugin', weeklyStars: 55, categories: ['tools'] }),
+    desktopRankingEntry({ id: 'dsh-rank-beta', name: 'Beta ranked plugin', weeklyStars: 45, categories: ['ai'] }),
+    desktopRankingEntry({ id: 'candidate:pending-review', name: 'Pending review plugin', source: 'candidate',
+      reviewStatus: 'reviewing', listingReason: 'Store review is still pending for this plugin.',
+      repositoryUrl: 'https://github.com/acme/pending-review', weeklyStars: 35, categories: ['tools', 'ai'],
+      communityRecommendation: { basis: 'author-interaction', evidenceUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/1700#issuecomment-1', occurredAt: '2026-11-01T12:00:00.000Z' } }),
+    desktopRankingEntry({ id: 'dsh-rank-blocked', name: 'Blocked plugin', reviewStatus: 'blocked', listingReason: 'A policy blocker.',
+      weeklyStars: 100, categories: ['tools'] }),
+    desktopRankingEntry({ id: 'candidate:rejected-review', name: 'Rejected plugin', source: 'candidate', reviewStatus: 'rejected',
+      listingReason: 'Fixed-source review rejected this plugin.', repositoryUrl: 'https://github.com/acme/rejected-review',
+      weeklyStars: 90, categories: ['ai'] }),
+    desktopRankingEntry({ id: 'dsh-store-tool', name: 'DSH Store tool', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+      weeklyStars: 10, categories: ['tools'] }),
+    desktopRankingEntry({ id: 'build-dsh-plugin', name: 'Build DSH Plugin', repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin',
+      weeklyStars: 5, categories: ['ai'] }),
+  ])
+  const catalogEntries = rankingSnapshot.entries.filter(entry => entry.source === 'catalog').map(entry => desktopEntry({
+    id: entry.id, packageName: `@acme/${entry.id}`, commit: desktopCommit, status: entry.reviewStatus,
+    statusReason: entry.listingReason || undefined, repositoryUrl: entry.repositoryUrl,
+  }))
+  const candidates = rankingSnapshot.entries.filter(entry => entry.source === 'candidate').map(entry => ({
+    id: entry.id.replace(/^candidate:/, ''), name: entry.nameZh, description: entry.description,
+    repositoryUrl: entry.repositoryUrl, status: entry.reviewStatus, statusReason: entry.listingReason,
+    latestCommit: '9'.repeat(40), topics: entry.categories,
+  }))
+  const catalog = desktopCatalog(catalogEntries)
+  return { rankingSnapshot, catalog, directoryDocuments: desktopDirectoryDocuments(catalog, { extraCandidates: candidates }) }
+}
+
 function desktopCatalogIndex(entries) {
   const updatedAt = '2026-10-30T00:00:00Z'
   return {
@@ -198,7 +253,8 @@ function desktopCatalogIndex(entries) {
 function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.2',
   inspectResult, installResult, installedAfterInstallResult = null, removeResult = null,
   retainInstalledAfterRemove = false, inspectAvailable = true, removeBundleAvailable = true,
-  protocol = 'dsh-app:', directoryDocuments = undefined, listBundlesError = false } = {}) {
+  protocol = 'dsh-app:', directoryDocuments = undefined, rankingSnapshot = null, rankingIndexDigest = null,
+  listBundlesError = false } = {}) {
   const activeDirectoryDocuments = directoryDocuments === undefined
     ? (catalog ? desktopDirectoryDocuments(catalog) : null) : directoryDocuments
   const sourcePromise = readFile(new URL('../src/client.js', import.meta.url), 'utf8')
@@ -219,20 +275,34 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
   let nextTimer = 0
 
   const recordFor = component => {
-    if (!componentRecords.has(component)) componentRecords.set(component, { states: [], refs: [], effects: [], cursor: 0 })
+    if (!componentRecords.has(component)) componentRecords.set(component, { states: [], refs: [], effects: [], callbacks: [], cursor: 0 })
     return componentRecords.get(component)
   }
+  const sameDependencies = (left, right) => Array.isArray(left) && Array.isArray(right)
+    && left.length === right.length && left.every((value, index) => Object.is(value, right[index]))
   const React = {
     Fragment: Symbol('Fragment'),
     createElement(type, props, ...children) {
       const values = children.length === 1 ? children[0] : children
       return { type, props: { ...(props || {}), ...(children.length ? { children: values } : {}) }, children }
     },
-    useCallback(callback) { activeComponent.cursor++; return callback },
-    useEffect(effect) {
+    useCallback(callback, dependencies) {
       const record = activeComponent
       const index = record.cursor++
-      if (!record.effects[index]) record.effects[index] = { effect, cleanup: null, ran: false }
+      const cached = record.callbacks[index]
+      if (cached && sameDependencies(cached.dependencies, dependencies)) return cached.callback
+      record.callbacks[index] = { callback, dependencies }
+      return callback
+    },
+    useEffect(effect, dependencies) {
+      const record = activeComponent
+      const index = record.cursor++
+      const previous = record.effects[index]
+      if (!previous) record.effects[index] = { effect, cleanup: null, dependencies, pending: true }
+      else if (dependencies === undefined || previous.dependencies === undefined
+        || !sameDependencies(previous.dependencies, dependencies)) {
+        record.effects[index] = { effect, cleanup: previous.cleanup, dependencies, pending: true }
+      }
     },
     useMemo(factory) { activeComponent.cursor++; return factory() },
     useRef(initial) {
@@ -331,9 +401,14 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
       return jsonResponse(url, catalog)
     }
     directoryRequests.push({ url, options })
+    if (url === desktopRankingIndexUrl) {
+      const digest = rankingIndexDigest || createHash('sha256').update(JSON.stringify(rankingSnapshot)).digest('hex')
+      return jsonResponse(url, null, `<meta name="dsh-rankings-sha256" content="${digest}">`)
+    }
     const payload = url.includes('/catalog-index.json') ? activeDirectoryDocuments?.catalogIndex
       : url.includes('/discovery-index.json') ? activeDirectoryDocuments?.discovery
-        : url.includes('/candidates.json') ? activeDirectoryDocuments?.candidates : null
+        : url.includes('/candidates.json') ? activeDirectoryDocuments?.candidates
+          : url === desktopRankingDataUrl ? rankingSnapshot : null
     if (!payload) throw new Error('directory fixture unavailable')
     const rawText = url.includes('/catalog-index.json') ? activeDirectoryDocuments?.catalogIndexRaw : null
     return jsonResponse(url, payload, rawText || JSON.stringify(payload))
@@ -390,8 +465,9 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
     await ready
     const effects = recordFor(component).effects
     for (const record of effects) {
-      if (!record || record.ran) continue
-      record.ran = true
+      if (!record || !record.pending) continue
+      record.pending = false
+      record.cleanup?.()
       record.cleanup = record.effect()
     }
   }
@@ -488,7 +564,7 @@ test('official Desktop registers 插件商城 and mirrors the complete website d
   assert.match(text, /插件商城（DSH-Store）/)
   assert.match(text, /全部已知插件 · 10/)
   assert.match(text, /Name dsh-installed.*已启动|已启动.*Name dsh-installed/)
-  assert.match(text, /Catalog 收录状态不等于审核通过/)
+  assert.match(text, /收录状态与审核建议分开展示/)
   assert.match(text, /Catalog 已拦截 · DSH 可检查/)
   assert.ok(desktopNodes(initial).length > 0)
   assert.equal(harness.calls.listBundles, 1)
@@ -517,9 +593,12 @@ test('official Desktop registers 插件商城 and mirrors the complete website d
   assert.ok(blockedInstallCard)
   assert.equal(blockedInstallCard.props.disabled, false)
   assert.equal(typeof blockedInstallCard.props.onClick, 'function')
-  assert.equal(desktopNodes(publicOnlyCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
-  assert.equal(desktopNodes(candidateOnlyCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
-  assert.equal(desktopNodes(withdrawnCard).some(node => node.type === 'button' && node.children?.includes('安装')), false)
+  for (const card of [publicOnlyCard, candidateOnlyCard, withdrawnCard]) {
+    const githubInstall = desktopNodes(card).find(node => node.type === 'button'
+      && node.children?.includes('GitHub 地址交由 DSH 安装'))
+    assert.ok(githubInstall, 'unlisted, candidate, and public-only DSH plugins share the DSH install handoff')
+    assert.equal(githubInstall.props.disabled, false)
+  }
   assert.match(desktopText(tree), /AI 与智能体/)
   const directorySearch = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
   assert.ok(directorySearch)
@@ -602,6 +681,166 @@ test('official Desktop registers 插件商城 and mirrors the complete website d
   assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '按分类筛选'))
   assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '排序方式'))
   assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '按 DSH STORE 审核状态筛选'))
+})
+
+test('Desktop directory keeps records beyond the former 700-item range searchable', async () => {
+  const catalog = desktopCatalog([desktopEntry({ id: 'large-directory-anchor', packageName: '@acme/large-directory-anchor', commit: desktopCommit })])
+  const directoryDocuments = desktopDirectoryDocuments(catalog)
+  const initialCount = directoryDocuments.discovery.entries.length
+  const additionalRecords = 805
+  for (let index = 0; index < additionalRecords; index++) {
+    const sourceIndex = initialCount + index
+    const id = `bulk-dsh-plugin-${index}`
+    directoryDocuments.discovery.entries.push({
+      sourceIndex, sourceId: id, alias: `@acme/${id}`, name: `Bulk DSH plugin ${index}`,
+      description: `Large directory fixture ${index}`, stars: additionalRecords - index, categories: ['ai'],
+      kind: 'dsh-plugin', repositoryUrl: `https://github.com/acme/${id}`,
+      detailUrl: `https://www.dsh.so/artifact/${id}/`,
+    })
+  }
+  directoryDocuments.discovery.source.recordCount = directoryDocuments.discovery.entries.length
+  const expectedDirectory = createKnownPluginDirectory(catalog.entries.filter(row => row.status !== 'unlisted'),
+    directoryDocuments.candidates.entries, { discoveryIndex: directoryDocuments.discovery })
+  const harness = createDesktopHarness({ catalog, directoryDocuments })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(`全部已知插件 · ${expectedDirectory.length}`))
+  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
+  search.props.onChange({ target: { value: `bulk-dsh-plugin-${additionalRecords - 1}` } })
+  tree = await harness.render()
+  const results = desktopNodes(tree).filter(node => node.type === 'article')
+  assert.equal(results.length, 1)
+  assert.match(desktopText(results[0]), new RegExp(`Bulk DSH plugin ${additionalRecords - 1}`))
+  assert.match(desktopText(tree), /1 条结果 · 第 1 \/ 1 页/)
+})
+
+test('Desktop recommendation and essential boards match the official website ranking algorithm and show review reasons', async () => {
+  const { rankingSnapshot, catalog, directoryDocuments } = desktopRankingFixture()
+  const harness = createDesktopHarness({ catalog, directoryDocuments, rankingSnapshot })
+  await harness.ready
+  await harness.render()
+  const panel = harness.getComponent('DesktopStorePanel')
+  await harness.runEffects(panel)
+  await waitForDesktopTree(harness, tree => desktopText(tree).includes('全部已知插件'))
+
+  for (const [type, tabPrefix] of [['recommended', '推荐榜单'], ['essential', '必装榜单']]) {
+    let tree = await harness.render()
+    const tab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
+      && node.children?.some(value => String(value).startsWith(tabPrefix)))
+    assert.ok(tab, `${tabPrefix} tab is visible`)
+    tab.props.onClick()
+    tree = await harness.render()
+    await harness.runEffects(panel)
+    tree = await waitForDesktopTree(harness, value => desktopText(value).includes(type === 'recommended' ? '官网推荐榜' : '官网必装榜')
+      && !desktopText(value).includes('正在读取官网榜单'))
+
+    const expectedIds = rankingEntries(rankingSnapshot, type).map(entry => entry.id)
+    const pageCount = Math.max(1, Math.ceil(expectedIds.length / 30))
+    for (let page = 1; page <= pageCount; page++) {
+      if (page > 1) {
+        const next = desktopNodes(tree).find(node => node.type === 'button' && node.props['aria-label'] === '下一页')
+        assert.ok(next, `${tabPrefix} exposes page ${page}`)
+        next.props.onClick()
+        tree = await harness.render()
+        assert.ok(desktopText(tree).includes(`${page} / ${pageCount} 页`))
+      }
+      const actualIds = desktopNodes(tree).filter(node => node.type === 'article')
+        .map(node => node.props['data-market-entry-id'])
+      assert.deepEqual(actualIds, expectedIds.slice((page - 1) * 30, page * 30),
+        `${tabPrefix} page ${page} follows marketplace/rankings/model.js`)
+    }
+    if (type === 'recommended') {
+      const candidateCard = desktopNodes(tree).find(node => node.type === 'article'
+        && node.props['data-market-entry-id'] === 'candidate:pending-review')
+      assert.ok(candidateCard)
+      assert.match(desktopText(candidateCard), /DSH STORE 审核建议：Store review is still pending for this plugin\./)
+      assert.match(desktopText(candidateCard), /作者互动推荐/)
+    }
+  }
+
+  assert.equal(harness.directoryRequests.filter(item => item.url === desktopRankingIndexUrl).length, 1)
+  assert.equal(harness.directoryRequests.filter(item => item.url === desktopRankingDataUrl).length, 1)
+})
+
+test('a ranking digest mismatch fails the board closed without disabling full-directory search', async () => {
+  const { rankingSnapshot, catalog, directoryDocuments } = desktopRankingFixture()
+  const harness = createDesktopHarness({ catalog, directoryDocuments, rankingSnapshot, rankingIndexDigest: 'f'.repeat(64) })
+  await harness.ready
+  await harness.render()
+  const panel = harness.getComponent('DesktopStorePanel')
+  await harness.runEffects(panel)
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('全部已知插件'))
+  let tab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
+    && node.children?.some(value => String(value).startsWith('推荐榜单')))
+  tab.props.onClick()
+  tree = await harness.render()
+  await harness.runEffects(panel)
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DESKTOP_RANKING_INTEGRITY_MISMATCH'))
+  assert.match(desktopText(tree), /官网榜单暂不可用/)
+  assert.equal(desktopNodes(tree).some(node => node.type === 'article'), false)
+
+  tab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
+    && node.children?.some(value => String(value).startsWith('全部已知插件')))
+  tab.props.onClick()
+  tree = await harness.render()
+  assert.ok(desktopNodes(tree).some(node => node.type === 'article' && desktopText(node).includes('Name dsh-rank-alpha')))
+  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
+  search.props.onChange({ target: { value: 'public-only' } })
+  tree = await harness.render()
+  assert.equal(desktopNodes(tree).filter(node => node.type === 'article').length, 1)
+  assert.match(desktopText(tree), /Public only plugin/)
+})
+
+test('Desktop lets DSH decide a rejected candidate after exact GitHub source confirmation', async () => {
+  const catalog = desktopCatalog([
+    desktopEntry({ id: 'baseline-entry', packageName: '@acme/baseline-entry', commit: desktopCommit }),
+  ])
+  const candidate = { id: 'candidate-only', name: 'Candidate only plugin', description: 'A candidate with no Catalog record.',
+    repositoryUrl: 'https://github.com/acme/candidate-only', status: 'rejected', latestCommit: '7'.repeat(40),
+    statusReason: 'Static Store review did not find a standard DSH Bundle.', topics: ['ai'] }
+  const harness = createDesktopHarness({
+    catalog,
+    directoryDocuments: desktopDirectoryDocuments(catalog, { extraCandidates: [candidate] }),
+    inspectResult: { status: 'rejected', reason: 'DSH preflight could not verify this repository yet' },
+  })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Candidate only plugin'))
+  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(candidate.name))
+  assert.ok(card, desktopText(tree))
+  assert.match(desktopText(card), /候选审核未通过/)
+  assert.match(desktopText(card), /Static Store review did not find a standard DSH Bundle/)
+  const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('GitHub 地址交由 DSH 安装'))
+  assert.ok(install)
+  assert.equal(install.props.disabled, false)
+  install.props.onClick()
+  tree = await harness.render()
+  assert.match(desktopText(tree), /Store 候选审核状态：rejected/)
+  assert.match(desktopText(tree), /这是商城建议，不是 DSH 的安装结论/)
+  assert.equal(harness.calls.installBundle.length, 0)
+
+  const confirmation = 'INSTALL GITHUB acme/candidate-only DEFAULT'
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
+  assert.equal(confirm.props.disabled, false)
+  await confirm.props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成安装')
+    && desktopText(value).includes('DSH 已安装 · 已启动'))
+
+  assert.deepEqual(harness.calls.inspect, ['git+https://github.com/acme/candidate-only.git'])
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.equal(harness.calls.installBundle[0].spec, 'git+https://github.com/acme/candidate-only.git')
+  assert.equal(harness.calls.installBundle[0].options.enabled, true)
+  assert.match(desktopText(tree), /DSH Desktop 预检提示：DSH preflight could not verify this repository yet/)
+  const installedCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(candidate.name))
+  assert.match(desktopText(installedCard), /DSH 已安装 · 已启动/)
+  assert.match(desktopText(installedCard), /已由 DSH Desktop 安装/)
+  assert.equal(desktopNodes(installedCard).some(node => node.type === 'button'
+    && node.children?.includes('GitHub 地址交由 DSH 安装')), false)
 })
 
 test('Web renderer retains the Settings entry without registering a Desktop home panel', async () => {

@@ -41,6 +41,7 @@ jobs:
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-desktop-update-20261101.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-desktop-home-nav-update-20261102.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-desktop-full-directory-20261102.json
+      - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-desktop-github-install-20261102.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-desktop-self-update-20261102.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-desktop-interactions-20261102.json
       - run: node scripts/verify-dsh-upgrade-plan.mjs docs/ops/dsh-native-market-desktop-ui-20261031.json

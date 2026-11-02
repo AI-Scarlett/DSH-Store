@@ -1453,6 +1453,10 @@ window.__ModuleLoader__.load({
     const DESKTOP_DISCOVERY_TIMEOUT_MS = 45_000
     const DESKTOP_CANDIDATE_MAX_BYTES = 5 * 1024 * 1024
     const DESKTOP_CANDIDATE_MAX_RECORDS = 20_000
+    const DESKTOP_RANKING_MAX_BYTES = 2 * 1024 * 1024
+    const DESKTOP_RANKING_INDEX_MAX_BYTES = 256 * 1024
+    const DESKTOP_RANKING_MAX_RECORDS = 10_000
+    const DESKTOP_RANKING_PAGE_SIZE = 30
     const DESKTOP_DIRECTORY_SOURCES = {
       catalogIndex: [
         { url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog-index.json', host: 'raw.githubusercontent.com', path: '/AI-Scarlett/DSH-Store/main/registry/catalog-index.json' },
@@ -1466,6 +1470,10 @@ window.__ModuleLoader__.load({
         { url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/candidates.json', host: 'raw.githubusercontent.com', path: '/AI-Scarlett/DSH-Store/main/registry/candidates.json' },
         { url: 'https://ai-scarlett.github.io/DSH-Store/registry/candidates.json', host: 'ai-scarlett.github.io', path: '/DSH-Store/registry/candidates.json' },
       ],
+      rankings: [{
+        index: { url: 'https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/index.html', host: 'ai-scarlett.github.io', path: '/DSH-Store/marketplace/rankings/index.html' },
+        data: { url: 'https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/data.json', host: 'ai-scarlett.github.io', path: '/DSH-Store/marketplace/rankings/data.json' },
+      }],
     }
     const DESKTOP_DISCOVERY_CATEGORY_LABELS = {
       ai: 'AI 与智能体', audio: '音频', automation: '自动化', browser: '浏览器', 'code-review': '代码审查',
@@ -1905,6 +1913,211 @@ window.__ModuleLoader__.load({
       return value
     }
 
+    function validateDesktopRankingSnapshot(value) {
+      if (!desktopExactObjectKeys(value, ['schemaVersion', 'sourceCommit', 'catalogUpdatedAt', 'candidatesUpdatedAt',
+        'starsObservedAt', 'weeklyStarsObservedAt', 'categories', 'entries'])
+        || value.schemaVersion !== 4 || !DESKTOP_COMMIT.test(value.sourceCommit || '')
+        || !Number.isFinite(Date.parse(value.catalogUpdatedAt))
+        || !Array.isArray(value.categories) || value.categories.length === 0 || value.categories.length > 64
+        || !Array.isArray(value.entries) || value.entries.length === 0 || value.entries.length > DESKTOP_RANKING_MAX_RECORDS) {
+        throw desktopFailure('DESKTOP_RANKING_SCHEMA_INVALID')
+      }
+      for (const key of ['candidatesUpdatedAt', 'starsObservedAt', 'weeklyStarsObservedAt']) {
+        if (value[key] !== null && (typeof value[key] !== 'string' || !Number.isFinite(Date.parse(value[key])))) {
+          throw desktopFailure(`DESKTOP_RANKING_${key.toUpperCase()}_INVALID`)
+        }
+      }
+      const categoryIds = new Set()
+      for (const category of value.categories) {
+        if (!desktopExactObjectKeys(category, ['id', 'zh', 'en'])
+          || !desktopBoundedString(category.id, 1, 80) || !/^[a-z0-9-]+$/.test(category.id)
+          || categoryIds.has(category.id) || !desktopBoundedString(category.zh, 1, 160)
+          || !desktopBoundedString(category.en, 1, 160)) throw desktopFailure('DESKTOP_RANKING_CATEGORY_INVALID')
+        categoryIds.add(category.id)
+      }
+      const ids = new Set()
+      for (const [index, entry] of value.entries.entries()) {
+        const keys = ['id', 'nameZh', 'nameEn', 'version', 'repositoryUrl', 'description', 'categories',
+          'listingStatus', 'listingReason', 'source', 'reviewStatus', 'stars', 'weeklyStars',
+          'weeklySnapshotMember', 'weeklyCategories']
+        const optionalKeys = ['communityRecommendation', 'featured', 'order']
+        if (!entry || typeof entry !== 'object' || Array.isArray(entry)
+          || keys.some(key => !Object.hasOwn(entry, key))
+          || Object.keys(entry).some(key => !keys.includes(key) && !optionalKeys.includes(key))
+          || !desktopBoundedString(entry.id, 1, 240) || ids.has(entry.id)
+          || !desktopBoundedString(entry.nameZh, 1, 240) || !desktopBoundedString(entry.nameEn, 1, 240)
+          || !desktopBoundedString(entry.version, 0, 120) || !desktopSafeRepositoryUrl(entry.repositoryUrl)
+          || !desktopBoundedString(entry.description, 0, 256)
+          || !Array.isArray(entry.categories) || entry.categories.some(id => !categoryIds.has(id))
+          || !['listed', 'not-listed'].includes(entry.listingStatus)
+          || (entry.listingStatus === 'listed'
+            ? entry.listingReason !== null || entry.source !== 'catalog' || entry.reviewStatus !== 'approved'
+            : !desktopBoundedString(entry.listingReason, 1, 600))
+          || !['catalog', 'candidate'].includes(entry.source)
+          || !(entry.source === 'catalog' ? ['approved', 'blocked', 'unlisted'] : ['discovered', 'reviewing', 'rejected']).includes(entry.reviewStatus)
+          || (entry.source === 'candidate' && entry.featured === true)
+          || (entry.featured !== undefined && typeof entry.featured !== 'boolean')
+          || (entry.order !== undefined && (!Number.isSafeInteger(entry.order) || entry.order < 0))
+          || (entry.stars !== null && (!Number.isSafeInteger(entry.stars) || entry.stars < 0 || value.starsObservedAt === null))
+          || (entry.weeklyStars !== null && (!Number.isSafeInteger(entry.weeklyStars) || entry.weeklyStars < 0 || value.weeklyStarsObservedAt === null))
+          || typeof entry.weeklySnapshotMember !== 'boolean'
+          || !Array.isArray(entry.weeklyCategories) || entry.weeklyCategories.some(id => !categoryIds.has(id))
+          || (!entry.weeklySnapshotMember && (entry.weeklyStars !== null || entry.weeklyCategories.length > 0))) {
+          throw desktopFailure(`DESKTOP_RANKING_ENTRY_${index}_INVALID`)
+        }
+        if (entry.communityRecommendation !== undefined) {
+          const recommendation = entry.communityRecommendation
+          if (!desktopExactObjectKeys(recommendation, ['basis', 'evidenceUrl', 'occurredAt'])
+            || recommendation.basis !== 'author-interaction'
+            || !/^https:\/\/github\.com\/AI-Scarlett\/DSH-Store\/(?:issues|pull)\/\d+(?:#issuecomment-\d+)?$/.test(recommendation.evidenceUrl)
+            || !Number.isFinite(Date.parse(recommendation.occurredAt))) throw desktopFailure(`DESKTOP_RANKING_ENTRY_${index}_RECOMMENDATION_INVALID`)
+        }
+        ids.add(entry.id)
+      }
+      return value
+    }
+
+    function desktopRankingEntries(data, type) {
+      const validStars = value => Number.isSafeInteger(value) && value >= 0
+      const compareId = (left, right) => left.id < right.id ? -1 : left.id > right.id ? 1 : 0
+      const compareStars = (left, right) => right.stars - left.stars || compareId(left, right)
+      const scoreField = type === 'recommended' || type === 'essential' ? 'weeklyStars' : null
+      if (!scoreField || !['recommended', 'essential'].includes(type)) return []
+      const known = data.entries.filter(entry => validStars(entry[scoreField]))
+        .map(entry => ({ ...entry, stars: entry[scoreField] })).sort(compareStars)
+      const officialRepositories = [
+        'https://github.com/AI-Scarlett/DSH-Store',
+        'https://github.com/AI-Scarlett/build-dsh-plugin',
+      ]
+      const isOfficial = entry => officialRepositories.some(url => url.toLowerCase() === entry.repositoryUrl.toLowerCase())
+      const withOfficialSlots = (rows, limit = DESKTOP_RANKING_PAGE_SIZE) => {
+        const seen = new Set()
+        const official = []
+        for (const repositoryUrl of officialRepositories) {
+          const source = rows.find(entry => entry.repositoryUrl.toLowerCase() === repositoryUrl.toLowerCase())
+            || data.entries.find(entry => entry.repositoryUrl.toLowerCase() === repositoryUrl.toLowerCase())
+          if (!source || ['blocked', 'rejected'].includes(source.reviewStatus) || seen.has(source.id)) continue
+          seen.add(source.id)
+          const entry = { ...source, officialToolPick: true,
+            stars: validStars(source.weeklyStars) ? source.weeklyStars : null }
+          if (type === 'recommended') entry.recommendationKind = 'official-tool'
+          else entry.wins = Array.isArray(source.wins) ? source.wins : []
+          official.push(entry)
+        }
+        if (!official.length) return rows.slice(0, limit)
+        const seedDate = data.weeklyStarsObservedAt || 'weekly-snapshot-unavailable'
+        let randomState = 2166136261
+        for (const character of `${seedDate}:${type}:official-dsh-tools`) {
+          randomState = Math.imul(randomState ^ character.charCodeAt(0), 16777619)
+        }
+        if (randomState === 0) randomState = 0x6d2b79f5
+        const random = () => {
+          randomState = (randomState + 0x6d2b79f5) | 0
+          let value = randomState
+          value = Math.imul(value ^ (value >>> 15), value | 1)
+          value ^= value + Math.imul(value ^ (value >>> 7), value | 61)
+          return ((value ^ (value >>> 14)) >>> 0) / 4294967296
+        }
+        const ordinary = rows.filter(entry => !isOfficial(entry)).slice(0, limit - official.length)
+        const total = ordinary.length + official.length
+        const windowSize = Math.min(10, total)
+        const slots = Array.from({ length: windowSize }, (_, index) => index)
+        for (let index = slots.length - 1; index > 0; index--) {
+          const other = Math.floor(random() * (index + 1))
+          ;[slots[index], slots[other]] = [slots[other], slots[index]]
+        }
+        const output = new Array(windowSize)
+        official.forEach((entry, index) => { output[slots[index]] = entry })
+        let nextOrdinary = 0
+        for (let index = 0; index < output.length; index++) if (!output[index]) output[index] = ordinary[nextOrdinary++]
+        return [...output, ...ordinary.slice(nextOrdinary)]
+      }
+
+      if (type === 'recommended') {
+        const communityPicks = known.filter(entry => entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus))
+          .map(entry => ({ ...entry, recommendationKind: 'community-stars' }))
+        const interactions = data.entries.filter(entry => entry.communityRecommendation)
+          .sort((left, right) => Date.parse(right.communityRecommendation.occurredAt) - Date.parse(left.communityRecommendation.occurredAt)
+            || compareId(left, right))
+          .map(entry => ({ ...entry, stars: entry.weeklyStars, recommendationKind: 'author-interaction' }))
+        if (!interactions.length) return withOfficialSlots(communityPicks)
+        const interactionIds = new Set(interactions.map(entry => entry.id))
+        const regular = communityPicks.filter(entry => !interactionIds.has(entry.id)).slice(0, DESKTOP_RANKING_PAGE_SIZE)
+        return withOfficialSlots([...interactions, ...regular],
+          Math.max(DESKTOP_RANKING_PAGE_SIZE, interactions.length + regular.length + 2))
+      }
+
+      const winners = new Map()
+      for (const category of data.categories) {
+        const members = data.entries.filter(entry => entry.weeklySnapshotMember
+          && entry.weeklyCategories.includes(category.id) && !['rejected', 'blocked'].includes(entry.reviewStatus))
+        if (!members.length || members.some(entry => !validStars(entry.weeklyStars))) continue
+        const eligible = known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+          && !['rejected', 'blocked'].includes(entry.reviewStatus))
+        const winner = eligible[0]
+        if (!winner) continue
+        if (!winners.has(winner.id)) winners.set(winner.id, { ...winner, wins: [] })
+        winners.get(winner.id).wins.push({ ...category, tied: eligible.filter(entry => entry.stars === winner.stars).length > 1 })
+      }
+      const result = [...winners.values()].sort(compareStars)
+      const selected = new Set(result.map(entry => entry.id))
+      const categoryMembers = data.categories.map(category => ({
+        category,
+        members: known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+          && !['rejected', 'blocked'].includes(entry.reviewStatus)),
+      }))
+      for (let rank = 0; rank < known.length && result.length < DESKTOP_RANKING_PAGE_SIZE; rank++) {
+        let any = false
+        for (const { category, members } of categoryMembers) {
+          const entry = members[rank]
+          if (!entry) continue
+          any = true
+          if (result.length >= DESKTOP_RANKING_PAGE_SIZE) break
+          if (selected.has(entry.id) || entry.stars === 0 || ['rejected', 'blocked'].includes(entry.reviewStatus)) continue
+          selected.add(entry.id)
+          result.push({ ...entry, wins: [], categoryPick: { ...category, observedRank: rank + 1 } })
+        }
+        if (!any) break
+      }
+      return withOfficialSlots(result)
+    }
+
+    function createDesktopRankingRows(directoryRows, snapshot, type) {
+      if (!snapshot) return []
+      const byId = new Map()
+      const byRepository = new Map()
+      for (const row of directoryRows) {
+        for (const id of [row.sourceId, row.catalogIndexEntry?.id, row.catalogEntry?.id, row.candidateEntry?.id]) {
+          if (typeof id === 'string' && !byId.has(id.toLowerCase())) byId.set(id.toLowerCase(), row)
+        }
+        if (typeof row.repositoryUrl === 'string' && !byRepository.has(row.repositoryUrl.toLowerCase())) {
+          byRepository.set(row.repositoryUrl.toLowerCase(), row)
+        }
+      }
+      return desktopRankingEntries(snapshot, type).map(ranked => {
+        const existing = byId.get(ranked.id.toLowerCase()) || byRepository.get(ranked.repositoryUrl.toLowerCase())
+        if (existing) return { ...existing, rankingEntry: ranked, categories: [...ranked.categories] }
+        const catalogIndexEntry = ranked.source === 'catalog' ? {
+          id: ranked.id, nameZh: ranked.nameZh, nameEn: ranked.nameEn, packageName: '',
+          version: ranked.version, featured: false, order: Number.MAX_SAFE_INTEGER,
+          repositoryUrl: ranked.repositoryUrl, status: ranked.reviewStatus, categories: ranked.categories, searchTerms: [],
+        } : null
+        const candidateEntry = ranked.source === 'candidate' ? {
+          id: ranked.id, name: ranked.nameZh, description: ranked.description,
+          repositoryUrl: ranked.repositoryUrl, status: ranked.reviewStatus, topics: ranked.categories,
+        } : null
+        return {
+          id: `ranking:${ranked.id}`, source: ranked.source === 'candidate' ? 'candidate' : 'catalog',
+          sourceId: ranked.id, alias: '', packageName: '', name: ranked.nameZh || ranked.nameEn,
+          description: ranked.description, categories: [...ranked.categories], stars: ranked.stars || 0,
+          kind: ranked.source === 'candidate' ? 'ranking-candidate' : 'ranking-catalog',
+          repositoryUrl: ranked.repositoryUrl, detailUrl: null, order: Number.MAX_SAFE_INTEGER,
+          catalogIndexEntry, catalogEntry: null, candidateEntry, rankingEntry: ranked,
+          listingStatus: ranked.listingStatus === 'listed' ? 'listed' : 'unlisted', primaryCategory: ranked.categories[0] || 'uncategorized',
+        }
+      })
+    }
+
     async function fetchDesktopDirectoryDocument(sources, { maxBytes, timeoutMs, errorCode }) {
       const failures = []
       for (const source of sources) {
@@ -1957,6 +2170,79 @@ window.__ModuleLoader__.load({
         } finally { window.clearTimeout(timeout) }
       }
       throw desktopFailure(`${errorCode}_UNAVAILABLE_${failures.join('_') || 'UNKNOWN'}`)
+    }
+
+    async function fetchDesktopBoundedText(source, { maxBytes, timeoutMs, errorCode }) {
+      const controller = new AbortController()
+      const timeout = window.setTimeout(() => controller.abort(), timeoutMs)
+      try {
+        const response = await fetch(source.url, {
+          cache: 'no-store', credentials: 'omit', redirect: 'error',
+          headers: { accept: 'text/html' }, signal: controller.signal, referrerPolicy: 'no-referrer',
+        })
+        if (!response.ok) throw desktopFailure(`${errorCode}_HTTP_FAILED`)
+        if (response.url) {
+          const finalUrl = new URL(response.url)
+          if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== source.host || finalUrl.pathname !== source.path
+            || finalUrl.username || finalUrl.password || finalUrl.search || finalUrl.hash) throw desktopFailure(`${errorCode}_REDIRECT_REFUSED`)
+        }
+        const lengthHeader = response.headers?.get?.('content-length')
+        if (typeof lengthHeader === 'string' && /^\d+$/.test(lengthHeader) && Number(lengthHeader) > maxBytes) {
+          throw desktopFailure(`${errorCode}_TOO_LARGE`)
+        }
+        const reader = response.body?.getReader?.()
+        let raw = ''
+        let byteLength = 0
+        if (reader) {
+          const decoder = new TextDecoder('utf-8', { fatal: true })
+          try {
+            while (true) {
+              const chunk = await reader.read()
+              if (chunk.done) break
+              if (!(chunk.value instanceof Uint8Array)) throw desktopFailure(`${errorCode}_STREAM_INVALID`)
+              byteLength += chunk.value.byteLength
+              if (byteLength > maxBytes) {
+                try { await reader.cancel() } catch {}
+                throw desktopFailure(`${errorCode}_TOO_LARGE`)
+              }
+              raw += decoder.decode(chunk.value, { stream: true })
+            }
+            raw += decoder.decode()
+          } finally { reader.releaseLock?.() }
+        } else {
+          raw = await response.text()
+          byteLength = new TextEncoder().encode(raw).byteLength
+          if (byteLength > maxBytes) throw desktopFailure(`${errorCode}_TOO_LARGE`)
+        }
+        if (byteLength === 0) throw desktopFailure(`${errorCode}_EMPTY`)
+        return raw
+      } finally { window.clearTimeout(timeout) }
+    }
+
+    async function fetchDesktopRankingSnapshot() {
+      const failures = []
+      for (const source of DESKTOP_DIRECTORY_SOURCES.rankings) {
+        try {
+          const indexHtml = await fetchDesktopBoundedText(source.index, {
+            maxBytes: DESKTOP_RANKING_INDEX_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS,
+            errorCode: 'DESKTOP_RANKING_INDEX',
+          })
+          const digestMatch = /<meta\s+name="dsh-rankings-sha256"\s+content="([0-9a-f]{64})"\s*>/i.exec(indexHtml)
+          if (!digestMatch) throw desktopFailure('DESKTOP_RANKING_DIGEST_MISSING')
+          const document = await fetchDesktopDirectoryDocument([source.data], {
+            maxBytes: DESKTOP_RANKING_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS,
+            errorCode: 'DESKTOP_RANKING_DATA',
+          })
+          const bytes = new TextEncoder().encode(document.raw)
+          if (!window.crypto?.subtle || typeof window.crypto.subtle.digest !== 'function') throw desktopFailure('DESKTOP_RANKING_INTEGRITY_UNAVAILABLE')
+          const digest = [...new Uint8Array(await window.crypto.subtle.digest('SHA-256', bytes))]
+            .map(value => value.toString(16).padStart(2, '0')).join('')
+          if (digest !== digestMatch[1]) throw desktopFailure('DESKTOP_RANKING_INTEGRITY_MISMATCH')
+          return { snapshot: validateDesktopRankingSnapshot(document.value), source: document.source,
+            digest, rankingIndexUrl: source.index.url }
+        } catch (error) { failures.push(desktopErrorCode(error)) }
+      }
+      throw desktopFailure(`DESKTOP_RANKING_UNAVAILABLE_${failures.join('_') || 'UNKNOWN'}`)
     }
 
     async function fetchDesktopCatalogIndex(catalog) {
@@ -2181,7 +2467,69 @@ window.__ModuleLoader__.load({
       return { catalog, ...inventory }
     }
 
+    function desktopDirectoryGitHubInstallEntry(row) {
+      const discoveryPlugin = row?.source === 'discovery' && row.kind === 'dsh-plugin'
+      const catalogPlugin = Boolean(row?.catalogIndexEntry || row?.catalogEntry)
+      const candidatePlugin = Boolean(row?.candidateEntry)
+      if ((!discoveryPlugin && !catalogPlugin && !candidatePlugin)
+        || typeof row.repositoryUrl !== 'string' || !desktopSafeRepositoryUrl(row.repositoryUrl)) return null
+      const repositoryUrl = row.repositoryUrl
+      const normalizedRepository = repositoryUrl.toLowerCase()
+      const catalogEntry = row.catalogEntry || null
+      const catalogIndexEntry = row.catalogIndexEntry || null
+      const packageNameHint = catalogEntry?.packageName || catalogIndexEntry?.packageName || row.alias || row.packageName || ''
+      if (packageNameHint === 'dsh-safe-plugin-manager' || packageNameHint.startsWith('@deepseek-ai/')
+        || normalizedRepository === 'https://github.com/ai-scarlett/dsh-store'
+        || normalizedRepository.startsWith('https://github.com/deepseek-ai/')) return null
+      if (catalogEntry && desktopHasProtectedEntryId(catalogEntry)) return null
+      const repositoryName = repositoryUrl.split('/').at(-1).toLowerCase()
+      const packageName = DESKTOP_PACKAGE_NAME.test(packageNameHint) && !packageNameHint.includes('..')
+        ? packageNameHint : repositoryName
+      const details = catalogEntry?.details || {
+        license: '未知', externalDependencies: [],
+        permissions: { level: 'unknown', files: 'unknown', network: 'unknown', commands: 'unknown', credentials: ['unknown'] },
+      }
+      return {
+        id: row.id || row.sourceId || repositoryName,
+        name: row.name || catalogEntry?.name || packageName,
+        packageName,
+        version: 'GitHub 默认分支',
+        commit: 'DEFAULT_BRANCH',
+        status: catalogEntry?.status || catalogIndexEntry?.status || 'unlisted',
+        candidateStatus: row.candidateEntry?.status || null,
+        statusReason: catalogEntry?.statusReason || catalogIndexEntry?.statusReason || row.candidateEntry?.statusReason || '',
+        updatePolicy: null,
+        repositoryUrl,
+        installPath: null,
+        manifestPath: 'package.json',
+        entryIds: catalogEntry?.entryIds || [],
+        compatibility: catalogEntry?.compatibility || { profiles: [] },
+        details,
+        risk: catalogEntry?.risk || { installScripts: [] },
+        installMode: 'github-default-branch',
+        directorySource: discoveryPlugin ? 'discovery' : catalogPlugin ? 'catalog' : 'candidate',
+        discoveryKind: discoveryPlugin ? row.kind : null,
+      }
+    }
+
+    function desktopDirectoryGitHubInstallReady(entry) {
+      if (entry?.installMode !== 'github-default-branch'
+        || !['discovery', 'catalog', 'candidate'].includes(entry.directorySource)
+        || (entry.directorySource === 'discovery' && entry.discoveryKind !== 'dsh-plugin')
+        || !desktopSafeRepositoryUrl(entry.repositoryUrl)
+        || entry.packageName === 'dsh-safe-plugin-manager'
+        || entry.packageName.startsWith('@deepseek-ai/')
+        || entry.repositoryUrl.toLowerCase() === 'https://github.com/ai-scarlett/dsh-store'
+        || entry.repositoryUrl.toLowerCase().startsWith('https://github.com/deepseek-ai/')
+        || desktopHasProtectedEntryId(entry)) return false
+      return true
+    }
+
     function desktopInstallSpecifier(entry) {
+      if (entry?.installMode === 'github-default-branch') {
+        if (!desktopDirectoryGitHubInstallReady(entry)) throw Object.assign(new Error('DESKTOP_INSTALL_SOURCE_INVALID'), { code: 'DESKTOP_INSTALL_SOURCE_INVALID' })
+        return `git+${entry.repositoryUrl}.git`
+      }
       const repository = entry.repositoryUrl
       if (!/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+$/.test(repository)
         || !DESKTOP_COMMIT.test(entry.commit)) throw Object.assign(new Error('DESKTOP_INSTALL_SOURCE_INVALID'), { code: 'DESKTOP_INSTALL_SOURCE_INVALID' })
@@ -2259,6 +2607,10 @@ window.__ModuleLoader__.load({
     }
 
     function desktopBundleConfirmsInstall(entry, bundle) {
+      if (entry?.installMode === 'github-default-branch') {
+        return Boolean(bundle?.installed === true && desktopDirectoryGitHubInstallReady(entry)
+          && desktopSourceRepository(bundle.source) === desktopEntryRepository(entry))
+      }
       if (!bundle || bundle.name !== entry.packageName || bundle.installed !== true
         || bundle.version !== entry.version || !desktopBundleMatchesCatalogEntry(entry, bundle)) return false
       return desktopSourceRevision(bundle.source) === entry.commit
@@ -2322,6 +2674,9 @@ window.__ModuleLoader__.load({
     function desktopActionConfirmation(action, entry) {
       const verb = { install: 'INSTALL', update: 'UPDATE', remove: 'REMOVE', enable: 'START', disable: 'CLOSE' }[action]
       if (!verb) throw desktopFailure('DESKTOP_ACTION_INVALID')
+      if (entry.installMode === 'github-default-branch' && action === 'install') {
+        return `INSTALL GITHUB ${entry.repositoryUrl.slice('https://github.com/'.length)} DEFAULT`
+      }
       return `${verb} ${entry.packageName} ${entry.commit}`
     }
 
@@ -2334,6 +2689,7 @@ window.__ModuleLoader__.load({
       const [loadState, setLoadState] = useState({ status: 'loading' })
       const [inventoryState, setInventoryState] = useState({ status: 'loading' })
       const [directoryState, setDirectoryState] = useState({ status: 'loading' })
+      const [rankingState, setRankingState] = useState({ status: 'idle' })
       const [refreshing, setRefreshing] = useState(false)
       const [view, setView] = useState('directory')
       const [query, setQuery] = useState('')
@@ -2351,6 +2707,7 @@ window.__ModuleLoader__.load({
       const actionInFlight = useRef(false)
       const directoryRequestId = useRef(0)
       const refreshRequestId = useRef(0)
+      const rankingRequestId = useRef(0)
       const loadDirectory = useCallback(async catalog => {
         const requestId = ++directoryRequestId.current
         setDirectoryState({ status: 'loading' })
@@ -2359,6 +2716,16 @@ window.__ModuleLoader__.load({
           if (requestId === directoryRequestId.current) setDirectoryState({ status: 'ready', snapshot })
         } catch (error) {
           if (requestId === directoryRequestId.current) setDirectoryState({ status: 'error', code: desktopErrorCode(error) })
+        }
+      }, [])
+      const loadRankings = useCallback(async () => {
+        const requestId = ++rankingRequestId.current
+        setRankingState({ status: 'loading' })
+        try {
+          const result = await fetchDesktopRankingSnapshot()
+          if (requestId === rankingRequestId.current) setRankingState({ status: 'ready', ...result })
+        } catch (error) {
+          if (requestId === rankingRequestId.current) setRankingState({ status: 'error', code: desktopErrorCode(error) })
         }
       }, [])
       const refresh = useCallback(async () => {
@@ -2393,8 +2760,11 @@ window.__ModuleLoader__.load({
       }, [loadDirectory])
       useEffect(() => {
         void refresh()
-        return () => { refreshRequestId.current += 1; directoryRequestId.current += 1 }
+        return () => { refreshRequestId.current += 1; directoryRequestId.current += 1; rankingRequestId.current += 1 }
       }, [refresh])
+      useEffect(() => {
+        if (['recommended', 'essential'].includes(view) && rankingState.status === 'idle') void loadRankings()
+      }, [view, rankingState.status, loadRankings])
 
       const entries = loadState.status === 'ready' ? loadState.catalog.entries : []
       const categoryLabels = loadState.status === 'ready' ? loadState.catalog.registry.categories || {} : {}
@@ -2404,11 +2774,24 @@ window.__ModuleLoader__.load({
         if (directoryState.status === 'error') return createDesktopKnownDirectory(loadState.catalog, { discovery: { entries: [] }, candidates: [] })
         return []
       }, [loadState.status, loadState.catalog, directoryState.status, directoryState.snapshot])
-      const directoryCategoryIds = useMemo(() => [...new Set(directoryRows.flatMap(entry => entry.categories || []))].sort(), [directoryRows])
+      const rankedDirectoryRows = useMemo(() => {
+        if (!['recommended', 'essential'].includes(view) || rankingState.status !== 'ready') return []
+        return createDesktopRankingRows(directoryRows, rankingState.snapshot, view)
+      }, [directoryRows, rankingState.status, rankingState.snapshot, view])
+      const activeDirectoryRows = ['recommended', 'essential'].includes(view) ? rankedDirectoryRows : directoryRows
+      const directoryCategoryIds = useMemo(() => [...new Set(activeDirectoryRows.flatMap(entry => entry.categories || []))].sort(), [activeDirectoryRows])
       const catalogCategoryIds = useMemo(() => [...new Set(entries.flatMap(entry => entry.categories || []))].sort(), [entries])
-      const categoryIds = view === 'directory' ? directoryCategoryIds : catalogCategoryIds
+      const directoryViewActive = ['directory', 'recommended', 'essential'].includes(view)
+      const categoryIds = directoryViewActive ? directoryCategoryIds : catalogCategoryIds
       const installedByName = new Map((loadState.status === 'ready' ? loadState.bundles : [])
         .filter(bundle => bundle && typeof bundle.name === 'string').map(bundle => [bundle.name, bundle]))
+      const installedByRepository = new Map()
+      for (const bundle of loadState.status === 'ready' ? loadState.bundles : []) {
+        const repository = desktopSourceRepository(bundle?.source)
+        if (bundle?.installed === true && repository && !installedByRepository.has(repository)) installedByRepository.set(repository, bundle)
+      }
+      const installedBundleForEntry = entry => installedByName.get(entry?.packageName)
+        || (entry?.installMode === 'github-default-branch' ? installedByRepository.get(desktopEntryRepository(entry)) : null)
       const catalogPackageNames = new Set(entries.map(entry => entry.packageName))
       const normalizedQuery = query.trim().toLocaleLowerCase()
       const matching = entries.filter(entry => (!category || entry.categories?.includes(category))
@@ -2479,21 +2862,28 @@ window.__ModuleLoader__.load({
       }, [directoryRows])
       const directoryCategoryCounts = useMemo(() => {
         const counts = new Map()
-        for (const row of directoryRows) for (const id of row.categories || []) counts.set(id, (counts.get(id) || 0) + 1)
+        for (const row of activeDirectoryRows) for (const id of row.categories || []) counts.set(id, (counts.get(id) || 0) + 1)
         return counts
-      }, [directoryRows])
-      const directorySearchIndex = useMemo(() => directoryRows.map(row => ({
+      }, [activeDirectoryRows])
+      const directorySearchIndex = useMemo(() => activeDirectoryRows.map(row => ({
         row,
         text: [row.id, row.sourceId, row.alias, row.packageName, row.name, row.description,
           row.catalogIndexEntry?.nameZh, row.catalogIndexEntry?.nameEn, row.catalogIndexEntry?.version,
           row.catalogIndexEntry?.status, ...(row.catalogIndexEntry?.searchTerms || []),
           row.repositoryUrl, row.detailUrl, row.kind, row.catalogEntry?.statusReason,
           row.candidateEntry?.status, row.candidateEntry?.statusReason,
+          row.rankingEntry?.listingReason,
+          row.rankingEntry?.recommendationKind, row.rankingEntry?.reviewStatus,
+          row.rankingEntry?.communityRecommendation?.evidenceUrl,
+          ...(row.rankingEntry?.wins || []).map(item => item.zh || item.en),
+          row.rankingEntry?.categoryPick?.zh, row.rankingEntry?.categoryPick?.en,
           ...(row.categories || []), ...(row.categories || []).map(id => categoryLabels[id])]
           .filter(value => value !== null && value !== undefined)
           .map(value => String(value).toLocaleLowerCase()).join('\n'),
-      })), [directoryRows, categoryLabels])
-      const directoryOrderedSearchIndex = useMemo(() => [...directorySearchIndex].sort((left, right) => {
+      })), [activeDirectoryRows, categoryLabels])
+      const directoryOrderedSearchIndex = useMemo(() => {
+        if (['recommended', 'essential'].includes(view)) return directorySearchIndex
+        return [...directorySearchIndex].sort((left, right) => {
         const leftName = left.row.name || left.row.packageName || left.row.sourceId || ''
         const rightName = right.row.name || right.row.packageName || right.row.sourceId || ''
         if (sortBy === 'name') return leftName.localeCompare(rightName, 'zh-CN')
@@ -2502,7 +2892,8 @@ window.__ModuleLoader__.load({
           || Number(Boolean(right.row.catalogIndexEntry)) - Number(Boolean(left.row.catalogIndexEntry))
           || (right.row.stars || 0) - (left.row.stars || 0)
           || leftName.localeCompare(rightName, 'zh-CN') || left.row.order - right.row.order
-      }), [directorySearchIndex, sortBy])
+        })
+      }, [directorySearchIndex, sortBy, view])
       const directoryFiltered = useMemo(() => {
         const needle = query.trim().toLocaleLowerCase()
         return directoryOrderedSearchIndex.filter(({ row, text }) => (!category || row.categories.includes(category))
@@ -2517,9 +2908,10 @@ window.__ModuleLoader__.load({
             || (directoryReviewFilter === 'public-only' && !row.catalogIndexEntry && !row.candidateEntry))
           && (!needle || text.includes(needle))).map(({ row }) => row)
       }, [directoryOrderedSearchIndex, query, category, directoryListingFilter, directoryReviewFilter])
-      const directoryPageCount = Math.max(1, Math.ceil(directoryFiltered.length / MARKET_PAGE_SIZE))
+      const directoryPageSize = ['recommended', 'essential'].includes(view) ? DESKTOP_RANKING_PAGE_SIZE : MARKET_PAGE_SIZE
+      const directoryPageCount = Math.max(1, Math.ceil(directoryFiltered.length / directoryPageSize))
       const directoryCurrentPage = Math.min(page, directoryPageCount)
-      const directoryVisible = directoryFiltered.slice((directoryCurrentPage - 1) * MARKET_PAGE_SIZE, directoryCurrentPage * MARKET_PAGE_SIZE)
+      const directoryVisible = directoryFiltered.slice((directoryCurrentPage - 1) * directoryPageSize, directoryCurrentPage * directoryPageSize)
       const directoryHasFilters = Boolean(query || category || directoryListingFilter !== 'all' || directoryReviewFilter !== 'all')
 
       const closeActionPlan = () => {
@@ -2543,10 +2935,15 @@ window.__ModuleLoader__.load({
         && DESKTOP_COMMIT.test(entry.commit || '')
         && !bundle.readOnlyReason && desktopBundleMatchesCatalogEntry(entry, bundle)
       const actionAvailable = (action, entry, bundle) => {
+        if (action === 'install' && entry.installMode === 'github-default-branch') return desktopDirectoryGitHubInstallReady(entry)
+          && !bundle?.installed
+          && typeof desktopPluginManager?.installBundle === 'function'
         if (inventoryState.status !== 'ready') return false
-        if (action === 'install') return ['approved', 'blocked'].includes(entry.status) && !bundle?.installed
-          && entry.packageName !== 'dsh-safe-plugin-manager' && !entry.packageName.startsWith('@deepseek-ai/')
-          && !desktopHasProtectedEntryId(entry) && desktopBlockedInstallReady(entry)
+        if (action === 'install') {
+          return ['approved', 'blocked'].includes(entry.status) && !bundle?.installed
+            && entry.packageName !== 'dsh-safe-plugin-manager' && !entry.packageName.startsWith('@deepseek-ai/')
+            && !desktopHasProtectedEntryId(entry) && desktopBlockedInstallReady(entry)
+        }
         if (action === 'update') return desktopBundleNeedsUpdate(entry, bundle)
         if (!canManageBundle(entry, bundle)) return false
         if (action === 'remove') return bundle.removable === true
@@ -2568,7 +2965,7 @@ window.__ModuleLoader__.load({
         return false
       }
       const beginAction = (action, entry) => {
-        const bundle = installedByName.get(entry.packageName)
+        const bundle = installedBundleForEntry(entry)
         if (!actionAvailable(action, entry, bundle) || !managerSupports(action, entry)) return
         setDetailEntry(null)
         setActionPlan({ action, entry, confirmation: desktopActionConfirmation(action, entry),
@@ -2587,12 +2984,15 @@ window.__ModuleLoader__.load({
         let mutationStarted = false
         let inspectionNotice = null
         const manager = desktopPluginManager
+        const directGithubInstall = plannedEntry.installMode === 'github-default-branch'
         const readDesktopInstalledBundle = async () => {
           const current = unwrapDesktopRemote(await withDesktopTimeout(
             manager.listBundles(), 'DESKTOP_INVENTORY_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
           ), 'DESKTOP_INVENTORY_FAILED')
           if (!Array.isArray(current)) throw desktopFailure('DESKTOP_INVENTORY_INVALID')
-          return current.find(item => item?.name === plannedEntry.packageName) || null
+          return current.find(item => item?.name === plannedEntry.packageName)
+            || (plannedEntry.installMode === 'github-default-branch'
+              ? current.find(item => desktopBundleConfirmsInstall(plannedEntry, item)) : null) || null
         }
         const installThroughDesktop = async (spec, enabled) => {
           requestId = window.crypto?.randomUUID?.()
@@ -2619,22 +3019,41 @@ window.__ModuleLoader__.load({
           }
         }
         try {
-          const fresh = await readDesktopStoreSnapshot()
+          let fresh
+          if (directGithubInstall) {
+            let inventory = null
+            try { inventory = await readDesktopInventorySnapshot() }
+            catch (error) { setInventoryState({ status: 'error', code: desktopErrorCode(error) }) }
+            if (inventory) setInventoryState({ status: 'ready' })
+            fresh = {
+              catalog: loadState.catalog,
+              bundles: inventory?.bundles || loadState.bundles || [],
+              runtimeVersion: inventory?.runtimeVersion ?? loadState.runtimeVersion ?? null,
+            }
+          } else fresh = await readDesktopStoreSnapshot()
           setLoadState({ status: 'ready', ...fresh })
-          const entry = fresh.catalog.entries.find(item => item.id === plannedEntry.id)
-          const bundle = entry ? fresh.bundles.find(item => item?.name === entry.packageName) : null
-          const catalogAllowsAction = entry && (action === 'install'
-            ? ['approved', 'blocked'].includes(entry.status) && desktopBlockedInstallReady(entry)
-            : action === 'update' ? entry.status === 'approved'
-              : action === 'enable' ? entry.status === 'approved' : ['approved', 'blocked'].includes(entry.status))
+          const entry = directGithubInstall ? plannedEntry : fresh.catalog.entries.find(item => item.id === plannedEntry.id)
+          const bundle = directGithubInstall
+            ? fresh.bundles.find(item => desktopBundleConfirmsInstall(plannedEntry, item))
+              || fresh.bundles.find(item => item?.name === plannedEntry.packageName)
+            : entry ? fresh.bundles.find(item => item?.name === entry.packageName) : null
+          const catalogAllowsAction = directGithubInstall
+            ? action === 'install' && desktopDirectoryGitHubInstallReady(entry)
+            : entry && (action === 'install'
+              ? ['approved', 'blocked'].includes(entry.status) && desktopBlockedInstallReady(entry)
+              : action === 'update' ? entry.status === 'approved'
+                : action === 'enable' ? entry.status === 'approved' : ['approved', 'blocked'].includes(entry.status))
           const installedStateMatchesPlan = action !== 'update' || (bundle && actionPlan.installedState
             && (bundle.version ?? null) === actionPlan.installedState.version
             && (bundle.source ?? null) === actionPlan.installedState.source
             && (bundle.enabled === true) === actionPlan.installedState.enabled)
-          const sourceMatchesPlan = entry && entry.packageName === plannedEntry.packageName
-            && entry.version === plannedEntry.version && entry.status === plannedEntry.status
-            && entry.statusReason === plannedEntry.statusReason && entry.updatePolicy === plannedEntry.updatePolicy
-            && desktopInstallSpecifier(entry) === desktopInstallSpecifier(plannedEntry)
+          const sourceMatchesPlan = directGithubInstall
+            ? entry.repositoryUrl === plannedEntry.repositoryUrl
+              && desktopInstallSpecifier(entry) === desktopInstallSpecifier(plannedEntry)
+            : entry && entry.packageName === plannedEntry.packageName
+              && entry.version === plannedEntry.version && entry.status === plannedEntry.status
+              && entry.statusReason === plannedEntry.statusReason && entry.updatePolicy === plannedEntry.updatePolicy
+              && desktopInstallSpecifier(entry) === desktopInstallSpecifier(plannedEntry)
           if (!catalogAllowsAction || !sourceMatchesPlan || !installedStateMatchesPlan
             || !actionAvailable(action, entry, bundle) || !managerSupports(action, entry)) {
             throw desktopFailure('CATALOG_OR_PROFILE_STATE_CHANGED')
@@ -2850,6 +3269,11 @@ window.__ModuleLoader__.load({
 
       const actionLabel = action => ({ install: '安装', update: '更新', remove: '卸载', enable: '启动', disable: '关闭' }[action] || action)
       const actionBlockReason = (action, entry, bundle) => {
+        if (entry.installMode === 'github-default-branch') {
+          if (!desktopDirectoryGitHubInstallReady(entry)) return '缺少规范 GitHub DSH 插件来源，商城不会提交此条目。'
+          if (!managerSupports('install', entry)) return '当前 DSH Desktop 未提供官方 installBundle 接口。'
+          return '确认后会把 GitHub 默认分支交给 DSH Desktop；本机安装清单未知时也由 DSH 决定结果。'
+        }
         if (inventoryState.status === 'loading') return '正在读取 DSH 安装清单；完整目录仍可浏览和搜索。'
         if (inventoryState.status === 'error') return `DSH 安装清单暂不可用（${inventoryState.code}）；完整目录仍可浏览和搜索，刷新后再执行安装管理。`
         if (entry.packageName === 'dsh-safe-plugin-manager') {
@@ -2914,6 +3338,21 @@ window.__ModuleLoader__.load({
         } else add('install')
         return actions
       }
+      const directoryGitHubInstallButton = (row, bundle) => {
+        if (bundle?.installed === true) return null
+        const entry = desktopDirectoryGitHubInstallEntry(row)
+        if (!entry) return null
+        const available = actionAvailable('install', entry, bundle) && managerSupports('install', entry)
+        const reason = available ? null : actionBlockReason('install', entry, bundle)
+        return React.createElement(Button, {
+          key: 'github-install', compact: true,
+          primary: available && !['approved', 'blocked'].includes(row.catalogEntry?.status),
+          disabled: !available,
+          onClick: available ? () => beginAction('install', entry) : undefined,
+          ariaLabel: reason ? 'GitHub 地址交由 DSH 安装（已禁用：' + reason + '）' : undefined,
+          title: reason || undefined,
+        }, 'GitHub 地址交由 DSH 安装')
+      }
       const detailActionMessage = (entry, bundle) => {
         if (entry.packageName === 'dsh-safe-plugin-manager') {
           return actionAvailable('update', entry, bundle) && managerSupports('update', entry)
@@ -2938,11 +3377,13 @@ window.__ModuleLoader__.load({
           + ' · 版本 ' + (typeof detailBundle.version === 'string' && DESKTOP_VERSION.test(detailBundle.version) ? detailBundle.version : '未知')
           + ' · ' + (desktopBundleMatchesCatalogEntry(detailEntry, detailBundle) ? '安装来源与 Catalog 仓库匹配' : '安装来源未核验')
         : '本机未安装'
-      const actionBundle = actionPlan ? installedByName.get(actionPlan.entry.packageName) : null
-      const actionInstalledSummary = actionBundle?.installed === true
-        ? '当前 Desktop 安装版本：' + (typeof actionBundle.version === 'string' && DESKTOP_VERSION.test(actionBundle.version) ? actionBundle.version : '未知')
-          + ' · ' + (actionBundle.enabled === true ? '已启动' : actionBundle.enabled === false ? '已关闭' : '状态未知')
-        : '当前 Desktop 尚未安装'
+      const actionBundle = actionPlan ? installedBundleForEntry(actionPlan.entry) : null
+      const actionInstalledSummary = actionPlan?.entry.installMode === 'github-default-branch' && inventoryState.status !== 'ready'
+        ? 'DSH 安装清单当前不可用；本次请求仍会交给 DSH 官方安装器检查。'
+        : actionBundle?.installed === true
+          ? '当前 Desktop 安装版本：' + (typeof actionBundle.version === 'string' && DESKTOP_VERSION.test(actionBundle.version) ? actionBundle.version : '未知')
+            + ' · ' + (actionBundle.enabled === true ? '已启动' : actionBundle.enabled === false ? '已关闭' : '状态未知')
+          : '当前 Desktop 尚未安装'
       const operationFooter = actionPlan ? React.createElement('div', { style: styles.actions },
         actionState.status === 'success' ? React.createElement(Button, { primary: true, onClick: closeActionPlan }, '完成')
           : actionState.status === 'unknown' ? React.createElement(Button, { onClick: closeActionPlan }, '关闭并刷新核对')
@@ -2979,17 +3420,17 @@ window.__ModuleLoader__.load({
           React.createElement('select', {
             value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
             style: styles.select, 'aria-label': '按分类筛选',
-          }, React.createElement('option', { value: '' }, `全部分类 · ${directoryRows.length}`),
+          }, React.createElement('option', { value: '' }, `全部分类 · ${activeDirectoryRows.length}`),
           categoryIds.map(id => React.createElement('option', { key: id, value: id }, `${directoryCategoryLabel(id)} · ${directoryCategoryCounts.get(id) || 0}`))),
           React.createElement('select', {
             value: directoryReviewFilter, onChange: event => { setDirectoryReviewFilter(event.target.value); setPage(1) },
             style: styles.select, 'aria-label': '按 DSH STORE 审核状态筛选',
           }, directoryReviewOptions.map(([id, label, count]) => React.createElement('option', { key: id, value: id }, `${label} · ${count}`))),
-          React.createElement('select', {
+          view === 'directory' ? React.createElement('select', {
             value: sortBy === 'recent' ? 'recommended' : sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
             style: styles.select, 'aria-label': '排序方式',
           }, React.createElement('option', { value: 'recommended' }, '分类、收录与 Stars'),
-          React.createElement('option', { value: 'name' }, '名称 A-Z'), React.createElement('option', { value: 'stars' }, 'Stars 从高到低'))),
+          React.createElement('option', { value: 'name' }, '名称 A-Z'), React.createElement('option', { value: 'stars' }, 'Stars 从高到低')) : null),
         React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按官网目录收录状态筛选' },
           [['all', '全部已知', directoryCounts.all], ['listed', 'Catalog 有记录', directoryCounts.listed], ['unlisted', 'Catalog 未收录', directoryCounts.unlisted]]
             .map(([id, label, count]) => React.createElement(Button, {
@@ -2998,8 +3439,19 @@ window.__ModuleLoader__.load({
             }, `${label} · ${count}`)))),
         React.createElement('div', { style: styles.marketResults },
           React.createElement('span', { style: styles.muted, role: 'status' },
-            `${directoryFiltered.length} 条结果 · 第 ${directoryCurrentPage} / ${directoryPageCount} 页 · ${directoryCounts.approved} 已审核 · ${directoryCounts.blocked} 已拦截 · ${directoryCounts.unlisted} 未收录`),
+            `${directoryFiltered.length} 条结果 · 第 ${directoryCurrentPage} / ${directoryPageCount} 页 · ${view === 'recommended' ? '官网推荐榜' : view === 'essential' ? '官网必装榜' : `${directoryCounts.approved} 已审核 · ${directoryCounts.blocked} 已拦截 · ${directoryCounts.unlisted} 未收录`}`),
           directoryHasFilters ? React.createElement(Button, { compact: true, onClick: clearDirectoryFilters }, '清除筛选') : null),
+        ['recommended', 'essential'].includes(view) && rankingState.status === 'loading'
+          ? React.createElement('div', { style: styles.marketEmpty, role: 'status' }, '正在读取官网榜单并核验发布摘要…') : null,
+        ['recommended', 'essential'].includes(view) && rankingState.status === 'error'
+          ? React.createElement('div', { style: styles.notice, role: 'alert' },
+            `官网榜单暂不可用（${rankingState.code}）；完整插件目录和 Catalog 审核记录仍可使用。`,
+            React.createElement(Button, { compact: true, onClick: loadRankings }, '重试读取榜单')) : null,
+        ['recommended', 'essential'].includes(view) && rankingState.status === 'ready'
+          ? React.createElement('div', { style: styles.muted, role: 'note' },
+            view === 'recommended'
+              ? '推荐依据沿用官网榜单（公开互动、周度星标和标注的官方工具位）；推荐不代表安全审查或兼容验证。'
+              : '必装榜沿用官网每周分类榜；榜单位置不代表所有用户都必须安装，也不代表安全审查。') : null,
         directoryState.status === 'loading' ? React.createElement('div', { style: styles.marketEmpty, role: 'status' },
           React.createElement('strong', { style: styles.name }, '正在读取官网完整目录'),
           React.createElement('span', { style: styles.muted }, '搜索框和分类筛选会在目录载入后覆盖全部记录。')) : null,
@@ -3008,6 +3460,7 @@ window.__ModuleLoader__.load({
         directoryState.status === 'ready' && directoryState.snapshot.candidateError
           ? React.createElement('div', { style: styles.notice, role: 'status' }, '候选审核补充记录暂不可用；公开发现目录与 Catalog 记录仍可浏览。') : null,
         directoryFiltered.length === 0 && directoryState.status !== 'loading'
+          && (!['recommended', 'essential'].includes(view) || rankingState.status === 'ready')
           ? React.createElement('div', { style: styles.marketEmpty },
             React.createElement('strong', { style: styles.name }, '没有匹配的插件'),
             React.createElement('span', { style: styles.muted }, '试试名称、用途、分类或 GitHub 仓库；也可以清除筛选。'),
@@ -3017,8 +3470,12 @@ window.__ModuleLoader__.load({
         }, React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': '全部已知插件' }, directoryVisible.map(row => {
           const entry = row.catalogEntry
           const catalogIndexEntry = row.catalogIndexEntry
+          const githubInstallButton = directoryGitHubInstallButton(row,
+            (entry && installedByName.get(entry.packageName))
+              || (row.repositoryUrl ? installedByRepository.get(row.repositoryUrl.toLowerCase()) : null))
           const packageName = entry?.packageName || catalogIndexEntry?.packageName || row.packageName || row.alias || row.sourceId
-          const installedBundle = entry ? installedByName.get(entry.packageName) : null
+          const installedBundle = (entry && installedByName.get(entry.packageName))
+            || (row.repositoryUrl ? installedByRepository.get(row.repositoryUrl.toLowerCase()) : null)
           const statusLabel = desktopDirectoryStatusLabel(row)
           const catalogStatus = catalogIndexEntry?.status || entry?.status
           const statusTone = catalogStatus === 'approved' ? 'var(--dsw-alias-state-success-primary)'
@@ -3028,7 +3485,9 @@ window.__ModuleLoader__.load({
             ? installedBundle.enabled === true ? 'DSH 已安装 · 已启动'
               : installedBundle.enabled === false ? 'DSH 已安装 · 已关闭' : 'DSH 已安装'
             : null
-          const reason = desktopSafeReasonText(entry?.statusReason || row.candidateEntry?.statusReason, 240)
+          const rankingEntry = row.rankingEntry
+          const reason = desktopSafeReasonText(rankingEntry?.listingStatus === 'not-listed'
+            ? rankingEntry.listingReason : entry?.statusReason || row.candidateEntry?.statusReason, 240)
           const unmanagedMessage = entry && installedBundle?.installed === true && !canManageBundle(entry, installedBundle)
             ? installedBundle.official === true ? '官方组件不由商城管理' : '已安装来源与商城记录不一致，商城不管理'
             : ''
@@ -3036,7 +3495,13 @@ window.__ModuleLoader__.load({
             : row.kind === 'ecosystem-plugin' ? 'Ecosystem plugin'
               : row.source === 'catalog' ? 'Catalog-only record'
                 : row.source === 'candidate' ? '候选记录' : '官网公开发现'
-          return React.createElement('article', { key: row.id, style: styles.marketCard, role: 'listitem' },
+          const rankingLabel = rankingEntry?.officialToolPick ? 'DSH 官方工具展示位'
+            : rankingEntry?.communityRecommendation ? '作者互动推荐'
+              : rankingEntry?.recommendationKind === 'community-stars' ? '每周星标推荐'
+                : rankingEntry?.wins?.length ? `分类星标第一 · ${rankingEntry.wins.map(item => item.zh).join(' / ')}`
+                  : rankingEntry?.categoryPick ? `分类高星补充 · 第 ${rankingEntry.categoryPick.observedRank} 名` : ''
+          return React.createElement('article', { key: row.id, style: styles.marketCard, role: 'listitem',
+            ...(rankingEntry ? { 'data-market-entry-id': rankingEntry.id } : {}) },
             React.createElement('div', { style: styles.cardHeader },
               React.createElement('div', { style: styles.marketCardTitle }, row.name || packageName),
               React.createElement('div', { style: styles.marketBadges },
@@ -3050,23 +3515,32 @@ window.__ModuleLoader__.load({
                 'DSH Desktop 客户端：' + desktopClientAdaptationLabel(entry.compatibility.profiles)) : null,
               ...(row.categories || []).map(id => React.createElement('span', { key: id, style: styles.badge }, directoryCategoryLabel(id))),
               row.stars > 0 ? React.createElement('span', { style: styles.badge }, `★ ${new Intl.NumberFormat('zh-CN').format(row.stars)}`) : null,
-              row.candidateEntry && entry ? React.createElement('span', { style: styles.badge }, `候选：${row.candidateEntry.status}`) : null),
-            reason ? React.createElement('div', { style: styles.notice }, reason) : null,
+              row.candidateEntry ? React.createElement('span', { style: styles.badge }, `候选：${row.candidateEntry.status}`) : null,
+              rankingLabel ? React.createElement('span', { style: styles.badge }, rankingLabel) : null),
+            reason ? React.createElement('div', { style: styles.notice, role: 'note' },
+              rankingEntry?.listingStatus === 'not-listed' ? `DSH STORE 审核建议：${reason}` : reason) : null,
             React.createElement('div', { style: styles.cardFooter },
               React.createElement('div', { style: styles.marketCardActions },
                 entry && ['approved', 'blocked'].includes(entry.status) ? React.createElement(React.Fragment, null,
                   ...actionButtons(entry, installedBundle, { includeUnavailable: true }),
+                  githubInstallButton,
                   unmanagedMessage ? React.createElement('span', { key: 'unmanaged', style: styles.muted }, unmanagedMessage) : null,
                   React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry) }, '查看详情'))
-                  : entry ? React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry) }, '查看详情')
-                    : React.createElement('span', { style: styles.muted }, '目录记录仅供浏览 · 无安装操作')),
+                  : entry ? React.createElement(React.Fragment, null,
+                    githubInstallButton,
+                    React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry) }, '查看详情'))
+                    : githubInstallButton || React.createElement('span', { style: styles.muted },
+                      installedBundle?.installed ? '已由 DSH Desktop 安装' : '目录记录仅供浏览 · 无安装操作')),
               row.repositoryUrl ? React.createElement('a', { href: row.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub 源码 ↗') : null,
-              row.detailUrl ? React.createElement('a', { href: row.detailUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '官网详情 ↗') : null))
+              row.detailUrl ? React.createElement('a', { href: row.detailUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '官网详情 ↗') : null,
+              rankingEntry?.communityRecommendation ? React.createElement('a', {
+                href: rankingEntry.communityRecommendation.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link,
+              }, '推荐依据 ↗') : null))
         }))),
         React.createElement(Pagination, { pagination: {
           page: directoryCurrentPage, pageCount: directoryPageCount,
           hasPrevious: directoryCurrentPage > 1, hasNext: directoryCurrentPage < directoryPageCount,
-        }, loading: directoryState.status === 'loading', onPageChange: setPage }),
+        }, loading: directoryState.status === 'loading' || rankingState.status === 'loading', onPageChange: setPage }),
         directoryState.status === 'ready' ? React.createElement('div', { style: styles.muted },
           `公开索引生成于 ${directoryState.snapshot.discovery.source.generatedAt.slice(0, 10)} · 数据来源 dsh.so（CC BY 4.0，保留署名） · Catalog 收录状态不代表审核通过。`) : null)
 
@@ -3194,8 +3668,12 @@ window.__ModuleLoader__.load({
             React.createElement('div', { style: styles.actions },
               loadState.status === 'ready' && loadState.runtimeVersion
                 ? React.createElement('span', { style: styles.versionPill }, 'DSH ' + loadState.runtimeVersion) : null,
+              React.createElement('a', { href: 'https://dsh.store/rankings/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网榜单 ↗'),
               React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网完整目录 ↗'),
-              React.createElement(Button, { compact: true, disabled: refreshing, onClick: refresh },
+              React.createElement(Button, { compact: true, disabled: refreshing, onClick: () => {
+                void refresh()
+                if (['recommended', 'essential'].includes(view)) void loadRankings()
+              } },
                 refreshing ? '正在刷新…' : '刷新目录'))),
           loadState.status === 'ready' ? React.createElement('div', { style: styles.marketStats, 'aria-label': '目录概况' },
             [[directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'loading' ? '读取中' : '暂不可用', '已知目录条目'],
@@ -3206,7 +3684,7 @@ window.__ModuleLoader__.load({
                 React.createElement('span', { style: styles.marketStatValue }, String(value)),
                 React.createElement('span', { style: styles.marketStatLabel }, label)))) : null),
         React.createElement('div', { style: styles.notice, role: 'status' },
-          '“Catalog 审核记录”只显示商城审核条目；点“全部已知插件”查看官网完整目录。Catalog 收录状态不等于审核通过。已审核条目可提交安装或更新；已拦截条目会显示 Store 建议，确认后仍可交给 DSH 检查。未收录或已下架条目仅供浏览；最终安装结果以 DSH Desktop 官方插件管理器返回为准。',
+          '商城分开提供完整目录、Catalog 审核记录、官网推荐榜和必装榜。收录、审核、推荐和榜单位置是不同信息；完整目录中的 DSH 插件来源可在确认后交给 DSH Desktop 检查，候选与未上架状态仅作建议，最终安装结果只按 DSH 官方管理器返回判断。生态应用、官方受保护组件和格式无效的仓库不提供插件安装动作。',
           loadState.status === 'ready' && !loadState.runtimeVersion
             ? React.createElement('div', { style: styles.muted }, '商城无法读取用于显示的 DSH 版本；安装仍会交由 Desktop 官方插件管理器按当前运行环境校验。') : null,
           inventoryState.status === 'error'
@@ -3218,13 +3696,19 @@ window.__ModuleLoader__.load({
             React.createElement(TabButton, { active: view === 'directory',
               onClick: () => { setView('directory'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1) } },
               `全部已知插件 · ${directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'error' ? '暂不可用' : '…'}`),
+            React.createElement(TabButton, { active: view === 'recommended',
+              onClick: () => { setView('recommended'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
+              `推荐榜单 · ${rankingState.status === 'ready' ? rankedDirectoryRows.length : rankingState.status === 'error' ? '不可用' : '…'}`),
+            React.createElement(TabButton, { active: view === 'essential',
+              onClick: () => { setView('essential'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
+              `必装榜单 · ${rankingState.status === 'ready' ? rankedDirectoryRows.length : rankingState.status === 'error' ? '不可用' : '…'}`),
             React.createElement(TabButton, { active: view === 'catalog',
               onClick: () => { setView('catalog'); setListFilter('all'); setPage(1) } }, `Catalog 审核记录 · ${entries.length}`),
             React.createElement(TabButton, { active: view === 'installed',
               onClick: () => { setView('installed'); setListFilter('all'); setPage(1) } },
               `已安装 · ${inventoryState.status === 'ready' ? installedCount : inventoryState.status === 'loading' ? '读取中' : '暂不可用'}`),
             React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网目录 ↗')),
-          view === 'directory' ? directoryViewContent : catalogViewContent,
+          directoryViewActive ? directoryViewContent : catalogViewContent,
         detailEntry ? React.createElement(Modal, {
           open: true, onClose: () => setDetailEntry(null), title: detailEntry.name + ' · 插件详情',
           closeLabel: '关闭插件详情', footer: detailFooter(detailEntry),
@@ -3266,7 +3750,9 @@ window.__ModuleLoader__.load({
         }, React.createElement('div', { style: styles.detailSection },
           React.createElement('div', { style: styles.code }, actionPlan.entry.packageName + ' · ' + actionPlan.entry.version),
           React.createElement('div', { style: styles.muted }, 'GitHub：' + actionPlan.entry.repositoryUrl),
-          React.createElement('div', { style: styles.code }, '固定 Commit：' + actionPlan.entry.commit),
+          React.createElement('div', { style: styles.code }, actionPlan.entry.installMode === 'github-default-branch'
+            ? '来源：GitHub 默认分支，由 DSH Desktop 解析并检查'
+            : '固定 Commit：' + actionPlan.entry.commit),
           React.createElement('div', { style: styles.muted }, actionInstalledSummary),
           ['install', 'update'].includes(actionPlan.action)
             ? React.createElement('div', { style: styles.code }, (actionPlan.action === 'update' ? '更新' : '安装')
@@ -3274,6 +3760,12 @@ window.__ModuleLoader__.load({
           ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
             ? React.createElement('div', { style: styles.error, role: 'alert' },
               'Store 复核建议：' + actionPlan.entry.statusReason + '。这是 Store 的风险提示，不是 DSH 的安装结论；最终安装/更新结果由 DSH 官方插件管理器返回。请先核对来源、权限和脚本。') : null,
+          actionPlan.entry.installMode === 'github-default-branch' && actionPlan.entry.status !== 'approved'
+            ? React.createElement('div', { style: styles.notice, role: 'status' },
+              (actionPlan.entry.directorySource === 'candidate' ? 'Store 候选审核状态：' : 'Store Catalog 状态：')
+              + (actionPlan.entry.directorySource === 'candidate' ? actionPlan.entry.candidateStatus : actionPlan.entry.status)
+              + (actionPlan.entry.statusReason ? ' · ' + actionPlan.entry.statusReason : '')
+              + '。这是商城建议，不是 DSH 的安装结论；你确认后仍可提交给 DSH Desktop，由 DSH 判断是否接受。') : null,
           ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.updatePolicy === 'external-only'
             ? React.createElement('div', { style: styles.notice }, '更新策略：external-only。此次仅把当前 Catalog 固定 Commit 交由 DSH 检查；Store 不会自动跟随后续源码更新。') : null,
           React.createElement('div', { style: styles.muted },
@@ -3282,7 +3774,9 @@ window.__ModuleLoader__.load({
           actionPlan.entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
             '本包声明安装脚本：' + actionPlan.entry.risk.installScripts.join('、') + '。商城不会代为批准构建脚本。') : null,
           React.createElement('div', { style: styles.notice },
-            'DSH 官方安装器会检查固定来源并处理 Profile。预检提示不会阻止本次已确认的安装请求；最终状态以 DSH 官方安装器和 Desktop 已安装清单为准。商城不会自动授权安装脚本。'),
+            actionPlan.entry.installMode === 'github-default-branch'
+              ? '此来源不是 Catalog 固定 Commit；用户确认后，商城会把精确 GitHub 仓库默认分支交给 DSH Desktop 官方安装器。收录和审核状态仅作建议，预检提示不会拦截请求；最终状态以 DSH 返回及 Desktop 安装清单为准。商城不会自动授权安装脚本。'
+              : 'DSH 官方安装器会检查固定来源并处理 Profile。预检提示不会阻止本次已确认的安装请求；最终状态以 DSH 官方安装器和 Desktop 已安装清单为准。商城不会自动授权安装脚本。'),
           actionState.status === 'running' ? React.createElement('div', { style: styles.muted, role: 'status' },
             '正在由 DSH 官方插件管理器处理；请等待结果，不要重复提交。') : null,
           actionState.inspectionNotice ? React.createElement('div', { style: styles.notice, role: 'status' }, actionState.inspectionNotice) : null,
@@ -3290,7 +3784,9 @@ window.__ModuleLoader__.load({
             actionState.application === 'already-installed'
               ? actionPlan.action === 'update'
                 ? 'DSH Desktop 已安装清单确认当前来源与目标固定 Commit 一致。'
-                : 'DSH Desktop 已安装清单确认目标包当前已安装。'
+                : actionPlan.entry.installMode === 'github-default-branch'
+                  ? 'DSH Desktop 已安装清单确认此 GitHub 仓库来源当前已安装。'
+                  : 'DSH Desktop 已安装清单确认目标包当前已安装。'
               : actionState.application === 'restart-required'
                 ? '操作已写入 Desktop Profile；DSH 报告需要按其官方流程重新加载后生效。'
                 : 'DSH 官方插件管理器已完成' + actionLabel(actionPlan.action) + '。') : null,
