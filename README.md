@@ -51,7 +51,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-Catalog 当前固定 DSH Store `0.9.29`、Commit `500c33dccf5fe988e604e349d4347587445babf9`。此版本将 DSH Desktop 商城对齐官网完整目录，合并公开发现、Catalog 和候选数据；当前快照含 24,171 条官网发现、875 条 Catalog 记录和 806 条候选，合并后共 24,838 条。源码 `0.9.29` 修复目录浏览和交互：完整目录与 DSH 安装清单分开加载，搜索预建索引并避免逐字重新排序全量记录，搜索和筛选固定在单一可滚动面板顶部。未收录与候选记录保持浏览用途；安装操作仍交由 DSH 官方插件管理器，最终结果以 DSH 返回和安装清单核对为准。Catalog 仍只声明 `web` Profile，用户已报告实际安装成功；真实 Desktop 滚动、搜索与操作验收仍待验证。
+Catalog 当前固定 DSH Store `0.9.29`、Commit `500c33dccf5fe988e604e349d4347587445babf9`。此版本将 DSH Desktop 商城对齐官网完整目录，合并公开发现、Catalog 和候选数据；当前快照含 24,171 条官网发现、875 条 Catalog 记录和 806 条候选，合并后共 24,838 条。源码 `0.9.29` 修复目录浏览和交互：完整目录与 DSH 安装清单分开加载，搜索预建索引并避免逐字重新排序全量记录，搜索和筛选固定在单一可滚动面板顶部。源码 `0.9.30` 为所有带规范 GitHub 来源的 DSH 插件目录项提供逐次确认的默认分支安装入口，包括候选和 Catalog 未上架记录；Store 状态与审核意见继续展示为建议，预检不拦截请求，最终结果由 DSH 官方插件管理器返回并与安装清单核对。Catalog 仍只声明 `web` Profile，用户已报告实际安装成功；真实 Desktop 滚动、搜索与操作验收仍待验证。
 源码 `0.9.28` 修复旧版商城无法提交自身更新的问题：只要 DSH 清单确认安装的是同一 Store 仓库且当前版本低于 Catalog 固定版本，更新入口就会把目标固定 Commit 直接交给 DSH `installBundle()`，不要求旧安装来源可解析为完整 Commit，也不调用 `removeBundle()`。DSH 明确拒绝时保留其错误；不确定结果只核对一次，不会重试。该修复包含在源码 `0.9.29` 中；源码 PR 合并后，仍需单独发布 Catalog `0.9.29`，旧版桌面才会看到新版本。
 通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.29` Commit：
 
@@ -88,7 +88,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 ### 官方 Desktop
 
-官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。源码 `0.9.27` 将 DSH Store 注册为 root `main` 面板，并在首页左侧 `sidebar.panellist` 添加“插件商城”入口；原设置分区继续保留。页面标题为 `插件商城（DSH-Store）`，保留内部包 ID `dsh-safe-plugin-manager`。商城以官网同源的完整目录展示公开发现索引、Catalog 主索引和候选记录，并通过官方 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。源码 `0.9.29` 将目录数据与 DSH 安装清单独立加载；即使安装清单读取失败，完整目录仍可浏览和搜索，但状态依赖的安装管理动作会明确禁用。搜索预建全量索引，排序只在目录或排序方式变化时执行；搜索和筛选固定在单一可滚动面板顶部，避免嵌套滚动。普通第三方 GitHub 插件更新时，用户逐次确认后由 DSH 官方管理器执行 `removeBundle()`，再提交新的固定 Commit 给 `installBundle()`；若 DSH 返回 `stop-profile`，按官方更新流程继续提交安装。源码 `0.9.28` 修复商城自身更新门禁：仅限精确的 Store 包名和规范仓库，按已安装版本判断是否存在更高 Catalog 版本；旧来源没有完整 Commit 时仍将目标固定 Commit 交给 DSH `installBundle()`，不调用 `removeBundle()`，并以 DSH 返回和一次安装清单回读判断结果。普通第三方更新的旧 Commit 校验、移除、恢复及不重试规则保持不变。DSH `inspect` 结果、Catalog `blocked` 状态和风险提示都只是建议，不会拦住用户确认后的官方安装请求。Web 管理操作继续执行原准入策略。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。当前 Catalog 固定 `0.9.29` / `500c33dccf5fe988e604e349d4347587445babf9`；用户报告实际安装成功，真实 Desktop 滚动、搜索与操作验收尚未完成，不由测试推断。
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。源码 `0.9.27` 将 DSH Store 注册为 root `main` 面板，并在首页左侧 `sidebar.panellist` 添加“插件商城”入口；原设置分区继续保留。页面标题为 `插件商城（DSH-Store）`，保留内部包 ID `dsh-safe-plugin-manager`。商城以官网同源的完整目录展示公开发现索引、Catalog 主索引和候选记录，并通过官方 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。源码 `0.9.29` 将目录数据与 DSH 安装清单独立加载；即使安装清单读取失败，完整目录仍可浏览和搜索，但状态依赖的安装管理动作会明确禁用。搜索预建全量索引，排序只在目录或排序方式变化时执行；搜索和筛选固定在单一可滚动面板顶部，避免嵌套滚动。源码 `0.9.30` 为公开 DSH 插件目录记录提供 GitHub 默认分支直装入口，覆盖未收录与候选记录；每次提交前展示来源并要求确认，Store 审核状态和 DSH `inspect` 只作提示，最终接受或拒绝由 `installBundle()` 返回决定。Catalog 审核条目仍保留固定 Commit 安装/更新流程。普通第三方 GitHub 插件更新时，用户逐次确认后由 DSH 官方管理器执行 `removeBundle()`，再提交新的固定 Commit 给 `installBundle()`；若 DSH 返回 `stop-profile`，按官方更新流程继续提交安装。源码 `0.9.28` 修复商城自身更新门禁：仅限精确的 Store 包名和规范仓库，按已安装版本判断是否存在更高 Catalog 版本；旧来源没有完整 Commit 时仍将目标固定 Commit 交给 DSH `installBundle()`，不调用 `removeBundle()`，并以 DSH 返回和一次安装清单回读判断结果。普通第三方更新的旧 Commit 校验、移除、恢复及不重试规则保持不变。Web 管理操作继续执行原准入策略。目录外已安装插件只展示 DSH Desktop 返回的包名、版本、状态和可解析的 GitHub 来源，不提供商城管理操作。当前 Catalog 固定 `0.9.29` / `500c33dccf5fe988e604e349d4347587445babf9`；用户报告实际安装成功，真实 Desktop 滚动、搜索与操作验收尚未完成，不由测试推断。
 `0.9.21` 中，客户端适配标识和 Catalog 的 DSH 兼容记录只作参考，不决定第三方插件能否安装；商城自身和 DSH 官方组件仍受保护。可管理的第三方条目交由 DSH Desktop 官方管理器处理；Git 源的 `inspect` 结果作为预检提示，实际包的 DSH 版本/peer 兼容性由 `installBundle` 作最终判断。官方拒绝码和兼容要求会显示在商城中。安装、更新、卸载和
 Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`setBundleEnabled` 执行；每次操作
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
@@ -103,7 +103,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 | Catalog 固定版本 | `0.9.29`（用户已报告安装成功；真实 UI/Profile 验收尚未完成） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
-| Desktop 可交由 DSH 检查 | 按每条记录的固定 GitHub Commit、Bundle 入口和安装路径进行基础校验；blocked 不会仅因审核状态而被挡在 DSH 外 |
+| Desktop 可交由 DSH 检查 | Catalog 项使用固定 Commit；公开 DSH 插件目录项使用规范 GitHub 仓库；每次操作经明确确认，Store 审核状态与兼容建议不决定 DSH 的最终结果 |
 | Store 未准入 / 下架 | 以实时 Catalog 的 `blocked` / `unlisted` 状态及 `statusReason` 为准；这不是 DSH 安装结果 |
 | 分类 | Catalog 22 个；官网发现页当前快照 19 个（随官网索引变化） |
 | 推荐 | 商城“只看推荐”与官网推荐榜共享公开作者互动名单，完整分页；推荐不改变审核或安装资格 |

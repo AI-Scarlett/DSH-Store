@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-github-install-20261102",
+  "planFile": "docs/ops/dsh-native-market-desktop-github-install-20261102.json",
+  "createdAt": "2026-11-02T15:01:01Z",
+  "baseCommit": "80436ef3bb6a84759b6c2a9eb24c68624c867800",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-github-install-20261102.json",
+    "docs/reviews/dsh-native-market-desktop-github-install-20261102.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "4ab0001906b44376cbb14fdf57a5163da233e25e85ad4712d8265c90bd7d068c",
+    "README.md": "e4668b48acc5159b3417dd5bd529c038b1ef3ea91bfe667423b7c038792cfa94",
+    "docs/ops/dsh-native-market-desktop-github-install-20261102.json": null,
+    "docs/reviews/dsh-native-market-desktop-github-install-20261102.md": null,
+    "package.json": "9a560e6efdf1de74976994127b9de8dabd5cdd219a9ef350011ce9c24da45930",
+    "src/client.js": "cdbc8dd9650d4ce5e3c7d9d60e40576058f8bc93a2281111d535fcae35167654",
+    "test/catalog.test.mjs": "61914f6bdebb7732a5c43a1658beb40ebd0fa6f2f2bc24d8326ce673270769c7",
+    "test/contracts.test.mjs": "7b52a2e7f4bd566e4936d8c9ef4401540e04554bd3a018b06685dcfeccb55c00",
+    "test/desktop-compat.test.mjs": "3b52e2a59ffc08de2b04b3afbc093e71634c3054763590bc7aa47dd3981ed1a3",
+    "test/upgrade-matrix.test.mjs": "168d7c88adddcfa9b08f688df31ef62ea1fc59d3360755983b16682c96c228ed"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "872a42582e03897bfaa823f014d7e19ef06f995b4e5a2cb2b6bf0dc7331766de",
+    "README.md": "a8711e90a41bb962ba693e2b0dce50d6c467f1a3939dc084eb72f528a0ebb2c7",
+    "docs/reviews/dsh-native-market-desktop-github-install-20261102.md": "b65e7fd99d703976b3a07f0347afc64ec3670152f3659db97791996d45cd6e69",
+    "package.json": "cdf91343b01a5d40e6c1f04e4f181c2601eb8f4da195e72e6101df15b4057ad1",
+    "src/client.js": "429b7212b89c7142ef606843026257f766435a23b5d85f64435aa6c914c9d7ed",
+    "test/catalog.test.mjs": "883d43488078952a3f6ac575377eec7dd1a3eea730cc128bc0d51fde721816ab",
+    "test/contracts.test.mjs": "1391e9f381a44ea983ee94326c6b0f762fd5f7851ffcb522d7318b833d1ad9ad",
+    "test/desktop-compat.test.mjs": "81a6a4a7200420843858da46f8bcca3d3f52286ba5d3dd9105f749c9648f3b12",
+    "test/upgrade-matrix.test.mjs": "04c8712d70bf38488325d27bf399c165899ca9139788ae53731d9271c7547fa0"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户明确要求商城展示可搜索的完整插件目录，并为插件提供 DSH Desktop 安装入口；收录和审核状态用于建议，最终安装结果由 DSH Desktop 判断。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "让 DSH Desktop 商城分别提供审核记录、官网推荐榜、必装榜和可搜索的完整插件目录。公开发现、Catalog 和 Store 候选中的 DSH 插件都提供逐次确认的 GitHub 安装入口；Store 收录/审核状态作为建议展示，最终是否安装成功由 DSH Desktop 判断。",
+  "websiteSnapshot": {
+    "rankingPage": "https://dsh.store/rankings/",
+    "rankingData": "https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/data.json",
+    "observedAt": "2026-11-02T15:04:00Z",
+    "schemaVersion": 4,
+    "records": 1566,
+    "categories": 22,
+    "recommendedEvidenceRecords": 129,
+    "weeklySnapshotRecords": 1545,
+    "integrity": "ranking index HTML publishes the SHA-256 of the ranking data; both files are served from GitHub Pages"
+  },
+  "directorySnapshot": {
+    "page": "https://dsh.store/plugins/",
+    "discoveryIndex": "https://ai-scarlett.github.io/DSH-Store/registry/discovery-index.json",
+    "observedAt": "2026-11-02T15:34:04Z",
+    "discoveryRecords": 24171,
+    "catalogRecords": 875,
+    "candidateRecords": 806,
+    "mergedRecords": 24838,
+    "listedRecords": 945,
+    "unlistedRecords": 23893,
+    "integrity": "The official directory uses the published discovery index, Catalog index, and candidate registry, merged by source identity, package name, and repository; counts are snapshot-specific"
+  },
+  "change": {
+    "packageVersion": "0.9.30",
+    "storeViews": "Separate full directory, Catalog review records, official recommended ranking, essential ranking, and Desktop installed views. Full-directory search, filters, and pagination cover the website's merged discovery/Catalog/candidate rows. Recommended and essential rankings use the website ranking snapshot and its published SHA-256, with website-equivalent ranking and pagination; placement never changes review status or installation eligibility.",
+    "installAuthority": "Store 显示收录、审核和风险建议；公开 dsh-plugin 的 GitHub 来源经基本格式与保护对象校验后，可由用户确认并提交给 DSH installBundle。DSH inspect 只作提示；DSH installBundle 返回及一次按仓库来源核对的 listBundles 回读决定成功、失败或未知状态，不自动重试。",
+    "sourceSelection": "公开目录直装使用 canonical GitHub 仓库 URL，不伪称其为 Catalog 审核固定 Commit；Catalog 的既有 approved/blocked 固定 Commit 入口继续保留。",
+    "excludedTargets": "未被识别为 DSH 插件的生态应用/生态插件、商城自身、@deepseek-ai/*、受保护官方组件和格式无效的仓库不显示插件直装入口。Store 候选审核未通过不会阻断用户确认后的 DSH 检查。",
+    "catalog": "Source PR 不改变 Catalog 状态或 pin；源码合并后才创建新的 Catalog policy plan 发布 0.9.30。",
+    "runtime": "不修改 DSH 核心、不写真实 Profile、不重启 DSH、不执行第三方源码。仅在用户确认后调用 DSH Desktop 官方 pluginManager。"
+  },
+  "gates": [
+    "This fresh plan binds the current base Commit, exact file scope, and base SHA-256 values; CI runs the typed plan verifier.",
+    "The recommended and essential views read the same published ranking snapshot as the website, verify its digest from the paired ranking-page HTML, and validate bounded schema/counts before rendering. If that snapshot is unavailable, those views report unavailable while the full directory remains usable.",
+    "The recommended ranking preserves author-interaction evidence, weekly star picks, official-tool placements, and source review status. The essential ranking preserves the website's category winners and labelled category supplements; neither is represented as a security audit or universal install requirement.",
+    "A canonical public GitHub repository uses the direct route when the row is an official discovery dsh-plugin, has a Catalog record, or has a DSH Store candidate record. Candidate-only and unlisted Catalog rows are not suppressed by their Store review state. Unclassified ecosystem apps/plugins, protected packages and malformed repositories remain excluded.",
+    "The direct route requires a per-operation confirmation that names the exact GitHub repository and explicitly identifies the default-branch source. It calls only the DSH Desktop official installBundle API.",
+    "Catalog listing, review, featured/recommended state, candidate verdicts, and compatibility notes remain visible advice; none of them report DSH installation success. Existing approved/blocked fixed-Commit actions remain available.",
+    "DSH inspect is advisory. DSH applied/restart-required results are displayed as returned; failed or uncertain requests are reconciled once against the GitHub repository in listBundles, and never resubmitted automatically.",
+    "Use disposable Desktop fixtures. Run the focused Desktop suite, npm run check, package dry run, typed plan verifier, and git diff --check; require exact-head CI before merge.",
+    "After source merge, use a separate fresh Catalog plan and independently read back GitHub Raw, Pages, dsh.store, and dsh-store.cn. Real Desktop UI/Profile acceptance remains separate and unverified until exercised in the app."
+  ],
+  "rollback": "Revert only this source change through an auditable CI-checked PR. Do not change any real DSH Profile or package. Keep the Catalog on its current pin unless a separate Catalog policy plan is approved and verified.",
+  "healthCheck": "Require DSH_UPGRADE_PLAN_OK, focused disposable Desktop tests, npm run check, npm pack dry run, git diff --check, and exact-head PR CI. After the separate Catalog release, perform four independent public readbacks. Do not infer real Desktop UI acceptance from tests.",
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop interaction and direct GitHub install cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all repository checks pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.30 package contents are valid"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-github-install-20261102.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "execution": {
+    "status": "pr-open",
+    "sourceBase": "80436ef3bb6a84759b6c2a9eb24c68624c867800",
+    "packageVersion": "0.9.30",
+    "catalogVersion": "0.9.29 until separate policy publication",
+    "exactHeadCi": "see-pull-request",
+    "publicReadback": "pending separate Catalog publication",
+    "realDesktop": "unverified",
+    "pullRequest": {
+      "number": 1723,
+      "url": "https://github.com/AI-Scarlett/DSH-Store/pull/1723",
+      "implementationCommit": "c4a13058b826ca86565c6b6a60e0aae487dd04ac"
+    }
+  }
+}
+
