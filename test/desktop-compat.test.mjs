@@ -197,7 +197,8 @@ function desktopCatalogIndex(entries) {
 
 function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.2',
   inspectResult, installResult, installedAfterInstallResult = null, removeResult = null,
-  retainInstalledAfterRemove = false, inspectAvailable = true, protocol = 'dsh-app:', directoryDocuments = undefined } = {}) {
+  retainInstalledAfterRemove = false, inspectAvailable = true, removeBundleAvailable = true,
+  protocol = 'dsh-app:', directoryDocuments = undefined } = {}) {
   const activeDirectoryDocuments = directoryDocuments === undefined
     ? (catalog ? desktopDirectoryDocuments(catalog) : null) : directoryDocuments
   const sourcePromise = readFile(new URL('../src/client.js', import.meta.url), 'utf8')
@@ -304,6 +305,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
     async waitForInstall(requestId) { calls.waitForInstall.push(requestId); return null },
   }
   if (!inspectAvailable) delete manager.inspect
+  if (!removeBundleAvailable) delete manager.removeBundle
   const jsonResponse = (url, payload, rawText = JSON.stringify(payload)) => {
     const bytes = new TextEncoder().encode(rawText)
     let offset = 0
@@ -1063,6 +1065,89 @@ test('DSH Store can update its own installed package through the official Deskto
   assert.equal(harness.calls.installBundle[0].spec, `git+${entry.repositoryUrl}.git#${desktopCommit}`)
   assert.deepEqual(harness.calls.removeBundle, [])
   assert.ok(harness.calls.listBundles >= 2)
+})
+
+test('Store self-update accepts a legacy install with no full source Commit and no removeBundle API', async () => {
+  const entry = desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: desktopCommit,
+    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
+  entry.version = '0.9.27'
+  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
+    enabled: true, version: '0.9.26', source: 'git+https://github.com/AI-Scarlett/DSH-Store.git' }
+  const updated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    removeBundleAvailable: false,
+    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
+      error: { code: 'PACKAGE_CHANGE_AMBIGUOUS' } },
+    installedAfterInstallResult: [updated] })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
+  const update = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('更新'))
+  assert.ok(update, 'the older Store version exposes the DSH self-update action without removeBundle')
+  update.props.onClick()
+  tree = await harness.render()
+  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop 已安装清单确认当前来源与目标固定 Commit 一致'))
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.equal(harness.calls.installBundle[0].spec, `git+${entry.repositoryUrl}.git#${desktopCommit}`)
+  assert.deepEqual(harness.calls.removeBundle, [])
+  assert.equal(harness.calls.waitForInstall.length, 0)
+})
+
+test('Store self-update preserves a DSH rejection for an unpinned old source and never retries', async () => {
+  const entry = desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: desktopCommit,
+    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
+  entry.version = '0.9.27'
+  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
+    enabled: true, version: '0.9.26', source: 'git+https://github.com/AI-Scarlett/DSH-Store.git' }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    removeBundleAvailable: false,
+    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
+      error: { code: 'DSH_FIXED_SOURCE_REJECTED', reason: 'official DSH rejection' } } })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
+  desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
+  tree = await harness.render()
+  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('旧固定 Commit 未知 保留'))
+  assert.ok(desktopText(tree).includes('DSH_FIXED_SOURCE_REJECTED'))
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.deepEqual(harness.calls.removeBundle, [])
+  assert.equal(harness.calls.waitForInstall.length, 0)
+})
+
+test('Store self-update does not offer a downgrade when its installed stable version is newer', async () => {
+  const entry = desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: desktopCommit,
+    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
+  entry.version = '0.9.27'
+  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
+    enabled: true, version: '0.9.28', source: 'git+https://github.com/AI-Scarlett/DSH-Store.git' }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    removeBundleAvailable: false })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
+  const update = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('更新'))
+  assert.ok(update)
+  assert.equal(update.props.disabled, true)
+  assert.match(update.props.title, /未提交降级更新/)
+  assert.equal(harness.calls.installBundle.length, 0)
+  assert.deepEqual(harness.calls.removeBundle, [])
 })
 
 test('DSH stop-profile removal outcome follows the official update path and still submits the fixed Commit', async () => {
