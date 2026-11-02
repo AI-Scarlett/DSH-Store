@@ -55,7 +55,13 @@
     "notCatalogLinked": 19063,
     "categories": 46,
     "publicDiscoveryRows": 19345,
-    "directoryControls": ["category", "Catalog listing status", "search", "sort", "pagination"]
+    "directoryControls": [
+      "category",
+      "Catalog listing status",
+      "search",
+      "sort",
+      "pagination"
+    ]
   },
   "directorySources": {
     "discovery": "registry/discovery-index.json, 19,345 records; source license and attribution retained",
@@ -75,11 +81,11 @@
   "rollback": "Revert only this source change through a CI-checked PR. The separate Catalog remains on 0.9.26 until a fresh policy plan publishes 0.9.27. No real DSH Profile or package mutation is included.",
   "healthCheck": "Require the exact-head source PR checks and all four public readbacks after the separate Catalog policy workflow. Keep real DSH Desktop UI and Profile acceptance as separate evidence gates.",
   "execution": {
-    "status": "source-verified",
+    "status": "source-pr-pending",
     "packageVersion": "0.9.27",
     "catalogVersion": "0.9.26 until separate Catalog policy publication",
     "sourceChecks": "passed: DSH_UPGRADE_PLAN_OK; npm run check REGISTRY_OK with 584/584 tests; Desktop contract tests 37/37; marketplace static build; npm pack dry run dsh-safe-plugin-manager@0.9.27; git diff --check",
-    "pullRequest": null,
+    "pullRequest": 1718,
     "publicDeployment": "pending",
     "realDesktop": "unverified; Mac was locked during this review, so native scroll and search were not exercised"
   }
