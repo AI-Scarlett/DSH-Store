@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f34805cc8540a591f977e632604b168b8ad3c657",
-  "version": "0.15.0",
+  "commit": "0f41abca71105224b9c3d44dcd22500dcb0351ae",
+  "version": "0.16.0",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-30T06:02:39.000Z",
-    "observedAt": "2026-10-30T09:25:15.000Z",
+    "updatedAt": "2026-11-02T02:28:04.000Z",
+    "observedAt": "2026-11-02T02:33:17.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-30T09:25:15.000Z",
-      "evidenceUrl": "https://github.com/hyqhyq3/dsh-mcp-manager/commit/f34805cc8540a591f977e632604b168b8ad3c657",
+      "checkedAt": "2026-11-02T02:33:17.000Z",
+      "evidenceUrl": "https://github.com/hyqhyq3/dsh-mcp-manager/commit/0f41abca71105224b9c3d44dcd22500dcb0351ae",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d0c9c961fbd3a85b0f363d44ffe31be869f4a22c36a264436edb6ca843608ece",
+    "binding": "ca690abc003be87ec766ecd900a316e23b14afcd0a77be3580c965ead6c2f267",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -95,7 +95,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.2-rc.1 <0.2.0",
+    "dsh": ">=0.1.2-rc.1 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -109,9 +109,9 @@
       "0.1.5-alpha.1": "compatible",
       "0.1.5-alpha.2": "compatible",
       "0.1.5-rc.1": "compatible",
-      "0.2.1-rc.4": "unknown",
-      "0.2.1-rc.5": "unknown",
-      "0.2.2-alpha.2": "unknown"
+      "0.2.1-rc.5": "compatible",
+      "0.2.2-alpha.2": "compatible",
+      "0.2.1-rc.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -186,12 +186,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
@@ -199,6 +193,12 @@
         "rollback": "unknown"
       },
       "0.2.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.1-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
