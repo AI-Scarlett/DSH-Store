@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-interactions-20261102",
+  "planFile": "docs/ops/dsh-native-market-desktop-interactions-20261102.json",
+  "createdAt": "2026-11-02T18:30:00+08:00",
+  "baseCommit": "52b53f0259f6839114c741996fe8d299e8680625",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-interactions-20261102.json",
+    "docs/reviews/dsh-native-market-desktop-interactions-20261102.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "2f52275ebcc21ad0f0a3565d571f63e28b7e040d6a895f00d6954c4b0a0a2885",
+    "README.md": "50d05581b4eb839751ea4f6ba20d0598f2f28f95aa765a561703c17d8ccf7da2",
+    "docs/ops/dsh-native-market-desktop-interactions-20261102.json": null,
+    "docs/reviews/dsh-native-market-desktop-interactions-20261102.md": null,
+    "package.json": "9ab62a9b0d03899e528fd52efce04105a701b0289f6f84f3002d8df6c264a72e",
+    "src/client.js": "c86d992f2f191bd749f14501e4e508e33a0ab088bd6f545f435d16879bad05e0",
+    "test/catalog.test.mjs": "ff2b88c32dc516dcdda5658a7addab7681a6d2e89a40ce17e137d3253dea9af1",
+    "test/contracts.test.mjs": "2b2a697889c70a9449d031d2158648f40f98991a623020a8ee127d081baf82c9",
+    "test/desktop-compat.test.mjs": "1b5acc8dc96a368a820dc884f7c29ee5d714ff5b799511c60d19759fbb85606e",
+    "test/upgrade-matrix.test.mjs": "920b99116bff980ca87e890c7c6c226fb49e0bf3a58bb8d901f1d51f3dddc77a"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "39efb5d56a81b86a36c6d654d023a9b57bd32fcc4ac5d87bbe02223af072c179",
+    "README.md": "37f1c6a96f47104442b04adc7dee47a740d705acee5b20aa3a6ce3e70c977715",
+    "docs/reviews/dsh-native-market-desktop-interactions-20261102.md": "222e3687f159f2745bca1dc46856b514410ab7c7e14a2c36c81027c8a615ca27",
+    "package.json": "9a560e6efdf1de74976994127b9de8dabd5cdd219a9ef350011ce9c24da45930",
+    "src/client.js": "cdbc8dd9650d4ce5e3c7d9d60e40576058f8bc93a2281111d535fcae35167654",
+    "test/catalog.test.mjs": "61914f6bdebb7732a5c43a1658beb40ebd0fa6f2f2bc24d8326ce673270769c7",
+    "test/contracts.test.mjs": "7b52a2e7f4bd566e4936d8c9ef4401540e04554bd3a018b06685dcfeccb55c00",
+    "test/desktop-compat.test.mjs": "3b52e2a59ffc08de2b04b3afbc093e71634c3054763590bc7aa47dd3981ed1a3",
+    "test/upgrade-matrix.test.mjs": "168d7c88adddcfa9b08f688df31ef62ea1fc59d3360755983b16682c96c228ed"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户确认实际安装已成功，并要求继续排查商城界面滚动、搜索、操作和完整目录问题；此前明确要求推送发布。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "让 DSH Desktop 商城独立加载并显示与官网一致的完整已知插件目录，改善搜索响应和列表滚动；安装操作继续以 DSH 官方管理器和安装清单为最终依据。",
+  "observations": {
+    "website": "线上 https://dsh.store/plugins/ 的静态完整目录元数据与当前 GitHub Raw 索引 SHA-256 一致：discovery-index.json 为 24,171 条；Catalog 索引为 875 条。加入 806 条候选后，共享目录规则合并为 24,838 条，其中 945 条与 Catalog 匹配、20 个分类，最终数随索引更新。",
+    "directoryLoading": "Desktop 首次渲染先等待 DSH listBundles；若该官方接口慢或失败，Store Catalog 与完整目录也无法就绪，造成浏览和查找被安装清单状态连带阻塞。",
+    "search": "每次查询变更都会重新构建类别列表并对全目录重新排序，输入时存在不必要的同步工作。",
+    "scrolling": "结果网格内层 overflow:auto 与商城外层 overflow:auto 嵌套；在 Desktop 面板中滚轮可能落在错误滚动容器。官网目录采用单一页面滚动。",
+    "userEvidence": "用户已确认实际安装成功，并反馈安装后页面仍不能稳定滚动、搜索和操作；未将自动化夹具视为真实 Desktop UI 验收。"
+  },
+  "gates": [
+    "Directory data and DSH inventory load independently. DSH inventory failures leave the full browse/search directory available while clearly disabling state-dependent mutations until inventory can be read.",
+    "Search builds a normalized searchable index once per directory snapshot and sorts only when sort mode or data changes; query keystrokes filter without sorting all 24,000+ rows again.",
+    "Use one explicit scroll container for the Desktop marketplace panel, with search and directory filters sticky at the top; remove the nested independently scrolling result viewport.",
+    "Keep website deduplication, Catalog status, candidate status, source attribution, pagination, and installation boundaries unchanged. Non-Catalog rows remain browse-only; DSH decides installation compatibility and success.",
+    "Run disposable Desktop compatibility tests, npm run check, npm pack dry run, plan verifier, and git diff --check. Require exact-head PR CI before merge.",
+    "After source merge, publish the Store Catalog through a separate fresh plan and verify GitHub Raw, Pages, dsh.store, and dsh-store.cn independently. Real Desktop interaction remains unverified until observed in the installed app."
+  ],
+  "rollback": "Revert only this source change through a CI-checked PR. Do not change the DSH Profile or installed package. Catalog remains on its current fixed source until a separate Catalog publication.",
+  "healthCheck": "Require plan precondition and postcondition verification, Desktop fixture coverage, full npm check, package dry run, exact-head PR CI, separate Catalog publication, and four independent public readbacks. Keep real Desktop UI acceptance separate.",
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and full repository suite passes"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.29 package contents are valid"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-interactions-20261102.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    }
+  ],
+  "execution": {
+    "status": "source-pr-pending",
+    "packageVersion": "0.9.29",
+    "catalogVersion": "0.9.27 until separate Catalog policy publication",
+    "sourceChecks": "passed: DSH_UPGRADE_PLAN_OK; Desktop fixtures 41/41; npm run check REGISTRY_OK with 588/588 tests; npm pack --dry-run dsh-safe-plugin-manager@0.9.29 (1,075 files); live dsh.store index metadata matches GitHub Raw SHA-256 fafe139d90916b4ec15548c9d7582f7cb747816a85d15a915a7cda0c334a4f94 with 24,171 discovery rows; shared directory merge 24,838 rows, 945 Catalog matches, 20 categories; git diff --check",
+    "pullRequest": 1721,
+    "publicReadback": "pending",
+    "realDesktop": "user confirms installation succeeded; Desktop scrolling, keyboard search and operation UI remain unverified by Codex"
+  }
+}
