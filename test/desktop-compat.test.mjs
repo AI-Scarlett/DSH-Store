@@ -1512,8 +1512,11 @@ test('current trusted Registry Catalog is accepted by the Desktop reader', async
   assert.match(text, new RegExp(`Catalog 已拦截 · ${expectedDirectoryStatusCount('blocked')}`))
   const categoryOptions = desktopNodes(tree).find(node => node.type === 'select' && node.props?.['aria-label'] === '按分类筛选')
     .children.flat(Infinity).filter(node => node?.type === 'option')
-  assert.equal(categoryOptions.length, 47)
-  assert.match(text, /1002 页/)
+  const expectedCategoryCount = new Set(expectedDirectory.flatMap(entry => entry.categories || [])).size
+  assert.equal(categoryOptions.length, expectedCategoryCount + 1)
+  const firstPageCardCount = desktopNodes(tree).filter(node => node.type === 'article').length
+  const expectedPageCount = Math.ceil(expectedDirectory.length / firstPageCardCount)
+  assert.match(text, new RegExp(`${expectedPageCount} 页`))
   const viewport = desktopNodes(tree).find(node => node.props?.['aria-label'] === '全部已知插件列表，可在此区域滚动浏览')
   assert.equal(viewport.props.style.overflowY, 'auto')
   const root = desktopNodes(tree).find(node => node.type === 'section' && node.props?.['aria-label'] === '插件商城（DSH-Store）')
@@ -1525,7 +1528,7 @@ test('current trusted Registry Catalog is accepted by the Desktop reader', async
   assert.equal(nextPage.props.disabled, false)
   nextPage.props.onClick()
   tree = await harness.render()
-  assert.match(desktopText(tree), /2 \/ 1002 页/)
+  assert.match(desktopText(tree), new RegExp(`2 \/ ${expectedPageCount} 页`))
   const expectedDesktop = catalog.entries.filter(entry => entry.status !== 'unlisted' && entry.compatibility?.profiles?.includes('desktop')).length
   assert.ok(expectedDesktop > 0)
   const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')

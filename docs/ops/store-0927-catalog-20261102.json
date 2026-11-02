@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-0927-catalog-20261102",
+  "planPath": "docs/ops/store-0927-catalog-20261102.json",
+  "sourceReviewPath": "docs/reviews/store-0927-source-review-20261102.json",
+  "version": "0.9.27",
+  "targetDshRelease": "0.2.2-alpha.2",
+  "latestDshWindow": [
+    "0.2.1-rc.4",
+    "0.2.1-rc.5",
+    "0.2.2-alpha.2"
+  ],
+  "reviewMode": "first-party-owner-reviewed",
+  "createdAt": "2026-11-02T08:56:44.822Z",
+  "baseCommit": "eb77236035f7755d4d8b6ec29b5135b833377c52",
+  "sourceCommit": "eb77236035f7755d4d8b6ec29b5135b833377c52",
+  "sourceTree": "7beff5518616901750b4338fa2d986e842500f78",
+  "sourceHead": "abb1649f4a2811f50d4057d3ef9ed8f545ab30a5",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/store-0927-catalog-20261102.json",
+    "docs/reviews/store-0927-release-20261102.md",
+    "docs/reviews/store-0927-source-review-20261102.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    "registry/discovery-index.json",
+    "registry/discovery-index.json.gz",
+    "test/desktop-compat.test.mjs",
+    "test/marketplace-static-build.test.mjs",
+    "test/plugin-directory.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "35ae06ed944683fddb4f70639f5f8782057265986f69d3966c8026ea304285b8",
+    "README.md": "3714a86cec6ca81e6214f0821b480d3357ff442de5fa28eaa4a350091e3daf9b",
+    "docs/ops/store-0927-catalog-20261102.json": null,
+    "docs/reviews/store-0927-release-20261102.md": null,
+    "docs/reviews/store-0927-source-review-20261102.json": null,
+    "registry/catalog-index.json": "76e0b1f8841b0f48e1088899f31a50f666a86a869283834d28d104cd2a8cba56",
+    "registry/catalog.json": "7a1930761eec613b2c1288cb0d20154bfa77687208daebf7b9888359f69ecfbf",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "e7d14d0ceff1f174753c8a0304df0a510b3540f3088f35aa5887b519a000f471",
+    "registry/discovery-index.json": "61a0d4291a25d6140acb7507315233cadcb245d938cf64ea388f5657d0b722a6",
+    "registry/discovery-index.json.gz": "14b13ca979fa3ebb6526335e030bd815d270281a984e5638e853f1d4f8ff1196",
+    "test/desktop-compat.test.mjs": "fa8428ceafb1599f65145e0cf738067541ab7a0203b2d6a679589ce33538bf25",
+    "test/marketplace-static-build.test.mjs": "8c24e9915d7a1462568cf55a76c07185d2bccf30fe9f7de4fbdd0b10a1f6282f",
+    "test/plugin-directory.test.mjs": "fdf70acfa60ef7100e5326dfee3b0c9600658022bd757d70ad1dd2c24226b9f7"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "984cd251b0cce9c125bdae3e0e816dd2e63c5f1d133fb052c9f45d74490f5263",
+    "README.md": "312b1f5351b786d80cb67ac70032c9a198cf25f0dbae1f1b635021df604db48d",
+    "docs/reviews/store-0927-release-20261102.md": "7390754ced1cc455d7f54d512b83a2235195f449e10b99fcd91fbd62afbc5925",
+    "docs/reviews/store-0927-source-review-20261102.json": "5b3a378bd7a634dd5168d6a16f54ef5641bf68e36aa36d8a7fb1d8dca062332c",
+    "registry/catalog-index.json": "c96fe8ed64ee6c92e73d1e82203a31e96082cf842517a2739351640b742202e5",
+    "registry/catalog.json": "767248ffe57b14ad058e8e19c9d62b1bd90e0aaebc3452d17cd110c1364d3d76",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "b0b897a4b6c132d65614a9c1b563691786e6217dc86d0178723c196c685f751a",
+    "registry/discovery-index.json": "fafe139d90916b4ec15548c9d7582f7cb747816a85d15a915a7cda0c334a4f94",
+    "registry/discovery-index.json.gz": "b916ebdf0d6bb5874b7866998b998e9c3469bb6dee7effad6729857c342a7239",
+    "test/desktop-compat.test.mjs": "03eefb909a6c7f2f03af8d841df156d3e067801b0aa8a97ea6ba90feb12484be",
+    "test/marketplace-static-build.test.mjs": "50b7fcab8d294269003df8e92593d48288ed3ea898846601d16f472bce53413b",
+    "test/plugin-directory.test.mjs": "fc232360e100ecad0eb094960d616a3f810d5c3ba8f6cd2029f0549bc9aba41e"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户反馈 DSH Desktop 插件商城安装后不能稳定滚动、查找和操作，当前只有约 700 条，并要求按官网全量插件目录展示；此前明确要求修复后推送发布。本计划只发布 DSH Store 自身 0.9.27 固定源码与完整公开目录索引，实际安装结果仍由 DSH Desktop 官方插件管理器决定。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "deterministicPolicyVerdictRequired": true
+  },
+  "sourceEvidence": {
+    "canonicalRepository": "https://github.com/AI-Scarlett/DSH-Store",
+    "mergedSourcePullRequest": 1718,
+    "sourceHead": "abb1649f4a2811f50d4057d3ef9ed8f545ab30a5",
+    "mergeCommit": "eb77236035f7755d4d8b6ec29b5135b833377c52",
+    "sourceTree": "7beff5518616901750b4338fa2d986e842500f78",
+    "sourceChecks": [
+      {
+        "name": "DSH upgrade matrix",
+        "state": "SUCCESS",
+        "runId": 41408783826,
+        "headRevision": "abb1649f4a2811f50d4057d3ef9ed8f545ab30a5",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41408783826"
+      },
+      {
+        "name": "Registry validation",
+        "state": "SUCCESS",
+        "runId": 41408783838,
+        "headRevision": "abb1649f4a2811f50d4057d3ef9ed8f545ab30a5",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41408783838"
+      }
+    ],
+    "publicDirectory": {
+      "pageUrl": "https://www.dsh.so/artifacts/",
+      "feedUrl": "https://www.dsh.so/plugins-index.json",
+      "generatedAt": "2026-11-02T00:31:49.941Z",
+      "pageRecordCount": 24171,
+      "pageCategoryCount": 19,
+      "feedRecordCount": 28364,
+      "feedSha256": "bfaedbe9c015c149d64c56d7832240c152f21788a98503cd8d49697c9cb6f9d4",
+      "pageFilteredInputSha256": "fb9031de04c9af48c03dfe6f9705819b20f32eb7ca26fb9379ba322acb6ca5b1",
+      "license": "CC-BY-4.0"
+    }
+  },
+  "objective": "将 DSH Store 0.9.27 固定到首方 Catalog，发布与 dsh.so 插件页相同的完整公开发现记录，并在桌面商城显示独立滚动列表、全量搜索、分类、收录状态、审核状态、排序、分页和详情；审核信息只作建议，安装结果仍以 DSH Desktop 官方插件管理器为准。",
+  "change": {
+    "packageVersion": "0.9.27",
+    "directory": "公开目录索引精确保留 dsh.so 当日 artifacts 页的 24,171 条身份记录与 19 个官网分类，保留 CC-BY-4.0 署名和生成时间；桌面端再将公开记录与 Catalog/候选审核状态按官网身份规则合并，额外 Catalog-only/候选记录显示各自来源；未受审固定来源仍不显示安装按钮。",
+    "lifecycle": "保留 approved 身份、现有权限和 web Profile 声明。页面目录包含公开发现、Catalog 与候选数据；收录/审核标签为 Store 信息，候选与未收录记录保持浏览用途，实际安装接受/失败以 DSH Desktop 官方插件管理器为准。",
+    "catalog": "仅更新 dsh-safe-plugin-manager 的 0.9.27 版本、固定 Commit、描述、搜索词和来源证据；不更改其他 Catalog 条目。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "scripts/verify-store-release-plan.mjs",
+        "docs/ops/store-0927-catalog-20261102.json"
+      ],
+      "expected": "STORE_RELEASE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all repository checks pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.27 includes the DSH Bundle and MIT license"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Plan binds the current Catalog base Commit, exact source Commit/tree/PR head, full file scope, and SHA-256 preconditions/postconditions.",
+    "The fixed-source review covers the complete distributable runtime surface with exact source hashes; all scanner findings have file/line-bound review; no third-party install/build/test/runtime code is executed.",
+    "The source PR DSH upgrade matrix and Registry CI pass on the exact PR head; DSH latest-three release window is recorded in the source review.",
+    "Catalog bridge, index, and detail pin the same 0.9.27 Commit and preserve approved status, declared permissions, compatibility, and web-only Profile claim; every other Catalog entry is byte-for-byte unchanged.",
+    "The refreshed discovery index contains the exact 24,171-record public artifacts page snapshot and 19 current page categories, generated from the published discovery feed with source timestamp and CC-BY-4.0 attribution preserved.",
+    "The Desktop directory mirrors the website identity merge and exposes separate collection/review labels; current category counts follow the published snapshot, while scrolling and search/filter/pagination are covered by source checks.",
+    "After merge, independently read GitHub Raw, Pages, dsh.store, and dsh-store.cn. Native DSH Desktop UI and Profile acceptance remain separate and are not inferred from CI."
+  ],
+  "rollback": {
+    "catalog": "Revert this exact Catalog commit through a CI-checked PR; preserve immutable source and prior Catalog history.",
+    "runtime": "No real DSH Desktop Profile, package, restart, or uninstall mutation is part of this release."
+  },
+  "healthCheck": "Release-plan verifier, Registry schema/index validation, npm run check, npm pack dry run and Registry CI pass; Catalog/index/detail agree on 0.9.27/eb77236035f7755d4d8b6ec29b5135b833377c52; discovery-index JSON and gzip agree on the current 24,171-record/19-category dsh.so page snapshot; all other Catalog entries stay byte-for-byte unchanged; verify GitHub Raw, Pages, dsh.store and dsh-store.cn after merge."
+}
