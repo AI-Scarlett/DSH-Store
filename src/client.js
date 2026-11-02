@@ -526,7 +526,10 @@ window.__ModuleLoader__.load({
         borderColor: 'var(--dsw-alias-border-l2)',
       },
       grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '12px' },
-      marketRoot: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '1180px' },
+      marketRoot: {
+        display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '1180px', minWidth: 0, minHeight: 0,
+        maxHeight: 'calc(100vh - 24px)', overflowY: 'auto', overscrollBehaviorY: 'contain',
+      },
       marketHero: {
         display: 'flex', flexDirection: 'column', gap: '14px', border: '1px solid var(--dsw-alias-border-l2)',
         borderRadius: '14px', padding: '16px', background: 'linear-gradient(135deg, var(--dsw-alias-bg-layer-2), var(--dsw-alias-bg-layer-3))',
@@ -540,6 +543,12 @@ window.__ModuleLoader__.load({
       marketViewBar: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', paddingBottom: '10px', borderBottom: '1px solid var(--dsw-alias-border-l2)' },
       marketFilterTabs: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' },
       marketResults: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' },
+      marketListViewport: {
+        width: '100%', height: '48vh', maxHeight: '520px', minHeight: '220px', minWidth: 0,
+        overflowX: 'hidden', overflowY: 'auto', overscrollBehaviorY: 'contain',
+        scrollbarGutter: 'stable', scrollbarWidth: 'auto', WebkitOverflowScrolling: 'touch',
+        paddingRight: '4px', touchAction: 'pan-y',
+      },
       marketGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: '10px', alignItems: 'stretch' },
       marketCard: {
         display: 'flex', flexDirection: 'column', gap: '9px', minWidth: 0, padding: '13px',
@@ -1438,6 +1447,37 @@ window.__ModuleLoader__.load({
     const DESKTOP_CATALOG_MAX_BYTES = 4 * 1024 * 1024
     const DESKTOP_CATALOG_MAX_ENTRIES = 2_000
     const DESKTOP_CATALOG_TIMEOUT_MS = 12_000
+    const DESKTOP_CATALOG_INDEX_MAX_BYTES = 2 * 1024 * 1024
+    const DESKTOP_DISCOVERY_MAX_BYTES = 12 * 1024 * 1024
+    const DESKTOP_DISCOVERY_MAX_RECORDS = 50_000
+    const DESKTOP_DISCOVERY_TIMEOUT_MS = 45_000
+    const DESKTOP_CANDIDATE_MAX_BYTES = 5 * 1024 * 1024
+    const DESKTOP_CANDIDATE_MAX_RECORDS = 20_000
+    const DESKTOP_DIRECTORY_SOURCES = {
+      catalogIndex: [
+        { url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog-index.json', host: 'raw.githubusercontent.com', path: '/AI-Scarlett/DSH-Store/main/registry/catalog-index.json' },
+        { url: 'https://ai-scarlett.github.io/DSH-Store/registry/catalog-index.json', host: 'ai-scarlett.github.io', path: '/DSH-Store/registry/catalog-index.json' },
+      ],
+      discovery: [
+        { url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json', host: 'raw.githubusercontent.com', path: '/AI-Scarlett/DSH-Store/main/registry/discovery-index.json' },
+        { url: 'https://ai-scarlett.github.io/DSH-Store/registry/discovery-index.json', host: 'ai-scarlett.github.io', path: '/DSH-Store/registry/discovery-index.json' },
+      ],
+      candidates: [
+        { url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/candidates.json', host: 'raw.githubusercontent.com', path: '/AI-Scarlett/DSH-Store/main/registry/candidates.json' },
+        { url: 'https://ai-scarlett.github.io/DSH-Store/registry/candidates.json', host: 'ai-scarlett.github.io', path: '/DSH-Store/registry/candidates.json' },
+      ],
+    }
+    const DESKTOP_DISCOVERY_CATEGORY_LABELS = {
+      ai: 'AI 与智能体', audio: '音频', automation: '自动化', browser: '浏览器', 'code-review': '代码审查',
+      content: '内容创作', creator: '创作工具', data: '数据', database: '数据库', desktop: '桌面端',
+      developer: '开发工具', file: '文件处理', finance: '金融', game: '游戏与娱乐', git: 'Git 工具',
+      github: 'GitHub 集成', knowledge: '知识管理', launcher: '启动器', markdown: 'Markdown', mcp: 'MCP 集成',
+      media: '媒体', memory: '记忆', network: '网络', notification: '通知', notify: '通知', ocr: 'OCR',
+      office: '办公', pdf: 'PDF', productivity: '效率工具', proxy: '代理', scheduler: '定时任务', search: '搜索',
+      security: '安全与隐私', 'skin-theme': '主题外观', spreadsheet: '表格', storage: '存储', telegram: 'Telegram 集成',
+      terminal: '终端', ui: '界面增强', uncategorized: '未分类', video: '视频', vision: '视觉', web: 'Web',
+      'web-search': '网络搜索', agent: '智能体', 'agent-orchestration': '智能体编排',
+    }
     const DESKTOP_OPERATION_TIMEOUT_MS = 90_000
     const DESKTOP_PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/
     const DESKTOP_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
@@ -1531,7 +1571,45 @@ window.__ModuleLoader__.load({
     function validateDesktopInstallEntry(entry, index, categoryLabels = {}) {
       if (!entry || typeof entry !== 'object' || Array.isArray(entry)) throw new Error(`CATALOG_ENTRY_${index}_INVALID`)
       if (!['approved', 'blocked', 'unlisted'].includes(entry.status)) throw new Error(`CATALOG_ENTRY_${index}_STATUS_INVALID`)
-      if (entry.status === 'unlisted') return null
+      if (entry.status === 'unlisted') {
+        const id = typeof entry.id === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/.test(entry.id) ? entry.id : null
+        const name = typeof entry.name === 'string' && entry.name.trim().length <= 160 ? entry.name.trim() : null
+        if (!id || !name) return null
+        const packageName = typeof entry.packageName === 'string' && DESKTOP_PACKAGE_NAME.test(entry.packageName)
+          && !entry.packageName.includes('..') ? entry.packageName : ''
+        const repositoryUrl = desktopSafeRepositoryUrl(entry.repositoryUrl) ? entry.repositoryUrl || '' : ''
+        const safeCategories = Array.isArray(entry.categories)
+          ? entry.categories.filter(id => typeof id === 'string' && Object.hasOwn(categoryLabels, id)).slice(0, 32) : []
+        const safeSearchTerms = Array.isArray(entry.searchTerms)
+          ? entry.searchTerms.filter(term => typeof term === 'string' && term.length <= 160).slice(0, 64) : []
+        const sourceDetails = entry.details && typeof entry.details === 'object' ? entry.details : {}
+        const sourcePermissions = sourceDetails.permissions && typeof sourceDetails.permissions === 'object' ? sourceDetails.permissions : {}
+        const statusReason = typeof entry.statusReason === 'string' && entry.statusReason.trim()
+          ? entry.statusReason.trim().slice(0, 2_000) : 'Catalog 当前未上架此条目。'
+        return {
+          id, name, description: typeof entry.description === 'string' ? entry.description.slice(0, 2_000) : '',
+          packageName, repositoryUrl, version: typeof entry.version === 'string' && DESKTOP_VERSION.test(entry.version) ? entry.version : '未知版本',
+          commit: typeof entry.commit === 'string' && DESKTOP_COMMIT.test(entry.commit) ? entry.commit : '',
+          categories: safeCategories, searchTerms: safeSearchTerms, status: 'unlisted', statusReason,
+          compatibility: { profiles: Array.isArray(entry.compatibility?.profiles)
+            ? entry.compatibility.profiles.filter(profile => typeof profile === 'string').slice(0, 32) : [] },
+          details: {
+            license: typeof sourceDetails.license === 'string' && sourceDetails.license.trim() ? sourceDetails.license.slice(0, 128) : '未知',
+            externalDependencies: Array.isArray(sourceDetails.externalDependencies)
+              ? sourceDetails.externalDependencies.filter(value => typeof value === 'string').slice(0, 64) : [],
+            permissions: {
+              level: ['low', 'medium', 'high', 'unknown'].includes(sourcePermissions.level) ? sourcePermissions.level : 'unknown',
+              files: ['none', 'read-only', 'write', 'unknown'].includes(sourcePermissions.files) ? sourcePermissions.files : 'unknown',
+              network: ['none', 'specified-services', 'any', 'unknown'].includes(sourcePermissions.network) ? sourcePermissions.network : 'unknown',
+              commands: ['none', 'restricted', 'shell', 'unknown'].includes(sourcePermissions.commands) ? sourcePermissions.commands : 'unknown',
+              credentials: Array.isArray(sourcePermissions.credentials)
+                ? sourcePermissions.credentials.filter(value => typeof value === 'string').slice(0, 32) : ['unknown'],
+            },
+          },
+          risk: { installScripts: Array.isArray(entry.risk?.installScripts)
+            ? entry.risk.installScripts.filter(script => DESKTOP_INSTALL_SCRIPTS.has(script)) : [] },
+        }
+      }
       if (entry.status === 'blocked') {
         const id = typeof entry.id === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/.test(entry.id) ? entry.id : null
         const packageName = typeof entry.packageName === 'string' && DESKTOP_PACKAGE_NAME.test(entry.packageName)
@@ -1648,17 +1726,19 @@ window.__ModuleLoader__.load({
       const ids = new Set()
       const packageNames = new Set()
       const entries = []
+      const directoryEntries = []
       for (const [index, entry] of value.entries.entries()) {
         const normalized = validateDesktopInstallEntry(entry, index, value.registry.categories)
         if (!normalized) continue
-        if (normalized.status === 'approved' && normalized.categories.some(id => !Object.hasOwn(value.registry.categories, id))) throw new Error(`CATALOG_ENTRY_${index}_CATEGORY_UNKNOWN`)
-        if (ids.has(normalized.id) || packageNames.has(normalized.packageName)) throw new Error('CATALOG_IDENTITY_DUPLICATE')
+        if (normalized.status !== 'unlisted' && normalized.categories.some(id => !Object.hasOwn(value.registry.categories, id))) throw new Error(`CATALOG_ENTRY_${index}_CATEGORY_UNKNOWN`)
+        if (ids.has(normalized.id) || (normalized.packageName && packageNames.has(normalized.packageName))) throw new Error('CATALOG_IDENTITY_DUPLICATE')
         ids.add(normalized.id)
-        packageNames.add(normalized.packageName)
-        entries.push(normalized)
+        if (normalized.packageName) packageNames.add(normalized.packageName)
+        directoryEntries.push(normalized)
+        if (normalized.status !== 'unlisted') entries.push(normalized)
       }
       if (entries.length === 0) throw new Error('CATALOG_HAS_NO_LISTED_ENTRIES')
-      return { registry: value.registry, generatedAt: value.generatedAt ?? value.registry.updatedAt ?? null, entries }
+      return { registry: value.registry, generatedAt: value.generatedAt ?? value.registry.updatedAt ?? null, entries, directoryEntries }
     }
 
     function desktopFailure(code) {
@@ -1737,6 +1817,347 @@ window.__ModuleLoader__.load({
       } finally {
         window.clearTimeout(timeout)
       }
+    }
+
+    function desktopExactObjectKeys(value, expected) {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+      const actual = Object.keys(value).sort()
+      const wanted = [...expected].sort()
+      return actual.length === wanted.length && actual.every((key, index) => key === wanted[index])
+    }
+
+    function desktopBoundedString(value, min, max) {
+      return typeof value === 'string' && value.length >= min && value.length <= max
+    }
+
+    function desktopSafeRepositoryUrl(value) {
+      if (value === null) return true
+      if (!desktopBoundedString(value, 1, 512)) return false
+      try {
+        const url = new URL(value)
+        const parts = url.pathname.split('/').filter(Boolean)
+        return url.protocol === 'https:' && url.hostname.toLowerCase() === 'github.com'
+          && !url.username && !url.password && !url.search && !url.hash
+          && parts.length === 2 && parts.every(part => /^[A-Za-z0-9_.-]+$/.test(part))
+          && !parts[1].toLowerCase().endsWith('.git')
+          && value === `https://github.com/${parts[0]}/${parts[1]}`
+      } catch { return false }
+    }
+
+    function validateDesktopDiscoveryIndex(value) {
+      if (!desktopExactObjectKeys(value, ['schemaVersion', 'source', 'entries']) || value.schemaVersion !== 1
+        || !desktopExactObjectKeys(value.source, ['name', 'url', 'generatedAt', 'recordCount', 'license'])
+        || value.source.name !== 'dsh.so public discovery index'
+        || value.source.url !== 'https://www.dsh.so/plugins-index.json'
+        || typeof value.source.generatedAt !== 'string' || !Number.isFinite(Date.parse(value.source.generatedAt))
+        || !desktopExactObjectKeys(value.source.license, ['spdx', 'attribution'])
+        || value.source.license.spdx !== 'CC-BY-4.0'
+        || value.source.license.attribution !== 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
+        || !Array.isArray(value.entries) || value.entries.length === 0
+        || value.entries.length > DESKTOP_DISCOVERY_MAX_RECORDS
+        || value.source.recordCount !== value.entries.length) throw desktopFailure('DESKTOP_DISCOVERY_SCHEMA_INVALID')
+      for (const [index, entry] of value.entries.entries()) {
+        if (!desktopExactObjectKeys(entry, ['sourceIndex', 'sourceId', 'alias', 'name', 'description', 'stars', 'categories', 'kind', 'repositoryUrl', 'detailUrl'])
+          || entry.sourceIndex !== index
+          || !desktopBoundedString(entry.sourceId, 1, 240)
+          || !desktopBoundedString(entry.alias, 0, 500)
+          || !desktopBoundedString(entry.name, 1, 240)
+          || !desktopBoundedString(entry.description, 0, 221)
+          || !Number.isSafeInteger(entry.stars) || entry.stars < 0
+          || !Array.isArray(entry.categories) || entry.categories.length < 1 || entry.categories.length > 64
+          || entry.categories.some(category => !desktopBoundedString(category, 1, 48) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(category))
+          || new Set(entry.categories).size !== entry.categories.length
+          || !desktopBoundedString(entry.kind, 1, 80)
+          || !desktopSafeRepositoryUrl(entry.repositoryUrl)
+          || !desktopBoundedString(entry.detailUrl, 1, 2_000)) throw desktopFailure(`DESKTOP_DISCOVERY_ENTRY_${index}_INVALID`)
+        try {
+          const url = new URL(entry.detailUrl)
+          if (url.protocol !== 'https:' || url.hostname !== 'www.dsh.so' || !url.pathname.startsWith('/artifact/')
+            || !url.pathname.endsWith('/') || url.username || url.password || url.search || url.hash
+            || entry.detailUrl !== url.href) throw new Error('invalid detail URL')
+        } catch { throw desktopFailure(`DESKTOP_DISCOVERY_ENTRY_${index}_DETAIL_URL_INVALID`) }
+      }
+      return value
+    }
+
+    function validateDesktopCandidateRegistry(value) {
+      if (!value || typeof value !== 'object' || Array.isArray(value) || value.schemaVersion !== 1
+        || value.registry?.repositoryUrl !== 'https://github.com/AI-Scarlett/DSH-Store'
+        || value.registry?.trustBoundary?.installActionsDisabled !== true
+        || value.registry?.trustBoundary?.catalogPromotionRequired !== true
+        || value.registry?.trustBoundary?.unknownIsNotVerified !== true
+        || !Array.isArray(value.entries) || value.entries.length > DESKTOP_CANDIDATE_MAX_RECORDS) {
+        throw desktopFailure('DESKTOP_CANDIDATE_REGISTRY_INVALID')
+      }
+      for (const [index, entry] of value.entries.entries()) {
+        if (!entry || typeof entry !== 'object' || Array.isArray(entry)
+          || !desktopBoundedString(entry.id, 1, 240)
+          || !desktopBoundedString(entry.name, 1, 240)
+          || !desktopBoundedString(entry.description, 0, 2_000)
+          || !desktopSafeRepositoryUrl(entry.repositoryUrl)
+          || !['discovered', 'reviewing', 'rejected'].includes(entry.status)
+          || (entry.latestCommit != null && !DESKTOP_COMMIT.test(entry.latestCommit))
+          || !Array.isArray(entry.topics) || entry.topics.length > 64
+          || entry.topics.some(topic => !desktopBoundedString(topic, 1, 80))) {
+          throw desktopFailure(`DESKTOP_CANDIDATE_ENTRY_${index}_INVALID`)
+        }
+      }
+      return value
+    }
+
+    async function fetchDesktopDirectoryDocument(sources, { maxBytes, timeoutMs, errorCode }) {
+      const failures = []
+      for (const source of sources) {
+        const controller = new AbortController()
+        const timeout = window.setTimeout(() => controller.abort(), timeoutMs)
+        try {
+          const response = await fetch(source.url, {
+            cache: 'no-store', credentials: 'omit', redirect: 'error',
+            headers: { accept: 'application/json' }, signal: controller.signal, referrerPolicy: 'no-referrer',
+          })
+          if (!response.ok) throw desktopFailure(`${errorCode}_HTTP_FAILED`)
+          if (response.url) {
+            const finalUrl = new URL(response.url)
+            if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== source.host || finalUrl.pathname !== source.path
+              || finalUrl.username || finalUrl.password || finalUrl.search || finalUrl.hash) throw desktopFailure(`${errorCode}_REDIRECT_REFUSED`)
+          }
+          const lengthHeader = response.headers?.get?.('content-length')
+          if (typeof lengthHeader === 'string' && /^\d+$/.test(lengthHeader) && Number(lengthHeader) > maxBytes) {
+            throw desktopFailure(`${errorCode}_TOO_LARGE`)
+          }
+          const reader = response.body?.getReader?.()
+          let raw = ''
+          let byteLength = 0
+          if (reader) {
+            const decoder = new TextDecoder('utf-8', { fatal: true })
+            try {
+              while (true) {
+                const chunk = await reader.read()
+                if (chunk.done) break
+                if (!(chunk.value instanceof Uint8Array)) throw desktopFailure(`${errorCode}_STREAM_INVALID`)
+                byteLength += chunk.value.byteLength
+                if (byteLength > maxBytes) {
+                  try { await reader.cancel() } catch {}
+                  throw desktopFailure(`${errorCode}_TOO_LARGE`)
+                }
+                raw += decoder.decode(chunk.value, { stream: true })
+              }
+              raw += decoder.decode()
+            } finally { reader.releaseLock?.() }
+          } else {
+            raw = await response.text()
+            byteLength = new TextEncoder().encode(raw).byteLength
+            if (byteLength > maxBytes) throw desktopFailure(`${errorCode}_TOO_LARGE`)
+          }
+          if (byteLength === 0) throw desktopFailure(`${errorCode}_EMPTY`)
+          try { return { value: JSON.parse(raw), raw, source: source.host === 'raw.githubusercontent.com' ? 'GitHub Raw' : 'GitHub Pages' } }
+          catch { throw desktopFailure(`${errorCode}_JSON_INVALID`) }
+        } catch (error) {
+          failures.push(desktopErrorCode(error))
+        } finally { window.clearTimeout(timeout) }
+      }
+      throw desktopFailure(`${errorCode}_UNAVAILABLE_${failures.join('_') || 'UNKNOWN'}`)
+    }
+
+    async function fetchDesktopCatalogIndex(catalog) {
+      const metadata = catalog?.registry
+      if (metadata?.indexPath !== 'catalog-index.json'
+        || !/^[0-9a-f]{64}$/.test(metadata.indexSha256 || '')
+        || !Number.isSafeInteger(metadata.indexBytes) || metadata.indexBytes < 1 || metadata.indexBytes > DESKTOP_CATALOG_INDEX_MAX_BYTES
+        || metadata.indexEntryCount !== catalog.directoryEntries?.length) throw desktopFailure('DESKTOP_CATALOG_INDEX_METADATA_INVALID')
+      const result = await fetchDesktopDirectoryDocument(DESKTOP_DIRECTORY_SOURCES.catalogIndex, {
+        maxBytes: DESKTOP_CATALOG_INDEX_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS, errorCode: 'DESKTOP_CATALOG_INDEX',
+      })
+      const bytes = new TextEncoder().encode(result.raw)
+      if (bytes.byteLength !== metadata.indexBytes) throw desktopFailure('DESKTOP_CATALOG_INDEX_SIZE_MISMATCH')
+      if (!window.crypto?.subtle || typeof window.crypto.subtle.digest !== 'function') throw desktopFailure('DESKTOP_CATALOG_INDEX_INTEGRITY_UNAVAILABLE')
+      const digest = [...new Uint8Array(await window.crypto.subtle.digest('SHA-256', bytes))]
+        .map(value => value.toString(16).padStart(2, '0')).join('')
+      if (digest !== metadata.indexSha256) throw desktopFailure('DESKTOP_CATALOG_INDEX_INTEGRITY_MISMATCH')
+      const value = result.value
+      if (!value || value.schemaVersion !== 2 || value.catalogType !== 'index'
+        || value.registry?.repositoryUrl !== 'https://github.com/AI-Scarlett/DSH-Store'
+        || value.registry?.updatedAt !== metadata.updatedAt
+        || typeof value.registry?.detailsPath !== 'string' || value.registry.detailsPath !== 'catalog/details'
+        || !Array.isArray(value.entries) || value.entries.length !== metadata.indexEntryCount) {
+        throw desktopFailure('DESKTOP_CATALOG_INDEX_SCHEMA_INVALID')
+      }
+      for (const [index, entry] of value.entries.entries()) {
+        if (!entry || typeof entry !== 'object' || Array.isArray(entry)
+          || !desktopBoundedString(entry.id, 1, 240)
+          || !desktopBoundedString(entry.nameZh, 1, 240)
+          || !desktopBoundedString(entry.nameEn, 1, 240)
+          || !desktopBoundedString(entry.packageName, 1, 500)
+          || !desktopBoundedString(entry.version, 1, 120)
+          || typeof entry.featured !== 'boolean' || !Number.isSafeInteger(entry.order) || entry.order < 0
+          || !desktopSafeRepositoryUrl(entry.repositoryUrl)
+          || !desktopBoundedString(entry.detailPath, 1, 500)
+          || !['approved', 'blocked', 'unlisted'].includes(entry.status)
+          || !Array.isArray(entry.categories) || entry.categories.length > 32
+          || entry.categories.some(category => !desktopBoundedString(category, 1, 80))
+          || !Array.isArray(entry.searchTerms) || entry.searchTerms.length > 64
+          || entry.searchTerms.some(term => !desktopBoundedString(term, 0, 160))) {
+          throw desktopFailure(`DESKTOP_CATALOG_INDEX_ENTRY_${index}_INVALID`)
+        }
+      }
+      return value.entries
+    }
+
+    async function fetchDesktopDirectorySnapshot(catalog) {
+      const catalogIndexPromise = fetchDesktopCatalogIndex(catalog)
+      const discoveryPromise = fetchDesktopDirectoryDocument(DESKTOP_DIRECTORY_SOURCES.discovery, {
+        maxBytes: DESKTOP_DISCOVERY_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS, errorCode: 'DESKTOP_DISCOVERY',
+      }).then(result => ({ ...result, value: validateDesktopDiscoveryIndex(result.value) }))
+      const candidatePromise = fetchDesktopDirectoryDocument(DESKTOP_DIRECTORY_SOURCES.candidates, {
+        maxBytes: DESKTOP_CANDIDATE_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS, errorCode: 'DESKTOP_CANDIDATE',
+      }).then(result => ({ ...result, value: validateDesktopCandidateRegistry(result.value) }))
+      const [catalogIndexResult, discoveryResult, candidateResult] = await Promise.allSettled([
+        catalogIndexPromise, discoveryPromise, candidatePromise,
+      ])
+      if (catalogIndexResult.status === 'rejected') throw catalogIndexResult.reason
+      if (discoveryResult.status === 'rejected') throw discoveryResult.reason
+      return {
+        catalogIndexEntries: catalogIndexResult.value,
+        discovery: discoveryResult.value.value,
+        candidates: candidateResult.status === 'fulfilled' ? candidateResult.value.value.entries : [],
+        source: discoveryResult.value.source,
+        candidateSource: candidateResult.status === 'fulfilled' ? candidateResult.value.source : null,
+        candidateError: candidateResult.status === 'rejected' ? desktopErrorCode(candidateResult.reason) : null,
+      }
+    }
+
+    function desktopDirectoryCategories(values, allowed = null) {
+      const categories = [...new Set((Array.isArray(values) ? values : []).map(value => typeof value === 'string'
+        ? value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48) : '')
+        .filter(value => value && (!allowed || allowed.has(value))))]
+      return categories.length ? categories : ['uncategorized']
+    }
+
+    function desktopDirectoryCategoryLabel(id, catalogLabels = {}) {
+      return catalogLabels[id] || DESKTOP_DISCOVERY_CATEGORY_LABELS[id] || id
+    }
+
+    function createDesktopKnownDirectory(catalog, directorySnapshot) {
+      const discoveryRows = Array.isArray(directorySnapshot?.discovery?.entries) ? directorySnapshot.discovery.entries : []
+      const candidates = Array.isArray(directorySnapshot?.candidates) ? directorySnapshot.candidates : []
+      const catalogRows = Array.isArray(directorySnapshot?.catalogIndexEntries)
+        ? directorySnapshot.catalogIndexEntries
+        : (Array.isArray(catalog?.directoryEntries) ? catalog.directoryEntries : (catalog?.entries || []))
+      const trustedCatalogRows = Array.isArray(catalog?.directoryEntries) ? catalog.directoryEntries : (catalog?.entries || [])
+      const trustedCatalogById = new Map(trustedCatalogRows.map(entry => [entry.id.toLowerCase(), entry]))
+      const trustedCatalogEntry = indexEntry => indexEntry
+        ? trustedCatalogById.get(indexEntry.id.toLowerCase()) || null : null
+      const allowedCategories = new Set(discoveryRows.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : []))
+      const catalogIndexes = { byId: new Map(), byPackage: new Map(), byRepository: new Map() }
+      for (const entry of catalogRows) {
+        catalogIndexes.byId.set(entry.id.toLowerCase(), entry)
+        if (entry.packageName) catalogIndexes.byPackage.set(entry.packageName.toLowerCase(), entry)
+        if (entry.repositoryUrl && !catalogIndexes.byRepository.has(entry.repositoryUrl.toLowerCase())) {
+          catalogIndexes.byRepository.set(entry.repositoryUrl.toLowerCase(), entry)
+        }
+      }
+      const rows = []
+      const bySourceId = new Map()
+      const byAlias = new Map()
+      const byPackage = new Map()
+      const byRepository = new Map()
+      const add = row => {
+        const item = { ...row, categories: desktopDirectoryCategories(row.categories) }
+        item.listingStatus = item.catalogIndexEntry ? 'listed' : 'unlisted'
+        rows.push(item)
+        if (item.sourceId) bySourceId.set(item.sourceId.toLowerCase(), item)
+        if (item.alias) byAlias.set(item.alias.toLowerCase(), item)
+        if (item.packageName) byPackage.set(item.packageName.toLowerCase(), item)
+        if (item.repositoryUrl) {
+          const matches = byRepository.get(item.repositoryUrl.toLowerCase()) || []
+          matches.push(item)
+          byRepository.set(item.repositoryUrl.toLowerCase(), matches)
+        }
+        return item
+      }
+      const findExisting = identity => bySourceId.get(identity.sourceId?.toLowerCase())
+        || byAlias.get(identity.alias?.toLowerCase())
+        || byPackage.get(identity.packageName?.toLowerCase())
+        || (identity.repositoryUrl ? byRepository.get(identity.repositoryUrl.toLowerCase())?.[0] : null)
+        || null
+      const catalogMatch = identity => catalogIndexes.byId.get(identity.sourceId?.toLowerCase())
+        || catalogIndexes.byPackage.get(identity.alias?.toLowerCase())
+        || catalogIndexes.byPackage.get(identity.packageName?.toLowerCase())
+        || catalogIndexes.byRepository.get(identity.repositoryUrl?.toLowerCase())
+        || null
+
+      discoveryRows.forEach((entry, index) => {
+        const sourceId = entry.sourceId
+        const alias = entry.alias
+        const repository = entry.repositoryUrl
+        const identity = { sourceId, alias, packageName: alias, repositoryUrl: repository }
+        const matchedCatalog = catalogMatch(identity)
+        add({
+          id: `discovery:${entry.sourceIndex}:${sourceId}`, source: 'discovery', sourceId,
+          sourceIndex: entry.sourceIndex, alias, packageName: alias, name: entry.name,
+          description: entry.description, categories: desktopDirectoryCategories(entry.categories, allowedCategories),
+          stars: entry.stars, kind: entry.kind, repositoryUrl: repository, detailUrl: entry.detailUrl,
+          order: Number.isSafeInteger(entry.sourceIndex) ? entry.sourceIndex : index,
+          catalogIndexEntry: matchedCatalog, catalogEntry: trustedCatalogEntry(matchedCatalog), candidateEntry: null,
+        })
+      })
+
+      for (const entry of catalogRows) {
+        const identity = { sourceId: entry.id, alias: '', packageName: entry.packageName, repositoryUrl: entry.repositoryUrl }
+        const existing = findExisting(identity)
+        if (existing) {
+          existing.catalogIndexEntry = entry
+          existing.catalogEntry = trustedCatalogEntry(entry)
+          existing.listingStatus = 'listed'
+          continue
+        }
+        add({
+          id: `catalog:${entry.id}`, source: 'catalog', sourceId: entry.id, sourceIndex: null,
+          alias: '', packageName: entry.packageName, name: entry.nameZh || entry.nameEn || entry.packageName, description: '',
+          categories: desktopDirectoryCategories(entry.categories, allowedCategories), stars: 0,
+          kind: 'store-catalog', repositoryUrl: entry.repositoryUrl || null, detailUrl: null,
+          order: Number.isSafeInteger(entry.order) ? entry.order : Number.MAX_SAFE_INTEGER,
+          catalogIndexEntry: entry, catalogEntry: trustedCatalogEntry(entry), candidateEntry: null,
+        })
+      }
+
+      candidates.forEach((entry, index) => {
+        const alias = entry.packageName || entry.name
+        const identity = { sourceId: entry.id, alias, packageName: alias, repositoryUrl: entry.repositoryUrl }
+        const existing = findExisting(identity)
+        if (existing) {
+          existing.candidateEntry = entry
+          return
+        }
+        add({
+          id: `candidate:${entry.id || index}`, source: 'candidate', sourceId: entry.id,
+          sourceIndex: null, alias, packageName: alias, name: entry.name,
+          description: entry.description, categories: desktopDirectoryCategories(entry.topics, allowedCategories),
+          stars: 0, kind: 'store-candidate', repositoryUrl: entry.repositoryUrl, detailUrl: null,
+          order: Number.MAX_SAFE_INTEGER,
+          catalogIndexEntry: catalogMatch(identity), catalogEntry: trustedCatalogEntry(catalogMatch(identity)), candidateEntry: entry,
+        })
+      })
+
+      const categoryCounts = new Map()
+      for (const row of rows) for (const category of row.categories) categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1)
+      for (const row of rows) {
+        row.categories.sort((left, right) => (categoryCounts.get(right) || 0) - (categoryCounts.get(left) || 0) || left.localeCompare(right))
+        row.primaryCategory = row.categories[0] || 'uncategorized'
+      }
+      return rows
+    }
+
+    function desktopDirectoryStatusLabel(row) {
+      const catalogStatus = row.catalogIndexEntry?.status || row.catalogEntry?.status
+      if (catalogStatus === 'approved') return 'Catalog 已审核'
+      if (catalogStatus === 'blocked') return 'Catalog 已拦截 · DSH 可检查'
+      if (catalogStatus === 'unlisted') return 'Catalog 未上架'
+      const candidateStatus = row.candidateEntry?.status
+      if (candidateStatus === 'rejected') return '候选审核未通过'
+      if (candidateStatus === 'reviewing') return '候选审核中'
+      if (candidateStatus === 'discovered') return '候选待审核'
+      return '官网发现 · Store 未收录'
     }
 
     async function readDesktopStoreSnapshot() {
@@ -1841,7 +2262,7 @@ window.__ModuleLoader__.load({
       if (!bundle || bundle.name !== entry.packageName || bundle.installed !== true
         || bundle.official === true || bundle.optional === true || bundle.readOnlyReason
         || entry.packageName.startsWith('@deepseek-ai/')
-        || !['approved', 'blocked'].includes(entry.status)
+        || entry.status !== 'approved'
         || !DESKTOP_COMMIT.test(entry.commit || '')
         || !desktopBundleMatchesCatalogEntry(entry, bundle)) return false
       if (entry.packageName === 'dsh-safe-plugin-manager'
@@ -1878,10 +2299,13 @@ window.__ModuleLoader__.load({
 
     function DesktopStorePanel() {
       const [loadState, setLoadState] = useState({ status: 'loading' })
-      const [view, setView] = useState('catalog')
+      const [directoryState, setDirectoryState] = useState({ status: 'loading' })
+      const [view, setView] = useState('directory')
       const [query, setQuery] = useState('')
       const [category, setCategory] = useState('')
       const [listFilter, setListFilter] = useState('all')
+      const [directoryListingFilter, setDirectoryListingFilter] = useState('all')
+      const [directoryReviewFilter, setDirectoryReviewFilter] = useState('all')
       const [clientFilter, setClientFilter] = useState('all')
       const [sortBy, setSortBy] = useState('recommended')
       const [page, setPage] = useState(1)
@@ -1890,28 +2314,49 @@ window.__ModuleLoader__.load({
       const [confirmation, setConfirmation] = useState('')
       const [actionState, setActionState] = useState({ status: 'idle' })
       const actionInFlight = useRef(false)
+      const directoryRequestId = useRef(0)
+      const loadDirectory = useCallback(async catalog => {
+        const requestId = ++directoryRequestId.current
+        setDirectoryState({ status: 'loading' })
+        try {
+          const snapshot = await fetchDesktopDirectorySnapshot(catalog)
+          if (requestId === directoryRequestId.current) setDirectoryState({ status: 'ready', snapshot })
+        } catch (error) {
+          if (requestId === directoryRequestId.current) setDirectoryState({ status: 'error', code: desktopErrorCode(error) })
+        }
+      }, [])
       const refresh = useCallback(async () => {
         setLoadState({ status: 'loading' })
+        void loadDirectory(loadState.status === 'ready' ? loadState.catalog : null)
         try {
           const snapshot = await readDesktopStoreSnapshot()
           setLoadState({ status: 'ready', ...snapshot })
         } catch (error) {
           setLoadState({ status: 'error', code: desktopErrorCode(error) })
         }
-      }, [])
+      }, [loadDirectory, loadState.catalog, loadState.status])
       useEffect(() => {
         let cancelled = false
         void readDesktopStoreSnapshot().then(snapshot => {
-          if (!cancelled) setLoadState({ status: 'ready', ...snapshot })
+          if (!cancelled) {
+            setLoadState({ status: 'ready', ...snapshot })
+            void loadDirectory(snapshot.catalog)
+          }
         }).catch(error => {
           if (!cancelled) setLoadState({ status: 'error', code: desktopErrorCode(error) })
         })
-        return () => { cancelled = true }
-      }, [])
+        return () => { cancelled = true; directoryRequestId.current += 1 }
+      }, [loadDirectory])
 
       const entries = loadState.status === 'ready' ? loadState.catalog.entries : []
       const categoryLabels = loadState.status === 'ready' ? loadState.catalog.registry.categories || {} : {}
-      const categoryIds = [...new Set(entries.flatMap(entry => entry.categories || []))].sort()
+      const directoryRows = useMemo(() => {
+        if (loadState.status !== 'ready') return []
+        if (directoryState.status === 'ready') return createDesktopKnownDirectory(loadState.catalog, directoryState.snapshot)
+        if (directoryState.status === 'error') return createDesktopKnownDirectory(loadState.catalog, { discovery: { entries: [] }, candidates: [] })
+        return []
+      }, [loadState.status, loadState.catalog, directoryState.status, directoryState.snapshot])
+      const categoryIds = [...new Set((view === 'directory' ? directoryRows : entries).flatMap(entry => entry.categories || []))].sort()
       const installedByName = new Map((loadState.status === 'ready' ? loadState.bundles : [])
         .filter(bundle => bundle && typeof bundle.name === 'string').map(bundle => [bundle.name, bundle]))
       const catalogPackageNames = new Set(entries.map(entry => entry.packageName))
@@ -1965,6 +2410,61 @@ window.__ModuleLoader__.load({
       const pageCount = Math.max(1, Math.ceil(filtered.length / MARKET_PAGE_SIZE))
       const currentPage = Math.min(page, pageCount)
       const visible = filtered.slice((currentPage - 1) * MARKET_PAGE_SIZE, currentPage * MARKET_PAGE_SIZE)
+      const directoryCounts = useMemo(() => {
+        const counts = { all: directoryRows.length, listed: 0, unlisted: 0, approved: 0, blocked: 0,
+          withdrawn: 0, reviewing: 0, rejected: 0, discovered: 0, publicOnly: 0 }
+        for (const row of directoryRows) {
+          if (row.catalogIndexEntry) counts.listed += 1
+          else counts.unlisted += 1
+          if (row.catalogIndexEntry?.status === 'approved') counts.approved += 1
+          if (row.catalogIndexEntry?.status === 'blocked') counts.blocked += 1
+          if (row.catalogIndexEntry?.status === 'unlisted') counts.withdrawn += 1
+          if (!row.catalogIndexEntry && row.candidateEntry?.status === 'reviewing') counts.reviewing += 1
+          if (!row.catalogIndexEntry && row.candidateEntry?.status === 'rejected') counts.rejected += 1
+          if (!row.catalogIndexEntry && row.candidateEntry?.status === 'discovered') counts.discovered += 1
+          if (!row.catalogIndexEntry && !row.candidateEntry) counts.publicOnly += 1
+        }
+        return counts
+      }, [directoryRows])
+      const directoryCategoryCounts = useMemo(() => {
+        const counts = new Map()
+        for (const row of directoryRows) for (const id of row.categories || []) counts.set(id, (counts.get(id) || 0) + 1)
+        return counts
+      }, [directoryRows])
+      const directoryFiltered = useMemo(() => {
+        const needle = query.trim().toLocaleLowerCase()
+        return directoryRows.filter(row => (!category || row.categories.includes(category))
+          && (directoryListingFilter === 'all' || (directoryListingFilter === 'listed' ? Boolean(row.catalogIndexEntry) : !row.catalogIndexEntry))
+          && (directoryReviewFilter === 'all'
+            || (directoryReviewFilter === 'approved' && row.catalogIndexEntry?.status === 'approved')
+            || (directoryReviewFilter === 'blocked' && row.catalogIndexEntry?.status === 'blocked')
+            || (directoryReviewFilter === 'unlisted-catalog' && row.catalogIndexEntry?.status === 'unlisted')
+            || (directoryReviewFilter === 'reviewing' && !row.catalogIndexEntry && row.candidateEntry?.status === 'reviewing')
+            || (directoryReviewFilter === 'rejected' && !row.catalogIndexEntry && row.candidateEntry?.status === 'rejected')
+            || (directoryReviewFilter === 'discovered' && !row.catalogIndexEntry && row.candidateEntry?.status === 'discovered')
+            || (directoryReviewFilter === 'public-only' && !row.catalogIndexEntry && !row.candidateEntry))
+          && (!needle || [row.id, row.sourceId, row.alias, row.packageName, row.name, row.description,
+            row.catalogIndexEntry?.nameZh, row.catalogIndexEntry?.nameEn, row.catalogIndexEntry?.version,
+            row.catalogIndexEntry?.status, ...(row.catalogIndexEntry?.searchTerms || []),
+            row.repositoryUrl, row.detailUrl, row.kind, row.catalogEntry?.statusReason,
+            row.candidateEntry?.status, row.candidateEntry?.statusReason,
+            ...(row.categories || []), ...(row.categories || []).map(id => categoryLabels[id])]
+            .some(value => String(value || '').toLocaleLowerCase().includes(needle))))
+          .sort((left, right) => {
+            const leftName = left.name || left.packageName || left.sourceId || ''
+            const rightName = right.name || right.packageName || right.sourceId || ''
+            if (sortBy === 'name') return leftName.localeCompare(rightName, 'zh-CN')
+            if (sortBy === 'stars') return (right.stars || 0) - (left.stars || 0) || left.order - right.order
+            return String(left.primaryCategory || 'uncategorized').localeCompare(String(right.primaryCategory || 'uncategorized'), 'en')
+              || Number(Boolean(right.catalogIndexEntry)) - Number(Boolean(left.catalogIndexEntry))
+              || (right.stars || 0) - (left.stars || 0)
+              || leftName.localeCompare(rightName, 'zh-CN') || left.order - right.order
+          })
+      }, [directoryRows, query, category, directoryListingFilter, directoryReviewFilter, sortBy, categoryLabels])
+      const directoryPageCount = Math.max(1, Math.ceil(directoryFiltered.length / MARKET_PAGE_SIZE))
+      const directoryCurrentPage = Math.min(page, directoryPageCount)
+      const directoryVisible = directoryFiltered.slice((directoryCurrentPage - 1) * MARKET_PAGE_SIZE, directoryCurrentPage * MARKET_PAGE_SIZE)
+      const directoryHasFilters = Boolean(query || category || directoryListingFilter !== 'all' || directoryReviewFilter !== 'all')
 
       const closeActionPlan = () => {
         if (actionState.status === 'running') return
@@ -2062,9 +2562,10 @@ window.__ModuleLoader__.load({
           setLoadState({ status: 'ready', ...fresh })
           const entry = fresh.catalog.entries.find(item => item.id === plannedEntry.id)
           const bundle = entry ? fresh.bundles.find(item => item?.name === entry.packageName) : null
-          const catalogAllowsAction = entry && (action === 'install' || action === 'update'
-            ? ['approved', 'blocked'].includes(entry.status)
-            : action === 'enable' ? entry.status === 'approved' : ['approved', 'blocked'].includes(entry.status))
+          const catalogAllowsAction = entry && (action === 'install'
+            ? ['approved', 'blocked'].includes(entry.status) && desktopBlockedInstallReady(entry)
+            : action === 'update' ? entry.status === 'approved'
+              : action === 'enable' ? entry.status === 'approved' : ['approved', 'blocked'].includes(entry.status))
           const installedStateMatchesPlan = action !== 'update' || (bundle && actionPlan.installedState
             && (bundle.version ?? null) === actionPlan.installedState.version
             && (bundle.source ?? null) === actionPlan.installedState.source
@@ -2292,9 +2793,12 @@ window.__ModuleLoader__.load({
             ? '商城自身已经是 Catalog 当前固定 Commit。' : '商城更新条件未满足。'
         }
         if (entry.packageName.startsWith('@deepseek-ai/')) return 'DSH 官方组件不由商城管理。'
-        if (action === 'install' && entry.status === 'blocked' && !desktopBlockedInstallReady(entry)) return '固定 GitHub Commit、来源证据、entry ID 或安装路径未通过基础校验。'
-        if (['install', 'enable'].includes(action) && entry.status !== 'approved'
-          && !(action === 'install' && entry.status === 'blocked')) return '当前目录状态不允许此操作。'
+        if (action === 'install' && entry.status === 'blocked') {
+          return desktopBlockedInstallReady(entry)
+            ? 'Catalog 有审核建议；确认后可提交给 DSH Desktop 官方管理器检查，最终结果以 DSH 返回为准。'
+            : '此条目缺少可交由 DSH 检查的固定来源或条目 ID。'
+        }
+        if (['install', 'update', 'enable'].includes(action) && entry.status !== 'approved') return '此条目尚未通过 DSH STORE 审核；仅 Catalog 已拦截条目可在确认后交由 DSH 检查安装。'
         if (!managerSupports(action)) return '当前 DSH Desktop 未提供对应的官方插件管理器接口。'
         if (action === 'install') {
           if (bundle?.installed) return '当前 Profile 已安装此插件。'
@@ -2376,22 +2880,238 @@ window.__ModuleLoader__.load({
           onClick: confirmAction,
         }, actionState.status === 'running' ? '正在由 DSH 处理…' : '确认并' + actionLabel(actionPlan.action)) : null) : null
 
-      const approvedCount = entries.filter(entry => entry.status === 'approved').length
-      const blockedCount = entries.filter(entry => entry.status === 'blocked').length
-      const desktopSupportedCount = entries.filter(entry => entry.compatibility?.profiles?.includes('desktop')).length
       const userInstalledBundles = [...installedByName.values()].filter(bundle => bundle?.installed === true
         && bundle.official !== true && bundle.optional !== true && !bundle.name?.startsWith('@deepseek-ai/'))
       const installedCount = userInstalledBundles.length
       const enabledCount = userInstalledBundles.filter(bundle => bundle.enabled === true).length
       const disabledCount = userInstalledBundles.filter(bundle => bundle.enabled === false).length
       const hasFilters = Boolean(query || category || listFilter !== 'all' || clientFilter !== 'all' || sortBy !== 'recommended')
+      const directoryReviewOptions = [
+        ['all', '所有审核状态', directoryCounts.all], ['approved', 'Catalog 已审核', directoryCounts.approved],
+        ['blocked', 'Catalog 已拦截', directoryCounts.blocked], ['unlisted-catalog', 'Catalog 未上架', directoryCounts.withdrawn],
+        ['reviewing', '候选审核中', directoryCounts.reviewing], ['rejected', '候选审核未通过', directoryCounts.rejected],
+        ['discovered', '候选待审核', directoryCounts.discovered], ['public-only', '官网发现未收录', directoryCounts.publicOnly],
+      ]
+      const directoryCategoryLabel = id => desktopDirectoryCategoryLabel(id, categoryLabels)
+      const clearDirectoryFilters = () => {
+        setQuery(''); setCategory(''); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1)
+      }
+      const directoryViewContent = React.createElement(React.Fragment, null,
+        React.createElement('div', { style: styles.marketToolbar },
+          React.createElement('input', {
+            type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
+            style: { ...styles.input, flex: '1 1 280px', minWidth: '180px' },
+            placeholder: '搜索插件、用途或 GitHub 仓库', 'aria-label': '搜索全部已知插件',
+          }),
+          React.createElement('select', {
+            value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
+            style: styles.select, 'aria-label': '按分类筛选',
+          }, React.createElement('option', { value: '' }, `全部分类 · ${directoryRows.length}`),
+          categoryIds.map(id => React.createElement('option', { key: id, value: id }, `${directoryCategoryLabel(id)} · ${directoryCategoryCounts.get(id) || 0}`))),
+          React.createElement('select', {
+            value: directoryReviewFilter, onChange: event => { setDirectoryReviewFilter(event.target.value); setPage(1) },
+            style: styles.select, 'aria-label': '按 DSH STORE 审核状态筛选',
+          }, directoryReviewOptions.map(([id, label, count]) => React.createElement('option', { key: id, value: id }, `${label} · ${count}`))),
+          React.createElement('select', {
+            value: sortBy === 'recent' ? 'recommended' : sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
+            style: styles.select, 'aria-label': '排序方式',
+          }, React.createElement('option', { value: 'recommended' }, '分类、收录与 Stars'),
+          React.createElement('option', { value: 'name' }, '名称 A-Z'), React.createElement('option', { value: 'stars' }, 'Stars 从高到低'))),
+        React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按官网目录收录状态筛选' },
+          [['all', '全部已知', directoryCounts.all], ['listed', 'Catalog 有记录', directoryCounts.listed], ['unlisted', 'Catalog 未收录', directoryCounts.unlisted]]
+            .map(([id, label, count]) => React.createElement(Button, {
+              key: id, compact: true, primary: directoryListingFilter === id, ariaPressed: directoryListingFilter === id,
+              onClick: () => { setDirectoryListingFilter(id); setPage(1) },
+            }, `${label} · ${count}`))),
+        React.createElement('div', { style: styles.marketResults },
+          React.createElement('span', { style: styles.muted, role: 'status' },
+            `${directoryFiltered.length} 条结果 · 第 ${directoryCurrentPage} / ${directoryPageCount} 页 · ${directoryCounts.approved} 已审核 · ${directoryCounts.blocked} 已拦截 · ${directoryCounts.unlisted} 未收录`),
+          directoryHasFilters ? React.createElement(Button, { compact: true, onClick: clearDirectoryFilters }, '清除筛选') : null),
+        directoryState.status === 'loading' ? React.createElement('div', { style: styles.marketEmpty, role: 'status' },
+          React.createElement('strong', { style: styles.name }, '正在读取官网完整目录'),
+          React.createElement('span', { style: styles.muted }, '搜索框和分类筛选会在目录载入后覆盖全部记录。')) : null,
+        directoryState.status === 'error' ? React.createElement('div', { style: styles.notice, role: 'alert' },
+          `官网完整目录暂时不可用（${directoryState.code}）；下方仅显示 Catalog 回退记录，搜索结果不代表全部插件。可以刷新后重试。`) : null,
+        directoryState.status === 'ready' && directoryState.snapshot.candidateError
+          ? React.createElement('div', { style: styles.notice, role: 'status' }, '候选审核补充记录暂不可用；公开发现目录与 Catalog 记录仍可浏览。') : null,
+        directoryFiltered.length === 0 && directoryState.status !== 'loading'
+          ? React.createElement('div', { style: styles.marketEmpty },
+            React.createElement('strong', { style: styles.name }, '没有匹配的插件'),
+            React.createElement('span', { style: styles.muted }, '试试名称、用途、分类或 GitHub 仓库；也可以清除筛选。'),
+            directoryHasFilters ? React.createElement(Button, { compact: true, onClick: clearDirectoryFilters }, '清除筛选') : null) : null,
+        React.createElement('div', {
+          style: styles.marketListViewport, role: 'region', tabIndex: 0, 'aria-label': '全部已知插件列表，可在此区域滚动浏览',
+        }, React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': '全部已知插件' }, directoryVisible.map(row => {
+          const entry = row.catalogEntry
+          const catalogIndexEntry = row.catalogIndexEntry
+          const packageName = entry?.packageName || catalogIndexEntry?.packageName || row.packageName || row.alias || row.sourceId
+          const installedBundle = entry ? installedByName.get(entry.packageName) : null
+          const statusLabel = desktopDirectoryStatusLabel(row)
+          const catalogStatus = catalogIndexEntry?.status || entry?.status
+          const statusTone = catalogStatus === 'approved' ? 'var(--dsw-alias-state-success-primary)'
+            : catalogStatus === 'blocked' || row.candidateEntry?.status === 'rejected'
+              ? 'var(--dsw-alias-state-error-primary)' : 'var(--dsw-alias-label-tertiary)'
+          const installedLabel = installedBundle?.installed === true
+            ? installedBundle.enabled === true ? 'DSH 已安装 · 已启动'
+              : installedBundle.enabled === false ? 'DSH 已安装 · 已关闭' : 'DSH 已安装'
+            : null
+          const reason = desktopSafeReasonText(entry?.statusReason || row.candidateEntry?.statusReason, 240)
+          const unmanagedMessage = entry && installedBundle?.installed === true && !canManageBundle(entry, installedBundle)
+            ? installedBundle.official === true ? '官方组件不由商城管理' : '已安装来源与商城记录不一致，商城不管理'
+            : ''
+          const kindLabel = row.kind === 'ecosystem-app' ? 'Ecosystem app'
+            : row.kind === 'ecosystem-plugin' ? 'Ecosystem plugin'
+              : row.source === 'catalog' ? 'Catalog-only record'
+                : row.source === 'candidate' ? '候选记录' : '官网公开发现'
+          return React.createElement('article', { key: row.id, style: styles.marketCard, role: 'listitem' },
+            React.createElement('div', { style: styles.cardHeader },
+              React.createElement('div', { style: styles.marketCardTitle }, row.name || packageName),
+              React.createElement('div', { style: styles.marketBadges },
+                React.createElement(StatusPill, { label: statusLabel, tone: statusTone }),
+                installedLabel ? React.createElement(StatusPill, { label: installedLabel, tone: 'var(--dsw-alias-state-success-primary)' }) : null)),
+            React.createElement('div', { style: styles.code }, packageName),
+            React.createElement('div', { style: styles.cardDescription }, row.description || '官网暂未提供插件说明。'),
+            React.createElement('div', { style: styles.marketBadges },
+              React.createElement('span', { style: styles.badge }, kindLabel),
+              entry ? React.createElement('span', { style: styles.badge },
+                'DSH Desktop 客户端：' + desktopClientAdaptationLabel(entry.compatibility.profiles)) : null,
+              ...(row.categories || []).map(id => React.createElement('span', { key: id, style: styles.badge }, directoryCategoryLabel(id))),
+              row.stars > 0 ? React.createElement('span', { style: styles.badge }, `★ ${new Intl.NumberFormat('zh-CN').format(row.stars)}`) : null,
+              row.candidateEntry && entry ? React.createElement('span', { style: styles.badge }, `候选：${row.candidateEntry.status}`) : null),
+            reason ? React.createElement('div', { style: styles.notice }, reason) : null,
+            React.createElement('div', { style: styles.cardFooter },
+              React.createElement('div', { style: styles.marketCardActions },
+                entry && ['approved', 'blocked'].includes(entry.status) ? React.createElement(React.Fragment, null,
+                  ...actionButtons(entry, installedBundle, { includeUnavailable: true }),
+                  unmanagedMessage ? React.createElement('span', { key: 'unmanaged', style: styles.muted }, unmanagedMessage) : null,
+                  React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry) }, '查看详情'))
+                  : entry ? React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry) }, '查看详情')
+                    : React.createElement('span', { style: styles.muted }, '目录记录仅供浏览 · 无安装操作')),
+              row.repositoryUrl ? React.createElement('a', { href: row.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub 源码 ↗') : null,
+              row.detailUrl ? React.createElement('a', { href: row.detailUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '官网详情 ↗') : null))
+        }))),
+        React.createElement(Pagination, { pagination: {
+          page: directoryCurrentPage, pageCount: directoryPageCount,
+          hasPrevious: directoryCurrentPage > 1, hasNext: directoryCurrentPage < directoryPageCount,
+        }, loading: directoryState.status === 'loading', onPageChange: setPage }),
+        directoryState.status === 'ready' ? React.createElement('div', { style: styles.muted },
+          `公开索引生成于 ${directoryState.snapshot.discovery.source.generatedAt.slice(0, 10)} · 数据来源 dsh.so（CC BY 4.0，保留署名） · Catalog 收录状态不代表审核通过。`) : null)
+
+      const catalogViewContent = React.createElement(React.Fragment, null,
+        React.createElement('div', { style: styles.marketToolbar },
+          React.createElement('input', {
+            type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
+            style: { ...styles.input, flex: '1 1 280px', minWidth: '180px' },
+            placeholder: '搜索名称、用途、别名、权限或 GitHub 仓库', 'aria-label': '搜索插件',
+          }),
+          React.createElement('select', {
+            value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
+            style: styles.select, 'aria-label': '按分类筛选',
+          }, React.createElement('option', { value: '' }, '全部分类'),
+          categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))),
+          React.createElement('select', {
+            value: clientFilter, onChange: event => { setClientFilter(event.target.value); setPage(1) },
+            style: styles.select, 'aria-label': '按 Desktop 适配标识筛选',
+          }, React.createElement('option', { value: 'all' }, '全部客户端适配状态'),
+          React.createElement('option', { value: 'declared' }, '已声明适配 Desktop'),
+          React.createElement('option', { value: 'undeclared' }, '未声明适配 Desktop')),
+          React.createElement('select', {
+            value: sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
+            style: styles.select, 'aria-label': '排序方式',
+          }, React.createElement('option', { value: 'recommended' }, '默认排序'),
+          React.createElement('option', { value: 'recent' }, '最近更新'),
+          React.createElement('option', { value: 'name' }, '名称 A-Z'))),
+        view === 'catalog' ? React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按状态筛选' },
+          [['all', '全部'], ['approved', 'Catalog 已审核'], ['blocked', 'Catalog 已拦截'], ['installed', '已安装']].map(([id, label]) =>
+            React.createElement(Button, { key: id, compact: true, primary: listFilter === id, ariaPressed: listFilter === id,
+              onClick: () => { setListFilter(id); setPage(1) } }, `${label} · ${statusCounts[id]}`)))
+          : React.createElement('div', { style: styles.marketStats, 'aria-label': '已安装插件状态' },
+            [[installedCount, 'DSH 已安装'], [enabledCount, '已启动'], [disabledCount, '已关闭'],
+              [externalInstalledBundles.length, '目录外只读']].map(([value, label]) =>
+              React.createElement('div', { key: label, style: styles.marketStat },
+                React.createElement('span', { style: styles.marketStatValue }, String(value)),
+                React.createElement('span', { style: styles.marketStatLabel }, label)))),
+        React.createElement('div', { style: styles.marketResults },
+          React.createElement('span', { style: styles.muted, role: 'status' },
+            `${filtered.length} 条结果 · 第 ${currentPage} / ${pageCount} 页 · ${view === 'installed' ? `其中 ${installedCatalogEntries.length} 个与 Catalog 匹配` : `Desktop Profile ${installedCount} 个已安装 bundle`}`),
+          hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
+            setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
+          } }, '清除筛选') : null),
+        filtered.length === 0 ? React.createElement('div', { style: styles.marketEmpty },
+          React.createElement('strong', { style: styles.name }, view === 'installed' ? '当前没有匹配的已安装插件' : '没有匹配的插件'),
+          React.createElement('span', { style: styles.muted }, view === 'installed'
+            ? '已安装状态来自 DSH Desktop 官方插件管理器。清除筛选，或在插件目录中浏览可安装条目。'
+            : '试试插件名、包名、用途、分类、权限或 GitHub 仓库。'),
+          hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
+            setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
+          } }, '清除筛选') : null) : null,
+        React.createElement('div', {
+          style: styles.marketListViewport, role: 'region', tabIndex: 0,
+          'aria-label': view === 'installed' ? '已安装插件列表，可在此区域滚动浏览' : 'Catalog 审核记录列表，可在此区域滚动浏览',
+        }, React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': view === 'installed' ? '已安装插件目录' : '插件商城目录' }, visible.map(row => {
+          if (row.kind === 'external') {
+            const bundle = row.bundle
+            const sourceRepository = desktopSourceRepository(bundle.source)
+            const bundleVersion = typeof bundle.version === 'string' && DESKTOP_VERSION.test(bundle.version) ? bundle.version : '未知版本'
+            return React.createElement('article', { key: row.key, style: styles.marketExternalCard, role: 'listitem' },
+              React.createElement('div', { style: styles.cardHeader },
+                React.createElement('div', { style: styles.marketCardTitle }, bundle.name),
+                React.createElement(StatusPill, { label: bundle.enabled === true ? '已启动' : bundle.enabled === false ? '已关闭' : '状态未知',
+                  tone: bundle.enabled === true ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)' })),
+              React.createElement('div', { style: styles.code }, bundle.name + ' · ' + bundleVersion),
+              React.createElement('div', { style: styles.muted }, '此插件没有可匹配的已审核 Catalog 固定来源记录；商城只显示 DSH Desktop 返回的状态。'),
+              React.createElement('div', { style: styles.marketBadges },
+                React.createElement('span', { style: styles.badge }, bundle.official === true ? 'DSH 官方组件' : '目录外插件'),
+                bundle.optional === true ? React.createElement('span', { style: styles.badge }, '可选组件') : null,
+                bundle.removable === true ? React.createElement('span', { style: styles.badge }, 'Desktop 允许卸载') : null),
+              React.createElement('div', { style: styles.muted }, sourceRepository ? 'GitHub 来源：' + sourceRepository : '安装来源未公开显示'),
+              React.createElement('div', { style: styles.marketCardActions },
+                React.createElement(Button, { compact: true, disabled: true, title: '没有受审固定 Commit 和权限记录，商城不管理目录外 Bundle。' }, '商城不管理')))
+          }
+          const entry = row.entry
+          const installedBundle = installedByName.get(entry.packageName)
+          const installed = installedBundle?.installed === true
+          const official = installedBundle?.official === true || entry.packageName.startsWith('@deepseek-ai/')
+          const unmanagedMessage = entry.packageName === 'dsh-safe-plugin-manager' ? '商城自身不由商城管理'
+            : installed && !canManageBundle(entry, installedBundle)
+              ? (official ? '官方组件不由商城管理' : '已安装来源与商城记录不一致，商城不管理')
+              : ''
+          const stateLabel = entry.status === 'blocked' ? (installed ? 'Catalog 已拦截 · 已安装' : 'Catalog 已拦截 · DSH 可检查')
+            : !installed ? '安装由 DSH Desktop 校验'
+              : (installedBundle.enabled === true ? '已启动' : installedBundle.enabled === false ? '已关闭' : '已安装')
+          const stateTone = entry.status === 'blocked' ? 'var(--dsw-alias-state-error-primary)'
+            : installed ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)'
+          return React.createElement('article', { key: row.key, style: styles.marketCard, role: 'listitem' },
+            React.createElement('div', { style: styles.cardHeader },
+              React.createElement('div', { style: styles.marketCardTitle }, entry.name),
+              React.createElement(StatusPill, { label: stateLabel, tone: stateTone })),
+            React.createElement('div', { style: styles.code }, entry.packageName + ' · ' + entry.version),
+            React.createElement('div', { style: styles.cardDescription }, entry.description),
+            React.createElement('div', { style: styles.marketBadges },
+              React.createElement('span', { style: styles.badge }, 'DSH Desktop 客户端：' + desktopClientAdaptationLabel(entry.compatibility.profiles)),
+              ...entry.categories.map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id)),
+              React.createElement('span', { style: styles.badge }, licenseLabel(entry.details.license))),
+            React.createElement('div', { style: styles.muted }, entry.commit ? 'Commit ' + entry.commit.slice(0, 12) : '固定 Commit 未提供'),
+            entry.status === 'blocked' ? React.createElement('div', { style: styles.notice },
+              'Catalog 审核建议：确认后可提交给 DSH Desktop 检查安装；这不是商城拒绝安装的结论。最终结果以 DSH 返回为准，审核原因见详情。') : null,
+            React.createElement('div', { style: styles.cardFooter },
+              React.createElement('div', { style: styles.marketCardActions },
+                ...actionButtons(entry, installedBundle, { includeUnavailable: true }),
+                unmanagedMessage ? React.createElement('span', { key: 'unmanaged', style: styles.muted }, unmanagedMessage) : null,
+                React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry),
+                  'aria-label': '查看 ' + entry.name + ' 详情' }, '查看详情')),
+              entry.repositoryUrl ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub 源码 ↗') : null))
+        }))),
+        React.createElement(Pagination, { pagination: {
+          page: currentPage, pageCount, hasPrevious: currentPage > 1, hasNext: currentPage < pageCount,
+        }, loading: false, onPageChange: setPage }))
 
       return React.createElement('section', { style: styles.marketRoot, 'aria-label': '插件商城（DSH-Store）' },
         React.createElement('div', { style: styles.marketHero },
           React.createElement('div', { style: styles.toolbar },
             React.createElement('div', { style: styles.headingCopy },
               React.createElement('h2', { style: styles.marketHeroTitle }, '插件商城（DSH-Store）'),
-              React.createElement('p', { style: styles.subtitle }, '固定 GitHub Commit · 搜索、筛选、查看详情；安装与更新均交由 DSH Desktop 官方插件管理器')),
+              React.createElement('p', { style: styles.subtitle }, '按官网目录浏览全部已知插件；收录状态与审核建议分开展示，已确认的操作由 DSH Desktop 官方插件管理器最终判断')),
             React.createElement('div', { style: styles.actions },
               loadState.status === 'ready' && loadState.runtimeVersion
                 ? React.createElement('span', { style: styles.versionPill }, 'DSH ' + loadState.runtimeVersion) : null,
@@ -2399,127 +3119,30 @@ window.__ModuleLoader__.load({
               React.createElement(Button, { compact: true, disabled: loadState.status === 'loading', onClick: refresh },
                 loadState.status === 'loading' ? '正在刷新…' : '刷新目录'))),
           loadState.status === 'ready' ? React.createElement('div', { style: styles.marketStats, 'aria-label': '目录概况' },
-            [[entries.length, '目录条目'], [approvedCount, 'Catalog 已审核'], [blockedCount, 'Store 待复核'],
-              [desktopSupportedCount, '声明适配 Desktop'], [installedCount, 'Desktop 已安装']].map(([value, label]) =>
+            [[directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'loading' ? '读取中' : '暂不可用', '已知目录条目'],
+              [directoryCounts.listed, '有 Catalog 记录'], [directoryCounts.approved, 'Catalog 已审核'],
+              [directoryCounts.blocked, 'Catalog 已拦截'], [directoryCounts.withdrawn, 'Catalog 未上架'],
+              [installedCount, 'Desktop 已安装']].map(([value, label]) =>
               React.createElement('div', { key: label, style: styles.marketStat },
                 React.createElement('span', { style: styles.marketStatValue }, String(value)),
                 React.createElement('span', { style: styles.marketStatLabel }, label)))) : null),
         React.createElement('div', { style: styles.notice, role: 'status' },
-          '列表包含 Catalog 已审核和待复核条目。客户端适配标识仅供参考；对来源固定且通过基础字段校验的条目，用户确认后可交由 DSH Desktop 官方插件管理器检查并安装。Catalog 的权限与安全提示会保留显示，DSH 返回安装结果；商城自身和 DSH 官方组件不由商城管理。',
+          'Catalog 收录状态不等于审核通过。已审核条目可提交安装或更新；已拦截条目会显示 Store 建议，确认后仍可交给 DSH 检查。未收录或已下架条目仅供浏览；最终安装结果以 DSH Desktop 官方插件管理器返回为准。',
           loadState.status === 'ready' && !loadState.runtimeVersion
             ? React.createElement('div', { style: styles.muted }, '商城无法读取用于显示的 DSH 版本；安装仍会交由 Desktop 官方插件管理器按当前运行环境校验。') : null),
         loadState.status === 'loading' ? React.createElement('p', { style: styles.muted }, '正在读取 DSH Store Catalog 与当前 Desktop Profile…') : null,
         loadState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' }, '无法读取 Desktop 商城数据（' + loadState.code + '）。刷新后重试。') : null,
         loadState.status === 'ready' ? React.createElement(React.Fragment, null,
           React.createElement('div', { style: styles.marketViewBar, role: 'tablist', 'aria-label': '插件商城视图' },
+            React.createElement(TabButton, { active: view === 'directory',
+              onClick: () => { setView('directory'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1) } },
+              `全部已知插件 · ${directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'error' ? '暂不可用' : '…'}`),
             React.createElement(TabButton, { active: view === 'catalog',
-              onClick: () => { setView('catalog'); setListFilter('all'); setPage(1) } }, `插件目录 · ${entries.length}`),
+              onClick: () => { setView('catalog'); setListFilter('all'); setPage(1) } }, `Catalog 审核记录 · ${entries.length}`),
             React.createElement(TabButton, { active: view === 'installed',
               onClick: () => { setView('installed'); setListFilter('all'); setPage(1) } }, `已安装 · ${installedCount}`),
-            React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网完整发现目录 ↗')),
-          React.createElement('div', { style: styles.marketToolbar },
-            React.createElement('input', {
-              type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
-              style: { ...styles.input, flex: '1 1 280px', minWidth: '180px' }, placeholder: '搜索名称、用途、别名、权限或 GitHub 仓库', 'aria-label': '搜索插件',
-            }),
-            React.createElement('select', {
-              value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
-              style: styles.select, 'aria-label': '按分类筛选',
-            }, React.createElement('option', { value: '' }, '全部分类'),
-            categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))),
-            React.createElement('select', {
-              value: clientFilter, onChange: event => { setClientFilter(event.target.value); setPage(1) },
-              style: styles.select, 'aria-label': '按 Desktop 适配标识筛选',
-            }, React.createElement('option', { value: 'all' }, '全部客户端适配状态'),
-            React.createElement('option', { value: 'declared' }, '已声明适配 Desktop'),
-            React.createElement('option', { value: 'undeclared' }, '未声明适配 Desktop')),
-            React.createElement('select', {
-              value: sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
-              style: styles.select, 'aria-label': '排序方式',
-            }, React.createElement('option', { value: 'recommended' }, '默认排序'),
-            React.createElement('option', { value: 'recent' }, '最近更新'),
-            React.createElement('option', { value: 'name' }, '名称 A-Z'))),
-          view === 'catalog' ? React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按状态筛选' },
-            [['all', '全部'], ['approved', 'Catalog 已审核'], ['blocked', 'Store 待复核'], ['installed', '已安装']].map(([id, label]) =>
-              React.createElement(Button, { key: id, compact: true, primary: listFilter === id, ariaPressed: listFilter === id,
-                onClick: () => { setListFilter(id); setPage(1) } }, `${label} · ${statusCounts[id]}`)))
-            : React.createElement('div', { style: styles.marketStats, 'aria-label': '已安装插件状态' },
-              [[installedCount, 'DSH 已安装'], [enabledCount, '已启动'], [disabledCount, '已关闭'],
-                [externalInstalledBundles.length, '目录外只读']].map(([value, label]) =>
-                React.createElement('div', { key: label, style: styles.marketStat },
-                  React.createElement('span', { style: styles.marketStatValue }, String(value)),
-                  React.createElement('span', { style: styles.marketStatLabel }, label)))),
-          React.createElement('div', { style: styles.marketResults },
-            React.createElement('span', { style: styles.muted, role: 'status' },
-              `${filtered.length} 条结果 · 第 ${currentPage} / ${pageCount} 页 · ${view === 'installed' ? `其中 ${installedCatalogEntries.length} 个与 Catalog 匹配` : `Desktop Profile ${installedCount} 个已安装 bundle`}`),
-            hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
-              setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
-            } }, '清除筛选') : null),
-          filtered.length === 0 ? React.createElement('div', { style: styles.marketEmpty },
-            React.createElement('strong', { style: styles.name }, view === 'installed' ? '当前没有匹配的已安装插件' : '没有匹配的插件'),
-            React.createElement('span', { style: styles.muted }, view === 'installed'
-              ? '已安装状态来自 DSH Desktop 官方插件管理器。清除筛选，或在插件目录中浏览可安装条目。'
-              : '试试插件名、包名、用途、分类、权限或 GitHub 仓库。'),
-            hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
-              setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
-            } }, '清除筛选') : null) : null,
-          React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': view === 'installed' ? '已安装插件目录' : '插件商城目录' }, visible.map(row => {
-            if (row.kind === 'external') {
-              const bundle = row.bundle
-              const sourceRepository = desktopSourceRepository(bundle.source)
-              const bundleVersion = typeof bundle.version === 'string' && DESKTOP_VERSION.test(bundle.version) ? bundle.version : '未知版本'
-              return React.createElement('article', { key: row.key, style: styles.marketExternalCard, role: 'listitem' },
-                React.createElement('div', { style: styles.cardHeader },
-                  React.createElement('div', { style: styles.marketCardTitle }, bundle.name),
-                  React.createElement(StatusPill, { label: bundle.enabled === true ? '已启动' : bundle.enabled === false ? '已关闭' : '状态未知',
-                    tone: bundle.enabled === true ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)' })),
-                React.createElement('div', { style: styles.code }, bundle.name + ' · ' + bundleVersion),
-                React.createElement('div', { style: styles.muted }, '此插件没有可匹配的已审核 Catalog 固定来源记录；商城只显示 DSH Desktop 返回的状态。'),
-                React.createElement('div', { style: styles.marketBadges },
-                  React.createElement('span', { style: styles.badge }, bundle.official === true ? 'DSH 官方组件' : '目录外插件'),
-                  bundle.optional === true ? React.createElement('span', { style: styles.badge }, '可选组件') : null,
-                  bundle.removable === true ? React.createElement('span', { style: styles.badge }, 'Desktop 允许卸载') : null),
-                React.createElement('div', { style: styles.muted }, sourceRepository ? 'GitHub 来源：' + sourceRepository : '安装来源未公开显示'),
-                React.createElement('div', { style: styles.marketCardActions },
-                  React.createElement(Button, { compact: true, disabled: true, title: '没有受审固定 Commit 和权限记录，商城不管理目录外 Bundle。' }, '商城不管理')))
-            }
-            const entry = row.entry
-            const installedBundle = installedByName.get(entry.packageName)
-            const installed = installedBundle?.installed === true
-            const official = installedBundle?.official === true || entry.packageName.startsWith('@deepseek-ai/')
-            const unmanagedMessage = entry.packageName === 'dsh-safe-plugin-manager' ? '商城自身不由商城管理'
-              : installed && !canManageBundle(entry, installedBundle)
-                ? (official ? '官方组件不由商城管理' : '已安装来源与商城记录不一致，商城不管理')
-                : ''
-            const stateLabel = entry.status === 'blocked' ? (installed ? 'Store 待复核 · 已安装' : 'Store 待复核 · DSH 可检查')
-              : !installed ? '安装由 DSH Desktop 校验'
-              : (installedBundle.enabled === true ? '已启动' : installedBundle.enabled === false ? '已关闭' : '已安装')
-            const stateTone = entry.status === 'blocked' ? 'var(--dsw-alias-state-error-primary)'
-              : installed ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)'
-            return React.createElement('article', { key: entry.id, style: styles.marketCard, role: 'listitem' },
-              React.createElement('div', { style: styles.cardHeader },
-                React.createElement('div', { style: styles.marketCardTitle }, entry.name),
-                React.createElement(StatusPill, { label: stateLabel, tone: stateTone })),
-              React.createElement('div', { style: styles.code }, entry.packageName + ' · ' + entry.version),
-              React.createElement('div', { style: styles.cardDescription }, entry.description),
-              React.createElement('div', { style: styles.marketBadges },
-                React.createElement('span', { style: styles.badge }, 'DSH Desktop 客户端：' + desktopClientAdaptationLabel(entry.compatibility.profiles)),
-                ...entry.categories.map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id)),
-                React.createElement('span', { style: styles.badge }, licenseLabel(entry.details.license))),
-              React.createElement('div', { style: styles.muted }, entry.commit ? 'Commit ' + entry.commit.slice(0, 12) : '固定 Commit 未提供'),
-              entry.status === 'blocked' ? React.createElement('div', { style: styles.notice },
-                'Store 给出复核建议。确认后将此固定来源交由 DSH Desktop 安装；预检结果仅作提示，最终结果以 DSH 官方安装器返回为准。审核原因见详情。') : null,
-              React.createElement('div', { style: styles.cardFooter },
-                React.createElement('div', { style: styles.marketCardActions },
-                  ...actionButtons(entry, installedBundle, { includeUnavailable: true }),
-                  unmanagedMessage ? React.createElement('span', { key: 'unmanaged', style: styles.muted }, unmanagedMessage) : null,
-                  React.createElement(Button, { compact: true, onClick: () => setDetailEntry(entry),
-                    'aria-label': '查看 ' + entry.name + ' 详情' }, '查看详情')),
-                entry.repositoryUrl ? React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub 源码 ↗') : null))
-          }),
-          React.createElement(Pagination, { pagination: {
-            page: currentPage, pageCount, hasPrevious: currentPage > 1, hasNext: currentPage < pageCount,
-          }, loading: false, onPageChange: setPage }))) : null,
+            React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网目录 ↗')),
+          view === 'directory' ? directoryViewContent : catalogViewContent,
         detailEntry ? React.createElement(Modal, {
           open: true, onClose: () => setDetailEntry(null), title: detailEntry.name + ' · 插件详情',
           closeLabel: '关闭插件详情', footer: detailFooter(detailEntry),
@@ -2527,7 +3150,8 @@ window.__ModuleLoader__.load({
         }, React.createElement('div', { style: styles.detailSection },
           React.createElement('div', { style: styles.cardDescription }, detailEntry.description),
           React.createElement('div', { style: styles.marketBadges },
-            React.createElement('span', { style: styles.badge }, detailEntry.status === 'approved' ? 'Catalog 已审核' : 'Catalog 待复核'),
+            React.createElement('span', { style: styles.badge }, detailEntry.status === 'approved' ? 'Catalog 已审核'
+              : detailEntry.status === 'blocked' ? 'Catalog 已拦截' : 'Catalog 未上架'),
             React.createElement('span', { style: styles.badge }, 'DSH Desktop 客户端：' + desktopClientAdaptationLabel(detailEntry.compatibility.profiles)),
             ...(detailEntry.categories || []).map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id))),
           React.createElement('div', { style: styles.actions, 'aria-label': '插件操作' },
@@ -2543,7 +3167,7 @@ window.__ModuleLoader__.load({
             + ' · Catalog 兼容性参考：DSH ' + (loadState.runtimeVersion || '未知') + ' / ' + detailCompatibility),
           React.createElement('div', { style: styles.muted }, detailInstalledState),
           React.createElement('div', { style: styles.muted },
-            '分类：' + (detailEntry.categories.map(id => categoryLabels[id] || id).join(' / ') || '未分类')
+            '分类：' + (detailEntry.categories.map(id => desktopDirectoryCategoryLabel(id, categoryLabels)).join(' / ') || '未分类')
             + ' · 许可证：' + licenseLabel(detailEntry.details.license)),
           React.createElement('div', { style: styles.muted }, permissionsOf(detailEntry)),
           detailEntry.details.externalDependencies.length ? React.createElement('div', { style: styles.muted },
@@ -2609,7 +3233,7 @@ window.__ModuleLoader__.load({
             React.createElement('input', {
               value: confirmation, onChange: event => { setConfirmation(event.target.value) },
               style: styles.input, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',
-            })) : null)) : null)
+            })) : null)) : null) : null)
     }
 
     function StorePanelIcon({ size = 18 }) {
