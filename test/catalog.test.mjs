@@ -612,6 +612,7 @@ test('bundled registry declares complete detail metadata for every entry', async
     || (packageManifest.version === '0.9.23' && manager.version === '0.9.22')
     || (packageManifest.version === '0.9.24' && manager.version === '0.9.23')
     || (packageManifest.version === '0.9.25' && manager.version === '0.9.24')
+    || (packageManifest.version === '0.9.26' && manager.version === '0.9.25')
   )
   assert.ok(managerIsBootstrap || managerIsCurrent || managerIsPreviousReleaseBeforeCatalogPin,
     'the Catalog manager must be the fixed bootstrap, the current package release, or the staged previous release before self-pinning')
@@ -628,7 +629,9 @@ test('bundled registry declares complete detail metadata for every entry', async
   assert.match(guide, /仅供历史审计/)
   assert.ok(readme.includes(`| Catalog 固定版本 | \`${manager.version}\``), 'README must distinguish its Catalog pin from the newer source version')
   assert.match(readme, /dsh plugin --profile web add/)
-  assert.match(readme, /设置左侧独立的\s+`插件商城`\s+分区/)
+  assert.match(readme, /root `main` 面板/)
+  assert.match(readme, /首页左侧 `sidebar\.panellist` 添加“插件商城”入口/)
+  assert.match(readme, /原设置分区继续保留/)
   assert.doesNotMatch(readme, /dsh-safe-plugin-manager\.git#main/)
   const agentReach = source.entries.find(item => item.id === 'dsh-agent-reach')
   assert.ok(agentReach, 'Agent Reach adapter must be listed')

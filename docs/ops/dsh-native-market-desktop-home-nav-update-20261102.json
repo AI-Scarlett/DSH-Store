@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-home-nav-update-20261102",
+  "planFile": "docs/ops/dsh-native-market-desktop-home-nav-update-20261102.json",
+  "createdAt": "2026-11-02T10:21:10+08:00",
+  "baseCommit": "e42e5fb409645a96aaa5f4592475274edafdf687",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-home-nav-update-20261102.json",
+    "docs/reviews/dsh-native-market-desktop-home-nav-update-20261102.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "5793f18c05976dd5dccc39501bacff818ef33f8502660a6582151ad64217905c",
+    "README.md": "f60ab713c70e26739af618aeadd9298ca81a5f8577c5626a3ac1c183c140840b",
+    "docs/ops/dsh-native-market-desktop-home-nav-update-20261102.json": null,
+    "docs/reviews/dsh-native-market-desktop-home-nav-update-20261102.md": null,
+    "package.json": "b28ae9d194f1950ecf80fd1fb7a11dd28899c82c22ee9e65bdde41e7515e940a",
+    "src/client.js": "73ba7e506a59350074f478ad95c35e2565c29f0e09202912914a520b9f18c3cf",
+    "test/desktop-compat.test.mjs": "4c1174be9481c27650c560e62a930f57d4021648cae8bcfbfc9e8f66bca873d8",
+    "test/catalog.test.mjs": "e95b93a5ec6cfd538f2933238aa5e0fb0ff5db66bebc52d8e6e4f5023fce4a2b",
+    "test/contracts.test.mjs": "378707de8cdcd19d61c39b3e0dac6d3eeef3061381575f542ba3a70ab2d248f7",
+    "test/upgrade-matrix.test.mjs": "03f81f16614ea59e167658adea7d06a694ded7ee23baf1b0d9d8195f918496ba"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "bf3a0d65b2f31403ca2b3c805341c7d9552d748dbb00603f8d8878df0daaff7e",
+    "README.md": "571c6b346d58cae5b28b00d9a5601cfde53728a1d1a0397c2b1ef88cfd548aef",
+    "docs/reviews/dsh-native-market-desktop-home-nav-update-20261102.md": "dba318b0bf9b96a967591be18c1e88132e63a87de24ebdb0f9fe97a662db417d",
+    "package.json": "92f41028b5875c113cb235ceb3c3eecbd7755ffe0742de44288df43623ac6be5",
+    "src/client.js": "aa6c0f470bc413ccd2a188a1ea9660d99cc206e54bec65b109f398911210431b",
+    "test/catalog.test.mjs": "b94acdf8b1cd00e900aee6271e0d5753a7e9eab4c616a7309974748bcfdc02bf",
+    "test/contracts.test.mjs": "fed56a7cd35daff014e5052258594d7a9791c6cf6ecc34ce0908e0067ef062e8",
+    "test/desktop-compat.test.mjs": "cbc45f249e1d13f053c359e2c638db5314a345f51ac6c7da369bcfb1b22ebe4d",
+    "test/upgrade-matrix.test.mjs": "4438b7387ea3f6e1e03ab3c2c93fe688f0faeb47204055c97661c7f075123436"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Fix GitHub Commit updates that DSH currently treats as a duplicate install, and add DSH-Store to the official Desktop home sidebar.",
+    "publication": "auditable-pull-request-and-publication",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "officialContract": {
+    "repository": "deepseek-ai/deepseek-harness",
+    "commit": "ce7073d51254c26cd63b22a60835b8f948deb447",
+    "release": "dsh-v0.2.2-alpha.2",
+    "desktopSidebarSlots": [
+      "main",
+      "sidebar.panellist"
+    ],
+    "pluginManagerMethods": [
+      "listBundles",
+      "inspect",
+      "installBundle",
+      "removeBundle",
+      "waitForInstall"
+    ],
+    "updateBehavior": "For installed third-party GitHub bundles, follow the official DSH Plugin Manager sequence: removeBundle then installBundle with the new full-Commit GitHub source. Continue after DSH's stop-profile response, as the official manager does; DSH applied or restart-required accepts the operation. For the Store's own protected package, do not remove it: submit the fixed Commit directly to DSH and reconcile a false/no-change or uncertain response against DSH waitForInstall and one exact listBundles read. Report success only when DSH's inventory confirms package name, target version, canonical repository, and full target Commit. On explicit external-update failure, preserve the previous exact source when present or restore it through DSH if absent. Never resubmit an uncertain request."
+  },
+  "gates": [
+    "Use only public DSH Client slots and Remote plugin-manager methods; do not modify DSH source, private packages, or the official plugin inventory.",
+    "Keep Catalog risk and compatibility fields advisory. DSH receives the confirmed fixed source and owns the final install result.",
+    "Offer updates only when the installed bundle is not official, optional, or read-only; its source repository matches the Catalog repository; and its full previous Commit is available for exact recovery. Do not use the removable flag as a Store-side install gate; DSH decides whether remove/install is permitted.",
+    "Only the official DSH Desktop renderer registers the public root `main` keyed Slot and `sidebar.panellist` list; both registrations use the same `dsh-store` ID and keep the existing Settings entry.",
+    "Treat DSH `applied` and `restart-required` as successful outcomes. Follow DSH's stop-profile update handling. Keep Store self-update on installBundle without removeBundle, and use exact listBundles confirmation when DSH reports failure/no-change after the package was updated.",
+    "Run the scoped plan verifier, JavaScript syntax checks, npm run check, and the exact-head PR checks before merge.",
+    "Pin the new source Commit in a separate fresh Catalog plan after the source Commit is established; verify GitHub Raw, Pages, dsh.store, and dsh-store.cn after merge.",
+    "The supplied native Desktop install screenshot shows DSH changing dsh-safe-plugin-manager from 0.9.23 to 0.9.25, then its own Plugin Manager reports reasonAmbiguousInstall. This is a DSH-host false-negative after the package change. Store code cannot change that native dialog; Store-initiated updates can present DSH's exact installed-list readback. Real Desktop sidebar visibility, Profile installation, and rollback remain separate acceptance gates and are not inferred from fixture tests."
+  ],
+  "rollback": "Revert the source change through a CI-checked PR. No real DSH Desktop Profile or installed package is modified by this repository change.",
+  "healthCheck": "Verify the typed plan and npm run check, then exact-head PR CI. After merge and Catalog update, independently read back GitHub Raw, Pages, dsh.store, and dsh-store.cn. Perform real Desktop UI and Profile acceptance only through a separate confirmed DSH operation plan.",
+  "verdict": {
+    "status": "source-verified",
+    "baseCommit": "e42e5fb409645a96aaa5f4592475274edafdf687",
+    "desktopPublicApi": "verified from the official dsh-v0.2.2-alpha.2 source and published @deepseek-ai client contracts; current latest-three resolved to 0.2.1-rc.4, 0.2.1-rc.5, 0.2.2-alpha.2",
+    "sourceChecks": "passed: node syntax checks; Desktop compatibility fixtures 36/36; git diff --check",
+    "npmRunCheck": "passed: REGISTRY_OK entries=874; 583/583 tests",
+    "packageDryRun": "passed: dsh-safe-plugin-manager@0.9.26; 1074 files; 8517353 bytes",
+    "typedPlan": "passed: DSH_UPGRADE_PLAN_OK base=e42e5fb409645a96aaa5f4592475274edafdf687 changed=10",
+    "pullRequestCi": "pending exact-head PR checks",
+    "publicSurfaces": "pending source merge and separate Catalog pin",
+    "realDesktop": "unverified; no real Profile has been changed"
+  },
+  "boundaries": [
+    "No DSH source or @deepseek-ai package changes.",
+    "No real DSH Profile, package, or restart mutations.",
+    "No third-party plugin code execution.",
+    "No direct main-branch writes; changes enter through the authorized auditable PR.",
+    "No public-release claim until the source Commit, Catalog pin, and four storefront readbacks pass."
+  ],
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and full repository suite passes"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.26 includes the DSH bundle and license"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-home-nav-update-20261102.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    }
+  ]
+}

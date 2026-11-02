@@ -1516,6 +1516,18 @@ window.__ModuleLoader__.load({
       return `DSH Desktop 官方插件管理器拒绝，错误码：${code}。`
     }
 
+    function desktopOperationError(outcome, fallbackCode) {
+      const error = desktopFailure(desktopErrorCode(outcome?.error || outcome || { code: fallbackCode }))
+      if (outcome?.error || outcome?.problem || outcome?.packageResult?.incompatible) {
+        error.reason = desktopManagerReason(outcome)
+      }
+      return error
+    }
+
+    function desktopOperationSucceeded(outcome) {
+      return Boolean(outcome && ['applied', 'restart-required'].includes(outcome.application))
+    }
+
     function validateDesktopInstallEntry(entry, index, categoryLabels = {}) {
       if (!entry || typeof entry !== 'object' || Array.isArray(entry)) throw new Error(`CATALOG_ENTRY_${index}_INVALID`)
       if (!['approved', 'blocked', 'unlisted'].includes(entry.status)) throw new Error(`CATALOG_ENTRY_${index}_STATUS_INVALID`)
@@ -1835,7 +1847,15 @@ window.__ModuleLoader__.load({
       if (entry.packageName === 'dsh-safe-plugin-manager'
         && (entry.id !== 'dsh-safe-plugin-manager'
           || desktopEntryRepository(entry) !== 'https://github.com/ai-scarlett/dsh-store')) return false
-      return desktopSourceRevision(bundle.source) !== entry.commit
+      const installedCommit = desktopSourceRevision(bundle.source)
+      return installedCommit !== null && installedCommit !== entry.commit
+    }
+
+    function desktopBundleConfirmsPreviousInstall(entry, bundle, previous) {
+      if (!bundle || bundle.name !== entry.packageName || bundle.installed !== true
+        || bundle.version !== previous?.version || !desktopBundleMatchesCatalogEntry(entry, bundle)) return false
+      const previousCommit = desktopSourceRevision(previous?.source)
+      return previousCommit !== null && desktopSourceRevision(bundle.source) === previousCommit
     }
 
     function desktopInspectionAdvice(inspection) {
@@ -1978,7 +1998,10 @@ window.__ModuleLoader__.load({
         return false
       }
       const managerSupports = action => {
-        if (action === 'install' || action === 'update') return typeof desktopPluginManager?.installBundle === 'function'
+        if (action === 'install') return typeof desktopPluginManager?.installBundle === 'function'
+        if (action === 'update') return typeof desktopPluginManager?.installBundle === 'function'
+          && typeof desktopPluginManager?.removeBundle === 'function'
+          && typeof desktopPluginManager?.listBundles === 'function'
         if (action === 'remove') return typeof desktopPluginManager?.removeBundle === 'function'
         if (action === 'enable' || action === 'disable') return typeof desktopPluginManager?.setBundleEnabled === 'function'
         return false
@@ -2003,6 +2026,37 @@ window.__ModuleLoader__.load({
         let mutationStarted = false
         let inspectionNotice = null
         const manager = desktopPluginManager
+        const readDesktopInstalledBundle = async () => {
+          const current = unwrapDesktopRemote(await withDesktopTimeout(
+            manager.listBundles(), 'DESKTOP_INVENTORY_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
+          ), 'DESKTOP_INVENTORY_FAILED')
+          if (!Array.isArray(current)) throw desktopFailure('DESKTOP_INVENTORY_INVALID')
+          return current.find(item => item?.name === plannedEntry.packageName) || null
+        }
+        const installThroughDesktop = async (spec, enabled) => {
+          requestId = window.crypto?.randomUUID?.()
+          if (typeof requestId !== 'string' || !/^[0-9a-f-]{36}$/i.test(requestId)) {
+            throw desktopFailure('INSTALL_REQUEST_ID_UNAVAILABLE')
+          }
+          mutationStarted = true
+          try {
+            return unwrapDesktopRemote(await withDesktopTimeout(manager.installBundle(spec, { enabled, requestId }),
+              'DESKTOP_INSTALL_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS), 'DESKTOP_INSTALL_FAILED')
+          } catch (error) {
+            const code = desktopErrorCode(error)
+            const uncertain = /(?:TIMEOUT|RESULT_UNKNOWN|REMOTE_FAILED|UNAVAILABLE)/.test(code)
+            if (uncertain && typeof manager.waitForInstall === 'function') {
+              try {
+                const recovered = unwrapDesktopRemote(await withDesktopTimeout(
+                  manager.waitForInstall(requestId), 'DESKTOP_INSTALL_RESULT_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
+                ), 'DESKTOP_INSTALL_RESULT_UNAVAILABLE')
+                if (recovered) return recovered
+              } catch { /* Reconcile this request once; never submit it again. */ }
+            }
+            if (uncertain) error.recovery = 'unknown'
+            throw error
+          }
+        }
         try {
           const fresh = await readDesktopStoreSnapshot()
           setLoadState({ status: 'ready', ...fresh })
@@ -2036,12 +2090,108 @@ window.__ModuleLoader__.load({
                 inspectionNotice = `DSH Desktop 预检未完成（${desktopErrorCode(error)}）；安装请求仍交由官方安装器最终判断。`
               }
             }
-            requestId = window.crypto?.randomUUID?.()
-            if (typeof requestId !== 'string' || !/^[0-9a-f-]{36}$/i.test(requestId)) throw desktopFailure('INSTALL_REQUEST_ID_UNAVAILABLE')
-            mutationStarted = true
-            outcome = unwrapDesktopRemote(await withDesktopTimeout(manager.installBundle(spec, {
-              enabled: action === 'install' ? true : bundle.enabled === true, requestId,
-            }), 'DESKTOP_INSTALL_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS), 'DESKTOP_INSTALL_FAILED')
+            if (action === 'install') {
+              outcome = await installThroughDesktop(spec, true)
+            } else {
+              const previous = actionPlan.installedState
+              const previousCommit = desktopSourceRevision(previous?.source)
+              if (!previous || previousCommit === null || !desktopBundleMatchesCatalogEntry(entry, bundle)) {
+                throw desktopFailure('DESKTOP_UPDATE_PREVIOUS_SOURCE_UNVERIFIED')
+              }
+              const restorePreviousThroughDesktop = async () => {
+                const restored = await installThroughDesktop(previous.source, previous.enabled === true)
+                if (desktopOperationSucceeded(restored)) return restored
+                if (restored?.application === 'already-installed') {
+                  const current = await readDesktopInstalledBundle()
+                  if (desktopBundleConfirmsPreviousInstall(entry, current, previous)) return restored
+                }
+                throw desktopOperationError(restored, 'DESKTOP_UPDATE_RESTORE_FAILED')
+              }
+              const markRestoreFailure = (targetError, restoreError) => {
+                const code = desktopErrorCode(restoreError)
+                if (restoreError?.recovery === 'unknown' || /(?:TIMEOUT|RESULT_UNKNOWN|REMOTE_FAILED|UNAVAILABLE)/.test(code)) {
+                  targetError.recovery = 'unknown'
+                  return
+                }
+                targetError.recovery = 'recovery-required'
+                targetError.recoveryReason = desktopSafeReasonText(restoreError?.reason) || code
+              }
+              if (entry.packageName !== 'dsh-safe-plugin-manager') {
+                let removal
+                try {
+                  mutationStarted = true
+                  removal = unwrapDesktopRemote(await withDesktopTimeout(
+                    manager.removeBundle(entry.packageName), 'DESKTOP_UPDATE_REMOVE_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
+                  ), 'DESKTOP_UPDATE_REMOVE_FAILED')
+                  const stopProfile = removal?.error?.code === 'stop-profile' || removal?.code === 'stop-profile'
+                  if (!desktopOperationSucceeded(removal) && !stopProfile) {
+                    throw desktopOperationError(removal, 'DESKTOP_UPDATE_REMOVE_FAILED')
+                  }
+                } catch (error) {
+                  if (desktopErrorCode(error) !== 'stop-profile') {
+                    if (!error.recovery) {
+                      const code = desktopErrorCode(error)
+                      if (/(?:TIMEOUT|RESULT_UNKNOWN|REMOTE_FAILED|UNAVAILABLE)/.test(code)) {
+                        error.recovery = 'unknown'
+                      } else {
+                        let current
+                        try { current = await readDesktopInstalledBundle() }
+                        catch {
+                          error.recovery = 'unknown'
+                        }
+                        if (!error.recovery && desktopBundleConfirmsPreviousInstall(entry, current, previous)) {
+                          error.recovery = 'old-version-preserved'
+                        } else if (!error.recovery && current?.installed === true) {
+                          error.recovery = 'recovery-required'
+                          error.recoveryReason = 'DSH reports an installed source that does not match the previous Commit.'
+                        } else if (!error.recovery) {
+                          try {
+                            const restored = await restorePreviousThroughDesktop()
+                            error.recovery = 'old-version-restored'
+                            error.recoveryApplication = restored.application
+                          } catch (restoreError) { markRestoreFailure(error, restoreError) }
+                        }
+                      }
+                    }
+                    throw error
+                  }
+                }
+              }
+              try {
+                outcome = await installThroughDesktop(spec, previous.enabled === true)
+                if (!desktopOperationSucceeded(outcome)) throw desktopOperationError(outcome, 'DESKTOP_UPDATE_INSTALL_FAILED')
+              } catch (error) {
+                if (error.recovery === 'unknown') throw error
+                const code = desktopErrorCode(error)
+                if (/(?:TIMEOUT|RESULT_UNKNOWN|REMOTE_FAILED|UNAVAILABLE)/.test(code)) {
+                  error.recovery = 'unknown'
+                  throw error
+                }
+                let current
+                try { current = await readDesktopInstalledBundle() }
+                catch {
+                  error.recovery = 'unknown'
+                  throw error
+                }
+                if (desktopBundleConfirmsInstall(entry, current)) {
+                  outcome = { application: 'already-installed' }
+                } else if (desktopBundleConfirmsPreviousInstall(entry, current, previous)) {
+                  error.recovery = 'old-version-preserved'
+                  throw error
+                } else if (current?.installed === true) {
+                  error.recovery = 'recovery-required'
+                  error.recoveryReason = 'DSH reports an installed source that matches neither the previous nor target Commit.'
+                  throw error
+                } else {
+                  try {
+                    const restored = await restorePreviousThroughDesktop()
+                    error.recovery = 'old-version-restored'
+                    error.recoveryApplication = restored.application
+                  } catch (restoreError) { markRestoreFailure(error, restoreError) }
+                  throw error
+                }
+              }
+            }
           } else if (action === 'remove') {
             mutationStarted = true
             outcome = unwrapDesktopRemote(await withDesktopTimeout(
@@ -2053,16 +2203,29 @@ window.__ModuleLoader__.load({
               manager.setBundleEnabled(entry.packageName, action === 'enable'), 'DESKTOP_TOGGLE_TIMEOUT', DESKTOP_OPERATION_TIMEOUT_MS,
             ), 'DESKTOP_TOGGLE_FAILED')
           }
-          if (!outcome || !['applied', 'restart-required'].includes(outcome.application)) {
-            const error = desktopFailure(desktopErrorCode(outcome?.error || outcome))
-            if (outcome?.error || outcome?.problem || outcome?.packageResult?.incompatible) error.reason = desktopManagerReason(outcome)
-            throw error
+          if (!desktopOperationSucceeded(outcome) && outcome?.application !== 'already-installed') {
+            throw desktopOperationError(outcome, 'DESKTOP_OPERATION_FAILED')
           }
           setActionState({ status: 'success', application: outcome.application, inspectionNotice })
           await refresh()
         } catch (error) {
           const code = desktopErrorCode(error)
           const uncertain = mutationStarted && /(?:TIMEOUT|RESULT_UNKNOWN|REMOTE_FAILED|UNAVAILABLE)/.test(code)
+          if (action === 'update' && error.recovery) {
+            const reason = typeof error.reason === 'string' ? error.reason : null
+            if (error.recovery === 'unknown'
+              && await desktopInstallIsAlreadyPresent(manager, actionPlan.entry)) {
+              setActionState({ status: 'success', application: 'already-installed', inspectionNotice })
+              await refresh()
+              return
+            }
+            const status = error.recovery === 'unknown' ? 'unknown' : 'error'
+            setActionState({ status, code, reason, inspectionNotice,
+              recovery: error.recovery, recoveryReason: error.recoveryReason || null,
+              recoveryApplication: error.recoveryApplication || null })
+            await refresh()
+            return
+          }
           if (uncertain && ['install', 'update'].includes(action) && requestId && typeof manager.waitForInstall === 'function') {
             try {
               const recovered = unwrapDesktopRemote(await withDesktopTimeout(
@@ -2420,13 +2583,22 @@ window.__ModuleLoader__.load({
           actionState.status === 'success' ? React.createElement('div', { style: styles.notice, role: 'status' },
             actionState.application === 'already-installed'
               ? actionPlan.action === 'update'
-                ? 'DSH Desktop 已安装清单确认此固定 Commit 已是当前版本；本次未发生依赖变更。'
-                : 'DSH Desktop 已安装清单确认此版本已安装；本次未发生依赖变更。'
+                ? 'DSH Desktop 已安装清单确认当前来源与目标固定 Commit 一致。'
+                : 'DSH Desktop 已安装清单确认目标包当前已安装。'
               : actionState.application === 'restart-required'
                 ? '操作已写入 Desktop Profile；DSH 报告需要按其官方流程重新加载后生效。'
                 : 'DSH 官方插件管理器已完成' + actionLabel(actionPlan.action) + '。') : null,
           actionState.status === 'error' ? React.createElement('div', { style: styles.error, role: 'alert' },
             '操作未完成（' + actionState.code + '）。' + (actionState.reason ? actionState.reason + '。' : '')
+            + (actionPlan.action === 'update' && actionState.recovery === 'old-version-preserved'
+              ? `DSH 已安装清单仍确认旧固定 Commit ${desktopSourceRevision(actionPlan.installedState?.source) || '未知'} 保留。`
+              : actionPlan.action === 'update' && actionState.recovery === 'old-version-restored'
+                ? actionState.recoveryApplication === 'restart-required'
+                  ? `目标版本未完成，DSH 已接受恢复旧固定 Commit ${desktopSourceRevision(actionPlan.installedState?.source) || '未知'}，需按 DSH 流程重载后生效。`
+                  : `目标版本未完成，DSH 已恢复旧固定 Commit ${desktopSourceRevision(actionPlan.installedState?.source) || '未知'}。`
+                : actionPlan.action === 'update' && actionState.recovery === 'recovery-required'
+                  ? 'DSH 当前安装源与旧 Commit 和目标 Commit 均不一致，请先在 DSH Desktop 核对当前包。'
+                  : '')
             + '刷新目录核对状态；商城不会自动重试。') : null,
           actionState.status === 'unknown' ? React.createElement('div', { style: styles.error, role: 'alert' },
             '操作结果暂时无法确认。商城已刷新 Desktop Profile；请核对当前状态后再决定下一步，不会自动重试。') : null,
@@ -2438,6 +2610,17 @@ window.__ModuleLoader__.load({
               value: confirmation, onChange: event => { setConfirmation(event.target.value) },
               style: styles.input, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',
             })) : null)) : null)
+    }
+
+    function StorePanelIcon({ size = 18 }) {
+      return React.createElement('svg', {
+        width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor',
+        strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true',
+      },
+      React.createElement('path', { d: 'M4 9.5h16v10.75H4z' }),
+      React.createElement('path', { d: 'm3.25 9.5 2-5h13.5l2 5' }),
+      React.createElement('path', { d: 'M8 20.25v-6.5h4.5v6.5' }),
+      React.createElement('path', { d: 'M3.5 9.5c0 1.15.9 2.05 2.05 2.05S7.6 10.65 7.6 9.5c0 1.15.9 2.05 2.05 2.05S11.7 10.65 11.7 9.5c0 1.15.9 2.05 2.05 2.05S15.8 10.65 15.8 9.5c0 1.15.9 2.05 2.05 2.05S19.9 10.65 19.9 9.5' }))
     }
 
     function ManagerPanel() {
@@ -2956,6 +3139,14 @@ window.__ModuleLoader__.load({
         name: 'settings.section', id: 'dsh-store', order: -10,
         label: () => '插件商城', inject: () => ({}),
       }, ManagerPanel))
+      if (OFFICIAL_DESKTOP_RENDERER) {
+        ctx.slots.inject('main', () => ctx.slots.register({
+          name: 'main', key: 'dsh-store',
+        }, ManagerPanel))
+        ctx.slots.inject('sidebar.panellist', () => ctx.slots.register({
+          name: 'sidebar.panellist', id: 'dsh-store', order: 10, label: '插件商城',
+        }, StorePanelIcon))
+      }
     }
 
     module.exports = { name, inject, apply }

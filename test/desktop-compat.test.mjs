@@ -135,9 +135,11 @@ function desktopCatalog(entries) {
 }
 
 function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.2',
-  inspectResult, installResult, installedAfterInstallResult = null, inspectAvailable = true } = {}) {
+  inspectResult, installResult, installedAfterInstallResult = null, removeResult = null,
+  retainInstalledAfterRemove = false, inspectAvailable = true, protocol = 'dsh-app:' } = {}) {
   const sourcePromise = readFile(new URL('../src/client.js', import.meta.url), 'utf8')
   const settingsRegistrations = []
+  const slotRegistrations = []
   const injections = []
   const moduleDependencies = []
   const requests = []
@@ -147,6 +149,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
   const componentRecords = new Map()
   let activeComponent = null
   let panel
+  let activeSlotRegistration = null
   let installedBundles = installed
   let nextTimer = 0
 
@@ -223,8 +226,11 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
     },
     async removeBundle(name) {
       calls.removeBundle.push(name)
-      installedBundles = installedBundles.filter(bundle => bundle.name !== name)
-      return { application: 'applied', changed: true, stage: 'remove', target: name }
+      const result = removeResult ?? { application: 'applied', changed: true, stage: 'remove', target: name }
+      if (!retainInstalledAfterRemove && ['applied', 'restart-required'].includes(result.application)) {
+        installedBundles = installedBundles.filter(bundle => bundle.name !== name)
+      }
+      return result
     },
     async setBundleEnabled(name, enabled) {
       calls.setBundleEnabled.push({ name, enabled })
@@ -254,7 +260,8 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
     }
   }
   const window = {
-    location: { protocol: 'dsh-app:', origin: 'dsh-app://app', href: 'dsh-app://app/settings' },
+    location: { protocol, origin: protocol === 'dsh-app:' ? 'dsh-app://app' : 'https://dsh.test',
+      href: protocol === 'dsh-app:' ? 'dsh-app://app/settings' : 'https://dsh.test/settings' },
     localStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
     crypto: { randomUUID: () => '11111111-1111-4111-8111-111111111111' },
     setTimeout: (callback, delay) => { timerCallbacks.push(callback); timerDelays.push(delay); return ++nextTimer },
@@ -270,9 +277,21 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
           injections.push(paths)
           if (paths.every(path => declaredDependencies.has(path))) callback()
         },
+        effect() {},
         slots: {
-          inject(slot, register) { settingsRegistrations.push({ slot }); register() },
-          register(metadata, component) { settingsRegistrations.at(-1).metadata = metadata; panel = component },
+          inject(slot, register) {
+            const current = { slot }
+            slotRegistrations.push(current)
+            if (slot === 'settings.section') settingsRegistrations.push(current)
+            activeSlotRegistration = current
+            register()
+            activeSlotRegistration = null
+          },
+          register(metadata, component) {
+            activeSlotRegistration.metadata = metadata
+            activeSlotRegistration.component = component
+            if (activeSlotRegistration.slot === 'settings.section') panel = component
+          },
         },
       })
     } },
@@ -283,6 +302,10 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
   const render = async () => {
     await ready
     return resolveTree(withComponent(panel))
+  }
+  const renderComponent = async (component, props) => {
+    await ready
+    return resolveTree(withComponent(component, props))
   }
   const runEffects = async component => {
     await ready
@@ -295,7 +318,7 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
   }
   return { ready, render, runEffects, setInstalledBundles: value => { installedBundles = value },
     getComponent: name => [...componentRecords.keys()].find(component => component.name === name),
-    settingsRegistrations, injections, moduleDependencies, requests, calls, timerCallbacks, timerDelays,
+    settingsRegistrations, slotRegistrations, renderComponent, injections, moduleDependencies, requests, calls, timerCallbacks, timerDelays,
     setInstalled: value => { installedBundles = value } }
 }
 
@@ -353,6 +376,19 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
   assert.equal(harness.settingsRegistrations[0].slot, 'settings.section')
   assert.equal(harness.settingsRegistrations[0].metadata.id, 'dsh-store')
   assert.equal(harness.settingsRegistrations[0].metadata.label(), '插件商城')
+  assert.deepEqual(harness.slotRegistrations.map(row => row.slot), ['settings.section', 'main', 'sidebar.panellist'])
+  const storePanel = harness.slotRegistrations.find(row => row.slot === 'main')
+  assert.equal(storePanel.metadata.key, 'dsh-store')
+  assert.equal(storePanel.component.name, 'ManagerPanel')
+  const sidebarEntry = harness.slotRegistrations.find(row => row.slot === 'sidebar.panellist')
+  assert.equal(sidebarEntry.metadata.id, storePanel.metadata.key)
+  assert.equal(sidebarEntry.metadata.label, '插件商城')
+  assert.equal(sidebarEntry.metadata.order, 10)
+  const icon = await harness.renderComponent(sidebarEntry.component, { size: 18, active: true })
+  assert.equal(desktopNodes(icon).find(node => node.type === 'svg')?.props.width, 18)
+  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  assert.ok(manifest.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-layout'))
+  assert.ok(manifest.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-sidebar'))
   assert.deepEqual(harness.moduleDependencies, ['slots', 'remote', 'remote.pluginManager'])
   assert.equal(JSON.stringify(harness.injections[0]), '["remote","remote.pluginManager"]')
 
@@ -463,6 +499,13 @@ test('official Desktop registers 插件商城 and loads the Catalog with search 
   assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '按分类筛选'))
   assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '排序方式'))
   assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === '按 Desktop 适配标识筛选'))
+})
+
+test('Web renderer retains the Settings entry without registering a Desktop home panel', async () => {
+  const harness = createDesktopHarness({ catalog: desktopCatalog([]), protocol: 'https:' })
+  await harness.ready
+  assert.deepEqual(harness.slotRegistrations.map(row => row.slot), ['settings.section'])
+  assert.equal(harness.settingsRegistrations[0].metadata.id, 'dsh-store')
 })
 
 test('blocked fixed-source entries use DSH inspect and install only after explicit confirmation', async () => {
@@ -849,14 +892,14 @@ test('an already installed exact package reported by Desktop reconciles a no-cha
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop 已安装清单确认此版本已安装'))
-  assert.match(desktopText(tree), /本次未发生依赖变更/)
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop 已安装清单确认目标包当前已安装'))
+  assert.doesNotMatch(desktopText(tree), /操作未完成|NO_DEPENDENCY_CHANGES/)
   assert.equal(harness.calls.installBundle.length, 1)
   assert.ok(harness.calls.listBundles >= 2)
   assert.equal(harness.calls.waitForInstall.length, 0)
 })
 
-test('Desktop updates an older fixed GitHub revision through installBundle after exact Commit confirmation', async () => {
+test('Desktop updates an older fixed GitHub revision through DSH remove and install after exact Commit confirmation', async () => {
   const entry = desktopEntry({ id: 'dsh-update-target', packageName: '@acme/dsh-update-target', commit: desktopCommit })
   const oldCommit = 'b'.repeat(40)
   const installed = { name: entry.packageName, official: false, installed: true, removable: true,
@@ -888,7 +931,7 @@ test('Desktop updates an older fixed GitHub revision through installBundle after
   assert.equal(harness.calls.installBundle[0].spec, harness.calls.inspect[0])
   assert.equal(harness.calls.installBundle[0].options.enabled, false)
   assert.ok(harness.timerDelays.includes(90_000), 'DSH operations retain their 90-second deadline')
-  assert.equal(harness.calls.removeBundle.length, 0)
+  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
 })
 
 test('DSH Store can update its own installed package through the official Desktop manager', async () => {
@@ -896,11 +939,12 @@ test('DSH Store can update its own installed package through the official Deskto
     repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
   entry.version = '0.9.25'
   const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
+  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
     enabled: true, version: '0.9.24', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
   const updated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
   const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    installResult: { application: 'applied', changed: true, stage: 'install', target: entry.packageName },
+    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
+      error: { code: 'PACKAGE_CHANGE_AMBIGUOUS' } },
     installedAfterInstallResult: [updated] })
   await harness.ready
   await harness.render()
@@ -916,10 +960,39 @@ test('DSH Store can update its own installed package through the official Deskto
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成更新'))
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop 已安装清单确认当前来源与目标固定 Commit 一致'))
   assert.equal(harness.calls.installBundle.length, 1)
   assert.equal(harness.calls.installBundle[0].spec, `git+${entry.repositoryUrl}.git#${desktopCommit}`)
-  assert.equal(harness.calls.removeBundle.length, 0)
+  assert.deepEqual(harness.calls.removeBundle, [])
+  assert.ok(harness.calls.listBundles >= 2)
+})
+
+test('DSH stop-profile removal outcome follows the official update path and still submits the fixed Commit', async () => {
+  const entry = desktopEntry({ id: 'dsh-stop-profile-update', packageName: '@acme/dsh-stop-profile-update', commit: desktopCommit })
+  const oldCommit = 'b'.repeat(40)
+  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
+    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
+  const updated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    removeResult: { application: 'failed', changed: false, stage: 'remove', target: entry.packageName,
+      error: { code: 'stop-profile' } },
+    installResult: { application: 'applied', changed: true, stage: 'install', target: entry.packageName },
+    installedAfterInstallResult: [updated] })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
+  tree = await harness.render()
+  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 官方插件管理器已完成更新'))
+  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.equal(harness.calls.installBundle[0].spec, `git+${entry.repositoryUrl}.git#${desktopCommit}`)
 })
 
 test('an update with no dependency changes is reconciled only when Desktop confirms the exact target Commit', async () => {
@@ -955,6 +1028,8 @@ test('Desktop update preserves the official rejection and never resubmits the re
   const installed = { name: entry.packageName, official: false, installed: true, removable: true,
     enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
   const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    removeResult: { application: 'restart-required', changed: true, stage: 'remove', target: entry.packageName },
+    retainInstalledAfterRemove: true,
     installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
       error: { code: 'incompatible-version' } } })
   await harness.ready
@@ -969,8 +1044,114 @@ test('Desktop update preserves the official rejection and never resubmits the re
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
   tree = await waitForDesktopTree(harness, value => desktopText(value).includes('操作未完成（incompatible-version）'))
+  assert.match(desktopText(tree), new RegExp(`旧固定 Commit ${oldCommit} 保留`))
   assert.equal(harness.calls.installBundle.length, 1)
+  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
   assert.equal(harness.calls.waitForInstall.length, 0)
+})
+
+test('a definite target failure restores the prior fixed source through DSH and reports its reload result', async () => {
+  const entry = desktopEntry({ id: 'dsh-update-restore', packageName: '@acme/dsh-update-restore', commit: desktopCommit })
+  const oldCommit = 'b'.repeat(40)
+  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
+    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
+  const targetSpec = `git+${entry.repositoryUrl}.git#${desktopCommit}`
+  const oldSpec = installed.source
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    installResult: spec => spec === targetSpec
+      ? { application: 'failed', changed: false, stage: 'install', error: { code: 'TARGET_COMMIT_REFUSED' } }
+      : { application: 'restart-required', changed: true, stage: 'install' },
+    installedAfterInstallResult: [] })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
+  tree = await harness.render()
+  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH 已接受恢复旧固定 Commit'))
+  assert.deepEqual(harness.calls.installBundle.map(call => call.spec), [targetSpec, oldSpec])
+  assert.match(desktopText(tree), new RegExp(`旧固定 Commit ${oldCommit}，需按 DSH 流程重载`))
+  assert.equal(harness.calls.waitForInstall.length, 0)
+})
+
+test('an uncertain update result is reconciled once and never resubmitted or rolled back blindly', async () => {
+  const entry = desktopEntry({ id: 'dsh-update-unknown', packageName: '@acme/dsh-update-unknown', commit: desktopCommit })
+  const oldCommit = 'b'.repeat(40)
+  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
+    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    installResult: async () => { const error = new Error('result unavailable'); error.code = 'DESKTOP_INSTALL_TIMEOUT'; throw error } })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
+  tree = await harness.render()
+  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('操作结果暂时无法确认'))
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
+  assert.equal(harness.calls.waitForInstall.length, 1)
+})
+
+test('DSH restart-required update result is accepted while its installed inventory is still catching up', async () => {
+  const entry = desktopEntry({ id: 'dsh-update-restart', packageName: '@acme/dsh-update-restart', commit: desktopCommit })
+  const oldCommit = 'b'.repeat(40)
+  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
+    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    removeResult: { application: 'restart-required', changed: true, stage: 'remove', target: entry.packageName },
+    retainInstalledAfterRemove: true,
+    installResult: { application: 'restart-required', changed: true, stage: 'install', target: entry.packageName },
+    installedAfterInstallResult: [installed] })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
+  tree = await harness.render()
+  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('操作已写入 Desktop Profile'))
+  assert.equal(harness.calls.installBundle.length, 1)
+  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
+  assert.equal(harness.calls.waitForInstall.length, 0)
+})
+
+test('DSH refusal to remove an installed bundle prevents the update install request', async () => {
+  const entry = desktopEntry({ id: 'dsh-update-remove-refused', packageName: '@acme/dsh-update-remove-refused', commit: desktopCommit })
+  const oldCommit = 'b'.repeat(40)
+  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
+    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
+    removeResult: { application: 'failed', changed: false, stage: 'remove', target: entry.packageName,
+      error: { code: 'PACKAGE_REMOVE_REFUSED' } } })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
+  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
+  tree = await harness.render()
+  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
+  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+    .props.onChange({ target: { value: confirmation } })
+  tree = await harness.render()
+  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('PACKAGE_REMOVE_REFUSED'))
+  assert.equal(harness.calls.installBundle.length, 0)
+  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
 })
 
 test('Desktop hides the update action when the installed source already matches the fixed Commit', async () => {
