@@ -1,4 +1,3 @@
-/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 # DSH STORE | DeepSeek Harness Plugin Marketplace
 <img width="900" height="383" alt="cover_dsh_plugin_market_900x383" src="https://github.com/user-attachments/assets/2b03ff48-a39b-427d-87c1-62190560a496" />
 
