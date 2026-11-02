@@ -6,7 +6,7 @@ import { resolveDshUpgradeMatrix } from '../scripts/resolve-dsh-upgrade-matrix.m
 test('client peer declarations match the official Host pre-install contract', async () => {
   const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
   const clients = manifest.dsh.client.inject
-  assert.equal(clients.length, 4)
+  assert.equal(clients.length, 6)
   const runtime = '@deepseek-ai/dsh-client-runtime'
   assert.ok(clients.includes(runtime))
   const runtimeAlternatives = manifest.peerDependencies[runtime].split(' || ')
@@ -38,7 +38,7 @@ test('RC support is exact across the host and published UI peers without future 
     assert.ok(!range.includes('*'))
     assert.ok(!range.split(' || ').some(part => /^>=0\.2\./.test(part)))
   }
-  assert.equal(manifest.version, '0.9.25')
+  assert.equal(manifest.version, '0.9.26')
   assert.ok(['unknown', 'compatible'].includes(manifest.dsh.compatibility.dshReleases['0.2.1-rc.1']))
   assert.equal(manifest.dsh.compatibility.dshOperations['0.2.1-rc.1'].rollback, 'unknown')
   assert.equal(manifest.dsh.compatibility.dshReleases['0.2.1-rc.3'], 'compatible')

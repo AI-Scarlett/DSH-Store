@@ -1,6 +1,6 @@
 {
   "name": "dsh-safe-plugin-manager",
-  "version": "0.9.25",
+  "version": "0.9.26",
   "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
   "repository": {
     "type": "git",
@@ -42,7 +42,9 @@
         "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-client-ui-primitives",
         "@deepseek-ai/dsh-client-ui-slots",
-        "@deepseek-ai/dsh-client-ui-settings"
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
       ],
       "platform": "web"
     },
@@ -207,9 +209,11 @@
     "reassess:admission": "node scripts/reassess-admission.mjs"
   },
   "peerDependencies": {
+    "@deepseek-ai/dsh-client-ui-layout": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
     "@deepseek-ai/dsh-client-runtime": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
     "@deepseek-ai/dsh-client-ui-primitives": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
     "@deepseek-ai/dsh-client-ui-settings": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
     "@deepseek-ai/dsh-client-ui-slots": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
     "react": ">=18.2.0"
   },
