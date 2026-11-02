@@ -1,0 +1,263 @@
+/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-0930-catalog-20261102",
+  "planPath": "docs/ops/store-0930-catalog-20261102.json",
+  "sourceReviewPath": "docs/reviews/store-0930-source-review-20261102.json",
+  "version": "0.9.30",
+  "targetDshRelease": "0.2.2-alpha.2",
+  "latestDshWindow": [
+    "0.2.1-rc.4",
+    "0.2.1-rc.5",
+    "0.2.2-alpha.2"
+  ],
+  "reviewMode": "first-party-owner-reviewed",
+  "createdAt": "2026-11-02T15:52:00.000Z",
+  "baseCommit": "4939e294af0096621c3ba3fccbd3e94779b7aff3",
+  "sourceCommit": "4939e294af0096621c3ba3fccbd3e94779b7aff3",
+  "sourceTree": "14fe1e299dca6d7e2ccdcb1a38e190ba999e3804",
+  "sourceHead": "7df7278c29231de3478b784128111fbf014eb27f",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/store-0930-catalog-20261102.json",
+    "docs/reviews/store-0930-release-20261102.md",
+    "docs/reviews/store-0930-source-review-20261102.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "872a42582e03897bfaa823f014d7e19ef06f995b4e5a2cb2b6bf0dc7331766de",
+    "README.md": "a8711e90a41bb962ba693e2b0dce50d6c467f1a3939dc084eb72f528a0ebb2c7",
+    "docs/ops/store-0930-catalog-20261102.json": null,
+    "docs/reviews/store-0930-release-20261102.md": null,
+    "docs/reviews/store-0930-source-review-20261102.json": null,
+    "registry/catalog-index.json": "21bf3f950639aa90525657c082b0a1ac65764a9cd33cf7489340a6dfcd05474b",
+    "registry/catalog.json": "5ddaddb7b477963b6d102162cedb8808a1afcf84f9edfa21759299054729de9b",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "3f46f47e48aba34f49548a8fc07e72c45aec6b3abbc4cad10d953ef2d6ea534a"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "2cc8cb6391c5e753d8e5faf47f37eb7536f12b40f98e90ed426a153e6cdc83b4",
+    "README.md": "f7cce7ad0cfa95898d9e18f2fdf14a36212a9379620cabafba7ad7751e0fbe71",
+    "docs/reviews/store-0930-release-20261102.md": "be4976b0610e85d17a0bc3df9f044222a4efb81069b88170fa89ed608b763d15",
+    "docs/reviews/store-0930-source-review-20261102.json": "c142f38e73a3fa64d9aed022e3f40e29f6063e622ece14533d18ce77da6500f3",
+    "registry/catalog-index.json": "911d7ce8891e1b8d6ca04fe908ffc7d5b0cc015d85119b9b81ac3a970a5d3e4d",
+    "registry/catalog.json": "fcc5a62683e11035ba811bfa1bb00bf32251c1bcb073d650d36d42243d2ccca6",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "6392519fec492336f19bb09c77821a4a3eceef4418c62c0cc9f9b5aa77acc3b6"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求 DSH Store 提供官网式完整插件目录、审核建议、推荐/必装榜及可搜索安装入口；用户此前明确要求“推送 发布”。本计划仅将已合并且 exact-head CI 通过的 DSH Store 0.9.30 固定到 Catalog；安装结果由 DSH Desktop 官方插件管理器判断。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "deterministicPolicyVerdictRequired": true
+  },
+  "sourceEvidence": {
+    "canonicalRepository": "https://github.com/AI-Scarlett/DSH-Store",
+    "mergedSourcePullRequest": 1723,
+    "sourceHead": "7df7278c29231de3478b784128111fbf014eb27f",
+    "mergeCommit": "4939e294af0096621c3ba3fccbd3e94779b7aff3",
+    "sourceTree": "14fe1e299dca6d7e2ccdcb1a38e190ba999e3804",
+    "sourceChecks": [
+      {
+        "name": "runtime (ubuntu-latest, 10)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (ubuntu-latest, 11)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (ubuntu-latest, 12)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (macos-latest, 10)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (macos-latest, 11)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (macos-latest, 12)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (windows-latest, 10)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (windows-latest, 11)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "runtime (windows-latest, 12)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "previous-latest-three (0.2.1-rc.4)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "previous-latest-three (0.2.1-rc.5)",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "DSH latest-three resolution",
+        "state": "SUCCESS",
+        "runId": 41474509019,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474509019"
+      },
+      {
+        "name": "Registry validation",
+        "state": "SUCCESS",
+        "runId": 41474508911,
+        "headRevision": "7df7278c29231de3478b784128111fbf014eb27f",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41474508911"
+      }
+    ],
+    "officialDshWindow": {
+      "authority": "official-github-releases-and-npm-published-versions",
+      "registryUrl": "https://registry.npmjs.org/@deepseek-ai%2Fdsh",
+      "latestVersion": "0.2.2-alpha.2",
+      "releases": [
+        "0.2.1-rc.4",
+        "0.2.1-rc.5",
+        "0.2.2-alpha.2"
+      ]
+    },
+    "directorySnapshot": {
+      "page": "https://dsh.store/plugins/",
+      "discoveryIndex": "https://ai-scarlett.github.io/DSH-Store/registry/discovery-index.json",
+      "observedAt": "2026-11-02T15:34:04Z",
+      "discoveryRecords": 24171,
+      "catalogRecords": 875,
+      "candidateRecords": 806,
+      "mergedRecords": 24838,
+      "listedRecords": 945,
+      "unlistedRecords": 23893,
+      "integrity": "The official directory uses the published discovery index, Catalog index, and candidate registry, merged by source identity, package name, and repository; counts are snapshot-specific"
+    },
+    "rankingSnapshot": {
+      "rankingPage": "https://dsh.store/rankings/",
+      "rankingData": "https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/data.json",
+      "observedAt": "2026-11-02T15:04:00Z",
+      "schemaVersion": 4,
+      "records": 1566,
+      "categories": 22,
+      "recommendedEvidenceRecords": 129,
+      "weeklySnapshotRecords": 1545,
+      "integrity": "ranking index HTML publishes the SHA-256 of the ranking data; both files are served from GitHub Pages"
+    }
+  },
+  "objective": "将 Catalog 固定到 DSH Store 0.9.30，为现有 Desktop 全插件目录和默认分支安装入口提供公开更新；审核与推荐信息继续作为 Store 建议，最终安装决定由 DSH Desktop 官方管理器作出。",
+  "change": {
+    "packageVersion": "0.9.30",
+    "directory": "保留既有官网公开发现索引、Catalog 和候选记录合并目录及官网榜单快照；目录可见性与审核收录状态继续分层。",
+    "install": "目录中的规范 GitHub DSH 插件来源在逐次确认后交给 DSH Desktop pluginManager.installBundle；DSH inspect 和 Store 审核状态不拦截已确认请求。结果以 DSH 响应和一次安装清单来源核对为准，不自动重试。",
+    "catalog": "仅更新 dsh-safe-plugin-manager 的固定版本、Commit、描述和 CI/审核证据；保持已批准身份、既有权限、兼容性与 web Profile 声明，所有第三方 Catalog 条目保持不变。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "scripts/verify-store-release-plan.mjs",
+        "docs/ops/store-0930-catalog-20261102.json"
+      ],
+      "expected": "STORE_RELEASE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "validate:registry"
+      ],
+      "expected": "REGISTRY_OK and schema/source/index consistency passes"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "all repository checks pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.30 package metadata and Bundle are present"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "This fresh plan binds the merged current main Commit, exact file scope, and base SHA-256 values; Registry CI must pass the typed plan verifier.",
+    "Source review is bound to the immutable 0.9.30 merge Commit and complete bounded runtime surface; scanner findings retain exact source hashes and reviewer reasons. No third-party code was executed.",
+    "PR #1723 exact-head Registry validation and DSH upgrade matrix passed for the official latest-three window 0.2.1-rc.4, 0.2.1-rc.5, 0.2.2-alpha.2.",
+    "Catalog bridge, index, and detail pin 0.9.30/4939e294af0096621c3ba3fccbd3e94779b7aff3, preserve approved identity and existing permission/profile declarations; every third-party Catalog entry is byte-for-byte unchanged.",
+    "The published directory and ranking snapshots remain unchanged; Catalog admission and DSH install result stay distinct from public discovery visibility.",
+    "After merge, independently read back GitHub Raw, Pages, dsh.store, and dsh-store.cn. Real Desktop UI/Profile acceptance remains unverified until exercised in the app."
+  ],
+  "rollback": {
+    "catalog": "Revert this Catalog pin through an auditable CI-checked PR; preserve the merged source Commit and previous Catalog history.",
+    "runtime": "No real DSH Desktop Profile, package, restart, or uninstall mutation is part of this Catalog release."
+  },
+  "healthCheck": "Require the typed plan verifier, Registry validation, npm run check, npm pack dry run and exact-head Registry CI. Confirm Catalog bridge/index/detail agree on 0.9.30 and the fixed Commit, third-party Catalog entries are unchanged, then independently read back GitHub Raw, Pages, dsh.store and dsh-store.cn. Real Desktop UI acceptance is a separate gate.",
+  "execution": {
+    "status": "pr-prepared",
+    "sourceBase": "4939e294af0096621c3ba3fccbd3e94779b7aff3",
+    "packageVersion": "0.9.30",
+    "catalogVersion": "0.9.30 after this PR",
+    "exactHeadCi": "pending",
+    "publicReadback": "pending",
+    "realDesktop": "unverified",
+    "pullRequest": null
+  }
+}
