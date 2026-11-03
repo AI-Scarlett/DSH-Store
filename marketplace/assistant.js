@@ -44,24 +44,30 @@
 
     const scored = catalog.map(entry => {
       let score = 0;
-      const name = (entry.name || '').toLowerCase();
-      const alias = (entry.alias || '').toLowerCase();
-      const desc = (entry.description || '').toLowerCase();
+      const pkg = (entry.packageName || entry.name || entry.id || '').toLowerCase();
+      const name = (entry.name || entry.nameZh || pkg).toLowerCase();
+      const alias = (entry.alias || entry.nameEn || '').toLowerCase();
+      const terms = (entry.searchTerms || []).join(' ').toLowerCase();
+      const desc = (entry.description || terms).toLowerCase();
       const cats = (entry.categories || []).join(' ').toLowerCase();
 
-      if (desc.includes(q)) score += 30;
-      if (name.includes(q) || alias.includes(q)) score += 40;
+      if (desc.includes(q)) score += 35;
+      if (name.includes(q) || alias.includes(q) || pkg.includes(q)) score += 40;
+      if (terms.includes(q)) score += 30;
 
       for (const t of tokenSet) {
-        if (name.includes(t)) score += 15;
+        if (pkg.includes(t)) score += 15;
+        if (name.includes(t)) score += 16;
         if (alias.includes(t)) score += 12;
-        if (desc.includes(t)) score += 8;
-        if (cats.includes(t)) score += 10;
+        if (desc.includes(t)) score += 10;
+        if (terms.includes(t)) score += 12;
+        if (cats.includes(t)) score += 8;
       }
 
       if (score > 0) {
         if (entry.stars > 0) score += Math.min(10, Math.log2(entry.stars + 1));
         if (entry.clientAdaptation) score += 2;
+        if (entry.status === 'approved') score += 5;
       }
       return { entry, score };
     });
@@ -70,19 +76,25 @@
       .filter(item => item.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, limit)
-      .map(item => ({
-        name: item.entry.name,
-        alias: item.entry.alias || item.entry.name.replace(/^@[^/]+\//, ''),
-        description: item.entry.description || '',
-        reason: '功能匹配：' + (item.entry.description ? item.entry.description.slice(0, 80) + '...' : '与关键词相符'),
-        installCommand: 'dsh plugin add ' + item.entry.name,
-        categories: item.entry.categories || [],
-        stars: item.entry.stars || 0,
-        version: item.entry.version || '',
-        commit: item.entry.commit || '',
-        repositoryUrl: item.entry.repositoryUrl || null,
-        clientAdaptation: Boolean(item.entry.clientAdaptation)
-      }));
+      .map(item => {
+        const pkgName = item.entry.packageName || item.entry.name || item.entry.id;
+        const displayName = item.entry.name || item.entry.nameZh || pkgName;
+        const desc = item.entry.description || (Array.isArray(item.entry.searchTerms) ? item.entry.searchTerms.slice(0, 6).join(' · ') : '');
+        return {
+          name: pkgName,
+          displayName: displayName,
+          alias: item.entry.alias || displayName,
+          description: desc,
+          reason: '功能匹配：' + (desc ? desc.slice(0, 80) + '...' : '与关键词相符'),
+          installCommand: 'dsh plugin add ' + pkgName,
+          categories: item.entry.categories || [],
+          stars: item.entry.stars || 0,
+          version: item.entry.version || '',
+          commit: item.entry.commit || '',
+          repositoryUrl: item.entry.repositoryUrl || null,
+          clientAdaptation: Boolean(item.entry.clientAdaptation)
+        };
+      });
   }
 
   async function queryRecommendation(query) {
@@ -145,7 +157,7 @@
       '<article class="ai-plugin-card">',
       '  <div>',
       '    <div class="ai-card-top">',
-      '      <h3 class="ai-card-title">' + escapeHtml(plugin.name) + '</h3>',
+      '      <h3 class="ai-card-title">' + escapeHtml(plugin.displayName || plugin.name) + '</h3>',
       '      <div class="ai-card-badges">' + starsBadge + adaptBadge + '</div>',
       '    </div>',
       '    <div class="ai-card-reason" style="margin-top: 8px;">' + escapeHtml(plugin.reason) + '</div>',

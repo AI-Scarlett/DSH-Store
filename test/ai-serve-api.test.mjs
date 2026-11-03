@@ -50,7 +50,7 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     const recRes = await fetch(`${baseUrl}/api/ai/recommend`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: '知网论文' }),
+      body: JSON.stringify({ query: '微信机器人' }),
     })
     assert.equal(recRes.status, 200)
     const recData = await recRes.json()

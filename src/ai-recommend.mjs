@@ -1,35 +1,71 @@
 import { readFile } from "node:fs/promises"
 import { resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import { decryptKey } from "./ai-model-settings.mjs"
+import { decryptKey, DEFAULT_KEY_PATH } from "./ai-model-settings.mjs"
 
 const projectRoot = resolve(fileURLToPath(new URL("..", import.meta.url)))
+const CATALOG_FULL_PATH = resolve(projectRoot, "registry/catalog.json")
 const CATALOG_INDEX_PATH = resolve(projectRoot, "registry/catalog-index.json")
 
 let cachedCatalog = null
 
-export async function loadCatalogIndex(customPath = CATALOG_INDEX_PATH) {
-  if (cachedCatalog && customPath === CATALOG_INDEX_PATH) return cachedCatalog
+export function normalizeCatalogEntry(raw) {
+  const packageName = raw.packageName || raw.name || raw.id || ""
+  const displayName = raw.name || raw.nameZh || raw.nameEn || packageName
+  const alias = raw.alias || raw.nameEn || raw.nameZh || raw.id || packageName
+  const description = raw.description || (Array.isArray(raw.searchTerms) ? raw.searchTerms.slice(0, 8).join(" · ") : "")
+  const categories = Array.isArray(raw.categories) ? raw.categories : []
+  const searchTerms = Array.isArray(raw.searchTerms) ? raw.searchTerms : []
+  return {
+    ...raw,
+    name: packageName,
+    displayName,
+    alias,
+    description,
+    categories,
+    searchTerms,
+    stars: Number(raw.stars) || 0,
+    commit: raw.commit || "",
+    version: raw.version || "",
+    clientAdaptation: Boolean(raw.clientAdaptation || raw.compatibility?.profiles?.includes("desktop")),
+  }
+}
+
+export async function loadCatalogIndex(customPath) {
+  if (cachedCatalog && !customPath) return cachedCatalog
+  const target = customPath || (process.env.CATALOG_PATH ? resolve(process.env.CATALOG_PATH) : CATALOG_FULL_PATH)
   try {
-    const raw = await readFile(customPath, "utf8")
+    const raw = await readFile(target, "utf8")
     const data = JSON.parse(raw)
-    const entries = Array.isArray(data.entries) ? data.entries : []
-    if (customPath === CATALOG_INDEX_PATH) cachedCatalog = entries
+    const entries = (Array.isArray(data.entries) ? data.entries : []).map(normalizeCatalogEntry)
+    if (!customPath) cachedCatalog = entries
     return entries
   } catch {
+    if (!customPath) {
+      try {
+        const raw = await readFile(CATALOG_INDEX_PATH, "utf8")
+        const data = JSON.parse(raw)
+        const entries = (Array.isArray(data.entries) ? data.entries : []).map(normalizeCatalogEntry)
+        cachedCatalog = entries
+        return entries
+      } catch {}
+    }
     return []
   }
 }
 
 export function tokenize(text) {
-  if (!text || typeof text !== 'string') return []
-  const clean = text.toLowerCase().replace(/[^\w\u4e00-\u9fa5]/g, ' ')
+  if (!text || typeof text !== "string") return []
+  const clean = text.toLowerCase().replace(/[^\w一-龥]/g, " ")
   const words = clean.split(/\s+/).filter(t => t.length >= 2)
-  const tokens = new Set(words)
+  const tokens = new Set()
+  const stopWords = new Set(["我想", "可以", "如何", "怎么", "怎样", "请问", "一下", "这个", "那个", "满足", "需求", "需要"])
   for (const w of words) {
-    if (/[\u4e00-\u9fa5]/.test(w) && w.length >= 2) {
+    if (!stopWords.has(w)) tokens.add(w)
+    if (/[一-龥]/.test(w) && w.length >= 2) {
       for (let i = 0; i <= w.length - 2; i++) {
-        tokens.add(w.slice(i, i + 2))
+        const gram = w.slice(i, i + 2).trim()
+        if (gram.length === 2 && !stopWords.has(gram)) tokens.add(gram)
       }
     }
   }
@@ -48,23 +84,29 @@ export function searchCatalogCandidates(queryText, catalog, limit = 8) {
   const scored = catalog.map(entry => {
     let score = 0
     const name = (entry.name || "").toLowerCase()
+    const displayName = (entry.displayName || "").toLowerCase()
     const alias = (entry.alias || "").toLowerCase()
     const desc = (entry.description || "").toLowerCase()
+    const terms = (entry.searchTerms || []).map(t => String(t).toLowerCase()).join(" ")
     const cats = (entry.categories || []).map(c => c.toLowerCase()).join(" ")
 
-    if (desc.includes(queryLower)) score += 30
-    if (name.includes(queryLower) || alias.includes(queryLower)) score += 40
+    if (desc.includes(queryLower)) score += 35
+    if (displayName.includes(queryLower) || name.includes(queryLower) || alias.includes(queryLower)) score += 40
+    if (terms.includes(queryLower)) score += 30
 
     for (const token of qTokens) {
       if (name.includes(token)) score += 15
+      if (displayName.includes(token)) score += 16
       if (alias.includes(token)) score += 12
-      if (desc.includes(token)) score += 8
-      if (cats.includes(token)) score += 10
+      if (desc.includes(token)) score += 10
+      if (terms.includes(token)) score += 12
+      if (cats.includes(token)) score += 8
     }
 
     if (score > 0) {
       if (entry.stars > 0) score += Math.min(10, Math.log2(entry.stars + 1))
       if (entry.clientAdaptation) score += 2
+      if (entry.status === "approved") score += 5
     }
 
     return { entry, score }
@@ -78,10 +120,13 @@ export function searchCatalogCandidates(queryText, catalog, limit = 8) {
 }
 
 export function formatPluginCard(entry, customReason) {
-  const installCmd = "dsh plugin add " + entry.name
+  const pkgName = entry.packageName || entry.name || entry.id
+  const title = entry.displayName || entry.name || entry.nameZh || pkgName
+  const installCmd = "dsh plugin add " + pkgName
   return {
-    name: entry.name,
-    alias: entry.alias || entry.name.replace(/^@[^/]+\//, ""),
+    name: pkgName,
+    displayName: title,
+    alias: entry.alias || title,
     description: entry.description || "",
     reason: customReason || (entry.description ? "匹配功能：" + entry.description.slice(0, 80) + "..." : "根据需求匹配此插件"),
     installCommand: installCmd,
@@ -89,7 +134,7 @@ export function formatPluginCard(entry, customReason) {
     stars: entry.stars || 0,
     version: entry.version || "",
     commit: entry.commit || "",
-    permissions: entry.permissions || {},
+    permissions: entry.details?.permissions || entry.permissions || {},
     repositoryUrl: entry.repositoryUrl || null,
     clientAdaptation: Boolean(entry.clientAdaptation),
   }
@@ -102,13 +147,13 @@ export function fallbackRecommend(queryText, catalog) {
       ok: true,
       source: "rules",
       modelName: null,
-      summary: "未在当前 DSH Store 目录中检索到与「" + queryText.slice(0, 30) + "」完全匹配的已收录插件。建议换用更通用的关键词（如“微信”、“知网”、“记忆”、“看板”、“监控”），或在完整插件目录中按分类浏览。",
+      summary: "未在当前 DSH Store 目录中检索到与「" + queryText.slice(0, 30) + "」直接匹配的插件。建议换用更通用的关键词（如“微信”、“QQ”、“余额”、“记忆”、“设置”、“自动化”），或在完整插件目录中按分类浏览。",
       plugins: [],
       suggestions: [
-        "查看完整插件目录",
-        "知网论文精读",
         "微信 / QQ 接入 DSH",
         "大模型 API 余额监控",
+        "会话长期记忆与知识库",
+        "任务与工作流自动化",
       ],
     }
   }
@@ -213,6 +258,7 @@ export function parseLlmRecommendation(rawText, candidates) {
     const candidateMap = new Map()
     for (const c of candidates) {
       candidateMap.set(c.name.toLowerCase(), c)
+      if (c.displayName) candidateMap.set(c.displayName.toLowerCase(), c)
       if (c.alias) candidateMap.set(c.alias.toLowerCase(), c)
     }
 
@@ -220,13 +266,15 @@ export function parseLlmRecommendation(rawText, candidates) {
     if (Array.isArray(parsed.plugins)) {
       for (const item of parsed.plugins) {
         if (!item || !item.name) continue
-        const matched = candidateMap.get(item.name.toLowerCase())
+        const itemKey = item.name.toLowerCase()
+        const matched = candidateMap.get(itemKey)
         if (matched) {
           plugins.push(formatPluginCard(matched, item.reason))
         } else {
           const found = candidates.find(c =>
-            c.name.toLowerCase().includes(item.name.toLowerCase()) ||
-            item.name.toLowerCase().includes(c.name.toLowerCase())
+            c.name.toLowerCase().includes(itemKey) ||
+            (c.displayName && c.displayName.toLowerCase().includes(itemKey)) ||
+            itemKey.includes(c.name.toLowerCase())
           )
           if (found) {
             plugins.push(formatPluginCard(found, item.reason))
@@ -276,7 +324,7 @@ export async function recommendPlugins({ query, settings, catalog, customKeyPath
 
   const contextJson = JSON.stringify(candidates.map(c => ({
     name: c.name,
-    alias: c.alias,
+    displayName: c.displayName,
     description: c.description,
     categories: c.categories,
     stars: c.stars,

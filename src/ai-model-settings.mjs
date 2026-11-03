@@ -4,8 +4,8 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
-const DEFAULT_CONFIG_PATH = resolve(projectRoot, '.local/model-settings.json')
-const DEFAULT_KEY_PATH = resolve(projectRoot, '.local/model-settings.key')
+export const DEFAULT_CONFIG_PATH = process.env.MODEL_SETTINGS_CONFIG_PATH ? resolve(process.env.MODEL_SETTINGS_CONFIG_PATH) : resolve(projectRoot, ".local/model-settings.json")
+export const DEFAULT_KEY_PATH = process.env.MODEL_SETTINGS_KEY_PATH ? resolve(process.env.MODEL_SETTINGS_KEY_PATH) : resolve(projectRoot, ".local/model-settings.key")
 
 export const MODEL_PRESETS = [
   {
