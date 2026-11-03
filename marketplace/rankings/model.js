@@ -322,22 +322,28 @@ export function rankingEntries(data, type) {
   }
   const result = [...winners.values()].sort(compareStars)
   const selected = new Set(result.map(entry => entry.id))
-  const categories = data.categories.map(category => ({
-    category, members: known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
-      && !['rejected', 'blocked'].includes(entry.reviewStatus)),
-  }))
+  const categories = data.categories.map(category => {
+    const snapshotMembers = data.entries.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+      && !['rejected', 'blocked'].includes(entry.reviewStatus))
+    return {
+      category,
+      members: known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+        && !['rejected', 'blocked'].includes(entry.reviewStatus)),
+      unknownStars: snapshotMembers.filter(entry => !validStars(entry.weeklyStars)).length,
+    }
+  })
   // Leaders retain their original rule. Fill the rest with round-robin
   // category picks, explicitly labelled observed ranks rather than champions.
   for (let rank = 0; rank < known.length && result.length < PAGE_SIZE; rank++) {
     let any = false
-    for (const { category, members } of categories) {
+    for (const { category, members, unknownStars } of categories) {
       const entry = members[rank]
       if (!entry) continue
       any = true
       if (result.length >= PAGE_SIZE) break
       if (selected.has(entry.id) || entry.stars === 0 || ['rejected', 'blocked'].includes(entry.reviewStatus)) continue
       selected.add(entry.id)
-      result.push({ ...entry, wins: [], categoryPick: { ...category, observedRank: rank + 1 } })
+      result.push({ ...entry, wins: [], categoryPick: { ...category, observedRank: rank + 1, unknownStars } })
     }
     if (!any) break
   }
@@ -361,7 +367,9 @@ export function renderRankingRows(entries, { type = 'popular', locale = 'zh', of
     const officialToolNote = entry.officialToolPick
       ? `<span class="ranking-pick">${en ? 'Official DSH tool · randomized weekly top-10 placement; not a star rank or Store review' : 'DSH 官方工具展示位 · 周榜随机置入前十，非星标排名或商城评测'}</span>` : ''
     const reason = type === 'essential' ? `<div class="ranking-wins">${officialToolNote}${entry.categoryPick
-      ? `<span>${escapeHtml(en ? entry.categoryPick.en : entry.categoryPick.zh)} · ${en ? 'Category supplement · observed #' : '分类高星补充 · 当前数据第 '}${entry.categoryPick.observedRank}${en ? '' : ' 名'}</span>`
+      ? `<span>${en
+        ? `${escapeHtml(entry.categoryPick.en)} · Category supplement · observed among known stars #${entry.categoryPick.observedRank}${entry.categoryPick.unknownStars ? ` · ${entry.categoryPick.unknownStars} star counts unknown; category leader unconfirmed` : ''}`
+        : `${escapeHtml(entry.categoryPick.zh)} · 分类高星补位 · 当前可核对星标第 ${entry.categoryPick.observedRank} 位${entry.categoryPick.unknownStars ? ` · ${entry.categoryPick.unknownStars} 个插件星标数未知，分类第一未确认` : ''}`}</span>`
       : entry.wins.map(win => `<span>${escapeHtml(en ? win.en : win.zh)}${win.tied ? (en ? ' · tied lead' : ' · 并列最高') : (en ? ' · #1' : ' · 星标第一')}</span>`).join('')}</div>`
       : type === 'recommended' ? (entry.officialToolPick ? officialToolNote : entry.communityRecommendation
         ? `<a class="ranking-pick" href="${escapeHtml(entry.communityRecommendation.evidenceUrl)}" target="_blank" rel="noopener noreferrer">${en ? 'Author interaction · View public discussion' : '作者互动推荐 · 查看公开交流'}</a>`
