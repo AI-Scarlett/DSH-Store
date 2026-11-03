@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-store-desktop-search-fix",
+  "planId": "dsh-desktop-search-relevance-20261103",
+  "planPath": "docs/ops/dsh-desktop-search-relevance-20261103.json",
+  "baseCommit": "d4420f0fc7daf4fcf0708cfafad0ce68079828ae",
+  "packageVersion": "0.9.32",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "修复 DSH Desktop 插件商城完整目录搜索 im 时返回大量无关结果的问题；用户授权实际操作测试。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request"
+  },
+  "scope": [
+    "README.md",
+    "docs/ops/dsh-desktop-search-relevance-20261103.json",
+    "docs/reviews/dsh-desktop-search-relevance-20261103.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "README.md": "ce97244482f5246bc052dca8a3bb7dfd0064bdb86fa85c2886fcd18b1ffca712",
+    "docs/ops/dsh-desktop-search-relevance-20261103.json": null,
+    "docs/reviews/dsh-desktop-search-relevance-20261103.md": null,
+    "package.json": "339aa6643a4766e1c6efbfd8b6b6276fa03ada0e45020d55a4c6b325bc447fe7",
+    "src/client.js": "e287b234747903a5f513be0fdeb7dac1389f52793f5262fab566094caad3efe9",
+    "test/catalog.test.mjs": "3e4122d9d559de9a117a5f02798f794fbf06a892fa905600db838dd1d93ecc36",
+    "test/contracts.test.mjs": "b62f300d473cc952346d6a2974325683d8e9d68084685369cf316b3c513e55dc",
+    "test/desktop-compat.test.mjs": "14d36b83a0c95af5de4c4e05bced3b89ff7655f2cd009dff4a6403ec4f583370",
+    "test/upgrade-matrix.test.mjs": "5cc3364eb9cf77ea2577dcfde731a8a68f38613f2f98bd5add1e4aedce898a14"
+  },
+  "change": {
+    "searchableFields": "Search plugin IDs, names, aliases, package names, GitHub repositories, catalog search terms, candidate topics, categories, and descriptions; exclude review statuses, rejection reasons, recommendations evidence URLs, and internal listing explanations.",
+    "shortQueries": "Queries of two characters or fewer search plugin identity, GitHub repository, and curated keywords; they do not scan long descriptions where common pairs create noise.",
+    "ranking": "Require every whitespace-separated query term to match. Rank identity above repository, repository above curated keywords, and keywords above descriptions, preserving the selected board or directory sort as a stable tie-breaker.",
+    "boundary": "No DSH core, @deepseek-ai dependency, real DSH Profile, installed package, install eligibility, package installation behavior, Loader, Fiber, or restart change."
+  },
+  "verification": {
+    "reproduction": "On the running DSH Desktop 0.9.31 store, query im returned 4099 results with generic metadata and policy text ahead of title matches.",
+    "regression": "A disposable official-Desktop fixture verifies im excludes incidental description and moderation matches, image name matches rank before description-only matches, and installation review rationale is not searchable.",
+    "focused": "3 directory search/surface tests passed.",
+    "full": "npm run check passed: registry validation and 593 tests.",
+    "desktopAcceptance": "Pending merged 0.9.32 Catalog pin and official DSH Desktop update; verify im, image, installation, and exact plugin-name queries against live data."
+  },
+  "rollback": "Revert the source PR through an auditable CI-checked PR. Keep the 0.9.31 Catalog pin until a separate fresh release plan passes all deterministic gates.",
+  "postconditions": {
+    "README.md": "6728355f14e94c6a1586601e11bce691500327baa524a801e30b86e107aeebc5",
+    "docs/reviews/dsh-desktop-search-relevance-20261103.md": "f610bc9b4713cd2ab31310a12383d8cd22865d9b9f0d1176eaaa1528858e3ec2",
+    "package.json": "c9cfe510151a72075cf337cd0b2799bde663574e838b27688e2df8c121c0001f",
+    "src/client.js": "ec51c8c995b2189baec1174820575829e7e1354568590b99d8b1caf48bae0d45",
+    "test/catalog.test.mjs": "875c1b134e5fd5c17c0cd028fc7d772d32a49433fdf4252df51995f5b0f0eb96",
+    "test/contracts.test.mjs": "fb4d981f0ce8f279c828f1fa9a22135600d6e316017ab5c31a3b03e76521c975",
+    "test/desktop-compat.test.mjs": "b35ec61351ca3223c77a8c78fee4470c00a3ed1b1a04a90ba3b467df9e84dbb6",
+    "test/upgrade-matrix.test.mjs": "1f1d020f9c6266f721a53f922a22616e6ac859f4d209bcc57365e076df6fac65"
+  },
+  "backup": "Isolated Git worktree and recoverable source history; no real DSH Profile, bundle, or restart mutation.",
+  "atomicCommit": "One commit after scoped review, focused regression, npm run check, package dry-run, and git diff --check.",
+  "healthCheck": {
+    "registry": "REGISTRY_OK entries=875; npm run check passed with 593 tests.",
+    "package": "npm pack --dry-run --json passed for dsh-safe-plugin-manager@0.9.32 with 1075 files.",
+    "runtime": "Merge exact-head CI, then Catalog release and DSH Desktop UI acceptance are separate gates."
+  }
+}
