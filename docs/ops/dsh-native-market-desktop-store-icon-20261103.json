@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-store-icon-20261103",
+  "planFile": "docs/ops/dsh-native-market-desktop-store-icon-20261103.json",
+  "createdAt": "2026-11-03T16:56:51+08:00",
+  "baseCommit": "bfed2434c5c1b4915833d6384be38fda7cd17046",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-store-icon-20261103.json",
+    "docs/reviews/dsh-native-market-desktop-store-icon-20261103.md",
+    "marketplace/dsh-store-icon-desktop.png",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "6f14a75dd67d445605d0a2ec7fa016b4f7c481a4bd05c2c93e6666bc64dfe2c2",
+    "README.md": "b5c263d00a32ae4c5211488ce06fbbf0e0ec9c65fc12204ff50464c1a5619fff",
+    "docs/ops/dsh-native-market-desktop-store-icon-20261103.json": null,
+    "docs/reviews/dsh-native-market-desktop-store-icon-20261103.md": null,
+    "marketplace/dsh-store-icon-desktop.png": null,
+    "package.json": "edad905f4e161d829d74c4151ef2e2c8f16350e51e883ed875eb301caefa9d59",
+    "src/client.js": "62ed4b08360e9af98ed0fccabf361f26a06241818a98498eba86522c8931aa82",
+    "test/catalog.test.mjs": "1e86cb88af663a61bd21dbaf678d7454023b2b6dc4dcbd5b7167fe49f94ba0f5",
+    "test/contracts.test.mjs": "1190392e36c7b8862d23e681e7cea3b4c1e0a9d51f1249f5e0a4353c2ff800bc",
+    "test/desktop-compat.test.mjs": "2380434623de572cda21e225b8030883aeff9d1c8186bcac088f7a2a6fcf3b42",
+    "test/upgrade-matrix.test.mjs": "294442bdefaa164e00e9449f7ac922348711ebfb253873c3c40dc6b70860be4a"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "be79fc94e3ac2e9740bd0be1793b0263328adca6bc176c533ee18401d67da7c9",
+    "README.md": "d521b6fd5e40ac5ad3bac1c6199f3b380e53a6e7bcc273970a613d8ad6849e26",
+    "docs/reviews/dsh-native-market-desktop-store-icon-20261103.md": "65ab30637e993b8a304615e158efac2be605083e958ac8c965f107235987b08b",
+    "marketplace/dsh-store-icon-desktop.png": "43bf78b4ad72332d950bf6849fe2739938da1f09aa1aa577505b5b5735c9ce1b",
+    "package.json": "61874c5b159b03f3d53e205892a2a5ec570c365f85818b647af865b64483c212",
+    "src/client.js": "4f372400122b0747b66eae45e02eebd7343efb8cbe26150d67950a9c3b3e81ac",
+    "test/catalog.test.mjs": "4f4082773b4985ad98fe06afd6df2730ab5edc201592d74271b5371b683a348f",
+    "test/contracts.test.mjs": "c544ffcc2778610cac8c8a5774c0f5e5cc4a189c08b36037be05ab91f019b1d6",
+    "test/desktop-compat.test.mjs": "a400eb1d9d72ff0c33de81d57a3c3090c1511f4bb5cfc6a9219ca60b2baf4599",
+    "test/upgrade-matrix.test.mjs": "72d875c71831b9016662f65ec86a9fe9d28a0df64dca32fb93f1a3c1c35b7e1c"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户提供 DSH Store 图标并要求左侧商城 Tab 和 DSH Desktop 插件列表统一使用；随后明确要求提交发布。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-source-pull-request-then-separate-first-party-Catalog-policy-release"
+  },
+  "objective": "发布 DSH Store 0.9.36 品牌图标：左侧商城 Tab 和 Desktop 插件清单均显示用户提供的图标。",
+  "change": {
+    "packageVersion": "0.9.36",
+    "manifestIcon": "./marketplace/dsh-store-icon-desktop.png",
+    "sidebar": "sidebar.panellist uses an inline 96px PNG derived from the same supplied 1254px image.",
+    "catalog": "No Catalog mutation in the source PR. After merge, pin the exact merged source Commit in a fresh first-party Store release plan."
+  },
+  "officialContract": {
+    "packageIconField": "top-level package.json icon, relative to the manifest directory",
+    "assetIncluded": "package.json files includes marketplace/",
+    "surface": "DSH Desktop installed bundle/plugin cards read package manifest icon metadata; sidebar.panellist renders the same artwork."
+  },
+  "gates": [
+    "Bind this fresh plan to the exact current main Commit, exact file scope, and base SHA-256 values; verify with scripts/verify-dsh-upgrade-plan.mjs and CI.",
+    "The image is a 96px derivative of the user supplied asset; manifest and sidebar refer to this same packaged artwork.",
+    "Keep the existing DSH Desktop sidebar registration, labels, and plugin behavior unchanged apart from the icon.",
+    "Do not modify DSH source, any @deepseek-ai package, real Profile/package state, or Catalog data in the source PR.",
+    "Run the focused disposable Desktop suite, npm run check, npm pack --dry-run --json, plan verification, and git diff --check before submitting.",
+    "Require exact-head PR CI before merging; then use a separate fresh Store Catalog release plan for 0.9.36 and independently verify GitHub Raw, Pages, dsh.store, and dsh-store.cn.",
+    "Keep real Desktop visual acceptance distinct from source tests and public artifact readback."
+  ],
+  "rollback": "Revert only this icon source release through a CI-checked PR; the prior Catalog pin and existing user Profiles remain unchanged.",
+  "healthCheck": "All local gates and exact-head PR checks pass; after Catalog release, GitHub Raw, Pages, dsh.store, and dsh-store.cn expose the same Catalog pin. Real Desktop UI remains separately unverified until loaded.",
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-store-icon-20261103.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all repository checks pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.36 includes the icon asset"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "execution": {
+    "status": "local-checks-passed-awaiting-pr",
+    "sourceCommit": null,
+    "pullRequest": null,
+    "sourceChecks": "DSH_UPGRADE_PLAN_OK; Desktop 47/47; REGISTRY_OK 875; npm run check 594/594; npm pack 1076 files including icon; git diff --check passed",
+    "catalogPublication": "pending source merge and separate fresh first-party Store policy plan",
+    "realDesktop": "unverified"
+  },
+  "inputAsset": {
+    "originalPath": "marketplace/dsh-store-icon.png",
+    "originalSha256": "8af3852ebf1cd2fe5b7d650a671d12200dd9c6f705e62a01f85a5255edb2d6c2",
+    "originalDimensions": [
+      1254,
+      1254
+    ],
+    "desktopAssetPath": "marketplace/dsh-store-icon-desktop.png",
+    "desktopAssetDimensions": [
+      96,
+      96
+    ],
+    "desktopAssetSha256": "43bf78b4ad72332d950bf6849fe2739938da1f09aa1aa577505b5b5735c9ce1b"
+  }
+}
